@@ -1,0 +1,166 @@
+import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
+import { createActionTypes } from '../../../reusable/common/redux-actions';
+const actionTypes = createActionTypes('@@welogix/corps/', [
+  'MODAL_HIDE', 'MODAL_SHOW', 'CORP_BEGIN_EDIT', 'CHANGE_CORP_VALUE',
+  'CORP_UPLOAD_PIC', 'CORP_UPLOAD_SUCCEED', 'CORP_UPLOAD_FAIL',
+  'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
+  'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
+  'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
+  'CORP_LOAD', 'CORP_LOAD_SUCCEED', 'CORP_LOAD_FAIL']);
+
+const initialState = {
+  loaded: false,
+  loading: false,
+  needUpdate: false,
+  visible: false,
+  selectIndex: -1,
+  thisCorp: {
+    type: 1,
+    status: 'paid'
+  },
+  corps: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: []
+  }
+};
+export default function reducer(state = initialState, action) {
+  const curCorp = state.thisCorp;
+  const plainCorp = { type: curCorp.type, status: curCorp.status };
+  switch (action.type) {
+  case actionTypes.CORP_LOAD:
+    return { ...state, loading: true, needUpdate: false };
+  case actionTypes.CORP_LOAD_SUCCEED: {
+    const corps = {...state.corps, ...action.result.data};
+    return {...state, loading: false, loaded: true, corps};
+  }
+  case actionTypes.CORP_LOAD_FAIL:
+    return { ...state, loading: false };
+  case actionTypes.MODAL_HIDE:
+    return { ...state, thisCorp: plainCorp, visible: false };
+  case actionTypes.MODAL_SHOW:
+    return { ...state, thisCorp: plainCorp, visible: true };
+  case actionTypes.CORP_BEGIN_EDIT:
+    return { ...state, thisCorp: { ...state.corps.data[action.data.index] }, visible: true, selectIndex: action.data.index };
+  case actionTypes.CORP_EDIT_SUCCEED: {
+    const corps = {...state.corps};
+    corps.data[action.index] = state.thisCorp;
+    return { ...state, corps, thisCorp: plainCorp, visible: false };
+  }
+  case actionTypes.CORP_DELETE_SUCCEED: {
+    return { ...state, needUpdate: true };
+  }
+  case actionTypes.CHANGE_CORP_VALUE: {
+    const thisCorp = { ...state.thisCorp };
+    thisCorp[action.data.field] = action.data.value;
+    return { ...state, thisCorp };
+  }
+  case actionTypes.CORP_UPLOAD_SUCCEED: {
+    const thisCorp = { ...state.thisCorp };
+    thisCorp[action.field] = action.result.data;
+    return { ...state, thisCorp };
+  }
+  case actionTypes.CORP_SUBMIT_SUCCEED: {
+    const corps = {...state.corps};
+    if ((corps.current - 1) * corps.pageSize <= corps.totalCount // = for 0 totalCount
+        && corps.current * corps.pageSize > corps.totalCount) {
+      corps.data.push({...action.data.corp, key: action.result.data.corpId,
+                      status: action.result.data.status});
+    }
+    corps.totalCount++;
+    return { ...state, corps, thisCorp: plainCorp, visible: false };
+  }
+  // todo deal with submit fail submit loading
+  default:
+    return state;
+  }
+}
+
+export function hideModal() {
+  return {
+    type: actionTypes.MODAL_HIDE
+  };
+}
+
+export function showModal() {
+  return {
+    type: actionTypes.MODAL_SHOW
+  };
+}
+
+export function beginEditCorp(index) {
+  return {
+    type: actionTypes.CORP_BEGIN_EDIT,
+    data: { index }
+  };
+}
+
+export function delCorp(corpId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CORP_DELETE, actionTypes.CORP_DELETE_SUCCEED, actionTypes.CORP_DELETE_FAIL],
+      endpoint: 'v1/account/corp',
+      method: 'del',
+      data: {corpId}
+    }
+  };
+}
+
+export function editCorp(corp, index) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CORP_EDIT, actionTypes.CORP_EDIT_SUCCEED, actionTypes.CORP_EDIT_FAIL],
+      endpoint: 'v1/account/corp',
+      method: 'put',
+      index,
+      data: { corp }
+    }
+  };
+}
+
+export function changeThisCorpValue(field, newValue) {
+  return {
+    type: actionTypes.CHANGE_CORP_VALUE,
+    data: { field, value: newValue }
+  };
+}
+
+export function uploadCorpPics(field, pics) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CORP_UPLOAD_PIC, actionTypes.CORP_UPLOAD_SUCCEED, actionTypes.CORP_UPLOAD_FAIL],
+      endpoint: 'v1/upload/pics',
+      method: 'post',
+      files: pics,
+      field
+    }
+  };
+}
+
+export function submitCorp(corp) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CORP_SUBMIT, actionTypes.CORP_SUBMIT_SUCCEED, actionTypes.CORP_SUBMIT_FAIL],
+      endpoint: 'v1/account/corp',
+      method: 'post',
+      data: { corp }
+    }
+  };
+}
+
+export function isLoaded(state) {
+  return state.corp && state.corp.loaded;
+}
+
+export function loadCorps(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CORP_LOAD, actionTypes.CORP_LOAD_SUCCEED, actionTypes.CORP_LOAD_FAIL],
+      endpoint: 'v1/account/corps',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}

@@ -1,0 +1,6 @@
+[submodule "reusable"]
+	path = reusable
+	url = git@git.yun56.co:saas/qm-reusable.git
+[submodule "public/assets"]
+	path = public/assets
+	url = git@git.yun56.co:saas/qm-assets.git

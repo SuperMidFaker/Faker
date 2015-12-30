@@ -1,0 +1,23 @@
+{
+  "extends": "airbnb",
+  "globals": {
+    "__CLIENT__": true,
+    "webpackIsomorphicTools": false,
+    "__PRODUCTIONS_ROOT_GROUP__": false,
+    "__PRODUCTIONS_DOMAIN_GROUP__": false,
+    "__DEV__": false,
+    "__DEVTOOLS__": false,
+    "__API_ROOT__": false
+  },  
+  "rules": {
+    "comma-dangle": [1, "never"],
+    "key-spacing": [0, {
+      "beforeColon": true,
+      "afterColon": true
+    }], 
+    "no-else-return": 0,
+    "space-before-function-paren": [0, "always"],
+    "id-length":[0],
+    "react/jsx-quotes": [0, "single"]
+  }
+}

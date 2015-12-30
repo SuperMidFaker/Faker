@@ -1,0 +1,290 @@
+.am-splash-screen {
+  background-color: #383737;
+  min-height: 100%;
+  background: url("../../public/assets/img/wetms-splash-bg.jpg") no-repeat center top;
+  background-size: cover;
+  .am-wrapper {
+    padding-top: 0px;
+    .am-content {
+      margin: 0px;
+      a {
+        color: #ABABAB;
+      }
+    }
+  }
+}
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 10px;
+  label {
+    display: inline-block;
+    max-width: 100%;
+    font-weight: 400;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .panel-default {
+    background: transparent none repeat scroll 0px 0px;
+    padding: 0px;
+    border: 0px none;
+    overflow: hidden;
+    margin-bottom: 20px;
+    .panel-heading {
+      padding: 0px;
+      background: transparent none repeat scroll 0px 0px;
+      border: 0px none;
+      text-align: center;
+      margin-bottom: 20px;
+      span {
+        display: block;
+        color: #858383;
+        line-height: 20px;
+        font-size: 15px;
+        font-weight: 400;
+        margin-top: 10px;
+        padding-bottom: 10px;
+      }
+    }
+    .panel-body {
+      .form-group {
+        margin: 0px;
+        padding: 0px;
+        .input-group {
+          border-bottom: 2px solid #4A4949;
+          padding: 10px 0px;
+          .input-group-addon {
+            border: 0px none;
+            background-color: transparent;
+            .icon {
+              font-size: 20px;
+              color: #FFF;
+            }
+          }
+          .form-control {
+            border: 0px none;
+            background-color: transparent;
+            box-shadow: none;
+            color: #A3A2A2;
+            padding: 0px;
+            font-size: 14px;
+            font-weight: 500;
+            height: 36px;
+          }
+        }
+        &.login-submit {
+          padding-top: 40px;
+          padding-bottom: 15px;
+          .btn {
+            width: 100%;
+          }
+        }
+        &.footer {
+          margin-top: 3px;
+          line-height: 35px;
+          font-size: 14px;
+        }
+        > div {
+          padding: 0px;
+        }
+        .remember {
+          text-align: right;
+          color: #A3A2A2;
+          label {
+            margin: 0px;
+            cursor: pointer;
+          }
+          .am-checkbox {
+            display: inline-block;
+            margin-left: 7px;
+            input[type="checkbox"] + label::before {
+              border-color: #4A4949;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.panel {
+  background-color: #FFF;
+  margin-bottom: 30px;
+  box-shadow: none;
+  border-radius: 0px;
+}
+.panel-heading {
+  font-size: 18px;
+  font-weight: 300;
+  padding: 20px 0 15px;
+  margin: 0px 20px;
+  border-bottom: 1px solid transparent;
+}
+.panel-default > .panel-heading {
+  color: #333;
+  background-color: transparent;
+  border-color: #DDD;
+}
+.panel-body {
+  padding: 15px 20px 20px;
+}
+.input-group {
+  position: relative;
+  display: table;
+  border-collapse: separate;
+  .form-control, .input-group-addon, .input-group-btn {
+    display: table-cell;
+  }
+}
+.input-group-addon {
+  font-size: 15px;
+  padding: 8px 12px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  background-color: #EAEAEA;
+  border: 1px solid #EAEAEA;
+  border-radius: 0px;
+  color: #777;
+  &:first-child {
+    border-right: 0px none;
+  }
+}
+.input-group-addon, .input-group-btn {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group > .btn, .input-group-btn:first-child > .dropdown-toggle, .input-group-btn:last-child > .btn-group:not(:last-child) > .btn, .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle) {
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.form-control {
+  background-image: none;
+  line-height: 1.42857;
+  color: #777;
+  display: block;
+  width: 100%;
+  height: 44px;
+  background-color: #FFF;
+  border: 1px solid #EAEAEA;
+  border-radius: 0px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  border-width: 2px;
+  box-shadow: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  &:focus {
+    outline: 0;
+  }
+}
+.input-group .form-control {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 100%;
+  margin-bottom: 0px;
+}
+.btn {
+  background-image: none;
+  white-space: nowrap;
+  display: inline-block;
+  margin-bottom: 0px;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  font-size: 13px;
+  -moz-user-select: none;
+  &:focus {
+    outline: 0!important;
+    outline-offset: -2px;
+    text-decoration: none;
+  }
+}
+.btn-block {
+  display: block;
+  width: 100%;
+}
+.btn-block+.btn-block {
+  margin-top: 5px;
+}
+.btn-primary {
+  color: #FFF;
+  background-color: #EF6262;
+  border-color: #EF6262;
+  &:focus {
+    color: #fff;
+    background-color: #ef6262;
+    border-color: #ef6262;
+  }
+}
+.btn-group-lg > .btn, .btn-lg {
+  padding: 12px 16px;
+  font-size: 15px;
+  line-height: 1.63333;
+  border-radius: 0px;
+}
+.btn {
+  border-radius: 0px;
+}
+.col-xs-6 {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 50%;
+}
+.am-checkbox {
+  display: block;
+  line-height: 22px;
+  margin: 0px;
+  padding: 7px 0px;
+  input[type="checkbox"] {
+    margin: 0px;
+    display: none;
+    width: 22px;
+  }
+  input[type=checkbox]:checked+label:before {
+    content: "\e6cd";
+    color: #ef6262;
+    border-color: #ef6262;
+  }
+  input[type="checkbox"] + label {
+    padding-left: 0px;
+    &::before {
+      content: "";
+      width: 22px;
+      height: 22px;
+      display: inline-block;
+      border: 2px solid #EAEAEA;
+      margin-right: 5px;
+      font-size: 18px;
+      font-family: "Stroke 7";
+      font-weight: 400;
+      line-height: 19px;
+      vertical-align: bottom;
+      text-align: center;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  }
+}
+.form-horizontal .am-checkbox {
+  padding: 7px 0px;
+  min-height: auto;
+}
+.form-horizontal .form-group, .panel-body {
+  &::before {
+    content: " ";
+    display: table;
+  }
+  &::after {
+    content: " ";
+    display: table;
+    clear: both;
+  }
+}

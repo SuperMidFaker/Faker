@@ -1,0 +1,11 @@
+[{
+    "name"       : "wewms",
+    "script"     : "./server/sboot.js",
+    "error_file" : "./log/wewms-err.log",
+    "out_file"   : "./log/wewms-out.log",
+    "pid_file"   : "./log/wewms.pid",
+    "args"      : "['--port=3024']",
+    "env": {
+        "NODE_ENV": "development"
+    }
+}]
