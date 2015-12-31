@@ -11,7 +11,7 @@ export default class AmNavBar extends React.Component {
       <nav className="navbar navbar-default navbar-fixed-top am-top-header">
         <div className="container-fluid">
           <div className="navbar-header">
-            <NavLink to="/home" className="navbar-brand" />
+            <NavLink to="/" className="navbar-brand" />
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-nav-right">

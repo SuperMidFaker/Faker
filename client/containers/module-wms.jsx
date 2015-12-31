@@ -23,7 +23,7 @@ export default class WMS extends React.Component {
         text: 'Login'
       }, {
         key: 'ui-2',
-        path: '/home',
+        path: '/',
         text: 'Home'
       }, {
         key: 'ui-3',

@@ -28,7 +28,7 @@ export default class Module extends React.Component {
                 <span className="icon-bar"><span></span><span></span><span></span></span>
               </a>
             {/* mobile header */}
-              <NavLink to="/home" className="navbar-brand" />
+              <NavLink to="/" className="navbar-brand" />
             </div>
             {/* mobile collapse */}
             <a data-toggle="collapse" data-target="#am-navbar-collapse" className="am-toggle-top-header-menu collapsed">

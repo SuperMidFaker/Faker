@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import AmNavBar from '../components/am-navbar';
+import ModuleLayout from '../components/module-layout';
+import './home.less';
 
 @connect(
   state => ({
@@ -19,15 +21,13 @@ export default class Home extends React.Component {
         <div className="am-content">
           <div className="main-content">
             <div className="home-header">
-              <div className="center-container">
-              <img url="" />
-              <span></span>
+              <div className="corp-container">
+                <img src="/assets/img/home/logo.png" />
+                <span></span>
               </div>
             </div>
             <div className="home-body">
-              <ul>
-                <li><img /><sapn></span></li>
-              </ul>
+              <ModuleLayout size="large" />
             </div>
           </div>
         </div>

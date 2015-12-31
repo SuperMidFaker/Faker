@@ -38,11 +38,11 @@ app.use(function *catchAuthError(next) {
 });
 
 app.use(kLogger());
-app.use(verifyApp());
 app.use(assets(path.resolve(__dirname, '..', 'public')));
 // 页面路由在routes.jsx进行权限判断
 app.use(loadRoute(__dirname, 'routes'));
 
+app.use(verifyApp());
 // 受限API用户验证
 app.use(kJwt(Object.assign({
   cookie: config.get('jwt_cookie_key'),
@@ -52,7 +52,7 @@ app.use(kJwt(Object.assign({
   custom: function skip() {
     return !!this.skipJwt;
   },
-  path: [/^\/login/, /^\/public/,/dist/, /assets/]
+  path: [/^\/public/,/dist/, /assets/]
 }));
 app.use(loadRoute(__dirname, 'api'));
 
