@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, IndexRoute, Redirect } from 'react-router';
+import { Route, IndexRoute } from 'react-router';
 import Root from './root';
 import Home from './containers/home';
 import SSO from './containers/pack-sso';
@@ -53,14 +53,12 @@ export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
     function checkAuth() {
       const {account: {username}} = store.getState();
-      console.log('checkAuth', username);
       if (username === '') {
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}`);
       }
       cb();
     }
     if (!isLoaded(store.getState(), 'account')) {
-      console.log('load account', cookie);
       store.dispatch(loadAccount(cookie)).then(checkAuth);
     } else {
       checkAuth();
@@ -85,8 +83,8 @@ export default (store, cookie) => {
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
-          <Redirect from="wms" to="wms/warehouse" />
           <Route path="wms" component={WMS}>
+            <IndexRoute component={Warehouse} />
             <Route path="warehouse" component={Warehouse} />
             <Route path="customer" component={Customer} />
             <Route path="bill" component={Bill} />

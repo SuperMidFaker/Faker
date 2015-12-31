@@ -5,6 +5,22 @@ const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 const MenuItemGroup = Menu.ItemGroup;
 
+function hoverAmSubmenu() {
+  // hacky: make the submenu ul visible at the bottom of page
+  /* eslint-disable */
+  $('.am-sidebar-submenu').hover(function () {
+    const submenu = $(this);
+    const submenuUL = submenu.find('ul');
+    if (submenu[0].offsetTop < window.innerHeight/2) {
+      submenuUL.css('top', 0);
+    } else {
+      submenuUL.css('bottom', 0);
+    }
+  })
+}
+function updateDimensions() {
+  hoverAmSubmenu();
+}
 export default class AmLeftSidebar extends React.Component {
   static propTypes = {
     links: PropTypes.array
@@ -14,6 +30,13 @@ export default class AmLeftSidebar extends React.Component {
     this.state = {
       openedKey: []
     };
+  }
+  componentDidMount() {
+    hoverAmSubmenu();
+    window.addEventListener("resize", updateDimensions);
+  }
+  componentWillUnmount() {
+    window.removeEventListener("resize", updateDimensions);
   }
   handleClick(ev) {
     this.setState({

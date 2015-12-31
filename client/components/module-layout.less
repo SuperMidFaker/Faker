@@ -1,13 +1,35 @@
-
 .module- {
   &container {
-    padding: 20px 40px;
+    padding: 10px 5px 0 0;
     text-align: center;
-    margin-bottom: 30px;
+    width: 120px;   
     &.large {
+      padding: 20px 40px;
+      margin-bottom: 20px;
+      width: 250px;   
       .module-text {
         font-size: 20px;
       }
+      .module-icon >img {
+        width: 70px;
+        height: 70px;
+        margin: 20px;
+      }
+      .module-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 10px;
+      }
+    }
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .module-icon >img {
+      width: 44px;
+      height: 44px;
+      margin: 10px;
     }
     .module-text {
       font-weight: 400;
@@ -15,9 +37,34 @@
       line-height: normal;
     }
   }
+  &icon {
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 5px;
+  }
+  /*
   &import {
     background: url('../../public/assets/img/home/import-bg.png');
-    width: 120px;
-    height: 120px;
   }
+  &export {
+    background: url('../../public/assets/img/home/export-bg.png');
+  }
+  &tms {
+    background: url('../../public/assets/img/home/tms-bg.png');
+  }
+  &wms {
+    background: url('../../public/assets/img/home/wms-bg.png');
+  }
+  &payment {
+    background: url('../../public/assets/img/home/payment-bg.png');
+  }
+  &receipt {
+    background: url('../../public/assets/img/home/receipt-bg.png');
+  }
+  &cost {
+    background: url('../../public/assets/img/home/cost-bg.png');
+  }
+  &kpi {
+    background: url('../../public/assets/img/home/kpi-bg.png');
+  }*/
 }
