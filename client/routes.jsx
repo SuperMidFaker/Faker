@@ -10,6 +10,8 @@ import * as Corp from './containers/account/corp';
 import * as Personnel from './containers/account/personnel';
 import Password from './containers/account/password';
 import Module from './containers/module';
+import ImportM from './containers/module-import';
+import ImportDashboard from './containers/import/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Customer from './containers/wms/customer';
@@ -83,6 +85,16 @@ export default (store, cookie) => {
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
+          <Route path="import" component={ImportM}>
+            <IndexRoute component={ImportDashboard} />
+            <Route path="delegate">
+              <Route path="list" />
+              <Route path="new" />
+              <Route path="/edit/:id" />
+              <Route path="/view/:id" />
+              <Route path="/send/:id" />
+            </Route>
+          </Route>
           <Route path="wms" component={WMS}>
             <IndexRoute component={Warehouse} />
             <Route path="warehouse" component={Warehouse} />

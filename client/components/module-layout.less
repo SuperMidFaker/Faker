@@ -2,69 +2,44 @@
   &container {
     padding: 10px 5px 0 0;
     text-align: center;
-    width: 120px;   
+    width: 120px;
     &.large {
       padding: 20px 40px;
       margin-bottom: 20px;
-      width: 250px;   
+      width: 250px;
       .module-text {
         font-size: 20px;
+      }
+      > img {
+        width: 120px;
+        height: 120px;
       }
       .module-icon >img {
         width: 70px;
         height: 70px;
-        margin: 20px;
-      }
-      .module-icon {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 10px;
+        left: 90px;
+        top: 40px;
       }
     }
-    img {
-      position: absolute;
+    > img {
+      position: relative;
       top: 0;
       left: 0;
-    }
-    .module-icon >img {
-      width: 44px;
-      height: 44px;
-      margin: 10px;
-    }
-    .module-text {
-      font-weight: 400;
-      font-size: 13px;
-      line-height: normal;
+      width: 75px;
+      height: 75px;
     }
   }
-  &icon {
-    width: 75px;
-    height: 75px;
-    margin: 0 auto 5px;
+  &icon >img {
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    left: 35px;
+    top: 20px;
   }
-  /*
-  &import {
-    background: url('../../public/assets/img/home/import-bg.png');
+  &text {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: normal;
+    display: block;
   }
-  &export {
-    background: url('../../public/assets/img/home/export-bg.png');
-  }
-  &tms {
-    background: url('../../public/assets/img/home/tms-bg.png');
-  }
-  &wms {
-    background: url('../../public/assets/img/home/wms-bg.png');
-  }
-  &payment {
-    background: url('../../public/assets/img/home/payment-bg.png');
-  }
-  &receipt {
-    background: url('../../public/assets/img/home/receipt-bg.png');
-  }
-  &cost {
-    background: url('../../public/assets/img/home/cost-bg.png');
-  }
-  &kpi {
-    background: url('../../public/assets/img/home/kpi-bg.png');
-  }*/
 }

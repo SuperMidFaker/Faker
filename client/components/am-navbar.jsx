@@ -3,11 +3,13 @@ import { Popover } from '../../reusable/ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
+import {DEFAULT_MODULES} from '../../universal/constants';
 export default class AmNavBar extends React.Component {
   static propTypes = {
     locationPath: PropTypes.string
   }
   render() {
+    const moduleName = this.props.locationPath && this.props.locationPath.split('/')[1];
     return (
       <nav className="navbar navbar-default navbar-fixed-top am-top-header">
         <div className="container-fluid">
@@ -30,10 +32,10 @@ export default class AmNavBar extends React.Component {
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-nav-right">
               <li className="dropdown">
-              { this.props.locationPath &&
+              { moduleName &&
                 <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
                   <a role="button" aria-expanded="false" className="dropdown-toggle">
-                    <span>Services</span>
+                    <span>{DEFAULT_MODULES[moduleName].text}</span>
                     <span className="angle-down s7-angle-down"></span>
                   </a>
                 </Popover>
@@ -45,12 +47,12 @@ export default class AmNavBar extends React.Component {
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
               <li className="dropdown">
-                <a data-toggle="dropdown" role="button">
+                <a className="dropdown-toggle" aria-expanded="false" role="button">
                   <span className="icon s7-comment"></span>
                 </a>
               </li>
               <li className="dropdown">
-                <a data-toggle="dropdown" role="button" aria-expanded="false">
+                <a className="dropdown-toggle" role="button" aria-expanded="false">
                   <span className="icon s7-bell"></span>
                 </a>
               </li>

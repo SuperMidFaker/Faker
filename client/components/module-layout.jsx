@@ -30,15 +30,15 @@ export default class ModuleLayout extends React.Component {
         {
           this.props.enabledmods.map((mod, idx) => (
             <Col span="6" key={`mod-${idx}`}>
-              <img src={`/assets/img/home/${mod.cls}-bg.png`} />
-              <div className={containerCls}>
-                <NavLink to={mod.url}>
-                  <div className={'module-icon module-' + mod.cls}>
+              <NavLink to={mod.url}>
+                <div className={containerCls}>
+                  <img src={`/assets/img/home/${mod.cls}-bg.png`} />
+                  <div className="module-icon">
                     <img src={`/assets/img/home/${mod.cls}.png`} />
                   </div>
                   <span className="module-text">{mod.text}</span>
-                </NavLink>
-              </div>
+                </div>
+              </NavLink>
             </Col>))
         }
       </Row>);

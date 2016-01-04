@@ -52,16 +52,6 @@ export default class AmLeftSidebar extends React.Component {
         <div className="nano-content">
        */}
         <Menu prefixCls="am-sidebar" onClick={(ev) => this.handleClick(ev)} mode="vertical">
-          <SubMenu key="sub1" title={<span><i className="icon anticon anticon-mail" /><span>导航一</span></span>}>
-            <MenuItemGroup title="分组1">
-              <Menu.Item key="1">选项1</Menu.Item>
-              <Menu.Item key="2">选项2</Menu.Item>
-            </MenuItemGroup>
-              <MenuItemGroup title="分组2">
-              <Menu.Item key="3">选项3</Menu.Item>
-              <Menu.Item key="4">选项4</Menu.Item>
-            </MenuItemGroup>
-          </SubMenu>
         {
           links.map(link => {
             if (link.single) {
