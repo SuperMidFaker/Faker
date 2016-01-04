@@ -6,7 +6,7 @@ export default [
    ['get', '/home', plainRender],
    ['get', '/login', plainRender],
    ['get', '/forgot', plainRender],
-   ['get', '/account/*', plainRender],
+   ['get', '/corp/*', plainRender],
    ['get', '/wms*', plainRender],
    ['get', '/account/logout', logoutUser]
 ];

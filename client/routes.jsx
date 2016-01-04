@@ -5,10 +5,11 @@ import Home from './containers/home';
 import SSO from './containers/pack-sso';
 import Login from './containers/sso/login';
 import Forgot from './containers/sso/forgot';
-import Account from './containers/pack-account';
-import * as Corp from './containers/account/corp';
-import * as Personnel from './containers/account/personnel';
-import Password from './containers/account/password';
+import Corp from './containers/pack-corp';
+import CorpInfo from './containers/corp/info';
+import * as Organization from './containers/corp/organization';
+import * as Personnel from './containers/corp/personnel';
+import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
@@ -20,37 +21,6 @@ import Notice from './containers/wms/notice';
 import {loadAccount} from '../universal/redux/reducers/account';
 import {isLoaded} from '../reusable/common/redux-actions';
 
-/*
-export default (
-  <Route path="/" component={Root}>
-    <IndexRoute component={Home} />
-    <Route component={SSO}>
-      <Route path="login" component={Login} />
-      <Route path="forgot" component={Forgot} />
-    </Route>
-    <Route path="home" component={Home} />
-    <Route path="account" component={Account}>
-      <Route path="corp">
-        <Route path="info" />
-        <Route path="new" />
-        <Route path="/:id/edit" />
-      </Route>
-      <Route path="corps" component={Corp.List} />
-      <Route path="personnels" component={Personnel.List} />
-      <Route path="password" component={Password} />
-    </Route>
-    <Route component={Module}>
-      <Redirect from="wms" to="wms/warehouse" />
-      <Route path="wms" component={WMS}>
-        <Route path="warehouse" component={Warehouse} />
-        <Route path="customer" component={Customer} />
-        <Route path="bill" component={Bill} />
-        <Route path="notice" component={Notice} />
-      </Route>
-    </Route>
-  </Route>
-);
-*/
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
     function checkAuth() {
@@ -74,14 +44,18 @@ export default (store, cookie) => {
       </Route>
       <Route onEnter={requireAuth}>
         <IndexRoute component={Home} />
-        <Route path="account" component={Account}>
-          <Route path="corp">
-            <Route path="info" />
+        <Route path="corp" component={Corp}>
+          <Route path="info" component={CorpInfo} />
+          <Route path="organization">
             <Route path="new" />
-            <Route path="/:id/edit" />
+            <Route path="/edit/:id" />
           </Route>
-          <Route path="corps" component={Corp.List} />
-          <Route path="personnels" component={Personnel.List} />
+          <Route path="organizations" component={Organization.List} />
+          <Route path="user">
+            <Route path="new" />
+            <Route path="/edit/:id" />
+          </Route>
+          <Route path="users" component={Personnel.List} />
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
@@ -92,7 +66,6 @@ export default (store, cookie) => {
               <Route path="new" />
               <Route path="/edit/:id" />
               <Route path="/view/:id" />
-              <Route path="/send/:id" />
             </Route>
           </Route>
           <Route path="wms" component={WMS}>

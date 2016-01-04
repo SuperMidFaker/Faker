@@ -3,7 +3,6 @@ import NavLink from '../../reusable/components/nav-link';
 import { Menu } from '../../reusable/ant-ui';
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
-const MenuItemGroup = Menu.ItemGroup;
 
 function hoverAmSubmenu() {
   // hacky: make the submenu ul visible at the bottom of page

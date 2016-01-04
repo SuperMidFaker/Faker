@@ -18,46 +18,12 @@ export default class AmUserNav extends React.Component {
   render() {
     const MenuItem = Menu.Item;
     const settingMenus = [];
-    if (this.props.usertype === ADMIN) {
+    if (this.props.usertype === ENTERPRISE || this.props.usertype === BRANCH) {
       settingMenus.push(
         <MenuItem key="corps">
-          <NavLink to="/account/corps">
+          <NavLink to="/corp/info">
             <span className="icon s7-config"></span>
-            <span>主帐号管理</span>
-          </NavLink>
-        </MenuItem>);
-    } else if (this.props.usertype === ENTERPRISE) {
-      settingMenus.push(
-        <MenuItem key="corp-info">
-          <NavLink to="/account/corp/info">
-            <span className="icon s7-config"></span>
-            <span>帐号设置</span>
-          </NavLink>
-        </MenuItem>,
-        <MenuItem key="corps">
-          <NavLink to="/account/corps">
-            <span className="icon s7-config"></span>
-            <span>子帐号管理</span>
-          </NavLink>
-        </MenuItem>,
-        <MenuItem key="personnels">
-          <NavLink to="/account/personnels">
-            <span className="icon s7-config"></span>
-            <span>用户管理</span>
-          </NavLink>
-        </MenuItem>);
-    } else if (this.props.usertype === BRANCH) {
-      settingMenus.push(
-        <MenuItem key="corp-info">
-          <NavLink to="/account/corp/info">
-            <span className="icon s7-config"></span>
-            <span>帐号设置</span>
-          </NavLink>
-        </MenuItem>,
-        <MenuItem key="personnels">
-          <NavLink to="/account/personnels">
-            <span className="icon s7-config"></span>
-            <span>用户管理</span>
+            <span>企业设置</span>
           </NavLink>
         </MenuItem>);
     }
