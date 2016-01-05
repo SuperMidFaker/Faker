@@ -28,7 +28,7 @@ export default class Home extends React.Component {
               <h2>某某公司</h2>
             </div>
             <div className="btn-group">
-              <NavLink to="/setting"><Button type="primary" size="large"><span>设置</span></Button></NavLink>
+              <NavLink to="/corp/info"><Button type="primary" size="large"><span>设置</span></Button></NavLink>
             </div>
           </div>
           <div className="home-body">

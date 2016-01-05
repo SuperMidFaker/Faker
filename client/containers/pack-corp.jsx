@@ -30,7 +30,7 @@ export default class Account extends React.Component {
     }, {
       single: true,
       key: 'corpsetting-3',
-      path: '/corp/organizations',
+      path: '/corp/organization',
       icon: 's7-network',
       text: '组织机构'
     }, {
@@ -56,12 +56,10 @@ export default class Account extends React.Component {
     }];
     return (
       <div className="am-wrapper am-fixed-sidebar">
-        <AmNavBar />
+        <AmNavBar barTitle="企业设置" />
         <div className="am-content">
           <AmLeftSidebar links={ linkMenus } />
-          <div className="main-content">
           {this.props.children}
-          </div>
         </div>
       </div>);
   }

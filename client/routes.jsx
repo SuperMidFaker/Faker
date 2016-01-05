@@ -7,7 +7,7 @@ import Login from './containers/sso/login';
 import Forgot from './containers/sso/forgot';
 import Corp from './containers/pack-corp';
 import CorpInfo from './containers/corp/info';
-import * as Organization from './containers/corp/organization';
+// import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
 import Password from './containers/corp/password';
 import Module from './containers/module';
@@ -50,7 +50,9 @@ export default (store, cookie) => {
             <Route path="new" />
             <Route path="/edit/:id" />
           </Route>
-          <Route path="organizations" component={Organization.List} />
+          {/*
+          <Route path="organization" component={Organization.List} />
+         */}
           <Route path="user">
             <Route path="new" />
             <Route path="/edit/:id" />

@@ -6,7 +6,8 @@ import ModuleLayout from './module-layout';
 import {DEFAULT_MODULES} from '../../universal/constants';
 export default class AmNavBar extends React.Component {
   static propTypes = {
-    locationPath: PropTypes.string
+    locationPath: PropTypes.string,
+    barTitle: PropTypes.string
   }
   render() {
     const moduleName = this.props.locationPath && this.props.locationPath.split('/')[1];
@@ -40,6 +41,11 @@ export default class AmNavBar extends React.Component {
                   </a>
                 </Popover>
               }
+              </li>
+              <li className="dropdown">
+                <a role="button" aria-expanded="false" className="dropdown-toggle">
+                  <span>{this.props.barTitle}</span>
+                </a>
               </li>
             </ul>
             <ul className="nav navbar-nav navbar-right am-user-nav">

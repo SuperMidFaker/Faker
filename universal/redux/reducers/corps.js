@@ -1,6 +1,7 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/corps/', [
+  'FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
   'MODAL_HIDE', 'MODAL_SHOW', 'CORP_BEGIN_EDIT', 'CHANGE_CORP_VALUE',
   'CORP_UPLOAD_PIC', 'CORP_UPLOAD_SUCCEED', 'CORP_UPLOAD_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
@@ -18,7 +19,9 @@ const initialState = {
     type: 1,
     status: 'paid'
   },
-  corps: {
+  formData: {
+  },
+  corplist: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
@@ -149,8 +152,24 @@ export function submitCorp(corp) {
   };
 }
 
-export function isLoaded(state) {
-  return state.corp && state.corp.loaded;
+export function isFormDataLoaded(corpsState, corpId) {
+  let loaded = corpsState.formData.key === corpId;
+  corpsState.corplist.data.forEach((corp) => {
+    loaded = loaded || corp.key === corpId;
+  });
+  return loaded;
+}
+
+export function loadForm(cookie, corpId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.FORM_LOAD, actionTypes.FORM_LOAD_SUCCEED, actionTypes.FORM_LOAD_FAIL],
+      endpoint: 'v1/user/corp',
+      method: 'get',
+      params: {corpId},
+      cookie
+    }
+  };
 }
 
 export function loadCorps(cookie, params) {
