@@ -2,7 +2,7 @@ import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
-  'MODAL_HIDE', 'MODAL_SHOW', 'CORP_BEGIN_EDIT', 'CHANGE_CORP_VALUE',
+  'MODAL_HIDE', 'MODAL_SHOW', 'CORP_BEGIN_EDIT', 'SET_FORM_VALUE',
   'CORP_UPLOAD_PIC', 'CORP_UPLOAD_SUCCEED', 'CORP_UPLOAD_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
@@ -54,10 +54,10 @@ export default function reducer(state = initialState, action) {
   case actionTypes.CORP_DELETE_SUCCEED: {
     return { ...state, needUpdate: true };
   }
-  case actionTypes.CHANGE_CORP_VALUE: {
-    const thisCorp = { ...state.thisCorp };
-    thisCorp[action.data.field] = action.data.value;
-    return { ...state, thisCorp };
+  case actionTypes.SET_FORM_VALUE: {
+    const form = { ...state.formData };
+    form[action.data.field] = action.data.value;
+    return { ...state, formData: form };
   }
   case actionTypes.CORP_UPLOAD_SUCCEED: {
     const thisCorp = { ...state.thisCorp };
@@ -122,13 +122,6 @@ export function editCorp(corp, index) {
   };
 }
 
-export function changeThisCorpValue(field, newValue) {
-  return {
-    type: actionTypes.CHANGE_CORP_VALUE,
-    data: { field, value: newValue }
-  };
-}
-
 export function uploadCorpPics(field, pics) {
   return {
     [CLIENT_API]: {
@@ -169,6 +162,13 @@ export function loadForm(cookie, corpId) {
       params: {corpId},
       cookie
     }
+  };
+}
+
+export function setFormValue(field, newValue) {
+  return {
+    type: actionTypes.SET_FORM_VALUE,
+    data: { field, value: newValue }
   };
 }
 

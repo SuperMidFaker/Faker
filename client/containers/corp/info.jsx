@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import {connect} from 'react-redux';
 import cx from '../../../reusable/browser-util/classname-join';
 import {AntIcon, Button, Form, Input, Row, Col, Select, Tabs} from '../../../reusable/ant-ui';
+import Region from '../../components/region-cascade';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
 import {isFormDataLoaded, loadForm, setFormValue, uploadPic, submit} from '../../../universal/redux/reducers/corps';
 const Option = Select.Option;
-const OptGroup = Select.OptGroup;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
@@ -69,31 +69,70 @@ export default class CorpInfo extends React.Component {
             {this.renderTextInput('企业名称', '请与营业执照名称一致', 'name', true, [{required: true, message: '公司名称必填'}])}
             {this.renderTextInput('企业简称', '', 'short_name')}
             <FormItem label="所在地" labelCol={{span: 6}} wrapperCol={{span: 16}}>
-              <Select defaultValue="cn" style={{width:250}} {...getFieldProps('country')}>
-                <OptGroup label="选择国家或地区">
-                  <Option value="cn">中国</Option>
-                </OptGroup>
-              </Select>
-              <Select style={{width:80}} {...getFieldProps('province')}>
-                <Option value="zj">Zhejiang</Option>
-              </Select>
+              <Region setFormValue={this.props.setFormValue} region={{
+                country: this.props.formData.country, province: this.props.formData.province,
+                city: this.props.formData.city, county: this.props.formData.district}} />
             </FormItem>
+            {this.renderTextInput('详细地址', '', 'address')}
           </Col>
           <Col span="8">
+            <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 12}} required>
+              <Col span="18">
+                <Input type="text" disabled {...getFieldProps('code')} />
+              </Col>
+              <Col span="6">
+                <a role="button"><span>申请修改</span></a>
+              </Col>
+            </FormItem>
             <FormItem label="行业类型" labelCol={{span: 6}} wrapperCol={{span: 12}}>
-              <Select defaultValue="lucy" {...getFieldProps('type')}>
+              <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('type')}>
                 <Option value="freight">货代</Option>
               </Select>
             </FormItem>
-            <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+            <FormItem label="公司介绍" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+              <Input type="textarea" rows="3" {...getFieldProps('desc')} />
+            </FormItem>
+            <FormItem label="公司网址" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+              <Input type="text" addonBefore="http://" {...getFieldProps('remark')} />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row className="horizontal-divider">
+          <Col span="8">
+            <Row>
+              <Col span="11" offset="3">
+              {this.renderTextInput('联系人', '', 'username', true, [{required: true, message: '联系人名称必填'}])}
+              </Col>
+              <Col span="9">
+                <FormItem label="职位" labelCol={{span: 5}} wrapperCol={{span: 16}}>
+                  <Input type="text" {...getFieldProps('position')} />
+                </FormItem>
+              </Col>
+            </Row>
+            {this.renderTextInput('手机号', '', 'phone', true, [{required: true, message: '联系人手机号必填'}])}
+            {this.renderTextInput('Email', '', 'email')}
+          </Col>
+        </Row>
+      </Form>);
+  }
+  renderEnterpriseForm() {
+    const {formhoc: {getFieldProps}} = this.props;
+    return (
+      <Form>
+        <Row>
+          <Col span="8">
+            <FormItem label="企业LOGO" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row className="horizontal-divider">
+          <Col span="8">
+            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 12}}>
               <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('code')} />
             </FormItem>
           </Col>
         </Row>
       </Form>);
-  }
-  renderFinancialForm() {
-    return 'Financial';
   }
   render() {
     return (
@@ -104,7 +143,7 @@ export default class CorpInfo extends React.Component {
         <div className="page-body">
           <Tabs defaultActiveKey="tab1">
             <TabPane tab="基础信息" key="tab1">{this.renderBasicForm()}</TabPane>
-            <TabPane tab="财务信息" key="tab2">{this.renderFinancialForm()}</TabPane>
+            <TabPane tab="品牌设置" key="tab2">{this.props.formData.level === undefined && this.renderEnterpriseForm()}</TabPane>
           </Tabs>
         </div>
         <div className="bottom-fixed-row">
