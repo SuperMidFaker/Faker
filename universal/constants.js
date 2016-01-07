@@ -26,9 +26,18 @@ const DEFAULT_MODULES = {
   'kpi':    { cls: 'kpi', url: '/kpi', text: 'KPI绩效' }
 };
 
+const TENANT_LEVEL = {
+  STANDARD: 0,
+  ENTERPRISE: 1,
+  PLATFORM: 2
+};
+const CHINA_CODE = 'CN';
+
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
+  TENANT_LEVEL,
+  CHINA_CODE,
   corpStatusDesc,
   SMS_TYPE,
   ADMIN,

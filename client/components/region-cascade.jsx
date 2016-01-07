@@ -1,10 +1,14 @@
 import React, { PropTypes } from 'react';
 import {Row, Col, Select} from '../../reusable/ant-ui';
+import { CHINA_CODE } from '../../universal/constants';
 import world from './worldwide-regions.json';
 import chinaRegions from './china-regions.json';
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 
+const defaultProvince = '省/自治区/直辖市';
+const defaultCity = '市';
+const defaultCounty = '区县';
 export default class RegionCascade extends React.Component {
   static propTypes = {
     setFormValue: PropTypes.func.isRequired,
@@ -14,12 +18,12 @@ export default class RegionCascade extends React.Component {
     super(...args);
     this.state = {
       disableProvince: false,
-      country: 'CN',
-      province: '省/自治区/直辖市',
+      country: CHINA_CODE,
+      province: defaultProvince,
       cities: [],
-      city: '市',
+      city: defaultCity,
       counties: [],
-      county: '区县'
+      county: defaultCounty
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -32,34 +36,44 @@ export default class RegionCascade extends React.Component {
     this.setState(propsAsState);
   }
   handleCountryChange(value) {
-    if (value !== 'CN') {
-      this.setState({disableProvince: true});
+    if (value !== CHINA_CODE) {
+      this.setState({
+        disableProvince: true,
+        province: defaultProvince,
+        cities: [],
+        city: defaultCity,
+        counties: [],
+        county: defaultCounty
+      });
     } else {
       this.setState({disableProvince: false});
     }
     this.props.setFormValue('country', value);
   }
   handleProvinceChange(value) {
-    let cities;
+    let cities = [];
     chinaRegions.province.forEach((prov) => {
       if (prov.name === value) {
-        cities = prov.city;
+        cities = prov.city || [];
         return;
       }
     });
-    this.setState({cities});
+    this.setState({cities, city: defaultCity, counties: [], county: defaultCounty});
     this.props.setFormValue('province', value);
+    this.props.setFormValue('city', undefined);
+    this.props.setFormValue('district', undefined);
   }
   handleCityChange(value) {
-    let counties;
+    let counties = [];
     this.state.cities.forEach((city) => {
       if (city.name === value) {
-        counties = city.county;
+        counties = city.county || [];
         return;
       }
     });
-    this.setState({counties});
+    this.setState({counties, county: defaultCounty});
     this.props.setFormValue('city', value);
+    this.props.setFormValue('district', undefined);
   }
   handleCountyChange(value) {
     this.props.setFormValue('district', value);

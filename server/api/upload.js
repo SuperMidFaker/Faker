@@ -3,7 +3,7 @@ import Result from '../../reusable/node-util/response-result';
 import fileUtil from '../../reusable/node-util/fileUtil';
 
 export default [
-   ['post', '/v1/upload/pics/', uploadPics]
+   ['post', '/v1/upload/img/', uploadImgs]
 ];
 
 function saveBuffer(stream) {
@@ -18,7 +18,7 @@ function saveBuffer(stream) {
     });
   };
 }
-function *uploadPics() {
+function *uploadImgs() {
   const parts = cobusboy(this, { autoFields: true });
   try {
     const part = yield parts;

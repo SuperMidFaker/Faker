@@ -1,9 +1,10 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
+import { CHINA_CODE } from '../../../universal/constants';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
   'MODAL_HIDE', 'MODAL_SHOW', 'CORP_BEGIN_EDIT', 'SET_FORM_VALUE',
-  'CORP_UPLOAD_PIC', 'CORP_UPLOAD_SUCCEED', 'CORP_UPLOAD_FAIL',
+  'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
@@ -20,6 +21,7 @@ const initialState = {
     status: 'paid'
   },
   formData: {
+    country: CHINA_CODE
   },
   corplist: {
     totalCount: 0,
@@ -32,6 +34,8 @@ export default function reducer(state = initialState, action) {
   const curCorp = state.thisCorp;
   const plainCorp = { type: curCorp.type, status: curCorp.status };
   switch (action.type) {
+  case actionTypes.FORM_LOAD_SUCCEED:
+    return {...state, formData: action.result.data};
   case actionTypes.CORP_LOAD:
     return { ...state, loading: true, needUpdate: false };
   case actionTypes.CORP_LOAD_SUCCEED: {
@@ -44,25 +48,27 @@ export default function reducer(state = initialState, action) {
     return { ...state, thisCorp: plainCorp, visible: false };
   case actionTypes.MODAL_SHOW:
     return { ...state, thisCorp: plainCorp, visible: true };
-  case actionTypes.CORP_BEGIN_EDIT:
-    return { ...state, thisCorp: { ...state.corps.data[action.data.index] }, visible: true, selectIndex: action.data.index };
-  case actionTypes.CORP_EDIT_SUCCEED: {
-    const corps = {...state.corps};
-    corps.data[action.index] = state.thisCorp;
-    return { ...state, corps, thisCorp: plainCorp, visible: false };
-  }
-  case actionTypes.CORP_DELETE_SUCCEED: {
-    return { ...state, needUpdate: true };
-  }
   case actionTypes.SET_FORM_VALUE: {
     const form = { ...state.formData };
     form[action.data.field] = action.data.value;
     return { ...state, formData: form };
   }
-  case actionTypes.CORP_UPLOAD_SUCCEED: {
-    const thisCorp = { ...state.thisCorp };
-    thisCorp[action.field] = action.result.data;
-    return { ...state, thisCorp };
+  case actionTypes.IMG_UPLOAD_SUCCEED: {
+    const form = { ...state.formData };
+    form[action.field] = action.result.data;
+    return { ...state, formData: form };
+  }
+  case actionTypes.CORP_BEGIN_EDIT:
+    return { ...state, thisCorp: { ...state.corps.data[action.data.index] }, visible: true, selectIndex: action.data.index };
+  case actionTypes.CORP_EDIT_SUCCEED: {
+    if (action.index) {
+      const corps = {...state.corps};
+      corps.data[action.index] = state.thisCorp;
+      return { ...state, corps, thisCorp: plainCorp, visible: false };
+    }
+  }
+  case actionTypes.CORP_DELETE_SUCCEED: {
+    return { ...state, needUpdate: true };
   }
   case actionTypes.CORP_SUBMIT_SUCCEED: {
     const corps = {...state.corps};
@@ -110,11 +116,11 @@ export function delCorp(corpId) {
   };
 }
 
-export function editCorp(corp, index) {
+export function edit(corp, index) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_EDIT, actionTypes.CORP_EDIT_SUCCEED, actionTypes.CORP_EDIT_FAIL],
-      endpoint: 'v1/account/corp',
+      endpoint: 'v1/user/corp',
       method: 'put',
       index,
       data: { corp }
@@ -122,11 +128,11 @@ export function editCorp(corp, index) {
   };
 }
 
-export function uploadCorpPics(field, pics) {
+export function uploadImg(field, pics) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CORP_UPLOAD_PIC, actionTypes.CORP_UPLOAD_SUCCEED, actionTypes.CORP_UPLOAD_FAIL],
-      endpoint: 'v1/upload/pics',
+      types: [actionTypes.IMG_UPLOAD, actionTypes.IMG_UPLOAD_SUCCEED, actionTypes.IMG_UPLOAD_FAIL],
+      endpoint: 'v1/upload/img',
       method: 'post',
       files: pics,
       field
@@ -134,7 +140,7 @@ export function uploadCorpPics(field, pics) {
   };
 }
 
-export function submitCorp(corp) {
+export function submit(corp) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_SUBMIT, actionTypes.CORP_SUBMIT_SUCCEED, actionTypes.CORP_SUBMIT_FAIL],

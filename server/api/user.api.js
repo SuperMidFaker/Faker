@@ -7,6 +7,7 @@ import mysql from '../../reusable/db-util/mysql';
 import corpDao from '../models/corp.db';
 import userDao from '../models/user.db';
 import tenantDao from '../models/tenant.db';
+import tenantUserDao from '../models/tenant-user.db';
 import smsDao from '../models/sms.db';
 import bCryptUtil from '../../reusable/node-util/BCryptUtil';
 import config from '../../reusable/node-util/server.config';
@@ -22,7 +23,7 @@ export default [
    ['get', '/v1/account/corps', getCorps],
    ['get', '/v1/user/corp', getCorpInfo],
    ['post', '/v1/account/corp', submitCorp],
-   ['put', '/v1/account/corp', editCorp],
+   ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/account/corp', delCorp],
    ['get', '/v1/account/personnels', getCorpPersonnels],
    ['get', '/v1/user/personnel', getPersonnelInfo],
@@ -48,7 +49,7 @@ function *loginUserP() {
       // todo add the subdomain corp-code condition
       const checkpwd = bCryptUtil.checkpw(password, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
       if (checkpwd) {
-        const claims = { userId: user.account_id, userType: user.user_type };
+        const claims = { userId: user.id, userType: user.user_type };
         const opts = Object.assign({}, config.get('jwt_crypt'), { expiresInMinutes: config.get('jwt_expire_minutes')});
         // todo we should set a shorter interval for token expire, refresh it later
         const jwtoken = kJwt.sign(claims, privateKey, opts);
@@ -82,7 +83,7 @@ function *requestSmsCodeP() {
     if (users.length === 0) {
       return Result.NotFound(this, `手机号不存在,请先添加`);
     }
-    const userId = users[0].account_id;
+    const userId = users[0].id;
     const smsCode = getSmsCode(6);
     const msg = yield smsUtil.sendSms(phone, smsCode);
     console.log('sendsms result msg', msg);
@@ -117,22 +118,21 @@ function *verifySmsCodeP() {
 
 function *getUserAccount() {
   const userType = this.state.user.userType;
+  if (userType === ADMIN) {
+    return Result.OK(this, {username: 'root'});
+  }
   const curUserId = this.state.user.userId;
   try {
-    const accounts = yield userDao.getAccountInfo(curUserId);
+    const accounts = yield tenantUserDao.getAccountInfo(curUserId);
     let username;
-    let corpId;
     let tenantId;
     if (accounts.length > 0) {
       username = accounts[0].name;
-      corpId = accounts[0].corpId;
-      tenantId = accounts[0].parentCorpId === 0 ? corpId : accounts[0].parentCorpId;
-    } else if (accounts.length === 0 && userType === ADMIN) {
-      username = ADMIN;
+      tenantId = accounts[0].tenantId;
     } else {
-      throw new Error('current user account isnot exist');
+      throw new Error('current user account do not exist');
     }
-    Result.OK(this, {username, corpId, type: userType, tenantId});
+    Result.OK(this, {username, corpId: tenantId, type: userType, tenantId});
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
@@ -150,6 +150,7 @@ function *getCorps() {
       totalCount: counts[0].num,
       data: corps
     };
+    // todo append the app module enabled info
     Result.OK(this, data);
   } catch (e) {
     Result.InternalServerError(this, e.message);
@@ -159,42 +160,14 @@ function *getCorps() {
 function *getCorpInfo() {
   let accountId = this.state.user.userId;
   let userType = this.state.user.userType;
+  const tenantId = this.request.query.corpId;
   try {
-    let corps = [];
-    let readonly = false;
-    let isTenant = true;
-    if (userType === PERSONNEL) {
-      const corps = yield userDao.getPersonnelCorpInfo(accountId);
-      if (corps.length > 0) {
-        userType = corps[0].userType;
-        accountId = corps[0].accountId;
-      }
-      readonly = true;
+    const tenants = yield tenantDao.getCorpAndOwnerInfo(tenantId);
+    if (tenants.length === 0) {
+      throw new Error('企业租户不存在');
     }
-    if (userType === ENTERPRISE) {
-      corps = yield corpDao.getEnterpriseAccountCorp(accountId);
-    } else if (userType === BRANCH) {
-      corps = yield corpDao.getBranchAccountCorp(accountId);
-      isTenant = false;
-    }
-    if (corps.length === 0) {
-      throw new Error('no corp found for current user');
-    }
-    const thisCorp = corps[0];
-    if (userType === BRANCH) {
-      const parentCorps = yield corpDao.getCorpInfo(thisCorp.parentCorpId);
-      thisCorp.status = parentCorps[0].status;
-      thisCorp.che = parentCorps[0].che;
-      thisCorp.tms = parentCorps[0].tms;
-      thisCorp.app = parentCorps[0].app;
-    }
-    Result.OK(this,{
-      corpInfo: {
-        readonly,
-        isTenant,
-        thisCorp
-      }
-    });
+    const tenant = tenants[0];
+    Result.OK(this, tenant);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
@@ -245,13 +218,14 @@ function *editCorp() {
   const corp = body.corp;
   let trans;
   try {
-    const caIds = yield userDao.getCorpAccountId(corp.key);
-    if (caIds.length === 0) {
-      throw new Error('current corp account donot exist');
+    const loginIds = yield tenantUserDao.getOwnerLoginId(corp.key);
+    if (loginIds.length === 0) {
+      throw new Error('current corp owner do not exist');
     }
     trans = yield mysql.beginTransaction();
-    yield userDao.updatePhone(caIds[0].accountId, corp.mobile, trans);
-    yield corpDao.updateCorp(corp, trans);
+    yield userDao.updateLoginName(loginIds[0].id, corp.phone, corp.loginName, corp.email, trans);
+    yield tenantUserDao.updateOwnerInfo(loginIds[0].id, corp.contact, corp.position, trans);
+    yield tenantDao.updateCorp(corp, trans);
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
