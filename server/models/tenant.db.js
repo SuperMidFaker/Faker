@@ -33,10 +33,10 @@ export default {
     args.push(corp.key);
     return mysql.update(sql, args, trans);
   },
-  insert(corpId, trans) {
-    const sql = `insert into sso_tenant (corp_id, branch_count, user_count, time_start) values (?, 1, 1, NOW())`;
-    const args = [corpId];
-    return mysql.insert(sql, args, trans);
+  getSubdomainCount(subdomain, tenantId) {
+    const sql = `select count(tenant_id) as count from sso_tenants where subdomain = ? and level = 1 and tenant_id != ?`;
+    const args = [subdomain, tenantId];
+    return mysql.query(sql, args);
   },
   updateBranchCount(corpId, trans) {
     const sql = `update sso_tenants set branch_count = branch_count + 1 where corp_id = ?`;

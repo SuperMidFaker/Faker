@@ -31,6 +31,7 @@ export default [
    ['put', '/v1/account/personnel', editPersonnel],
    ['delete', '/v1/account/personnel', delPersonnel],
    ['put', '/v1/user/password', changePassword],
+   ['get', '/v1/user/corp/subdomain', isSubdomainExist],
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
@@ -360,5 +361,17 @@ function *changePassword() {
     }
   } else {
     Result.InternalServerError(this, '用户异常');
+  }
+}
+
+function *isSubdomainExist() {
+  const subdomain = this.request.query.subdomain;
+  const tenantId = this.request.query.tenantId;
+  try {
+    const cnts = yield tenantDao.getSubdomainCount(subdomain, tenantId);
+    let unexist = (cnts.length === 0 || cnts[0].count === 0);
+    Result.OK(this, { exist: !unexist });
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
   }
 }

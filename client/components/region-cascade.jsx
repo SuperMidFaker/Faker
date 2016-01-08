@@ -19,11 +19,11 @@ export default class RegionCascade extends React.Component {
     this.state = {
       disableProvince: false,
       country: CHINA_CODE,
-      province: defaultProvince,
+      province: this.props.region.province || defaultProvince,
       cities: [],
-      city: defaultCity,
+      city: this.props.region.city || defaultCity,
       counties: [],
-      county: defaultCounty
+      county: this.props.region.county || defaultCounty
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -87,7 +87,7 @@ export default class RegionCascade extends React.Component {
             <OptGroup label="选择国家或地区">
               {
                 world.countries.map((ctry) => {
-                  return (<Option value={ctry.code}>{ctry.zh_cn}</Option>);
+                  return (<Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>);
                 })
               }
             </OptGroup>
@@ -96,8 +96,8 @@ export default class RegionCascade extends React.Component {
         <Col span="8">
           <Select value={province} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleProvinceChange(value)}>
             {
-              chinaRegions.province.map((prov) => {
-                return (<Option value={prov.name}>{prov.name}</Option>);
+              chinaRegions.province.map((prov, idx) => {
+                return (<Option value={prov.name} key={prov.name + '' + idx}>{prov.name}</Option>);
               })
             }
           </Select>
@@ -105,8 +105,8 @@ export default class RegionCascade extends React.Component {
         <Col span="7" offset="1">
           <Select value={city} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleCityChange(value)}>
           {
-            cities.map((c) => {
-              return (<Option value={c.name}>{c.name}</Option>);
+            cities.map((c, idx) => {
+              return (<Option value={c.name} key={c.name + '' + idx}>{c.name}</Option>);
             })
           }
           </Select>
@@ -114,8 +114,8 @@ export default class RegionCascade extends React.Component {
         <Col span="7" offset="1">
           <Select value={county} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleCountyChange(value)}>
           {
-            counties.map((c) => {
-              return (<Option value={c.name}>{c.name}</Option>);
+            counties.map((c, idx) => {
+              return (<Option value={c.name} key={c.name + '' + idx}>{c.name}</Option>);
             })
           }
           </Select>

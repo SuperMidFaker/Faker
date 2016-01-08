@@ -8,7 +8,9 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
-  'CORP_LOAD', 'CORP_LOAD_SUCCEED', 'CORP_LOAD_FAIL']);
+  'CORP_LOAD', 'CORP_LOAD_SUCCEED', 'CORP_LOAD_FAIL',
+  'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
+]);
 
 const initialState = {
   loaded: false,
@@ -72,7 +74,7 @@ export default function reducer(state = initialState, action) {
   }
   case actionTypes.CORP_SUBMIT_SUCCEED: {
     const corps = {...state.corps};
-    if ((corps.current - 1) * corps.pageSize <= corps.totalCount // = for 0 totalCount
+    if ((corps.current - 1) * corps.pageSize <= corps.totalCount // '=' because of totalCount 0
         && corps.current * corps.pageSize > corps.totalCount) {
       corps.data.push({...action.data.corp, key: action.result.data.corpId,
                       status: action.result.data.status});
@@ -175,6 +177,17 @@ export function setFormValue(field, newValue) {
   return {
     type: actionTypes.SET_FORM_VALUE,
     data: { field, value: newValue }
+  };
+}
+
+export function checkCorpDomain(subdomain, tenatId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CHECK_CORP_DOMAIN, actionTypes.CHECK_DOMAIN_SUCCEED, actionTypes.CHECK_DOMAIN_FAIL],
+      endpoint: 'v1/user/corp/subdomain',
+      method: 'get',
+      params: {subdomain, tenatId}
+    }
   };
 }
 

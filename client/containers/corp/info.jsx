@@ -4,7 +4,7 @@ import cx from '../../../reusable/browser-util/classname-join';
 import {AntIcon, Button, Form, Input, Row, Col, Select, Tabs, message} from '../../../reusable/ant-ui';
 import Region from '../../components/region-cascade';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
-import {isFormDataLoaded, loadForm, setFormValue, uploadImg, edit} from '../../../universal/redux/reducers/corps';
+import {isFormDataLoaded, loadForm, setFormValue, uploadImg, edit, checkCorpDomain} from '../../../universal/redux/reducers/corps';
 import {isMobile} from '../../../reusable/common/validater';
 import {TENANT_LEVEL} from '../../../universal/constants';
 const Dropzone = require('react-dropzone');
@@ -25,7 +25,7 @@ function fetchData({state, dispatch, cookie}) {
   state => ({
     formData: state.corps.formData
   }),
-  {uploadImg, setFormValue, edit})
+  {uploadImg, setFormValue, edit, checkCorpDomain})
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -44,22 +44,37 @@ export default class CorpInfo extends React.Component {
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired,
+    checkCorpDomain: PropTypes.func.isRequired,
     uploadImg: PropTypes.func.isRequired
   }
   handleSubmit() {
-    this.props.formhoc.validate((errors, values) => {
+    this.props.formhoc.validate((errors) => {
       if (!errors) {
         this.props.edit(this.props.formData).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
+          } else {
+            message.info('更新成功', 5);
           }
         });
       } else {
         this.forceUpdate();
+        message.error('表单检验存在错误', 10);
       }
     });
   }
-
+  isCorpDomainExist(value, callback) {
+    this.props.checkCorpDomain(value, this.props.formData.key).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+        callback(null);
+      } else if (result.data.exist) {
+        callback(new Error('企业子域名已存在'));
+      } else {
+        callback(null);
+      }
+    });
+  }
   renderValidateStyle(item) {
     const {isFieldValidating, getFieldError, getFieldsValue} = this.props.formhoc;
     return cx({
@@ -145,7 +160,7 @@ export default class CorpInfo extends React.Component {
       </Form>);
   }
   renderEnterpriseForm() {
-    const {formData: {logo: logoPng}, formhoc: {getFieldProps}} = this.props;
+    const {formData: {logo: logoPng}, formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
       <Form>
         <Row>
@@ -170,9 +185,11 @@ export default class CorpInfo extends React.Component {
         </Row>
         <Row className="horizontal-divider">
           <Col span="8">
-            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 10}}>
-            {/* todo validator */}
-              <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('subdomain', {rules: [{validator: this.checkCorpDomain}]})} />
+            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 10}} help={getFieldError('subdomain')} hasFeedback
+              validateStatus={this.renderValidateStyle('subdomain')}>
+              <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('subdomain', {
+                rules: [{validator: (rule, value, callback) => this.isCorpDomainExist(value, callback)}]
+              })} />
             </FormItem>
           </Col>
         </Row>
