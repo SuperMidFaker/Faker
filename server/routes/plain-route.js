@@ -23,7 +23,9 @@ function *plainRender() {
 }
 
 function *logoutUser() {
-  this.cookies.set(config.get('jwt_cookie_key'), '');
+  this.cookies.set(config.get('jwt_cookie_key'), '', {
+    httpOnly : __DEV__ ? false : true,
+    domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
+  });
   this.redirect('/login');
 }
-

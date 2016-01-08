@@ -27,56 +27,6 @@ function renderAsHtml(pageCss, pageJs, content) {
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js" type="text/javascript"></script>
   ${pageJs}
-  <script>
-  /*
-    function hoverAmSubmenu() {
-      // hacky: make the submenu ul visible at the bottom of page
-      $('.am-sidebar-submenu').hover(function () {
-        const submenu = $(this);
-        const submenuUL = submenu.find('ul');
-        if (submenu[0].offsetTop < window.innerHeight/2) {
-          submenuUL.css('top', 0);
-        } else {
-          submenuUL.css('bottom', 0);
-        }
-      })
-    }
-    window.onpopstate = function (event) {
-      if (event.state) {
-        // history changed because of pushState/replaceState
-        hoverAmSubmenu();
-      }
-    }
-
-    $(window).on('hashchange', function(){
-      hoverAmSubmenu();
-    });
-    var _wr = function(type) {
-      var orig = history[type];
-      return function() {
-        var rv = orig.apply(this, arguments);
-        setTimeout(function() {
-          var e = new Event(type);
-          e.arguments = arguments;
-          window.dispatchEvent(e);
-        }, 1000);
-        return rv;
-      };
-    };
-    history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
-    window.addEventListener('replaceState', function(e) {
-      hoverAmSubmenu();
-    });
-    window.addEventListener('pushState', function(e) {
-      hoverAmSubmenu();
-    });
-    $(document).ready(function() {
-      hoverAmSubmenu();
-      // todo if need the scroller, then wrap am-scroller nav-items div on AntMenu and  SubMenu
-      // $('.am-scroller').nanoScroller();
-    });
-    */
-  </script>
 </body>
 </html>`;
 }

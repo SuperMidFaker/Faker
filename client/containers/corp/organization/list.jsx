@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadCorps, hideModal, showModal, beginEditCorp, delCorp, editCorp,
-  changeThisCorpValue, uploadCorpPics, submitCorp } from '../../../../universal/redux/reducers/corps';
-import {Table, Button, AntIcon, message} from '../../../../reusable/ant-ui';
+import {loadCorps} from '../../../../universal/redux/reducers/corps';
+import {Table, Button, AntIcon} from '../../../../reusable/ant-ui';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import CorpSetter from '../../../components/corp-setter';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import { corpStatusDesc, ADMIN } from '../../../../universal/constants';
+import { ACCOUNT_STATUS, ADMIN } from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'corps') ) {
@@ -16,58 +14,29 @@ function fetchData({state, dispatch, cookie}) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    corplist: state.corps.corps,
-    thisCorp: state.corps.thisCorp,
-    selectIndex: state.corps.selectIndex,
+    corplist: state.corps.corplist,
     needUpdate: state.corps.needUpdate,
     loading: state.corps.loading,
-    userType: state.account.userType,
-    modalVisible: state.corps.visible
   }),
-  { hideModal, showModal, beginEditCorp, loadCorps, delCorp, editCorp, changeThisCorpValue,
-    uploadCorpPics, submitCorp }
+  {loadCorps}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
     corplist: PropTypes.object.isRequired,
-    thisCorp: PropTypes.object,
-    modalVisible: PropTypes.bool,
-    selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    userType: PropTypes.bool.isRequired,
-    changeThisCorpValue: PropTypes.func.isRequired,
-    uploadCorpPics: PropTypes.func.isRequired,
-    submitCorp: PropTypes.func.isRequired,
-    beginEditCorp: PropTypes.func.isRequired,
-    loadCorps: PropTypes.func.isRequired,
-    delCorp: PropTypes.func.isRequired,
-    editCorp: PropTypes.func.isRequired,
-    hideModal: PropTypes.func.isRequired,
-    showModal: PropTypes.func.isRequired
+    loadCorps: PropTypes.func.isRequired
   }
   handleCorpReg() {
-    this.refs.corpform.reset();
-    this.props.showModal();
-  }
-  handleCorpBeginEdit(index) {
-    const form = this.refs.corpform;
-    form.reset();
-    this.props.beginEditCorp(index);
   }
   handleCorpDel(key) {
-    this.props.delCorp(key);
   }
-  handleCorpSubmit() {
-    const {thisCorp, selectIndex} = this.props;
-    if (thisCorp.key) {
-      this.props.editCorp(thisCorp, selectIndex);
-    } else {
-      this.props.submitCorp(thisCorp);
-    }
+  handleStatusSwitch(key) {
+  }
+  handleEnabledAppEdit(/* tenant */) {
   }
   render() {
-    const { corplist, thisCorp, userType, loading, needUpdate } = this.props;
+    const { corplist, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadCorps(null, params),
       resolve: (result) => result.data,
@@ -105,53 +74,76 @@ export default class CorpList extends React.Component {
       }
     };
     const columns = [{
-      title: '名称',
+      title: '部门/分支机构',
       dataIndex: 'name'
     }, {
-      title: '移动电话',
-      dataIndex: 'mobile'
+      title: '负责人',
+      dataIndex: 'phone'
     }, {
-      title: '企业代号',
-      dataIndex: 'code'
+      title: '手机号',
+      dataIndex: 'phone'
+    }, {
+      title: '邮箱',
+      dataIndex: 'email'
+    }, {
+      title: '已开通应用',
+      render: (o, record) => {
+        const modComp = [];
+        record.apps.forEach((mod, idx) => {
+          modComp.push(<NavLink key={`${DEFAULT_MODULES[mod].url}`} to={DEFAULT_MODULES[mod].url}>{DEFAULT_MODULES[mod].text}</NavLink>);
+          modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
+        });
+        return (
+          <span>
+            {modComp}
+            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record)} size="small"><AntIcon type="edit" /></Button>
+          </span>);
+      }
     }, {
       title: '状态',
       dataIndex: 'status',
       render: (o, record) => {
-        return <span>{corpStatusDesc[record.status]}</span>;
+        let className = '';
+        if (record.status === ACCOUNT_STATUS.normal) {
+          className = 'text-disabled';
+        }
+        return <span className={className}>{ACCOUNT_STATUS[record.status]}</span>;
       }
     }, {
       title: '操作',
       dataIndex: '',
       width: 150,
       render: (text, record, index) => {
-        return (<span>
-          <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleCorpBeginEdit(index)} size="small"><AntIcon type="edit" /></Button>
-          <span className="ant-divider"></span>
-          <Button shape="circle" type="primary" title="删除" onClick={() => this.handleCorpDel(record.key)} size="small"><AntIcon type="cross" /></Button>
-          <span className="ant-divider"></span>
-          <a href="#" className="ant-dropdown-link">
-          更多 <AntIcon type="down" />
-          </a>
-        </span>);
+        if (record.status === ACCOUNT_STATUS.normal) {
+          return (
+            <span>
+              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record.key)}>停用</a>
+              <span className="ant-divider"></span>
+              <a href="#" className="ant-dropdown-link">更多<AntIcon type="down" /></a>
+            </span>);
+        } else if (record.status === ACCOUNT_STATUS.blocked) {
+          return (
+            <span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record.key)}>停用</a>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
+            <span>);
+        }
       }
     }];
     return (
-      <div className="page-panel">
-        <div className={ (!this.props.modalVisible ? ' form-fade-enter' : ' form-fade-leave') }>
-          <div className="page-header">
-            <Button type="primary" onClick={() => this.handleCorpReg()}><AntIcon type="plus" /><span>{ userType === ADMIN ? '注册企业' : '注册分公司' }</span></Button>
-          </div>
+      <div className="main-content">
+        <div className="page-header">
+          <h2>组织机构</h2>
+        </div>
+        <div className="page-body">
+          <Button type="primary" onClick={() => this.handleCorpReg()}><AntIcon type="plus" /><span>新增</span></Button>
           <div className="page-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource}/>
           </div>
         </div>
-        { thisCorp &&
-        <div className={ this.props.modalVisible ? 'form-fade-enter' : 'form-fade-leave' }>
-          <CorpSetter ref="corpform" thisCorp={ this.props.thisCorp } changeThisCorpValue={ this.props.changeThisCorpValue }
-            uploadCorpPics={ this.props.uploadCorpPics } handleModalHide={ this.props.hideModal }
-            handleCorpSubmit={ ::this.handleCorpSubmit } adminView={userType === ADMIN}/>
-        </div>
-        }
       </div>
     );
   }

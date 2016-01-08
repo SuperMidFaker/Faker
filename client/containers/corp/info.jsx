@@ -40,6 +40,7 @@ function fetchData({state, dispatch, cookie}) {
 })
 export default class CorpInfo extends React.Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
@@ -62,6 +63,9 @@ export default class CorpInfo extends React.Component {
         message.error('表单检验存在错误', 10);
       }
     });
+  }
+  handleCancel() {
+    this.props.history.goBack();
   }
   isCorpDomainExist(value, callback) {
     this.props.checkCorpDomain(value, this.props.formData.key).then((result) => {

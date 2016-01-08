@@ -1,7 +1,7 @@
 const __DEFAULT_PASSWORD__ = '123456';
-const corpStatusDesc = {
-  'free': '免费用户',
-  'paid': '付费用户'
+const ACCOUNT_STATUS = {
+  normal: '正常',
+  blocked: '停用'
 };
 const ADMIN = 'admin';
 const ENTERPRISE = 'enterprise';
@@ -38,7 +38,7 @@ export {
   DEFAULT_MODULES,
   TENANT_LEVEL,
   CHINA_CODE,
-  corpStatusDesc,
+  ACCOUNT_STATUS,
   SMS_TYPE,
   ADMIN,
   ENTERPRISE,

@@ -1,2 +1,11 @@
 react-intl
 wms -> new edit
+[] am-ant-leftmenu can't scroll, need jqury,rc-animate server render fail -> replace antmenu use am-leftsidebar and css to make Menu SubMenu and scrollbar fixed or absolute
+   set activekey based on url
+[] winston log
+
+[] gregorian-calendar-format replace with moment.js
+[] table column resize/scrollbar http://www.guriddo.net/demo/bootstrap/
+
+remember
+ rc-trigger for React 0.14.2 https://github.com/react-component/trigger/issues/1
