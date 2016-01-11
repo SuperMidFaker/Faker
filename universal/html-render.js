@@ -16,7 +16,7 @@ function renderAsHtml(pageCss, pageJs, content) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>仓管家</title>
+  <title>关云掌</title>
   <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico${tv}"/>
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/stroke-7/style.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/jquery.nanoscroller/css/nanoscroller.css" />

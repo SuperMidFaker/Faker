@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import {connect} from 'react-redux';
-import cx from '../../../reusable/browser-util/classname-join';
+import {renderValidateStyle} from '../../../reusable/browser-util/react-ant';
 import {AntIcon, Button, Form, Input, Row, Col, Select, Tabs, message} from '../../../reusable/ant-ui';
 import Region from '../../components/region-cascade';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
@@ -79,18 +79,11 @@ export default class CorpInfo extends React.Component {
       }
     });
   }
-  renderValidateStyle(item) {
-    const {isFieldValidating, getFieldError, getFieldsValue} = this.props.formhoc;
-    return cx({
-      'error': getFieldError(item),
-      'validating': isFieldValidating(item),
-      'success': getFieldsValue([item])[item] && !getFieldError(item) && !isFieldValidating(item)
-    });
-  }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}} validateStatus={rules && this.renderValidateStyle(field)}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}} validateStatus={rules
+        && renderValidateStyle(field, this.props.formhoc)}
         help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
@@ -190,7 +183,7 @@ export default class CorpInfo extends React.Component {
         <Row className="horizontal-divider">
           <Col span="8">
             <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 10}} help={getFieldError('subdomain')} hasFeedback
-              validateStatus={this.renderValidateStyle('subdomain')}>
+              validateStatus={renderValidateStyle('subdomain', this.props.formhoc)}>
               <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('subdomain', {
                 rules: [{validator: (rule, value, callback) => this.isCorpDomainExist(value, callback)}]
               })} />

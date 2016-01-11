@@ -38,6 +38,17 @@ export default {
     const args = [subdomain, tenantId];
     return mysql.query(sql, args);
   },
+  getCorpCountByParent(parentTenantId) {
+    const sql = 'select count(tenant_id) as num from sso_tenants where parent_tenant_id = ?';
+    const args = [parentTenantId];
+    return mysql.query(sql, args);
+  },
+  getPagedCorpsByParent(parentTenantId, current, pageSize) {
+    const start = (current - 1) * pageSize;
+    const sql = `select tenant_id as \`key\`, code, name, phone, status from sso_tenants where parent_tenant_id = ? limit ?, ?`;
+    const args = [parentTenantId, start, pageSize];
+    return mysql.query(sql, args);
+  },
   updateBranchCount(corpId, trans) {
     const sql = `update sso_tenants set branch_count = branch_count + 1 where corp_id = ?`;
     const args = [corpId];

@@ -20,7 +20,7 @@ export default [
    ['post', '/public/v1/sms/code', requestSmsCodeP],
    ['post', '/public/v1/sms/verify', verifySmsCodeP],
    ['get', '/v1/user/account', getUserAccount],
-   ['get', '/v1/account/corps', getCorps],
+   ['get', '/v1/user/corps', getCorps],
    ['get', '/v1/user/corp', getCorpInfo],
    ['post', '/v1/account/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
@@ -126,28 +126,31 @@ function *getUserAccount() {
   const curUserId = this.state.user.userId;
   try {
     const accounts = yield tenantUserDao.getAccountInfo(curUserId);
-    let username;
-    let tenantId;
+    let account;
     if (accounts.length > 0) {
-      username = accounts[0].name;
-      tenantId = accounts[0].tenantId;
+      account = accounts[0];
     } else {
       throw new Error('current user account do not exist');
     }
-    Result.OK(this, {username, corpId: tenantId, type: userType, tenantId});
+    Result.OK(this, {...account, type: userType});
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
 }
 
 function *getCorps() {
-  const userType = this.state.user.userType;
-  const userId = this.state.user.userId;
+  const parentTenantId = this.request.query.tenantId;
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const current = parseInt(this.request.query.currentPage || 1, 10);
   try {
-    const counts = yield corpDao.getCorpCountByCreator(userId);
-    const corps = yield corpDao.getPagedCorpsByCreator(userId, current, pageSize);
+    const counts = yield tenantDao.getCorpCountByParent(parentTenantId);
+    const corps = yield tenantDao.getPagedCorpsByParent(parentTenantId, current, pageSize);
+    corps.forEach((c) => {
+      c.apps = [];
+    });
+    if (corps.length > 0) {
+      corps[0].apps = ['import', 'wms'];
+    }
     const data = {
       totalCount: counts[0].num,
       data: corps

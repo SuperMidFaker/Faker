@@ -7,7 +7,8 @@ import Login from './containers/sso/login';
 import Forgot from './containers/sso/forgot';
 import Corp from './containers/pack-corp';
 import CorpInfo from './containers/corp/info';
-// import * as Organization from './containers/corp/organization';
+import PackOrganization from './containers/corp/pack-organization';
+import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
 import Password from './containers/corp/password';
 import Module from './containers/module';
@@ -46,18 +47,16 @@ export default (store, cookie) => {
         <IndexRoute component={Home} />
         <Route path="corp" component={Corp}>
           <Route path="info" component={CorpInfo} />
-          <Route path="organization">
-            <Route path="new" />
-            <Route path="/edit/:id" />
+          <Route path="organization" component={PackOrganization}>
+            <IndexRoute component={Organization.List} />
+            <Route path="new" component={Organization.Edit}/>
+            <Route path="edit/:id" component={Organization.Edit} />
           </Route>
-          {/*
-          <Route path="organization" component={Organization.List} />
-         */}
           <Route path="user">
+            <IndexRoute component={Personnel.List} />
             <Route path="new" />
-            <Route path="/edit/:id" />
+            <Route path="edit/:id" />
           </Route>
-          <Route path="users" component={Personnel.List} />
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
@@ -66,8 +65,8 @@ export default (store, cookie) => {
             <Route path="delegate">
               <Route path="list" />
               <Route path="new" />
-              <Route path="/edit/:id" />
-              <Route path="/view/:id" />
+              <Route path="edit/:id" />
+              <Route path="view/:id" />
             </Route>
           </Route>
           <Route path="wms" component={WMS}>

@@ -3,12 +3,12 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { CHINA_CODE } from '../../../universal/constants';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
-  'MODAL_HIDE', 'MODAL_SHOW', 'CORP_BEGIN_EDIT', 'SET_FORM_VALUE',
+  'FORM_ASSIGN', 'CORP_BEGIN_EDIT', 'SET_FORM_VALUE',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
-  'CORP_LOAD', 'CORP_LOAD_SUCCEED', 'CORP_LOAD_FAIL',
+  'CORPS_LOAD', 'CORPS_LOAD_SUCCEED', 'CORPS_LOAD_FAIL',
   'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
 ]);
 
@@ -16,8 +16,7 @@ const initialState = {
   loaded: false,
   loading: false,
   needUpdate: false,
-  visible: false,
-  selectIndex: -1,
+  selectedIndex: -1,
   thisCorp: {
     type: 1,
     status: 'paid'
@@ -36,20 +35,23 @@ export default function reducer(state = initialState, action) {
   const curCorp = state.thisCorp;
   const plainCorp = { type: curCorp.type, status: curCorp.status };
   switch (action.type) {
+  case actionTypes.FORM_ASSIGN: {
+    if (action.index !== -1) {
+      return {...state, selectedIndex: action.index, formData: state.corplist.data[action.index]};
+    } else {
+      return {...state, selectedIndex: action.index, formData: initialState.formData};
+    }
+  }
   case actionTypes.FORM_LOAD_SUCCEED:
     return {...state, formData: action.result.data};
-  case actionTypes.CORP_LOAD:
+  case actionTypes.CORPS_LOAD:
     return { ...state, loading: true, needUpdate: false };
-  case actionTypes.CORP_LOAD_SUCCEED: {
-    const corps = {...state.corps, ...action.result.data};
-    return {...state, loading: false, loaded: true, corps};
+  case actionTypes.CORPS_LOAD_SUCCEED: {
+    const corplist = {...state.corplist, ...action.result.data};
+    return {...state, loading: false, loaded: true, corplist};
   }
-  case actionTypes.CORP_LOAD_FAIL:
+  case actionTypes.CORPS_LOAD_FAIL:
     return { ...state, loading: false };
-  case actionTypes.MODAL_HIDE:
-    return { ...state, thisCorp: plainCorp, visible: false };
-  case actionTypes.MODAL_SHOW:
-    return { ...state, thisCorp: plainCorp, visible: true };
   case actionTypes.SET_FORM_VALUE: {
     const form = { ...state.formData };
     form[action.data.field] = action.data.value;
@@ -60,13 +62,11 @@ export default function reducer(state = initialState, action) {
     form[action.field] = action.result.data;
     return { ...state, formData: form };
   }
-  case actionTypes.CORP_BEGIN_EDIT:
-    return { ...state, thisCorp: { ...state.corps.data[action.data.index] }, visible: true, selectIndex: action.data.index };
   case actionTypes.CORP_EDIT_SUCCEED: {
-    if (action.index) {
-      const corps = {...state.corps};
-      corps.data[action.index] = state.thisCorp;
-      return { ...state, corps, thisCorp: plainCorp, visible: false };
+    if (state.selectedIndex !== -1) {
+      const corplist = {...state.corplist};
+      corplist.data[state.selectedIndex] = action.data.corp;
+      return {...state, selectedIndex: -1, corplist};
     }
   }
   case actionTypes.CORP_DELETE_SUCCEED: {
@@ -80,24 +80,12 @@ export default function reducer(state = initialState, action) {
                       status: action.result.data.status});
     }
     corps.totalCount++;
-    return { ...state, corps, thisCorp: plainCorp, visible: false };
+    return { ...state, corps, thisCorp: plainCorp};
   }
   // todo deal with submit fail submit loading
   default:
     return state;
   }
-}
-
-export function hideModal() {
-  return {
-    type: actionTypes.MODAL_HIDE
-  };
-}
-
-export function showModal() {
-  return {
-    type: actionTypes.MODAL_SHOW
-  };
 }
 
 export function beginEditCorp(index) {
@@ -118,13 +106,12 @@ export function delCorp(corpId) {
   };
 }
 
-export function edit(corp, index) {
+export function edit(corp) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_EDIT, actionTypes.CORP_EDIT_SUCCEED, actionTypes.CORP_EDIT_FAIL],
       endpoint: 'v1/user/corp',
       method: 'put',
-      index,
       data: { corp }
     }
   };
@@ -156,7 +143,10 @@ export function submit(corp) {
 export function isFormDataLoaded(corpsState, corpId) {
   let loaded = corpsState.formData.key === corpId;
   corpsState.corplist.data.forEach((corp) => {
-    loaded = loaded || corp.key === corpId;
+    if (corp.key === corpId) {
+      loaded = true;
+      return;
+    }
   });
   return loaded;
 }
@@ -170,6 +160,20 @@ export function loadForm(cookie, corpId) {
       params: {corpId},
       cookie
     }
+  };
+}
+
+export function assignForm(corpsState, corpId) {
+  let index = -1;
+  corpsState.corplist.data.forEach((c, idx)=> {
+    if (c.key === corpId) {
+      index = idx;
+      return;
+    }
+  });
+  return {
+    type: actionTypes.FORM_ASSIGN,
+    index
   };
 }
 
@@ -194,8 +198,8 @@ export function checkCorpDomain(subdomain, tenatId) {
 export function loadCorps(cookie, params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CORP_LOAD, actionTypes.CORP_LOAD_SUCCEED, actionTypes.CORP_LOAD_FAIL],
-      endpoint: 'v1/account/corps',
+      types: [actionTypes.CORPS_LOAD, actionTypes.CORPS_LOAD_SUCCEED, actionTypes.CORPS_LOAD_FAIL],
+      endpoint: 'v1/user/corps',
       method: 'get',
       params,
       cookie

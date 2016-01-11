@@ -2,13 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {loadCorps} from '../../../../universal/redux/reducers/corps';
 import {Table, Button, AntIcon} from '../../../../reusable/ant-ui';
+import NavLink from '../../../../reusable/components/nav-link';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import { ACCOUNT_STATUS, ADMIN } from '../../../../universal/constants';
+import {ACCOUNT_STATUS, DEFAULT_MODULES} from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'corps') ) {
-    return dispatch(loadCorps(cookie));
+    return dispatch(loadCorps(cookie, {tenantId: state.account.tenantId}));
   }
 }
 @connectFetch()(fetchData)
@@ -17,17 +18,17 @@ function fetchData({state, dispatch, cookie}) {
     corplist: state.corps.corplist,
     needUpdate: state.corps.needUpdate,
     loading: state.corps.loading,
+    tenantId: state.account.tenantId
   }),
   {loadCorps}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
+    tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     loadCorps: PropTypes.func.isRequired
-  }
-  handleCorpReg() {
   }
   handleCorpDel(key) {
   }
@@ -53,6 +54,7 @@ export default class CorpList extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
+          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
@@ -78,7 +80,7 @@ export default class CorpList extends React.Component {
       dataIndex: 'name'
     }, {
       title: '负责人',
-      dataIndex: 'phone'
+      dataIndex: 'contact'
     }, {
       title: '手机号',
       dataIndex: 'phone'
@@ -107,44 +109,49 @@ export default class CorpList extends React.Component {
         if (record.status === ACCOUNT_STATUS.normal) {
           className = 'text-disabled';
         }
-        return <span className={className}>{ACCOUNT_STATUS[record.status]}</span>;
+        return <span className={className}>{ACCOUNT_STATUS[record.status].text}</span>;
       }
     }, {
       title: '操作',
       dataIndex: '',
       width: 150,
-      render: (text, record, index) => {
-        if (record.status === ACCOUNT_STATUS.normal) {
+      render: (text, record) => {
+        if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
             <span>
               <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record.key)}>停用</a>
-              <span className="ant-divider"></span>
-              <a href="#" className="ant-dropdown-link">更多<AntIcon type="down" /></a>
             </span>);
-        } else if (record.status === ACCOUNT_STATUS.blocked) {
+        } else if (record.status === ACCOUNT_STATUS.blocked.name) {
           return (
             <span>
               <a role="button" onClick={() => this.handleStatusSwitch(record.key)}>停用</a>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
-            <span>);
+            </span>);
+        } else {
+          return <span />;
         }
       }
     }];
     return (
-      <div className="main-content">
-        <div className="page-header">
-          <h2>组织机构</h2>
-        </div>
-        <div className="page-body">
-          <Button type="primary" onClick={() => this.handleCorpReg()}><AntIcon type="plus" /><span>新增</span></Button>
-          <div className="page-body">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource}/>
+      <div className="page-body">
+        <div className="panel-header">
+          <div className="pull-right action-btns">
+            <NavLink to="/corp/organization/new">
+              <Button type="primary">
+                <span>新增</span>
+              </Button>
+            </NavLink>
           </div>
+          <span>限额使用 </span>
+          <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{this.props.corplist.totalCount}</span>
+          <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
+          <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
+          <a role="button">如何扩容?</a>
         </div>
-      </div>
-    );
+        <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource}/>
+      </div>);
   }
 }

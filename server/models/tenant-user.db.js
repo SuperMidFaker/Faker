@@ -6,7 +6,8 @@ export default {
     return mysql.query(sql, args);
   },
   getAccountInfo(loginId) {
-    const sql = `select name, tenant_id as tenantId from sso_tenant_users where login_id = ?`;
+    const sql = `select TU.name as username, T.tenant_id as tenantId, code from sso_tenant_users as TU inner join sso_tenants as T
+      on TU.tenant_id = T.tenant_id where login_id = ?`;
     const args = [loginId];
     return mysql.query(sql, args);
   },

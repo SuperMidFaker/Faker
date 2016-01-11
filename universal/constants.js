@@ -1,7 +1,13 @@
 const __DEFAULT_PASSWORD__ = '123456';
 const ACCOUNT_STATUS = {
-  normal: '正常',
-  blocked: '停用'
+  normal: {
+    name: 'normal',
+    text: '正常'
+  },
+  blocked: {
+    name: 'blocked',
+    text: '停用'
+  }
 };
 const ADMIN = 'admin';
 const ENTERPRISE = 'enterprise';

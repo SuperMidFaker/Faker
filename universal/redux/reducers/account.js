@@ -4,7 +4,7 @@ const initialState = {
   loaded: false, // used by isLoad action
   username: '',
   type: '',
-  corpId: 0,
+  code: '',
   tenantId: 0,
   modules: 0
 };
