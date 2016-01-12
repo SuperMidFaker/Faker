@@ -3,12 +3,14 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { CHINA_CODE } from '../../../universal/constants';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
-  'FORM_ASSIGN', 'CORP_BEGIN_EDIT', 'SET_FORM_VALUE',
+  'FORM_ASSIGN', 'FORM_CLEAR', 'SET_FORM_VALUE',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
+  'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
   'CORPS_LOAD', 'CORPS_LOAD_SUCCEED', 'CORPS_LOAD_FAIL',
+  'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
   'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
 ]);
 
@@ -17,10 +19,6 @@ const initialState = {
   loading: false,
   needUpdate: false,
   selectedIndex: -1,
-  thisCorp: {
-    type: 1,
-    status: 'paid'
-  },
   formData: {
     country: CHINA_CODE
   },
@@ -32,18 +30,33 @@ const initialState = {
   }
 };
 export default function reducer(state = initialState, action) {
-  const curCorp = state.thisCorp;
-  const plainCorp = { type: curCorp.type, status: curCorp.status };
   switch (action.type) {
   case actionTypes.FORM_ASSIGN: {
     if (action.index !== -1) {
       return {...state, selectedIndex: action.index, formData: state.corplist.data[action.index]};
     } else {
-      return {...state, selectedIndex: action.index, formData: initialState.formData};
+      return {...state, selectedIndex: action.index};
     }
   }
+  case actionTypes.FORM_CLEAR:
+    return {...state, selectedIndex: -1, formData: initialState.formData};
   case actionTypes.FORM_LOAD_SUCCEED:
     return {...state, formData: action.result.data};
+  case actionTypes.SET_FORM_VALUE: {
+    const form = { ...state.formData };
+    form[action.data.field] = action.data.value;
+    return { ...state, formData: form };
+  }
+  case actionTypes.SWITCH_STATUS_SUCCEED: {
+    const corplist = { ...state.corplist };
+    corplist.data[action.index].status = action.data.status;
+    return {...state, corplist};
+  }
+  case actionTypes.IMG_UPLOAD_SUCCEED: {
+    const form = { ...state.formData };
+    form[action.field] = action.result.data;
+    return { ...state, formData: form };
+  }
   case actionTypes.CORPS_LOAD:
     return { ...state, loading: true, needUpdate: false };
   case actionTypes.CORPS_LOAD_SUCCEED: {
@@ -52,16 +65,6 @@ export default function reducer(state = initialState, action) {
   }
   case actionTypes.CORPS_LOAD_FAIL:
     return { ...state, loading: false };
-  case actionTypes.SET_FORM_VALUE: {
-    const form = { ...state.formData };
-    form[action.data.field] = action.data.value;
-    return { ...state, formData: form };
-  }
-  case actionTypes.IMG_UPLOAD_SUCCEED: {
-    const form = { ...state.formData };
-    form[action.field] = action.result.data;
-    return { ...state, formData: form };
-  }
   case actionTypes.CORP_EDIT_SUCCEED: {
     if (state.selectedIndex !== -1) {
       const corplist = {...state.corplist};
@@ -73,14 +76,13 @@ export default function reducer(state = initialState, action) {
     return { ...state, needUpdate: true };
   }
   case actionTypes.CORP_SUBMIT_SUCCEED: {
-    const corps = {...state.corps};
-    if ((corps.current - 1) * corps.pageSize <= corps.totalCount // '=' because of totalCount 0
-        && corps.current * corps.pageSize > corps.totalCount) {
-      corps.data.push({...action.data.corp, key: action.result.data.corpId,
-                      status: action.result.data.status});
+    const corplist = {...state.corplist};
+    if ((corplist.current - 1) * corplist.pageSize <= corplist.totalCount // '=' because of totalCount 0
+        && corplist.current * corplist.pageSize > corplist.totalCount) {
+      corplist.data.push(action.result.data);
     }
-    corps.totalCount++;
-    return { ...state, corps, thisCorp: plainCorp};
+    corplist.totalCount++;
+    return { ...state, corplist};
   }
   // todo deal with submit fail submit loading
   default:
@@ -88,18 +90,11 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function beginEditCorp(index) {
-  return {
-    type: actionTypes.CORP_BEGIN_EDIT,
-    data: { index }
-  };
-}
-
 export function delCorp(corpId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_DELETE, actionTypes.CORP_DELETE_SUCCEED, actionTypes.CORP_DELETE_FAIL],
-      endpoint: 'v1/account/corp',
+      endpoint: 'v1/user/corp',
       method: 'del',
       data: {corpId}
     }
@@ -129,13 +124,13 @@ export function uploadImg(field, pics) {
   };
 }
 
-export function submit(corp) {
+export function submit(corp, tenant) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_SUBMIT, actionTypes.CORP_SUBMIT_SUCCEED, actionTypes.CORP_SUBMIT_FAIL],
-      endpoint: 'v1/account/corp',
+      endpoint: 'v1/user/corp',
       method: 'post',
-      data: { corp }
+      data: { corp, tenant }
     }
   };
 }
@@ -177,6 +172,12 @@ export function assignForm(corpsState, corpId) {
   };
 }
 
+export function clearForm() {
+  return {
+    type: actionTypes.FORM_CLEAR
+  };
+}
+
 export function setFormValue(field, newValue) {
   return {
     type: actionTypes.SET_FORM_VALUE,
@@ -184,13 +185,36 @@ export function setFormValue(field, newValue) {
   };
 }
 
-export function checkCorpDomain(subdomain, tenatId) {
+export function checkCorpDomain(subdomain, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CHECK_CORP_DOMAIN, actionTypes.CHECK_DOMAIN_SUCCEED, actionTypes.CHECK_DOMAIN_FAIL],
-      endpoint: 'v1/user/corp/subdomain',
+      endpoint: 'v1/user/corp/check/subdomain',
       method: 'get',
-      params: {subdomain, tenatId}
+      params: {subdomain, tenantId}
+    }
+  };
+}
+
+export function checkLoginName(loginName, loginId, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CHECK_LOGINNAME, actionTypes.CHECK_LOGINNAME_SUCCEED, actionTypes.CHECK_LOGINNAME_FAIL],
+      endpoint: 'v1/user/check/loginname',
+      method: 'get',
+      params: {loginName, loginId, tenantId}
+    }
+  };
+}
+
+export function switchStatus(index, tenantId, status) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SWITCH_STATUS, actionTypes.SWITCH_STATUS_SUCCEED, actionTypes.SWITCH_STATUS_FAIL],
+      endpoint: 'v1/user/corp/status',
+      method: 'put',
+      index,
+      data: {status, tenantId}
     }
   };
 }

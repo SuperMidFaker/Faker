@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {renderValidateStyle} from '../../../../reusable/browser-util/react-ant';
-import {AntIcon, Button, Form, Input, Row, Col, message} from '../../../../reusable/ant-ui';
+import {Button, Form, Input, Row, Col, message} from '../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import {isFormDataLoaded, loadForm, assignForm, setFormValue, edit, submit} from '../../../../universal/redux/reducers/corps';
+import {isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit, checkLoginName} from '../../../../universal/redux/reducers/corps';
 import {isMobile} from '../../../../reusable/common/validater';
 const FormItem = Form.Item;
 
@@ -16,7 +16,7 @@ function fetchData({state, dispatch, cookie, params}) {
       return dispatch(assignForm(state.corps, corpId));
     }
   } else {
-    return dispatch(assignForm(state.corps, null));
+    return dispatch(clearForm());
   }
 }
 
@@ -24,9 +24,9 @@ function fetchData({state, dispatch, cookie, params}) {
 @connect(
   state => ({
     formData: state.corps.formData,
-    code: state.account.code
+    account: state.account
   }),
-  {setFormValue, edit, submit})
+  {setFormValue, edit, submit, checkLoginName})
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -42,31 +42,32 @@ function fetchData({state, dispatch, cookie, params}) {
 export default class CorpEdit extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    code: PropTypes.string.isRequired,
+    account: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
+    checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
-  handleSubmit(ev) {
-    function onSubmitReturn(error) {
-      if (error) {
-        message.error(error.message, 10);
-      } else {
-        this.props.history.goBack();
-      }
+  onSubmitReturn(error) {
+    if (error) {
+      message.error(error.message, 10);
+    } else {
+      this.props.history.goBack();
     }
+  }
+  handleSubmit(ev) {
     ev.preventDefault();
     this.props.formhoc.validate((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData).then((result) => {
-            onSubmitReturn(result.error);
+          this.props.edit(this.props.formData).then(result => {
+            this.onSubmitReturn(result.error);
           });
         } else {
-          this.props.submit(this.props.formData).then((result) => {
-            onSubmitReturn(result.error);
+          this.props.submit(this.props.formData, this.props.account).then(result => {
+            this.onSubmitReturn(result.error);
           });
         }
       } else {
@@ -78,7 +79,20 @@ export default class CorpEdit extends React.Component {
     this.props.history.goBack();
   }
   isLoginNameExist(name, callback) {
-    callback(null);
+    if (name === undefined || name === '') {
+      return callback(new Error('用户名必填'));
+    }
+    // 判断主租户用户名是否重复
+    this.props.checkLoginName(name || '', this.props.formData.loginId, this.props.account.tenantId).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+        callback(null);
+      } else if (result.data.exist) {
+        callback(new Error('用户名已存在'));
+      } else {
+        callback(null);
+      }
+    });
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
@@ -91,7 +105,7 @@ export default class CorpEdit extends React.Component {
     );
   }
   render() {
-    const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
+    const {formhoc: {getFieldProps, getFieldError}, account: {code}} = this.props;
     return (
       <div className="page-body">
         <div className="panel-header">
@@ -104,7 +118,9 @@ export default class CorpEdit extends React.Component {
             <FormItem label="用户名" labelCol={{span: 4}} wrapperCol={{span: 6}} help={getFieldError('loginName')} hasFeedback
               validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-                rules: [{validator: (rule, value, callback) => this.isLoginNameExist(value, callback)}]
+                rules: [{validator: (rule, value, callback) => this.isLoginNameExist(value, callback)}],
+                adapt: (value) => value && value.split('@')[0],
+                transform: (value) => `${value}@${code}`
               })} />
             </FormItem>
             {this.renderTextInput('手机号', '', 'phone', true, [{

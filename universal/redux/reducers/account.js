@@ -6,6 +6,8 @@ const initialState = {
   type: '',
   code: '',
   tenantId: 0,
+  aspect: 0,
+  categoryId: 0,
   modules: 0
 };
 

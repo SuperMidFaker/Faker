@@ -13,7 +13,7 @@ import bCryptUtil from '../../reusable/node-util/BCryptUtil';
 import config from '../../reusable/node-util/server.config';
 import { isMobile, getSmsCode } from '../../reusable/common/validater';
 import smsUtil from '../../reusable/node-util/sms-util';
-import { __DEFAULT_PASSWORD__, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE } from '../../universal/constants';
+import { __DEFAULT_PASSWORD__, TENANT_LEVEL, ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE } from '../../universal/constants';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
@@ -22,16 +22,18 @@ export default [
    ['get', '/v1/user/account', getUserAccount],
    ['get', '/v1/user/corps', getCorps],
    ['get', '/v1/user/corp', getCorpInfo],
-   ['post', '/v1/account/corp', submitCorp],
+   ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
-   ['delete', '/v1/account/corp', delCorp],
+   ['delete', '/v1/user/corp', delCorp],
    ['get', '/v1/account/personnels', getCorpPersonnels],
    ['get', '/v1/user/personnel', getPersonnelInfo],
    ['post', '/v1/account/personnel', submitPersonnel],
    ['put', '/v1/account/personnel', editPersonnel],
    ['delete', '/v1/account/personnel', delPersonnel],
    ['put', '/v1/user/password', changePassword],
-   ['get', '/v1/user/corp/subdomain', isSubdomainExist],
+   ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
+   ['get', '/v1/user/check/loginname', isLoginNameExist],
+   ['put', '/v1/user/corp/status', switchCorpStatus],
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
@@ -180,39 +182,32 @@ function *getCorpInfo() {
 
 function *submitCorp() {
   const body = yield cobody(this);
+  const corp = body.corp;
+  const parentTenant = body.tenant;
+  const parentTenantId = parentTenant.tenantId;
+  corp.code = parentTenant.code;
+  // parentTenantId为0表示platform创建enterprise
+  corp.level = parentTenantId === 0 ? TENANT_LEVEL.ENTERPRISE : TENANT_LEVEL.STANDARD;
+  corp.category_id = parentTenant.category_id;
+  corp.aspect = parentTenant.aspect;
   const salt = bCryptUtil.gensalt();
   const pwdHash = bCryptUtil.hashpw(__DEFAULT_PASSWORD__, salt);
-  const unid = bCryptUtil.hashMd5(body.mobile + salt + Date.now());
-  const corp = body.corp;
-  const curUserId = this.state.user.userId;
-  const userType = this.state.user.userType;
+  const unid = bCryptUtil.hashMd5(corp.phone + salt + Date.now());
   let trans;
   try {
-    const parentAccounts = yield userDao.getAccountInfo(curUserId);
-    let parentCorpId = 0;
-    let status = corp.status;
-    if (parentAccounts.length > 0) {
-      parentCorpId = parentAccounts[0].corpId;
-      // 创建子帐号公司状态与主帐号一致
-      status = parentAccounts[0].status;
-    }
     trans = yield mysql.beginTransaction();
-    let result = yield userDao.insertAccount(corp.mobile, salt, pwdHash,
-                                             userType === ADMIN ? ENTERPRISE : BRANCH, unid, trans);
-    const accountId = result.insertId;
-    result = yield corpDao.insertCorp(corp, parentCorpId, curUserId, status, trans);
-    const corpId = result.insertId;
-    yield userDao.insertCorpAdmin(corp.name, accountId, corpId, parentCorpId, curUserId, trans);
-    /*
-    if (parentCorpId === 0) {
-      yield tenantDao.insert(corpid, trans);
-    } else {
-      yield tenantDao.updateBranchCount(parentCorpId, trans);
-    }
-   */
+    let result = yield tenantDao.insertCorp(corp, parentTenantId, trans);
+    corp.key = result.insertId;
+    result = yield userDao.insertAccount(corp.loginName, corp.email, corp.phone, salt, pwdHash,
+                                         parentTenantId === 0 ? ENTERPRISE : BRANCH, unid, trans);
+    corp.loginId = result.insertId;
+    corp.status = ACCOUNT_STATUS.normal.name;
+    yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.tenantId, parentTenantId,
+                                          this.state.user.userId, trans);
     yield mysql.commit(trans);
-    Result.OK(this, {corpId, status});
+    Result.OK(this, corp);
   } catch (e) {
+    console.log('submitCorp', e && e.stack);
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
   }
@@ -244,15 +239,14 @@ function *delCorp() {
   const corpId = body.corpId;
   let trans;
   try {
-    const usids = yield userDao.getCorpUserIds(corpId);
-    const accids = [];
-    usids.forEach((user) => accids.push(user.accountId));
+    const logins = yield tenantUserDao.getAttchedLoginIds(corpId);
+    const lids = [];
+    logins.forEach((login) => lids.push(login.id));
     trans = yield mysql.beginTransaction();
-    if (accids.length > 0) {
-      yield userDao.deleteAccounts(accids, trans);
+    if (lids.length > 0) {
+      yield userDao.deleteAccounts(lids, trans);
     }
-    yield userDao.deleteCorpUsers(corpId, trans);
-    yield corpDao.deleteCorp(corpId, trans);
+    yield tenantUserDao.deleteTenantUsers(corpId, trans);
     yield tenantDao.deleteTenant(corpId, trans);
     yield mysql.commit(trans);
     Result.OK(this);
@@ -354,7 +348,6 @@ function *changePassword() {
   if (users.length > 0) {
     const user = users[0];
     const checkpwd = bCryptUtil.checkpw(body.oldPwd, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(body.oldPwd), user.password);
-
     if (checkpwd) {
       const salt = bCryptUtil.gensalt();
       const pwdHash = bCryptUtil.hashpw(body.newPwd, salt);
@@ -373,8 +366,31 @@ function *isSubdomainExist() {
   const tenantId = this.request.query.tenantId;
   try {
     const cnts = yield tenantDao.getSubdomainCount(subdomain, tenantId);
-    let unexist = (cnts.length === 0 || cnts[0].count === 0);
+    const unexist = (cnts.length === 0 || cnts[0].count === 0);
     Result.OK(this, { exist: !unexist });
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function *isLoginNameExist() {
+  const loginName = this.request.query.loginName;
+  const loginId = this.request.query.loginId;
+  const tenantId = this.request.query.tenantId;
+  try {
+    const cnts = yield tenantUserDao.getLoginNameCount(loginName, loginId, tenantId);
+    const unexist = (cnts.length === 0 || cnts[0].count === 0);
+    Result.OK(this, { exist: !unexist });
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function *switchCorpStatus() {
+  const body = yield cobody(this);
+  try {
+    yield tenantDao.updateStatus(body.tenantId, body.status);
+    Result.OK(this);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }

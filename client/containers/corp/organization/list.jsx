@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {loadCorps} from '../../../../universal/redux/reducers/corps';
-import {Table, Button, AntIcon} from '../../../../reusable/ant-ui';
+import {loadCorps, delCorp, switchStatus} from '../../../../universal/redux/reducers/corps';
+import {Table, Button, AntIcon, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import {ACCOUNT_STATUS, DEFAULT_MODULES} from '../../../../universal/constants';
+import {ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES} from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'corps') ) {
@@ -20,19 +20,32 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  {loadCorps}
+  {loadCorps, delCorp, switchStatus}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
+    switchStatus: PropTypes.func.isRequired,
+    delCorp: PropTypes.func.isRequired,
     loadCorps: PropTypes.func.isRequired
   }
-  handleCorpDel(key) {
+  handleNavigationTo(to, query) {
+    this.props.history.pushState(null, to, query);
   }
-  handleStatusSwitch(key) {
+  handleCorpDel(id) {
+    this.props.delCorp(id);
+  }
+  handleStatusSwitch(tenant, index) {
+    this.props.switchStatus(index, tenant.key, tenant.status === ACCOUNT_STATUS.normal.name
+      ? ACCOUNT_STATUS.blocked.name : ACCOUNT_STATUS.normal.name).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
   }
   handleEnabledAppEdit(/* tenant */) {
   }
@@ -45,8 +58,8 @@ export default class CorpList extends React.Component {
       getPagination: (result) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
-        current: result.totalCount !== 0 &&
-          result.current > Math.ceil(result.totalCount / result.pageSize) ?
+        current: (result.current - 1) * result.pageSize <= result.totalCount &&
+          result.current * result.pageSize > result.totalCount ?
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
@@ -91,7 +104,7 @@ export default class CorpList extends React.Component {
       title: '已开通应用',
       render: (o, record) => {
         const modComp = [];
-        record.apps.forEach((mod, idx) => {
+        (record.apps || []).forEach((mod, idx) => {
           modComp.push(<NavLink key={`${DEFAULT_MODULES[mod].url}`} to={DEFAULT_MODULES[mod].url}>{DEFAULT_MODULES[mod].text}</NavLink>);
           modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
         });
@@ -109,26 +122,27 @@ export default class CorpList extends React.Component {
         if (record.status === ACCOUNT_STATUS.normal) {
           className = 'text-disabled';
         }
+        // todo make the row disabled as gray background and text color
         return <span className={className}>{ACCOUNT_STATUS[record.status].text}</span>;
       }
     }, {
       title: '操作',
       dataIndex: '',
       width: 150,
-      render: (text, record) => {
+      render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
             <span>
               <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record.key)}>停用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
             </span>);
         } else if (record.status === ACCOUNT_STATUS.blocked.name) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record.key)}>停用</a>
-              <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
             </span>);
         } else {
           return <span />;
@@ -139,11 +153,10 @@ export default class CorpList extends React.Component {
       <div className="page-body">
         <div className="panel-header">
           <div className="pull-right action-btns">
-            <NavLink to="/corp/organization/new">
-              <Button type="primary">
-                <span>新增</span>
-              </Button>
-            </NavLink>
+            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
+              onClick={() => this.handleNavigationTo('/corp/organization/new')}>
+              <span>新增</span>
+            </Button>
           </div>
           <span>限额使用 </span>
           <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{this.props.corplist.totalCount}</span>

@@ -4,7 +4,7 @@ function packColumnArgs(item) {
     `code`, `aspect`, `name`, `phone`, `subdomain`, `country`, `province`, `city`,
     `district`, `address`, `logo`, `short_name`, `category_id`, `website`, `remark`,
     `level`, `email`, `contact`
-  ]; 
+  ];
   const args = [];
   columns.forEach((c) => {
     if (c in item) {
@@ -17,11 +17,12 @@ function packColumnArgs(item) {
 }
 export default {
   getCorpAndOwnerInfo(corpId) {
-    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country, province,
-      city, district, address, logo, short_name, category_id, website, remark, level, email, contact,
-      position, username as loginName from sso_tenants as T inner join (select tenant_id, name, username,
-      position from sso_tenant_users as TU inner join sso_login as L on TU.login_id = L.id where TU.tenant_id
-      = ? and TU.user_type = 'owner') as TUL on T.tenant_id = TUL.tenant_id limit 1`;
+    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country,
+      province, city, district, address, logo, short_name, category_id, website, remark, level, email,
+      contact, position, login_id as loginId, username as loginName from sso_tenants as T inner join
+      (select tenant_id, login_id, name, username, position from sso_tenant_users as TU inner join
+      sso_login as L on TU.login_id = L.id where TU.tenant_id = ? and TU.user_type = 'owner') as TUL
+      on T.tenant_id = TUL.tenant_id limit 1`;
     const args = [corpId];
     return mysql.query(sql, args);
   },
@@ -45,9 +46,27 @@ export default {
   },
   getPagedCorpsByParent(parentTenantId, current, pageSize) {
     const start = (current - 1) * pageSize;
-    const sql = `select tenant_id as \`key\`, code, name, phone, status from sso_tenants where parent_tenant_id = ? limit ?, ?`;
+    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country,
+      province, city, district, address, logo, short_name, category_id, website, remark, level, email,
+      contact, position, T.status as status, login_id as loginId, username as loginName from sso_tenants as T
+      inner join (select tenant_id, name, username, position, login_id from sso_tenant_users as TU inner join
+      sso_login as L on TU.login_id = L.id where parent_tenant_id = ? and TU.user_type = 'owner') as TUL
+      on T.tenant_id = TUL.tenant_id limit ?, ?`;
     const args = [parentTenantId, start, pageSize];
     return mysql.query(sql, args);
+  },
+  insertCorp(corp, parentTenantId, trans) {
+    const sql = `insert into sso_tenants (code, aspect, name, phone, subdomain, country, province,
+      city, district, address, logo, short_name, category_id, website, remark, level, email, contact,
+      parent_tenant_id, branch_count, user_count, status, created_date) values (?, 0, 1, 'normal', NOW())`;
+    const args = packColumnArgs(corp);
+    args.push(parentTenantId);
+    return mysql.insert(sql, [args], trans);
+  },
+  updateStatus(tenantId, status, trans) {
+    const sql = 'update sso_tenants set status = ? where tenant_id = ?';
+    const args = [status, tenantId];
+    return mysql.update(sql, args, trans);
   },
   updateBranchCount(corpId, trans) {
     const sql = `update sso_tenants set branch_count = branch_count + 1 where corp_id = ?`;
@@ -60,8 +79,8 @@ export default {
     return mysql.query(sql, args);
   },
   deleteTenant(corpId, trans) {
-    const sql = `delete from sso_tenant where corp_id = ?`;
-    const args = [corpId];
+    const sql = 'delete from sso_tenants where tenant_id = ? or parent_tenant_id = ?';
+    const args = [corpId, corpId];
     return mysql.delete(sql, args, trans);
   }
 }

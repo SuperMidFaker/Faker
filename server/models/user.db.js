@@ -21,10 +21,10 @@ export default {
     const args = [salt, pwdHash, userId];
     return mysql.update(sql, args);
   },
-  insertAccount(phone, salt, pwdHash, userType, unid, trans) {
-    const sql = `insert into sso_login(phone, salt, password, user_type, created_date, unid)
-      values (?, ?, ?, ?, NOW(), ?)`;
-    const args = [phone, salt, pwdHash, userType, unid];
+  insertAccount(username, email, phone, salt, pwdHash, userType, unid, trans) {
+    const sql = `insert into sso_login(username, email, phone, salt, password, user_type, created_date, unid)
+      values (?, ?, ?, ?, ?, ?, NOW(), ?)`;
+    const args = [username, email, phone, salt, pwdHash, userType, unid];
     return mysql.insert(sql, args, trans);
   },
   deleteAccounts(accounts, trans) {
@@ -67,11 +67,6 @@ export default {
     const sql = 'select id as accountId from sso_corp_accounts where corp_id = ? or parent_corp_id = ?';
     const args = [corpId, corpId];
     return mysql.query(sql, args);
-  },
-  deleteCorpUsers(corpId, trans) {
-    const sql = 'delete from sso_corp_accounts where corp_id = ? or parent_corp_id = ?';
-    const args = [corpId, corpId];
-    return mysql.delete(sql, args, trans);
   },
   getCorpPersonnelCount(creator) {
     const sql = `select count(id) as num from sso_corp_accounts where created_user_id = ?`;
