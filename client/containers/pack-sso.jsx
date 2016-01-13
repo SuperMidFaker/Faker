@@ -16,8 +16,8 @@ export default class Home extends React.Component {
               <div className="login-container">
                 <div className="panel panel-default">
                   <div className="panel-heading">
-                    <img src="/assets/img/logo-full-retina.png" alt="logo" width="150px" height="39px" className="logo-img" />
-                    <span>物流链运输协同平台</span>
+                    <img src="http://cdn.welogix.cn/assets/img/welogix-badge.png" alt="logo" width="120px" className="logo-img" />
+                    <span>进出口物流协同云平台</span>
                   </div>
                   {this.props.children}
                 </div>
