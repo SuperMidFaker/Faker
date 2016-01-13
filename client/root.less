@@ -1,6 +1,7 @@
 @import "../reusable/ant-ui/style/index.less";
 @am-leftbar-width: 100px;
 @am-header-height: 50px;
+@am-theme-color: #F08519;
 @import "./components/am-ant-leftbar.less";
 body {
   background-color: #F0F0F0;
@@ -156,7 +157,7 @@ img {
   border-color: #53B9A3;
 }
 .am-top-header {
-  background-color:#6bc3b0;
+  background-color:@am-theme-color;
   border:0;
   margin-bottom:0;
   transition:all .35s ease;
@@ -259,7 +260,7 @@ img {
           padding:10px 20px;
           min-width:175px;
           &:hover {
-            background-color:#6bc3b0;
+            background-color:@am-theme-color;
             color:#fff;
           }
           &:active, &:focus {
@@ -461,7 +462,7 @@ img {
         }
       }
       &.active>a {
-        border-left:2px solid #6bc3b0;
+        border-left:2px solid @am-theme-color;
         padding-left:13px
       }
     }
