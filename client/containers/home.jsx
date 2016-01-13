@@ -22,7 +22,7 @@ export default class Home extends React.Component {
         <AmNavBar />
         <div className="am-content">
           <div className="home-header">
-            <img src="/assets/img/home/header-bg.jpg" />
+            <img src="http://cdn.welogix.cn/assets/img/about-bg.jpg" />
             <div className="tenant-container">
               <img src="/assets/img/home/tenant-logo.png" />
               <h2>某某公司</h2>
@@ -32,7 +32,9 @@ export default class Home extends React.Component {
             </div>
           </div>
           <div className="home-body">
-            <ModuleLayout size="large" />
+            <div className="home-body-wrapper">
+              <ModuleLayout size="large" />
+            </div>
           </div>
         </div>
       </div>);
