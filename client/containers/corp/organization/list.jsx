@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {loadCorps, delCorp, switchStatus} from '../../../../universal/redux/reducers/corps';
-import {Table, Button, AntIcon, message} from '../../../../reusable/ant-ui';
+import {Table, Button, AntIcon, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
+import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES} from '../../../../universal/constants';
@@ -33,11 +34,25 @@ export default class CorpList extends React.Component {
     delCorp: PropTypes.func.isRequired,
     loadCorps: PropTypes.func.isRequired
   }
+  constructor() {
+    super();
+    this.state = {
+      selectedRowKeys: []
+    };
+  }
+  handleSelectionClear() {
+    this.setState({selectedRowKeys: []});
+  }
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
   }
   handleCorpDel(id) {
-    this.props.delCorp(id);
+    showWarningModal({
+      title: '请输入DELETE进行下一步操作',
+      content: '点击确定会删除该机构及其下所有帐户信息',
+      onOk: () => this.props.delCorp(id),
+      confirmString: 'DELETE'
+    });
   }
   handleStatusSwitch(tenant, index) {
     this.props.switchStatus(index, tenant.key, tenant.status === ACCOUNT_STATUS.normal.name
@@ -83,9 +98,9 @@ export default class CorpList extends React.Component {
     });
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
-      onSelect: (/* record, selected, selectedRows */) => {
-      },
-      onSelectAll: (/* selected, selectedRows */) => {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({selectedRowKeys});
       }
     };
     const columns = [{
@@ -116,7 +131,6 @@ export default class CorpList extends React.Component {
       }
     }, {
       title: '状态',
-      dataIndex: 'status',
       render: (o, record) => {
         let className = '';
         if (record.status === ACCOUNT_STATUS.normal) {
@@ -127,7 +141,6 @@ export default class CorpList extends React.Component {
       }
     }, {
       title: '操作',
-      dataIndex: '',
       width: 150,
       render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
@@ -165,6 +178,13 @@ export default class CorpList extends React.Component {
           <a role="button">如何扩容?</a>
         </div>
         <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource}/>
+        <div className={'bottom-fixed-row' + (this.state.selectedRowKeys.length === 0 ? ' hide' : '')}>
+          <Row>
+            <Col span="2" offset="20">
+              <Button size="large" onClick={() => this.handleSelectionClear()}>清除选择</Button>
+            </Col>
+          </Row>
+        </div>
       </div>);
   }
 }

@@ -202,7 +202,7 @@ function *submitCorp() {
                                          parentTenantId === 0 ? ENTERPRISE : BRANCH, unid, trans);
     corp.loginId = result.insertId;
     corp.status = ACCOUNT_STATUS.normal.name;
-    yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.tenantId, parentTenantId,
+    yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.key, parentTenantId,
                                           this.state.user.userId, trans);
     yield mysql.commit(trans);
     Result.OK(this, corp);
