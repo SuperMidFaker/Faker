@@ -36,7 +36,7 @@ export default class AmNavBar extends React.Component {
               { moduleName &&
                 <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
                   <a role="button" aria-expanded="false" className="dropdown-toggle">
-                    <span>{DEFAULT_MODULES[moduleName].text}</span>
+                    {DEFAULT_MODULES[moduleName].text}
                     <span className="angle-down s7-angle-down"></span>
                   </a>
                 </Popover>
