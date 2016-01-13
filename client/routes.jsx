@@ -52,7 +52,7 @@ export default (store, cookie) => {
             <Route path="new" component={Organization.Edit}/>
             <Route path="edit/:id" component={Organization.Edit} />
           </Route>
-          <Route path="user">
+          <Route path="personnel">
             <IndexRoute component={Personnel.List} />
             <Route path="new" />
             <Route path="edit/:id" />

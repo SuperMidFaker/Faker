@@ -11,8 +11,7 @@ const initialState = {
   loading: false,
   needUpdate: false,
   visible: false,
-  thisPersonnel: {
-  },
+  branches: [],
   personnel: {
     totalCount: 0,
     pageSize: 10,
@@ -87,7 +86,7 @@ export function delPersonnel(pid, accountId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_DELETE, actionTypes.PERSONNEL_DELETE_SUCCEED, actionTypes.PERSONNEL_DELETE_FAIL],
-      endpoint: 'v1/account/personnel',
+      endpoint: 'v1/user/personnel',
       method: 'del',
       data: { pid, accountId }
     }
@@ -98,7 +97,7 @@ export function editPersonnel(personnel, index) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_EDIT, actionTypes.PERSONNEL_EDIT_SUCCEED, actionTypes.PERSONNEL_EDIT_FAIL],
-      endpoint: 'v1/account/personnel',
+      endpoint: 'v1/user/personnel',
       method: 'put',
       index,
       data: { personnel }
@@ -117,18 +116,18 @@ export function submitPersonnel(personnel) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_SUBMIT, actionTypes.PERSONNEL_SUBMIT_SUCCEED, actionTypes.PERSONNEL_SUBMIT_FAIL],
-      endpoint: 'v1/account/personnel',
+      endpoint: 'v1/user/personnel',
       method: 'post',
       data: { personnel }
     }
   };
 }
 
-export function loadPersonnels(cookie, params) {
+export function loadAllPersonnel(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_LOAD, actionTypes.PERSONNEL_LOAD_SUCCEED, actionTypes.PERSONNEL_LOAD_FAIL],
-      endpoint: 'v1/account/personnels/',
+      endpoint: 'v1/user/personnels/',
       method: 'get',
       params,
       cookie

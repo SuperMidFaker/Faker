@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnels, hideModal, showModal, beginEditPersonnel, delPersonnel,
-  editPersonnel, changeThisPersonnel, submitPersonnel } from '../../../../universal/redux/reducers/personnel';
+import { loadAllPersonnel, delPersonnel, editPersonnel, changeThisPersonnel, submitPersonnel } from '../../../../universal/redux/reducers/personnel';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import {Table, Button, AntIcon} from '../../../../reusable/ant-ui';
-import PersonnelSetter from '../../../components/personnel-setter';
+import {Table, Button, AntIcon, Select, Row, Col} from '../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import {ACCOUNT_STATUS, TENANT_ROLE} from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'personnel')) {
-    return dispatch(loadPersonnels(cookie));
+    return dispatch(loadAllPersonnel(cookie));
   }
 }
 @connectFetch()(fetchData)
@@ -17,65 +16,71 @@ function fetchData({state, dispatch, cookie}) {
   state => ({
     corpId: state.account.corpId,
     parentCorpId: state.account.tenantId,
-    personnel: state.personnel.personnel,
-    thisPersonnel: state.personnel.thisPersonnel,
-    selectIndex: state.personnel.selectIndex,
+    personnelist: state.personnel.personnelist,
+    branches: state.personnel.branches,
     loading: state.personnel.loading,
     needUpdate: state.personnel.needUpdate,
-    modalVisible: state.personnel.visible
   }),
-  { hideModal, showModal, beginEditPersonnel, delPersonnel, editPersonnel,
-    changeThisPersonnel, submitPersonnel, loadPersonnels })
+  { delPersonnel, editPersonnel,
+    changeThisPersonnel, submitPersonnel, loadAllPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     personnel: PropTypes.object.isRequired,
-    thisPersonnel: PropTypes.object.isRequired,
-    modalVisible: PropTypes.bool.isRequired,
+    branches: PropTypes.array.isRequired,
     corpId: PropTypes.number.isRequired,
     parentCorpId: PropTypes.number.isRequired,
-    location: PropTypes.object.isRequired,
-    changeThisPersonnel: PropTypes.func.isRequired,
-    loadPersonnels: PropTypes.func.isRequired,
+    loadAllPersonnel: PropTypes.func.isRequired,
     submitPersonnel: PropTypes.func.isRequired,
-    beginEditPersonnel: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired,
-    editPersonnel: PropTypes.func.isRequired,
-    hideModal: PropTypes.func.isRequired,
-    showModal: PropTypes.func.isRequired
+    editPersonnel: PropTypes.func.isRequired
+  }
+  constructor() {
+    super();
+    this.state = {
+      selectedRowKeys: []
+    };
+  }
+  handleSelectionClear() {
+    this.setState({selectedRowKeys: []});
+  }
+  handleTenantSwitch(val) {
+  }
+  handleNavigationTo(to, query) {
+    this.props.history.pushState(null, to, query);
   }
   handlePersonnelReg() {
     this.refs.personnelform.reset();
-    this.props.showModal();
   }
   handlePersonnelEdit(idx) {
     this.refs.personnelform.reset();
-    this.props.beginEditPersonnel(idx);
   }
   handlePersonnelDel(record) {
     this.props.delPersonnel(record.key, record.accountId);
   }
   handlePersonnelSubmit() {
-    const personnel = { ...this.props.thisPersonnel, corpId: this.props.corpId, parentCorpId: this.props.parentCorpId };
-    if (this.props.thisPersonnel.key) {
-      this.props.editPersonnel(personnel, this.props.selectIndex);
-    } else {
-      this.props.submitPersonnel(personnel);
+  }
+  renderColumnText(status, text) {
+    let className = '';
+    if (status === ACCOUNT_STATUS.normal.id) {
+      className = 'text-disabled';
     }
+    return <span className={className}>{text}</span>;
   }
   render() {
-    const { personnel, thisPersonnel, loading, needUpdate } = this.props;
+    const { personnel, branches, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadPersonnels(null, params),
+      fetcher: (params) => this.props.loadAllPersonnel(null, params),
       resolve: (result) => result.data,
       needUpdate,
       getPagination: (result) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
-        current: result.totalCount !== 0 &&
-          result.current > Math.ceil(result.totalCount / result.pageSize) ?
+        current: (result.current - 1) * result.pageSize <= result.totalCount &&
+          result.current * result.pageSize > result.totalCount ?
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
@@ -96,57 +101,102 @@ export default class PersonnelSetting extends React.Component {
         return params;
       }
     });
-    // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
-      onSelect: (/* record, selected, selectedRows */) => {
-      },
-      onSelectAll: (/* selected, selectedRows */) => {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({selectedRowKeys});
       }
     };
     const columns = [{
       title: '姓名',
-      dataIndex: 'name'
+      render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
-      title: '手机',
-      dataIndex: 'phone'
+      title: '用户名',
+      render: (o, record) => this.renderColumnText(record.status, record.loginName)
     }, {
-      title: '部门',
-      dataIndex: 'department'
+      title: '手机号',
+      render: (o, record) => this.renderColumnText(record.status, record.phone)
+    }, {
+      title: '邮箱',
+      render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '职位',
-      dataIndex: 'position'
+      render: (o, record) => this.renderColumnText(record.status, record.position)
+    }, {
+      title: '角色',
+      render: (o, record) => this.renderColumnText(record.status, record.role)
+    }, {
+      title: '状态',
+      render: (o, record) => {
+        let style = {color: '#51C23A'};
+        let text = ACCOUNT_STATUS.blocked.text;
+        if (record.status === ACCOUNT_STATUS.normal.id) {
+          style = {color: '#CCC'};
+          text = ACCOUNT_STATUS.normal.text;
+        }
+        return <span style={style}>{text}</span>;
+      }
     }, {
       title: '操作',
-      dataIndex: '',
-      width: 150,
       render: (text, record, index) => {
-        return (<span>
-          <Button shape="circle" type="primary" title="编辑" onClick={() => this.handlePersonnelEdit(index)} size="small"><AntIcon type="edit" /></Button>
-          <span className="ant-divider"></span>
-          <Button shape="circle" type="primary" title="删除" onClick={() => this.handlePersonnelDel(record)} size="small"><AntIcon type="cross" /></Button>
-          <span className="ant-divider"></span>
-          <a href="#" className="ant-dropdown-link">
-          更多 <AntIcon type="down" />
-          </a>
-        </span>);
+        if (record.role === TENANT_ROLE.owner) {
+          return (
+            <span>
+              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+            </span>);
+        } else if (record.status === ACCOUNT_STATUS.normal.id) {
+          return (
+            <span>
+              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
+              <span className="ant-divider"></span>
+              <a href="#" className="ant-dropdown-link">
+              更多 <AntIcon type="down" />
+              </a>
+            </span>);
+        } else if (record.status === ACCOUNT_STATUS.blocked.id) {
+          return (
+            <span>
+              <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
+            </span>);
+        } else {
+          return <span />;
+        }
       }
     }];
     return (
-      <div className="page-panel">
-        <div className={ (!this.props.modalVisible ? 'form-fade-enter' : 'form-fade-leave') }>
-          <div className="page-header">
-              <Button type="primary" onClick={ () => this.handlePersonnelReg() }>注册员工</Button>
+      <div className="main-content">
+        <div className="page-header">
+          <h2>用户管理</h2>
+        </div>
+        <div className="page-body">
+          <div className="panel-header">
+            <div className="pull-right action-btns">
+              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/persnonnel/new')}>
+                <span>新增</span>
+              </Button>
+            </div>
+            <span>所属组织</span>
+            <Select style={{width: 200}} defaultValue={branches.length > 0 ? branches[0].key : ''} onChange={(value) => this.handleTenantSwitch(value)}>
+            {
+              branches.map(br => (
+                <Select.Option key={br.key}value={br.key}>{br.name}</Select.Option>
+              ))
+            }
+            </Select>
           </div>
-          <div className="page-body">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnel} dataSource={dataSource}/>
+          <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnel} dataSource={dataSource}/>
+          <div className={'bottom-fixed-row' + (this.state.selectedRowKeys.length === 0 ? ' hide' : '')}>
+            <Row>
+              <Col span="2" offset="20">
+                <Button size="large" onClick={() => this.handleSelectionClear()}>清除选择</Button>
+              </Col>
+            </Row>
           </div>
         </div>
-        { thisPersonnel &&
-        <div className={ this.props.modalVisible ? 'form-fade-enter' : 'form-fade-leave' }>
-          <PersonnelSetter ref="personnelform" thisPersonnel={ this.props.thisPersonnel } changeThisPersonnel={ this.props.changeThisPersonnel }
-            handleModalHide={ this.props.hideModal } handlePersonnelSubmit={ ::this.handlePersonnelSubmit } />
-        </div>
-        }
       </div>
     );
   }
