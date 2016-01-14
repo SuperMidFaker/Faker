@@ -54,8 +54,8 @@ export default (store, cookie) => {
           </Route>
           <Route path="personnel">
             <IndexRoute component={Personnel.List} />
-            <Route path="new" />
-            <Route path="edit/:id" />
+            <Route path="new" component={Personnel.Edit}/>
+            <Route path="edit/:id" component={Personnel.Edit}/>
           </Route>
           <Route path="password" component={Password} />
         </Route>

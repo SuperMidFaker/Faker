@@ -1,39 +1,48 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadAllPersonnel, delPersonnel, editPersonnel, changeThisPersonnel, submitPersonnel } from '../../../../universal/redux/reducers/personnel';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, editPersonnel, switchTenant, switchStatus, submitPersonnel } from '../../../../universal/redux/reducers/personnel';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import {Table, Button, AntIcon, Select, Row, Col} from '../../../../reusable/ant-ui';
+import {Table, Button, AntIcon, Select, Row, Col, message} from '../../../../reusable/ant-ui';
+import NavLink from '../../../../reusable/components/nav-link';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {ACCOUNT_STATUS, TENANT_ROLE} from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
+  const promises = [];
   if (!isLoaded(state, 'personnel')) {
-    return dispatch(loadAllPersonnel(cookie));
+    let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
+    promises.push(p);
+    p = dispatch(loadPersonnel(cookie, {
+      tenantId: state.account.tenantId,
+      pageSize: state.personnel.personnelist.pageSize,
+      currentPage: state.personnel.personnelist.current
+    }));
+    promises.push(p);
   }
+  return promises;
 }
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    corpId: state.account.corpId,
-    parentCorpId: state.account.tenantId,
     personnelist: state.personnel.personnelist,
     branches: state.personnel.branches,
+    tenantId: state.personnel.tenantId,
     loading: state.personnel.loading,
-    needUpdate: state.personnel.needUpdate,
+    needUpdate: state.personnel.needUpdate
   }),
-  { delPersonnel, editPersonnel,
-    changeThisPersonnel, submitPersonnel, loadAllPersonnel })
+  { delPersonnel, editPersonnel, switchTenant, switchStatus, submitPersonnel, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    personnel: PropTypes.object.isRequired,
+    personnelist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
-    corpId: PropTypes.number.isRequired,
-    parentCorpId: PropTypes.number.isRequired,
-    loadAllPersonnel: PropTypes.func.isRequired,
+    tenantId: PropTypes.string.isRequired,
+    loadPersonnel: PropTypes.func.isRequired,
+    switchTenant: PropTypes.func.isRequired,
+    switchStatus: PropTypes.func.isRequired,
     submitPersonnel: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired,
     editPersonnel: PropTypes.func.isRequired
@@ -48,9 +57,29 @@ export default class PersonnelSetting extends React.Component {
     this.setState({selectedRowKeys: []});
   }
   handleTenantSwitch(val) {
+    const {personnelist} = this.props;
+    this.props.loadPersonnel(null, {
+      tenantId: val,
+      pageSize: personnelist.pageSize,
+      currentPage: personnelist.current
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.switchTenant(val);
+      }
+    });
   }
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
+  }
+  handleStatusSwitch(personnel, index) {
+    this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id
+      ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
   }
   handlePersonnelReg() {
     this.refs.personnelform.reset();
@@ -64,16 +93,16 @@ export default class PersonnelSetting extends React.Component {
   handlePersonnelSubmit() {
   }
   renderColumnText(status, text) {
-    let className = '';
-    if (status === ACCOUNT_STATUS.normal.id) {
-      className = 'text-disabled';
+    let style = {};
+    if (status === ACCOUNT_STATUS.blocked.id) {
+      style = {color: '#CCC'};
     }
-    return <span className={className}>{text}</span>;
+    return <span style={style}>{text}</span>;
   }
   render() {
-    const { personnel, branches, loading, needUpdate } = this.props;
+    const { tenantId, personnelist, branches, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadAllPersonnel(null, params),
+      fetcher: (params) => this.props.loadPersonnel(null, params),
       resolve: (result) => result.data,
       needUpdate,
       getPagination: (result) => ({
@@ -88,6 +117,7 @@ export default class PersonnelSetting extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
+          tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
@@ -129,25 +159,26 @@ export default class PersonnelSetting extends React.Component {
       title: '状态',
       render: (o, record) => {
         let style = {color: '#51C23A'};
-        let text = ACCOUNT_STATUS.blocked.text;
-        if (record.status === ACCOUNT_STATUS.normal.id) {
+        let text = ACCOUNT_STATUS.normal.text;
+        if (record.status === ACCOUNT_STATUS.blocked.id) {
           style = {color: '#CCC'};
-          text = ACCOUNT_STATUS.normal.text;
+          text = ACCOUNT_STATUS.blocked.text;
         }
         return <span style={style}>{text}</span>;
       }
     }, {
       title: '操作',
+      width: 150,
       render: (text, record, index) => {
-        if (record.role === TENANT_ROLE.owner) {
+        if (record.role === TENANT_ROLE.owner.name) {
           return (
             <span>
-              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
             </span>);
         } else if (record.status === ACCOUNT_STATUS.normal.id) {
           return (
             <span>
-              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
               <span className="ant-divider"></span>
@@ -175,20 +206,19 @@ export default class PersonnelSetting extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/persnonnel/new')}>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
                 <span>新增</span>
               </Button>
             </div>
             <span>所属组织</span>
-            <Select style={{width: 200}} defaultValue={branches.length > 0 ? branches[0].key : ''} onChange={(value) => this.handleTenantSwitch(value)}>
+            <Select style={{width: 200}} value={tenantId}
+              onChange={(value) => this.handleTenantSwitch(value)}>
             {
-              branches.map(br => (
-                <Select.Option key={br.key}value={br.key}>{br.name}</Select.Option>
-              ))
+              branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
             }
             </Select>
           </div>
-          <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnel} dataSource={dataSource}/>
+          <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
           <div className={'bottom-fixed-row' + (this.state.selectedRowKeys.length === 0 ? ' hide' : '')}>
             <Row>
               <Col span="2" offset="20">

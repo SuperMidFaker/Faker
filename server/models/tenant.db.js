@@ -73,9 +73,10 @@ export default {
     const args = [corpId];
     return mysql.update(sql, args, trans);
   },
-  getTenant(corpid) {
-    const sql = 'select tms, che, app from sso_tenant where corp_id = ?';
-    const args = [corpid];
+  getAttachedTenants(tenantId) {
+    const sql = `select tenant_id as \`key\`, name from sso_tenants where status = 'normal'
+      and (tenant_id = ? or parent_tenant_id = ?)`;
+    const args = [tenantId, tenantId];
     return mysql.query(sql, args);
   },
   deleteTenant(corpId, trans) {

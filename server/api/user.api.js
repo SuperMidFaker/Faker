@@ -25,15 +25,17 @@ export default [
    ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/user/corp', delCorp],
-   ['get', '/v1/account/personnels', getCorpPersonnels],
+   ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
+   ['get', '/v1/user/personnels', getCorpPersonnels],
    ['get', '/v1/user/personnel', getPersonnelInfo],
-   ['post', '/v1/account/personnel', submitPersonnel],
-   ['put', '/v1/account/personnel', editPersonnel],
-   ['delete', '/v1/account/personnel', delPersonnel],
+   ['post', '/v1/user/personnel', submitPersonnel],
+   ['put', '/v1/user/personnel', editPersonnel],
+   ['delete', '/v1/user/personnel', delPersonnel],
    ['put', '/v1/user/password', changePassword],
    ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
    ['get', '/v1/user/check/loginname', isLoginNameExist],
    ['put', '/v1/user/corp/status', switchCorpStatus],
+   ['put', '/v1/user/personnel/status', switchPersonnelStatus],
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
@@ -155,6 +157,8 @@ function *getCorps() {
     }
     const data = {
       totalCount: counts[0].num,
+      pageSize,
+      current,
       data: corps
     };
     // todo append the app module enabled info
@@ -310,16 +314,28 @@ function *delPersonnel() {
   }
 }
 
-function *getCorpPersonnels() {
-  const curUserId = this.state.user.userId;
-  const pageSize = parseInt(this.request.query.pageSize || 10, 10);
-  const current = parseInt(this.request.query.currentPage || 1, 10);
+function *getTenantsUnderMain() {
+  const tenantId = this.params.tid;
   try {
-    const counts = yield userDao.getCorpPersonnelCount(curUserId);
+    const branches = yield tenantDao.getAttachedTenants(tenantId);
+    Result.OK(this, branches);
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+function *getCorpPersonnels() {
+  const tenantId = this.request.query.tenantId;
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
+  try {
+    const counts = yield tenantUserDao.getTenantPersonnelCount(tenantId);
     const totalCount = counts[0].num;
-    const personnel = yield userDao.getPagedPersonnelInCorp(curUserId, current, pageSize);
+    const personnel = yield tenantUserDao.getPagedPersonnelInCorp(tenantId, current, pageSize);
+    // 换页,切换页数时从这里传到reducer里更新
     Result.OK(this, {
       totalCount,
+      current,
+      pageSize,
       data: personnel
     });
   } catch (e) {
@@ -390,6 +406,16 @@ function *switchCorpStatus() {
   const body = yield cobody(this);
   try {
     yield tenantDao.updateStatus(body.tenantId, body.status);
+    Result.OK(this);
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function *switchPersonnelStatus() {
+  const body = yield cobody(this);
+  try {
+    yield tenantUserDao.updateStatus(body.pid, body.status);
     Result.OK(this);
   } catch (e) {
     Result.InternalServerError(this, e.message);

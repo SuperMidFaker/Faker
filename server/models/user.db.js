@@ -68,18 +68,6 @@ export default {
     const args = [corpId, corpId];
     return mysql.query(sql, args);
   },
-  getCorpPersonnelCount(creator) {
-    const sql = `select count(id) as num from sso_corp_accounts where created_user_id = ?`;
-    const args = [creator];
-    return mysql.query(sql, args);
-  },
-  getPagedPersonnelInCorp(createdUserid, current, pageSize) {
-    const sql = `select id as \`key\`, A.id as accountId, phone, name, department, position, is_admin as isAdmin from
-      sso_corp_accounts as CA inner join sso_login as A on CA.id = A.id where created_user_id = ?
-      limit ?, ?`;
-    const args = [createdUserid, (current - 1) * pageSize, pageSize];
-    return mysql.query(sql, args);
-  },
   insertPersonnel(createUserid, accountId, personnel, trans) {
     const sql = `insert into sso_corp_accounts(corp_id, parent_corp_id, id, name, department, position,
       created_user_id, created_date) values (?, ?, ?, ?, ?, ?, ?, NOW())`;
