@@ -32,9 +32,10 @@ export default class ModuleLayout extends React.Component {
             <Col span="6" key={`mod-${idx}`}>
               <NavLink to={mod.url}>
                 <div className={containerCls}>
-                  <img src={`/assets/img/home/${mod.cls}-bg.png`} />
-                  <div className="module-icon">
-                    <img src={`/assets/img/home/${mod.cls}.png`} />
+                  <div className={'module-icon-bg ' + mod.cls}>
+                    <div className="module-icon">
+                      <img src={`/assets/img/home/${mod.cls}.png`} />
+                    </div>
                   </div>
                   <span className="module-text">{mod.text}</span>
                 </div>

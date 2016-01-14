@@ -21,11 +21,10 @@ export default class Home extends React.Component {
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />
         <div className="am-content">
-          <div className="home-header">
-            <img src="http://cdn.welogix.cn/assets/img/about-bg.jpg" />
-            <div className="tenant-container">
-              <img src="/assets/img/home/tenant-logo.png" />
-              <h2>某某公司</h2>
+          <div className="home-header home-header-bg">
+            <div className="tenant-info">
+            <div className="tenant-logo " style={{backgroundImage:'url("/assets/img/home/tenant-logo.png")'}}></div>
+              <h2 className="tenant-name">某某公司</h2>
             </div>
             <div className="btn-group">
               <NavLink to="/corp/info"><Button type="primary" size="large"><span>设置</span></Button></NavLink>
