@@ -50,7 +50,7 @@ export default class CorpList extends React.Component {
     showWarningModal({
       title: '请输入DELETE进行下一步操作',
       content: '点击确定会删除该机构及其下所有帐户信息',
-      onOk: () => this.props.delCorp(id),
+      onOk: () => this.props.delCorp(id, this.props.tenantId),
       confirmString: 'DELETE'
     });
   }

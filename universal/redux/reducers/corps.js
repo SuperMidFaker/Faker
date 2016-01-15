@@ -90,13 +90,13 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function delCorp(corpId) {
+export function delCorp(corpId, parentTenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_DELETE, actionTypes.CORP_DELETE_SUCCEED, actionTypes.CORP_DELETE_FAIL],
       endpoint: 'v1/user/corp',
       method: 'del',
-      data: {corpId}
+      data: {corpId, parentTenantId}
     }
   };
 }

@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, editPersonnel, switchTenant, switchStatus, submitPersonnel } from '../../../../universal/redux/reducers/personnel';
-import { isLoaded } from '../../../../reusable/common/redux-actions';
-import {Table, Button, AntIcon, Select, Row, Col, message} from '../../../../reusable/ant-ui';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, changeCurrentPage, switchTenant, switchStatus} from '../../../../universal/redux/reducers/personnel';
+import {Table, Button, Select, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
+import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {ACCOUNT_STATUS, TENANT_ROLE} from '../../../../universal/constants';
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({state, dispatch, location, cookie}) {
   const promises = [];
-  if (!isLoaded(state, 'personnel')) {
+  if (location.action !== 'POP' || cookie) {
+    // 当从Edit页面切回来不重新加载
+    // 从其他页面切过来或者在服务端重新加载
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
     promises.push(p);
     p = dispatch(loadPersonnel(cookie, {
@@ -19,18 +21,18 @@ function fetchData({state, dispatch, cookie}) {
     }));
     promises.push(p);
   }
-  return promises;
+  return Promise.all(promises);
 }
 @connectFetch()(fetchData)
 @connect(
   state => ({
     personnelist: state.personnel.personnelist,
     branches: state.personnel.branches,
-    tenantId: state.personnel.tenantId,
+    tenant: state.personnel.tenant,
     loading: state.personnel.loading,
     needUpdate: state.personnel.needUpdate
   }),
-  { delPersonnel, editPersonnel, switchTenant, switchStatus, submitPersonnel, loadPersonnel })
+  { delPersonnel, changeCurrentPage, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -39,13 +41,12 @@ export default class PersonnelSetting extends React.Component {
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
-    tenantId: PropTypes.string.isRequired,
+    tenant: PropTypes.object.isRequired,
     loadPersonnel: PropTypes.func.isRequired,
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    submitPersonnel: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired,
-    editPersonnel: PropTypes.func.isRequired
+    changeCurrentPage: PropTypes.func.isRequired
   }
   constructor() {
     super();
@@ -61,12 +62,22 @@ export default class PersonnelSetting extends React.Component {
     this.props.loadPersonnel(null, {
       tenantId: val,
       pageSize: personnelist.pageSize,
-      currentPage: personnelist.current
+      currentPage: 1
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.switchTenant(val);
+        let tenant;
+        this.props.branches.forEach(br => {
+          if ('' + br.key === val) {
+            tenant = {
+              id: br.key,
+              parentId: br.parentId
+            };
+            return;
+          }
+        });
+        this.props.switchTenant(tenant);
       }
     });
   }
@@ -81,16 +92,10 @@ export default class PersonnelSetting extends React.Component {
         }
       });
   }
-  handlePersonnelReg() {
-    this.refs.personnelform.reset();
-  }
-  handlePersonnelEdit(idx) {
-    this.refs.personnelform.reset();
-  }
   handlePersonnelDel(record) {
-    this.props.delPersonnel(record.key, record.accountId);
+    this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
   }
-  handlePersonnelSubmit() {
+  handleSearch(searchVal) {
   }
   renderColumnText(status, text) {
     let style = {};
@@ -100,7 +105,7 @@ export default class PersonnelSetting extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { tenantId, personnelist, branches, loading, needUpdate } = this.props;
+    const { tenant, personnelist, branches, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadPersonnel(null, params),
       resolve: (result) => result.data,
@@ -113,11 +118,13 @@ export default class PersonnelSetting extends React.Component {
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
+        onChange: (page) => this.props.changeCurrentPage(page),
+        pageSizeOptions: [`${result.pageSize}`, `${2 * result.pageSize}`, `${3 * result.pageSize}`],
         pageSize: result.pageSize
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId,
+          tenantId: tenant.id,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
@@ -181,15 +188,11 @@ export default class PersonnelSetting extends React.Component {
               <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
-              <span className="ant-divider"></span>
-              <a href="#" className="ant-dropdown-link">
-              更多 <AntIcon type="down" />
-              </a>
             </span>);
         } else if (record.status === ACCOUNT_STATUS.blocked.id) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
+              <a role="button" onClick={() => this.handlePersonnelDel(record)}>删除</a>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
             </span>);
@@ -201,7 +204,19 @@ export default class PersonnelSetting extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <h2>用户管理</h2>
+        <Row>
+          <Col span="6">
+            <h2>用户管理</h2>
+          </Col>
+          <Col span="18">
+          <div className="pull-right action-btns">
+            <SearchBar placeholder="搜索姓名/手机号/邮箱" onSearch={(val) => this.handleSearch(val)} />
+            <Button type="ghost" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
+              <span>高级搜索</span>
+            </Button>
+          </div>
+          </Col>
+          </Row>
         </div>
         <div className="page-body">
           <div className="panel-header">
@@ -210,8 +225,8 @@ export default class PersonnelSetting extends React.Component {
                 <span>新增</span>
               </Button>
             </div>
-            <span>所属组织</span>
-            <Select style={{width: 200}} value={tenantId}
+            <span style={{paddingRight: 10, color: '#09C', fontSize: 13}}>所属组织</span>
+            <Select style={{width: 200}} value={`${tenant.id}`}
               onChange={(value) => this.handleTenantSwitch(value)}>
             {
               branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)

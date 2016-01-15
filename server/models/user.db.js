@@ -68,23 +68,6 @@ export default {
     const args = [corpId, corpId];
     return mysql.query(sql, args);
   },
-  insertPersonnel(createUserid, accountId, personnel, trans) {
-    const sql = `insert into sso_corp_accounts(corp_id, parent_corp_id, id, name, department, position,
-      created_user_id, created_date) values (?, ?, ?, ?, ?, ?, ?, NOW())`;
-    const args = [personnel.corpId, personnel.parentCorpId, accountId, personnel.name,
-      personnel.department, personnel.position, createUserid];
-    return mysql.insert(sql, args, trans);
-  },
-  updatePersonnel(p, trans) {
-    const sql = `update sso_corp_accounts set name = ?, department = ?, position = ? where id = ?`;
-    const args = [p.name, p.department, p.position, p.id];
-    return mysql.update(sql, args, trans);
-  },
-  deletePersonnel(pid, trans) {
-    const sql = 'delete from sso_corp_accounts where id = ?';
-    const args = [pid];
-    return mysql.delete(sql, args, trans);
-  },
 
   getPersonnelInfo(accountId) {
     const sql = `select A.id as accountId, phone, name, department, position from sso_corp_accounts as CA
