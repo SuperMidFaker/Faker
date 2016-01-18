@@ -85,8 +85,8 @@ export default class CorpList extends React.Component {
       getPagination: (result) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
-        current: (result.current - 1) * result.pageSize <= result.totalCount &&
-          result.current * result.pageSize > result.totalCount ?
+        current: result.totalCount > 0 && (result.current - 1) * result.pageSize <= result.totalCount
+          && result.current * result.pageSize > result.totalCount ?
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
