@@ -95,7 +95,7 @@ export default class PersonnelSetting extends React.Component {
     this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
   }
   handleSearch(searchVal) {
-    // OR this name condition
+    // OR with name condition
     const filters = [[{
       name: 'name',
       value: searchVal

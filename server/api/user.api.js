@@ -22,6 +22,7 @@ export default [
    ['get', '/v1/user/account', getUserAccount],
    ['get', '/v1/user/corps', getCorps],
    ['get', '/v1/user/corp', getCorpInfo],
+   ['get', 'v1/user/subdomain/corp', getCorpByDomain],
    ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/user/corp', delCorp],
@@ -439,4 +440,7 @@ function *switchPersonnelStatus() {
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
+}
+
+function *getCorpByDomain() {
 }
