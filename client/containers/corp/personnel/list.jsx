@@ -96,6 +96,23 @@ export default class PersonnelSetting extends React.Component {
     this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
   }
   handleSearch(searchVal) {
+    // OR this name condition
+    const filters = [[{
+      name: 'name',
+      value: searchVal
+    }, {
+      name: 'email',
+      value: searchVal
+    }, {
+      name: 'phone',
+      value: searchVal
+    }]];
+    this.props.loadPersonnel(null, {
+      tenantId: this.props.tenant.id,
+      pageSize: this.props.personnelist.pageSize,
+      currentPage: 1,
+      filters: JSON.stringify(filters)
+    });
   }
   renderColumnText(status, text) {
     let style = {};
@@ -128,13 +145,18 @@ export default class PersonnelSetting extends React.Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
+          filters: []
         };
         for (const key in filters) {
           if (filters[key]) {
-            params[key] = filters[key];
+            params.filters.push({
+              name: key,
+              value: filters[key][0]
+            });
           }
         }
+        params.filters = JSON.stringify(params.filters);
         return params;
       }
     });
@@ -146,6 +168,8 @@ export default class PersonnelSetting extends React.Component {
     };
     const columns = [{
       title: '姓名',
+      dataIndex: 'name',
+      sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: '用户名',
@@ -155,13 +179,24 @@ export default class PersonnelSetting extends React.Component {
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: '邮箱',
+      dataIndex: 'email',
+      sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '职位',
       render: (o, record) => this.renderColumnText(record.status, record.position)
     }, {
       title: '角色',
-      render: (o, record) => this.renderColumnText(record.status, record.role)
+      sorter: true,
+      dataIndex: 'role',
+      filters: [{
+        text: TENANT_ROLE.manager.text,
+        value: TENANT_ROLE.manager.name
+      }, {
+        text: TENANT_ROLE.member.text,
+        value: TENANT_ROLE.member.name
+      }],
+      render: (o, record) => this.renderColumnText(record.status, TENANT_ROLE[record.role].text)
     }, {
       title: '状态',
       render: (o, record) => {
@@ -210,7 +245,7 @@ export default class PersonnelSetting extends React.Component {
           </Col>
           <Col span="18">
           <div className="pull-right action-btns">
-            <SearchBar placeholder="搜索姓名/手机号/邮箱" onSearch={(val) => this.handleSearch(val)} />
+            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
             <Button type="ghost" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
               <span>高级搜索</span>
             </Button>

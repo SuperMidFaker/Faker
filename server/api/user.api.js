@@ -271,11 +271,14 @@ function *getCorpPersonnels() {
   const tenantId = this.request.query.tenantId;
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const current = parseInt(this.request.query.currentPage, 10);
-  const filters = this.request.query.filters;
+  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
+  const sortField = this.request.query.sortField;
+  const sortOrder = this.request.query.sortOrder;
   try {
     const counts = yield tenantUserDao.getTenantPersonnelCount(tenantId, filters);
     const totalCount = counts[0].num;
-    const personnel = yield tenantUserDao.getPagedPersonnelInCorp(tenantId, current, pageSize, filters);
+    const personnel = yield tenantUserDao.getPagedPersonnelInCorp(tenantId, current, pageSize,
+                                                                  filters, sortField, sortOrder);
     // 换页,切换页数时从这里传到reducer里更新
     Result.OK(this, {
       totalCount,

@@ -1,4 +1,43 @@
 import mysql from '../../reusable/db-util/mysql';
+function putInComposition(f, args) {
+  let sql = '';
+  if (f.name === 'username') {
+    sql += 'username like ?';
+    args.push('%' + f.value + '%');
+  } else if (f.name === 'email') {
+    sql += 'email like ?';
+    args.push('%' + f.value + '%');
+  } else if (f.name === 'phone') {
+    sql += 'phone like ?';
+    args.push('%' + f.value + '%');
+  } else if (f.name === 'name') {
+    sql += 'name like ?';
+    args.push('%' + f.value + '%');
+  } else if (f.name === 'role') {
+    sql += 'TU.user_type = ?';
+    args.push(f.value);
+  }
+  return sql;
+}
+function concatFilterSql(filters, args) {
+  let sqlClause = '';
+  for (let i = 0, len = filters.length; i < len; i++) {
+    sqlClause += ' and '; // 第一层级与关系
+    const f = filters[i];
+    if (f.length > 0) { // 第二层级为或关系
+      sqlClause += '(';
+      for (let j = 0, lenf = f.length; j < lenf; j++) {
+        sqlClause += putInComposition(f[j], args);
+        sqlClause += ' or ';
+      }
+      sqlClause = sqlClause.slice(0, -3);
+      sqlClause += ')';
+    } else {
+      sqlClause += putInComposition(f, args);
+    }
+  }
+  return sqlClause;
+}
 export default {
   getOwnerLoginId(tenantId) {
     const sql = `select login_id as id from sso_tenant_users where tenant_id = ? and user_type = 'owner'`;
@@ -44,19 +83,26 @@ export default {
     return mysql.delete(sql, args, trans);
   },
   getTenantPersonnelCount(tenantId, filters) {
-    const sql = `select count(user_id) as num from sso_tenant_users inner join sso_login on login_id = id where tenant_id = ?`;
     const args = [tenantId];
-    if (filters.length > 0) {
-      if (filters[0].name === 'loginName') {
-      }
-    }
+    const filterClause = concatFilterSql(filters, args);
+    const sql = `select count(user_id) as num from sso_tenant_users as TU inner join
+      sso_login as L on login_id = id where tenant_id = ? ${filterClause}`;
+    console.log(sql, args);
     return mysql.query(sql, args);
   },
-  getPagedPersonnelInCorp(tenantId, current, pageSize, filters) {
+  getPagedPersonnelInCorp(tenantId, current, pageSize, filters, sortField, sortOrder) {
+    const args = [tenantId];
+    const filterClause = concatFilterSql(filters, args);
+    let sortColumn = sortField || 'user_id';
+    if (sortColumn === 'role') {
+      sortColumn = 'TU.user_type';
+    }
+    const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
     const sql = `select user_id as \`key\`, username as loginName, phone, email, name, position,
       TU.user_type as role, status, login_id as loginId from sso_tenant_users as TU inner join
-      sso_login as L on TU.login_id = L.id where tenant_id = ? order by user_id limit ?, ?`;
-    const args = [tenantId, (current - 1) * pageSize, pageSize];
+      sso_login as L on TU.login_id = L.id where tenant_id = ? ${filterClause} ${sortClause} limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
+    console.log(sql, args);
     return mysql.query(sql, args);
   },
   insertPersonnel(creator, loginId, personnel, tenant, trans) {
