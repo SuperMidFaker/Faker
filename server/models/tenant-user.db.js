@@ -53,7 +53,7 @@ export default {
   getLoginNameCount(loginName, loginId, tenantId) {
     const sql = `select count(id) as count from sso_login as L inner join (select login_id from sso_tenant_users
       where login_id != ? and (tenant_id = ? or parent_tenant_id = ?)) as TU on id = TU.login_id where username = ?`;
-    const args = [loginId, tenantId, tenantId, loginName];
+    const args = [loginId || -1, tenantId, tenantId, loginName];
     return mysql.query(sql, args);
   },
   getAttchedLoginIds(tenantId) {

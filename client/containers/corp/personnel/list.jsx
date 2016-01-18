@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, changeCurrentPage, switchTenant, switchStatus} from '../../../../universal/redux/reducers/personnel';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus} from '../../../../universal/redux/reducers/personnel';
 import {Table, Button, Select, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
@@ -32,7 +32,7 @@ function fetchData({state, dispatch, location, cookie}) {
     loading: state.personnel.loading,
     needUpdate: state.personnel.needUpdate
   }),
-  { delPersonnel, changeCurrentPage, switchTenant, switchStatus, loadPersonnel })
+  { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -45,8 +45,7 @@ export default class PersonnelSetting extends React.Component {
     loadPersonnel: PropTypes.func.isRequired,
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    delPersonnel: PropTypes.func.isRequired,
-    changeCurrentPage: PropTypes.func.isRequired
+    delPersonnel: PropTypes.func.isRequired
   }
   constructor() {
     super();
@@ -135,8 +134,6 @@ export default class PersonnelSetting extends React.Component {
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
-        onChange: (page) => this.props.changeCurrentPage(page),
-        pageSizeOptions: [`${result.pageSize}`, `${2 * result.pageSize}`, `${3 * result.pageSize}`],
         pageSize: result.pageSize
       }),
       getParams: (pagination, filters, sorter) => {

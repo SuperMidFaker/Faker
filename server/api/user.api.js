@@ -27,7 +27,6 @@ export default [
    ['delete', '/v1/user/corp', delCorp],
    ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
    ['get', '/v1/user/personnels', getCorpPersonnels],
-   ['get', 'v1/user/search/personnel', getSearchedPersonnel],
    ['get', '/v1/user/personnel', getPersonnelInfo],
    ['post', '/v1/user/personnel', submitPersonnel],
    ['put', '/v1/user/personnel', editPersonnel],
@@ -145,8 +144,8 @@ function *getUserAccount() {
 
 function *getCorps() {
   const parentTenantId = this.request.query.tenantId;
-  const pageSize = parseInt(this.request.query.pageSize || 10, 10);
-  const current = parseInt(this.request.query.currentPage || 1, 10);
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
   try {
     const counts = yield tenantDao.getCorpCountByParent(parentTenantId);
     const corps = yield tenantDao.getPagedCorpsByParent(parentTenantId, current, pageSize);
@@ -280,25 +279,6 @@ function *getCorpPersonnels() {
     const personnel = yield tenantUserDao.getPagedPersonnelInCorp(tenantId, current, pageSize,
                                                                   filters, sortField, sortOrder);
     // 换页,切换页数时从这里传到reducer里更新
-    Result.OK(this, {
-      totalCount,
-      current,
-      pageSize,
-      data: personnel
-    });
-  } catch (e) {
-    Result.InternalServerError(this, e.message);
-  }
-}
-
-function *getSearchedPersonnel() {
-  const tenantId = this.request.query.tenantId;
-  const pageSize = parseInt(this.request.query.pageSize, 10);
-  const current = parseInt(this.request.query.currentPage, 10);
-  try {
-    const counts = yield tenantUserDao.getTenantPersonnelCountByName(tenantId, name);
-    const totalCount = counts[0].num;
-    const personnel = yield tenantUserDao.getPagedPersonnelInCorpByName(tenantId, current, pageSize, name);
     Result.OK(this, {
       totalCount,
       current,

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {loadCorps, delCorp, switchStatus} from '../../../../universal/redux/reducers/corps';
+import {loadCorps, delCorp, changeCurrentPage, switchStatus} from '../../../../universal/redux/reducers/corps';
 import {Table, Button, AntIcon, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
@@ -10,7 +10,11 @@ import {ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES} from '../../../../
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'corps') ) {
-    return dispatch(loadCorps(cookie, {tenantId: state.account.tenantId}));
+    return dispatch(loadCorps(cookie, {
+      tenantId: state.account.tenantId,
+      pageSize: state.corps.corplist.pageSize,
+      currentPage: state.corps.corplist.current
+    }));
   }
 }
 @connectFetch()(fetchData)
@@ -21,11 +25,12 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  {loadCorps, delCorp, switchStatus}
+  {loadCorps, delCorp, changeCurrentPage, switchStatus}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
+    changeCurrentPage: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     needUpdate: PropTypes.bool.isRequired,
@@ -64,6 +69,13 @@ export default class CorpList extends React.Component {
   }
   handleEnabledAppEdit(/* tenant */) {
   }
+  renderColumnText(status, text) {
+    let style = {};
+    if (status === ACCOUNT_STATUS.blocked.name) {
+      style = {color: '#CCC'};
+    }
+    return <span style={style}>{text}</span>;
+  }
   render() {
     const { corplist, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
@@ -78,6 +90,8 @@ export default class CorpList extends React.Component {
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
+        onChange: (page) => this.props.changeCurrentPage(page),
+        pageSizeOptions: [`${result.pageSize}`, `${2 * result.pageSize}`, `${3 * result.pageSize}`],
         pageSize: result.pageSize
       }),
       getParams: (pagination, filters, sorter) => {
@@ -105,16 +119,20 @@ export default class CorpList extends React.Component {
     };
     const columns = [{
       title: '部门/分支机构',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: '负责人',
-      dataIndex: 'contact'
+      dataIndex: 'contact',
+      render: (o, record) => this.renderColumnText(record.status, record.contact)
     }, {
       title: '手机号',
-      dataIndex: 'phone'
+      dataIndex: 'phone',
+      render: (o, record) => this.renderColumnText(record.status, record.contact)
     }, {
       title: '邮箱',
-      dataIndex: 'email'
+      dataIndex: 'email',
+      render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '已开通应用',
       render: (o, record) => {
@@ -132,12 +150,11 @@ export default class CorpList extends React.Component {
     }, {
       title: '状态',
       render: (o, record) => {
-        let className = '';
-        if (record.status === ACCOUNT_STATUS.normal) {
-          className = 'text-disabled';
+        let style = {color: '#51C23A'};
+        if (record.status === ACCOUNT_STATUS.blocked.name) {
+          style = {color: '#CCC'};
         }
-        // todo make the row disabled as gray background and text color
-        return <span className={className}>{ACCOUNT_STATUS[record.status].text}</span>;
+        return <span style={style}>{ACCOUNT_STATUS[record.status].text}</span>;
       }
     }, {
       title: '操作',

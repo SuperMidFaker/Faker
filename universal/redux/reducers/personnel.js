@@ -4,10 +4,9 @@ import {appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assign
   clearFormC, setFormValueC} from '../../../reusable/domains/redux/form-common';
 import {TENANT_ROLE} from '../../../universal/constants';
 const actionTypes = createActionTypes('@@welogix/personnel/', [
-  'SWITCH_TENANT', 'CHANGE_CURREN_PAGE', 'PERSONNEL_BEGIN_EDIT',
+  'SWITCH_TENANT',
   'MASTER_TENANTS_LOAD', 'MASTER_TENANTS_LOAD_SUCCEED', 'MASTER_TENANTS_LOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
-  'SEARCH_ITEM', 'SEARCH_ITEM_SUCCEED', 'SEARCH_ITEM_FAIL',
   'PERSONNEL_SUBMIT', 'PERSONNEL_SUBMIT_SUCCEED', 'PERSONNEL_SUBMIT_FAIL',
   'PERSONNEL_DELETE', 'PERSONNEL_DELETE_SUCCEED', 'PERSONNEL_DELETE_FAIL',
   'PERSONNEL_EDIT', 'PERSONNEL_EDIT_SUCCEED', 'PERSONNEL_EDIT_FAIL',
@@ -29,15 +28,13 @@ const initialState = {
   },
   personnelist: {
     totalCount: 0,
-    pageSize: 5,
+    pageSize: 10,
     current: 1,
     data: []
   }
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case actionTypes.CHANGE_CURREN_PAGE:
-    return {...state, personnelist: {...state.personnelist, current: action.current}, needUpdate: true};
   case actionTypes.PERSONNEL_LOAD:
     return {...state, loading: true, needUpdate: false};
   case actionTypes.PERSONNEL_LOAD_SUCCEED:
@@ -52,12 +49,6 @@ export default function reducer(state = initialState, action) {
         id: action.result.data[0].key,
         parentId: action.result.data[0].parentId
       } : {}};
-  case actionTypes.SEARCH_ITEM:
-    return {...state, loading: true };
-  case actionTypes.SEARCH_ITEM_SUCCEED:
-    return {...state, loaded: true, loading: false,
-      personnelist: {...state.personnelist, ...action.result.data}
-    };
   case actionTypes.SWITCH_TENANT:
     return {...state, tenant: action.tenant};
   case actionTypes.SWITCH_STATUS_SUCCEED: {
@@ -71,7 +62,7 @@ export default function reducer(state = initialState, action) {
     return { ...state, personnelist};
   }
   case actionTypes.PERSONNEL_DELETE_SUCCEED: {
-    return { ...state, needUpdate: true };
+    return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
   }
   case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
     const personnelist = {...state.personnelist};
@@ -85,7 +76,8 @@ export default function reducer(state = initialState, action) {
   }
   // todo deal with submit fail submit loading
   default:
-    return formReducer(actionTypes, state, action, {key: null, role: TENANT_ROLE.member.name}, 'personnelist');
+    return formReducer(actionTypes, state, action, {key: null, role: TENANT_ROLE.member.name}, 'personnelist')
+          || state;
   }
 }
 
@@ -179,24 +171,6 @@ export function switchStatus(index, pid, status) {
       method: 'put',
       index,
       data: {status, pid}
-    }
-  };
-}
-
-export function changeCurrentPage(current) {
-  return {
-    type: actionTypes.CHANGE_CURREN_PAGE,
-    current
-  };
-}
-
-export function searchByItem(filters, tenatId, pageSize, current) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.SEARCH_ITEM, actionTypes.SEARCH_ITEM_SUCCEED, actionTypes.SEARCH_ITEM_FAIL],
-      endpoint: 'v1/user/personnels',
-      method: 'get',
-      params: {filters, tenatId, pageSize, current}
     }
   };
 }
