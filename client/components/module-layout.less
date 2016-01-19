@@ -28,18 +28,6 @@
         width: 120px;
         height: 120px;
       }
-      .module-icon {
-        width: 100%;
-        height: 100%;
-        >img {
-          width: 100%;
-          height: 100%;
-          padding: 20px;
-          @media (max-width:767px) {
-            padding: 10px;
-          }
-        }
-      } 
     }
     &:hover {
       background: rgba(0,0,0,0.1);
@@ -78,6 +66,18 @@
       background-image: linear-gradient(to bottom, #ff9e41, #ea7300);
     }
   }
+  &icon {
+    width: 100%;
+    height: 100%;
+    >img {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      @media (max-width:767px) {
+        padding: 10px;
+      }
+    }
+  } 
   &text {
     font-weight: 400;
     font-size: 12px;
