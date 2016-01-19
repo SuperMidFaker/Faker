@@ -16,9 +16,11 @@ const SMS_VERIFY = '@@qm-auth/auth/SMS_VERIFY';
 const SMS_VERIFY_SUCCEED = '@@qm-auth/auth/SMS_VERIFY_SUCCEED';
 const SMS_VERIFY_FAIL = '@@qm-auth/auth/SMS_VERIFY_FAIL';
 const initialState = {
+  /*
   username: '',
   password: '',
   remember: false,
+ */
   loggingIn: false,
   isAuthed: false,
   verified: false,
