@@ -1,4 +1,5 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
+import {CPD_LOAD_FAIL} from './corp-domain';
 const LOGIN = '@@qm-auth/auth/LOGIN';
 const LOGIN_SUCCEED = '@@qm-auth/auth/LOGIN_SUCCEED';
 const LOGIN_FAIL = '@@qm-auth/auth/LOGIN_FAIL';
@@ -15,8 +16,8 @@ const SMS_VERIFY = '@@qm-auth/auth/SMS_VERIFY';
 const SMS_VERIFY_SUCCEED = '@@qm-auth/auth/SMS_VERIFY_SUCCEED';
 const SMS_VERIFY_FAIL = '@@qm-auth/auth/SMS_VERIFY_FAIL';
 const initialState = {
-  username: null,
-  password: null,
+  username: '',
+  password: '',
   remember: false,
   loggingIn: false,
   isAuthed: false,
@@ -42,7 +43,7 @@ export default function reducer(state = initialState, action = {}) {
       ...state,
       loggingIn: false,
       error: null,
-      password: null,
+      password: '',
       isAuthed: true,
       userType,
       token
@@ -59,6 +60,11 @@ export default function reducer(state = initialState, action = {}) {
     return {
       ...state,
       [action.data.field]: action.data.value
+    };
+  case CPD_LOAD_FAIL:
+    return {
+      ...state,
+      error: {message: action.error.msg || 'tenant subdomain do not exist'}
     };
   case PWD_CHANGE_SUCCEED:
     action.history.goBack(); // todo change to componentWillReceiveProps

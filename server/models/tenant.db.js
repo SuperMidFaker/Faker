@@ -39,6 +39,11 @@ export default {
     const args = [subdomain, tenantId];
     return mysql.query(sql, args);
   },
+  getTenantByDomain(subdomain) {
+    const sql = 'select logo, code, name from sso_tenants where subdomain = ? and level = 1';
+    const args = [subdomain];
+    return mysql.query(sql, args);
+  },
   getCorpCountByParent(parentTenantId) {
     const sql = 'select count(tenant_id) as num from sso_tenants where parent_tenant_id = ?';
     const args = [parentTenantId];

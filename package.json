@@ -12,17 +12,17 @@
     "dev": "nodemon",
     "start": "npm run clean & npm run hot &  npm run dev",
     "test-build": "NODE_ENV=test webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
-    "test-prod": "NODE_ENV=test node . --port=3024",
+    "test-prod": "NODE_ENV=test node . --port=3022",
     "test-deploy": "npm run clean && npm run test-build && npm run test-prod",
     "build": "NODE_ENV=production webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
-    "prod": "NODE_ENV=production node . --port=3024",
+    "prod": "NODE_ENV=production node . --port=3022",
     "pm2": "pm2 start pm2/prod.js",
     "deploy": "npm run clean && npm run build && npm run pm2",
     "test": "mocha --reporter spec --check-leaks tests/*_test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git@git.qeemo.me:saas/welogix-web.git"
+    "url": "git@git.welogix.cn:saas/welogix-web.git"
   },
   "keywords": [
     "tms",

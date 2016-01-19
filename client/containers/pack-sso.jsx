@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import './sso.less';
 
-export default class Home extends React.Component {
+export default class SSOPack extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired
   };
