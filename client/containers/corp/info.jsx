@@ -207,7 +207,7 @@ export default class CorpInfo extends React.Component {
         <div className="bottom-fixed-row">
           <Row>
             <Col span="2" offset="1">
-              <Button size="large" type="primary" htmlType="submit" onClick={ () => this.handleSubmit() }>确定</Button>
+              <Button type="primary" htmlType="submit" onClick={ () => this.handleSubmit() }>确定</Button>
             </Col>
             <Col span="2">
               <Button onClick={ () => this.handleCancel() }>返回</Button>

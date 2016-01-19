@@ -571,15 +571,21 @@ img {
 .page-body {
   background-color: #fff;
   padding: 10px 20px;
-  height: 100%;
+  min-height: 500px;
+  margin-bottom: 80px;
 }
 
 .bottom-fixed-row {
   position: fixed;
-  bottom: 2px;
+  bottom: 0;
   width: 100%;
-  background-color: #f0f0f0;
-  padding: 20px 0px 10px;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.15);
+  -webkit-transition: all ease 0.4s;
+  -moz-transition: all ease 0.4s;
+  -o-transition: all ease 0.4s;
+  transition: all ease 0.4s;
+  padding: 20px 0px 18px;
   margin-left: -35px;
 }
 .horizontal-divider {
