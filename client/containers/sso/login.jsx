@@ -21,6 +21,9 @@ export default class Login extends React.Component {
   }
   handleSubmit(ev) {
     ev.preventDefault();
+    if (this.props.auth.error && this.props.auth.error.message) {
+      return;
+    }
     const { auth: { username, password, remember } } = this.props;
     const form = {
       username,

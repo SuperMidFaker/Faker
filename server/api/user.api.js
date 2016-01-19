@@ -19,10 +19,10 @@ export default [
    ['post', '/public/v1/login', loginUserP],
    ['post', '/public/v1/sms/code', requestSmsCodeP],
    ['post', '/public/v1/sms/verify', verifySmsCodeP],
+   ['get', '/public/v1/subdomain/corp', getCorpBySubdomain],
    ['get', '/v1/user/account', getUserAccount],
    ['get', '/v1/user/corps', getCorps],
    ['get', '/v1/user/corp', getCorpInfo],
-   ['get', 'v1/user/subdomain/corp', getCorpByDomain],
    ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/user/corp', delCorp],
@@ -442,5 +442,15 @@ function *switchPersonnelStatus() {
   }
 }
 
-function *getCorpByDomain() {
+function *getCorpBySubdomain() {
+  const subdomain = this.request.query.subdomain;
+  try {
+   const result = yield tenantDao.getTenantByDomain(subdomain); 
+   if (result.length === 0) {
+     throw new Error('当前子域未对应任何租户');
+   }
+   Result.OK(this, result[0]);
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
 }
