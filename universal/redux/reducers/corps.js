@@ -1,9 +1,10 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { CHINA_CODE } from '../../../universal/constants';
+import {appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
+  clearFormC, setFormValueC} from '../../../reusable/domains/redux/form-common';
 const actionTypes = createActionTypes('@@welogix/corps/', [
-  'FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
-  'FORM_ASSIGN', 'FORM_CLEAR', 'SET_FORM_VALUE',
+  'CHANGE_CURRENT_PAGE',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
@@ -13,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
   'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
 ]);
+appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
 const initialState = {
   loaded: false,
@@ -24,29 +26,15 @@ const initialState = {
   },
   corplist: {
     totalCount: 0,
-    pageSize: 10,
+    pageSize: 5,
     current: 1,
     data: []
   }
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case actionTypes.FORM_ASSIGN: {
-    if (action.index !== -1) {
-      return {...state, selectedIndex: action.index, formData: state.corplist.data[action.index]};
-    } else {
-      return {...state, selectedIndex: action.index};
-    }
-  }
-  case actionTypes.FORM_CLEAR:
-    return {...state, selectedIndex: -1, formData: initialState.formData};
-  case actionTypes.FORM_LOAD_SUCCEED:
-    return {...state, formData: action.result.data};
-  case actionTypes.SET_FORM_VALUE: {
-    const form = { ...state.formData };
-    form[action.data.field] = action.data.value;
-    return { ...state, formData: form };
-  }
+  case actionTypes.CHANGE_CURRENT_PAGE:
+    return {...state, corplist: {...state.corplist, current: action.current}, needUpdate: true};
   case actionTypes.SWITCH_STATUS_SUCCEED: {
     const corplist = { ...state.corplist };
     corplist.data[action.index].status = action.data.status;
@@ -73,7 +61,9 @@ export default function reducer(state = initialState, action) {
     }
   }
   case actionTypes.CORP_DELETE_SUCCEED: {
-    return { ...state, needUpdate: true };
+    const corplist = {...state.corplist};
+    corplist.totalCount--;
+    return { ...state, corplist, needUpdate: true };
   }
   case actionTypes.CORP_SUBMIT_SUCCEED: {
     const corplist = {...state.corplist};
@@ -86,17 +76,18 @@ export default function reducer(state = initialState, action) {
   }
   // todo deal with submit fail submit loading
   default:
-    return state;
+    return formReducer(actionTypes, state, action, {key: null, country: CHINA_CODE}, 'corplist')
+           || state;
   }
 }
 
-export function delCorp(corpId) {
+export function delCorp(corpId, parentTenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CORP_DELETE, actionTypes.CORP_DELETE_SUCCEED, actionTypes.CORP_DELETE_FAIL],
       endpoint: 'v1/user/corp',
       method: 'del',
-      data: {corpId}
+      data: {corpId, parentTenantId}
     }
   };
 }
@@ -136,53 +127,23 @@ export function submit(corp, tenant) {
 }
 
 export function isFormDataLoaded(corpsState, corpId) {
-  let loaded = corpsState.formData.key === corpId;
-  corpsState.corplist.data.forEach((corp) => {
-    if (corp.key === corpId) {
-      loaded = true;
-      return;
-    }
-  });
-  return loaded;
+  return isFormDataLoadedC(corpId, corpsState, 'corplist');
 }
 
 export function loadForm(cookie, corpId) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.FORM_LOAD, actionTypes.FORM_LOAD_SUCCEED, actionTypes.FORM_LOAD_FAIL],
-      endpoint: 'v1/user/corp',
-      method: 'get',
-      params: {corpId},
-      cookie
-    }
-  };
+  return loadFormC(cookie, 'v1/user/corp', {corpId}, actionTypes);
 }
 
 export function assignForm(corpsState, corpId) {
-  let index = -1;
-  corpsState.corplist.data.forEach((c, idx)=> {
-    if (c.key === corpId) {
-      index = idx;
-      return;
-    }
-  });
-  return {
-    type: actionTypes.FORM_ASSIGN,
-    index
-  };
+  return assignFormC(corpId, corpsState, 'corplist', actionTypes);
 }
 
 export function clearForm() {
-  return {
-    type: actionTypes.FORM_CLEAR
-  };
+  return clearFormC(actionTypes);
 }
 
 export function setFormValue(field, newValue) {
-  return {
-    type: actionTypes.SET_FORM_VALUE,
-    data: { field, value: newValue }
-  };
+  return setFormValueC(actionTypes, field, newValue);
 }
 
 export function checkCorpDomain(subdomain, tenantId) {
@@ -228,5 +189,12 @@ export function loadCorps(cookie, params) {
       params,
       cookie
     }
+  };
+}
+
+export function changeCurrentPage(current) {
+  return {
+    type: actionTypes.CHANGE_CURRENT_PAGE,
+    current
   };
 }

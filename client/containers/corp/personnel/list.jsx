@@ -1,81 +1,136 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnels, hideModal, showModal, beginEditPersonnel, delPersonnel,
-  editPersonnel, changeThisPersonnel, submitPersonnel } from '../../../../universal/redux/reducers/personnel';
-import { isLoaded } from '../../../../reusable/common/redux-actions';
-import {Table, Button, AntIcon} from '../../../../reusable/ant-ui';
-import PersonnelSetter from '../../../components/personnel-setter';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus} from '../../../../universal/redux/reducers/personnel';
+import {Table, Button, Select, Row, Col, message} from '../../../../reusable/ant-ui';
+import NavLink from '../../../../reusable/components/nav-link';
+import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import {ACCOUNT_STATUS, TENANT_ROLE} from '../../../../universal/constants';
 
-function fetchData({state, dispatch, cookie}) {
-  if (!isLoaded(state, 'personnel')) {
-    return dispatch(loadPersonnels(cookie));
+function fetchData({state, dispatch, location, cookie}) {
+  const promises = [];
+  if (location.action !== 'POP' || cookie) {
+    // 当从Edit页面切回来不重新加载
+    // 从其他页面切过来或者在服务端重新加载
+    let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
+    promises.push(p);
+    p = dispatch(loadPersonnel(cookie, {
+      tenantId: state.account.tenantId,
+      pageSize: state.personnel.personnelist.pageSize,
+      currentPage: state.personnel.personnelist.current
+    }));
+    promises.push(p);
   }
+  return Promise.all(promises);
 }
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    corpId: state.account.corpId,
-    parentCorpId: state.account.tenantId,
-    personnel: state.personnel.personnel,
-    thisPersonnel: state.personnel.thisPersonnel,
-    selectIndex: state.personnel.selectIndex,
+    personnelist: state.personnel.personnelist,
+    branches: state.personnel.branches,
+    tenant: state.personnel.tenant,
     loading: state.personnel.loading,
-    needUpdate: state.personnel.needUpdate,
-    modalVisible: state.personnel.visible
+    needUpdate: state.personnel.needUpdate
   }),
-  { hideModal, showModal, beginEditPersonnel, delPersonnel, editPersonnel,
-    changeThisPersonnel, submitPersonnel, loadPersonnels })
+  { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    personnel: PropTypes.object.isRequired,
-    thisPersonnel: PropTypes.object.isRequired,
-    modalVisible: PropTypes.bool.isRequired,
-    corpId: PropTypes.number.isRequired,
-    parentCorpId: PropTypes.number.isRequired,
-    location: PropTypes.object.isRequired,
-    changeThisPersonnel: PropTypes.func.isRequired,
-    loadPersonnels: PropTypes.func.isRequired,
-    submitPersonnel: PropTypes.func.isRequired,
-    beginEditPersonnel: PropTypes.func.isRequired,
-    delPersonnel: PropTypes.func.isRequired,
-    editPersonnel: PropTypes.func.isRequired,
-    hideModal: PropTypes.func.isRequired,
-    showModal: PropTypes.func.isRequired
+    personnelist: PropTypes.object.isRequired,
+    branches: PropTypes.array.isRequired,
+    tenant: PropTypes.object.isRequired,
+    loadPersonnel: PropTypes.func.isRequired,
+    switchTenant: PropTypes.func.isRequired,
+    switchStatus: PropTypes.func.isRequired,
+    delPersonnel: PropTypes.func.isRequired
   }
-  handlePersonnelReg() {
-    this.refs.personnelform.reset();
-    this.props.showModal();
+  constructor() {
+    super();
+    this.state = {
+      selectedRowKeys: []
+    };
   }
-  handlePersonnelEdit(idx) {
-    this.refs.personnelform.reset();
-    this.props.beginEditPersonnel(idx);
+  handleSelectionClear() {
+    this.setState({selectedRowKeys: []});
+  }
+  handleTenantSwitch(val) {
+    const {personnelist} = this.props;
+    this.props.loadPersonnel(null, {
+      tenantId: val,
+      pageSize: personnelist.pageSize,
+      currentPage: 1
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        let tenant;
+        this.props.branches.forEach(br => {
+          if ('' + br.key === val) {
+            tenant = {
+              id: br.key,
+              parentId: br.parentId
+            };
+            return;
+          }
+        });
+        this.props.switchTenant(tenant);
+      }
+    });
+  }
+  handleNavigationTo(to, query) {
+    this.props.history.pushState(null, to, query);
+  }
+  handleStatusSwitch(personnel, index) {
+    this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id
+      ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
   }
   handlePersonnelDel(record) {
-    this.props.delPersonnel(record.key, record.accountId);
+    this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
   }
-  handlePersonnelSubmit() {
-    const personnel = { ...this.props.thisPersonnel, corpId: this.props.corpId, parentCorpId: this.props.parentCorpId };
-    if (this.props.thisPersonnel.key) {
-      this.props.editPersonnel(personnel, this.props.selectIndex);
-    } else {
-      this.props.submitPersonnel(personnel);
+  handleSearch(searchVal) {
+    // OR this name condition
+    const filters = [[{
+      name: 'name',
+      value: searchVal
+    }, {
+      name: 'email',
+      value: searchVal
+    }, {
+      name: 'phone',
+      value: searchVal
+    }]];
+    this.props.loadPersonnel(null, {
+      tenantId: this.props.tenant.id,
+      pageSize: this.props.personnelist.pageSize,
+      currentPage: 1,
+      filters: JSON.stringify(filters)
+    });
+  }
+  renderColumnText(status, text) {
+    let style = {};
+    if (status === ACCOUNT_STATUS.blocked.id) {
+      style = {color: '#CCC'};
     }
+    return <span style={style}>{text}</span>;
   }
   render() {
-    const { personnel, thisPersonnel, loading, needUpdate } = this.props;
+    const { tenant, personnelist, branches, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadPersonnels(null, params),
+      fetcher: (params) => this.props.loadPersonnel(null, params),
       resolve: (result) => result.data,
       needUpdate,
       getPagination: (result) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
-        current: result.totalCount !== 0 &&
-          result.current > Math.ceil(result.totalCount / result.pageSize) ?
+        current: result.totalCount > 0 && (result.current - 1) * result.pageSize <= result.totalCount
+          && result.current * result.pageSize > result.totalCount ?
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
@@ -83,70 +138,142 @@ export default class PersonnelSetting extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
+          tenantId: tenant.id,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
+          filters: []
         };
         for (const key in filters) {
           if (filters[key]) {
-            params[key] = filters[key];
+            params.filters.push({
+              name: key,
+              value: filters[key][0]
+            });
           }
         }
+        params.filters = JSON.stringify(params.filters);
         return params;
       }
     });
-    // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
-      onSelect: (/* record, selected, selectedRows */) => {
-      },
-      onSelectAll: (/* selected, selectedRows */) => {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({selectedRowKeys});
       }
     };
     const columns = [{
       title: '姓名',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      sorter: true,
+      render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
-      title: '手机',
-      dataIndex: 'phone'
+      title: '用户名',
+      render: (o, record) => this.renderColumnText(record.status, record.loginName)
     }, {
-      title: '部门',
-      dataIndex: 'department'
+      title: '手机号',
+      render: (o, record) => this.renderColumnText(record.status, record.phone)
+    }, {
+      title: '邮箱',
+      dataIndex: 'email',
+      sorter: true,
+      render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '职位',
-      dataIndex: 'position'
+      render: (o, record) => this.renderColumnText(record.status, record.position)
+    }, {
+      title: '角色',
+      sorter: true,
+      dataIndex: 'role',
+      filters: [{
+        text: TENANT_ROLE.manager.text,
+        value: TENANT_ROLE.manager.name
+      }, {
+        text: TENANT_ROLE.member.text,
+        value: TENANT_ROLE.member.name
+      }],
+      render: (o, record) => this.renderColumnText(record.status, TENANT_ROLE[record.role].text)
+    }, {
+      title: '状态',
+      render: (o, record) => {
+        let style = {color: '#51C23A'};
+        let text = ACCOUNT_STATUS.normal.text;
+        if (record.status === ACCOUNT_STATUS.blocked.id) {
+          style = {color: '#CCC'};
+          text = ACCOUNT_STATUS.blocked.text;
+        }
+        return <span style={style}>{text}</span>;
+      }
     }, {
       title: '操作',
-      dataIndex: '',
       width: 150,
       render: (text, record, index) => {
-        return (<span>
-          <Button shape="circle" type="primary" title="编辑" onClick={() => this.handlePersonnelEdit(index)} size="small"><AntIcon type="edit" /></Button>
-          <span className="ant-divider"></span>
-          <Button shape="circle" type="primary" title="删除" onClick={() => this.handlePersonnelDel(record)} size="small"><AntIcon type="cross" /></Button>
-          <span className="ant-divider"></span>
-          <a href="#" className="ant-dropdown-link">
-          更多 <AntIcon type="down" />
-          </a>
-        </span>);
+        if (record.role === TENANT_ROLE.owner.name) {
+          return (
+            <span>
+              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
+            </span>);
+        } else if (record.status === ACCOUNT_STATUS.normal.id) {
+          return (
+            <span>
+              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
+            </span>);
+        } else if (record.status === ACCOUNT_STATUS.blocked.id) {
+          return (
+            <span>
+              <a role="button" onClick={() => this.handlePersonnelDel(record)}>删除</a>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
+            </span>);
+        } else {
+          return <span />;
+        }
       }
     }];
     return (
-      <div className="page-panel">
-        <div className={ (!this.props.modalVisible ? 'form-fade-enter' : 'form-fade-leave') }>
-          <div className="page-header">
-              <Button type="primary" onClick={ () => this.handlePersonnelReg() }>注册员工</Button>
+      <div className="main-content">
+        <div className="page-header">
+        <Row>
+          <Col span="6">
+            <h2>用户管理</h2>
+          </Col>
+          <Col span="18">
+          <div className="pull-right action-btns">
+            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
+            <Button type="ghost" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
+              <span>高级搜索</span>
+            </Button>
           </div>
-          <div className="page-body">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnel} dataSource={dataSource}/>
+          </Col>
+          </Row>
+        </div>
+        <div className="page-body">
+          <div className="panel-header">
+            <div className="pull-right action-btns">
+              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
+                <span>新增</span>
+              </Button>
+            </div>
+            <span style={{paddingRight: 10, color: '#09C', fontSize: 13}}>所属组织</span>
+            <Select style={{width: 200}} value={`${tenant.id}`}
+              onChange={(value) => this.handleTenantSwitch(value)}>
+            {
+              branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
+            }
+            </Select>
+          </div>
+          <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
+          <div className={'bottom-fixed-row' + (this.state.selectedRowKeys.length === 0 ? ' hide' : '')}>
+            <Row>
+              <Col span="2" offset="20">
+                <Button size="large" onClick={() => this.handleSelectionClear()}>清除选择</Button>
+              </Col>
+            </Row>
           </div>
         </div>
-        { thisPersonnel &&
-        <div className={ this.props.modalVisible ? 'form-fade-enter' : 'form-fade-leave' }>
-          <PersonnelSetter ref="personnelform" thisPersonnel={ this.props.thisPersonnel } changeThisPersonnel={ this.props.changeThisPersonnel }
-            handleModalHide={ this.props.hideModal } handlePersonnelSubmit={ ::this.handlePersonnelSubmit } />
-        </div>
-        }
       </div>
     );
   }

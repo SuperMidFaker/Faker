@@ -4,6 +4,7 @@ wms -> new edit
    set activekey based on url
 [] winston log
 [] merge with ant-design
+[] memory leak in corp personnel table create update action
 
 [] gregorian-calendar-format replace with moment.js
 [] table column resize/scrollbar http://www.guriddo.net/demo/bootstrap/

@@ -58,7 +58,7 @@ export default {
   insertCorp(corp, parentTenantId, trans) {
     const sql = `insert into sso_tenants (code, aspect, name, phone, subdomain, country, province,
       city, district, address, logo, short_name, category_id, website, remark, level, email, contact,
-      parent_tenant_id, branch_count, user_count, status, created_date) values (?, 0, 1, 'normal', NOW())`;
+      parent_tenant_id, status, created_date) values (?, 'normal', NOW())`;
     const args = packColumnArgs(corp);
     args.push(parentTenantId);
     return mysql.insert(sql, [args], trans);
@@ -68,19 +68,25 @@ export default {
     const args = [status, tenantId];
     return mysql.update(sql, args, trans);
   },
-  updateBranchCount(corpId, trans) {
-    const sql = `update sso_tenants set branch_count = branch_count + 1 where corp_id = ?`;
-    const args = [corpId];
-    return mysql.update(sql, args, trans);
-  },
-  getTenant(corpid) {
-    const sql = 'select tms, che, app from sso_tenant where corp_id = ?';
-    const args = [corpid];
+  getAttachedTenants(tenantId) {
+    const sql = `select tenant_id as \`key\`, name, parent_tenant_id as parentId from sso_tenants where status = 'normal'
+      and (tenant_id = ? or parent_tenant_id = ?)`;
+    const args = [tenantId, tenantId];
     return mysql.query(sql, args);
   },
   deleteTenant(corpId, trans) {
     const sql = 'delete from sso_tenants where tenant_id = ? or parent_tenant_id = ?';
     const args = [corpId, corpId];
     return mysql.delete(sql, args, trans);
+  },
+  updateBranchCount(corpId, amount, trans) {
+    const sql = `update sso_tenants set branch_count = branch_count + ? where tenant_id = ?`;
+    const args = [amount, corpId];
+    return mysql.update(sql, args, trans);
+  },
+  updateUserCount(tenatId, amount, trans) {
+    const sql = `update sso_tenants set user_count = user_count + ? where tenant_id = ?`;
+    const args = [amount, tenatId];
+    return mysql.update(sql, args, trans);
   }
 }

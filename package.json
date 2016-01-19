@@ -1,7 +1,7 @@
 {
-  "name": "qm-wewms",
+  "name": "welogix-web",
   "version": "0.0.1",
-  "description": "qeemo warehouse management system adapter",
+  "description": "welogix GuanYunZhang web system",
   "main": "server/sboot.js",
   "scripts": {
     "clean": "rm -rf public/dist",
@@ -22,16 +22,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.qeemo.me:kayw/qm-wewms.git"
+    "url": "git@git.qeemo.me:saas/welogix-web.git"
   },
   "keywords": [
+    "tms",
     "wms",
     "sass",
     "react",
     "router",
     "koa"
   ],
-  "author": "kayw",
+  "author": "The Welogix Team",
   "license": "MIT",
   "dependencies": {
     "async-validator": "^1.3.5",

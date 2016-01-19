@@ -13,7 +13,7 @@ import bCryptUtil from '../../reusable/node-util/BCryptUtil';
 import config from '../../reusable/node-util/server.config';
 import { isMobile, getSmsCode } from '../../reusable/common/validater';
 import smsUtil from '../../reusable/node-util/sms-util';
-import { __DEFAULT_PASSWORD__, TENANT_LEVEL, ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE } from '../../universal/constants';
+import { __DEFAULT_PASSWORD__, TENANT_LEVEL, TENANT_ROLE, ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE } from '../../universal/constants';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
@@ -25,15 +25,17 @@ export default [
    ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/user/corp', delCorp],
-   ['get', '/v1/account/personnels', getCorpPersonnels],
+   ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
+   ['get', '/v1/user/personnels', getCorpPersonnels],
    ['get', '/v1/user/personnel', getPersonnelInfo],
-   ['post', '/v1/account/personnel', submitPersonnel],
-   ['put', '/v1/account/personnel', editPersonnel],
-   ['delete', '/v1/account/personnel', delPersonnel],
+   ['post', '/v1/user/personnel', submitPersonnel],
+   ['put', '/v1/user/personnel', editPersonnel],
+   ['delete', '/v1/user/personnel', delPersonnel],
    ['put', '/v1/user/password', changePassword],
    ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
    ['get', '/v1/user/check/loginname', isLoginNameExist],
    ['put', '/v1/user/corp/status', switchCorpStatus],
+   ['put', '/v1/user/personnel/status', switchPersonnelStatus],
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
@@ -142,8 +144,8 @@ function *getUserAccount() {
 
 function *getCorps() {
   const parentTenantId = this.request.query.tenantId;
-  const pageSize = parseInt(this.request.query.pageSize || 10, 10);
-  const current = parseInt(this.request.query.currentPage || 1, 10);
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
   try {
     const counts = yield tenantDao.getCorpCountByParent(parentTenantId);
     const corps = yield tenantDao.getPagedCorpsByParent(parentTenantId, current, pageSize);
@@ -155,6 +157,8 @@ function *getCorps() {
     }
     const data = {
       totalCount: counts[0].num,
+      pageSize,
+      current,
       data: corps
     };
     // todo append the app module enabled info
@@ -204,6 +208,9 @@ function *submitCorp() {
     corp.status = ACCOUNT_STATUS.normal.name;
     yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.key, parentTenantId,
                                           this.state.user.userId, trans);
+    yield tenantDao.updateBranchCount(parentTenantId, 1, trans);
+    yield tenantDao.updateUserCount(corp.key, 1, trans);
+    yield tenantDao.updateUserCount(parentTenantId, 1, trans);
     yield mysql.commit(trans);
     Result.OK(this, corp);
   } catch (e) {
@@ -248,6 +255,9 @@ function *delCorp() {
     }
     yield tenantUserDao.deleteTenantUsers(corpId, trans);
     yield tenantDao.deleteTenant(corpId, trans);
+    yield tenantDao.updateBranchCount(body.parentTenantId, -1, trans);
+    console.log('decrease user count ', lids.length);
+    yield tenantDao.updateUserCount(body.parentTenantId, -lids.length, trans);
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
@@ -256,21 +266,51 @@ function *delCorp() {
   }
 }
 
+function *getCorpPersonnels() {
+  const tenantId = this.request.query.tenantId;
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
+  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
+  const sortField = this.request.query.sortField;
+  const sortOrder = this.request.query.sortOrder;
+  try {
+    const counts = yield tenantUserDao.getTenantPersonnelCount(tenantId, filters);
+    const totalCount = counts[0].num;
+    const personnel = yield tenantUserDao.getPagedPersonnelInCorp(tenantId, current, pageSize,
+                                                                  filters, sortField, sortOrder);
+    // 换页,切换页数时从这里传到reducer里更新
+    Result.OK(this, {
+      totalCount,
+      current,
+      pageSize,
+      data: personnel
+    });
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
 function *submitPersonnel() {
   const curUserId = this.state.user.userId;
   const body = yield cobody(this);
-  const salt = bCryptUtil.gensalt();
-  const pwdHash = bCryptUtil.hashpw(__DEFAULT_PASSWORD__, salt);
+  const tenant = body.tenant;
   const personnel = body.personnel;
+  const salt = bCryptUtil.gensalt();
+  const pwdHash = bCryptUtil.hashpw(personnel.password, salt);
   const unid = bCryptUtil.hashMd5(personnel.phone + salt + Date.now());
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    let result = yield userDao.insertAccount(personnel.phone, salt, pwdHash, PERSONNEL, unid, trans);
-    const accountId = result.insertId;
-    result = yield userDao.insertPersonnel(curUserId, accountId, personnel, trans);
+    const accountType = personnel.role === TENANT_ROLE.manager.name ? (
+      tenant.parentId === 0 ? ENTERPRISE : BRANCH) : PERSONNEL;
+    let result = yield userDao.insertAccount(personnel.loginName, personnel.email,
+                                             personnel.phone, salt, pwdHash, accountType, unid, trans);
+    const loginId = result.insertId;
+    result = yield tenantUserDao.insertPersonnel(curUserId, loginId, personnel, tenant, trans);
+    yield tenantDao.updateUserCount(tenant.id, 1, trans);
+    yield tenantDao.updateUserCount(tenant.parentId, 1, trans);
     yield mysql.commit(trans);
-    Result.OK(this, { pid: result.insertId, accountId });
+    Result.OK(this, { pid: result.insertId, loginId, status: 0 });
   } catch (e) {
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
@@ -283,8 +323,9 @@ function *editPersonnel() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield userDao.updatePhone(personnel.accountId, personnel.phone, trans);
-    yield userDao.updatePersonnel(personnel, trans);
+    yield userDao.updateLoginName(personnel.loginId, personnel.phone, personnel.loginName,
+                                  personnel.email, trans);
+    yield tenantUserDao.updatePersonnel(personnel, trans);
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
@@ -296,12 +337,14 @@ function *editPersonnel() {
 function *delPersonnel() {
   const body = yield cobody(this);
   const pid = body.pid;
-  const accountId = body.accountId;
+  const loginId = body.loginId;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield userDao.deleteAccount(accountId);
-    yield userDao.deletePersonnel(pid);
+    yield userDao.deleteAccount(loginId);
+    yield tenantUserDao.deletePersonnel(pid);
+    yield tenantDao.updateUserCount(body.tenant.id, -1, trans);
+    yield tenantDao.updateUserCount(body.tenant.parentId, -1, trans);
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
@@ -310,23 +353,15 @@ function *delPersonnel() {
   }
 }
 
-function *getCorpPersonnels() {
-  const curUserId = this.state.user.userId;
-  const pageSize = parseInt(this.request.query.pageSize || 10, 10);
-  const current = parseInt(this.request.query.currentPage || 1, 10);
+function *getTenantsUnderMain() {
+  const tenantId = this.params.tid;
   try {
-    const counts = yield userDao.getCorpPersonnelCount(curUserId);
-    const totalCount = counts[0].num;
-    const personnel = yield userDao.getPagedPersonnelInCorp(curUserId, current, pageSize);
-    Result.OK(this, {
-      totalCount,
-      data: personnel
-    });
+    const branches = yield tenantDao.getAttachedTenants(tenantId);
+    Result.OK(this, branches);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
 }
-
 function *getPersonnelInfo() {
   const curUserId = this.state.user.userId;
   try {
@@ -390,6 +425,16 @@ function *switchCorpStatus() {
   const body = yield cobody(this);
   try {
     yield tenantDao.updateStatus(body.tenantId, body.status);
+    Result.OK(this);
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function *switchPersonnelStatus() {
+  const body = yield cobody(this);
+  try {
+    yield tenantUserDao.updateStatus(body.pid, body.status);
     Result.OK(this);
   } catch (e) {
     Result.InternalServerError(this, e.message);

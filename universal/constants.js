@@ -1,12 +1,28 @@
 const __DEFAULT_PASSWORD__ = '123456';
 const ACCOUNT_STATUS = {
   normal: {
+    id: 0,
     name: 'normal',
     text: '正常'
   },
   blocked: {
+    id: 1,
     name: 'blocked',
     text: '停用'
+  }
+};
+const TENANT_ROLE = {
+  owner: {
+    name: 'owner',
+    text: '拥有者'
+  },
+  manager: {
+    name: 'manager',
+    text: '管理员'
+  },
+  member: {
+    name: 'member',
+    text: '成员'
   }
 };
 const ADMIN = 'admin';
@@ -43,6 +59,7 @@ const MAX_STANDARD_TENANT = 10;
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
+  TENANT_ROLE,
   TENANT_LEVEL,
   MAX_STANDARD_TENANT,
   CHINA_CODE,

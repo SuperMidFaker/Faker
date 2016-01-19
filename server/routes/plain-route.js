@@ -8,6 +8,7 @@ export default [
    ['get', '/forgot', plainRender],
    ['get', '/corp/*', plainRender],
    ['get', '/wms*', plainRender],
+   ['get', '/import*', plainRender],
    ['get', '/account/logout', logoutUser]
 ];
 
