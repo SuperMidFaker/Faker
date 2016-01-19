@@ -15,21 +15,17 @@ export default class AmNavBar extends React.Component {
       <nav className="navbar navbar-default navbar-fixed-top am-top-header">
         <div className="container-fluid">
           <div className="navbar-header">
-            {/* mobile header
-              <div className="page-title">
-                <span>仓管家</span>
-              </div>
-              <a className="am-toggle-left-sidebar navbar-toggle collapsed">
-                <span className="icon-bar"><span></span><span></span><span></span></span>
-              </a>
-            */}
+            <div className="page-title">
+              <span>微骆</span>
+            </div>
+            <a className="am-toggle-left-sidebar navbar-toggle collapsed">
+              <span className="icon-bar"><span></span><span></span><span></span></span>
+            </a>
             <NavLink to="/" className="navbar-brand" />
           </div>
-          {/* mobile collapse
           <a data-toggle="collapse" data-target="#am-navbar-collapse" className="am-toggle-top-header-menu collapsed">
             <span className="icon s7-angle-down"></span>
           </a>
-          */}
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-nav-right">
               <li className="dropdown">

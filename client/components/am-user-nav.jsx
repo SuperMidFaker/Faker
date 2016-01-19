@@ -23,7 +23,7 @@ export default class AmUserNav extends React.Component {
         <MenuItem key="corps">
           <NavLink to="/corp/info">
             <span className="icon s7-config"></span>
-            <span>企业设置</span>
+            <span>个人设置</span>
           </NavLink>
         </MenuItem>);
     }
@@ -36,6 +36,7 @@ export default class AmUserNav extends React.Component {
             <span>修改密码</span>
           </NavLink>
         </MenuItem>
+        <Menu.Divider/>
         <MenuItem>
           <a href="/account/logout">
             <span className="icon s7-power"></span>
