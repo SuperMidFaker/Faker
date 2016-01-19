@@ -3,7 +3,8 @@ import {Modal, Switch} from '../../reusable/ant-ui';
 
 export default class ModuleEditor extends React.Component {
   static propTypes = {
-    appPackage: PropTypes.arrary.isRequired,
+    visible: PropTypes.bool.isRequired,
+    appPackage: PropTypes.array.isRequired,
     enabledModules: PropTypes.object
   }
   render() {
@@ -16,14 +17,14 @@ export default class ModuleEditor extends React.Component {
         </div>
         <form className="mod-editor-form">
         {
-          this.props.appPackage.map((ap, idx) => {
-            <div className="form-group clearfix" key=`modeditor${idx}`>
+          this.props.appPackage.map((ap, idx) => (
+            <div className="form-group clearfix" key={`modeditor${idx}`}>
               <label>{ap.name}</label>
               <label>{ap.desc}</label>
-              <Switch checked={this.props.enabledModules[ap.name].enabled}
+              <Switch checked={true/* this.props.enabledModules[ap.name].enabled */}
                 onChange={this.handleAppEnableChange} />
             </div>
-          })
+          ))
         }
         </form>
       </Modal>);

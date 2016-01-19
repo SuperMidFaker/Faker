@@ -4,11 +4,13 @@ import { submit, setValue } from '../../../universal/redux/reducers/auth';
 import NavLink from '../../../reusable/components/nav-link';
 
 @connect(state => ({
+  code: state.corpDomain.code,
   auth: state.auth
 }), { submit, setValue })
 export default class Login extends React.Component {
   static propTypes = {
     auth: PropTypes.object,
+    code: PropTypes.string.isRequired,
     setValue: PropTypes.func,
     submit: PropTypes.func
   }
@@ -21,13 +23,12 @@ export default class Login extends React.Component {
   }
   handleSubmit(ev) {
     ev.preventDefault();
-    /*
-    if (this.props.auth.error && this.props.auth.error.message) {
+    if (this.props.auth.nonTenant) {
       return;
     }
-   */
-    const { auth: { username, password, remember } } = this.props;
+    const { code, auth: { username, password, remember } } = this.props;
     const form = {
+      code,
       username,
       password,
       remember

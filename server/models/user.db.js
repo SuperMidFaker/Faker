@@ -1,9 +1,9 @@
 import mysql from '../../reusable/db-util/mysql';
 export default {
-  getUserByAccount(account) {
+  getUserByAccount(account, code) {
     const sql = `SELECT id, username, phone, email, user_type, password, unid FROM sso_login WHERE phone = ?
       OR username = ? OR email = ? AND disabled = 0 LIMIT 1`;
-    const args = [account, account, account];
+    const args = [account, account + '@' + code, account];
     return mysql.query(sql, args);
   },
   getUserByPhone(phone) {

@@ -49,7 +49,7 @@ function *loginUserP() {
     return Result.ParamError(this, '用户名或密码有误');
   }
   try {
-    const users = yield userDao.getUserByAccount(username);
+    const users = yield userDao.getUserByAccount(username, body.code);
     if (users.length > 0) {
       const user = users[0];
       // todo add the subdomain corp-code condition

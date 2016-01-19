@@ -4,6 +4,7 @@ import {loadCorps, delCorp, changeCurrentPage, switchStatus} from '../../../../u
 import {Table, Button, AntIcon, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
+import AppEditor from '../../../components/appmodule-editor';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES} from '../../../../universal/constants';
@@ -42,7 +43,8 @@ export default class CorpList extends React.Component {
   constructor() {
     super();
     this.state = {
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      visible: false
     };
   }
   handleSelectionClear() {
@@ -68,6 +70,7 @@ export default class CorpList extends React.Component {
       });
   }
   handleEnabledAppEdit(/* tenant */) {
+    this.setState({visible: true});
   }
   renderColumnText(status, text) {
     let style = {};
@@ -202,6 +205,7 @@ export default class CorpList extends React.Component {
             </Col>
           </Row>
         </div>
+        <AppEditor visible={this.state.visible} appPackage={[ DEFAULT_MODULES.import, DEFAULT_MODULES.export]} />
       </div>);
   }
 }

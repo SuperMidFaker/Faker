@@ -22,6 +22,7 @@ const initialState = {
   loggingIn: false,
   isAuthed: false,
   verified: false,
+  nonTenant: false,
   smsId: null
 };
 
@@ -64,6 +65,7 @@ export default function reducer(state = initialState, action = {}) {
   case CPD_LOAD_FAIL:
     return {
       ...state,
+      nonTenant: true,
       error: {message: action.error.msg || 'tenant subdomain do not exist'}
     };
   case PWD_CHANGE_SUCCEED:
