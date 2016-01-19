@@ -23,9 +23,6 @@ export default class AmNavBar extends React.Component {
             </a>
             <NavLink to="/" className="navbar-brand" />
           </div>
-          <a data-toggle="collapse" data-target="#am-navbar-collapse" className="am-toggle-top-header-menu collapsed">
-            <span className="icon s7-angle-down"></span>
-          </a>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-nav-right">
               <li className="dropdown">

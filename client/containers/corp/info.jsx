@@ -105,7 +105,7 @@ export default class CorpInfo extends React.Component {
             {this.renderTextInput('详细地址', '', 'address')}
           </Col>
           <Col span="8">
-            <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 12}} required>
+            <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
               <Col span="18">
                 <Input type="text" disabled {...getFieldProps('code')} />
               </Col>
@@ -113,15 +113,15 @@ export default class CorpInfo extends React.Component {
                 <a role="button"><span>申请修改</span></a>
               </Col>
             </FormItem>
-            <FormItem label="行业类型" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+            <FormItem label="行业类型" labelCol={{span: 6}} wrapperCol={{span: 16}}>
               <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('type')}>
                 <Option value="freight">货代</Option>
               </Select>
             </FormItem>
-            <FormItem label="公司介绍" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+            <FormItem label="公司介绍" labelCol={{span: 6}} wrapperCol={{span: 16}}>
               <Input type="textarea" rows="3" {...getFieldProps('remark')} />
             </FormItem>
-            <FormItem label="公司网址" labelCol={{span: 6}} wrapperCol={{span: 12}}>
+            <FormItem label="公司网址" labelCol={{span: 6}} wrapperCol={{span: 16}}>
               <Input type="text" addonBefore="http://" {...getFieldProps('website')} />
             </FormItem>
           </Col>

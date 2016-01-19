@@ -2,40 +2,44 @@
   &container {
     padding: 10px;
     text-align: center;
-    width: 100px;
     border-radius: 10px;
     &.large {
       padding: 20px;
-      margin-bottom: 20px;
-      width: 220px;
       .module-text {
         font-size: 20px;
         color: white;
         margin-top: 16px;
+        @media (max-width:767px) {
+          font-size: 16px;
+        }
       }
       .module-icon-bg {
         width: 110px;
         height: 110px;
         border-radius: 30px;
         -webkit-box-shadow: 0 0 50px rgba(132,132,132,0.5);
+        @media (max-width:767px) {
+          width: 60px;
+          height: 60px;
+          border-radius: 16px;
+        }
       }
       > img {
         width: 120px;
         height: 120px;
       }
-      .module-icon >img {
-        width: 70px;
-        height: 70px;
-        left: 75px;
-        top: 40px;
-      }
-    }
-    > img {
-      position: relative;
-      top: 0;
-      left: 0;
-      width: 75px;
-      height: 75px;
+      .module-icon {
+        width: 100%;
+        height: 100%;
+        >img {
+          width: 100%;
+          height: 100%;
+          padding: 20px;
+          @media (max-width:767px) {
+            padding: 10px;
+          }
+        }
+      } 
     }
     &:hover {
       background: rgba(0,0,0,0.1);
@@ -73,13 +77,6 @@
       background-image: -o-linear-gradient(top, #ff9e41, #ea7300);
       background-image: linear-gradient(to bottom, #ff9e41, #ea7300);
     }
-  }
-  &icon >img {
-    width: 44px;
-    height: 44px;
-    position: absolute;
-    left: 28px;
-    top: 22px;
   }
   &text {
     font-weight: 400;
