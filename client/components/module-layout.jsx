@@ -16,8 +16,8 @@ export default class ModuleLayout extends React.Component {
       DEFAULT_MODULES.export,
       DEFAULT_MODULES.tms,
       DEFAULT_MODULES.wms,
-      DEFAULT_MODULES.payment,
-      DEFAULT_MODULES.receipt,
+      DEFAULT_MODULES.payable,
+      DEFAULT_MODULES.receivable,
       DEFAULT_MODULES.cost,
       DEFAULT_MODULES.kpi
     ]

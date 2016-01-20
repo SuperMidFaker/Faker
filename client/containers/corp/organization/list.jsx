@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {loadCorps, delCorp, changeCurrentPage, switchStatus} from '../../../../universal/redux/reducers/corps';
+import {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApps} from '../../../../universal/redux/reducers/corps';
 import {Table, Button, AntIcon, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
@@ -26,7 +26,7 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  {loadCorps, delCorp, changeCurrentPage, switchStatus}
+  {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApps}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
@@ -37,6 +37,7 @@ export default class CorpList extends React.Component {
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     switchStatus: PropTypes.func.isRequired,
+    switchTenantApps: PropTypes.func.isRequired,
     delCorp: PropTypes.func.isRequired,
     loadCorps: PropTypes.func.isRequired
   }
@@ -44,6 +45,7 @@ export default class CorpList extends React.Component {
     super();
     this.state = {
       selectedRowKeys: [],
+      editTenantId: -1,
       visible: false
     };
   }
@@ -69,8 +71,8 @@ export default class CorpList extends React.Component {
         }
       });
   }
-  handleEnabledAppEdit(/* tenant */) {
-    this.setState({visible: true});
+  handleEnabledAppEdit(key) {
+    this.setState({visible: true, editTenantId: key});
   }
   renderColumnText(status, text) {
     let style = {};
@@ -147,7 +149,7 @@ export default class CorpList extends React.Component {
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record)} size="small"><AntIcon type="edit" /></Button>
+            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record.key)} size="small"><AntIcon type="edit" /></Button>
           </span>);
       }
     }, {
@@ -205,7 +207,8 @@ export default class CorpList extends React.Component {
             </Col>
           </Row>
         </div>
-        <AppEditor visible={this.state.visible} appPackage={[ DEFAULT_MODULES.import, DEFAULT_MODULES.export]} />
+        <AppEditor tenantId={this.state.editTenantId} visible={this.state.visible} switchTenantApps=
+          {this.props.switchTenantApps} appPackage={[ {id: 1, name: '进口', desc: '进口'}, {id: 1, name: '出口', desc: '出口'}]} />
       </div>);
   }
 }

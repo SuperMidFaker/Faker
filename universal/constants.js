@@ -38,12 +38,12 @@ const SMS_TYPE = {
   CHANGE_PAID_PASSWORD: 6
 };
 const DEFAULT_MODULES = {
-  'import': { cls: 'import', url: '/import', text: '进口' },
-  'export': { cls: 'export', url: '/export', text: '出口' },
-  'tms':    { cls: 'tms', url: '/tms', text: '运输' },
-  'wms':    { cls: 'wms', url: '/wms', text: '仓储' },
-  'payment':{ cls: 'payment', url: '/payment', text: '付汇' },
-  'receipt':{ cls: 'receipt', url: '/receipt', text: '收汇' },
+  'import': { cls: 'import', url: '/import', text: '进口', desc: '进口报关' },
+  'export': { cls: 'export', url: '/export', text: '出口', desc: '出口报关' },
+  'tms':    { cls: 'tms', url: '/tms', text: '运输', desc: '运输管理' },
+  'wms':    { cls: 'wms', url: '/wms', text: '仓储', desc: '仓储管理' },
+  'payable':{ cls: 'payable', url: '/payable', text: '付汇' },
+  'receivable':{ cls: 'receivable', url: '/receivable', text: '收汇' },
   'cost':   { cls: 'cost', url: '/cost', text: '成本分析' },
   'kpi':    { cls: 'kpi', url: '/kpi', text: 'KPI绩效' }
 };
