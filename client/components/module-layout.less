@@ -5,12 +5,15 @@
     border-radius: 10px;
     &.large {
       padding: 20px;
+      @media (max-width:767px) {
+        padding: 10px;
+      }
       .module-text {
         font-size: 20px;
         color: white;
         margin-top: 16px;
         @media (max-width:767px) {
-          font-size: 16px;
+          font-size: 14px;
         }
       }
       .module-icon-bg {
@@ -24,9 +27,16 @@
           border-radius: 16px;
         }
       }
-      > img {
-        width: 120px;
-        height: 120px;
+      .module-icon {
+        >i {
+          color: #fff;
+          font-size: 66px;
+          line-height: 110px;
+          @media (max-width:767px) {
+            font-size: 36px;
+            line-height: 60px;
+          }
+        }
       }
     }
     &:hover {
@@ -65,17 +75,39 @@
       background-image: -o-linear-gradient(top, #ff9e41, #ea7300);
       background-image: linear-gradient(to bottom, #ff9e41, #ea7300);
     }
+    &.payable {
+      background-image: -webkit-linear-gradient(top, #1ae0ee, #00b2bf);
+      background-image: -moz-linear-gradient(top, #1ae0ee, #00b2bf);
+      background-image: -o-linear-gradient(top, #1ae0ee, #00b2bf);
+      background-image: linear-gradient(to bottom, #1ae0ee, #00b2bf);
+    }
+    &.receivable {
+      background-image: -webkit-linear-gradient(top, #1ebf5e, #00903a);
+      background-image: -moz-linear-gradient(top, #1ebf5e, #00903a);
+      background-image: -o-linear-gradient(top, #1ebf5e, #00903a);
+      background-image: linear-gradient(to bottom, #1ebf5e, #00903a);
+    }
+    &.cost {
+      background-image: -webkit-linear-gradient(top, #5bccff, #0096da);
+      background-image: -moz-linear-gradient(top, #5bccff, #0096da);
+      background-image: -o-linear-gradient(top, #5bccff, #0096da);
+      background-image: linear-gradient(to bottom, #5bccff, #0096da);
+    }
+    &.kpi {
+      background-image: -webkit-linear-gradient(top, #ff9e41, #ea7300);
+      background-image: -moz-linear-gradient(top, #ff9e41, #ea7300);
+      background-image: -o-linear-gradient(top, #ff9e41, #ea7300);
+      background-image: linear-gradient(to bottom, #ff9e41, #ea7300);
+    }
   }
   &icon {
     width: 100%;
     height: 100%;
-    >img {
-      width: 100%;
-      height: 100%;
-      padding: 20px;
-      @media (max-width:767px) {
-        padding: 10px;
-      }
+    >i {
+      color: #fff;
+      font-size: 44px;
+      line-height: 70px;
+      
     }
   } 
   &text {
@@ -85,4 +117,28 @@
     line-height: normal;
     display: block;
   }
+}
+.zmdi-import:before {
+  content: '\f3d8';
+}
+.zmdi-export:before {
+  content: '\f3d9';
+}
+.zmdi-tms:before {
+  content: '\f1e6';
+}
+.zmdi-wms:before {
+  content: '\f1d2';
+}
+.zmdi-payable:before {
+  content: '\f270';
+}
+.zmdi-receivable:before {
+  content: '\f275';
+}
+.zmdi-cost:before {
+  content: '\f19a';
+}
+.zmdi-kpi:before {
+  content: '\f131';
 }

@@ -19,6 +19,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <title>关云掌</title>
   <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico${tv}"/>
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/stroke-7/style.css" />
+  <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/md-iconic-font/css/material-design-iconic-font.min.css">
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/jquery.nanoscroller/css/nanoscroller.css" />
   ${pageCss}
 </head>

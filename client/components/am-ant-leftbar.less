@@ -61,10 +61,12 @@
       display:block;
       margin-top:5px;
       @media (max-width:767px) {
-        display:inline-block
-      }
-      @media (max-height:600px) {
         margin-top: 2px;
+        display: none;
+      }
+      (max-height:600px) {
+        margin-top: 2px;
+        display: none;
       }
     }
   }
@@ -184,5 +186,8 @@
     bottom: 0;
     width: @am-leftbar-width;
     border-top: 1px solid #474646;
+    @media (max-width:767px) {
+      width: 60px;
+    }
   }
 }
