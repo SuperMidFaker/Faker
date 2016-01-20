@@ -22,7 +22,7 @@ export default class AmUserNav extends React.Component {
       settingMenus.push(
         <MenuItem key="corps">
           <NavLink to="/corp/info">
-            <span className="icon s7-config"></span>
+            <i className="icon s7-user"></i>
             <span>个人设置</span>
           </NavLink>
         </MenuItem>);
@@ -32,14 +32,14 @@ export default class AmUserNav extends React.Component {
         { settingMenus }
         <MenuItem>
           <NavLink to="/account/password">
-            <span className="icon s7-user"></span>
+            <i className="icon s7-lock"></i>
             <span>修改密码</span>
           </NavLink>
         </MenuItem>
         <Menu.Divider/>
         <MenuItem>
           <a href="/account/logout">
-            <span className="icon s7-power"></span>
+            <i className="icon s7-power"></i>
             <span>退出登录</span>
           </a>
         </MenuItem>

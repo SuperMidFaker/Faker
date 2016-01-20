@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {Button} from '../../reusable/ant-ui';
+import {Button, AntIcon} from '../../reusable/ant-ui';
 import AmNavBar from '../components/am-navbar';
 import NavLink from '../../reusable/components/nav-link';
 import ModuleLayout from '../components/module-layout';
@@ -30,7 +30,7 @@ export default class Home extends React.Component {
               <h2 className="tenant-name">{name}</h2>
             </div>
             <div className="setting-btn-wrap">
-              <NavLink to="/corp/info"><Button type="primary" shape="circle-outline" size="large">设置</Button></NavLink>
+              <NavLink to="/corp/info"><Button type="primary" shape="circle-outline" size="large"><AntIcon type="setting" /></Button></NavLink>
             </div>
             <div className="tenant-nav">
             </div>

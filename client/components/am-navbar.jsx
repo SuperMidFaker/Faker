@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Popover } from '../../reusable/ant-ui';
+import { Popover, AntIcon } from '../../reusable/ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
@@ -24,11 +24,12 @@ export default class AmNavBar extends React.Component {
             <NavLink to="/" className="navbar-brand" />
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
-            <ul className="nav navbar-nav am-nav-right">
+            <ul className="nav navbar-nav am-title-nav">
               <li className="dropdown">
               { moduleName &&
                 <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
                   <a role="button" aria-expanded="false" className="dropdown-toggle">
+                    <AntIcon type="setting" />
                     {DEFAULT_MODULES[moduleName].text}
                     <span className="angle-down s7-angle-down"></span>
                   </a>
@@ -37,6 +38,7 @@ export default class AmNavBar extends React.Component {
               </li>
               <li className="dropdown">
                 <a role="button" aria-expanded="false" className="dropdown-toggle">
+                  <AntIcon type="setting" />
                   <span>{this.props.barTitle}</span>
                 </a>
               </li>
@@ -53,6 +55,11 @@ export default class AmNavBar extends React.Component {
               <li className="dropdown">
                 <a className="dropdown-toggle" role="button" aria-expanded="false">
                   <span className="icon s7-bell"></span>
+                </a>
+              </li>
+              <li className="dropdown">
+                <a className="dropdown-toggle" role="button" aria-expanded="false">
+                  <span className="icon s7-help1"></span>
                 </a>
               </li>
             </ul>

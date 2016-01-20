@@ -282,8 +282,21 @@ img {
         padding-left:15px
       }
     }
+    .am-title-nav {
+      margin-left: -20px;
+      >li.dropdown {
+        >a {
+          padding: 0;
+          >i {
+            width: 50px;
+          }
+        }
+      }
+      @media (max-width:767px) {
+        margin-left: 60px;
+      }
+    }
     .am-user-nav {
-      margin-right:0;
       >li.dropdown {
         >a {
           padding-left:16px;
@@ -369,17 +382,17 @@ img {
   }
 }
 .am-nosidebar-left .am-top-header .navbar-header .navbar-brand {
-  background-color:transparent;
-  border-bottom-width:0;
-  margin-left:0;
-  margin-right:10px;
-  width:180px;
-  background-image:url("../public/assets/img/welogix_logo_160_100_white.png");
+  background-color: transparent;
+  border-bottom-width: 0;
+  margin-left: 0;
+  margin-right: 10px;
+  width: 80px;
+  background-image: url("../public/assets/img/welogix_logo_160_100_white.png");
   background-size: auto 50px;
   @media (min-width:768px) and (max-width:991px) {
     margin-right:0;
     padding-left:0;
-    width:160px;
+    width:80px;
   }
 }
 .am-nosidebar-left .am-left-sidebar {
@@ -565,7 +578,7 @@ img {
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   padding: 20px;
   min-height: 500px;
-  margin-bottom: 80px;
+  margin-bottom: 86px;
 }
 
 .bottom-fixed-row {
@@ -580,6 +593,7 @@ img {
   transition: all ease 0.4s;
   padding: 20px 0px 18px;
   margin-left: -35px;
+  z-index: 1000;
 }
 .horizontal-divider {
   border-top: 1px solid #f0f0f0;
