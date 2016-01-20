@@ -196,13 +196,15 @@ img {
       left:0;
       top:0;
       margin:0;
-      font-size:0;
+      font-size: 24px;
+      color: #fff;
       text-align:center;
       display:none;
-      padding:0 18px;
+      padding:0 16px;
       border-width:0;
       line-height:50px;
       @media (max-width:767px) {
+        width: 60px;
         display:block;
       }
       .icon-bar {
@@ -223,7 +225,7 @@ img {
         }
       }
       &:focus, &:hover {
-        background-color:transparent;
+        background-color: transparent;
       }
     }
   }
@@ -288,7 +290,9 @@ img {
         >a {
           padding: 0;
           >i {
+            font-size: 24px;
             width: 50px;
+            text-align: center;
           }
         }
       }
@@ -530,7 +534,7 @@ img {
   height: 100%;
   transition:all .35s ease;
   @media (max-width:767px) {
-    margin-left:0
+    margin-left: 60px;
   }
 }
 .am-nosidebar-left .am-content {
@@ -574,6 +578,12 @@ img {
 .page-header {
   margin: 0 0 10px;
   vertical-align: middle;
+  height: 30px;
+  >h2 {
+    font-size: 16px;
+    line-height: 30px;
+    float: left;
+  }
 }
 
 .page-body {
@@ -597,16 +607,13 @@ img {
   padding: 20px 0px 18px;
   margin-left: -35px;
   z-index: 1000;
+  @media (max-width:767px) {
+    margin-left: -15px;
+  }
 }
 .horizontal-divider {
   border-top: 1px solid #f0f0f0;
   padding-top: 20px;
-}
-
-.col-2 {
-  button {
-    width: 80%;
-  }
 }
 
 .panel-header {
@@ -646,4 +653,28 @@ img {
 .form-fade-leave {
   display: none;
   animation: form-fade-leave both ease-out;
+}
+
+@media (max-width:767px) {
+    .hidden-xs {
+        display: none!important
+    }
+}
+
+@media (min-width:768px) and (max-width:991px) {
+    .hidden-sm {
+        display: none!important
+    }
+}
+
+@media (min-width:992px) and (max-width:1199px) {
+    .hidden-md {
+        display: none!important
+    }
+}
+
+@media (min-width:1200px) {
+    .hidden-lg {
+        display: none!important
+    }
 }

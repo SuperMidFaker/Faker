@@ -18,18 +18,18 @@ export default class AmNavBar extends React.Component {
             <div className="page-title">
               <span>微骆</span>
             </div>
-            <a className="am-toggle-left-sidebar navbar-toggle collapsed">
-              <span className="icon-bar"><span></span><span></span><span></span></span>
-            </a>
+            <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
+              <i className="zmdi zmdi-home"></i>
+            </NavLink>
             <NavLink to="/" className="navbar-brand" />
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
               <li className="dropdown">
               { moduleName &&
-                <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
+                <Popover placement="bottomRight" trigger="click" overlay={<ModuleLayout />}>
                   <a role="button" aria-expanded="false" className="dropdown-toggle">
-                    <AntIcon type="setting" />
+                    <i className={'hidden-xs zmdi zmdi-' + moduleName}></i>
                     {DEFAULT_MODULES[moduleName].text}
                     <span className="angle-down s7-angle-down"></span>
                   </a>
@@ -38,7 +38,6 @@ export default class AmNavBar extends React.Component {
               </li>
               <li className="dropdown">
                 <a role="button" aria-expanded="false" className="dropdown-toggle">
-                  <AntIcon type="setting" />
                   <span>{this.props.barTitle}</span>
                 </a>
               </li>
@@ -47,17 +46,17 @@ export default class AmNavBar extends React.Component {
               <AmUserNav />
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
-              <li className="dropdown">
+              <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" aria-expanded="false" role="button">
                   <span className="icon s7-comment"></span>
                 </a>
               </li>
-              <li className="dropdown">
+              <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" role="button" aria-expanded="false">
                   <span className="icon s7-bell"></span>
                 </a>
               </li>
-              <li className="dropdown">
+              <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" role="button" aria-expanded="false">
                   <span className="icon s7-help1"></span>
                 </a>

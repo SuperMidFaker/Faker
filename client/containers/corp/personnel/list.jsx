@@ -236,19 +236,13 @@ export default class PersonnelSetting extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-        <Row>
-          <Col span="6">
-            <h2>用户管理</h2>
-          </Col>
-          <Col span="18">
+          <h2>用户管理</h2>
           <div className="pull-right action-btns">
             <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
             <Button type="ghost" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
               <span>高级搜索</span>
             </Button>
           </div>
-          </Col>
-          </Row>
         </div>
         <div className="page-body">
           <div className="panel-header">
