@@ -23,11 +23,9 @@ export default class Login extends React.Component {
   }
   handleSubmit(ev) {
     ev.preventDefault();
-    /*
     if (this.props.auth.nonTenant) {
       return;
     }
-   */
     const { code, auth: { username, password, remember } } = this.props;
     const form = {
       code,

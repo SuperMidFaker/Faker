@@ -27,7 +27,7 @@ export default (store, cookie) => {
     function checkAuth() {
       const {account: {username}} = store.getState();
       if (username === '') {
-        replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}`);
+        replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname) + '&' + nextState.location.search.substring(1)}`);
       }
       cb();
     }
