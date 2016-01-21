@@ -35,7 +35,7 @@ export default class Root extends React.Component {
       const redirectUrl = this.props.location.query.next || '/';
       this.props.history.replaceState(null, redirectUrl);
     } else if (this.props.isAuthed && !nextProps.isAuthed) {
-      this.props.history.replaceState(null, '/login' + this.props.location.search);
+      this.props.history.replaceState(null, '/login' + (__DEV__ ? this.props.location.search : ''));
     }
   }
 
