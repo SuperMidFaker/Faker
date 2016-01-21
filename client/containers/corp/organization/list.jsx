@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApps} from '../../../../universal/redux/reducers/corps';
+import {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApp} from '../../../../universal/redux/reducers/corps';
 import {Table, Button, AntIcon, Row, Col, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
@@ -26,7 +26,7 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApps}
+  {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApp}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
@@ -37,7 +37,7 @@ export default class CorpList extends React.Component {
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    switchTenantApps: PropTypes.func.isRequired,
+    switchTenantApp: PropTypes.func.isRequired,
     delCorp: PropTypes.func.isRequired,
     loadCorps: PropTypes.func.isRequired
   }
@@ -45,7 +45,9 @@ export default class CorpList extends React.Component {
     super();
     this.state = {
       selectedRowKeys: [],
+      editTenantApps: [],
       editTenantId: -1,
+      editIndex: -1,
       visible: false
     };
   }
@@ -71,8 +73,9 @@ export default class CorpList extends React.Component {
         }
       });
   }
-  handleEnabledAppEdit(key) {
-    this.setState({visible: true, editTenantId: key});
+  handleEnabledAppEdit(record, index) {
+    this.setState({visible: true, editTenantId: record.key,
+      editTenantApps: record.apps, editIndex: index});
   }
   renderColumnText(status, text) {
     let style = {};
@@ -140,16 +143,16 @@ export default class CorpList extends React.Component {
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '已开通应用',
-      render: (o, record) => {
+      render: (o, record, index) => {
         const modComp = [];
         (record.apps || []).forEach((mod, idx) => {
-          modComp.push(<NavLink key={`${DEFAULT_MODULES[mod].url}`} to={DEFAULT_MODULES[mod].url}>{DEFAULT_MODULES[mod].text}</NavLink>);
+          modComp.push(<NavLink key={`${DEFAULT_MODULES[mod.id].url}`} to={DEFAULT_MODULES[mod.id].url}>{mod.name}</NavLink>);
           modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
         });
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record.key)} size="small"><AntIcon type="edit" /></Button>
+            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record, index)} size="small"><AntIcon type="edit" /></Button>
           </span>);
       }
     }, {
@@ -207,8 +210,9 @@ export default class CorpList extends React.Component {
             </Col>
           </Row>
         </div>
-        <AppEditor tenantId={this.state.editTenantId} visible={this.state.visible} switchTenantApps=
-          {this.props.switchTenantApps} appPackage={[ {id: 1, name: '进口', desc: '进口'}, {id: 1, name: '出口', desc: '出口'}]} />
+        <AppEditor tenantId={this.state.editTenantId} visible={this.state.visible} index={this.state.editIndex}
+          switchTenantApp={this.props.switchTenantApp} tenantApps={this.state.editTenantApps}
+          appPackage={this.props.corplist.tenantAppPackage} />
       </div>);
   }
 }

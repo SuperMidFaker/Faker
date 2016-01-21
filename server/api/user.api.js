@@ -26,6 +26,7 @@ export default [
    ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/user/corp', delCorp],
+   ['post', '/v1/user/corp/app', switchTenantApp],
    ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
    ['get', '/v1/user/personnels', getCorpPersonnels],
    ['get', '/v1/user/personnel', getPersonnelInfo],
@@ -150,19 +151,17 @@ function *getCorps() {
   try {
     const counts = yield tenantDao.getCorpCountByParent(parentTenantId);
     const corps = yield tenantDao.getPagedCorpsByParent(parentTenantId, current, pageSize);
-    corps.forEach((c) => {
-      c.apps = [];
-    });
-    if (corps.length > 0) {
-      corps[0].apps = ['import', 'wms'];
+    const tenantAppPackage = yield tenantDao.getAppsInfoById(parentTenantId);
+    for (let idx = 0; idx < corps.length; ++idx) {
+      corps[idx].apps = yield tenantDao.getAppsInfoById(corps[idx].key);
     }
     const data = {
+      tenantAppPackage,
       totalCount: counts[0].num,
       pageSize,
       current,
       data: corps
     };
-    // todo append the app module enabled info
     Result.OK(this, data);
   } catch (e) {
     Result.InternalServerError(this, e.message);
@@ -450,6 +449,16 @@ function *getCorpBySubdomain() {
      throw new Error('当前子域未对应任何租户');
    }
    Result.OK(this, result[0]);
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function *switchTenantApp() {
+  const body = yield cobody(this);
+  try {
+    yield tenantDao.changeOverTenantApp(body.tenantId, body.checked, body.app);
+    Result.OK(this);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }

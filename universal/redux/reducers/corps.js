@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CHANGE_CURRENT_PAGE',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
+  'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
@@ -25,6 +26,7 @@ const initialState = {
     country: CHINA_CODE
   },
   corplist: {
+    tenantAppPackage: [],
     totalCount: 0,
     pageSize: 5,
     current: 1,
@@ -44,6 +46,22 @@ export default function reducer(state = initialState, action) {
     const form = { ...state.formData };
     form[action.field] = action.result.data;
     return { ...state, formData: form };
+  }
+  case actionTypes.SWITCH_APP_SUCCEED: {
+    const corplist = {...state.corplist};
+    if (action.data.checked) {
+      corplist.data[action.index].apps.push(action.data.app);
+    } else {
+      let appIndex = -1;
+      corplist.data[action.index].apps.forEach((app, index) => {
+        if (app.id === action.data.app.id) {
+          appIndex = index;
+          return;
+        }
+      });
+      corplist.data[action.index].apps.splice(appIndex, 1);
+    }
+    return {...state, corplist};
   }
   case actionTypes.CORPS_LOAD:
     return { ...state, loading: true, needUpdate: false };
@@ -188,6 +206,18 @@ export function loadCorps(cookie, params) {
       method: 'get',
       params,
       cookie
+    }
+  };
+}
+
+export function switchTenantApp(tenantId, checked, app, index) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SWITCH_APP, actionTypes.SWITCH_APP_SUCCEED, actionTypes.SWITCH_APP_FAIL],
+      endpoint: 'v1/user/corp/app',
+      method: 'post',
+      index,
+      data: {tenantId, checked, app}
     }
   };
 }

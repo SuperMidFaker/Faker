@@ -3,7 +3,7 @@ export default {
   getUserByAccount(account, code) {
     const sql = `SELECT id, username, phone, email, user_type, password, unid FROM sso_login WHERE phone = ?
       OR username = ? OR email = ? AND disabled = 0 LIMIT 1`;
-    const args = [account, account + '@' + code, account];
+    const args = [account, /* account + '@' + code */account, account];
     return mysql.query(sql, args);
   },
   getUserByPhone(phone) {

@@ -44,6 +44,11 @@ export default {
     const args = [subdomain];
     return mysql.query(sql, args);
   },
+  getAppsInfoById(tenantId) {
+    const sql = 'select app_id as id, app_name as name, package, app_desc as `desc` from sso_tenant_apps where tenant_id = ?';
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
   getCorpCountByParent(parentTenantId) {
     const sql = 'select count(tenant_id) as num from sso_tenants where parent_tenant_id = ?';
     const args = [parentTenantId];
@@ -83,6 +88,16 @@ export default {
     const sql = 'delete from sso_tenants where tenant_id = ? or parent_tenant_id = ?';
     const args = [corpId, corpId];
     return mysql.delete(sql, args, trans);
+  },
+  changeOverTenantApp(tenantId, checked, app) {
+    if (checked) {
+      const sql = `insert into sso_tenant_apps (tenant_id, app_id, app_name, app_desc, package, date_start) values (?, NOW())`;
+      const args = [tenantId, app.id, app.name, app.desc, app.package];
+      return mysql.insert(sql, [args]);
+    } else {
+      const sql = 'delete from sso_tenant_apps where tenant_id = ? and app_id = ?';
+      return mysql.delete(sql, [tenantId, app.id]);
+    }
   },
   updateBranchCount(corpId, amount, trans) {
     const sql = `update sso_tenants set branch_count = branch_count + ? where tenant_id = ?`;
