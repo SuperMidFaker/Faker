@@ -21,7 +21,7 @@ export default class AmNavBar extends React.Component {
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-home"></i>
             </NavLink>
-            <NavLink to="/" className="navbar-brand" />
+            <NavLink to="/" className={'navbar-brand ' + moduleName} />
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
