@@ -1,7 +1,7 @@
 @import "../reusable/ant-ui/style/index.less";
 @am-leftbar-width: 100px;
 @am-header-height: 50px;
-@am-theme-color: #F08519;
+@am-theme-color: #fff;
 @import "./components/am-ant-leftbar.less";
 body {
   background-color: #F0F0F0;
@@ -158,6 +158,7 @@ img {
   background-color:@am-theme-color;
   border:0;
   margin-bottom:0;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
   transition:all .35s ease;
   .navbar-header {
     @media (max-width:767px) {
@@ -234,12 +235,14 @@ img {
     .navbar-nav {
       >li>a {
         line-height: @am-header-height;
-        color:#fff;
+        color:#373737;
         font-size:16px;
         padding:0 18px;
         outline:0;
         span {
           font-size: 18px;
+          line-height: 44px;
+          vertical-align: middle;
         }
         @media (min-width:768px) and (max-width:991px) {
           padding:0 12px;
@@ -293,6 +296,8 @@ img {
             font-size: 24px;
             width: 50px;
             text-align: center;
+            line-height: 44px;
+            vertical-align: middle;
           }
         }
       }
@@ -349,7 +354,7 @@ img {
           .icon {
             font-size:24px;
             vertical-align:middle;
-            color:rgba(255,255,255,.8);
+            color:#373737;
           }
           .indicator {
             background:#fff;
@@ -391,7 +396,7 @@ img {
   margin-left: 0;
   margin-right: 10px;
   width: 80px;
-  background-image: url("../public/assets/img/welogix_logo_160_100_white.png");
+  background-image: url("../public/assets/img/welogix_logo_160_100.png");
   background-size: auto 50px;
   @media (min-width:768px) and (max-width:991px) {
     margin-right:0;
