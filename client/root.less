@@ -132,11 +132,6 @@ img {
     }
   }
 }
-.navbar-header {
-  @media (min-width:768px) {
-    float: left;
-  }
-}
 .container-fluid {
   padding-left: 15px;
   padding-right: 15px;
@@ -161,6 +156,7 @@ img {
   box-shadow: 0 1px 2px rgba(0,0,0,.15);
   transition:all .35s ease;
   .navbar-header {
+    float: left;
     @media (max-width:767px) {
       text-align:center;
     }
@@ -443,27 +439,35 @@ img {
     }    
   }
 }
-.am-nosidebar-left .am-top-header .navbar-header .navbar-brand {
-  background-color: transparent;
-  border-bottom-width: 0;
-  margin-left: 0;
-  margin-right: 10px;
-  width: 80px;
-  background-image: url("../public/assets/img/welogix_logo_160_100.png");
-  background-size: auto 50px;
-  @media (min-width:768px) and (max-width:991px) {
-    margin-right:0;
-    padding-left:0;
-    width:80px;
-  }
-}
-.am-nosidebar-left .am-top-header .navbar-header .am-toggle-left-sidebar {
-  @media (max-width:767px) {
+.am-nosidebar-left {
+  .am-left-sidebar {
     display: none;
   }
-}
-.am-nosidebar-left .am-left-sidebar {
-  display: none;
+  .am-top-header .navbar-header .navbar-brand {
+    background-color: transparent;
+    border-bottom-width: 0;
+    margin-left: 0;
+    margin-right: 10px;
+    width: 80px;
+    background-image: url("../public/assets/img/welogix_logo_160_100.png");
+    background-size: auto 50px;
+    @media (min-width:768px) and (max-width:991px) {
+      margin-right:0;
+      padding-left:0;
+      width:80px;
+    }
+    @media (max-width:767px) {
+      display: block;
+    }
+  }
+  @media (max-width:767px) {
+    .am-top-header .navbar-header .am-toggle-left-sidebar {
+      display: none;
+    }
+    .am-top-header .navbar-collapse .navbar-nav>li>a {
+      color: #373737;
+    }
+  }
 }
 .am-left-sidebar {
   background-color:#3d3c3c;
