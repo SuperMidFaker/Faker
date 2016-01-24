@@ -19,7 +19,7 @@ export default class AmNavBar extends React.Component {
               <span>微骆</span>
             </div>
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
-              <i className="zmdi zmdi-home"></i>
+              <i className="zmdi zmdi-apps"></i>
             </NavLink>
             <NavLink to="/" className={'navbar-brand module-' + moduleName} />
           </div>
@@ -27,7 +27,7 @@ export default class AmNavBar extends React.Component {
             <ul className="nav navbar-nav am-title-nav">
               <li className="dropdown">
               { moduleName &&
-                <Popover placement="bottomRight" trigger="click" overlay={<ModuleLayout />}>
+                <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
                   <a role="button" aria-expanded="false" className="dropdown-toggle">
                     <i className={'hidden-xs zmdi zmdi-' + moduleName}></i>
                     {DEFAULT_MODULES[moduleName].text}
