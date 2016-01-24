@@ -271,6 +271,9 @@ img {
         @media (min-width:768px) and (max-width:991px) {
           padding:0 12px;
         }
+        @media (max-width:767px) {
+          color: #fff;
+        }
       }
       .angle-down {
         font-size:27px;
@@ -413,6 +416,32 @@ img {
       display: block;
     }
   }
+  @media (max-width:767px) {
+    &.module-import {
+      background-color:#00b2bf;
+    }
+    &.module-export {
+      background-color:#00903a;
+    }
+    &.module-tms {
+      background-color:#0096da;
+    }
+    &.module-wms {
+      background-color:#ea7300;
+    }
+    &.module-payable {
+      background-color:#c2915a;
+    }
+    &.module-receivable {
+      background-color:#7667cf;
+    }
+    &.module-cost {
+      background-color:#12d61e;
+    }
+    &.module-kpi {
+      background-color:#ff773d;
+    }    
+  }
 }
 .am-nosidebar-left .am-top-header .navbar-header .navbar-brand {
   background-color: transparent;
@@ -426,6 +455,11 @@ img {
     margin-right:0;
     padding-left:0;
     width:80px;
+  }
+}
+.am-nosidebar-left .am-top-header .navbar-header .am-toggle-left-sidebar {
+  @media (max-width:767px) {
+    display: none;
   }
 }
 .am-nosidebar-left .am-left-sidebar {

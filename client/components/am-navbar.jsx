@@ -12,7 +12,7 @@ export default class AmNavBar extends React.Component {
   render() {
     const moduleName = this.props.locationPath && this.props.locationPath.split('/')[1];
     return (
-      <nav className="navbar navbar-default navbar-fixed-top am-top-header">
+      <nav className={'navbar navbar-default navbar-fixed-top am-top-header module-' + moduleName} >
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="page-title">
