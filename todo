@@ -5,6 +5,7 @@ wms -> new edit
 [] winston log
 [] merge with ant-design
 [] memory leak in corp personnel table create update action
+[] eslintrc from max-len to bottom
 
 [] gregorian-calendar-format replace with moment.js
 [] table column resize/scrollbar http://www.guriddo.net/demo/bootstrap/

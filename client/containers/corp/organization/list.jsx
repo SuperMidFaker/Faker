@@ -10,7 +10,7 @@ import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES} from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
-  if (!isLoaded(state, 'corps') ) {
+  if (!isLoaded(state, 'corps')) {
     return dispatch(loadCorps(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.corps.corplist.pageSize,
@@ -146,7 +146,7 @@ export default class CorpList extends React.Component {
       render: (o, record, index) => {
         const modComp = [];
         (record.apps || []).forEach((mod, idx) => {
-          modComp.push(<NavLink key={`${DEFAULT_MODULES[mod.id].url}`} to={DEFAULT_MODULES[mod.id].url}>{mod.name}</NavLink>);
+          modComp.push(<NavLink key={mod.name} to={DEFAULT_MODULES[mod.id].url}>{mod.name}</NavLink>);
           modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
         });
         return (
@@ -203,7 +203,7 @@ export default class CorpList extends React.Component {
           <a role="button">如何扩容?</a>
         </div>
         <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource}/>
-        <div className={'bottom-fixed-row' + (this.state.selectedRowKeys.length === 0 ? ' hide' : '')}>
+        <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
           <Row>
             <Col span="2" offset="20">
               <Button size="large" onClick={() => this.handleSelectionClear()}>清除选择</Button>

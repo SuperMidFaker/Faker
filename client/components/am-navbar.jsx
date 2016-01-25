@@ -12,7 +12,7 @@ export default class AmNavBar extends React.Component {
   render() {
     const moduleName = this.props.locationPath && this.props.locationPath.split('/')[1];
     return (
-      <nav className={'navbar navbar-default navbar-fixed-top am-top-header module-' + moduleName} >
+      <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="page-title">
@@ -21,7 +21,7 @@ export default class AmNavBar extends React.Component {
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps"></i>
             </NavLink>
-            <NavLink to="/" className={'navbar-brand module-' + moduleName} />
+            <NavLink to="/" className={`navbar-brand module-${moduleName}`} />
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
@@ -29,7 +29,7 @@ export default class AmNavBar extends React.Component {
               { moduleName &&
                 <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
                   <a role="button" aria-expanded="false" className="dropdown-toggle">
-                    <i className={'hidden-xs zmdi zmdi-' + moduleName}></i>
+                    <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
                     {DEFAULT_MODULES[moduleName].text}
                     <span className="angle-down s7-angle-down"></span>
                   </a>

@@ -143,7 +143,7 @@ export default class CorpInfo extends React.Component {
               validator: (rule, value, callback) => {
                 if (value === '') {
                   callback(new Error('联系人手机号必填'));
-                } else if (isMobile(value) ) {
+                } else if (isMobile(value)) {
                   callback(null);
                 } else {
                   callback(new Error('非法手机号'));

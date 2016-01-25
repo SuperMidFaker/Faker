@@ -24,7 +24,7 @@ export default class ModuleLayout extends React.Component {
   };
 
   render() {
-    const containerCls = 'module-container' + (this.props.size ? (' ' + this.props.size) : '');
+    const containerCls = `module-container ${this.props.size || ''}`;
     return (
       <Row>
         {
@@ -32,9 +32,9 @@ export default class ModuleLayout extends React.Component {
             <Col span="6" key={`mod-${idx}`}>
               <NavLink to={mod.url}>
                 <div className={containerCls}>
-                  <div className={'module-icon-bg ' + mod.cls}>
+                  <div className={`module-icon-bg ${mod.cls}`}>
                     <div className="module-icon">
-                      <i className={'zmdi zmdi-' + mod.cls}></i>
+                      <i className={`zmdi zmdi-${mod.cls}`}></i>
 
                     </div>
                   </div>

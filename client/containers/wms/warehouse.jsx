@@ -277,7 +277,7 @@ export default class Warehouse extends React.Component {
                 <Input type="textarea" id="remark" name="remark" placeholder="仓库备忘信息..." {...getFieldProps('remark',
                    {initialValue: ''})} />
               </FormItem>
-              <div className={'bottom-fixed-row' + (this.state.showForm ? ' form-fade-enter' : ' form-fade-leave')}>
+              <div className={`bottom-fixed-row${this.state.showForm ? ' form-fade-enter' : ' form-fade-leave'}`}>
                 <Row>
                   <Col span="2" offset="8">
                     <Button type="primary" htmlType="submit">确定</Button>

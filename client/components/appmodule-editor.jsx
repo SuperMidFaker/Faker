@@ -42,20 +42,24 @@ export default class ModuleEditor extends React.Component {
       desc: ap.desc,
       package: ap.package
     };
-    this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      }
-    });
+    this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
   }
   render() {
     return (
       <Modal title="设置开通的应用" visible={this.state.visible}
-         onCancel={() => this.handleCancel()} footer={[
-           <Button key="confirm" type="primary" size="large" onClick={() => this.handleCancel()}>
-            确定
-           </Button>
-         ]}>
+        onCancel={() => this.handleCancel()} footer={
+          [
+            <Button key="confirm" type="primary" size="large" onClick={() => this.handleCancel()}>
+             确定
+            </Button>
+          ]
+        }
+      >
         <Row className="module-editor">
           <Col span="8"><h4>应用名称</h4></Col>
           <Col span="8"><p className="type-label">描述</p></Col>
@@ -70,7 +74,8 @@ export default class ModuleEditor extends React.Component {
               <Col span="8">
                 <div className="pull-right">
                   <Switch checked={!!this.state.enabledApps[ap.id]}
-                    onChange={(checked) => this.handleAppCheck(ap, checked)} />
+                    onChange={(checked) => this.handleAppCheck(ap, checked)}
+                  />
                 </div>
               </Col>
             </div>

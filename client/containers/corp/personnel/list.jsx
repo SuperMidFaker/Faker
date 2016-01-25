@@ -68,7 +68,7 @@ export default class PersonnelSetting extends React.Component {
       } else {
         let tenant;
         this.props.branches.forEach(br => {
-          if ('' + br.key === val) {
+          if (`${br.key}` === val) {
             tenant = {
               id: br.key,
               parentId: br.parentId
@@ -260,7 +260,7 @@ export default class PersonnelSetting extends React.Component {
             </Select>
           </div>
           <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
-          <div className={'bottom-fixed-row' + (this.state.selectedRowKeys.length === 0 ? ' hide' : '')}>
+          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Row>
               <Col span="2" offset="20">
                 <Button size="large" onClick={() => this.handleSelectionClear()}>清除选择</Button>

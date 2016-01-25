@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint",
   "extends": "airbnb",
   "globals": {
     "__CLIENT__": true,
@@ -18,6 +19,15 @@
     "no-else-return": 0,
     "space-before-function-paren": [0, "always"],
     "id-length":[0],
-    "react/jsx-quotes": [0, "single"]
+    "react/jsx-quotes": [0, "single"],
+    "max-len": 0,
+    "react/jsx-closing-bracket-location": 0,
+    "object-curly-spacing": 0,
+    "array-bracket-spacing": 0,
+    "indent": 0,
+    "react/jsx-indent-props": 0,
+    "arrow-body-style": 0,
+    "quote-props": 0,
+    "react/jsx-no-bind": 0
   }
 }
