@@ -661,6 +661,17 @@ img {
   margin-bottom: 86px;
 }
 
+.table-responsive {
+  overflow-x: auto;
+  min-height: .01%;
+  @media screen and (max-width: 767px) {
+    width: 100%;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid #ddd;
+  }
+}
+
 .bottom-fixed-row {
   position: fixed;
   bottom: 0;
