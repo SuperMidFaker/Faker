@@ -38,7 +38,7 @@ export default class AmNavBar extends React.Component {
     } else if (navTitle.depth === 3) {
       amTitleNav = (
         <a role="button" onClick={navTitle.goBackFn}>
-          <i className={`hidden-xs zmdi zmdi-hc-3x zmdi-long-arrow-left`}></i>
+          <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-arrow-left`}></i>
           {navTitle.text}
         </a>);
     }
