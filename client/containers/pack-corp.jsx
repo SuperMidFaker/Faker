@@ -3,35 +3,26 @@ import { connect } from 'react-redux';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
 import { setNavTitle } from '../../universal/redux/reducers/navbar';
+import connectNav from '../../reusable/decorators/connect-nav';
 
 @connect(
   null,
   { setNavTitle }
 )
+@connectNav((props) => {
+  props.setNavTitle({
+    depth: 2,
+    text: '企业设置',
+    moduleName: 'corp',
+    withModuleLayout: false,
+    goBackFn: ''
+  });
+})
 export default class Account extends React.Component {
   static propTypes = {
     setNavTitle: PropTypes.func,
     children: PropTypes.object.isRequired
   };
-
-  componentWillMount() {
-    this.props.setNavTitle({
-      depth: 2,
-      text: '企业设置',
-      moduleName: 'corp',
-      withModuleLayout: false,
-      backUrl: ''
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    nextProps.setNavTitle({
-      depth: 2,
-      text: '企业设置',
-      moduleName: 'corp',
-      withModuleLayout: false,
-      backUrl: ''
-    });
-  }
 
   render() {
     const linkMenus = [{

@@ -37,10 +37,10 @@ export default class AmNavBar extends React.Component {
       }
     } else if (navTitle.depth === 3) {
       amTitleNav = (
-        <NavLink to={navTitle.backUrl}>
+        <a role="button" onClick={navTitle.goBackFn}>
           <i className={`hidden-xs zmdi zmdi-hc-3x zmdi-long-arrow-left`}></i>
           {navTitle.text}
-        </NavLink>);
+        </a>);
     }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>

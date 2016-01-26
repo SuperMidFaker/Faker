@@ -11,7 +11,7 @@ const initialState = {
     text: '',
     moduleName: '',
     withModuleLayout: false,
-    backUrl: ''
+    goBackFn: null
   }
 };
 

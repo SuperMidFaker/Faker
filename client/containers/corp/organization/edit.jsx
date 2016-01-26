@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
 import { Button, Form, Input, Row, Col, message } from '../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit,
   submit, checkLoginName } from '../../../../universal/redux/reducers/corps';
+import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import {isMobile} from '../../../../reusable/common/validater';
 const FormItem = Form.Item;
 
@@ -27,7 +29,20 @@ function fetchData({state, dispatch, cookie, params}) {
     formData: state.corps.formData,
     account: state.account
   }),
-  {setFormValue, edit, submit, checkLoginName})
+  {setFormValue, edit, submit, checkLoginName, setNavTitle})
+@connectNav((props) => {
+  if (props.formData.key === undefined) {
+    return;
+  }
+  const isCreating = props.formData.key === null;
+  props.setNavTitle({
+    depth: 3,
+    text: isCreating ? '添加部门或分支机构' : props.formData.name,
+    moduleName: '',
+    goBackFn: () => props.history.goBack(),
+    withModuleLayout: false
+  });
+})
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -49,6 +64,7 @@ export default class CorpEdit extends React.Component {
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
+    setNavTitle: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
   onSubmitReturn(error) {
@@ -110,44 +126,39 @@ export default class CorpEdit extends React.Component {
     const {formhoc: {getFieldProps, getFieldError}, account: {code}} = this.props;
     return (
       <div className="page-body">
-        <div className="panel-header">
-          <h3>{!this.props.formData.key ? '添加' : '修改'}部门或分支机构</h3>
-        </div>
-        <div className="panel-body">
-          <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
-            {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-            {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-            <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
-              validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
-              <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-                rules: [{validator: (rule, value, callback) => this.isLoginNameExist(value, callback)}],
-                adapt: (value) => value && value.split('@')[0],
-                transform: (value) => `${value}@${code}`
-              })} />
-            </FormItem>
-            {this.renderTextInput('手机号', '', 'phone', true, [{
-              validator: (rule, value, callback) => {
-                if (value === undefined || value === '') {
-                  callback(new Error('联系人手机号必填'));
-                } else if (isMobile(value)) {
-                  callback();
-                } else {
-                  callback(new Error('非法手机号'));
-                }
-              }}
-            ])}
-            {this.renderTextInput('Email', '', 'email', false, [{
-              type: 'string',
-              pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-              message: 'email格式错误'}])}
-            <Row>
-              <Col span="18" offset="6">
-                <Button htmlType="submit" type="primary">确定</Button>
-                <Button onClick={ () => this.handleCancel() }>取消</Button>
-              </Col>
-            </Row>
-          </Form>
-        </div>
+        <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
+          {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+          {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+          <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
+            validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
+            <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
+              rules: [{validator: (rule, value, callback) => this.isLoginNameExist(value, callback)}],
+              adapt: (value) => value && value.split('@')[0],
+              transform: (value) => `${value}@${code}`
+            })} />
+          </FormItem>
+          {this.renderTextInput('手机号', '', 'phone', true, [{
+            validator: (rule, value, callback) => {
+              if (value === undefined || value === '') {
+                callback(new Error('联系人手机号必填'));
+              } else if (isMobile(value)) {
+                callback();
+              } else {
+                callback(new Error('非法手机号'));
+              }
+            }}
+          ])}
+          {this.renderTextInput('Email', '', 'email', false, [{
+            type: 'string',
+            pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+            message: 'email格式错误'}])}
+          <Row>
+            <Col span="18" offset="6">
+              <Button htmlType="submit" type="primary">确定</Button>
+              <Button onClick={ () => this.handleCancel() }>取消</Button>
+            </Col>
+          </Row>
+        </Form>
       </div>);
   }
 }

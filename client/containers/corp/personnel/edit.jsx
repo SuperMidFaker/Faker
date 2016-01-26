@@ -4,6 +4,7 @@ import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant
 import { AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message } from
 '../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
 '../../../../universal/redux/reducers/personnel';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
@@ -34,6 +35,19 @@ function fetchData({state, dispatch, cookie, params}) {
     tenant: state.personnel.tenant
   }),
   { setFormValue, edit, submit, checkLoginName, setNavTitle })
+@connectNav((props) => {
+  if (props.formData.key === -1) {
+    return;
+  }
+  const isCreating = props.formData.key === null;
+  props.setNavTitle({
+    depth: 3,
+    text: isCreating ? '添加用户' : `用户${props.formData.name}`,
+    moduleName: '',
+    goBackFn: () => props.history.goBack(),
+    withModuleLayout: false
+  });
+})
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -59,6 +73,11 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
+  constructor() {
+    super();
+    this.handleCancel = this.handleCancel.bind(this);
+  }
+  /*
   componentWillMount() {
     const isCreating = this.props.formData.key === null;
     this.props.setNavTitle({
@@ -66,7 +85,7 @@ export default class CorpEdit extends React.Component {
       text: isCreating ? '添加用户' : `用户${this.props.formData.name}`,
       moduleName: '',
       withModuleLayout: false,
-      backUrl: '/corp/personnel'
+      goBackFn: this.handleCancel
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -76,9 +95,10 @@ export default class CorpEdit extends React.Component {
       text: isCreating ? '添加用户' : `用户${nextProps.formData.name}`,
       moduleName: '',
       withModuleLayout: false,
-      backUrl: '/corp/personnel'
+      goBackFn: this.handleCancel
     });
   }
+ */
   onSubmitReturn(error) {
     if (error) {
       message.error(error.message, 10);
@@ -127,56 +147,51 @@ export default class CorpEdit extends React.Component {
           <h2>用户管理</h2>
         </div>
         <div className="page-body">
-          <div className="panel-header">
-            <h3>{isCreating ? '添加' : '修改'}用户</h3>
-          </div>
-          <div className="panel-body">
-            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
-              {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-              <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
-                validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
-                <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-                  rules: [{validator: (rule, value, callback) => isLoginNameExist(value, this.props.formData.loginId,
-                                                                                  this.props.tenant.id, callback,
-                                                                                 message, this.props.checkLoginName)}],
-                  adapt: (value) => value && value.split('@')[0],
-                  transform: (value) => `${value}@${code}`
-                })} />
-              </FormItem>
-              {isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',
-                                                  true, [{required: true, min: 6, message: '至少6位字符'}],
-                                                 null, 'password')}
-              {this.renderTextInput('手机号', '可作登录帐号使用', 'phone', true, [{
-                validator: (rule, value, callback) => {
-                  if (value === undefined || value === '') {
-                    callback(new Error('联系人手机号必填'));
-                  } else if (isMobile(value)) {
-                    callback();
-                  } else {
-                    callback(new Error('非法手机号'));
-                  }
-                }}
-              ])}
-              {this.renderTextInput('Email', '绑定后可作登录帐号使用', 'email', false, [{
-                type: 'string',
-                pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-                message: 'email格式错误'}])}
-              {this.renderTextInput('职位', '', 'position')}
-              {this.props.formData.role !== TENANT_ROLE.owner.name &&
-              <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-                <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                  onChange={(checked) => this.props.setFormValue('role',
-                                        checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
-                  checked={this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name}/>
-              </FormItem>}
-              <Row>
-                <Col span="18" offset="6">
-                  <Button htmlType="submit" type="primary">确定</Button>
-                  <Button onClick={ () => this.handleCancel() }>取消</Button>
-                </Col>
-              </Row>
-            </Form>
-          </div>
+          <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
+            {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+            <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
+              validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
+              <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
+                rules: [{validator: (rule, value, callback) => isLoginNameExist(value, this.props.formData.loginId,
+                                                                                this.props.tenant.id, callback,
+                                                                               message, this.props.checkLoginName)}],
+                adapt: (value) => value && value.split('@')[0],
+                transform: (value) => `${value}@${code}`
+              })} />
+            </FormItem>
+            {isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',
+                                                true, [{required: true, min: 6, message: '至少6位字符'}],
+                                               null, 'password')}
+            {this.renderTextInput('手机号', '可作登录帐号使用', 'phone', true, [{
+              validator: (rule, value, callback) => {
+                if (value === undefined || value === '') {
+                  callback(new Error('联系人手机号必填'));
+                } else if (isMobile(value)) {
+                  callback();
+                } else {
+                  callback(new Error('非法手机号'));
+                }
+              }}
+            ])}
+            {this.renderTextInput('Email', '绑定后可作登录帐号使用', 'email', false, [{
+              type: 'string',
+              pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+              message: 'email格式错误'}])}
+            {this.renderTextInput('职位', '', 'position')}
+            {this.props.formData.role !== TENANT_ROLE.owner.name &&
+            <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>
+              <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
+                onChange={(checked) => this.props.setFormValue('role',
+                                      checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
+                checked={this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name}/>
+            </FormItem>}
+            <Row>
+              <Col span="18" offset="6">
+                <Button htmlType="submit" type="primary">确定</Button>
+                <Button onClick={ this.handleCancel }>取消</Button>
+              </Col>
+            </Row>
+          </Form>
         </div>
       </div>);
   }
