@@ -259,7 +259,7 @@ export default class PersonnelSetting extends React.Component {
             }
             </Select>
           </div>
-          <div className="table-responsive">
+          <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

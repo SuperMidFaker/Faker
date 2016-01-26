@@ -92,6 +92,7 @@ export default class CorpInfo extends React.Component {
   renderBasicForm() {
     const {formData: {country, province, city, district}, formhoc: {getFieldProps}} = this.props;
     return (
+      <div className="body-responsive"> 
       <Form horizontal>
         <Row>
           <Col span="8">
@@ -154,11 +155,13 @@ export default class CorpInfo extends React.Component {
                                   message: 'email格式错误'}])}
           </Col>
         </Row>
-      </Form>);
+      </Form>
+      </div>);
   }
   renderEnterpriseForm() {
     const {formData: {logo: logoPng}, formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
+      <div className="body-responsive">
       <Form>
         <Row>
           <Col span="8">
@@ -190,7 +193,8 @@ export default class CorpInfo extends React.Component {
             </FormItem>
           </Col>
         </Row>
-      </Form>);
+      </Form>
+      </div>);
   }
   render() {
     return (
