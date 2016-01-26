@@ -186,6 +186,9 @@ img {
       @media (min-width:768px) and (max-width:991px) {
         margin-right:10px;
       }
+      &.module-undefined {
+        background-color:#000;
+      }
       &.module-import {
         background-color:#00b2bf;
       }
@@ -413,6 +416,9 @@ img {
     }
   }
   @media (max-width:767px) {
+    &.module-undefined {
+      background-color:#000;
+    }
     &.module-import {
       background-color:#00b2bf;
     }
@@ -661,7 +667,7 @@ img {
   margin-bottom: 86px;
 }
 
-.table-responsive {
+.body-responsive {
   overflow-x: auto;
   min-height: .01%;
   @media screen and (max-width: 767px) {
@@ -672,6 +678,9 @@ img {
     .ant-table td, 
     .ant-table th {
       white-space: nowrap;
+    }
+    .ant-form-horizontal {
+      min-width: 1000px;
     }
   }
 }
