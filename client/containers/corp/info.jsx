@@ -92,7 +92,7 @@ export default class CorpInfo extends React.Component {
   renderBasicForm() {
     const {formData: {country, province, city, district}, formhoc: {getFieldProps}} = this.props;
     return (
-      <div className="body-responsive"> 
+      <div className="body-responsive">
       <Form horizontal>
         <Row>
           <Col span="8">
@@ -209,14 +209,8 @@ export default class CorpInfo extends React.Component {
           </Tabs>
         </div>
         <div className="bottom-fixed-row">
-          <Row>
-            <Col span="2" offset="1">
-              <Button type="primary" htmlType="submit" onClick={ () => this.handleSubmit() }>确定</Button>
-            </Col>
-            <Col span="2">
-              <Button onClick={ () => this.handleCancel() }>返回</Button>
-            </Col>
-          </Row>
+          <Button type="primary" size="large" htmlType="submit" onClick={ () => this.handleSubmit() }>确定</Button>
+          <Button size="large" onClick={ () => this.handleCancel() }>返回</Button>
         </div>
       </div>);
   }

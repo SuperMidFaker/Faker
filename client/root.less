@@ -187,7 +187,7 @@ img {
         margin-right:10px;
       }
       &.module-undefined {
-        background-color:#000;
+        background-color:#393c40;
       }
       &.module-import {
         background-color:#00b2bf;
@@ -417,7 +417,7 @@ img {
   }
   @media (max-width:767px) {
     &.module-undefined {
-      background-color:#000;
+      background-color:#393c40;
     }
     &.module-import {
       background-color:#00b2bf;
@@ -449,23 +449,29 @@ img {
   .am-left-sidebar {
     display: none;
   }
-  .am-top-header .navbar-header .navbar-brand {
-    background-color: transparent;
-    border-bottom-width: 0;
-    margin-left: 0;
-    margin-right: 10px;
-    width: 80px;
-    background-image: url("../public/assets/img/welogix_logo_160_100.png");
-    background-size: auto 50px;
-    @media (min-width:768px) and (max-width:991px) {
-      margin-right:0;
-      padding-left:0;
-      width:80px;
-    }
+  .am-top-header {
     @media (max-width:767px) {
-      display: block;
+      background-color: #fff;
+    }
+    .navbar-header .navbar-brand {
+      background-color: transparent;
+      border-bottom-width: 0;
+      margin-left: 0;
+      margin-right: 10px;
+      width: 80px;
+      background-image: url("../public/assets/img/welogix_logo_160_100.png");
+      background-size: auto 50px;
+      @media (min-width:768px) and (max-width:991px) {
+        margin-right:0;
+        padding-left:0;
+        width:80px;
+      }
+      @media (max-width:767px) {
+        display: block;
+      }
     }
   }
+  
   @media (max-width:767px) {
     .am-top-header .navbar-header .am-toggle-left-sidebar {
       display: none;
@@ -623,7 +629,7 @@ img {
     -webkit-overflow-scrolling:touch;
     padding-left:15px;
     padding-right:15px;
-    padding-top:20px
+    padding-top:15px
   }
   @media (min-width:768px) and (max-width:991px) {
     padding-left:25px;
@@ -647,7 +653,6 @@ img {
   padding: 20px 20px 40px;
   min-height: 100%;
 }
-
 .page-header {
   margin: 0 0 10px;
   vertical-align: middle;
@@ -658,11 +663,9 @@ img {
     float: left;
   }
 }
-
 .page-body {
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  padding: 20px;
   min-height: 500px;
   margin-bottom: 86px;
 }
@@ -695,11 +698,14 @@ img {
   -moz-transition: all ease 0.4s;
   -o-transition: all ease 0.4s;
   transition: all ease 0.4s;
-  padding: 20px 0px 18px;
-  margin-left: -35px;
+  padding: 20px;
+  margin-left: -20px;
   z-index: 1000;
   @media (max-width:767px) {
     margin-left: -15px;
+  }
+  .ant-btn {
+    margin-right: 8px;
   }
 }
 .horizontal-divider {
@@ -709,12 +715,22 @@ img {
 
 .panel-header {
   position: relative;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
+  padding: 20px 20px 0 20px;
   span {
     vertical-align: middle;
   }
+  @media (max-width:767px) {
+    margin-bottom: 10px;
+    padding: 10px 10px 0 10px;
+  }
 }
-
+.panel-body {
+  padding: 0px 20px 20px;
+  @media (max-width:767px) {
+    padding: 0;
+  }
+}
 .action-btns button {
   width: 80px;
   height: 30px;
