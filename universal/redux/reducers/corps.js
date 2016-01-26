@@ -12,8 +12,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
   'CORPS_LOAD', 'CORPS_LOAD_SUCCEED', 'CORPS_LOAD_FAIL',
-  'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
-  'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
+  'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -162,17 +161,6 @@ export function clearForm() {
 
 export function setFormValue(field, newValue) {
   return setFormValueC(actionTypes, field, newValue);
-}
-
-export function checkCorpDomain(subdomain, tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.CHECK_CORP_DOMAIN, actionTypes.CHECK_DOMAIN_SUCCEED, actionTypes.CHECK_DOMAIN_FAIL],
-      endpoint: 'v1/user/corp/check/subdomain',
-      method: 'get',
-      params: {subdomain, tenantId}
-    }
-  };
 }
 
 export function checkLoginName(loginName, loginId, tenantId) {

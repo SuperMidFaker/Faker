@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
-import {connect} from 'react-redux';
-import {renderValidateStyle} from '../../../reusable/browser-util/react-ant';
-import {AntIcon, Button, Form, Input, Row, Col, Select, Tabs, message} from '../../../reusable/ant-ui';
+import { connect } from 'react-redux';
+import { renderValidateStyle } from '../../../reusable/browser-util/react-ant';
+import { AntIcon, Button, Form, Input, Row, Col, Select, Tabs, message } from
+'../../../reusable/ant-ui';
 import Region from '../../components/region-cascade';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
-import {isFormDataLoaded, loadForm, setFormValue, uploadImg, edit, checkCorpDomain} from '../../../universal/redux/reducers/corps';
+import { isFormDataLoaded, loadForm, setFormValue, uploadImg, edit } from
+'../../../universal/redux/reducers/corps';
+import { checkCorpDomain } from '../../../universal/redux/reducers/corp-domain';
 import {isMobile} from '../../../reusable/common/validater';
 import {TENANT_LEVEL} from '../../../universal/constants';
 const Dropzone = require('react-dropzone');
@@ -71,11 +74,11 @@ export default class CorpInfo extends React.Component {
     this.props.checkCorpDomain(value, this.props.formData.key).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
-        callback(null);
+        callback();
       } else if (result.data.exist) {
         callback(new Error('企业子域名已存在'));
       } else {
-        callback(null);
+        callback();
       }
     });
   }
@@ -138,7 +141,7 @@ export default class CorpInfo extends React.Component {
                 if (value === '') {
                   callback(new Error('联系人手机号必填'));
                 } else if (isMobile(value)) {
-                  callback(null);
+                  callback();
                 } else {
                   callback(new Error('非法手机号'));
                 }

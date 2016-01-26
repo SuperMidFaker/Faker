@@ -5,11 +5,12 @@ import {Table, Button, Select, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import { isLoaded } from '../../../../reusable/common/redux-actions';
 import {ACCOUNT_STATUS, TENANT_ROLE} from '../../../../universal/constants';
 
 function fetchData({state, dispatch, location, cookie}) {
   const promises = [];
-  if (location.action !== 'POP' || cookie) {
+  if (location.action !== 'POP' || !isLoaded(state, 'personnel')) {
     // 当从Edit页面切回来不重新加载
     // 从其他页面切过来或者在服务端重新加载
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));

@@ -136,7 +136,7 @@ export default class CorpList extends React.Component {
     }, {
       title: '手机号',
       dataIndex: 'phone',
-      render: (o, record) => this.renderColumnText(record.status, record.contact)
+      render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: '邮箱',
       dataIndex: 'email',

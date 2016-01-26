@@ -57,9 +57,9 @@ export default {
   getPagedCorpsByParent(parentTenantId, current, pageSize) {
     const start = (current - 1) * pageSize;
     const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country,
-      province, city, district, address, logo, short_name, category_id, website, remark, level, email,
+      province, city, district, address, logo, short_name, category_id, website, remark, level, TUL.email as email,
       contact, position, T.status as status, login_id as loginId, username as loginName from sso_tenants as T
-      inner join (select tenant_id, name, username, position, login_id from sso_tenant_users as TU inner join
+      inner join (select tenant_id, name, username, position, email, login_id from sso_tenant_users as TU inner join
       sso_login as L on TU.login_id = L.id where parent_tenant_id = ? and TU.user_type = 'owner') as TUL
       on T.tenant_id = TUL.tenant_id limit ?, ?`;
     const args = [parentTenantId, start, pageSize];

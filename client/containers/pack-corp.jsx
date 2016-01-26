@@ -2,15 +2,25 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
+import { setNavTitle } from '../../universal/redux/reducers/navbar';
+import connectNav from '../../reusable/decorators/connect-nav';
 
 @connect(
-  state => ({
-    username: state.account.username
-  })
+  null,
+  { setNavTitle }
 )
+@connectNav((props) => {
+  props.setNavTitle({
+    depth: 2,
+    text: '企业设置',
+    moduleName: 'corp',
+    withModuleLayout: false,
+    goBackFn: ''
+  });
+})
 export default class Account extends React.Component {
   static propTypes = {
-    username: PropTypes.string,
+    setNavTitle: PropTypes.func,
     children: PropTypes.object.isRequired
   };
 

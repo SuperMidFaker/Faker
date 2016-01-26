@@ -363,14 +363,13 @@ function *getTenantsUnderMain() {
   }
 }
 function *getPersonnelInfo() {
-  const curUserId = this.state.user.userId;
+  const persId = this.request.query.pid;
   try {
-    const personnels = yield userDao.getPersonnelInfo(curUserId);
-    Result.OK(this, {
-      personnelInfo: {
-        thisPersonnel: personnels[0]
-      }
-    });
+    const personnels = yield tenantUserDao.getPersonnelInfo(persId);
+    if (personnels.length === 0) {
+      throw new Error('用户不存在');
+    }
+    Result.OK(this, personnels[0]);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
@@ -397,7 +396,7 @@ function *changePassword() {
 }
 
 function *isSubdomainExist() {
-  const subdomain = this.request.query.subdomain;
+  const subdomain = this.request.query.domain;
   const tenantId = this.request.query.tenantId;
   try {
     const cnts = yield tenantDao.getSubdomainCount(subdomain, tenantId);
