@@ -129,17 +129,8 @@ export default class CorpInfo extends React.Component {
         </Row>
         <Row className="horizontal-divider">
           <Col span="8">
-            <Row>
-              <Col span="11" offset="3">
-              {this.renderTextInput('联系人', '', 'contact', true, [{required: true, message: '联系人名称必填', type: 'string', whitespace: true}]
+            {this.renderTextInput('联系人', '', 'contact', true, [{required: true, message: '联系人名称必填', type: 'string', whitespace: true}]
                                    , {transform: (value) => (value.trim())})}
-              </Col>
-              <Col span="9">
-                <FormItem label="职位" labelCol={{span: 5}} wrapperCol={{span: 16}}>
-                  <Input type="text" {...getFieldProps('position')} />
-                </FormItem>
-              </Col>
-            </Row>
             {this.renderTextInput('手机号', '', 'phone', true, [{
               validator: (rule, value, callback) => {
                 if (value === '') {
@@ -151,6 +142,11 @@ export default class CorpInfo extends React.Component {
                 }
               }}
             ])}
+          </Col>
+          <Col span="8">
+            <FormItem label="职位" labelCol={{span: 6}} wrapperCol={{span: 16}}>
+              <Input type="text" {...getFieldProps('position')} />
+            </FormItem>
             {this.renderTextInput('Email', '', 'email', false, [{type: 'string', pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
                                   message: 'email格式错误'}])}
           </Col>
@@ -162,7 +158,7 @@ export default class CorpInfo extends React.Component {
     const {formData: {logo: logoPng}, formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
       <div className="body-responsive">
-      <Form>
+      <Form horizontal>
         <Row>
           <Col span="8">
             <FormItem label="企业LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>
@@ -185,7 +181,7 @@ export default class CorpInfo extends React.Component {
         </Row>
         <Row className="horizontal-divider">
           <Col span="8">
-            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 10}} help={getFieldError('subdomain')} hasFeedback
+            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}} help={getFieldError('subdomain')} hasFeedback
               validateStatus={renderValidateStyle('subdomain', this.props.formhoc)}>
               <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('subdomain', {
                 rules: [{validator: (rule, value, callback) => this.isCorpDomainExist(value, callback)}]
@@ -210,7 +206,6 @@ export default class CorpInfo extends React.Component {
         </div>
         <div className="bottom-fixed-row">
           <Button type="primary" size="large" htmlType="submit" onClick={ () => this.handleSubmit() }>确定</Button>
-          <Button size="large" onClick={ () => this.handleCancel() }>返回</Button>
         </div>
       </div>);
   }
