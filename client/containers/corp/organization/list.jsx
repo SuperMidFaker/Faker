@@ -206,11 +206,7 @@ export default class CorpList extends React.Component {
           <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource} />
         </div>
         <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-          <Row>
-            <Col span="2" offset="20">
-              <Button size="large" onClick={() => this.handleSelectionClear()}>清除选择</Button>
-            </Col>
-          </Row>
+          <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>
         </div>
         <AppEditor tenantId={this.state.editTenantId} visible={this.state.visible} index={this.state.editIndex}
           switchTenantApp={this.props.switchTenantApp} tenantApps={this.state.editTenantApps}
