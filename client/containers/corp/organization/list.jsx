@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApp} from '../../../../universal/redux/reducers/corps';
-import {Table, Button, AntIcon, Row, Col, message} from '../../../../reusable/ant-ui';
+import {Table, Button, AntIcon, message} from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';
