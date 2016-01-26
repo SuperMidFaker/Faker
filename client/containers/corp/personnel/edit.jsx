@@ -85,7 +85,7 @@ export default class CorpEdit extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 4}} wrapperCol={{span: 6}} validateStatus={rules
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
         && renderValidateStyle(field, this.props.formhoc)}
         help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
@@ -105,10 +105,10 @@ export default class CorpEdit extends React.Component {
           <div className="panel-header">
             <h3>{isCreating ? '添加' : '修改'}用户</h3>
           </div>
-          <Row className="horizontal-divider">
-            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)}>
+          <div className="panel-body">
+            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
               {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-              <FormItem label="用户名" labelCol={{span: 4}} wrapperCol={{span: 6}} help={getFieldError('loginName')} hasFeedback
+              <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
                 validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
                 <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
                   rules: [{validator: (rule, value, callback) => isLoginNameExist(value, this.props.formData.loginId,
@@ -138,22 +138,20 @@ export default class CorpEdit extends React.Component {
                 message: 'email格式错误'}])}
               {this.renderTextInput('职位', '', 'position')}
               {this.props.formData.role !== TENANT_ROLE.owner.name &&
-              <FormItem label="是否管理员" labelCol={{span: 4}} wrapperCol={{span: 2}}>
+              <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>
                 <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
                   onChange={(checked) => this.props.setFormValue('role',
                                         checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
                   checked={this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name}/>
               </FormItem>}
               <Row>
-                <Col span="2" offset="4">
-                  <Button size="large" htmlType="submit" type="primary">确定</Button>
-                </Col>
-                <Col span="2">
-                  <Button onClick={ () => this.handleCancel() }>返回</Button>
+                <Col span="18" offset="6">
+                  <Button htmlType="submit" type="primary">确定</Button>
+                  <Button onClick={ () => this.handleCancel() }>取消</Button>
                 </Col>
               </Row>
             </Form>
-          </Row>
+          </div>
         </div>
       </div>);
   }

@@ -97,7 +97,7 @@ export default class CorpEdit extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 4}} wrapperCol={{span: 6}} validateStatus={rules
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
         && renderValidateStyle(field, this.props.formhoc)}
         help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
@@ -111,11 +111,11 @@ export default class CorpEdit extends React.Component {
         <div className="panel-header">
           <h3>{!this.props.formData.key ? '添加' : '修改'}部门或分支机构</h3>
         </div>
-        <Row className="horizontal-divider">
-          <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)}>
+        <div className="panel-body">
+          <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
             {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
             {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-            <FormItem label="用户名" labelCol={{span: 4}} wrapperCol={{span: 6}} help={getFieldError('loginName')} hasFeedback
+            <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
               validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
                 rules: [{validator: (rule, value, callback) => this.isLoginNameExist(value, callback)}],
@@ -139,15 +139,13 @@ export default class CorpEdit extends React.Component {
               pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
               message: 'email格式错误'}])}
             <Row>
-              <Col span="2" offset="4">
-                <Button size="large" htmlType="submit" type="primary">确定</Button>
-              </Col>
-              <Col span="2">
-                <Button onClick={ () => this.handleCancel() }>返回</Button>
+              <Col span="18" offset="6">
+                <Button htmlType="submit" type="primary">确定</Button>
+                <Button onClick={ () => this.handleCancel() }>取消</Button>
               </Col>
             </Row>
           </Form>
-        </Row>
+        </div>
       </div>);
   }
 }
