@@ -30,7 +30,7 @@ export default class Home extends React.Component {
               <h2 className="tenant-name">{name}</h2>
             </div>
             <div className="setting-btn-wrap">
-              <NavLink to="/corp/info"><Button type="primary" shape="circle-outline" size="large"><AntIcon type="setting" /></Button></NavLink>
+              <NavLink to="/corp/info"><Button shape="circle-outline" size="large"><AntIcon type="setting" /></Button></NavLink>
             </div>
             <div className="tenant-nav">
             </div>

@@ -314,7 +314,6 @@ img {
       }
     }
     .am-title-nav {
-      margin-left: -20px;
       >li.dropdown {
         >a {
           padding: 0;
@@ -656,11 +655,9 @@ img {
 .page-header {
   margin: 0 0 10px;
   vertical-align: middle;
-  height: 30px;
   >h2 {
     font-size: 16px;
     line-height: 30px;
-    float: left;
   }
 }
 .page-body {
@@ -668,8 +665,8 @@ img {
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   min-height: 500px;
   margin-bottom: 86px;
+  clear: both;
 }
-
 .body-responsive {
   overflow-x: auto;
   min-height: .01%;
@@ -687,7 +684,6 @@ img {
     }
   }
 }
-
 .bottom-fixed-row {
   position: fixed;
   bottom: 0;
@@ -699,13 +695,13 @@ img {
   -moz-transition: all ease 0.4s;
   -o-transition: all ease 0.4s;
   transition: all ease 0.4s;
-  padding: 20px;
+  padding: 12px 20px 12px;
   z-index: 1000;
   @media (max-width:767px) {
     margin-left: -15px;
   }
-  .ant-btn {
-    margin-right: 8px;
+  .ant-btn + .ant-btn {
+    margin-left: 8px;
   }
 }
 .horizontal-divider {
@@ -715,7 +711,7 @@ img {
 
 .panel-header {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding: 20px 20px 0 20px;
   span {
     vertical-align: middle;
@@ -726,14 +722,25 @@ img {
   }
 }
 .panel-body {
+  clear: both;
   padding: 0px 20px 20px;
   @media (max-width:767px) {
     padding: 0;
   }
 }
-.action-btns button {
-  width: 80px;
-  height: 30px;
+.action-btns {
+  a {
+    margin-right: 15px;
+  }
+}
+.form-edit-content {
+  padding-right: 600px;
+  .ant-btn + .ant-btn {
+    margin-left: 8px;
+  }
+  @media (max-width:991px) {
+    padding: 10px;
+  }
 }
 
 @keyframes form-fade-enter {

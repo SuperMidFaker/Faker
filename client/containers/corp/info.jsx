@@ -106,12 +106,14 @@ export default class CorpInfo extends React.Component {
             {this.renderTextInput('详细地址', '', 'address')}
           </Col>
           <Col span="8">
-            <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
+            <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 18}} required>
               <Col span="18">
                 <Input type="text" disabled {...getFieldProps('code')} />
               </Col>
               <Col span="6">
-                <a role="button"><span>申请修改</span></a>
+                <p className="ant-form-text">
+                  <a role="button">申请修改</a>
+                </p>
               </Col>
             </FormItem>
             <FormItem label="行业类型" labelCol={{span: 6}} wrapperCol={{span: 16}}>
