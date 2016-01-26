@@ -4,19 +4,27 @@ import {Button, AntIcon} from '../../reusable/ant-ui';
 import AmNavBar from '../components/am-navbar';
 import NavLink from '../../reusable/components/nav-link';
 import ModuleLayout from '../components/module-layout';
+import { setNavTitle } from '../../universal/redux/reducers/navbar';
 import './home.less';
 
 @connect(
   state => ({
     logo: state.corpDomain.logo,
     name: state.corpDomain.name
-  })
+  }),
+  { setNavTitle }
 )
 export default class Home extends React.Component {
   static propTypes = {
+    setNavTitle: PropTypes.func.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   };
+  componentWillMount() {
+    this.props.setNavTitle({
+      depth: 1
+    });
+  }
 
   render() {
     const {logo, name} = this.props;

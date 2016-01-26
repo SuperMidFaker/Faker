@@ -2,19 +2,19 @@ import mysql from '../../reusable/db-util/mysql';
 function putInComposition(f, args) {
   let sql = '';
   if (f.name === 'username') {
-    sql += 'username like ?';
+    sql = 'username like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'email') {
-    sql += 'email like ?';
+    sql = 'email like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'phone') {
-    sql += 'phone like ?';
+    sql = 'phone like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'name') {
-    sql += 'name like ?';
+    sql = 'name like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'role') {
-    sql += 'TU.user_type = ?';
+    sql = 'TU.user_type = ?';
     args.push(f.value);
   }
   return sql;
@@ -122,11 +122,11 @@ export default {
     const args = [pid];
     return mysql.delete(sql, args, trans);
   },
-  getPersonnelCorpInfo(accountId) {
-    const sql = `select A.id as accountId, A.user_type as userType, name, corp_id as corpId,
-      parent_corp_id as parentCorpId from sso_corp_accounts as CA inner join sso_login as A
-      on A.id = CA.created_user_id where CA.id = ?`;
-    const args = [accountId];
+  getPersonnelInfo(pId) {
+    const sql = `select user_id as \`key\`, username as loginName, phone, email, name, position,
+      TU.user_type as role, status, login_id as loginId from sso_tenant_users as TU inner join
+      sso_login as L on TU.login_id = L.id where user_id = ?`;
+    const args = [pId];
     return mysql.query(sql, args);
   }
 }

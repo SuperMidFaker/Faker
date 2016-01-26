@@ -1,12 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {renderValidateStyle} from '../../../../reusable/browser-util/react-ant';
-import {AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message} from '../../../../reusable/ant-ui';
+import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
+import { AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message } from
+'../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import {isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit} from '../../../../universal/redux/reducers/personnel';
-import {isLoginNameExist, checkLoginName} from '../../../../reusable/domains/redux/checker-reducer';
-import {isMobile} from '../../../../reusable/common/validater';
-import {TENANT_ROLE} from '../../../../universal/constants';
+import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
+'../../../../universal/redux/reducers/personnel';
+import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { isLoginNameExist, checkLoginName } from
+'../../../../reusable/domains/redux/checker-reducer';
+import { isMobile } from '../../../../reusable/common/validater';
+import { TENANT_ROLE } from '../../../../universal/constants';
 const FormItem = Form.Item;
 
 function fetchData({state, dispatch, cookie, params}) {
@@ -29,7 +33,7 @@ function fetchData({state, dispatch, cookie, params}) {
     code: state.account.code,
     tenant: state.personnel.tenant
   }),
-  {setFormValue, edit, submit, checkLoginName})
+  { setFormValue, edit, submit, checkLoginName, setNavTitle })
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -51,8 +55,29 @@ export default class CorpEdit extends React.Component {
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
+    setNavTitle: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
+  }
+  componentWillMount() {
+    const isCreating = this.props.formData.key === null;
+    this.props.setNavTitle({
+      depth: 3,
+      text: isCreating ? '添加用户' : `用户${this.props.formData.name}`,
+      moduleName: '',
+      withModuleLayout: false,
+      backUrl: '/corp/personnel'
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    const isCreating = nextProps.formData.key === null;
+    this.props.setNavTitle({
+      depth: 3,
+      text: isCreating ? '添加用户' : `用户${nextProps.formData.name}`,
+      moduleName: '',
+      withModuleLayout: false,
+      backUrl: '/corp/personnel'
+    });
   }
   onSubmitReturn(error) {
     if (error) {
@@ -126,7 +151,7 @@ export default class CorpEdit extends React.Component {
                   if (value === undefined || value === '') {
                     callback(new Error('联系人手机号必填'));
                   } else if (isMobile(value)) {
-                    callback(null);
+                    callback();
                   } else {
                     callback(new Error('非法手机号'));
                   }

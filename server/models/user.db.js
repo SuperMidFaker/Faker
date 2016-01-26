@@ -69,12 +69,6 @@ export default {
     return mysql.query(sql, args);
   },
 
-  getPersonnelInfo(accountId) {
-    const sql = `select A.id as accountId, phone, name, department, position from sso_corp_accounts as CA
-      inner join sso_login as A on A.id = CA.id where CA.id = ?`;
-    const args = [accountId];
-    return mysql.query(sql, args);
-  },
   getPersonnelCorpInfo(accountId) {
     const sql = `select A.id as accountId, A.user_type as userType, name, corp_id as corpId,
       parent_corp_id as parentCorpId from sso_corp_accounts as CA inner join sso_login as A

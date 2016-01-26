@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {renderValidateStyle} from '../../../../reusable/browser-util/react-ant';
-import {Button, Form, Input, Row, Col, message} from '../../../../reusable/ant-ui';
+import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
+import { Button, Form, Input, Row, Col, message } from '../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import {isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit, checkLoginName} from '../../../../universal/redux/reducers/corps';
+import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit,
+  submit, checkLoginName } from '../../../../universal/redux/reducers/corps';
 import {isMobile} from '../../../../reusable/common/validater';
 const FormItem = Form.Item;
 
@@ -79,6 +80,7 @@ export default class CorpEdit extends React.Component {
     this.props.history.goBack();
   }
   isLoginNameExist(name, callback) {
+    // todo can use common
     if (name === undefined || name === '') {
       return callback(new Error('用户名必填'));
     }
@@ -86,11 +88,11 @@ export default class CorpEdit extends React.Component {
     this.props.checkLoginName(name || '', this.props.formData.loginId, this.props.account.tenantId).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
-        callback(null);
+        callback();
       } else if (result.data.exist) {
         callback(new Error('用户名已存在'));
       } else {
-        callback(null);
+        callback();
       }
     });
   }
@@ -128,7 +130,7 @@ export default class CorpEdit extends React.Component {
                 if (value === undefined || value === '') {
                   callback(new Error('联系人手机号必填'));
                 } else if (isMobile(value)) {
-                  callback(null);
+                  callback();
                 } else {
                   callback(new Error('非法手机号'));
                 }

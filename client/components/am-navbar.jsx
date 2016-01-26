@@ -1,16 +1,47 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Popover } from '../../reusable/ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
-import {DEFAULT_MODULES} from '../../universal/constants';
+
+@connect(
+  state => ({
+    navTitle: state.navbar.navTitle
+  })
+)
 export default class AmNavBar extends React.Component {
   static propTypes = {
-    locationPath: PropTypes.string,
-    barTitle: PropTypes.string
+    navTitle: PropTypes.object.isRequired
   }
   render() {
-    const moduleName = this.props.locationPath && this.props.locationPath.split('/')[1];
+    const { navTitle } = this.props;
+    const moduleName = navTitle.moduleName;
+    let amTitleNav = null;
+    if (navTitle.depth === 2) {
+      if (navTitle.withModuleLayout) {
+        amTitleNav = (
+          <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
+            <a role="button" aria-expanded="false" className="dropdown-toggle">
+              <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-${moduleName}`}></i>
+              {navTitle.text}
+              <span className="angle-down s7-angle-down"></span>
+            </a>
+          </Popover>);
+      } else {
+        amTitleNav = (
+          <a role="button" aria-expanded="false" className="dropdown-toggle">
+            <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-${moduleName}`}></i>
+            {navTitle.text}
+          </a>);
+      }
+    } else if (navTitle.depth === 3) {
+      amTitleNav = (
+        <NavLink to={navTitle.backUrl}>
+          <i className={`hidden-xs zmdi zmdi-hc-3x zmdi-long-arrow-left`}></i>
+          {navTitle.text}
+        </NavLink>);
+    }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
         <div className="container-fluid">
@@ -26,20 +57,7 @@ export default class AmNavBar extends React.Component {
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
               <li className="dropdown">
-              { moduleName &&
-                <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
-                  <a role="button" aria-expanded="false" className="dropdown-toggle">
-                    <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
-                    {DEFAULT_MODULES[moduleName].text}
-                    <span className="angle-down s7-angle-down"></span>
-                  </a>
-                </Popover>
-              }
-              </li>
-              <li className="dropdown">
-                <a role="button" aria-expanded="false" className="dropdown-toggle">
-                  <span>{this.props.barTitle}</span>
-                </a>
+              { amTitleNav }
               </li>
             </ul>
             <ul className="nav navbar-nav navbar-right am-user-nav">

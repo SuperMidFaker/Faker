@@ -8,7 +8,10 @@ const initialState = {
   logo: ''
 };
 
-const actions = ['CPD_LOAD', 'CPD_LOAD_SUCCEED', 'CPD_LOAD_FAIL'];
+const actions = [
+  'CPD_LOAD', 'CPD_LOAD_SUCCEED', 'CPD_LOAD_FAIL',
+  'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
+];
 const domain = '@@welogix/corpd/';
 const actionTypes = createActionTypes(domain, actions);
 
@@ -21,6 +24,17 @@ export default function reducer(state = initialState, action) {
   default:
     return state;
   }
+}
+
+export function checkCorpDomain(subdomain, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CHECK_CORP_DOMAIN, actionTypes.CHECK_DOMAIN_SUCCEED, actionTypes.CHECK_DOMAIN_FAIL],
+      endpoint: 'v1/user/corp/check/subdomain',
+      method: 'get',
+      params: {domain: subdomain, tenantId}
+    }
+  };
 }
 
 export function loadCorpByDomain(cookie, params) {
