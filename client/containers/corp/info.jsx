@@ -8,7 +8,7 @@ import connectFetch from '../../../reusable/decorators/connect-fetch';
 import { isFormDataLoaded, loadForm, setFormValue, uploadImg, edit } from
 '../../../universal/redux/reducers/corps';
 import { checkCorpDomain } from '../../../universal/redux/reducers/corp-domain';
-import {isMobile} from '../../../reusable/common/validater';
+import { validatePhone } from '../../../reusable/common/validater';
 import {TENANT_LEVEL} from '../../../universal/constants';
 const Dropzone = require('react-dropzone');
 
@@ -137,23 +137,14 @@ export default class CorpInfo extends React.Component {
             {this.renderTextInput('联系人', '', 'contact', true, [{required: true, message: '联系人名称必填', type: 'string', whitespace: true}]
                                    , {transform: (value) => (value.trim())})}
             {this.renderTextInput('手机号', '', 'phone', true, [{
-              validator: (rule, value, callback) => {
-                if (value === '') {
-                  callback(new Error('联系人手机号必填'));
-                } else if (isMobile(value)) {
-                  callback();
-                } else {
-                  callback(new Error('非法手机号'));
-                }
-              }}
-            ])}
+              validator: (rule, value, callback) => validatePhone(value, callback)
+            }])}
           </Col>
           <Col span="8">
             <FormItem label="职位" labelCol={{span: 6}} wrapperCol={{span: 16}}>
               <Input type="text" {...getFieldProps('position')} />
             </FormItem>
-            {this.renderTextInput('Email', '', 'email', false, [{type: 'string', pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-                                  message: 'email格式错误'}])}
+            {this.renderTextInput('Email', '', 'email', false, [{type: 'email', message: 'email格式错误'}])}
           </Col>
         </Row>
       </Form>
@@ -183,11 +174,8 @@ export default class CorpInfo extends React.Component {
         </Row>
         <Row className="horizontal-divider">
           <Col span="8">
-            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}} help={getFieldError('subdomain')} hasFeedback
-              validateStatus={renderValidateStyle('subdomain', this.props.formhoc)}>
-              <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('subdomain', {
-                rules: [{validator: (rule, value, callback) => this.isCorpDomainExist(value, callback)}]
-              })} />
+            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}} help={getFieldError('subdomain')}>
+              <Input type="text" addonAfter=".welogix.cn" disabled {...getFieldProps('subdomain')} />
             </FormItem>
           </Col>
         </Row>

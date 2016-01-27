@@ -10,7 +10,7 @@ import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, 
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { isLoginNameExist, checkLoginName } from
 '../../../../reusable/domains/redux/checker-reducer';
-import { isMobile } from '../../../../reusable/common/validater';
+import { validatePhone } from '../../../../reusable/common/validater';
 import { TENANT_ROLE } from '../../../../universal/constants';
 const FormItem = Form.Item;
 
@@ -27,6 +27,10 @@ function fetchData({state, dispatch, cookie, params}) {
   }
 }
 
+function goBack(props) {
+  props.history.goBack();
+}
+
 @connectFetch()(fetchData)
 @connect(
   state => ({
@@ -34,19 +38,19 @@ function fetchData({state, dispatch, cookie, params}) {
     code: state.account.code,
     tenant: state.personnel.tenant
   }),
-  { setFormValue, edit, submit, checkLoginName, setNavTitle })
-@connectNav((props) => {
+  { setFormValue, edit, submit, checkLoginName })
+@connectNav((props, dispatch) => {
   if (props.formData.key === -1) {
     return;
   }
   const isCreating = props.formData.key === null;
-  props.setNavTitle({
+  dispatch(setNavTitle({
     depth: 3,
     text: isCreating ? '添加用户' : `用户${props.formData.name}`,
     moduleName: '',
-    goBackFn: () => props.history.goBack(),
+    goBackFn: () => goBack(props),
     withModuleLayout: false
-  });
+  }));
 })
 @Form.formify({
   mapPropsToFields(props) {
@@ -69,41 +73,19 @@ export default class CorpEdit extends React.Component {
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
-    setNavTitle: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
   constructor() {
     super();
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
-  /*
-  componentWillMount() {
-    const isCreating = this.props.formData.key === null;
-    this.props.setNavTitle({
-      depth: 3,
-      text: isCreating ? '添加用户' : `用户${this.props.formData.name}`,
-      moduleName: '',
-      withModuleLayout: false,
-      goBackFn: this.handleCancel
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    const isCreating = nextProps.formData.key === null;
-    this.props.setNavTitle({
-      depth: 3,
-      text: isCreating ? '添加用户' : `用户${nextProps.formData.name}`,
-      moduleName: '',
-      withModuleLayout: false,
-      goBackFn: this.handleCancel
-    });
-  }
- */
   onSubmitReturn(error) {
     if (error) {
       message.error(error.message, 10);
     } else {
-      this.props.history.goBack();
+      goBack(this.props);
     }
   }
   handleSubmit(ev) {
@@ -125,7 +107,7 @@ export default class CorpEdit extends React.Component {
     });
   }
   handleCancel() {
-    this.props.history.goBack();
+    goBack(this.props);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
@@ -140,14 +122,15 @@ export default class CorpEdit extends React.Component {
   render() {
     const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
     const isCreating = this.props.formData.key === null;
-    // todo loginname no '@'
+    // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
         <div className="page-header">
           <h2>用户管理</h2>
         </div>
         <div className="page-body">
-          <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} className="form-edit-content">
+          { this.props.tenant.id === -1 && <h3>未选择所属租户,无法修改</h3> }
+          <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
             {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
             <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
               validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
@@ -163,20 +146,10 @@ export default class CorpEdit extends React.Component {
                                                 true, [{required: true, min: 6, message: '至少6位字符'}],
                                                null, 'password')}
             {this.renderTextInput('手机号', '可作登录帐号使用', 'phone', true, [{
-              validator: (rule, value, callback) => {
-                if (value === undefined || value === '') {
-                  callback(new Error('联系人手机号必填'));
-                } else if (isMobile(value)) {
-                  callback();
-                } else {
-                  callback(new Error('非法手机号'));
-                }
-              }}
-            ])}
+              validator: (rule, value, callback) => validatePhone(value, callback)
+            }])}
             {this.renderTextInput('Email', '绑定后可作登录帐号使用', 'email', false, [{
-              type: 'string',
-              pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-              message: 'email格式错误'}])}
+              type: 'email', message: 'email格式错误'}])}
             {this.renderTextInput('职位', '', 'position')}
             {this.props.formData.role !== TENANT_ROLE.owner.name &&
             <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>
@@ -187,7 +160,7 @@ export default class CorpEdit extends React.Component {
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
-                <Button htmlType="submit" type="primary">确定</Button>
+                <Button disabled={ this.props.tenant.id === -1 } htmlType="submit" type="primary">确定</Button>
                 <Button onClick={ this.handleCancel }>取消</Button>
               </Col>
             </Row>
