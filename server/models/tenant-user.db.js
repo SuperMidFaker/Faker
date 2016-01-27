@@ -100,7 +100,8 @@ export default {
     const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
     const sql = `select user_id as \`key\`, username as loginName, phone, email, name, position,
       TU.user_type as role, status, login_id as loginId from sso_tenant_users as TU inner join
-      sso_login as L on TU.login_id = L.id where tenant_id = ? ${filterClause} ${sortClause} limit ?, ?`;
+      sso_login as L on TU.login_id = L.id where tenant_id = ? ${filterClause} ${sortClause}
+      limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     console.log(sql, args);
     return mysql.query(sql, args);

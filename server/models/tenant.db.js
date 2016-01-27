@@ -17,12 +17,12 @@ function packColumnArgs(item) {
 }
 export default {
   getCorpAndOwnerInfo(corpId) {
-    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country,
-      province, city, district, address, logo, short_name, category_id, website, remark, level, email,
-      contact, position, login_id as loginId, username as loginName from sso_tenants as T inner join
-      (select tenant_id, login_id, name, username, position from sso_tenant_users as TU inner join
-      sso_login as L on TU.login_id = L.id where TU.tenant_id = ? and TU.user_type = 'owner') as TUL
-      on T.tenant_id = TUL.tenant_id limit 1`;
+    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain,
+      country, province, city, district, address, logo, short_name, category_id, website, remark,
+      level, email, contact, position, login_id as loginId, username as loginName from
+      sso_tenants as T inner join (select tenant_id, login_id, name, username, position from
+      sso_tenant_users as TU inner join sso_login as L on TU.login_id = L.id where TU.tenant_id = ?
+      and TU.user_type = 'owner') as TUL on T.tenant_id = TUL.tenant_id limit 1`;
     const args = [corpId];
     return mysql.query(sql, args);
   },
@@ -34,8 +34,14 @@ export default {
     args.push(corp.key);
     return mysql.update(sql, args, trans);
   },
+  updateCorpOwnerInfo(tenantId, phone, contact, email, trans) {
+    const sql = 'update sso_tenants set phone = ?, contact = ?, email = ? where tenant_id = ?';
+    const args = [phone, contact, email, tenantId];
+    return mysql.update(sql, args, trans);
+  },
   getSubdomainCount(subdomain, tenantId) {
-    const sql = `select count(tenant_id) as count from sso_tenants where subdomain = ? and level = 1 and tenant_id != ?`;
+    const sql = `select count(tenant_id) as count from sso_tenants where subdomain = ?
+      and level = 1 and tenant_id != ?`;
     const args = [subdomain, tenantId];
     return mysql.query(sql, args);
   },

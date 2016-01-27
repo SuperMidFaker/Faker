@@ -1,18 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus} from '../../../../universal/redux/reducers/personnel';
-import {Table, Button, Select, message} from '../../../../reusable/ant-ui';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from '../../../../universal/redux/reducers/personnel';
+import { Table, Button, Select, message } from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import {ACCOUNT_STATUS, TENANT_ROLE} from '../../../../universal/constants';
+import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
 
-function fetchData({state, dispatch, location, cookie}) {
+function fetchData({state, dispatch, cookie}) {
   const promises = [];
-  if (location.action !== 'POP' || !isLoaded(state, 'personnel')) {
-    // 当从Edit页面切回来不重新加载
-    // 从其他页面切过来或者在服务端重新加载
+  if (!isLoaded(state, 'personnel')) {
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
     promises.push(p);
     p = dispatch(loadPersonnel(cookie, {

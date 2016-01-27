@@ -95,7 +95,7 @@ export default class CorpEdit extends React.Component {
     this.props.formhoc.validate((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData).then(result => {
+          this.props.edit(this.props.formData, this.props.tenant.id).then(result => {
             this.onSubmitReturn(result.error);
           });
         } else {

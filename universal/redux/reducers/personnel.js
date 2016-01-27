@@ -1,8 +1,9 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
-import {appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
-  clearFormC, setFormValueC} from '../../../reusable/domains/redux/form-common';
-import {TENANT_ROLE} from '../../../universal/constants';
+import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
+  clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
+import { TENANT_ROLE } from '../../../universal/constants';
+import { CORP_EDIT_SUCCEED } from './corps';
 const actionTypes = createActionTypes('@@welogix/personnel/', [
   'SWITCH_TENANT',
   'MASTER_TENANTS_LOAD', 'MASTER_TENANTS_LOAD_SUCCEED', 'MASTER_TENANTS_LOAD_FAIL',
@@ -13,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/personnel/', [
   'PERSONNEL_LOAD', 'PERSONNEL_LOAD_SUCCEED', 'PERSONNEL_LOAD_FAIL']);
 appendFormAcitonTypes('@@welogix/personnel/', actionTypes);
 
+export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
@@ -35,49 +37,52 @@ const initialState = {
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case actionTypes.PERSONNEL_LOAD:
-    return {...state, loading: true, needUpdate: false};
-  case actionTypes.PERSONNEL_LOAD_SUCCEED:
-    return {...state, loaded: true, loading: false,
-      personnelist: {...state.personnelist, ...action.result.data}
-    };
-  case actionTypes.PERSONNEL_LOAD_FAIL:
-    return {...state, loading: false};
-  case actionTypes.MASTER_TENANTS_LOAD_SUCCEED:
-    return {...state, branches: action.result.data,
-      tenant: action.result.data.length > 0 ? {
-        id: action.result.data[0].key,
-        parentId: action.result.data[0].parentId
-      } : {}};
-  case actionTypes.SWITCH_TENANT:
-    return {...state, tenant: action.tenant};
-  case actionTypes.SWITCH_STATUS_SUCCEED: {
-    const personnelist = {...state.personnelist};
-    personnelist.data[action.index].status = action.data.status;
-    return {...state, personnelist};
-  }
-  case actionTypes.PERSONNEL_EDIT_SUCCEED: {
-    const personnelist = {...state.personnelist};
-    personnelist.data[state.selectedIndex] = action.data.personnel;
-    return { ...state, personnelist, selectedIndex: -1 };
-  }
-  case actionTypes.PERSONNEL_DELETE_SUCCEED: {
-    return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
-  }
-  case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
-    const personnelist = {...state.personnelist};
-    if ((personnelist.current - 1) * personnelist.pageSize <= personnelist.totalCount // = for 0 totalCount
-        && personnelist.current * personnelist.pageSize > personnelist.totalCount) {
-      personnelist.data.push({...action.data.personnel, key: action.result.data.pid,
-                          loginId: action.result.data.loginId, status: action.result.data.status});
+    case CORP_EDIT_SUCCEED:
+      // 租户变化时重新加载
+      return { ...state, loaded: false };
+    case actionTypes.PERSONNEL_LOAD:
+      return {...state, loading: true, needUpdate: false};
+    case actionTypes.PERSONNEL_LOAD_SUCCEED:
+      return {...state, loaded: true, loading: false,
+        personnelist: {...state.personnelist, ...action.result.data}
+      };
+    case actionTypes.PERSONNEL_LOAD_FAIL:
+      return {...state, loading: false};
+    case actionTypes.MASTER_TENANTS_LOAD_SUCCEED:
+      return {...state, branches: action.result.data,
+        tenant: action.result.data.length > 0 ? {
+          id: action.result.data[0].key,
+          parentId: action.result.data[0].parentId
+        } : {}};
+    case actionTypes.SWITCH_TENANT:
+      return {...state, tenant: action.tenant};
+    case actionTypes.SWITCH_STATUS_SUCCEED: {
+      const personnelist = {...state.personnelist};
+      personnelist.data[action.index].status = action.data.status;
+      return {...state, personnelist};
     }
-    personnelist.totalCount++;
-    return { ...state, personnelist };
-  }
-  // todo deal with submit fail submit loading
-  default:
-    return formReducer(actionTypes, state, action, {key: null, role: TENANT_ROLE.member.name}, 'personnelist')
-          || state;
+    case actionTypes.PERSONNEL_EDIT_SUCCEED: {
+      const personnelist = {...state.personnelist};
+      personnelist.data[state.selectedIndex] = action.data.personnel;
+      return { ...state, personnelist, selectedIndex: -1 };
+    }
+    case actionTypes.PERSONNEL_DELETE_SUCCEED: {
+      return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
+    }
+    case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
+      const personnelist = {...state.personnelist};
+      if ((personnelist.current - 1) * personnelist.pageSize <= personnelist.totalCount // = for 0 totalCount
+          && personnelist.current * personnelist.pageSize > personnelist.totalCount) {
+        personnelist.data.push({...action.data.personnel, key: action.result.data.pid,
+                            loginId: action.result.data.loginId, status: action.result.data.status});
+      }
+      personnelist.totalCount++;
+      return { ...state, personnelist };
+    }
+    // todo deal with submit fail submit loading
+    default:
+      return formReducer(actionTypes, state, action, {key: null, role: TENANT_ROLE.member.name}, 'personnelist')
+            || state;
   }
 }
 
@@ -87,18 +92,18 @@ export function delPersonnel(pid, loginId, tenant) {
       types: [actionTypes.PERSONNEL_DELETE, actionTypes.PERSONNEL_DELETE_SUCCEED, actionTypes.PERSONNEL_DELETE_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'del',
-      data: {pid, loginId, tenant}
+      data: { pid, loginId, tenant }
     }
   };
 }
 
-export function edit(personnel) {
+export function edit(personnel, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_EDIT, actionTypes.PERSONNEL_EDIT_SUCCEED, actionTypes.PERSONNEL_EDIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'put',
-      data: { personnel }
+      data: { personnel, tenantId }
     }
   };
 }
@@ -109,7 +114,7 @@ export function submit(personnel, tenant) {
       types: [actionTypes.PERSONNEL_SUBMIT, actionTypes.PERSONNEL_SUBMIT_SUCCEED, actionTypes.PERSONNEL_SUBMIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'post',
-      data: {personnel, tenant}
+      data: { personnel, tenant }
     }
   };
 }
@@ -170,7 +175,7 @@ export function switchStatus(index, pid, status) {
       endpoint: 'v1/user/personnel/status',
       method: 'put',
       index,
-      data: {status, pid}
+      data: { status, pid }
     }
   };
 }

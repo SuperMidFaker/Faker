@@ -53,7 +53,6 @@ function *loginUserP() {
     const users = yield userDao.getUserByAccount(username, body.code);
     if (users.length > 0) {
       const user = users[0];
-      // todo add the subdomain corp-code condition
       const checkpwd = bCryptUtil.checkpw(password, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
       if (checkpwd) {
         const claims = { userId: user.id, userType: user.user_type };
@@ -325,6 +324,8 @@ function *editPersonnel() {
     trans = yield mysql.beginTransaction();
     yield userDao.updateLoginName(personnel.loginId, personnel.phone, personnel.loginName,
                                   personnel.email, trans);
+    yield tenantDao.updateCorpOwnerInfo(body.tenantId, personnel.phone, personnel.name,
+                                        personnel.email, trans);
     yield tenantUserDao.updatePersonnel(personnel, trans);
     yield mysql.commit(trans);
     Result.OK(this);
@@ -444,7 +445,7 @@ function *getCorpBySubdomain() {
   const subdomain = this.request.query.subdomain;
   console.log('getCorpBySubdomain', subdomain);
   try {
-   const result = yield tenantDao.getTenantByDomain(subdomain); 
+   const result = yield tenantDao.getTenantByDomain(subdomain);
    if (result.length === 0) {
      throw new Error('当前子域未对应任何租户');
    }

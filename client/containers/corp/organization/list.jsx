@@ -27,7 +27,7 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  {loadCorps, delCorp, switchStatus, switchTenantApp}
+  { loadCorps, delCorp, switchStatus, switchTenantApp }
 )
 export default class CorpList extends React.Component {
   static propTypes = {
