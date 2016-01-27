@@ -4,7 +4,6 @@ import { CHINA_CODE } from '../../../universal/constants';
 import {appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
   clearFormC, setFormValueC} from '../../../reusable/domains/redux/form-common';
 const actionTypes = createActionTypes('@@welogix/corps/', [
-  'CHANGE_CURRENT_PAGE',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
@@ -34,8 +33,6 @@ const initialState = {
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case actionTypes.CHANGE_CURRENT_PAGE:
-    return {...state, corplist: {...state.corplist, current: action.current}, needUpdate: true};
   case actionTypes.SWITCH_STATUS_SUCCEED: {
     const corplist = { ...state.corplist };
     corplist.data[action.index].status = action.data.status;
@@ -207,12 +204,5 @@ export function switchTenantApp(tenantId, checked, app, index) {
       index,
       data: {tenantId, checked, app}
     }
-  };
-}
-
-export function changeCurrentPage(current) {
-  return {
-    type: actionTypes.CHANGE_CURRENT_PAGE,
-    current
   };
 }

@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApp} from '../../../../universal/redux/reducers/corps';
-import {Table, Button, AntIcon, message} from '../../../../reusable/ant-ui';
+import { loadCorps, delCorp, switchStatus, switchTenantApp } from
+'../../../../universal/redux/reducers/corps';
+import { Table, Button, AntIcon, message } from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import {ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES} from '../../../../universal/constants';
+import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'corps')) {
@@ -26,12 +27,11 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  {loadCorps, delCorp, changeCurrentPage, switchStatus, switchTenantApp}
+  {loadCorps, delCorp, switchStatus, switchTenantApp}
 )
 export default class CorpList extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    changeCurrentPage: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     needUpdate: PropTypes.bool.isRequired,
@@ -98,8 +98,7 @@ export default class CorpList extends React.Component {
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
-        onChange: (page) => this.props.changeCurrentPage(page),
-        pageSizeOptions: [`${result.pageSize}`, `${2 * result.pageSize}`, `${3 * result.pageSize}`],
+        pageSizeOptions: ['5', '10'], // todo how to make it sync with initialstate pageSize
         pageSize: result.pageSize
       }),
       getParams: (pagination, filters, sorter) => {

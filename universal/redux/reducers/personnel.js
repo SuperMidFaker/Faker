@@ -59,7 +59,7 @@ export default function reducer(state = initialState, action) {
   case actionTypes.PERSONNEL_EDIT_SUCCEED: {
     const personnelist = {...state.personnelist};
     personnelist.data[state.selectedIndex] = action.data.personnel;
-    return { ...state, personnelist};
+    return { ...state, personnelist, selectedIndex: -1 };
   }
   case actionTypes.PERSONNEL_DELETE_SUCCEED: {
     return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };

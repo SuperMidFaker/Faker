@@ -34,6 +34,7 @@ function goBack(props) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
+    selectedIndex: state.personnel.selectedIndex,
     formData: state.personnel.formData,
     code: state.account.code,
     tenant: state.personnel.tenant
@@ -67,6 +68,7 @@ function goBack(props) {
 export default class CorpEdit extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
+    selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     tenant: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
@@ -129,7 +131,6 @@ export default class CorpEdit extends React.Component {
           <h2>用户管理</h2>
         </div>
         <div className="page-body">
-          { this.props.tenant.id === -1 && <h3>未选择所属租户,无法修改</h3> }
           <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
             {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
             <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
@@ -160,7 +161,8 @@ export default class CorpEdit extends React.Component {
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
-                <Button disabled={ this.props.tenant.id === -1 } htmlType="submit" type="primary">确定</Button>
+                <Button disabled={ this.props.selectedIndex === -1 } htmlType="submit"
+                title="未选择所属租户,无法修改" type="primary">确定</Button>
                 <Button onClick={ this.handleCancel }>取消</Button>
               </Col>
             </Row>
