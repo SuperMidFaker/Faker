@@ -167,20 +167,17 @@ export default class CorpInfo extends React.Component {
         <Row>
           <Col span="8">
             <FormItem label="企业LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-              <Col span="5">
+                <img style={{height: 120, width: 120, margin: 10, border: '1px solid #e0e0e0', borderRadius: 60}} src={logoPng || '/assets/img/wetms.png'}/>
                 <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } style={{}}>
-                  <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{height: 146, width: 186, marginBottom: 20}}>
+                  <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{height: 140, marginTop: 20}}>
                     <span>
                       <div className="ant-upload-drag-container">
-                        <AntIcon type="plus" />
+                        <AntIcon type="upload" />
+                        <p className="ant-upload-hint">建议使用PNG或GIF格式的透明图片</p>
                       </div>
                     </span>
                   </div>
                 </Dropzone>
-              </Col>
-              <Col span="4" offset="6">
-                <img style={{height: 120, width: 120, margin: 10, border: '1px dashed #e0e0e0', borderRadius: 6}} src={logoPng || '/assets/img/wetms.png'}/>
-              </Col>
             </FormItem>
           </Col>
         </Row>

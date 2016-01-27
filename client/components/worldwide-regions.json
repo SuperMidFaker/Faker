@@ -1,6 +1,11 @@
 {
         "countries": [
                 {
+                        "code": "CN",
+                        "en": "China",
+                        "zh_cn": "中国"
+                },
+                {
                         "code":"AO",
                         "en": "Angola",
                         "zh_cn": "安哥拉"
@@ -179,11 +184,7 @@
                         "en": "Chile",
                         "zh_cn": "智利"
                 },
-                {
-                        "code": "CN",
-                        "en": "China",
-                        "zh_cn": "中国"
-                },
+
                 {
                         "code": "CO",
                         "en": "Colombia",
