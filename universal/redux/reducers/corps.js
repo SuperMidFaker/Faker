@@ -36,12 +36,12 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case PERSONNEL_EDIT_SUCCEED:
-      // 租户用户修改有可能租房拥有者信息改变需重新加载
+      // 用户修改可能导致租户拥有者信息改变需重新加载
       return { ...state, loaded: false };
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const corplist = { ...state.corplist };
       corplist.data[action.index].status = action.data.status;
-      return {...state, corplist};
+      return { ...state, corplist };
     }
     case actionTypes.IMG_UPLOAD_SUCCEED: {
       const form = { ...state.formData };
@@ -171,7 +171,7 @@ export function checkLoginName(loginName, loginId, tenantId) {
       types: [actionTypes.CHECK_LOGINNAME, actionTypes.CHECK_LOGINNAME_SUCCEED, actionTypes.CHECK_LOGINNAME_FAIL],
       endpoint: 'v1/user/check/loginname',
       method: 'get',
-      params: {loginName, loginId, tenantId}
+      params: { loginName, loginId, tenantId }
     }
   };
 }
@@ -183,7 +183,7 @@ export function switchStatus(index, tenantId, status) {
       endpoint: 'v1/user/corp/status',
       method: 'put',
       index,
-      data: {status, tenantId}
+      data: { status, tenantId }
     }
   };
 }
@@ -207,7 +207,7 @@ export function switchTenantApp(tenantId, checked, app, index) {
       endpoint: 'v1/user/corp/app',
       method: 'post',
       index,
-      data: {tenantId, checked, app}
+      data: { tenantId, checked, app }
     }
   };
 }

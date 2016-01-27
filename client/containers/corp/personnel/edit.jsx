@@ -143,9 +143,9 @@ export default class CorpEdit extends React.Component {
                 transform: (value) => `${value}@${code}`
               })} />
             </FormItem>
-            {isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',
+            { isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',
                                                 true, [{required: true, min: 6, message: '至少6位字符'}],
-                                               null, 'password')}
+                                               null, 'password') }
             {this.renderTextInput('手机号', '可作登录帐号使用', 'phone', true, [{
               validator: (rule, value, callback) => validatePhone(value, callback)
             }])}

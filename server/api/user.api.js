@@ -326,7 +326,9 @@ function *editPersonnel() {
                                   personnel.email, trans);
     yield tenantDao.updateCorpOwnerInfo(body.tenantId, personnel.phone, personnel.name,
                                         personnel.email, trans);
-    yield tenantUserDao.updatePersonnel(personnel, trans);
+    if (personnel.role === TENANT_ROLE.owner.name) {
+      yield tenantUserDao.updatePersonnel(personnel, trans);
+    }
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {

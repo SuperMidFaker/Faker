@@ -116,11 +116,12 @@ export default class CorpEdit extends React.Component {
     );
   }
   render() {
-    const {formhoc: {getFieldProps, getFieldError}, account: {code}} = this.props;
+    const { formhoc: {getFieldProps, getFieldError}, account: {code} } = this.props;
     return (
       <div className="page-body">
         <Form horizontal onSubmit={this.handleSubmit} className="form-edit-content">
           {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+          <div>
           {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
           <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
             validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
@@ -138,6 +139,7 @@ export default class CorpEdit extends React.Component {
           {this.renderTextInput('Email', '', 'email', false, [{
             type: 'email',
             message: 'email格式错误'}])}
+          </div>
           <Row>
             <Col span="18" offset="6">
               <Button htmlType="submit" type="primary">确定</Button>

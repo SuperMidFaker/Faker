@@ -20,6 +20,8 @@ function fetchData({state, dispatch, cookie}) {
     }));
     promises.push(p);
   }
+  // 分别加载当前用户所有的租户列表和该用户所在租户下用户列表
+  // 返回多个promise结果
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
