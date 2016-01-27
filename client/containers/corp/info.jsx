@@ -9,7 +9,7 @@ import { isFormDataLoaded, loadForm, setFormValue, uploadImg, edit } from
 '../../../universal/redux/reducers/corps';
 import { checkCorpDomain } from '../../../universal/redux/reducers/corp-domain';
 import { validatePhone } from '../../../reusable/common/validater';
-import {TENANT_LEVEL} from '../../../universal/constants';
+import { TENANT_LEVEL } from '../../../universal/constants';
 const Dropzone = require('react-dropzone');
 
 const Option = Select.Option;
@@ -28,7 +28,7 @@ function fetchData({state, dispatch, cookie}) {
   state => ({
     formData: state.corps.formData
   }),
-  {uploadImg, setFormValue, edit, checkCorpDomain})
+  { uploadImg, setFormValue, edit, checkCorpDomain })
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;

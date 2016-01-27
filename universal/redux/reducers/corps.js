@@ -37,7 +37,7 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case PERSONNEL_EDIT_SUCCEED:
       // 用户修改可能导致租户拥有者信息改变需重新加载
-      return { ...state, loaded: false };
+      return { ...state, loaded: false, formData: initialState.formData };
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const corplist = { ...state.corplist };
       corplist.data[action.index].status = action.data.status;
