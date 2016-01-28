@@ -62,7 +62,8 @@ export default function reducer(state = initialState, action) {
   case actionTypes.ID_LOAD_STATUS:
     return {...state, statusList: initialState.statusList};
   case actionTypes.ID_LOAD_STATUS_SUCCEED:
-    return {...state, statusList: action.result.data};
+     return {...state, statusList: {...state.statusList, notSendCount: action.result.data.notSendCount, notAcceptCount: action.result.data.notAcceptCount, acceptCount: action.result.data.acceptCount}};
+  return { ...state, statusList: action.result };
   case actionTypes.ID_LOAD_STATUS_FAIL:
     return { ...state, statusList: initialState.statusList };
   default:
@@ -117,7 +118,6 @@ export function delId(idkey) {
 }
 
 export function loadStatus(cookie,params) {
-  debugger
   return {
     [CLIENT_API]: {
       types: [ actionTypes.ID_LOAD_STATUS, actionTypes.ID_LOAD_STATUS_SUCCEED, actionTypes.ID_LOAD_STATUS_FAIL ],

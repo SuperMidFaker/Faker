@@ -36,6 +36,7 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     tenantId: state.account.tenantId,
     idlist: state.importdelegate.idlist,
+    statusList: state.importdelegate.statusList,
     needUpdate: state.importdelegate.needUpdate,
     formData: state.importdelegate.formData,
     loading: state.importdelegate.loading
@@ -56,6 +57,7 @@ export default class ImportDelegate extends React.Component {
   static propTypes = {
     formhoc: PropTypes.object.isRequired,
     idlist: PropTypes.object.isRequired,
+    statusList:PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     updateId: PropTypes.func.isRequired,
@@ -77,6 +79,8 @@ export default class ImportDelegate extends React.Component {
       statusNotSend:'primary',
       statusNotAccept:'ghost',
       statusAccept:'ghost',
+      currentStatus:0,
+      searchVal:''
     };
   }
   handleIdReg() {
@@ -130,23 +134,47 @@ export default class ImportDelegate extends React.Component {
   handleIdRemove(idKey) {
     this.props.delId(idKey);
   }
-  handleGetDateFromUTC(datestring) {
-      if(datestring.length>0) {
-          return datestring.substring(0,10);
-      }
-      
-  }
-  handleChangeStatus(status) {
+  handleChangeStatus(type,status) {
     this.setState({
-        statusAll:"statusAll"===status?"primary":"ghost",
-        statusNotSend:"statusNotSend"===status?"primary":"ghost",
-        statusNotAccept:"statusNotAccept"===status?"primary":"ghost",
-        statusAccept:"statusAccept"===status?"primary":"ghost"
+        statusAll:"statusAll"===type?"primary":"ghost",
+        statusNotSend:"statusNotSend"===type?"primary":"ghost",
+        statusNotAccept:"statusNotAccept"===type?"primary":"ghost",
+        statusAccept:"statusAccept"===type?"primary":"ghost",
+        currentStatus:status
+    });
+    
+    const filters=this.createFilters(this.state.searchVal);
+    
+    this.props.loadDelegates(null, {
+      tenantId: this.props.tenantId,
+      pageSize: this.props.idlist.pageSize,
+      currentPage: 1,
+      currentStatus:status,
+      filters: JSON.stringify(filters)
     });
   }
    handleSearch(searchVal) {
-    alert('123');
-    const filters = [[{
+    this.setState({
+        searchVal:searchVal
+    });
+    
+    const filters=this.createFilters(searchVal);
+    
+    this.props.loadDelegates(null, {
+      tenantId: this.props.tenantId,
+      pageSize: this.props.idlist.pageSize,
+      currentPage: 1,
+      currentStatus:this.state.currentStatus,
+      filters: JSON.stringify(filters)
+    });
+    
+    this.props.loadStatus(null, {
+      tenantId: this.props.tenantId,
+      filters: JSON.stringify(filters)
+    });
+  }
+  createFilters(searchVal) {
+    return [[{
       name: 'del_no',
       value: searchVal
     }, {
@@ -156,12 +184,6 @@ export default class ImportDelegate extends React.Component {
       name: 'invoice_no',
       value: searchVal
     }]];
-    this.props.loadDelegates(null, {
-      tenantId: this.props.tenant.id,
-      pageSize: this.props.idlist.pageSize,
-      currentPage: 1,
-      filters: JSON.stringify(filters)
-    });
   }
   renderValidateStyle(item) {
     const {isFieldValidating, getFieldError, getFieldsValue} = this.props.formhoc;
@@ -181,7 +203,7 @@ export default class ImportDelegate extends React.Component {
     );
   }
   render() {
-    const { idlist, loading, needUpdate, formhoc: {getFieldProps, getFieldError} } = this.props;
+    const { statusList: {notSendCount, notAcceptCount, acceptCount}, idlist, loading, needUpdate, formhoc: {getFieldProps, getFieldError} } = this.props;
     const { statusAll, statusAccept, statusNotAccept, statusNotSend } = this.state;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadDelegates(params),
@@ -229,28 +251,38 @@ export default class ImportDelegate extends React.Component {
       dataIndex: 'rec_tenant_id'
     }, {
       title: '委托时间',
-      dataIndex: 'del_date',
-      render: (text, record, index) => {// todo down icon not horiztonal
-        return (<span>
-           {this.handleGetDateFromUTC(record.del_date)}
-            </span>);
-      }
+      dataIndex: 'del_date'
     }, {
       title: '接单时间',
-      dataIndex: 'rec_del_date',
-        render: (text, record, index) => {// todo down icon not horiztonal
-        return (<span>
-           {this.handleGetDateFromUTC(record.rec_del_date)}
-            </span>);
-      }
+      dataIndex: 'rec_del_date'
     }, {
       title: '提单号',
       dataIndex: 'bill_no'
     }, {
       title: '状态',
       render: (text, record, index) => {// todo down icon not horiztonal
-        return (<span>
-            未发送
+        let fontColor=""
+        let statusText="";
+        switch(record.status){
+            case 0:
+               statusText="未发送";
+               fontColor="#FFD700";
+               break;
+            case 1:
+               statusText="未受理";
+               fontColor="#FF7F00";
+               break;
+            case 2:
+               statusText="已接单";
+               fontColor="green";
+               break;
+            case 3:
+               statusText="已作废";
+               fontColor="gray";
+               break;
+        }
+        return (<span style={{color:fontColor}}>
+                  {statusText}
             </span>);
       }
     }, {
@@ -279,10 +311,10 @@ export default class ImportDelegate extends React.Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-              <Button type={statusAll} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAll') } ><span>全部</span></Button>
-              <Button type={statusNotSend} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotSend') } ><span>未发送(2)</span></Button>
-              <Button type={statusNotAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotAccept') } ><span>未受理(0)</span></Button>
-              <Button type={statusAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAccept') } ><span>已接单(0)</span></Button>
+              <Button type={statusAll} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAll',-1) } ><span>全部</span></Button>
+              <Button type={statusNotSend} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotSend',0) } ><span>未发送({notSendCount})</span></Button>
+              <Button type={statusNotAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotAccept',1) } ><span>未受理({notAcceptCount})</span></Button>
+              <Button type={statusAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAccept',2) } ><span>已接单({acceptCount})</span></Button>
           </div>
           <div className="panel-body body-responsive">
              <Table rowSelection={rowSelection} columns={ columns } loading={ loading } remoteData={ idlist } dataSource={ dataSource }/>
