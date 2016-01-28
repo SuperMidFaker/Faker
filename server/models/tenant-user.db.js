@@ -71,7 +71,13 @@ export default {
     const args = [status, id];
     return mysql.update(sql, args, trans);
   },
+  updateUserType(id, userType, trans) {
+    const sql = `update sso_tenant_users set user_type = ? where user_id = ?`;
+    const args = [userType, id];
+    return mysql.update(sql, args, trans);
+  },
   insertTenantOwner(name, loginId, tenantId, parentTenantId, creator, trans) {
+    // todo union with insertPersonnel
     const sql = `insert into sso_tenant_users(tenant_id, parent_tenant_id, login_id, name,
       user_type, creater_login_id, status, created_date) values (?, 0, NOW())`;
     const args = [tenantId, parentTenantId, loginId, name, 'owner', creator];
@@ -128,6 +134,11 @@ export default {
       TU.user_type as role, status, login_id as loginId from sso_tenant_users as TU inner join
       sso_login as L on TU.login_id = L.id where user_id = ?`;
     const args = [pId];
+    return mysql.query(sql, args);
+  },
+  getTenantUsers(tenantId) {
+    const sql = 'select user_id as id, name from sso_tenant_users where tenant_id = ?';
+    const args = [tenantId];
     return mysql.query(sql, args);
   }
 }

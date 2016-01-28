@@ -14,7 +14,8 @@ function fetchData({state, dispatch, cookie}) {
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
     promises.push(p);
     p = dispatch(loadPersonnel(cookie, {
-      tenantId: state.account.tenantId,
+      tenantId: state.personnel.tenant.id !== -1 ? state.personnel.tenant.id :
+        state.account.tenantId,
       pageSize: state.personnel.personnelist.pageSize,
       currentPage: state.personnel.personnelist.current
     }));

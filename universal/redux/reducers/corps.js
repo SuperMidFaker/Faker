@@ -1,8 +1,8 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { CHINA_CODE } from '../../../universal/constants';
-import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
-  clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
+import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, clearFormC,
+  setFormValueC } from '../../../reusable/domains/redux/form-common';
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
@@ -12,19 +12,27 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
   'CORPS_LOAD', 'CORPS_LOAD_SUCCEED', 'CORPS_LOAD_FAIL',
+  'ORGAN_FORM_LOAD', 'ORGAN_FORM_LOAD_SUCCEED', 'ORGAN_FORM_LOAD_FAIL',
+  'EDIT_ORGAN', 'EDIT_ORGAN_SUCCEED', 'EDIT_ORGAN_FAIL',
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
 export const CORP_EDIT_SUCCEED = actionTypes.CORP_EDIT_SUCCEED;
+export const CORP_SUBMIT_SUCCEED = actionTypes.CORP_SUBMIT_SUCCEED;
+export const CORP_DELETE_SUCCEED = actionTypes.CORP_DELETE_SUCCEED;
+export const EDIT_ORGAN_SUCCEED = actionTypes.EDIT_ORGAN_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
   needUpdate: false,
   selectedIndex: -1,
   formData: {
+    poid: '',
+    coid: '',
     country: CHINA_CODE
   },
+  corpUsers: [],
   corplist: {
     tenantAppPackage: [],
     totalCount: 0,
@@ -64,10 +72,26 @@ export default function reducer(state = initialState, action) {
       }
       return {...state, corplist};
     }
+    case actionTypes.ORGAN_FORM_LOAD_SUCCEED: {
+      const actresult = action.result.data;
+      const formData = {
+        key: actresult.tenant.tid,
+        name: actresult.tenant.name,
+        coid: `${actresult.tenant.uid}`,
+        poid: `${actresult.tenant.uid}`
+      };
+      return { ...state, corpUsers: actresult.users, formData };
+    }
+    case actionTypes.EDIT_ORGAN_SUCCEED: {
+      const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
+        { ...corp, ...action.result.data } : corp);
+      return { ...state, corplist: { ...state.corplist, data: corps },
+        formData: initialState.formData, corpUsers: [] };
+    }
     case actionTypes.CORPS_LOAD:
       return { ...state, loading: true, needUpdate: false };
     case actionTypes.CORPS_LOAD_SUCCEED: {
-      const corplist = {...state.corplist, ...action.result.data};
+      const corplist = { ...state.corplist, ...action.result.data };
       return {...state, loading: false, loaded: true, corplist};
     }
     case actionTypes.CORPS_LOAD_FAIL:
@@ -145,16 +169,35 @@ export function submit(corp, tenant) {
   };
 }
 
+export function loadOrganizationForm(cookie, corpId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.ORGAN_FORM_LOAD, actionTypes.ORGAN_FORM_LOAD_SUCCEED,
+        actionTypes.ORGAN_FORM_LOAD_FAIL],
+      endpoint: 'v1/user/organization',
+      method: 'get',
+      cookie,
+      params: { corpId }
+    }
+  };
+}
+
+export function editOrganization(corp) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.EDIT_ORGAN, actionTypes.EDIT_ORGAN_SUCCEED, actionTypes.EDIT_ORGAN_FAIL],
+      endpoint: 'v1/user/organization',
+      method: 'put',
+      data: { corp }
+    }
+  };
+}
 export function isFormDataLoaded(corpsState, corpId) {
   return isFormDataLoadedC(corpId, corpsState, 'corplist');
 }
 
 export function loadForm(cookie, corpId) {
   return loadFormC(cookie, 'v1/user/corp', {corpId}, actionTypes);
-}
-
-export function assignForm(corpsState, corpId) {
-  return assignFormC(corpId, corpsState, 'corplist', actionTypes);
 }
 
 export function clearForm() {

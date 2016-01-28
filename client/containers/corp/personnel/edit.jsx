@@ -124,6 +124,7 @@ export default class CorpEdit extends React.Component {
   render() {
     const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
     const isCreating = this.props.formData.key === null;
+    const disableSubmit = this.props.tenant.id === -1;
     // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
@@ -161,8 +162,8 @@ export default class CorpEdit extends React.Component {
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
-                <Button disabled={ this.props.selectedIndex === -1 } htmlType="submit"
-                title="未选择所属租户,无法修改" type="primary">确定</Button>
+                <Button disabled={ disableSubmit } htmlType="submit" type="primary"
+                title={ disableSubmit && '未选择所属租户,无法修改' }>确定</Button>
                 <Button onClick={ this.handleCancel }>取消</Button>
               </Col>
             </Row>

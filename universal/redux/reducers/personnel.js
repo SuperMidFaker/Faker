@@ -53,18 +53,19 @@ export default function reducer(state = initialState, action) {
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
           parentId: action.result.data[0].parentId
-        } : {}};
+        } : initialState.tenant
+    };
     case actionTypes.SWITCH_TENANT:
       return {...state, tenant: action.tenant};
     case actionTypes.SWITCH_STATUS_SUCCEED: {
-      const personnelist = {...state.personnelist};
+      const personnelist = { ...state.personnelist };
       personnelist.data[action.index].status = action.data.status;
       return {...state, personnelist};
     }
     case actionTypes.PERSONNEL_EDIT_SUCCEED: {
       const personnelist = {...state.personnelist};
       personnelist.data[state.selectedIndex] = action.data.personnel;
-      return { ...state, personnelist, selectedIndex: -1 };
+      return { ...state, personnelist, selectedIndex: -1, tenant: initialState.tenant };
     }
     case actionTypes.PERSONNEL_DELETE_SUCCEED: {
       return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
@@ -77,7 +78,7 @@ export default function reducer(state = initialState, action) {
                             loginId: action.result.data.loginId, status: action.result.data.status});
       }
       personnelist.totalCount++;
-      return { ...state, personnelist };
+      return { ...state, personnelist, tenant: initialState.tenant };
     }
     // todo deal with submit fail submit loading
     default:

@@ -26,6 +26,8 @@ export default [
    ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
    ['delete', '/v1/user/corp', delCorp],
+   ['get', '/v1/user/organization', getOrganization],
+   ['put', '/v1/user/organization', editOrganization],
    ['post', '/v1/user/corp/app', switchTenantApp],
    ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
    ['get', '/v1/user/personnels', getCorpPersonnels],
@@ -240,6 +242,52 @@ function *editCorp() {
   }
 }
 
+function *getOrganization() {
+  const corpId = this.request.query.corpId;
+  try {
+    const tenants = yield tenantDao.getPartialTenantInfo(corpId);
+    if (tenants.length !== 1) {
+      throw new Error('未找到该组织机构');
+    }
+    const users = yield tenantUserDao.getTenantUsers(corpId);
+    return Result.OK(this, {
+      tenant: tenants[0],
+      users
+    });
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+function *editOrganization() {
+  const body = yield cobody(this);
+  const corp = body.corp;
+  const prevOwnerId = corp.poid;
+  const currOwnerId = corp.coid;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield tenantUserDao.updateUserType(prevOwnerId, TENANT_ROLE.member.name, trans);
+    yield tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans);
+    const users = yield tenantUserDao.getPersonnelInfo(currOwnerId);
+    if (users.length !== 1) { 
+      throw new Error('not found selected owner');
+    }
+    const currOwner = users[0];
+    yield tenantDao.updateCorpOwnerInfo(corp.key, corp.name, currOwner.phone, currOwner.name,
+                                        currOwner.email, trans);
+    yield mysql.commit(trans);
+    Result.OK(this, {
+      name: corp.name,
+      contact: currOwner.name,
+      phone: currOwner.phone,
+      email: currOwner.email
+    });
+  } catch (e) {
+    yield mysql.rollback(trans);
+    Result.InternalServerError(this, e.message);
+  }
+}
+
 function *delCorp() {
   const body = yield cobody(this);
   const corpId = body.corpId;
@@ -325,7 +373,7 @@ function *editPersonnel() {
     yield userDao.updateLoginName(personnel.loginId, personnel.phone, personnel.loginName,
                                   personnel.email, trans);
     if (personnel.role === TENANT_ROLE.owner.name) {
-      yield tenantDao.updateCorpOwnerInfo(body.tenantId, personnel.phone, personnel.name,
+      yield tenantDao.updateCorpOwnerInfo(body.tenantId, null, personnel.phone, personnel.name,
                                           personnel.email, trans);
     }
     yield tenantUserDao.updatePersonnel(personnel, trans);
