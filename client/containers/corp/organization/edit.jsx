@@ -66,7 +66,7 @@ export default class CorpEdit extends React.Component {
     formhoc: PropTypes.object.isRequired,
     corpUsers: PropTypes.array.isRequired,
     formData: PropTypes.object.isRequired,
-    edit: PropTypes.func.isRequired,
+    editOrganization: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired

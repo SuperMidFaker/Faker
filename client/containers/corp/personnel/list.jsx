@@ -13,9 +13,9 @@ function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'personnel')) {
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
     promises.push(p);
+    // 当前选择租户可能被删除,所以重新加载到主租户
     p = dispatch(loadPersonnel(cookie, {
-      tenantId: state.personnel.tenant.id !== -1 ? state.personnel.tenant.id :
-        state.account.tenantId,
+      tenantId: state.account.tenantId,
       pageSize: state.personnel.personnelist.pageSize,
       currentPage: state.personnel.personnelist.current
     }));

@@ -163,7 +163,7 @@ export default class CorpEdit extends React.Component {
             <Row>
               <Col span="18" offset="6">
                 <Button disabled={ disableSubmit } htmlType="submit" type="primary"
-                title={ disableSubmit && '未选择所属租户,无法修改' }>确定</Button>
+                title={ disableSubmit ? '未选择所属租户,无法修改' : '' }>确定</Button>
                 <Button onClick={ this.handleCancel }>取消</Button>
               </Col>
             </Row>

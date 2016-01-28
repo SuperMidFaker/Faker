@@ -1,6 +1,6 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
-import { CHINA_CODE } from '../../../universal/constants';
+import { CHINA_CODE, TENANT_ROLE } from '../../../universal/constants';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, clearFormC,
   setFormValueC } from '../../../reusable/domains/redux/form-common';
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
@@ -44,8 +44,13 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case PERSONNEL_EDIT_SUCCEED:
-      // 用户修改可能导致租户拥有者信息改变需重新加载
-      return { ...state, loaded: false, formData: initialState.formData };
+      if (action.data.personnel.role === TENANT_ROLE.owner.name) {
+        // 修改租户拥有者需重新加载租户列表
+        return { ...state, loaded: false, formData: initialState.formData };
+      } else {
+        return state;
+      }
+      break;
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const corplist = { ...state.corplist };
       corplist.data[action.index].status = action.data.status;
@@ -61,6 +66,7 @@ export default function reducer(state = initialState, action) {
       if (action.data.checked) {
         corplist.data[action.index].apps.push(action.data.app);
       } else {
+        // todo written map filter
         let appIndex = -1;
         corplist.data[action.index].apps.forEach((app, index) => {
           if (app.id === action.data.app.id) {
@@ -127,7 +133,8 @@ export default function reducer(state = initialState, action) {
 export function delCorp(corpId, parentTenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CORP_DELETE, actionTypes.CORP_DELETE_SUCCEED, actionTypes.CORP_DELETE_FAIL],
+      types: [actionTypes.CORP_DELETE, actionTypes.CORP_DELETE_SUCCEED,
+        actionTypes.CORP_DELETE_FAIL],
       endpoint: 'v1/user/corp',
       method: 'del',
       data: { corpId, parentTenantId }
@@ -161,7 +168,8 @@ export function uploadImg(field, pics) {
 export function submit(corp, tenant) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CORP_SUBMIT, actionTypes.CORP_SUBMIT_SUCCEED, actionTypes.CORP_SUBMIT_FAIL],
+      types: [actionTypes.CORP_SUBMIT, actionTypes.CORP_SUBMIT_SUCCEED,
+        actionTypes.CORP_SUBMIT_FAIL],
       endpoint: 'v1/user/corp',
       method: 'post',
       data: { corp, tenant }

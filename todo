@@ -1,6 +1,6 @@
 react-intl
 wms -> new edit
-[] new personnel freshed page without tenant info
+[] new personnel freshed page without tenant info  => how to make new/edit in route redirect to indexRoute
 [] location region selector can't choose city or county when initial set 2. data in server side
 [] am-ant-leftmenu can't scroll, need jqury,rc-animate server render fail -> replace antmenu use am-leftsidebar and css to make Menu SubMenu and scrollbar fixed or absolute
    set activekey based on url

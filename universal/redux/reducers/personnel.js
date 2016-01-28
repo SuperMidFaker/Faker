@@ -3,7 +3,8 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
   clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
 import { TENANT_ROLE } from '../../../universal/constants';
-import { CORP_EDIT_SUCCEED } from './corps';
+import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, EDIT_ORGAN_SUCCEED } from './corps';
+
 const actionTypes = createActionTypes('@@welogix/personnel/', [
   'SWITCH_TENANT',
   'MASTER_TENANTS_LOAD', 'MASTER_TENANTS_LOAD_SUCCEED', 'MASTER_TENANTS_LOAD_FAIL',
@@ -38,7 +39,10 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case CORP_EDIT_SUCCEED:
-      // 租户变化时重新加载
+    case CORP_SUBMIT_SUCCEED:
+    case CORP_DELETE_SUCCEED:
+    case EDIT_ORGAN_SUCCEED:
+      // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:
       return {...state, loading: true, needUpdate: false};
@@ -65,7 +69,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.PERSONNEL_EDIT_SUCCEED: {
       const personnelist = {...state.personnelist};
       personnelist.data[state.selectedIndex] = action.data.personnel;
-      return { ...state, personnelist, selectedIndex: -1, tenant: initialState.tenant };
+      return { ...state, personnelist, selectedIndex: -1 };
     }
     case actionTypes.PERSONNEL_DELETE_SUCCEED: {
       return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
@@ -78,7 +82,7 @@ export default function reducer(state = initialState, action) {
                             loginId: action.result.data.loginId, status: action.result.data.status});
       }
       personnelist.totalCount++;
-      return { ...state, personnelist, tenant: initialState.tenant };
+      return { ...state, personnelist };
     }
     // todo deal with submit fail submit loading
     default:
