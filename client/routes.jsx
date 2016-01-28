@@ -21,6 +21,7 @@ import Bill from './containers/wms/bill';
 import Notice from './containers/wms/notice';
 import {loadAccount} from '../universal/redux/reducers/account';
 import {isLoaded} from '../reusable/common/redux-actions';
+import importDelegate from './containers/import/delegate';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
@@ -63,7 +64,7 @@ export default (store, cookie) => {
         <Route component={Module}>
           <Route path="import" component={ImportM}>
             <IndexRoute component={ImportDashboard} />
-            <Route path="delegate">
+            <Route path="delegate" component={importDelegate}>
               <Route path="list" />
               <Route path="new" />
               <Route path="edit/:id" />
