@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from '../../../../universal/redux/reducers/personnel';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
+'../../../../universal/redux/reducers/personnel';
 import { Table, Button, Select, message } from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
