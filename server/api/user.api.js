@@ -150,12 +150,20 @@ function *getOrganizations() {
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const current = parseInt(this.request.query.currentPage, 10);
   try {
+    console.time('organ count');
     const counts = yield tenantDao.getOrganCountByParent(parentTenantId);
+    console.timeEnd('organ count');
+    console.time('organs');
     const corps = yield tenantDao.getPagedOrgansByParent(parentTenantId, current, pageSize);
+    console.timeEnd('organs');
+    console.time('appPackage');
     const tenantAppPackage = yield tenantDao.getAppsInfoById(parentTenantId);
+    console.timeEnd('appPackage');
+    console.time('apps');
     for (let idx = 0; idx < corps.length; ++idx) {
       corps[idx].apps = yield tenantDao.getAppsInfoById(corps[idx].key);
     }
+    console.timeEnd('apps');
     const data = {
       tenantAppPackage,
       totalCount: counts[0].num,

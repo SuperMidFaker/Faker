@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadOrgans, delCorp, switchStatus, switchTenantApp } from
-'../../../../universal/redux/reducers/corps';
+import { loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
+  closeTenantAppsEditor } from '../../../../universal/redux/reducers/corps';
 import { Table, Button, AntIcon, message } from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
@@ -25,31 +25,33 @@ function fetchData({state, dispatch, cookie}) {
     corplist: state.corps.corplist,
     needUpdate: state.corps.needUpdate,
     loading: state.corps.loading,
+    appEditor: state.corps.appEditor,
     tenantId: state.account.tenantId
   }),
-  { loadOrgans, delCorp, switchStatus, switchTenantApp }
+  { loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor, closeTenantAppsEditor }
 )
 export default class CorpList extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
+    appEditor: PropTypes.object.isRequired,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     switchStatus: PropTypes.func.isRequired,
     switchTenantApp: PropTypes.func.isRequired,
+    openTenantAppsEditor: PropTypes.func.isRequired,
+    closeTenantAppsEditor: PropTypes.func.isRequired,
     delCorp: PropTypes.func.isRequired,
     loadOrgans: PropTypes.func.isRequired
   }
   constructor() {
     super();
     this.state = {
-      selectedRowKeys: [],
-      editTenantApps: [],
-      editTenantId: -1,
-      editIndex: -1,
-      visible: false
+      selectedRowKeys: []
     };
+    this.handleSelectionClear = this.handleSelectionClear.bind(this);
+    this.handleEditorHide = this.handleEditorHide.bind(this);
   }
   handleSelectionClear() {
     this.setState({selectedRowKeys: []});
@@ -74,8 +76,10 @@ export default class CorpList extends React.Component {
       });
   }
   handleEnabledAppEdit(record, index) {
-    this.setState({visible: true, editTenantId: record.key,
-      editTenantApps: record.apps, editIndex: index});
+    this.props.openTenantAppsEditor(record, index);
+  }
+  handleEditorHide() {
+    this.props.closeTenantAppsEditor();
   }
   renderColumnText(status, text) {
     let style = {};
@@ -204,11 +208,10 @@ export default class CorpList extends React.Component {
           <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource} />
         </div>
         <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-          <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>
+          <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">清除选择</Button>
         </div>
-        <AppEditor tenantId={this.state.editTenantId} visible={this.state.visible} index={this.state.editIndex}
-          switchTenantApp={this.props.switchTenantApp} tenantApps={this.state.editTenantApps}
-          appPackage={this.props.corplist.tenantAppPackage} />
+        <AppEditor { ...this.props.appEditor } switchTenantApp={this.props.switchTenantApp}
+          appPackage={this.props.corplist.tenantAppPackage} onCancel={ this.handleEditorHide }/>
       </div>);
   }
 }

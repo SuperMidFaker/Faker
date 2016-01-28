@@ -1,5 +1,5 @@
-import React, {PropTypes} from 'react';
-import {Modal, Button, Switch, Row, Col, message} from '../../reusable/ant-ui';
+import React, { PropTypes } from 'react';
+import { Modal, Button, Switch, Row, Col, message } from '../../reusable/ant-ui';
 import './appmodule-editor.less';
 
 export default class ModuleEditor extends React.Component {
@@ -9,6 +9,7 @@ export default class ModuleEditor extends React.Component {
     tenantId: PropTypes.number.isRequired,
     appPackage: PropTypes.array.isRequired,
     switchTenantApp: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
     tenantApps: PropTypes.array
   }
   constructor() {
@@ -21,6 +22,8 @@ export default class ModuleEditor extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible === true) {
       this.setState({visible: true});
+    } else {
+      this.setState({visible: false});
     }
     if ('tenantApps' in nextProps) {
       const enMods = {};
@@ -31,9 +34,7 @@ export default class ModuleEditor extends React.Component {
     }
   }
   handleCancel() {
-    this.setState({
-      visible: false
-    });
+    this.props.onCancel();
   }
   handleAppCheck(ap, checked) {
     const app = {

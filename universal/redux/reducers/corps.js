@@ -5,6 +5,7 @@ import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValue
 '../../../reusable/domains/redux/form-common';
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
 const actionTypes = createActionTypes('@@welogix/corps/', [
+  'OPEN_TENANT_APPS_EDITOR', 'CLOSE_TENANT_APPS_EDITOR',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
@@ -31,6 +32,12 @@ const initialState = {
     poid: '',
     coid: '',
     country: CHINA_CODE
+  },
+  appEditor: {
+    tenantApps: [],
+    tenantId: -1,
+    index: -1,
+    visible: false
   },
   corpUsers: [],
   corplist: {
@@ -86,22 +93,21 @@ export default function reducer(state = initialState, action) {
       return { ...state, corplist };
     }
     case actionTypes.SWITCH_APP_SUCCEED: {
-      const corplist = {...state.corplist};
+      const corplist = { ...state.corplist };
       if (action.data.checked) {
-        corplist.data[action.index].apps.push(action.data.app);
+        // DO NOT use push because apps is shallow copied, DO NOT modify state
+        corplist.data[action.index].apps = [...corplist.data[action.index].apps, action.data.app];
       } else {
-        // todo written map filter
-        let appIndex = -1;
-        corplist.data[action.index].apps.forEach((app, index) => {
-          if (app.id === action.data.app.id) {
-            appIndex = index;
-            return;
-          }
-        });
-        corplist.data[action.index].apps.splice(appIndex, 1);
+        corplist.data[action.index].apps = corplist.data[action.index].apps.filter(
+          app => app.id !== action.data.app.id);
       }
-      return {...state, corplist};
+      return { ...state, corplist, appEditor: { ...state.appEditor, tenantApps:
+        corplist.data[action.index].apps } };
     }
+    case actionTypes.OPEN_TENANT_APPS_EDITOR:
+      return { ...state, appEditor: action.tenantAppInfo };
+    case actionTypes.CLOSE_TENANT_APPS_EDITOR:
+      return { ...state, appEditor: initialState.appEditor };
     case actionTypes.CORP_SUBMIT_SUCCEED: {
       const corplist = { ...state.corplist };
       if ((corplist.current - 1) * corplist.pageSize <= corplist.totalCount // '=' because of totalCount 0
@@ -261,5 +267,23 @@ export function switchTenantApp(tenantId, checked, app, index) {
       index,
       data: { tenantId, checked, app }
     }
+  };
+}
+
+export function openTenantAppsEditor(record, index) {
+  return {
+    type: actionTypes.OPEN_TENANT_APPS_EDITOR,
+    tenantAppInfo: {
+      visible: true,
+      tenantId: record.key,
+      tenantApps: record.apps,
+      index
+    }
+  };
+}
+
+export function closeTenantAppsEditor() {
+  return {
+    type: actionTypes.CLOSE_TENANT_APPS_EDITOR
   };
 }
