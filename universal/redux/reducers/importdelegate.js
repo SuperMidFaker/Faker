@@ -11,13 +11,19 @@ const initialState = {
     current: 1,
     pageSize: 10,
     data: []
+  },
+  statusList: {
+      notSendCount:0,
+      notAcceptCount:0,
+      acceptCount:0,
   }
 };
 
 const actions = [
   'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL', 'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL', 'ID_BEGIN_EDIT', 'ID_EDIT',
-  'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL'
-];
+  'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL','ID_LOAD_STATUS_SUCCEED',
+  'ID_LOAD_STATUS_FAIL','ID_LOAD_STATUS'
+  ];
 const domain = '@@qm-import/importdelegate/';
 const actionTypes = createActionTypes(domain, actions);
 
@@ -53,22 +59,29 @@ export default function reducer(state = initialState, action) {
     return {...state, formData: {...state.formData, [action.data.name]: action.data.value}};
   case actionTypes.ID_EDIT_CANCEL:
     return {...state, formData: {}, editIndex: -1};
+  case actionTypes.ID_LOAD_STATUS:
+    return {...state, statusList: initialState.statusList};
+  case actionTypes.ID_LOAD_STATUS_SUCCEED:
+    return {...state, statusList: action.result.data};
+  case actionTypes.ID_LOAD_STATUS_FAIL:
+    return { ...state, statusList: initialState.statusList };
   default:
     return state;
   }
 }
 
-export function loadDelegates(params, cookie) {
+export function loadDelegates(cookie,params) {
   return {
     [CLIENT_API]: {
       types: [ actionTypes.ID_LOAD, actionTypes.ID_LOAD_SUCCEED, actionTypes.ID_LOAD_FAIL ],
       endpoint: 'v1/import/importdelegates',
       method: 'get',
-      params,
-      cookie
+      cookie,      
+      params
     }
   };
 }
+
 
 export function submitDelegate(importdelegate, corpId, tenantId) {
   return {
@@ -103,6 +116,19 @@ export function delId(idkey) {
   };
 }
 
+export function loadStatus(cookie,params) {
+  debugger
+  return {
+    [CLIENT_API]: {
+      types: [ actionTypes.ID_LOAD_STATUS, actionTypes.ID_LOAD_STATUS_SUCCEED, actionTypes.ID_LOAD_STATUS_FAIL ],
+      endpoint: 'v1/import/status',
+      method: 'get',
+      cookie,
+      params
+    }
+  };
+}
+
 export function beginEdit(item, index) {
   return {
     type: actionTypes.ID_BEGIN_EDIT,
@@ -122,3 +148,4 @@ export function cancelEdit() {
     type: actionTypes.ID_EDIT_CANCEL
   };
 }
+
