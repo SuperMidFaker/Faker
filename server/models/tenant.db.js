@@ -69,19 +69,15 @@ export default {
     const args = [tenantId];
     return mysql.query(sql, args);
   },
-  getCorpCountByParent(parentTenantId) {
+  getOrganCountByParent(parentTenantId) {
     const sql = 'select count(tenant_id) as num from sso_tenants where parent_tenant_id = ?';
     const args = [parentTenantId];
     return mysql.query(sql, args);
   },
-  getPagedCorpsByParent(parentTenantId, current, pageSize) {
+  getPagedOrgansByParent(parentTenantId, current, pageSize) {
     const start = (current - 1) * pageSize;
-    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country,
-      province, city, district, address, logo, short_name, category_id, website, remark, level,
-      TUL.email as email, contact, position, T.status as status, login_id as loginId,
-      username as loginName from sso_tenants as T inner join (select tenant_id, name, username, position,
-      email, login_id from sso_tenant_users as TU inner join sso_login as L on TU.login_id = L.id where parent_tenant_id = ? and TU.user_type = 'owner') as TUL
-      on T.tenant_id = TUL.tenant_id limit ?, ?`;
+    const sql = `select tenant_id as \`key\`, name, phone, email, contact, status
+      from sso_tenants where parent_tenant_id = ? limit ?, ?`;
     const args = [parentTenantId, start, pageSize];
     return mysql.query(sql, args);
   },

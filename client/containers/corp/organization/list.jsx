@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadCorps, delCorp, switchStatus, switchTenantApp } from
+import { loadOrgans, delCorp, switchStatus, switchTenantApp } from
 '../../../../universal/redux/reducers/corps';
 import { Table, Button, AntIcon, message } from '../../../../reusable/ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
@@ -12,7 +12,7 @@ import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../.
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'corps')) {
-    return dispatch(loadCorps(cookie, {
+    return dispatch(loadOrgans(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.corps.corplist.pageSize,
       currentPage: state.corps.corplist.current
@@ -27,7 +27,7 @@ function fetchData({state, dispatch, cookie}) {
     loading: state.corps.loading,
     tenantId: state.account.tenantId
   }),
-  { loadCorps, delCorp, switchStatus, switchTenantApp }
+  { loadOrgans, delCorp, switchStatus, switchTenantApp }
 )
 export default class CorpList extends React.Component {
   static propTypes = {
@@ -39,7 +39,7 @@ export default class CorpList extends React.Component {
     switchStatus: PropTypes.func.isRequired,
     switchTenantApp: PropTypes.func.isRequired,
     delCorp: PropTypes.func.isRequired,
-    loadCorps: PropTypes.func.isRequired
+    loadOrgans: PropTypes.func.isRequired
   }
   constructor() {
     super();
@@ -87,7 +87,7 @@ export default class CorpList extends React.Component {
   render() {
     const { corplist, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadCorps(null, params),
+      fetcher: (params) => this.props.loadOrgans(null, params),
       resolve: (result) => result.data,
       needUpdate,
       getPagination: (result) => ({

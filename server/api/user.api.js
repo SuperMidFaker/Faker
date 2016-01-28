@@ -21,11 +21,11 @@ export default [
    ['post', '/public/v1/sms/verify', verifySmsCodeP],
    ['get', '/public/v1/subdomain/corp', getCorpBySubdomain],
    ['get', '/v1/user/account', getUserAccount],
-   ['get', '/v1/user/corps', getCorps],
    ['get', '/v1/user/corp', getCorpInfo],
-   ['post', '/v1/user/corp', submitCorp],
    ['put', '/v1/user/corp', editCorp],
+   ['post', '/v1/user/corp', submitCorp],
    ['delete', '/v1/user/corp', delCorp],
+   ['get', '/v1/user/organizations', getOrganizations],
    ['get', '/v1/user/organization', getOrganization],
    ['put', '/v1/user/organization', editOrganization],
    ['post', '/v1/user/corp/app', switchTenantApp],
@@ -145,13 +145,13 @@ function *getUserAccount() {
   }
 }
 
-function *getCorps() {
+function *getOrganizations() {
   const parentTenantId = this.request.query.tenantId;
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const current = parseInt(this.request.query.currentPage, 10);
   try {
-    const counts = yield tenantDao.getCorpCountByParent(parentTenantId);
-    const corps = yield tenantDao.getPagedCorpsByParent(parentTenantId, current, pageSize);
+    const counts = yield tenantDao.getOrganCountByParent(parentTenantId);
+    const corps = yield tenantDao.getPagedOrgansByParent(parentTenantId, current, pageSize);
     const tenantAppPackage = yield tenantDao.getAppsInfoById(parentTenantId);
     for (let idx = 0; idx < corps.length; ++idx) {
       corps[idx].apps = yield tenantDao.getAppsInfoById(corps[idx].key);
