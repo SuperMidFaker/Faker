@@ -95,10 +95,20 @@ export default class PersonnelSetting extends React.Component {
       });
   }
   handlePersonnelDel(record) {
-    this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
+    this.props.delPersonnel(record.key, record.loginId, this.props.tenant).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.loadPersonnel(null, {
+          tenantId: this.props.tenant.id,
+          pageSize: this.props.personnelist.pageSize,
+          currentPage: 1
+        });
+      }
+    });
   }
   handleSearch(searchVal) {
-    // OR with name condition
+    // OR name condition
     const filters = [[{
       name: 'name',
       value: searchVal
@@ -109,6 +119,8 @@ export default class PersonnelSetting extends React.Component {
       name: 'phone',
       value: searchVal
     }]];
+    // todo how to concatenation the table sort filter params
+    // in new Table impl the filter and sort can't be emptied
     this.props.loadPersonnel(null, {
       tenantId: this.props.tenant.id,
       pageSize: this.props.personnelist.pageSize,
@@ -127,14 +139,12 @@ export default class PersonnelSetting extends React.Component {
     const { tenant, personnelist, branches, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadPersonnel(null, params),
-      resolve: (result) => result.data,
+      resolved: personnelist.data,
       needUpdate,
-      getPagination: (result) => ({
+      getPagination: (result, resolve) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
-        current: result.totalCount > 0 && (result.current - 1) * result.pageSize <= result.totalCount
-          && result.current * result.pageSize > result.totalCount ?
-          Math.ceil(result.totalCount / result.pageSize) : result.current,
+        current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize
@@ -261,7 +271,7 @@ export default class PersonnelSetting extends React.Component {
             </Select>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>

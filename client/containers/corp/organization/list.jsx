@@ -200,7 +200,7 @@ export default class CorpList extends React.Component {
             </Button>
           </div>
           <span>限额使用 </span>
-          <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{this.props.corplist.totalCount}</span>
+          <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
           <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
           <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
         </div>

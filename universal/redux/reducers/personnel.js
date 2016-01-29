@@ -19,7 +19,6 @@ export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
-  needUpdate: false,
   selectedIndex: -1,
   branches: [],
   tenant: {
@@ -45,7 +44,7 @@ export default function reducer(state = initialState, action) {
       // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:
-      return {...state, loading: true, needUpdate: false};
+      return {...state, loading: true};
     case actionTypes.PERSONNEL_LOAD_SUCCEED:
       return {...state, loaded: true, loading: false,
         personnelist: {...state.personnelist, ...action.result.data}
@@ -70,9 +69,6 @@ export default function reducer(state = initialState, action) {
       const personnelist = {...state.personnelist};
       personnelist.data[state.selectedIndex] = action.data.personnel;
       return { ...state, personnelist, selectedIndex: -1 };
-    }
-    case actionTypes.PERSONNEL_DELETE_SUCCEED: {
-      return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
     }
     case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
       const personnelist = {...state.personnelist};

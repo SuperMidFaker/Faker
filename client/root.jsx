@@ -5,6 +5,12 @@ import {loadCorpByDomain} from '../universal/redux/reducers/corp-domain';
 import {isLoaded} from '../reusable/common/redux-actions';
 import connectFetch from '../reusable/decorators/connect-fetch';
 import './root.less';
+/*
+TODO:
+ ant-ui
+ spin remotetable
+b7f088136b234 formitem children.map child iscompact formhoc
+*/
 
 function fetchData({state, dispatch, cookie, location}) {
   if (!isLoaded(state, 'corpDomain')) {
