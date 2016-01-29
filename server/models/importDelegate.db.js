@@ -76,5 +76,11 @@ export default {
     const sql = `select count(status) as count from g_bus_delegate where status=? ${filterClause}`;
     console.log(sql, args);
     return mysql.query(sql, args);
+  },
+  deleteId(idkey) {
+      const args = [idkey];
+      const sql = `delete from g_bus_delegate where del_id=?`;
+      console.log(sql, args);
+      return mysql.query(sql, args);
   }
 }

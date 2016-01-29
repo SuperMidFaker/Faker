@@ -7,6 +7,7 @@ import SearchBar from '../../../../reusable/components/search-bar';
 import cx from '../../../../reusable/browser-util/classname-join';
 import { toNumber } from '../../../../reusable/common/transformer'; 
 import {Table, Button, AntIcon, Form, Input, Radio, Row, Col, Datepicker, Select, message} from '../../../../reusable/ant-ui';
+import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -132,7 +133,12 @@ export default class ImportDelegate extends React.Component {
     });
   }
   handleIdRemove(idKey) {
-    this.props.delId(idKey);
+     showWarningModal({
+      title: '请输入DELETE进行下一步操作',
+      content: '删除的数据将无法找回',
+      onOk: () =>  this.props.delId(idKey),
+      confirmString: 'DELETE'
+    });
   }
   handleChangeStatus(type,status) {
     this.setState({
@@ -320,7 +326,7 @@ export default class ImportDelegate extends React.Component {
                 <span>
                     <a href="#" className="ant-dropdown-link">查看</a>
                             <span className="ant-divider"></span>
-                    <a href="#" className="ant-dropdown-link">删除</a>
+                    <a role="button" onClick={()=>this.handleIdRemove(record.key)} >删除</a>
                </span>
             );
     }
