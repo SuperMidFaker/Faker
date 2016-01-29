@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { submitDelegate, loadDelegates, updateId, delId, beginEdit, edit, cancelEdit,loadStatus } from '../../../universal/redux/reducers/importdelegate';
-import { isLoaded } from '../../../reusable/common/redux-actions';
-import connectFetch from '../../../reusable/decorators/connect-fetch';
-import SearchBar from '../../../reusable/components/search-bar';
-import cx from '../../../reusable/browser-util/classname-join';
-import { toNumber } from '../../../reusable/common/transformer'; 
-import {Table, Button, AntIcon, Form, Input, Radio, Row, Col, Datepicker, Select, message} from '../../../reusable/ant-ui';
+import { submitDelegate, loadDelegates, updateId, delId, beginEdit, edit, cancelEdit,loadStatus } from '../../../../universal/redux/reducers/importdelegate';
+import { isLoaded } from '../../../../reusable/common/redux-actions';
+import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import SearchBar from '../../../../reusable/components/search-bar';
+import cx from '../../../../reusable/browser-util/classname-join';
+import { toNumber } from '../../../../reusable/common/transformer'; 
+import {Table, Button, AntIcon, Form, Input, Radio, Row, Col, Datepicker, Select, message} from '../../../../reusable/ant-ui';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -193,15 +193,17 @@ export default class ImportDelegate extends React.Component {
       'success': getFieldsValue([item])[item] && !getFieldError(item) && !isFieldValidating(item)
     });
   }
-  renderInput(labelName, field, required, rules, fieldProps) {
-    const {getFieldProps, getFieldError} = this.props.formhoc;
+  renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
+    const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 8}} validateStatus={rules && this.renderValidateStyle(field)}
-      help={ rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type="text" {...getFieldProps(field, {rules, ...fieldProps})} />
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}} validateStatus={rules
+        && renderValidateStyle(field, this.props.formhoc)}
+        help={rules && getFieldError(field)} hasFeedback required={required}>
+        <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
   }
+  
   render() {
     const { statusList: {notSendCount, notAcceptCount, acceptCount}, idlist, loading, needUpdate, formhoc: {getFieldProps, getFieldError} } = this.props;
     const { statusAll, statusAccept, statusNotAccept, statusNotSend } = this.state;
@@ -236,6 +238,7 @@ export default class ImportDelegate extends React.Component {
         return params;
       }
     });
+
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
       onSelect: (/* record, selected, selectedRows */) => {
@@ -274,7 +277,7 @@ export default class ImportDelegate extends React.Component {
                break;
             case 2:
                statusText="已接单";
-               fontColor="green";
+               fontColor="#00CD00";
                break;
             case 3:
                statusText="已作废";
@@ -289,15 +292,38 @@ export default class ImportDelegate extends React.Component {
       title: '操作',
       width: 150,
       render: (text, record, index) => {// todo down icon not horiztonal
-        return (<span>
-          <Button shape="circle" type="primary" title="编辑" onClick={ () => this.handleDgEdit(record, index) } size="small"><AntIcon type="edit" /></Button>
-          <span className="ant-divider"></span>
-          <Button shape="circle" type="primary" title="删除" onClick={ () => this.handleDgRemove(record.key)} size="small"><AntIcon type="cross" /></Button>
-          <span className="ant-divider"></span>
-          <a href="#" className="ant-dropdown-link">
-          更多 <AntIcon type="down" />
-          </a>
-        </span>);
+         switch(record.status) {
+        case 0:
+             return (
+                <span>
+                    <a href="#" className="ant-dropdown-link">修改</a>
+                            <span className="ant-divider"></span>
+                    <a href="#" className="ant-dropdown-link">发送</a>
+               </span>
+            );
+        case 1:
+             return (
+                <span>
+                    <a href="#" className="ant-dropdown-link">查看</a>
+                            <span className="ant-divider"></span>
+                    <a href="#" className="ant-dropdown-link">撤回</a>
+               </span>
+            );
+        case 2:
+             return (
+                <span>
+                    <a href="#" className="ant-dropdown-link">变更</a>
+               </span>
+            );
+       case 3:
+             return (
+                <span>
+                    <a href="#" className="ant-dropdown-link">查看</a>
+                            <span className="ant-divider"></span>
+                    <a href="#" className="ant-dropdown-link">删除</a>
+               </span>
+            );
+    }
       }
     }];
     return (
@@ -315,6 +341,11 @@ export default class ImportDelegate extends React.Component {
               <Button type={statusNotSend} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotSend',0) } ><span>未发送({notSendCount})</span></Button>
               <Button type={statusNotAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotAccept',1) } ><span>未受理({notAcceptCount})</span></Button>
               <Button type={statusAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAccept',2) } ><span>已接单({acceptCount})</span></Button>
+           <div className="pull-right action-btns">
+              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
+                <span>添加用户</span>
+              </Button>
+            </div>
           </div>
           <div className="panel-body body-responsive">
              <Table rowSelection={rowSelection} columns={ columns } loading={ loading } remoteData={ idlist } dataSource={ dataSource }/>
