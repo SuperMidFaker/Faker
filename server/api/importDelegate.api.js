@@ -4,9 +4,9 @@ import Result from '../../reusable/node-util/response-result';
 
 export default [
   ['get', '/v1/import/importdelegates', importdelegates],
-  ['get', '/v1/import/status', importdelegateStatusG]
+  ['get', '/v1/import/status', importdelegateStatusG],
 //   ['put', '/v1/import/importdelegates', updateDelegate],
-//   ['delete', '/v1/import/importdelegates', delDelegate]
+  ['delete', '/v1/import/importdelegate', delId]
 ]
 
 function *importdelegates() {
@@ -53,6 +53,17 @@ function *importdelegateStatusG() {
   } catch (e) {
     console.log(e);
     return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *delId() {
+  const body = yield cobody(this);
+  try {
+    yield idDao.deleteId(body.idkey);
+    return Result.OK(this);
+  } catch (e) {
+    console.log(e);
+    return Result.InternalServerError(this, '删除进口委托数据异常');
   }
 }
 
