@@ -13,7 +13,7 @@ function *importdelegates() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   //const tenantId = parseInt(this.request.query.tenantId || 0, 10);
-  const currentStatus = parseInt(this.request.query.currentStatus || -1, 10);
+  const currentStatus = parseInt(this.request.query.currentStatus || 0, 10)//木有状态则默认查询未发送的数据;
 
 
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
@@ -41,14 +41,16 @@ function *importdelegateStatusG() {
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
   
   try {
-    const notSendCount = yield idDao.getStatusCount(tenantId,0,filters);
-    const notAcceptCount = yield idDao.getStatusCount(tenantId,1,filters);
-    const acceptCount = yield idDao.getStatusCount(tenantId,2,filters);
+    const notSendCount = yield idDao.getStatusCount(tenantId, 0, filters);
+    const notAcceptCount = yield idDao.getStatusCount(tenantId, 1, filters);
+    const acceptCount = yield idDao.getStatusCount(tenantId, 2, filters);
+    const invalidCount= yield idDao.getStatusCount(tenantId, 3, filters);
     
     return Result.OK(this, {
       notSendCount:notSendCount.length > 0 ? notSendCount[0].count : 0,
       notAcceptCount:notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
-      acceptCount:acceptCount.length > 0 ? acceptCount[0].count : 0
+      acceptCount:acceptCount.length > 0 ? acceptCount[0].count : 0,
+      invalidCount:invalidCount.length > 0 ? invalidCount[0].count: 0
     });
   } catch (e) {
     console.log(e);

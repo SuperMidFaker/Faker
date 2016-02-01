@@ -12,13 +12,14 @@ const initialState = {
     pageSize: 10,
     data: []
   },
-  statusList: {
+  statusList: {//初始化状态显示数量
       notSendCount:0,
       notAcceptCount:0,
       acceptCount:0,
+      invalidCount:0
   }
 };
-
+//定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
   'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL', 'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL', 'ID_BEGIN_EDIT', 'ID_EDIT',
   'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL','ID_LOAD_STATUS_SUCCEED',
@@ -62,7 +63,7 @@ export default function reducer(state = initialState, action) {
   case actionTypes.ID_LOAD_STATUS:
     return {...state, statusList: initialState.statusList};
   case actionTypes.ID_LOAD_STATUS_SUCCEED:
-     return {...state, statusList: {...state.statusList, notSendCount: action.result.data.notSendCount, notAcceptCount: action.result.data.notAcceptCount, acceptCount: action.result.data.acceptCount}};
+     return {...state, statusList: {...state.statusList, invalidCount:action.result.data.invalidCount, notSendCount: action.result.data.notSendCount, notAcceptCount: action.result.data.notAcceptCount, acceptCount: action.result.data.acceptCount}};
   return { ...state, statusList: action.result };
   case actionTypes.ID_LOAD_STATUS_FAIL:
     return { ...state, statusList: initialState.statusList };
