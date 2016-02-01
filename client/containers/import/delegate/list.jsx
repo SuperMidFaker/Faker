@@ -15,7 +15,7 @@ const InputGroup = Input.Group;
 
 function fetchData({ state, dispatch, cookie }) {
     const promises = [];
-    !isLoaded(state, 'importdelegate')
+    if(!isLoaded(state, 'importdelegate'))
     {
        let p =dispatch(loadDelegates(cookie, { 
                 tenantId: state.account.tenantId,
@@ -34,7 +34,7 @@ function fetchData({ state, dispatch, cookie }) {
 
 @connectFetch()(fetchData)
 @connect(
-  state => ({
+  state => ({//从初始化state中加载数据
     tenantId: state.account.tenantId,
     idlist: state.importdelegate.idlist,
     statusList: state.importdelegate.statusList,
@@ -55,7 +55,7 @@ function fetchData({ state, dispatch, cookie }) {
   formPropName: 'formhoc'
 })
 export default class ImportDelegate extends React.Component {
-  static propTypes = {
+  static propTypes = {//属性检测
     formhoc: PropTypes.object.isRequired,
     idlist: PropTypes.object.isRequired,
     statusList:PropTypes.object.isRequired,
@@ -74,12 +74,13 @@ export default class ImportDelegate extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = {//设置默认视图状态
       showForm: false,
       statusAll:'ghost',
       statusNotSend:'primary',
       statusNotAccept:'ghost',
       statusAccept:'ghost',
+      statusInvalid:'ghost',
       currentStatus:0,
       searchVal:''
     };
@@ -132,7 +133,7 @@ export default class ImportDelegate extends React.Component {
       showForm: true
     });
   }
-  handleIdRemove(idKey) {
+  handleIdRemove(idKey) {//删除
      showWarningModal({
       title: '请输入DELETE进行下一步操作',
       content: '删除的数据将无法找回',
@@ -141,16 +142,18 @@ export default class ImportDelegate extends React.Component {
     });
   }
   handleChangeStatus(type,status) {
+    //更新视图状态
     this.setState({
         statusAll:"statusAll"===type?"primary":"ghost",
         statusNotSend:"statusNotSend"===type?"primary":"ghost",
         statusNotAccept:"statusNotAccept"===type?"primary":"ghost",
         statusAccept:"statusAccept"===type?"primary":"ghost",
+        statusInvalid:"statusInvalid"===type?"primary":"ghost",
         currentStatus:status
     });
     
     const filters=this.createFilters(this.state.searchVal);
-    
+    //切换状态后更新table数据
     this.props.loadDelegates(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
@@ -158,6 +161,11 @@ export default class ImportDelegate extends React.Component {
       currentStatus:status,
       filters: JSON.stringify(filters)
     });
+    //切换状态的时候同时更新状态数量
+    //  this.props.loadStatus(null, {
+    //   tenantId: this.props.tenantId,
+    //   filters: JSON.stringify(filters)
+    // });
   }
    handleSearch(searchVal) {
     this.setState({
@@ -179,7 +187,7 @@ export default class ImportDelegate extends React.Component {
       filters: JSON.stringify(filters)
     });
   }
-  createFilters(searchVal) {
+  createFilters(searchVal) {//创建过滤
     return [[{
       name: 'del_no',
       value: searchVal
@@ -190,6 +198,13 @@ export default class ImportDelegate extends React.Component {
       name: 'invoice_no',
       value: searchVal
     }]];
+  }
+  renderColumnText(status, text) {
+    let style = {};
+    if (status === 3) {
+      style = {color: '#CCC'};
+    }
+    return <span style={style}>{text}</span>;
   }
   renderValidateStyle(item) {
     const {isFieldValidating, getFieldError, getFieldsValue} = this.props.formhoc;
@@ -211,10 +226,10 @@ export default class ImportDelegate extends React.Component {
   }
   
   render() {
-    const { statusList: {notSendCount, notAcceptCount, acceptCount}, idlist, loading, needUpdate, formhoc: {getFieldProps, getFieldError} } = this.props;
-    const { statusAll, statusAccept, statusNotAccept, statusNotSend } = this.state;
+    const { statusList: {notSendCount, notAcceptCount, acceptCount,invalidCount}, idlist, loading, needUpdate, formhoc: {getFieldProps, getFieldError} } = this.props;
+    const { statusAll, statusAccept, statusInvalid, statusNotAccept, statusNotSend,currentStatus } = this.state;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadDelegates(params),
+      fetcher: (params) => this.props.loadDelegates(null,params),
       resolve: (result) => result.data,
       needUpdate,
       extraParams: { tenantId: this.props.tenantId },
@@ -233,14 +248,15 @@ export default class ImportDelegate extends React.Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
+          currentStatus:currentStatus,
         };
         for (const key in filters) {
           if (filters[key]) {
             params[key] = filters[key];
           }
         }
-        // console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
+         //console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
         return params;
       }
     });
@@ -254,22 +270,31 @@ export default class ImportDelegate extends React.Component {
     };
     const columns = [{
       title: '报关业务单号',
-      dataIndex: 'del_no'
+      dataIndex: 'del_no',
+      render:(text,record)=>this.renderColumnText(record.status, text)
     }, {
       title: '报关行',
-      dataIndex: 'rec_tenant_id'
+      sorter: true,
+      dataIndex: 'rec_tenant_id',
+      render:(text,record)=>this.renderColumnText(record.status, text)
     }, {
       title: '委托时间',
-      dataIndex: 'del_date'
+      sorter: true,
+      dataIndex: 'del_date',
+      render:(text,record)=>this.renderColumnText(record.status, text)
     }, {
       title: '接单时间',
-      dataIndex: 'rec_del_date'
+      dataIndex: 'rec_del_date',
+      render:(text,record)=>this.renderColumnText(record.status, text)
     }, {
       title: '提单号',
-      dataIndex: 'bill_no'
+      dataIndex: 'bill_no',
+       render:(text,record)=>this.renderColumnText(record.status, text)
     }, {
       title: '状态',
-      render: (text, record, index) => {// todo down icon not horiztonal
+      dataIndex: 'status',
+      sorter: true,
+      render: (text, record, index) => {//根据状态定制显示状态中文描述
         let fontColor=""
         let statusText="";
         switch(record.status){
@@ -287,7 +312,7 @@ export default class ImportDelegate extends React.Component {
                break;
             case 3:
                statusText="已作废";
-               fontColor="gray";
+               fontColor="#CCC";
                break;
         }
         return (<span style={{color:fontColor}}>
@@ -297,7 +322,7 @@ export default class ImportDelegate extends React.Component {
     }, {
       title: '操作',
       width: 150,
-      render: (text, record, index) => {// todo down icon not horiztonal
+      render: (text, record, index) => {//根据状态定制按钮显示
          switch(record.status) {
         case 0:
              return (
@@ -347,6 +372,7 @@ export default class ImportDelegate extends React.Component {
               <Button type={statusNotSend} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotSend',0) } ><span>未发送({notSendCount})</span></Button>
               <Button type={statusNotAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotAccept',1) } ><span>未受理({notAcceptCount})</span></Button>
               <Button type={statusAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAccept',2) } ><span>已接单({acceptCount})</span></Button>
+              <Button type={statusInvalid} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusInvalid',2) } ><span>已作废({invalidCount})</span></Button>         
            <div className="pull-right action-btns">
               <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
                 <span>添加用户</span>

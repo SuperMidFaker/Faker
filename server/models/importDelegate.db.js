@@ -54,7 +54,7 @@ export default {
     const args = [];
     
      let statusClause="";
-    
+    console.log(currentStatus);
     if(currentStatus!=-1)
     {
        statusClause = " and \`status\`= ?";
