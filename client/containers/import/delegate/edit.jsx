@@ -48,7 +48,7 @@ function goBack(props) {
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating ? '新增业务单' : '业务单详情',
-    moduleName: '',
+    moduleName: 'import',
     goBackFn: () => goBack(props),
     withModuleLayout: false
   }));

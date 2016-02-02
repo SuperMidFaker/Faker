@@ -48,7 +48,7 @@ function goBack(props) {
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating ? '添加用户' : `用户${props.formData.name}`,
-    moduleName: '',
+    moduleName: 'corp',
     goBackFn: () => goBack(props),
     withModuleLayout: false
   }));
