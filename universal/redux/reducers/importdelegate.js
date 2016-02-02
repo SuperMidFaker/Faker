@@ -17,13 +17,15 @@ const initialState = {
       notAcceptCount:0,
       acceptCount:0,
       invalidCount:0
-  }
+  },
+  customsBrokerList: []
 };
 //定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
   'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL', 'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL', 'ID_BEGIN_EDIT', 'ID_EDIT',
   'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL','ID_LOAD_STATUS_SUCCEED',
-  'ID_LOAD_STATUS_FAIL','ID_LOAD_STATUS'
+  'ID_LOAD_STATUS_FAIL','ID_LOAD_STATUS',
+  'ID_LOAD_CUSTOMSBROKERS','ID_LOAD_CUSTOMSBROKERS_SUCCEED','ID_LOAD_CUSTOMSBROKERS_FAIL'
   ];
 const domain = '@@qm-import/importdelegate/';
 const actionTypes = createActionTypes(domain, actions);
@@ -64,9 +66,11 @@ export default function reducer(state = initialState, action) {
     return {...state, statusList: initialState.statusList};
   case actionTypes.ID_LOAD_STATUS_SUCCEED:
      return {...state, statusList: {...state.statusList, invalidCount:action.result.data.invalidCount, notSendCount: action.result.data.notSendCount, notAcceptCount: action.result.data.notAcceptCount, acceptCount: action.result.data.acceptCount}};
-  return { ...state, statusList: action.result };
   case actionTypes.ID_LOAD_STATUS_FAIL:
     return { ...state, statusList: initialState.statusList };
+  case actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED:
+     return {...state, customsBrokerList: action.result.data};
+
   default:
     return state;
   }
@@ -129,6 +133,18 @@ export function loadStatus(cookie,params) {
     }
   };
 }
+
+export function loadCustomsBrokers(cookie,tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [ actionTypes.ID_LOAD_CUSTOMSBROKERS, actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED, actionTypes.ID_LOAD_CUSTOMSBROKERS_FAIL ],
+      endpoint: `v1/import/${tenantId}/customsBrokers`,
+      method: 'get',
+      cookie
+    }
+  };
+}
+
 
 export function beginEdit(item, index) {
   return {

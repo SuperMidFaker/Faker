@@ -5,14 +5,15 @@ import Result from '../../reusable/node-util/response-result';
 export default [
   ['get', '/v1/import/importdelegates', importdelegates],
   ['get', '/v1/import/status', importdelegateStatusG],
-//   ['put', '/v1/import/importdelegates', updateDelegate],
+  ['get', '/v1/import/:tid/customsBrokers', customsBrokersG],
+ // ['put', '/v1/import/importdelegates', updateDelegate],
   ['delete', '/v1/import/importdelegate', delId]
 ]
 
 function *importdelegates() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
-  //const tenantId = parseInt(this.request.query.tenantId || 0, 10);
+  const tenantId = parseInt(this.request.query.tenantId || 0, 10);
   const currentStatus = parseInt(this.request.query.currentStatus || 0, 10)//木有状态则默认查询未发送的数据;
 
 
@@ -21,8 +22,8 @@ function *importdelegates() {
   const sortOrder = this.request.query.sortOrder;
   
   try {
-    const totals = yield idDao.getIdTotalCount(currentStatus,filters);
-    const ids = yield idDao.getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, currentStatus);
+    const totals = yield idDao.getIdTotalCount(currentStatus,filters,tenantId);
+    const ids = yield idDao.getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, currentStatus,tenantId);
     return Result.OK(this, {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
@@ -67,6 +68,12 @@ function *delId() {
     console.log(e);
     return Result.InternalServerError(this, '删除进口委托数据异常');
   }
+}
+
+function *customsBrokersG() {
+    const tenantId=this.params.tid;
+    const cbs= yield idDao.getcustomsBrokers(tenantId);
+    return Result.OK(this,cbs);
 }
 
 

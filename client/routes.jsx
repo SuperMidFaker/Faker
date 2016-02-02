@@ -66,8 +66,8 @@ export default (store, cookie) => {
             <IndexRoute component={ImportDashboard} />
             <Route path="delegate">
               <IndexRoute component={importDelegate.List} />
-              <Route path="new" />
-              <Route path="edit/:id" />
+              <Route path="new" component={importDelegate.Edit} />
+              <Route path="edit/:id" component={importDelegate.Edit} />
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
