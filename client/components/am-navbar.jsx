@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover } from '../../reusable/ant-ui';
+import { Popover, Tooltip } from '../../reusable/ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
@@ -52,7 +52,9 @@ export default class AmNavBar extends React.Component {
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps"></i>
             </NavLink>
-            <NavLink to="/" className={`navbar-brand module-${moduleName}`} />
+            <Tooltip placement="right" title="返回首页">
+              <NavLink to="/" className={`navbar-brand module-${moduleName}`} />
+            </Tooltip>
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
