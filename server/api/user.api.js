@@ -211,10 +211,11 @@ function *submitCorp() {
     trans = yield mysql.beginTransaction();
     let result = yield tenantDao.insertCorp(corp, parentTenantId, trans);
     corp.key = result.insertId;
-    result = yield userDao.insertAccount(corp.loginName, corp.email, corp.phone, salt, pwdHash,
+    result = yield userDao.insertAccount(`${corp.loginName}@{corp.code}`, corp.email, corp.phone, salt, pwdHash,
                                          parentTenantId === 0 ? ENTERPRISE : BRANCH, unid, trans);
     corp.loginId = result.insertId;
     corp.status = ACCOUNT_STATUS.normal.name;
+    corp.apps = [];
     yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.key, parentTenantId,
                                           this.state.user.userId, trans);
     yield tenantDao.updateBranchCount(parentTenantId, 1, trans);

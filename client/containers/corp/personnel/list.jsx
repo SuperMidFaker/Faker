@@ -158,7 +158,7 @@ export default class PersonnelSetting extends React.Component {
           filters: []
         };
         for (const key in filters) {
-          if (filters[key]) {
+          if (filters[key] && filters[key].length > 0) {
             params.filters.push({
               name: key,
               value: filters[key][0]

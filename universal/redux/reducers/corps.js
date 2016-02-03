@@ -26,7 +26,6 @@ export const ORGAN_EDIT_SUCCEED = actionTypes.ORGAN_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
-  needUpdate: false,
   selectedIndex: -1,
   formData: {
     poid: '',
@@ -45,7 +44,7 @@ const initialState = {
     totalCount: 0,
     pageSize: 5,
     current: 1,
-    data: []
+    data: [] // structure see getOrganizations
   }
 };
 export default function reducer(state = initialState, action) {
@@ -69,7 +68,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, corpUsers: actresult.users, formData };
     }
     case actionTypes.ORGANS_LOAD:
-      return { ...state, loading: true, needUpdate: false };
+      return { ...state, loading: true };
     case actionTypes.ORGANS_LOAD_SUCCEED: {
       const corplist = { ...state.corplist, ...action.result.data };
       return {...state, loading: false, loaded: true, corplist};
@@ -79,7 +78,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CORP_DELETE_SUCCEED: {
       const corplist = { ...state.corplist };
       corplist.totalCount--;
-      return { ...state, corplist, needUpdate: true };
+      return { ...state, corplist };
     }
     case actionTypes.ORGAN_EDIT_SUCCEED: {
       const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?

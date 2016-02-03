@@ -23,12 +23,14 @@ function fetchData({state, dispatch, cookie}) {
 @connect(
   state => ({
     corplist: state.corps.corplist,
-    needUpdate: state.corps.needUpdate,
     loading: state.corps.loading,
     appEditor: state.corps.appEditor,
     tenantId: state.account.tenantId
   }),
-  { loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor, closeTenantAppsEditor }
+  {
+    loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
+    closeTenantAppsEditor
+  }
 )
 export default class CorpList extends React.Component {
   static propTypes = {
@@ -36,7 +38,6 @@ export default class CorpList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     appEditor: PropTypes.object.isRequired,
-    needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     switchStatus: PropTypes.func.isRequired,
     switchTenantApp: PropTypes.func.isRequired,
@@ -45,15 +46,10 @@ export default class CorpList extends React.Component {
     delCorp: PropTypes.func.isRequired,
     loadOrgans: PropTypes.func.isRequired
   }
-  constructor() {
-    super();
-    this.state = {
-      selectedRowKeys: []
-    };
-    this.handleSelectionClear = this.handleSelectionClear.bind(this);
-    this.handleEditorHide = this.handleEditorHide.bind(this);
-  }
-  handleSelectionClear() {
+  state = {
+    selectedRowKeys: []
+  };
+  handleSelectionClear = () => {
     this.setState({selectedRowKeys: []});
   }
   handleNavigationTo(to, query) {
@@ -63,7 +59,17 @@ export default class CorpList extends React.Component {
     showWarningModal({
       title: '请输入DELETE进行下一步操作',
       content: '点击确定会删除该机构及其下所有帐户信息',
-      onOk: () => this.props.delCorp(id, this.props.tenantId),
+      onOk: () => this.props.delCorp(id, this.props.tenantId).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.props.loadOrgans(null, {
+            tenantId: this.props.tenantId,
+            pageSize: this.props.corplist.pageSize,
+            currentPage: 1
+          });
+        }
+      }),
       confirmString: 'DELETE'
     });
   }
@@ -78,7 +84,7 @@ export default class CorpList extends React.Component {
   handleEnabledAppEdit(record, index) {
     this.props.openTenantAppsEditor(record, index);
   }
-  handleEditorHide() {
+  handleEditorHide = () => {
     this.props.closeTenantAppsEditor();
   }
   renderColumnText(status, text) {
@@ -89,17 +95,13 @@ export default class CorpList extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { corplist, loading, needUpdate } = this.props;
+    const { corplist, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadOrgans(null, params),
       resolve: (result) => result.data,
-      needUpdate,
-      getPagination: (result) => ({
+      getPagination: (result, currentResolve) => ({
         total: result.totalCount,
-        // 删除完一页时返回上一页
-        current: result.totalCount > 0 && (result.current - 1) * result.pageSize <= result.totalCount
-          && result.current * result.pageSize > result.totalCount ?
-          Math.ceil(result.totalCount / result.pageSize) : result.current,
+        current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
         pageSizeOptions: ['5', '10'], // todo how to make it sync with initialstate pageSize
@@ -119,7 +121,8 @@ export default class CorpList extends React.Component {
           }
         }
         return params;
-      }
+      },
+      remotes: corplist
     });
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
@@ -155,7 +158,8 @@ export default class CorpList extends React.Component {
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record, index)} size="small"><Icon type="edit" /></Button>
+            <Button shape="circle" type="primary" title="编辑" onClick={
+              () => this.handleEnabledAppEdit(record, index)} size="small"><Icon type="edit" /></Button>
           </span>);
       }
     }, {
@@ -205,7 +209,7 @@ export default class CorpList extends React.Component {
           <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
         </div>
         <div className="panel-body body-responsive">
-          <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={corplist} dataSource={dataSource} />
+          <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
         </div>
         <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
           <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">清除选择</Button>
