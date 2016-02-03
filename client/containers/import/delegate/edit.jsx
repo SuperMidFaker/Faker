@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Form, Input, Row, Col, Switch, message } from 'ant-ui';
+import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
+import { AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message } from
+'../../../../reusable/ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
@@ -45,8 +47,8 @@ function goBack(props) {
   const isCreating = props.formData.key === null;
   dispatch(setNavTitle({
     depth: 3,
-    text: isCreating ? '添加用户' : `用户${props.formData.name}`,
-    moduleName: 'corp',
+    text: isCreating ? '新增业务单' : '业务单详情',
+    moduleName: 'import',
     goBackFn: () => goBack(props),
     withModuleLayout: false
   }));
@@ -76,6 +78,11 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
+  constructor() {
+    super();
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
   onSubmitReturn(error) {
     if (error) {
       message.error(error.message, 10);
@@ -83,31 +90,32 @@ export default class CorpEdit extends React.Component {
       goBack(this.props);
     }
   }
-  handleSubmit = (ev) => {
+  handleSubmit(ev) {
     ev.preventDefault();
-    this.props.formhoc.validateFields((errors) => {
+    this.props.formhoc.validate((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData, this.props.code, this.props.tenant.id).then(
-            result => this.onSubmitReturn(result.error)
-          );
+          this.props.edit(this.props.formData, this.props.tenant.id).then(result => {
+            this.onSubmitReturn(result.error);
+          });
         } else {
-          this.props.submit(this.props.formData, this.props.code, this.props.tenant).then(
-            result => this.onSubmitReturn(result.error)
-          );
+          this.props.submit(this.props.formData, this.props.tenant).then(result => {
+            this.onSubmitReturn(result.error);
+          });
         }
       } else {
         this.forceUpdate();
       }
     });
   }
-  handleCancel = () => {
+  handleCancel() {
     goBack(this.props);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
+        && renderValidateStyle(field, this.props.formhoc)}
         help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
@@ -117,41 +125,19 @@ export default class CorpEdit extends React.Component {
     const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
-    // todo loginname no '@'
+    // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
-        <div className="page-header">
-          <h2>用户管理</h2>
-        </div>
         <div className="page-body">
-          <Form horizontal onSubmit={ this.handleSubmit } form={ this.props.formhoc }
-          className="form-edit-content">
-            {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-            <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}}
-              help={getFieldError('loginName')} hasFeedback required>
-              <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-                rules: [{validator: (rule, value, callback) =>
-                  isLoginNameExist(value, code, this.props.formData.loginId,
-                                   this.props.tenant.id, callback,
-                                   message, this.props.checkLoginName)}]
-              })} />
-            </FormItem>
-            { isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',
-                                                true, [{required: true, min: 6, message: '至少6位字符'}],
-                                               null, 'password') }
-            {this.renderTextInput('手机号', '可作登录帐号使用', 'phone', true, [{
-              validator: (rule, value, callback) => validatePhone(value, callback)
-            }])}
-            {this.renderTextInput('Email', '绑定后可作登录帐号使用', 'email', false, [{
-              type: 'email', message: 'email格式错误'}])}
-            {this.renderTextInput('职位', '', 'position')}
-            {this.props.formData.role !== TENANT_ROLE.owner.name &&
-            <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-              <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                onChange={(checked) => this.props.setFormValue('role',
-                                      checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
-                checked={this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name}/>
-            </FormItem>}
+          <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
+            <Row>
+              <Col span="12">
+                {this.renderTextInput('清关海关', '请输入清关海关', 'customs', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+              </Col>
+               <Col span="12">
+                {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+              </Col>
+            </Row>
             <Row>
               <Col span="18" offset="6">
                 <Button disabled={ disableSubmit } htmlType="submit" type="primary"

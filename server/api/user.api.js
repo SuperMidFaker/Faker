@@ -383,8 +383,8 @@ function *editPersonnel() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield userDao.updateLoginName(personnel.loginId, personnel.phone, personnel.loginName,
-                                  personnel.email, trans);
+    yield userDao.updateLoginName(personnel.loginId, personnel.phone,
+      `${personnel.loginName}@${code}`, personnel.email, trans);
     if (personnel.role === TENANT_ROLE.owner.name) {
       yield tenantDao.updateCorpOwnerInfo(body.tenantId, null, personnel.phone, personnel.name,
                                           personnel.email, trans);
@@ -433,9 +433,8 @@ function *getPersonnelInfo() {
     if (personnels.length === 0) {
       throw new Error('用户不存在');
     }
-    personnels.forEach(pers => 
-      pers.loginName = pers.loginName.split('@')[0]);
-    Result.OK(this, personnel[0]);
+    personnels.forEach(pers => pers.loginName = pers.loginName.split('@')[0]);
+    Result.OK(this, personnels[0]);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }

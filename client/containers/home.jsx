@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {Button, Icon} from 'ant-ui';
+import { Menu } from 'ant-ui';
 import AmNavBar from '../components/am-navbar';
 import NavLink from '../../reusable/components/nav-link';
 import ModuleLayout from '../components/module-layout';
@@ -25,7 +25,6 @@ export default class Home extends React.Component {
       depth: 1
     });
   }
-
   render() {
     const {logo, name} = this.props;
     return (
@@ -37,10 +36,18 @@ export default class Home extends React.Component {
               <div className="tenant-logo " style={{backgroundImage:`url("${logo || '/assets/img/home/tenant-logo.png'}")`}} />
               <h2 className="tenant-name">{name}</h2>
             </div>
-            <div className="setting-btn-wrap">
-              <NavLink to="/corp/info"><Button shape="circle-outline" size="large"><Icon type="setting" /></Button></NavLink>
-            </div>
             <div className="tenant-nav">
+              <Menu selectedKeys="apps" mode="horizontal">
+                <Menu.Item key="apps">
+                  <i className="zmdi zmdi-apps"></i>应用
+                </Menu.Item>
+                <Menu.Item key="activities">
+                  <i className="zmdi zmdi-view-day"></i>动态
+                </Menu.Item>
+                <Menu.Item key="setting">
+                  <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
+                </Menu.Item>
+              </Menu>
             </div>
           </div>
           <div className="home-body">

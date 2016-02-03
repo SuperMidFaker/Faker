@@ -30,7 +30,7 @@ function renderAsHtml(pageCss, pageJs, content) {
     <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.min.js,es5-shim/4.1.14/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
   <![endif]-->
 </head>
-<body>
+<body class="vertical-scroll" style="min-height: 680px;">
   <div id="mount" class="full-container">${content}</div>
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js" type="text/javascript"></script>

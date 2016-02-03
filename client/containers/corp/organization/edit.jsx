@@ -42,7 +42,7 @@ function goBack(props) {
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating ? '添加部门或分支机构' : props.formData.name,
-    moduleName: '',
+    moduleName: 'corp',
     goBackFn: () => goBack(props),
     withModuleLayout: false
   }));

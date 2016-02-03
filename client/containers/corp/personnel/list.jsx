@@ -32,6 +32,7 @@ function fetchData({state, dispatch, cookie}) {
     personnelist: state.personnel.personnelist,
     branches: state.personnel.branches,
     tenant: state.personnel.tenant,
+    code: state.account.code,
     loading: state.personnel.loading
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
@@ -39,6 +40,7 @@ export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
+    code: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
@@ -134,7 +136,7 @@ export default class PersonnelSetting extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { tenant, personnelist, branches, loading } = this.props;
+    const { code, tenant, personnelist, branches, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadPersonnel(null, params),
       resolve: (result) => result.data,
@@ -181,7 +183,7 @@ export default class PersonnelSetting extends React.Component {
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: '用户名',
-      render: (o, record) => this.renderColumnText(record.status, record.loginName)
+      render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
     }, {
       title: '手机号',
       render: (o, record) => this.renderColumnText(record.status, record.phone)

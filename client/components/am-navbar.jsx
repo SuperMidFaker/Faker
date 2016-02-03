@@ -23,7 +23,7 @@ export default class AmNavBar extends React.Component {
         amTitleNav = (
           <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
             <a role="button" aria-expanded="false" className="dropdown-toggle">
-              <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-${moduleName}`}></i>
+              <i className={`zmdi zmdi-${moduleName}`}></i>
               {navTitle.text}
               <span className="angle-down s7-angle-down"></span>
             </a>
@@ -31,14 +31,14 @@ export default class AmNavBar extends React.Component {
       } else {
         amTitleNav = (
           <a role="button" aria-expanded="false" className="dropdown-toggle">
-            <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-${moduleName}`}></i>
+            <i className={`zmdi zmdi-${moduleName}`}></i>
             {navTitle.text}
           </a>);
       }
     } else if (navTitle.depth === 3) {
       amTitleNav = (
         <a role="button" onClick={navTitle.goBackFn}>
-          <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-arrow-left`}></i>
+          <i className={`zmdi zmdi-arrow-left`}></i>
           {navTitle.text}
         </a>);
     }
