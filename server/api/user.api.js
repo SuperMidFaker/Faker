@@ -277,7 +277,7 @@ function *editOrganization() {
     yield tenantUserDao.updateUserType(prevOwnerId, TENANT_ROLE.member.name, trans);
     yield tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans);
     const users = yield tenantUserDao.getPersonnelInfo(currOwnerId);
-    if (users.length !== 1) { 
+    if (users.length !== 1) {
       throw new Error('not found selected owner');
     }
     const currOwner = users[0];
@@ -338,7 +338,10 @@ function *getCorpPersonnels() {
       totalCount,
       current,
       pageSize,
-      data: personnel
+      data: personnel.map(pers => {
+        pers.loginName = pers.loginName.split('@')[0]
+        return pers;
+      })
     });
   } catch (e) {
     Result.InternalServerError(this, e.message);
@@ -349,6 +352,7 @@ function *submitPersonnel() {
   const curUserId = this.state.user.userId;
   const body = yield cobody(this);
   const tenant = body.tenant;
+  const code = body.code;
   const personnel = body.personnel;
   const salt = bCryptUtil.gensalt();
   const pwdHash = bCryptUtil.hashpw(personnel.password, salt);
@@ -358,7 +362,7 @@ function *submitPersonnel() {
     trans = yield mysql.beginTransaction();
     const accountType = personnel.role === TENANT_ROLE.manager.name ? (
       tenant.parentId === 0 ? ENTERPRISE : BRANCH) : PERSONNEL;
-    let result = yield userDao.insertAccount(personnel.loginName, personnel.email,
+    let result = yield userDao.insertAccount(`${personnel.loginName}@${code}`, personnel.email,
                                              personnel.phone, salt, pwdHash, accountType, unid, trans);
     const loginId = result.insertId;
     result = yield tenantUserDao.insertPersonnel(curUserId, loginId, personnel, tenant, trans);
@@ -375,6 +379,7 @@ function *submitPersonnel() {
 function *editPersonnel() {
   const body = yield cobody(this);
   const personnel = body.personnel;
+  const code = body.code;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
@@ -428,7 +433,9 @@ function *getPersonnelInfo() {
     if (personnels.length === 0) {
       throw new Error('用户不存在');
     }
-    Result.OK(this, personnels[0]);
+    personnels.forEach(pers => 
+      pers.loginName = pers.loginName.split('@')[0]);
+    Result.OK(this, personnel[0]);
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }

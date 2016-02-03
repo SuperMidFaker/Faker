@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import NavLink from '../../reusable/components/nav-link';
-import {Row, Col} from '../../reusable/ant-ui';
+import {Row, Col} from 'ant-ui';
 import {DEFAULT_MODULES} from '../../universal/constants';
 import './module-layout.less';
 

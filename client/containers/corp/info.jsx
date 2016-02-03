@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { renderValidateStyle } from '../../../reusable/browser-util/react-ant';
-import { AntIcon, Button, Form, Input, Row, Col, Select, Tabs, message } from
-'../../../reusable/ant-ui';
+import { Icon, Button, Form, Input, Row, Col, Select, Tabs, message } from 'ant-ui';
 import Region from '../../components/region-cascade';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
 import { isFormDataLoaded, loadForm, setFormValue, uploadImg, edit } from
@@ -52,7 +50,7 @@ export default class CorpInfo extends React.Component {
     uploadImg: PropTypes.func.isRequired
   }
   handleSubmit() {
-    this.props.formhoc.validate((errors) => {
+    this.props.formhoc.validateFields((errors) => {
       if (!errors) {
         this.props.edit(this.props.formData).then((result) => {
           if (result.error) {
@@ -85,9 +83,8 @@ export default class CorpInfo extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}} validateStatus={rules
-        && renderValidateStyle(field, this.props.formhoc)}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}}
+      help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
@@ -96,7 +93,7 @@ export default class CorpInfo extends React.Component {
     const {formData: {country, province, city, district}, formhoc: {getFieldProps}} = this.props;
     return (
       <div className="body-responsive">
-      <Form horizontal>
+      <Form horizontal form={ this.props.formhoc }>
         <Row>
           <Col span="8">
             {this.renderTextInput('企业名称', '请与营业执照名称一致', 'name', true, [{required: true, message: '公司名称必填'}])}
@@ -163,7 +160,7 @@ export default class CorpInfo extends React.Component {
                   <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{height: 140, marginTop: 20}}>
                     <span>
                       <div className="ant-upload-drag-container">
-                        <AntIcon type="upload" />
+                        <Icon type="upload" />
                         <p className="ant-upload-hint">建议使用PNG或GIF格式的透明图片</p>
                       </div>
                     </span>

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
 '../../../../universal/redux/reducers/personnel';
-import { Table, Button, Select, message } from '../../../../reusable/ant-ui';
+import { Table, Button, Select, message } from 'ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
@@ -32,15 +32,13 @@ function fetchData({state, dispatch, cookie}) {
     personnelist: state.personnel.personnelist,
     branches: state.personnel.branches,
     tenant: state.personnel.tenant,
-    loading: state.personnel.loading,
-    needUpdate: state.personnel.needUpdate
+    loading: state.personnel.loading
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
-    needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
@@ -136,11 +134,10 @@ export default class PersonnelSetting extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { tenant, personnelist, branches, loading, needUpdate } = this.props;
+    const { tenant, personnelist, branches, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadPersonnel(null, params),
-      resolved: personnelist.data,
-      needUpdate,
+      resolve: (result) => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
@@ -168,7 +165,8 @@ export default class PersonnelSetting extends React.Component {
         }
         params.filters = JSON.stringify(params.filters);
         return params;
-      }
+      },
+      remotes: personnelist
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

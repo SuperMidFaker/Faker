@@ -9,7 +9,7 @@ export default class SSOPack extends React.Component {
   render() {
     return (
       <div className="am-splash-screen">
-        <img src="http://cdn.welogix.cn/assets/img/welogix_logo_160_100_white.png" />
+        <img src={ `${__CDN__}/assets/img/welogix_logo_160_100_white.png` } />
         <div className="am-wrapper am-login">
           <div className="am-content">
             <div className="main-content">

@@ -6,6 +6,6 @@
     "pid_file"   : "./pm2/log/welogix-web.pid",
     "args"      : "['--port=3022']",
     "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "home"
     }
 }]

@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
-import { AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message } from
-'../../../../reusable/ant-ui';
+import { Icon, Button, Form, Input, Row, Col, Switch, message } from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
@@ -92,16 +90,16 @@ export default class CorpEdit extends React.Component {
   }
   handleSubmit(ev) {
     ev.preventDefault();
-    this.props.formhoc.validate((errors) => {
+    this.props.formhoc.validateFields((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData, this.props.tenant.id).then(result => {
-            this.onSubmitReturn(result.error);
-          });
+          this.props.edit(this.props.formData, this.props.code, this.props.tenant.id).then(
+            result => this.onSubmitReturn(result.error)
+          );
         } else {
-          this.props.submit(this.props.formData, this.props.tenant).then(result => {
-            this.onSubmitReturn(result.error);
-          });
+          this.props.submit(this.props.formData, this.props.code, this.props.tenant).then(
+            result => this.onSubmitReturn(result.error)
+          );
         }
       } else {
         this.forceUpdate();
@@ -114,8 +112,7 @@ export default class CorpEdit extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
-        && renderValidateStyle(field, this.props.formhoc)}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
         help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
@@ -125,23 +122,23 @@ export default class CorpEdit extends React.Component {
     const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
-    // todo loginname no '@' change adapt and tranform logic with new rc-form
+    // todo loginname no '@'
     return (
       <div className="main-content">
         <div className="page-header">
           <h2>用户管理</h2>
         </div>
         <div className="page-body">
-          <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
+          <Form horizontal onSubmit={ this.handleSubmit } form={ this.props.formhoc }
+          className="form-edit-content">
             {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-            <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
-              validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
+            <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}}
+              help={getFieldError('loginName')} hasFeedback required>
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-                rules: [{validator: (rule, value, callback) => isLoginNameExist(value, this.props.formData.loginId,
-                                                                                this.props.tenant.id, callback,
-                                                                               message, this.props.checkLoginName)}],
-                adapt: (value) => value && value.split('@')[0],
-                transform: (value) => `${value}@${code}`
+                rules: [{validator: (rule, value, callback) =>
+                  isLoginNameExist(value, code, this.props.formData.loginId,
+                                   this.props.tenant.id, callback,
+                                   message, this.props.checkLoginName)}]
               })} />
             </FormItem>
             { isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',

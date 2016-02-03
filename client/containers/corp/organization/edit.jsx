@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
-import { Button, Form, Input, Select, Row, Col, message } from '../../../../reusable/ant-ui';
+import { Button, Form, Input, Select, Row, Col, message } from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { loadOrganizationForm, clearForm, setFormValue, editOrganization, submit } from

@@ -98,24 +98,24 @@ export function delPersonnel(pid, loginId, tenant) {
   };
 }
 
-export function edit(personnel, tenantId) {
+export function edit(personnel, code, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_EDIT, actionTypes.PERSONNEL_EDIT_SUCCEED, actionTypes.PERSONNEL_EDIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'put',
-      data: { personnel, tenantId }
+      data: { personnel, code, tenantId }
     }
   };
 }
 
-export function submit(personnel, tenant) {
+export function submit(personnel, code, tenant) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_SUBMIT, actionTypes.PERSONNEL_SUBMIT_SUCCEED, actionTypes.PERSONNEL_SUBMIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'post',
-      data: { personnel, tenant }
+      data: { personnel, code, tenant }
     }
   };
 }

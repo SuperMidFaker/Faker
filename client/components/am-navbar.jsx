@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover } from '../../reusable/ant-ui';
+import { Popover } from 'ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';

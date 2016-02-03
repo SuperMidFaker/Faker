@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Switch, Row, Col, message } from '../../reusable/ant-ui';
+import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
 import './appmodule-editor.less';
 
 export default class ModuleEditor extends React.Component {

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
   closeTenantAppsEditor } from '../../../../universal/redux/reducers/corps';
-import { Table, Button, AntIcon, message } from '../../../../reusable/ant-ui';
+import { Table, Button, Icon, message } from 'ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';
@@ -155,7 +155,7 @@ export default class CorpList extends React.Component {
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record, index)} size="small"><AntIcon type="edit" /></Button>
+            <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEnabledAppEdit(record, index)} size="small"><Icon type="edit" /></Button>
           </span>);
       }
     }, {
