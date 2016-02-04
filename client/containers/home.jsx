@@ -29,7 +29,22 @@ export default class Home extends React.Component {
     });
   }
   render() {
-    const {logo, name} = this.props;
+    const { logo, name, accountType } = this.props;
+    const tenantMenus = [
+      <Menu.Item key="apps">
+        <i className="zmdi zmdi-apps"></i>应用
+      </Menu.Item>,
+      <Menu.Item key="activities">
+        <i className="zmdi zmdi-view-day"></i>动态
+      </Menu.Item>
+    ];
+    if (accountType !== PERSONNEL) {
+      tenantMenus.push(
+        <Menu.Item key="setting">
+          <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
+        </Menu.Item>
+      );
+    }
     return (
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />
@@ -41,18 +56,7 @@ export default class Home extends React.Component {
             </div>
             <div className="tenant-nav">
               <Menu selectedKeys="apps" mode="horizontal">
-                <Menu.Item key="apps">
-                  <i className="zmdi zmdi-apps"></i>应用
-                </Menu.Item>
-                <Menu.Item key="activities">
-                  <i className="zmdi zmdi-view-day"></i>动态
-                </Menu.Item>
-                {
-                  this.props.accountType !== PERSONNEL &&
-                  <Menu.Item key="setting">
-                    <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
-                  </Menu.Item>
-                }
+              { tenantMenus }
               </Menu>
             </div>
           </div>
