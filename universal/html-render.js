@@ -8,7 +8,6 @@ import routes from '../client/routes';
 import App from '../client/app';
 import fetchInitialState from '../reusable/node-util/fetch-initial-state';
 
-const tv = __DEV__ ? '' : `?${new Date().getTime()}`;
 function renderAsHtml(pageCss, pageJs, content) {
   return `
 <!DOCTYPE html>
@@ -17,7 +16,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <title>WeLogix</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico${tv}"/>
+  <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico"/>
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-57x57-precomposed.png" />
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-72x72-precomposed.png" sizes="72x72" />
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-114x114-precomposed.png" sizes="114x114" />

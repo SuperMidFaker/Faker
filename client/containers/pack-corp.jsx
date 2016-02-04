@@ -1,26 +1,33 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
 import { setNavTitle } from '../../universal/redux/reducers/navbar';
 import connectNav from '../../reusable/decorators/connect-nav';
+import { BRANCH } from '../../universal/constants';
 
+@connect(
+  state => ({
+    accountType: state.account.type
+  })
+)
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({
     depth: 2,
     text: '企业设置',
     moduleName: 'corp',
     withModuleLayout: false,
-    goBackFn: ''
+    goBackFn: null
   }));
 })
 export default class Account extends React.Component {
   static propTypes = {
+    accountType: PropTypes.string.isRequired,
     children: PropTypes.object.isRequired
   };
 
   render() {
     // todo no organization when tenant is standard
-    // and no setting button
     const linkMenus = [{
       single: true,
       key: 'corpsetting-1',
@@ -34,6 +41,7 @@ export default class Account extends React.Component {
       icon: 's7-users',
       text: '用户管理'
     }, {
+      invisible: this.props.accountType === BRANCH,
       single: true,
       key: 'corpsetting-3',
       path: '/corp/organization',
@@ -62,7 +70,7 @@ export default class Account extends React.Component {
     }];
     return (
       <div className="am-wrapper am-fixed-sidebar">
-        <AmNavBar barTitle="企业设置" />
+        <AmNavBar />
         <div className="am-content">
           <AmLeftSidebar links={ linkMenus } />
           {this.props.children}

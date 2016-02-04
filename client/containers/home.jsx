@@ -5,10 +5,12 @@ import AmNavBar from '../components/am-navbar';
 import NavLink from '../../reusable/components/nav-link';
 import ModuleLayout from '../components/module-layout';
 import { setNavTitle } from '../../universal/redux/reducers/navbar';
+import { PERSONNEL } from '../../universal/constants';
 import './home.less';
 
 @connect(
   state => ({
+    accountType: state.account.type,
     logo: state.corpDomain.logo,
     name: state.corpDomain.name
   }),
@@ -17,6 +19,7 @@ import './home.less';
 export default class Home extends React.Component {
   static propTypes = {
     setNavTitle: PropTypes.func.isRequired,
+    accountType: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   };
@@ -44,9 +47,12 @@ export default class Home extends React.Component {
                 <Menu.Item key="activities">
                   <i className="zmdi zmdi-view-day"></i>动态
                 </Menu.Item>
-                <Menu.Item key="setting">
-                  <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
-                </Menu.Item>
+                {
+                  this.props.accountType !== PERSONNEL &&
+                  <Menu.Item key="setting">
+                    <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
+                  </Menu.Item>
+                }
               </Menu>
             </div>
           </div>
