@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { submitWarehouse, loadWarehouses, updateWh, delWh, beginEdit, edit, cancelEdit } from '../../../universal/redux/reducers/warehouse';
 import { isLoaded } from '../../../reusable/common/redux-actions';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
-import cx from '../../../reusable/browser-util/classname-join';
 import { toNumber } from '../../../reusable/common/transformer';
-import {Table, Button, AntIcon, Form, Input, Radio, Row, Col, Datepicker, Select, message} from '../../../reusable/ant-ui';
+import {Table, Button, Icon, Form, Input, Radio, Row, Col, DatePicker, Select, message} from 'ant-ui';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -113,18 +112,10 @@ export default class Warehouse extends React.Component {
   handleWhRemove(whKey) {
     this.props.delWh(whKey);
   }
-  renderValidateStyle(item) {
-    const {isFieldValidating, getFieldError, getFieldsValue} = this.props.formhoc;
-    return cx({
-      'error': getFieldError(item),
-      'validating': isFieldValidating(item),
-      'success': getFieldsValue([item])[item] && !getFieldError(item) && !isFieldValidating(item)
-    });
-  }
   renderInput(labelName, field, required, rules, fieldProps) {
     const {getFieldProps, getFieldError} = this.props.formhoc;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 8}} validateStatus={rules && this.renderValidateStyle(field)}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 8}}
       help={ rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
@@ -188,12 +179,12 @@ export default class Warehouse extends React.Component {
       width: 150,
       render: (text, record, index) => {// todo down icon not horiztonal
         return (<span>
-          <Button shape="circle" type="primary" title="编辑" onClick={ () => this.handleWhEdit(record, index) } size="small"><AntIcon type="edit" /></Button>
+          <Button shape="circle" type="primary" title="编辑" onClick={ () => this.handleWhEdit(record, index) } size="small"><Icon type="edit" /></Button>
           <span className="ant-divider"></span>
-          <Button shape="circle" type="primary" title="删除" onClick={ () => this.handleWhRemove(record.key)} size="small"><AntIcon type="cross" /></Button>
+          <Button shape="circle" type="primary" title="删除" onClick={ () => this.handleWhRemove(record.key)} size="small"><Icon type="cross" /></Button>
           <span className="ant-divider"></span>
           <a href="#" className="ant-dropdown-link">
-          更多 <AntIcon type="down" />
+          更多 <Icon type="down" />
           </a>
         </span>);
       }
@@ -203,16 +194,16 @@ export default class Warehouse extends React.Component {
         <div className="row">
           <div className={ this.state.showForm ? 'form-fade-leave' : '' }>
             <div className="table-header">
-              <Button type="primary" size="large" onClick={ () => this.handleWhReg() }><AntIcon type="plus" /><span>新增</span></Button>
+              <Button type="primary" size="large" onClick={ () => this.handleWhReg() }><Icon type="plus" /><span>新增</span></Button>
             </div>
             <div className="table-body">
               <Table rowSelection={rowSelection} columns={ columns } loading={ loading } remoteData={ whlist } dataSource={ dataSource }/>
             </div>
           </div>
-          <div className={(this.state.showForm ? 'form-fade-enter' : 'form-fade-leave')}>
+          <div className={(this.state.showForm ? 'form-fade-enter' : 'form-fade-leave')} form={ this.props.formhoc }>
             <Form horizontal onSubmit={ (ev) => this.handleSubmit(ev) }>
               {this.renderInput('仓库代码', 'wh_no', true, [{required: true, message: '请填写仓库代码'}])}
-              <FormItem label="仓库类型: " labelCol={{span: 6}} wrapperCol={{span: 8}} validateStatus={this.renderValidateStyle('wh_mode')}
+              <FormItem label="仓库类型: " labelCol={{span: 6}} wrapperCol={{span: 8}}
                 help={getFieldError('wh_mode')} hasFeedback required>
                 <RadioGroup value="paid" name="wh_mode" {...getFieldProps('wh_mode', {rules: [{required: true, message: '仓库类型必选'}]})}>
                   <Radio value="paid">收费</Radio>
@@ -242,7 +233,7 @@ export default class Warehouse extends React.Component {
               </FormItem>
               {this.renderInput('详细地址', 'address')}
               <FormItem label="开业日期: " labelCol={{span: 6}} wrapperCol={{span: 4}}>
-                <Datepicker name="open_date" {...getFieldProps('open_date', {initialValue: null})} />
+                <DatePicker name="open_date" {...getFieldProps('open_date', {initialValue: null})} />
               </FormItem>
               {this.renderInput('联系人', 'linkman')}
               {this.renderInput('联系手机号', 'mobile')}

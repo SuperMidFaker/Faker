@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Table, Button, Select, message } from 'ant-ui';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
 '../../../../universal/redux/reducers/personnel';
-import { Table, Button, Select, message } from 'ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
 
@@ -95,14 +96,15 @@ export default class PersonnelSetting extends React.Component {
       });
   }
   handlePersonnelDel(record) {
-    this.props.delPersonnel(record.key, record.loginId, this.props.tenant).then(result => {
+    const { tenant, personnelist: { totalCount, current, pageSize } } = this.props;
+    this.props.delPersonnel(record.key, record.loginId, tenant).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         this.props.loadPersonnel(null, {
-          tenantId: this.props.tenant.id,
-          pageSize: this.props.personnelist.pageSize,
-          currentPage: 1
+          tenantId: tenant.id,
+          pageSize,
+          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
         });
       }
     });

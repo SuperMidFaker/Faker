@@ -8,6 +8,7 @@
     "__PRODUCTIONS_ROOT_GROUP__": false,
     "__PRODUCTIONS_DOMAIN_GROUP__": false,
     "__DEV__": false,
+    "__PROD__": false,
     "__DEVTOOLS__": false,
     "__API_ROOT__": false
   },  

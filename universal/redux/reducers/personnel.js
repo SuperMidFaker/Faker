@@ -44,7 +44,7 @@ export default function reducer(state = initialState, action) {
       // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:
-      return {...state, loading: true};
+      return { ...state, loading: true };
     case actionTypes.PERSONNEL_LOAD_SUCCEED:
       return {...state, loaded: true, loading: false,
         personnelist: {...state.personnelist, ...action.result.data}

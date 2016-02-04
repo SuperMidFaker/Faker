@@ -16,8 +16,6 @@ import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
-import Customer from './containers/wms/customer';
-import Bill from './containers/wms/bill';
 import Notice from './containers/wms/notice';
 import {loadAccount} from '../universal/redux/reducers/account';
 import {isLoaded} from '../reusable/common/redux-actions';
@@ -73,8 +71,6 @@ export default (store, cookie) => {
           <Route path="wms" component={WMS}>
             <IndexRoute component={Warehouse} />
             <Route path="warehouse" component={Warehouse} />
-            <Route path="customer" component={Customer} />
-            <Route path="bill" component={Bill} />
             <Route path="notice" component={Notice} />
           </Route>
         </Route>

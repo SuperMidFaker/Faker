@@ -1,17 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
-import { AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message } from
-'../../../../reusable/ant-ui';
+import { Button, Form, Input, Row, Col, message } from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
 '../../../../universal/redux/reducers/personnel';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { isLoginNameExist, checkLoginName } from
-'../../../../reusable/domains/redux/checker-reducer';
-import { validatePhone } from '../../../../reusable/common/validater';
-import { TENANT_ROLE } from '../../../../universal/constants';
 const FormItem = Form.Item;
 
 function fetchData({state, dispatch, cookie, params}) {
@@ -39,7 +33,7 @@ function goBack(props) {
     code: state.account.code,
     tenant: state.personnel.tenant
   }),
-  { setFormValue, edit, submit, checkLoginName })
+  { setFormValue, edit, submit })
 @connectNav((props, dispatch) => {
   if (props.formData.key === -1) {
     return;
@@ -75,7 +69,6 @@ export default class CorpEdit extends React.Component {
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
-    checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
   constructor() {
@@ -114,22 +107,19 @@ export default class CorpEdit extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
-        && renderValidateStyle(field, this.props.formhoc)}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
+      help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
   }
   render() {
-    const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
-    const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
-    // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
         <div className="page-body">
-          <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
+          <Form horizontal onSubmit={ this.handleSubmit } form={ this.props.formhoc }
+          className="form-edit-content">
             <Row>
               <Col span="12">
                 {this.renderTextInput('清关海关', '请输入清关海关', 'customs', true, [{required: true, min: 2, message: '2位以上中英文'}])}
@@ -141,7 +131,7 @@ export default class CorpEdit extends React.Component {
             <Row>
               <Col span="18" offset="6">
                 <Button disabled={ disableSubmit } htmlType="submit" type="primary"
-                title={ disableSubmit ? '未选择所属租户,无法修改' : '' }>确定</Button>
+                  title={ disableSubmit ? '未选择所属租户,无法修改' : '' }>确定</Button>
                 <Button onClick={ this.handleCancel }>取消</Button>
               </Col>
             </Row>

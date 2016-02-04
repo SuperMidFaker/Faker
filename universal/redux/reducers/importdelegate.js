@@ -3,7 +3,6 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 const initialState = {
   loaded: false, // used by isLoad action
   loading: false,
-  needUpdate: false,
   formData: {},
   editIndex: -1,
   idlist: {
@@ -12,28 +11,31 @@ const initialState = {
     pageSize: 10,
     data: []
   },
-  statusList: {//初始化状态显示数量
-      notSendCount:0,
-      notAcceptCount:0,
-      acceptCount:0,
-      invalidCount:0
+  statusList: {// 初始化状态显示数量
+    notSendCount:0,
+    notAcceptCount:0,
+    acceptCount:0,
+    invalidCount:0
   },
   customsBrokerList: []
 };
-//定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
+// 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
-  'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL', 'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL', 'ID_BEGIN_EDIT', 'ID_EDIT',
-  'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL','ID_LOAD_STATUS_SUCCEED',
-  'ID_LOAD_STATUS_FAIL','ID_LOAD_STATUS',
-  'ID_LOAD_CUSTOMSBROKERS','ID_LOAD_CUSTOMSBROKERS_SUCCEED','ID_LOAD_CUSTOMSBROKERS_FAIL'
-  ];
+  'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL',
+  'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL',
+  'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL',
+  'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL',
+  'ID_EDIT_CANCEL', 'ID_EDIT',
+  'ID_LOAD_STATUS_SUCCEED', 'ID_LOAD_STATUS_FAIL', 'ID_LOAD_STATUS',
+  'ID_LOAD_CUSTOMSBROKERS', 'ID_LOAD_CUSTOMSBROKERS_SUCCEED', 'ID_LOAD_CUSTOMSBROKERS_FAIL'
+];
 const domain = '@@qm-import/importdelegate/';
 const actionTypes = createActionTypes(domain, actions);
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
   case actionTypes.ID_LOAD:
-    return { ...state, loading: true, needUpdate: false };
+    return { ...state, loading: true };
   case actionTypes.ID_LOAD_SUCCEED:
     return { ...state, loaded: true, loading: false, idlist: action.result.data };
   case actionTypes.ID_LOAD_FAIL:
@@ -55,9 +57,7 @@ export default function reducer(state = initialState, action) {
     return { ...state, idlist: { ...state.idlist, data: idDataArray }, formData: {}, editIndex: -1 };
   }
   case actionTypes.ID_DELETE_SUCCEED:
-    return { ...state, needUpdate: true, idlist: { ...state.idlist, totalCount: state.idlist.totalCount - 1 } };
-  case actionTypes.ID_BEGIN_EDIT:
-    return {...state, formData: action.data.item, editIndex: action.data.index};
+    return { ...state, idlist: { ...state.idlist, totalCount: state.idlist.totalCount - 1 } };
   case actionTypes.ID_EDIT:
     return {...state, formData: {...state.formData, [action.data.name]: action.data.value}};
   case actionTypes.ID_EDIT_CANCEL:
@@ -76,13 +76,13 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadDelegates(cookie,params) {
+export function loadDelegates(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [ actionTypes.ID_LOAD, actionTypes.ID_LOAD_SUCCEED, actionTypes.ID_LOAD_FAIL ],
       endpoint: 'v1/import/importdelegates',
       method: 'get',
-      cookie,      
+      cookie,
       params
     }
   };
@@ -122,7 +122,7 @@ export function delId(idkey) {
   };
 }
 
-export function loadStatus(cookie,params) {
+export function loadStatus(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [ actionTypes.ID_LOAD_STATUS, actionTypes.ID_LOAD_STATUS_SUCCEED, actionTypes.ID_LOAD_STATUS_FAIL ],
@@ -134,7 +134,7 @@ export function loadStatus(cookie,params) {
   };
 }
 
-export function loadCustomsBrokers(cookie,tenantId) {
+export function loadCustomsBrokers(cookie, tenantId) {
   return {
     [CLIENT_API]: {
       types: [ actionTypes.ID_LOAD_CUSTOMSBROKERS, actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED, actionTypes.ID_LOAD_CUSTOMSBROKERS_FAIL ],
@@ -145,13 +145,6 @@ export function loadCustomsBrokers(cookie,tenantId) {
   };
 }
 
-
-export function beginEdit(item, index) {
-  return {
-    type: actionTypes.ID_BEGIN_EDIT,
-    data: {item, index}
-  };
-}
 
 export function edit(name, value) {
   return {
@@ -165,4 +158,3 @@ export function cancelEdit() {
     type: actionTypes.ID_EDIT_CANCEL
   };
 }
-

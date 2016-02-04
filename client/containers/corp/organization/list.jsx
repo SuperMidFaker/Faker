@@ -7,6 +7,7 @@ import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
+import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
 
@@ -56,17 +57,18 @@ export default class CorpList extends React.Component {
     this.props.history.pushState(null, to, query);
   }
   handleCorpDel(id) {
+    const { tenantId, corplist: { totalCount, current, pageSize } } = this.props;
     showWarningModal({
       title: '请输入DELETE进行下一步操作',
       content: '点击确定会删除该机构及其下所有帐户信息',
-      onOk: () => this.props.delCorp(id, this.props.tenantId).then(result => {
+      onOk: () => this.props.delCorp(id, tenantId).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
           this.props.loadOrgans(null, {
-            tenantId: this.props.tenantId,
-            pageSize: this.props.corplist.pageSize,
-            currentPage: 1
+            tenantId: tenantId,
+            pageSize,
+            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
           });
         }
       }),

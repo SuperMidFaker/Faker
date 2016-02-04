@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import connectFetch from '../../../reusable/decorators/connect-fetch';
 import { load, submit, update, del, beginEdit, edit, cancelEdit } from '../../../universal/redux/reducers/notice';
 import { isLoaded } from '../../../reusable/common/redux-actions';
-import cx from '../../../reusable/browser-util/classname-join';
-import {Table, Button, AntIcon, Form, Input, Row, Col, message} from '../../../reusable/ant-ui';
+import {Table, Button, Icon, Form, Input, Row, Col, message} from 'ant-ui';
 const FormItem = Form.Item;
 
 function fetchData({ state, dispatch, cookie }) {
@@ -109,18 +108,10 @@ export default class Notice extends React.Component {
   handleRemove(key) {
     this.props.del(key);
   }
-  renderValidateStyle(item) {
-    const {isFieldValidating, getFieldError, getFieldsValue} = this.props.formhoc;
-    return cx({
-      'error': getFieldError(item),
-      'validating': isFieldValidating(item),
-      'success': getFieldsValue([item])[item] && !getFieldError(item) && !isFieldValidating(item)
-    });
-  }
   renderInput(labelName, field, required, rules, fieldProps) {
     const {getFieldProps, getFieldError} = this.props.formhoc;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 8}} validateStatus={rules && this.renderValidateStyle(field)}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 8}}
       help={ rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
@@ -184,12 +175,12 @@ export default class Notice extends React.Component {
       width: 150,
       render: (text, record, index) => {
         return (<span>
-          <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEdit(record, index)} size="small"><AntIcon type="edit" /></Button>
+          <Button shape="circle" type="primary" title="编辑" onClick={() => this.handleEdit(record, index)} size="small"><Icon type="edit" /></Button>
           <span className="ant-divider"></span>
-          <Button shape="circle" type="primary" title="删除" onClick={() => this.handleRemove(record.key)} size="small"><AntIcon type="cross" /></Button>
+          <Button shape="circle" type="primary" title="删除" onClick={() => this.handleRemove(record.key)} size="small"><Icon type="cross" /></Button>
           <span className="ant-divider"></span>
           <a href="#" className="ant-dropdown-link">
-          更多 <AntIcon type="down" />
+          更多 <Icon type="down" />
           </a>
         </span>);
       }
@@ -199,18 +190,18 @@ export default class Notice extends React.Component {
         <div className="row">
           <div className={ this.state.showForm ? 'form-fade-leave' : '' }>
             <div className="table-header">
-              <Button type="primary" size="large" onClick={ () => this.handleFormReg() }><AntIcon type="plus" /><span>新增</span></Button>
+              <Button type="primary" size="large" onClick={ () => this.handleFormReg() }><Icon type="plus" /><span>新增</span></Button>
             </div>
             <div className="table-body">
               <Table rowSelection={rowSelection} columns={ columns } loading={ loading } remoteData={ notices } dataSource={ dataSource }/>
             </div>
           </div>
           <div className={ this.state.showForm ? 'form-fade-enter' : 'form-fade-leave' }>
-            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)}>
+            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} form={ this.props.formhoc }>
               {this.renderInput('标题', 'title', true, [{required: true, message: '标题不能为空'}])}
               {this.renderInput('分类', 'subject', true, [{required: true, message: '类别不能为空'}])}
-              <FormItem label="内容" labelCol={{span: 6}} wrapperCol={{span: 8}} validateStatus={this.renderValidateStyle('body')}
-                help={getFieldError('body')} hasFeedback required>
+              <FormItem label="内容" labelCol={{span: 6}} wrapperCol={{span: 8}}
+              help={getFieldError('body')} hasFeedback required>
                 <Input type="textarea" rows="10" name="body" {...getFieldProps('body', {rules: [{required: true, message: '内容不能为空'}]})} />
               </FormItem>
               <Row>
