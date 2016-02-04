@@ -66,7 +66,7 @@ export default class CorpList extends React.Component {
           message.error(result.error.message, 10);
         } else {
           this.props.loadOrgans(null, {
-            tenantId: tenantId,
+            tenantId,
             pageSize,
             currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
           });

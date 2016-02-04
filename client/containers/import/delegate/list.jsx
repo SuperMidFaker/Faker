@@ -81,7 +81,7 @@ export default class ImportDelegate extends React.Component {
           message.error(result.error.message, 10);
         } else {
           this.props.loadDelegates(null, {
-            tenantId: tenantId,
+            tenantId,
             pageSize,
             currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
           });
