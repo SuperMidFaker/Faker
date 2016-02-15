@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Select, message } from 'ant-ui';
+import { Table, Button, Radio, message } from 'ant-ui';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
 '../../../../universal/redux/reducers/personnel';
 import NavLink from '../../../../reusable/components/nav-link';
@@ -8,9 +8,10 @@ import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   const promises = [];
   if (!isLoaded(state, 'personnel')) {
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
@@ -87,14 +88,6 @@ export default class PersonnelSetting extends React.Component {
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
   }
-  handleStatusSwitch(personnel, index) {
-    this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id
-      ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        }
-      });
-  }
   handlePersonnelDel(record) {
     const { tenant, personnelist: { totalCount, current, pageSize } } = this.props;
     this.props.delPersonnel(record.key, record.loginId, tenant).then(result => {
@@ -132,9 +125,6 @@ export default class PersonnelSetting extends React.Component {
   }
   renderColumnText(status, text) {
     let style = {};
-    if (status === ACCOUNT_STATUS.blocked.id) {
-      style = {color: '#CCC'};
-    }
     return <span style={style}>{text}</span>;
   }
   render() {
@@ -198,79 +188,38 @@ export default class PersonnelSetting extends React.Component {
       title: '职位',
       render: (o, record) => this.renderColumnText(record.status, record.position)
     }, {
-      title: '角色',
-      sorter: true,
-      dataIndex: 'role',
-      filters: [{
-        text: TENANT_ROLE.manager.text,
-        value: TENANT_ROLE.manager.name
-      }, {
-        text: TENANT_ROLE.member.text,
-        value: TENANT_ROLE.member.name
-      }],
-      render: (o, record) => this.renderColumnText(record.status, TENANT_ROLE[record.role].text)
-    }, {
-      title: '状态',
-      render: (o, record) => {
-        let style = {color: '#51C23A'};
-        let text = ACCOUNT_STATUS.normal.text;
-        if (record.status === ACCOUNT_STATUS.blocked.id) {
-          style = {color: '#CCC'};
-          text = ACCOUNT_STATUS.blocked.text;
-        }
-        return <span style={style}>{text}</span>;
-      }
-    }, {
       title: '操作',
       width: 150,
       render: (text, record, index) => {
-        if (record.role === TENANT_ROLE.owner.name) {
-          return (
-            <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
-            </span>);
-        } else if (record.status === ACCOUNT_STATUS.normal.id) {
-          return (
-            <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
-              <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
-            </span>);
-        } else if (record.status === ACCOUNT_STATUS.blocked.id) {
-          return (
-            <span>
-              <a role="button" onClick={() => this.handlePersonnelDel(record)}>删除</a>
-              <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
-            </span>);
-        } else {
-          return <span />;
-        }
+        // uninvited
+        return (
+          <span>
+            <NavLink to={`/corp/personnel/edit/${record.key}`}>发送邀请</NavLink>
+          </span>
+        );
       }
     }];
     return (
       <div className="main-content">
         <div className="page-header">
           <div className="pull-right action-btns">
-            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
+            <SearchBar placeholder="搜索合作伙伴" onInputSearch={(val) => this.handleSearch(val)} />
             <a role="button">高级搜索</a>
           </div>
-          <h2>用户管理</h2>
+          <h2>合作伙伴</h2>
         </div>
         <div className="page-body">
           <div className="panel-header">
             <div className="pull-right action-btns">
               <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
-                <span>添加用户</span>
+                <span>添加合作伙伴</span>
               </Button>
             </div>
-            <span style={{paddingRight: 10, color: '#09C', fontSize: 13}}>所属组织</span>
-            <Select style={{width: 200}} value={`${tenant.id}`}
-              onChange={(value) => this.handleTenantSwitch(value)}>
-            {
-              branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
-            }
-            </Select>
+            <RadioGroup onChange={} defaultValue="all">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="client">客户(2)</RadioButton>
+              <RadioButton value="2">报关(1)</RadioButton>
+            </RadioGroup>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
