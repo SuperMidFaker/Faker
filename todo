@@ -1,5 +1,5 @@
-react-intl
-wms -> new edit
+[] react-intl
+[] different domain after jwt should check domain and onEnter should redirect
 [] new personnel freshed page without tenant info  => how to make new/edit in route redirect to indexRoute
 [] appeditor modal interface logic in a mess
 [] webpack search dir for client side code but how server can use it too \\  debug node_modules source

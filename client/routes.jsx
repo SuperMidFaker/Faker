@@ -10,6 +10,7 @@ import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
+import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
@@ -56,6 +57,9 @@ export default (store, cookie) => {
             <IndexRoute component={Personnel.List} />
             <Route path="new" component={Personnel.Edit}/>
             <Route path="edit/:id" component={Personnel.Edit}/>
+          </Route>
+          <Route path="partners">
+            <IndexRoute component={Cooperation.Partners} />
           </Route>
           <Route path="password" component={Password} />
         </Route>

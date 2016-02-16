@@ -27,7 +27,6 @@ export default class Account extends React.Component {
   };
 
   render() {
-    // todo no organization when tenant is standard
     const linkMenus = [{
       single: true,
       key: 'corpsetting-1',
@@ -48,11 +47,23 @@ export default class Account extends React.Component {
       icon: 's7-network',
       text: '组织机构'
     }, {
-      single: true,
+      single: false,
       key: 'corpsetting-4',
-      path: '/corp/partners',
       icon: 's7-share',
-      text: '合作伙伴'
+      text: '合作网络',
+      sublinks: [{
+        key: 'partner-1',
+        path: '/corp/partners',
+        text: '合作伙伴'
+      }, {
+        key: 'partner-2',
+        path: '/corp/partners/inviters',
+        text: '收到的邀请'
+      }, {
+        key: 'partner-3',
+        path: '/corp/partners/invitees',
+        text: '发出的邀请'
+      }]
     }, {
       single: false,
       key: 'corpsetting-5',

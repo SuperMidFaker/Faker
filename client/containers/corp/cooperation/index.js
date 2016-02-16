@@ -1,2 +1,1 @@
-export List from './list';
-export Edit from './edit';
+export Partners from './partners';

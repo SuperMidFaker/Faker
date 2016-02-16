@@ -19,10 +19,6 @@ const wpConfig = {
   resolve: {
     // When requiring, you don't need to add these extensions
     extensions: ['', '.js', '.jsx'],
-    alias: {
-      ace: path.resolve(__dirname, 'node_modules/ace'),
-      codemirror: path.resolve(__dirname, 'node_modules/codemirror')
-    },
     // Modules will be searched for in these directories
     modulesDirectories: [
       'node_modules',

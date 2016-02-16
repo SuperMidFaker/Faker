@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Radio, message } from 'ant-ui';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
-'../../../../universal/redux/reducers/personnel';
+import { loadPartners, loadPartnershipTypes, delPersonnel, switchTenant, switchStatus } from
+'../../../../universal/redux/reducers/partner';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
@@ -13,96 +13,61 @@ const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];
-  if (!isLoaded(state, 'personnel')) {
-    let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
-    promises.push(p);
-    // 当前选择租户可能被删除,所以重新加载到主租户
-    p = dispatch(loadPersonnel(cookie, {
+  if (!isLoaded(state, 'partner')) {
+    promises.push(dispatch(loadPartners(cookie, {
       tenantId: state.account.tenantId,
-      pageSize: state.personnel.personnelist.pageSize,
-      currentPage: state.personnel.personnelist.current
-    }));
-    promises.push(p);
+      pageSize: state.partner.partnerlist.pageSize,
+      currentPage: state.partner.partnerlist.current
+    })));
   }
-  // 分别加载当前用户所有的租户列表和该用户所在租户下用户列表
-  // 返回多个promise结果
+  if (state.partner.partnershipTypes.length === 0) {
+    promises.push(dispatch(loadPartnershipTypes(cookie)));
+  }
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    personnelist: state.personnel.personnelist,
-    branches: state.personnel.branches,
-    tenant: state.personnel.tenant,
-    code: state.account.code,
+    partnershipTypes: state.partner.partnershipTypes,
+    partnerlist: state.partner.partnerlist,
+    tenants: state.partner.tenants,
     loading: state.personnel.loading
   }),
-  { delPersonnel, switchTenant, switchStatus, loadPersonnel })
+  { delPersonnel, switchTenant, switchStatus, loadPartners })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    selectIndex: PropTypes.number,
-    code: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
-    personnelist: PropTypes.object.isRequired,
-    branches: PropTypes.array.isRequired,
-    tenant: PropTypes.object.isRequired,
-    loadPersonnel: PropTypes.func.isRequired,
+    partnershipTypes: PropTypes.array.isRequired,
+    partnerlist: PropTypes.object.isRequired,
+    tenants: PropTypes.array.isRequired,
+    loadPartners: PropTypes.func.isRequired,
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired
   }
-  constructor() {
-    super();
-    this.state = {
-      selectedRowKeys: []
-    };
-  }
-  handleSelectionClear() {
+  state = {
+    selectedRowKeys: []
+  };
+  handleSelectionClear = () => {
     this.setState({selectedRowKeys: []});
   }
   handleTenantSwitch(val) {
-    const {personnelist} = this.props;
-    this.props.loadPersonnel(null, {
+    const { partnerlist } = this.props;
+    this.props.loadPartners(null, {
       tenantId: val,
-      pageSize: personnelist.pageSize,
+      pageSize: partnerlist.pageSize,
       currentPage: 1
-    }).then((result) => {
+    }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
-      } else {
-        let tenant;
-        this.props.branches.forEach(br => {
-          if (`${br.key}` === val) {
-            tenant = {
-              id: br.key,
-              parentId: br.parentId
-            };
-            return;
-          }
-        });
-        this.props.switchTenant(tenant);
       }
     });
   }
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
   }
-  handlePersonnelDel(record) {
-    const { tenant, personnelist: { totalCount, current, pageSize } } = this.props;
-    this.props.delPersonnel(record.key, record.loginId, tenant).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.props.loadPersonnel(null, {
-          tenantId: tenant.id,
-          pageSize,
-          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
-        });
-      }
-    });
-  }
-  handleSearch(searchVal) {
+  handleSearch = (searchVal) => {
     // OR name condition
     const filters = [[{
       name: 'name',
@@ -114,27 +79,25 @@ export default class PersonnelSetting extends React.Component {
       name: 'phone',
       value: searchVal
     }]];
-    // todo how to concatenation the table sort filter params
-    // in new Table impl the filter and sort can't be emptied
-    this.props.loadPersonnel(null, {
-      tenantId: this.props.tenant.id,
-      pageSize: this.props.personnelist.pageSize,
+    this.props.loadPartners(null, {
+      // tenantId: this.props.tenant.id,
+      pageSize: this.props.partnerlist.pageSize,
       currentPage: 1,
       filters: JSON.stringify(filters)
     });
   }
+  handlePartnershipFilter = (ev) => {
+  }
   renderColumnText(status, text) {
-    let style = {};
-    return <span style={style}>{text}</span>;
+    return <span>{text}</span>;
   }
   render() {
-    const { code, tenant, personnelist, branches, loading } = this.props;
+    const { partnershipTypes, tenants, partnerlist, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadPersonnel(null, params),
+      fetcher: (params) => this.props.loadPartners(null, params),
       resolve: (result) => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
-        // 删除完一页时返回上一页
         current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
@@ -142,7 +105,7 @@ export default class PersonnelSetting extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId: tenant.id,
+          // tenantId: tenant.id,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
@@ -160,7 +123,7 @@ export default class PersonnelSetting extends React.Component {
         params.filters = JSON.stringify(params.filters);
         return params;
       },
-      remotes: personnelist
+      remotes: partnerlist
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -169,29 +132,30 @@ export default class PersonnelSetting extends React.Component {
       }
     };
     const columns = [{
-      title: '姓名',
-      dataIndex: 'name',
-      sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.name)
+      title: '合作伙伴',
+      dataIndex: 'name'
     }, {
-      title: '用户名',
-      render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
+      title: '关系',
+      render: (o, record) => record.name
     }, {
-      title: '手机号',
-      render: (o, record) => this.renderColumnText(record.status, record.phone)
+      title: '类型',
+      dataIndex: 'tenant_type'
     }, {
-      title: '邮箱',
-      dataIndex: 'email',
-      sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.email)
+      title: '业务量',
+      dataIndex: 'volume'
     }, {
-      title: '职位',
-      render: (o, record) => this.renderColumnText(record.status, record.position)
+      title: '营收',
+      dataIndex: 'revenue',
+      render: (o, record) => record.revenue.toFixed(2)
+    }, {
+      title: '成本',
+      dataIndex: 'cost',
+      render: (o, record) => record.cost.toFixed(2)
     }, {
       title: '操作',
       width: 150,
-      render: (text, record, index) => {
-        // uninvited
+      render: (text, record) => {
+        // todo if only offline partner_id is null
         return (
           <span>
             <NavLink to={`/corp/personnel/edit/${record.key}`}>发送邀请</NavLink>
@@ -199,11 +163,12 @@ export default class PersonnelSetting extends React.Component {
         );
       }
     }];
+    // const partnershipRadios =
     return (
       <div className="main-content">
         <div className="page-header">
           <div className="pull-right action-btns">
-            <SearchBar placeholder="搜索合作伙伴" onInputSearch={(val) => this.handleSearch(val)} />
+            <SearchBar placeholder="搜索合作伙伴" onInputSearch={this.handleSearch} />
             <a role="button">高级搜索</a>
           </div>
           <h2>合作伙伴</h2>
@@ -215,17 +180,24 @@ export default class PersonnelSetting extends React.Component {
                 <span>添加合作伙伴</span>
               </Button>
             </div>
-            <RadioGroup onChange={} defaultValue="all">
+            <RadioGroup onChange={this.handlePartnershipFilter} defaultValue="all">
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="client">客户(2)</RadioButton>
-              <RadioButton value="2">报关(1)</RadioButton>
+              {
+                partnershipTypes.map(
+                  pst =>
+                    <RadioButton value={pst.key} key={pst.key}>pst.name(
+                      partnerlist.data.filter(pt =>
+                        pt.types.filter(ptt => ptt.key === pst.key).length > 0).length)
+                    </RadioButton>
+                )
+              }
             </RadioGroup>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>
+            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">清除选择</Button>
           </div>
         </div>
       </div>

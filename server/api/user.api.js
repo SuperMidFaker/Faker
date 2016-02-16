@@ -58,14 +58,14 @@ function *loginUserP() {
       const checkpwd = bCryptUtil.checkpw(password, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
       if (checkpwd) {
         const claims = { userId: user.id, userType: user.user_type };
-        const opts = Object.assign({}, config.get('jwt_crypt'), { expiresInMinutes: config.get('jwt_expire_minutes')});
+        const opts = Object.assign({}, config.get('jwt_crypt'), { expiresIn: config.get('jwt_expire_seconds')});
         // todo we should set a shorter interval for token expire, refresh it later
         const jwtoken = kJwt.sign(claims, privateKey, opts);
         const remember = body.remember;
         const ONE_DAY = 24 * 60 * 60;
         this.cookies.set(config.get('jwt_cookie_key'), jwtoken, {
           httpOnly : __DEV__ ? false : true,
-          expires: remember ? new Date(Date.now() + config.get('jwt_expire_minutes') * 60000) : new Date(Date.now() + ONE_DAY * 1000),
+          expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
           domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
         });
         return Result.OK(this, { token: jwtoken, userType: user.user_type, unid: user.unid });
