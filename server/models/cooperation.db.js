@@ -1,4 +1,4 @@
-import mysql from '../db-util/mysql';
+import mysql from '../../reusable/db-util/mysql';
 function prepareArgs(input) {
   const args = [];
   const columns = [`payer_id`, `payee_id`, `subject`, `body`, `amount`, `batch_no`,
@@ -23,13 +23,31 @@ export default {
     return mysql.query(sql, args);
   },
   getPagedPartners(tenantId, current, pageSize) {
-    const sql = `select partner_id as \`key\`, name, tenant_type as type,
+    return [{
+      key: 0,
+      name: 'aa',
+      tenantType: '线下',
+      partnerTenantId: 1
+    }, {
+      key: 1,
+      name: 'bb',
+      tenantType: '分支机构',
+      partnerTenantId: 2 
+    }];
+    const sql = `select id as \`key\`, name, tenant_type as tenantType,
       partner_tenant_id as partnerTenantId, business_volume as volume, revenue, cost
       from sso_partners where tenant_id = ? limit ?,?`;
     const args = [tenantId, (current - 1) * pageSize, pageSize];
     return mysql.query(sql, args);
   },
-  getTenantPartnerships(tenantId, parnterTenantId) {
+  getTenantPartnerships(tenantId, parnterName) {
+    return [{
+      type: '4',
+      name: '仓储'
+    }, {
+      type: '3',
+      name: '运输'
+    }];
     return [];
   },
   insertBill(bill, corpId, tenantId) {

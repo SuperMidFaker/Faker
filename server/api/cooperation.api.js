@@ -1,5 +1,6 @@
 import cobody from 'co-body';
 import coopDao from '../models/cooperation.db';
+import tenantDao from '../models/tenant.db';
 import Result from '../../reusable/node-util/response-result';
 
 const partnershipTypeNames = ['客户', '报关', '货代', '运输', '仓储'];
@@ -21,21 +22,21 @@ function *partnersG() {
     const partners = yield coopDao.getPagedPartners(tenantId, current, pageSize);
     for (let i = 0; i < partners.length; ++i) {
       const partner = partners[i];
-      const partnerships = yield coopDao.getTenantPartnerships(tenantId, partner.partnerTenantId);
-      partnerships.map(pt =>
-        partner.types.push({
+      partner.types = [];
+      const partnerships = yield coopDao.getTenantPartnerships(tenantId, partner.name);
+      partnerships.map(
+        pt => partner.types.push({
           key: pt.type,
           name: pt.name
-        }));
-      }
+        })
+      );
     }
-    const tenants = yield coopDao.getTenantsExcept(tenantId);
+    const tenants = yield tenantDao.getAllTenantsExcept(tenantId);
     return Result.OK(this, {
-      partnerlist :{
-        totalCount: totals.length > 0 ? totals[0].count : 0,
+      partnerlist: {
+        totalCount: 2,// totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        customers,
         data: partners
       },
       tenants
