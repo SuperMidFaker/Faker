@@ -45,7 +45,7 @@ export default class Home extends React.Component {
                   <i className="zmdi zmdi-view-day"></i>动态
                 </Menu.Item>
                 <Menu.Item key="setting">
-                  <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
+                  <NavLink to="/corp/info"><i className="zmdi zmdi-corp"></i>设置</NavLink>
                 </Menu.Item>
               </Menu>
             </div>

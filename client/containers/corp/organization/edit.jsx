@@ -149,7 +149,7 @@ export default class CorpEdit extends React.Component {
     return (
       <div className="page-body">
         <Form horizontal onSubmit={this.handleSubmit} form={ this.props.formhoc }
-        className="form-edit-content">
+        className="form-edit-content offset-right-col">
           {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
           { isCreating ?
             this.renderOwnerForm() :

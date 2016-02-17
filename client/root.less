@@ -24,7 +24,7 @@ img {
 .ant-popover-inner {
   max-width: 476px;
 }
-.ant-popover-placement-bottomRight, .ant-popover-placement-bottomLeft {
+.ant-popover-placement-bottom, .ant-popover-placement-bottomRight, .ant-popover-placement-bottomLeft {
   margin-top: 0;
 }
 .ant-menu-vertical {
@@ -345,21 +345,22 @@ img {
       }
     }
     .am-title-nav {
-      margin-left: -20px;
+      .apps-toggle {
+        margin-left: 16px;
+      }
       >li.dropdown {
         >a {
           padding: 0;
           >i {
-            width: 60px;
+            width: 30px;
             font-size: 24px;
-            text-align: center;
             line-height: 44px;
             vertical-align: middle;
           }
         }
       }
       @media (max-width:767px) {
-        margin-left: 60px;
+        margin-left: 70px;
       }
     }
     .am-user-nav {
@@ -686,6 +687,21 @@ img {
     font-size: 16px;
     line-height: 30px;
   }
+  >span {
+    font-size: 14px;
+    line-height: 28px;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  .tools {
+    float: right;
+  }
+  @media (max-width:767px) {
+    .tools {
+      float: none;
+      margin-bottom: 10px;
+    }
+  }
 }
 .page-body {
   background: #fff;
@@ -693,6 +709,9 @@ img {
   min-height: 500px;
   margin-bottom: 86px;
   clear: both;
+  .ant-tabs-nav-container {
+    font-size: 16px;
+  }
 }
 .body-responsive {
   overflow-x: auto;
@@ -741,9 +760,16 @@ img {
   span {
     vertical-align: middle;
   }
+  .tools {
+    float: right;
+  }
   @media (max-width:767px) {
     margin-bottom: 10px;
     padding: 10px 10px 0 10px;
+    .tools {
+      float: none;
+      margin-bottom: 10px;
+    }
   }
 }
 .panel-body {
@@ -754,17 +780,23 @@ img {
   }
 }
 .action-btns {
-  a {
-    margin-right: 15px;
+  button, a {
+    margin-right: 8px;
   }
 }
 .form-edit-content {
-  padding: 20px 600px 20px 20px;
+  padding: 20px 20px 20px 20px;
   .ant-btn + .ant-btn {
     margin-left: 8px;
   }
+  &.offset-right-col {
+    width: 50%;
+  }
   @media (max-width:991px) {
     padding: 10px;
+    &.offset-right-col {
+      width: 100%;
+    }
   }
 }
 

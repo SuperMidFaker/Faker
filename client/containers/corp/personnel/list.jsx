@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Select, message } from 'ant-ui';
+import { Table, Button, Select, Icon, message } from 'ant-ui';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
 '../../../../universal/redux/reducers/personnel';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import connectNav from '../../../../reusable/decorators/connect-nav';
+import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
@@ -28,6 +30,15 @@ function fetchData({state, dispatch, cookie}) {
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
+@connectNav((props, dispatch) => {
+  dispatch(setNavTitle({
+    depth: 2,
+    text: '用户管理',
+    moduleName: 'corp',
+    withModuleLayout: false,
+    goBackFn: ''
+  }));
+})
 @connect(
   state => ({
     personnelist: state.personnel.personnelist,
@@ -251,26 +262,22 @@ export default class PersonnelSetting extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="pull-right action-btns">
+          <div className="tools">
             <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
-            <a role="button">高级搜索</a>
+            <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <h2>用户管理</h2>
-        </div>
-        <div className="page-body">
-          <div className="panel-header">
-            <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
-                <span>添加用户</span>
-              </Button>
-            </div>
-            <span style={{paddingRight: 10, color: '#09C', fontSize: 13}}>所属组织</span>
-            <Select style={{width: 200}} value={`${tenant.id}`}
+          <span>所属组织</span> <Select style={{width: 200}} size="large" value={`${tenant.id}`}
               onChange={(value) => this.handleTenantSwitch(value)}>
             {
               branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
             }
             </Select>
+        </div>
+        <div className="page-body">
+          <div className="panel-header">
+            <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
+              <Icon type="plus-circle-o" />添加用户
+            </Button>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>

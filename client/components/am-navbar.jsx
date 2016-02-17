@@ -21,17 +21,18 @@ export default class AmNavBar extends React.Component {
     if (navTitle.depth === 2) {
       if (navTitle.withModuleLayout) {
         amTitleNav = (
-          <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
+          <Popover placement="bottomLeft" trigger="hover" overlay={<ModuleLayout />}>
             <a role="button" aria-expanded="false" className="dropdown-toggle">
-              <i className={`zmdi zmdi-${moduleName}`}></i>
+              <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
               {navTitle.text}
               <span className="angle-down s7-angle-down"></span>
             </a>
-          </Popover>);
+          </Popover>
+          );
       } else {
         amTitleNav = (
           <a role="button" aria-expanded="false" className="dropdown-toggle">
-            <i className={`zmdi zmdi-${moduleName}`}></i>
+            <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
             {navTitle.text}
           </a>);
       }
@@ -52,9 +53,7 @@ export default class AmNavBar extends React.Component {
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps"></i>
             </NavLink>
-            <Tooltip placement="right" title="返回首页">
-              <NavLink to="/" className={`navbar-brand module-${moduleName}`} />
-            </Tooltip>
+            <NavLink to="/" className={`navbar-brand module-${moduleName}`} />
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">

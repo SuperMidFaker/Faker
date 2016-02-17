@@ -120,12 +120,9 @@ export default class CorpEdit extends React.Component {
     // todo loginname no '@'
     return (
       <div className="main-content">
-        <div className="page-header">
-          <h2>用户管理</h2>
-        </div>
         <div className="page-body">
           <Form horizontal onSubmit={ this.handleSubmit } form={ this.props.formhoc }
-          className="form-edit-content">
+          className="form-edit-content offset-right-col">
             {this.renderTextInput('姓名', '请输入真实姓名', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
             <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}}
               help={getFieldError('loginName')} hasFeedback required>
