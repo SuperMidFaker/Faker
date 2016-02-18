@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Table, Button, Radio, message } from 'ant-ui';
 import { loadPartners, loadPartnershipTypes, delPersonnel, openClosePartnerModal, setModalViewport } from
 '../../../../universal/redux/reducers/partner';
+import PartnerModal from '../../../components/partner-setup-modal';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
-import PartnerModal from '../../../components/partner-setup-modal';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 const RadioButton = Radio.Button;
@@ -30,7 +30,6 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     partnershipTypes: state.partner.partnershipTypes,
     partnerlist: state.partner.partnerlist,
-    tenants: state.partner.tenants,
     loading: state.personnel.loading
   }),
   { delPersonnel, setModalViewport, openClosePartnerModal, loadPartners })
@@ -40,14 +39,12 @@ export default class PartnersView extends React.Component {
     loading: PropTypes.bool.isRequired,
     partnershipTypes: PropTypes.array.isRequired,
     partnerlist: PropTypes.object.isRequired,
-    tenants: PropTypes.array.isRequired,
     loadPartners: PropTypes.func.isRequired,
     setModalViewport: PropTypes.func.isRequired,
     openClosePartnerModal: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired
   }
   state = {
-    inviteOffline: false,
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
@@ -159,7 +156,8 @@ export default class PartnersView extends React.Component {
   handlePartnershipFilter = (ev) => {
   }
   render() {
-    const { partnershipTypes, tenants, partnerlist, loading } = this.props;
+    const { partnershipTypes, partnerlist, loading } = this.props;
+    this.dataSource.remotes = partnerlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -204,9 +202,7 @@ export default class PartnersView extends React.Component {
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">清除选择</Button>
           </div>
-          <PartnerModal visible={this.state.visibleModal}
-            inviteOfflineView={this.state.inviteOffline}
-          />
+          <PartnerModal />
         </div>
       </div>
     );

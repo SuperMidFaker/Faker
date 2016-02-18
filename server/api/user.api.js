@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
-import corpDao from '../models/corp.db';
 import userDao from '../models/user.db';
 import tenantDao from '../models/tenant.db';
 import tenantUserDao from '../models/tenant-user.db';

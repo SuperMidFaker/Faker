@@ -1,68 +1,104 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
-import { openClosePartnerModal, setModalViewport } from
+import { openClosePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
 '../../universal/redux/reducers/partner';
 const Option = Select.Option;
 
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     partnershipTypes: state.partner.partnershipTypes,
-    tenants: state.partner.tenants,
+    partnerTenants: state.partner.partnerTenants,
     stepView: state.partner.modalViewport,
     visible: state.partner.visibleModal
   }),
-  { openClosePartnerModal, setModalViewport}
+  { openClosePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner }
 )
 export default class PartnerSetupDialog extends React.Component {
   static propTypes = {
     openClosePartnerModal: PropTypes.func.isRequired,
     setModalViewport: PropTypes.func.isRequired,
+    inviteOnlPartner: PropTypes.func.isRequired,
+    inviteOfflPartner: PropTypes.func.isRequired,
+    tenantId: PropTypes.number.isRequired,
     partnershipTypes: PropTypes.array.isRequired,
-    tenants: PropTypes.array.isRequired,
+    partnerTenants: PropTypes.array.isRequired,
     stepView: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired
   }
   state = {
     isPlatformTenant: false,
-    offlineContact: '',
-    selectedTenantId: '',
-    partnershipType: 'client'
+    isProviderPartner: false,
+    checkedProviderTypes: [],
+    tenantInput: '',
+    offlineContact: ''
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && nextProps.stepView === 'invite-initial') {
+      this.setState({
+        tenantInput: ''
+      });
+    }
   }
   getTenantOptions = () => {
-    return this.props.tenants.map(t =>
-      <Option datalink={t} key={t.id} value={t.id}>
+    return this.props.partnerTenants.map(t =>
+      <Option datalink={t} key={t.id} value={t.name}>
         {t.name}
       </Option>);
   }
   getTenantFilterOption = (input, option) => {
     return option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1;
   }
-  handleTenantSelect = (value) => {
-    this.setState({
-      selectedTenantId: value
-    });
+  handleTenantInputChange = (value) => {
+    this.state.tenantInput = value;
+  }
+  handlePartnershipRadioChange = (ev) => {
+    if (ev.target.value === 'client') {
+      this.setState({
+        isProviderPartner: false,
+        checkedProviderTypes: []
+      });
+    } else {
+      this.setState({ isProviderPartner: true });
+    }
+  }
+  handlePartnerProviderTypeChange = (checkeds) => {
+    this.setState({ checkedProviderTypes: checkeds });
   }
   handlePartnerForm = () => {
-    this.props.setModalViewport('invite-offline');
+    if (this.state.tenantInput === '') {
+      message.error('合作伙伴名称不能为空', 10);
+      return;
+    }
+    const tenant = this.props.partnerTenants.find(elem => elem.name === this.state.tenantInput);
+    const selectedTenantId = tenant ? tenant.id : -1;
+    const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
+    if (selectedTenantId !== -1) {
+      this.props.inviteOnlPartner(this.props.tenantId, selectedTenantId, partnerships,
+                                  'invite-sent');
+    } else {
+      this.props.setModalViewport('invite-offline');
+    }
   }
-  handlePartnershipTypeChange = () => {
-  }
-  handleProviderTypeChange = () => {
-  }
-  handleOfflineInvite = () => {
-  }
-  handleContactChange = (ev) => {
+  handleContactInputChange = (ev) => {
     this.setState({
       offlineContact: ev.target.value
     });
+  }
+  handleOfflineInvite = () => {
+    const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes
+      : ['客户'];
+    this.props.inviteOfflPartner(this.props.tenantId, this.state.tenantInput, partnerships,
+                                 this.state.offlineContact, 'invite-sent');
   }
   handleCancel = () => {
     this.props.openClosePartnerModal();
   }
   render() {
-    const { isPlatformTenant, offlineContact } = this.state;
-    const { stepView, visible } = this.props;
+    const { isPlatformTenant, isProviderPartner, checkedProviderTypes, offlineContact }
+    = this.state;
+    const { stepView, visible, partnershipTypes } = this.props;
     let modalContent = <div />;
     let footer = <div />;
     if (stepView === 'invite-initial') {
@@ -78,20 +114,28 @@ export default class PartnerSetupDialog extends React.Component {
         <Form horizontal>
           <Form.Item label="合作伙伴:" labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
             <Select combobox style={{ width: '100%' }} searchPlaceholder="请输入公司名称"
-              filterOption={this.getTenantFilterOption} onSelect={this.handleTenantSelect}
+              filterOption={this.getTenantFilterOption}
+              onChange={this.handleTenantInputChange}
             >
             {this.getTenantOptions()}
             </Select>
           </Form.Item>
           <Form.Item label="伙伴关系:" labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
-            <Radio.Group onChange={this.handlePartnershipTypeChange} defaultValue="client">
+            <Radio.Group onChange={this.handlePartnershipRadioChange}
+              defaultValue={ !isProviderPartner ? 'client' : 'provider' }
+            >
               <Radio.Button value="client">客户</Radio.Button>
               <Radio.Button value="provider">供应商</Radio.Button>
             </Radio.Group>
           </Form.Item>
-          <Form.Item labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
-            <Checkbox.Group options={['aa']} onChange={this.handleProviderTypeChange} />
+          { isProviderPartner &&
+          <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
+            <Checkbox.Group options={partnershipTypes.filter(pst => pst.name !== '客户')
+              .map(pst => pst.name)} onChange={this.handlePartnerProviderTypeChange}
+              value={ checkedProviderTypes }
+            />
           </Form.Item>
+          }
         </Form>);
     } else if (stepView === 'invite-offline') {
       footer = [
@@ -106,7 +150,7 @@ export default class PartnerSetupDialog extends React.Component {
         <div className="ant-confirm-body">
           <i className="anticon anticon-info-circle" />
           对方还不是平台用户，请填写邮箱/手机号发送邀请
-          <Input placeholder="输入邮箱/手机号码" onChange={this.handleContactChange}
+          <Input placeholder="输入邮箱/手机号码" onChange={this.handleContactInputChange}
             value={offlineContact}
           />
         </div>);

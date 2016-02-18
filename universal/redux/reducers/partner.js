@@ -2,9 +2,11 @@ import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
-  'PARTNER_MODAL_OPENCLOSE', 'PARTNER_MODAL_VIEWPORT',
+  'PARTNER_MODAL_OPENCLOSE', 'SET_MODAL_VIEWPORT',
   'PARTNERS_LOAD', 'PARTNERS_LOAD_SUCCEED', 'PARTNERS_LOAD_FAIL',
   'PARTNERSHIP_TYPE_LOAD', 'PARTNERSHIP_TYPE_LOAD_SUCCEED', 'PARTNERSHIP_TYPE_LOAD_FAIL',
+  'ONL_PARTNER_INVITE', 'ONL_PARTNER_INVITE_SUCCEED', 'ONL_PARTNER_INVITE_FAIL',
+  'OFFL_PARTNER_INVITE', 'OFFL_PARTNER_INVITE_SUCCEED', 'OFFL_PARTNER_INVITE_FAIL',
   'OFFLINE_PARTNER', 'OFFLINE_PARTNER_SUCCEED', 'OFFLINE_PARTNER_FAIL'
 ]);
 
@@ -16,7 +18,7 @@ const initialState = {
   partnershipTypes: [
     /* { key:, name: } */
   ],
-  tenants: [
+  partnerTenants: [
     /* { id:, name: } */
   ],
   partnerlist: {
@@ -41,8 +43,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, partnershipTypes: action.result.data };
     case actionTypes.PARTNER_MODAL_OPENCLOSE:
       return { ...state, visibleModal: !state.visibleModal };
-    case actionTypes.PARTNER_MODAL_VIEWPORT:
+    case actionTypes.SET_MODAL_VIEWPORT:
       return { ...state, modalViewport: action.viewport };
+    case actionTypes.ONL_PARTNER_INVITE_SUCCEED:
+      return { ...state, modalViewport: action.viewport };
+    case actionTypes.OFFL_PARTNER_INVITE_SUCCEED: {
+      const partnerlist = { ...state.partnerlist };
+      if ((partnerlist.current - 1) * partnerlist.pageSize <= partnerlist.totalCount
+          && partnerlist.current * partnerlist.pageSize > partnerlist.totalCount) {
+        partnerlist.data.push(action.result.data);
+      }
+      partnerlist.totalCount++;
+      return { ...state, partnerlist, modalViewport: action.viewport };
+    }
     default:
       return state;
   }
@@ -64,7 +77,7 @@ export function loadPartnershipTypes(cookie) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PARTNERSHIP_TYPE_LOAD, actionTypes.PARTNERSHIP_TYPE_LOAD_SUCCEED,
-        actionTypes.PARTNERS_LOAD_FAIL],
+        actionTypes.PARTNERSHIP_TYPE_LOAD_FAIL],
       endpoint: 'v1/cooperation/partnership/types',
       method: 'get',
       cookie
@@ -80,7 +93,42 @@ export function openClosePartnerModal() {
 
 export function setModalViewport(viewport) {
   return {
-    type: actionTypes.PARTNER_MODAL_VIEWPORT,
+    type: actionTypes.SET_MODAL_VIEWPORT,
     viewport: viewport || initialState.modalViewport
+  };
+}
+
+export function inviteOnlPartner(tenantId, partnerId, partnerships, viewport) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.ONL_PARTNER_INVITE, actionTypes.ONL_PARTNER_INVITE_SUCCEED,
+        actionTypes.ONL_PARTNER_INVITE_FAIL],
+      endpoint: 'v1/cooperation/partner/online',
+      method: 'post',
+      viewport,
+      data: {
+        tenantId,
+        partnerId,
+        partnerships
+      }
+    }
+  };
+}
+
+export function inviteOfflPartner(tenantId, partnerName, partnerships, contact, viewport) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.OFFL_PARTNER_INVITE, actionTypes.OFFL_PARTNER_INVITE_SUCCEED,
+        actionTypes.OFFL_PARTNER_INVITE_FAIL],
+      endpoint: 'v1/cooperation/partner/offline',
+      method: 'post',
+      viewport,
+      data: {
+        contact,
+        tenantId,
+        partnerName,
+        partnerships
+      }
+    }
   };
 }

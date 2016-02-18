@@ -38,6 +38,11 @@ export default {
     const args = [tid];
     return mysql.query(sql, args);
   },
+  getTenantInfo(tid) {
+    const sql = 'select name, level from sso_tenants where tenant_id = ? limit 1';
+    const args = [tid];
+    return mysql.query(sql, args);
+  },
   updateCorp(corp, trans) {
     const sql = `update sso_tenants set code = ?, aspect = ?, name = ?, phone = ?, subdomain = ?,
       country = ?, province = ?, city = ?, district = ?, address = ?, logo = ?, short_name = ?,

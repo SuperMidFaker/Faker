@@ -23,41 +23,38 @@ export default {
     return mysql.query(sql, args);
   },
   getPagedPartners(tenantId, current, pageSize) {
-    return [{
-      key: 0,
-      name: 'aa',
-      tenantType: '线下',
-      partnerTenantId: 1
-    }, {
-      key: 1,
-      name: 'bb',
-      tenantType: '分支机构',
-      partnerTenantId: 2 
-    }];
     const sql = `select id as \`key\`, name, tenant_type as tenantType,
       partner_tenant_id as partnerTenantId, business_volume as volume, revenue, cost
-      from sso_partners where tenant_id = ? limit ?,?`;
+      from sso_partners where tenant_id = ? and (established = 1 or partner_tenant_id = -1)
+      limit ?,?`;
     const args = [tenantId, (current - 1) * pageSize, pageSize];
     return mysql.query(sql, args);
   },
-  getTenantPartnerships(tenantId, parnterName) {
-    return [{
-      type: '4',
-      name: '仓储'
-    }, {
-      type: '3',
-      name: '运输'
-    }];
-    return [];
+  getTenantPartnerships(tenantId, partnerName) {
+    const sql = `select type, type_name as name from sso_partnerships where tenant_id = ? and partner_name = ?`;
+    const args = [tenantId, partnerName];
+    return mysql.query(sql, args);
   },
-  insertBill(bill, corpId, tenantId) {
-    const sql = `insert into wms_bills(payer_id, payee_id, subject, body, amount,
-      batch_no, merge_batch_no, status, payment_id, payment_date, corp_id, tenant_id,
-      created_date) values (?)`;
-    const args = prepareArgs(bill);
-    args.push(corpId, tenantId, new Date());
-    console.log(bill);
-    console.log('args length', args.length, args);
-    return mysql.insert(sql, [args]);
+  insertPartner(tenantId, partnerId, partnerName, tenantType, trans) {
+    const sql = `insert into sso_partners(name, tenant_type, partner_tenant_id,
+      tenant_id, created_date) values (?, NOW())`;
+    const args = [partnerName, tenantType, partnerId, tenantId];
+    return mysql.insert(sql, [args], trans);
+  },
+  insertPartnership(tenantId, partnerId, partnerName, partnerships, trans) {
+    const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id, partner_name,
+      type, type_name) values ?`;
+    const args = [];
+    partnerships.forEach(pts => {
+      args.push([tenantId, partnerId, partnerName, pts.key, pts.name]);
+    });
+    console.log('partnership args', args);
+    return mysql.insert(sql, [args], trans);
+  },
+  insertInvitation(tenantId, partnerId, partnerName, code, trans) {
+    const sql = `insert into sso_partner_invitations(inviter_tenant_id, invitee_tenant_id,
+      invitee_name, invitation_code, status, created_date) values (?, 0, NOW())`;
+    const args = [tenantId, partnerId, partnerName, code];
+    return mysql.insert(sql, [args], trans);
   }
 };
