@@ -2,9 +2,8 @@ import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
-  'PARTNER_MODAL_OPENCLOSE', 'SET_MODAL_VIEWPORT',
+  'SHOW_MODAL', 'PARTNER_MODAL_OPENCLOSE', 'SET_MODAL_VIEWPORT',
   'PARTNERS_LOAD', 'PARTNERS_LOAD_SUCCEED', 'PARTNERS_LOAD_FAIL',
-  'PARTNERSHIP_TYPE_LOAD', 'PARTNERSHIP_TYPE_LOAD_SUCCEED', 'PARTNERSHIP_TYPE_LOAD_FAIL',
   'ONL_PARTNER_INVITE', 'ONL_PARTNER_INVITE_SUCCEED', 'ONL_PARTNER_INVITE_FAIL',
   'OFFL_PARTNER_INVITE', 'OFFL_PARTNER_INVITE_SUCCEED', 'OFFL_PARTNER_INVITE_FAIL',
   'OFFLINE_PARTNER', 'OFFLINE_PARTNER_SUCCEED', 'OFFLINE_PARTNER_FAIL'
@@ -15,8 +14,9 @@ const initialState = {
   loading: false,
   visibleModal: false,
   modalViewport: 'invite-initial',
+  isPlatformTenant: false,
   partnershipTypes: [
-    /* { key:, name: } */
+    /* { key:, name: count: } */
   ],
   partnerTenants: [
     /* { id:, name: } */
@@ -39,22 +39,22 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.result.data, loading: false, loaded: true };
     case actionTypes.PARTNERS_LOAD_FAIL:
       return { ...state, loading: false, loaded: true };
-    case actionTypes.PARTNERSHIP_TYPE_LOAD_SUCCEED:
-      return { ...state, partnershipTypes: action.result.data };
+    case actionTypes.SHOW_MODAL:
+      return { ...state, visibleModal: true, modalViewport: initialState.modalViewport };
     case actionTypes.PARTNER_MODAL_OPENCLOSE:
       return { ...state, visibleModal: !state.visibleModal };
     case actionTypes.SET_MODAL_VIEWPORT:
       return { ...state, modalViewport: action.viewport };
     case actionTypes.ONL_PARTNER_INVITE_SUCCEED:
-      return { ...state, modalViewport: action.viewport };
+      return { ...state, modalViewport: action.viewport, isPlatformTenant: true };
     case actionTypes.OFFL_PARTNER_INVITE_SUCCEED: {
       const partnerlist = { ...state.partnerlist };
-      if ((partnerlist.current - 1) * partnerlist.pageSize <= partnerlist.totalCount
-          && partnerlist.current * partnerlist.pageSize > partnerlist.totalCount) {
+      if (partnerlist.current * partnerlist.pageSize > partnerlist.totalCount) {
+        // 当前页未满则添加
         partnerlist.data.push(action.result.data);
       }
       partnerlist.totalCount++;
-      return { ...state, partnerlist, modalViewport: action.viewport };
+      return { ...state, partnerlist, modalViewport: action.viewport, isPlatformTenant: false };
     }
     default:
       return state;
@@ -73,19 +73,12 @@ export function loadPartners(cookie, params) {
   };
 }
 
-export function loadPartnershipTypes(cookie) {
+export function showPartnerModal() {
   return {
-    [CLIENT_API]: {
-      types: [actionTypes.PARTNERSHIP_TYPE_LOAD, actionTypes.PARTNERSHIP_TYPE_LOAD_SUCCEED,
-        actionTypes.PARTNERSHIP_TYPE_LOAD_FAIL],
-      endpoint: 'v1/cooperation/partnership/types',
-      method: 'get',
-      cookie
-    }
+    type: actionTypes.SHOW_MODAL
   };
 }
-
-export function openClosePartnerModal() {
+export function swapPartnerModal() {
   return {
     type: actionTypes.PARTNER_MODAL_OPENCLOSE
   };
@@ -94,7 +87,7 @@ export function openClosePartnerModal() {
 export function setModalViewport(viewport) {
   return {
     type: actionTypes.SET_MODAL_VIEWPORT,
-    viewport: viewport || initialState.modalViewport
+    viewport
   };
 }
 

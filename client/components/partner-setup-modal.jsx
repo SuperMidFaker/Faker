@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
-import { openClosePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
+import { swapPartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
 '../../universal/redux/reducers/partner';
+import './partner-setup-modal.less';
 const Option = Select.Option;
 
 @connect(
@@ -10,31 +11,37 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     partnershipTypes: state.partner.partnershipTypes,
     partnerTenants: state.partner.partnerTenants,
+    isPlatformTenant: state.partner.isPlatformTenant,
     stepView: state.partner.modalViewport,
     visible: state.partner.visibleModal
   }),
-  { openClosePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner }
+  { swapPartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner }
 )
 export default class PartnerSetupDialog extends React.Component {
   static propTypes = {
-    openClosePartnerModal: PropTypes.func.isRequired,
+    swapPartnerModal: PropTypes.func.isRequired,
     setModalViewport: PropTypes.func.isRequired,
     inviteOnlPartner: PropTypes.func.isRequired,
     inviteOfflPartner: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     partnershipTypes: PropTypes.array.isRequired,
     partnerTenants: PropTypes.array.isRequired,
-    stepView: PropTypes.string.isRequired,
+    isPlatformTenant: PropTypes.bool.isRequired,
+    stepView: PropTypes.oneOf(['invite-initial', 'invite-sent', 'invite-offline']),
     visible: PropTypes.bool.isRequired
   }
   state = {
-    isPlatformTenant: false,
     isProviderPartner: false,
     checkedProviderTypes: [],
     tenantInput: '',
     offlineContact: ''
   }
   componentWillReceiveProps(nextProps) {
+    if (nextProps.visible) {
+      this.setState({
+        offlineContact: ''
+      });
+    }
     if (nextProps.visible && nextProps.stepView === 'invite-initial') {
       this.setState({
         tenantInput: ''
@@ -87,18 +94,17 @@ export default class PartnerSetupDialog extends React.Component {
     });
   }
   handleOfflineInvite = () => {
-    const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes
-      : ['客户'];
+    const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
     this.props.inviteOfflPartner(this.props.tenantId, this.state.tenantInput, partnerships,
                                  this.state.offlineContact, 'invite-sent');
   }
   handleCancel = () => {
-    this.props.openClosePartnerModal();
+    this.props.swapPartnerModal();
   }
   render() {
-    const { isPlatformTenant, isProviderPartner, checkedProviderTypes, offlineContact }
+    const { isProviderPartner, checkedProviderTypes, offlineContact }
     = this.state;
-    const { stepView, visible, partnershipTypes } = this.props;
+    const { stepView, visible, partnershipTypes, isPlatformTenant } = this.props;
     let modalContent = <div />;
     let footer = <div />;
     if (stepView === 'invite-initial') {
@@ -147,12 +153,16 @@ export default class PartnerSetupDialog extends React.Component {
         </Button>
       ];
       modalContent = (
-        <div className="ant-confirm-body">
+        <div className="partner-modal-offline-body">
           <i className="anticon anticon-info-circle" />
-          对方还不是平台用户，请填写邮箱/手机号发送邀请
-          <Input placeholder="输入邮箱/手机号码" onChange={this.handleContactInputChange}
-            value={offlineContact}
-          />
+          <span>
+            对方还不是平台用户,请填写邮箱/手机号发送邀请
+          </span>
+          <div className="partner-modal-content">
+            <Input placeholder="输入邮箱/手机号码" onChange={this.handleContactInputChange}
+              value={offlineContact}
+            />
+          </div>
         </div>);
     } else if (stepView === 'invite-sent') {
       footer = [
@@ -161,17 +171,19 @@ export default class PartnerSetupDialog extends React.Component {
         </Button>
       ];
       modalContent = (
-        <div className="ant-confirm-body">
+        <div className="partner-modal-confirm-body">
           <i className="anticon anticon-info-circle" />
-          <span className="ant-confirm-title">已发送邀请</span>
-          <div className="ant-confirm-content">对方是
+          <span className="partner-modal-title">已发送邀请</span>
+          <div className="partner-modal-content">对方是
             { isPlatformTenant ? '平台' : '线下' }用户,已发送合作伙伴邀请
           </div>
         </div>);
     }
     return (
-      <Modal title="添加合作伙伴" visible={visible} closable={false} footer={footer}>
-      {modalContent}
+      <Modal title="添加合作伙伴" visible={visible} closable={false} footer={footer}
+        className="partner-modal"
+      >
+        {modalContent}
       </Modal>
     );
   }

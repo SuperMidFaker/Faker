@@ -1,0 +1,42 @@
+@partner-prefix-cls : partner-modal;
+@text-color         : #666;
+@primary-color      : #2db7f5;
+@success-color      : #87d068;
+@error-color        : #f50;
+@warning-color      : #fa0;
+@font-size-base     : 12px;
+
+
+.@{partner-prefix-cls} {
+  .ant-modal-body {
+    padding: 30px 40px;
+  }
+  .anticon {
+    font-size: 24px;
+    margin-right: 10px;
+    padding: 0 1px;
+    position: relative;
+    top: 5px;
+  }
+
+  .@{partner-prefix-cls}-title {
+    color: @text-color;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .@{partner-prefix-cls}-content {
+    margin-left: 37px;
+    font-size: @font-size-base;
+    color: @text-color;
+  }
+  .@{partner-prefix-cls}-offline-body {
+    .anticon-info-circle {
+      color: @warning-color;
+    }
+  }
+  .@{partner-prefix-cls}-confirm-body {
+    .anticon-info-circle {
+      color: @primary-color;
+    }
+  }
+}

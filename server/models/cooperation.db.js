@@ -16,23 +16,56 @@ function prepareArgs(input) {
   });
   return args;
 }
+
+function getDefaultPartnerClause(tenantId, args) {
+  args.push(tenantId);
+  return `tenant_id = ? and (established = 1 or partner_tenant_id = -1)`;
+}
+function getPartnerWhereClause(filters, tenantId, args) {
+  const defaultClause = getDefaultPartnerClause(tenantId, args);
+  let nameLikeClause = '';
+  let partnershipClause = '';
+  filters.forEach(flt => {
+    if (flt.name === 'name') {
+      nameLikeClause = 'and name like ?';
+      args.push(`%${flt.value}%`);
+    }
+    if (flt.name === 'partnerType') {
+      partnershipClause = `and name in (select partner_name from sso_partnerships where
+        tenant_id = ? and type = ?)`;
+      args.push(tenantId);
+      args.push(flt.value);
+    }
+  });
+  return `${defaultClause} ${nameLikeClause} ${partnershipClause}`;
+}
 export default {
-  getPartnersTotalCount(tenantId) {
-    const sql = `select count(id) as count from sso_partners where tenant_id = ?`;
-    const args = [tenantId];
+  getPartnersTotalCount(tenantId, filters) {
+    const args = [];
+    const sqlClause = getPartnerWhereClause(filters, tenantId, args);
+    const sql = `select count(id) as count from sso_partners where ${sqlClause}`;
     return mysql.query(sql, args);
   },
-  getPagedPartners(tenantId, current, pageSize) {
+  getPagedPartners(tenantId, current, pageSize, filters) {
+    const args = [];
+    const sqlClause = getPartnerWhereClause(filters, tenantId, args);
     const sql = `select id as \`key\`, name, tenant_type as tenantType,
       partner_tenant_id as partnerTenantId, business_volume as volume, revenue, cost
-      from sso_partners where tenant_id = ? and (established = 1 or partner_tenant_id = -1)
-      limit ?,?`;
-    const args = [tenantId, (current - 1) * pageSize, pageSize];
+      from sso_partners where ${sqlClause} limit ?,?`;
+    console.log(sql, args);
+    args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
-  getTenantPartnerships(tenantId, partnerName) {
-    const sql = `select type, type_name as name from sso_partnerships where tenant_id = ? and partner_name = ?`;
-    const args = [tenantId, partnerName];
+  getTenantPartnerships(tenantId, filters) {
+    // used to get partnership type counts
+    // if you join in getPagedPartner, you can't get total count group by type,
+    // if you put stats in another table, you can't get count filter by name
+    const args = [];
+    const partnerClause = getPartnerWhereClause(filters.filter(flt => flt.name !== 'partnerType'),
+                                                tenantId, args);
+    const sql = `select type, type_name as name, partner_name as partnerName from sso_partnerships
+      as PS inner join (select tenant_id, name from sso_partners where ${partnerClause}) as P
+      on PS.partner_name = P.name`;
     return mysql.query(sql, args);
   },
   insertPartner(tenantId, partnerId, partnerName, tenantType, trans) {

@@ -8,27 +8,24 @@ import { TENANT_LEVEL } from '../../universal/constants';
 
 const partnershipTypeNames = ['客户', '报关', '货代', '运输', '仓储'];
 
-function *partnershipTypeG() {
-  const data = partnershipTypeNames.map((name, idx) => ({
-    key: idx,
-    name
-  }));
-  return Result.OK(this, data);
-}
-
 function *partnersG() {
   const current = parseInt(this.request.query.currentPage, 10);
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const tenantId = parseInt(this.request.query.tenantId, 10);
+  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
   try {
-    const totals = yield coopDao.getPartnersTotalCount(tenantId);
-    const partners = yield coopDao.getPagedPartners(tenantId, current, pageSize);
+    const totals = yield coopDao.getPartnersTotalCount(tenantId, filters);
+    const partners = yield coopDao.getPagedPartners(tenantId, current, pageSize, filters);
+    const partnerships = yield coopDao.getTenantPartnerships(tenantId, filters);
+    const partnershipTypes = partnershipTypeNames.map((name, index) => ({
+      key: `${index}`, // used as RadionButton key
+      name,
+      count: partnerships.filter(pts => pts.name === name).length
+    }));
     for (let i = 0; i < partners.length; ++i) {
       const partner = partners[i];
       partner.types = [];
-      console.log(partner);
-      const partnerships = yield coopDao.getTenantPartnerships(tenantId, partner.name);
-      partnerships.map(
+      partnerships.filter(ps => ps.partnerName === partner.name).forEach(
         pt => partner.types.push({
           key: pt.type,
           name: pt.name
@@ -43,6 +40,7 @@ function *partnersG() {
         current,
         data: partners
       },
+      partnershipTypes,
       partnerTenants
     });
   } catch (e) {
@@ -123,7 +121,6 @@ function *delBill() {
 }
 
 export default [
-  [ 'get', '/v1/cooperation/partnership/types', partnershipTypeG ],
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'post', '/v1/cooperation/partner/online', partnerOnlineP ],
   [ 'post', '/v1/cooperation/partner/offline', partnerOfflineP ],

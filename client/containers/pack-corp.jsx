@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
-import { setNavTitle } from '../../universal/redux/reducers/navbar';
-import connectNav from '../../reusable/decorators/connect-nav';
 import { BRANCH } from '../../universal/constants';
 
 @connect(
@@ -11,15 +9,6 @@ import { BRANCH } from '../../universal/constants';
     accountType: state.account.type
   })
 )
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    text: '企业设置',
-    moduleName: 'corp',
-    withModuleLayout: false,
-    goBackFn: null
-  }));
-})
 export default class Account extends React.Component {
   static propTypes = {
     accountType: PropTypes.string.isRequired,
@@ -57,11 +46,11 @@ export default class Account extends React.Component {
         text: '合作伙伴'
       }, {
         key: 'partner-2',
-        path: '/corp/partners/inviters',
+        path: '/corp/partners/ins',
         text: '收到的邀请'
       }, {
         key: 'partner-3',
-        path: '/corp/partners/invitees',
+        path: '/corp/partners/outs',
         text: '发出的邀请'
       }]
     }, {
