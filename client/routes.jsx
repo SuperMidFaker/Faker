@@ -15,6 +15,8 @@ import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
+import TMS from './containers/module-tms';
+import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
@@ -76,6 +78,9 @@ export default (store, cookie) => {
             <IndexRoute component={Warehouse} />
             <Route path="warehouse" component={Warehouse} />
             <Route path="notice" component={Notice} />
+          </Route>
+          <Route path="tms" component={TMS}>
+            <IndexRoute component={TMSDashboard} />
           </Route>
         </Route>
       </Route>

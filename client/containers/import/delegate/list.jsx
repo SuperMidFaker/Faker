@@ -3,10 +3,14 @@ import { connect } from 'react-redux';
 import { submitDelegate, loadDelegates, updateId, delId, edit, cancelEdit, loadStatus, loadCustomsBrokers } from '../../../../universal/redux/reducers/importdelegate';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import connectNav from '../../../../reusable/decorators/connect-nav';
 import SearchBar from '../../../../reusable/components/search-bar';
 import { Table, Button, message } from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
+import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+
+const ButtonGroup = Button.Group;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];
@@ -39,6 +43,15 @@ function fetchData({ state, dispatch, cookie }) {
   }),
   { updateId, delId, loadDelegates, submitDelegate, edit, cancelEdit, loadStatus }
 )
+@connectNav((props, dispatch) => {
+  dispatch(setNavTitle({
+    depth: 2,
+    text: '进口报关委托',
+    moduleName: 'import',
+    withModuleLayout: true,
+    goBackFn: ''
+  }));
+})
 export default class ImportDelegate extends React.Component {
   static propTypes = {// 属性检测
     history: PropTypes.object.isRequired,
@@ -304,34 +317,33 @@ export default class ImportDelegate extends React.Component {
   return (
     <div className="main-content">
       <div className="page-header">
-        <div className="pull-right action-btns">
+        <div className="tools">
           <SearchBar placeholder="业务单号/发票号/提单号" onInputSearch={(val) => this.handleSearch(val)} />
-          <a role="button">高级搜索</a>
+          <a className="hidden-xs" role="button">高级搜索</a>
         </div>
-        <h2>进口委托</h2>
+        <ButtonGroup>
+          <Button type={statusAll} size="large" onClick={ () => this.handleChangeStatus('statusAll', -1) } >
+            <span>所有状态</span>
+          </Button>
+          <Button type={statusNotSend} size="large" onClick={ () => this.handleChangeStatus('statusNotSend', 0) } >
+            <span>未发送 ({notSendCount})</span>
+          </Button>
+          <Button type={statusNotAccept} size="large" onClick={ () => this.handleChangeStatus('statusNotAccept', 1) } >
+            <span>未受理 ({notAcceptCount})</span>
+          </Button>
+          <Button type={statusAccept} size="large" onClick={ () => this.handleChangeStatus('statusAccept', 2) } >
+            <span>已接单 ({acceptCount})</span>
+          </Button>
+          <Button type={statusInvalid} size="large" onClick={ () => this.handleChangeStatus('statusInvalid', 2) } >
+            <span>已作废 ({invalidCount})</span>
+          </Button>
+        </ButtonGroup>
       </div>
       <div className="page-body">
         <div className="panel-header">
-          <Button type={statusAll} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAll', -1) } >
-            <span>全部</span>
+          <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
+            <span>新增</span>
           </Button>
-          <Button type={statusNotSend} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotSend', 0) } >
-            <span>未发送({notSendCount})</span>
-          </Button>
-          <Button type={statusNotAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusNotAccept', 1) } >
-            <span>未受理({notAcceptCount})</span>
-          </Button>
-          <Button type={statusAccept} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusAccept', 2) } >
-            <span>已接单({acceptCount})</span>
-          </Button>
-          <Button type={statusInvalid} style={{marginRight:5}} onClick={ () => this.handleChangeStatus('statusInvalid', 2) } >
-            <span>已作废({invalidCount})</span>
-          </Button>
-          <div className="pull-right action-btns">
-            <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
-              <span>新增</span>
-            </Button>
-          </div>
         </div>
         <div className="panel-body body-responsive">
           <Table rowSelection={rowSelection} columns={ columns } loading={ loading } dataSource={ dataSource }/>

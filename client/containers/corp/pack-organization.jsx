@@ -7,9 +7,6 @@ export default class OrganizationWrapper extends React.Component {
   render() {
     return (
       <div className="main-content">
-        <div className="page-header">
-          <h2>组织机构</h2>
-        </div>
         {this.props.children}
       </div>);
   }
