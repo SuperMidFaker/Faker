@@ -46,11 +46,11 @@ export default class Account extends React.Component {
         text: '合作伙伴'
       }, {
         key: 'partner-2',
-        path: '/corp/partners/ins',
+        path: '/corp/partners/invitations/in',
         text: '收到的邀请'
       }, {
         key: 'partner-3',
-        path: '/corp/partners/outs',
+        path: '/corp/partners/invitations/out',
         text: '发出的邀请'
       }]
     }, {

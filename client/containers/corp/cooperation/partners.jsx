@@ -41,14 +41,12 @@ function fetchData({ state, dispatch, cookie }) {
   { showPartnerModal, loadPartners })
 export default class PartnersView extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
     partnershipTypes: PropTypes.array.isRequired,
     partnerlist: PropTypes.object.isRequired,
     loadPartners: PropTypes.func.isRequired,
-    showPartnerModal: PropTypes.func.isRequired,
-    delPersonnel: PropTypes.func.isRequired
+    showPartnerModal: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
@@ -145,6 +143,7 @@ export default class PartnersView extends React.Component {
     this.props.showPartnerModal();
   }
   handlePartnershipFilter = (ev) => {
+    // searchbar value clear todo
     const { partnerlist, tenantId } = this.props;
     const partnerType = ev.target.value;
     let filters = undefined;

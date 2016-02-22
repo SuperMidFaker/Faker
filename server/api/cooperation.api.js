@@ -74,7 +74,7 @@ function *partnerOnlineP() {
   } catch (e) {
     console.log(e && e.stack);
     yield mysql.rollback(trans);
-    return Result.InternalServerError(this, '添加合作伙伴异常');
+    return Result.InternalServerError(this, '添加线上合作伙伴异常');
   }
 }
 
@@ -105,24 +105,67 @@ function *partnerOfflineP() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, '更新帐单异常');
+    return Result.InternalServerError(this, '添加线下伙伴异常');
   }
 }
 
-function *delBill() {
-  const body = yield cobody(this);
+function *receivedInvitationsG() {
+  const current = parseInt(this.request.query.currentPage, 10);
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const tenantId = parseInt(this.request.query.tenantId, 10);
   try {
-    yield billDao.deleteBill(body.whkey);
-    return Result.OK(this);
+    const invitations = yield coopDao.getReceivedInvitations(tenantId, current, pageSize);
+    const partnerships = yield coopDao.getPartnershipByInvitee(tenantId);
+    const receiveds = [];
+    for (let i = 0; i < invitations.length; i++) {
+      const receive = {
+        key: invitations[i].id,
+        createdDate: invitations[i].createdDate,
+        status: invitations[i].status
+      };
+      const receiverNames = yield tenantDao.getTenantInfo(invitations[i].inviterId);
+      receive.name = receiverNames[0].name;
+      receive.types = partnerships.filter(pts => pts.name === receive.name).forEach(pts => ({
+        key: pts.type,
+        name: pts.name
+      }));
+    }
+    return Result.OK(this, receiveds);
   } catch (e) {
-    console.log(e);
-    return Result.InternalServerError(this, '删除帐单异常');
+    console.log(e && e.stack);
+    return Result.InternalServerError(this, '获取当前租户收到邀请异常');
   }
 }
 
+function *sentInvitationsG() {
+  const current = parseInt(this.request.query.currentPage, 10);
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const tenantId = parseInt(this.request.query.tenantId, 10);
+  try {
+    const invitations = yield coopDao.getSentInvitations(tenantId, current, pageSize);
+    const partnerships = yield coopDao.getPartnershipByInviter(tenantId);
+    const sents = [];
+    for (let i = 0; i < invitations.length; i++) {
+      const sent = {
+        key: invitations[i].id,
+        createdDate: invitations[i].createdDate,
+        name: invitations[i].name,
+        status: invitations[i].status
+      };
+      sent.types = partnerships.filter(pts => pts.name === receive.name).forEach(pts => ({
+        key: pts.type,
+        name: pts.name
+      }));
+    }
+    return Result.OK(this, sents);
+  } catch (e) {
+    console.log(e && e.stack);
+    return Result.InternalServerError(this, '获取当前租户发出邀请异常');
+  }
+}
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'post', '/v1/cooperation/partner/online', partnerOnlineP ],
   [ 'post', '/v1/cooperation/partner/offline', partnerOfflineP ],
-  [ 'delete', '/v1/wewms/bill', delBill ],
+  [ 'get', '/v1/cooperation/invitations/in', receivedInvitationsG ],
 ]

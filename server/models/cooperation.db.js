@@ -89,5 +89,29 @@ export default {
       invitee_name, invitation_code, status, created_date) values (?, 0, NOW())`;
     const args = [tenantId, partnerId, partnerName, code];
     return mysql.insert(sql, [args], trans);
+  },
+  getReceivedInvitations(tenantId, current, pageSize) {
+    const sql = `select id, inviter_tenant_id as inviterId,
+      created_date as createdDate, status from sso_partner_invitations
+      where invitee_tenant_id = ? limit ?,?`;
+    const args = [tenantId, (current - 1) * pageSize, pageSize];
+    return mysql.query(sql, args);
+  },
+  getPartnershipByInvitee(tenantId) {
+    const sql = 'select type, type_name as name from sso_partnerships where partner_tenant_id = ?';
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
+  getSentInvitations(tenantId, current, pageSize) {
+    const sql = `select id, invitee_tenant_id as inviteeId, invitee_name as name,
+      created_date as createdDate, status from sso_partner_invitations
+      where invitee_tenant_id = ? limit ?,?`;
+    const args = [tenantId, (current - 1) * pageSize, pageSize];
+    return mysql.query(sql, args);
+  },
+  getPartnershipByInviter(tenantId) {
+    const sql = 'select type, type_name as name from sso_partnerships where tenant_id = ?';
+    const args = [tenantId];
+    return mysql.query(sql, args);
   }
 };

@@ -20,8 +20,8 @@ import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
-import {loadAccount} from '../universal/redux/reducers/account';
-import {isLoaded} from '../reusable/common/redux-actions';
+import { loadAccount } from '../universal/redux/reducers/account';
+import { isLoaded } from '../reusable/common/redux-actions';
 import * as importDelegate from './containers/import/delegate';
 
 export default (store, cookie) => {
@@ -62,6 +62,8 @@ export default (store, cookie) => {
           </Route>
           <Route path="partners">
             <IndexRoute component={Cooperation.Partners} />
+            <Route path="invitations/in" component={Cooperation.Received} />
+            <Route path="invitations/out" component={Cooperation.Received} />
           </Route>
           <Route path="password" component={Password} />
         </Route>

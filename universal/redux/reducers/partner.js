@@ -64,7 +64,8 @@ export default function reducer(state = initialState, action) {
 export function loadPartners(cookie, params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.PARTNERS_LOAD, actionTypes.PARTNERS_LOAD_SUCCEED, actionTypes.PARTNERS_LOAD_FAIL],
+      types: [actionTypes.PARTNERS_LOAD, actionTypes.PARTNERS_LOAD_SUCCEED,
+        actionTypes.PARTNERS_LOAD_FAIL],
       endpoint: 'v1/cooperation/partners',
       method: 'get',
       params,
