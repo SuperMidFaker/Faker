@@ -82,6 +82,7 @@ export default class PartnerSetupDialog extends React.Component {
     const selectedTenantId = tenant ? tenant.id : -1;
     const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
     if (selectedTenantId !== -1) {
+      // todo check if tenant already invited
       this.props.inviteOnlPartner(this.props.tenantId, selectedTenantId, partnerships,
                                   'invite-sent');
     } else {

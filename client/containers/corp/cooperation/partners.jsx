@@ -8,18 +8,15 @@ import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { isLoaded } from '../../../../reusable/common/redux-actions';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, cookie }) {
-  if (!isLoaded(state, 'partner')) {
-    return dispatch(loadPartners(cookie, {
-      tenantId: state.account.tenantId,
-      pageSize: state.partner.partnerlist.pageSize,
-      currentPage: state.partner.partnerlist.current
-    }));
-  }
+  return dispatch(loadPartners(cookie, {
+    tenantId: state.account.tenantId,
+    pageSize: state.partner.partnerlist.pageSize,
+    currentPage: state.partner.partnerlist.current
+  }));
 }
 @connectFetch()(fetchData)
 @connectNav((props, dispatch) => {

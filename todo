@@ -10,7 +10,9 @@
 [] winston log
 [] use ant upload how to manage rc-form-wl and ant-ui version
 [] memory leak in corp personnel create upate & form edit slow
-[] eslintrc from max-len to bottom eslint --fix   no-jsx-bind --> property initializer
+[] eslintrc from max-len to bottom
+[] separate forgot changepassword from reducer/auth
+[] less <-> scss
 
 [] gregorian-calendar-format replace with moment.js
 [] table column resize/scrollbar http://www.guriddo.net/demo/bootstrap/

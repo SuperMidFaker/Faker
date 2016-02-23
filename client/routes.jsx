@@ -63,7 +63,7 @@ export default (store, cookie) => {
           <Route path="partners">
             <IndexRoute component={Cooperation.Partners} />
             <Route path="invitations/in" component={Cooperation.Received} />
-            <Route path="invitations/out" component={Cooperation.Received} />
+            <Route path="invitations/out" component={Cooperation.Sent} />
           </Route>
           <Route path="password" component={Password} />
         </Route>

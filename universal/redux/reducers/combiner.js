@@ -6,6 +6,7 @@ import corpDomain from './corp-domain';
 import corps from './corps';
 import personnel from './personnel';
 import partner from './partner';
+import invitation from './invitation';
 import importdelegate from './importdelegate';
 import warehouse from './warehouse';
 import bill from './bill';
@@ -19,6 +20,7 @@ export default combineReducers({
   corps,
   personnel,
   partner,
+  invitation,
   warehouse,
   importdelegate,
   bill,

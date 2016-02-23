@@ -56,7 +56,21 @@ function *loginUserP() {
       const user = users[0];
       const checkpwd = bCryptUtil.checkpw(password, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
       if (checkpwd) {
-        const claims = { userId: user.id, userType: user.user_type };
+        const userTypes = yield tenantUserDao.getUserTypeInfo(user.id);
+        let userType = user.user_type;
+        if (userTypes.length === 1) {
+          const personnel = userTypes[0];
+          if (personnel.role !== TENANT_ROLE.member.name) {
+            if (personnel.parentId === 0) {
+              userType = ENTERPRISE;
+            } else {
+              userType = BRANCH;
+            }
+          } else {
+           userType = PERSONNEL;
+          }
+        }
+        const claims = { userId: user.id, userType };
         const opts = Object.assign({}, config.get('jwt_crypt'), { expiresIn: config.get('jwt_expire_seconds')});
         // todo we should set a shorter interval for token expire, refresh it later
         const jwtoken = kJwt.sign(claims, privateKey, opts);
@@ -210,8 +224,8 @@ function *submitCorp() {
     trans = yield mysql.beginTransaction();
     let result = yield tenantDao.insertCorp(corp, parentTenantId, trans);
     corp.key = result.insertId;
-    result = yield userDao.insertAccount(`${corp.loginName}@{corp.code}`, corp.email, corp.phone, salt, pwdHash,
-                                         parentTenantId === 0 ? ENTERPRISE : BRANCH, unid, trans);
+    result = yield userDao.insertAccount(`${corp.loginName}@${corp.code}`, corp.email, corp.phone, salt, pwdHash,
+                                         unid, trans);
     corp.loginId = result.insertId;
     corp.status = ACCOUNT_STATUS.normal.name;
     corp.apps = [];
@@ -360,10 +374,8 @@ function *submitPersonnel() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const accountType = personnel.role === TENANT_ROLE.manager.name ? (
-      tenant.parentId === 0 ? ENTERPRISE : BRANCH) : PERSONNEL;
     let result = yield userDao.insertAccount(`${personnel.loginName}@${code}`, personnel.email,
-                                             personnel.phone, salt, pwdHash, accountType, unid, trans);
+                                             personnel.phone, salt, pwdHash, unid, trans);
     const loginId = result.insertId;
     result = yield tenantUserDao.insertPersonnel(curUserId, loginId, personnel, tenant, trans);
     yield tenantDao.updateUserCount(tenant.id, 1, trans);

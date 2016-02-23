@@ -2,15 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Input, message } from 'ant-ui';
 import moment from 'moment';
-import { loadReceiveds, change } from
-'../../../../universal/redux/reducers/invitation';
+import { loadSents, cancel } from '../../../../universal/redux/reducers/invitation';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 
 function fetchData({ state, dispatch, cookie }) {
   if (!state.invitation.receiveds.loaded) {
-    return dispatch(loadReceiveds(cookie, {
+    return dispatch(loadSents(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.invitation.receiveds.pageSize,
       currentPage: state.invitation.receiveds.current
@@ -21,7 +20,7 @@ function fetchData({ state, dispatch, cookie }) {
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({
     depth: 2,
-    text: '收到的邀请',
+    text: '发出的邀请',
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: null
@@ -30,21 +29,21 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    receivedlist: state.invitation.receiveds
+    sentlist: state.invitation.sents
   }),
-  { change, loadReceiveds })
-export default class ReceivedView extends React.Component {
+  { loadSents, cancel })
+export default class SentView extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
-    receivedlist: PropTypes.object.isRequired,
-    change: PropTypes.func.isRequired,
-    loadReceiveds: PropTypes.func.isRequired
+    sentlist: PropTypes.object.isRequired,
+    cancel: PropTypes.func.isRequired,
+    loadSents: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
-    fetcher: (params) => this.props.loadReceiveds(null, params),
+    fetcher: (params) => this.props.loadSents(null, params),
     resolve: (result) => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -73,20 +72,13 @@ export default class ReceivedView extends React.Component {
       params.filters = JSON.stringify(params.filters);
       return params;
     },
-    remotes: this.props.receivedlist
+    remotes: this.props.sentlist
   })
 
-  handleAccept(invKey, index) {
-    this.props.change(invKey, 'accept', index).then(result => {
+  handleExpire(invKey, index) {
+    this.props.cancel(invKey, index).then(result => {
       if (result.error) {
-        message.error('接受邀请失败', 10);
-      }
-    });
-  }
-  handleReject(invKey, index) {
-    this.props.change(invKey, 'reject', index).then(result => {
-      if (result.error) {
-        message.error('拒绝邀请失败', 10);
+        message.error('取消邀请失败', 10);
       }
     });
   }
@@ -94,18 +86,18 @@ export default class ReceivedView extends React.Component {
     title: '合作伙伴',
     dataIndex: 'name'
   }, {
-    title: '邀请你成为',
+    title: '邀请对方成为',
     dataIndex: 'types',
     render: (o, record) => `${record.types.map(t => t.name).join('/')}服务商`
   }, {
-    title: '收到日期',
+    title: '发出日期',
     dataIndex: 'created_date',
     render: (o, record) => moment(record.createdDate).format('YYYY-MM-DD')
   }, {
     title: '状态',
     dataIndex: 'status',
     render: (o, record) => {
-      let text = '新邀请';
+      let text = '待定';
       if (record.status === 1) {
         text = '已接受';
       } else if (record.status === 2) {
@@ -120,9 +112,7 @@ export default class ReceivedView extends React.Component {
       if (record.status === 0) {
         return (
           <span>
-            <a role="button" onClick={() => this.handleAccept(record.key, index)}>接受</a>
-            <span className="ant-divider"></span>
-            <a role="button" onClick={() => this.handleReject(record.key, index)}>拒绝</a>
+            <a role="button" onClick={() => this.handleExpire(record.key, index)}>取消</a>
           </span>
         );
       } else {
@@ -134,8 +124,8 @@ export default class ReceivedView extends React.Component {
     this.setState({selectedRowKeys: []});
   }
   render() {
-    const { receivedlist } = this.props;
-    this.dataSource.remotes = receivedlist;
+    const { sentlist } = this.props;
+    this.dataSource.remotes = sentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -147,16 +137,11 @@ export default class ReceivedView extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <div className="tools">
-              <Button type="primary">接受</Button>
-              <Button>拒绝</Button>
-            </div>
-            <div className="left-tools">
-              <Input placeholder="输入邀请码" />
-              <Button>提取</Button>
+              <Button type="primary">邀请伙伴</Button>
             </div>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={receivedlist.loading}
+            <Table rowSelection={rowSelection} columns={this.columns} loading={sentlist.loading}
               dataSource={this.dataSource}
             />
           </div>

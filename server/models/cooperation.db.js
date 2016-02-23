@@ -68,11 +68,17 @@ export default {
       on PS.partner_name = P.name`;
     return mysql.query(sql, args);
   },
-  insertPartner(tenantId, partnerId, partnerName, tenantType, trans) {
+  insertPartner(tenantId, partnerId, partnerName, tenantType, established, trans) {
     const sql = `insert into sso_partners(name, tenant_type, partner_tenant_id,
-      tenant_id, created_date) values (?, NOW())`;
-    const args = [partnerName, tenantType, partnerId, tenantId];
+      tenant_id, established, created_date) values (?, NOW())`;
+    const args = [partnerName, tenantType, partnerId, tenantId, established];
     return mysql.insert(sql, [args], trans);
+  },
+  establishPartner(tenantId, partnerId, trans) {
+    const sql = `update sso_partners set established = 1 where tenant_id = ?
+      and partner_tenant_id = ?`;
+    const args = [tenantId, partnerId];
+    return mysql.update(sql, args, trans);
   },
   insertPartnership(tenantId, partnerId, partnerName, partnerships, trans) {
     const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id, partner_name,
@@ -90,28 +96,52 @@ export default {
     const args = [tenantId, partnerId, partnerName, code];
     return mysql.insert(sql, [args], trans);
   },
+  getReceivedInvitationCount(tenantId) {
+    const sql = `select count(id) as count from sso_partner_invitations
+      where invitee_tenant_id = ?`;
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
   getReceivedInvitations(tenantId, current, pageSize) {
     const sql = `select id, inviter_tenant_id as inviterId,
       created_date as createdDate, status from sso_partner_invitations
-      where invitee_tenant_id = ? limit ?,?`;
+      where invitee_tenant_id = ? and status != 3 limit ?,?`;
     const args = [tenantId, (current - 1) * pageSize, pageSize];
     return mysql.query(sql, args);
   },
   getPartnershipByInvitee(tenantId) {
-    const sql = 'select type, type_name as name from sso_partnerships where partner_tenant_id = ?';
+    const sql = `select type, type_name as name, tenant_id as inviterId
+      from sso_partnerships where partner_tenant_id = ?`;
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
+  getSentInvitationCount(tenantId) {
+    const sql = `select count(id) as count from sso_partner_invitations
+      where inviter_tenant_id = ?`;
     const args = [tenantId];
     return mysql.query(sql, args);
   },
   getSentInvitations(tenantId, current, pageSize) {
-    const sql = `select id, invitee_tenant_id as inviteeId, invitee_name as name,
-      created_date as createdDate, status from sso_partner_invitations
-      where invitee_tenant_id = ? limit ?,?`;
+    const sql = `select id, invitee_name as name, created_date as createdDate, status
+      from sso_partner_invitations where inviter_tenant_id = ? and status != 3 limit ?,?`;
     const args = [tenantId, (current - 1) * pageSize, pageSize];
     return mysql.query(sql, args);
   },
   getPartnershipByInviter(tenantId) {
-    const sql = 'select type, type_name as name from sso_partnerships where tenant_id = ?';
+    const sql = `select type, type_name as name, partner_name as partnerName
+      from sso_partnerships where tenant_id = ?`;
     const args = [tenantId];
     return mysql.query(sql, args);
+  },
+  getInvitationInfo(invKey) {
+    const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId
+      from sso_partner_invitations where id = ?`;
+    const args = [invKey];
+    return mysql.query(sql, args);
+  },
+  updateInvitationStatus(status, acceptDate, key, trans) {
+    const sql = 'update sso_partner_invitations set status = ?, accept_date = ? where id = ?';
+    const args = [status, acceptDate, key];
+    return mysql.update(sql, args, trans);
   }
 };

@@ -9,7 +9,7 @@ import { BRANCH } from '../../universal/constants';
     accountType: state.account.type
   })
 )
-export default class Account extends React.Component {
+export default class CorpPack extends React.Component {
   static propTypes = {
     accountType: PropTypes.string.isRequired,
     children: PropTypes.object.isRequired
