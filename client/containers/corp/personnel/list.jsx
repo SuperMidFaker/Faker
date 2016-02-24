@@ -266,12 +266,13 @@ export default class PersonnelSetting extends React.Component {
             <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <span>所属组织</span> <Select style={{width: 200}} size="large" value={`${tenant.id}`}
+          <span>所属组织</span>
+          <Select style={{width: 200}} size="large" value={`${tenant.id}`}
               onChange={(value) => this.handleTenantSwitch(value)}>
             {
               branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
             }
-            </Select>
+          </Select>
         </div>
         <div className="page-body">
           <div className="panel-header">

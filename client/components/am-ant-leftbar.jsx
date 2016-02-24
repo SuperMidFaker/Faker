@@ -24,12 +24,9 @@ export default class AmLeftSidebar extends React.Component {
   static propTypes = {
     links: PropTypes.array
   }
-  constructor(...args) {
-    super(...args);
-    this.state = {
-      openedKey: []
-    };
-  }
+  state = {
+    openedKey: []
+  };
   componentDidMount() {
     hoverAmSubmenu();
     window.addEventListener("resize", updateDimensions);
@@ -37,20 +34,20 @@ export default class AmLeftSidebar extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("resize", updateDimensions);
   }
-  handleClick(ev) {
+  handleClick = (ev) => {
     this.setState({
       openedKey: ev.keyPath.slice(1)
     });
   }
   render() {
-    const { links } = this.props;
+    const links = this.props.links.filter(l => !l.invisible);
     return (
       <div className="am-left-sidebar">
       {/*
         <div className="am-scroller nano">
         <div className="nano-content">
        */}
-        <Menu prefixCls="am-sidebar" onClick={(ev) => this.handleClick(ev)} mode="vertical">
+        <Menu prefixCls="am-sidebar" onClick={ this.handleClick } mode="vertical">
         {
           links.map(link => {
             if (link.single) {
