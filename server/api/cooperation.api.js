@@ -27,9 +27,8 @@ function *partnersG() {
     }));
     for (let i = 0; i < partners.length; ++i) {
       const partner = partners[i];
-      partner.types = [];
-      partnerships.filter(ps => ps.partnerName === partner.name).forEach(
-        pt => partner.types.push({
+      partner.types = partnerships.filter(ps => ps.partnerName === partner.name).map(
+        pt => ({
           key: pt.type,
           name: pt.name
         })
@@ -60,6 +59,10 @@ function *partnerOnlineP() {
   }));
   let trans;
   try {
+    const partners = yield coopDao.getPartnerByPair(body.tenantId, body.partnerId);
+    if (partners.length > 0) {
+      return Result.ParamError(this, '已经邀请或者建立合作伙伴');
+    }
     const partnerTenants = yield tenantDao.getTenantInfo(body.partnerId);
     if (partnerTenants.length !== 1) {
       throw new Error('no platform partner tenant found');
@@ -77,7 +80,7 @@ function *partnerOnlineP() {
   } catch (e) {
     console.log(e && e.stack);
     yield mysql.rollback(trans);
-    return Result.InternalServerError(this, '添加线上合作伙伴异常');
+    return Result.InternalServerError(this, e.message || '添加线上合作伙伴异常');
   }
 }
 
@@ -90,6 +93,10 @@ function *partnerOfflineP() {
   const tenantType = '线下';
   let trans;
   try {
+    const partners = yield coopDao.getPartnerByPair(body.tenantId, -1, body.partnerName);
+    if (partners.length > 0) {
+      return Result.ParamError(this, '已经添加为线下合作伙伴');
+    }
     trans = yield mysql.beginTransaction();
     const result = yield coopDao.insertPartner(body.tenantId, -1, body.partnerName,
                                                tenantType, 0, trans);
@@ -108,7 +115,7 @@ function *partnerOfflineP() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, '添加线下伙伴异常');
+    return Result.InternalServerError(this, e.message || '添加线下伙伴异常');
   }
 }
 
@@ -144,6 +151,7 @@ function *receivedInvitationsG() {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
       current,
+      providerTypes: partnershipTypeNames.slice(1),
       data: receiveds
     });
   } catch (e) {
@@ -167,19 +175,34 @@ function *invitationP() {
       status = 1;
       yield coopDao.updateInvitationStatus(status, new Date(), body.key, trans);
       yield coopDao.establishPartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
-      const inviterTenants = yield tenantDao.getTenantInfo(invitations[0].inviterId);
-      const partnerName = inviterTenants[0].name;
-      const tenantType = getTenantTypeDesc(inviterTenants[0].level);
-      yield coopDao.insertPartner(invitations[0].inviteeId, invitations[0].inviterId,
-                                  partnerName, tenantType, 1, trans);
-      // 建立双向合作关系时另一个合作关系都为'客户' fixme
-      yield coopDao.insertPartnership(invitations[0].inviteeId, invitations[0].inviterId,
-                                      partnerName, [{ key: 0, name: partnershipTypeNames[0] }],
-                                      trans);
+      const partners = yield coopDao.getPartnerByPair(invitations[0].inviteeId,
+                                                      invitations[0].inviterId);
+      console.log(partners);
+      if (partners.length === 0) {
+        const inviterTenants = yield tenantDao.getTenantInfo(invitations[0].inviterId);
+        const partnerName = inviterTenants[0].name;
+        const tenantType = getTenantTypeDesc(inviterTenants[0].level);
+        yield coopDao.insertPartner(invitations[0].inviteeId, invitations[0].inviterId,
+                                    partnerName, tenantType, 1, trans);
+        // 建立双向合作关系时另一个合作关系都为'客户' fixme
+        yield coopDao.insertPartnership(
+          invitations[0].inviteeId, invitations[0].inviterId, partnerName,
+          body.partnerships.map(ps => ({
+            key: partnershipTypeNames.indexOf(ps),
+            name: ps
+          })), trans);
+      } else {
+        // 已经向邀请方发送添加请求,只需将另一条partner记录置为建立,
+        // 发送邀请置为取消
+        yield coopDao.updateInvitationStatusByPair(3, null, invitations[0].inviteeId,
+                                                   invitations[0].inviterId, trans);
+        yield coopDao.establishPartner(invitations[0].inviteeId, invitations[0].inviterId, trans);
+      }
     } else if (body.type === 'reject') {
       status = 2;
       yield coopDao.updateInvitationStatus(status, null, body.key, trans);
-      // todo delete the partners partnerships records??
+      yield coopDao.deleteSinglePartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
+      yield coopDao.deleteSinglePartnership(invitations[0].inviterId, invitations[0].inviteeId, trans);
     }
     yield mysql.commit(trans);
     return Result.OK(this, status);
@@ -225,6 +248,24 @@ function *sentInvitationsG() {
 }
 
 function *cancelInvitation() {
+  const body = yield cobody(this);
+  let trans;
+  try {
+    const invitations = yield coopDao.getInvitationInfo(body.key);
+    if (invitations.length !== 1) {
+      throw new Error('invitation not found');
+    }
+    const status = 3; // 取消邀请
+    trans = mysql.beginTransaction();
+    yield coopDao.updateInvitationStatus(status, null, body.key, trans);
+    yield coopDao.deleteSinglePartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
+    yield coopDao.deleteSinglePartnership(invitations[0].inviterId, invitations[0].inviteeId, trans);
+    yield mysql.commit(trans);
+    return Result.OK(this, status);
+  } catch (e) {
+    yield mysql.rollback(trans);
+    return Result.InternalServerError(this, e.message);
+  }
 }
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Input, message } from 'ant-ui';
+import { Table, Button, Input, message, Modal, Checkbox } from 'ant-ui';
 import moment from 'moment';
 import { loadReceiveds, change } from
 '../../../../universal/redux/reducers/invitation';
@@ -9,13 +9,11 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 
 function fetchData({ state, dispatch, cookie }) {
-  if (!state.invitation.receiveds.loaded) {
-    return dispatch(loadReceiveds(cookie, {
-      tenantId: state.account.tenantId,
-      pageSize: state.invitation.receiveds.pageSize,
-      currentPage: state.invitation.receiveds.current
-    }));
-  }
+  return dispatch(loadReceiveds(cookie, {
+    tenantId: state.account.tenantId,
+    pageSize: state.invitation.receiveds.pageSize,
+    currentPage: state.invitation.receiveds.current
+  }));
 }
 @connectFetch()(fetchData)
 @connectNav((props, dispatch) => {
@@ -30,6 +28,7 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    providerTypes: state.invitation.receiveds,
     receivedlist: state.invitation.receiveds
   }),
   { change, loadReceiveds })
@@ -37,10 +36,15 @@ export default class ReceivedView extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     receivedlist: PropTypes.object.isRequired,
+    providerTypes: PropTypes.array.isRequired,
     change: PropTypes.func.isRequired,
     loadReceiveds: PropTypes.func.isRequired
   }
   state = {
+    visibleModal: false,
+    invitation: {},
+    index: -1,
+    checkedProviderTypes: [],
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
@@ -76,12 +80,22 @@ export default class ReceivedView extends React.Component {
     remotes: this.props.receivedlist
   })
 
-  handleAccept(invKey, index) {
-    this.props.change(invKey, 'accept', index).then(result => {
-      if (result.error) {
-        message.error('接受邀请失败', 10);
-      }
-    });
+  handleAccept(invitation, index) {
+    if (invitation.types.length === 1 && invitation.types[0] === '客户') {
+      // 显示设置合作方的关系类型选择框
+      this.setState({
+        visibleModal: true,
+        invitation,
+        index
+      });
+    } else {
+      // 合作方成为'客户'
+      this.props.change(invitation.key, 'accept', index, ['客户']).then(result => {
+        if (result.error) {
+          message.error('接受邀请失败', 10);
+        }
+      });
+    }
   }
   handleReject(invKey, index) {
     this.props.change(invKey, 'reject', index).then(result => {
@@ -120,7 +134,7 @@ export default class ReceivedView extends React.Component {
       if (record.status === 0) {
         return (
           <span>
-            <a role="button" onClick={() => this.handleAccept(record.key, index)}>接受</a>
+            <a role="button" onClick={() => this.handleAccept(record, index)}>接受</a>
             <span className="ant-divider"></span>
             <a role="button" onClick={() => this.handleReject(record.key, index)}>拒绝</a>
           </span>
@@ -131,10 +145,28 @@ export default class ReceivedView extends React.Component {
     }
   }]
   handleSelectionClear = () => {
-    this.setState({selectedRowKeys: []});
+    this.setState({ selectedRowKeys: [] });
+  }
+  handleAcceptCancel = () => {
+    this.setState({ visibleModal: false });
+  }
+  handleProviderTypeChange = (checked) => {
+    this.setState({
+      visibleModal: false,
+      checkedProviderTypes: checked
+    });
+  }
+  handleProviderAccept = () => {
+    this.props.change(this.state.invitation.key, 'accept', this.state.index,
+                      this.state.checkedProviderTypes)
+      .then(result => {
+        if (result.error) {
+          message.error('接受邀请失败', 10);
+        }
+      });
   }
   render() {
-    const { receivedlist } = this.props;
+    const { receivedlist, providerTypes } = this.props;
     this.dataSource.remotes = receivedlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -166,6 +198,13 @@ export default class ReceivedView extends React.Component {
             </Button>
           </div>
         </div>
+        <Modal onOK={this.handleProviderAccept} onCancel={this.handleAcceptCancel}
+          title="设置供应商类型" visible={this.state.visibleModal}
+        >
+          <Checkbox.Group options={providerTypes}
+            onChange={this.handleProviderTypeChange} value={ this.state.checkedProviderTypes }
+          />
+        </Modal>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Input, message } from 'ant-ui';
+import { Table, Button, message } from 'ant-ui';
 import moment from 'moment';
 import { loadSents, cancel } from '../../../../universal/redux/reducers/invitation';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
@@ -8,13 +8,11 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 
 function fetchData({ state, dispatch, cookie }) {
-  if (!state.invitation.receiveds.loaded) {
-    return dispatch(loadSents(cookie, {
-      tenantId: state.account.tenantId,
-      pageSize: state.invitation.receiveds.pageSize,
-      currentPage: state.invitation.receiveds.current
-    }));
-  }
+  return dispatch(loadSents(cookie, {
+    tenantId: state.account.tenantId,
+    pageSize: state.invitation.receiveds.pageSize,
+    currentPage: state.invitation.receiveds.current
+  }));
 }
 @connectFetch()(fetchData)
 @connectNav((props, dispatch) => {
@@ -88,7 +86,15 @@ export default class SentView extends React.Component {
   }, {
     title: '邀请对方成为',
     dataIndex: 'types',
-    render: (o, record) => `${record.types.map(t => t.name).join('/')}服务商`
+    render: (o, record) => {
+      let text;
+      if (record.types.length === 1 && record.types[0].name === '客户') {
+        text = record.types[0].name;
+      } else {
+        text = `${record.types.map(t => t.name).join('/')}服务商`;
+      }
+      return text;
+    }
   }, {
     title: '发出日期',
     dataIndex: 'created_date',
@@ -102,6 +108,8 @@ export default class SentView extends React.Component {
         text = '已接受';
       } else if (record.status === 2) {
         text = '已拒绝';
+      } else if (record.status === 3) {
+        text = '已取消';
       }
       return text;
     }
@@ -135,11 +143,7 @@ export default class SentView extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <div className="panel-header">
-            <div className="tools">
-              <Button type="primary">邀请伙伴</Button>
-            </div>
-          </div>
+          <div className="panel-header" />
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={sentlist.loading}
               dataSource={this.dataSource}
