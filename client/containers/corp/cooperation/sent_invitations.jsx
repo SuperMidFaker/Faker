@@ -6,6 +6,7 @@ import { loadSents, cancel } from '../../../../universal/redux/reducers/invitati
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { INVITATION_STATUS } from '../../../../universal/constants';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadSents(cookie, {
@@ -104,11 +105,11 @@ export default class SentView extends React.Component {
     dataIndex: 'status',
     render: (o, record) => {
       let text = '待定';
-      if (record.status === 1) {
+      if (record.status === INVITATION_STATUS.ACCEPTED) {
         text = '已接受';
-      } else if (record.status === 2) {
+      } else if (record.status === INVITATION_STATUS.REJECTED) {
         text = '已拒绝';
-      } else if (record.status === 3) {
+      } else if (record.status === INVITATION_STATUS.CANCELED) {
         text = '已取消';
       }
       return text;
@@ -117,7 +118,7 @@ export default class SentView extends React.Component {
     title: '操作',
     width: 150,
     render: (text, record, index) => {
-      if (record.status === 0) {
+      if (record.status === INVITATION_STATUS.NEW_SENT) {
         return (
           <span>
             <a role="button" onClick={() => this.handleExpire(record.key, index)}>取消</a>

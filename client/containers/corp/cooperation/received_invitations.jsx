@@ -28,7 +28,6 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    providerTypes: state.invitation.receiveds,
     receivedlist: state.invitation.receiveds
   }),
   { change, loadReceiveds })
@@ -36,7 +35,6 @@ export default class ReceivedView extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     receivedlist: PropTypes.object.isRequired,
-    providerTypes: PropTypes.array.isRequired,
     change: PropTypes.func.isRequired,
     loadReceiveds: PropTypes.func.isRequired
   }
@@ -81,7 +79,7 @@ export default class ReceivedView extends React.Component {
   })
 
   handleAccept(invitation, index) {
-    if (invitation.types.length === 1 && invitation.types[0] === '客户') {
+    if (invitation.types.length === 1 && invitation.types[0].name === '客户') {
       // 显示设置合作方的关系类型选择框
       this.setState({
         visibleModal: true,
@@ -110,7 +108,15 @@ export default class ReceivedView extends React.Component {
   }, {
     title: '邀请你成为',
     dataIndex: 'types',
-    render: (o, record) => `${record.types.map(t => t.name).join('/')}服务商`
+    render: (o, record) => {
+      let text;
+      if (record.types.length === 1 && record.types[0].name === '客户') {
+        text = '客户';
+      } else {
+        text = `${record.types.map(t => t.name).join('/')}服务商`;
+      }
+      return text;
+    }
   }, {
     title: '收到日期',
     dataIndex: 'created_date',
@@ -152,21 +158,24 @@ export default class ReceivedView extends React.Component {
   }
   handleProviderTypeChange = (checked) => {
     this.setState({
-      visibleModal: false,
       checkedProviderTypes: checked
     });
   }
   handleProviderAccept = () => {
+    if (this.state.checkedProviderTypes.length === 0) {
+      return message.error('请选择供应商类型', 10);
+    }
     this.props.change(this.state.invitation.key, 'accept', this.state.index,
                       this.state.checkedProviderTypes)
       .then(result => {
         if (result.error) {
           message.error('接受邀请失败', 10);
         }
+        this.setState({ visibleModal: false });
       });
   }
   render() {
-    const { receivedlist, providerTypes } = this.props;
+    const { receivedlist } = this.props;
     this.dataSource.remotes = receivedlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -198,10 +207,10 @@ export default class ReceivedView extends React.Component {
             </Button>
           </div>
         </div>
-        <Modal onOK={this.handleProviderAccept} onCancel={this.handleAcceptCancel}
-          title="设置供应商类型" visible={this.state.visibleModal}
+        <Modal onOk={this.handleProviderAccept} onCancel={this.handleAcceptCancel}
+          title="设置供应商类型" visible={this.state.visibleModal} closable={false}
         >
-          <Checkbox.Group options={providerTypes}
+          <Checkbox.Group options={receivedlist.providerTypes}
             onChange={this.handleProviderTypeChange} value={ this.state.checkedProviderTypes }
           />
         </Modal>

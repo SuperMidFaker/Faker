@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
-import { swapPartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
+import { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
 '../../universal/redux/reducers/partner';
-import './partner-setup-modal.less';
+import './partner-modal.less';
 const Option = Select.Option;
 
 @connect(
@@ -15,11 +15,11 @@ const Option = Select.Option;
     stepView: state.partner.modalViewport,
     visible: state.partner.visibleModal
   }),
-  { swapPartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner }
+  { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner }
 )
 export default class PartnerSetupDialog extends React.Component {
   static propTypes = {
-    swapPartnerModal: PropTypes.func.isRequired,
+    hidePartnerModal: PropTypes.func.isRequired,
     setModalViewport: PropTypes.func.isRequired,
     inviteOnlPartner: PropTypes.func.isRequired,
     inviteOfflPartner: PropTypes.func.isRequired,
@@ -110,13 +110,12 @@ export default class PartnerSetupDialog extends React.Component {
     });
   }
   handleCancel = () => {
-    this.props.swapPartnerModal();
+    this.props.hidePartnerModal();
   }
   render() {
     const { isProviderPartner, checkedProviderTypes, offlineContact }
     = this.state;
     const { stepView, visible, partnershipTypes, isPlatformTenant } = this.props;
-    let modalContent = <div />;
     let footer = <div />;
     if (stepView === 'invite-initial') {
       footer = [
@@ -127,8 +126,27 @@ export default class PartnerSetupDialog extends React.Component {
           取消
         </Button>
       ];
-      modalContent = (
-        <Form horizontal>
+    } else if (stepView === 'invite-offline') {
+      footer = [
+        <Button key="offline-invite" type="primary" size="large" onClick={this.handleOfflineInvite}>
+          发送邀请
+        </Button>,
+        <Button key="cancel" onClick={this.handleCancel}>
+          取消
+        </Button>
+      ];
+    } else if (stepView === 'invite-sent') {
+      footer = [
+        <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
+          知道了
+        </Button>
+      ];
+    }
+    return (
+      <Modal title="添加合作伙伴" visible={visible} closable={false} footer={footer}
+        className="partner-modal"
+      >
+        <Form horizontal className={stepView === 'invite-initial' ? '' : 'hide'}>
           <Form.Item label="合作伙伴:" labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
             <Select combobox style={{ width: '100%' }} searchPlaceholder="请输入公司名称"
               filterOption={this.getTenantFilterOption}
@@ -153,18 +171,10 @@ export default class PartnerSetupDialog extends React.Component {
             />
           </Form.Item>
           }
-        </Form>);
-    } else if (stepView === 'invite-offline') {
-      footer = [
-        <Button key="offline-invite" type="primary" size="large" onClick={this.handleOfflineInvite}>
-          发送邀请
-        </Button>,
-        <Button key="cancel" onClick={this.handleCancel}>
-          取消
-        </Button>
-      ];
-      modalContent = (
-        <div className="partner-modal-offline-body">
+        </Form>
+        <div className={`partner-modal-offline-body
+          ${stepView === 'invite-offline' ? '' : ' hide'}`}
+        >
           <i className="anticon anticon-info-circle" />
           <span>
             对方还不是平台用户,请填写邮箱/手机号发送邀请
@@ -174,27 +184,16 @@ export default class PartnerSetupDialog extends React.Component {
               value={offlineContact}
             />
           </div>
-        </div>);
-    } else if (stepView === 'invite-sent') {
-      footer = [
-        <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
-          知道了
-        </Button>
-      ];
-      modalContent = (
-        <div className="partner-modal-confirm-body">
+        </div>
+        <div className={`partner-modal-confirm-body
+          ${stepView === 'invite-sent' ? '' : ' hide'}`}
+        >
           <i className="anticon anticon-info-circle" />
           <span className="partner-modal-title">已发送邀请</span>
           <div className="partner-modal-content">对方是
             { isPlatformTenant ? '平台' : '线下' }用户,已发送合作伙伴邀请
           </div>
-        </div>);
-    }
-    return (
-      <Modal title="添加合作伙伴" visible={visible} closable={false} footer={footer}
-        className="partner-modal"
-      >
-        {modalContent}
+        </div>
       </Modal>
     );
   }

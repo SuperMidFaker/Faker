@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message } from 'ant-ui';
-import { loadPartners, showPartnerModal } from
+import { loadPartners, showPartnerModal, showInviteModal } from
 '../../../../universal/redux/reducers/partner';
 import PartnerModal from '../../../components/partner-setup-modal';
+import InviteModal from '../../../components/partner-invite-modal';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
@@ -35,7 +36,7 @@ function fetchData({ state, dispatch, cookie }) {
     partnerlist: state.partner.partnerlist,
     loading: state.personnel.loading
   }),
-  { showPartnerModal, loadPartners })
+  { showPartnerModal, showInviteModal, loadPartners })
 export default class PartnersView extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
@@ -43,10 +44,14 @@ export default class PartnersView extends React.Component {
     partnershipTypes: PropTypes.array.isRequired,
     partnerlist: PropTypes.object.isRequired,
     loadPartners: PropTypes.func.isRequired,
+    showInviteModal: PropTypes.func.isRequired,
     showPartnerModal: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
+  }
+  handleSendInvitation(partner) {
+    this.props.showInviteModal(partner);
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadPartners(null, params),
@@ -109,7 +114,7 @@ export default class PartnersView extends React.Component {
       if (record.partnerTenantId === -1) {
         return (
           <span>
-            <a role="button">发送邀请</a>
+            <a role="button" onClick={() => this.handleSendInvitation(record)}>发送邀请</a>
           </span>
         );
       } else {
@@ -118,7 +123,7 @@ export default class PartnersView extends React.Component {
     }
   }]
   handleSelectionClear = () => {
-    this.setState({selectedRowKeys: []});
+    this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (searchVal) => {
     let filters = undefined;
@@ -204,6 +209,7 @@ export default class PartnersView extends React.Component {
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">清除选择</Button>
           </div>
           <PartnerModal />
+          <InviteModal />
         </div>
       </div>
     );
