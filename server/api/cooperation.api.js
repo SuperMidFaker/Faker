@@ -4,7 +4,7 @@ import tenantDao from '../models/tenant.db';
 import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
 import { getSmsCode } from '../../reusable/common/validater';
-import { TENANT_LEVEL } from '../../universal/constants';
+import { TENANT_LEVEL, INVITATION_STATUS } from '../../universal/constants';
 
 const partnershipTypeNames = ['客户', '报关', '货代', '运输', '仓储'];
 
@@ -70,11 +70,17 @@ function *partnerOnlineP() {
     const partner = partnerTenants[0];
     const tenantType = getTenantTypeDesc(partner.level);
     trans = yield mysql.beginTransaction();
-    yield coopDao.insertPartner(body.tenantId, body.partnerId, partner.name,
-                                tenantType, 0, trans);
-    yield coopDao.insertPartnership(body.tenantId, body.partnerId, partner.name,
-                                    partnerships, trans);
-    yield coopDao.insertInvitation(body.tenantId, body.partnerId, partner.name, null, trans);
+    yield coopDao.insertPartner(
+      body.tenantId, body.partnerId, partner.name,
+      tenantType, 0, trans
+    );
+    yield coopDao.deleteSinglePartnership(body.tenantId, body.partnerId, trans);
+    yield coopDao.insertPartnership(
+      body.tenantId, body.partnerId, partner.name, partnerships, trans
+    );
+    yield coopDao.insertInvitation(
+      body.tenantId, body.partnerId, partner.name,
+      INVITATION_STATUS.NEW_SENT, null, trans);
     yield mysql.commit(trans);
     return Result.OK(this);
   } catch (e) {
@@ -93,17 +99,22 @@ function *partnerOfflineP() {
   const tenantType = '线下';
   let trans;
   try {
-    const partners = yield coopDao.getPartnerByPair(body.tenantId, -1, body.partnerName);
+    const partners = yield coopDao.getPartnerByPair(body.tenantId, null, body.partnerName);
     if (partners.length > 0) {
       return Result.ParamError(this, '已经添加为线下合作伙伴');
     }
     trans = yield mysql.beginTransaction();
-    const result = yield coopDao.insertPartner(body.tenantId, -1, body.partnerName,
-                                               tenantType, 0, trans);
-    yield coopDao.insertPartnership(body.tenantId, -1, body.partnerName,
-                                    partnerships, trans);
+    const result = yield coopDao.insertPartner(
+      body.tenantId, -1, body.partnerName, tenantType, 0, trans
+    );
+    yield coopDao.deleteOfflinePartnership(body.tenantId, body.partnerName, trans);
+    yield coopDao.insertPartnership(
+      body.tenantId, -1, body.partnerName, partnerships, trans
+    );
     const code = getSmsCode(6);
-    yield coopDao.insertInvitation(body.tenantId, -1, body.partnerName, code, trans);
+    yield coopDao.insertInvitation(
+      body.tenantId, -1, body.partnerName,
+      INVITATION_STATUS.NEW_SENT, code, trans);
     yield mysql.commit(trans);
     // sendInvitation by body.contact -> phone or email todo
     return Result.OK(this, {
@@ -125,7 +136,8 @@ function *receivedInvitationsG() {
   const tenantId = parseInt(this.request.query.tenantId, 10);
   try {
     const totals = yield coopDao.getReceivedInvitationCount(tenantId);
-    const invitations = yield coopDao.getReceivedInvitations(tenantId, current, pageSize);
+    const invitations = yield coopDao.getReceivedInvitations(
+      tenantId, INVITATION_STATUS.CANCELED, current, pageSize);
     const partnerships = yield coopDao.getPartnershipByInvitee(tenantId);
     const receiveds = [];
     const invitees = yield tenantDao.getTenantInfo(tenantId);
@@ -169,22 +181,23 @@ function *invitationP() {
       throw new Error('invitation not found');
     }
     trans = yield mysql.beginTransaction();
-
-    let status = -1;
+    let status;
     if (body.type === 'accept') {
-      status = 1;
+      status = INVITATION_STATUS.ACCEPTED;
       yield coopDao.updateInvitationStatus(status, new Date(), body.key, trans);
       yield coopDao.establishPartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
       const partners = yield coopDao.getPartnerByPair(invitations[0].inviteeId,
                                                       invitations[0].inviterId);
-      console.log(partners);
       if (partners.length === 0) {
         const inviterTenants = yield tenantDao.getTenantInfo(invitations[0].inviterId);
         const partnerName = inviterTenants[0].name;
         const tenantType = getTenantTypeDesc(inviterTenants[0].level);
         yield coopDao.insertPartner(invitations[0].inviteeId, invitations[0].inviterId,
                                     partnerName, tenantType, 1, trans);
-        // 建立双向合作关系时另一个合作关系都为'客户' fixme
+        // 先删除再新建, 不在拒绝和取消时删除因收到和发出界面里需要显示
+        // 若重新建立,则相应界面显示新的关系
+        yield coopDao.deleteSinglePartnership(invitations[0].inviteeId,
+                                              invitations[0].inviterId, trans);
         yield coopDao.insertPartnership(
           invitations[0].inviteeId, invitations[0].inviterId, partnerName,
           body.partnerships.map(ps => ({
@@ -194,15 +207,18 @@ function *invitationP() {
       } else {
         // 已经向邀请方发送添加请求,只需将另一条partner记录置为建立,
         // 发送邀请置为取消
-        yield coopDao.updateInvitationStatusByPair(3, null, invitations[0].inviteeId,
-                                                   invitations[0].inviterId, trans);
+        yield coopDao.cancelInvitationByPair(
+          INVITATION_STATUS.CANCELED, invitations[0].inviteeId,
+          invitations[0].inviterId, null, trans);
         yield coopDao.establishPartner(invitations[0].inviteeId, invitations[0].inviterId, trans);
       }
     } else if (body.type === 'reject') {
-      status = 2;
+      status = INVITATION_STATUS.REJECTED;
       yield coopDao.updateInvitationStatus(status, null, body.key, trans);
-      yield coopDao.deleteSinglePartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
-      yield coopDao.deleteSinglePartnership(invitations[0].inviterId, invitations[0].inviteeId, trans);
+      yield coopDao.rejectPartner(
+        invitations[0].inviterId, invitations[0].inviteeId,
+        invitations[0].inviteeName, trans
+      );
     }
     yield mysql.commit(trans);
     return Result.OK(this, status);
@@ -229,10 +245,11 @@ function *sentInvitationsG() {
         name: invitations[i].name,
         status: invitations[i].status
       };
-      sent.types = partnerships.filter(pts => pts.partnerName === invitations[i].name).map(pts => ({
-        key: pts.type,
-        name: pts.name
-      }));
+      sent.types = partnerships.filter(pts => pts.partnerName === invitations[i].name)
+        .map(pts => ({
+          key: pts.type,
+          name: pts.name
+        }));
       sents.push(sent);
     }
     return Result.OK(this, {
@@ -255,13 +272,38 @@ function *cancelInvitation() {
     if (invitations.length !== 1) {
       throw new Error('invitation not found');
     }
-    const status = 3; // 取消邀请
-    trans = mysql.beginTransaction();
+    const status = INVITATION_STATUS.CANCELED;
+    trans = yield mysql.beginTransaction();
     yield coopDao.updateInvitationStatus(status, null, body.key, trans);
-    yield coopDao.deleteSinglePartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
-    yield coopDao.deleteSinglePartnership(invitations[0].inviterId, invitations[0].inviteeId, trans);
+    yield coopDao.rejectPartner(
+      invitations[0].inviterId, invitations[0].inviteeId,
+      invitations[0].inviteeName, trans
+    );
     yield mysql.commit(trans);
     return Result.OK(this, status);
+  } catch (e) {
+    yield mysql.rollback(trans);
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *sendOfflineInvitation() {
+  const body = yield cobody(this);
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield coopDao.cancelInvitationByPair(
+      INVITATION_STATUS.CANCELED, body.tenantId,
+      null, body.partnerName, trans
+    );
+    const code = getSmsCode(6);
+    yield coopDao.insertInvitation(
+      body.tenantId, -1, body.partnerName,
+      INVITATION_STATUS.NEW_SENT, code, trans
+    );
+    // todo body.contact
+    yield mysql.commit(trans);
+    return Result.OK(this);
   } catch (e) {
     yield mysql.rollback(trans);
     return Result.InternalServerError(this, e.message);
@@ -275,4 +317,5 @@ export default [
   [ 'post', '/v1/cooperation/invitation', invitationP ],
   [ 'get', '/v1/cooperation/invitations/out', sentInvitationsG ],
   [ 'post', '/v1/cooperation/invitation/cancel', cancelInvitation ],
+  [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ]
 ]
