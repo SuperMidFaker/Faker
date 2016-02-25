@@ -1,21 +1,4 @@
 import mysql from '../../reusable/db-util/mysql';
-function prepareArgs(input) {
-  const args = [];
-  const columns = [`payer_id`, `payee_id`, `subject`, `body`, `amount`, `batch_no`,
-    `merge_batch_no`, `status`, `payment_id`, `payment_date`];
-  columns.forEach((column) => {
-    if (column in input) {
-      if (column === 'payment_date') {
-        args.push(new Date(input[column]));
-      } else {
-        args.push(input[column]);
-      }
-    } else {
-      args.push(null);
-    }
-  });
-  return args;
-}
 
 function getDefaultPartnerClause(tenantId, args) {
   args.push(tenantId);
@@ -65,7 +48,14 @@ export default {
                                                 tenantId, args);
     const sql = `select type, type_name as name, partner_name as partnerName from sso_partnerships
       as PS inner join (select tenant_id, name from sso_partners where ${partnerClause}) as P
-      on PS.partner_name = P.name`;
+      on PS.partner_name = P.name where PS.tenant_id = ?`;
+    args.push(tenantId);
+    return mysql.query(sql, args);
+  },
+  getPartnerByPair(inviterId, inviteeId, inviteeName) {
+    const sql = `select id, established from sso_partners where tenant_id = ?
+      and (partner_tenant_id = ? or name = ?)`;
+    const args = [inviterId, inviteeId, inviteeName];
     return mysql.query(sql, args);
   },
   insertPartner(tenantId, partnerId, partnerName, tenantType, established, trans) {
@@ -80,6 +70,11 @@ export default {
     const args = [tenantId, partnerId];
     return mysql.update(sql, args, trans);
   },
+  deleteSinglePartner(tenantId, partnerId, trans) {
+    const sql = 'delete from sso_partners where tenant_id = ? and partner_tenant_id = ?';
+    const args = [tenantId, partnerId];
+    return mysql.delete(sql, args, trans);
+  },
   insertPartnership(tenantId, partnerId, partnerName, partnerships, trans) {
     const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id, partner_name,
       type, type_name) values ?`;
@@ -89,6 +84,11 @@ export default {
     });
     console.log('partnership args', args);
     return mysql.insert(sql, [args], trans);
+  },
+  deleteSinglePartnership(tenantId, partnerId, trans) {
+    const sql = 'delete from sso_partnerships where tenant_id = ? and partner_tenant_id = ?';
+    const args = [tenantId, partnerId];
+    return mysql.delete(sql, args, trans);
   },
   insertInvitation(tenantId, partnerId, partnerName, code, trans) {
     const sql = `insert into sso_partner_invitations(inviter_tenant_id, invitee_tenant_id,
@@ -123,7 +123,7 @@ export default {
   },
   getSentInvitations(tenantId, current, pageSize) {
     const sql = `select id, invitee_name as name, created_date as createdDate, status
-      from sso_partner_invitations where inviter_tenant_id = ? and status != 3 limit ?,?`;
+      from sso_partner_invitations where inviter_tenant_id = ? limit ?,?`;
     const args = [tenantId, (current - 1) * pageSize, pageSize];
     return mysql.query(sql, args);
   },
@@ -142,6 +142,12 @@ export default {
   updateInvitationStatus(status, acceptDate, key, trans) {
     const sql = 'update sso_partner_invitations set status = ?, accept_date = ? where id = ?';
     const args = [status, acceptDate, key];
+    return mysql.update(sql, args, trans);
+  },
+  updateInvitationStatusByPair(status, acceptDate, inviterId, inviteeId, trans) {
+    const sql = `update sso_partner_invitations set status = ?, accept_date = ?
+      where inviter_tenant_id = ? and invitee_tenant_id = ?`;
+    const args = [status, acceptDate, inviterId, inviteeId];
     return mysql.update(sql, args, trans);
   }
 };

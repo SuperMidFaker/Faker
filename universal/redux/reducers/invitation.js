@@ -4,22 +4,22 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/invitation/', [
   'RECEIVEDS_LOAD', 'RECEIVEDS_LOAD_SUCCEED', 'RECEIVEDS_LOAD_FAIL',
   'SENTS_LOAD', 'SENTS_LOAD_SUCCEED', 'SENTS_LOAD_FAIL',
-  'INVITATION_CHANGE', 'INVITATION_CHANGE_SUCCEED', 'INVITATION_CHANGE_FAIL'
+  'INVITATION_CHANGE', 'INVITATION_CHANGE_SUCCEED', 'INVITATION_CHANGE_FAIL',
+  'INVITATION_CANCEL', 'INVITATION_CANCEL_SUCCEED', 'INVITATION_CANCEL_FAIL'
 ]);
 
 const initialState = {
   receiveds: {
-    loaded: false,
     loading: false,
     pageSize: 10,
     current: 1,
     totalCount: 0,
+    providerTypes: [],
     data: [
       /* { key:, name:, other db column } */
     ]
   },
   sents: {
-    loaded: false,
     loading: false,
     pageSize: 10,
     current: 1,
@@ -38,8 +38,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         receiveds: {
-          ...state.receiveds, loading: false, loaded: true,
-          ...action.result.data
+          ...state.receiveds, loading: false, ...action.result.data
         }
       };
     case actionTypes.RECEIVEDS_LOAD_FAIL:
@@ -50,8 +49,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         sents: {
-          ...state.sents, loading: false, loaded: true,
-          ...action.result.data
+          ...state.sents, loading: false, ...action.result.data
         }
       };
     case actionTypes.SENTS_LOAD_FAIL:
@@ -60,6 +58,11 @@ export default function reducer(state = initialState, action) {
       const receiveds = { ...state.receiveds };
       receiveds.data[action.index].status = action.result.data;
       return { ...state, receiveds };
+    }
+    case actionTypes.INVITATION_CANCEL_SUCCEED: {
+      const sents = { ...state.sents };
+      sents.data[action.index].status = action.result.data;
+      return { ...state, sents };
     }
     default:
       return state;
@@ -79,7 +82,7 @@ export function loadReceiveds(cookie, params) {
   };
 }
 
-export function change(key, type, index) {
+export function change(key, type, index, partnerships) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.INVITATION_CHANGE, actionTypes.INVITATION_CHANGE_SUCCEED,
@@ -89,6 +92,7 @@ export function change(key, type, index) {
       index,
       data: {
         key,
+        partnerships,
         type
       }
     }
@@ -111,8 +115,8 @@ export function loadSents(cookie, params) {
 export function cancel(key, index) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.INVITATION_CHANGE, actionTypes.INVITATION_CHANGE_SUCCEED,
-        actionTypes.INVITATION_CHANGE_FAIL],
+      types: [actionTypes.INVITATION_CANCEL, actionTypes.INVITATION_CANCEL_SUCCEED,
+        actionTypes.INVITATION_CANCEL_FAIL],
       endpoint: 'v1/cooperation/invitation/cancel',
       method: 'post',
       index,

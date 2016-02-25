@@ -82,9 +82,13 @@ export default class PartnerSetupDialog extends React.Component {
     const selectedTenantId = tenant ? tenant.id : -1;
     const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
     if (selectedTenantId !== -1) {
-      // todo check if tenant already invited
-      this.props.inviteOnlPartner(this.props.tenantId, selectedTenantId, partnerships,
-                                  'invite-sent');
+      this.props.inviteOnlPartner(
+        this.props.tenantId, selectedTenantId, partnerships, 'invite-sent'
+      ).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
     } else {
       this.props.setModalViewport('invite-offline');
     }
@@ -96,8 +100,14 @@ export default class PartnerSetupDialog extends React.Component {
   }
   handleOfflineInvite = () => {
     const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
-    this.props.inviteOfflPartner(this.props.tenantId, this.state.tenantInput, partnerships,
-                                 this.state.offlineContact, 'invite-sent');
+    this.props.inviteOfflPartner(
+      this.props.tenantId, this.state.tenantInput, partnerships,
+      this.state.offlineContact, 'invite-sent'
+    ).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
   }
   handleCancel = () => {
     this.props.swapPartnerModal();

@@ -49,8 +49,8 @@ export default class PartnersView extends React.Component {
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
-    fetcher: (params) => this.props.loadPartners(null, params),
-    resolve: (result) => result.data,
+    fetcher: params => this.props.loadPartners(null, params),
+    resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
       current: resolve(result.totalCount, result.current, result.pageSize),
@@ -106,7 +106,6 @@ export default class PartnersView extends React.Component {
     title: '操作',
     width: 150,
     render: (text, record) => {
-      // todo if only offline uninvited
       if (record.partnerTenantId === -1) {
         return (
           <span>
