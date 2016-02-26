@@ -34,12 +34,14 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     partnershipTypes: state.partner.partnershipTypes,
     partnerlist: state.partner.partnerlist,
+    filters: state.partner.filters,
     loading: state.personnel.loading
   }),
   { showPartnerModal, showInviteModal, loadPartners })
 export default class PartnersView extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
+    filters: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     partnershipTypes: PropTypes.array.isRequired,
     partnerlist: PropTypes.object.isRequired,
@@ -52,6 +54,16 @@ export default class PartnersView extends React.Component {
   }
   handleSendInvitation(partner) {
     this.props.showInviteModal(partner);
+  }
+  mergeFilters(curFilters, name, value) {
+    const merged = curFilters.filter(flt => flt.name !== name);
+    if (value !== null && value !== undefined && value !== '') {
+      merged.push({
+        name,
+        value
+      });
+    }
+    return merged;
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadPartners(null, params),
@@ -70,14 +82,14 @@ export default class PartnersView extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order,
-        filters: []
+        filters: this.props.filters
       };
+      params.filters = params.filters.filter(
+        flt => flt.name in filters && filters[flt.name].length
+      );
       for (const key in filters) {
         if (filters[key] && filters[key].length > 0) {
-          params.filters.push({
-            name: key,
-            value: filters[key][0]
-          });
+          params.filters = this.mergeFilters(params.filters, key, filters[key][0]);
         }
       }
       params.filters = JSON.stringify(params.filters);
@@ -126,13 +138,9 @@ export default class PartnersView extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (searchVal) => {
-    let filters = undefined;
-    if (searchVal) {
-      filters = JSON.stringify([{
-        name: 'name',
-        value: searchVal
-      }]);
-    }
+    const filters = JSON.stringify(
+      this.mergeFilters(this.props.filters, 'name', searchVal)
+    );
     this.props.loadPartners(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.partnerlist.pageSize,
@@ -144,20 +152,13 @@ export default class PartnersView extends React.Component {
     this.props.showPartnerModal();
   }
   handlePartnershipFilter = (ev) => {
-    // searchbar value clear todo
-    const { partnerlist, tenantId } = this.props;
+    const { partnerlist, tenantId, filters } = this.props;
     const partnerType = ev.target.value;
-    let filters = undefined;
-    if (partnerType !== 'all') {
-      const filterArray = [{
-        name: 'partnerType',
-        value: parseInt(partnerType, 10)
-      }];
-      filters = JSON.stringify(filterArray);
-    }
+    const typeValue = partnerType !== 'all' ? parseInt(partnerType, 10) : undefined;
+    const filterArray = this.mergeFilters(filters, 'partnerType', typeValue);
     this.props.loadPartners(null, {
       tenantId,
-      filters,
+      filters: JSON.stringify(filterArray),
       pageSize: partnerlist.pageSize,
       currentPage: 1
     }).then(result => {
@@ -171,8 +172,8 @@ export default class PartnersView extends React.Component {
     this.dataSource.remotes = partnerlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({selectedRowKeys});
+      onChange: selectedRowKeys => {
+        this.setState({ selectedRowKeys });
       }
     };
     return (
