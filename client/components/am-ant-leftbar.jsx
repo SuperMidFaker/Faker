@@ -60,12 +60,12 @@ export default class AmLeftSidebar extends React.Component {
             } else {
               return (
                 <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'am-sidebar-submenu-expanded' : ''}
-                      title={<span><i className={ 'icon ' + link.icon }></i><span>{link.text}</span></span>}>
+                      title={<div><i className={ 'icon ' + link.icon }></i><span>{link.text}</span></div>}>
                   {
                     link.sublinks.map(sub => {
                       return (<MenuItem key={sub.key}>
                         <NavLink to={ sub.path }>
-                          <span>{sub.text}</span>
+                          {sub.text}
                         </NavLink>
                       </MenuItem>);
                     })
