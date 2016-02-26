@@ -23,17 +23,27 @@ import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
 import * as importDelegate from './containers/import/delegate';
+import { parse } from 'query-string';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
+    console.log('checkauth query', nextState.location.query);
     function checkAuth() {
-      const {account: {username}} = store.getState();
-      if (username === '') {
+      const { account: { username, subdomain } } = store.getState();
+      console.log('in checkauth', username, subdomain, nextState.location);
+      let querySubdomain;
+      if (nextState.location.search) {
+        const query = parse(nextState.location.search.substring(1));
+        console.log('in checkauth query', query);
+        querySubdomain = query && query.subdomain;
+      }
+      if (username === '' || (querySubdomain && querySubdomain !== subdomain)) {
         const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
       }
       cb();
     }
+    console.log('account', store.getState().account);
     if (!isLoaded(store.getState(), 'account')) {
       store.dispatch(loadAccount(cookie)).then(checkAuth);
     } else {
@@ -52,13 +62,13 @@ export default (store, cookie) => {
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={PackOrganization}>
             <IndexRoute component={Organization.List} />
-            <Route path="new" component={Organization.Edit}/>
+            <Route path="new" component={Organization.Edit} />
             <Route path="edit/:id" component={Organization.Edit} />
           </Route>
           <Route path="personnel">
             <IndexRoute component={Personnel.List} />
-            <Route path="new" component={Personnel.Edit}/>
-            <Route path="edit/:id" component={Personnel.Edit}/>
+            <Route path="new" component={Personnel.Edit} />
+            <Route path="edit/:id" component={Personnel.Edit} />
           </Route>
           <Route path="partners">
             <IndexRoute component={Cooperation.Partners} />

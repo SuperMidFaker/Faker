@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {parse} from 'query-string';
-import {loadCorpByDomain} from '../universal/redux/reducers/corp-domain';
-import {isLoaded} from '../reusable/common/redux-actions';
+import { parse } from 'query-string';
+import { loadCorpByDomain } from '../universal/redux/reducers/corp-domain';
+import { isLoaded } from '../reusable/common/redux-actions';
 import connectFetch from '../reusable/decorators/connect-fetch';
 import './root.less';
 

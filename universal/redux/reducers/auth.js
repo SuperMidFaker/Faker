@@ -31,6 +31,7 @@ export default function reducer(state = initialState, action = {}) {
   case LOGIN:
     return {
       ...state,
+      isAuthed: false,
       loggingIn: true
     };
   case LOGIN_SUCCEED:
