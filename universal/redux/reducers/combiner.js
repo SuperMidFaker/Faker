@@ -7,6 +7,7 @@ import corps from './corps';
 import personnel from './personnel';
 import warehouse from './warehouse';
 import importdelegate from './importdelegate';
+import task from './task';
 import bill from './bill';
 import notice from './notice';
 
@@ -19,6 +20,7 @@ export default combineReducers({
   personnel,
   warehouse,
   importdelegate,
+  task,
   bill,
   notice
 });
