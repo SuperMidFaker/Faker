@@ -1,18 +1,7 @@
 import cobody from 'co-body';
-import kJwt from 'koa-jwt';
-import fs from 'fs';
-import path from 'path';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
-import corpDao from '../models/corp.db';
-import userDao from '../models/user.db';
-import tenantDao from '../models/tenant.db';
 import delegate from '../models/delegate.db';
-import smsDao from '../models/sms.db';
-import config from '../../reusable/node-util/server.config';
-import { isMobile, getSmsCode } from '../../reusable/common/validater';
-import smsUtil from '../../reusable/node-util/sms-util';
-import { __DEFAULT_PASSWORD__, TENANT_LEVEL, TENANT_ROLE, ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE } from '../../universal/constants';
 
 export default [
    ['get', '/v1/delegate/delegate', getCorpdelegate],

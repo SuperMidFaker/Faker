@@ -10,14 +10,13 @@ import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
-import * as delegate from './containers/export/delegate';
 import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import * as importDelegate from './containers/import/delegate';
 import ExporT from './containers/module-export';
-import * as exportdelegate from './containers/export/delegate'
+import * as exportdelegate from './containers/export/delegate';
 import ImportDashboard from './containers/import/dashboard';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';

@@ -11,12 +11,11 @@ const actionTypes = createActionTypes('@@welogix/delegate/', [
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'delegate_SUBMIT', 'delegate_SUBMIT_SUCCEED', 'delegate_SUBMIT_FAIL',
   'delegate_DELETE', 'delegate_DELETE_SUCCEED', 'delegate_DELETE_FAIL',
-  'delegate_EDIT', 'delegate_EDIT_SUCCEED', 'delegate_EDIT_FAIL',
+  'delegate_EDIT', 'Delegate_EDIT_SUCCEED', 'delegate_EDIT_FAIL',
   'delegate_LOAD', 'delegate_LOAD_SUCCEED', 'delegate_LOAD_FAIL',
   'delegate_UnsentUnsent', 'delegate_UnsentUnsent_SUCCEED', 'delegate_UnsentUnsent_FAIL']);
 appendFormAcitonTypes('@@welogix/delegate/', actionTypes);
 
-export const delegate_EDIT_SUCCEED = actionTypes.delegate_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
@@ -49,7 +48,6 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.delegate_LOAD_FAIL:
       return {...state, loading: false};
-      
     case actionTypes.delegate_UnsentUnsent:
       return {...state, loading: true, needUpdate: false};
     case actionTypes.delegate_UnsentUnsent_SUCCEED:
@@ -58,34 +56,28 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.delegate_UnsentUnsent_FAIL:
       return {...state, loading: false};
-      
     case actionTypes.MASTER_TENANTS_LOAD_SUCCEED:
       return {...state, branches: action.result.data,
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
           parentId: action.result.data[0].parentId
         } : {}};
-     /////////////////
      case actionTypes.MASTER_Master_Customs_LOAD_SUCCEED:
       return {...state, customs_code: action.result.data,
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
           parentId: action.result.data[0].parentId
         } : {}};
-     
     case actionTypes.SWITCH_TENANT:
       return {...state, tenant: action.tenant};
-    
-    
     case actionTypes.Customs_CodeS:
       return {...state, customs_code: action.customs_code};
-      
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const delegateist = {...state.delegateist};
       delegateist.data[action.index].status = action.data.status;
       return {...state, delegateist};
     }
-    case actionTypes.delegate_EDIT_SUCCEED: {
+    case actionTypes.Delegate_EDIT_SUCCEED: {
       const delegateist = {...state.delegateist};
       delegateist.data[state.selectedIndex] = action.data.delegate;
       return { ...state, delegateist, selectedIndex: -1 };
@@ -124,7 +116,7 @@ export function deldelegate(pid, loginId, tenant) {
 export function edit(delegate, tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.delegate_EDIT, actionTypes.delegate_EDIT_SUCCEED, actionTypes.delegate_EDIT_FAIL],
+      types: [actionTypes.delegate_EDIT, actionTypes.Delegate_EDIT_SUCCEED, actionTypes.delegate_EDIT_FAIL],
       endpoint: 'v1/delegate/edit',
       method: 'put',
       data: { delegate, tenantId }
@@ -179,17 +171,6 @@ export function loadTenantsByMaster(cookie, tenantId) {
     [CLIENT_API]: {
       types: [actionTypes.MASTER_TENANTS_LOAD, actionTypes.MASTER_TENANTS_LOAD_SUCCEED, actionTypes.MASTER_TENANTS_LOAD_FAIL],
       endpoint: `v1/delegate/${tenantId}/tenants`,
-      method: 'get',
-      cookie
-    }
-  };
-}
-//
-export function loadMaster_CustomsMaster(cookie, customs_code) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.MASTER_Master_Customs_LOAD, actionTypes.MASTER_Master_Customs_LOAD_SUCCEED, actionTypes.MASTER_Master_Customs_LOAD_FAIL],
-      endpoint: `v1/delegate/Master_Customs`,
       method: 'get',
       cookie
     }

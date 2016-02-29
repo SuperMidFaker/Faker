@@ -11,7 +11,6 @@ import importdelegate from './importdelegate';
 import warehouse from './warehouse';
 import bill from './bill';
 import notice from './notice';
-import personnel_test from './personnel_test';
 import delegate from './delegate';
 
 export default combineReducers({
@@ -27,6 +26,5 @@ export default combineReducers({
   importdelegate,
   bill,
   notice,
-  personnel_test,
   delegate
 });

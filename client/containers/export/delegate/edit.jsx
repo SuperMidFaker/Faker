@@ -1,24 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
-import { AntIcon as Icon, Button, Form, Input, Row, Col, Switch, message,Select,Tabs } from
-'../../../../reusable/ant-ui';
+import { Icon, Button, Form, Input, Switch, message, Select, Tabs } from
+'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
-import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit,loadMaster_CustomsMaster } from
+import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
 '../../../../universal/redux/reducers/delegate';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { isLoginNameExist, checkLoginName } from
-'../../../../reusable/domains/redux/checker-reducer';
-import { validatePhone } from '../../../../reusable/common/validater';
-import { TENANT_USEBOOK,TENANT_LEVEL } from '../../../../universal/constants';
+import { TENANT_USEBOOK, TENANT_LEVEL } from '../../../../universal/constants';
 const Option = Select.Option;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
 function fetchData({state, dispatch, cookie, params}) {
-  //let p = dispatch(loadMaster_CustomsMaster());
-  //promises.push(p);
   const pid = parseInt(params.id, 10);
   if (pid) {
     if (!isFormDataLoaded(state.delegate, pid)) {
@@ -44,7 +38,7 @@ function goBack(props) {
     tenant: state.delegate.tenant,
     customs_code: state.delegate.customs_code
   }),
-  { setFormValue, edit, submit, checkLoginName })
+  { setFormValue, edit, submit })
 @connectNav((props, dispatch) => {
   if (props.formData.key === -1) {
     return;
@@ -80,7 +74,6 @@ export default class CorpEdit extends React.Component {
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
-    checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
   constructor() {
@@ -96,9 +89,9 @@ export default class CorpEdit extends React.Component {
     }
   }
   handleSubmit() {
-    this.props.formhoc.validate((errors) => {
+    this.props.formhoc.validateFields((errors) => {
         if (!errors) {
-            if(this.props.formData.key){
+            if (this.props.formData.key) {
             this.props.edit(this.props.formData).then((result) => {
             if (result.error) {
                 message.error(result.error.message, 10);
@@ -107,10 +100,11 @@ export default class CorpEdit extends React.Component {
                 this.handleCancel();
             }
             });
-        }else{
+        } else {
           this.props.submit(this.props.formData, this.props.tenant).then(result => {
-            this.onSubmitReturn(result.error);});
-            }
+            this.onSubmitReturn(result.error);
+            });
+           }
         } else {
             this.forceUpdate();
             message.error('表单检验存在错误', 10);
@@ -121,18 +115,15 @@ export default class CorpEdit extends React.Component {
     goBack(this.props);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
-    const {formhoc: {getFieldProps, getFieldError}} = this.props;
+    const { formhoc: { getFieldProps, getFieldError } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
-        && renderValidateStyle(field, this.props.formhoc)}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
+        help={ rules && getFieldError(field) } hasFeedback required={required}>
         <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
   }
   renderBasicForm() {
-    const {formhoc: {getFieldProps, getFieldError}, code} = this.props;
-    const isCreating = this.props.formData.key === null;
     // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
@@ -140,21 +131,22 @@ export default class CorpEdit extends React.Component {
         </div>
         <div className="page-body">
           <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
-          <table  width="800"  border="1" cellpadding="1" cellspacing="1" bordercolor="#0000FF">
+          <table width="800" border="1" cellPadding="1" cellSpacing="1" bordercolor="#0000FF">
             <tr>
-                <td>{this.renderTextInput('报关业务单号', '请输入报关业务单号', 'del_no', true, [{required: true, min: 2, message: '2位以上中英文'}])}</td>
+                <td>{this.renderTextInput('报关业务单号', '请输入报关业务单号', 'del_no', true,
+                 [{required: true, min: 2, message: '2位以上中英文'}])}</td>
             </tr>
             <tr>
-              <td width="400" height="35"> 
+              <td width="400" height="35">
                 <FormItem label="清关海关:" labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                    <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('master_customs')}>
+                    <Select defaultValue="lucy" style={{width:'100%'}} >
                         <Option value="2200">2200</Option>
                     </Select>
                 </FormItem>
              </td>
-             <td width="400" height="35"> 
+             <td width="400" height="35">
                 <FormItem label="报关类型:" labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                    <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('declare_way_no')}>
+                    <Select defaultValue="lucy" style={{width:'100%'}} >
                         <Option value="C">C</Option>
                     </Select>
                 </FormItem>
@@ -162,10 +154,11 @@ export default class CorpEdit extends React.Component {
             </tr>
             <tr>
                 <td width="400" height="35">
-                    {this.renderTextInput('运单号', '请输入运单号', 'bill_no', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+                    {this.renderTextInput('运单号', '请输入运单号', 'bill_no', true,
+                      [{required: true, min: 2, message: '2位以上中英文'}])}
                 </td>
             </tr>
-            <tr  height="35">
+            <tr height="35">
                 <td height="35">
                     {this.props.formData.usebook !== TENANT_USEBOOK.owner.name &&
                     <FormItem label="是否使用手册:" labelCol={{span: 6}} wrapperCol={{span: 18}}>
@@ -176,14 +169,14 @@ export default class CorpEdit extends React.Component {
                     </FormItem>}
                 </td>
             </tr>
-            
             <tr height="35">
                 <td>
-                    {this.renderTextInput('发票号', '请输入发票号', 'invoice_no', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+                    {this.renderTextInput('发票号', '请输入发票号', 'invoice_no', true,
+                     [{required: true, min: 2, message: '2位以上中英文'}])}
                 </td>
                 <td>
                     <FormItem label="贸易方式:" labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                        <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('trade_mode')}>
+                        <Select defaultValue="lucy" style={{width:'100%'}} >
                             <Option value="1247">1247</Option>
                         </Select>
                      </FormItem>
@@ -197,12 +190,11 @@ export default class CorpEdit extends React.Component {
                             onChange={(checked) => this.props.setFormValue('urgent',
                                                 checked ? TENANT_USEBOOK.manager.name : TENANT_USEBOOK.member.name)}
                             checked={this.props.formData.urgent && this.props.formData.urgent === TENANT_USEBOOK.manager.name}/>
-                        </FormItem>
-                     }
+                        </FormItem>}
                 </td>
                 <td>
                    <FormItem label="其他要求:" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-                         <textarea  width="272px;"></textarea>
+                         <textarea width="272px;"></textarea>
                    </FormItem>
                  </td>
             </tr>
@@ -212,35 +204,8 @@ export default class CorpEdit extends React.Component {
       </div>);
   }
     renderEnterpriseForm() {
-    const {formData: {logo: logoPng}, formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
       <div className="body-responsive">
-      <Form horizontal>
-        <Row>
-          <Col span="8">
-            <FormItem label="企业LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-                <img style={{height: 120, width: 120, margin: 10, border: '1px solid #e0e0e0', borderRadius: 60}} src={logoPng || '/assets/img/wetms.png'}/>
-                <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } style={{}}>
-                  <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{height: 140, marginTop: 20}}>
-                    <span>
-                      <div className="ant-upload-drag-container">
-                        <AntIcon type="upload" />
-                        <p className="ant-upload-hint">建议使用PNG或GIF格式的透明图片</p>
-                      </div>
-                    </span>
-                  </div>
-                </Dropzone>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row className="horizontal-divider">
-          <Col span="8">
-            <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}} help={getFieldError('subdomain')}>
-              <Input type="text" addonAfter=".welogix.cn" disabled {...getFieldProps('subdomain')} />
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
       </div>);
   }
     render() {

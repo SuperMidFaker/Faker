@@ -28,7 +28,7 @@ export default class CorpPack extends React.Component {
       path: '/corp/personnel',
       icon: 's7-users',
       text: '用户管理'
-    },{
+    }, {
       single: true,
       key: 'corpsetting-22',
       path: '/corp/personnel_test',

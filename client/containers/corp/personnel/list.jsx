@@ -148,7 +148,6 @@ export default class PersonnelSetting extends React.Component {
     }
     return <span style={style}>{text}</span>;
   }
-      //返回
   render() {
     const { code, tenant, personnelist, branches, loading } = this.props;
     const dataSource = new Table.DataSource({
@@ -190,8 +189,6 @@ export default class PersonnelSetting extends React.Component {
         this.setState({selectedRowKeys});
       }
     };
-    
-    //列
     const columns = [{
       title: '姓名',
       dataIndex: 'name',

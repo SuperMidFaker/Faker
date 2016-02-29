@@ -67,7 +67,7 @@ export default {
       sortColumn = 'del_no';
       sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
     }
-    const sql = `SELECT del_id as \`key\`,invoice_no,del_no,status,del_date,bill_no,rec_tenant_id from g_bus_delegate where tenant_id = ? and status=2  ${filterClause} ${sortClause}
+    const sql = `SELECT del_id as \`key\`,del_no,STATUS,invoice_no,del_date,created_date,master_customs,declare_way_no,bill_no,usebook,trade_mode,urgent,other_note from g_bus_delegate where tenant_id = ? and status=2  ${filterClause} ${sortClause}
       limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     console.log(sql, args);

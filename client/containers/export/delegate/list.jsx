@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loaddelegate, loadTenantsByMaster, deldelegate, switchTenant, switchStatus } from '../../../../universal/redux/reducers/delegate';
-import { Table, Button, Select, message } from 'ant-ui';
-import { UnsentUnsent } from
-'../../../../universal/redux/reducers/delegate';
+import { loaddelegate, loadTenantsByMaster, deldelegate, switchTenant, switchStatus }
+ from '../../../../universal/redux/reducers/delegate';
+import { Table, Button, message } from 'ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
@@ -33,15 +32,13 @@ function fetchData({state, dispatch, cookie}) {
     delegateist: state.delegate.delegateist,
     branches: state.delegate.branches,
     tenant: state.delegate.tenant,
-    loading: state.delegate.loading,
-    needUpdate: state.delegate.needUpdate
+    loading: state.delegate.loading
   }),
   { deldelegate, switchTenant, switchStatus, loaddelegate })
 export default class delegateSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
-    needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     delegateist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
@@ -124,13 +121,11 @@ export default class delegateSetting extends React.Component {
     }
     return <span style={style}>{text}</span>;
   }
-      //返回
   render() {
-    const { tenant, delegateist, branches, loading, needUpdate } = this.props;
+    const { tenant, delegateist, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loaddelegate(null, params),
       resolve: (result) => result.data,
-      needUpdate,
       getPagination: (result) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
@@ -160,7 +155,8 @@ export default class delegateSetting extends React.Component {
         }
         params.filters = JSON.stringify(params.filters);
         return params;
-      }
+      },
+      remotes: delegateist
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -168,33 +164,31 @@ export default class delegateSetting extends React.Component {
         this.setState({selectedRowKeys});
       }
     };
-    
-    //列
     const columns = [{
       title: '报关业务单号',
       dataIndex: 'del_no',
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.del_no)
     }, {
-      title: '报关行', 
+      title: '报关行',
       dataIndex: 'rec_tenant_id',
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.rec_tenant_id)
     }, {
-      title: '委托时间', 
+      title: '委托时间',
       dataIndex: 'del_date',
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.del_date)
     }, {
-      title: '运单号', 
+      title: '运单号',
       dataIndex: 'bill_no',
       render: (o, record) => this.renderColumnText(record.status, record.bill_no)
     }, {
-      title: '发票号', 
+      title: '发票号',
       dataIndex: 'invoice_no',
       render: (o, record) => this.renderColumnText(record.status, record.invoice_no)
     }, {
-      title: '是否使用手册', 
+      title: '是否使用手册',
       dataIndex: 'usebook',
       render: (o, record) => this.renderColumnText(record.status, record.usebook)
     }, {
@@ -253,13 +247,13 @@ export default class delegateSetting extends React.Component {
                 <span>添加</span>
               </Button>
             </div>
-            <Button  htmlType="SELECTALL"  type="primary">全部</Button>&nbsp;
-            <Button  htmlType="UnsentUnsent"  type="primary">未发送</Button>&nbsp;
-            <Button  htmlType="SELECTALL"  type="primary">未受理</Button>&nbsp;
-            <Button  htmlType="SELECTALL"  type="primary">已接单</Button>
+            <Button htmlType="SELECTALL" type="primary">全部</Button>&nbsp;
+            <Button htmlType="UnsentUnsent" type="primary">未发送</Button>&nbsp;
+            <Button htmlType="SELECTALL" type="primary">未受理</Button>&nbsp;
+            <Button htmlType="SELECTALL" type="primary">已接单</Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={delegateist} dataSource={dataSource}/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>
