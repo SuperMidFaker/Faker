@@ -1,10 +1,10 @@
 [{
-    "name"       : "wewms",
+    "name"       : "welogix-web",
     "script"     : "./server/sboot.js",
-    "error_file" : "./log/wewms-err.log",
-    "out_file"   : "./log/wewms-out.log",
-    "pid_file"   : "./log/wewms.pid",
-    "args"      : "['--port=3024']",
+    "error_file" : "./log/welogix-web-err.log",
+    "out_file"   : "./log/welogix-web-out.log",
+    "pid_file"   : "./log/welogix-web.pid",
+    "args"      : "['--port=3022']",
     "env": {
         "NODE_ENV": "development"
     }

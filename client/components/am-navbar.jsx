@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover } from '../../reusable/ant-ui';
+import { Popover } from 'ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
@@ -21,24 +21,25 @@ export default class AmNavBar extends React.Component {
     if (navTitle.depth === 2) {
       if (navTitle.withModuleLayout) {
         amTitleNav = (
-          <Popover placement="bottomLeft" trigger="click" overlay={<ModuleLayout />}>
+          <Popover placement="bottomLeft" trigger="hover" overlay={<ModuleLayout />}>
             <a role="button" aria-expanded="false" className="dropdown-toggle">
-              <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-${moduleName}`}></i>
+              <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
               {navTitle.text}
               <span className="angle-down s7-angle-down"></span>
             </a>
-          </Popover>);
+          </Popover>
+          );
       } else {
         amTitleNav = (
           <a role="button" aria-expanded="false" className="dropdown-toggle">
-            <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-${moduleName}`}></i>
+            <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
             {navTitle.text}
           </a>);
       }
     } else if (navTitle.depth === 3) {
       amTitleNav = (
         <a role="button" onClick={navTitle.goBackFn}>
-          <i className={`hidden-xs zmdi zmdi-hc-2x zmdi-arrow-left`}></i>
+          <i className={`zmdi zmdi-arrow-left`}></i>
           {navTitle.text}
         </a>);
     }

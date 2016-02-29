@@ -8,7 +8,6 @@ import routes from '../client/routes';
 import App from '../client/app';
 import fetchInitialState from '../reusable/node-util/fetch-initial-state';
 
-const tv = __DEV__ ? '' : `?${new Date().getTime()}`;
 function renderAsHtml(pageCss, pageJs, content) {
   return `
 <!DOCTYPE html>
@@ -17,7 +16,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <title>WeLogix</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico${tv}"/>
+  <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico"/>
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-57x57-precomposed.png" />
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-72x72-precomposed.png" sizes="72x72" />
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-114x114-precomposed.png" sizes="114x114" />
@@ -30,7 +29,7 @@ function renderAsHtml(pageCss, pageJs, content) {
     <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.min.js,es5-shim/4.1.14/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
   <![endif]-->
 </head>
-<body>
+<body class="vertical-scroll" style="min-height: 680px;">
   <div id="mount" class="full-container">${content}</div>
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js" type="text/javascript"></script>

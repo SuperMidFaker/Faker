@@ -1,26 +1,21 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
-import { setNavTitle } from '../../universal/redux/reducers/navbar';
-import connectNav from '../../reusable/decorators/connect-nav';
+import { BRANCH } from '../../universal/constants';
 
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    text: '企业设置',
-    moduleName: 'corp',
-    withModuleLayout: false,
-    goBackFn: ''
-  }));
-})
-export default class Account extends React.Component {
+@connect(
+  state => ({
+    accountType: state.account.type
+  })
+)
+export default class CorpPack extends React.Component {
   static propTypes = {
+    accountType: PropTypes.string.isRequired,
     children: PropTypes.object.isRequired
   };
 
   render() {
-    // todo no organization when tenant is standard
-    // and no setting button
     const linkMenus = [{
       single: true,
       key: 'corpsetting-1',
@@ -40,17 +35,30 @@ export default class Account extends React.Component {
       icon: 's7-users',
       text: '用户管理1'
     }, {
+      invisible: this.props.accountType === BRANCH,
       single: true,
       key: 'corpsetting-3',
       path: '/corp/organization',
       icon: 's7-network',
       text: '组织机构'
     }, {
-      single: true,
+      single: false,
       key: 'corpsetting-4',
-      path: '/corp/partners',
       icon: 's7-share',
-      text: '合作伙伴'
+      text: '合作关系',
+      sublinks: [{
+        key: 'partner-1',
+        path: '/corp/partners',
+        text: '合作伙伴'
+      }, {
+        key: 'partner-2',
+        path: '/corp/partners/invitations/in',
+        text: '收到的邀请'
+      }, {
+        key: 'partner-3',
+        path: '/corp/partners/invitations/out',
+        text: '发出的邀请'
+      }]
     }, {
       single: false,
       key: 'corpsetting-5',
@@ -68,7 +76,7 @@ export default class Account extends React.Component {
     }];
     return (
       <div className="am-wrapper am-fixed-sidebar">
-        <AmNavBar barTitle="企业设置" />
+        <AmNavBar />
         <div className="am-content">
           <AmLeftSidebar links={ linkMenus } />
           {this.props.children}

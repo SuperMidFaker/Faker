@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import NavLink from '../../reusable/components/nav-link';
-import {Row, Col} from '../../reusable/ant-ui';
+import {Row, Col} from 'ant-ui';
 import {DEFAULT_MODULES} from '../../universal/constants';
 import './module-layout.less';
 
@@ -35,7 +35,6 @@ export default class ModuleLayout extends React.Component {
                   <div className={`module-icon-bg ${mod.cls}`}>
                     <div className="module-icon">
                       <i className={`zmdi zmdi-${mod.cls}`}></i>
-
                     </div>
                   </div>
                   <span className="module-text">{mod.text}</span>

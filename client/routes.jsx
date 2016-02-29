@@ -10,20 +10,22 @@ import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
-import * as personnel_test from './containers/corp/personnel_test';
 import * as delegate from './containers/export/delegate';
+import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
+import * as importDelegate from './containers/import/delegate';
 import ExporT from './containers/module-export';
+import * as exportdelegate from './containers/export/delegate'
 import ImportDashboard from './containers/import/dashboard';
+import TMS from './containers/module-tms';
+import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
-import Customer from './containers/wms/customer';
-import Bill from './containers/wms/bill';
 import Notice from './containers/wms/notice';
-import {loadAccount} from '../universal/redux/reducers/account';
-import {isLoaded} from '../reusable/common/redux-actions';
+import { loadAccount } from '../universal/redux/reducers/account';
+import { isLoaded } from '../reusable/common/redux-actions';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
@@ -61,27 +63,36 @@ export default (store, cookie) => {
             <Route path="new" component={Personnel.Edit}/>
             <Route path="edit/:id" component={Personnel.Edit}/>
           </Route>
-          <Route path="personnel_test">
-            <IndexRoute component={personnel_test.List} />
-            <Route path="new" component={personnel_test.Edit}/>
-            <Route path="edit/:id" component={personnel_test.Edit}/>
+          <Route path="partners">
+            <IndexRoute component={Cooperation.Partners} />
+            <Route path="invitations/in" component={Cooperation.Received} />
+            <Route path="invitations/out" component={Cooperation.Sent} />
           </Route>
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
+          <Route path="import" component={ImportM}>
+            <IndexRoute component={ImportDashboard} />
+            <Route path="delegate">
+              <IndexRoute component={importDelegate.List} />
+              <Route path="new" component={importDelegate.Edit} />
+              <Route path="edit/:id" component={importDelegate.Edit} />
+            </Route>
+          </Route>
           <Route path="export" component={ExporT}>
             <Route path="delegate">
-                <IndexRoute component={delegate.List} />
-                <Route path="new" component={delegate.Edit}/>
-                <Route path="edit/:id" component={delegate.Edit}/>
+                <IndexRoute component={exportdelegate.List} />
+                <Route path="new" component={exportdelegate.Edit}/>
+                <Route path="edit/:id" component={exportdelegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
             <IndexRoute component={Warehouse} />
             <Route path="warehouse" component={Warehouse} />
-            <Route path="customer" component={Customer} />
-            <Route path="bill" component={Bill} />
             <Route path="notice" component={Notice} />
+          </Route>
+          <Route path="tms" component={TMS}>
+            <IndexRoute component={TMSDashboard} />
           </Route>
         </Route>
       </Route>

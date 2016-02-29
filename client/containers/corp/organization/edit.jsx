@@ -1,25 +1,21 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { renderValidateStyle } from '../../../../reusable/browser-util/react-ant';
-import { Button, Form, Input, Row, Col, message } from '../../../../reusable/ant-ui';
+import { Button, Form, Input, Select, Row, Col, message } from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
-import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
+import { loadOrganizationForm, clearForm, setFormValue, editOrganization, submit } from
 '../../../../universal/redux/reducers/corps';
 import { isLoginNameExist, checkLoginName } from
 '../../../../reusable/domains/redux/checker-reducer';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
 const FormItem = Form.Item;
+const Option = Select.Option;
 
-function fetchData({state, dispatch, cookie, params}) {
+function fetchData({dispatch, cookie, params}) {
   const corpId = parseInt(params.id, 10);
   if (corpId) {
-    if (!isFormDataLoaded(state.corps, corpId)) {
-      return dispatch(loadForm(cookie, corpId));
-    } else {
-      return dispatch(assignForm(state.corps, corpId));
-    }
+    return dispatch(loadOrganizationForm(cookie, corpId));
   } else {
     return dispatch(clearForm());
   }
@@ -33,9 +29,10 @@ function goBack(props) {
 @connect(
   state => ({
     formData: state.corps.formData,
+    corpUsers: state.corps.corpUsers,
     account: state.account
   }),
-  { setFormValue, edit, submit, checkLoginName })
+  { setFormValue, editOrganization, submit, checkLoginName })
 @connectNav((props, dispatch) => {
   if (props.formData.key === undefined) {
     return;
@@ -44,7 +41,7 @@ function goBack(props) {
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating ? '添加部门或分支机构' : props.formData.name,
-    moduleName: '',
+    moduleName: 'corp',
     goBackFn: () => goBack(props),
     withModuleLayout: false
   }));
@@ -66,16 +63,12 @@ export default class CorpEdit extends React.Component {
     history: PropTypes.object.isRequired,
     account: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
+    corpUsers: PropTypes.array.isRequired,
     formData: PropTypes.object.isRequired,
-    edit: PropTypes.func.isRequired,
+    editOrganization: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
-  }
-  constructor() {
-    super();
-    this.handleCancel = this.handleCancel.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
   onSubmitReturn(error) {
     if (error) {
@@ -84,12 +77,13 @@ export default class CorpEdit extends React.Component {
       goBack(this.props);
     }
   }
-  handleSubmit(ev) {
+  handleSubmit = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validate((errors) => {
+    this.props.formhoc.validateFields((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData).then(result => {
+          // only with poid coid(owner id) and organization name
+          this.props.editOrganization(this.props.formData).then(result => {
             this.onSubmitReturn(result.error);
           });
         } else {
@@ -102,44 +96,64 @@ export default class CorpEdit extends React.Component {
       }
     });
   }
-  handleCancel() {
+  handleCancel = () => {
     goBack(this.props);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const {formhoc: {getFieldProps, getFieldError}} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}} validateStatus={rules
-        && renderValidateStyle(field, this.props.formhoc)}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
         help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
   }
-  render() {
+  renderOwnerForm() {
     const { formhoc: {getFieldProps, getFieldError}, account: {code} } = this.props;
     return (
+      <div>
+        {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+        <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} hasFeedback required
+        help={getFieldError('loginName')}>
+          <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
+            rules: [{
+              validator: (rule, value, callback) =>
+              isLoginNameExist(value, code, this.props.formData.loginId,
+                               this.props.account.tenantId, callback,
+                               message, this.props.checkLoginName)}]
+          })} />
+        </FormItem>
+        {this.renderTextInput('手机号', '', 'phone', true, [{
+          validator: (rule, value, callback) => validatePhone(value, callback)
+        }])}
+        {this.renderTextInput('Email', '', 'email', false, [{
+          type: 'email',
+          message: 'email格式错误'}])}
+      </div>);
+  }
+  renderOwnerSelect() {
+    const { corpUsers, formhoc: { getFieldProps, getFieldError } } = this.props;
+    return (
+      <FormItem label="负责人" labelCol={ {span: 6} } wrapperCol={ {span: 18} }
+        help={ getFieldError('coid') } required>
+        <Select style={ { width: '100%' } } { ...getFieldProps('coid', {
+          rules: [{required: true, message: '负责人必填'}]}) }>
+          {
+            corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{ u.name }</Option>)
+          }
+        </Select>
+      </FormItem>);
+  }
+  render() {
+    const isCreating = this.props.formData.key === null;
+    return (
       <div className="page-body">
-        <Form horizontal onSubmit={this.handleSubmit} className="form-edit-content">
+        <Form horizontal onSubmit={this.handleSubmit} form={ this.props.formhoc }
+        className="form-edit-content offset-right-col">
           {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-          <div>
-          {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
-          <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} help={getFieldError('loginName')} hasFeedback
-            validateStatus={renderValidateStyle('loginName', this.props.formhoc)} required>
-            <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-              rules: [{validator: (rule, value, callback) => isLoginNameExist(value, this.props.formData.loginId,
-                                                                                   this.props.account.tenantId, callback,
-                                                                                  message, this.props.checkLoginName)}],
-              adapt: (value) => value && value.split('@')[0],
-              transform: (value) => `${value}@${code}`
-            })} />
-          </FormItem>
-          {this.renderTextInput('手机号', '', 'phone', true, [{
-            validator: (rule, value, callback) => validatePhone(value, callback)
-          }])}
-          {this.renderTextInput('Email', '', 'email', false, [{
-            type: 'email',
-            message: 'email格式错误'}])}
-          </div>
+          { isCreating ?
+            this.renderOwnerForm() :
+            this.renderOwnerSelect() }
           <Row>
             <Col span="18" offset="6">
               <Button htmlType="submit" type="primary">确定</Button>

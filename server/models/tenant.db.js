@@ -16,6 +16,11 @@ function packColumnArgs(item) {
   return args;
 }
 export default {
+  getAllTenantsExcept(tenantId) {
+    const sql = 'select tenant_id as id, name from sso_tenants where tenant_id != ?';
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
   getCorpAndOwnerInfo(corpId) {
     const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain,
       country, province, city, district, address, logo, short_name, category_id, website, remark,
@@ -26,6 +31,18 @@ export default {
     const args = [corpId];
     return mysql.query(sql, args);
   },
+  getPartialTenantInfo(tid) {
+    const sql = `select T.tenant_id as tid, T.name as name, user_id as uid from sso_tenants as T
+      inner join sso_tenant_users as TU on T.tenant_id = TU.tenant_id where T.tenant_id = ? and
+      TU.user_type = 'owner' limit 1`;
+    const args = [tid];
+    return mysql.query(sql, args);
+  },
+  getTenantInfo(tid) {
+    const sql = 'select name, level from sso_tenants where tenant_id = ? limit 1';
+    const args = [tid];
+    return mysql.query(sql, args);
+  },
   updateCorp(corp, trans) {
     const sql = `update sso_tenants set code = ?, aspect = ?, name = ?, phone = ?, subdomain = ?,
       country = ?, province = ?, city = ?, district = ?, address = ?, logo = ?, short_name = ?,
@@ -34,9 +51,15 @@ export default {
     args.push(corp.key);
     return mysql.update(sql, args, trans);
   },
-  updateCorpOwnerInfo(tenantId, phone, contact, email, trans) {
-    const sql = 'update sso_tenants set phone = ?, contact = ?, email = ? where tenant_id = ?';
-    const args = [phone, contact, email, tenantId];
+  updateCorpOwnerInfo(tenantId, tenantName, phone, contact, email, trans) {
+    const args = [];
+    let nameCol = '';
+    if (tenantName !== null && tenantName !== undefined) {
+      nameCol = 'name = ?,';
+      args.push(tenantName);
+    }
+    const sql = `update sso_tenants set ${nameCol} phone = ?, contact = ?, email = ? where tenant_id = ?`;
+    args.push(phone, contact, email, tenantId);
     return mysql.update(sql, args, trans);
   },
   getSubdomainCount(subdomain, tenantId) {
@@ -51,23 +74,20 @@ export default {
     return mysql.query(sql, args);
   },
   getAppsInfoById(tenantId) {
-    const sql = 'select app_id as id, app_name as name, package, app_desc as `desc` from sso_tenant_apps where tenant_id = ?';
+    const sql = `select app_id as id, app_name as name, package, app_desc as \`desc\`
+      from sso_tenant_apps where tenant_id = ?`;
     const args = [tenantId];
     return mysql.query(sql, args);
   },
-  getCorpCountByParent(parentTenantId) {
+  getOrganCountByParent(parentTenantId) {
     const sql = 'select count(tenant_id) as num from sso_tenants where parent_tenant_id = ?';
     const args = [parentTenantId];
     return mysql.query(sql, args);
   },
-  getPagedCorpsByParent(parentTenantId, current, pageSize) {
+  getPagedOrgansByParent(parentTenantId, current, pageSize) {
     const start = (current - 1) * pageSize;
-    const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain, country,
-      province, city, district, address, logo, short_name, category_id, website, remark, level, TUL.email as email,
-      contact, position, T.status as status, login_id as loginId, username as loginName from sso_tenants as T
-      inner join (select tenant_id, name, username, position, email, login_id from sso_tenant_users as TU inner join
-      sso_login as L on TU.login_id = L.id where parent_tenant_id = ? and TU.user_type = 'owner') as TUL
-      on T.tenant_id = TUL.tenant_id limit ?, ?`;
+    const sql = `select tenant_id as \`key\`, name, phone, email, contact, status
+      from sso_tenants where parent_tenant_id = ? limit ?, ?`;
     const args = [parentTenantId, start, pageSize];
     return mysql.query(sql, args);
   },
@@ -110,9 +130,9 @@ export default {
     const args = [amount, corpId];
     return mysql.update(sql, args, trans);
   },
-  updateUserCount(tenatId, amount, trans) {
-    const sql = `update g_bus_delegate set del_id =? where tenant_id = ?`;
-    const args = [amount, tenatId];
+  updateUserCount(tenantId, amount, trans) {
+    const sql = `update sso_tenants set user_count = user_count + ? where tenant_id = ?`;
+    const args = [amount, tenantId];
     return mysql.update(sql, args, trans);
   }
 }

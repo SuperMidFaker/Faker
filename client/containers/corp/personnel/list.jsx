@@ -1,10 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from '../../../../universal/redux/reducers/personnel';
-import { Table, Button, Select, message } from '../../../../reusable/ant-ui';
+import { Table, Button, Select, Icon, message } from 'ant-ui';
+import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
+'../../../../universal/redux/reducers/personnel';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import connectNav from '../../../../reusable/decorators/connect-nav';
+import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
 
@@ -13,6 +17,7 @@ function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'personnel')) {
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
     promises.push(p);
+    // 当前选择租户可能被删除,所以重新加载到主租户
     p = dispatch(loadPersonnel(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.personnel.personnelist.pageSize,
@@ -25,20 +30,29 @@ function fetchData({state, dispatch, cookie}) {
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
+@connectNav((props, dispatch) => {
+  dispatch(setNavTitle({
+    depth: 2,
+    text: '用户管理',
+    moduleName: 'corp',
+    withModuleLayout: false,
+    goBackFn: ''
+  }));
+})
 @connect(
   state => ({
     personnelist: state.personnel.personnelist,
     branches: state.personnel.branches,
     tenant: state.personnel.tenant,
-    loading: state.personnel.loading,
-    needUpdate: state.personnel.needUpdate
+    code: state.account.code,
+    loading: state.personnel.loading
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
-    needUpdate: PropTypes.bool.isRequired,
+    code: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
@@ -93,10 +107,21 @@ export default class PersonnelSetting extends React.Component {
       });
   }
   handlePersonnelDel(record) {
-    this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
+    const { tenant, personnelist: { totalCount, current, pageSize } } = this.props;
+    this.props.delPersonnel(record.key, record.loginId, tenant).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.loadPersonnel(null, {
+          tenantId: tenant.id,
+          pageSize,
+          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+        });
+      }
+    });
   }
   handleSearch(searchVal) {
-    // OR with name condition
+    // OR name condition
     const filters = [[{
       name: 'name',
       value: searchVal
@@ -107,6 +132,8 @@ export default class PersonnelSetting extends React.Component {
       name: 'phone',
       value: searchVal
     }]];
+    // todo how to concatenation the table sort filter params
+    // in new Table impl the filter and sort can't be emptied
     this.props.loadPersonnel(null, {
       tenantId: this.props.tenant.id,
       pageSize: this.props.personnelist.pageSize,
@@ -123,17 +150,14 @@ export default class PersonnelSetting extends React.Component {
   }
       //返回
   render() {
-    const { tenant, personnelist, branches, loading, needUpdate } = this.props;
+    const { code, tenant, personnelist, branches, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadPersonnel(null, params),
       resolve: (result) => result.data,
-      needUpdate,
-      getPagination: (result) => ({
+      getPagination: (result, resolve) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
-        current: result.totalCount > 0 && (result.current - 1) * result.pageSize <= result.totalCount
-          && result.current * result.pageSize > result.totalCount ?
-          Math.ceil(result.totalCount / result.pageSize) : result.current,
+        current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize
@@ -148,7 +172,7 @@ export default class PersonnelSetting extends React.Component {
           filters: []
         };
         for (const key in filters) {
-          if (filters[key]) {
+          if (filters[key] && filters[key].length > 0) {
             params.filters.push({
               name: key,
               value: filters[key][0]
@@ -157,7 +181,8 @@ export default class PersonnelSetting extends React.Component {
         }
         params.filters = JSON.stringify(params.filters);
         return params;
-      }
+      },
+      remotes: personnelist
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -174,7 +199,7 @@ export default class PersonnelSetting extends React.Component {
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: '用户名',
-      render: (o, record) => this.renderColumnText(record.status, record.loginName)
+      render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
     }, {
       title: '手机号',
       render: (o, record) => this.renderColumnText(record.status, record.phone)
@@ -240,29 +265,26 @@ export default class PersonnelSetting extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="pull-right action-btns">
+          <div className="tools">
             <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
-            <a role="button">高级搜索</a>
+            <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <h2>用户管理</h2>
-        </div>
-        <div className="page-body">
-          <div className="panel-header">
-            <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
-                <span>添加用户</span>
-              </Button>
-            </div>
-            <span style={{paddingRight: 10, color: '#09C', fontSize: 13}}>所属组织</span>
-            <Select style={{width: 200}} value={`${tenant.id}`}
+          <span>所属组织</span>
+          <Select style={{width: 200}} size="large" value={`${tenant.id}`}
               onChange={(value) => this.handleTenantSwitch(value)}>
             {
               branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
             }
-            </Select>
+          </Select>
+        </div>
+        <div className="page-body">
+          <div className="panel-header">
+            <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
+              <Icon type="plus-circle-o" />添加用户
+            </Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>

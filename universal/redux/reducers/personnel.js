@@ -3,7 +3,8 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
   clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
 import { TENANT_ROLE } from '../../../universal/constants';
-import { CORP_EDIT_SUCCEED } from './corps';
+import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
+
 const actionTypes = createActionTypes('@@welogix/personnel/', [
   'SWITCH_TENANT',
   'MASTER_TENANTS_LOAD', 'MASTER_TENANTS_LOAD_SUCCEED', 'MASTER_TENANTS_LOAD_FAIL',
@@ -18,7 +19,6 @@ export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
-  needUpdate: false,
   selectedIndex: -1,
   branches: [],
   tenant: {
@@ -38,10 +38,13 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case CORP_EDIT_SUCCEED:
-      // 租户变化时重新加载
+    case CORP_SUBMIT_SUCCEED:
+    case CORP_DELETE_SUCCEED:
+    case ORGAN_EDIT_SUCCEED:
+      // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:
-      return {...state, loading: true, needUpdate: false};
+      return { ...state, loading: true };
     case actionTypes.PERSONNEL_LOAD_SUCCEED:
       return {...state, loaded: true, loading: false,
         personnelist: {...state.personnelist, ...action.result.data}
@@ -53,11 +56,12 @@ export default function reducer(state = initialState, action) {
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
           parentId: action.result.data[0].parentId
-        } : {}};
+        } : initialState.tenant
+    };
     case actionTypes.SWITCH_TENANT:
       return {...state, tenant: action.tenant};
     case actionTypes.SWITCH_STATUS_SUCCEED: {
-      const personnelist = {...state.personnelist};
+      const personnelist = { ...state.personnelist };
       personnelist.data[action.index].status = action.data.status;
       return {...state, personnelist};
     }
@@ -65,9 +69,6 @@ export default function reducer(state = initialState, action) {
       const personnelist = {...state.personnelist};
       personnelist.data[state.selectedIndex] = action.data.personnel;
       return { ...state, personnelist, selectedIndex: -1 };
-    }
-    case actionTypes.PERSONNEL_DELETE_SUCCEED: {
-      return { ...state, personnelist: {...state.personnelist, totalCount: state.personnelist.totalCount - 1}, needUpdate: true };
     }
     case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
       const personnelist = {...state.personnelist};
@@ -97,24 +98,24 @@ export function delPersonnel(pid, loginId, tenant) {
   };
 }
 
-export function edit(personnel, tenantId) {
+export function edit(personnel, code, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_EDIT, actionTypes.PERSONNEL_EDIT_SUCCEED, actionTypes.PERSONNEL_EDIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'put',
-      data: { personnel, tenantId }
+      data: { personnel, code, tenantId }
     }
   };
 }
 
-export function submit(personnel, tenant) {
+export function submit(personnel, code, tenant) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PERSONNEL_SUBMIT, actionTypes.PERSONNEL_SUBMIT_SUCCEED, actionTypes.PERSONNEL_SUBMIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'post',
-      data: { personnel, tenant }
+      data: { personnel, code, tenant }
     }
   };
 }
