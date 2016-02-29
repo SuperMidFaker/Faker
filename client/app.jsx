@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, RoutingContext } from 'react-router';
-import ReduxDevTool from '../reusable/components/redux-devtool';
 import routes from './routes';
 
 export default class App extends Component {
@@ -11,7 +10,8 @@ export default class App extends Component {
     routerHistory: PropTypes.object
   }
   renderDevTools () {
-    return <div></div>;
+    const ReduxDevTool = require('../reusable/components/redux-devtool');
+    return <ReduxDevTool />;
   }
 
   renderRouter () {
@@ -31,7 +31,7 @@ export default class App extends Component {
       <Provider store={this.props.store}>
         <div className="full-container">
         { this.renderRouter() }
-        { __DEVTOOLS__ && <ReduxDevTool /> }
+        { __DEVTOOLS__ && this.renderDevTools() }
         </div>
       </Provider>
     );

@@ -19,10 +19,6 @@ const wpConfig = {
   resolve: {
     // When requiring, you don't need to add these extensions
     extensions: ['', '.js', '.jsx'],
-    alias: {
-      ace: path.resolve(__dirname, 'node_modules/ace'),
-      codemirror: path.resolve(__dirname, 'node_modules/codemirror')
-    },
     // Modules will be searched for in these directories
     modulesDirectories: [
       'node_modules',
@@ -38,6 +34,7 @@ const wpConfig = {
     new webpack.IgnorePlugin(/assets\.json$/),
     new webpack.DefinePlugin({
       __CLIENT__: true,
+      __CDN__: JSON.stringify(config.get('CDN_URL')),
       __API_ROOT__: JSON.stringify(config.get('__API_ROOT__')),
       __PRODUCTIONS_ROOT_GROUP__: JSON.stringify(config.get('__PRODUCTIONS_ROOT_GROUP__')),
       __PRODUCTIONS_DOMAIN_GROUP__: JSON.stringify(config.get('__PRODUCTIONS_DOMAIN_GROUP__')),

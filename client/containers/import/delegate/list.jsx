@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
+import NavLink from '../../../../reusable/components/nav-link';
 import {
   submitDelegate,
   loadDelegates,
@@ -14,9 +15,11 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import NavLink from '../../../../reusable/components/nav-link';
-import {Table, Button} from '../../../../reusable/ant-ui';
+import {Table, Button, message} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
+import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
+
+const ButtonGroup = Button.Group;
 
 function fetchData({state, dispatch, cookie}) {
   const promises = [];
@@ -65,13 +68,11 @@ export default class ImportDelegate extends React.Component {
     loading: PropTypes.bool.isRequired,
     updateId: PropTypes.func.isRequired,
     delId: PropTypes.func.isRequired,
-    beginEdit: PropTypes.func.isRequired,
     edit: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     loadDelegates: PropTypes.func.isRequired,
     loadStatus: PropTypes.func.isRequired,
     submitDelegate: PropTypes.func.isRequired,
-    needUpdate: PropTypes.bool,
     tenantId: PropTypes.number.isRequired
   }
   constructor(props) {
@@ -91,10 +92,28 @@ export default class ImportDelegate extends React.Component {
     this.setState({showForm: true});
   }
   handleIdRemove(idKey) { // 删除
+    const {
+      tenantId,
+      idlist: {
+        totalCount,
+        current,
+        pageSize
+      }
+    } = this.props;
     showWarningModal({
       title: '请输入DELETE进行下一步操作',
       content: '删除的数据将无法找回',
-      onOk: () => this.props.delId(idKey),
+      onOk: () => this.props.delId(idKey).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.props.loadDelegates(null, {
+            tenantId,
+            pageSize,
+            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+          });
+        }
+      }),
       confirmString: 'DELETE'
     });
   }
@@ -134,11 +153,10 @@ export default class ImportDelegate extends React.Component {
     //   filters: JSON.stringify(filters)
     // });
   }
+
   handleSearch(value) {
     this.setState({searchVal: value});
-
     const filters = this.createFilters(value);
-
     this.props.loadDelegates(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
@@ -180,6 +198,7 @@ export default class ImportDelegate extends React.Component {
     }
     return <span style={style}>{text}</span>;
   }
+
   render() {
     const {
       customsBrokerList,
@@ -190,8 +209,7 @@ export default class ImportDelegate extends React.Component {
         invalidCount
       },
       idlist,
-      loading,
-      needUpdate
+      loading
     } = this.props;
     const {
       statusAll,
@@ -204,16 +222,12 @@ export default class ImportDelegate extends React.Component {
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadDelegates(null, params),
       resolve: (result) => result.data,
-      needUpdate,
       extraParams: {
         tenantId: this.props.tenantId
       },
-      getPagination: (result) => ({
+      getPagination: (result, currentResolve) => ({
         total: result.totalCount,
-        // 删除完一页时返回上一页
-        current: result.totalCount !== 0 && result.current > Math.ceil(result.totalCount / result.pageSize)
-          ? Math.ceil(result.totalCount / result.pageSize)
-          : result.current,
+        current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize
@@ -224,19 +238,19 @@ export default class ImportDelegate extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          currentStatus: curStatus,
+          curStatus,
           filters: []
         };
-
         for (const key in filters) {
           if (filters[key]) {
             params.filters.push({name: key, value: `'${filters[key].join("','")}'`});
           }
         }
         params.filters = JSON.stringify(params.filters);
-        //  console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
+        // console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
         return params;
-      }
+      },
+      remotes: idlist
     });
 
     // 通过 rowSelection 对象表明需要行选择
@@ -250,7 +264,6 @@ export default class ImportDelegate extends React.Component {
     customsBrokerList.map(item => {
       filterArray.push({text: item.short_name, value: `${item.key}`});
     });
-
     const columns = [
       {
         title: '报关业务单号',
@@ -319,7 +332,7 @@ export default class ImportDelegate extends React.Component {
               return (
                 <span>
                   <NavLink to={`/import/delegate/edit/${record.key}`}>修改</NavLink>
-                  <span className="ant-divider"></span>
+                  <span className="ant-divider"/>
                   <a href="#" className="ant-dropdown-link">发送</a>
                 </span>
               );
@@ -327,7 +340,7 @@ export default class ImportDelegate extends React.Component {
               return (
                 <span>
                   <a href="#" className="ant-dropdown-link">查看</a>
-                  <span className="ant-divider"></span>
+                  <span className="ant-divider"/>
                   <a href="#" className="ant-dropdown-link">撤回</a>
                 </span>
               );
@@ -341,14 +354,12 @@ export default class ImportDelegate extends React.Component {
               return (
                 <span>
                   <a href="#" className="ant-dropdown-link">查看</a>
-                  <span className="ant-divider"></span>
+                  <span className="ant-divider"/>
                   <a role="button" onClick={() => this.handleIdRemove(record.key)}>删除</a>
                 </span>
               );
             default:
-              return (
-                <span></span>
-              );
+              return (<span/>);
           }
         }
       }
@@ -356,47 +367,36 @@ export default class ImportDelegate extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="pull-right action-btns">
+          <div className="tools">
             <SearchBar placeholder="业务单号/发票号/提单号" onInputSearch={(val) => this.handleSearch(val)}/>
-            <a role="button">高级搜索</a>
+            <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <h2>进口委托</h2>
+          <ButtonGroup>
+            <Button type={statusAll} size="large" onClick={() => this.handleChangeStatus('statusAll', -1)}>
+              <span>所有状态</span>
+            </Button>
+            <Button type={statusNotSend} size="large" onClick={() => this.handleChangeStatus('statusNotSend', 0)}>
+              <span>未发送 ({notSendCount})</span>
+            </Button>
+            <Button type={statusNotAccept} size="large" onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
+              <span>未受理 ({notAcceptCount})</span>
+            </Button>
+            <Button type={statusAccept} size="large" onClick={() => this.handleChangeStatus('statusAccept', 2)}>
+              <span>已接单 ({acceptCount})</span>
+            </Button>
+            <Button type={statusInvalid} size="large" onClick={() => this.handleChangeStatus('statusInvalid', 2)}>
+              <span>已作废 ({invalidCount})</span>
+            </Button>
+          </ButtonGroup>
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type={statusAll} style={{
-              marginRight: 5
-            }} onClick={() => this.handleChangeStatus('statusAll', -1)}>
-              <span>全部</span>
+            <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
+              <span>新增</span>
             </Button>
-            <Button type={statusNotSend} style={{
-              marginRight: 5
-            }} onClick={() => this.handleChangeStatus('statusNotSend', 0)}>
-              <span>未发送({notSendCount})</span>
-            </Button>
-            <Button type={statusNotAccept} style={{
-              marginRight: 5
-            }} onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
-              <span>未受理({notAcceptCount})</span>
-            </Button>
-            <Button type={statusAccept} style={{
-              marginRight: 5
-            }} onClick={() => this.handleChangeStatus('statusAccept', 2)}>
-              <span>已接单({acceptCount})</span>
-            </Button>
-            <Button type={statusInvalid} style={{
-              marginRight: 5
-            }} onClick={() => this.handleChangeStatus('statusInvalid', 2)}>
-              <span>已作废({invalidCount})</span>
-            </Button>
-            <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
-                <span>新增</span>
-              </Button>
-            </div>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={idlist} dataSource={dataSource}/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
         </div>
       </div>

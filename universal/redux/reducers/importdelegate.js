@@ -16,7 +16,6 @@ import {
 const initialState = {
   loaded: false, // used by isLoad action
   loading: false,
-  needUpdate: false,
   formData: {},
   selectedIndex: -1,
   editIndex: -1,
@@ -45,6 +44,7 @@ const initialState = {
 };
 // 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
+
   'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL', 'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL', 'ID_BEGIN_EDIT', 'ID_EDIT',
   'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL', 'ID_LOAD_STATUS_SUCCEED',
   'ID_LOAD_STATUS_FAIL', 'ID_LOAD_STATUS',
@@ -172,7 +172,7 @@ export default function reducer(state = initialState, action) {
         if (state.selectedIndex !== -1) {
           const idlist = {...state.idlist
           };
-          idlist.data[state.selectedIndex] = action.data.importDelegate;
+          idlist.data[state.selectedIndex] = action.data.importdelegate;
           return {...state,
             selectedIndex: -1,
             idlist
@@ -184,7 +184,7 @@ export default function reducer(state = initialState, action) {
       }
     default:
       return formReducer(actionTypes, state, action, {}, 'idlist') || state;
-  }
+      }
 }
 
 export function loadDelegates(cookie, params) {

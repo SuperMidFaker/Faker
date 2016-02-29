@@ -1,8 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {renderValidateStyle} from '../../../../reusable/browser-util/react-ant';
 import {
-  AntIcon,
+  Icon,
   Button,
   Form,
   Select,
@@ -12,7 +11,7 @@ import {
   Switch,
   message
 } from
-'../../../../reusable/ant-ui';
+'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import {
@@ -67,7 +66,7 @@ function goBack(props) {
   if (props.formData.key === -1) {
     return;
   }
-  const isCreating = props.formData.key === null;
+  const isCreating = (props.formData.key === undefined || props.formData.key === null);
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating
@@ -96,7 +95,6 @@ export default class ImportDelegateEdit extends React.Component {
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
-    tenant: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
@@ -122,7 +120,7 @@ export default class ImportDelegateEdit extends React.Component {
   }
   handleSubmit(ev) {
     ev.preventDefault();
-    this.props.formhoc.validate((errors) => {
+    this.props.formhoc.validateFields((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
           this.props.edit(this.props.formData, this.props.username, this.props.tenantId).then(result => {
@@ -156,7 +154,7 @@ export default class ImportDelegateEdit extends React.Component {
         span: 6
       }} wrapperCol={{
         span: 18
-      }} validateStatus={rules && renderValidateStyle(field, this.props.formhoc)} help={rules && getFieldError(field)} hasFeedback required={required}>
+      }} help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})}/>
       </FormItem>
     );
@@ -187,7 +185,7 @@ export default class ImportDelegateEdit extends React.Component {
         span: 6
       }} wrapperCol={{
         span: 18
-      }} validateStatus={rules && renderValidateStyle(field, this.props.formhoc)} help={rules && getFieldError(field)} hasFeedback required={required}>
+      }} help={rules && getFieldError(field)} hasFeedback required={required}>
         <Select style={{
           width: '100%'
         }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
@@ -215,19 +213,19 @@ export default class ImportDelegateEdit extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <Form horizontal onSubmit={this.handleSubmit} className="form-edit-content">
+          <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
             <Row>
               <Col span="12">
                 {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
                   {
-                    required: true
+                  required: true
                   }
                 ])}
 
                 {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
                   {
-                    required: true,
-                    message: '提运单号不能为空'
+                  required: true,
+                  message: '提运单号不能为空'
                   }
                 ])}
 
@@ -235,7 +233,7 @@ export default class ImportDelegateEdit extends React.Component {
               <Col span="12">
                 {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
                   {
-                    required: true
+                  required: true
                   }
                 ])}
               </Col>
@@ -255,18 +253,18 @@ export default class ImportDelegateEdit extends React.Component {
             <Row>
               <Col span="12">
                 <FormItem labelCol={{
-                  span: 6
+                span: 6
                 }} label="报关单据">
                   <Row>
                     <Col span="6">
                       <Dropzone onDrop={(files) => this.props.uploadFiles('declare_file', files)} style={{}}>
                         <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
-                          height: 80,
-                          marginTop: 20
+                        height: 80,
+                        marginTop: 20
                         }}>
                           <span>
                             <div className="ant-upload-drag-container">
-                              <AntIcon type="upload"/>
+                              <Icon type="upload"/>
                               <p className="ant-upload-hint">选择文件</p>
                             </div>
                           </span>

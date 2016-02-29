@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
-import corpDao from '../models/corp.db';
 import userDao from '../models/user.db';
 import tenantDao from '../models/tenant.db';
 import tenantUserDao from '../models/tenant-user.db';
@@ -57,15 +56,29 @@ function *loginUserP() {
       const user = users[0];
       const checkpwd = bCryptUtil.checkpw(password, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
       if (checkpwd) {
-        const claims = { userId: user.id, userType: user.user_type };
-        const opts = Object.assign({}, config.get('jwt_crypt'), { expiresInMinutes: config.get('jwt_expire_minutes')});
+        const userTypes = yield tenantUserDao.getUserTypeInfo(user.id);
+        let userType = user.user_type;
+        if (userTypes.length === 1) {
+          const personnel = userTypes[0];
+          if (personnel.role !== TENANT_ROLE.member.name) {
+            if (personnel.parentId === 0) {
+              userType = ENTERPRISE;
+            } else {
+              userType = BRANCH;
+            }
+          } else {
+           userType = PERSONNEL;
+          }
+        }
+        const claims = { userId: user.id, userType };
+        const opts = Object.assign({}, config.get('jwt_crypt'), { expiresIn: config.get('jwt_expire_seconds')});
         // todo we should set a shorter interval for token expire, refresh it later
         const jwtoken = kJwt.sign(claims, privateKey, opts);
         const remember = body.remember;
         const ONE_DAY = 24 * 60 * 60;
         this.cookies.set(config.get('jwt_cookie_key'), jwtoken, {
           httpOnly : __DEV__ ? false : true,
-          expires: remember ? new Date(Date.now() + config.get('jwt_expire_minutes') * 60000) : new Date(Date.now() + ONE_DAY * 1000),
+          expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
           domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
         });
         return Result.OK(this, { token: jwtoken, userType: user.user_type, unid: user.unid });
@@ -211,10 +224,11 @@ function *submitCorp() {
     trans = yield mysql.beginTransaction();
     let result = yield tenantDao.insertCorp(corp, parentTenantId, trans);
     corp.key = result.insertId;
-    result = yield userDao.insertAccount(corp.loginName, corp.email, corp.phone, salt, pwdHash,
-                                         parentTenantId === 0 ? ENTERPRISE : BRANCH, unid, trans);
+    result = yield userDao.insertAccount(`${corp.loginName}@${corp.code}`, corp.email, corp.phone, salt, pwdHash,
+                                         unid, trans);
     corp.loginId = result.insertId;
     corp.status = ACCOUNT_STATUS.normal.name;
+    corp.apps = [];
     yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.key, parentTenantId,
                                           this.state.user.userId, trans);
     yield tenantDao.updateBranchCount(parentTenantId, 1, trans);
@@ -277,7 +291,7 @@ function *editOrganization() {
     yield tenantUserDao.updateUserType(prevOwnerId, TENANT_ROLE.member.name, trans);
     yield tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans);
     const users = yield tenantUserDao.getPersonnelInfo(currOwnerId);
-    if (users.length !== 1) { 
+    if (users.length !== 1) {
       throw new Error('not found selected owner');
     }
     const currOwner = users[0];
@@ -338,7 +352,10 @@ function *getCorpPersonnels() {
       totalCount,
       current,
       pageSize,
-      data: personnel
+      data: personnel.map(pers => {
+        pers.loginName = pers.loginName.split('@')[0]
+        return pers;
+      })
     });
   } catch (e) {
     Result.InternalServerError(this, e.message);
@@ -349,6 +366,7 @@ function *submitPersonnel() {
   const curUserId = this.state.user.userId;
   const body = yield cobody(this);
   const tenant = body.tenant;
+  const code = body.code;
   const personnel = body.personnel;
   const salt = bCryptUtil.gensalt();
   const pwdHash = bCryptUtil.hashpw(personnel.password, salt);
@@ -356,10 +374,8 @@ function *submitPersonnel() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const accountType = personnel.role === TENANT_ROLE.manager.name ? (
-      tenant.parentId === 0 ? ENTERPRISE : BRANCH) : PERSONNEL;
-    let result = yield userDao.insertAccount(personnel.loginName, personnel.email,
-                                             personnel.phone, salt, pwdHash, accountType, unid, trans);
+    let result = yield userDao.insertAccount(`${personnel.loginName}@${code}`, personnel.email,
+                                             personnel.phone, salt, pwdHash, unid, trans);
     const loginId = result.insertId;
     result = yield tenantUserDao.insertPersonnel(curUserId, loginId, personnel, tenant, trans);
     yield tenantDao.updateUserCount(tenant.id, 1, trans);
@@ -375,11 +391,12 @@ function *submitPersonnel() {
 function *editPersonnel() {
   const body = yield cobody(this);
   const personnel = body.personnel;
+  const code = body.code;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield userDao.updateLoginName(personnel.loginId, personnel.phone, personnel.loginName,
-                                  personnel.email, trans);
+    yield userDao.updateLoginName(personnel.loginId, personnel.phone,
+      `${personnel.loginName}@${code}`, personnel.email, trans);
     if (personnel.role === TENANT_ROLE.owner.name) {
       yield tenantDao.updateCorpOwnerInfo(body.tenantId, null, personnel.phone, personnel.name,
                                           personnel.email, trans);
@@ -428,6 +445,7 @@ function *getPersonnelInfo() {
     if (personnels.length === 0) {
       throw new Error('用户不存在');
     }
+    personnels.forEach(pers => pers.loginName = pers.loginName.split('@')[0]);
     Result.OK(this, personnels[0]);
   } catch (e) {
     Result.InternalServerError(this, e.message);

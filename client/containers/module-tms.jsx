@@ -1,51 +1,45 @@
 import React, { PropTypes } from 'react';
 import AmLeftSidebar from '../components/am-ant-leftbar';
 
-export default class ImportM extends React.Component {
+export default class TMS extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired
   };
   render() {
     const linkMenus = [{
       single: true,
-      key: 'import-0',
-      path: '/import/',
+      key: 'tms-0',
+      path: '/tms/',
       icon: 's7-display1',
       text: '工作台'
     }, {
       single: true,
-      key: 'import-1',
-      path: '/import/delegate',
+      key: 'tms-1',
+      path: '/tms/order',
       icon: 's7-next-2',
-      text: '报关委托'
+      text: '订单'
     }, {
       single: true,
-      key: 'import-2',
-      path: '/import/receive',
+      key: 'tms-2',
+      path: '/tms/dispatch',
       icon: 's7-mail-open-file',
-      text: '报关受理'
+      text: '调度'
     }, {
       single: true,
-      key: 'import-3',
-      path: '/import/passage',
+      key: 'tms-3',
+      path: '/tms/tracking',
       icon: 's7-note',
-      text: '通关作业'
+      text: '追踪'
     }, {
       single: true,
-      key: 'import-4',
-      path: '/import/tracking',
+      key: 'tms-4',
+      path: '/tms/invoicing',
       icon: 's7-look',
-      text: '通关跟踪'
+      text: '账单'
     }, {
       single: true,
-      key: 'import-5',
-      path: '/import/billing',
-      icon: 's7-cash',
-      text: '计费账单'
-    }, {
-      single: true,
-      key: 'import-6',
-      path: '/wms/setting',
+      key: 'tms-5',
+      path: '/tms/setting',
       icon: 's7-settings',
       text: '设置'
     }];

@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {Button, AntIcon} from '../../reusable/ant-ui';
+import { Menu } from 'ant-ui';
 import AmNavBar from '../components/am-navbar';
 import NavLink from '../../reusable/components/nav-link';
 import ModuleLayout from '../components/module-layout';
 import { setNavTitle } from '../../universal/redux/reducers/navbar';
+import { PERSONNEL } from '../../universal/constants';
 import './home.less';
 
 @connect(
   state => ({
+    accountType: state.account.type,
     logo: state.corpDomain.logo,
     name: state.corpDomain.name
   }),
@@ -17,6 +19,7 @@ import './home.less';
 export default class Home extends React.Component {
   static propTypes = {
     setNavTitle: PropTypes.func.isRequired,
+    accountType: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   };
@@ -25,9 +28,23 @@ export default class Home extends React.Component {
       depth: 1
     });
   }
-
   render() {
-    const {logo, name} = this.props;
+    const { logo, name, accountType } = this.props;
+    const tenantMenus = [
+      <Menu.Item key="apps">
+        <i className="zmdi zmdi-apps"></i>应用
+      </Menu.Item>,
+      <Menu.Item key="activities">
+        <i className="zmdi zmdi-view-day"></i>动态
+      </Menu.Item>
+    ];
+    if (accountType !== PERSONNEL) {
+      tenantMenus.push(
+        <Menu.Item key="setting">
+          <NavLink to="/corp/info"><i className="zmdi zmdi-settings"></i>设置</NavLink>
+        </Menu.Item>
+      );
+    }
     return (
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />
@@ -37,10 +54,10 @@ export default class Home extends React.Component {
               <div className="tenant-logo " style={{backgroundImage:`url("${logo || '/assets/img/home/tenant-logo.png'}")`}} />
               <h2 className="tenant-name">{name}</h2>
             </div>
-            <div className="setting-btn-wrap">
-              <NavLink to="/corp/info"><Button shape="circle-outline" size="large"><AntIcon type="setting" /></Button></NavLink>
-            </div>
             <div className="tenant-nav">
+              <Menu selectedKeys="apps" mode="horizontal">
+              { tenantMenus }
+              </Menu>
             </div>
           </div>
           <div className="home-body">

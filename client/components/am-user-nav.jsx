@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover, Menu } from '../../reusable/ant-ui';
+import { Popover, Menu } from 'ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import { ENTERPRISE, BRANCH } from '../../universal/constants';
 

@@ -39,14 +39,21 @@ function concatFilterSql(filters, args) {
   return sqlClause;
 }
 export default {
+  getUserTypeInfo(loginId) {
+    const sql = `select user_type as role, parent_tenant_id as parentId
+      from sso_tenant_users where login_id = ?`;
+    const args = [loginId];
+    return mysql.query(sql, args);
+  },
   getOwnerLoginId(tenantId) {
     const sql = `select login_id as id from sso_tenant_users where tenant_id = ? and user_type = 'owner'`;
     const args = [tenantId];
     return mysql.query(sql, args);
   },
   getAccountInfo(loginId) {
-    const sql = `select TU.name as username, T.tenant_id as tenantId, code, aspect, category_id as categoryId
-      from sso_tenant_users as TU inner join sso_tenants as T on TU.tenant_id = T.tenant_id where login_id = ?`;
+    const sql = `select login_id as loginId, TU.name as username, T.tenant_id as tenantId, code, aspect,
+      category_id as categoryId from sso_tenant_users as TU inner join sso_tenants as T
+      on TU.tenant_id = T.tenant_id where login_id = ?`;
     const args = [loginId];
     return mysql.query(sql, args);
   },

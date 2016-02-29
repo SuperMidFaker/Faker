@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Switch, Row, Col, message } from '../../reusable/ant-ui';
+import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
 import './appmodule-editor.less';
 
 export default class ModuleEditor extends React.Component {
@@ -12,12 +12,9 @@ export default class ModuleEditor extends React.Component {
     onCancel: PropTypes.func.isRequired,
     tenantApps: PropTypes.array
   }
-  constructor() {
-    super();
-    this.state = {
-      visible: false,
-      enabledApps: {}
-    };
+  state = {
+    visible: false,
+    enabledApps: {}
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible === true) {
@@ -33,7 +30,7 @@ export default class ModuleEditor extends React.Component {
       this.setState({enabledApps: enMods});
     }
   }
-  handleCancel() {
+  handleCancel = () => {
     this.props.onCancel();
   }
   handleAppCheck(ap, checked) {
@@ -53,9 +50,9 @@ export default class ModuleEditor extends React.Component {
   render() {
     return (
       <Modal title="设置开通的应用" visible={this.state.visible}
-        onCancel={() => this.handleCancel()} footer={
+        onCancel={this.handleCancel} footer={
           [
-            <Button key="confirm" type="primary" size="large" onClick={() => this.handleCancel()}>
+            <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
              确定
             </Button>
           ]

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import {Row, Col, Select} from '../../reusable/ant-ui';
+import {Row, Col, Select} from 'ant-ui';
 import { CHINA_CODE } from '../../universal/constants';
 import world from './worldwide-regions.json';
 import chinaRegions from './china-regions.json';
