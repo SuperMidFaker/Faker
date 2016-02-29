@@ -16,6 +16,11 @@ function packColumnArgs(item) {
   return args;
 }
 export default {
+  getAllTenantsExcept(tenantId) {
+    const sql = 'select tenant_id as id, name from sso_tenants where tenant_id != ?';
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
   getCorpAndOwnerInfo(corpId) {
     const sql = `select T.tenant_id as \`key\`, code, aspect, T.name as name, phone, subdomain,
       country, province, city, district, address, logo, short_name, category_id, website, remark,
@@ -30,6 +35,11 @@ export default {
     const sql = `select T.tenant_id as tid, T.name as name, user_id as uid from sso_tenants as T
       inner join sso_tenant_users as TU on T.tenant_id = TU.tenant_id where T.tenant_id = ? and
       TU.user_type = 'owner' limit 1`;
+    const args = [tid];
+    return mysql.query(sql, args);
+  },
+  getTenantInfo(tid) {
+    const sql = 'select name, level from sso_tenants where tenant_id = ? limit 1';
     const args = [tid];
     return mysql.query(sql, args);
   },
@@ -120,9 +130,9 @@ export default {
     const args = [amount, corpId];
     return mysql.update(sql, args, trans);
   },
-  updateUserCount(tenatId, amount, trans) {
+  updateUserCount(tenantId, amount, trans) {
     const sql = `update sso_tenants set user_count = user_count + ? where tenant_id = ?`;
-    const args = [amount, tenatId];
+    const args = [amount, tenantId];
     return mysql.update(sql, args, trans);
   }
 }

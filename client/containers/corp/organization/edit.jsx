@@ -137,7 +137,7 @@ export default class CorpEdit extends React.Component {
       <FormItem label="负责人" labelCol={ {span: 6} } wrapperCol={ {span: 18} }
         help={ getFieldError('coid') } required>
         <Select style={ { width: '100%' } } { ...getFieldProps('coid', {
-          rules: [{required: true, message: '负责人必填'}]}) }>
+        rules: [{required: true, message: '负责人必填'}]}) }>
           {
             corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{ u.name }</Option>)
           }
@@ -149,11 +149,11 @@ export default class CorpEdit extends React.Component {
     return (
       <div className="page-body">
         <Form horizontal onSubmit={this.handleSubmit} form={ this.props.formhoc }
-        className="form-edit-content">
+        className="form-edit-content offset-right-col">
           {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
           { isCreating ?
-            this.renderOwnerForm() :
-            this.renderOwnerSelect() }
+          this.renderOwnerForm() :
+          this.renderOwnerSelect() }
           <Row>
             <Col span="18" offset="6">
               <Button htmlType="submit" type="primary">确定</Button>

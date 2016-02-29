@@ -10,15 +10,18 @@ import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
+import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
+import TMS from './containers/module-tms';
+import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
-import {loadAccount} from '../universal/redux/reducers/account';
-import {isLoaded} from '../reusable/common/redux-actions';
+import { loadAccount } from '../universal/redux/reducers/account';
+import { isLoaded } from '../reusable/common/redux-actions';
 import * as importDelegate from './containers/import/delegate';
 import * as importTask from './containers/import/task';
 
@@ -58,6 +61,11 @@ export default (store, cookie) => {
             <Route path="new" component={Personnel.Edit}/>
             <Route path="edit/:id" component={Personnel.Edit}/>
           </Route>
+          <Route path="partners">
+            <IndexRoute component={Cooperation.Partners} />
+            <Route path="invitations/in" component={Cooperation.Received} />
+            <Route path="invitations/out" component={Cooperation.Sent} />
+          </Route>
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
@@ -77,6 +85,9 @@ export default (store, cookie) => {
             <IndexRoute component={Warehouse} />
             <Route path="warehouse" component={Warehouse} />
             <Route path="notice" component={Notice} />
+          </Route>
+          <Route path="tms" component={TMS}>
+            <IndexRoute component={TMSDashboard} />
           </Route>
         </Route>
       </Route>

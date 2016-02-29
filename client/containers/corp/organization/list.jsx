@@ -9,6 +9,8 @@ import AppEditor from '../../../components/appmodule-editor';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
+import connectNav from '../../../../reusable/decorators/connect-nav';
+import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
 
 function fetchData({state, dispatch, cookie}) {
@@ -33,6 +35,15 @@ function fetchData({state, dispatch, cookie}) {
     closeTenantAppsEditor
   }
 )
+@connectNav((props, dispatch) => {
+  dispatch(setNavTitle({
+    depth: 2,
+    text: '组织机构',
+    moduleName: 'corp',
+    withModuleLayout: false,
+    goBackFn: ''
+  }));
+})
 export default class CorpList extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -200,15 +211,15 @@ export default class CorpList extends React.Component {
       <div className="page-body">
         <div className="panel-header">
           <div className="pull-right action-btns">
-            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
-              onClick={() => this.handleNavigationTo('/corp/organization/new')}>
-              <span>新增</span>
-            </Button>
+            <span>限额使用 </span>
+            <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
+            <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
+            <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
           </div>
-          <span>限额使用 </span>
-          <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
-          <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
-          <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
+          <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
+              onClick={() => this.handleNavigationTo('/corp/organization/new')}>
+              <Icon type="plus-circle-o" />新建
+          </Button>
         </div>
         <div className="panel-body body-responsive">
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />

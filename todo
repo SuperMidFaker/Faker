@@ -1,6 +1,5 @@
-react-intl
-wms -> new edit
-[] redux production warning
+[] react-intl
+[] different domain after jwt should check domain and onEnter should redirect
 [] new personnel freshed page without tenant info  => how to make new/edit in route redirect to indexRoute
 [] appeditor modal interface logic in a mess
 [] webpack search dir for client side code but how server can use it too \\  debug node_modules source
@@ -9,10 +8,10 @@ wms -> new edit
 [] am-ant-leftmenu can't scroll, need jqury,rc-animate server render fail -> replace antmenu use am-leftsidebar and css to make Menu SubMenu and scrollbar fixed or absolute
    set activekey based on url
 [] winston log
-[] merge with ant-design
-[] use ant upload
+[] use ant upload how to manage rc-form-wl and ant-ui version
 [] memory leak in corp personnel create upate & form edit slow
-[] eslintrc from max-len to bottom eslint --fix   no-jsx-bind --> property initializer
+[] eslintrc from max-len to bottom
+[] separate forgot changepassword from reducer/auth
 
 [] gregorian-calendar-format replace with moment.js
 [] table column resize/scrollbar http://www.guriddo.net/demo/bootstrap/
