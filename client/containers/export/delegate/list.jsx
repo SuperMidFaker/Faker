@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loaddelegate, loadTenantsByMaster, deldelegate, switchTenant, switchStatus } from '../../../../universal/redux/reducers/delegate';
-import { Table, Button, Select, message } from '../../../../reusable/ant-ui';
+import { Table, Button, Select, message } from 'ant-ui';
 import { UnsentUnsent } from
 '../../../../universal/redux/reducers/delegate';
 import NavLink from '../../../../reusable/components/nav-link';

@@ -39,15 +39,15 @@ const TENANT_ROLE = {
 };
 const TENANT_USEBOOK = {
   owner: {
-    name: '2',
+    name: 2,
     text: '拥有者'
   },
   manager: {
-    name: '1',
+    name: 1,
     text: '是'
   },
   member: {
-    name: '0',
+    name: 0,
     text: '否'
   }
 };

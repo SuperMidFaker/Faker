@@ -122,9 +122,9 @@ function *submitdelegate() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield delegate.insertdelegate(delegates,tenantId, trans);
+    const result =yield delegate.insertdelegate(delegates,tenantId, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.OK(this, { smsId: result.insertId});
   } catch (e) {
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
