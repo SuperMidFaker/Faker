@@ -25,6 +25,8 @@ import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
+import * as importDelegate from './containers/import/delegate';
+import * as importTask from './containers/import/task';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
@@ -76,6 +78,10 @@ export default (store, cookie) => {
               <IndexRoute component={importDelegate.List} />
               <Route path="new" component={importDelegate.Edit} />
               <Route path="edit/:id" component={importDelegate.Edit} />
+            </Route>
+            <Route path="passage">
+              <IndexRoute component={importTask.List} />
+              
             </Route>
           </Route>
           <Route path="export" component={ExporT}>
