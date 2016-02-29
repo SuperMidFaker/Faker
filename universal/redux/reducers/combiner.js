@@ -12,6 +12,7 @@ import task from './task';
 import warehouse from './warehouse';
 import bill from './bill';
 import notice from './notice';
+import delegate from './delegate';
 
 export default combineReducers({
   auth,
@@ -26,5 +27,6 @@ export default combineReducers({
   importdelegate,
   task,
   bill,
-  notice
+  notice,
+  delegate
 });
