@@ -17,6 +17,8 @@ const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
 function fetchData({state, dispatch, cookie, params}) {
+  //let p = dispatch(loadMaster_CustomsMaster());
+  //promises.push(p);
   const pid = parseInt(params.id, 10);
   if (pid) {
     if (!isFormDataLoaded(state.delegate, pid)) {
@@ -95,19 +97,24 @@ export default class CorpEdit extends React.Component {
   }
   handleSubmit() {
     this.props.formhoc.validate((errors) => {
-      if (!errors) {
-        this.props.edit(this.props.formData).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.info('更新成功', 5);
-            this.handleCancel();
+        if (!errors) {
+            if(this.props.formData.key){
+            this.props.edit(this.props.formData).then((result) => {
+            if (result.error) {
+                message.error(result.error.message, 10);
+            } else {
+                message.info('更新成功', 5);
+                this.handleCancel();
+            }
+            });
+        }else{
+          this.props.submit(this.props.formData, this.props.tenant).then(result => {
+            this.onSubmitReturn(result.error);});
+            }
+        } else {
+            this.forceUpdate();
+            message.error('表单检验存在错误', 10);
           }
-        });
-      } else {
-        this.forceUpdate();
-        message.error('表单检验存在错误', 10);
-      }
     });
   }
   handleCancel() {
@@ -135,8 +142,7 @@ export default class CorpEdit extends React.Component {
           <Form horizontal onSubmit={ this.handleSubmit } className="form-edit-content">
           <table  width="800"  border="1" cellpadding="1" cellspacing="1" bordercolor="#0000FF">
             <tr>
-                <td><label>单号</label></td>
-                <td><label value='del_no'>2</label></td>
+                <td>{this.renderTextInput('报关业务单号', '请输入报关业务单号', 'del_no', true, [{required: true, min: 2, message: '2位以上中英文'}])}</td>
             </tr>
             <tr>
               <td width="400" height="35"> 

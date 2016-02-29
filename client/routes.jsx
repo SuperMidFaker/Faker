@@ -10,9 +10,12 @@ import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
+import * as personnel_test from './containers/corp/personnel_test';
+import * as delegate from './containers/export/delegate';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
+import ExporT from './containers/module-export';
 import ImportDashboard from './containers/import/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
@@ -58,16 +61,19 @@ export default (store, cookie) => {
             <Route path="new" component={Personnel.Edit}/>
             <Route path="edit/:id" component={Personnel.Edit}/>
           </Route>
+          <Route path="personnel_test">
+            <IndexRoute component={personnel_test.List} />
+            <Route path="new" component={personnel_test.Edit}/>
+            <Route path="edit/:id" component={personnel_test.Edit}/>
+          </Route>
           <Route path="password" component={Password} />
         </Route>
         <Route component={Module}>
-          <Route path="import" component={ImportM}>
-            <IndexRoute component={ImportDashboard} />
+          <Route path="export" component={ExporT}>
             <Route path="delegate">
-              <Route path="list" />
-              <Route path="new" />
-              <Route path="edit/:id" />
-              <Route path="view/:id" />
+                <IndexRoute component={delegate.List} />
+                <Route path="new" component={delegate.Edit}/>
+                <Route path="edit/:id" component={delegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>

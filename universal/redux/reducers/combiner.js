@@ -8,6 +8,8 @@ import personnel from './personnel';
 import warehouse from './warehouse';
 import bill from './bill';
 import notice from './notice';
+import personnel_test from './personnel_test';
+import delegate from './delegate';
 
 export default combineReducers({
   auth,
@@ -18,5 +20,7 @@ export default combineReducers({
   personnel,
   warehouse,
   bill,
-  notice
+  notice,
+  personnel_test,
+  delegate
 });

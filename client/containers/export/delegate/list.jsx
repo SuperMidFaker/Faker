@@ -1,22 +1,25 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from '../../../../universal/redux/reducers/personnel';
+import { loaddelegate, loadTenantsByMaster, deldelegate, switchTenant, switchStatus } from '../../../../universal/redux/reducers/delegate';
 import { Table, Button, Select, message } from '../../../../reusable/ant-ui';
+import { UnsentUnsent } from
+'../../../../universal/redux/reducers/delegate';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
+import { DELEGATE_STATUS, TENANT_ROLE } from '../../../../universal/constants';
+
 
 function fetchData({state, dispatch, cookie}) {
   const promises = [];
-  if (!isLoaded(state, 'personnel')) {
-    let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
+  if (!isLoaded(state, 'delegate')) {
+      let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
     promises.push(p);
-    p = dispatch(loadPersonnel(cookie, {
+      p = dispatch(loaddelegate(cookie, {
       tenantId: state.account.tenantId,
-      pageSize: state.personnel.personnelist.pageSize,
-      currentPage: state.personnel.personnelist.current
+      pageSize: state.delegate.delegateist.pageSize,
+      currentPage: state.delegate.delegateist.current
     }));
     promises.push(p);
   }
@@ -27,26 +30,26 @@ function fetchData({state, dispatch, cookie}) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    personnelist: state.personnel.personnelist,
-    branches: state.personnel.branches,
-    tenant: state.personnel.tenant,
-    loading: state.personnel.loading,
-    needUpdate: state.personnel.needUpdate
+    delegateist: state.delegate.delegateist,
+    branches: state.delegate.branches,
+    tenant: state.delegate.tenant,
+    loading: state.delegate.loading,
+    needUpdate: state.delegate.needUpdate
   }),
-  { delPersonnel, switchTenant, switchStatus, loadPersonnel })
-export default class PersonnelSetting extends React.Component {
+  { deldelegate, switchTenant, switchStatus, loaddelegate })
+export default class delegateSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    personnelist: PropTypes.object.isRequired,
+    delegateist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
     tenant: PropTypes.object.isRequired,
-    loadPersonnel: PropTypes.func.isRequired,
+    loaddelegate: PropTypes.func.isRequired,
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    delPersonnel: PropTypes.func.isRequired
+    deldelegate: PropTypes.func.isRequired
   }
   constructor() {
     super();
@@ -58,10 +61,10 @@ export default class PersonnelSetting extends React.Component {
     this.setState({selectedRowKeys: []});
   }
   handleTenantSwitch(val) {
-    const {personnelist} = this.props;
-    this.props.loadPersonnel(null, {
+    const {delegateist} = this.props;
+    this.props.loaddelegate(null, {
       tenantId: val,
-      pageSize: personnelist.pageSize,
+      pageSize: delegateist.pageSize,
       currentPage: 1
     }).then((result) => {
       if (result.error) {
@@ -84,48 +87,48 @@ export default class PersonnelSetting extends React.Component {
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
   }
-  handleStatusSwitch(personnel, index) {
-    this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id
-      ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
+  handleStatusSwitch(delegate, index) {
+    this.props.switchStatus(index, delegate.key, delegate.status === DELEGATE_STATUS.normal.id
+      ? DELEGATE_STATUS.blocked.id : DELEGATE_STATUS.normal.id).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
       });
   }
-  handlePersonnelDel(record) {
-    this.props.delPersonnel(record.key, record.loginId, this.props.tenant);
+  handledelegateDel(record) {
+    this.props.deldelegate(record.key, record.loginId, this.props.tenant);
   }
   handleSearch(searchVal) {
     // OR with name condition
     const filters = [[{
-      name: 'name',
+      name: 'del_no',
       value: searchVal
     }, {
-      name: 'email',
+      name: 'invoice_no',
       value: searchVal
     }, {
-      name: 'phone',
+      name: 'bill_no',
       value: searchVal
     }]];
-    this.props.loadPersonnel(null, {
+    this.props.loaddelegate(null, {
       tenantId: this.props.tenant.id,
-      pageSize: this.props.personnelist.pageSize,
+      pageSize: this.props.delegateist.pageSize,
       currentPage: 1,
       filters: JSON.stringify(filters)
     });
   }
   renderColumnText(status, text) {
     let style = {};
-    if (status === ACCOUNT_STATUS.blocked.id) {
+    if (status === DELEGATE_STATUS.blocked.id) {
       style = {color: '#CCC'};
     }
     return <span style={style}>{text}</span>;
   }
       //返回
   render() {
-    const { tenant, personnelist, branches, loading, needUpdate } = this.props;
+    const { tenant, delegateist, branches, loading, needUpdate } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadPersonnel(null, params),
+      fetcher: (params) => this.props.loaddelegate(null, params),
       resolve: (result) => result.data,
       needUpdate,
       getPagination: (result) => ({
@@ -168,44 +171,41 @@ export default class PersonnelSetting extends React.Component {
     
     //列
     const columns = [{
-      title: '姓名',
-      dataIndex: 'name',
+      title: '报关业务单号',
+      dataIndex: 'del_no',
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.name)
+      render: (o, record) => this.renderColumnText(record.status, record.del_no)
     }, {
-      title: '用户名',
-      render: (o, record) => this.renderColumnText(record.status, record.loginName)
-    }, {
-      title: '手机号',
-      render: (o, record) => this.renderColumnText(record.status, record.phone)
-    }, {
-      title: '邮箱',
-      dataIndex: 'email',
+      title: '报关行', 
+      dataIndex: 'rec_tenant_id',
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.email)
+      render: (o, record) => this.renderColumnText(record.status, record.rec_tenant_id)
     }, {
-      title: '职位',
-      render: (o, record) => this.renderColumnText(record.status, record.position)
-    }, {
-      title: '角色',
+      title: '委托时间', 
+      dataIndex: 'del_date',
       sorter: true,
-      dataIndex: 'role',
-      filters: [{
-        text: TENANT_ROLE.manager.text,
-        value: TENANT_ROLE.manager.name
-      }, {
-        text: TENANT_ROLE.member.text,
-        value: TENANT_ROLE.member.name
-      }],
-      render: (o, record) => this.renderColumnText(record.status, TENANT_ROLE[record.role].text)
+      render: (o, record) => this.renderColumnText(record.status, record.del_date)
+    }, {
+      title: '运单号', 
+      dataIndex: 'bill_no',
+      render: (o, record) => this.renderColumnText(record.status, record.bill_no)
+    }, {
+      title: '发票号', 
+      dataIndex: 'invoice_no',
+      render: (o, record) => this.renderColumnText(record.status, record.invoice_no)
+    }, {
+      title: '是否使用手册', 
+      dataIndex: 'usebook',
+      render: (o, record) => this.renderColumnText(record.status, record.usebook)
     }, {
       title: '状态',
+      sorter: true,
       render: (o, record) => {
         let style = {color: '#51C23A'};
-        let text = ACCOUNT_STATUS.normal.text;
-        if (record.status === ACCOUNT_STATUS.blocked.id) {
+        let text = DELEGATE_STATUS.normal.text;
+        if (record.status === DELEGATE_STATUS.blocked.id) {
           style = {color: '#CCC'};
-          text = ACCOUNT_STATUS.blocked.text;
+          text = DELEGATE_STATUS.blocked.text;
         }
         return <span style={style}>{text}</span>;
       }
@@ -216,19 +216,19 @@ export default class PersonnelSetting extends React.Component {
         if (record.role === TENANT_ROLE.owner.name) {
           return (
             <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/export/delegate/edit/${record.key}`}>修改</NavLink>
             </span>);
-        } else if (record.status === ACCOUNT_STATUS.normal.id) {
+        } else if (record.status === DELEGATE_STATUS.normal.id) {
           return (
             <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/export/delegate/edit/${record.key}`}>修改</NavLink>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
             </span>);
-        } else if (record.status === ACCOUNT_STATUS.blocked.id) {
+        } else if (record.status === DELEGATE_STATUS.blocked.id) {
           return (
             <span>
-              <a role="button" onClick={() => this.handlePersonnelDel(record)}>删除</a>
+              <a role="button" onClick={() => this.handledelegateDel(record)}>删除</a>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
             </span>);
@@ -241,28 +241,25 @@ export default class PersonnelSetting extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="pull-right action-btns">
-            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
+            <SearchBar placeholder="业务单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)} />
             <a role="button">高级搜索</a>
           </div>
-          <h2>用户管理</h2>
+          <h2>业务委托</h2>
         </div>
         <div className="page-body">
           <div className="panel-header">
             <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
-                <span>添加用户</span>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/export/delegate/new')}>
+                <span>添加</span>
               </Button>
             </div>
-            <span style={{paddingRight: 10, color: '#09C', fontSize: 13}}>所属组织</span>
-            <Select style={{width: 200}} value={`${tenant.id}`}
-              onChange={(value) => this.handleTenantSwitch(value)}>
-            {
-              branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
-            }
-            </Select>
+            <Button  htmlType="SELECTALL"  type="primary">全部</Button>&nbsp;
+            <Button  htmlType="UnsentUnsent"  type="primary">未发送</Button>&nbsp;
+            <Button  htmlType="SELECTALL"  type="primary">未受理</Button>&nbsp;
+            <Button  htmlType="SELECTALL"  type="primary">已接单</Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={personnelist} dataSource={dataSource}/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={delegateist} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>

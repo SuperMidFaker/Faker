@@ -33,6 +33,12 @@ export default class Account extends React.Component {
       path: '/corp/personnel',
       icon: 's7-users',
       text: '用户管理'
+    },{
+      single: true,
+      key: 'corpsetting-22',
+      path: '/corp/personnel_test',
+      icon: 's7-users',
+      text: '用户管理1'
     }, {
       single: true,
       key: 'corpsetting-3',

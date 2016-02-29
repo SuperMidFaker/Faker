@@ -88,7 +88,14 @@ export default {
     const sql = `select count(user_id) as num from sso_tenant_users as TU inner join
       sso_login as L on login_id = id where tenant_id = ? ${filterClause}`;
     console.log(sql, args);
-    return mysql.query(sql, args);
+    return mysql.query(sql, args); 
+  },
+  getTenantPersonnelCount_test(tenantId, filters) {
+    const args = [tenantId];
+    const filterClause =  " where tenant_id=34";
+    const sql = `SELECT count(*) from g_bus_delegate  ${filterClause}`;
+    console.log(sql, args);
+    return mysql.query(sql, args); //getTenantPersonnelCount_test
   },
   getPagedPersonnelInCorp(tenantId, current, pageSize, filters, sortField, sortOrder) {
     const args = [tenantId];
@@ -101,6 +108,22 @@ export default {
     const sql = `select user_id as \`key\`, username as loginName, phone, email, name, position,
       TU.user_type as role, status, login_id as loginId from sso_tenant_users as TU inner join
       sso_login as L on TU.login_id = L.id where tenant_id = ? ${filterClause} ${sortClause}
+      limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
+    console.log(sql, args);
+    return mysql.query(sql, args);
+  },
+  getPagedPersonnelInCorp_test(tenantId, current, pageSize, filters, sortField, sortOrder) {
+    const args = [tenantId];
+    const filterClause = " where tenant_id = ?";
+    let sortColumn = sortField;
+    let sortClause = '';
+    if (sortColumn === 'role') {
+      sortColumn = 'TU.user_type';
+      sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
+    }
+
+    const sql = `SELECT del_id as \`key\`,invoice_no,del_no,status from g_bus_delegate  ${filterClause} ${sortClause}
       limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     console.log(sql, args);

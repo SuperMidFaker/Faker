@@ -47,6 +47,11 @@ export default {
     const args = [phone, name, email, lid];
     return mysql.update(sql, args, trans);
   },
+   updateg_bus_delegate(del_no, invoice_no,tenantId,trans) {
+    const sql = 'update g_bus_delegate set del_no = ?, invoice_no = ?  where tenant_id = ?';
+    const args = [del_no, invoice_no,tenantId,trans];
+    return mysql.update(sql, args, trans);
+  },
   getAccountInfo(accountId) {
     const sql = 'select name, corp_id as corpId, parent_corp_id as parentCorpId from sso_corp_accounts where id = ?';
     const args = [accountId];

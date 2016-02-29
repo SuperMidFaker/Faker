@@ -111,7 +111,7 @@ export default {
     return mysql.update(sql, args, trans);
   },
   updateUserCount(tenatId, amount, trans) {
-    const sql = `update sso_tenants set user_count = user_count + ? where tenant_id = ?`;
+    const sql = `update g_bus_delegate set del_id =? where tenant_id = ?`;
     const args = [amount, tenatId];
     return mysql.update(sql, args, trans);
   }
