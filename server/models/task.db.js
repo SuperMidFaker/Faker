@@ -11,7 +11,7 @@ function putInComposition(f, args) {
   } else if (f.name === 'invoice_no') {
     sql = 'invoice_no like ?';
     args.push('%' + f.value + '%');
-  } 
+  }
   return sql;
 }
 
@@ -36,64 +36,60 @@ function concatFilterSql(filters, args) {
 }
 
 export default {
-  getTaskTotalCount(tenantId, currentStatus,loginId,filters) {
+  getTaskTotalCount(tenantId, currentStatus, loginId, filters) {
       const args = [tenantId];
-      let statusClause="";
-    if(currentStatus!=-1)
-    {
-       statusClause = " and customs_status= ?";
-       args.push(currentStatus);
-    }
-    if(loginId!=-1)
-    {
-       statusClause += " and creater_login_id= ?";
-       args.push(loginId);
-    }
-    const filterClause =concatFilterSql(filters, args);
-    const sql = `select count(del_id) as count from g_bus_delegate where tenant_id = ? ${statusClause} ${filterClause}`;
-    
-    return mysql.query(sql, args);
-  },
-  
-  getPagedTaskByCorp(current,currentStatus,loginId, filters, pageSize,tenantId,sortField,sortOrder) {
+      let statusClause = "";
+      if (currentStatus != -1) {
+        statusClause = " and customs_status= ?";
+        args.push(currentStatus);
+      }
+      if (loginId != -1) {
+        statusClause += " and creater_login_id= ?";
+        args.push(loginId);
+      }
+      const filterClause = concatFilterSql(filters, args);
+      const sql = `select count(del_id) as count from g_bus_delegate where tenant_id = ? ${statusClause} ${filterClause}`;
+
+      return mysql.query(sql, args);
+    },
+
+    getPagedTaskByCorp(current, currentStatus, loginId, filters, pageSize, tenantId, sortField, sortOrder) {
       const args = [tenantId];
-      let statusClause="";
-    if(currentStatus!=-1)
-    {
-       statusClause = " and customs_status= ?";
-       args.push(currentStatus);
-    }
-    if(loginId!=-1)
-    {
-       statusClause += " and creater_login_id= ?";
-       args.push(loginId);
-    }
-    const filterClause =concatFilterSql(filters, args);
-    
-    let sortColumn = sortField || 'del_id';
-    const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-    
-    const sql = `select del_id as \`key\`, del_no, status, customs_status, del_date, invoice_no,
+      let statusClause = "";
+      if (currentStatus != -1) {
+        statusClause = " and customs_status= ?";
+        args.push(currentStatus);
+      }
+      if (loginId != -1) {
+        statusClause += " and creater_login_id= ?";
+        args.push(loginId);
+      }
+      const filterClause = concatFilterSql(filters, args);
+
+      let sortColumn = sortField || 'del_id';
+      const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
+
+      const sql = `select del_id as \`key\`, del_no, status, customs_status, del_date, invoice_no,
       bill_no, send_tenant_id, rec_tenant_id, creater_login_id, rec_login_id, rec_del_date, master_customs, declare_way_no,
       usebook, ems_no, trade_mode, urgent, delegate_type, tenant_id, other_note, created_date, update_date
        from g_bus_delegate where tenant_id = ?  ${statusClause} ${filterClause} ${sortClause}
       limit ?, ?`;
-    args.push((current - 1) * pageSize, pageSize);
-    console.log(sql, args);
-    return mysql.query(sql, args);
-  },
-    getStatusCount(tenantId,status,filters) {
-    const args = [tenantId,status];
-    const filterClause =concatFilterSql(filters, args);
-    const sql = `select count(customs_status) as count from g_bus_delegate where tenant_id=? and customs_status=? ${filterClause}`;
-    console.log(sql, args);
-    return mysql.query(sql, args);
-  },
-  getToMeCount(tenantId,loginId) {
-    const args = [tenantId,loginId];
-    //const filterClause =concatFilterSql(filters, args);
-    const sql = `select count(creater_login_id) as count from g_bus_delegate where tenant_id=? and creater_login_id=? `;
-    console.log(sql, args);
-    return mysql.query(sql, args);
+      args.push((current - 1) * pageSize, pageSize);
+      console.log(sql, args);
+      return mysql.query(sql, args);
+    },
+    getStatusCount(tenantId, status, filters) {
+      const args = [tenantId, status];
+      const filterClause = concatFilterSql(filters, args);
+      const sql = `select count(customs_status) as count from g_bus_delegate where tenant_id=? and customs_status=? ${filterClause}`;
+      console.log(sql, args);
+      return mysql.query(sql, args);
+    },
+    getToMeCount(tenantId, loginId) {
+      const args = [tenantId, loginId];
+      //const filterClause =concatFilterSql(filters, args);
+      const sql = `select count(creater_login_id) as count from g_bus_delegate where tenant_id=? and creater_login_id=? `;
+      console.log(sql, args);
+      return mysql.query(sql, args);
     },
 }
