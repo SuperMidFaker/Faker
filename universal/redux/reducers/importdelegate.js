@@ -30,6 +30,7 @@ const initialState = {
     data: []
   },
   statusList: { // 初始化状态显示数量
+    statusValue: '0',
     notSendCount: 0,
     notAcceptCount: 0,
     acceptCount: 0,
@@ -68,6 +69,7 @@ export default function reducer(state = initialState, action) {
       return {...state,
         loaded: true,
         loading: false,
+        statusList: { ...state.statusList, statusValue: action.params.currentStatus || '0'},
         idlist: action.result.data
       };
     case actionTypes.ID_LOAD_FAIL:

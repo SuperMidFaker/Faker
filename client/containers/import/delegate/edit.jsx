@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {
+  Modal,
   Icon,
   Button,
   Form,
@@ -108,7 +109,9 @@ export default class ImportDelegateEdit extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
       current: '1',
-      openKeys: []
+      openKeys: [],
+      modalVisible: false,
+      fileCategory: ''
     };
   }
   onSubmitReturn(error) {
@@ -141,6 +144,15 @@ export default class ImportDelegateEdit extends React.Component {
   }
   handleSelectChange(stateKey, value) {
     this.setState(JSON.parse(`{"${stateKey}":"${value}"}`));
+  }
+  handleShowModal() {
+    this.setState({modalVisible: true});
+  }
+  handleOk() {
+    this.setState({modalVisible: false});
+  }
+  handleCancel() {
+    this.setState({modalVisible: false});
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, disabled = false, type = 'text') {
     const {
@@ -188,7 +200,7 @@ export default class ImportDelegateEdit extends React.Component {
       }} help={rules && getFieldError(field)} hasFeedback required={required}>
         <Select style={{
           width: '100%'
-        }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
+        }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
           <OptGroup label={placeholder}>
             {source.map((item) => (
               <Option value={item.value} key={item.value}>{item.text}</Option>
@@ -218,22 +230,23 @@ export default class ImportDelegateEdit extends React.Component {
               <Col span="12">
                 {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
                   {
-                  required: true
+                    required: true,
+                    message: '请选择清关海关'
                   }
                 ])}
 
                 {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
                   {
-                  required: true,
-                  message: '提运单号不能为空'
+                    required: true,
+                    message: '提运单号不能为空'
                   }
                 ])}
-
               </Col>
               <Col span="12">
                 {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
                   {
-                  required: true
+                    required: true,
+                    message: '请选择报关类型'
                   }
                 ])}
               </Col>
@@ -251,16 +264,24 @@ export default class ImportDelegateEdit extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col span="12">
+              <Col span="24">
                 <FormItem labelCol={{
-                span: 6
+                  span: 3
                 }} label="报关单据">
                   <Row>
-                    <Col span="6">
+                    <Col span="2">123</Col>
+                    <Col span="2">123</Col>
+                    <Col span="2">123</Col>
+                    <Col span="2">123</Col>
+                    <Col span="2">123</Col>
+                    <Col span="2">123</Col>
+                    <Col span="2">123</Col>
+
+                    <Col span="2">
                       <Dropzone onDrop={(files) => this.props.uploadFiles('declare_file', files)} style={{}}>
                         <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
-                        height: 80,
-                        marginTop: 20
+                          height: 80,
+                          marginTop: 20
                         }}>
                           <span>
                             <div className="ant-upload-drag-container">
@@ -270,7 +291,16 @@ export default class ImportDelegateEdit extends React.Component {
                           </span>
                         </div>
                       </Dropzone>
+                      <span style={{
+                        cursor: 'hand'
+                      }}>
+                        <Icon type="tags"/>
+                        <label onClick={() => {
+                          this.handleShowModal();
+                        }}>点此选择单据类型</label>
+                      </span>
                     </Col>
+
                   </Row>
                 </FormItem>
               </Col>
@@ -283,6 +313,19 @@ export default class ImportDelegateEdit extends React.Component {
               </Col>
             </Row>
           </Form>
+
+          <Modal title="选择单据类型" visible={this.state.modalVisible} closable={false} onOk={() => {
+            this.handleOk();
+          }} onCancel={() => {
+            this.handleCancel();
+          }}>
+          <Form horizontal>
+            <Form.Item label="合作伙伴:" labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
+              <Select multiple style={{ width: '100%' }} searchPlaceholder="请输入公司名称">
+              </Select>
+            </Form.Item>
+          </Form>
+          </Modal>
         </div>
       </div>
     );

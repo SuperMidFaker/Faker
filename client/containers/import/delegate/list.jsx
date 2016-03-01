@@ -15,11 +15,12 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Button, message} from 'ant-ui';
+import {Table, Button, message, Radio} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
-const ButtonGroup = Button.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 function fetchData({state, dispatch, cookie}) {
   const promises = [];
@@ -79,12 +80,8 @@ export default class ImportDelegate extends React.Component {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      statusAll: 'ghost',
-      statusNotSend: 'primary',
-      statusNotAccept: 'ghost',
-      statusAccept: 'ghost',
-      statusInvalid: 'ghost',
       curStatus: 0,
+      statusValue: '',
       searchVal: ''
     };
   }
@@ -117,34 +114,14 @@ export default class ImportDelegate extends React.Component {
       confirmString: 'DELETE'
     });
   }
-  handleChangeStatus(type, status) {
-    // 更新视图状态
-    this.setState({
-      statusAll: type === 'statusAll'
-        ? 'primary'
-        : 'ghost',
-      statusNotSend: type === 'statusNotSend'
-        ? 'primary'
-        : 'ghost',
-      statusNotAccept: type === 'statusNotAccept'
-        ? 'primary'
-        : 'ghost',
-      statusAccept: type === 'statusAccept'
-        ? 'primary'
-        : 'ghost',
-      statusInvalid: type === 'statusInvalid'
-        ? 'primary'
-        : 'ghost',
-      curStatus: status
-    });
-
+  handleChangeStatus(e) {
     const filters = this.createFilters(this.state.searchVal);
     // 切换状态后更新table数据
     this.props.loadDelegates(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
-      currentStatus: status,
+      currentStatus: e.target.value,
       filters: JSON.stringify(filters)
     });
     // 切换状态的时候同时更新状态数量
@@ -203,6 +180,7 @@ export default class ImportDelegate extends React.Component {
     const {
       customsBrokerList,
       statusList: {
+        statusValue,
         notSendCount,
         notAcceptCount,
         acceptCount,
@@ -211,14 +189,7 @@ export default class ImportDelegate extends React.Component {
       idlist,
       loading
     } = this.props;
-    const {
-      statusAll,
-      statusAccept,
-      statusInvalid,
-      statusNotAccept,
-      statusNotSend,
-      curStatus
-    } = this.state;
+    const {curStatus} = this.state;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadDelegates(null, params),
       resolve: (result) => result.data,
@@ -238,7 +209,7 @@ export default class ImportDelegate extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          curStatus,
+          currentStatus: curStatus,
           filters: []
         };
         for (const key in filters) {
@@ -371,23 +342,23 @@ export default class ImportDelegate extends React.Component {
             <SearchBar placeholder="业务单号/发票号/提单号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <ButtonGroup>
-            <Button type={statusAll} size="large" onClick={() => this.handleChangeStatus('statusAll', -1)}>
+          <RadioGroup defaultValue="0" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
+            <RadioButton value="-1">
               <span>所有状态</span>
-            </Button>
-            <Button type={statusNotSend} size="large" onClick={() => this.handleChangeStatus('statusNotSend', 0)}>
+            </RadioButton>
+            <RadioButton value="0">
               <span>未发送 ({notSendCount})</span>
-            </Button>
-            <Button type={statusNotAccept} size="large" onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
+            </RadioButton>
+            <RadioButton value="1">
               <span>未受理 ({notAcceptCount})</span>
-            </Button>
-            <Button type={statusAccept} size="large" onClick={() => this.handleChangeStatus('statusAccept', 2)}>
+            </RadioButton>
+            <RadioButton value="2">
               <span>已接单 ({acceptCount})</span>
-            </Button>
-            <Button type={statusInvalid} size="large" onClick={() => this.handleChangeStatus('statusInvalid', 2)}>
+            </RadioButton>
+            <RadioButton value="3">
               <span>已作废 ({invalidCount})</span>
-            </Button>
-          </ButtonGroup>
+            </RadioButton>
+          </RadioGroup>
         </div>
         <div className="page-body">
           <div className="panel-header">

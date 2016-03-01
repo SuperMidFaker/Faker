@@ -87,7 +87,7 @@ export default {
     getcustomsBrokers(tenantId) {
       const args = [tenantId];
       const sql = `SELECT t.short_name,t.partner_tenant_id as \`key\`  FROM sso_partners as t
-                    inner join sso_partner_types as t1 on t.partner_tenant_id=t1.partner_tenant_id and t.tenant_id=t1.tenant_id
+                    inner join sso_partnerships as t1 on t.partner_tenant_id=t1.partner_tenant_id and t.tenant_id=t1.tenant_id
                     where t1.type=1 and t.tenant_id= ? order by t.partner_tenant_id`;
       console.log(sql, args);
       return mysql.query(sql, args);
