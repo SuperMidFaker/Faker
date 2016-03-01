@@ -11,6 +11,18 @@ const ACCOUNT_STATUS = {
     text: '停用'
   }
 };
+const DELEGATE_STATUS = {
+  normal: {
+    id: 0,
+    name: 'normal',
+    text: '待处理'
+  },
+  blocked: {
+    id: 1,
+    name: 'blocked',
+    text: '停用'
+  }
+};
 const TENANT_ROLE = {
   owner: {
     name: 'owner',
@@ -23,6 +35,20 @@ const TENANT_ROLE = {
   member: {
     name: 'member',
     text: '成员'
+  }
+};
+const TENANT_USEBOOK = {
+  owner: {
+    name: 2,
+    text: '拥有者'
+  },
+  manager: {
+    name: 1,
+    text: '是'
+  },
+  member: {
+    name: 0,
+    text: '否'
   }
 };
 const ADMIN = 'admin';
@@ -75,5 +101,7 @@ export {
   ADMIN,
   ENTERPRISE,
   BRANCH,
-  PERSONNEL
+  PERSONNEL,
+  DELEGATE_STATUS,
+  TENANT_USEBOOK
 };

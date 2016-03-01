@@ -14,6 +14,9 @@ import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
+import * as importDelegate from './containers/import/delegate';
+import ExporT from './containers/module-export';
+import * as exportdelegate from './containers/export/delegate';
 import ImportDashboard from './containers/import/dashboard';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';
@@ -22,7 +25,7 @@ import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
-import * as importDelegate from './containers/import/delegate';
+import * as importTask from './containers/import/task';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
@@ -74,6 +77,17 @@ export default (store, cookie) => {
               <IndexRoute component={importDelegate.List} />
               <Route path="new" component={importDelegate.Edit} />
               <Route path="edit/:id" component={importDelegate.Edit} />
+            </Route>
+            <Route path="passage">
+              <IndexRoute component={importTask.List} />
+              
+            </Route>
+          </Route>
+          <Route path="export" component={ExporT}>
+            <Route path="delegate">
+                <IndexRoute component={exportdelegate.List} />
+                <Route path="new" component={exportdelegate.Edit}/>
+                <Route path="edit/:id" component={exportdelegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
