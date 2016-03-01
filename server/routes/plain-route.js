@@ -9,7 +9,8 @@ export default [
    ['get', '/corp/*', plainRender],
    ['get', '/wms*', plainRender],
    ['get', '/import*', plainRender],
-   ['get', '/account/logout', logoutUser]
+   ['get', '/account/logout', logoutUser],
+   ['get', '/export*', plainRender]
 ];
 
 function *plainRender() {
