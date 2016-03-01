@@ -6,7 +6,6 @@ import connectFetch from '../reusable/decorators/connect-fetch';
 import './root.less';
 
 function fetchData({state, dispatch, cookie, location}) {
-  console.log('search query', `${location.query}`, 'search in root fetchdata', `${location.search}`)
   if (!isLoaded(state, 'corpDomain')) {
     // client side use location.query
     const query = location.query ||
