@@ -15,6 +15,7 @@ import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
+import * as importDelegate from './containers/import/delegate';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
@@ -22,19 +23,16 @@ import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
-import * as importDelegate from './containers/import/delegate';
-import { parse } from 'query-string';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
-    console.log('checkauth query', nextState.location.query);
     function checkAuth() {
       const { account: { username, subdomain } } = store.getState();
-      console.log('in checkauth', username, subdomain, nextState.location);
       let querySubdomain;
       if (nextState.location.search) {
-        const query = parse(nextState.location.search.substring(1));
-        console.log('in checkauth query', query);
+        // seems only enter in server side, we need check the search string
+        // this callabck is blocking
+        const query = require('query-string').parse(nextState.location.search.substring(1));
         querySubdomain = query && query.subdomain;
       }
       if (username === '' || (querySubdomain && querySubdomain !== subdomain)) {
@@ -43,7 +41,6 @@ export default (store, cookie) => {
       }
       cb();
     }
-    console.log('account', store.getState().account);
     if (!isLoaded(store.getState(), 'account')) {
       store.dispatch(loadAccount(cookie)).then(checkAuth);
     } else {

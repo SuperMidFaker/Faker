@@ -39,7 +39,7 @@ export default class CorpPack extends React.Component {
       single: false,
       key: 'corpsetting-4',
       icon: 's7-share',
-      text: '合作网络',
+      text: '合作关系',
       sublinks: [{
         key: 'partner-1',
         path: '/corp/partners',

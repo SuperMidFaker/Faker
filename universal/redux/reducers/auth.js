@@ -28,62 +28,63 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-  case LOGIN:
-    return {
-      ...state,
-      isAuthed: false,
-      loggingIn: true
-    };
-  case LOGIN_SUCCEED:
-    let token;
-    let userType;
-    if (action.result.data && action.result.data.token) {
-      token = action.result.data.token;
-      userType = action.result.data.userType;
+    case LOGIN:
+      return {
+        ...state,
+        isAuthed: false,
+        loggingIn: true
+      };
+    case LOGIN_SUCCEED: {
+      let token;
+      let userType;
+      if (action.result.data && action.result.data.token) {
+        token = action.result.data.token;
+        userType = action.result.data.userType;
+      }
+      return {
+        ...state,
+        loggingIn: false,
+        error: null,
+        password: '',
+        isAuthed: true,
+        userType,
+        token
+      };
     }
-    return {
-      ...state,
-      loggingIn: false,
-      error: null,
-      password: '',
-      isAuthed: true,
-      userType,
-      token
-    };
-  case LOGIN_FAIL:
-    return {
-      ...state,
-      loggingIn: false,
-      token: null,
-      error: { message: action.error.msg ? `C${action.error.error_code}: ${action.error.msg}`
-      : action.error.toString() }
-    };
-  case INPUT_CHANGE:
-    return {
-      ...state,
-      [action.data.field]: action.data.value
-    };
-  case CPD_LOAD_FAIL:
-    return {
-      ...state,
-      nonTenant: true,
-      error: {message: action.error.msg || 'tenant subdomain do not exist'}
-    };
-  case PWD_CHANGE_SUCCEED:
-    action.history.goBack(); // todo change to componentWillReceiveProps
-    return state;
-  case ENTER_FORGOT_PAGE:
-    return { ...state, error: null, smsId: null, verified: false };
-  case SMS_REQUEST_SUCCEED:
-    return { ...state, error: null, smsId: action.result.data.smsId, userId: action.result.data.userId };
-  case SMS_REQUEST_FAIL:
-    return { ...state, error: { message: action.error.msg || action.error.toString() } };
-  case SMS_VERIFY_SUCCEED:
-    return { ...state, error: null, verified: true };
-  case SMS_VERIFY_FAIL:
-    return { ...state, error: { message: action.error.msg || action.error.toString() } };
-  default:
-    return state;
+    case LOGIN_FAIL:
+      return {
+        ...state,
+        loggingIn: false,
+        token: null,
+        error: { message: action.error.msg ? `C${action.error.error_code}: ${action.error.msg}`
+        : action.error.toString() }
+      };
+    case INPUT_CHANGE:
+      return {
+        ...state,
+        [action.data.field]: action.data.value
+      };
+    case CPD_LOAD_FAIL:
+      return {
+        ...state,
+        nonTenant: true,
+        error: {message: action.error.msg || 'tenant subdomain do not exist'}
+      };
+    case PWD_CHANGE_SUCCEED:
+      action.history.goBack(); // todo change to componentWillReceiveProps
+      return state;
+    case ENTER_FORGOT_PAGE:
+      return { ...state, error: null, smsId: null, verified: false };
+    case SMS_REQUEST_SUCCEED:
+      return { ...state, error: null, smsId: action.result.data.smsId, userId: action.result.data.userId };
+    case SMS_REQUEST_FAIL:
+      return { ...state, error: { message: action.error.msg || action.error.toString() } };
+    case SMS_VERIFY_SUCCEED:
+      return { ...state, error: null, verified: true };
+    case SMS_VERIFY_FAIL:
+      return { ...state, error: { message: action.error.msg || action.error.toString() } };
+    default:
+      return state;
   }
 }
 

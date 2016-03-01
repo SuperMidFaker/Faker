@@ -519,7 +519,6 @@ function *switchPersonnelStatus() {
 
 function *getCorpBySubdomain() {
   const subdomain = this.request.query.subdomain;
-  console.log('getCorpBySubdomain', subdomain);
   try {
    const result = yield tenantDao.getTenantByDomain(subdomain);
    if (result.length === 0) {
