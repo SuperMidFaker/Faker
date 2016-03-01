@@ -87,7 +87,6 @@ export default (store, cookie) => {
             </Route>
             <Route path="passage">
               <IndexRoute component={importTask.List} />
-              
             </Route>
           </Route>
           <Route path="export" component={ExporT}>

@@ -152,7 +152,7 @@ export default class CorpEdit extends React.Component {
         className="form-edit-content offset-right-col">
           {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
           {
-            isCreating ?  this.renderOwnerForm() : this.renderOwnerSelect()
+            isCreating ? this.renderOwnerForm() : this.renderOwnerSelect()
           }
           <Row>
             <Col span="18" offset="6">
