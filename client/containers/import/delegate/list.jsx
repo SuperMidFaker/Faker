@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import NavLink from '../../../../reusable/components/nav-link';
 import {
-  submitDelegate,
   loadDelegates,
   updateId,
   delId,
@@ -52,7 +51,6 @@ function fetchData({state, dispatch, cookie}) {
   updateId,
   delId,
   loadDelegates,
-  submitDelegate,
   beginEdit,
   edit,
   cancelEdit,
@@ -72,7 +70,6 @@ export default class ImportDelegate extends React.Component {
     cancelEdit: PropTypes.func.isRequired,
     loadDelegates: PropTypes.func.isRequired,
     loadStatus: PropTypes.func.isRequired,
-    submitDelegate: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired
   }
   constructor(props) {

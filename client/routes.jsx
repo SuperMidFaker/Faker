@@ -15,10 +15,10 @@ import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
-import * as importDelegate from './containers/import/delegate';
-import * as importTask from './containers/import/task';
-import ExporT from './containers/module-export';
-import * as exportdelegate from './containers/export/delegate';
+import * as ImportDelegate from './containers/import/delegate';
+import * as ImportTask from './containers/import/task';
+import ExportM from './containers/module-export';
+import * as ExportDelegate from './containers/export/delegate';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
@@ -81,19 +81,19 @@ export default (store, cookie) => {
           <Route path="import" component={ImportM}>
             <IndexRoute component={ImportDashboard} />
             <Route path="delegate">
-              <IndexRoute component={importDelegate.List} />
-              <Route path="new" component={importDelegate.Edit} />
-              <Route path="edit/:id" component={importDelegate.Edit} />
+              <IndexRoute component={ImportDelegate.List} />
+              <Route path="new" component={ImportDelegate.Edit} />
+              <Route path="edit/:id" component={ImportDelegate.Edit} />
             </Route>
             <Route path="passage">
-              <IndexRoute component={importTask.List} />
+              <IndexRoute component={ImportTask.List} />
             </Route>
           </Route>
-          <Route path="export" component={ExporT}>
+          <Route path="export" component={ExportM}>
             <Route path="delegate">
-                <IndexRoute component={exportdelegate.List} />
-                <Route path="new" component={exportdelegate.Edit}/>
-                <Route path="edit/:id" component={exportdelegate.Edit}/>
+                <IndexRoute component={ExportDelegate.List} />
+                <Route path="new" component={ExportDelegate.Edit}/>
+                <Route path="edit/:id" component={ExportDelegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
