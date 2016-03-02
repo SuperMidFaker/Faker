@@ -46,7 +46,7 @@ const initialState = {
   },
   sendlist: {
     data: []
-  },
+  }
 };
 // 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
@@ -216,7 +216,7 @@ export default function reducer(state = initialState, action) {
           return {...state
           };
         }
-      };
+      }
     case actionTypes.SEND_LOAD_SUCCEED:
       return {...state,
         loaded: true,

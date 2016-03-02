@@ -162,7 +162,6 @@ export default class ImportDelegate extends React.Component {
     } else {
       return <span style={style}>{text}</span>;
     }
-
   }
 
   render() {
