@@ -29,12 +29,6 @@ export default class CorpPack extends React.Component {
       icon: 's7-users',
       text: '用户管理'
     }, {
-      single: true,
-      key: 'corpsetting-22',
-      path: '/corp/personnel_test',
-      icon: 's7-users',
-      text: '用户管理1'
-    }, {
       invisible: this.props.accountType === BRANCH,
       single: true,
       key: 'corpsetting-3',

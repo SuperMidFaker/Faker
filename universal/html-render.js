@@ -62,7 +62,7 @@ export default function render(request) {
             const content = ReactDom.renderToString(component);
             const assets = webpackIsomorphicTools.assets();
             let pageCss = '';
-            Object.keys(assets.styles).map((style, i) => {
+            Object.keys(assets.styles).map(style => {
               pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
             });
             let pageJs = `
@@ -71,7 +71,7 @@ export default function render(request) {
             </script>`;
             pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
             Object.keys(assets.javascript).filter(script => script !== 'vendor')
-            .map((script, i) => {
+            .map(script => {
               pageJs += `<script src=${assets.javascript[script]}></script>`;
             });
             const htmls = renderAsHtml(pageCss, pageJs, content);

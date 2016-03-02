@@ -127,20 +127,28 @@ export default class CorpEdit extends React.Component {
             <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}}
               help={getFieldError('loginName')} hasFeedback required>
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
-              rules: [{validator: (rule, value, callback) =>
-              isLoginNameExist(value, code, this.props.formData.loginId,
-              this.props.tenant.id, callback,
-              message, this.props.checkLoginName)}]
+                rules: [{
+                  validator: (rule, value, callback) => isLoginNameExist(
+                    value, code, this.props.formData.loginId,
+                    this.props.tenant.id, callback,
+                    message, this.props.checkLoginName)
+                }]
               })} />
             </FormItem>
-            { isCreating && this.renderTextInput('登录密码', '首次登录时会提示更改密码', 'password',
-              true, [{required: true, min: 6, message: '至少6位字符'}],
-            null, 'password') }
-            {this.renderTextInput('手机号', '可作登录帐号使用', 'phone', true, [{
-            validator: (rule, value, callback) => validatePhone(value, callback)
-            }])}
-            {this.renderTextInput('Email', '绑定后可作登录帐号使用', 'email', false, [{
-              type: 'email', message: 'email格式错误'}])}
+            {
+              isCreating && this.renderTextInput(
+                '登录密码', '首次登录时会提示更改密码', 'password',
+                true, [{required: true, min: 6, message: '至少6位字符'}],
+                null, 'password')
+            }
+            {this.renderTextInput(
+              '手机号', '可作登录帐号使用', 'phone', true,
+              [{ validator: (rule, value, callback) => validatePhone(value, callback) }]
+            )}
+            {this.renderTextInput(
+              'Email', '绑定后可作登录帐号使用', 'email', false,
+              [{ type: 'email', message: 'email格式错误'}]
+            )}
             {this.renderTextInput('职位', '', 'position')}
             {this.props.formData.role !== TENANT_ROLE.owner.name &&
             <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>

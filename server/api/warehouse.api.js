@@ -5,8 +5,7 @@ import Result from '../../reusable/node-util/response-result';
 export default [
   ['get', '/v1/wewms/warehouses', warehouseG],
   ['post', '/v1/wewms/warehouse', warehouseP],
-  ['put', '/v1/wewms/warehouse', updateWarehouse],
-  ['delete', '/v1/wewms/warehouse', delWarehouse],
+
   ['get', '/v1/wms/customer/warehouses', getWarehouses],
   ['post', '/v1/wms/customer/inbound', getInbound],
   ['post', '/v1/wms/customer/outbound', getOutbound],
@@ -45,28 +44,6 @@ function *warehouseP() {
   } catch (e) {
     console.log(e);
     return Result.InternalServerError(this, '添加仓库异常');
-  }
-}
-
-function *updateWarehouse() {
-  const body = yield cobody(this);
-  try {
-    yield whDao.updateWh(body.warehouse);
-    return Result.OK(this);
-  } catch (e) {
-    console.log(e);
-    return Result.InternalServerError(this, '更新仓库异常');
-  }
-}
-
-function *delWarehouse() {
-  const body = yield cobody(this);
-  try {
-    yield whDao.deleteWh(body.whkey);
-    return Result.OK(this);
-  } catch (e) {
-    console.log(e);
-    return Result.InternalServerError(this, '删除仓库异常');
   }
 }
 

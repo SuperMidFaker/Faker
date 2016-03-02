@@ -19,6 +19,7 @@ export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
+  filters: [],
   selectedIndex: -1,
   branches: [],
   tenant: {
@@ -44,20 +45,25 @@ export default function reducer(state = initialState, action) {
       // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:
-      return { ...state, loading: true };
+      return {
+        ...state, loading: true,
+        filters: action.params.filters ? JSON.parse(action.params.filters) : []
+      };
     case actionTypes.PERSONNEL_LOAD_SUCCEED:
-      return {...state, loaded: true, loading: false,
-        personnelist: {...state.personnelist, ...action.result.data}
+      return {
+        ...state, loaded: true, loading: false,
+        personnelist: { ...state.personnelist, ...action.result.data }
       };
     case actionTypes.PERSONNEL_LOAD_FAIL:
-      return {...state, loading: false};
+      return { ...state, loading: false };
     case actionTypes.MASTER_TENANTS_LOAD_SUCCEED:
-      return {...state, branches: action.result.data,
+      return {
+        ...state, branches: action.result.data,
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
           parentId: action.result.data[0].parentId
         } : initialState.tenant
-    };
+      };
     case actionTypes.SWITCH_TENANT:
       return {...state, tenant: action.tenant};
     case actionTypes.SWITCH_STATUS_SUCCEED: {
@@ -66,24 +72,25 @@ export default function reducer(state = initialState, action) {
       return {...state, personnelist};
     }
     case actionTypes.PERSONNEL_EDIT_SUCCEED: {
-      const personnelist = {...state.personnelist};
+      const personnelist = { ...state.personnelist };
       personnelist.data[state.selectedIndex] = action.data.personnel;
       return { ...state, personnelist, selectedIndex: -1 };
     }
     case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
-      const personnelist = {...state.personnelist};
-      if ((personnelist.current - 1) * personnelist.pageSize <= personnelist.totalCount // = for 0 totalCount
-          && personnelist.current * personnelist.pageSize > personnelist.totalCount) {
-        personnelist.data.push({...action.data.personnel, key: action.result.data.pid,
-                            loginId: action.result.data.loginId, status: action.result.data.status});
+      const personnelist = { ...state.personnelist };
+      if (personnelist.current * personnelist.pageSize > personnelist.totalCount) {
+        personnelist.data.push({
+          ...action.data.personnel, key: action.result.data.pid,
+          loginId: action.result.data.loginId, status: action.result.data.status
+        });
       }
       personnelist.totalCount++;
       return { ...state, personnelist };
     }
     // todo deal with submit fail submit loading
     default:
-      return formReducer(actionTypes, state, action, {key: null, role: TENANT_ROLE.member.name}, 'personnelist')
-            || state;
+      return formReducer(actionTypes, state, action, { key: null, role: TENANT_ROLE.member.name },
+                         'personnelist') || state;
   }
 }
 

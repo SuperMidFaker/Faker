@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {parse} from 'query-string';
-import {loadCorpByDomain} from '../universal/redux/reducers/corp-domain';
-import {isLoaded} from '../reusable/common/redux-actions';
+import { loadCorpByDomain } from '../universal/redux/reducers/corp-domain';
+import { isLoaded } from '../reusable/common/redux-actions';
 import connectFetch from '../reusable/decorators/connect-fetch';
 import './root.less';
 
 function fetchData({state, dispatch, cookie, location}) {
   if (!isLoaded(state, 'corpDomain')) {
-    const query = parse(location.search.substring(1));
+    // client side use location.query
+    const query = location.query ||
+      (location.search && require('query-string').parse(location.search.substring(1)));
     return dispatch(loadCorpByDomain(cookie, {
       subdomain: query.subdomain
     }));

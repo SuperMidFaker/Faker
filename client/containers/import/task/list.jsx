@@ -33,7 +33,6 @@ function fetchData({state, dispatch, cookie}) {
       tenantId: state.account.tenantId,
       loginId: state.account.loginId
     }));
-    console.log(state.account.loginId);
     promises.push(p);
   }
   // 分别加载当前用户所有的租户列表和该用户所在租户下用户列表
@@ -230,7 +229,6 @@ export default class TaskSetting extends React.Component {
       loading,
       needUpdate
     } = this.props;
-    console.log(notSendCount, notAcceptCount, acceptCount, invalidCount);
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadTask(null, params),
       resolve: (result) => result.data,
