@@ -14,10 +14,11 @@ import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
-import * as importDelegate from './containers/import/delegate';
-import ExporT from './containers/module-export';
-import * as exportdelegate from './containers/export/delegate';
 import ImportDashboard from './containers/import/dashboard';
+import * as ImportDelegate from './containers/import/delegate';
+import * as ImportTask from './containers/import/task';
+import ExportM from './containers/module-export';
+import * as ExportDelegate from './containers/export/delegate';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
@@ -25,13 +26,19 @@ import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
-import * as importTask from './containers/import/task';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
     function checkAuth() {
-      const {account: {username}} = store.getState();
-      if (username === '') {
+      const { account: { username, subdomain } } = store.getState();
+      let querySubdomain;
+      if (nextState.location.search) {
+        // seems only enter in server side, we need check the search string
+        // this callabck is blocking
+        const query = require('query-string').parse(nextState.location.search.substring(1));
+        querySubdomain = query && query.subdomain;
+      }
+      if (username === '' || (querySubdomain && querySubdomain !== subdomain)) {
         const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
       }
@@ -55,13 +62,13 @@ export default (store, cookie) => {
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={PackOrganization}>
             <IndexRoute component={Organization.List} />
-            <Route path="new" component={Organization.Edit}/>
+            <Route path="new" component={Organization.Edit} />
             <Route path="edit/:id" component={Organization.Edit} />
           </Route>
           <Route path="personnel">
             <IndexRoute component={Personnel.List} />
-            <Route path="new" component={Personnel.Edit}/>
-            <Route path="edit/:id" component={Personnel.Edit}/>
+            <Route path="new" component={Personnel.Edit} />
+            <Route path="edit/:id" component={Personnel.Edit} />
           </Route>
           <Route path="partners">
             <IndexRoute component={Cooperation.Partners} />
@@ -74,6 +81,7 @@ export default (store, cookie) => {
           <Route path="import" component={ImportM}>
             <IndexRoute component={ImportDashboard} />
             <Route path="delegate">
+<<<<<<< HEAD
               <IndexRoute component={importDelegate.List} />
               <Route path="new" component={importDelegate.Edit} />
               <Route path="edit/:id" component={importDelegate.Edit} />
@@ -82,13 +90,21 @@ export default (store, cookie) => {
             <Route path="passage">
               <IndexRoute component={importTask.List} />
 
+=======
+              <IndexRoute component={ImportDelegate.List} />
+              <Route path="new" component={ImportDelegate.Edit} />
+              <Route path="edit/:id" component={ImportDelegate.Edit} />
+            </Route>
+            <Route path="passage">
+              <IndexRoute component={ImportTask.List} />
+>>>>>>> a480c015df42ad2eee1016b1f5ae4bcb708e8c86
             </Route>
           </Route>
-          <Route path="export" component={ExporT}>
+          <Route path="export" component={ExportM}>
             <Route path="delegate">
-                <IndexRoute component={exportdelegate.List} />
-                <Route path="new" component={exportdelegate.Edit}/>
-                <Route path="edit/:id" component={exportdelegate.Edit}/>
+                <IndexRoute component={ExportDelegate.List} />
+                <Route path="new" component={ExportDelegate.Edit}/>
+                <Route path="edit/:id" component={ExportDelegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>

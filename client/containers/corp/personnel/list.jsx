@@ -41,10 +41,11 @@ function fetchData({state, dispatch, cookie}) {
 })
 @connect(
   state => ({
+    code: state.account.code,
     personnelist: state.personnel.personnelist,
+    filters: state.personnel.filters,
     branches: state.personnel.branches,
     tenant: state.personnel.tenant,
-    code: state.account.code,
     loading: state.personnel.loading
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
@@ -55,6 +56,7 @@ export default class PersonnelSetting extends React.Component {
     code: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
     branches: PropTypes.array.isRequired,
     tenant: PropTypes.object.isRequired,
     loadPersonnel: PropTypes.func.isRequired,
@@ -62,22 +64,22 @@ export default class PersonnelSetting extends React.Component {
     switchStatus: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired
   }
-  constructor() {
-    super();
-    this.state = {
-      selectedRowKeys: []
-    };
+  state = {
+    selectedRowKeys: []
   }
-  handleSelectionClear() {
-    this.setState({selectedRowKeys: []});
+  handleSelectionClear = () => {
+    this.setState({
+      selectedRowKeys: []
+    });
   }
   handleTenantSwitch(val) {
-    const {personnelist} = this.props;
+    const { personnelist, filters } = this.props;
     this.props.loadPersonnel(null, {
       tenantId: val,
       pageSize: personnelist.pageSize,
+      filters: JSON.stringify(filters),
       currentPage: 1
-    }).then((result) => {
+    }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -107,7 +109,7 @@ export default class PersonnelSetting extends React.Component {
       });
   }
   handlePersonnelDel(record) {
-    const { tenant, personnelist: { totalCount, current, pageSize } } = this.props;
+    const { tenant, filters, personnelist: { totalCount, current, pageSize } } = this.props;
     this.props.delPersonnel(record.key, record.loginId, tenant).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -115,25 +117,32 @@ export default class PersonnelSetting extends React.Component {
         this.props.loadPersonnel(null, {
           tenantId: tenant.id,
           pageSize,
+          filters: JSON.stringify(filters),
           currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
         });
       }
     });
   }
-  handleSearch(searchVal) {
-    // OR name condition
-    const filters = [[{
-      name: 'name',
-      value: searchVal
-    }, {
-      name: 'email',
-      value: searchVal
-    }, {
-      name: 'phone',
-      value: searchVal
-    }]];
-    // todo how to concatenation the table sort filter params
-    // in new Table impl the filter and sort can't be emptied
+  handleSearch = (searchVal) => {
+    const filters = this.props.filters.filter(
+      flt => !(flt.length === 3 && flt[0].name === 'name' &&
+        flt[1].name === 'email' && flt[2].name === 'phone')
+    );
+    if (searchVal) {
+      // OR name column clause
+      filters.push(
+        [{
+          name: 'name',
+          value: searchVal
+        }, {
+          name: 'email',
+          value: searchVal
+        }, {
+          name: 'phone',
+          value: searchVal
+        }]
+      );
+    }
     this.props.loadPersonnel(null, {
       tenantId: this.props.tenant.id,
       pageSize: this.props.personnelist.pageSize,
@@ -151,8 +160,8 @@ export default class PersonnelSetting extends React.Component {
   render() {
     const { code, tenant, personnelist, branches, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadPersonnel(null, params),
-      resolve: (result) => result.data,
+      fetcher: params => this.props.loadPersonnel(null, params),
+      resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         // 删除完一页时返回上一页
@@ -168,10 +177,15 @@ export default class PersonnelSetting extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          filters: []
+          filters: this.props.filters
         };
+        // 首先去除不存在的过滤条件
+        params.filters = params.filters.filter(
+          flt => !flt.name || (flt.name in filters && filters[flt.name].length)
+        );
         for (const key in filters) {
-          if (filters[key] && filters[key].length > 0) {
+          if ((key in filters) && filters[key].length > 0) {
+            params.filters = params.filters.filter(flt => flt.name !== key);
             params.filters.push({
               name: key,
               value: filters[key][0]
@@ -239,21 +253,24 @@ export default class PersonnelSetting extends React.Component {
           return (
             <span>
               <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
-            </span>);
+            </span>
+          );
         } else if (record.status === ACCOUNT_STATUS.normal.id) {
           return (
             <span>
               <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
-            </span>);
+            </span>
+          );
         } else if (record.status === ACCOUNT_STATUS.blocked.id) {
           return (
             <span>
               <a role="button" onClick={() => this.handlePersonnelDel(record)}>删除</a>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
-            </span>);
+            </span>
+          );
         } else {
           return <span />;
         }
@@ -263,7 +280,7 @@ export default class PersonnelSetting extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={(val) => this.handleSearch(val)} />
+            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={this.handleSearch} />
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
           <span>所属组织</span>
@@ -284,7 +301,7 @@ export default class PersonnelSetting extends React.Component {
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={() => this.handleSelectionClear()} className="pull-right">清除选择</Button>
+            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">清除选择</Button>
           </div>
         </div>
       </div>
