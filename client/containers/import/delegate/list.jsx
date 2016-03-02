@@ -9,7 +9,6 @@ import {
   beginEdit,
   edit,
   cancelEdit,
-  loadStatus,
   loadCustomsBrokers
 } from '../../../../universal/redux/reducers/importdelegate';
 import {isLoaded} from '../../../../reusable/common/redux-actions';
@@ -30,9 +29,6 @@ function fetchData({state, dispatch, cookie}) {
       pageSize: state.importdelegate.idlist.pageSize,
       currentPage: state.importdelegate.idlist.current
     }));
-    promises.push(p);
-
-    p = dispatch(loadStatus(cookie, {tenantId: state.account.tenantId}));
     promises.push(p);
     p = dispatch(loadCustomsBrokers(cookie, state.account.tenantId));
     promises.push(p);
@@ -56,8 +52,7 @@ function fetchData({state, dispatch, cookie}) {
   submitDelegate,
   beginEdit,
   edit,
-  cancelEdit,
-  loadStatus
+  cancelEdit
 })
 export default class ImportDelegate extends React.Component {
   static propTypes = { // 属性检测
@@ -72,7 +67,6 @@ export default class ImportDelegate extends React.Component {
     edit: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     loadDelegates: PropTypes.func.isRequired,
-    loadStatus: PropTypes.func.isRequired,
     submitDelegate: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired
   }
@@ -124,11 +118,8 @@ export default class ImportDelegate extends React.Component {
       currentStatus: e.target.value,
       filters: JSON.stringify(filters)
     });
-    // 切换状态的时候同时更新状态数量
-    //  this.props.loadStatus(null, {
-    //   tenantId: this.props.tenantId,
-    //   filters: JSON.stringify(filters)
-    // });
+
+    this.setState({statusValue: e.target.value});
   }
 
   handleSearch(value) {
@@ -139,11 +130,6 @@ export default class ImportDelegate extends React.Component {
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
       currentStatus: this.state.curStatus,
-      filters: JSON.stringify(filters)
-    });
-
-    this.props.loadStatus(null, {
-      tenantId: this.props.tenantId,
       filters: JSON.stringify(filters)
     });
   }
@@ -166,14 +152,19 @@ export default class ImportDelegate extends React.Component {
       ]
     ];
   }
-  renderColumnText(status, text) {
+  renderColumnText(record, text, ishref = false) {
     let style = {};
-    if (status === 3) {
+    if (record.status === 3) {
       style = {
         color: '#CCC'
       };
     }
-    return <span style={style}>{text}</span>;
+    if (ishref === true) {
+      return <NavLink to={`/import/delegate/edit/${record.key}`}>{text}</NavLink>;
+    } else {
+      return <span style={style}>{text}</span>;
+    }
+
   }
 
   render() {
@@ -239,26 +230,26 @@ export default class ImportDelegate extends React.Component {
       {
         title: '报关业务单号',
         dataIndex: 'del_no',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record, text, true)
       }, {
         title: '报关行',
         sorter: true,
         dataIndex: 'short_name',
         filters: filterArray,
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record, text)
       }, {
         title: '委托时间',
         sorter: true,
         dataIndex: 'del_date',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record, text)
       }, {
         title: '接单时间',
         dataIndex: 'rec_del_date',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record, text)
       }, {
         title: '提单号',
         dataIndex: 'bill_no',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record, text)
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -304,7 +295,7 @@ export default class ImportDelegate extends React.Component {
                 <span>
                   <NavLink to={`/import/delegate/edit/${record.key}`}>修改</NavLink>
                   <span className="ant-divider"/>
-                  <a href="#" className="ant-dropdown-link">发送</a>
+                  <NavLink to={`/import/delegate/send/${record.key}`}>发送</NavLink>
                 </span>
               );
             case 1:

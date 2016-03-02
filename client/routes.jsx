@@ -77,10 +77,11 @@ export default (store, cookie) => {
               <IndexRoute component={importDelegate.List} />
               <Route path="new" component={importDelegate.Edit} />
               <Route path="edit/:id" component={importDelegate.Edit} />
+              <Route path="send/:id" component={importDelegate.Send} />
             </Route>
             <Route path="passage">
               <IndexRoute component={importTask.List} />
-              
+
             </Route>
           </Route>
           <Route path="export" component={ExporT}>
