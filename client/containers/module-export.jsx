@@ -9,7 +9,7 @@ export default class ImportM extends React.Component {
     const linkMenus = [{
       single: true,
       key: 'export-1',
-      path: '/import/',
+      path: '/export/',
       icon: 's7-refresh-cloud',
       text: '工作台'
     }, {
@@ -18,6 +18,12 @@ export default class ImportM extends React.Component {
       path: '/export/delegate',
       icon: 's7-refresh-cloud',
       text: '业务委托'
+    }, {
+      single: true,
+      key: 'export-3',
+      path: '/export/accept',
+      icon: 's7-mail-open-file',
+      text: '业务受理'
     }, {
       single: true,
       key: 'import-6',
