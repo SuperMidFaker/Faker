@@ -6,11 +6,12 @@ import delegate from '../models/delegate.db';
 export default [
    ['get', '/v1/delegate/delegate', getCorpdelegate],
    ['put', '/v1/delegate/status', switchdelegateStatus],
+   ['get', '/v1/delegate/StatusG', importdelegateStatusG],
    ['delete', '/v1/delegate/delete', deldelegate],
    ['put', '/v1/delegate/edit', editdelegate],
    ['post', '/v1/delegate/submit', submitdelegate],
    ['get', '/v1/delegate/:tid/tenants', getTenantsUnderMain],
-   ['get', '/v1/delegate/Master_Customs', getMaster_CustomsMain],
+   ['get', '/v1/delegate/getSelectOptions', getSelectOptions],
    ['put', '/v1/delegate/UnsentUnsent', getUnsent]
 ];
 
@@ -22,14 +23,16 @@ function *getCorpdelegate() {
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
   const sortField = this.request.query.sortField;
   const sortOrder = this.request.query.sortOrder;
+  
+  const currentStatus = parseInt(this.request.query.currentStatus || 0, 10) //木有状态则默认查询未发送的数据;
   try {
-    const counts = yield delegate.getTenantdelegateCount(tenantId, filters);
+    const counts = yield delegate.getTenantdelegateCount(tenantId, filters,currentStatus);
     const totalCount = counts[0].num;
     const personnel = yield delegate.getPageddelegateInCorp(tenantId, current, pageSize,
-                                                                  filters, sortField, sortOrder);
+                                                                  filters, sortField, sortOrder,currentStatus);
     // 换页,切换页数时从这里传到reducer里更新
     Result.OK(this, {
-      totalCount,
+      totalCount: totalCount.length > 0 ? totalCount[0].count : 0,
       current,
       pageSize,
       data: personnel
@@ -128,12 +131,34 @@ function *getTenantsUnderMain() {
     Result.InternalServerError(this, e.message);
   }
 }
-function *getMaster_CustomsMain() {
+function* getSelectOptions() {
+  const customsInfoList = yield delegate.getCustomsInfo();
+  const declareWayList = yield delegate.getDeclareWay();
+  const tradeModeList = yield delegate.getTradeMode();
+  return Result.OK(this, {
+    customsInfoList: customsInfoList,
+    declareWayList: declareWayList,
+    tradeModeList: tradeModeList
+  });
+}
+function* importdelegateStatusG() {
+  const tenantId = parseInt(this.request.query.tenantId || 0, 10);
+  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
   try {
-    const customs_code = yield delegate.getAttachedcustoms_code();
-    Result.OK(this, customs_code); 
+    const notSendCount = yield delegate.getStatusCount(tenantId, 0, filters);
+    const notAcceptCount = yield delegate.getStatusCount(tenantId, 1, filters);
+    const acceptCount = yield delegate.getStatusCount(tenantId, 2, filters);
+    const invalidCount = yield delegate.getStatusCount(tenantId, 3, filters);
+
+    return Result.OK(this, {
+      notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
+      notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
+      acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
+      invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0
+    });
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    console.log(e);
+    return Result.InternalServerError(this, e.message);
   }
 }
 

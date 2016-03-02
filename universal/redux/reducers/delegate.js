@@ -7,12 +7,13 @@ import { CORP_EDIT_SUCCEED } from './corps';
 const actionTypes = createActionTypes('@@welogix/delegate/', [
   'SWITCH_TENANT',
   'MASTER_TENANTS_LOAD', 'MASTER_TENANTS_LOAD_SUCCEED', 'MASTER_TENANTS_LOAD_FAIL',
-  'MASTER_Master_Customs_LOAD', 'MASTER_Master_Customs_LOAD_SUCCEED', 'MASTER_Master_Customs_LOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'delegate_SUBMIT', 'delegate_SUBMIT_SUCCEED', 'delegate_SUBMIT_FAIL',
   'delegate_DELETE', 'delegate_DELETE_SUCCEED', 'delegate_DELETE_FAIL',
   'delegate_EDIT', 'Delegate_EDIT_SUCCEED', 'delegate_EDIT_FAIL',
   'delegate_LOAD', 'delegate_LOAD_SUCCEED', 'delegate_LOAD_FAIL',
+  'ID_LOAD_STATUS_SUCCEED', 'ID_LOAD_STATUS_FAIL', 'ID_LOAD_STATUS',
+  'ID_LOAD_SELECTOPTIONS', 'ID_LOAD_SELECTOPTIONS_SUCCEED', 'ID_LOAD_SELECTOPTIONS_FAIL',
   'delegate_UnsentUnsent', 'delegate_UnsentUnsent_SUCCEED', 'delegate_UnsentUnsent_FAIL']);
 appendFormAcitonTypes('@@welogix/delegate/', actionTypes);
 
@@ -22,6 +23,10 @@ const initialState = {
   needUpdate: false,
   selectedIndex: -1,
   customs_code: [],
+  tenant: {
+    id: -1,
+    parentId: -1
+  },
   customs: {
     code: -1
   },
@@ -33,6 +38,18 @@ const initialState = {
     pageSize: 10,
     current: 1,
     data: []
+  },
+  customsBrokerList: [],
+  selectOptions: {
+    customsInfoList: [],
+    declareWayList: [],
+    tradeModeList: []
+  },
+  statusList: { // 初始化状态显示数量
+    notSendCount: 0,
+    notAcceptCount: 0,
+    acceptCount: 0,
+    invalidCount: 0
   }
 };
 export default function reducer(state = initialState, action) {
@@ -53,6 +70,31 @@ export default function reducer(state = initialState, action) {
     case actionTypes.delegate_UnsentUnsent_SUCCEED:
       return {...state, loaded: true, loading: false,
         delegateist: {...state.delegateist, ...action.result.data}
+      };
+      case actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED:
+      return {...state,
+        selectOptions: {...state.selectOptions,
+          customsInfoList: action.result.data.customsInfoList,
+          declareWayList: action.result.data.declareWayList,
+          tradeModeList: action.result.data.tradeModeList
+        }
+      };
+      case actionTypes.ID_LOAD_STATUS:
+      return {...state,
+        statusList: initialState.statusList
+      };
+    case actionTypes.ID_LOAD_STATUS_SUCCEED:
+      return {...state,
+        statusList: {...state.statusList,
+          invalidCount: action.result.data.invalidCount,
+          notSendCount: action.result.data.notSendCount,
+          notAcceptCount: action.result.data.notAcceptCount,
+          acceptCount: action.result.data.acceptCount
+        }
+      };
+    case actionTypes.ID_LOAD_STATUS_FAIL:
+      return {...state,
+        statusList: initialState.statusList
       };
     case actionTypes.delegate_UnsentUnsent_FAIL:
       return {...state, loading: false};
@@ -177,6 +219,17 @@ export function loadTenantsByMaster(cookie, tenantId) {
   };
 }
 
+export function loadSelectOptions(cookie) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.ID_LOAD_SELECTOPTIONS, actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED, actionTypes.ID_LOAD_SELECTOPTIONS_FAIL],
+      endpoint: `v1/delegate/getSelectOptions`,
+      method: 'get',
+      cookie
+    }
+  };
+}
+
 export function switchTenant(tenant) {
   return {
     type: actionTypes.SWITCH_TENANT,
@@ -202,6 +255,17 @@ export function switchStatus(index, pid, status) {
       method: 'put',
       params,
       cookie
+    }
+  };
+}
+export function loadStatus(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.ID_LOAD_STATUS, actionTypes.ID_LOAD_STATUS_SUCCEED, actionTypes.ID_LOAD_STATUS_FAIL],
+      endpoint: 'v1/delegate/StatusG',
+      method: 'get',
+      cookie,
+      params
     }
   };
 }

@@ -36,15 +36,26 @@ function concatFilterSqls(filters, args) {
 
 
 export default {
-    getTenantdelegateCount(tenantId, filters) {
+    getTenantdelegateCount(tenantId, filters,currentStatus) {
     const args = [tenantId];
+      let statusClause = "";
+      if (currentStatus != -1) {
+        statusClause = " and \`status\`= ?";
+        args.push(currentStatus);
+      }
     const filterClause = concatFilterSqls(filters, args); //" where tenant_id = ?";
-    const sql = `SELECT count(del_id) as num from g_bus_delegate where tenant_id = ?  ${filterClause}`;
+    const sql = `SELECT count(del_id) as num from g_bus_delegate where tenant_id = ? ${statusClause} ${filterClause}`;
     console.log(sql, args);
     return mysql.query(sql, args); //getTenantdelegateCount_test
    },
-    getPageddelegateInCorp(tenantId, current, pageSize, filters, sortField, sortOrder) {
+    getPageddelegateInCorp(tenantId, current, pageSize, filters, sortField, sortOrder,currentStatus) {
     const args = [tenantId];
+    let statusClause = "";
+    console.log(currentStatus);
+      if (currentStatus != -1) {
+        statusClause = " and \`status\`= ?";
+        args.push(currentStatus);
+      }
     const filterClause = concatFilterSqls(filters, args);
     let sortColumn = sortField || 'del_id';
     let sortClause = '';
@@ -52,7 +63,7 @@ export default {
       sortColumn = 'del_no';
     }
     sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-    const sql = `SELECT del_id as \`key\`,invoice_no,del_no,status,DATE_FORMAT(del_date, '%Y-%m-%d') as del_date,bill_no,rec_tenant_id,usebook from g_bus_delegate where tenant_id = ?  ${filterClause} ${sortClause}
+    const sql = `SELECT del_id as \`key\`,del_no,\`status\`,invoice_no,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,DATE_FORMAT(created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no,bill_no,usebook,trade_mode,urgent,other_note from g_bus_delegate where tenant_id = ? ${statusClause}  ${filterClause} ${sortClause}
       limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     console.log(sql, args);
@@ -89,8 +100,10 @@ export default {
     return mysql.update(sql, args, trans);
   },
   insertdelegate(creator,tenantId, trans) {
+    
+    
     const sql = `INSERT into g_bus_delegate(del_no,STATUS,invoice_no,del_date,created_date,master_customs,declare_way_no,bill_no,usebook,trade_mode,urgent,other_note,tenant_id) values (?, 0, ?,NOW(),NOW(),?,?,?,?,?,?,?,?)`;
-    const args = [creator.del_no,creator.invoice_no,creator.master_customs,creator.declare_way_no,creator.bill_no,creator.usebook,creator.trade_mode,creator.urgent,creator.other_note,tenantId];
+    const args = [1,creator.invoice_no,creator.master_customs,creator.declare_way_no,creator.bill_no,creator.usebook,creator.trade_mode,creator.urgent,creator.other_note,tenantId];
     return mysql.insert(sql, args, trans);
   },
   getAttachedTenants(tenantId) {
@@ -103,5 +116,27 @@ export default {
     const sql = `select id as \`key\`,customs_code as code,customs_name as name from PARA_CUSTOMS_REL`;
     const args = '';
     return mysql.query(sql, args);
-  }
+  },
+  getCustomsInfo() {
+      const args = [];
+      const sql = `SELECT id as \`key\`,customs_code as \`value\`,CONCAT(customs_code,' | ',customs_name) as \`text\` FROM para_customs_rel`;
+      return mysql.query(sql, args);
+    },
+    getDeclareWay() {
+      const args = [];
+      const sql = `SELECT distinct declare_way_no as \`value\`,CONCAT(declare_way_no,' | ',declare_way_name) as \`text\` FROM g_cop_declare_way`;
+      return mysql.query(sql, args);
+    },
+    getTradeMode() {
+      const args = [];
+      const sql = `SELECT TRADE_MODE as \`value\`,CONCAT(TRADE_MODE,' | ',ABBR_TRADE) as \`text\` from para_trade`;
+      return mysql.query(sql, args);
+    },
+    getStatusCount(tenantId, status, filters) {
+      const args = [tenantId, status];
+      const filterClause = concatFilterSqls(filters, args);
+      const sql = `select count(status) as count from g_bus_delegate where tenant_id=? and status=? ${filterClause}`;
+      console.log(sql, args);
+      return mysql.query(sql, args);
+    }
 }

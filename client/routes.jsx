@@ -25,7 +25,6 @@ import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
-import * as importDelegate from './containers/import/delegate';
 import * as importTask from './containers/import/task';
 
 export default (store, cookie) => {
