@@ -1,27 +1,19 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {loadSend} from '../../../../universal/redux/reducers/importdelegate';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {Table, Button, Select} from 'ant-ui';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 import './upload.less';
 const Option = Select.Option;
 
-function fetchData({state, dispatch, cookie, params}) {
-  const pid = params.id;
-  return dispatch(loadSend(state.importdelegate.idlist, cookie, pid));
-}
-
 function goBack(props) {
   props.history.goBack();
 }
 
-@connectFetch()(fetchData)
 @connect(state => ({ // 从初始化state中加载数据
   tenantId: state.account.tenantId,
-  sendlist: state.importdelegate.sendlist,
-  loading: state.importdelegate.loading
+  sendlist: state.importdelegate.sendlist
 }), {loadSend})
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({
@@ -36,7 +28,6 @@ export default class ImportDelegateSend extends React.Component {
   static propTypes = { // 属性检测
     history: PropTypes.object.isRequired,
     sendlist: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadSend: PropTypes.func.isRequired
   }
@@ -54,16 +45,7 @@ export default class ImportDelegateSend extends React.Component {
     return <span>{text}</span>;
   }
   render() {
-    const {sendlist, loading} = this.props;
-
-    const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadSend(null, params),
-      resolve: (result) => result.data,
-      extraParams: {
-        tenantId: this.props.tenantId
-      },
-      remotes: sendlist
-    });
+    const {sendlist} = this.props;
 
     const columns = [
       {
@@ -106,7 +88,7 @@ export default class ImportDelegateSend extends React.Component {
             </Select>
           </div>
           <div className="panel-body body-responsive">
-            <Table columns={columns} loading={loading} dataSource={dataSource} pagination={false}/>
+            <Table columns={columns} dataSource={sendlist.data}/>
           </div>
           <div className="bottom-fixed-row">
             <Button size="large" type="primary">发送</Button>

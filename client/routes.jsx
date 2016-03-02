@@ -91,7 +91,7 @@ export default(store, cookie) => {
               <IndexRoute component={ImportDelegate.List}/>
               <Route path="new" component={ImportDelegate.Edit}/>
               <Route path="edit/:id" component={ImportDelegate.Edit}/>
-              <Route path="send/:id" component={ImportDelegate.Send}/>
+              <Route path="send" component={ImportDelegate.Send}/>
             </Route>
             <Route path="passage">
               <IndexRoute component={ImportTask.List}/>

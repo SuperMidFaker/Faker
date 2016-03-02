@@ -39,6 +39,7 @@ function fetchData({state, dispatch, cookie}) {
 @connect(state => ({ // 从初始化state中加载数据
   tenantId: state.account.tenantId,
   idlist: state.importdelegate.idlist,
+  sendlist: state.importdelegate.sendlist,
   statusList: state.importdelegate.statusList,
   customsBrokerList: state.importdelegate.customsBrokerList,
   needUpdate: state.importdelegate.needUpdate,
@@ -66,7 +67,8 @@ export default class ImportDelegate extends React.Component {
     cancelEdit: PropTypes.func.isRequired,
     loadDelegates: PropTypes.func.isRequired,
     submitDelegate: PropTypes.func.isRequired,
-    tenantId: PropTypes.number.isRequired
+    tenantId: PropTypes.number.isRequired,
+    sendlist: PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);
@@ -74,7 +76,8 @@ export default class ImportDelegate extends React.Component {
       showForm: false,
       curStatus: 0,
       statusValue: '',
-      searchVal: ''
+      searchVal: '',
+      selectedRowKeys: []
     };
   }
   handleIdReg() {
@@ -133,6 +136,15 @@ export default class ImportDelegate extends React.Component {
   }
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
+  }
+  handleSend(record) {
+    this.props.sendlist.data = [];
+    if (!record) {
+      this.state.sendlist.map((item) => (this.props.sendlist.data.push(item)));
+    } else {
+      this.props.sendlist.data.push(record);
+    }
+    this.props.history.pushState(null, '/import/delegate/send');
   }
   createFilters(searchVal) { // 创建过滤
     return [
@@ -214,8 +226,16 @@ export default class ImportDelegate extends React.Component {
 
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
-      onSelect: (/* record, selected, selectedRows */) => {},
-      onSelectAll: (/* selected, selectedRows */) => {}
+      // selectedRowKeys: this.state.selectedRowKeys,
+      onSelect: (record, selected, selectedRows) => {
+        this.setState({sendlist: selectedRows});
+      },
+      onSelectAll: (selected, selectedRows) => {
+        this.setState({sendlist: selectedRows});
+      },
+      onChange: (selectedRowKeys) => {
+        this.setState({selectedRowKeys});
+      }
     };
 
     const filterArray = [];
@@ -292,7 +312,7 @@ export default class ImportDelegate extends React.Component {
                 <span>
                   <NavLink to={`/import/delegate/edit/${record.key}`}>修改</NavLink>
                   <span className="ant-divider"/>
-                  <NavLink to={`/import/delegate/send/${record.key}`}>发送</NavLink>
+                  <a role="button" onClick={() => this.handleSend(record)}>发送</a>
                 </span>
               );
             case 1:
@@ -356,6 +376,11 @@ export default class ImportDelegate extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
+          </div>
+          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0
+            ? 'hide'
+            : ''}`}>
+            <Button size="large" type="primary" onClick={() => this.handleSend()}>发送</Button>
           </div>
         </div>
       </div>
