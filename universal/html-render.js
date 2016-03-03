@@ -38,6 +38,18 @@ function renderAsHtml(pageCss, pageJs, content) {
 </html>`;
 }
 
+// https://github.com/koa-modules/locale/blob/master/index.js
+function getLocaleFromHeader(request) {
+  const accept = request.acceptsLanguages() || '',
+  const reg = /(^|,\s*)([a-z-]+)/gi,
+  let match, locale;
+  while ((match = reg.exec(accept))) {
+    if (!locale) {
+      locale = match[2];
+    }
+  }
+  return locale;
+}
 export default function render(request) {
   if (__DEV__) {
     webpackIsomorphicTools.refresh();
@@ -45,7 +57,6 @@ export default function render(request) {
   return new Promise((resolve, reject) => {
     const url = request.url;
     const location = createLocation(url);
-    console.log(url, location);
     const store = createStore();
     const cookie = request.get('cookie');
     match({ routes: routes(store, cookie), location }, (err, redirection, props) => {
@@ -56,8 +67,10 @@ export default function render(request) {
       } else if (!props) {
         reject([404]);
       } else {
+        const curLocale = getLocaleFromHeader(request);
+        addLocaleData(require(`react-intl/lib/locale-data/${curLocale.split('-')[0]}`));
         fetchInitialState(props.components, store, cookie, props.location, props.params)
-          .then( () => {
+          .then(() => {
             const component = (<App routingContext = {props} store = {store} />);
             const content = ReactDom.renderToString(component);
             const assets = webpackIsomorphicTools.assets();
@@ -76,7 +89,7 @@ export default function render(request) {
             });
             const htmls = renderAsHtml(pageCss, pageJs, content);
             resolve(htmls);
-          }).catch( (e) => {
+          }).catch(e => {
             reject(e);
           });
       }

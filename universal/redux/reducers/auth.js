@@ -1,5 +1,6 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
-import {CPD_LOAD_FAIL} from './corp-domain';
+import { CPD_LOAD_FAIL } from './corp-domain';
+import { ACC_LOAD_SUCCEED } from './account';
 const LOGIN = '@@qm-auth/auth/LOGIN';
 const LOGIN_SUCCEED = '@@qm-auth/auth/LOGIN_SUCCEED';
 const LOGIN_FAIL = '@@qm-auth/auth/LOGIN_FAIL';
@@ -64,6 +65,8 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         [action.data.field]: action.data.value
       };
+    case ACC_LOAD_SUCCEED:
+      return { ...state, isAuthed: true };
     case CPD_LOAD_FAIL:
       return {
         ...state,

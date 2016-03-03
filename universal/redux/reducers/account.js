@@ -16,6 +16,7 @@ const actions = ['ACC_LOAD', 'ACC_LOAD_SUCCEED', 'ACC_LOAD_FAIL'];
 const domain = '@@welogix/account/';
 const actionTypes = createActionTypes(domain, actions);
 
+export const ACC_LOAD_SUCCEED = actionTypes.ACC_LOAD_SUCCEED;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
   case actionTypes.ACC_LOAD_SUCCEED:
