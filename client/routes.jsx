@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import {Route, IndexRoute} from 'react-router';
 import Root from './root';
 import Home from './containers/home';
 import SSO from './containers/pack-sso';
@@ -24,13 +24,18 @@ import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
-import { loadAccount } from '../universal/redux/reducers/account';
-import { isLoaded } from '../reusable/common/redux-actions';
+import {loadAccount} from '../universal/redux/reducers/account';
+import {isLoaded} from '../reusable/common/redux-actions';
 
-export default (store, cookie) => {
+export default(store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
     function checkAuth() {
-      const { account: { username, subdomain } } = store.getState();
+      const {
+        account: {
+          username,
+          subdomain
+        }
+      } = store.getState();
       let querySubdomain;
       if (nextState.location.search) {
         // seems only enter in server side, we need check the search string
@@ -39,7 +44,9 @@ export default (store, cookie) => {
         querySubdomain = query && query.subdomain;
       }
       if (username === '' || (querySubdomain && querySubdomain !== subdomain)) {
-        const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
+        const search = __DEV__
+          ? `&${nextState.location.search.substring(1)}`
+          : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
       }
       cb();
@@ -53,56 +60,57 @@ export default (store, cookie) => {
   return (
     <Route path="/" component={Root}>
       <Route component={SSO}>
-        <Route path="login" component={Login} />
-        <Route path="forgot" component={Forgot} />
+        <Route path="login" component={Login}/>
+        <Route path="forgot" component={Forgot}/>
       </Route>
       <Route onEnter={requireAuth}>
-        <IndexRoute component={Home} />
+        <IndexRoute component={Home}/>
         <Route path="corp" component={Corp}>
-          <Route path="info" component={CorpInfo} />
+          <Route path="info" component={CorpInfo}/>
           <Route path="organization" component={PackOrganization}>
-            <IndexRoute component={Organization.List} />
-            <Route path="new" component={Organization.Edit} />
-            <Route path="edit/:id" component={Organization.Edit} />
+            <IndexRoute component={Organization.List}/>
+            <Route path="new" component={Organization.Edit}/>
+            <Route path="edit/:id" component={Organization.Edit}/>
           </Route>
           <Route path="personnel">
-            <IndexRoute component={Personnel.List} />
-            <Route path="new" component={Personnel.Edit} />
-            <Route path="edit/:id" component={Personnel.Edit} />
+            <IndexRoute component={Personnel.List}/>
+            <Route path="new" component={Personnel.Edit}/>
+            <Route path="edit/:id" component={Personnel.Edit}/>
           </Route>
           <Route path="partners">
-            <IndexRoute component={Cooperation.Partners} />
-            <Route path="invitations/in" component={Cooperation.Received} />
-            <Route path="invitations/out" component={Cooperation.Sent} />
+            <IndexRoute component={Cooperation.Partners}/>
+            <Route path="invitations/in" component={Cooperation.Received}/>
+            <Route path="invitations/out" component={Cooperation.Sent}/>
           </Route>
-          <Route path="password" component={Password} />
+          <Route path="password" component={Password}/>
         </Route>
         <Route component={Module}>
           <Route path="import" component={ImportM}>
-            <IndexRoute component={ImportDashboard} />
+            <IndexRoute component={ImportDashboard}/>
             <Route path="delegate">
-              <IndexRoute component={ImportDelegate.List} />
-              <Route path="new" component={ImportDelegate.Edit} />
-              <Route path="edit/:id" component={ImportDelegate.Edit} />
+              <IndexRoute component={ImportDelegate.List}/>
+              <Route path="new" component={ImportDelegate.Edit}/>
+              <Route path="edit/:id" component={ImportDelegate.Edit}/>
+              <Route path="send" component={ImportDelegate.Send}/>
             </Route>
             <Route path="passage">
-              <IndexRoute component={ImportTask.List} />
+              <IndexRoute component={ImportTask.List}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
             <Route path="delegate">
-                <IndexRoute component={ExportDelegate.List} />
-                <Route path="new" component={ExportDelegate.Edit}/>
-                <Route path="edit/:id" component={ExportDelegate.Edit}/>
+              <IndexRoute component={ExportDelegate.List}/>
+              <Route path="new" component={ExportDelegate.Edit}/>
+              <Route path="edit/:id" component={ExportDelegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
-            <IndexRoute component={Warehouse} />
-            <Route path="warehouse" component={Warehouse} />
-            <Route path="notice" component={Notice} />
+            <IndexRoute component={Warehouse}/>
+            <Route path="warehouse" component={Warehouse}/>
+            <Route path="notice" component={Notice}/>
           </Route>
           <Route path="tms" component={TMS}>
-            <IndexRoute component={TMSDashboard} />
+            <IndexRoute component={TMSDashboard}/>
           </Route>
         </Route>
       </Route>
