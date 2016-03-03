@@ -19,8 +19,7 @@ function fetchData({state, dispatch, cookie, location}) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    isAuthed: state.auth.isAuthed,
-    userType: state.auth.userType
+    isAuthed: state.auth.isAuthed
   })
 )
 export default class Root extends React.Component {
