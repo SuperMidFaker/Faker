@@ -18,6 +18,7 @@ import ImportDashboard from './containers/import/dashboard';
 import * as ImportDelegate from './containers/import/delegate';
 import * as ImportTask from './containers/import/task';
 import ExportM from './containers/module-export';
+import ExportBoard from './containers/export/dashboard';
 import * as ExportDelegate from './containers/export/delegate';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';
@@ -97,10 +98,11 @@ export default (store, cookie) => {
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
+            <IndexRoute component={ExportBoard} />
             <Route path="delegate">
-                <IndexRoute component={ExportDelegate.List} />
-                <Route path="new" component={ExportDelegate.Edit}/>
-                <Route path="edit/:id" component={ExportDelegate.Edit}/>
+               <IndexRoute component={ExportDelegate.List} />
+               <Route path="new" component={ExportDelegate.Edit}/>
+               <Route path="edit/:id" component={ExportDelegate.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
