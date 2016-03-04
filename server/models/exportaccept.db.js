@@ -104,7 +104,12 @@ export default {
     },
     getTradeMode() {
       const args = [];
-      const sql = `SELECT TRADE_MODE as \`value\`,CONCAT(TRADE_MODE,' | ',ABBR_TRADE) as \`text\` from para_trade`;
+      const sql = `SELECT TRADE_MODE as \`value\`,CONCAT(TRADE_MODE,' | ',ABBR_TRADE) as \`text\` from para_trade order by TRADE_MODE`;
+      return mysql.query(sql, args);
+    }, 
+    getShortName() {
+      const args = [];
+      const sql = `SELECT tenant_id as \`value\`,CONCAT(tenant_id,' | ',short_name) as \'text'\ FROM sso_tenants `;
       return mysql.query(sql, args);
     }, * insertexportaccept(entity, trans) {
       let insertClause = [];

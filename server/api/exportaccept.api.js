@@ -82,10 +82,12 @@ function* getSelectOptions() {
   const customsInfoList = yield idDao.getCustomsInfo();
   const declareWayList = yield idDao.getDeclareWay();
   const tradeModeList = yield idDao.getTradeMode();
+  const shortNameList=yield idDao.getShortName();
   return Result.OK(this, {
     customsInfoList: customsInfoList,
     declareWayList: declareWayList,
-    tradeModeList: tradeModeList
+    tradeModeList: tradeModeList,
+    shortNameList:shortNameList
   });
 }
 

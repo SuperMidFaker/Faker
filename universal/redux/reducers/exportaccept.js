@@ -39,7 +39,9 @@ const initialState = {
   selectOptions: {
     customsInfoList: [],
     declareWayList: [],
-    tradeModeList: []
+    tradeModeList: [],
+    shortNameList:[]
+    
   }
 };
 // 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
@@ -163,7 +165,8 @@ export default function reducer(state = initialState, action) {
         selectOptions: {...state.selectOptions,
           customsInfoList: action.result.data.customsInfoList,
           declareWayList: action.result.data.declareWayList,
-          tradeModeList: action.result.data.tradeModeList
+          tradeModeList: action.result.data.tradeModeList,
+          shortNameList:action.result.data.shortNameList
         }
       };
     case actionTypes.IMPORT_EDIT_SUCCEED:

@@ -267,7 +267,7 @@ export default class ImportDelegate extends React.Component {
       }, {
         title: '客户名称',
         sorter: true,
-        dataIndex: 'short_name',
+        dataIndex: 'send_tenant_id',
         filters: filterArray,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
@@ -377,7 +377,7 @@ export default class ImportDelegate extends React.Component {
             <Button type={statusAll} size="large" onClick={() => this.handleChangeStatus('statusAll', -1)}>
               <span>全部</span>
             </Button>
-            <Button  type={statusNotAccept} size="large" onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
+            <Button type={statusNotAccept} size="large" onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
               <span>未受理 ({notAcceptCount})</span>
             </Button>
             <Button type={statusAccept} size="large" onClick={() => this.handleChangeStatus('statusAccept', 2)}>

@@ -205,7 +205,8 @@ export default class ExportAcceptEdit extends React.Component {
       selectOptions: {
         customsInfoList,
         declareWayList,
-        tradeModeList
+        tradeModeList,
+        shortNameList
       }
     } = this.props;
     //  const disableSubmit = this.props.tenant.id === -1;
@@ -216,7 +217,7 @@ export default class ExportAcceptEdit extends React.Component {
           <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
             <Row>
             <Col span="12">
-             {this.renderSelect('申报单位', '选择客户', 'declare_way_no', true, declareWayList, [
+             {this.renderSelect('申报单位', '选择客户', 'send_tenant_id', true, shortNameList, [
                   {
                   required: true
                   }
