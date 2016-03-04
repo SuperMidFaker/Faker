@@ -9,10 +9,11 @@ import { isLoginNameExist, checkLoginName } from
   '../../../../reusable/domains/redux/checker-reducer';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
+import Msg from './message.i18n';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-function fetchData({dispatch, cookie, params}) {
+function fetchData({ dispatch, cookie, params }) {
   const corpId = parseInt(params.id, 10);
   if (corpId) {
     return dispatch(loadOrganizationForm(cookie, corpId));
@@ -40,7 +41,8 @@ function goBack(props) {
   const isCreating = props.formData.key === null;
   dispatch(setNavTitle({
     depth: 3,
-    text: isCreating ? '添加部门或分支机构' : props.formData.name,
+    // text: isCreating ? '添加部门或分支机构' : props.formData.name,
+    text: isCreating ? <Msg s="organization.edit.title" /> : props.formData.name,
     moduleName: 'corp',
     goBackFn: () => goBack(props),
     withModuleLayout: false
@@ -100,7 +102,7 @@ export default class CorpEdit extends React.Component {
     goBack(this.props);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const {formhoc: {getFieldProps, getFieldError}} = this.props;
+    const { formhoc: { getFieldProps, getFieldError }} = this.props;
     return (
       <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
         help={rules && getFieldError(field)} hasFeedback required={required}>

@@ -1,5 +1,4 @@
 require('babel/register')({
-  stage: 0
 });
 
 const webpack = require('webpack');
@@ -56,6 +55,7 @@ const wpConfig = {
       query: {
         optional: ['runtime'],
         stage: 0,
+        blacklist: ['regenerator'],
         env: {
           development: {
             plugins: [

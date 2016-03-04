@@ -45,8 +45,8 @@ export default (store, cookie) => {
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
       }
      */
-      const {auth: { isAuthed }} = store.getState();
-      if (isAuthed) {
+      const { auth: { isAuthed }} = store.getState();
+      if (!isAuthed) {
         const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
       }

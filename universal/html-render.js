@@ -39,16 +39,20 @@ function renderAsHtml(pageCss, pageJs, content) {
 }
 
 // https://github.com/koa-modules/locale/blob/master/index.js
-function getLocaleFromHeader(request) {
-  const accept = request.acceptsLanguages() || '',
-  const reg = /(^|,\s*)([a-z-]+)/gi,
-  let match, locale;
-  while ((match = reg.exec(accept))) {
-    if (!locale) {
-      locale = match[2];
+function getRequestLocale(request) {
+  let locale = request.query.locale;
+  if (!locale) {
+    const accept = request.acceptsLanguages() || '';
+    const reg = /(^|,\s*)([a-z-]+)/gi;
+    let match;
+    while (match = reg.exec(accept)) {
+      if (!locale) {
+        locale = match[2];
+      }
     }
+    locale = locale && locale.split('-')[0];
   }
-  return locale;
+  return locale || 'zh';
 }
 export default function render(request) {
   if (__DEV__) {
@@ -67,8 +71,9 @@ export default function render(request) {
       } else if (!props) {
         reject([404]);
       } else {
-        const curLocale = getLocaleFromHeader(request);
-        addLocaleData(require(`react-intl/lib/locale-data/${curLocale.split('-')[0]}`));
+        const curLocale = getRequestLocale(request);
+        addLocaleData(require(`react-intl/lib/locale-data/${curLocale}`));
+        store.getState().intl.locale = curLocale;
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
             const component = (<App routingContext = {props} store = {store} />);
