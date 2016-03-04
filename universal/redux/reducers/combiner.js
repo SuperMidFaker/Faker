@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import intl from './intl';
 import auth from './auth';
 import account from './account';
 import navbar from './navbar';
@@ -15,6 +16,7 @@ import notice from './notice';
 import delegate from './delegate';
 
 export default combineReducers({
+  intl,
   auth,
   account,
   navbar,

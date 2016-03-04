@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import { match } from 'react-router';
+import { addLocaleData } from 'react-intl';
 import createLocation from 'history/lib/createLocation';
 import createStore from './redux/configureStore';
 import routes from '../client/routes';
@@ -73,7 +74,7 @@ export default function render(request) {
       } else {
         const curLocale = getRequestLocale(request);
         addLocaleData(require(`react-intl/lib/locale-data/${curLocale}`));
-        store.getState().intl.locale = curLocale;
+        store.getState().intl = { locale:  curLocale };
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
             const component = (<App routingContext = {props} store = {store} />);

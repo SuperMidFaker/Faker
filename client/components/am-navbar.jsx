@@ -18,6 +18,7 @@ export default class AmNavBar extends React.Component {
     const { navTitle } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
+    console.log(navTitle.text);
     if (navTitle.depth === 2) {
       if (navTitle.withModuleLayout) {
         amTitleNav = (

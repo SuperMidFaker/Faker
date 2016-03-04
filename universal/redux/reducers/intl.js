@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/intl/', [
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TRANSLATION_LOAD_SUCCEED:
-      return { ...state, ...action.result.data, loaded: true };
+      return { ...state, messages: action.result.data, loaded: true };
     default:
       return state;
   }

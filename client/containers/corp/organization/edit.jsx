@@ -42,7 +42,7 @@ function goBack(props) {
   dispatch(setNavTitle({
     depth: 3,
     // text: isCreating ? '添加部门或分支机构' : props.formData.name,
-    text: isCreating ? <Msg s="organization.edit.title" /> : props.formData.name,
+    text: isCreating ? <Msg s="editTitle" /> : props.formData.name,
     moduleName: 'corp',
     goBackFn: () => goBack(props),
     withModuleLayout: false
