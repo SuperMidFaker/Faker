@@ -24,8 +24,10 @@ import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
-import {loadAccount} from '../universal/redux/reducers/account';
-import {isLoaded} from '../reusable/common/redux-actions';
+import { loadAccount } from '../universal/redux/reducers/account';
+import { isLoaded } from '../reusable/common/redux-actions';
+import * as exportaccept from './containers/export/accept';
+
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
@@ -102,6 +104,10 @@ export default(store, cookie) => {
               <IndexRoute component={ExportDelegate.List}/>
               <Route path="new" component={ExportDelegate.Edit}/>
               <Route path="edit/:id" component={ExportDelegate.Edit}/>
+            </Route>
+            <Route path="accept">
+            <IndexRoute component={exportaccept.List}/>
+            <Route path="new" component={exportaccept.Edit}/>
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
