@@ -24,15 +24,11 @@ import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
-<<<<<<< HEAD
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
 import * as importTask from './containers/import/task';
 import * as exportaccept from './containers/export/accept';
-=======
-import {loadAccount} from '../universal/redux/reducers/account';
-import {isLoaded} from '../reusable/common/redux-actions';
->>>>>>> 341ab2b636b53dc2ae53416046674b64dde16686
+
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
