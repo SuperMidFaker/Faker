@@ -11,7 +11,7 @@ function putInComposition(f, args) {
   } else if (f.name === 'invoice_no') {
     sql = 'invoice_no like ?';
     args.push('%' + f.value + '%');
-  } else if (f.name === 'short_name') {
+  } else if (f.name === 'short_name' && f.value !== `''`) {
     sql = `rec_tenant_id in (${f.value})`;
   }
   return sql;
@@ -34,7 +34,7 @@ function concatFilterSql(filters, args) {
       sqlClause += putInComposition(f, args);
     }
   }
-  return sqlClause;
+  return sqlClause === ' and ' ? '' : sqlClause;
 }
 export default {
   getIdTotalCount(currentStatus, filters, tenantId) { //获取满足条件的总记录数
