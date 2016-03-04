@@ -13,7 +13,8 @@ function goBack(props) {
 
 @connect(state => ({ // 从初始化state中加载数据
   tenantId: state.account.tenantId,
-  sendlist: state.importdelegate.sendlist
+  sendlist: state.importdelegate.sendlist,
+  customsBrokerList: state.importdelegate.customsBrokerList
 }), {loadSend})
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({
@@ -29,7 +30,8 @@ export default class ImportDelegateSend extends React.Component {
     history: PropTypes.object.isRequired,
     sendlist: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
-    loadSend: PropTypes.func.isRequired
+    loadSend: PropTypes.func.isRequired,
+    customsBrokerList: PropTypes.array.isRequired
   }
   constructor(props) {
     super(props);
@@ -45,7 +47,7 @@ export default class ImportDelegateSend extends React.Component {
     return <span>{text}</span>;
   }
   render() {
-    const {sendlist} = this.props;
+    const {sendlist, customsBrokerList} = this.props;
 
     const columns = [
       {
@@ -82,9 +84,11 @@ export default class ImportDelegateSend extends React.Component {
             <Select showSearch style={{
               width: 200
             }} placeholder="请选择报关行" optionFilterProp="children" notFoundContent="无法找到" searchPlaceholder="输入关键词">
-              <Option value="jack">杰克</Option>
-              <Option value="lucy">露西</Option>
-              <Option value="tom">汤姆</Option>
+              {
+                customsBrokerList.map((item) => (
+                  <Option value={item.key}>{item.short_name}</Option>
+                ))
+              }
             </Select>
           </div>
           <div className="panel-body body-responsive">
