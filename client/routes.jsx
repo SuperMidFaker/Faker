@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import {Route, IndexRoute} from 'react-router';
 import Root from './root';
 import Home from './containers/home';
 import SSO from './containers/pack-sso';
@@ -14,26 +14,46 @@ import * as Cooperation from './containers/corp/cooperation';
 import Password from './containers/corp/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
-import * as importDelegate from './containers/import/delegate';
-import ExporT from './containers/module-export';
-import * as exportdelegate from './containers/export/delegate';
 import ImportDashboard from './containers/import/dashboard';
+import * as ImportDelegate from './containers/import/delegate';
+import * as ImportTask from './containers/import/task';
+import ExportM from './containers/module-export';
+import * as ExportDelegate from './containers/export/delegate';
 import TMS from './containers/module-tms';
 import TMSDashboard from './containers/tms/dashboard';
 import WMS from './containers/module-wms';
 import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
+<<<<<<< HEAD
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
 import * as importTask from './containers/import/task';
 import * as exportaccept from './containers/export/accept';
+=======
+import {loadAccount} from '../universal/redux/reducers/account';
+import {isLoaded} from '../reusable/common/redux-actions';
+>>>>>>> 341ab2b636b53dc2ae53416046674b64dde16686
 
-export default (store, cookie) => {
+export default(store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
     function checkAuth() {
-      const {account: {username}} = store.getState();
-      if (username === '') {
-        const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
+      const {
+        account: {
+          username,
+          subdomain
+        }
+      } = store.getState();
+      let querySubdomain;
+      if (nextState.location.search) {
+        // seems only enter in server side, we need check the search string
+        // this callabck is blocking
+        const query = require('query-string').parse(nextState.location.search.substring(1));
+        querySubdomain = query && query.subdomain;
+      }
+      if (username === '' || (querySubdomain && querySubdomain !== subdomain)) {
+        const search = __DEV__
+          ? `&${nextState.location.search.substring(1)}`
+          : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
       }
       cb();
@@ -47,48 +67,48 @@ export default (store, cookie) => {
   return (
     <Route path="/" component={Root}>
       <Route component={SSO}>
-        <Route path="login" component={Login} />
-        <Route path="forgot" component={Forgot} />
+        <Route path="login" component={Login}/>
+        <Route path="forgot" component={Forgot}/>
       </Route>
       <Route onEnter={requireAuth}>
-        <IndexRoute component={Home} />
+        <IndexRoute component={Home}/>
         <Route path="corp" component={Corp}>
-          <Route path="info" component={CorpInfo} />
+          <Route path="info" component={CorpInfo}/>
           <Route path="organization" component={PackOrganization}>
-            <IndexRoute component={Organization.List} />
+            <IndexRoute component={Organization.List}/>
             <Route path="new" component={Organization.Edit}/>
-            <Route path="edit/:id" component={Organization.Edit} />
+            <Route path="edit/:id" component={Organization.Edit}/>
           </Route>
           <Route path="personnel">
-            <IndexRoute component={Personnel.List} />
+            <IndexRoute component={Personnel.List}/>
             <Route path="new" component={Personnel.Edit}/>
             <Route path="edit/:id" component={Personnel.Edit}/>
           </Route>
           <Route path="partners">
-            <IndexRoute component={Cooperation.Partners} />
-            <Route path="invitations/in" component={Cooperation.Received} />
-            <Route path="invitations/out" component={Cooperation.Sent} />
+            <IndexRoute component={Cooperation.Partners}/>
+            <Route path="invitations/in" component={Cooperation.Received}/>
+            <Route path="invitations/out" component={Cooperation.Sent}/>
           </Route>
-          <Route path="password" component={Password} />
+          <Route path="password" component={Password}/>
         </Route>
         <Route component={Module}>
           <Route path="import" component={ImportM}>
-            <IndexRoute component={ImportDashboard} />
+            <IndexRoute component={ImportDashboard}/>
             <Route path="delegate">
-              <IndexRoute component={importDelegate.List} />
-              <Route path="new" component={importDelegate.Edit} />
-              <Route path="edit/:id" component={importDelegate.Edit} />
+              <IndexRoute component={ImportDelegate.List}/>
+              <Route path="new" component={ImportDelegate.Edit}/>
+              <Route path="edit/:id" component={ImportDelegate.Edit}/>
+              <Route path="send" component={ImportDelegate.Send}/>
             </Route>
             <Route path="passage">
-              <IndexRoute component={importTask.List} />
-              
+              <IndexRoute component={ImportTask.List}/>
             </Route>
           </Route>
-          <Route path="export" component={ExporT}>
+          <Route path="export" component={ExportM}>
             <Route path="delegate">
-                <IndexRoute component={exportdelegate.List} />
-                <Route path="new" component={exportdelegate.Edit}/>
-                <Route path="edit/:id" component={exportdelegate.Edit}/>
+              <IndexRoute component={ExportDelegate.List}/>
+              <Route path="new" component={ExportDelegate.Edit}/>
+              <Route path="edit/:id" component={ExportDelegate.Edit}/>
             </Route>
             <Route path="accept">
             <IndexRoute component={exportaccept.List}/>
@@ -96,12 +116,12 @@ export default (store, cookie) => {
             </Route>
           </Route>
           <Route path="wms" component={WMS}>
-            <IndexRoute component={Warehouse} />
-            <Route path="warehouse" component={Warehouse} />
-            <Route path="notice" component={Notice} />
+            <IndexRoute component={Warehouse}/>
+            <Route path="warehouse" component={Warehouse}/>
+            <Route path="notice" component={Notice}/>
           </Route>
           <Route path="tms" component={TMS}>
-            <IndexRoute component={TMSDashboard} />
+            <IndexRoute component={TMSDashboard}/>
           </Route>
         </Route>
       </Route>

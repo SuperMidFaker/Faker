@@ -27,11 +27,26 @@ function* importdelegates() {
   try {
     const totals = yield idDao.getIdTotalCount(currentStatus, filters, tenantId);
     const ids = yield idDao.getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, currentStatus, tenantId);
+
+    const notSendCount = yield idDao.getStatusCount(tenantId, 0, filters);
+    const notAcceptCount = yield idDao.getStatusCount(tenantId, 1, filters);
+    const acceptCount = yield idDao.getStatusCount(tenantId, 2, filters);
+    const invalidCount = yield idDao.getStatusCount(tenantId, 3, filters);
+
+
     return Result.OK(this, {
-      totalCount: totals.length > 0 ? totals[0].count : 0,
-      pageSize,
-      current,
-      data: ids
+      idlist: {
+        totalCount: totals.length > 0 ? totals[0].count : 0,
+        pageSize,
+        current,
+        data: ids
+      },
+      statusList:{
+        notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
+        notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
+        acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
+        invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0
+      }
     });
   } catch (e) {
     console.log(e);
@@ -80,13 +95,21 @@ function* customsBrokersG() {
 }
 
 function* getSelectOptions() {
+  const params = this.request.query;
   const customsInfoList = yield idDao.getCustomsInfo();
   const declareWayList = yield idDao.getDeclareWay();
   const tradeModeList = yield idDao.getTradeMode();
+  const tenantId = params.tenantId;
+  const delId = params.delId;
+
+  const declareFileList = yield idDao.getDeclareFileList(tenantId, delId);
+  const declareCategoryList = yield idDao.getDeclareCategoryList(tenantId);
   return Result.OK(this, {
     customsInfoList: customsInfoList,
     declareWayList: declareWayList,
-    tradeModeList: tradeModeList
+    tradeModeList: tradeModeList,
+    declareFileList: declareFileList,
+    declareCategoryList: declareCategoryList
   });
 }
 
@@ -96,21 +119,22 @@ function* getSelectOptions() {
 function* editImportDelegate() {
   const body = yield cobody(this);
   const entity = body.importdelegate;
+  const params = JSON.parse(body.params);
   const newEntity = {};
   newEntity.usebook = entity.usebook == true ? 1 : 0;
   newEntity.urgent = entity.urgent == true ? 1 : 0;
-  newEntity.tenant_id = body.tenantId;
+  newEntity.tenant_id = params.tenantId;
   newEntity.master_customs = entity.master_customs;
   newEntity.bill_no = entity.bill_no;
   newEntity.invoice_no = entity.invoice_no;
   newEntity.trade_mode = entity.trade_mode;
   newEntity.other_note = entity.other_note;
 
-  console.log(newEntity);
   let trans;
   try {
     trans = yield mysql.beginTransaction();
     const result = yield idDao.editImportDelegate(newEntity, entity.key, trans);
+    yield idDao.saveFileInfo(params.declareFileList, params.tenantId, entity.key, entity.del_no, trans);
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
@@ -123,16 +147,18 @@ function* editImportDelegate() {
 function* submitImportDelegate() {
   const body = yield cobody(this);
   const entity = body.importdelegate;
+  const params = JSON.parse(body.params);
 
   entity.usebook = (entity.usebook || false) ? 1 : 0;
   entity.urgent = (entity.urgent || false) ? 1 : 0;
-  entity.tenant_id = body.tenantId;
+  entity.tenant_id = params.tenantId;
   entity.status = 0;
 
   let trans;
   try {
     trans = yield mysql.beginTransaction();
     const result = yield idDao.insertImportDelegate(entity, trans);
+    yield idDao.saveFileInfo(params.declareFileList, params.tenantId, result[0].key, result[0].del_no, trans);
     yield mysql.commit(trans);
     Result.OK(this, result[0]);
   } catch (e) {

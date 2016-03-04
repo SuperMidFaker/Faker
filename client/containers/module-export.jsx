@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import AmLeftSidebar from '../components/am-ant-leftbar';
 
-export default class ImportM extends React.Component {
+export default class ExportM extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired
   };

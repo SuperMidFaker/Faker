@@ -1,6 +1,5 @@
-[] react-intl
-[] different domain after jwt should check domain and onEnter should redirect
-[] new personnel freshed page without tenant info  => how to make new/edit in route redirect to indexRoute
+[] react-intl http://formatjs.io/react/  https://github.com/yahoo/react-intl/issues/162
+[] new personnel freshed page without tenant info  => how to make new/edit in route redirect to indexRoute forgot redirectto login
 [] appeditor modal interface logic in a mess
 [] webpack search dir for client side code but how server can use it too \\  debug node_modules source
 [] location region selector can't choose city or county when initial set

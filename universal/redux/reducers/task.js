@@ -55,7 +55,7 @@ const initialState = {
     current: 1,
     data: []
   },
-  statusList: { //初始化状态显示数量
+  statusList: { // 初始化状态显示数量
     notSendCount: 0,
     notAcceptCount: 0,
     acceptCount: 0,

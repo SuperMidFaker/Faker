@@ -14,6 +14,9 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
 const initialState = {
   loaded: false,
   loading: false,
+  filters: [
+    /* { name: , value: } */
+  ],
   visibleModal: false,
   modalViewport: 'invite-initial',
   isPlatformTenant: false,
@@ -42,7 +45,8 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.PARTNERS_LOAD:
-      return { ...state, loading: true };
+      return { ...state, loading: true,
+        filters: action.params.filters ? JSON.parse(action.params.filters) : [] };
     case actionTypes.PARTNERS_LOAD_SUCCEED:
       return { ...state, ...action.result.data, loading: false, loaded: true };
     case actionTypes.PARTNERS_LOAD_FAIL:
