@@ -110,13 +110,16 @@ function *editdelegate() {
 function *submitdelegate() {
   const body = yield cobody(this);
   const delegates = body.delegate;
-  const tenantId=body.tenant.id;
+  delegates.usebook = (delegates.usebook || false) ? 1 : 0;
+  delegates.urgent = (delegates.urgent || false) ? 1 : 0;
+  delegates.tenant_id = body.tenantId;
+  delegates.status = 0;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const result =yield delegate.insertdelegate(delegates,tenantId, trans);
+    const result =yield delegate.insertdelegate(delegates, trans);
     yield mysql.commit(trans);
-    Result.OK(this, { smsId: result.insertId});
+    Result.OK(this, result[0]);
   } catch (e) {
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);

@@ -7,7 +7,7 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit, loadSelectOptions, uploadFiles } from
 '../../../../universal/redux/reducers/delegate';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { TENANT_USEBOOK, TENANT_LEVEL } from '../../../../universal/constants';
+import { TENANT_LEVEL } from '../../../../universal/constants';
 const Option = Select.Option;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
@@ -39,7 +39,7 @@ function goBack(props) {
     selectedIndex: state.delegate.selectedIndex,
     formData: state.delegate.formData,
     code: state.account.code,
-    tenant: state.delegate.tenant,
+    tenantId: state.account.tenantId,
     customs_code: state.delegate.customs_code,
     selectOptions: state.delegate.selectOptions
   }),
@@ -48,7 +48,7 @@ function goBack(props) {
   if (props.formData.key === -1) {
     return;
   }
-  const isCreating = props.formData.key === null;
+  const isCreating = (props.formData.key === undefined || props.formData.key === null);
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating ? '新增业务单' : `业务单详情`,
@@ -74,7 +74,6 @@ export default class CorpEdit extends React.Component {
     history: PropTypes.object.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
-    tenant: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
@@ -108,7 +107,7 @@ export default class CorpEdit extends React.Component {
             }
             });
         } else {
-          this.props.submit(this.props.formData, this.props.tenant).then(result => {
+          this.props.submit(this.props.formData, this.props.tenantId).then(result => {
             this.onSubmitReturn(result.error);
             });
            }
@@ -144,6 +143,20 @@ export default class CorpEdit extends React.Component {
             }
           </OptGroup>
         </Select>
+      </FormItem>
+    );
+  }
+  renderSwitch(labelName, field) {
+    const {formhoc: {
+        getFieldProps
+      }} = this.props;
+    return (
+      <FormItem label={labelName} labelCol={{
+        span: 6
+      }} wrapperCol={{
+        span: 18
+      }}>
+        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}/>
       </FormItem>
     );
   }
@@ -203,21 +216,9 @@ export default class CorpEdit extends React.Component {
            </Row>
               <Row>
                     <Col span="8">
-                        {this.props.formData.usebook !== TENANT_USEBOOK.owner.name &&
-                        <FormItem label="是否使用手册:" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-                        <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                            onChange={(checked) => this.props.setFormValue('usebook',
-                                                checked ? TENANT_USEBOOK.manager.name : TENANT_USEBOOK.member.name)}
-                            checked={this.props.formData.usebook && this.props.formData.usebook === TENANT_USEBOOK.manager.name}/>
-                        </FormItem>}
-                         {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
-                        {this.props.formData.urgent !== TENANT_USEBOOK.owner.name &&
-                            <FormItem label="是否加急:" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-                            <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                                onChange={(checked) => this.props.setFormValue('urgent',
-                                                    checked ? TENANT_USEBOOK.manager.name : TENANT_USEBOOK.member.name)}
-                                checked={this.props.formData.urgent && this.props.formData.urgent === TENANT_USEBOOK.manager.name}/>
-                            </FormItem>}
+                        {this.renderSwitch('使用手册/账册', 'usebook')}
+                        {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
+                        {this.renderSwitch('加急', 'urgent')}
                     </Col>
                     <Col span="8">
                         {this.renderTextInput('备案号', '', 'ems_no', false, null, null, true)}

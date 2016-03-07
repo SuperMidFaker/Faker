@@ -2,7 +2,6 @@ import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
   clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
-import { TENANT_ROLE } from '../../../universal/constants';
 import { CORP_EDIT_SUCCEED } from './corps';
 const actionTypes = createActionTypes('@@welogix/delegate/', [
   'SWITCH_TENANT',
@@ -30,9 +29,7 @@ const initialState = {
   customs: {
     code: -1
   },
-  formData: {
-    key: -1
-  },
+  formData: {},
   delegateist: {
     totalCount: 0,
     pageSize: 10,
@@ -128,18 +125,24 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegateist: {...state.delegateist, totalCount: state.delegateist.totalCount - 1}, needUpdate: true };
     }
     case actionTypes.delegate_SUBMIT_SUCCEED: {
-      const delegateist = {...state.delegateist};
-      if ((delegateist.current - 1) * delegateist.pageSize <= delegateist.totalCount // = for 0 totalCount
+      const delegateist = {...state.delegateist
+        };
+        const statusList = {...state.statusList
+        };
+        if ((delegateist.current - 1) * delegateist.pageSize <= delegateist.totalCount // '=' because of totalCount 0
           && delegateist.current * delegateist.pageSize > delegateist.totalCount) {
-        delegateist.data.push({...action.data.delegate, key: action.result.data.pid,
-                            loginId: action.result.data.loginId, status: action.result.data.status});
-      }
-      delegateist.totalCount++;
-      return { ...state, delegateist };
+          delegateist.data.push(action.result.data);
+        }
+        delegateist.totalCount++;
+        statusList.notSendCount++;
+        return {...state,
+          delegateist,
+          statusList
+        };
     }
     // todo deal with submit fail submit loading
     default:
-      return formReducer(actionTypes, state, action, {key: null, role: TENANT_ROLE.member.name}, 'delegateist')
+      return formReducer(actionTypes, state, action, {}, 'delegateist')
             || state;
   }
 }
@@ -166,13 +169,13 @@ export function edit(delegate, tenantId) {
   };
 }
 
-export function submit(delegate, tenant) {
+export function submit(delegate, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.delegate_SUBMIT, actionTypes.delegate_SUBMIT_SUCCEED, actionTypes.delegate_SUBMIT_FAIL],
       endpoint: 'v1/delegate/submit',
       method: 'post',
-      data: { delegate, tenant }
+      data: { delegate, tenantId }
     }
   };
 }

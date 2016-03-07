@@ -41,12 +41,12 @@ function fetchData({state, dispatch, cookie}) {
 export default class delegateSetting extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    selectIndex: PropTypes.number,
     loading: PropTypes.bool.isRequired,
     statusList: PropTypes.object.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
     delegateist: PropTypes.object.isRequired,
     branches: PropTypes.array.isRequired,
+    formData: PropTypes.object.isRequired,
     tenant: PropTypes.object.isRequired,
     loaddelegate: PropTypes.func.isRequired,
     switchTenant: PropTypes.func.isRequired,
@@ -261,10 +261,6 @@ export default class delegateSetting extends React.Component {
       title: '发票号',
       dataIndex: 'invoice_no',
       render: (o, record) => this.renderColumnText(record.status, record.invoice_no)
-    }, {
-      title: '是否使用手册',
-      dataIndex: 'usebook',
-      render: (o, record) => this.renderColumnText(record.status, record.usebook)
     }, {
         title: '状态',
         dataIndex: 'status',
