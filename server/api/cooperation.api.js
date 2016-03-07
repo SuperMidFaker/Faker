@@ -4,9 +4,11 @@ import tenantDao from '../models/tenant.db';
 import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
 import { getSmsCode } from '../../reusable/common/validater';
-import { TENANT_LEVEL, INVITATION_STATUS } from '../../universal/constants';
+import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO }
+  from '../../universal/constants';
 
-const partnershipTypeNames = ['客户', '报关', '货代', '运输', '仓储'];
+const partnershipTypeNames = PARTNERSHIP_TYPE_INFO.map(psti => psti.name);
+const partnershipTypeCodes = PARTNERSHIP_TYPE_INFO.map(psti => psti.code);
 
 function getTenantTypeDesc(level) {
   return level === TENANT_LEVEL.ENTERPRISE ? '企业法人' : '分支机构';
@@ -55,6 +57,7 @@ function *partnerOnlineP() {
   const body = yield cobody(this);
   const partnerships = body.partnerships.map(pts => ({
     key: partnershipTypeNames.indexOf(pts),
+    code: partnershipTypeCodes[partnershipTypeNames.indexOf(pts)],
     name: pts
   }));
   let trans;
@@ -94,6 +97,7 @@ function *partnerOfflineP() {
   const body = yield cobody(this);
   const partnerships = body.partnerships.map(pts => ({
     key: partnershipTypeNames.indexOf(pts),
+    code: partnershipTypeCodes[partnershipTypeNames.indexOf(pts)],
     name: pts
   }));
   const tenantType = '线下';
@@ -163,7 +167,7 @@ function *receivedInvitationsG() {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
       current,
-      providerTypes: partnershipTypeNames.slice(1),
+      providerTypes: partnershipTypeNames.slice(1), // 去掉第一个'客户'关系
       data: receiveds
     });
   } catch (e) {
@@ -186,22 +190,25 @@ function *invitationP() {
       status = INVITATION_STATUS.ACCEPTED;
       yield coopDao.updateInvitationStatus(status, new Date(), body.key, trans);
       yield coopDao.establishPartner(invitations[0].inviterId, invitations[0].inviteeId, trans);
-      const partners = yield coopDao.getPartnerByPair(invitations[0].inviteeId,
-                                                      invitations[0].inviterId);
+      const partners = yield coopDao.getPartnerByPair(
+        invitations[0].inviteeId, invitations[0].inviterId
+      );
       if (partners.length === 0) {
         const inviterTenants = yield tenantDao.getTenantInfo(invitations[0].inviterId);
         const partnerName = inviterTenants[0].name;
         const tenantType = getTenantTypeDesc(inviterTenants[0].level);
         yield coopDao.insertPartner(invitations[0].inviteeId, invitations[0].inviterId,
                                     partnerName, tenantType, 1, trans);
-        // 先删除再新建, 不在拒绝和取消时删除因收到和发出界面里需要显示
+        // 先删除再新建, 不在拒绝和取消时删除,因为收到和发出界面里需要显示
         // 若重新建立,则相应界面显示新的关系
-        yield coopDao.deleteSinglePartnership(invitations[0].inviteeId,
-                                              invitations[0].inviterId, trans);
+        yield coopDao.deleteSinglePartnership(
+          invitations[0].inviteeId, invitations[0].inviterId, trans
+        );
         yield coopDao.insertPartnership(
           invitations[0].inviteeId, invitations[0].inviterId, partnerName,
           body.partnerships.map(ps => ({
             key: partnershipTypeNames.indexOf(ps),
+            code: partnershipTypeCodes[partnershipTypeNames.indexOf(ps)],
             name: ps
           })), trans);
       } else {

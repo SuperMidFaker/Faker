@@ -87,6 +87,13 @@ const INVITATION_STATUS = {
   REJECTED: 2,
   CANCELED: 3 // 取消邀请
 };
+const PARTNERSHIP_TYPE_INFO = [
+  { name: '客户', code: 'CUS'},
+  { name: '报关', code: 'CCB'},
+  { name: '货代', code: 'FWD'},
+  { name: '运输', code: 'TRS'},
+  { name: '仓储', code: 'WHS'}
+];
 
 export {
   __DEFAULT_PASSWORD__,
@@ -95,6 +102,7 @@ export {
   TENANT_LEVEL,
   INVITATION_STATUS,
   MAX_STANDARD_TENANT,
+  PARTNERSHIP_TYPE_INFO,
   CHINA_CODE,
   ACCOUNT_STATUS,
   SMS_TYPE,
