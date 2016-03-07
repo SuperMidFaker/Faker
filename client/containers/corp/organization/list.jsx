@@ -35,7 +35,10 @@ function fetchData({state, dispatch, cookie}) {
     closeTenantAppsEditor
   }
 )
-@connectNav((props, dispatch) => {
+@connectNav((props, dispatch, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
   dispatch(setNavTitle({
     depth: 2,
     text: '组织机构',

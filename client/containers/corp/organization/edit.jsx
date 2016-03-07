@@ -34,8 +34,8 @@ function goBack(props) {
     account: state.account
   }),
   { setFormValue, editOrganization, submit, checkLoginName })
-@connectNav((props, dispatch) => {
-  if (props.formData.key === undefined) {
+@connectNav((props, dispatch, lifecycle) => {
+  if (lifecycle === 'componentDidMount') {
     return;
   }
   const isCreating = props.formData.key === null;
