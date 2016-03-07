@@ -30,37 +30,30 @@ const initialState = {
     data: []
   },
   statusList: { // 初始化状态显示数量
-    statusValue: '0',
-    notSendCount: 0,
     notAcceptCount: 0,
     acceptCount: 0,
-    invalidCount: 0
+    invalidCount: 0,
+    revokedCount: 0
   },
   customsBrokerList: [],
   selectOptions: {
     customsInfoList: [],
     declareWayList: [],
     tradeModeList: [],
-    declareFileList: [],
-    declareCategoryList: []
-  },
-  sendlist: {
-    data: []
-  }
+    shortNameList:[]
+ }
 };
 // 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
-
   'ID_LOAD', 'ID_LOAD_SUCCEED', 'ID_LOAD_FAIL', 'ID_SUBMIT', 'ID_SUBMIT_SUCCEED', 'ID_SUBMIT_FAIL', 'ID_BEGIN_EDIT', 'ID_EDIT',
   'ID_UPDATE', 'ID_UPDATE_SUCCEED', 'ID_UPDATE_FAIL', 'ID_DELETE', 'ID_DELETE_SUCCEED', 'ID_DELETE_FAIL', 'ID_EDIT_CANCEL', 'ID_LOAD_STATUS_SUCCEED',
-  'ID_LOAD_STATUS_FAIL', 'ID_LOAD_STATUS', 'REMOVEFILE',
+  'ID_LOAD_STATUS_FAIL', 'ID_LOAD_STATUS',
   'ID_LOAD_CUSTOMSBROKERS', 'ID_LOAD_CUSTOMSBROKERS_SUCCEED', 'ID_LOAD_CUSTOMSBROKERS_FAIL',
   'ID_LOAD_SELECTOPTIONS', 'ID_LOAD_SELECTOPTIONS_SUCCEED', 'ID_LOAD_SELECTOPTIONS_FAIL',
   'FILE_UPLOAD', 'FILE_UPLOAD_SUCCEED', 'FILE_UPLOAD_FAIL',
-  'IMPORT_EDIT', 'IMPORT_EDIT_SUCCEED', 'IMPORT_EDIT_FAIL',
-  'SEND_LOAD', 'SEND_LOAD_SUCCEED', 'SEND_LOAD_FAIL'
+  'IMPORT_EDIT', 'IMPORT_EDIT_SUCCEED', 'IMPORT_EDIT_FAIL'
 ];
-const domain = '@@welogix/importdelegate/';
+const domain = '@@welogix/exportaccept/';
 const actionTypes = createActionTypes(domain, actions);
 appendFormAcitonTypes(domain, actionTypes);
 
@@ -75,14 +68,7 @@ export default function reducer(state = initialState, action) {
       return {...state,
         loaded: true,
         loading: false,
-        statusList: {...state.statusList,
-          statusValue: action.params.currentStatus || '0',
-          invalidCount: action.result.data.statusList.invalidCount,
-          notSendCount: action.result.data.statusList.notSendCount,
-          notAcceptCount: action.result.data.statusList.notAcceptCount,
-          acceptCount: action.result.data.statusList.acceptCount
-        },
-        idlist: action.result.data.idlist
+        idlist: action.result.data
       };
     case actionTypes.ID_LOAD_FAIL:
       return {...state,
@@ -92,30 +78,11 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.FILE_UPLOAD_SUCCEED:
       {
-        const selectOptions = {...state.selectOptions
+        const form = {...state.formData
         };
-        selectOptions.declareFileList.push({
-          id: -1,
-          url: action.result.data,
-          doc_name: action.fileName,
-          category: action.category,
-          fileflag: 0
-        });
-        selectOptions.declareCategoryList.push({
-          category: action.category
-        });
+        form[action.field] = action.result.data;
         return {...state,
-          selectOptions
-        };
-      }
-
-    case actionTypes.REMOVEFILE:
-      {
-        const selectOptions = {...state.selectOptions
-        };
-        selectOptions.declareFileList[action.index].fileflag = -1;
-        return {...state,
-          selectOptions
+          formData: form
         };
       }
 
@@ -130,7 +97,7 @@ export default function reducer(state = initialState, action) {
           idlist.data.push(action.result.data);
         }
         idlist.totalCount++;
-        statusList.notSendCount++;
+        statusList.revokedCount++;
         return {...state,
           idlist,
           statusList
@@ -139,7 +106,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ID_UPDATE_SUCCEED:
       {
         const idDataArray = [...state.idlist.data];
-        idDataArray[state.editIndex] = action.data.importdelegate;
+        idDataArray[state.editIndex] = action.data.exportaccept;
         return {...state,
           idlist: {...state.idlist,
             data: idDataArray
@@ -179,7 +146,7 @@ export default function reducer(state = initialState, action) {
       return {...state,
         statusList: {...state.statusList,
           invalidCount: action.result.data.invalidCount,
-          notSendCount: action.result.data.notSendCount,
+          revokedCount: action.result.data.revokedCount,
           notAcceptCount: action.result.data.notAcceptCount,
           acceptCount: action.result.data.acceptCount
         }
@@ -198,8 +165,7 @@ export default function reducer(state = initialState, action) {
           customsInfoList: action.result.data.customsInfoList,
           declareWayList: action.result.data.declareWayList,
           tradeModeList: action.result.data.tradeModeList,
-          declareFileList: action.result.data.declareFileList,
-          declareCategoryList: action.result.data.declareCategoryList
+          shortNameList:action.result.data.shortNameList
         }
       };
     case actionTypes.IMPORT_EDIT_SUCCEED:
@@ -207,7 +173,7 @@ export default function reducer(state = initialState, action) {
         if (state.selectedIndex !== -1) {
           const idlist = {...state.idlist
           };
-          idlist.data[state.selectedIndex] = action.data.importdelegate;
+          idlist.data[state.selectedIndex] = action.data.exportaccept;
           return {...state,
             selectedIndex: -1,
             idlist
@@ -217,24 +183,16 @@ export default function reducer(state = initialState, action) {
           };
         }
       }
-    case actionTypes.SEND_LOAD_SUCCEED:
-      return {...state,
-        loaded: true,
-        loading: false,
-        sendlist: {
-          data:action.sendlist.data
-        }
-      };
     default:
       return formReducer(actionTypes, state, action, {}, 'idlist') || state;
-  }
+      }
 }
 
-export function loadDelegates(cookie, params) {
+export function loadAccept(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_LOAD, actionTypes.ID_LOAD_SUCCEED, actionTypes.ID_LOAD_FAIL],
-      endpoint: 'v1/import/importdelegates',
+      endpoint: 'v1/export/exportaccepts',
       method: 'get',
       cookie,
       params
@@ -243,28 +201,29 @@ export function loadDelegates(cookie, params) {
 }
 
 
-export function submit(importdelegate, params) {
+export function submit(exportaccept, username, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_SUBMIT, actionTypes.ID_SUBMIT_SUCCEED, actionTypes.ID_SUBMIT_FAIL],
-      endpoint: 'v1/import/importdelegate',
+      endpoint: 'v1/export/exportaccept',
       method: 'post',
       data: {
-        importdelegate,
-        params
+        exportaccept,
+        username,
+        tenantId
       }
     }
   };
 }
 
-export function updateId(importdelegate) {
+export function updateId(exportaccept) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_UPDATE, actionTypes.ID_UPDATE_SUCCEED, actionTypes.ID_UPDATE_FAIL],
-      endpoint: 'v1/import/importdelegate',
+      endpoint: 'v1/export/exportaccept',
       method: 'put',
       data: {
-        importdelegate
+        exportaccept
       }
     }
   };
@@ -274,7 +233,7 @@ export function delId(idkey) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_DELETE, actionTypes.ID_DELETE_SUCCEED, actionTypes.ID_DELETE_FAIL],
-      endpoint: 'v1/import/importdelegate',
+      endpoint: 'v1/export/exportaccept',
       method: 'del',
       data: {
         idkey
@@ -287,7 +246,7 @@ export function loadStatus(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_LOAD_STATUS, actionTypes.ID_LOAD_STATUS_SUCCEED, actionTypes.ID_LOAD_STATUS_FAIL],
-      endpoint: 'v1/import/status',
+      endpoint: 'v1/export/status',
       method: 'get',
       cookie,
       params
@@ -299,35 +258,34 @@ export function loadCustomsBrokers(cookie, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_LOAD_CUSTOMSBROKERS, actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED, actionTypes.ID_LOAD_CUSTOMSBROKERS_FAIL],
-      endpoint: `v1/import/${tenantId}/customsBrokers`,
+      endpoint: `v1/export/${tenantId}/customsBrokers`,
       method: 'get',
       cookie
     }
   };
 }
 
-export function loadSelectOptions(cookie, params) {
+export function loadSelectOptions(cookie) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_LOAD_SELECTOPTIONS, actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED, actionTypes.ID_LOAD_SELECTOPTIONS_FAIL],
-      endpoint: `v1/import/getSelectOptions`,
+      endpoint: `v1/export/getSelectOptions`,
       method: 'get',
-      cookie,
-      params
+      cookie
     }
   };
 }
 
-export function assignForm(importdelegateState, idId) {
-  return assignFormC(idId, importdelegateState, 'idlist', actionTypes);
+export function assignForm(exportacceptState, idId) {
+  return assignFormC(idId, exportacceptState, 'idlist', actionTypes);
 }
 
-export function isFormDataLoaded(importdelegateState, idId) {
-  return isFormDataLoadedC(idId, importdelegateState, 'idlist');
+export function isFormDataLoaded(exportacceptState, idId) {
+  return isFormDataLoadedC(idId, exportacceptState, 'idlist');
 }
 
 export function loadForm(cookie, idId) {
-  return loadFormC(cookie, 'v1/import/importdelegate', {
+  return loadFormC(cookie, 'v1/export/exportaccepts', {
     pid: idId
   }, actionTypes);
 }
@@ -340,35 +298,28 @@ export function setFormValue(field, newValue) {
   return setFormValueC(actionTypes, field, newValue);
 }
 
-export function uploadFiles(file, fileName, category) {
+export function uploadFiles(field, file) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.FILE_UPLOAD, actionTypes.FILE_UPLOAD_SUCCEED, actionTypes.FILE_UPLOAD_FAIL],
       endpoint: 'v1/upload/img',
       method: 'post',
       files: file,
-      fileName,
-      category
+      field
     }
   };
 }
 
-export function removeFile(index) {
-  return {
-    type: actionTypes.REMOVEFILE,
-    index
-  };
-}
-
-export function edit(importdelegate, params) {
+export function edit(exportaccept, username, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.IMPORT_EDIT, actionTypes.IMPORT_EDIT_SUCCEED, actionTypes.IMPORT_EDIT_FAIL],
-      endpoint: 'v1/import/importdelegate',
+      endpoint: 'v1/export/exportaccept',
       method: 'put',
       data: {
-        importdelegate,
-        params
+        exportaccept,
+        username,
+        tenantId
       }
     }
   };
@@ -389,12 +340,5 @@ export function beginEdit(item, index) {
 export function cancelEdit() {
   return {
     type: actionTypes.ID_EDIT_CANCEL
-  };
-}
-
-export function loadSend(sendlist) {
-  return {
-    type: actionTypes.SEND_LOAD_SUCCEED,
-    sendlist
   };
 }
