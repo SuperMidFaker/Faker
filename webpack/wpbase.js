@@ -1,5 +1,4 @@
-require('babel/register')({
-});
+require('babel/register');
 
 const webpack = require('webpack');
 const path = require('path');
@@ -71,6 +70,14 @@ const wpConfig = {
                   transform: 'react-transform-catch-errors',
                   imports: ['react', 'redbox-react']
                 }]
+              }
+            }
+          },
+          i18n: {
+            plugins: ["react-intl"],
+            extra: {
+              react-intl: {
+                "messagesDir": "./public/assets/langs/"
               }
             }
           }

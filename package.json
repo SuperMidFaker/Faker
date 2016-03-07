@@ -71,6 +71,7 @@
     "babel-core": "^5.8.35",
     "babel-eslint": "^4.1.8",
     "babel-loader": "^5.4.0",
+    "babel-plugin-react-intl": "^1.0.0",
     "babel-plugin-react-transform": "^1.1.1",
     "babel-runtime": "^5.8.35",
     "css-loader": "^0.23.1",

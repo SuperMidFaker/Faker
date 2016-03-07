@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover } from 'ant-ui';
+import { Popover, Menu } from 'ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
@@ -15,6 +15,7 @@ export default class AmNavBar extends React.Component {
     navTitle: PropTypes.object.isRequired
   }
   render() {
+    const MenuItem = Menu.Item;
     const { navTitle } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
@@ -40,7 +41,7 @@ export default class AmNavBar extends React.Component {
     } else if (navTitle.depth === 3) {
       amTitleNav = (
         <a role="button" onClick={navTitle.goBackFn}>
-          <i className={`zmdi zmdi-arrow-left`}></i>
+          <i className="zmdi zmdi-arrow-left"></i>
           {navTitle.text}
         </a>);
     }
@@ -66,6 +67,23 @@ export default class AmNavBar extends React.Component {
               <AmUserNav />
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
+              <Popover placement="bottomLeft" trigger="hover" overlay={
+                <Menu>
+                  <MenuItem>
+                    <a role="button"><span>中文</span></a>
+                  </MenuItem>
+                  <MenuItem>
+                    <a role="button"><span>英文</span></a>
+                  </MenuItem>
+                </Menu>
+              }>
+                <li className="dropdown">
+                  <a className="dropdown-toggle" role="button" aria-expanded="false">
+                    <span className="icon s7-global"></span>
+                    <span className="angle-down s7-angle-down"></span>
+                  </a>
+                </li>
+              </Popover>
               <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" aria-expanded="false" role="button">
                   <span className="icon s7-comment"></span>
