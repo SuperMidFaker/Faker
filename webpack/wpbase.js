@@ -73,11 +73,11 @@ const wpConfig = {
               }
             }
           },
-          i18n: {
-            plugins: ["react-intl"],
+          production: {
+            plugins: ['react-intl'],
             extra: {
-              react-intl: {
-                "messagesDir": "./public/assets/langs/"
+              'react-intl': {
+                'messagesDir': './public/dist/messages/'
               }
             }
           }

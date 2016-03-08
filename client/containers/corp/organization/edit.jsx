@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Input, Select, Row, Col, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { loadOrganizationForm, clearForm, setFormValue, editOrganization, submit } from
@@ -9,7 +10,7 @@ import { isLoginNameExist, checkLoginName } from
   '../../../../reusable/domains/redux/checker-reducer';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
-import Msg from './message.i18n';
+import formatMsg from './message.i18n';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -27,6 +28,7 @@ function goBack(props) {
 }
 
 @connectFetch()(fetchData)
+@injectIntl
 @connect(
   state => ({
     formData: state.corps.formData,
@@ -41,8 +43,7 @@ function goBack(props) {
   const isCreating = props.formData.key === null;
   dispatch(setNavTitle({
     depth: 3,
-    // text: isCreating ? '添加部门或分支机构' : props.formData.name,
-    text: isCreating ? <Msg s="editTitle" /> : props.formData.name,
+    text: isCreating ? formatMsg(props.intl, 'editTitle') : props.formData.name,
     moduleName: 'corp',
     goBackFn: () => goBack(props),
     withModuleLayout: false
@@ -62,6 +63,7 @@ function goBack(props) {
 })
 export default class CorpEdit extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     history: PropTypes.object.isRequired,
     account: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
@@ -111,10 +113,13 @@ export default class CorpEdit extends React.Component {
     );
   }
   renderOwnerForm() {
-    const { formhoc: {getFieldProps, getFieldError}, account: {code} } = this.props;
+    const { formhoc: { getFieldProps, getFieldError }, intl, account: { code }} = this.props;
     return (
       <div>
-        {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+        {this.renderTextInput(
+          formatMsg(intl, 'corpHead'), formatMsg(intl, 'headPlaceholder'), 'contact',
+          true, [{required: true, min: 2, message: formatMsg(intl, 'headMessage')}]
+        )}
         <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} hasFeedback required
           help={getFieldError('loginName')}>
           <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {

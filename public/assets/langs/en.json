@@ -1,3 +1,6 @@
 {
-  "organization.edit.title": "Add department/organization"
+  "organization.edit.title": "Add department/organization",
+  "organization.edit.corpHead": "Person Incharger",
+  "organization.edit.headPlaceholder": "Please input person name",
+  "organization.edit.headMessage": "Name must be more than 2 chinese or english"
 }
