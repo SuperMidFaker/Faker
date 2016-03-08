@@ -30,11 +30,9 @@ export default [
    ['post', '/v1/user/corp/app', switchTenantApp],
    ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
    ['get', '/v1/user/personnels', getCorpPersonnels],
-   ['get', '/v1/user/personnels_test', getCorpPersonnels_test],
    ['get', '/v1/user/personnel', getPersonnelInfo],
    ['post', '/v1/user/personnel', submitPersonnel],
    ['put', '/v1/user/personnel', editPersonnel],
-   ['put', '/v1/user/personnel_test', editPersonnel_test],
    ['delete', '/v1/user/personnel', delPersonnel],
    ['put', '/v1/user/password', changePassword],
    ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
@@ -364,30 +362,6 @@ function *getCorpPersonnels() {
   }
 }
 
-function *getCorpPersonnels_test() {
-  const tenantId = this.request.query.tenantId;
-  const pageSize = parseInt(this.request.query.pageSize, 10);
-  const current = parseInt(this.request.query.currentPage, 10);
-  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
-  const sortField = this.request.query.sortField;
-  const sortOrder = this.request.query.sortOrder;
-  try {
-    const counts = yield tenantUserDao.getTenantPersonnelCount_test(tenantId, filters);
-    const totalCount = counts[0].num;
-    const personnel = yield tenantUserDao.getPagedPersonnelInCorp_test(tenantId, current, pageSize,
-                                                                  filters, sortField, sortOrder);
-    // 换页,切换页数时从这里传到reducer里更新
-    Result.OK(this, {
-      totalCount,
-      current,
-      pageSize,
-      data: personnel
-    });
-  } catch (e) {
-    Result.InternalServerError(this, e.message);
-  }
-}
-
 function *submitPersonnel() {
   const curUserId = this.state.user.userId;
   const body = yield cobody(this);
@@ -428,22 +402,6 @@ function *editPersonnel() {
                                           personnel.email, trans);
     }
     yield tenantUserDao.updatePersonnel(personnel, trans);
-    yield mysql.commit(trans);
-    Result.OK(this);
-  } catch (e) {
-    yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
-  }
-}
-
-function *editPersonnel_test() {
-  const body = yield cobody(this);
-  const personnel = body.personnel;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield userDao.updateg_bus_delegate(personnel.del_no, personnel.invoice_no,body.tenantId,trans);
-                                  
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {

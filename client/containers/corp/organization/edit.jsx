@@ -11,6 +11,7 @@ import { isLoginNameExist, checkLoginName } from
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
 import formatMsg from './message.i18n';
+import globalMessages from 'client/containers/root.i18n';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -117,11 +118,13 @@ export default class CorpEdit extends React.Component {
     return (
       <div>
         {this.renderTextInput(
-          formatMsg(intl, 'corpHead'), formatMsg(intl, 'headPlaceholder'), 'contact',
-          true, [{required: true, min: 2, message: formatMsg(intl, 'headMessage')}]
+          formatMsg(intl, 'chief'), formatMsg(intl, 'chiefPlaceholder'), 'contact',
+          true, [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}]
         )}
-        <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} hasFeedback required
-          help={getFieldError('loginName')}>
+        <FormItem label={formatMsg(intl, 'username')} labelCol={{span: 6}}
+          wrapperCol={{span: 18}} hasFeedback required
+          help={getFieldError('loginName')}
+        >
           <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
             rules: [{
               validator: (rule, value, callback) =>
@@ -131,21 +134,24 @@ export default class CorpEdit extends React.Component {
             }]
           })} />
         </FormItem>
-        {this.renderTextInput('手机号', '', 'phone', true, [{
+        {this.renderTextInput(formatMsg(intl, 'phone'), '', 'phone', true, [{
           validator: (rule, value, callback) => validatePhone(value, callback)
         }])}
         {this.renderTextInput('Email', '', 'email', false, [{
           type: 'email',
-          message: 'email格式错误'}])}
+          message: formatMsg(intl, 'emailError')}])}
       </div>);
   }
   renderOwnerSelect() {
-    const { corpUsers, formhoc: { getFieldProps, getFieldError } } = this.props;
+    const { corpUsers, intl, formhoc: { getFieldProps, getFieldError }} = this.props;
     return (
-      <FormItem label="负责人" labelCol={{span: 6}} wrapperCol={{span: 18}}
+      <FormItem label={formatMsg(intl, 'chief')} labelCol={{span: 6}} wrapperCol={{span: 18}}
         help={getFieldError('coid')} required>
-        <Select style={{ width: '100%' }} { ...getFieldProps('coid', {
-          rules: [{required: true, message: '负责人必填'}]}) }>
+        <Select style={{ width: '100%' }} { ...getFieldProps(
+          'coid', {
+            rules: [{required: true, message: formatMsg('chiefRequired')}]
+          }) }
+        >
           {
             corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{ u.name }</Option>)
           }
@@ -154,18 +160,25 @@ export default class CorpEdit extends React.Component {
   }
   render() {
     const isCreating = this.props.formData.key === null;
+    const { intl } = this.props;
     return (
       <div className="page-body">
-        <Form horizontal onSubmit={this.handleSubmit} form={ this.props.formhoc }
-        className="form-edit-content offset-right-col">
-          {this.renderTextInput('名称', '请输入部门或分支机构名称', 'name', true, [{required: true, min: 2, message: '2位以上中英文'}])}
+        <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
+          className="form-edit-content offset-right-col"
+        >
+          {
+            this.renderTextInput(
+              formatMsg(intl, 'organName'), formatMsg(intl, 'organPlaceholder'), 'name', true,
+              [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}]
+            )
+          }
           {
             isCreating ? this.renderOwnerForm() : this.renderOwnerSelect()
           }
           <Row>
             <Col span="18" offset="6">
-              <Button htmlType="submit" type="primary">确定</Button>
-              <Button onClick={ this.handleCancel }>取消</Button>
+              <Button htmlType="submit" type="primary">{formatMsg(intl, 'ok', globalMessages)}</Button>
+              <Button onClick={ this.handleCancel }>{formatMsg(intl, 'cancel', globalMessages)}</Button>
             </Col>
           </Row>
         </Form>

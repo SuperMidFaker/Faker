@@ -15,6 +15,7 @@ const actions = [
 const domain = '@@welogix/corpd/';
 const actionTypes = createActionTypes(domain, actions);
 
+export const CPD_LOAD_SUCCEED = actionTypes.CPD_LOAD_SUCCEED;
 export const CPD_LOAD_FAIL = actionTypes.CPD_LOAD_FAIL;
 
 export default function reducer(state = initialState, action) {

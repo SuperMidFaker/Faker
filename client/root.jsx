@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 import { loadCorpByDomain } from '../universal/redux/reducers/corp-domain';
 import { loadTranslation } from '../universal/redux/reducers/intl';
 import { isLoaded } from '../reusable/common/redux-actions';
@@ -28,6 +29,8 @@ function fetchData({ state, dispatch, cookie, location }) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
+    locale: state.intl.locale,
+    messages: state.intl.messages,
     subdomain: state.account.subdomain,
     isAuthed: state.auth.isAuthed
   })
@@ -37,6 +40,8 @@ export default class Root extends React.Component {
     children: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired,
+    messages: PropTypes.object.isRequired,
     subdomain: PropTypes.string.isRequired,
     isAuthed: PropTypes.bool.isRequired
   };
@@ -56,6 +61,14 @@ export default class Root extends React.Component {
   }
 
   render() {
-    return this.props.children;
+    const { locale, messages } = this.props;
+    return (
+      <IntlProvider key={locale}
+        locale={locale}
+        messages={messages}
+      >
+      {this.props.children}
+      </IntlProvider>
+    );
   }
 }

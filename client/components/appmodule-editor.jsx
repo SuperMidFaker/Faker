@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
+import formatMsg from './message.i18n';
 import './appmodule-editor.less';
 
+@injectIntl
 export default class ModuleEditor extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -18,9 +22,9 @@ export default class ModuleEditor extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible === true) {
-      this.setState({visible: true});
+      this.setState({ visible: true });
     } else {
-      this.setState({visible: false});
+      this.setState({ visible: false });
     }
     if ('tenantApps' in nextProps) {
       const enMods = {};
@@ -48,8 +52,9 @@ export default class ModuleEditor extends React.Component {
       });
   }
   render() {
+    const { intl } = this.props;
     return (
-      <Modal title="设置开通的应用" visible={this.state.visible}
+      <Modal title={formatMsg(intl, 'appEditorTitle')} visible={this.state.visible}
         onCancel={this.handleCancel} footer={
           [
             <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
@@ -59,7 +64,7 @@ export default class ModuleEditor extends React.Component {
         }
       >
         <Row className="module-editor">
-          <Col span="8"><h4>应用名称</h4></Col>
+          <Col span="8"><h4>{ formatMsg(intl, 'appEditorNameCol') }</h4></Col>
           <Col span="8"><p className="type-label">描述</p></Col>
           <Col span="8"><label className="type-label pull-right">开通状态</label></Col>
         </Row>

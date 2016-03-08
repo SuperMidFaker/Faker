@@ -1,6 +1,14 @@
 {
+  "root.ok": "OK",
+  "root.cancel": "Cancel",
+  "component.appEditor.title": "App Setting",
+  "component.appEditor.nameCol": "App Name",
   "organization.edit.title": "Add department/organization",
-  "organization.edit.corpHead": "Person Incharger",
-  "organization.edit.headPlaceholder": "Please input person name",
-  "organization.edit.headMessage": "Name must be more than 2 chinese or english"
+  "organization.edit.chief": "Chief",
+  "organization.edit.chiefPlaceholder": "Please input person name",
+  "organization.edit.nameMessage": "Name must be more than 2 chinese or english.",
+  "organization.edit.username": "Username",
+  "organization.edit.phone": "Phone",
+  "organization.edit.emailErr": "Wrong email format.",
+  "organization.edit.chiefRequired": "Chief name is required."
 }

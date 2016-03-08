@@ -72,14 +72,6 @@ const wpConfig = {
                 }]
               }
             }
-          },
-          production: {
-            plugins: ['react-intl'],
-            extra: {
-              'react-intl': {
-                'messagesDir': './public/dist/messages/'
-              }
-            }
           }
         }
       }

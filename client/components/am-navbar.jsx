@@ -4,22 +4,30 @@ import { Popover, Menu } from 'ant-ui';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
+import { loadTranslation } from 'universal/redux/reducers/intl';
 
 @connect(
   state => ({
+    curLocale: state.intl.locale,
     navTitle: state.navbar.navTitle
-  })
+  }),
+  { loadTranslation }
 )
 export default class AmNavBar extends React.Component {
   static propTypes = {
+    loadTranslation: PropTypes.func.isRequired,
+    curLocale: PropTypes.oneOf(['en', 'zh']),
     navTitle: PropTypes.object.isRequired
+  }
+  handleClick = (ev) => {
+    this.setState({ currentLang: ev.key });
+    this.props.loadTranslation(null, ev.key);
   }
   render() {
     const MenuItem = Menu.Item;
-    const { navTitle } = this.props;
+    const { curLocale, navTitle } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
-    console.log(navTitle.text);
     if (navTitle.depth === 2) {
       if (navTitle.withModuleLayout) {
         amTitleNav = (
@@ -68,12 +76,12 @@ export default class AmNavBar extends React.Component {
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
               <Popover placement="bottomLeft" trigger="hover" overlay={
-                <Menu>
-                  <MenuItem>
-                    <a role="button"><span>中文</span></a>
+                <Menu selectedKeys={[curLocale]} onClick={this.handleClick}>
+                  <MenuItem key="zh">
+                    <span>中文</span>
                   </MenuItem>
-                  <MenuItem>
-                    <a role="button"><span>英文</span></a>
+                  <MenuItem key="en">
+                    <span>英文</span>
                   </MenuItem>
                 </Menu>
               }>

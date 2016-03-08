@@ -3,7 +3,6 @@ import { createActionTypes } from '../../../reusable/common/redux-actions';
 const initialState = {
   loaded: false,
   locale: '',
-  langCLDR: '',
   messages: {
   }
 };
@@ -14,7 +13,8 @@ const actionTypes = createActionTypes('@@welogix/intl/', [
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TRANSLATION_LOAD_SUCCEED:
-      return { ...state, messages: action.result.data, loaded: true };
+      return { ...state, locale: action.params.locale,
+        messages: action.result.data, loaded: true };
     default:
       return state;
   }

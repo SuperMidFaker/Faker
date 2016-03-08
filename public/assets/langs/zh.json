@@ -1,6 +1,6 @@
 {
   "organization.edit.title": "添加部门或分支机构",
-  "organization.edit.corpHead": "负责人",
-  "organization.edit.headPlaceholder": "请输入负责人名称",
-  "organization.edit.headMessage": "2位以上中英文"
+  "organization.edit.chief": "负责人",
+  "organization.edit.chiefPlaceholder": "请输入负责人名称",
+  "organization.edit.chiefMessage": "2位以上中英文"
 }
