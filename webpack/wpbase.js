@@ -20,10 +20,7 @@ const wpConfig = {
     // When requiring, you don't need to add these extensions
     extensions: ['', '.js', '.jsx'],
     // Modules will be searched for in these directories
-    modulesDirectories: [
-      'node_modules',
-      path.resolve(__dirname, '..')
-    ]
+    root: path.resolve(__dirname, '..')
   },
   output: {
     path: config.get('output_path'), // Path of output file

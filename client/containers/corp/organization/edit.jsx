@@ -4,9 +4,9 @@ import { Button, Form, Input, Select, Row, Col, message } from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { loadOrganizationForm, clearForm, setFormValue, editOrganization, submit } from
-'../../../../universal/redux/reducers/corps';
+  '../../../../universal/redux/reducers/corps';
 import { isLoginNameExist, checkLoginName } from
-'../../../../reusable/domains/redux/checker-reducer';
+  '../../../../reusable/domains/redux/checker-reducer';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
 const FormItem = Form.Item;
@@ -114,13 +114,14 @@ export default class CorpEdit extends React.Component {
       <div>
         {this.renderTextInput('负责人', '请输入负责人名称', 'contact', true, [{required: true, min: 2, message: '2位以上中英文'}])}
         <FormItem label="用户名" labelCol={{span: 6}} wrapperCol={{span: 18}} hasFeedback required
-        help={getFieldError('loginName')}>
+          help={getFieldError('loginName')}>
           <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
             rules: [{
               validator: (rule, value, callback) =>
               isLoginNameExist(value, code, this.props.formData.loginId,
                                this.props.account.tenantId, callback,
-                               message, this.props.checkLoginName)}]
+                               message, this.props.checkLoginName)
+            }]
           })} />
         </FormItem>
         {this.renderTextInput('手机号', '', 'phone', true, [{
@@ -134,9 +135,9 @@ export default class CorpEdit extends React.Component {
   renderOwnerSelect() {
     const { corpUsers, formhoc: { getFieldProps, getFieldError } } = this.props;
     return (
-      <FormItem label="负责人" labelCol={ {span: 6} } wrapperCol={ {span: 18} }
-        help={ getFieldError('coid') } required>
-        <Select style={ { width: '100%' } } { ...getFieldProps('coid', {
+      <FormItem label="负责人" labelCol={{span: 6}} wrapperCol={{span: 18}}
+        help={getFieldError('coid')} required>
+        <Select style={{ width: '100%' }} { ...getFieldProps('coid', {
           rules: [{required: true, message: '负责人必填'}]}) }>
           {
             corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{ u.name }</Option>)
