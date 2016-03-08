@@ -58,7 +58,8 @@ const actions = [
   'ID_LOAD_SELECTOPTIONS', 'ID_LOAD_SELECTOPTIONS_SUCCEED', 'ID_LOAD_SELECTOPTIONS_FAIL',
   'FILE_UPLOAD', 'FILE_UPLOAD_SUCCEED', 'FILE_UPLOAD_FAIL',
   'IMPORT_EDIT', 'IMPORT_EDIT_SUCCEED', 'IMPORT_EDIT_FAIL',
-  'SEND_LOAD', 'SEND_LOAD_SUCCEED', 'SEND_LOAD_FAIL'
+  'SEND_LOAD', 'SEND_LOAD_SUCCEED', 'SEND_LOAD_FAIL',
+  'SEND', 'SEND_SUCCEED', 'SEND_FAIL'
 ];
 const domain = '@@welogix/importdelegate/';
 const actionTypes = createActionTypes(domain, actions);
@@ -222,9 +223,31 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         loading: false,
         sendlist: {
-          data:action.sendlist.data
+          data: action.sendlist.data
         }
       };
+    case actionTypes.SEND_SUCCEED:
+      {
+        const idlist = {...state.idlist
+        };
+        const newlist = [];
+
+        idlist.data.map((item) => {
+          if (action.params.sendlist.indexOf(item.key) === -1) {
+            newlist.push(item);
+          }
+        });
+
+        return {...state,
+          idlist: {...state.idlist,
+            data: newlist
+          },
+          statusList: {...state.statusList,
+            notSendCount: state.statusList.notSendCount - (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1),
+            notAcceptCount: state.statusList.notAcceptCount + (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1)
+          }
+        };
+      }
     default:
       return formReducer(actionTypes, state, action, {}, 'idlist') || state;
   }
@@ -396,5 +419,16 @@ export function loadSend(sendlist) {
   return {
     type: actionTypes.SEND_LOAD_SUCCEED,
     sendlist
+  };
+}
+
+export function sendDelegate(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SEND, actionTypes.SEND_SUCCEED, actionTypes.SEND_FAIL],
+      endpoint: 'v1/import/senddelegate',
+      method: 'put',
+      params
+    }
   };
 }

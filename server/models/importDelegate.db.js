@@ -167,12 +167,29 @@ export default {
           const sql = ` INSERT INTO g_bus_delegate_files (category, url, doc_name, format, del_id, del_no, tenant_id)
                       VALUES (?, ?, ?, ?, ?, ?, ?)`;
           yield mysql.query(sql, args, trans);
-        } else if(file.id !== -1 && file.fileflag === -1) {
+        } else if (file.id !== -1 && file.fileflag === -1) {
           const args = [file.id];
-          const sql=`DELETE FROM g_bus_delegate_files where id=?`;
+          const sql = `DELETE FROM g_bus_delegate_files where id=?`;
           yield mysql.query(sql, args, trans);
         }
 
       }
+    },
+    sendDelegate(tenantId, sendlist, customsBroker, status) {
+      if (status === '0') {
+        const args = [tenantId, customsBroker];
+        const sql = `UPDATE g_bus_delegate set send_tenant_id=?,rec_tenant_id=?,status=1 where del_id in (${sendlist instanceof Array?sendlist.join(","):sendlist})`;
+        return mysql.query(sql, args);
+      } else {
+        const args = [];
+        const sql = `UPDATE g_bus_delegate set status=0 where del_id in (${sendlist instanceof Array?sendlist.join(","):sendlist})`;
+        return mysql.query(sql, args);
+      }
+    }, * invalidDelegate(tenantId, loginId, username, delegateId, reason, trans) {
+      const args = [tenantId, loginId, delegateId];
+      const sql = `UPDATE g_bus_delegate set status=3 where tenant_id=? and creater_login_id=? and del_id=?`;
+
+      yield mysql.query(sql, args, trans);
     }
+
 }
