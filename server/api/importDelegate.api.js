@@ -10,7 +10,10 @@ export default [
   ['get', '/v1/import/getSelectOptions', getSelectOptions],
   ['delete', '/v1/import/importdelegate', delId],
   ['post', '/v1/import/importdelegate', submitImportDelegate],
-  ['put', '/v1/import/importdelegate', editImportDelegate]
+  ['put', '/v1/import/importdelegate', editImportDelegate],
+  ['put', '/v1/import/senddelegate', sendDelegate],
+  ['put', '/v1/import/invalidDelegate', invalidDelegate],
+  ['get', '/v1/import/importdelegatelogs', importdelegatelogs],
 ]
 
 function* importdelegates() {
@@ -41,7 +44,7 @@ function* importdelegates() {
         current,
         data: ids
       },
-      statusList:{
+      statusList: {
         notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
         notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
         acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
@@ -134,6 +137,9 @@ function* editImportDelegate() {
   try {
     trans = yield mysql.beginTransaction();
     const result = yield idDao.editImportDelegate(newEntity, entity.key, trans);
+    if (parseInt(params.status, 10) === 2) {
+      yield idDao.writeLog(entity.key, params.loginId, params.username, `变更业务单:${entity.del_no}`, trans);
+    }
     yield idDao.saveFileInfo(params.declareFileList, params.tenantId, entity.key, entity.del_no, trans);
     yield mysql.commit(trans);
     Result.OK(this);
@@ -152,12 +158,15 @@ function* submitImportDelegate() {
   entity.usebook = (entity.usebook || false) ? 1 : 0;
   entity.urgent = (entity.urgent || false) ? 1 : 0;
   entity.tenant_id = params.tenantId;
+  entity.creater_login_id = params.loginId;
   entity.status = 0;
 
   let trans;
   try {
     trans = yield mysql.beginTransaction();
     const result = yield idDao.insertImportDelegate(entity, trans);
+    yield idDao.writeLog(result[0].key, params.loginId, params.username, `添加业务单:${result[0].del_no}`, trans);
+    yield idDao.insertUser(result[0].key, result[0].del_no, 0, params.loginId, trans);
     yield idDao.saveFileInfo(params.declareFileList, params.tenantId, result[0].key, result[0].del_no, trans);
     yield mysql.commit(trans);
     Result.OK(this, result[0]);
@@ -165,5 +174,64 @@ function* submitImportDelegate() {
     console.log('submitImport', e && e.stack);
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
+  }
+}
+
+function* sendDelegate() {
+  const tenantId = this.request.query.tenantId;
+  const customsBroker = this.request.query.customsBroker;
+  const sendlist = this.request.query.sendlist;
+  const status = this.request.query.status;
+  try {
+    yield idDao.sendDelegate(tenantId, sendlist, customsBroker, status);
+    Result.OK(this);
+  } catch (e) {
+    console.log('send', e && e.stack);
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function* invalidDelegate() {
+  const tenantId = this.request.query.tenantId;
+  const loginId = this.request.query.loginId;
+  const username = this.request.query.username;
+  const delegateId = this.request.query.delegateId;
+  const reason = this.request.query.reason;
+  const del_no = this.request.query.del_no;
+
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield idDao.invalidDelegate(tenantId, loginId, username, delegateId, reason, trans);
+    yield idDao.writeLog(delegateId, loginId, username, `作废业务单:${del_no}`, trans);
+    yield mysql.commit(trans);
+    Result.OK(this);
+  } catch (e) {
+    console.log('invalid', e && e.stack);
+    yield mysql.rollback(trans);
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function* importdelegatelogs() {
+  const current = parseInt(this.request.query.currentPage || 1, 10);
+  const pageSize = parseInt(this.request.query.pageSize || 10, 10);
+  const delegateId = parseInt(this.request.query.delegateId || 10, 10);
+
+  try {
+    const totals = yield idDao.getLogsCount(delegateId);
+    const logs = yield idDao.getLogs(current, pageSize, delegateId);
+
+    return Result.OK(this, {
+      loglist: {
+        totalCount: totals.length > 0 ? totals[0].count : 0,
+        pageSize,
+        current,
+        data: logs
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    return Result.InternalServerError(this, e.message);
   }
 }

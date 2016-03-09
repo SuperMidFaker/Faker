@@ -13,7 +13,7 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Button, message, Radio} from 'ant-ui';
+import {Table, Button, message, Radio, Tag} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
@@ -66,7 +66,6 @@ export default class ImportDelegate extends React.Component {
     edit: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     loadDelegates: PropTypes.func.isRequired,
-    submitDelegate: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     sendlist: PropTypes.object.isRequired
   }
@@ -77,7 +76,9 @@ export default class ImportDelegate extends React.Component {
       curStatus: 0,
       statusValue: '',
       searchVal: '',
-      selectedRowKeys: []
+      sendlist: [],
+      buttonText: '撤回',
+      sendStatus: 1
     };
   }
   handleIdReg() {
@@ -137,14 +138,34 @@ export default class ImportDelegate extends React.Component {
   handleNavigationTo(to, query) {
     this.props.history.pushState(null, to, query);
   }
-  handleSend(record) {
+  handleSend(status, record) {
     this.props.sendlist.data = [];
     if (!record) {
       this.state.sendlist.map((item) => (this.props.sendlist.data.push(item)));
     } else {
       this.props.sendlist.data.push(record);
     }
-    this.props.history.pushState(null, '/import/delegate/send');
+    this.props.history.pushState(null, `/import/delegate/send/${status}`);
+  }
+  handleSetSendList(selectedRows) {
+    this.setState({sendlist: [], buttonText: '', sendStatus: 0});
+    let allnosend = true;
+    let allnoaccept = true;
+    selectedRows.map((record) => {
+      if (record.status !== 0) {
+        allnosend = false;
+      }
+      if (record.status !== 1) {
+        allnoaccept = false;
+      }
+    });
+
+    if (allnosend === true) {
+      this.setState({sendlist: selectedRows, buttonText: '发送', sendStatus: 0});
+    }
+    if (allnoaccept === true) {
+      this.setState({sendlist: selectedRows, buttonText: '撤回', sendStatus: 1});
+    }
   }
   createFilters(searchVal) { // 创建过滤
     return [
@@ -189,7 +210,7 @@ export default class ImportDelegate extends React.Component {
       idlist,
       loading
     } = this.props;
-    const {curStatus} = this.state;
+    const {curStatus, buttonText} = this.state;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadDelegates(null, params),
       resolve: (result) => result.data,
@@ -228,13 +249,10 @@ export default class ImportDelegate extends React.Component {
     const rowSelection = {
       // selectedRowKeys: this.state.selectedRowKeys,
       onSelect: (record, selected, selectedRows) => {
-        this.setState({sendlist: selectedRows});
+        this.handleSetSendList(selectedRows);
       },
       onSelectAll: (selected, selectedRows) => {
-        this.setState({sendlist: selectedRows});
-      },
-      onChange: (selectedRowKeys) => {
-        this.setState({selectedRowKeys});
+        this.handleSetSendList(selectedRows);
       }
     };
 
@@ -294,12 +312,19 @@ export default class ImportDelegate extends React.Component {
             default:
               break;
           }
+          let noaccept = undefined;
+          if (record.status === 0 && record.short_name) {
+            noaccept = <Tag color="gray">已撤回</Tag>;
+          }
           return (
-            <span style={{
-              color: fontColor
-            }}>
-              {statusText}
-            </span>
+            <div>
+              <span style={{
+                color: fontColor
+              }}>
+                {statusText}
+              </span>
+              {noaccept}
+            </div>
           );
         }
       }, {
@@ -312,27 +337,27 @@ export default class ImportDelegate extends React.Component {
                 <span>
                   <NavLink to={`/import/delegate/edit/${record.key}`}>修改</NavLink>
                   <span className="ant-divider"/>
-                  <a role="button" onClick={() => this.handleSend(record)}>发送</a>
+                  <a role="button" onClick={() => this.handleSend(0, record)}>发送</a>
                 </span>
               );
             case 1:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/import/delegate/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
-                  <a href="#" className="ant-dropdown-link">撤回</a>
+                  <a role="button" onClick={() => this.handleSend(1, record)}>撤回</a>
                 </span>
               );
             case 2:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">变更</a>
+                    <NavLink to={`/import/delegate/edit/${record.key}`}>变更</NavLink>
                 </span>
               );
             case 3:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/import/delegate/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
                   <a role="button" onClick={() => this.handleIdRemove(record.key)}>删除</a>
                 </span>
@@ -377,10 +402,10 @@ export default class ImportDelegate extends React.Component {
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0
+          <div className={`bottom-fixed-row ${this.state.sendlist.length === 0
             ? 'hide'
             : ''}`}>
-            <Button size="large" type="primary" onClick={() => this.handleSend()}>发送</Button>
+            <Button size="large" type="primary" onClick={() => this.handleSend(this.state.sendStatus)}>{buttonText}</Button>
           </div>
         </div>
       </div>
