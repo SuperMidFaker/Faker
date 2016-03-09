@@ -12,7 +12,9 @@ import {
   Switch,
   message,
   Menu,
-  Dropdown
+  Dropdown,
+  Tabs,
+  Table
 } from
 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
@@ -27,7 +29,9 @@ import {
   submit,
   loadSelectOptions,
   uploadFiles,
-  removeFile
+  removeFile,
+  invalidDelegate,
+  loadLogs
 } from
 '../../../../universal/redux/reducers/importdelegate';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
@@ -37,6 +41,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const DropdownButton = Dropdown.Button;
+const TabPane = Tabs.TabPane;
 
 function fetchData({state, dispatch, cookie, params}) {
   const pid = parseInt(params.id, 10);
@@ -51,6 +56,7 @@ function fetchData({state, dispatch, cookie, params}) {
     } else {
       promises.push(dispatch(assignForm(state.importdelegate, pid)));
     }
+    promises.push(dispatch(loadLogs({delegateId: pid, pageSize: state.importdelegate.loglist.pageSize, currentPage: state.importdelegate.loglist.current})));
   } else {
     promises.push(dispatch(clearForm()));
   }
@@ -65,14 +71,24 @@ function goBack(props) {
 @connectFetch()(fetchData)
 @connect(state => ({
   selectedIndex: state.importdelegate.selectedIndex,
+  loglist: state.importdelegate.loglist,
   formData: state.importdelegate.formData,
   code: state.account.code,
   username: state.account.username,
   loginId: state.account.loginId,
   tenantId: state.account.tenantId,
   ename: state.corpDomain.name,
-  selectOptions: state.importdelegate.selectOptions
-}), {setFormValue, edit, submit, uploadFiles, removeFile})
+  selectOptions: state.importdelegate.selectOptions,
+  loading: state.importdelegate.loading
+}), {
+  setFormValue,
+  edit,
+  submit,
+  uploadFiles,
+  removeFile,
+  invalidDelegate,
+  loadLogs
+})
 @connectNav((props, dispatch) => {
   if (props.formData.key === -1) {
     return;
@@ -103,6 +119,7 @@ function goBack(props) {
 export default class ImportDelegateEdit extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
+    loglist: PropTypes.object.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
@@ -112,7 +129,8 @@ export default class ImportDelegateEdit extends React.Component {
     setFormValue: PropTypes.func.isRequired,
     selectOptions: PropTypes.object.isRequired,
     uploadFiles: PropTypes.func.isRequired,
-    removeFile: PropTypes.func.isRequired
+    removeFile: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
   }
   constructor() {
     super();
@@ -167,8 +185,22 @@ export default class ImportDelegateEdit extends React.Component {
     this.setState({modalVisible: false});
   }
   handleConfirmOk() {
-    
-    this.setState({voidConfirm: false});
+    if (!this.state.invalidReson || this.state.invalidReson === '') {
+      message.error('请输入作废原因', 10);
+      return;
+    }
+    this.props.invalidDelegate({
+      tenantId: this.props.tenantId,
+      loginId: this.props.loginId,
+      username: this.props.username,
+      delegateId: this.props.formData.key,
+      curStatus: this.props.formData.status,
+      del_no: this.props.formData.del_no,
+      reason: this.state.invalidReson
+    }).then(result => {
+      this.setState({voidConfirm: false});
+      this.onSubmitReturn(result.error);
+    });
   }
   handleConfirmHide() {
     this.setState({voidConfirm: false});
@@ -276,159 +308,232 @@ export default class ImportDelegateEdit extends React.Component {
       </span>
     );
   }
-  render() {
+  renderEditForm() {
     const {
       selectOptions: {
         customsInfoList,
         declareWayList,
         tradeModeList,
-        declareFileList,
-        declareCategoryList
+        declareFileList
       }
     } = this.props;
-
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
         <Menu.Item key="1">录入报关清单</Menu.Item>
         <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废业务单</Menu.Item>
       </Menu>
     );
+    return (
+      <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
+        <Row style={{
+          display: ((this.props.formData.key === undefined || this.props.formData.key === null)
+            ? 'none'
+            : 'inline-block')
+        }}>
+          <Col offset="3">
+            <div>
+              <strong>{this.props.ename}</strong>
+              &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div>&nbsp;</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="8" offset="3">
+            {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
+              {
+                required: true,
+                message: '请选择清关海关'
+              }
+            ], (this.props.formData.status === 2))}
+
+            {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
+              {
+                required: true,
+                message: '提运单号不能为空'
+              }
+            ], null, (this.props.formData.status === 2))}
+          </Col>
+          <Col span="8">
+            {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
+              {
+                required: true,
+                message: '请选择报关类型'
+              }
+            ], (this.props.formData.status === 2))}
+          </Col>
+        </Row>
+        <Row>
+          <Col span="8" offset="3">
+            {this.renderSwitch('使用手册/账册', 'usebook')}
+            {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
+            {this.renderSwitch('加急', 'urgent')}
+          </Col>
+          <Col span="8">
+            {this.renderTextInput('备案号', '', 'ems_no', false, null, null, true)}
+            {this.renderSelect('贸易方式', '选择贸易方式', 'trade_mode', false, tradeModeList, null)}
+            {this.renderTextInput('其他要求', '', 'other_note', false, null, null, false, 'textarea')}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem labelCol={{
+              span: 5
+            }} label="报关单据">
+              <Row>
+                <Col span="2">
+                  <Dropzone onDrop={(files) => this.handleUpload(files)} style={{}}>
+                    <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
+                      height: 100,
+                      marginTop: 0,
+                      width: 100
+                    }}>
+                      <span>
+                        <div className="ant-upload-drag-container">
+                          <Icon type="upload"/>
+                          <p className="ant-upload-hint">选择文件</p>
+                        </div>
+                      </span>
+                    </div>
+                  </Dropzone>
+                  <span style={{
+                    cursor: 'hand'
+                  }}>
+                    <Icon type="tags"/>
+                    <label onClick= { () => { this.handleShowModal(); } }>选择单据类型</label>
+                  </span>
+                </Col>
+
+                {declareFileList.map((item, index) => (
+                  <Col span="2" style={{
+                    display: (item.fileflag === -1)
+                      ? 'none'
+                      : 'inline-block'
+                  }}>
+
+                    <div className="ant-upload-list ant-upload-list-picture-card">
+                      <span>
+                        <div className="ant-upload-list-item ant-upload-list-item-done">
+                          <div className="ant-upload-list-item-info">
+                            <a className="ant-upload-list-item-thumbnail" target="_blank">
+                              <img src="https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png" alt={item.doc_name}/>
+                            </a>
+                            <span>
+                              <a href={item.url} target="_blank">
+                                <Icon type="download"/>
+                              </a>
+                              <Icon type="delete" onClick={() => this.handleRemoveFile(index)} alt="删除文件"/>
+                            </span>
+                          </div>
+                        </div>
+                      </span>
+                      <div className="ant-upload-list-item-uploading-text">{item.category}</div>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row style={{
+          display: this.props.formData.status === 3
+            ? 'hide'
+            : 'inline-block'
+        }}>
+          <Col span="18" offset="3">
+            <Button htmlType="submit" type="primary">确定</Button>
+            <Button onClick={this.handleCancel}>取消</Button>
+          </Col>
+          <Col span="2">
+            <DropdownButton overlay={menu} className="pull-right">
+              更多选项
+            </DropdownButton>
+          </Col>
+        </Row>
+      </Form>
+    );
+  }
+  renderLogForm() {
+    const {loglist, loading} = this.props;
+    const dataSource = new Table.DataSource({
+      fetcher: (params) => this.props.loadLogs(params),
+      resolve: (result) => result.data,
+      extraParams: {
+        delegateId: this.props.formData.key
+      },
+      getPagination: (result, currentResolve) => ({
+        total: result.totalCount,
+        current: currentResolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: result.pageSize
+      }),
+      getParams: (pagination) => {
+        const params = {
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current
+        };
+        return params;
+      },
+      remotes: loglist
+    });
+
+    const columns = [
+      {
+        title: '日志编号',
+        width: 80,
+        dataIndex: 'key'
+      }, {
+        title: '关联委托编号',
+        width: 200,
+        dataIndex: 'rel_id'
+      }, {
+        title: '操作人ID',
+        width: 120,
+        dataIndex: 'oper_id'
+      }, {
+        title: '操作人姓名',
+        width: 120,
+        dataIndex: 'oper_name'
+      }, {
+        title: '操作时间',
+        width: 120,
+        dataIndex: 'oper_date'
+      }, {
+        title: '日志内容',
+        dataIndex: 'oper_note'
+      }
+    ];
+    return (
+      <div className="panel-body body-responsive">
+        <Table columns={columns} loading={loading} dataSource={dataSource}/>
+      </div>
+    );
+  }
+
+  render() {
+    const {selectOptions: {
+        declareCategoryList
+      }} = this.props;
+
     //  const disableSubmit = this.props.tenant.id === -1;
     // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
         <div className="page-body">
-          <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
-            <Row style={{
-              display: ((this.props.formData.key === undefined || this.props.formData.key === null)
-                ? 'none'
-                : 'inline-block')
-            }}>
-              <Col offset="3">
-                <div>
-                  <strong>{this.props.ename}</strong>
-                  &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div>&nbsp;</div>
-              </Col>
-            </Row>
-            <Row>
-              <Col span="8" offset="3">
-                {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
-                  {
-                    required: true,
-                    message: '请选择清关海关'
-                  }
-                ], (this.props.formData.status === 2))}
 
-                {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
-                  {
-                    required: true,
-                    message: '提运单号不能为空'
-                  }
-                ], null, (this.props.formData.status === 2))}
-              </Col>
-              <Col span="8">
-                {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
-                  {
-                    required: true,
-                    message: '请选择报关类型'
-                  }
-                ], (this.props.formData.status === 2))}
-              </Col>
-            </Row>
-            <Row>
-              <Col span="8" offset="3">
-                {this.renderSwitch('使用手册/账册', 'usebook')}
-                {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
-                {this.renderSwitch('加急', 'urgent')}
-              </Col>
-              <Col span="8">
-                {this.renderTextInput('备案号', '', 'ems_no', false, null, null, true)}
-                {this.renderSelect('贸易方式', '选择贸易方式', 'trade_mode', false, tradeModeList, null)}
-                {this.renderTextInput('其他要求', '', 'other_note', false, null, null, false, 'textarea')}
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <FormItem labelCol={{
-                  span: 5
-                }} label="报关单据">
-                  <Row>
-                    <Col span="2">
-                      <Dropzone onDrop={(files) => this.handleUpload(files)} style={{}}>
-                        <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
-                          height: 100,
-                          marginTop: 0,
-                          width: 100
-                        }}>
-                          <span>
-                            <div className="ant-upload-drag-container">
-                              <Icon type="upload"/>
-                              <p className="ant-upload-hint">选择文件</p>
-                            </div>
-                          </span>
-                        </div>
-                      </Dropzone>
-                      <span style={{
-                        cursor: 'hand'
-                      }}>
-                        <Icon type="tags"/>
-                        <label onClick= { () => { this.handleShowModal(); } }>选择单据类型</label>
-                      </span>
-                    </Col>
-
-                    {declareFileList.map((item, index) => (
-                      <Col span="2" style={{
-                        display: (item.fileflag === -1)
-                          ? 'none'
-                          : 'inline-block'
-                      }}>
-
-                        <div className="ant-upload-list ant-upload-list-picture-card">
-                          <span>
-                            <div className="ant-upload-list-item ant-upload-list-item-done">
-                              <div className="ant-upload-list-item-info">
-                                <a className="ant-upload-list-item-thumbnail" target="_blank">
-                                  <img src="https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png" alt={item.doc_name}/>
-                                </a>
-                                <span>
-                                  <a href={item.url} target="_blank">
-                                    <Icon type="download"/>
-                                  </a>
-                                  <Icon type="delete" onClick={() => this.handleRemoveFile(index)} alt="删除文件"/>
-                                </span>
-                              </div>
-                            </div>
-                          </span>
-                          <div className="ant-upload-list-item-uploading-text">{item.category}</div>
-                        </div>
-                      </Col>
-                    ))}
-                  </Row>
-                </FormItem>
-              </Col>
-            </Row>
-            <Row style={{
-              display: this.props.formData.status === 3
-                ? 'hide'
-                : 'inline-block'
-            }}>
-              <Col span="18" offset="3">
-                <Button htmlType="submit" type="primary">确定</Button>
-                <Button onClick={this.handleCancel}>取消</Button>
-              </Col>
-              <Col span="2">
-                <DropdownButton overlay={menu} className="pull-right">
-                  更多选项
-                </DropdownButton>
-              </Col>
-            </Row>
-          </Form>
+          <Tabs defaultActiveKey="tab1">
+            <TabPane tab="业务单" key="tab1">
+              {this.renderEditForm()}
+            </TabPane>
+            <TabPane tab="操作日志" key="tab2">
+              {this.renderLogForm()}
+            </TabPane>
+          </Tabs>
 
           <Modal title="选择单据类型" visible={this.state.modalVisible} closable={false} onOk={() => {
             this.handleOk();
@@ -464,9 +569,7 @@ export default class ImportDelegateEdit extends React.Component {
               </Row>
               <Row>
                 <Col span="24">
-                  <FormItem>
-                    <Input type="textarea" placeholder="请填写作废原因"/>
-                  </FormItem>
+                  <Input type="textarea" className="ant-input ant-input-lg" onChange={(e) => this.setState({invalidReson: e.target.value})} placeholder="请填写作废原因"/>
                 </Col>
               </Row>
             </Form>

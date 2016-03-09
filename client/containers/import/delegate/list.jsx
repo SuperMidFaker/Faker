@@ -66,10 +66,8 @@ export default class ImportDelegate extends React.Component {
     edit: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     loadDelegates: PropTypes.func.isRequired,
-    submitDelegate: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
-    sendlist: PropTypes.object.isRequired,
-    sendStatus: PropTypes.object.isRequired
+    sendlist: PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);

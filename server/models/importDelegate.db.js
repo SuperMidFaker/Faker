@@ -146,7 +146,7 @@ export default {
         }
       }
       args.push(key);
-      const sql = `UPDATE g_bus_delegate SET ${updateClause.join(",")} where del_id=?`;
+      const sql = `UPDATE g_bus_delegate SET ${updateClause.join(",")}, update_date=now() where del_id=?`;
       console.log(sql);
       return mysql.update(sql, args, trans);
     },
@@ -185,11 +185,38 @@ export default {
         const sql = `UPDATE g_bus_delegate set status=0 where del_id in (${sendlist instanceof Array?sendlist.join(","):sendlist})`;
         return mysql.query(sql, args);
       }
-    }, * invalidDelegate(tenantId, loginId, username, delegateId, reason, trans) {
-      const args = [tenantId, loginId, delegateId];
-      const sql = `UPDATE g_bus_delegate set status=3 where tenant_id=? and creater_login_id=? and del_id=?`;
+    },
+    invalidDelegate(tenantId, loginId, username, delegateId, reason, trans) {
+      const args = [reason, tenantId, loginId, delegateId];
+      const sql = `UPDATE g_bus_delegate set status=3,remark=? where tenant_id=? and creater_login_id=? and del_id=?`;
 
-      yield mysql.query(sql, args, trans);
+      return mysql.query(sql, args, trans);
+    },
+    getLogsCount(delegateId) { //获取满足条件的总记录数
+      const args = [delegateId];
+      const sql = `SELECT count(rel_id) as count FROM g_bus_delegate_logs where rel_id=? `;
+      console.log(sql, args);
+      return mysql.query(sql, args);
+    },
+    getLogs(current, pageSize, delegateId) { //分页显示数据
+      const args = [delegateId];
+
+      const sql = `SELECT id as \`key\`, rel_id, oper_id, oper_name, oper_note, result, DATE_FORMAT(oper_date,'%Y-%m-%d %H:%i') oper_date FROM g_bus_delegate_logs where rel_id=? limit ?, ?`;
+      args.push((current - 1) * pageSize, pageSize);
+      console.log(sql, args);
+      return mysql.query(sql, args);
+    },
+    writeLog(delegateId, oper_id, oper_name, oper_note, trans) {
+      const args = [delegateId, oper_id, oper_name, oper_note];
+      const sql = `INSERT INTO g_bus_delegate_logs(rel_id, oper_id, oper_name, oper_note, result,oper_date)
+                 VALUES(?,?,?,?,'SUCCEED',now())`;
+      return mysql.insert(sql, args, trans);
+    },
+    insertUser(del_id, del_no, status, creater_login_id, trans) {
+      const args = [del_id, del_no, status, creater_login_id, creater_login_id];
+      const sql = `INSERT INTO g_bus_delegate_users(del_id, del_no, status, creater_login_id, oper_login_id) VALUES(?,?,?,?,?)`;
+      return mysql.insert(sql, args, trans);
     }
+
 
 }
