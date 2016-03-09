@@ -14,7 +14,7 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
 import formatMsg from './message.i18n';
-import globalMessages from 'client/containers/root.i18n';
+import globalMessages from 'client/root.i18n';
 
 function fetchData({ state, dispatch, cookie }) {
   if (!isLoaded(state, 'corps')) {

@@ -71,7 +71,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         nonTenant: true,
-        error: {message: action.error.msg || 'tenant subdomain do not exist'}
+        error: { message: action.error.msg || 'tenant subdomain do not exist' }
       };
     case PWD_CHANGE_SUCCEED:
       action.history.goBack(); // todo change to componentWillReceiveProps

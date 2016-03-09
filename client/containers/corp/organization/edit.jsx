@@ -11,7 +11,7 @@ import { isLoginNameExist, checkLoginName } from
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
 import formatMsg from './message.i18n';
-import globalMessages from 'client/containers/root.i18n';
+import globalMessages from 'client/root.i18n';
 const FormItem = Form.Item;
 const Option = Select.Option;
 

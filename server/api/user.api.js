@@ -141,7 +141,7 @@ function *verifySmsCodeP() {
 function *getUserAccount() {
   const userType = this.state.user.userType;
   if (userType === ADMIN) {
-    return Result.OK(this, {username: 'root'});
+    return Result.OK(this, { username: 'root' });
   }
   const curUserId = this.state.user.userId;
   try {

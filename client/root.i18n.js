@@ -1,6 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
+  brand: {
+    id: 'root.brand',
+    defaultMessage: '微骆'
+  },
+  chinese: {
+    id: 'root.chinese',
+    defaultMessage: '中文'
+  },
   ok: {
     id: 'root.ok',
     defaultMessage: '确定'
