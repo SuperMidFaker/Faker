@@ -32,22 +32,15 @@ import { loadTranslation } from '../universal/redux/reducers/intl';
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
     function checkAuth() {
-      /*
-      const { account: { username, subdomain } } = store.getState();
       let querySubdomain;
       if (nextState.location.search) {
-        // seems only enter in server side, we need check the search string
+        // OnEnter replace on server side, we need check the search string
         // this callabck is blocking
         const query = require('query-string').parse(nextState.location.search.substring(1));
         querySubdomain = query && query.subdomain;
       }
-      if (username === '' || (querySubdomain && querySubdomain !== subdomain)) {
-        const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
-        replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
-      }
-     */
-      const { intl: { locale, loaded }, auth: { isAuthed }} = store.getState();
-      if (!isAuthed) {
+      const { intl: { locale, loaded }, auth: { isAuthed, subdomain }} = store.getState();
+      if (!isAuthed || (querySubdomain && querySubdomain !== subdomain)) {
         const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
         cb();
