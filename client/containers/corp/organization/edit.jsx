@@ -149,7 +149,7 @@ export default class CorpEdit extends React.Component {
         help={getFieldError('coid')} required>
         <Select style={{ width: '100%' }} { ...getFieldProps(
           'coid', {
-            rules: [{required: true, message: formatMsg('chiefRequired')}]
+            rules: [{required: true, message: formatMsg(intl, 'chiefRequired')}]
           }) }
         >
           {

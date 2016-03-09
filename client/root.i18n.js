@@ -9,6 +9,14 @@ const messages = defineMessages({
     id: 'root.chinese',
     defaultMessage: '中文'
   },
+  english: {
+    id: 'root.english',
+    defaultMessage: '英文'
+  },
+  desc: {
+    id: 'root.desc',
+    defaultMessage: '描述'
+  },
   ok: {
     id: 'root.ok',
     defaultMessage: '确定'

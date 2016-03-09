@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
 import { BRANCH } from '../../universal/constants';
+import formatMsg from './message.i18n';
 
+@injectIntl
 @connect(
   state => ({
     accountType: state.account.type
@@ -11,61 +14,63 @@ import { BRANCH } from '../../universal/constants';
 )
 export default class CorpPack extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     accountType: PropTypes.string.isRequired,
     children: PropTypes.object.isRequired
   };
 
   render() {
+    const { intl } = this.props;
     const linkMenus = [{
       single: true,
       key: 'corpsetting-1',
       path: '/corp/info',
       icon: 's7-info',
-      text: '企业信息'
+      text: formatMsg(intl, 'corpInfo')
     }, {
       single: true,
       key: 'corpsetting-2',
       path: '/corp/personnel',
       icon: 's7-users',
-      text: '用户管理'
+      text: formatMsg(intl, 'personnelUser')
     }, {
       invisible: this.props.accountType === BRANCH,
       single: true,
       key: 'corpsetting-3',
       path: '/corp/organization',
       icon: 's7-network',
-      text: '组织机构'
+      text: formatMsg(intl, 'organTitle')
     }, {
       single: false,
       key: 'corpsetting-4',
       icon: 's7-share',
-      text: '合作关系',
+      text: formatMsg(intl, 'partnership'),
       sublinks: [{
         key: 'partner-1',
         path: '/corp/partners',
-        text: '合作伙伴'
+        text: formatMsg(intl, 'partners')
       }, {
         key: 'partner-2',
         path: '/corp/partners/invitations/in',
-        text: '收到的邀请'
+        text: formatMsg(intl, 'recvInvitations')
       }, {
         key: 'partner-3',
         path: '/corp/partners/invitations/out',
-        text: '发出的邀请'
+        text: formatMsg(intl, 'sentInvitations')
       }]
     }, {
       single: false,
       key: 'corpsetting-5',
       icon: 's7-tools',
-      text: '服务中心',
+      text: formatMsg(intl, 'serviceCenter'),
       sublinks: [{
         key: 'service-1',
         path: '/corp/service/buy',
-        text: '购买服务'
+        text: formatMsg(intl, 'servicePurchase')
       }, {
         key: 'service-2',
         path: '/corp/service/payment',
-        text: '付款记录'
+        text: formatMsg(intl, 'servicePayment')
       }]
     }];
     return (

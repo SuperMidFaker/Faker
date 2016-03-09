@@ -1,10 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  organTitle: {
-    id: 'organization.title',
-    defaultMessage: '组织机构'
-  },
   deleteTip: {
     id: 'organization.list.deleteTip',
     defaultMessage: '请输入DELETE进行下一步操作'

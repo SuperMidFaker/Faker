@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import formatMsg from './message.i18n';
+import globalMessages from 'client/root.i18n';
 import './appmodule-editor.less';
 
 @injectIntl
@@ -31,7 +32,7 @@ export default class ModuleEditor extends React.Component {
       nextProps.tenantApps.forEach(mod => {
         enMods[mod.id] = true;
       });
-      this.setState({enabledApps: enMods});
+      this.setState({ enabledApps: enMods });
     }
   }
   handleCancel = () => {
@@ -58,15 +59,19 @@ export default class ModuleEditor extends React.Component {
         onCancel={this.handleCancel} footer={
           [
             <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
-             确定
+            { formatMsg(intl, 'ok', globalMessages) }
             </Button>
           ]
         }
       >
         <Row className="module-editor">
           <Col span="8"><h4>{ formatMsg(intl, 'appEditorNameCol') }</h4></Col>
-          <Col span="8"><p className="type-label">描述</p></Col>
-          <Col span="8"><label className="type-label pull-right">开通状态</label></Col>
+          <Col span="8"><p className="type-label">{ formatMsg(intl, 'desc', globalMessages) }</p></Col>
+          <Col span="8">
+            <label className="type-label pull-right">
+            { formatMsg(intl, 'appEditorSetCol') }
+            </label>
+          </Col>
         </Row>
         <Row className="module-editor">
         {

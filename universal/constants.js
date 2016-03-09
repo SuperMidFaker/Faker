@@ -64,14 +64,14 @@ const SMS_TYPE = {
   CHANGE_PAID_PASSWORD: 6
 };
 const DEFAULT_MODULES = {
-  import: { cls: 'import', url: '/import', text: '进口' },
-  export: { cls: 'export', url: '/export', text: '出口' },
-  tms:    { cls: 'tms', url: '/tms', text: '运输' },
-  wms:    { cls: 'wms', url: '/wms', text: '仓储' },
-  payable:{ cls: 'payable', url: '/payable', text: '付汇' },
-  receivable:{ cls: 'receivable', url: '/receivable', text: '收汇' },
-  cost:   { cls: 'cost', url: '/cost', text: '成本分析' },
-  kpi:    { cls: 'kpi', url: '/kpi', text: 'KPI绩效' }
+  import: { cls: 'import', url: '/import', text: 'moduleImport' },
+  export: { cls: 'export', url: '/export', text: 'moduleExport' },
+  tms:    { cls: 'tms', url: '/tms', text: 'moduleTms' },
+  wms:    { cls: 'wms', url: '/wms', text: 'moduleWms' },
+  payable:{ cls: 'payable', url: '/payable', text: 'modulePayable' },
+  receivable:{ cls: 'receivable', url: '/receivable', text: 'moduleReceivable' },
+  cost:   { cls: 'cost', url: '/cost', text: 'moduleCost' },
+  kpi:    { cls: 'kpi', url: '/kpi', text: 'moduleKpi' }
 };
 
 const TENANT_LEVEL = {

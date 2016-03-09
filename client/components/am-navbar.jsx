@@ -1,11 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Popover, Menu } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
 import { loadTranslation } from 'universal/redux/reducers/intl';
+import formatMsg from './message.i18n';
+import globalMessages from 'client/root.i18n';
 
+@injectIntl
 @connect(
   state => ({
     curLocale: state.intl.locale,
@@ -15,6 +19,7 @@ import { loadTranslation } from 'universal/redux/reducers/intl';
 )
 export default class AmNavBar extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     loadTranslation: PropTypes.func.isRequired,
     curLocale: PropTypes.oneOf(['en', 'zh']),
     navTitle: PropTypes.object.isRequired
@@ -25,7 +30,7 @@ export default class AmNavBar extends React.Component {
   }
   render() {
     const MenuItem = Menu.Item;
-    const { curLocale, navTitle } = this.props;
+    const { intl, curLocale, navTitle } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
     if (navTitle.depth === 2) {
@@ -78,10 +83,10 @@ export default class AmNavBar extends React.Component {
               <Popover placement="bottomLeft" trigger="hover" overlay={
                 <Menu selectedKeys={[curLocale]} onClick={this.handleClick}>
                   <MenuItem key="zh">
-                    <span>中文</span>
+                    <span>{ formatMsg(intl, 'chinese', globalMessages) }</span>
                   </MenuItem>
                   <MenuItem key="en">
-                    <span>英文</span>
+                    <span>{ formatMsg(intl, 'english', globalMessages) }</span>
                   </MenuItem>
                 </Menu>
               }>
