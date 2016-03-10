@@ -29,22 +29,6 @@ const messages = defineMessages({
     id: 'organization.list.appsColumn',
     defaultMessage: '已开通应用'
   },
-  statusColumn: {
-    id: 'organization.list.statusColumn',
-    defaultMessage: '状态'
-  },
-  opColumn: {
-    id: 'organization.list.opColumn',
-    defaultMessage: '操作'
-  },
-  disableOp: {
-    id: 'organization.list.disableOp',
-    defaultMessage: '停用'
-  },
-  enableOp: {
-    id: 'organization.list.enableOp',
-    defaultMessage: '启用'
-  },
   quotas: {
     id: 'organization.list.quotas',
     defaultMessage: '限额使用'
@@ -80,10 +64,6 @@ const messages = defineMessages({
   phone: {
     id: 'organization.edit.phone',
     defaultMessage: '手机号'
-  },
-  emailError: {
-    id: 'organization.edit.emailErr',
-    defaultMessage: 'email格式错误'
   },
   chiefRequired: {
     id: 'organization.edit.chiefRequired',

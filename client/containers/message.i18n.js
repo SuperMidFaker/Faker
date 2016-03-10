@@ -25,6 +25,34 @@ const messages = defineMessages({
     id: 'container.account.disabled',
     defaultMessage: '停用'
   },
+  opColumn: {
+    id: 'container.table.opColumn',
+    defaultMessage: '操作'
+  },
+  statusColumn: {
+    id: 'container.table.statusColumn',
+    defaultMessage: '状态'
+  },
+  disableOp: {
+    id: 'container.table.disableOp',
+    defaultMessage: '停用'
+  },
+  enableOp: {
+    id: 'container.table.enableOp',
+    defaultMessage: '启用'
+  },
+  clearSelection: {
+    id: 'container.table.clearSelection',
+    defaultMessage: '清除选择'
+  },
+  emailError: {
+    id: 'container.form.email.error',
+    defaultMessage: 'email格式错误'
+  },
+  advancedSearch: {
+    id: 'container.form.advancedSearch',
+    defaultMessage: '高级搜索'
+  },
   corpInfo: {
     id: 'container.corpInfo',
     defaultMessage: '企业信息'

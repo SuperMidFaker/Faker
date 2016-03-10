@@ -142,7 +142,7 @@ export default class CorpEdit extends React.Component {
         }])}
         {this.renderTextInput('Email', '', 'email', false, [{
           type: 'email',
-          message: formatMsg(intl, 'emailError')}])}
+          message: formatContainerMsg(intl, 'emailError')}])}
       </div>);
   }
   renderOwnerSelect() {

@@ -192,7 +192,7 @@ export default class CorpList extends React.Component {
           </span>);
       }
     }, {
-      title: formatMsg(intl, 'statusColumn'),
+      title: formatContainerMsg(intl, 'statusColumn'),
       render: (o, record) => {
         let style = {color: '#51C23A'};
         if (record.status === ACCOUNT_STATUS.blocked.name) {
@@ -201,7 +201,7 @@ export default class CorpList extends React.Component {
         return <span style={style}>{formatContainerMsg(intl, ACCOUNT_STATUS[record.status].text)}</span>;
       }
     }, {
-      title: formatMsg(intl, 'opColumn'),
+      title: formatContainerMsg(intl, 'opColumn'),
       width: 150,
       render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
@@ -212,7 +212,7 @@ export default class CorpList extends React.Component {
               </NavLink>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-              {formatMsg(intl, 'disableOp')}
+              {formatContainerMsg(intl, 'disableOp')}
               </a>
             </span>);
         } else if (record.status === ACCOUNT_STATUS.blocked.name) {
@@ -223,7 +223,7 @@ export default class CorpList extends React.Component {
               </a>
               <span className="ant-divider"></span>
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-              {formatMsg(intl, 'enableOp')}
+              {formatContainerMsg(intl, 'enableOp')}
               </a>
             </span>);
         } else {
