@@ -20,5 +20,5 @@ function *getIntlMessages() {
 }
 
 export default [
-   ['get', '/v1/intl/messages', getIntlMessages]
+   ['get', '/public/v1/intl/messages', getIntlMessages]
 ];

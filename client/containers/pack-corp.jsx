@@ -4,7 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
 import { BRANCH } from '../../universal/constants';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+const formatMsg = format(messages);
 
 @injectIntl
 @connect(

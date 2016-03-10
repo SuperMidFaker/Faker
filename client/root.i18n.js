@@ -29,5 +29,17 @@ const messages = defineMessages({
     id: 'root.edit',
     defaultMessage: '编辑'
   },
+  modify: {
+    id: 'root.modify',
+    defaultMessage: '修改'
+  },
+  delete: {
+    id: 'root.delete',
+    defaultMessage: '删除'
+  },
+  createNew: {
+    id: 'root.createNew',
+    defaultMessage: '新建'
+  },
 });
 export default messages;

@@ -6,8 +6,11 @@ import NavLink from '../../reusable/components/nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
 import { loadTranslation } from 'universal/redux/reducers/intl';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 
 @injectIntl
 @connect(
@@ -83,10 +86,10 @@ export default class AmNavBar extends React.Component {
               <Popover placement="bottomLeft" trigger="hover" overlay={
                 <Menu selectedKeys={[curLocale]} onClick={this.handleClick}>
                   <MenuItem key="zh">
-                    <span>{ formatMsg(intl, 'chinese', globalMessages) }</span>
+                    <span>{ formatGlobalMsg(intl, 'chinese') }</span>
                   </MenuItem>
                   <MenuItem key="en">
-                    <span>{ formatMsg(intl, 'english', globalMessages) }</span>
+                    <span>{ formatGlobalMsg(intl, 'english') }</span>
                   </MenuItem>
                 </Menu>
               }>

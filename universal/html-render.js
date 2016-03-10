@@ -64,6 +64,8 @@ export default function render(request) {
     const location = createLocation(url);
     const store = createStore();
     const cookie = request.get('cookie');
+    const curLocale = getRequestLocale(request);
+    store.getState().intl = { locale:  curLocale };
     match({ routes: routes(store, cookie), location }, (err, redirection, props) => {
       if (err) {
         reject([500], err);
@@ -72,9 +74,7 @@ export default function render(request) {
       } else if (!props) {
         reject([404]);
       } else {
-        const curLocale = getRequestLocale(request);
         addLocaleData(require(`react-intl/lib/locale-data/${curLocale}`));
-        store.getState().intl = { locale:  curLocale };
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
             const component = (<App routingContext = {props} store = {store} />);

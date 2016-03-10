@@ -25,7 +25,7 @@ export function loadTranslation(cookie, locale) {
     [CLIENT_API]: {
       types: [actionTypes.TRANSLATION_LOAD, actionTypes.TRANSLATION_LOAD_SUCCEED,
         actionTypes.TRANSLATION_LOAD_FAIL],
-      endpoint: 'v1/intl/messages',
+      endpoint: 'public/v1/intl/messages',
       method: 'get',
       cookie,
       params: { locale }

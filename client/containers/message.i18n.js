@@ -1,6 +1,6 @@
 import { defineMessages } from 'react-intl';
 
-export const messages = defineMessages({
+const messages = defineMessages({
   applications: {
     id: 'container.applications',
     defaultMessage: '应用'
@@ -12,6 +12,14 @@ export const messages = defineMessages({
   setting: {
     id: 'container.setting',
     defaultMessage: '设置'
+  },
+  accountNormal: {
+    id: 'container.account.normal',
+    defaultMessage: '正常'
+  },
+  accountDisabled: {
+    id: 'container.account.disabled',
+    defaultMessage: '停用'
   },
   corpInfo: {
     id: 'container.corpInfo',
@@ -55,7 +63,4 @@ export const messages = defineMessages({
   }
 });
 
-function formatMsg(intl, msgKey, predefinedMessages) {
-  return intl.formatMessage((predefinedMessages || messages)[msgKey]);
-}
-export default formatMsg;
+export default messages;

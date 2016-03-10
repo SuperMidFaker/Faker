@@ -18,3 +18,7 @@ export function polyfill(runAppFn) {
     }
   });
 }
+
+export function format(messages) {
+  return (intl, descriptor) => intl.formatMessage(messages[descriptor]);
+}

@@ -10,8 +10,11 @@ import { isLoginNameExist, checkLoginName } from
   '../../../../reusable/domains/redux/checker-reducer';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { validatePhone } from '../../../../reusable/common/validater';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -177,8 +180,8 @@ export default class CorpEdit extends React.Component {
           }
           <Row>
             <Col span="18" offset="6">
-              <Button htmlType="submit" type="primary">{formatMsg(intl, 'ok', globalMessages)}</Button>
-              <Button onClick={ this.handleCancel }>{formatMsg(intl, 'cancel', globalMessages)}</Button>
+              <Button htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
+              <Button onClick={ this.handleCancel }>{formatGlobalMsg(intl, 'cancel')}</Button>
             </Col>
           </Row>
         </Form>

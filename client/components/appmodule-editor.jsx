@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 import './appmodule-editor.less';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 
 @injectIntl
 export default class ModuleEditor extends React.Component {
@@ -59,14 +62,14 @@ export default class ModuleEditor extends React.Component {
         onCancel={this.handleCancel} footer={
           [
             <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
-            { formatMsg(intl, 'ok', globalMessages) }
+            { formatGlobalMsg(intl, 'ok') }
             </Button>
           ]
         }
       >
         <Row className="module-editor">
           <Col span="8"><h4>{ formatMsg(intl, 'appEditorNameCol') }</h4></Col>
-          <Col span="8"><p className="type-label">{ formatMsg(intl, 'desc', globalMessages) }</p></Col>
+          <Col span="8"><p className="type-label">{ formatGlobalMsg(intl, 'desc') }</p></Col>
           <Col span="8">
             <label className="type-label pull-right">
             { formatMsg(intl, 'appEditorSetCol') }

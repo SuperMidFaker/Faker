@@ -27,7 +27,6 @@ import Warehouse from './containers/wms/warehouse';
 import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
-import { loadTranslation } from '../universal/redux/reducers/intl';
 
 export default (store, cookie) => {
   const requireAuth = (nextState, replaceState, cb) => {
@@ -39,18 +38,12 @@ export default (store, cookie) => {
         const query = require('query-string').parse(nextState.location.search.substring(1));
         querySubdomain = query && query.subdomain;
       }
-      const { intl: { locale, loaded }, auth: { isAuthed, subdomain }} = store.getState();
+      const { account: { subdomain }, auth: { isAuthed }} = store.getState();
       if (!isAuthed || (querySubdomain && querySubdomain !== subdomain)) {
         const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
         replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
-        cb();
-      } else {
-        if (!loaded) {
-          store.dispatch(loadTranslation(cookie, locale)).then(() => cb());
-        } else {
-          cb();
-        }
       }
+      cb();
     }
     if (!isLoaded(store.getState(), 'account')) {
       store.dispatch(loadAccount(cookie)).then(checkAuth);

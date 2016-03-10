@@ -13,9 +13,13 @@ import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
-import { messages as containerMsgs } from 'client/containers/message.i18n';
+import containerMessages from 'client/containers/message.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
+const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
   if (!isLoaded(state, 'corps')) {
@@ -46,7 +50,7 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatMsg(props.intl, 'organTitle', containerMsgs),
+    text: formatContainerMsg(props.intl, 'organTitle'),
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: ''
@@ -180,7 +184,7 @@ export default class CorpList extends React.Component {
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title={formatMsg(intl, 'edit', globalMessages)}
+            <Button shape="circle" type="primary" title={formatGlobalMsg(intl, 'edit')}
               onClick={() => this.handleEnabledAppEdit(record, index)} size="small"
             >
               <Icon type="edit" />
@@ -194,7 +198,7 @@ export default class CorpList extends React.Component {
         if (record.status === ACCOUNT_STATUS.blocked.name) {
           style = {color: '#CCC'};
         }
-        return <span style={style}>{ACCOUNT_STATUS[record.status].text}</span>;
+        return <span style={style}>{formatContainerMsg(intl, ACCOUNT_STATUS[record.status].text)}</span>;
       }
     }, {
       title: formatMsg(intl, 'opColumn'),
@@ -203,16 +207,24 @@ export default class CorpList extends React.Component {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
             <span>
-              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/corp/organization/edit/${record.key}`}>
+              {formatGlobalMsg(intl, 'modify')}
+              </NavLink>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              {formatMsg(intl, 'disableOp')}
+              </a>
             </span>);
         } else if (record.status === ACCOUNT_STATUS.blocked.name) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
+              <a role="button" onClick={() => this.handleCorpDel(record.key)}>
+              {formatGlobalMsg(intl, 'delete')}
+              </a>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              {formatMsg(intl, 'enableOp')}
+              </a>
             </span>);
         } else {
           return <span />;
@@ -223,14 +235,15 @@ export default class CorpList extends React.Component {
       <div className="page-body">
         <div className="panel-header">
           <div className="pull-right action-btns">
-            <span>限额使用 </span>
+            <span>{formatMsg(intl, 'quotas')}{' '}</span>
             <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
             <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
             <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
           </div>
           <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
               onClick={() => this.handleNavigationTo('/corp/organization/new')}>
-              <Icon type="plus-circle-o" />新建
+              <Icon type="plus-circle-o" />
+              {formatGlobalMsg(intl, 'createNew')}
           </Button>
         </div>
         <div className="panel-body body-responsive">

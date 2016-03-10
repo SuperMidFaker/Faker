@@ -37,6 +37,18 @@ const messages = defineMessages({
     id: 'organization.list.opColumn',
     defaultMessage: '操作'
   },
+  disableOp: {
+    id: 'organization.list.disableOp',
+    defaultMessage: '停用'
+  },
+  enableOp: {
+    id: 'organization.list.enableOp',
+    defaultMessage: '启用'
+  },
+  quotas: {
+    id: 'organization.list.quotas',
+    defaultMessage: '限额使用'
+  },
   editTitle: {
     id: 'organization.edit.title',
     defaultMessage: '添加部门或分支机构'
@@ -78,8 +90,4 @@ const messages = defineMessages({
     defaultMessage: '负责人必填'
   }
 });
-
-function formatMsg(intl, msgKey, predefinedMessages) {
-  return intl.formatMessage((predefinedMessages || messages)[msgKey]);
-}
-export default formatMsg;
+export default messages;

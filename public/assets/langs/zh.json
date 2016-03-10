@@ -22,6 +22,9 @@
   "organization.list.appsColumn": "已开通应用",
   "organization.list.statusColumn": "状态",
   "organization.list.opColumn": "操作",
+  "organization.list.disableOp": "停用",
+  "organization.list.enableOp": "启用",
+  "organization.list.quotas": "限额使用",
   "organization.edit.title": "添加部门或分支机构",
   "organization.edit.organName": "名称",
   "organization.edit.organPlaceholder": "请输入部门或分支机构名称",
@@ -51,5 +54,8 @@
   "root.desc": "描述",
   "root.ok": "确定",
   "root.cancel": "取消",
-  "root.edit": "编辑"
+  "root.edit": "编辑",
+  "root.modify": "修改",
+  "root.delete": "删除",
+  "root.createNew": "新建"
 }

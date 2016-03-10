@@ -3,8 +3,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import NavLink from '../../reusable/components/nav-link';
 import {Row, Col} from 'ant-ui';
 import {DEFAULT_MODULES} from '../../universal/constants';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import './module-layout.less';
+const formatMsg = format(messages);
 
 @injectIntl
 export default class ModuleLayout extends React.Component {

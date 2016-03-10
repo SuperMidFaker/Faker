@@ -59,7 +59,4 @@ const messages = defineMessages({
   }
 });
 
-function formatMsg(intl, msgKey, predefinedMessages) {
-  return intl.formatMessage((predefinedMessages || messages)[msgKey]);
-}
-export default formatMsg;
+export default messages;

@@ -3,12 +3,12 @@ const ACCOUNT_STATUS = {
   normal: {
     id: 0,
     name: 'normal',
-    text: '正常'
+    text: 'accountNormal'
   },
   blocked: {
     id: 1,
     name: 'blocked',
-    text: '停用'
+    text: 'accountDisabled'
   }
 };
 const DELEGATE_STATUS = {

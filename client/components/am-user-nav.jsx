@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { Popover, Menu } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from '../../reusable/components/nav-link';
-import formatMsg from './message.i18n';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+const formatMsg = format(messages);
 
 @injectIntl
 @connect(
