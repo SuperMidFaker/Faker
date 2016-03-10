@@ -45,6 +45,22 @@ const messages = defineMessages({
     id: 'component.user.logout',
     defaultMessage: '退出登录'
   },
+  defaultProvRegions: {
+    id: 'component.region.defaultProvince',
+    defaultMessage: '省/自治区/直辖市'
+  },
+  defaultCityRegions: {
+    id: 'component.region.defaultCity',
+    defaultMessage: '市'
+  },
+  selectCountry: {
+    id: 'component.region.select.country',
+    defaultMessage: '选择国家或地区'
+  },
+  defaultCountyRegions: {
+    id: 'component.region.defaultCounty',
+    defaultMessage: '区县'
+  },
   appEditorTitle: {
     id: 'component.appEditor.title',
     defaultMessage: '设置开通的应用'

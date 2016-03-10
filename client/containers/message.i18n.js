@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
+  slogan: {
+    id: 'container.slogan',
+    defaultMessage: '进出口物流协同云平台'
+  },
   applications: {
     id: 'container.applications',
     defaultMessage: '应用'

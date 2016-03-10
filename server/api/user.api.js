@@ -48,7 +48,7 @@ function *loginUserP() {
   const username = body.username;
   const password = body.password;
   if (!username || !password) {
-    return Result.ParamError(this, '用户名或密码有误');
+    return Result.ParamError(this, { key: 'loginEmptyParam' });
   }
   try {
     const users = yield userDao.getUserByAccount(username, body.code);
@@ -83,27 +83,27 @@ function *loginUserP() {
         });
         return Result.OK(this, { token: jwtoken, userType: user.user_type, unid: user.unid });
       } else {
-        return Result.ParamError(this, '用户名或密码有误');
+        return Result.ParamError(this, { key: 'loginErrorParam' });
       }
     } else {
-      Result.NotFound(this, `用户ID: ${username}不存在`);
+      return Result.NotFound(this, { key: 'loginUserNotFound', values: { username }});
     }
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, '登录异常');
+    return Result.InternalServerError(this, { key: 'loginExceptionError' });
   }
 }
 
 function *requestSmsCodeP() {
   const body = yield cobody(this);
   if (!body.phone || !isMobile(body.phone)) {
-    return Result.ParamError(this, '手机号码错误');
+    return Result.ParamError(this, { key: 'invalidPhone' });
   }
   try {
     const phone = body.phone;
     const users = yield userDao.getUserByPhone(phone);
     if (users.length === 0) {
-      return Result.NotFound(this, `手机号不存在,请先添加`);
+      return Result.NotFound(this, { key: 'phoneNotfound' });
     }
     const userId = users[0].id;
     const smsCode = getSmsCode(6);
@@ -113,7 +113,7 @@ function *requestSmsCodeP() {
     return Result.OK(this, { smsId: result.insertId, userId });
   } catch (e) {
     console.log(e.stack);
-    return Result.InternalServerError(this, '请求验证码异常');
+    return Result.InternalServerError(this, { key: 'requestCodeException' });
   }
 }
 
@@ -126,7 +126,7 @@ function *verifySmsCodeP() {
   try {
     const smsItems = yield smsDao.getSmsById(smsId);
     if (smsItems.length === 0 || smsItems[0].code !== smsCode) {
-      return Result.ParamError(this, '验证码错误');
+      return Result.ParamError(this, { key: 'invalidSmsCode' });
     } else {
       const salt = bCryptUtil.gensalt();
       const pwdHash = bCryptUtil.hashpw(bCryptUtil.md5(newPwd), salt);
@@ -134,7 +134,7 @@ function *verifySmsCodeP() {
       return Result.OK(this);
     }
   } catch (e) {
-    return Result.InternalServerError(this, '验证输入码异常');
+    return Result.InternalServerError(this, { key: 'smsCodeVerifyException' });
   }
 }
 
@@ -522,11 +522,11 @@ function *getCorpBySubdomain() {
   try {
    const result = yield tenantDao.getTenantByDomain(subdomain);
    if (result.length === 0) {
-     throw new Error('当前子域未对应任何租户');
+     throw ({ key: 'subdomainNotFound' });
    }
    Result.OK(this, result[0]);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.InternalServerError(this, e.message || e);
   }
 }
 

@@ -20,5 +20,5 @@ export function polyfill(runAppFn) {
 }
 
 export function format(messages) {
-  return (intl, descriptor) => intl.formatMessage(messages[descriptor]);
+  return (intl, descriptor, values) => intl.formatMessage(messages[descriptor], values);
 }

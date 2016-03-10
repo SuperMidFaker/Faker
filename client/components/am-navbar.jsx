@@ -7,9 +7,7 @@ import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
 import { loadTranslation } from 'universal/redux/reducers/intl';
 import { format } from 'universal/i18n/helpers';
-import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
-const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 
 @injectIntl
@@ -66,7 +64,7 @@ export default class AmNavBar extends React.Component {
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="page-title">
-              <span>微骆</span>
+              <span>{ formatGlobalMsg(intl, 'brand') }</span>
             </div>
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps"></i>
