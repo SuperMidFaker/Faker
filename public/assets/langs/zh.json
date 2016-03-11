@@ -15,6 +15,8 @@
   "component.region.select.country": "选择国家或地区",
   "component.region.defaultCounty": "区县",
   "component.partner.empty.name": "合作伙伴名称不能为空",
+  "cooperation.partner.new.exist": "已经邀请或者建立合作伙伴",
+  "cooperation.offline.partner.new.exist": "已经添加为线下合作伙伴",
   "component.partner.send.invitation": "发送邀请",
   "component.partner.iknow": "知道了",
   "component.partner.new": "添加合作伙伴",

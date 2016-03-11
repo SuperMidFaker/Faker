@@ -15,6 +15,8 @@
   "component.region.select.country": "Select country or region",
   "component.region.defaultCounty": "County",
   "component.partner.empty.name": "Partner name can not be empty",
+  "cooperation.partner.new.exist": "Already invite or add partner",
+  "cooperation.offline.partner.new.exist": "Already add the offline partner",
   "component.partner.send.invitation": "Send Invitation",
   "component.partner.iknow": "Know it",
   "component.partner.new": "New Partner",

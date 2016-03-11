@@ -65,6 +65,14 @@ const messages = defineMessages({
     id: 'component.partner.empty.name',
     defaultMessage: '合作伙伴名称不能为空'
   },
+  partnerExist: {
+    id: 'cooperation.partner.new.exist',
+    defaultMessage: '已经邀请或者建立合作伙伴'
+  },
+  offlinePartnerExist: {
+    id: 'cooperation.offline.partner.new.exist',
+    defaultMessage: '已经添加为线下合作伙伴'
+  },
   sendInvitation: {
     id: 'component.partner.send.invitation',
     defaultMessage: '发送邀请'

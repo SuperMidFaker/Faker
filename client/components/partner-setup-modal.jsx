@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
+import { getFormatMsg } from 'reusable/browser-util/react-ant';
 import { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
   '../../universal/redux/reducers/partner';
 import { format } from 'universal/i18n/helpers';
@@ -97,7 +98,7 @@ export default class PartnerSetupDialog extends React.Component {
         this.props.tenantId, selectedTenantId, partnerships, 'invite-sent'
       ).then(result => {
         if (result.error) {
-          message.error(result.error.message, 10);
+          message.error(getFormatMsg(result.error.message, this.msg), 10);
         }
       });
     } else {
@@ -117,7 +118,7 @@ export default class PartnerSetupDialog extends React.Component {
       this.state.offlineContact, 'invite-sent'
     ).then(result => {
       if (result.error) {
-        message.error(result.error.message, 10);
+        message.error(getFormatMsg(result.error.message, this.msg), 10);
       }
     });
   }

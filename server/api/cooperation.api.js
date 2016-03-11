@@ -62,7 +62,7 @@ function *partnerOnlineP() {
   try {
     const partners = yield coopDao.getPartnerByPair(body.tenantId, body.partnerId);
     if (partners.length > 0) {
-      return Result.ParamError(this, '已经邀请或者建立合作伙伴');
+      return Result.ParamError(this, { key: 'partnerExist' });
     }
     const partnerTenants = yield tenantDao.getTenantInfo(body.partnerId);
     if (partnerTenants.length !== 1) {
@@ -87,7 +87,7 @@ function *partnerOnlineP() {
   } catch (e) {
     console.log(e && e.stack);
     yield mysql.rollback(trans);
-    return Result.InternalServerError(this, e.message || '添加线上合作伙伴异常');
+    return Result.InternalServerError(this, e.message);
   }
 }
 
@@ -102,7 +102,7 @@ function *partnerOfflineP() {
   try {
     const partners = yield coopDao.getPartnerByPair(body.tenantId, null, body.partnerName);
     if (partners.length > 0) {
-      return Result.ParamError(this, '已经添加为线下合作伙伴');
+      return Result.ParamError(this, { key: 'offlinePartnerExist' });
     }
     trans = yield mysql.beginTransaction();
     const result = yield coopDao.insertPartner(
@@ -127,7 +127,7 @@ function *partnerOfflineP() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, e.message || '添加线下伙伴异常');
+    return Result.InternalServerError(this, e.message);
   }
 }
 
@@ -169,7 +169,7 @@ function *receivedInvitationsG() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, '获取当前租户收到邀请异常');
+    return Result.InternalServerError(this, e.message);
   }
 }
 
@@ -263,7 +263,7 @@ function *sentInvitationsG() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, '获取当前租户发出邀请异常');
+    return Result.InternalServerError(this, e.message);
   }
 }
 
