@@ -78,10 +78,10 @@ export default {
   },
   insertPartnership(tenantId, partnerId, partnerName, partnerships, trans) {
     const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id, partner_name,
-      type, type_name) values ?`;
+      type, type_name, type_code) values ?`;
     const args = [];
     partnerships.forEach(pts => {
-      args.push([tenantId, partnerId, partnerName, pts.key, pts.name]);
+      args.push([tenantId, partnerId, partnerName, pts.key, pts.name, pts.code]);
     });
     return mysql.insert(sql, [args], trans);
   },
