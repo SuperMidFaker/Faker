@@ -26,15 +26,15 @@ const DELEGATE_STATUS = {
 const TENANT_ROLE = {
   owner: {
     name: 'owner',
-    text: '拥有者'
+    text: 'tenantOwner'
   },
   manager: {
     name: 'manager',
-    text: '管理员'
+    text: 'tenantManager'
   },
   member: {
     name: 'member',
-    text: '成员'
+    text: 'tenantMember'
   }
 };
 const TENANT_USEBOOK = {

@@ -33,10 +33,6 @@ const messages = defineMessages({
     id: 'corp.info.location',
     defaultMessage: '所在地'
   },
-  location: {
-    id: 'corp.info.location',
-    defaultMessage: '所在地'
-  },
   fullAddress: {
     id: 'corp.info.full.address',
     defaultMessage: '详细地址'

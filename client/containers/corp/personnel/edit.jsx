@@ -152,31 +152,35 @@ export default class CorpEdit extends React.Component {
             </FormItem>
             {
               isCreating && this.renderTextInput(
-                msg('passord'), msg('passordPlaceholder'), 'password', true,
-                [{required: true, min: 6, message: msg('passordMessage')}],
+                msg('password'), msg('passwordPlaceholder'), 'password', true,
+                [{required: true, min: 6, message: msg('passwordMessage')}],
                 null, 'password')
             }
             {this.renderTextInput(
-              '手机号', '可作登录帐号使用', 'phone', true,
+              msg('phone'), msg('phonePlaceholder'), 'phone', true,
               [{ validator: (rule, value, callback) => validatePhone(value, callback) }]
             )}
             {this.renderTextInput(
-              'Email', '绑定后可作登录帐号使用', 'email', false,
-              [{ type: 'email', message: 'email格式错误'}]
+              'Email', msg('emailPlaceholder'), 'email', false,
+              [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }]
             )}
-            {this.renderTextInput('职位', '', 'position')}
+            {this.renderTextInput(msg('position'), '', 'position')}
             {this.props.formData.role !== TENANT_ROLE.owner.name &&
-            <FormItem label="是否管理员" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-              <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                onChange={(checked) => this.props.setFormValue('role',
-                                      checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
-                checked={this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name}/>
+            <FormItem label={msg('isAdmin')} labelCol={{span: 6}} wrapperCol={{span: 18}}>
+              <Switch checkedChildren={<Icon type="check" />}
+                unCheckedChildren={<Icon type="cross" />}
+                onChange={checked =>
+                  this.props.setFormValue(
+                    'role', checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
+                checked={this.props.formData.role
+                  && this.props.formData.role === TENANT_ROLE.manager.name}
+              />
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
                 <Button disabled={ disableSubmit } htmlType="submit" type="primary"
-                title={ disableSubmit ? '未选择所属租户,无法修改' : '' }>确定</Button>
-                <Button onClick={ this.handleCancel }>取消</Button>
+                title={ disableSubmit ? msg('nonTenantEdit') : '' }>{formatGlobalMsg(intl, 'ok')}</Button>
+                <Button onClick={ this.handleCancel }>{formatGlobalMsg(intl, 'cancel')}</Button>
               </Col>
             </Row>
           </Form>

@@ -242,20 +242,23 @@ export default class PersonnelSetting extends React.Component {
       sorter: true,
       dataIndex: 'role',
       filters: [{
-        text: TENANT_ROLE.manager.text,
+        text: formatContainerMsg(intl, 'tenantManager'),
         value: TENANT_ROLE.manager.name
       }, {
-        text: TENANT_ROLE.member.text,
+        text: formatContainerMsg(intl, 'tenantMember'),
         value: TENANT_ROLE.member.name
       }],
-      render: (o, record) => this.renderColumnText(record.status, TENANT_ROLE[record.role].text)
+      render: (o, record) => this.renderColumnText(
+        record.status,
+        formatContainerMsg(intl, TENANT_ROLE[record.role].text)
+      )
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
       render: (o, record) => {
-        let style = {color: '#51C23A'};
+        let style = { color: '#51C23A' };
         let text = ACCOUNT_STATUS.normal.text;
         if (record.status === ACCOUNT_STATUS.blocked.id) {
-          style = {color: '#CCC'};
+          style = { color: '#CCC' };
           text = ACCOUNT_STATUS.blocked.text;
         }
         return <span style={style}>{formatContainerMsg(intl, text)}</span>;

@@ -1,12 +1,20 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { loadSents, cancel } from '../../../../universal/redux/reducers/invitation';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { INVITATION_STATUS } from '../../../../universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+import containerMessages from 'client/containers/message.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
+const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadSents(cookie, {
@@ -16,10 +24,14 @@ function fetchData({ state, dispatch, cookie }) {
   }));
 }
 @connectFetch()(fetchData)
-@connectNav((props, dispatch) => {
+@injectIntl
+@connectNav((props, dispatch, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
   dispatch(setNavTitle({
     depth: 2,
-    text: '发出的邀请',
+    text: formatContainerMsg(props.intl, 'sentInvitations'),
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: null
@@ -33,6 +45,7 @@ function fetchData({ state, dispatch, cookie }) {
   { loadSents, cancel })
 export default class SentView extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     sentlist: PropTypes.object.isRequired,
     cancel: PropTypes.func.isRequired,
@@ -74,54 +87,57 @@ export default class SentView extends React.Component {
     remotes: this.props.sentlist
   })
 
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleExpire(invKey, index) {
     this.props.cancel(invKey, index).then(result => {
       if (result.error) {
-        message.error('取消邀请失败', 10);
+        message.error(this.msg('cancelInvitationFail'), 10);
       }
     });
   }
   columns = [{
-    title: '合作伙伴',
+    title: this.msg('partnerName'),
     dataIndex: 'name'
   }, {
-    title: '邀请对方成为',
+    title: this.msg('inviteOtherToBe'),
     dataIndex: 'types',
     render: (o, record) => {
       let text;
       if (record.types.length === 1 && record.types[0].name === '客户') {
         text = record.types[0].name;
       } else {
-        text = `${record.types.map(t => t.name).join('/')}服务商`;
+        text = `${record.types.map(t => t.name).join('/')}${this.msg('provider')}`;
       }
       return text;
     }
   }, {
-    title: '发出日期',
+    title: this.msg('sentDate'),
     dataIndex: 'created_date',
     render: (o, record) => moment(record.createdDate).format('YYYY-MM-DD')
   }, {
-    title: '状态',
+    title: formatContainerMsg(this.props.intl, 'statusColumn'),
     dataIndex: 'status',
     render: (o, record) => {
-      let text = '待定';
+      let text = this.msg('invitationDue');
       if (record.status === INVITATION_STATUS.ACCEPTED) {
-        text = '已接受';
+        text = this.msg('invitationAccepted');
       } else if (record.status === INVITATION_STATUS.REJECTED) {
-        text = '已拒绝';
+        text = this.msg('invitationRejected');
       } else if (record.status === INVITATION_STATUS.CANCELED) {
-        text = '已取消';
+        text = this.msg('invitationCannceleed');
       }
       return text;
     }
   }, {
-    title: '操作',
+    title: formatContainerMsg(this.props.intl, 'opColumn'),
     width: 150,
     render: (text, record, index) => {
       if (record.status === INVITATION_STATUS.NEW_SENT) {
         return (
           <span>
-            <a role="button" onClick={() => this.handleExpire(record.key, index)}>取消</a>
+            <a role="button" onClick={() => this.handleExpire(record.key, index)}>
+            {formatGlobalMsg(this.props.intl, 'cancel')}
+            </a>
           </span>
         );
       } else {
@@ -152,7 +168,7 @@ export default class SentView extends React.Component {
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
-              清除选择
+            {formatContainerMsg(this.props.intl, 'clearSelection')}
             </Button>
           </div>
         </div>

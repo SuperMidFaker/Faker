@@ -25,6 +25,18 @@ const messages = defineMessages({
     id: 'container.account.disabled',
     defaultMessage: '停用'
   },
+  tenantOwner: {
+    id: 'container.tenant.role.owner',
+    defaultMessage: '拥有者'
+  },
+  tenantManager: {
+    id: 'container.tenant.role.manager',
+    defaultMessage: '管理员'
+  },
+  tenantMember: {
+    id: 'container.tenant.role.member',
+    defaultMessage: '成员'
+  },
   opColumn: {
     id: 'container.table.opColumn',
     defaultMessage: '操作'
@@ -52,6 +64,10 @@ const messages = defineMessages({
   advancedSearch: {
     id: 'container.form.advancedSearch',
     defaultMessage: '高级搜索'
+  },
+  allTypes: {
+    id: 'container.table.types.all',
+    defaultMessage: '全部'
   },
   corpInfo: {
     id: 'container.corpInfo',

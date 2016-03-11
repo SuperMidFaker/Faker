@@ -49,18 +49,34 @@ const messages = defineMessages({
     id: 'personnel.edit.fullname.message',
     defaultMessage: '2位以上中英文'
   },
-  passord: {
+  password: {
     id: 'personnel.edit.password',
     defaultMessage: '登录密码'
   },
-  passordPlaceholder: {
+  passwordPlaceholder: {
     id: 'personnel.edit.password.placeholder',
     defaultMessage: '首次登录时会提示更改密码'
   },
-  passordMessage: {
+  passwordMessage: {
     id: 'personnel.edit.password.message',
     defaultMessage: '至少6位字符'
   },
+  phonePlaceholder: {
+    id: 'personnel.edit.phone.placeholder',
+    defaultMessage: '可作登录帐号使用'
+  },
+  emailPlaceholder: {
+    id: 'personnel.edit.email.placeholder',
+    defaultMessage: '绑定后可作登录帐号使用'
+  },
+  isAdmin: {
+    id: 'personnel.edit.label.isAdmin',
+    defaultMessage: '是否管理员'
+  },
+  nonTenantEdit: {
+    id: 'personnel.edit.nonTenant',
+    defaultMessage: '未选择所属租户,无法修改'
+  }
 });
 
 export default messages;
