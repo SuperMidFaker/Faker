@@ -10,10 +10,13 @@ import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';
 const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 
 const RadioButton = Radio.Button;
@@ -118,10 +121,13 @@ export default class PartnersView extends React.Component {
   }, {
     title: this.msg('partnerType'),
     dataIndex: 'types',
-    render: (o, record) => record.types.map(t => t.name).join('/') || '客户'
+    render: (o, record) =>
+    record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/') ||
+      formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer) // fallback to '客户'
   }, {
     title: this.msg('tenantType'),
-    dataIndex: 'tenantType'
+    dataIndex: 'tenantType',
+    render: (o, record) => formatContainerMsg(this.props.intl, record.tenantType)
   }, {
     title: this.msg('volume'),
     dataIndex: 'volume'
@@ -205,7 +211,7 @@ export default class PartnersView extends React.Component {
               partnershipTypes.map(
                 pst =>
                   <RadioButton value={pst.key} key={pst.key}>
-                  {pst.name}({pst.count})
+                  {formatGlobalMsg(intl, pst.name)}({pst.count})
                   </RadioButton>
               )
             }

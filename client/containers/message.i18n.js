@@ -69,6 +69,18 @@ const messages = defineMessages({
     id: 'container.table.types.all',
     defaultMessage: '全部'
   },
+  TENANT_ENTERPRISE: {
+    id: 'container.partner.type.enterprise',
+    defaultMessage: '企业法人'
+  },
+  TENANT_BRANCH: {
+    id: 'container.partner.type.branch',
+    defaultMessage: '分支机构'
+  },
+  TENANT_OFFLINE: {
+    id: 'container.partner.type.offline',
+    defaultMessage: '线下'
+  },
   corpInfo: {
     id: 'container.corpInfo',
     defaultMessage: '企业信息'

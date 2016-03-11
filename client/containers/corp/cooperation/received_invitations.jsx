@@ -8,10 +8,13 @@ import { loadReceiveds, change } from
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';
 const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
@@ -92,7 +95,8 @@ export default class ReceivedView extends React.Component {
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleAccept(invitation, index) {
-    if (invitation.types.length === 1 && invitation.types[0].name === '客户') {
+    if (invitation.types.length === 1
+        && invitation.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
       // 显示设置合作方的关系类型选择框
       this.setState({
         visibleModal: true,
@@ -101,11 +105,12 @@ export default class ReceivedView extends React.Component {
       });
     } else {
       // 合作方成为'客户'
-      this.props.change(invitation.key, 'accept', index, ['客户']).then(result => {
-        if (result.error) {
-          message.error(this.msg('acceptFailed'), 10);
-        }
-      });
+      this.props.change(invitation.key, 'accept', index, [ PARTNERSHIP_TYPE_INFO.customer ])
+        .then(result => {
+          if (result.error) {
+            message.error(this.msg('acceptFailed'), 10);
+          }
+        });
     }
   }
   handleReject(invKey, index) {
@@ -123,10 +128,11 @@ export default class ReceivedView extends React.Component {
     dataIndex: 'types',
     render: (o, record) => {
       let text;
-      if (record.types.length === 1 && record.types[0].name === '客户') {
-        text = '客户';
+      if (record.types.length === 1 && record.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
+        text = formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer);
       } else {
-        text = `${record.types.map(t => t.name).join('/')}${this.msg('provider')}`;
+        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/')}
+          ${this.msg('provider')}`;
       }
       return text;
     }

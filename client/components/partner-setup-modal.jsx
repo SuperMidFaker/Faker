@@ -1,11 +1,19 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
+import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
 import { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
-'../../universal/redux/reducers/partner';
+  '../../universal/redux/reducers/partner';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 import './partner-modal.less';
 const Option = Select.Option;
 
+@injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -19,6 +27,7 @@ const Option = Select.Option;
 )
 export default class PartnerSetupDialog extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     hidePartnerModal: PropTypes.func.isRequired,
     setModalViewport: PropTypes.func.isRequired,
     inviteOnlPartner: PropTypes.func.isRequired,
@@ -73,14 +82,16 @@ export default class PartnerSetupDialog extends React.Component {
   handlePartnerProviderTypeChange = (checkeds) => {
     this.setState({ checkedProviderTypes: checkeds });
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handlePartnerForm = () => {
     if (this.state.tenantInput === '') {
-      message.error('合作伙伴名称不能为空', 10);
+      message.error(this.msg('emptyPartnerName'), 10);
       return;
     }
     const tenant = this.props.partnerTenants.find(elem => elem.name === this.state.tenantInput);
     const selectedTenantId = tenant ? tenant.id : -1;
-    const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
+    const partnerships = this.state.isProviderPartner ?
+      this.state.checkedProviderTypes : [ PARTNERSHIP_TYPE_INFO.customer ];
     if (selectedTenantId !== -1) {
       this.props.inviteOnlPartner(
         this.props.tenantId, selectedTenantId, partnerships, 'invite-sent'
@@ -99,7 +110,8 @@ export default class PartnerSetupDialog extends React.Component {
     });
   }
   handleOfflineInvite = () => {
-    const partnerships = this.state.isProviderPartner ? this.state.checkedProviderTypes : ['客户'];
+    const partnerships = this.state.isProviderPartner ?
+      this.state.checkedProviderTypes : [ PARTNERSHIP_TYPE_INFO.customer ];
     this.props.inviteOfflPartner(
       this.props.tenantId, this.state.tenantInput, partnerships,
       this.state.offlineContact, 'invite-sent'
@@ -113,61 +125,63 @@ export default class PartnerSetupDialog extends React.Component {
     this.props.hidePartnerModal();
   }
   render() {
-    const { isProviderPartner, checkedProviderTypes, offlineContact }
-    = this.state;
-    const { stepView, visible, partnershipTypes, isPlatformTenant } = this.props;
+    const { isProviderPartner, checkedProviderTypes, offlineContact } = this.state;
+    const { intl, stepView, visible, partnershipTypes, isPlatformTenant } = this.props;
     let footer = <div />;
     if (stepView === 'invite-initial') {
       footer = [
         <Button key="form-invite" type="primary" size="large" onClick={this.handlePartnerForm}>
-          下一步
+        {formatGlobalMsg(intl, 'nextStep')}
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
-          取消
+        {formatGlobalMsg(intl, 'cancel')}
         </Button>
       ];
     } else if (stepView === 'invite-offline') {
       footer = [
         <Button key="offline-invite" type="primary" size="large" onClick={this.handleOfflineInvite}>
-          发送邀请
+        {this.msg('sendInvitation')}
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
-          取消
+        {formatGlobalMsg(intl, 'cancel')}
         </Button>
       ];
     } else if (stepView === 'invite-sent') {
       footer = [
         <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
-          知道了
+        {this.msg('iknow')}
         </Button>
       ];
     }
     return (
-      <Modal title="添加合作伙伴" visible={visible} closable={false} footer={footer}
+      <Modal title={this.msg('newPartner')} visible={visible} closable={false} footer={footer}
         className="partner-modal"
       >
         <Form horizontal className={stepView === 'invite-initial' ? '' : 'hide'}>
-          <Form.Item label="合作伙伴:" labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
-            <Select combobox style={{ width: '100%' }} searchPlaceholder="请输入公司名称"
-              filterOption={this.getTenantFilterOption}
+          <Form.Item label={this.msg('partner')} labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
+            <Select combobox style={{ width: '100%' }} filterOption={this.getTenantFilterOption}
+              searchPlaceholder={this.msg('companyNamePlaceholder')}
               onChange={this.handleTenantInputChange}
             >
             {this.getTenantOptions()}
             </Select>
           </Form.Item>
-          <Form.Item label="伙伴关系:" labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
+          <Form.Item label={this.msg('partnership')} labelCol={{ span: 7 }}
+            wrapperCol={{ span: 14 }}
+          >
             <Radio.Group onChange={this.handlePartnershipRadioChange}
-              defaultValue={ !isProviderPartner ? 'client' : 'provider' }
+              defaultValue={!isProviderPartner ? 'client' : 'provider'}
             >
-              <Radio.Button value="client">客户</Radio.Button>
-              <Radio.Button value="provider">供应商</Radio.Button>
+              <Radio.Button value="client">{this.msg('customer')}</Radio.Button>
+              <Radio.Button value="provider">{this.msg('provider')}</Radio.Button>
             </Radio.Group>
           </Form.Item>
           { isProviderPartner &&
           <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
-            <Checkbox.Group options={partnershipTypes.filter(pst => pst.name !== '客户')
-              .map(pst => pst.name)} onChange={this.handlePartnerProviderTypeChange}
-              value={ checkedProviderTypes }
+            <Checkbox.Group options={partnershipTypes.filter(
+              pst => pst.name !== PARTNERSHIP_TYPE_INFO.customer)
+              .map(pst => formatGlobalMsg(intl, pst.name))} onChange={this.handlePartnerProviderTypeChange}
+              value={checkedProviderTypes}
             />
           </Form.Item>
           }
@@ -177,10 +191,10 @@ export default class PartnerSetupDialog extends React.Component {
         >
           <i className="anticon anticon-info-circle" />
           <span>
-            对方还不是平台用户,请填写邮箱/手机号发送邀请
+          {this.msg('invitationForOffline')}
           </span>
           <div className="partner-modal-content">
-            <Input placeholder="输入邮箱/手机号码" onChange={this.handleContactInputChange}
+            <Input placeholder={this.msg('contactPlaceholder')} onChange={this.handleContactInputChange}
               value={offlineContact}
             />
           </div>
@@ -189,9 +203,9 @@ export default class PartnerSetupDialog extends React.Component {
           ${stepView === 'invite-sent' ? '' : ' hide'}`}
         >
           <i className="anticon anticon-info-circle" />
-          <span className="partner-modal-title">已发送邀请</span>
-          <div className="partner-modal-content">对方是
-            { isPlatformTenant ? '平台' : '线下' }用户,已发送合作伙伴邀请
+          <span className="partner-modal-title">{this.msg('invitationSent')}</span>
+          <div className="partner-modal-content">
+            {this.msg('invitationSentNotice', { isPlatformTenant })}
           </div>
         </div>
       </Modal>

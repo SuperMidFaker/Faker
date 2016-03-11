@@ -4,14 +4,13 @@ import tenantDao from '../models/tenant.db';
 import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
 import { getSmsCode } from '../../reusable/common/validater';
-import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO }
+import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE }
   from '../../universal/constants';
 
-const partnershipTypeNames = PARTNERSHIP_TYPE_INFO.map(psti => psti.name);
-const partnershipTypeCodes = PARTNERSHIP_TYPE_INFO.map(psti => psti.code);
+const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
 
 function getTenantTypeDesc(level) {
-  return level === TENANT_LEVEL.ENTERPRISE ? '企业法人' : '分支机构';
+  return level === TENANT_LEVEL.ENTERPRISE ? PARTNER_TENANT_TYPE[0] : PARTNER_TENANT_TYPE[1];
 }
 function *partnersG() {
   const current = parseInt(this.request.query.currentPage, 10);
@@ -57,8 +56,7 @@ function *partnerOnlineP() {
   const body = yield cobody(this);
   const partnerships = body.partnerships.map(pts => ({
     key: partnershipTypeNames.indexOf(pts),
-    code: partnershipTypeCodes[partnershipTypeNames.indexOf(pts)],
-    name: pts
+    code: pts
   }));
   let trans;
   try {
@@ -97,10 +95,9 @@ function *partnerOfflineP() {
   const body = yield cobody(this);
   const partnerships = body.partnerships.map(pts => ({
     key: partnershipTypeNames.indexOf(pts),
-    code: partnershipTypeCodes[partnershipTypeNames.indexOf(pts)],
-    name: pts
+    code: pts
   }));
-  const tenantType = '线下';
+  const tenantType = PARTNER_TENANT_TYPE[2];
   let trans;
   try {
     const partners = yield coopDao.getPartnerByPair(body.tenantId, null, body.partnerName);
@@ -208,8 +205,7 @@ function *invitationP() {
           invitations[0].inviteeId, invitations[0].inviterId, partnerName,
           body.partnerships.map(ps => ({
             key: partnershipTypeNames.indexOf(ps),
-            code: partnershipTypeCodes[partnershipTypeNames.indexOf(ps)],
-            name: ps
+            code: ps
           })), trans);
       } else {
         // 已经向邀请方发送添加请求,只需将另一条partner记录置为建立,

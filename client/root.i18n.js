@@ -45,5 +45,29 @@ const messages = defineMessages({
     id: 'root.save',
     defaultMessage: '保存'
   },
+  nextStep: {
+    id: 'root.nextStep',
+    defaultMessage: '下一步'
+  },
+  CUS: {
+    id: 'container.partnership.customer',
+    defaultMessage: '客户'
+  },
+  CCB: {
+    id: 'container.partnership.clearanceBroker',
+    defaultMessage: '报关'
+  },
+  FWD: {
+    id: 'container.partnership.forwarder',
+    defaultMessage: '货代'
+  },
+  TRS: {
+    id: 'container.partnership.transportation',
+    defaultMessage: '运输'
+  },
+  WHS: {
+    id: 'container.partnership.warehouse',
+    defaultMessage: '仓储'
+  }
 });
 export default messages;

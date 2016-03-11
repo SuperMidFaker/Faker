@@ -7,7 +7,7 @@ import { loadSents, cancel } from '../../../../universal/redux/reducers/invitati
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { INVITATION_STATUS } from '../../../../universal/constants';
+import { INVITATION_STATUS, PARTNERSHIP_TYPE_INFO } from '../../../../universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
@@ -103,10 +103,12 @@ export default class SentView extends React.Component {
     dataIndex: 'types',
     render: (o, record) => {
       let text;
-      if (record.types.length === 1 && record.types[0].name === '客户') {
-        text = record.types[0].name;
+      if (record.types.length === 1
+          && record.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
+        text = formatGlobalMsg(this.props.intl, record.types[0].name);
       } else {
-        text = `${record.types.map(t => t.name).join('/')}${this.msg('provider')}`;
+        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/')}
+          ${this.msg('provider')}`;
       }
       return text;
     }

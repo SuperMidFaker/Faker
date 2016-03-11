@@ -1,9 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Input, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import { hideInviteModal, sendInvitation } from '../../universal/redux/reducers/partner';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 import './partner-modal.less';
 
+@injectIntl
 @connect(
   state => ({
     tenantId: state.partner.inviteModal.tenantId,
@@ -15,6 +22,7 @@ import './partner-modal.less';
 )
 export default class PartnerInviteDialog extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     hideInviteModal: PropTypes.func.isRequired,
     sendInvitation: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -32,6 +40,7 @@ export default class PartnerInviteDialog extends React.Component {
       });
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleContactInputChange = (ev) => {
     this.setState({
       contact: ev.target.value
@@ -42,7 +51,7 @@ export default class PartnerInviteDialog extends React.Component {
   }
   handleInvite = () => {
     if (!this.state.contact) {
-      return message.error('请输入联系方式');
+      return message.error(this.msg('contactMissing'));
     }
     this.props.sendInvitation(
       this.state.contact, this.props.tenantId, this.props.partnerName
@@ -59,37 +68,37 @@ export default class PartnerInviteDialog extends React.Component {
     if (step === 1) {
       footer = [
         <Button key="offline-invite" type="primary" size="large" onClick={this.handleInvite}>
-          发送邀请
+        {this.msg('sendInvitation')}
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
-          取消
+        {formatGlobalMsg(this.props.intl, 'cancel')}
         </Button>
       ];
     } else if (step === 2) {
       footer = [
         <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
-          知道了
+        {this.msg('iknow')}
         </Button>
       ];
     }
     return (
-      <Modal title="邀请合作伙伴" visible={visible} closable={false} footer={footer}
+      <Modal title={this.msg('invitePartner')} visible={visible} closable={false} footer={footer}
         className="partner-modal"
       >
         <div className={`partner-modal-offline-body${step === 1 ? '' : ' hide'}`}>
           <i className="anticon anticon-info-circle" />
           <span>
-            请填写邀请合作伙伴"{ partnerName }"的联系方式
+          {this.msg('fillPartnerContact', { partnerName })}
           </span>
           <div className="partner-modal-content">
-            <Input placeholder="输入邮箱/手机号码" onChange={this.handleContactInputChange}
+            <Input placeholder={this.msg('contactPlaceholder')} onChange={this.handleContactInputChange}
               value={contact}
             />
           </div>
         </div>
         <div className={`partner-modal-confirm-body${step === 2 ? '' : ' hide'}`}>
           <i className="anticon anticon-info-circle" />
-          <span className="partner-modal-title">已发送邀请</span>
+          <span className="partner-modal-title">{this.msg('invitationSent')}</span>
         </div>
       </Modal>
     );
