@@ -29,6 +29,12 @@ const initialState = {
     pageSize: 10,
     data: []
   },
+  loglist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: []
+  },
   statusList: { // 初始化状态显示数量
     statusValue: '0',
     notSendCount: 0,
@@ -58,7 +64,10 @@ const actions = [
   'ID_LOAD_SELECTOPTIONS', 'ID_LOAD_SELECTOPTIONS_SUCCEED', 'ID_LOAD_SELECTOPTIONS_FAIL',
   'FILE_UPLOAD', 'FILE_UPLOAD_SUCCEED', 'FILE_UPLOAD_FAIL',
   'IMPORT_EDIT', 'IMPORT_EDIT_SUCCEED', 'IMPORT_EDIT_FAIL',
-  'SEND_LOAD', 'SEND_LOAD_SUCCEED', 'SEND_LOAD_FAIL'
+  'SEND_LOAD', 'SEND_LOAD_SUCCEED', 'SEND_LOAD_FAIL',
+  'SEND', 'SEND_SUCCEED', 'SEND_FAIL',
+  'INVALID', 'INVALID_SUCCEED', 'INVALID_FAIL',
+  'LOG_LOAD', 'LOG_LOAD_SUCCEED', 'LOG_LOAD_FAIL'
 ];
 const domain = '@@welogix/importdelegate/';
 const actionTypes = createActionTypes(domain, actions);
@@ -83,6 +92,12 @@ export default function reducer(state = initialState, action) {
           acceptCount: action.result.data.statusList.acceptCount
         },
         idlist: action.result.data.idlist
+      };
+    case actionTypes.LOG_LOAD_SUCCEED:
+      return {...state,
+        loaded: true,
+        loading: false,
+        loglist: action.result.data.loglist
       };
     case actionTypes.ID_LOAD_FAIL:
       return {...state,
@@ -222,9 +237,55 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         loading: false,
         sendlist: {
-          data:action.sendlist.data
+          data: action.sendlist.data
         }
       };
+    case actionTypes.SEND_SUCCEED:
+      {
+        const idlist = {...state.idlist
+        };
+        const newlist = [];
+
+        idlist.data.map((item) => {
+          if (action.params.sendlist.indexOf(item.key) === -1) {
+            newlist.push(item);
+          }
+        });
+
+        return {...state,
+          idlist: {...state.idlist,
+            data: newlist
+          },
+          statusList: {...state.statusList,
+            notSendCount: state.statusList.notSendCount - (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1),
+            notAcceptCount: state.statusList.notAcceptCount + (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1)
+          }
+        };
+      }
+    case actionTypes.INVALID_SUCCEED:
+      {
+        const idlist = {...state.idlist
+        };
+        const newlist = [];
+
+        idlist.data.map((item) => {
+          if (item.key !== action.params.delegateId) {
+            newlist.push(item);
+          }
+        });
+
+        return {...state,
+          idlist: {...state.idlist,
+            data: newlist
+          },
+          statusList: {...state.statusList,
+            notSendCount: state.statusList.notSendCount - (action.params.curStatus === 0 ? 1 : 0),
+            notAcceptCount: state.statusList.notAcceptCount - (action.params.curStatus === 1 ? 1 : 0),
+            acceptCount: state.statusList.acceptCount - (action.params.curStatus === 2 ? 1 : 0),
+            invalidCount: state.statusList.invalidCount + 1
+          }
+        };
+      }
     default:
       return formReducer(actionTypes, state, action, {}, 'idlist') || state;
   }
@@ -396,5 +457,38 @@ export function loadSend(sendlist) {
   return {
     type: actionTypes.SEND_LOAD_SUCCEED,
     sendlist
+  };
+}
+
+export function sendDelegate(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SEND, actionTypes.SEND_SUCCEED, actionTypes.SEND_FAIL],
+      endpoint: 'v1/import/senddelegate',
+      method: 'put',
+      params
+    }
+  };
+}
+
+export function invalidDelegate(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.INVALID, actionTypes.INVALID_SUCCEED, actionTypes.INVALID_FAIL],
+      endpoint: 'v1/import/invalidDelegate',
+      method: 'put',
+      params
+    }
+  };
+}
+
+export function loadLogs(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.LOG_LOAD, actionTypes.LOG_LOAD_SUCCEED, actionTypes.LOG_LOAD_FAIL],
+      endpoint: 'v1/import/importdelegatelogs',
+      method: 'get',
+      params
+    }
   };
 }

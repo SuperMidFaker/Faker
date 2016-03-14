@@ -36,15 +36,26 @@ function concatFilterSqls(filters, args) {
 
 
 export default {
-    getTenantdelegateCount(tenantId, filters) {
+    getTenantdelegateCount(tenantId, filters,currentStatus) {
     const args = [tenantId];
+      let statusClause = "";
+      if (currentStatus != -1) {
+        statusClause = " and \`status\`= ?";
+        args.push(currentStatus);
+      }
     const filterClause = concatFilterSqls(filters, args); //" where tenant_id = ?";
-    const sql = `SELECT count(del_id) as num from g_bus_delegate where tenant_id = ?  ${filterClause}`;
+    const sql = `SELECT count(del_id) as num from g_bus_delegate where tenant_id = ? ${statusClause} ${filterClause}`;
     console.log(sql, args);
     return mysql.query(sql, args); //getTenantdelegateCount_test
    },
-    getPageddelegateInCorp(tenantId, current, pageSize, filters, sortField, sortOrder) {
+    getPageddelegateInCorp(tenantId, current, pageSize, filters, sortField, sortOrder,currentStatus) {
     const args = [tenantId];
+    let statusClause = "";
+    console.log(currentStatus);
+      if (currentStatus != -1) {
+        statusClause = " and \`status\`= ?";
+        args.push(currentStatus);
+      }
     const filterClause = concatFilterSqls(filters, args);
     let sortColumn = sortField || 'del_id';
     let sortClause = '';
@@ -52,7 +63,8 @@ export default {
       sortColumn = 'del_no';
     }
     sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-    const sql = `SELECT del_id as \`key\`,invoice_no,del_no,status,DATE_FORMAT(del_date, '%Y-%m-%d') as del_date,bill_no,rec_tenant_id,usebook from g_bus_delegate where tenant_id = ?  ${filterClause} ${sortClause}
+    const sql = `select T1.short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
+      where T.tenant_id= ? ${statusClause}  ${filterClause} ${sortClause}
       limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     console.log(sql, args);
@@ -87,11 +99,33 @@ export default {
     const sql = 'update g_bus_delegate set del_no = ?,invoice_no = ?,master_customs=?,declare_way_no=?,bill_no=?,usebook=?,trade_mode=?,urgent=?,other_note=?  where del_id = ?';
     const args = [del_no, invoice_no,master_customs,declare_way_no,bill_no,usebook,trade_mode,urgent,other_note,key,trans];
     return mysql.update(sql, args, trans);
-  },
-  insertdelegate(creator,tenantId, trans) {
-    const sql = `INSERT into g_bus_delegate(del_no,STATUS,invoice_no,del_date,created_date,master_customs,declare_way_no,bill_no,usebook,trade_mode,urgent,other_note,tenant_id) values (?, 0, ?,NOW(),NOW(),?,?,?,?,?,?,?,?)`;
-    const args = [creator.del_no,creator.invoice_no,creator.master_customs,creator.declare_way_no,creator.bill_no,creator.usebook,creator.trade_mode,creator.urgent,creator.other_note,tenantId];
-    return mysql.insert(sql, args, trans);
+  },*
+  insertdelegate(delegates, trans) {
+      let insertClause = [];
+      let args = [];
+      let varlueClause = [];
+
+      for (var el in delegates) {
+        insertClause.push(el);
+        args.push(delegates[el]);
+        varlueClause.push('?');
+      }
+
+      const result = yield mysql.query(`SELECT REPLACE(uuid(),'-','') as uid`, [], trans);
+      const uuid = result[0].uid;
+      insertClause.push('del_no');
+      args.push(uuid);
+      varlueClause.push('?');
+      console.log(uuid);
+
+      let sql = `insert into g_bus_delegate(${insertClause.join(",")},created_date,del_date)
+               values(${varlueClause.join(",")},NOW(),NOW())`;
+      yield mysql.insert(sql, args, trans);
+
+      sql = `select T1.short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,master_customs,declare_way_no,usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
+          where T.del_no= ? `
+      console.log(sql);
+      return yield mysql.query(sql, [uuid], trans);
   },
   getAttachedTenants(tenantId) {
     const sql = `select tenant_id as \`key\`, name, parent_tenant_id as parentId from sso_tenants where status = 'normal'
@@ -103,5 +137,27 @@ export default {
     const sql = `select id as \`key\`,customs_code as code,customs_name as name from PARA_CUSTOMS_REL`;
     const args = '';
     return mysql.query(sql, args);
-  }
+  },
+  getCustomsInfo() {
+      const args = [];
+      const sql = `SELECT id as \`key\`,customs_code as \`value\`,CONCAT(customs_code,' | ',customs_name) as \`text\` FROM para_customs_rel`;
+      return mysql.query(sql, args);
+    },
+    getDeclareWay() {
+      const args = [];
+      const sql = `SELECT distinct declare_way_no as \`value\`,CONCAT(declare_way_no,' | ',declare_way_name) as \`text\` FROM g_cop_declare_way`;
+      return mysql.query(sql, args);
+    },
+    getTradeMode() {
+      const args = [];
+      const sql = `SELECT TRADE_MODE as \`value\`,CONCAT(TRADE_MODE,' | ',ABBR_TRADE) as \`text\` from para_trade`;
+      return mysql.query(sql, args);
+    },
+    getStatusCount(tenantId, status, filters) {
+      const args = [tenantId, status];
+      const filterClause = concatFilterSqls(filters, args);
+      const sql = `select count(status) as count from g_bus_delegate where tenant_id=? and status=? ${filterClause}`;
+      console.log(sql, args);
+      return mysql.query(sql, args);
+    }
 }
