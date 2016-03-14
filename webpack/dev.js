@@ -2,12 +2,10 @@ const webpack = require('webpack');
 const wpConfig = require('./wpbase');
 const config = require('../universal/config');
 
-wpConfig.entry = {
-  app: [
-    'webpack/hot/dev-server',
-    config.get('client_entry')
-  ]
-};
+wpConfig.entry.app = [
+  'webpack/hot/dev-server',
+  config.get('client_entry')
+];
 
 // Configuration for dev server
 wpConfig.devServer = {

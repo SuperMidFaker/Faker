@@ -11,6 +11,8 @@ const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 const wpConfig = {
   // Entry point to the project
   entry: {
+    vendor: config.get('vendor_dependencies'),
+    antd: ['ant-ui']
   },
   context: path.resolve(__dirname, '..'),
   // Webpack config options on how to obtain modules
