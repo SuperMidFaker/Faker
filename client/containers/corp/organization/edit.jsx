@@ -132,15 +132,20 @@ export default class CorpEdit extends React.Component {
         >
           <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
             rules: [{
-              validator: (rule, value, callback) =>
-              isLoginNameExist(value, code, this.props.formData.loginId,
-                               this.props.account.tenantId, callback,
-                               message, this.props.checkLoginName)
+              validator: (rule, value, callback) => isLoginNameExist(
+                value, code, this.props.formData.loginId,
+                this.props.account.tenantId, callback, message,
+                this.props.checkLoginName,
+                (msgs, descriptor) => format(msgs)(intl, descriptor)
+              )
             }]
           })} />
         </FormItem>
         {this.renderTextInput(formatMsg(intl, 'phone'), '', 'phone', true, [{
-          validator: (rule, value, callback) => validatePhone(value, callback)
+          validator: (rule, value, callback) => validatePhone(
+            value, callback,
+            (msgs, descriptor) => format(msgs)(intl, descriptor)
+          )
         }])}
         {this.renderTextInput('Email', '', 'email', false, [{
           type: 'email',

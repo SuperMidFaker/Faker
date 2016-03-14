@@ -12,7 +12,8 @@ import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/reac
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
+import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES, APP_ENTITY_META_INFO }
+  from 'universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
@@ -178,7 +179,11 @@ export default class CorpList extends React.Component {
       render: (o, record, index) => {
         const modComp = [];
         (record.apps || []).forEach((mod, idx) => {
-          modComp.push(<NavLink key={mod.name} to={DEFAULT_MODULES[mod.id].url}>{mod.name}</NavLink>);
+          modComp.push(
+            <NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
+            {formatGlobalMsg(intl, APP_ENTITY_META_INFO[mod.id].name)}
+            </NavLink>
+          );
           modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
         });
         return (
@@ -250,7 +255,9 @@ export default class CorpList extends React.Component {
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
         </div>
         <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-          <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">清除选择</Button>
+          <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">
+          {formatContainerMsg(intl, 'clearSelection')}
+          </Button>
         </div>
         <AppEditor { ...this.props.appEditor } switchTenantApp={this.props.switchTenantApp}
           appPackage={this.props.corplist.tenantAppPackage} onCancel={ this.handleEditorHide }/>

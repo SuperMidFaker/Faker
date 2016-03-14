@@ -49,24 +49,56 @@ const messages = defineMessages({
     id: 'root.nextStep',
     defaultMessage: '下一步'
   },
+  importApp: {
+    id: 'root.app.import',
+    defaultMessage: '进口'
+  },
+  importAppDesc: {
+    id: 'root.app.import.desc',
+    defaultMessage: '进口报关'
+  },
+  exportApp: {
+    id: 'root.app.export',
+    defaultMessage: '出口'
+  },
+  exportAppDesc: {
+    id: 'root.app.export.desc',
+    defaultMessage: '出口报关'
+  },
+  tmsApp: {
+    id: 'root.app.tms',
+    defaultMessage: '运管+'
+  },
+  tmsAppDesc: {
+    id: 'root.app.tms.desc',
+    defaultMessage: '运输管理系统'
+  },
+  wmsApp: {
+    id: 'root.app.wms',
+    defaultMessage: '仓管+'
+  },
+  wmsAppDesc: {
+    id: 'root.app.wms.desc',
+    defaultMessage: '仓库管理系统'
+  },
   CUS: {
-    id: 'container.partnership.customer',
+    id: 'root.partnership.customer',
     defaultMessage: '客户'
   },
   CCB: {
-    id: 'container.partnership.clearanceBroker',
+    id: 'root.partnership.clearanceBroker',
     defaultMessage: '报关'
   },
   FWD: {
-    id: 'container.partnership.forwarder',
+    id: 'root.partnership.forwarder',
     defaultMessage: '货代'
   },
   TRS: {
-    id: 'container.partnership.transportation',
+    id: 'root.partnership.transportation',
     defaultMessage: '运输'
   },
   WHS: {
-    id: 'container.partnership.warehouse',
+    id: 'root.partnership.warehouse',
     defaultMessage: '仓储'
   }
 });

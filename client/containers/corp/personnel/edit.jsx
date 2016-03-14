@@ -133,7 +133,7 @@ export default class CorpEdit extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <Form horizontal onSubmit={ this.handleSubmit } form={ this.props.formhoc }
+          <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
           className="form-edit-content offset-right-col">
             {this.renderTextInput(
               msg('fullName'), msg('fullNamePlaceholder'), 'name', true,
@@ -145,8 +145,8 @@ export default class CorpEdit extends React.Component {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(
                     value, code, this.props.formData.loginId,
-                    this.props.tenant.id, callback,
-                    message, this.props.checkLoginName)
+                    this.props.tenant.id, callback, message, this.props.checkLoginName,
+                    (msgs, descriptor) => format(msgs)(intl, descriptor))
                 }]
               })} />
             </FormItem>
@@ -158,7 +158,8 @@ export default class CorpEdit extends React.Component {
             }
             {this.renderTextInput(
               msg('phone'), msg('phonePlaceholder'), 'phone', true,
-              [{ validator: (rule, value, callback) => validatePhone(value, callback) }]
+              [{ validator: (rule, value, callback) => validatePhone(value, callback,
+                  (msgs, descriptor) => format(msgs)(intl, descriptor)) }]
             )}
             {this.renderTextInput(
               'Email', msg('emailPlaceholder'), 'email', false,

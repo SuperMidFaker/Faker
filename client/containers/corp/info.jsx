@@ -177,7 +177,10 @@ export default class CorpInfo extends React.Component {
               }], {transform: (value) => (value.trim())}
             )}
             {this.renderTextInput(msg('phone'), '', 'phone', true, [{
-              validator: (rule, value, callback) => validatePhone(value, callback)
+              validator: (rule, value, callback) => validatePhone(
+                value, callback,
+                (msgs, descriptor) => format(msgs)(intl, descriptor)
+              )
             }])}
           </Col>
           <Col span="12">

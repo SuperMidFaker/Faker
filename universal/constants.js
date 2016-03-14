@@ -74,6 +74,25 @@ const DEFAULT_MODULES = {
   kpi:    { cls: 'kpi', url: '/kpi', text: 'moduleKpi' }
 };
 
+const APP_ENTITY_META_INFO = {
+  import: {
+    name: 'importApp',
+    desc: 'importAppDesc'
+  },
+  export: {
+    name: 'exportApp',
+    desc: 'exportAppDesc'
+  },
+  tms: {
+    name: 'tmsApp',
+    desc: 'tmsAppDesc'
+  },
+  wms: {
+    name: 'wmsApp',
+    desc: 'wmsAppDesc'
+  }
+};
+
 const TENANT_LEVEL = {
   STANDARD: 0,
   ENTERPRISE: 1,
@@ -100,6 +119,7 @@ const PARTNER_TENANT_TYPE = [ 'TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_OFFL
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
+  APP_ENTITY_META_INFO,
   TENANT_ROLE,
   TENANT_LEVEL,
   INVITATION_STATUS,
