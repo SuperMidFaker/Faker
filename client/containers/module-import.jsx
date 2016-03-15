@@ -27,7 +27,7 @@ export default class ImportM extends React.Component {
     }, {
       single: true,
       key: 'import-3',
-      path: '/import/passage',
+      path: '/import/task',
       icon: 's7-note',
       text: '通关作业'
     }, {
