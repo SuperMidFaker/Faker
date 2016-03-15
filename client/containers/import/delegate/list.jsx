@@ -73,7 +73,7 @@ export default class ImportDelegate extends React.Component {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      curStatus: 0,
+      curStatus: -1,
       statusValue: '',
       searchVal: '',
       sendlist: [],
@@ -294,7 +294,7 @@ export default class ImportDelegate extends React.Component {
           let statusText = '';
           switch (record.status) {
             case 0:
-              statusText = '未发送';
+              statusText = '待处理';
               fontColor = '#FFD700';
               break;
             case 1:
@@ -380,7 +380,7 @@ export default class ImportDelegate extends React.Component {
               <span>所有状态</span>
             </RadioButton>
             <RadioButton value="0">
-              <span>未发送 ({notSendCount})</span>
+              <span>待处理 ({notSendCount})</span>
             </RadioButton>
             <RadioButton value="1">
               <span>委托中 ({notAcceptCount})</span>
@@ -396,7 +396,7 @@ export default class ImportDelegate extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
-              <Icon type="plus-circle-o" />新增业务
+              <Icon type="plus-circle-o" />新增报关业务
             </Button>
           </div>
           <div className="panel-body body-responsive">

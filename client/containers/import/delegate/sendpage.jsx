@@ -20,8 +20,8 @@ function goBack(props) {
   dispatch(setNavTitle({
     depth: 3,
     text: props.params.status === '0'
-      ? '发送业务单'
-      : '撤销业务单',
+      ? '发送报关业务'
+      : '撤销报关业务',
     moduleName: '',
     goBackFn: () => goBack(props),
     withModuleLayout: false
