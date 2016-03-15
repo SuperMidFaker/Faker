@@ -8,7 +8,7 @@ import { changePassword } from '../../../universal/redux/reducers/auth';
 export default class ChangePassword extends React.Component {
   static propTypes = {
     changePassword: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired // todo
   }
   constructor(props) {
     super(props);

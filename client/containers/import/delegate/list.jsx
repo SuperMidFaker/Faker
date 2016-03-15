@@ -55,7 +55,6 @@ function fetchData({state, dispatch, cookie}) {
 })
 export default class ImportDelegate extends React.Component {
   static propTypes = { // 属性检测
-    history: PropTypes.object.isRequired,
     idlist: PropTypes.object.isRequired,
     statusList: PropTypes.object.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
@@ -68,6 +67,9 @@ export default class ImportDelegate extends React.Component {
     loadDelegates: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     sendlist: PropTypes.object.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);
@@ -136,7 +138,7 @@ export default class ImportDelegate extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleSend(status, record) {
     this.props.sendlist.data = [];
@@ -145,7 +147,7 @@ export default class ImportDelegate extends React.Component {
     } else {
       this.props.sendlist.data.push(record);
     }
-    this.props.history.pushState(null, `/import/delegate/send/${status}`);
+    this.context.router.push(`/import/delegate/send/${status}`);
   }
   handleSetSendList(selectedRows) {
     this.setState({sendlist: [], buttonText: '', sendStatus: 0});

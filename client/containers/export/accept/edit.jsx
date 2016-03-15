@@ -49,8 +49,8 @@ function fetchData({state, dispatch, cookie, params}) {
   return Promise.all(promises);
 }
 
-function goBack(props) {
-  props.history.goBack();
+function goBack(router) {
+  router.goBack();
 }
 
 @connectFetch()(fetchData)
@@ -62,7 +62,7 @@ function goBack(props) {
   tenantId: state.account.tenantId,
   selectOptions: state.exportaccept.selectOptions
 }), {setFormValue, edit, submit, uploadFiles})
-@connectNav((props, dispatch) => {
+@connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
     return;
   }
@@ -73,7 +73,7 @@ function goBack(props) {
       ? '新增业务单'
       : '业务单详情',
     moduleName: '',
-    goBackFn: () => goBack(props),
+    goBackFn: () => goBack(router),
     withModuleLayout: false
   }));
 })
@@ -91,7 +91,6 @@ function goBack(props) {
 })
 export default class ExportAcceptEdit extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
@@ -101,6 +100,9 @@ export default class ExportAcceptEdit extends React.Component {
     setFormValue: PropTypes.func.isRequired,
     selectOptions: PropTypes.object.isRequired,
     uploadFiles: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor() {
     super();
@@ -115,7 +117,7 @@ export default class ExportAcceptEdit extends React.Component {
     if (error) {
       message.error(error.message, 10);
     } else {
-      goBack(this.props);
+      goBack(this.context.router);
     }
   }
   handleSubmit(ev) {
@@ -137,7 +139,7 @@ export default class ExportAcceptEdit extends React.Component {
     });
   }
   handleCancel() {
-    goBack(this.props);
+    goBack(this.context.router);
   }
   handleSelectChange(stateKey, value) {
     this.setState(JSON.parse(`{"${stateKey}":"${value}"}`));

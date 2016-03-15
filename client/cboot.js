@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import createHistory from 'history/lib/createBrowserHistory';
+import { browserHistory } from 'react-router';
 import App from './app';
 import configureStore from '../universal/redux/configureStore';
 import { addLocaleData } from 'react-intl';
@@ -10,7 +10,7 @@ polyfill(() => {
   addLocaleData(require('react-intl/locale-data/en'));
   addLocaleData(require('react-intl/locale-data/zh'));
   ReactDom.render(
-    <App routerHistory={createHistory()} store={store} />,
+    <App routerHistory={browserHistory} store={store} />,
     document.getElementById('mount')
   );
 });

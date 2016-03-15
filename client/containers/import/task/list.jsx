@@ -52,7 +52,6 @@ function fetchData({state, dispatch, cookie}) {
 }), {delTask, switchTenant, switchStatus, loadTask})
 export default class TaskSetting extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -66,6 +65,9 @@ export default class TaskSetting extends React.Component {
     loginId: PropTypes.number.isRequired,
     tenantId: PropTypes.object.isRequired,
     statusList: PropTypes.array.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor() {
     super();
@@ -110,7 +112,7 @@ export default class TaskSetting extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleStatusSwitch(task, index) {
     this.props.switchStatus(index, task.key, task.status === ACCOUNT_STATUS.normal.id

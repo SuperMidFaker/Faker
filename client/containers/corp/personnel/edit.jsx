@@ -33,8 +33,8 @@ function fetchData({state, dispatch, cookie, params}) {
   }
 }
 
-function goBack(props) {
-  props.history.goBack();
+function goBack(router) {
+  router.goBack();
 }
 
 @connectFetch()(fetchData)
@@ -47,7 +47,7 @@ function goBack(props) {
     tenant: state.personnel.tenant
   }),
   { setFormValue, edit, submit, checkLoginName })
-@connectNav((props, dispatch, lifecycle) => {
+@connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle === 'componentDidMount') {
     return;
   }
@@ -57,7 +57,7 @@ function goBack(props) {
     text: isCreating ? formatMsg(props.intl, 'newUser') :
       `${formatMsg(props.intl, 'user')}${props.formData.name}`,
     moduleName: 'corp',
-    goBackFn: () => goBack(props),
+    goBackFn: () => goBack(router),
     withModuleLayout: false
   }));
 })
@@ -76,7 +76,6 @@ function goBack(props) {
 export default class CorpEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    history: PropTypes.object.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     tenant: PropTypes.object.isRequired,
@@ -87,11 +86,14 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
   onSubmitReturn(error) {
     if (error) {
       message.error(error.message, 10);
     } else {
-      goBack(this.props);
+      goBack(this.context.router);
     }
   }
   handleSubmit = (ev) => {
@@ -113,7 +115,7 @@ export default class CorpEdit extends React.Component {
     });
   }
   handleCancel = () => {
-    goBack(this.props);
+    goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const { formhoc: { getFieldProps, getFieldError }} = this.props;

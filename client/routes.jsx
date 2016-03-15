@@ -31,7 +31,7 @@ import { isLoaded } from '../reusable/common/redux-actions';
 
 
 export default(store, cookie) => {
-  const requireAuth = (nextState, replaceState, cb) => {
+  const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
       let querySubdomain;
       if (nextState.location.search) {
@@ -43,7 +43,10 @@ export default(store, cookie) => {
       const { account: { subdomain }, auth: { isAuthed }} = store.getState();
       if (!isAuthed || (querySubdomain && querySubdomain !== subdomain)) {
         const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
-        replaceState(null, `/login?next=${encodeURIComponent(nextState.location.pathname)}${search}`);
+        replace({
+          pathname: '/login',
+          query: { next: `${nextState.location.pathname}${search}` }
+        });
       }
       cb();
     }

@@ -20,7 +20,6 @@ const formatGlobalMsg = format(globalMessages);
 export default class Forgot extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    history: PropTypes.object.isRequired,
     requestSms: PropTypes.func.isRequired,
     verifySms: PropTypes.func.isRequired,
     enterForgot: PropTypes.func.isRequired,
@@ -29,20 +28,20 @@ export default class Forgot extends React.Component {
     verified: PropTypes.bool,
     error: PropTypes.object
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      phone: '',
-      smsCode: '',
-      newPwd: ''
-    };
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+  state = {
+    phone: '',
+    smsCode: '',
+    newPwd: ''
   }
   componentWillMount() {
     this.props.enterForgot();
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.verified && nextProps.verified) {
-      this.props.history.replaceState('/login');
+      this.context.router.replace('/login');
     }
   }
   handleTextChange(ev, field) {
@@ -55,7 +54,7 @@ export default class Forgot extends React.Component {
   handleSmsCancel(ev) {
     ev.preventDefault();
     // this.props.leaveForgot();
-    this.props.history.goBack();
+    this.context.router.goBack();
   }
   handleSmsVerify(ev) {
     ev.preventDefault();

@@ -35,17 +35,19 @@ function fetchData({ state, dispatch, cookie, location }) {
 export default class Root extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     locale: PropTypes.string.isRequired,
-    messages: PropTypes.object,
+    messages: PropTypes.object.isRequired,
     isAuthed: PropTypes.bool.isRequired
-  };
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.isAuthed && nextProps.isAuthed) {
       const redirectUrl = this.props.location.query.next || '/';
-      this.props.history.replaceState(null, redirectUrl);
+      this.context.router.replace(redirectUrl);
     }
   }
 

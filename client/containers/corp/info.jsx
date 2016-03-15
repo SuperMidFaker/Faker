@@ -33,7 +33,7 @@ function fetchData({state, dispatch, cookie}) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connectNav((props, dispatch, lifecycle) => {
+@connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
   }
@@ -65,13 +65,15 @@ function fetchData({state, dispatch, cookie}) {
 export default class CorpInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    history: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired,
     checkCorpDomain: PropTypes.func.isRequired,
     uploadImg: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   handleSubmit() {
     const { intl } = this.props;
@@ -91,7 +93,7 @@ export default class CorpInfo extends React.Component {
     });
   }
   handleCancel() {
-    this.props.history.goBack();
+    this.context.router.goBack();
   }
   /*
   isCorpDomainExist(value, callback) {

@@ -40,7 +40,7 @@ function fetchData({ state, dispatch, cookie }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connectNav((props, dispatch, lifecycle) => {
+@connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
   }
@@ -65,7 +65,6 @@ function fetchData({ state, dispatch, cookie }) {
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     code: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -77,6 +76,9 @@ export default class PersonnelSetting extends React.Component {
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   state = {
     selectedRowKeys: []
@@ -112,7 +114,7 @@ export default class PersonnelSetting extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleStatusSwitch(personnel, index) {
     this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id

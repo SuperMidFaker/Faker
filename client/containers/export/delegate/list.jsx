@@ -40,7 +40,6 @@ function fetchData({state, dispatch, cookie}) {
   { deldelegate, switchTenant, switchStatus, loaddelegate, loadStatus })
 export default class delegateSetting extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     statusList: PropTypes.object.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
@@ -54,6 +53,9 @@ export default class delegateSetting extends React.Component {
     deldelegate: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadStatus: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);
@@ -96,7 +98,7 @@ export default class delegateSetting extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleStatusSwitch(delegate, index) {
     this.props.switchStatus(index, delegate.key, delegate.status === DELEGATE_STATUS.normal.id

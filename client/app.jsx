@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
-import { Router, RoutingContext } from 'react-router';
+import { Router, RouterContext } from 'react-router';
 import routes from './routes';
 
 export default class App extends Component {
@@ -16,7 +16,7 @@ export default class App extends Component {
 
   renderRouter () {
     if (this.props.routingContext) {
-      return <RoutingContext {...this.props.routingContext} />;
+      return <RouterContext {...this.props.routingContext} />;
     } else {
       return (
         <Router history={this.props.routerHistory}>

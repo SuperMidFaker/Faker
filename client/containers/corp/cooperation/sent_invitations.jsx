@@ -25,7 +25,7 @@ function fetchData({ state, dispatch, cookie }) {
 }
 @connectFetch()(fetchData)
 @injectIntl
-@connectNav((props, dispatch, lifecycle) => {
+@connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
   }

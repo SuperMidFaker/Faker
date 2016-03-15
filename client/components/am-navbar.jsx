@@ -7,7 +7,9 @@ import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
 import { loadTranslation } from 'universal/redux/reducers/intl';
 import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
+const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 
 @injectIntl
@@ -40,7 +42,7 @@ export default class AmNavBar extends React.Component {
           <Popover placement="bottomLeft" trigger="hover" overlay={<ModuleLayout />}>
             <a role="button" aria-expanded="false" className="dropdown-toggle">
               <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
-              {navTitle.text}
+              {formatMsg(intl, navTitle.text)}
               <span className="angle-down s7-angle-down"></span>
             </a>
           </Popover>

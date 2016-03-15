@@ -29,8 +29,8 @@ function fetchData({state, dispatch, cookie, params}) {
   }
 }
 
-function goBack(props) {
-  props.history.goBack();
+function goBack(router) {
+  router.goBack();
 }
 
 @connectFetch()(fetchData)
@@ -44,7 +44,7 @@ function goBack(props) {
     selectOptions: state.delegate.selectOptions
   }),
   { setFormValue, edit, submit, uploadFiles })
-@connectNav((props, dispatch) => {
+@connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
     return;
   }
@@ -53,7 +53,7 @@ function goBack(props) {
     depth: 3,
     text: isCreating ? '新增业务单' : `业务单详情`,
     moduleName: '',
-    goBackFn: () => goBack(props),
+    goBackFn: () => goBack(router),
     withModuleLayout: false
   }));
 })
@@ -71,7 +71,6 @@ function goBack(props) {
 })
 export default class CorpEdit extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
@@ -82,6 +81,9 @@ export default class CorpEdit extends React.Component {
     selectOptions: PropTypes.object.isRequired,
     uploadFiles: PropTypes.func.isRequired
   }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
   constructor() {
     super();
     this.handleCancel = this.handleCancel.bind(this);
@@ -91,7 +93,7 @@ export default class CorpEdit extends React.Component {
     if (error) {
       message.error(error.message, 10);
     } else {
-      goBack(this.props);
+      goBack(this.context.router);
     }
   }
   handleSubmit() {
@@ -118,7 +120,7 @@ export default class CorpEdit extends React.Component {
     });
   }
   handleCancel() {
-    goBack(this.props);
+    goBack(this.context.router);
   }
   renderSelect(labelName, placeholder, field, required, source, rules) {
     const {

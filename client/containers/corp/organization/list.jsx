@@ -45,7 +45,7 @@ function fetchData({ state, dispatch, cookie }) {
     closeTenantAppsEditor
   }
 )
-@connectNav((props, dispatch, lifecycle) => {
+@connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
   }
@@ -60,7 +60,6 @@ function fetchData({ state, dispatch, cookie }) {
 export default class CorpList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    history: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     appEditor: PropTypes.object.isRequired,
@@ -72,6 +71,9 @@ export default class CorpList extends React.Component {
     delCorp: PropTypes.func.isRequired,
     loadOrgans: PropTypes.func.isRequired
   }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
   state = {
     selectedRowKeys: []
   };
@@ -79,7 +81,7 @@ export default class CorpList extends React.Component {
     this.setState({selectedRowKeys: []});
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleCorpDel(id) {
     const { tenantId, corplist: { totalCount, current, pageSize }, intl } = this.props;
