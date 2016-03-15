@@ -66,7 +66,7 @@ export default class Home extends React.Component {
               <h2 className="tenant-name">{name}</h2>
             </div>
             <div className="tenant-nav">
-              <Menu selectedKeys="apps" mode="horizontal">
+              <Menu defaultSelectedKeys={['apps']} mode="horizontal">
               { tenantMenus }
               </Menu>
             </div>

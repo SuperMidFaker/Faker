@@ -11,7 +11,6 @@ const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 const wpConfig = {
   // Entry point to the project
   entry: {
-    antd: ['ant-ui'],
     vendor: config.get('vendor_dependencies')
   },
   context: path.resolve(__dirname, '..'),
@@ -30,7 +29,7 @@ const wpConfig = {
   plugins: [
     new webpack.IgnorePlugin(/assets\.json$/),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'antd'],
+      names: 'vendor',
       filename: '[name]-[hash].js',
       minChunks: Infinity
     }),
