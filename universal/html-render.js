@@ -88,8 +88,9 @@ export default function render(request) {
             <script>
             __INITIAL_STATE__ = ${serialize(store.getState())};
             </script>`;
+            pageJs += assets.javascript.antd ? `<script src=${assets.javascript.antd}></script>` : '';
             pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
-            Object.keys(assets.javascript).filter(script => script !== 'vendor')
+            Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'antd')
             .map(script => {
               pageJs += `<script src=${assets.javascript[script]}></script>`;
             });

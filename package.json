@@ -7,7 +7,7 @@
     "clean": "rm -rf public/dist",
     "debug": "node --debug .",
     "lint": "eslint --ext .js --ext .jsx client server universal webpack",
-    "hot": "webpack-dev-server --config webpack/dev.js",
+    "hot": "npm run build-i18n & webpack-dev-server --config webpack/dev.js",
     "build-dev": "NODE_ENV=production webpack --progress --profile --diplay-modules --display-origins --config webpack/dev.js",
     "dev": "nodemon",
     "start": "npm run clean & npm run hot &  npm run dev",

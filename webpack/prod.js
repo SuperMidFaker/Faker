@@ -11,7 +11,6 @@ wpConfig.plugins.push(
   // css files from the extract-text-plugin loader
   new ExtractTextPlugin('[name]-[chunkhash].css', {allChunks: true}),
   new webpack.optimize.DedupePlugin(),
-  new webpack.optimize.CommonsChunkPlugin(['vendor', 'antd'], '[name]-[hash].js'), // optimizations
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
