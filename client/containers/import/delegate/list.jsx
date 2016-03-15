@@ -13,7 +13,7 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Button, message, Radio, Tag} from 'ant-ui';
+import {Table, Button, message, Radio, Tag, Icon} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
@@ -263,11 +263,11 @@ export default class ImportDelegate extends React.Component {
     });
     const columns = [
       {
-        title: '报关业务单号',
+        title: '报关业务号',
         dataIndex: 'del_no',
         render: (text, record) => this.renderColumnText(record, text, true)
       }, {
-        title: '报关行',
+        title: '申报单位',
         sorter: true,
         dataIndex: 'short_name',
         filters: filterArray,
@@ -278,11 +278,11 @@ export default class ImportDelegate extends React.Component {
         dataIndex: 'del_date',
         render: (text, record) => this.renderColumnText(record, text)
       }, {
-        title: '接单时间',
+        title: '受理时间',
         dataIndex: 'rec_del_date',
         render: (text, record) => this.renderColumnText(record, text)
       }, {
-        title: '提单号',
+        title: '提运单号',
         dataIndex: 'bill_no',
         render: (text, record) => this.renderColumnText(record, text)
       }, {
@@ -298,11 +298,11 @@ export default class ImportDelegate extends React.Component {
               fontColor = '#FFD700';
               break;
             case 1:
-              statusText = '未受理';
+              statusText = '委托中';
               fontColor = '#FF7F00';
               break;
             case 2:
-              statusText = '已接单';
+              statusText = '受理中';
               fontColor = '#00CD00';
               break;
             case 3:
@@ -372,7 +372,7 @@ export default class ImportDelegate extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder="业务单号/发票号/提单号" onInputSearch={(val) => this.handleSearch(val)}/>
+            <SearchBar placeholder="提运单号/报关业务号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
           <RadioGroup defaultValue="0" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
@@ -383,10 +383,10 @@ export default class ImportDelegate extends React.Component {
               <span>未发送 ({notSendCount})</span>
             </RadioButton>
             <RadioButton value="1">
-              <span>未受理 ({notAcceptCount})</span>
+              <span>委托中 ({notAcceptCount})</span>
             </RadioButton>
             <RadioButton value="2">
-              <span>已接单 ({acceptCount})</span>
+              <span>受理中 ({acceptCount})</span>
             </RadioButton>
             <RadioButton value="3">
               <span>已作废 ({invalidCount})</span>
@@ -396,7 +396,7 @@ export default class ImportDelegate extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
-              <span>新增</span>
+              <Icon type="plus-circle-o" />新增业务
             </Button>
           </div>
           <div className="panel-body body-responsive">

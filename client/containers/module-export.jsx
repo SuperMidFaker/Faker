@@ -14,14 +14,14 @@ export default class ExportM extends React.Component {
       text: '看板'
     }, {
       single: true,
-      key: 'export-2',
+      key: 'export-1',
       path: '/export/delegate',
       icon: 's7-next-2',
       text: '报关委托'
     }, {
       single: true,
-      key: 'export-3',
-      path: '/export/accept',
+      key: 'export-2',
+      path: '/export/receive',
       icon: 's7-mail-open-file',
       text: '报关受理'
     }, {

@@ -108,7 +108,7 @@ export default(store, cookie) => {
               <Route path="edit/:id" component={ExportDelegate.Edit}/>
               <Route path="exportsend/:status" component={ExportDelegate.exportsend}/>
             </Route>
-            <Route path="accept">
+            <Route path="receive">
               <IndexRoute component={ExportAccept.List}/>
               <Route path="new" component={ExportAccept.Edit}/>
             </Route>
