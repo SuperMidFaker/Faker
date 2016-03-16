@@ -4,13 +4,15 @@ function putInCompositions(f, args) {
   if (f.name === 'del_no') {
     sql = 'del_no like ?';
     args.push('%' + f.value + '%');
-  }else if (f.name === 'invoice_no') {
+  } else if (f.name === 'invoice_no') {
     sql = 'invoice_no like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'bill_no') {
     sql = 'bill_no like ?';
     args.push('%' + f.value + '%');
-}
+  } else if (f.name === 'short_name' && f.value !== `''`) {
+    sql = `rec_tenant_id in (${f.value})`;
+  }
   return sql;
 }
 function concatFilterSqls(filters, args) {

@@ -283,7 +283,7 @@ export default class delegateSetting extends React.Component {
     };
     const filterArray = [];
     customsBrokerList.map(item => {
-      filterArray.push({text: item.rec_tenant_id, value: `${item.key}`});
+      filterArray.push({text: item.short_name, value: `${item.key}`});
     });
     const columns = [{
       title: '报关业务单号',
