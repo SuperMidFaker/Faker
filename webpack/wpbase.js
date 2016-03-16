@@ -1,6 +1,4 @@
-require('babel/register')({
-  stage: 0
-});
+require('babel/register');
 
 const webpack = require('webpack');
 const path = require('path');
@@ -13,6 +11,7 @@ const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 const wpConfig = {
   // Entry point to the project
   entry: {
+    vendor: config.get('vendor_dependencies')
   },
   context: path.resolve(__dirname, '..'),
   // Webpack config options on how to obtain modules
@@ -29,6 +28,11 @@ const wpConfig = {
   },
   plugins: [
     new webpack.IgnorePlugin(/assets\.json$/),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: 'vendor',
+      filename: '[name]-[hash].js',
+      minChunks: Infinity
+    }),
     new webpack.DefinePlugin({
       __CLIENT__: true,
       __CDN__: JSON.stringify(config.get('CDN_URL')),
@@ -56,6 +60,7 @@ const wpConfig = {
       query: {
         optional: ['runtime'],
         stage: 0,
+        blacklist: ['regenerator'],
         env: {
           development: {
             plugins: [

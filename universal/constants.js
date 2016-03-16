@@ -3,12 +3,12 @@ const ACCOUNT_STATUS = {
   normal: {
     id: 0,
     name: 'normal',
-    text: '正常'
+    text: 'accountNormal'
   },
   blocked: {
     id: 1,
     name: 'blocked',
-    text: '停用'
+    text: 'accountDisabled'
   }
 };
 const DELEGATE_STATUS = {
@@ -26,15 +26,15 @@ const DELEGATE_STATUS = {
 const TENANT_ROLE = {
   owner: {
     name: 'owner',
-    text: '拥有者'
+    text: 'tenantOwner'
   },
   manager: {
     name: 'manager',
-    text: '管理员'
+    text: 'tenantManager'
   },
   member: {
     name: 'member',
-    text: '成员'
+    text: 'tenantMember'
   }
 };
 const TENANT_USEBOOK = {
@@ -64,14 +64,33 @@ const SMS_TYPE = {
   CHANGE_PAID_PASSWORD: 6
 };
 const DEFAULT_MODULES = {
-  import: { cls: 'import', url: '/import', text: '进口' },
-  export: { cls: 'export', url: '/export', text: '出口' },
-  tms:    { cls: 'tms', url: '/tms', text: '运输' },
-  wms:    { cls: 'wms', url: '/wms', text: '仓储' },
-  payable:{ cls: 'payable', url: '/payable', text: '付汇' },
-  receivable:{ cls: 'receivable', url: '/receivable', text: '收汇' },
-  cost:   { cls: 'cost', url: '/cost', text: '成本分析' },
-  kpi:    { cls: 'kpi', url: '/kpi', text: 'KPI绩效' }
+  import: { cls: 'import', url: '/import', text: 'moduleImport' },
+  export: { cls: 'export', url: '/export', text: 'moduleExport' },
+  tms:    { cls: 'tms', url: '/tms', text: 'moduleTms' },
+  wms:    { cls: 'wms', url: '/wms', text: 'moduleWms' },
+  payable:{ cls: 'payable', url: '/payable', text: 'modulePayable' },
+  receivable:{ cls: 'receivable', url: '/receivable', text: 'moduleReceivable' },
+  cost:   { cls: 'cost', url: '/cost', text: 'moduleCost' },
+  kpi:    { cls: 'kpi', url: '/kpi', text: 'moduleKpi' }
+};
+
+const APP_ENTITY_META_INFO = {
+  import: {
+    name: 'importApp',
+    desc: 'importAppDesc'
+  },
+  export: {
+    name: 'exportApp',
+    desc: 'exportAppDesc'
+  },
+  tms: {
+    name: 'tmsApp',
+    desc: 'tmsAppDesc'
+  },
+  wms: {
+    name: 'wmsApp',
+    desc: 'wmsAppDesc'
+  }
 };
 
 const TENANT_LEVEL = {
@@ -87,22 +106,26 @@ const INVITATION_STATUS = {
   REJECTED: 2,
   CANCELED: 3 // 取消邀请
 };
-const PARTNERSHIP_TYPE_INFO = [
-  { name: '客户', code: 'CUS'},
-  { name: '报关', code: 'CCB'},
-  { name: '货代', code: 'FWD'},
-  { name: '运输', code: 'TRS'},
-  { name: '仓储', code: 'WHS'}
-];
+const PARTNERSHIP_TYPE_INFO = {
+  customer: 'CUS',
+  customsClearanceBroker: 'CCB',
+  freightForwarder: 'FWD',
+  transportation: 'TRS',
+  warehouse: 'WHS'
+};
+
+const PARTNER_TENANT_TYPE = [ 'TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_OFFLINE' ];
 
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
+  APP_ENTITY_META_INFO,
   TENANT_ROLE,
   TENANT_LEVEL,
   INVITATION_STATUS,
   MAX_STANDARD_TENANT,
   PARTNERSHIP_TYPE_INFO,
+  PARTNER_TENANT_TYPE,
   CHINA_CODE,
   ACCOUNT_STATUS,
   SMS_TYPE,

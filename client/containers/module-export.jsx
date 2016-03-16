@@ -8,28 +8,34 @@ export default class ExportM extends React.Component {
   render() {
     const linkMenus = [{
       single: true,
-      key: 'export-1',
+      key: 'export-0',
       path: '/export/',
-      icon: 's7-refresh-cloud',
-      text: '工作台'
+      icon: 's7-display1',
+      text: '看板'
+    }, {
+      single: true,
+      key: 'export-1',
+      path: '/export/delegate',
+      icon: 's7-next-2',
+      text: '报关委托'
     }, {
       single: true,
       key: 'export-2',
-      path: '/export/delegate',
-      icon: 's7-refresh-cloud',
-      text: '业务委托'
+      path: '/export/receive',
+      icon: 's7-mail-open-file',
+      text: '报关受理'
     }, {
       single: true,
       key: 'export-3',
-      path: '/export/accept',
-      icon: 's7-mail-open-file',
-      text: '业务受理'
+      path: '/export/task',
+      icon: 's7-note',
+      text: '通关作业'
     }, {
       single: true,
-      key: 'import-6',
-      path: '/wms/setting',
-      icon: 's7-settings',
-      text: '设置'
+      key: 'export-4',
+      path: '/export/tracking',
+      icon: 's7-look',
+      text: '通关追踪'
     }];
     return (
       <div className="am-content">

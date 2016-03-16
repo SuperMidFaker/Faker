@@ -52,7 +52,6 @@ function fetchData({state, dispatch, cookie}) {
 }), {delTask, switchTenant, switchStatus, loadTask})
 export default class TaskSetting extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
     selectIndex: PropTypes.number,
     needUpdate: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -66,6 +65,9 @@ export default class TaskSetting extends React.Component {
     loginId: PropTypes.number.isRequired,
     tenantId: PropTypes.object.isRequired,
     statusList: PropTypes.array.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor() {
     super();
@@ -110,7 +112,7 @@ export default class TaskSetting extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleStatusSwitch(task, index) {
     this.props.switchStatus(index, task.key, task.status === ACCOUNT_STATUS.normal.id
@@ -374,14 +376,10 @@ export default class TaskSetting extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="pull-right action-btns">
+          <div className="tools">
             <SearchBar placeholder="业务单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
-            <a role="button">高级搜索</a>
+            <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <h2>作业管理</h2>
-        </div>
-        <div className="page-body">
-          <div className="panel-header">
             <Button type="ghost" style={{
               marginRight: 5
             }} onClick={() => this.handleChangeStatus('statusAll', -1)}>
@@ -412,7 +410,9 @@ export default class TaskSetting extends React.Component {
             }} onClick={() => this.handleChangeStatus('statusInvalid', 4)}>
               <span>已结单({invalidCount})</span>
             </Button>
-            <div className="pull-right action-btns"></div>
+        </div>
+        <div className="page-body">
+          <div className="panel-header">
           </div>
           <div className="panel-body body-responsive">
             <Table columns={columns} loading={loading} remoteData={tasklist} dataSource={dataSource}/>

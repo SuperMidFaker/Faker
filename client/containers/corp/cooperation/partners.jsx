@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import { loadPartners, showPartnerModal, showInviteModal } from
 '../../../../universal/redux/reducers/partner';
 import PartnerModal from '../../../components/partner-setup-modal';
@@ -9,6 +10,15 @@ import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+import containerMessages from 'client/containers/message.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
+const formatContainerMsg = format(containerMessages);
+
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -19,11 +29,16 @@ function fetchData({ state, dispatch, cookie }) {
     currentPage: state.partner.partnerlist.current
   }));
 }
+
 @connectFetch()(fetchData)
-@connectNav((props, dispatch) => {
+@injectIntl
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
   dispatch(setNavTitle({
     depth: 2,
-    text: '合作伙伴',
+    text: formatContainerMsg(props.intl, 'partners'),
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: null
@@ -40,6 +55,7 @@ function fetchData({ state, dispatch, cookie }) {
   { showPartnerModal, showInviteModal, loadPartners })
 export default class PartnersView extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     filters: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -98,35 +114,41 @@ export default class PartnersView extends React.Component {
     remotes: this.props.partnerlist
   })
 
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
-    title: '合作伙伴',
+    title: this.msg('partnerName'),
     dataIndex: 'name'
   }, {
-    title: '关系',
+    title: this.msg('partnerType'),
     dataIndex: 'types',
-    render: (o, record) => record.types.map(t => t.name).join('/') || '客户'
+    render: (o, record) =>
+    record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/') ||
+      formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer) // fallback to '客户'
   }, {
-    title: '类型',
-    dataIndex: 'tenantType'
+    title: this.msg('tenantType'),
+    dataIndex: 'tenantType',
+    render: (o, record) => formatContainerMsg(this.props.intl, record.tenantType)
   }, {
-    title: '业务量',
+    title: this.msg('volume'),
     dataIndex: 'volume'
   }, {
-    title: '营收',
+    title: this.msg('revenue'),
     dataIndex: 'revenue',
     render: (o, record) => (record.revenue || 0.0).toFixed(2)
   }, {
-    title: '成本',
+    title: this.msg('cost'),
     dataIndex: 'cost',
     render: (o, record) => record.cost ? record.cost.toFixed(2) : '0.00'
   }, {
-    title: '操作',
+    title: formatContainerMsg(this.props.intl, 'opColumn'),
     width: 150,
     render: (text, record) => {
       if (record.partnerTenantId === -1) {
         return (
           <span>
-            <a role="button" onClick={() => this.handleSendInvitation(record)}>发送邀请</a>
+            <a role="button" onClick={() => this.handleSendInvitation(record)}>
+            {this.msg('sendInvitation')}
+            </a>
           </span>
         );
       } else {
@@ -168,7 +190,7 @@ export default class PartnersView extends React.Component {
     });
   }
   render() {
-    const { partnershipTypes, partnerlist, loading } = this.props;
+    const { partnershipTypes, partnerlist, loading, intl } = this.props;
     this.dataSource.remotes = partnerlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -180,16 +202,16 @@ export default class PartnersView extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder="搜索合作伙伴" onInputSearch={this.handleSearch} />
-            <a className="hidden-xs" role="button">高级搜索</a>
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+            <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
           </div>
           <RadioGroup onChange={this.handlePartnershipFilter} defaultValue="all">
-            <RadioButton value="all">全部</RadioButton>
+            <RadioButton value="all">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
             {
               partnershipTypes.map(
                 pst =>
                   <RadioButton value={pst.key} key={pst.key}>
-                  {pst.name}({pst.count})
+                  {formatGlobalMsg(intl, pst.name)}({pst.count})
                   </RadioButton>
               )
             }
@@ -198,7 +220,7 @@ export default class PartnersView extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={this.handleAddPartner}>
-              <Icon type="plus-circle-o" /><span>添加合作伙伴</span>
+              <Icon type="plus-circle-o" /><span>{this.msg('newPartner')}</span>
             </Button>
           </div>
           <div className="panel-body body-responsive">
@@ -207,7 +229,9 @@ export default class PartnersView extends React.Component {
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">清除选择</Button>
+            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
+            {formatContainerMsg(intl, 'clearSelection')}
+            </Button>
           </div>
           <PartnerModal />
           <InviteModal />

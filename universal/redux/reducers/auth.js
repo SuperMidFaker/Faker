@@ -1,5 +1,6 @@
 import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
-import {CPD_LOAD_FAIL} from './corp-domain';
+import { CPD_LOAD_FAIL } from './corp-domain';
+import { ACC_LOAD_SUCCEED } from './account';
 const LOGIN = '@@qm-auth/auth/LOGIN';
 const LOGIN_SUCCEED = '@@qm-auth/auth/LOGIN_SUCCEED';
 const LOGIN_FAIL = '@@qm-auth/auth/LOGIN_FAIL';
@@ -56,19 +57,26 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loggingIn: false,
         token: null,
-        error: { message: action.error.msg ? `C${action.error.error_code}: ${action.error.msg}`
-        : action.error.toString() }
+        error: {
+          code: action.error.error_code,
+          message:  action.error.msg
+        }
       };
     case INPUT_CHANGE:
       return {
         ...state,
         [action.data.field]: action.data.value
       };
+    case ACC_LOAD_SUCCEED:
+      return { ...state, isAuthed: true };
     case CPD_LOAD_FAIL:
       return {
         ...state,
         nonTenant: true,
-        error: {message: action.error.msg || 'tenant subdomain do not exist'}
+        error: {
+          code: 5001,
+          message: action.error.msg
+        }
       };
     case PWD_CHANGE_SUCCEED:
       action.history.goBack(); // todo change to componentWillReceiveProps
@@ -78,11 +86,11 @@ export default function reducer(state = initialState, action = {}) {
     case SMS_REQUEST_SUCCEED:
       return { ...state, error: null, smsId: action.result.data.smsId, userId: action.result.data.userId };
     case SMS_REQUEST_FAIL:
-      return { ...state, error: { message: action.error.msg || action.error.toString() } };
+      return { ...state, error: { message: action.error.msg } };
     case SMS_VERIFY_SUCCEED:
       return { ...state, error: null, verified: true };
     case SMS_VERIFY_FAIL:
-      return { ...state, error: { message: action.error.msg || action.error.toString() } };
+      return { ...state, error: { message: action.error.msg } };
     default:
       return state;
   }

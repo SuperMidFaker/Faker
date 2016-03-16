@@ -59,7 +59,6 @@ function fetchData({state, dispatch, cookie}) {
 })
 export default class ImportDelegate extends React.Component {
   static propTypes = { // 属性检测
-    history: PropTypes.object.isRequired,
     idlist: PropTypes.object.isRequired,
     statusList: PropTypes.object.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
@@ -73,6 +72,9 @@ export default class ImportDelegate extends React.Component {
     loadStatus: PropTypes.func.isRequired,
     submitAccept: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);
@@ -166,7 +168,7 @@ export default class ImportDelegate extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   createFilters(searchVal) { // 创建过滤
     return [
@@ -369,7 +371,7 @@ export default class ImportDelegate extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/export/accept/new')}>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/export/receive/new')}>
               <span>新增</span>
             </Button>
             </div>

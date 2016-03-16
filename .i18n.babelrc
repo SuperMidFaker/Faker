@@ -1,0 +1,10 @@
+{
+  stage: 0,
+  ignore: ['./node_modules/*', './server/*', 'not working, why, todo'],
+  plugins: ['react-intl'],
+  extra: {
+    'react-intl': {
+      'messagesDir': './public/dist/messages/'
+    }
+  }
+}

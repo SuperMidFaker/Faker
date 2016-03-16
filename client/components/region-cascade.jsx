@@ -1,29 +1,35 @@
 import React, { PropTypes } from 'react';
-import {Row, Col, Select} from 'ant-ui';
+import { Row, Col, Select } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import { CHINA_CODE } from '../../universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import world from './worldwide-regions.json';
 import chinaRegions from './china-regions.json';
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
+const formatMsg = format(messages);
 
-const defaultProvince = '省/自治区/直辖市';
-const defaultCity = '市';
-const defaultCounty = '区县';
+@injectIntl
 export default class RegionCascade extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     setFormValue: PropTypes.func.isRequired,
     region: PropTypes.object.isRequired
   }
   constructor(...args) {
     super(...args);
+    this.defaultProvince = formatMsg(this.props.intl, 'defaultProvRegions');
+    this.defaultCity = formatMsg(this.props.intl, 'defaultCityRegions');
+    this.defaultCounty = formatMsg(this.props.intl, 'defaultCountyRegions');
     this.state = {
       disableProvince: false,
       country: CHINA_CODE,
-      province: this.props.region.province || defaultProvince,
+      province: this.props.region.province || this.defaultProvince,
       cities: [],
-      city: this.props.region.city || defaultCity,
+      city: this.props.region.city || this.defaultCity,
       counties: [],
-      county: this.props.region.county || defaultCounty
+      county: this.props.region.county || this.defaultCounty
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -39,11 +45,11 @@ export default class RegionCascade extends React.Component {
     if (value !== CHINA_CODE) {
       this.setState({
         disableProvince: true,
-        province: defaultProvince,
+        province: this.defaultProvince,
         cities: [],
-        city: defaultCity,
+        city: this.defaultCity,
         counties: [],
-        county: defaultCounty
+        county: this.defaultCounty
       });
     } else {
       this.setState({disableProvince: false});
@@ -58,7 +64,7 @@ export default class RegionCascade extends React.Component {
         return;
       }
     });
-    this.setState({cities, city: defaultCity, counties: [], county: defaultCounty});
+    this.setState({cities, city: this.defaultCity, counties: [], county: this.defaultCounty});
     this.props.setFormValue('province', value);
     this.props.setFormValue('city', undefined);
     this.props.setFormValue('district', undefined);
@@ -71,7 +77,7 @@ export default class RegionCascade extends React.Component {
         return;
       }
     });
-    this.setState({counties, county: defaultCounty});
+    this.setState({counties, county: this.defaultCounty});
     this.props.setFormValue('city', value);
     this.props.setFormValue('district', undefined);
   }
@@ -79,12 +85,12 @@ export default class RegionCascade extends React.Component {
     this.props.setFormValue('district', value);
   }
   render() {
-    const {country, province, cities, city, counties, county, disableProvince} = this.state;
+    const { country, province, cities, city, counties, county, disableProvince } = this.state;
     return (
       <Row>
         <Col span="24">
           <Select value={country} style={{width: '100%'}} onChange={(value) => this.handleCountryChange(value)}>
-            <OptGroup label="选择国家或地区">
+            <OptGroup label={formatMsg(this.props.intl, 'selectCountry')}>
               {
                 world.countries.map((ctry) => (<Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>))
               }

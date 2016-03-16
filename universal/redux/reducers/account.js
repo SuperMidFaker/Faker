@@ -6,6 +6,7 @@ const initialState = {
   username: '',
   type: '',
   code: '',
+  subdomain: '',
   tenantId: 0,
   aspect: 0,
   categoryId: 0,
@@ -16,12 +17,13 @@ const actions = ['ACC_LOAD', 'ACC_LOAD_SUCCEED', 'ACC_LOAD_FAIL'];
 const domain = '@@welogix/account/';
 const actionTypes = createActionTypes(domain, actions);
 
+export const ACC_LOAD_SUCCEED = actionTypes.ACC_LOAD_SUCCEED;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case actionTypes.ACC_LOAD_SUCCEED:
-    return {...state, loaded: true, ...action.result.data};
-  default:
-    return state;
+    case actionTypes.ACC_LOAD_SUCCEED:
+      return {...state, loaded: true, ...action.result.data};
+    default:
+      return state;
   }
 }
 

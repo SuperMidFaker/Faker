@@ -1,9 +1,18 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
+import { APP_ENTITY_META_INFO } from 'universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
 import './appmodule-editor.less';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 
+@injectIntl
 export default class ModuleEditor extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -18,16 +27,16 @@ export default class ModuleEditor extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible === true) {
-      this.setState({visible: true});
+      this.setState({ visible: true });
     } else {
-      this.setState({visible: false});
+      this.setState({ visible: false });
     }
     if ('tenantApps' in nextProps) {
       const enMods = {};
       nextProps.tenantApps.forEach(mod => {
         enMods[mod.id] = true;
       });
-      this.setState({enabledApps: enMods});
+      this.setState({ enabledApps: enMods });
     }
   }
   handleCancel = () => {
@@ -36,8 +45,8 @@ export default class ModuleEditor extends React.Component {
   handleAppCheck(ap, checked) {
     const app = {
       id: ap.id,
-      name: ap.name,
-      desc: ap.desc,
+      name: formatGlobalMsg(this.props.intl, APP_ENTITY_META_INFO[ap.id].name),
+      desc: formatGlobalMsg(this.props.intl, APP_ENTITY_META_INFO[ap.id].desc),
       package: ap.package
     };
     this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then(
@@ -48,27 +57,38 @@ export default class ModuleEditor extends React.Component {
       });
   }
   render() {
+    const { intl } = this.props;
     return (
-      <Modal title="设置开通的应用" visible={this.state.visible}
+      <Modal title={formatMsg(intl, 'appEditorTitle')} visible={this.state.visible}
         onCancel={this.handleCancel} footer={
           [
             <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
-             确定
+            { formatGlobalMsg(intl, 'ok') }
             </Button>
           ]
         }
       >
         <Row className="module-editor">
-          <Col span="8"><h4>应用名称</h4></Col>
-          <Col span="8"><p className="type-label">描述</p></Col>
-          <Col span="8"><label className="type-label pull-right">开通状态</label></Col>
+          <Col span="8"><h4>{ formatMsg(intl, 'appEditorNameCol') }</h4></Col>
+          <Col span="8"><p className="type-label">{ formatGlobalMsg(intl, 'desc') }</p></Col>
+          <Col span="8">
+            <label className="type-label pull-right">
+            { formatMsg(intl, 'appEditorSetCol') }
+            </label>
+          </Col>
         </Row>
         <Row className="module-editor">
         {
           this.props.appPackage.map((ap, idx) => (
             <div className="form-group clearfix" key={`modeditor${idx}`}>
-              <Col span="8"><h4>{ap.name}</h4></Col>
-              <Col span="8"><p className="type-label">{ap.desc}</p></Col>
+              <Col span="8">
+                <h4>{formatGlobalMsg(intl, APP_ENTITY_META_INFO[ap.id].name)}</h4>
+              </Col>
+              <Col span="8">
+                <p className="type-label">
+                {formatGlobalMsg(intl, APP_ENTITY_META_INFO[ap.id].desc)}
+                </p>
+              </Col>
               <Col span="8">
                 <div className="pull-right">
                   <Switch checked={!!this.state.enabledApps[ap.id]}

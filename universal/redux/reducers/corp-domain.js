@@ -19,10 +19,10 @@ export const CPD_LOAD_FAIL = actionTypes.CPD_LOAD_FAIL;
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case actionTypes.CPD_LOAD_SUCCEED:
-    return {...state, loaded: true, ...action.result.data};
-  default:
-    return state;
+    case actionTypes.CPD_LOAD_SUCCEED:
+      return { ...state, loaded: true, ...action.result.data };
+    default:
+      return state;
   }
 }
 
@@ -37,13 +37,13 @@ export function checkCorpDomain(subdomain, tenantId) {
   };
 }
 
-export function loadCorpByDomain(cookie, params) {
+export function loadCorpByDomain(cookie, subdomain) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CPD_LOAD, actionTypes.CPD_LOAD_SUCCEED, actionTypes.CPD_LOAD_FAIL],
       endpoint: 'public/v1/subdomain/corp',
       method: 'get',
-      params,
+      params: { subdomain },
       cookie
     }
   };

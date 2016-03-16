@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Select, Icon, message } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
 '../../../../universal/redux/reducers/personnel';
 import NavLink from '../../../../reusable/components/nav-link';
@@ -11,8 +12,15 @@ import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+import containerMessages from 'client/containers/message.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
+const formatContainerMsg = format(containerMessages);
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   const promises = [];
   if (!isLoaded(state, 'personnel')) {
     let p = dispatch(loadTenantsByMaster(cookie, state.account.tenantId));
@@ -29,11 +37,16 @@ function fetchData({state, dispatch, cookie}) {
   // 返回多个promise结果
   return Promise.all(promises);
 }
+
 @connectFetch()(fetchData)
-@connectNav((props, dispatch) => {
+@injectIntl
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
   dispatch(setNavTitle({
     depth: 2,
-    text: '用户管理',
+    text: formatContainerMsg(props.intl, 'personnelUser'),
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: ''
@@ -51,7 +64,7 @@ function fetchData({state, dispatch, cookie}) {
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
+    intl: intlShape.isRequired,
     selectIndex: PropTypes.number,
     code: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -63,6 +76,9 @@ export default class PersonnelSetting extends React.Component {
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
     delPersonnel: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   state = {
     selectedRowKeys: []
@@ -98,7 +114,7 @@ export default class PersonnelSetting extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleStatusSwitch(personnel, index) {
     this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id
@@ -158,7 +174,8 @@ export default class PersonnelSetting extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { code, tenant, personnelist, branches, loading } = this.props;
+    const { intl, code, tenant, personnelist, branches, loading } = this.props;
+    const msg = (descriptor) => formatMsg(intl, descriptor);
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPersonnel(null, params),
       resolve: result => result.data,
@@ -204,71 +221,84 @@ export default class PersonnelSetting extends React.Component {
       }
     };
     const columns = [{
-      title: '姓名',
+      title: msg('fullName'),
       dataIndex: 'name',
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
-      title: '用户名',
+      title: msg('username'),
       render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
     }, {
-      title: '手机号',
+      title: msg('phone'),
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
-      title: '邮箱',
+      title: msg('email'),
       dataIndex: 'email',
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
-      title: '职位',
+      title: msg('position'),
       render: (o, record) => this.renderColumnText(record.status, record.position)
     }, {
-      title: '角色',
+      title: msg('role'),
       sorter: true,
       dataIndex: 'role',
       filters: [{
-        text: TENANT_ROLE.manager.text,
+        text: formatContainerMsg(intl, 'tenantManager'),
         value: TENANT_ROLE.manager.name
       }, {
-        text: TENANT_ROLE.member.text,
+        text: formatContainerMsg(intl, 'tenantMember'),
         value: TENANT_ROLE.member.name
       }],
-      render: (o, record) => this.renderColumnText(record.status, TENANT_ROLE[record.role].text)
+      render: (o, record) => this.renderColumnText(
+        record.status,
+        formatContainerMsg(intl, TENANT_ROLE[record.role].text)
+      )
     }, {
-      title: '状态',
+      title: formatContainerMsg(intl, 'statusColumn'),
       render: (o, record) => {
-        let style = {color: '#51C23A'};
+        let style = { color: '#51C23A' };
         let text = ACCOUNT_STATUS.normal.text;
         if (record.status === ACCOUNT_STATUS.blocked.id) {
-          style = {color: '#CCC'};
+          style = { color: '#CCC' };
           text = ACCOUNT_STATUS.blocked.text;
         }
-        return <span style={style}>{text}</span>;
+        return <span style={style}>{formatContainerMsg(intl, text)}</span>;
       }
     }, {
-      title: '操作',
+      title: formatContainerMsg(intl, 'opColumn'),
       width: 150,
       render: (text, record, index) => {
         if (record.role === TENANT_ROLE.owner.name) {
           return (
             <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/corp/personnel/edit/${record.key}`}>
+              {formatGlobalMsg(intl, 'modify')}
+              </NavLink>
             </span>
           );
         } else if (record.status === ACCOUNT_STATUS.normal.id) {
           return (
             <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/corp/personnel/edit/${record.key}`}>
+              {formatGlobalMsg(intl, 'modify')}
+              </NavLink>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              {formatContainerMsg(intl, 'disableOp')}
+              </a>
             </span>
           );
         } else if (record.status === ACCOUNT_STATUS.blocked.id) {
           return (
             <span>
-              <a role="button" onClick={() => this.handlePersonnelDel(record)}>删除</a>
+              <a role="button" onClick={() => this.handlePersonnelDel(record)}>
+              {formatGlobalMsg(intl, 'delete')}
+              </a>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              {formatContainerMsg(intl, 'enableOp')}
+              </a>
             </span>
           );
         } else {
@@ -280,10 +310,10 @@ export default class PersonnelSetting extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder="搜索姓名/手机号/邮箱" onInputSearch={this.handleSearch} />
-            <a className="hidden-xs" role="button">高级搜索</a>
+            <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+            <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
           </div>
-          <span>所属组织</span>
+          <span>{msg('affiliatedOrganizations')}</span>
           <Select style={{width: 200}} size="large" value={`${tenant.id}`}
               onChange={(value) => this.handleTenantSwitch(value)}>
             {
@@ -294,14 +324,14 @@ export default class PersonnelSetting extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
-              <Icon type="plus-circle-o" />添加用户
+              <Icon type="plus-circle-o" />{msg('newUser')}
             </Button>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">清除选择</Button>
+            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">{formatContainerMsg(intl, 'clearSelection')}</Button>
           </div>
         </div>
       </div>

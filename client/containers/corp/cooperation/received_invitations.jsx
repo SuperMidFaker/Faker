@@ -1,12 +1,21 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Input, message, Modal, Checkbox } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { loadReceiveds, change } from
 '../../../../universal/redux/reducers/invitation';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+import containerMessages from 'client/containers/message.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
+const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadReceiveds(cookie, {
@@ -15,11 +24,16 @@ function fetchData({ state, dispatch, cookie }) {
     currentPage: state.invitation.receiveds.current
   }));
 }
+
 @connectFetch()(fetchData)
-@connectNav((props, dispatch) => {
+@injectIntl
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
   dispatch(setNavTitle({
     depth: 2,
-    text: '收到的邀请',
+    text: formatContainerMsg(props.intl, 'recvInvitations'),
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: null
@@ -33,6 +47,7 @@ function fetchData({ state, dispatch, cookie }) {
   { change, loadReceiveds })
 export default class ReceivedView extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     receivedlist: PropTypes.object.isRequired,
     change: PropTypes.func.isRequired,
@@ -78,8 +93,10 @@ export default class ReceivedView extends React.Component {
     remotes: this.props.receivedlist
   })
 
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleAccept(invitation, index) {
-    if (invitation.types.length === 1 && invitation.types[0].name === '客户') {
+    if (invitation.types.length === 1
+        && invitation.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
       // 显示设置合作方的关系类型选择框
       this.setState({
         visibleModal: true,
@@ -88,61 +105,67 @@ export default class ReceivedView extends React.Component {
       });
     } else {
       // 合作方成为'客户'
-      this.props.change(invitation.key, 'accept', index, ['客户']).then(result => {
-        if (result.error) {
-          message.error('接受邀请失败', 10);
-        }
-      });
+      this.props.change(invitation.key, 'accept', index, [ PARTNERSHIP_TYPE_INFO.customer ])
+        .then(result => {
+          if (result.error) {
+            message.error(this.msg('acceptFailed'), 10);
+          }
+        });
     }
   }
   handleReject(invKey, index) {
     this.props.change(invKey, 'reject', index).then(result => {
       if (result.error) {
-        message.error('拒绝邀请失败', 10);
+        message.error(this.msg('rejectFailed'), 10);
       }
     });
   }
   columns = [{
-    title: '合作伙伴',
+    title: this.msg('partnerName'),
     dataIndex: 'name'
   }, {
-    title: '邀请你成为',
+    title: this.msg('inviteYouToBe'),
     dataIndex: 'types',
     render: (o, record) => {
       let text;
-      if (record.types.length === 1 && record.types[0].name === '客户') {
-        text = '客户';
+      if (record.types.length === 1 && record.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
+        text = formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer);
       } else {
-        text = `${record.types.map(t => t.name).join('/')}服务商`;
+        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/')}
+          ${this.msg('provider')}`;
       }
       return text;
     }
   }, {
-    title: '收到日期',
+    title: this.msg('recvDate'),
     dataIndex: 'created_date',
     render: (o, record) => moment(record.createdDate).format('YYYY-MM-DD')
   }, {
-    title: '状态',
+    title: formatContainerMsg(this.props.intl, 'statusColumn'),
     dataIndex: 'status',
     render: (o, record) => {
-      let text = '新邀请';
+      let text = this.msg('newInvitation');
       if (record.status === 1) {
-        text = '已接受';
+        text = this.msg('invitationAccepted');
       } else if (record.status === 2) {
-        text = '已拒绝';
+        text = this.msg('invitationRejected');
       }
       return text;
     }
   }, {
-    title: '操作',
+    title: formatContainerMsg(this.props.intl, 'opColumn'),
     width: 150,
     render: (text, record, index) => {
       if (record.status === 0) {
         return (
           <span>
-            <a role="button" onClick={() => this.handleAccept(record, index)}>接受</a>
+            <a role="button" onClick={() => this.handleAccept(record, index)}>
+            {this.msg('accept')}
+            </a>
             <span className="ant-divider"></span>
-            <a role="button" onClick={() => this.handleReject(record.key, index)}>拒绝</a>
+            <a role="button" onClick={() => this.handleReject(record.key, index)}>
+            {this.msg('reject')}
+            </a>
           </span>
         );
       } else {
@@ -163,13 +186,13 @@ export default class ReceivedView extends React.Component {
   }
   handleProviderAccept = () => {
     if (this.state.checkedProviderTypes.length === 0) {
-      return message.error('请选择供应商类型', 10);
+      return message.error(this.msg('selectProviderType'), 10);
     }
     this.props.change(this.state.invitation.key, 'accept', this.state.index,
                       this.state.checkedProviderTypes)
       .then(result => {
         if (result.error) {
-          message.error('接受邀请失败', 10);
+          message.error(this.msg('acceptFailed'), 10);
         }
         this.setState({ visibleModal: false });
       });
@@ -188,12 +211,12 @@ export default class ReceivedView extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <div className="tools">
-              <Button type="primary">接受</Button>
-              <Button>拒绝</Button>
+              <Button type="primary">{this.msg('accept')}</Button>
+              <Button>{this.msg('reject')}</Button>
             </div>
             <div className="left-tools">
-              <Input placeholder="输入邀请码" />
-              <Button>提取</Button>
+              <Input placeholder={this.msg('invitationCodePlaceholder')} />
+              <Button>{this.msg('retrieve')}</Button>
             </div>
           </div>
           <div className="panel-body body-responsive">
@@ -203,12 +226,12 @@ export default class ReceivedView extends React.Component {
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
-              清除选择
+            {formatContainerMsg(this.props.intl, 'clearSelection')}
             </Button>
           </div>
         </div>
         <Modal onOk={this.handleProviderAccept} onCancel={this.handleAcceptCancel}
-          title="设置供应商类型" visible={this.state.visibleModal} closable={false}
+          title={this.msg('setProviderType')} visible={this.state.visibleModal} closable={false}
         >
           <Checkbox.Group options={receivedlist.providerTypes}
             onChange={this.handleProviderTypeChange} value={ this.state.checkedProviderTypes }

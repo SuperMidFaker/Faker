@@ -1,11 +1,17 @@
 import React, { PropTypes } from 'react';
+import { intlShape, injectIntl } from 'react-intl';
 import NavLink from '../../reusable/components/nav-link';
 import {Row, Col} from 'ant-ui';
 import {DEFAULT_MODULES} from '../../universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import './module-layout.less';
+const formatMsg = format(messages);
 
+@injectIntl
 export default class ModuleLayout extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     enabledmods: PropTypes.array.isRequired, // todo get from state.account
     size: PropTypes.oneOf(['', 'large'])
   };
@@ -37,7 +43,7 @@ export default class ModuleLayout extends React.Component {
                       <i className={`zmdi zmdi-${mod.cls}`}></i>
                     </div>
                   </div>
-                  <span className="module-text">{mod.text}</span>
+                  <span className="module-text">{formatMsg(this.props.intl, mod.text)}</span>
                 </div>
               </NavLink>
             </Col>))

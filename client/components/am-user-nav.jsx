@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Popover, Menu } from 'ant-ui';
+import { intlShape, injectIntl } from 'react-intl';
 import NavLink from '../../reusable/components/nav-link';
-import { ENTERPRISE, BRANCH } from '../../universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+const formatMsg = format(messages);
 
+@injectIntl
 @connect(
   state => ({
     username: state.account.username,
@@ -12,35 +16,32 @@ import { ENTERPRISE, BRANCH } from '../../universal/constants';
 )
 export default class AmUserNav extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     username: PropTypes.string.isRequired,
     usertype: PropTypes.string.isRequired
   }
   render() {
     const MenuItem = Menu.Item;
-    const settingMenus = [];
-    if (this.props.usertype === ENTERPRISE || this.props.usertype === BRANCH) {
-      settingMenus.push(
-        <MenuItem key="corps">
-          <NavLink to="/corp/info">
-            <i className="icon s7-user"></i>
-            <span>个人设置</span>
-          </NavLink>
-        </MenuItem>);
-    }
+    const { intl } = this.props;
     const userMenu = (
       <Menu>
-        { settingMenus }
+        <MenuItem key="corps">
+          <NavLink to="/account/user">
+            <i className="icon s7-user"></i>
+            <span>{formatMsg(intl, 'userSetting')}</span>
+          </NavLink>
+        </MenuItem>
         <MenuItem>
           <NavLink to="/account/password">
             <i className="icon s7-lock"></i>
-            <span>修改密码</span>
+            <span>{formatMsg(intl, 'pwdSetting')}</span>
           </NavLink>
         </MenuItem>
         <Menu.Divider/>
         <MenuItem>
           <a href="/account/logout">
             <i className="icon s7-power"></i>
-            <span>退出登录</span>
+            <span>{formatMsg(intl, 'userLogout')}</span>
           </a>
         </MenuItem>
       </Menu>);

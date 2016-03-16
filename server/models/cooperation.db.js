@@ -46,7 +46,7 @@ export default {
     const args = [];
     const partnerClause = getPartnerWhereClause(filters.filter(flt => flt.name !== 'partnerType'),
                                                 tenantId, args);
-    const sql = `select type, type_name as name, partner_name as partnerName from sso_partnerships
+    const sql = `select type, type_code as name, partner_name as partnerName from sso_partnerships
       as PS inner join (select tenant_id, name from sso_partners where ${partnerClause}) as P
       on PS.partner_name = P.name where PS.tenant_id = ?`;
     args.push(tenantId);
@@ -78,10 +78,10 @@ export default {
   },
   insertPartnership(tenantId, partnerId, partnerName, partnerships, trans) {
     const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id, partner_name,
-      type, type_name, type_code) values ?`;
+      type, type_code) values ?`;
     const args = [];
     partnerships.forEach(pts => {
-      args.push([tenantId, partnerId, partnerName, pts.key, pts.name, pts.code]);
+      args.push([tenantId, partnerId, partnerName, pts.key, pts.code]);
     });
     return mysql.insert(sql, [args], trans);
   },
@@ -115,7 +115,7 @@ export default {
     return mysql.query(sql, args);
   },
   getPartnershipByInvitee(tenantId) {
-    const sql = `select type, type_name as name, tenant_id as inviterId
+    const sql = `select type, type_code as name, tenant_id as inviterId
       from sso_partnerships where partner_tenant_id = ?`;
     const args = [tenantId];
     return mysql.query(sql, args);
@@ -133,7 +133,7 @@ export default {
     return mysql.query(sql, args);
   },
   getPartnershipByInviter(tenantId) {
-    const sql = `select type, type_name as name, partner_name as partnerName
+    const sql = `select type, type_code as name, partner_name as partnerName
       from sso_partnerships where tenant_id = ?`;
     const args = [tenantId];
     return mysql.query(sql, args);

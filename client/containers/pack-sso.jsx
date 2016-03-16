@@ -1,8 +1,14 @@
 import React, { PropTypes } from 'react';
+import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
 import './sso.less';
+const formatMsg = format(messages);
 
+@injectIntl
 export default class SSOPack extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     children: PropTypes.object.isRequired
   };
 
@@ -17,7 +23,7 @@ export default class SSOPack extends React.Component {
                 <div className="panel panel-default">
                   <div className="panel-heading">
                     <img src="http://cdn.welogix.cn/assets/img/welogix-badge.png" alt="logo" width="120px" className="logo-img" />
-                    <span>进出口物流协同云平台</span>
+                    <span>{formatMsg(this.props.intl, 'slogan')}</span>
                   </div>
                   {this.props.children}
                 </div>

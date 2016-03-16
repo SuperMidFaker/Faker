@@ -60,6 +60,7 @@
     span {
       display:block;
       margin-top:5px;
+      white-space: normal;
       @media (max-width:767px) {
         margin-top: 2px;
         display: none;
@@ -180,14 +181,5 @@
 
   &-root&-vertical {
     box-shadow: none;
-  }
-  &-root >li:last-child {
-    position: fixed;
-    bottom: 0;
-    width: @am-leftbar-width;
-    border-top: 1px solid #474646;
-    @media (max-width:767px) {
-      width: 60px;
-    }
   }
 }

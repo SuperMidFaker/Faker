@@ -30,11 +30,9 @@ export default [
    ['post', '/v1/user/corp/app', switchTenantApp],
    ['get', '/v1/user/:tid/tenants', getTenantsUnderMain],
    ['get', '/v1/user/personnels', getCorpPersonnels],
-   ['get', '/v1/user/personnels_test', getCorpPersonnels_test],
    ['get', '/v1/user/personnel', getPersonnelInfo],
    ['post', '/v1/user/personnel', submitPersonnel],
    ['put', '/v1/user/personnel', editPersonnel],
-   ['put', '/v1/user/personnel_test', editPersonnel_test],
    ['delete', '/v1/user/personnel', delPersonnel],
    ['put', '/v1/user/password', changePassword],
    ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
@@ -50,7 +48,7 @@ function *loginUserP() {
   const username = body.username;
   const password = body.password;
   if (!username || !password) {
-    return Result.ParamError(this, '用户名或密码有误');
+    return Result.ParamError(this, { key: 'loginEmptyParam' });
   }
   try {
     const users = yield userDao.getUserByAccount(username, body.code);
@@ -85,27 +83,27 @@ function *loginUserP() {
         });
         return Result.OK(this, { token: jwtoken, userType: user.user_type, unid: user.unid });
       } else {
-        return Result.ParamError(this, '用户名或密码有误');
+        return Result.ParamError(this, { key: 'loginErrorParam' });
       }
     } else {
-      Result.NotFound(this, `用户ID: ${username}不存在`);
+      return Result.NotFound(this, { key: 'loginUserNotFound', values: { username }});
     }
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, '登录异常');
+    return Result.InternalServerError(this, { key: 'loginExceptionError' });
   }
 }
 
 function *requestSmsCodeP() {
   const body = yield cobody(this);
   if (!body.phone || !isMobile(body.phone)) {
-    return Result.ParamError(this, '手机号码错误');
+    return Result.ParamError(this, { key: 'invalidPhone' });
   }
   try {
     const phone = body.phone;
     const users = yield userDao.getUserByPhone(phone);
     if (users.length === 0) {
-      return Result.NotFound(this, `手机号不存在,请先添加`);
+      return Result.NotFound(this, { key: 'phoneNotfound' });
     }
     const userId = users[0].id;
     const smsCode = getSmsCode(6);
@@ -115,7 +113,7 @@ function *requestSmsCodeP() {
     return Result.OK(this, { smsId: result.insertId, userId });
   } catch (e) {
     console.log(e.stack);
-    return Result.InternalServerError(this, '请求验证码异常');
+    return Result.InternalServerError(this, { key: 'requestCodeException' });
   }
 }
 
@@ -128,7 +126,7 @@ function *verifySmsCodeP() {
   try {
     const smsItems = yield smsDao.getSmsById(smsId);
     if (smsItems.length === 0 || smsItems[0].code !== smsCode) {
-      return Result.ParamError(this, '验证码错误');
+      return Result.ParamError(this, { key: 'invalidSmsCode' });
     } else {
       const salt = bCryptUtil.gensalt();
       const pwdHash = bCryptUtil.hashpw(bCryptUtil.md5(newPwd), salt);
@@ -136,14 +134,14 @@ function *verifySmsCodeP() {
       return Result.OK(this);
     }
   } catch (e) {
-    return Result.InternalServerError(this, '验证输入码异常');
+    return Result.InternalServerError(this, { key: 'smsCodeVerifyException' });
   }
 }
 
 function *getUserAccount() {
   const userType = this.state.user.userType;
   if (userType === ADMIN) {
-    return Result.OK(this, {username: 'root'});
+    return Result.OK(this, { username: 'root' });
   }
   const curUserId = this.state.user.userId;
   try {
@@ -364,30 +362,6 @@ function *getCorpPersonnels() {
   }
 }
 
-function *getCorpPersonnels_test() {
-  const tenantId = this.request.query.tenantId;
-  const pageSize = parseInt(this.request.query.pageSize, 10);
-  const current = parseInt(this.request.query.currentPage, 10);
-  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
-  const sortField = this.request.query.sortField;
-  const sortOrder = this.request.query.sortOrder;
-  try {
-    const counts = yield tenantUserDao.getTenantPersonnelCount_test(tenantId, filters);
-    const totalCount = counts[0].num;
-    const personnel = yield tenantUserDao.getPagedPersonnelInCorp_test(tenantId, current, pageSize,
-                                                                  filters, sortField, sortOrder);
-    // 换页,切换页数时从这里传到reducer里更新
-    Result.OK(this, {
-      totalCount,
-      current,
-      pageSize,
-      data: personnel
-    });
-  } catch (e) {
-    Result.InternalServerError(this, e.message);
-  }
-}
-
 function *submitPersonnel() {
   const curUserId = this.state.user.userId;
   const body = yield cobody(this);
@@ -428,22 +402,6 @@ function *editPersonnel() {
                                           personnel.email, trans);
     }
     yield tenantUserDao.updatePersonnel(personnel, trans);
-    yield mysql.commit(trans);
-    Result.OK(this);
-  } catch (e) {
-    yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
-  }
-}
-
-function *editPersonnel_test() {
-  const body = yield cobody(this);
-  const personnel = body.personnel;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield userDao.updateg_bus_delegate(personnel.del_no, personnel.invoice_no,body.tenantId,trans);
-                                  
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
@@ -564,11 +522,11 @@ function *getCorpBySubdomain() {
   try {
    const result = yield tenantDao.getTenantByDomain(subdomain);
    if (result.length === 0) {
-     throw new Error('当前子域未对应任何租户');
+     throw ({ key: 'subdomainNotFound' });
    }
    Result.OK(this, result[0]);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.InternalServerError(this, e.message || e);
   }
 }
 

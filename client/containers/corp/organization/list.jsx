@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
   closeTenantAppsEditor } from '../../../../universal/redux/reducers/corps';
 import { Table, Button, Icon, message } from 'ant-ui';
@@ -11,9 +12,17 @@ import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/reac
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES } from '../../../../universal/constants';
+import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES, APP_ENTITY_META_INFO }
+  from 'universal/constants';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
+import containerMessages from 'client/containers/message.i18n';
+const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
+const formatContainerMsg = format(containerMessages);
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   if (!isLoaded(state, 'corps')) {
     return dispatch(loadOrgans(cookie, {
       tenantId: state.account.tenantId,
@@ -23,6 +32,7 @@ function fetchData({state, dispatch, cookie}) {
   }
 }
 @connectFetch()(fetchData)
+@injectIntl
 @connect(
   state => ({
     corplist: state.corps.corplist,
@@ -35,10 +45,13 @@ function fetchData({state, dispatch, cookie}) {
     closeTenantAppsEditor
   }
 )
-@connectNav((props, dispatch) => {
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
   dispatch(setNavTitle({
     depth: 2,
-    text: '组织机构',
+    text: formatContainerMsg(props.intl, 'organTitle'),
     moduleName: 'corp',
     withModuleLayout: false,
     goBackFn: ''
@@ -46,7 +59,7 @@ function fetchData({state, dispatch, cookie}) {
 })
 export default class CorpList extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     appEditor: PropTypes.object.isRequired,
@@ -58,6 +71,9 @@ export default class CorpList extends React.Component {
     delCorp: PropTypes.func.isRequired,
     loadOrgans: PropTypes.func.isRequired
   }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
   state = {
     selectedRowKeys: []
   };
@@ -65,13 +81,13 @@ export default class CorpList extends React.Component {
     this.setState({selectedRowKeys: []});
   }
   handleNavigationTo(to, query) {
-    this.props.history.pushState(null, to, query);
+    this.context.router.push({ pathname: to, query });
   }
   handleCorpDel(id) {
-    const { tenantId, corplist: { totalCount, current, pageSize } } = this.props;
+    const { tenantId, corplist: { totalCount, current, pageSize }, intl } = this.props;
     showWarningModal({
-      title: '请输入DELETE进行下一步操作',
-      content: '点击确定会删除该机构及其下所有帐户信息',
+      title: formatMsg(intl, 'deleteTip'),
+      content: formatMsg(intl, 'deleteWarn'),
       onOk: () => this.props.delCorp(id, tenantId).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -108,7 +124,7 @@ export default class CorpList extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { corplist, loading } = this.props;
+    const { intl, corplist, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadOrgans(null, params),
       resolve: (result) => result.data,
@@ -145,62 +161,77 @@ export default class CorpList extends React.Component {
       }
     };
     const columns = [{
-      title: '部门/分支机构',
+      title: formatMsg(intl, 'nameColumn'),
       dataIndex: 'name',
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
-      title: '负责人',
+      title: formatMsg(intl, 'contactColumn'),
       dataIndex: 'contact',
       render: (o, record) => this.renderColumnText(record.status, record.contact)
     }, {
-      title: '手机号',
+      title: formatMsg(intl, 'phoneColumn'),
       dataIndex: 'phone',
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
-      title: '邮箱',
+      title: formatMsg(intl, 'emailColumn'),
       dataIndex: 'email',
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
-      title: '已开通应用',
+      title: formatMsg(intl, 'appsColumn'),
       render: (o, record, index) => {
         const modComp = [];
         (record.apps || []).forEach((mod, idx) => {
-          modComp.push(<NavLink key={mod.name} to={DEFAULT_MODULES[mod.id].url}>{mod.name}</NavLink>);
+          modComp.push(
+            <NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
+            {formatGlobalMsg(intl, APP_ENTITY_META_INFO[mod.id].name)}
+            </NavLink>
+          );
           modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
         });
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title="编辑" onClick={
-              () => this.handleEnabledAppEdit(record, index)} size="small"><Icon type="edit" /></Button>
+            <Button shape="circle" type="primary" title={formatGlobalMsg(intl, 'edit')}
+              onClick={() => this.handleEnabledAppEdit(record, index)} size="small"
+            >
+              <Icon type="edit" />
+            </Button>
           </span>);
       }
     }, {
-      title: '状态',
+      title: formatContainerMsg(intl, 'statusColumn'),
       render: (o, record) => {
         let style = {color: '#51C23A'};
         if (record.status === ACCOUNT_STATUS.blocked.name) {
           style = {color: '#CCC'};
         }
-        return <span style={style}>{ACCOUNT_STATUS[record.status].text}</span>;
+        return <span style={style}>{formatContainerMsg(intl, ACCOUNT_STATUS[record.status].text)}</span>;
       }
     }, {
-      title: '操作',
+      title: formatContainerMsg(intl, 'opColumn'),
       width: 150,
       render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
             <span>
-              <NavLink to={`/corp/organization/edit/${record.key}`}>修改</NavLink>
+              <NavLink to={`/corp/organization/edit/${record.key}`}>
+              {formatGlobalMsg(intl, 'modify')}
+              </NavLink>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>停用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              {formatContainerMsg(intl, 'disableOp')}
+              </a>
             </span>);
         } else if (record.status === ACCOUNT_STATUS.blocked.name) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleCorpDel(record.key)}>删除</a>
+              <a role="button" onClick={() => this.handleCorpDel(record.key)}>
+              {formatGlobalMsg(intl, 'delete')}
+              </a>
               <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>启用</a>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              {formatContainerMsg(intl, 'enableOp')}
+              </a>
             </span>);
         } else {
           return <span />;
@@ -211,21 +242,24 @@ export default class CorpList extends React.Component {
       <div className="page-body">
         <div className="panel-header">
           <div className="pull-right action-btns">
-            <span>限额使用 </span>
+            <span>{formatMsg(intl, 'quotas')}{' '}</span>
             <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
             <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
             <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
           </div>
           <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
               onClick={() => this.handleNavigationTo('/corp/organization/new')}>
-              <Icon type="plus-circle-o" />新建
+              <Icon type="plus-circle-o" />
+              {formatGlobalMsg(intl, 'createNew')}
           </Button>
         </div>
         <div className="panel-body body-responsive">
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
         </div>
         <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-          <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">清除选择</Button>
+          <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">
+          {formatContainerMsg(intl, 'clearSelection')}
+          </Button>
         </div>
         <AppEditor { ...this.props.appEditor } switchTenantApp={this.props.switchTenantApp}
           appPackage={this.props.corplist.tenantAppPackage} onCancel={ this.handleEditorHide }/>
