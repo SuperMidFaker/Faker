@@ -371,7 +371,7 @@ export default class ImportDelegate extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/export/accept/new')}>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/export/receive/new')}>
               <span>新增</span>
             </Button>
             </div>
