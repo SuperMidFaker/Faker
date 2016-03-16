@@ -1,15 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loaddelegate, deldelegate, switchTenant, switchStatus, loadStatus }
+import { loaddelegate, deldelegate, switchTenant, switchStatus, loadStatus, loadCustomsBrokers }
  from '../../../../universal/redux/reducers/delegate';
-import { Table, Button, message } from 'ant-ui';
+import { Table, Button, message, Radio, Tag } from 'ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
 import { DELEGATE_STATUS } from '../../../../universal/constants';
-const ButtonGroup = Button.Group;
+import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
+import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 function fetchData({state, dispatch, cookie}) {
   const promises = [];
   if (!isLoaded(state, 'delegate')) {
@@ -20,6 +23,8 @@ function fetchData({state, dispatch, cookie}) {
     }));
     promises.push(p);
     p = dispatch(loadStatus(cookie, {tenantId: state.account.tenantId}));
+    promises.push(p);
+    p = dispatch(loadCustomsBrokers(cookie, state.account.tenantId));
     promises.push(p);
   }
   // 分别加载当前用户所有的租户列表和该用户所在租户下用户列表
@@ -32,6 +37,7 @@ function fetchData({state, dispatch, cookie}) {
     tenantId: state.account.tenantId,
     delegateist: state.delegate.delegateist,
     branches: state.delegate.branches,
+    sendlist: state.delegate.sendlist,
     tenant: state.delegate.tenant,
     loading: state.delegate.loading,
     customsBrokerList: state.delegate.customsBrokerList,
@@ -52,6 +58,7 @@ export default class delegateSetting extends React.Component {
     switchStatus: PropTypes.func.isRequired,
     deldelegate: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
+    sendlist: PropTypes.object.isRequired,
     loadStatus: PropTypes.func.isRequired
   }
   static contextTypes = {
@@ -61,17 +68,70 @@ export default class delegateSetting extends React.Component {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      statusAll: 'ghost',
-      statusNotSend: 'primary',
-      statusNotAccept: 'ghost',
-      statusAccept: 'ghost',
-      statusInvalid: 'ghost',
       curStatus: 0,
-      searchVal: ''
+      statusValue: '',
+      searchVal: '',
+      sendlist: [],
+      selectedRowKeys: []
     };
   }
   handleSelectionClear() {
     this.setState({selectedRowKeys: []});
+  }
+  handleIdRemove(idKey) { // 删除
+    const {
+      tenantId,
+      delegateist: {
+        totalCount,
+        current,
+        pageSize
+      }
+    } = this.props;
+    showWarningModal({
+      title: '请输入DELETE进行下一步操作',
+      content: '删除的数据将无法找回',
+      onOk: () => this.props.deldelegate(idKey).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.props.loaddelegate(null, {
+            tenantId,
+            pageSize,
+            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+          });
+        }
+      }),
+      confirmString: 'DELETE'
+    });
+  }
+  handleSend(status, record) {
+    this.props.sendlist.data = [];
+    if (!record) {
+      this.state.sendlist.map((item) => (this.props.sendlist.data.push(item)));
+    } else {
+      this.props.sendlist.data.push(record);
+    }
+    this.props.history.pushState(null, `/export/delegate/exportsend/${status}`);
+  }
+  handleSetSendList(selectedRows) {
+    this.setState({sendlist: [], buttonText: '', sendStatus: 0});
+    let allnosend = true;
+    let allnoaccept = true;
+    selectedRows.map((record) => {
+      if (record.status !== 0) {
+        allnosend = false;
+      }
+      if (record.status !== 1) {
+        allnoaccept = false;
+      }
+    });
+
+    if (allnosend === true) {
+      this.setState({sendlist: selectedRows, buttonText: '发送', sendStatus: 0});
+    }
+    if (allnoaccept === true) {
+      this.setState({sendlist: selectedRows, buttonText: '撤回', sendStatus: 1});
+    }
   }
   handleTenantSwitch(val) {
     const {delegateist} = this.props;
@@ -111,34 +171,18 @@ export default class delegateSetting extends React.Component {
   handledelegateDel(record) {
     this.props.deldelegate(record.key, record.loginId, this.props.tenant);
   }
-  handleChangeStatus(type, status) {
-    // 更新视图状态
-    this.setState({
-      statusAll: type === 'statusAll'
-        ? 'primary'
-        : 'ghost',
-      statusNotSend: type === 'statusNotSend'
-        ? 'primary'
-        : 'ghost',
-      statusNotAccept: type === 'statusNotAccept'
-        ? 'primary'
-        : 'ghost',
-      statusAccept: type === 'statusAccept'
-        ? 'primary'
-        : 'ghost',
-      statusInvalid: type === 'statusInvalid'
-        ? 'primary'
-        : 'ghost',
-      curStatus: status
-    });
+  handleChangeStatus(e) {
     const filters = this.createFilters(this.state.searchVal);
+    // 切换状态后更新table数据
     this.props.loaddelegate(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.delegateist.pageSize,
       currentPage: 1,
-      currentStatus: status,
+      currentStatus: e.target.value,
       filters: JSON.stringify(filters)
     });
+
+    this.setState({statusValue: e.target.value});
   }
    handleSearch(value) {
     this.setState({searchVal: value});
@@ -172,17 +216,24 @@ export default class delegateSetting extends React.Component {
       ]
     ];
   }
-    renderColumnText(status, text) {
+    renderColumnText(record, text, ishref = false) {
     let style = {};
-    if (status === DELEGATE_STATUS.blocked.id) {
-      style = {color: '#CCC'};
+    if (record.status === 3) {
+      style = {
+        color: '#CCC'
+      };
     }
-    return <span style={style}>{text}</span>;
+    if (ishref === true) {
+      return <NavLink to={`/export/delegate/edit/${record.key}`}>{text}</NavLink>;
+    } else {
+      return <span style={style}>{text}</span>;
+    }
   }
   render() {
        const {
        customsBrokerList,
        statusList: {
+        statusValue,
         notSendCount,
         notAcceptCount,
         acceptCount,
@@ -190,14 +241,7 @@ export default class delegateSetting extends React.Component {
       },
        delegateist, loading
     } = this.props;
-    const {
-      statusAll,
-      statusAccept,
-      statusInvalid,
-      statusNotAccept,
-      statusNotSend,
-      curStatus
-    } = this.state;
+    const {curStatus} = this.state;
  const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loaddelegate(null, params),
       resolve: (result) => result.data,
@@ -231,9 +275,12 @@ export default class delegateSetting extends React.Component {
       remotes: delegateist
     });
     const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({selectedRowKeys});
+      // selectedRowKeys: this.state.selectedRowKeys,
+      onSelect: (record, selected, selectedRows) => {
+        this.handleSetSendList(selectedRows);
+      },
+      onSelectAll: (selected, selectedRows) => {
+        this.handleSetSendList(selectedRows);
       }
     };
     const filterArray = [];
@@ -244,25 +291,26 @@ export default class delegateSetting extends React.Component {
       title: '报关业务单号',
       dataIndex: 'del_no',
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.del_no)
+      render: (text, record) => this.renderColumnText(record, text, true)
     }, {
       title: '报关行',
-      dataIndex: 'rec_tenant_id',
+      dataIndex: 'short_name',
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.rec_tenant_id)
+      filters: filterArray,
+      render: (text, record) => this.renderColumnText(record, text)
     }, {
       title: '委托时间',
       dataIndex: 'del_date',
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.del_date)
+      render: (text, record) => this.renderColumnText(record, text)
     }, {
       title: '运单号',
       dataIndex: 'bill_no',
-      render: (o, record) => this.renderColumnText(record.status, record.bill_no)
+      render: (text, record) => this.renderColumnText(record, text)
     }, {
       title: '发票号',
       dataIndex: 'invoice_no',
-      render: (o, record) => this.renderColumnText(record.status, record.invoice_no)
+      render: (text, record) => this.renderColumnText(record, text)
     }, {
         title: '状态',
         dataIndex: 'status',
@@ -290,12 +338,19 @@ export default class delegateSetting extends React.Component {
             default:
               break;
           }
+          let noaccept = undefined;
+          if (record.status === 0 && record.short_name) {
+            noaccept = <Tag color="gray">已撤回</Tag>;
+          }
           return (
-            <span style={{
-              color: fontColor
-            }}>
-              {statusText}
-            </span>
+            <div>
+              <span style={{
+                color: fontColor
+              }}>
+                {statusText}
+              </span>
+              {noaccept}
+            </div>
           );
         }
       }, {
@@ -308,27 +363,27 @@ export default class delegateSetting extends React.Component {
                 <span>
                   <NavLink to={`/export/delegate/edit/${record.key}`}>修改</NavLink>
                   <span className="ant-divider"/>
-                  <NavLink to={`/import/delegate/exportsend/${record.del_no}`}>发送</NavLink>
+                  <a role="button" onClick={() => this.handleSend(0, record)}>发送</a>
                 </span>
               );
             case 1:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
-                  <a href="#" className="ant-dropdown-link">撤回</a>
+                  <a role="button" onClick={() => this.handleSend(1, record)}>撤回</a>
                 </span>
               );
             case 2:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">变更</a>
+                  <NavLink to={`/import/delegate/edit/${record.key}`}>变更</NavLink>
                 </span>
               );
             case 3:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
                   <a role="button" onClick={() => this.handleIdRemove(record.key)}>删除</a>
                 </span>
@@ -354,23 +409,23 @@ export default class delegateSetting extends React.Component {
                 <span>添加</span>
               </Button>
             </div>
-            <ButtonGroup>
-            <Button type={statusAll} size="large" onClick={() => this.handleChangeStatus('statusAll', -1)}>
+            <RadioGroup defaultValue="0" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
+            <RadioButton value="-1">
               <span>所有状态</span>
-            </Button>
-            <Button type={statusNotSend} size="large" onClick={() => this.handleChangeStatus('statusNotSend', 0)}>
+            </RadioButton>
+            <RadioButton value="0">
               <span>未发送 ({notSendCount})</span>
-            </Button>
-            <Button type={statusNotAccept} size="large" onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
+            </RadioButton>
+            <RadioButton value="1">
               <span>未受理 ({notAcceptCount})</span>
-            </Button>
-            <Button type={statusAccept} size="large" onClick={() => this.handleChangeStatus('statusAccept', 2)}>
+            </RadioButton>
+            <RadioButton value="2">
               <span>已接单 ({acceptCount})</span>
-            </Button>
-            <Button type={statusInvalid} size="large" onClick={() => this.handleChangeStatus('statusInvalid', 3)}>
+            </RadioButton>
+            <RadioButton value="3">
               <span>已作废 ({invalidCount})</span>
-            </Button>
-          </ButtonGroup>
+            </RadioButton>
+          </RadioGroup>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>

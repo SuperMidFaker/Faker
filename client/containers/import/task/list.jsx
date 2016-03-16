@@ -376,14 +376,10 @@ export default class TaskSetting extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="pull-right action-btns">
+          <div className="tools">
             <SearchBar placeholder="业务单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
-            <a role="button">高级搜索</a>
+            <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <h2>作业管理</h2>
-        </div>
-        <div className="page-body">
-          <div className="panel-header">
             <Button type="ghost" style={{
               marginRight: 5
             }} onClick={() => this.handleChangeStatus('statusAll', -1)}>
@@ -414,7 +410,9 @@ export default class TaskSetting extends React.Component {
             }} onClick={() => this.handleChangeStatus('statusInvalid', 4)}>
               <span>已结单({invalidCount})</span>
             </Button>
-            <div className="pull-right action-btns"></div>
+        </div>
+        <div className="page-body">
+          <div className="panel-header">
           </div>
           <div className="panel-body body-responsive">
             <Table columns={columns} loading={loading} remoteData={tasklist} dataSource={dataSource}/>

@@ -11,7 +11,7 @@ export default class ImportM extends React.Component {
       key: 'import-0',
       path: '/import/',
       icon: 's7-display1',
-      text: '工作台'
+      text: '看板'
     }, {
       single: true,
       key: 'import-1',
@@ -27,7 +27,7 @@ export default class ImportM extends React.Component {
     }, {
       single: true,
       key: 'import-3',
-      path: '/import/passage',
+      path: '/import/task',
       icon: 's7-note',
       text: '通关作业'
     }, {
@@ -35,19 +35,7 @@ export default class ImportM extends React.Component {
       key: 'import-4',
       path: '/import/tracking',
       icon: 's7-look',
-      text: '通关跟踪'
-    }, {
-      single: true,
-      key: 'import-5',
-      path: '/import/billing',
-      icon: 's7-cash',
-      text: '计费账单'
-    }, {
-      single: true,
-      key: 'import-6',
-      path: '/wms/setting',
-      icon: 's7-settings',
-      text: '设置'
+      text: '通关追踪'
     }];
     return (
       <div className="am-content">

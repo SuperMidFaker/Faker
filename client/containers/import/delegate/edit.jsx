@@ -97,8 +97,8 @@ function goBack(router) {
   dispatch(setNavTitle({
     depth: 3,
     text: isCreating
-      ? '新增业务单'
-      : '业务单详情',
+      ? '新增报关业务'
+      : '报关业务详情',
     moduleName: '',
     goBackFn: () => goBack(router),
     withModuleLayout: false
@@ -284,15 +284,15 @@ export default class ImportDelegateEdit extends React.Component {
     let statusText = '';
     switch (status) {
       case 0:
-        statusText = '未发送';
+        statusText = '待处理';
         fontColor = '#FFD700';
         break;
       case 1:
-        statusText = '未受理';
+        statusText = '委托中';
         fontColor = '#FF7F00';
         break;
       case 2:
-        statusText = '已接单';
+        statusText = '受理中';
         fontColor = '#00CD00';
         break;
       case 3:
@@ -322,7 +322,7 @@ export default class ImportDelegateEdit extends React.Component {
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
         <Menu.Item key="1">录入报关清单</Menu.Item>
-        <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废业务单</Menu.Item>
+        <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废报关业务</Menu.Item>
       </Menu>
     );
     return (
@@ -529,7 +529,7 @@ export default class ImportDelegateEdit extends React.Component {
         <div className="page-body">
 
           <Tabs defaultActiveKey="tab1">
-            <TabPane tab="业务单" key="tab1">
+            <TabPane tab="报关委托" key="tab1">
               {this.renderEditForm()}
             </TabPane>
             <TabPane tab="操作日志" key="tab2">
@@ -559,7 +559,7 @@ export default class ImportDelegateEdit extends React.Component {
             </Form>
           </Modal>
 
-          <Modal title="业务单作废确认" visible={this.state.voidConfirm} closable={false} onOk={() => {
+          <Modal title="报关业务作废确认" visible={this.state.voidConfirm} closable={false} onOk={() => {
             this.handleConfirmOk();
           }} onCancel={() => {
             this.handleConfirmHide();
@@ -567,7 +567,7 @@ export default class ImportDelegateEdit extends React.Component {
             <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
               <Row>
                 <Col>
-                  是否确认将业务单<strong>{this.props.formData.del_no}</strong>作废?</Col>
+                  是否确认将此报关业务<strong>{this.props.formData.del_no}</strong>作废?</Col>
               </Row>
               <Row>
                 <Col span="24">

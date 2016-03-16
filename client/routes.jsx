@@ -92,18 +92,19 @@ export default(store, cookie) => {
               <Route path="edit/:id" component={ImportDelegate.Edit}/>
               <Route path="send/:status" component={ImportDelegate.Send}/>
             </Route>
-            <Route path="passage">
+            <Route path="task">
               <IndexRoute component={ImportTask.List}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
             <IndexRoute component={ExportBoard} />
             <Route path="delegate">
-               <IndexRoute component={ExportDelegate.List} />
-               <Route path="new" component={ExportDelegate.Edit}/>
-               <Route path="edit/:id" component={ExportDelegate.Edit}/>
+              <IndexRoute component={ExportDelegate.List}/>
+              <Route path="new" component={ExportDelegate.Edit}/>
+              <Route path="edit/:id" component={ExportDelegate.Edit}/>
+              <Route path="exportsend/:status" component={ExportDelegate.exportsend}/>
             </Route>
-            <Route path="accept">
+            <Route path="receive">
               <IndexRoute component={ExportAccept.List}/>
               <Route path="new" component={ExportAccept.Edit}/>
             </Route>
