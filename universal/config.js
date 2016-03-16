@@ -4,7 +4,6 @@ const port = 3022;
 const config = makeConfig(port, __dirname, 'welogix');
 config.set('vendor_dependencies', [
   'ant-ui',
-  'query-string',
   'react',
   'react-dom',
   'react-intl',

@@ -29,23 +29,19 @@ import Notice from './containers/wms/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
 
-
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
-      let querySubdomain;
-      if (nextState.location.search) {
-        // OnEnter replace on server side, we need check the search string
-        // this callabck is blocking
-        const query = require('query-string').parse(nextState.location.search.substring(1));
-        querySubdomain = query && query.subdomain;
-      }
+      const query = nextState.location.query;
       const { account: { subdomain }, auth: { isAuthed }} = store.getState();
-      if (!isAuthed || (querySubdomain && querySubdomain !== subdomain)) {
-        const search = __DEV__ ? `&${nextState.location.search.substring(1)}` : '';
+      if (!isAuthed || (query && query.subdomain && query.subdomain !== subdomain)) {
+        const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
-          query: { next: `${nextState.location.pathname}${search}` }
+          query: {
+            next: nextState.location.pathname,
+            ...prevQuery
+          }
         });
       }
       cb();

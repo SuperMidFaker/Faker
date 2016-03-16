@@ -10,9 +10,7 @@ import './root.less';
 function fetchData({ state, dispatch, cookie, location }) {
   const promises = [];
   if (!isLoaded(state, 'corpDomain')) {
-    // client side use location.query
-    const query = location.query ||
-      (location.search && require('query-string').parse(location.search.substring(1)));
+    const query = location.query;
     const prom = dispatch(loadCorpByDomain(cookie, query.subdomain));
     promises.push(prom);
   }
@@ -47,7 +45,8 @@ export default class Root extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.isAuthed && nextProps.isAuthed) {
       const redirectUrl = this.props.location.query.next || '/';
-      this.context.router.replace(redirectUrl);
+      const query = __DEV__ ? { subdomain: this.props.location.query.subdomain } : {};
+      this.context.router.replace({ pathname: redirectUrl, query });
     }
   }
 
