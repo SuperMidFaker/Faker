@@ -54,7 +54,7 @@ function goBack(router) {
     selectOptions: state.delegate.selectOptions
   }),
   { setFormValue, edit, submit, uploadFiles, removeFile, loadLogs, invalidDelegate })
-@connectNav((props, dispatch) => {
+@connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
     return;
   }

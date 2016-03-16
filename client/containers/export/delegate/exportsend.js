@@ -6,8 +6,8 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 const Option = Select.Option;
 
-function goBack(props) {
-  props.history.goBack();
+function goBack(router) {
+  router.goBack();
 }
 
 @connect(state => ({ // 从初始化state中加载数据
@@ -15,21 +15,20 @@ function goBack(props) {
   sendlist: state.delegate.sendlist,
   customsBrokerList: state.delegate.customsBrokerList
 }), {loadSend, sendDelegate})
-@connectNav((props, dispatch) => {
+@connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,
     text: props.params.status === '0'
       ? '发送业务单'
       : '撤销业务单',
     moduleName: '',
-    goBackFn: () => goBack(props),
+    goBackFn: () => goBack(router),
     withModuleLayout: false
   }));
 })
 
 export default class ExporttDelegateSend extends React.Component {
   static propTypes = { // 属性检测
-    history: PropTypes.object.isRequired,
     sendlist: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadSend: PropTypes.func.isRequired,
@@ -48,11 +47,11 @@ export default class ExporttDelegateSend extends React.Component {
     if (error) {
       message.error(error.message, 10);
     } else {
-      goBack(this.props);
+      goBack(this.context.router);
     }
   }
   handleCancel() {
-    goBack(this.props);
+    goBack(this.context.router);
   }
   handleSendDelegate() {
     if (!this.state.customsValue && this.props.params.status === '0') {

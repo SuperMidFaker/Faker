@@ -111,7 +111,7 @@ export default class delegateSetting extends React.Component {
     } else {
       this.props.sendlist.data.push(record);
     }
-    this.props.history.pushState(null, `/export/delegate/exportsend/${status}`);
+    this.context.router.push(`/export/delegate/exportsend/${status}`);
   }
   handleSetSendList(selectedRows) {
     this.setState({sendlist: [], buttonText: '', sendStatus: 0});
