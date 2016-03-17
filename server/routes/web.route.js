@@ -1,19 +1,7 @@
 import renderHtml from '../../universal/html-render';
 import config from '../../reusable/node-util/server.config';
 
-export default [
-   ['get', '/', plainRender],
-   ['get', '/home', plainRender],
-   ['get', '/login', plainRender],
-   ['get', '/forgot', plainRender],
-   ['get', '/corp/*', plainRender],
-   ['get', '/wms*', plainRender],
-   ['get', '/import*', plainRender],
-   ['get', '/export*', plainRender],
-   ['get', '/account/logout', logoutUser]
-];
-
-function *plainRender() {
+function *renderWebPage() {
   try {
     this.body = yield renderHtml(this.request);
   } catch (e) {
@@ -31,3 +19,15 @@ function *logoutUser() {
   });
   this.redirect('/login');
 }
+
+export default [
+   ['get', '/', renderWebPage],
+   ['get', '/home', renderWebPage],
+   ['get', '/login', renderWebPage],
+   ['get', '/forgot', renderWebPage],
+   ['get', '/corp/*', renderWebPage],
+   ['get', '/wms*', renderWebPage],
+   ['get', '/import*', renderWebPage],
+   ['get', '/export*', renderWebPage],
+   ['get', '/account/logout', logoutUser]
+];
