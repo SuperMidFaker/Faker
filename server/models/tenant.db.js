@@ -134,5 +134,8 @@ export default {
     const sql = `update sso_tenants set user_count = user_count + ? where tenant_id = ?`;
     const args = [amount, tenantId];
     return mysql.update(sql, args, trans);
+  },
+  getTenantInfoByCode(code) {
+    return mysql.query('select * from sso_tenants where code = ? limit 1', [code]);
   }
-}
+};

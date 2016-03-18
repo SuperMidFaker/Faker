@@ -1,5 +1,8 @@
 import makeConfig from '../reusable/domains/bootstrap/make-universal-config';
-const port = 3022;
+var port = 3022;
+if (!isNaN(process.env.PORT)) {
+  port = parseInt(process.env.PORT, 10);
+}
 
 const config = makeConfig(port, __dirname, 'welogix');
 config.set('vendor_dependencies', [

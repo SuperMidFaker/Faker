@@ -5,19 +5,15 @@ import assets from 'koa-static';
 import fs from 'fs';
 import path from 'path';
 import loadRoute from '../reusable/koa-middlewares/route-loader';
-import verifyApp from '../reusable/koa-middlewares/app-verify';
 import config from '../reusable/node-util/server.config';
 import Result from '../reusable/node-util/response-result';
+import Response from '../reusable/node-util/response';
 // import { ssoRedirectUrl } from '../reusable/node-util/redirection';
 
 const app = koa();
 var publicKey = fs.readFileSync(path.resolve(__dirname, '..', 'reusable', 'keys', 'qm.rsa.pub'));
 
-app.context.json = app.response.json = function json(obj) {
-  this.charset = this.charset || 'utf-8';
-  this.set('Content-Type', 'application/json; charset=' + this.charset);
-  this.body = JSON.stringify(obj);
-};
+Response(app);  // bind this.json/this.ok/this.error function
 
 app.use(function *catchAuthError(next) {
   try {
@@ -42,7 +38,6 @@ app.use(assets(path.resolve(__dirname, '..', 'public')));
 // 页面路由在routes.jsx进行权限判断
 app.use(loadRoute(__dirname, 'routes'));
 
-app.use(verifyApp());
 // 受限API用户验证
 app.use(kJwt(Object.assign({
   cookie: config.get('jwt_cookie_key'),
