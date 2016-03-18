@@ -1,37 +1,40 @@
 import request from 'superagent';
 import renderHtml from '../../universal/html-render';
-import weixinDao from '../models/weixin.db';
-import weixinOAuth from '../../reusable/node-util/weixin-oauth';
+import weixinDao from 'reusable/models/weixin.db';
+import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 
-// onEnter bind
-// wxcode
-//
 // onEnter business page
 // openid loadWeixinAuth
+// jwtkey redirect to bind
 // expire -> refresh token auto
 
-function *redirectMpOAuth() {
-  const query = this.request.query;
-  const wxUrlCode = query.code;
-  if (wxUrlCode === '') {
-    // 未通过微信公众号授权
-    this.redirect(weixinOAuth.genCodeUrl('/weixin/oauth'));
+function *redirectMPAccount() {
+  // 用户可点击的微信公众号授权地址
+  this.redirect(weixinOAuth.genCodeUrl('/weixin/oauth'));
+}
+function *redirectMPOAuth() {
+  const ua = this.request.get('user-agent');
+  const isWeixin = ua.match(/MicroMessenger/i) === "micromessenger";
+  console.log(isWeixin, ua);
+  const openid = weixinOAuth.getOpenIdBy(this.cookies);
+  if (!openid) {
+    const query = this.request.query;
+    const wxUrlCode = query.code;
+    // 未登录
+    const resp = yield weixinOAuth.getWebAccessToken(request, wxUrlCode);
+    // todo resp.body err_code
+    // todo getweixinuserinfo for unionid
+    yield weixinDao.upsertAuth(
+      resp.body.openid, resp.body.access_token,
+      resp.body.expires_in, resp.body.refresh_token,
+      new Date()
+    );
+    weixinOAuth.setCookie(this.cookies, openid);
+    // todo loginid exist redirect to account page
+    this.redirect('/weixin/bind');
   } else {
-    const openid = weixinOAuth.getOpenIdBy(this.cookies);
-    if (openid === '') {
-      // 未登录
-      const resp = yield weixinOAuth.getAccessToken(request, wxUrlCode);
-      // todo getweixinuserinfo for unionid
-      yield weixinDao.upsertAuth(
-        resp.openid, resp.access_token,
-        resp.expires_in, resp.refresh_token,
-        new Date()
-      );
-      this.redirect('/weixin/bind');
-    } else {
-      // 已绑定可以申请解绑
-      this.redirect('/weixin/unbind');
-    }
+    // 已绑定可以申请解绑
+    this.redirect('/weixin/welogix/account');
   }
 }
 
@@ -46,7 +49,13 @@ function *renderBindPage() {
   }
 }
 
+function *renderBusinessPage() {
+}
+
 export default [
-  ['get', '/weixin/oauth', redirectMpOAuth],
-  ['get', '/weixin/bind', renderBindPage]
+  ['get', '/weixin/account', redirectMPAccount],
+  ['get', '/weixin/oauth', redirectMPOAuth],
+  ['get', '/weixin/bind', renderBindPage],
+  ['get', '/weixin/welogix/account', renderBindPage],
+  ['get', '/weixin/welogix/businesss', renderBusinessPage]
 ]

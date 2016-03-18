@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import intl from './intl';
 import auth from './auth';
 import account from './account';
+import weixin from './weixin';
 import navbar from './navbar';
 import corpDomain from './corp-domain';
 import corps from './corps';
@@ -20,6 +21,7 @@ export default combineReducers({
   intl,
   auth,
   account,
+  weixin,
   navbar,
   corpDomain,
   corps,

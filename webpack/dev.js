@@ -18,6 +18,7 @@ wpConfig.devServer = {
   stats: {
     colors: true
   },
+  host: '0.0.0.0',
   port: config.get('webpack_port')
 };
 wpConfig.devtool = 'source-map',

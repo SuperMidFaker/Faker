@@ -6,7 +6,6 @@ import configureStore from '../universal/redux/configureStore';
 import { addLocaleData } from 'react-intl';
 import { polyfill } from 'universal/i18n/helpers';
 const store = configureStore(window.__INITIAL_STATE__);
-console.log('aa');
 polyfill(() => {
   addLocaleData(require('react-intl/locale-data/en'));
   addLocaleData(require('react-intl/locale-data/zh'));

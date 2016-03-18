@@ -5,6 +5,7 @@ import Home from './containers/home';
 import SSO from './containers/pack-sso';
 import Login from './containers/sso/login';
 import Forgot from './containers/sso/forgot';
+import WeixinBinder from './containers/weixin/binder';
 import Corp from './containers/pack-corp';
 import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
@@ -54,6 +55,9 @@ export default(store, cookie) => {
   };
   return (
     <Route path="/" component={Root}>
+      <Route path="weixin" component={SSO}>
+        <Route path="bind" component={WeixinBinder}/>
+      </Route>
       <Route component={SSO}>
         <Route path="login" component={Login}/>
         <Route path="forgot" component={Forgot}/>
