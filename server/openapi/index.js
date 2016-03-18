@@ -11,17 +11,23 @@
 
 import koa from 'koa';
 import kLogger from 'koa-logger';
-import Response from '../../reusable/node-util/response';
-import loadRoute from '../reusable/koa-middlewares/route-loader';
+import patch from './patch';
+import loadRoute from '../../reusable/koa-middlewares/route-loader';
 import verify from './verify';
 
 const app = koa();
 
-Response(app);
+patch(app);
 
 app.use(kLogger());
 app.use(verify);
 
 app.use(loadRoute(__dirname, 'apis'));
 
-app.listen(process.env.PORT || 3023);
+const port = process.env.PORT || 3023;
+// if (!isNaN(process.env.PORT)) {
+//   port = parseInt(process.env.PORT, 10);
+// }
+
+app.listen(port);
+console.log('api start listen on ' + port);

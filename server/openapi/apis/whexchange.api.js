@@ -1,9 +1,9 @@
 import cobody from 'co-body';
-import mysql from '../../reusable/db-util/mysql';
-import whDao from '../../reusable/models/warehouse.db';
-import whComposeDao from '../../reusable/models/wh-exchange.db';
-import customerDao from '../../reusable/models/customer.db';
-import Result from '../../reusable/node-util/response-result';
+import mysql from '../../../reusable/db-util/mysql';
+import whDao from '../../../reusable/models/warehouse.db';
+import whComposeDao from '../../../reusable/models/wh-exchange.db';
+import customerDao from '../../../reusable/models/customer.db';
+import Result from '../../../reusable/node-util/response-result';
 
 export default [
   ['post', '/v1/whexchange/customers', customersP],

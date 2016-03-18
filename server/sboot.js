@@ -8,7 +8,9 @@ require('babel/register')({
   blacklist: ['regenerator']
 });
 
-process.env.PORT = argv.port;
+if (!isNaN(argv.port)) {
+  process.env.PORT = parseInt(argv.port, 10);
+}
 
 if (argv.api) {
   require('./openapi');

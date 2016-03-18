@@ -15,13 +15,17 @@ import appDao from '../../reusable/models/app.db';
 
 const ignores = ['/v1/token', '/v1/authorize']
 
-export default function apiAuth *(next) {
+export default function *apiAuth(next) {
   if (~ignores.indexOf(this.path)) {
     return yield next;
   } else {
-    this.reqbody = yield parse(this.req);
-    if (!this.reqbody.access_token) {
-      return this.forbidden(codes.access_token_not_valid);
+    if (this.method === 'GET') {
+      this.reqbody = this.query;
+    } else {
+      this.reqbody = yield parse(this.req);
+      if (!this.reqbody.access_token) {
+        return this.forbidden(codes.access_token_not_valid);
+      }
     }
 
     const res = yield appDao.getAuthByAccessToken(this.reqbody.access_token);

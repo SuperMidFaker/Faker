@@ -22,7 +22,7 @@ const DEFAULT_INTERVAL = 2592000;  // one mounth seconds
 function genToken(appid, appSecret, ip) {
   const s = util.format('%s%s%s%s%s', appid, Date.now(), appSecret, KEY, ip);
   const atoken = bcrypt.hashs(s);
-  const refreshToken = bcrypt.hashs(util.format('%s%s%s%s', atoken, Date.now(), KEY, ip));
+  const refreshToken = bcrypt.hashs(util.format('%s%s%s%s', atoken, Date.now(), KEY, ip), 'sha1');
 
   return {
     access_token: atoken,
