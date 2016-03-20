@@ -7,13 +7,11 @@ import path from 'path';
 import loadRoute from '../reusable/koa-middlewares/route-loader';
 import config from '../reusable/node-util/server.config';
 import Result from '../reusable/node-util/response-result';
-import Response from '../reusable/node-util/response';
 // import { ssoRedirectUrl } from '../reusable/node-util/redirection';
 
 const app = koa();
 var publicKey = fs.readFileSync(path.resolve(__dirname, '..', 'reusable', 'keys', 'qm.rsa.pub'));
 
-Response(app);  // bind this.json/this.ok/this.error function
 
 app.use(function *catchAuthError(next) {
   try {
