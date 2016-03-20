@@ -10,7 +10,7 @@ import Result from '../reusable/node-util/response-result';
 // import { ssoRedirectUrl } from '../reusable/node-util/redirection';
 
 const app = koa();
-var publicKey = fs.readFileSync(path.resolve(__dirname, '..', 'reusable', 'keys', 'qm.rsa.pub'));
+const publicKey = fs.readFileSync(path.resolve(__dirname, '..', 'reusable', 'keys', 'qm.rsa.pub'));
 
 app.context.json = app.response.json = function json(obj) {
   this.charset = this.charset || 'utf-8';
