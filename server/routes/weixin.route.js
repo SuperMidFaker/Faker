@@ -1,4 +1,3 @@
-import request from 'superagent';
 import renderHtml from '../../universal/html-render';
 import weixinDao from 'reusable/models/weixin.db';
 import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
@@ -18,29 +17,6 @@ function *redirectMPAccount() {
     this.redirect('/weixin/bind');
   }
 }
-function *redirectMPOAuth() {
-  const ua = this.request.get('user-agent');
-  const isWeixin = ua.match(/MicroMessenger/i) === "micromessenger";
-  console.log(isWeixin, ua);
-  const openid = weixinOAuth.getWxCookie(this.cookies);
-  if (!openid) {
-    const query = this.request.query;
-    const wxUrlCode = query.code;
-    // 未登录
-    const resp = yield weixinOAuth.getWebAccessToken(request, wxUrlCode);
-    // todo resp.body err_code
-    // todo getweixinuserinfo for unionid
-    yield weixinDao.upsertAuth(
-      resp.body.openid, resp.body.access_token,
-      resp.body.expires_in, resp.body.refresh_token,
-      new Date()
-    );
-    weixinOAuth.setCookie(this.cookies, openid);
-    this.redirect('/weixin/bind');
-  } else {
-    this.redirect('/weixin/welogix/account');
-  }
-}
 
 function *renderBindPage() {
   try {
@@ -53,13 +29,16 @@ function *renderBindPage() {
   }
 }
 
+function *renderWxAccountPage() {
+  this.body = 'user ' + weixinOAuth.getLoginIdFrom(this.cookies) + ' ' + weixinOAuth.getOpenIdBy(this.cookies);
+}
+
 function *renderBusinessPage() {
 }
 
 export default [
   ['get', '/weixin/account', redirectMPAccount],
-  ['get', '/weixin/oauth', redirectMPOAuth],
   ['get', '/weixin/bind', renderBindPage],
-  ['get', '/weixin/welogix/account', renderBindPage],
+  ['get', '/weixin/welogix/account', renderWxAccountPage],
   ['get', '/weixin/welogix/businesss', renderBusinessPage]
 ]
