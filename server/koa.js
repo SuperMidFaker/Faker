@@ -4,6 +4,7 @@ import kJwt from 'koa-jwt';
 import assets from 'koa-static';
 import fs from 'fs';
 import path from 'path';
+import authWeixin from '../reusable/koa-middlewares/weixin-auth';
 import loadRoute from '../reusable/koa-middlewares/route-loader';
 import config from '../reusable/node-util/server.config';
 import Result from '../reusable/node-util/response-result';
@@ -30,6 +31,11 @@ app.use(function *catchAuthError(next) {
         code: e.code,
         msg: e.msg
       });
+    } else if (e.status === 403) {
+      this.json({
+        code: 4003,
+        msg: e.msg
+      });
     } else {
       throw e; // Pass the error to the next handler since it wasn't an auth error.
     }
@@ -38,6 +44,7 @@ app.use(function *catchAuthError(next) {
 
 app.use(kLogger());
 app.use(assets(path.resolve(__dirname, '..', 'public')));
+app.use(authWeixin());
 // 页面路由在routes.jsx进行权限判断
 app.use(loadRoute(__dirname, 'routes'));
 

@@ -6,17 +6,23 @@ import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 // onEnter business page
 // openid loadWeixinAuth
 // jwtkey redirect to bind
+// todo loginid not exist redirect to bind page
 // expire -> refresh token auto
 
 function *redirectMPAccount() {
-  // 用户可点击的微信公众号授权地址
-  this.redirect(weixinOAuth.genCodeUrl('/weixin/oauth'));
+  const loginId = weixinOAuth.getLoginIdFrom(this.cookies);
+  if (loginId > 0) {
+    // 已绑定可以申请解绑
+    this.redirect('/weixin/welogix/account');
+  } else {
+    this.redirect('/weixin/bind');
+  }
 }
 function *redirectMPOAuth() {
   const ua = this.request.get('user-agent');
   const isWeixin = ua.match(/MicroMessenger/i) === "micromessenger";
   console.log(isWeixin, ua);
-  const openid = weixinOAuth.getOpenIdBy(this.cookies);
+  const openid = weixinOAuth.getWxCookie(this.cookies);
   if (!openid) {
     const query = this.request.query;
     const wxUrlCode = query.code;
@@ -30,10 +36,8 @@ function *redirectMPOAuth() {
       new Date()
     );
     weixinOAuth.setCookie(this.cookies, openid);
-    // todo loginid exist redirect to account page
     this.redirect('/weixin/bind');
   } else {
-    // 已绑定可以申请解绑
     this.redirect('/weixin/welogix/account');
   }
 }

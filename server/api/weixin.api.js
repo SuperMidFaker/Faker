@@ -37,8 +37,9 @@ function *bindWxUserP() {
           expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
           domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
         });
+        weixinDao.setCookie(this.cookies, openid, user.id);
         yield weixinDao.updateAuthLoginId(openid, user.id);
-        this.redirect('/login'); // todo account info page
+        this.json(`${user.username} login`); // todo account info page
       }
     } else {
       return Result.NotFound(this, '用户不存在');
