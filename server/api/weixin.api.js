@@ -39,7 +39,7 @@ function *bindWxUserP() {
         });
         weixinOAuth.setCookie(this.cookies, openid, user.id);
         yield weixinDao.updateAuthLoginId(openid, user.id);
-        this.redirect('/weixin/welogix/account');
+        Result.OK(this, { code: 302, url: '/weixin/welogix/account' });
       }
     } else {
       return Result.NotFound(this, '用户不存在');
