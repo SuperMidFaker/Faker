@@ -37,7 +37,7 @@ function *bindWxUserP() {
           expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
           domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
         });
-        weixinDao.setCookie(this.cookies, openid, user.id);
+        weixinOAuth.setCookie(this.cookies, openid, user.id);
         yield weixinDao.updateAuthLoginId(openid, user.id);
         this.redirect('/weixin/welogix/account');
       }
