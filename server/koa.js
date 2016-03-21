@@ -12,6 +12,11 @@ import Result from '../reusable/node-util/response-result';
 const app = koa();
 var publicKey = fs.readFileSync(path.resolve(__dirname, '..', 'reusable', 'keys', 'qm.rsa.pub'));
 
+app.context.json = app.response.json = function json(obj) {
+  this.charset = this.charset || 'utf-8';
+  this.set('Content-Type', 'application/json; charset=' + this.charset);
+  this.body = JSON.stringify(obj);
+};
 
 app.use(function *catchAuthError(next) {
   try {
