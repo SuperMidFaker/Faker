@@ -11,7 +11,7 @@ import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 
 const privateKey = fs.readFileSync(path.resolve(__dirname, '..', '..', 'reusable', 'keys', 'qm.rsa'));
 function *bindWxUserP() {
-  const openid = weixinOAuth.getOpenIdBy(this.cookies);
+  const openid = weixinOAuth.getWxCookie(this.cookies).openid;
   if (!openid) {
     return Result.ParamError(this, '请在微信客户端访问');
   }
@@ -39,7 +39,7 @@ function *bindWxUserP() {
         });
         weixinOAuth.setCookie(this.cookies, openid, user.id);
         yield weixinDao.updateAuthLoginId(openid, user.id);
-        this.redirect('/weixin/welogix/account');
+        return Result.OK(this, { redirect: true, url: '/weixin/account?v=1.0' });
       }
     } else {
       return Result.NotFound(this, '用户不存在');
