@@ -18,16 +18,51 @@ import codes from '../codes';
 const isArray = util.isArray;
 
 function *billImport() {
+  const bills = this.reqbody.bills;
 
+  if (isArray(bills)) {
+    for (let i = 0; i < bills.length; i++) {
+      const bill = bills[i];
+
+    }
+    return this.ok();
+  }
+
+  return this.error(codes.params_error);
 }
 
 function *partnersImport() {
   const partners = this.reqbody.partners;
+  const stenantId = this.tenant_id;
+
   if (isArray(partners)) {
     for (let i = 0; i < partners.length; i++) {
-      const p = partners[i];
+      const part = partners[i];
+      const p = part.partner;
+      let res = yield tenantDao.getTenantInfoByCode(p.code);
+      if (res.length === 0) {
+        p.category_id = p.category_id || 0;
+        p.level = p.level || 0;
 
+        res = yield tenantDao.insertCorp(p, 0);
+        const tid = res.insertId;
+
+        yield copsDao.insertPartner(stenantId, tid, p.name, 'TENANT_ENTERPRISE', 1);
+
+        const arr = [];
+        if (isArray(part.ships)) {
+          part.ships.forEach(v => {
+            arr.push({key: v.type, code: v.type_code});
+          });
+
+          if (arr.length > 0) {
+            yield copsDao.insertPartnership(stenantId, tid, p.name, arr);
+          }
+        }
+      }
     }
+
+    return this.ok();
   }
 
   return this.error(codes.params_error);
