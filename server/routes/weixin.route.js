@@ -3,9 +3,6 @@ import weixinDao from 'reusable/models/weixin.db';
 import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 
 // onEnter business page
-// openid loadWeixinAuth
-// jwtkey redirect to bind
-// todo loginid not exist redirect to bind page
 // expire -> refresh token auto
 
 function *renderBindPage() {
@@ -28,7 +25,7 @@ function *renderBusinessPage() {
 }
 
 export default [
-  ['get', '/weixin/welogix/bind', renderBindPage],
-  ['get', '/weixin/welogix/account', renderWxAccountPage],
+  ['get', '/weixin/bind', renderBindPage],
+  ['get', '/weixin/account', renderWxAccountPage],
   ['get', '/weixin/welogix/businesss', renderBusinessPage]
 ]

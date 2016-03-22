@@ -35,7 +35,7 @@ export default class Binder extends React.Component {
   }
 
   render() {
-    const { username } = this.state;
+    const { username, password } = this.state;
     return (
       <div className="panel-body">
         <form onSubmit={this.handleSubmit} className="form-horizontal">
@@ -46,8 +46,8 @@ export default class Binder extends React.Component {
                 <span className="input-group-addon">
                   <i className="icon s7-user" />
                 </span>
-                <input type="text" placeholder="手机号" autoComplete="off" className="form-control" value={username}
-                  onChange={(ev) => this.handleTextChange(ev, 'username')}
+                <input type="text" placeholder="手机号" autoComplete="off" className="form-control"
+                  value={username} onChange={(ev) => this.handleTextChange(ev, 'username')}
                 />
               </div>
             </div>
@@ -56,7 +56,7 @@ export default class Binder extends React.Component {
                 <span className="input-group-addon">
                   <i className="icon s7-lock" />
                 </span>
-                <input type="password" placeholder="密码" className="form-control"
+                <input type="password" placeholder="密码" className="form-control" value={password}
                   onChange={(ev) => this.handleTextChange(ev, 'password')}
                 />
               </div>
