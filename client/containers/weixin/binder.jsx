@@ -28,7 +28,7 @@ export default class Binder extends React.Component {
       password
     };
     this.props.loginBind(form).then((result) => {
-      if (result.data.code === 302) {
+      if (result.data.redirect) {
         window.location = result.data.url;
       }
     });

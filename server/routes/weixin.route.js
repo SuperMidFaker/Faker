@@ -8,16 +8,6 @@ import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 // todo loginid not exist redirect to bind page
 // expire -> refresh token auto
 
-function *redirectMPAccount() {
-  const loginId = weixinOAuth.getLoginIdFrom(this.cookies);
-  if (loginId > 0) {
-    // 已绑定可以申请解绑
-    this.redirect('/weixin/welogix/account');
-  } else {
-    this.redirect('/weixin/bind');
-  }
-}
-
 function *renderBindPage() {
   try {
     this.body = yield renderHtml(this.request);
@@ -30,15 +20,15 @@ function *renderBindPage() {
 }
 
 function *renderWxAccountPage() {
-  this.body = 'user ' + weixinOAuth.getLoginIdFrom(this.cookies) + ' ' + weixinOAuth.getOpenIdBy(this.cookies);
+  const wxcookie = weixinOAuth.getWxCookie(this.cookies);
+  this.body = 'user ' + wxcookie.loginId + ' ' + wxcookie.openid;
 }
 
 function *renderBusinessPage() {
 }
 
 export default [
-  ['get', '/weixin/account', redirectMPAccount],
-  ['get', '/weixin/bind', renderBindPage],
+  ['get', '/weixin/welogix/bind', renderBindPage],
   ['get', '/weixin/welogix/account', renderWxAccountPage],
   ['get', '/weixin/welogix/businesss', renderBusinessPage]
 ]
