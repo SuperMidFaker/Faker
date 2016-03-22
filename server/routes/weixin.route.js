@@ -2,10 +2,7 @@ import renderHtml from '../../universal/html-render';
 import weixinDao from 'reusable/models/weixin.db';
 import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 
-// onEnter business page
-// expire -> refresh token auto
-
-function *renderBindPage() {
+function *renderWxPage() {
   try {
     this.body = yield renderHtml(this.request);
   } catch (e) {
@@ -16,16 +13,11 @@ function *renderBindPage() {
   }
 }
 
-function *renderWxAccountPage() {
-  const wxcookie = weixinOAuth.getWxCookie(this.cookies);
-  this.body = 'user ' + wxcookie.loginId + ' ' + wxcookie.openid;
-}
-
 function *renderBusinessPage() {
 }
 
 export default [
-  ['get', '/weixin/bind', renderBindPage],
-  ['get', '/weixin/account', renderWxAccountPage],
+  ['get', '/weixin/bind', renderWxPage],
+  ['get', '/weixin/account', renderWxPage],
   ['get', '/weixin/welogix/businesss', renderBusinessPage]
 ]

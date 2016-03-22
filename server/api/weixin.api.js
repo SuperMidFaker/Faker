@@ -11,10 +11,6 @@ import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
 
 const privateKey = fs.readFileSync(path.resolve(__dirname, '..', '..', 'reusable', 'keys', 'qm.rsa'));
 function *bindWxUserP() {
-  const openid = weixinOAuth.getWxCookie(this.cookies).openid;
-  if (!openid) {
-    return Result.ParamError(this, '请在微信客户端访问');
-  }
   const body = yield cobody(this);
   const username = body.username;
   const password = body.password;
@@ -37,9 +33,11 @@ function *bindWxUserP() {
           expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
           domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
         });
+        // weixin-auth mw guarantee openid exist
+        const openid = weixinOAuth.getWxCookie(this.cookies).openid;
         weixinOAuth.setCookie(this.cookies, openid, user.id);
         yield weixinDao.updateAuthLoginId(openid, user.id);
-        return Result.OK(this, { redirect: true, url: '/weixin/account?v=1.0' });
+        return Result.OK(this, { redirect: true, url: this.request.query.next || '/weixin/account?v=1.0' });
       }
     } else {
       return Result.NotFound(this, '用户不存在');
@@ -50,6 +48,32 @@ function *bindWxUserP() {
   }
 }
 
+function *wlProfileG() {
+  const loginId = this.state.userId;
+  try {
+    const wls = yield weixinDao.getWlProfile(loginId);
+    if (wls.length === 0) {
+      throw new Error('user not exist');
+    }
+    return Result.OK(this, wls[0]);
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *unbindWxUserP() {
+  try {
+    const openid = weixinOAuth.getWxCookie(this.cookies).openid;
+    yield weixinDao.updateAuthLoginId(openid, -1);
+    weixinOAuth.setCookie(this.cookies, undefined, undefined);
+    return Result.OK(this);
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
    ['post', '/public/v1/weixin/bind', bindWxUserP],
+   ['get', '/v1/weixin/welogix/profile', wlProfileG],
+   ['post', '/v1/weixin/unbind', unbindWxUserP]
 ]

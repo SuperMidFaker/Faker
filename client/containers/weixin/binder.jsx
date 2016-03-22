@@ -10,8 +10,12 @@ import { loginBind } from 'universal/redux/reducers/weixin';
 )
 export default class Binder extends React.Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
     errorMsg: PropTypes.string.isRequired,
     loginBind: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired
   }
   state = {
     username: '',
@@ -23,13 +27,12 @@ export default class Binder extends React.Component {
   handleSubmit = (ev) => {
     ev.preventDefault();
     const { username, password } = this.state;
-    const form = {
-      username,
-      password
-    };
-    this.props.loginBind(form).then((result) => {
-      if (result.data.redirect) {
-        window.location = result.data.url;
+    const form = { username, password };
+    this.props.loginBind(form).then(result => {
+      if (!result.error) {
+        this.context.router.replace(
+          this.props.location.query.next || '/weixin/account'
+        );
       }
     });
   }
@@ -39,7 +42,7 @@ export default class Binder extends React.Component {
     return (
       <div className="panel-body">
         <form onSubmit={this.handleSubmit} className="form-horizontal">
-         { this.props.errorMsg }
+          { this.props.errorMsg }
           <div className="login-form">
             <div className="form-group">
               <div className="input-group">
