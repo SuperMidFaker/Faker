@@ -1,5 +1,5 @@
 import renderHtml from '../../universal/html-render';
-import config from '../../reusable/node-util/server.config';
+import { clearJwtCookie } from '../../reusable/node-util/jwt-kit';
 
 function *renderWebPage() {
   try {
@@ -13,10 +13,7 @@ function *renderWebPage() {
 }
 
 function *logoutUser() {
-  this.cookies.set(config.get('jwt_cookie_key'), '', {
-    httpOnly : __DEV__ ? false : true,
-    domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
-  });
+  clearJwtCookie(this.cookies);
   this.redirect('/login');
 }
 

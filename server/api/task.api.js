@@ -7,7 +7,6 @@ import mysql from '../../reusable/db-util/mysql';
 import taskDao from '../models/task.db';
 import smsDao from '../models/sms.db';
 import bCryptUtil from '../../reusable/node-util/BCryptUtil';
-import config from '../../reusable/node-util/server.config';
 import {
   isMobile,
   getSmsCode

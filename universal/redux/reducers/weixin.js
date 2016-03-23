@@ -17,7 +17,7 @@ const actionTypes = createActionTypes(domain, actions);
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.WX_LOAD_SUCCEED:
+    case actionTypes.WX_PROFILE_LOAD_SUCCEED:
       return { ...state, profile: action.result.data };
     case actionTypes.WX_BIND_FAIL:
       return { ...state, error: action.error.msg };

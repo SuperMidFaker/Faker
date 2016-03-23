@@ -1,17 +1,15 @@
 import koa from 'koa';
 import kLogger from 'koa-logger';
-import kJwt from 'koa-jwt';
 import assets from 'koa-static';
 import fs from 'fs';
 import path from 'path';
 import authWeixin from '../reusable/koa-middlewares/weixin-auth';
 import loadRoute from '../reusable/koa-middlewares/route-loader';
-import config from '../reusable/node-util/server.config';
+import { koaJwtOptions } from '../reusable/node-util/jwt-kit';
 import Result from '../reusable/node-util/response-result';
 // import { ssoRedirectUrl } from '../reusable/node-util/redirection';
 
 const app = koa();
-const publicKey = fs.readFileSync(path.resolve(__dirname, '..', 'reusable', 'keys', 'qm.rsa.pub'));
 
 app.context.json = app.response.json = function json(obj) {
   this.charset = this.charset || 'utf-8';
@@ -49,11 +47,7 @@ app.use(authWeixin());
 app.use(loadRoute(__dirname, 'routes'));
 
 // 受限API用户验证
-app.use(kJwt(Object.assign({
-  cookie: config.get('jwt_cookie_key'),
-  secret: publicKey
-}, config.get('jwt_crypt'))
-).unless({
+app.use(koaJwtOptions.unless({
   custom: function skip() {
     return !!this.skipJwt;
   },
