@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { loadWelogixProfile, unbindAccount } from 'universal/redux/reducers/weixin';
 import connectFetch from 'reusable/decorators/connect-fetch';
 
-function fetchData({ dispatch, cookie }) {
-  return dispatch(loadWelogixProfile(cookie));
+function fetchData({ state, dispatch, cookie }) {
+  if (!state.weixin.profile.loaded) {
+    return dispatch(loadWelogixProfile(cookie));
+  }
 }
 
 @connectFetch()(fetchData)
