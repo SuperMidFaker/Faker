@@ -7,13 +7,14 @@ import Login from './containers/sso/login';
 import Forgot from './containers/sso/forgot';
 import WeixinBinder from './containers/weixin/binder';
 import WxProfile from './containers/weixin/profile';
+import PackAccount from './containers/pack-account';
 import Corp from './containers/pack-corp';
 import CorpInfo from './containers/corp/info';
 import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
 import * as Cooperation from './containers/corp/cooperation';
-import Password from './containers/corp/password';
+import Password from './containers/account/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
@@ -68,6 +69,10 @@ export default(store, cookie) => {
       </Route>
       <Route onEnter={requireAuth}>
         <IndexRoute component={Home}/>
+        <Route path="account" component={PackAccount}>
+          <Route path="profile" component={Password}/>
+          <Route path="password" component={Password}/>
+        </Route>
         <Route path="corp" component={Corp}>
           <Route path="info" component={CorpInfo}/>
           <Route path="organization" component={PackOrganization}>
@@ -85,7 +90,6 @@ export default(store, cookie) => {
             <Route path="invitations/in" component={Cooperation.Received}/>
             <Route path="invitations/out" component={Cooperation.Sent}/>
           </Route>
-          <Route path="password" component={Password}/>
         </Route>
         <Route component={Module}>
           <Route path="import" component={ImportM}>

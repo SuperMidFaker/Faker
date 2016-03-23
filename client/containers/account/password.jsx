@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { changePassword } from '../../../universal/redux/reducers/auth';
+import { Icon, Button, Form, Input, Row, Col, Select, Tabs, message } from 'ant-ui';
+import { changePassword } from 'universal/redux/reducers/auth';
 
 @connect(
   undefined, { changePassword }

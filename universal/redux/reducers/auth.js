@@ -5,9 +5,6 @@ const LOGIN = '@@qm-auth/auth/LOGIN';
 const LOGIN_SUCCEED = '@@qm-auth/auth/LOGIN_SUCCEED';
 const LOGIN_FAIL = '@@qm-auth/auth/LOGIN_FAIL';
 const INPUT_CHANGE = '@@qm-auth/auth/INPUT_CHANGE';
-const PWD_CHANGE = '@@qm-auth/auth/PWD_CHANGE';
-const PWD_CHANGE_SUCCEED = '@@qm-auth/auth/PWD_CHANGE_SUCCEED';
-const PWD_CHANGE_FAIL = '@@qm-auth/auth/PWD_CHANGE_FAIL';
 const LEAVE_FORGOT_PAGE = '@@qm-auth/auth/LEAVE_FORGOT_PAGE';
 const ENTER_FORGOT_PAGE = '@@qm-auth/auth/ENTER_FORGOT_PAGE';
 const SMS_REQUEST = '@@qm-auth/auth/SMS_REQUEST';
@@ -71,9 +68,6 @@ export default function reducer(state = initialState, action = {}) {
           message: action.error.msg
         }
       };
-    case PWD_CHANGE_SUCCEED:
-      action.history.goBack(); // todo change to componentWillReceiveProps
-      return state;
     case ENTER_FORGOT_PAGE:
       return { ...state, error: null, smsId: null, verified: false };
     case SMS_REQUEST_SUCCEED:
@@ -104,18 +98,6 @@ export function setValue(field, value) {
   return {
     type: INPUT_CHANGE,
     data: { field, value }
-  };
-}
-
-export function changePassword(oldPwd, newPwd, history) {
-  return {
-    [CLIENT_API]: {
-      types: [PWD_CHANGE, PWD_CHANGE_SUCCEED, PWD_CHANGE_FAIL],
-      endpoint: 'v1/user/password',
-      method: 'put',
-      history,
-      data: { oldPwd, newPwd }
-    }
   };
 }
 

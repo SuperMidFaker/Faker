@@ -26,7 +26,7 @@ export default class AmUserNav extends React.Component {
     const userMenu = (
       <Menu>
         <MenuItem key="corps">
-          <NavLink to="/account/user">
+          <NavLink to="/account/profile">
             <i className="icon s7-user"></i>
             <span>{formatMsg(intl, 'userSetting')}</span>
           </NavLink>

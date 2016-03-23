@@ -5,6 +5,7 @@
     "out_file"   : "./pm2/log/welogix-web-out.log",
     "pid_file"   : "./pm2/log/welogix-web.pid",
     "args"      : "['--port=3022']",
+    "log_date_format" : "YYYY-MM-DD HH:mm Z",
     "env": {
         "NODE_ENV": "production"
     }
