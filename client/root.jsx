@@ -39,7 +39,7 @@ export default class Root extends React.Component {
     isAuthed: PropTypes.bool.isRequired
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   }
 
   componentWillReceiveProps(nextProps) {

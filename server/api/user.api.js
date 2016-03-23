@@ -152,7 +152,7 @@ function *getUserAccount() {
     } else {
       throw new Error('current user account do not exist');
     }
-    Result.OK(this, {...account, type: userType});
+    Result.OK(this, { ...account, type: userType });
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
