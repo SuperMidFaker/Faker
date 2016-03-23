@@ -53,7 +53,7 @@ function *unbindWxUserP() {
   try {
     const openid = weixinOAuth.getWxCookie(this.cookies).openid;
     yield weixinDao.updateAuthLoginId(openid, -1);
-    weixinOAuth.setCookie(this.cookies, undefined, undefined);
+    weixinOAuth.setCookie(this.cookies, openid, undefined);
     return Result.OK(this);
   } catch (e) {
     return Result.InternalServerError(this, e.message);
