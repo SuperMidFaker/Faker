@@ -36,27 +36,20 @@ export default function reducer(state = initialState, action = {}) {
         loggingIn: true
       };
     case LOGIN_SUCCEED: {
-      let token;
-      let userType;
-      if (action.result.data && action.result.data.token) {
-        token = action.result.data.token;
-        userType = action.result.data.userType;
-      }
+      const userType = action.result.data && action.result.data.userType;
       return {
         ...state,
         loggingIn: false,
         error: null,
         password: '',
         isAuthed: true,
-        userType,
-        token
+        userType
       };
     }
     case LOGIN_FAIL:
       return {
         ...state,
         loggingIn: false,
-        token: null,
         error: {
           code: action.error.error_code,
           message:  action.error.msg

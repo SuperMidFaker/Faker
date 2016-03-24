@@ -1,7 +1,4 @@
 import cobody from 'co-body';
-import kJwt from 'koa-jwt';
-import fs from 'fs';
-import path from 'path';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
 import userDao from '../models/user.db';
@@ -9,10 +6,13 @@ import tenantDao from '../models/tenant.db';
 import tenantUserDao from '../models/tenant-user.db';
 import smsDao from '../models/sms.db';
 import bCryptUtil from '../../reusable/node-util/BCryptUtil';
-import config from '../../reusable/node-util/server.config';
 import { isMobile, getSmsCode } from '../../reusable/common/validater';
 import smsUtil from '../../reusable/node-util/sms-util';
-import { __DEFAULT_PASSWORD__, TENANT_LEVEL, TENANT_ROLE, ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE } from '../../universal/constants';
+import {
+  __DEFAULT_PASSWORD__, TENANT_LEVEL, TENANT_ROLE,
+  ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE
+} from '../../universal/constants';
+import { genJwtCookie } from 'reusable/node-util/jwt-kit';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
@@ -42,7 +42,6 @@ export default [
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
-const privateKey = fs.readFileSync(path.resolve(__dirname, '..', '..', 'reusable', 'keys', 'qm.rsa'));
 function *loginUserP() {
   const body = yield cobody(this);
   const username = body.username;
@@ -54,7 +53,8 @@ function *loginUserP() {
     const users = yield userDao.getUserByAccount(username, body.code);
     if (users.length > 0) {
       const user = users[0];
-      const checkpwd = bCryptUtil.checkpw(password, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
+      const checkpwd = bCryptUtil.checkpw(password, user.password) ||
+        bCryptUtil.checkpw(bCryptUtil.md5(password), user.password);
       if (checkpwd) {
         const userTypes = yield tenantUserDao.getUserTypeInfo(user.id);
         let userType = user.user_type;
@@ -70,18 +70,8 @@ function *loginUserP() {
            userType = PERSONNEL;
           }
         }
-        const claims = { userId: user.id, userType };
-        const opts = Object.assign({}, config.get('jwt_crypt'), { expiresIn: config.get('jwt_expire_seconds')});
-        // todo we should set a shorter interval for token expire, refresh it later
-        const jwtoken = kJwt.sign(claims, privateKey, opts);
-        const remember = body.remember;
-        const ONE_DAY = 24 * 60 * 60;
-        this.cookies.set(config.get('jwt_cookie_key'), jwtoken, {
-          httpOnly : __DEV__ ? false : true,
-          expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
-          domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
-        });
-        return Result.OK(this, { token: jwtoken, userType: user.user_type, unid: user.unid });
+        genJwtCookie(this.cookies, user.id, userType, body.remember);
+        return Result.OK(this, { userType: user.user_type, unid: user.unid });
       } else {
         return Result.ParamError(this, { key: 'loginErrorParam' });
       }

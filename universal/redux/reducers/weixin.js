@@ -3,6 +3,7 @@ import { createActionTypes } from 'reusable/common/redux-actions';
 const initialState = {
   error: '',
   profile: {
+    loaded: false
     /* name, phone, email, position */
   }
 };
@@ -17,8 +18,10 @@ const actionTypes = createActionTypes(domain, actions);
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.WX_LOAD_SUCCEED:
-      return { ...state, profile: action.result.data };
+    case actionTypes.WX_PROFILE_LOAD_SUCCEED:
+      return { ...state, profile: { loaded: true, ...action.result.data }};
+    case actionTypes.WX_UNBIND_SUCCEED:
+      return { ...state, profile: { loaded: false }};
     case actionTypes.WX_BIND_FAIL:
       return { ...state, error: action.error.msg };
     default:
