@@ -73,9 +73,9 @@ export default class CorpInfo extends React.Component {
     uploadImg: PropTypes.func.isRequired
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   }
-  handleSubmit() {
+  handleSubmit = () => {
     const { intl } = this.props;
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
@@ -110,10 +110,10 @@ export default class CorpInfo extends React.Component {
   }
   */
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const {formhoc: {getFieldProps, getFieldError}} = this.props;
+    const { formhoc: { getFieldProps, getFieldError }} = this.props;
     return (
       <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}}
-      help={rules && getFieldError(field)} hasFeedback required={required}>
+        help={rules && getFieldError(field)} hasFeedback required={required}>
         <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
@@ -124,85 +124,85 @@ export default class CorpInfo extends React.Component {
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
       <div className="panel-body body-responsive">
-      <Form horizontal form={this.props.formhoc}>
-        <Row>
-          <Col span="12">
-            {this.renderTextInput(
-              msg('companyName'), msg('companyNameTip'), 'name', true,
-              [{required: true, message: msg('companyNameRequired')}]
-            )}
-            {this.renderTextInput(
-              msg('companyShortName'), '', 'short_name', false,
-              [{ type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
-                message: msg('shortNameMessage')}]
-            )}
-            <FormItem label={msg('location')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-              <Region setFormValue={this.props.setFormValue} region={{
-                country, province, city, county: district}} />
-            </FormItem>
-            {this.renderTextInput(msg('fullAddress'), '', 'address')}
-          </Col>
-          <Col span="12">
-            <FormItem label={msg('enterpriseCode')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-              required
-            >
-              <Col span="18">
-                <Input type="text" disabled {...getFieldProps('code')} />
-              </Col>
-              <Col span="6">
-                <p className="ant-form-text">
-                  <a role="button">{msg('applyChange')}</a>
-                </p>
-              </Col>
-            </FormItem>
-            <FormItem label={msg('tradeCategory')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-              <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('type')}>
-                <Option value="freight">货代</Option>
-              </Select>
-            </FormItem>
-            <FormItem label={msg('companyAbout')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-              <Input type="textarea" rows="3" {...getFieldProps('remark')} />
-            </FormItem>
-            <FormItem label={msg('companyWebsite')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-              <Input type="text" addonBefore="http://" {...getFieldProps('website')} />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-            {this.renderTextInput(
-              msg('contact'), '', 'contact', true, [{
-                required: true,
-                message: msg('contactRequired'),
-                type: 'string',
-                whitespace: true
-              }], {transform: (value) => (value.trim())}
-            )}
-            {this.renderTextInput(msg('phone'), '', 'phone', true, [{
-              validator: (rule, value, callback) => validatePhone(
-                value, callback,
-                (msgs, descriptor) => format(msgs)(intl, descriptor)
-              )
-            }])}
-          </Col>
-          <Col span="12">
-            <FormItem label={msg('position')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-              <Input type="text" {...getFieldProps('position')} />
-            </FormItem>
-            {this.renderTextInput(
-              'Email', '', 'email', false,
-              [{type: 'email', message: formatContainerMsg(intl, 'emailError')}]
-            )}
-          </Col>
-        </Row>
-        <Row>
-          <Col span="21" offset="3">
-            <Button type="primary" size="large" htmlType="submit" onClick={() => this.handleSubmit()}>
-            {formatGlobalMsg(intl, 'save')}
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+        <Form horizontal form={this.props.formhoc}>
+          <Row>
+            <Col span="12">
+              {this.renderTextInput(
+                msg('companyName'), msg('companyNameTip'), 'name', true,
+                [{required: true, message: msg('companyNameRequired')}]
+              )}
+              {this.renderTextInput(
+                msg('companyShortName'), '', 'short_name', false,
+                [{ type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
+                  message: msg('shortNameMessage')}]
+              )}
+              <FormItem label={msg('location')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                <Region setFormValue={this.props.setFormValue} region={{
+                  country, province, city, county: district}} />
+              </FormItem>
+              {this.renderTextInput(msg('fullAddress'), '', 'address')}
+            </Col>
+            <Col span="12">
+              <FormItem label={msg('enterpriseCode')} labelCol={{span: 6}} wrapperCol={{span: 18}}
+                required
+              >
+                <Col span="18">
+                  <Input type="text" disabled {...getFieldProps('code')} />
+                </Col>
+                <Col span="6">
+                  <p className="ant-form-text">
+                    <a role="button">{msg('applyChange')}</a>
+                  </p>
+                </Col>
+              </FormItem>
+              <FormItem label={msg('tradeCategory')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('type')}>
+                  <Option value="freight">货代</Option>
+                </Select>
+              </FormItem>
+              <FormItem label={msg('companyAbout')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                <Input type="textarea" rows="3" {...getFieldProps('remark')} />
+              </FormItem>
+              <FormItem label={msg('companyWebsite')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                <Input type="text" addonBefore="http://" {...getFieldProps('website')} />
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
+              {this.renderTextInput(
+                msg('contact'), '', 'contact', true, [{
+                  required: true,
+                  message: msg('contactRequired'),
+                  type: 'string',
+                  whitespace: true
+                }], {transform: (value) => (value.trim())}
+              )}
+              {this.renderTextInput(msg('phone'), '', 'phone', true, [{
+                validator: (rule, value, callback) => validatePhone(
+                  value, callback,
+                  (msgs, descriptor) => format(msgs)(intl, descriptor)
+                )
+              }])}
+            </Col>
+            <Col span="12">
+              <FormItem label={msg('position')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                <Input type="text" {...getFieldProps('position')} />
+              </FormItem>
+              {this.renderTextInput(
+                'Email', '', 'email', false,
+                [{type: 'email', message: formatContainerMsg(intl, 'emailError')}]
+              )}
+            </Col>
+          </Row>
+          <Row>
+            <Col span="21" offset="3">
+              <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
+              {formatGlobalMsg(intl, 'save')}
+              </Button>
+            </Col>
+          </Row>
+        </Form>
       </div>);
   }
   renderEnterpriseForm() {
@@ -246,7 +246,7 @@ export default class CorpInfo extends React.Component {
           <Row>
             <Col span="21" offset="3">
               <Button type="primary" size="large" htmlType="submit"
-                onClick={() => this.handleSubmit()}
+                onClick={this.handleSubmit}
               >
               {formatGlobalMsg(intl, 'save')}
               </Button>

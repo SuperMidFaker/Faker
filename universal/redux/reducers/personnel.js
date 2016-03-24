@@ -4,6 +4,7 @@ import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assig
   clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
 import { TENANT_ROLE } from '../../../universal/constants';
 import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
+import { PROFILE_UPDATE_SUCCEED } from './account';
 
 const actionTypes = createActionTypes('@@welogix/personnel/', [
   'SWITCH_TENANT',
@@ -42,6 +43,7 @@ export default function reducer(state = initialState, action) {
     case CORP_SUBMIT_SUCCEED:
     case CORP_DELETE_SUCCEED:
     case ORGAN_EDIT_SUCCEED:
+    case PROFILE_UPDATE_SUCCEED:
       // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:

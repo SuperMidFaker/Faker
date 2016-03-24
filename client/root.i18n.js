@@ -25,6 +25,10 @@ const messages = defineMessages({
     id: 'root.cancel',
     defaultMessage: '取消'
   },
+  back: {
+    id: 'root.back',
+    defaultMessage: '返回'
+  },
   edit: {
     id: 'root.edit',
     defaultMessage: '编辑'

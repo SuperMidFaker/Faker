@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import AmNavBar from '../components/am-navbar';
 
-export default class CorpPack extends React.Component {
+export default class AccountPack extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired
   };
@@ -11,8 +11,11 @@ export default class CorpPack extends React.Component {
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />
         <div className="am-content">
+          <div className="main-content">
           {this.props.children}
+          </div>
         </div>
-      </div>);
+      </div>
+    );
   }
 }

@@ -34,11 +34,13 @@ export default [
    ['post', '/v1/user/personnel', submitPersonnel],
    ['put', '/v1/user/personnel', editPersonnel],
    ['delete', '/v1/user/personnel', delPersonnel],
-   ['put', '/v1/user/password', changePassword],
    ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
    ['get', '/v1/user/check/loginname', isLoginNameExist],
    ['put', '/v1/user/corp/status', switchCorpStatus],
    ['put', '/v1/user/personnel/status', switchPersonnelStatus],
+   ['put', '/v1/user/password', changePassword],
+   ['get', '/v1/user/profile', getUserAccount],
+   ['put', '/v1/user/profile', getUserAccount],
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
@@ -443,22 +445,28 @@ function *getPersonnelInfo() {
 }
 
 function *changePassword() {
-  const body = yield cobody(this);
   const curUserId = this.state.user.userId;
-  const users = yield userDao.getUserById(curUserId);
-  if (users.length > 0) {
-    const user = users[0];
-    const checkpwd = bCryptUtil.checkpw(body.oldPwd, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(body.oldPwd), user.password);
-    if (checkpwd) {
-      const salt = bCryptUtil.gensalt();
-      const pwdHash = bCryptUtil.hashpw(body.newPwd, salt);
-      const result = yield userDao.updatePassword(salt, pwdHash, curUserId);
-      Result.OK(this);
+  try {
+    const [ body, users ] = yield [
+      cobody(this),
+      userDao.getUserById(curUserId)
+    ];
+    if (users.length > 0) {
+      const user = users[0];
+      const checkpwd = bCryptUtil.checkpw(body.oldPwd, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(body.oldPwd), user.password);
+      if (checkpwd) {
+        const salt = bCryptUtil.gensalt();
+        const pwdHash = bCryptUtil.hashpw(body.newPwd, salt);
+        const result = yield userDao.updatePassword(salt, pwdHash, curUserId);
+        Result.OK(this);
+      } else {
+        Result.ParamError(this, { key: 'incorretOldPwd' });
+      }
     } else {
-      Result.ParamError(this, '旧密码有误');
+      Result.InternalServerError(this, { key: 'invalidUser' });
     }
-  } else {
-    Result.InternalServerError(this, '用户异常');
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
   }
 }
 

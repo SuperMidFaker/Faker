@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { submit, setValue } from '../../../universal/redux/reducers/auth';
 import NavLink from '../../../reusable/components/nav-link';
+import { getFormatMsg } from 'reusable/browser-util/react-ant';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
@@ -50,8 +51,8 @@ export default class Login extends React.Component {
     return (
       <div className="panel-body">
         { error ? <div>{
-          `C${error.code}: ${(typeof error.message !== 'string' ?
-          formatMsg(intl, error.message.key, error.message.values) : error.message)}`
+          `C${error.code}:
+            ${getFormatMsg(error.message, (key, values) => formatMsg(intl, key, values))}`
         }</div> : null }
         <form onSubmit={::this.handleSubmit} className="form-horizontal">
           <div className="login-form">

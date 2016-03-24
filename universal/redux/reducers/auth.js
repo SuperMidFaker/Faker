@@ -86,7 +86,7 @@ export default function reducer(state = initialState, action = {}) {
 export function submit(userForm) {
   return {
     [CLIENT_API]: {
-      types: [LOGIN, LOGIN_SUCCEED, LOGIN_FAIL],
+      types: [ LOGIN, LOGIN_SUCCEED, LOGIN_FAIL ],
       endpoint: 'public/v1/login',
       method: 'post',
       data: userForm

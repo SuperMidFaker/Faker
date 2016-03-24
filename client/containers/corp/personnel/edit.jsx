@@ -7,8 +7,7 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
 '../../../../universal/redux/reducers/personnel';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { isLoginNameExist, checkLoginName } from
-'../../../../reusable/domains/redux/checker-reducer';
+import { isLoginNameExist, checkLoginName } from 'reusable/domains/redux/checker-reducer';
 import { validatePhone } from '../../../../reusable/common/validater';
 import { TENANT_ROLE } from '../../../../universal/constants';
 import { format } from 'universal/i18n/helpers';
@@ -87,7 +86,7 @@ export default class CorpEdit extends React.Component {
     setFormValue: PropTypes.func.isRequired
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   }
   onSubmitReturn(error) {
     if (error) {
@@ -150,7 +149,8 @@ export default class CorpEdit extends React.Component {
                     this.props.tenant.id, callback, message, this.props.checkLoginName,
                     (msgs, descriptor) => format(msgs)(intl, descriptor))
                 }]
-              })} />
+              })}
+              />
             </FormItem>
             {
               isCreating && this.renderTextInput(
