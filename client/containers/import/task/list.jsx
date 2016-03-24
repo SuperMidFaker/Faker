@@ -49,7 +49,7 @@ export default class TaskSetting extends React.Component {
     // 切换状态后更新table数据
     this.props.loadTask(null, {
       tenantId: this.props.tenantId,
-      loginId:this.props.loginId,
+      loginId: this.props.loginId,
       pageSize: this.props.tasklist.pageSize,
       currentPage: 1,
       currentStatus: e.target.value,
@@ -62,7 +62,7 @@ export default class TaskSetting extends React.Component {
     const filters = this.createFilters(value);
     this.props.loadTask(null, {
       tenantId: this.props.tenantId,
-      loginId:this.props.loginId,
+      loginId: this.props.loginId,
       pageSize: this.props.tasklist.pageSize,
       currentPage: 1,
       currentStatus: this.state.curStatus,
@@ -85,7 +85,7 @@ export default class TaskSetting extends React.Component {
       ]
     ];
   }
-  renderColumnText(status, text) {
+  renderColumnText(record, text) {
     return <span>{text}</span>;
   }
   render() {
@@ -116,7 +116,7 @@ export default class TaskSetting extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          loginId:this.props.loginId,
+          loginId: this.props.loginId,
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
@@ -146,34 +146,32 @@ export default class TaskSetting extends React.Component {
     const columns = [
       {
         title: '业务单号',
-        dataIndex: 'del_no',
         sorter: true,
-        render: (o, record) => this.renderColumnText(record.status, record.del_no)
+        dataIndex: 'del_no',
+        render: (o, record) => this.renderColumnText(record, record.del_no)
       }, {
         title: '客户名称',
-        render: (o, record) => this.renderColumnText(record.status, record.send_tenant_id)
+        dataIndex: 'send_tenant_id',
+        render: (o, record) => this.renderColumnText(record, record.send_tenant_id)
       }, {
         title: '运单号',
-        render: (o, record) => this.renderColumnText(record.status, record.bill_no)
+        render: (o, record) => this.renderColumnText(record, record.bill_no)
       }, {
         title: '发票号',
-        dataIndex: 'invoice_no',
         sorter: true,
-        render: (o, record) => this.renderColumnText(record.status, record.invoice_no)
+        render: (o, record) => this.renderColumnText(record, record.invoice_no)
       }, {
         title: '操作人',
-        render: (o, record) => this.renderColumnText(record.status, record.creater_login_id)
+        render: (o, record) => this.renderColumnText(record, record.rec_login_id)
       }, {
         title: '接单日期',
-        render: (o, record) => this.renderColumnText(record.status, record.del_date)
+        render: (o, record) => this.renderColumnText(record, record.del_date)
       }, {
         title: '申报日期',
-        render: (o, record) => this.renderColumnText(record.status, record.rec_del_date)
+        render: (o, record) => this.renderColumnText(record, record.rec_del_date)
       }, {
         title: '状态',
-        dataIndex: 'customs_status',
         sorter: true,
-
         render: (text, record) => { // 根据状态定制显示状态中文描述
           let fontColor = '';
           let statusText = '';

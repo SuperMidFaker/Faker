@@ -63,9 +63,7 @@ export default function reducer(state = initialState, action) {
       };
       // todo deal with submit fail submit loading
     default:
-      return formReducer(actionTypes, state, action, {
-        key: null
-      }, 'tasklist') || state;
+      return formReducer(actionTypes, state, action, {}, 'tasklist') || state;
   }
 }
 

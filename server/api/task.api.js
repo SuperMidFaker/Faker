@@ -5,10 +5,10 @@ import taskDao from '../models/task.db';
 
 
 export default [
-  ['get', '/v1/import/tasks', getTakes]
+  ['get', '/v1/import/tasks', getTasks]
 ];
 
-function* getTakes() {
+function* getTasks() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
@@ -23,14 +23,14 @@ function* getTakes() {
   try {
     const totals = yield taskDao.getTaskTotalCount(loginId, tenantId, currentStatus, filters);
     const tasks = yield taskDao.getTasks(current, currentStatus, loginId, filters, pageSize, tenantId, sortField, sortOrder);
-
+    console.log(tasks);
     const notAcceptCount = yield taskDao.getStatusCount(loginId, tenantId, 0, filters);
     const haveOrderCount = yield taskDao.getStatusCount(loginId, tenantId, 1, filters);
     const closeOrderCount = yield taskDao.getStatusCount(loginId, tenantId, 2, filters);
 
 
     return Result.OK(this, {
-      idlist: {
+      tasklist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
