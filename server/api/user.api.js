@@ -567,7 +567,7 @@ function *updateUserProfile() {
         profile.email, trans
       ));
     }
-    yield yielders; 
+    yield yielders;
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
