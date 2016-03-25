@@ -40,6 +40,14 @@ const messages = defineMessages({
   invalidUser: {
     id: 'account.password.invalid.user',
     defaultMessage: '当前用户非法登录'
+  },
+  profileTitle: {
+    id: 'account.profile.title',
+    defaultMessage: '帐号设置'
+  },
+  avatarUpdate: {
+    id: 'account.profile.avatar.update',
+    defaultMessage: '点击更新'
   }
 });
 

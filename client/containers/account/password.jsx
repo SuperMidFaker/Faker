@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Button, Form, Input, Row, Col, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'universal/redux/reducers/account';
+import connectNav from '../../../reusable/decorators/connect-nav';
+import { setNavTitle } from '../../../universal/redux/reducers/navbar';
 import { getFormatMsg } from 'reusable/browser-util/react-ant';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -18,6 +20,14 @@ const FormItem = Form.Item;
   }),
   { changePassword }
 )
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
+  dispatch(setNavTitle({
+    depth: 1
+  }));
+})
 @Form.formify({
   formPropName: 'formhoc'
 })
@@ -95,7 +105,7 @@ export default class ChangePassword extends React.Component {
   renderTextInput(labelName, field, rules) {
     const { formhoc: { getFieldProps, getFieldError }} = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 7}}
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
         help={rules && getFieldError(field)} hasFeedback required>
         <Input type="password" { ...getFieldProps(field, rules) } />
       </FormItem>
@@ -109,15 +119,15 @@ export default class ChangePassword extends React.Component {
           <h3>{this.msg('pwdTitle')}</h3>
         </div>
         <div className="panel-body">
-          <Form horizontal onSubmit={this.handlePasswordChange} form={formhoc}>
+          <Form horizontal onSubmit={this.handlePasswordChange} form={formhoc}
+            className="form-edit-content offset-right-col"
+          >
             { this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules) }
             { this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules) }
             { this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules) }
             <Row>
-              <Col span="2" offset="7">
+              <Col span="18" offset="6">
                 <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-              </Col>
-              <Col span="2">
                 <Button size="large" onClick={this.handleCancel}>{formatGlobalMsg(intl, 'back')}</Button>
               </Col>
             </Row>

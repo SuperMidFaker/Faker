@@ -14,6 +14,7 @@ import PackOrganization from './containers/corp/pack-organization';
 import * as Organization from './containers/corp/organization';
 import * as Personnel from './containers/corp/personnel';
 import * as Cooperation from './containers/corp/cooperation';
+import MyProfile from './containers/account/profile';
 import Password from './containers/account/password';
 import Module from './containers/module';
 import ImportM from './containers/module-import';
@@ -70,7 +71,7 @@ export default(store, cookie) => {
       <Route onEnter={requireAuth}>
         <IndexRoute component={Home}/>
         <Route path="account" component={PackAccount}>
-          <Route path="profile" component={Password}/>
+          <Route path="profile" component={MyProfile}/>
           <Route path="password" component={Password}/>
         </Route>
         <Route path="corp" component={Corp}>

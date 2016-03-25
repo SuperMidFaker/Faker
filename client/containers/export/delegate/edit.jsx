@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Form, Input, Switch, message, Select, Tabs, Row, Modal, Col, Table,
-  Menu, Dropdown } from
-'ant-ui';
+import {
+  Icon, Button, Form, Input, Switch, message, Select, Tabs,
+  Row, Modal, Col, Table, Menu, Dropdown
+} from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit, loadSelectOptions,
@@ -278,7 +279,6 @@ export default class CorpEdit extends React.Component {
         tradeModeList
       }
     } = this.props;
-    // todo loginname no '@' change adapt and tranform logic with new rc-form
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
         <Menu.Item key="1">录入报关清单</Menu.Item>
@@ -479,8 +479,6 @@ export default class CorpEdit extends React.Component {
         declareCategoryList
       }} = this.props;
 
-    //  const disableSubmit = this.props.tenant.id === -1;
-    // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
         <div className="page-body">

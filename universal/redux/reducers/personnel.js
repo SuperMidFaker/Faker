@@ -20,6 +20,7 @@ export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
+  submitting: false,
   filters: [],
   selectedIndex: -1,
   branches: [],
@@ -71,12 +72,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const personnelist = { ...state.personnelist };
       personnelist.data[action.index].status = action.data.status;
-      return {...state, personnelist};
+      return { ...state, personnelist };
     }
+    case actionTypes.PERSONNEL_SUBMIT:
+    case actionTypes.PERSONNEL_EDIT:
+      return { ...state, submitting: true };
+    case actionTypes.PERSONNEL_SUBMIT_FAIL:
+    case actionTypes.PERSONNEL_EDIT_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.PERSONNEL_EDIT_SUCCEED: {
       const personnelist = { ...state.personnelist };
       personnelist.data[state.selectedIndex] = action.data.personnel;
-      return { ...state, personnelist, selectedIndex: -1 };
+      return { ...state, personnelist, selectedIndex: -1, submitting: false };
     }
     case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
       const personnelist = { ...state.personnelist };
@@ -87,9 +94,8 @@ export default function reducer(state = initialState, action) {
         });
       }
       personnelist.totalCount++;
-      return { ...state, personnelist };
+      return { ...state, personnelist, submitting: false };
     }
-    // todo deal with submit fail submit loading
     default:
       return formReducer(actionTypes, state, action, { key: null, role: TENANT_ROLE.member.name },
                          'personnelist') || state;

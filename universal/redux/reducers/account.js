@@ -4,22 +4,21 @@ const initialState = {
   loaded: false, // used by isLoad action
   loginId: -1,
   username: '',
-  type: '',
   code: '',
   subdomain: '',
   tenantId: 0,
   aspect: 0,
   categoryId: 0,
   modules: 0,
+  type: '', // user type ADMIN PERSONNEL ENTERP BRANCH
   profile: {
-    loaded: false
+    // name(same as outter username), username(loginName without @), phone, email, role
   }
 };
 
 const actions = [
   'ACC_LOAD', 'ACC_LOAD_SUCCEED', 'ACC_LOAD_FAIL',
   'PWD_CHANGE', 'PWD_CHANGE_SUCCEED', 'PWD_CHANGE_FAIL',
-  'PROFILE_LOAD', 'PROFILE_LOAD_SUCCEED', 'PROFILE_LOAD_FAIL',
   'SET_PROFILE_VALUE',
   'PROFILE_UPDATE', 'PROFILE_UPDATE_SUCCEED', 'PROFILE_UPDATE_FAIL'
 ];
@@ -34,8 +33,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, loaded: true, ...action.result.data };
     case actionTypes.SET_PROFILE_VALUE:
       return { ...state, profile: { ...state.profile, [action.data.field]: action.data.value }};
-    case actionTypes.PROFILE_LOAD_SUCCEED:
-      return { ...state, profile: { loaded: true, ...action.result.data }};
     default:
       return state;
   }
@@ -63,17 +60,6 @@ export function changePassword(oldPwd, newPwd) {
   };
 }
 
-export function loadProfile(cookie) {
-  return {
-    [CLIENT_API]: {
-      types: [ actionTypes.PROFILE_LOAD, actionTypes.PROFILE_LOAD_SUCCEED, actionTypes.PROFILE_LOAD_FAIL ],
-      endpoint: 'v1/user/profile',
-      method: 'get',
-      cookie
-    }
-  };
-}
-
 export function setProfileValue(field, value) {
   return {
     type: actionTypes.SET_PROFILE_VALUE,
@@ -81,7 +67,7 @@ export function setProfileValue(field, value) {
   };
 }
 
-export function updateProfile(profile, code) {
+export function updateProfile(profile, code, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -91,7 +77,7 @@ export function updateProfile(profile, code) {
       ],
       endpoint: 'v1/user/profile',
       method: 'put',
-      data: { profile, code }
+      data: { profile, code, tenantId }
     }
   };
 }

@@ -42,6 +42,7 @@ function goBack(router) {
   state => ({
     selectedIndex: state.personnel.selectedIndex,
     formData: state.personnel.formData,
+    submitting: state.personnel.submitting,
     code: state.account.code,
     tenant: state.personnel.tenant
   }),
@@ -80,6 +81,7 @@ export default class CorpEdit extends React.Component {
     tenant: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
@@ -126,11 +128,10 @@ export default class CorpEdit extends React.Component {
     );
   }
   render() {
-    const { intl, formhoc: { getFieldProps, getFieldError }, code } = this.props;
+    const { submitting, intl, formhoc: { getFieldProps, getFieldError }, code } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
     const msg = (descriptor) => formatMsg(intl, descriptor);
-    // todo loginname no '@'
     return (
       <div className="main-content">
         <div className="page-body">
@@ -181,9 +182,14 @@ export default class CorpEdit extends React.Component {
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
-                <Button disabled={ disableSubmit } htmlType="submit" type="primary"
-                title={ disableSubmit ? msg('nonTenantEdit') : '' }>{formatGlobalMsg(intl, 'ok')}</Button>
-                <Button onClick={ this.handleCancel }>{formatGlobalMsg(intl, 'cancel')}</Button>
+                <Button disabled={ disableSubmit } htmlType="submit" type="primary" loading={submitting}
+                  title={ disableSubmit ? msg('nonTenantEdit') : '' }
+                >
+                {formatGlobalMsg(intl, 'ok')}
+                </Button>
+                <Button onClick={ this.handleCancel } disabled={submitting}>
+                {formatGlobalMsg(intl, 'cancel')}
+                </Button>
               </Col>
             </Row>
           </Form>

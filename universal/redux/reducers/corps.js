@@ -23,9 +23,11 @@ export const CORP_EDIT_SUCCEED = actionTypes.CORP_EDIT_SUCCEED;
 export const CORP_SUBMIT_SUCCEED = actionTypes.CORP_SUBMIT_SUCCEED;
 export const CORP_DELETE_SUCCEED = actionTypes.CORP_DELETE_SUCCEED;
 export const ORGAN_EDIT_SUCCEED = actionTypes.ORGAN_EDIT_SUCCEED;
+export const INITIAL_LIST_PAGE_SIZE = 5;
 const initialState = {
   loaded: false,
   loading: false,
+  submitting: false,
   selectedIndex: -1,
   formData: {
     poid: '',
@@ -42,7 +44,7 @@ const initialState = {
   corplist: {
     tenantAppPackage: [],
     totalCount: 0,
-    pageSize: 5,
+    pageSize: INITIAL_LIST_PAGE_SIZE,
     current: 1,
     data: [] // structure see getOrganizations
   }
@@ -84,7 +86,7 @@ export default function reducer(state = initialState, action) {
       const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
         { ...corp, ...action.result.data } : corp);
       return { ...state, corplist: { ...state.corplist, data: corps },
-        formData: initialState.formData, corpUsers: [] };
+        formData: initialState.formData, corpUsers: [], submitting: false };
     }
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const corplist = { ...state.corplist };
@@ -107,6 +109,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, appEditor: action.tenantAppInfo };
     case actionTypes.CLOSE_TENANT_APPS_EDITOR:
       return { ...state, appEditor: initialState.appEditor };
+    case actionTypes.ORGAN_EDIT:
+    case actionTypes.CORP_SUBMIT:
+      return { ...state, submitting: true };
     case actionTypes.CORP_SUBMIT_SUCCEED: {
       const corplist = { ...state.corplist };
       if ((corplist.current - 1) * corplist.pageSize <= corplist.totalCount // '=' because of totalCount 0
@@ -114,9 +119,11 @@ export default function reducer(state = initialState, action) {
         corplist.data.push(action.result.data);
       }
       corplist.totalCount++;
-      return { ...state, corplist };
+      return { ...state, corplist, submitting: false };
     }
-    // todo deal with submit fail submit loading
+    case actionTypes.ORGAN_EDIT_FAIL:
+    case actionTypes.CORP_SUBMIT_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.IMG_UPLOAD_SUCCEED: {
       const form = { ...state.formData };
       form[action.field] = action.result.data;
