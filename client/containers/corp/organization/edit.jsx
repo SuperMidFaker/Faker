@@ -39,6 +39,7 @@ function goBack(router) {
   state => ({
     formData: state.corps.formData,
     corpUsers: state.corps.corpUsers,
+    submitting: state.corps.submitting,
     account: state.account
   }),
   { setFormValue, editOrganization, submit, checkLoginName })
@@ -74,6 +75,7 @@ export default class CorpEdit extends React.Component {
     formhoc: PropTypes.object.isRequired,
     corpUsers: PropTypes.array.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     editOrganization: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
@@ -99,7 +101,14 @@ export default class CorpEdit extends React.Component {
             this.onSubmitReturn(result.error);
           });
         } else {
-          this.props.submit(this.props.formData, this.props.account).then(result => {
+          const { account: { tenantId, aspect, code, category_id }} = this.props;
+          const tenant = {
+            tenantId,
+            aspect,
+            code,
+            category_id
+          };
+          this.props.submit(this.props.formData, tenant).then(result => {
             this.onSubmitReturn(result.error);
           });
         }
@@ -121,7 +130,7 @@ export default class CorpEdit extends React.Component {
     );
   }
   renderOwnerForm() {
-    const { formhoc: { getFieldProps, getFieldError }, intl, account: { code }} = this.props;
+    const { formhoc: { getFieldProps, getFieldError }, intl, account: { code, tenantId }} = this.props;
     return (
       <div>
         {this.renderTextInput(
@@ -136,7 +145,7 @@ export default class CorpEdit extends React.Component {
             rules: [{
               validator: (rule, value, callback) => isLoginNameExist(
                 value, code, this.props.formData.loginId,
-                this.props.account.tenantId, callback, message,
+                tenantId, callback, message,
                 this.props.checkLoginName,
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               )
@@ -172,7 +181,7 @@ export default class CorpEdit extends React.Component {
   }
   render() {
     const isCreating = this.props.formData.key === null;
-    const { intl } = this.props;
+    const { intl, submitting } = this.props;
     return (
       <div className="page-body">
         <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
@@ -189,8 +198,8 @@ export default class CorpEdit extends React.Component {
           }
           <Row>
             <Col span="18" offset="6">
-              <Button htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-              <Button onClick={ this.handleCancel }>{formatGlobalMsg(intl, 'cancel')}</Button>
+              <Button htmlType="submit" type="primary" loading={submitting}>{formatGlobalMsg(intl, 'ok')}</Button>
+              <Button onClick={ this.handleCancel } disabled={submitting}>{formatGlobalMsg(intl, 'cancel')}</Button>
             </Col>
           </Row>
         </Form>

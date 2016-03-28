@@ -522,8 +522,6 @@ export default class ImportDelegateEdit extends React.Component {
         declareCategoryList
       }} = this.props;
 
-    //  const disableSubmit = this.props.tenant.id === -1;
-    // todo loginname no '@' change adapt and tranform logic with new rc-form
     return (
       <div className="main-content">
         <div className="page-body">

@@ -83,16 +83,9 @@ export default {
     const args = [userType, id];
     return mysql.update(sql, args, trans);
   },
-  insertTenantOwner(name, loginId, tenantId, parentTenantId, creator, trans) {
-    // todo union with insertPersonnel
-    const sql = `insert into sso_tenant_users(tenant_id, parent_tenant_id, login_id, name,
-      user_type, creater_login_id, status, created_date) values (?, 0, NOW())`;
-    const args = [tenantId, parentTenantId, loginId, name, 'owner', creator];
-    return mysql.insert(sql, [args], trans);
-  },
   deleteTenantUsers(corpId, trans) {
     const sql = 'delete from sso_tenant_users where tenant_id = ? or parent_tenant_id = ?';
-    const args = [corpId, corpId];
+    const args = [ corpId, corpId ];
     return mysql.delete(sql, args, trans);
   },
   getTenantPersonnelCount(tenantId, filters) {
@@ -170,5 +163,17 @@ export default {
     const sql = 'select user_id as id, name from sso_tenant_users where tenant_id = ?';
     const args = [tenantId];
     return mysql.query(sql, args);
+  },
+  getProfile(loginId) {
+    const sql = `select id as loginId, name, phone, email, avatar, username, role from sso_login
+      as L inner join (select name, login_id, user_type as role from sso_tenant_users
+      where login_id = ?) as TU on TU.login_id = L.id`;
+    const args = [loginId];
+    return mysql.query(sql, args);
+  },
+  updatePersonnelName(loginId, name, trans) {
+    const sql = `update sso_tenant_users set name = ? where login_id = ?`;
+    const args = [name, loginId];
+    return mysql.update(sql, args, trans);
   }
 }

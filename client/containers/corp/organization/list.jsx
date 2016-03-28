@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
-  closeTenantAppsEditor } from '../../../../universal/redux/reducers/corps';
+import {
+  loadOrgans, delCorp, switchStatus, switchTenantApp,
+  openTenantAppsEditor, closeTenantAppsEditor, INITIAL_LIST_PAGE_SIZE
+} from '../../../../universal/redux/reducers/corps';
 import { Table, Button, Icon, message } from 'ant-ui';
 import NavLink from '../../../../reusable/components/nav-link';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
@@ -133,7 +135,7 @@ export default class CorpList extends React.Component {
         current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSizeOptions: ['5', '10'], // todo how to make it sync with initialstate pageSize
+        pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`],
         pageSize: result.pageSize
       }),
       getParams: (pagination, filters, sorter) => {
