@@ -122,7 +122,7 @@ export default class PartnersView extends React.Component {
     title: this.msg('partnerType'),
     dataIndex: 'types',
     render: (o, record) =>
-    record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/') ||
+    record.types.map(t => formatGlobalMsg(this.props.intl, t.code)).join('/') ||
       formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer) // fallback to '客户'
   }, {
     title: this.msg('tenantType'),
@@ -211,7 +211,7 @@ export default class PartnersView extends React.Component {
               partnershipTypes.map(
                 pst =>
                   <RadioButton value={pst.key} key={pst.key}>
-                  {formatGlobalMsg(intl, pst.name)}({pst.count})
+                  {formatGlobalMsg(intl, pst.code)}({pst.count})
                   </RadioButton>
               )
             }
