@@ -8,14 +8,12 @@
  * Version: 1.0
  * Description:
  */
-import util from 'util';
+import { isArray } from 'util';
 
 import tenantDao from '../../models/tenant.db';
 import copsDao from '../../models/cooperation.db';
 import dectrackDao from '../../models/dectrack.db';
 import codes from '../codes';
-
-const isArray = util.isArray;
 
 function *billImport() {
   const bills = this.reqbody.bills;
