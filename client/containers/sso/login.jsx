@@ -37,6 +37,7 @@ export default class Login extends React.Component {
       return;
     }
     const { code, auth: { username, password, remember } } = this.props;
+    // todo xss
     const form = {
       code,
       username,
