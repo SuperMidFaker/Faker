@@ -2,9 +2,9 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {loadTask} from
 '../../../../universal/redux/reducers/task';
-// import NavLink from '../../../../reusable/components/nav-link';
+import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Radio} from 'ant-ui';
+import {Table, Radio, Tag} from 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 const RadioButton = Radio.Button;
@@ -86,6 +86,13 @@ export default class TaskSetting extends React.Component {
     ];
   }
   renderColumnText(record, text) {
+    switch (text) {
+      case '报关单':
+      case '报关清单':
+        return <Tag color="gray">{text}</Tag>;
+      default:
+        return <span>{text}</span>;
+    }
     return <span>{text}</span>;
   }
   render() {
@@ -201,7 +208,24 @@ export default class TaskSetting extends React.Component {
         }
       }, {
         title: '操作',
-        width: 150
+        width: 150,
+        render: (text, record) => { // 根据状态定制显示状态中文描述
+          let returnVal;
+          if (record.bill_no !== undefined) {
+            returnVal = (
+              <span>
+                <NavLink to={`/import/task/inputbill/${record.key}`}>录入报关清单</NavLink>
+                <span className="ant-divider"/>
+                <a role="button" onClick={() => this.handleSend(0, record)}>更多</a>
+              </span>
+            );
+          } else {
+            returnVal = (
+              <span></span>
+            );
+          }
+          return (returnVal);
+        }
       }
     ];
     return (

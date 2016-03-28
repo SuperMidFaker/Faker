@@ -76,7 +76,6 @@ export default {
       args.push((current - 1) * pageSize, pageSize);
       let tasklist = yield mysql.query(sql, args);
       tasklist = yield this.getDecBillHead(tasklist, tenantId);
-      console.log(tasklist);
       return tasklist;
     },
     getStatusCount(loginId, tenantId, status, filters) {
@@ -92,25 +91,53 @@ export default {
         key.push(tasklist[i].key);
       }
       const sql = `select seq_no , del_id from g_dec_bill_head where tenant_id = ? and del_id in (${key.join(',')})`;
-      console.log(sql, args);
-      const decBillList = yield mysql.query(sql, args);
-
+      let decBillList = yield mysql.query(sql, args);
+      decBillList = yield this.getDecHead(decBillList, tenantId);
+      console.log("decBillList", decBillList);
       if (decBillList.length > 0) {
         for (var i = 0; i < tasklist.length; i++) {
           for (var j = 0; j < decBillList.length; j++) {
             if (tasklist[i].key === decBillList[j].del_id) {
-              if(tasklist[i].children === undefined){
+              if (tasklist[i].children === undefined) {
                 tasklist[i].children = [];
               }
-                tasklist[i].children.push({
+              tasklist[i].children.push({
+                key: decBillList[j].seq_no,
                 del_no: decBillList[j].seq_no,
-                send_tenant_id: '报关清单'
+                send_tenant_id: '报关清单',
+                children:decBillList[j].children
               });
             }
           }
         }
       }
       return tasklist;
+    }, * getDecHead(decBillList) {
+      const key = [0];
+      const args = [];
+
+      for (var i = 0; i < decBillList.length; i++) {
+        key.push(decBillList[i].del_id);
+      }
+      const sql = `select id as \`key\`, entry_id , del_id from entry_head where del_id in (${key.join(',')})`;
+      const decList = yield mysql.query(sql, args);
+      if (decList.length > 0) {
+        for (var i = 0; i < decBillList.length; i++) {
+          for (var j = 0; j < decList.length; j++) {
+            if (decBillList[i].del_id === decList[j].del_id) {
+              if (decBillList[i].children === undefined) {
+                decBillList[i].children = [];
+              }
+              decBillList[i].children.push({
+                key:'dec_'+decList[j].key,
+                del_no: decList[j].entry_id,
+                send_tenant_id: '报关单'
+              });
+            }
+          }
+        }
+      }
+      return decBillList;
     }
 
 }

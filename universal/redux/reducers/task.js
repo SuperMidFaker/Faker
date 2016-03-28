@@ -6,9 +6,13 @@ import {
 } from '../../../reusable/common/redux-actions';
 import {
   appendFormAcitonTypes,
-  formReducer
+  formReducer,
+  isFormDataLoadedC,
+  loadFormC,
+  assignFormC,
+  clearFormC,
+  setFormValueC
 } from '../../../reusable/domains/redux/form-common';
-
 const actionTypes = createActionTypes('@@welogix/task/', [
   'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL'
 ]);
@@ -77,4 +81,26 @@ export function loadTask(cookie, params) {
       cookie
     }
   };
+}
+
+export function assignForm(taskState, key) {
+  return assignFormC(key, taskState, 'tasklist', actionTypes);
+}
+
+export function isFormDataLoaded(taskState, key) {
+  return isFormDataLoadedC(key, taskState, 'tasklist');
+}
+
+export function clearForm() {
+  return clearFormC(actionTypes);
+}
+
+export function setFormValue(field, newValue) {
+  return setFormValueC(actionTypes, field, newValue);
+}
+
+export function loadForm(cookie, key) {
+  return loadFormC(cookie, 'v1/import/task', {
+    pid: key
+  }, actionTypes);
 }
