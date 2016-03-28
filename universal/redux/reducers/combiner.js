@@ -10,6 +10,7 @@ import personnel from './personnel';
 import partner from './partner';
 import invitation from './invitation';
 import importdelegate from './importdelegate';
+import importaccept from './importaccept';
 import exportaccept from './exportaccept';
 import task from './task';
 import warehouse from './warehouse';
@@ -34,5 +35,6 @@ export default combineReducers({
   task,
   bill,
   notice,
-  delegate
+  delegate,
+  importaccept
 });
