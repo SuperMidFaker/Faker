@@ -37,7 +37,7 @@ export default class PartnerSetupDialog extends React.Component {
     partnershipTypes: PropTypes.array.isRequired,
     partnerTenants: PropTypes.array.isRequired,
     isPlatformTenant: PropTypes.bool.isRequired,
-    stepView: PropTypes.oneOf(['invite-initial', 'invite-sent', 'invite-offline']),
+    stepView: PropTypes.oneOf([ 'invite-initial', 'invite-sent', 'invite-offline' ]),
     visible: PropTypes.bool.isRequired
   }
   state = {
@@ -52,11 +52,13 @@ export default class PartnerSetupDialog extends React.Component {
         offlineContact: ''
       });
     }
+    /* todo select will focus input and dropdown if we change the value
+     * rc-select componentWillReceiveProps setState({ open: false })
     if (nextProps.visible && nextProps.stepView === 'invite-initial') {
       this.setState({
         tenantInput: ''
       });
-    }
+    }*/
   }
   getTenantOptions = () => {
     return this.props.partnerTenants.map(t =>
@@ -68,7 +70,9 @@ export default class PartnerSetupDialog extends React.Component {
     return option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1;
   }
   handleTenantInputChange = (value) => {
-    this.state.tenantInput = value;
+    this.setState({
+      tenantInput: value
+    });
   }
   handlePartnershipRadioChange = (ev) => {
     if (ev.target.value === 'client') {
@@ -162,7 +166,7 @@ export default class PartnerSetupDialog extends React.Component {
           <Form.Item label={this.msg('partner')} labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
             <Select combobox style={{ width: '100%' }} filterOption={this.getTenantFilterOption}
               searchPlaceholder={this.msg('companyNamePlaceholder')}
-              onChange={this.handleTenantInputChange}
+              onChange={this.handleTenantInputChange} value={this.state.tenantInput}
             >
             {this.getTenantOptions()}
             </Select>
@@ -180,8 +184,8 @@ export default class PartnerSetupDialog extends React.Component {
           { isProviderPartner &&
           <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
             <Checkbox.Group options={partnershipTypes.filter(
-              pst => pst.name !== PARTNERSHIP_TYPE_INFO.customer)
-              .map(pst => formatGlobalMsg(intl, pst.name))} onChange={this.handlePartnerProviderTypeChange}
+              pst => pst.code !== PARTNERSHIP_TYPE_INFO.customer)
+              .map(pst => formatGlobalMsg(intl, pst.code))} onChange={this.handlePartnerProviderTypeChange}
               value={checkedProviderTypes}
             />
           </Form.Item>
