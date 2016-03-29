@@ -3,35 +3,35 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   moduleImport: {
     id: 'component.module.import',
-    defaultMessage: '进口'
+    defaultMessage: '进口报关'
   },
   moduleExport: {
     id: 'component.module.export',
-    defaultMessage: '出口'
+    defaultMessage: '出口报关'
   },
-  moduleTms: {
-    id: 'component.module.tms',
-    defaultMessage: '运输'
+  moduleTransport: {
+    id: 'component.module.transport',
+    defaultMessage: '运输协同'
   },
-  moduleWms: {
-    id: 'component.module.wms',
-    defaultMessage: '仓储'
+  moduleForwarder: {
+    id: 'component.module.forwarder',
+    defaultMessage: '货代协同'
   },
-  modulePayable: {
-    id: 'component.module.payable',
-    defaultMessage: '付汇'
+  moduleInventory: {
+    id: 'component.module.inventory',
+    defaultMessage: '库存管理'
   },
-  moduleReceivable: {
-    id: 'component.module.receivable',
-    defaultMessage: '收汇'
+  moduleTracking: {
+    id: 'component.module.tracking',
+    defaultMessage: '订单追踪'
   },
   moduleCost: {
     id: 'component.module.cost',
     defaultMessage: '成本分析'
   },
-  moduleKpi: {
-    id: 'component.module.kpi',
-    defaultMessage: 'KPI绩效'
+  modulePerformance: {
+    id: 'component.module.performance',
+    defaultMessage: '绩效评估'
   },
   userSetting: {
     id: 'component.user.setting',
