@@ -21,6 +21,7 @@ import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
 import * as ImportDelegate from './containers/import/delegate';
 import * as ImportTask from './containers/import/task';
+import * as ImportAccept from './containers/import/accept';
 import ExportM from './containers/module-export';
 import ExportBoard from './containers/export/dashboard';
 import * as ExportDelegate from './containers/export/delegate';
@@ -103,6 +104,11 @@ export default(store, cookie) => {
             </Route>
             <Route path="task">
               <IndexRoute component={ImportTask.List}/>
+            </Route>
+            <Route path="receive">
+              <IndexRoute component={ImportAccept.List}/>
+              <Route path="new" component={ImportAccept.Edit}/>
+              <Route path="edit/:id" component={ImportDelegate.Edit}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
