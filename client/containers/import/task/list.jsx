@@ -29,7 +29,7 @@ export default class TaskSetting extends React.Component {
     tasklist: PropTypes.object.isRequired,
     loadTask: PropTypes.func.isRequired,
     loginId: PropTypes.number.isRequired,
-    tenantId: PropTypes.object.isRequired,
+    tenantId: PropTypes.number.isRequired,
     statusList: PropTypes.object.isRequired
   }
   constructor(props) {

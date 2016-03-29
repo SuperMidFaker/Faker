@@ -119,7 +119,7 @@ export default {
       for (var i = 0; i < decBillList.length; i++) {
         key.push(decBillList[i].del_id);
       }
-      const sql = `select id as \`key\`, entry_id , del_id from entry_head where del_id in (${key.join(',')})`;
+      const sql = `select id as \`key\`, entry_id , del_id from g_entry_head where del_id in (${key.join(',')})`;
       const decList = yield mysql.query(sql, args);
       if (decList.length > 0) {
         for (var i = 0; i < decBillList.length; i++) {
