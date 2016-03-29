@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { requestSms, verifySms, enterForgot } from '../../../universal/redux/reducers/auth';
+import { requestSms, verifySms } from '../../../universal/redux/reducers/auth';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
@@ -11,58 +11,59 @@ const formatGlobalMsg = format(globalMessages);
 @injectIntl
 @connect(
   state => ({
-    verified: state.auth.verified,
     smsId: state.auth.smsId,
-    userId: state.auth.userId,
-    error: state.auth.error
+    userId: state.auth.userId
   }),
-  { requestSms, verifySms, enterForgot })
+  { requestSms, verifySms })
 export default class Forgot extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    requestSms: PropTypes.func.isRequired,
-    verifySms: PropTypes.func.isRequired,
-    enterForgot: PropTypes.func.isRequired,
     smsId: PropTypes.number,
     userId: PropTypes.number,
-    verified: PropTypes.bool,
-    error: PropTypes.object
+    requestSms: PropTypes.func.isRequired,
+    verifySms: PropTypes.func.isRequired
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   }
   state = {
+    error: null, // { message: {}},
     phone: '',
     smsCode: '',
     newPwd: ''
   }
-  componentWillMount() {
-    this.props.enterForgot();
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.verified && nextProps.verified) {
-      this.context.router.replace('/login');
-    }
-  }
   handleTextChange(ev, field) {
-    this.setState({ ...this.state, [field]: ev.target.value });
+    this.setState({ [field]: ev.target.value });
   }
   handleSmsRequest(ev) {
     ev.preventDefault();
-    this.props.requestSms(this.state.phone);
+    this.props.requestSms(this.state.phone).then(result => {
+      if (result.error) {
+        this.setState({ error: result.error });
+      }
+    });
   }
   handleSmsCancel(ev) {
     ev.preventDefault();
-    // this.props.leaveForgot();
     this.context.router.goBack();
   }
   handleSmsVerify(ev) {
     ev.preventDefault();
-    this.props.verifySms(this.props.smsId, this.props.userId, this.state.smsCode, this.state.newPwd);
+    this.props.verifySms(
+      this.props.smsId, this.props.userId,
+      this.state.smsCode, this.state.newPwd
+    ).then(result => {
+      if (result.error) {
+        this.setState({ error: result.error });
+      } else {
+        this.context.router.replace('/login');
+      }
+    });
   }
   render() {
     // todo resendSmsCode
-    const { intl, error } = this.props;
+    const { intl } = this.props;
+    const error = this.state.error;
     return (
       <div className="panel-body">
         { !this.props.smsId ?

@@ -34,11 +34,12 @@ export default [
    ['post', '/v1/user/personnel', submitPersonnel],
    ['put', '/v1/user/personnel', editPersonnel],
    ['delete', '/v1/user/personnel', delPersonnel],
-   ['put', '/v1/user/password', changePassword],
    ['get', '/v1/user/corp/check/subdomain', isSubdomainExist],
    ['get', '/v1/user/check/loginname', isLoginNameExist],
    ['put', '/v1/user/corp/status', switchCorpStatus],
    ['put', '/v1/user/personnel/status', switchPersonnelStatus],
+   ['put', '/v1/user/password', changePassword],
+   ['put', '/v1/user/profile', updateUserProfile],
    ['get', '/v1/admin/notexist', getUserAccount]
 ];
 
@@ -135,14 +136,18 @@ function *getUserAccount() {
   }
   const curUserId = this.state.user.userId;
   try {
-    const accounts = yield tenantUserDao.getAccountInfo(curUserId);
+    const [ accounts, profiles ] = yield [
+      tenantUserDao.getAccountInfo(curUserId),
+      tenantUserDao.getProfile(curUserId)
+    ];
     let account;
-    if (accounts.length > 0) {
+    if (accounts.length === 1 && profiles.length === 1) {
       account = accounts[0];
+      profiles[0].username = profiles[0].username.split('@')[0];
     } else {
       throw new Error('current user account do not exist');
     }
-    Result.OK(this, { ...account, type: userType });
+    Result.OK(this, { ...account, type: userType, profile: profiles[0] });
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
@@ -154,17 +159,17 @@ function *getOrganizations() {
   const current = parseInt(this.request.query.currentPage, 10);
   try {
     console.time('organ count');
-    const counts = yield tenantDao.getOrganCountByParent(parentTenantId);
+    const [ counts, corps, tenantAppPackage ] = yield [
+      tenantDao.getOrganCountByParent(parentTenantId),
+      tenantDao.getPagedOrgansByParent(parentTenantId, current, pageSize),
+      tenantDao.getAppsInfoById(parentTenantId)
+    ];
     console.timeEnd('organ count');
-    console.time('organs');
-    const corps = yield tenantDao.getPagedOrgansByParent(parentTenantId, current, pageSize);
-    console.timeEnd('organs');
-    console.time('appPackage');
-    const tenantAppPackage = yield tenantDao.getAppsInfoById(parentTenantId);
-    console.timeEnd('appPackage');
     console.time('apps');
+    const appsYielders = corps.map(corp => tenantDao.getAppsInfoById(corp.key));
+    const corpsApps = yield appsYielders;
     for (let idx = 0; idx < corps.length; ++idx) {
-      corps[idx].apps = yield tenantDao.getAppsInfoById(corps[idx].key);
+      corps[idx].apps = corpsApps[idx];
     }
     console.timeEnd('apps');
     const data = {
@@ -219,8 +224,11 @@ function *submitCorp() {
     corp.loginId = result.insertId;
     corp.status = ACCOUNT_STATUS.normal.name;
     corp.apps = [];
-    yield tenantUserDao.insertTenantOwner(corp.contact, corp.loginId, corp.key, parentTenantId,
-                                          this.state.user.userId, trans);
+    yield tenantUserDao.insertPersonnel(
+      this.state.user.userId, corp.loginId,
+      { name: corp.contact, role: TENANT_ROLE.owner.name },
+      { id: corp.key, parentId: parentTenantId }, trans
+    );
     yield tenantDao.updateBranchCount(parentTenantId, 1, trans);
     yield tenantDao.updateUserCount(corp.key, 1, trans);
     yield tenantDao.updateUserCount(parentTenantId, 1, trans);
@@ -333,13 +341,15 @@ function *getCorpPersonnels() {
   const sortField = this.request.query.sortField;
   const sortOrder = this.request.query.sortOrder;
   try {
-    const counts = yield tenantUserDao.getTenantPersonnelCount(tenantId, filters);
-    const totalCount = counts[0].num;
-    const personnel = yield tenantUserDao.getPagedPersonnelInCorp(tenantId, current, pageSize,
-                                                                  filters, sortField, sortOrder);
+    const [ counts, personnel ] = yield [
+      tenantUserDao.getTenantPersonnelCount(tenantId, filters),
+      tenantUserDao.getPagedPersonnelInCorp(
+        tenantId, current, pageSize, filters, sortField, sortOrder
+      )
+    ];
     // 换页,切换页数时从这里传到reducer里更新
     Result.OK(this, {
-      totalCount,
+      totalCount: counts[0].num,
       current,
       pageSize,
       data: personnel.map(pers => {
@@ -443,22 +453,28 @@ function *getPersonnelInfo() {
 }
 
 function *changePassword() {
-  const body = yield cobody(this);
   const curUserId = this.state.user.userId;
-  const users = yield userDao.getUserById(curUserId);
-  if (users.length > 0) {
-    const user = users[0];
-    const checkpwd = bCryptUtil.checkpw(body.oldPwd, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(body.oldPwd), user.password);
-    if (checkpwd) {
-      const salt = bCryptUtil.gensalt();
-      const pwdHash = bCryptUtil.hashpw(body.newPwd, salt);
-      const result = yield userDao.updatePassword(salt, pwdHash, curUserId);
-      Result.OK(this);
+  try {
+    const [ body, users ] = yield [
+      cobody(this),
+      userDao.getUserById(curUserId)
+    ];
+    if (users.length > 0) {
+      const user = users[0];
+      const checkpwd = bCryptUtil.checkpw(body.oldPwd, user.password) || bCryptUtil.checkpw(bCryptUtil.md5(body.oldPwd), user.password);
+      if (checkpwd) {
+        const salt = bCryptUtil.gensalt();
+        const pwdHash = bCryptUtil.hashpw(body.newPwd, salt);
+        const result = yield userDao.updatePassword(salt, pwdHash, curUserId);
+        Result.OK(this);
+      } else {
+        Result.ParamError(this, { key: 'incorretOldPwd' });
+      }
     } else {
-      Result.ParamError(this, '旧密码有误');
+      Result.InternalServerError(this, { key: 'invalidUser' });
     }
-  } else {
-    Result.InternalServerError(this, '用户异常');
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
   }
 }
 
@@ -526,6 +542,36 @@ function *switchTenantApp() {
     yield tenantDao.changeOverTenantApp(body.tenantId, body.checked, body.app);
     Result.OK(this);
   } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
+function *updateUserProfile() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const profile = body.profile;
+    trans = yield mysql.beginTransaction();
+    const yielders = [
+      userDao.updateUserProfile(
+        profile.loginId, profile.phone, profile.avatar,
+        `${profile.username}@${body.code}`, profile.email, trans
+      ),
+      tenantUserDao.updatePersonnelName(
+        profile.loginId, profile.name, trans
+      )
+    ];
+    if (profile.role === TENANT_ROLE.owner.name) {
+      yielders.push(tenantDao.updateCorpOwnerInfo(
+        body.tenantId, null, profile.phone, profile.name,
+        profile.email, trans
+      ));
+    }
+    yield yielders;
+    yield mysql.commit(trans);
+    Result.OK(this);
+  } catch (e) {
+    yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
   }
 }

@@ -46,5 +46,10 @@ export default {
     const sql = 'update sso_login set phone = ?, username = ?, email = ? where id = ?';
     const args = [phone, name, email, lid];
     return mysql.update(sql, args, trans);
+  },
+  updateUserProfile(lid, phone, avatar, name, email, trans) {
+    const sql = 'update sso_login set phone = ?, avatar = ?, username = ?, email = ? where id = ?';
+    const args = [phone, avatar, name, email, lid];
+    return mysql.update(sql, args, trans);
   }
 }

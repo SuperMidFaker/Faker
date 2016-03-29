@@ -10,23 +10,22 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    username: state.account.username,
-    usertype: state.account.type
+    avatar: state.account.profile.avatar
   })
 )
 export default class AmUserNav extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    username: PropTypes.string.isRequired,
-    usertype: PropTypes.string.isRequired
+    avatar: PropTypes.string.isRequired
   }
   render() {
     const MenuItem = Menu.Item;
-    const { intl } = this.props;
+    const { intl, avatar } = this.props;
+    const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     const userMenu = (
       <Menu>
         <MenuItem key="corps">
-          <NavLink to="/account/user">
+          <NavLink to="/account/profile">
             <i className="icon s7-user"></i>
             <span>{formatMsg(intl, 'userSetting')}</span>
           </NavLink>
@@ -49,7 +48,7 @@ export default class AmUserNav extends React.Component {
       <li className="dropdown">
         <Popover placement="bottomLeft" trigger="click" overlay={userMenu}>
           <a role="button" aria-expanded="false" className="dropdown-toggle">
-            <img src="/assets/img/avatar.jpg" />
+            <img src={avatar || defaultAvatar } />
             <span className="angle-down s7-angle-down"></span>
           </a>
         </Popover>

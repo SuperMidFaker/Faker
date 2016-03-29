@@ -9,12 +9,12 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
-  'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
-  'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
   'ORGANS_LOAD', 'ORGANS_LOAD_SUCCEED', 'ORGANS_LOAD_FAIL',
   'ORGAN_FORM_LOAD', 'ORGAN_FORM_LOAD_SUCCEED', 'ORGAN_FORM_LOAD_FAIL',
   'ORGAN_EDIT', 'ORGAN_EDIT_SUCCEED', 'ORGAN_EDIT_FAIL',
+  'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
+  'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
@@ -23,9 +23,11 @@ export const CORP_EDIT_SUCCEED = actionTypes.CORP_EDIT_SUCCEED;
 export const CORP_SUBMIT_SUCCEED = actionTypes.CORP_SUBMIT_SUCCEED;
 export const CORP_DELETE_SUCCEED = actionTypes.CORP_DELETE_SUCCEED;
 export const ORGAN_EDIT_SUCCEED = actionTypes.ORGAN_EDIT_SUCCEED;
+export const INITIAL_LIST_PAGE_SIZE = 5;
 const initialState = {
   loaded: false,
   loading: false,
+  submitting: false,
   selectedIndex: -1,
   formData: {
     poid: '',
@@ -42,13 +44,27 @@ const initialState = {
   corplist: {
     tenantAppPackage: [],
     totalCount: 0,
-    pageSize: 5,
+    pageSize: INITIAL_LIST_PAGE_SIZE,
     current: 1,
     data: [] // structure see getOrganizations
   }
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    // corp/info
+    case actionTypes.IMG_UPLOAD_SUCCEED: {
+      const form = { ...state.formData };
+      form[action.field] = action.result.data;
+      return { ...state, formData: form };
+    }
+    case actionTypes.CORP_EDIT_SUCCEED: {
+      if (state.selectedIndex !== -1) {
+        const corplist = {...state.corplist};
+        corplist.data[state.selectedIndex] = action.data.corp;
+        return {...state, selectedIndex: -1, corplist};
+      }
+    }
+    // organization
     case PERSONNEL_EDIT_SUCCEED:
       if (action.data.personnel.role === TENANT_ROLE.owner.name) {
         // 修改租户拥有者需重新加载租户列表
@@ -75,17 +91,6 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.ORGANS_LOAD_FAIL:
       return { ...state, loading: false };
-    case actionTypes.CORP_DELETE_SUCCEED: {
-      const corplist = { ...state.corplist };
-      corplist.totalCount--;
-      return { ...state, corplist };
-    }
-    case actionTypes.ORGAN_EDIT_SUCCEED: {
-      const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
-        { ...corp, ...action.result.data } : corp);
-      return { ...state, corplist: { ...state.corplist, data: corps },
-        formData: initialState.formData, corpUsers: [] };
-    }
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const corplist = { ...state.corplist };
       corplist.data[action.index].status = action.data.status;
@@ -107,6 +112,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, appEditor: action.tenantAppInfo };
     case actionTypes.CLOSE_TENANT_APPS_EDITOR:
       return { ...state, appEditor: initialState.appEditor };
+    case actionTypes.ORGAN_EDIT:
+    case actionTypes.CORP_SUBMIT:
+      return { ...state, submitting: true };
+    case actionTypes.ORGAN_EDIT_SUCCEED: {
+      const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
+        { ...corp, ...action.result.data } : corp);
+      return { ...state, corplist: { ...state.corplist, data: corps },
+        formData: initialState.formData, corpUsers: [], submitting: false };
+    }
     case actionTypes.CORP_SUBMIT_SUCCEED: {
       const corplist = { ...state.corplist };
       if ((corplist.current - 1) * corplist.pageSize <= corplist.totalCount // '=' because of totalCount 0
@@ -114,20 +128,15 @@ export default function reducer(state = initialState, action) {
         corplist.data.push(action.result.data);
       }
       corplist.totalCount++;
+      return { ...state, corplist, submitting: false };
+    }
+    case actionTypes.ORGAN_EDIT_FAIL:
+    case actionTypes.CORP_SUBMIT_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.CORP_DELETE_SUCCEED: {
+      const corplist = { ...state.corplist };
+      corplist.totalCount--;
       return { ...state, corplist };
-    }
-    // todo deal with submit fail submit loading
-    case actionTypes.IMG_UPLOAD_SUCCEED: {
-      const form = { ...state.formData };
-      form[action.field] = action.result.data;
-      return { ...state, formData: form };
-    }
-    case actionTypes.CORP_EDIT_SUCCEED: {
-      if (state.selectedIndex !== -1) {
-        const corplist = {...state.corplist};
-        corplist.data[state.selectedIndex] = action.data.corp;
-        return {...state, selectedIndex: -1, corplist};
-      }
     }
     default:
       return formReducer(actionTypes, state, action, { key: null, country: CHINA_CODE }, 'corplist')

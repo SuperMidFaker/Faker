@@ -4,6 +4,7 @@ import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assig
   clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
 import { TENANT_ROLE } from '../../../universal/constants';
 import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
+import { PROFILE_UPDATE_SUCCEED } from './account';
 
 const actionTypes = createActionTypes('@@welogix/personnel/', [
   'SWITCH_TENANT',
@@ -19,6 +20,7 @@ export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loaded: false,
   loading: false,
+  submitting: false,
   filters: [],
   selectedIndex: -1,
   branches: [],
@@ -42,6 +44,7 @@ export default function reducer(state = initialState, action) {
     case CORP_SUBMIT_SUCCEED:
     case CORP_DELETE_SUCCEED:
     case ORGAN_EDIT_SUCCEED:
+    case PROFILE_UPDATE_SUCCEED:
       // 租户改变重新加载
       return { ...state, loaded: false };
     case actionTypes.PERSONNEL_LOAD:
@@ -69,12 +72,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const personnelist = { ...state.personnelist };
       personnelist.data[action.index].status = action.data.status;
-      return {...state, personnelist};
+      return { ...state, personnelist };
     }
+    case actionTypes.PERSONNEL_SUBMIT:
+    case actionTypes.PERSONNEL_EDIT:
+      return { ...state, submitting: true };
+    case actionTypes.PERSONNEL_SUBMIT_FAIL:
+    case actionTypes.PERSONNEL_EDIT_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.PERSONNEL_EDIT_SUCCEED: {
       const personnelist = { ...state.personnelist };
       personnelist.data[state.selectedIndex] = action.data.personnel;
-      return { ...state, personnelist, selectedIndex: -1 };
+      return { ...state, personnelist, selectedIndex: -1, submitting: false };
     }
     case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
       const personnelist = { ...state.personnelist };
@@ -85,9 +94,8 @@ export default function reducer(state = initialState, action) {
         });
       }
       personnelist.totalCount++;
-      return { ...state, personnelist };
+      return { ...state, personnelist, submitting: false };
     }
-    // todo deal with submit fail submit loading
     default:
       return formReducer(actionTypes, state, action, { key: null, role: TENANT_ROLE.member.name },
                          'personnelist') || state;

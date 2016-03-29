@@ -61,6 +61,30 @@ const messages = defineMessages({
     id: 'container.form.email.error',
     defaultMessage: 'email格式错误'
   },
+  fullName: {
+    id: 'container.profile.fullname',
+    defaultMessage: '姓名'
+  },
+  username: {
+    id: 'container.profile.username',
+    defaultMessage: '用户名'
+  },
+  phone: {
+    id: 'container.profile.phone',
+    defaultMessage: '手机号'
+  },
+  email: {
+    id: 'container.profile.email',
+    defaultMessage: '邮箱'
+  },
+  fullNameMessage: {
+    id: 'container.profile.fullname.message',
+    defaultMessage: '2位以上中英文'
+  },
+  avatar : {
+    id: 'container.profile.avatar',
+    defaultMessage: '头像'
+  },
   advancedSearch: {
     id: 'container.form.advancedSearch',
     defaultMessage: '高级搜索'

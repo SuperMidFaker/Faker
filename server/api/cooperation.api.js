@@ -23,7 +23,7 @@ function *partnersG() {
     const partnerships = yield coopDao.getTenantPartnerships(tenantId, filters);
     const partnershipTypes = partnershipTypeNames.map((name, index) => ({
       key: `${index}`, // used as RadionButton key
-      name,
+      code: name,
       count: partnerships.filter(pts => pts.name === name).length
     }));
     for (let i = 0; i < partners.length; ++i) {
@@ -31,7 +31,7 @@ function *partnersG() {
       partner.types = partnerships.filter(ps => ps.partnerName === partner.name).map(
         pt => ({
           key: pt.type,
-          name: pt.name
+          code: pt.name
         })
       );
     }
@@ -156,7 +156,7 @@ function *receivedInvitationsG() {
       receive.types = partnerships.filter(pts => pts.inviterId === invitations[i].inviterId)
         .map(pts => ({
           key: pts.type,
-          name: pts.name
+          code: pts.name
         }));
       receiveds.push(receive);
     }
@@ -251,7 +251,7 @@ function *sentInvitationsG() {
       sent.types = partnerships.filter(pts => pts.partnerName === invitations[i].name)
         .map(pts => ({
           key: pts.type,
-          name: pts.name
+          code: pts.name
         }));
       sents.push(sent);
     }

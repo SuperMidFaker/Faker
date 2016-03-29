@@ -7,8 +7,7 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
 '../../../../universal/redux/reducers/personnel';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { isLoginNameExist, checkLoginName } from
-'../../../../reusable/domains/redux/checker-reducer';
+import { isLoginNameExist, checkLoginName } from 'reusable/domains/redux/checker-reducer';
 import { validatePhone } from '../../../../reusable/common/validater';
 import { TENANT_ROLE } from '../../../../universal/constants';
 import { format } from 'universal/i18n/helpers';
@@ -43,6 +42,7 @@ function goBack(router) {
   state => ({
     selectedIndex: state.personnel.selectedIndex,
     formData: state.personnel.formData,
+    submitting: state.personnel.submitting,
     code: state.account.code,
     tenant: state.personnel.tenant
   }),
@@ -81,13 +81,14 @@ export default class CorpEdit extends React.Component {
     tenant: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   }
   onSubmitReturn(error) {
     if (error) {
@@ -127,11 +128,10 @@ export default class CorpEdit extends React.Component {
     );
   }
   render() {
-    const { intl, formhoc: { getFieldProps, getFieldError }, code } = this.props;
+    const { submitting, intl, formhoc: { getFieldProps, getFieldError }, code } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
     const msg = (descriptor) => formatMsg(intl, descriptor);
-    // todo loginname no '@'
     return (
       <div className="main-content">
         <div className="page-body">
@@ -150,7 +150,8 @@ export default class CorpEdit extends React.Component {
                     this.props.tenant.id, callback, message, this.props.checkLoginName,
                     (msgs, descriptor) => format(msgs)(intl, descriptor))
                 }]
-              })} />
+              })}
+              />
             </FormItem>
             {
               isCreating && this.renderTextInput(
@@ -181,9 +182,14 @@ export default class CorpEdit extends React.Component {
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
-                <Button disabled={ disableSubmit } htmlType="submit" type="primary"
-                title={ disableSubmit ? msg('nonTenantEdit') : '' }>{formatGlobalMsg(intl, 'ok')}</Button>
-                <Button onClick={ this.handleCancel }>{formatGlobalMsg(intl, 'cancel')}</Button>
+                <Button disabled={ disableSubmit } htmlType="submit" type="primary" loading={submitting}
+                  title={ disableSubmit ? msg('nonTenantEdit') : '' }
+                >
+                {formatGlobalMsg(intl, 'ok')}
+                </Button>
+                <Button onClick={ this.handleCancel } disabled={submitting}>
+                {formatGlobalMsg(intl, 'cancel')}
+                </Button>
               </Col>
             </Row>
           </Form>
