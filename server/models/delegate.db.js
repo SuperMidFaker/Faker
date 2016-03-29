@@ -1,4 +1,6 @@
 import mysql from '../../reusable/db-util/mysql';
+import { prng } from 'crypto';
+
 function putInCompositions(f, args) {
   let sql = '';
   if (f.name === 'del_no') {
@@ -38,6 +40,55 @@ function concatFilterSqls(filters, args) {
 
 
 export default {
+  /**
+业务委托受理表g_bus_delegate
+主键为del_id，业务单号字段为del_no。因此不同公司业务单号可以相同。
+对于收费和试用用户是否可分别对待，试用用户随机数32位。
+收费用户，规则：公司代码（可不要，如有限定5位）＋业务模块首字母缩写（是否可由企业自己设定，限定三位）＋年后两位＋两位月＋两位日期（可不要）＋五位流水（有两位日期可三位流水）
+实现：表设定或代码控制，是我决定还是海峰决定。没有公司代码的业务单号，不同公司的业务单号有可能相同，但流水要按公司生成，有日期按日计流水，无日期按月计流水。
+   * @param  {string} prefix only limit 3 words
+   * @param  {int} tenantId
+   */
+  * genDelNo(code, prefix, tenantId) {
+    const res = yield mysql.query('select count(del_id) as sum from g_bus_delegate where tenant_id = ?', [tenantId]);
+    let sum = String(res[0].sum);
+    const dt = new Date();
+    const nos = [];
+    if (code) {
+      let s = code.substr(0, 5);
+      let l = 5 - s.length;
+      while (l > 0) {
+        s = `0${s}`;
+        --l;
+      }
+      nos.push(s);
+    } else {
+      nos.push(prng(10).toString('hex').substr(0, 5));
+    }
+    if (prefix) {
+      nos.push(prefix);
+    } else {
+      nos.push(prng(10).toString('hex').substr(0, 3));
+    }
+    nos.push(String(dt.getFullYear()).substr(2));
+    let m = String(dt.getMonth() + 1);
+    if (m.length === 1) {
+      m += '0';
+    }
+    nos.push(m);
+    m = String(dt.getDate());
+    if (m.length === 1) {
+      m += '0';
+    }
+    nos.push(m);
+    let len = 3 - sum.length;
+    while (len > 0) {
+      sum = `0${sum}`;
+      --len;
+    }
+    nos.push(sum);
+    return {del_no: nos.join('')};
+  },
     getTenantdelegateCount(tenantId, filters,currentStatus) {
     const args = [tenantId];
       let statusClause = "";

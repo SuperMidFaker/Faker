@@ -13,6 +13,9 @@ import { isArray } from 'util';
 import tenantDao from '../../models/tenant.db';
 import copsDao from '../../models/cooperation.db';
 import dectrackDao from '../../models/dectrack.db';
+import delegateDao from '../../models/delegate.db';
+import decbillDao from '../../models/decbill.db';
+import entryDao from '../../models/entry.db';
 import codes from '../codes';
 
 function *billImport() {
@@ -21,7 +24,39 @@ function *billImport() {
   if (isArray(bills)) {
     for (let i = 0; i < bills.length; i++) {
       const bill = bills[i];
+      let res = yield [tenantDao.getTenantInfoByCode(bill.head.trade_co),
+        tenantDao.getTenantInfoByCode(bill.head.agent_code)];
+      const tenant = res[0][0];  // owner tenant
+      const ctenant = res[1][0]; // create tenant
+      if (tenant && ctenant) {
+        res = yield delegateDao.genDelNo(tenant.code, tenant.delegate_prefix, tenant.tenant_id);
+        bill.head.external_no = bill.head.del_no;
+        bill.head.del_no = res.del_no;
+        bill.head.tenant_id = tenant.tenant_id;
+        bill.head.create_tenant_id = ctenant.tenant_id;
 
+        const entryId = bill.head.entry_id;
+        bill.head.entry_id = '';
+        for (let j = 0; j < bill.lists.length; j++) {
+          bill.lists[j].del_no = bill.head.del_no;
+          bill.lists[j].tenant_id = tenant.tenant_id;
+          bill.lists[j].create_tenant_id = ctenant.tenant_id;
+        }
+        const eIds = entryId.split(',');
+        const eArr = [];
+        eIds.forEach(id => {
+          eArr.push({
+            entry_id: id,
+            del_no: bill.head.del_no,
+            i_e_flag: bill.head.delegate_type === 0 ? 'I' : 'E',
+            i_e_port: bill.head.master_customs,
+            destination_port: bill.head.distinate_port,
+            // TODO
+          });
+        });
+        yield [decbillDao.insertHead(bill.head),
+          decbillDao.insertLists(bill.lists)];
+      }
     }
     return this.ok();
   }
