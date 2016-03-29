@@ -106,17 +106,21 @@ export default {
       const args = [];
       const sql = `SELECT TRADE_MODE as \`value\`,CONCAT(TRADE_MODE,' | ',ABBR_TRADE) as \`text\` from para_trade`;
       return mysql.query(sql, args);
-    }, * insertImportAccept(entity, trans) {
+    },
+    getShortName() {
+      const args = [];
+      const sql = `SELECT tenant_id as \`value\`,CONCAT(tenant_id,' | ',short_name) as \'text'\ FROM sso_tenants `;
+      return mysql.query(sql, args);
+    },
+    * insertImportAccept(entity, trans) {
       let insertClause = [];
       let args = [];
       let varlueClause = [];
 
       for (var el in entity) {
-        if (el !== 'category') {
-          insertClause.push(el);
-          args.push(entity[el]);
-          varlueClause.push('?');
-        }
+        insertClause.push(el);
+        args.push(entity[el]);
+        varlueClause.push('?');
       }
 
       const result = yield mysql.query(`SELECT REPLACE(uuid(),'-','') as uid`, [], trans);
@@ -130,7 +134,7 @@ export default {
                values(${varlueClause.join(",")},NOW(),NOW())`;
       yield mysql.insert(sql, args, trans);
 
-      sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no,usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
+      sql = `select T1.short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,master_customs,declare_way_no,usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
           where T.del_no= ? `
       console.log(sql);
       return yield mysql.query(sql, [uuid], trans);
@@ -160,11 +164,7 @@ export default {
       const sql = `SELECT distinct category FROM g_bus_delegate_files where tenant_id=?`;
       return mysql.query(sql, args);
     },
-    getShortName() {
-      const args = [];
-      const sql = `SELECT tenant_id as \`value\`,CONCAT(tenant_id,' | ',short_name) as \'text'\ FROM sso_tenants `;
-      return mysql.query(sql, args);
-    },* saveFileInfo(files, tenantId, delId, delno, trans) {
+    * saveFileInfo(files, tenantId, delId, delno, trans) {
       for (var i = 0; i < files.length; i++) {
         const file = files[i];
         if (file.fileflag === 0) {

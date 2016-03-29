@@ -11,8 +11,8 @@ import {
   Col,
   Switch,
   message,
-  Menu,
-  Dropdown,
+  // Menu,
+  // Dropdown,
   Tabs,
   Table
 } from
@@ -40,7 +40,7 @@ const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
-const DropdownButton = Dropdown.Button;
+// const DropdownButton = Dropdown.Button;
 const TabPane = Tabs.TabPane;
 
 function fetchData({state, dispatch, cookie, params}) {
@@ -253,7 +253,7 @@ export default class ImportAcceptEdit extends React.Component {
       </FormItem>
     );
   }
-  renderSelect(labelName, placeholder, field, required, source, rules, disabled = false) {
+  renderSelect(labelName, placeholder, field, required, source, rules) {
     const {
       formhoc: {
         getFieldProps,
@@ -268,7 +268,7 @@ export default class ImportAcceptEdit extends React.Component {
       }} help={rules && getFieldError(field)} hasFeedback required={required}>
         <Select style={{
           width: '100%'
-        }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
+        }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
           <OptGroup label={placeholder}>
             {source.map((item) => (
               <Option value={item.value} key={item.value}>{item.text}</Option>
@@ -342,7 +342,7 @@ export default class ImportAcceptEdit extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col span="24" offset="3">
+          <Col span="16" offset="1">
             {this.renderSelect('申报单位', '选择客户', 'send_tenant_id', true, shortNameList, [
               {
                 required: true

@@ -13,7 +13,13 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Button, message, Radio, Tag, Icon} from 'ant-ui';
+import {
+  Table,
+  Button,
+  message,
+  Radio,
+  Icon
+} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
@@ -138,7 +144,7 @@ export default class ImportAccept extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.context.router.push({ pathname: to, query });
+    this.context.router.push({pathname: to, query});
   }
   handleSend(status, record) {
     this.props.sendlist.data = [];
@@ -204,10 +210,8 @@ export default class ImportAccept extends React.Component {
       customsBrokerList,
       statusList: {
         statusValue,
-        notSendCount,
         notAcceptCount,
-        acceptCount,
-        invalidCount
+        acceptCount
       },
       idlist,
       loading
@@ -362,7 +366,7 @@ export default class ImportAccept extends React.Component {
             <SearchBar placeholder="提运单号/报关业务号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <RadioGroup defaultValue="0" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
+          <RadioGroup defaultValue="1" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
             <RadioButton value="-1">
               <span>所有状态</span>
             </RadioButton>
@@ -377,7 +381,7 @@ export default class ImportAccept extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/receive/new')}>
-              <Icon type="plus-circle-o" />新增
+              <Icon type="plus-circle-o"/>新增
             </Button>
           </div>
           <div className="panel-body body-responsive">
