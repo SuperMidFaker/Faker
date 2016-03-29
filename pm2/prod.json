@@ -9,4 +9,15 @@
     "env": {
         "NODE_ENV": "production"
     }
+},{
+    "name"       : "welogix-openapi",
+    "script"     : "./server/sboot.js",
+    "error_file" : "./pm2/log/openapi-err.log",
+    "out_file"   : "./pm2/log/openapi-out.log",
+    "pid_file"   : "./pm2/log/openapi.pid",
+    "args"      : "['--port=3023', '--api=true']",
+    "log_date_format" : "YYYY-MM-DD HH:mm Z",
+    "env": {
+        "NODE_ENV": "production"
+    }
 }]
