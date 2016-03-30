@@ -23,6 +23,10 @@ module.exports = (app) => {
     json(this, obj);
   };
 
+  app.context.nf = app.response.nf = function nf() {
+    json(this, codes.notFound(codes.not_found));
+  };
+
   app.context.onerror = function onerror(err) {
     if (!err) return;
 
@@ -32,8 +36,6 @@ module.exports = (app) => {
     // handler and log.
     if (this.headerSent || !this.writable) {
       err.headerSent = true;
-
-      console.error('ksdjfal11');
       return;
     }
 
