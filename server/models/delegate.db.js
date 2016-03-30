@@ -1,4 +1,5 @@
 import mysql from '../../reusable/db-util/mysql';
+import Orm from '../../reusable/db-util/orm';
 import { prng } from 'crypto';
 
 function putInCompositions(f, args) {
@@ -37,7 +38,9 @@ function concatFilterSqls(filters, args) {
   return sqlClause;
 }
 
+const colsDe = ['del_id/a', 'del_no/v', 'status/i', 'customs_status/i', 'del_date/dt', 'invoice_no/v', 'bill_no/v', 'send_tenant_id/i', 'rec_tenant_id/i', 'creater_login_id/i', 'rec_login_id/i', 'rec_del_date/dt', 'master_customs/v', 'declare_way_no/v', 'usebook/i', 'ems_no/v', 'trade_mode/v', 'urgent/i', 'delegate_type/i', 'tenant_id/i', 'other_note/v', 'created_date/dt', 'update_date/dt', 'remark/v'];
 
+const deOrm = new Orm(colsDe, 'g_bus_delegate');
 
 export default {
   /**
@@ -51,7 +54,7 @@ export default {
    */
   * genDelNo(code, prefix, tenantId) {
     const res = yield mysql.query('select count(del_id) as sum from g_bus_delegate where tenant_id = ?', [tenantId]);
-    let sum = String(res[0].sum);
+    let sum = String(res[0].sum + 1);
     const dt = new Date();
     const nos = [];
     if (code) {
@@ -78,7 +81,7 @@ export default {
     nos.push(m);
     m = String(dt.getDate());
     if (m.length === 1) {
-      m += '0';
+      m = `0${m}`;
     }
     nos.push(m);
     let len = 3 - sum.length;
@@ -88,6 +91,9 @@ export default {
     }
     nos.push(sum);
     return {del_no: nos.join('')};
+  },
+  insertDe(de) {
+    return deOrm.insertObj(de);
   },
     getTenantdelegateCount(tenantId, filters,currentStatus) {
     const args = [tenantId];

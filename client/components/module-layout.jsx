@@ -20,12 +20,12 @@ export default class ModuleLayout extends React.Component {
     enabledmods: [
       DEFAULT_MODULES.import,
       DEFAULT_MODULES.export,
-      DEFAULT_MODULES.tms,
-      DEFAULT_MODULES.wms,
-      DEFAULT_MODULES.payable,
-      DEFAULT_MODULES.receivable,
+      DEFAULT_MODULES.transport,
+      DEFAULT_MODULES.forwarding,
+      DEFAULT_MODULES.inventory,
+      DEFAULT_MODULES.tracking,
       DEFAULT_MODULES.cost,
-      DEFAULT_MODULES.kpi
+      DEFAULT_MODULES.performance
     ]
   };
 
