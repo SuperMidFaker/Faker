@@ -24,6 +24,10 @@ app.use(verify);
 
 app.use(loadRoute(__dirname, 'apis'));
 
+app.use(function *nf() {
+  return this.nf();
+});
+
 const port = process.env.PORT || 3023;
 // if (!isNaN(process.env.PORT)) {
 //   port = parseInt(process.env.PORT, 10);

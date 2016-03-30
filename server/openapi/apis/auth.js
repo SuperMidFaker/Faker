@@ -32,6 +32,9 @@ function genToken(appid, appSecret, ip) {
 }
 
 function *token() {
+  if (!this.header['content-type']) {
+    return this.error(codes.missing_content_type);
+  }
   const b = yield parse(this.req);
   if (b.grant_type === 'client_credential') {
     let res = yield appDao.getAppInfo(b.appid, b.app_secret);

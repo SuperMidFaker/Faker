@@ -22,6 +22,9 @@ export default function *apiAuth(next) {
     if (this.method === 'GET') {
       this.reqbody = this.query;
     } else {
+      if (!this.header['content-type']) {
+        return this.error(codes.missing_content_type);
+      }
       this.reqbody = yield parse(this.req);
       if (!this.reqbody.access_token) {
         return this.forbidden(codes.access_token_not_valid);
