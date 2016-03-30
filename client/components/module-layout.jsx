@@ -21,7 +21,7 @@ export default class ModuleLayout extends React.Component {
       DEFAULT_MODULES.import,
       DEFAULT_MODULES.export,
       DEFAULT_MODULES.transport,
-      DEFAULT_MODULES.forwarder,
+      DEFAULT_MODULES.forwarding,
       DEFAULT_MODULES.inventory,
       DEFAULT_MODULES.tracking,
       DEFAULT_MODULES.cost,

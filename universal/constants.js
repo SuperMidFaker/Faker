@@ -67,7 +67,7 @@ const DEFAULT_MODULES = {
   import:       { cls: 'import', url: '/import', text: 'moduleImport' },
   export:       { cls: 'export', url: '/export', text: 'moduleExport' },
   transport:    { cls: 'transport', url: '/transport', text: 'moduleTransport' },
-  forwarder:    { cls: 'forwarder', url: '/forwarder', text: 'moduleForwarder' },
+  forwarding:    { cls: 'forwarding', url: '/forwarding', text: 'moduleForwarding' },
   inventory:    { cls: 'inventory', url: '/inventory', text: 'moduleInventory' },
   tracking:     { cls: 'tracking', url: '/tracking', text: 'moduleTracking' },
   cost:         { cls: 'cost', url: '/cost', text: 'moduleCost' },

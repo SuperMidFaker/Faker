@@ -1,10 +1,10 @@
 {
   "component.module.import": "Import",
   "component.module.export": "Export",
-  "component.module.transport": "Transport",
-  "component.module.forwarder": "Forwarder",
+  "component.module.transport": "Transportation Collaboration",
+  "component.module.forwarding": "Freight Forwarder Collaboration",
   "component.module.inventory": "Inventory",
-  "component.module.tracking": "Order Tracking",
+  "component.module.tracking": "Tracking",
   "component.module.cost": "Cost Analytics",
   "component.module.performance": "KPI",
   "component.user.setting": "User Setting",

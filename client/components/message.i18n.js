@@ -13,8 +13,8 @@ const messages = defineMessages({
     id: 'component.module.transport',
     defaultMessage: '运输协同'
   },
-  moduleForwarder: {
-    id: 'component.module.forwarder',
+  moduleForwarding: {
+    id: 'component.module.forwarding',
     defaultMessage: '货代协同'
   },
   moduleInventory: {
@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
   moduleTracking: {
     id: 'component.module.tracking',
-    defaultMessage: '订单追踪'
+    defaultMessage: '全程追踪'
   },
   moduleCost: {
     id: 'component.module.cost',
