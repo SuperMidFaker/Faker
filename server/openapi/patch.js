@@ -32,6 +32,8 @@ module.exports = (app) => {
     // handler and log.
     if (this.headerSent || !this.writable) {
       err.headerSent = true;
+
+      console.error('ksdjfal11');
       return;
     }
 
@@ -39,6 +41,6 @@ module.exports = (app) => {
 
     this.status = 200;
     this.length = Buffer.byteLength(this.body);
-    this.res.end(msg);
+    this.res.end(this.body);
   };
 };
