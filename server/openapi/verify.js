@@ -17,11 +17,9 @@ const ignores = ['/v1/token', '/v1/authorize'];
 
 export default function *apiAuth(next) {
   if (~ignores.indexOf(this.path)) {
-
     if (this.path === '/v1/token' && !this.header['content-type']) {
       return this.error(codes.missing_content_type);
     }
-
     return yield next;
   } else {
     if (this.method === 'GET') {
