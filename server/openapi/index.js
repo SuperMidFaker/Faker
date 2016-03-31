@@ -22,10 +22,18 @@ patch(app);
 app.use(kLogger());
 app.use(verify);
 
-app.use(loadRoute(__dirname, 'apis'));
+const dispatch = loadRoute(__dirname, 'apis', '/v1');
+const apis = {};
+for (let i = 0; i < dispatch.router.stack.length; i++) {
+  const r = dispatch.router.stack[i];
+  if (r.name) {
+    apis[r.name] = r.path;
+  }
+}
+app.use(dispatch);
 
 app.use(function *nf() {
-  return this.nf();
+  return this.json(apis);
 });
 
 const port = process.env.PORT || 3023;
@@ -34,4 +42,4 @@ const port = process.env.PORT || 3023;
 // }
 
 app.listen(port);
-console.log('api start listen on ' + port);
+console.log(`api start listen on ${port}`);

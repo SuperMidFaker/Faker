@@ -13,7 +13,7 @@ import parse from 'co-body';
 import codes from './codes';
 import appDao from '../../reusable/models/app.db';
 
-const ignores = ['/v1/token', '/v1/authorize'];
+const ignores = ['/v1/token', '/v1/authorize', '/v1'];
 
 export default function *apiAuth(next) {
   if (~ignores.indexOf(this.path)) {
