@@ -6,14 +6,14 @@ import customerDao from '../../../reusable/models/customer.db';
 import Result from '../../../reusable/node-util/response-result';
 
 export default [
-  ['post', '/v1/whexchange/customers', customersP],
-  ['post', '/v1/whexchange/supplies', suppliesP],
-  ['post', '/v1/whexchange/warehouses', warehousesP],
-  ['post', '/v1/whexchange/products', productsP],
-  ['post', '/v1/whexchange/inbound', inboundP],
-  ['post', '/v1/whexchange/outbound', outboundP],
-  ['post', '/v1/whexchange/inventory', inventoryP],
-  ['post', '/v1/whexchange/fees', feesP]
+  ['post', '/whexchange/customers', customersP],
+  ['post', '/whexchange/supplies', suppliesP],
+  ['post', '/whexchange/warehouses', warehousesP],
+  ['post', '/whexchange/products', productsP],
+  ['post', '/whexchange/inbound', inboundP],
+  ['post', '/whexchange/outbound', outboundP],
+  ['post', '/whexchange/inventory', inventoryP],
+  ['post', '/whexchange/fees', feesP]
 ]
 
 function *customersP() {

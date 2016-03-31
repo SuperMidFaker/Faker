@@ -2,7 +2,7 @@ import codes from './codes';
 
 const json = (resp, obj) => {
   resp.charset = resp.charset || 'utf-8';
-  resp.set('Content-Type', 'application/json; charset=' + resp.charset);
+  resp.set('Content-Type', `application/json; charset=${resp.charset}`);
   resp.body = JSON.stringify(obj);
 };
 

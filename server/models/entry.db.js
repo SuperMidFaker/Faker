@@ -15,11 +15,18 @@ const colsHead = ['entry_id/v', 'pre_entry_id/v', 'del_id/i', 'del_no/v', 'id_ch
 
 const entryHead = new Orm(colsHead, 'g_entry_head');
 
+const colsLog = ['id/a', 'entry_id/v', 'process_name/v', 'process_date/dtt'];
+
+const entryLog = new Orm(colsLog, 'g_entry_log');
+
 export default {
   insertHead(head) {
     if (isArray(head)) {
       return entryHead.insertObjs(head);
     }
     return entryHead.insertObj(head);
+  },
+  getEntryLogs(ids) {
+    return entryLog.selectObjs({entry_id: ids});
   }
 };

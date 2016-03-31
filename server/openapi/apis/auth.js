@@ -69,6 +69,6 @@ function *authorize() {
 
 
 export default [
-  ['post', '/v1/token', token],
-  ['post', '/v1/authorize', authorize]
+  ['post', '/token', token, 'generate_token_url'],
+  ['post', '/authorize', authorize, 'grant_authorization_url']
 ];

@@ -64,7 +64,8 @@ function billHeadToEntryHead(entryId, head) {
     appr_no: head.appr_no,
     node_s: head.note,
     decl_port: head.master_customs,
-    tenant_id: head.tenant_id
+    tenant_id: head.tenant_id,
+    create_tenant_id: head.create_tenant_id
   };
 }
 
@@ -216,9 +217,47 @@ function *billStatus() {
   this.ok(res[0]);
 }
 
+function *entryLogs() {
+  const ids = this.reqbody.entry_id;
+  if (ids) {
+    const arr = ids.split(',');
+    const res = yield entryDao.getEntryLogs(arr);
+    const rarr = [];
+    let lid;
+    let idx = 0;
+    for (let i = 0; i < res.length; i++) {
+      const e = res[i];
+      delete e.id;
+
+      if (lid) {
+        if (lid !== e.entry_id) {
+          idx++;
+          lid = e.entry_id;
+          rarr.push({
+            entry_id: lid,
+            logs: [e]
+          });
+        } else {
+          rarr[idx].logs.push(e);
+        }
+      } else {
+        lid = e.entry_id;
+        rarr.push({
+          entry_id: lid,
+          logs: [e]
+        });
+      }
+    }
+    return this.ok(rarr);
+  }
+
+  return this.error(codes.params_error);
+}
+
 
 export default [
-  ['post', '/v1/customs/bill_import', billImport],
-  ['get', '/v1/customs/status', billStatus],
-  ['post', '/v1/partners/import', partnersImport]
+  ['post', '/customs/bills', billImport, 'import_bills_url'],
+  ['get', '/customs/status', billStatus, 'bill_status_info_url'],
+  ['post', '/customs/partners', partnersImport, 'import_partners_url'],
+  ['get', '/customs/entries/logs', entryLogs, 'gen_entry_logs_by_entry_id_url']
 ];
