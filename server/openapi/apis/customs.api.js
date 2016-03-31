@@ -256,8 +256,8 @@ function *entryLogs() {
 
 
 export default [
-  ['post', '/customs/bill_import', billImport, 'import_bills_url'],
+  ['post', '/customs/bills', billImport, 'import_bills_url'],
   ['get', '/customs/status', billStatus, 'bill_status_info_url'],
-  ['post', '/partners/import', partnersImport, 'import_partners_url'],
+  ['post', '/customs/partners', partnersImport, 'import_partners_url'],
   ['get', '/customs/entries/logs', entryLogs, 'gen_entry_logs_by_entry_id_url']
 ];
