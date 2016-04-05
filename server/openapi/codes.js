@@ -8,7 +8,7 @@
  * Version: 1.0
  * Description:
  */
-import util from 'util';
+import { _extend } from 'util';
 
 export default {
   ok(data) {
@@ -17,11 +17,18 @@ export default {
       data
     };
   },
-  frobidden(obj) {
-    return util._extend({status: 403}, obj);
+  forbidden(obj) {
+    return _extend({status: 403}, obj);
   },
   error(obj) {
-    return util._extend({status: 400}, obj);
+    return _extend({status: 400}, obj);
+  },
+  notFound(obj) {
+    return _extend({status: 404}, obj);
+  },
+  not_found: {
+    err_code: 40401,
+    msg: 'not found your request url, maybe your request method not valid'
   },
   internal_server_error: {
     err_code: 50001,
@@ -38,6 +45,10 @@ export default {
   grant_type_not_valid: {
     err_code: 40302,
     msg: 'grant_type is not valid'
+  },
+  missing_content_type: {
+    err_code: 41501,
+    msg: 'Content-Type is missing'
   },
   params_error: {
     err_code: 40001,

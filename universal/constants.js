@@ -64,14 +64,14 @@ const SMS_TYPE = {
   CHANGE_PAID_PASSWORD: 6
 };
 const DEFAULT_MODULES = {
-  import: { cls: 'import', url: '/import', text: 'moduleImport' },
-  export: { cls: 'export', url: '/export', text: 'moduleExport' },
-  tms:    { cls: 'tms', url: '/tms', text: 'moduleTms' },
-  wms:    { cls: 'wms', url: '/wms', text: 'moduleWms' },
-  payable:{ cls: 'payable', url: '/payable', text: 'modulePayable' },
-  receivable:{ cls: 'receivable', url: '/receivable', text: 'moduleReceivable' },
-  cost:   { cls: 'cost', url: '/cost', text: 'moduleCost' },
-  kpi:    { cls: 'kpi', url: '/kpi', text: 'moduleKpi' }
+  import:       { cls: 'import', url: '/import', text: 'moduleImport' },
+  export:       { cls: 'export', url: '/export', text: 'moduleExport' },
+  transport:    { cls: 'transport', url: '/transport', text: 'moduleTransport' },
+  forwarding:    { cls: 'forwarding', url: '/forwarding', text: 'moduleForwarding' },
+  inventory:    { cls: 'inventory', url: '/inventory', text: 'moduleInventory' },
+  tracking:     { cls: 'tracking', url: '/tracking', text: 'moduleTracking' },
+  cost:         { cls: 'cost', url: '/cost', text: 'moduleCost' },
+  performance:  { cls: 'performance', url: '/performance', text: 'modulePerformance' }
 };
 
 const APP_ENTITY_META_INFO = {

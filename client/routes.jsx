@@ -21,15 +21,16 @@ import ImportM from './containers/module-import';
 import ImportDashboard from './containers/import/dashboard';
 import * as ImportDelegate from './containers/import/delegate';
 import * as ImportTask from './containers/import/task';
+import * as ImportAccept from './containers/import/accept';
 import ExportM from './containers/module-export';
 import ExportBoard from './containers/export/dashboard';
 import * as ExportDelegate from './containers/export/delegate';
 import * as ExportAccept from './containers/export/accept';
-import TMS from './containers/module-tms';
-import TMSDashboard from './containers/tms/dashboard';
-import WMS from './containers/module-wms';
-import Warehouse from './containers/wms/warehouse';
-import Notice from './containers/wms/notice';
+import Transport from './containers/module-transport';
+import TMSDashboard from './containers/transport/dashboard';
+import Inventory from './containers/module-inventory';
+import Warehouse from './containers/inventory/warehouse';
+import Notice from './containers/inventory/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
 
@@ -105,6 +106,11 @@ export default(store, cookie) => {
               <IndexRoute component={ImportTask.List}/>
               <Route path="inputbill/:id" component={ImportTask.InputBill}/>
             </Route>
+            <Route path="receive">
+              <IndexRoute component={ImportAccept.List}/>
+              <Route path="new" component={ImportAccept.Edit}/>
+              <Route path="edit/:id" component={ImportDelegate.Edit}/>
+            </Route>
           </Route>
           <Route path="export" component={ExportM}>
             <IndexRoute component={ExportBoard} />
@@ -119,12 +125,12 @@ export default(store, cookie) => {
               <Route path="new" component={ExportAccept.Edit}/>
             </Route>
           </Route>
-          <Route path="wms" component={WMS}>
+          <Route path="inventory" component={Inventory}>
             <IndexRoute component={Warehouse}/>
             <Route path="warehouse" component={Warehouse}/>
             <Route path="notice" component={Notice}/>
           </Route>
-          <Route path="tms" component={TMS}>
+          <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard}/>
           </Route>
         </Route>
