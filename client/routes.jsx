@@ -131,6 +131,7 @@ export default(store, cookie) => {
           </Route>
           <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard}/>
+            <Route path="shipment" />
           </Route>
         </Route>
       </Route>
