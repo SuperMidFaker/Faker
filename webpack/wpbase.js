@@ -28,11 +28,6 @@ const wpConfig = {
   },
   plugins: [
     new webpack.IgnorePlugin(/assets\.json$/),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: 'vendor',
-      filename: '[name]-[hash].js',
-      minChunks: Infinity
-    }),
     new webpack.DefinePlugin({
       __CLIENT__: true,
       __CDN__: JSON.stringify(config.get('CDN_URL')),

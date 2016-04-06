@@ -108,12 +108,14 @@ export default function render(request) {
             Object.keys(assets.styles).map(style => {
               pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
             });
+            // manifest could be inline script
             let pageJs = `
             <script>
             __INITIAL_STATE__ = ${serialize(store.getState())};
             </script>`;
+            pageJs += assets.javascript.manifest ? `<script src=${assets.javascript.manifest}></script>` : '';
             pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
-            Object.keys(assets.javascript).filter(script => script !== 'vendor')
+            Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'manifest')
             .map(script => {
               pageJs += `<script src=${assets.javascript[script]}></script>`;
             });
