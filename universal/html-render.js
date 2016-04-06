@@ -8,6 +8,12 @@ import createStore from './redux/configureStore';
 import routes from '../client/routes';
 import App from '../client/app';
 import fetchInitialState from '../reusable/node-util/fetch-initial-state';
+import thirdPart from './thirdPart';
+
+let trackJs = '';
+if (__PROD__) {
+  trackJs = thirdPart;
+}
 
 function renderAsHtml(pageCss, pageJs, content) {
   return `
@@ -29,30 +35,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <!--[if lt IE 10]>
     <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.min.js,es5-shim/4.1.14/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
   <![endif]-->
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?a26a6a6c89888c364fc63eb1e449f8ec";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-  <script type='text/javascript'>
-    var _vds = _vds || [];
-    window._vds = _vds;
-    (function(){
-      _vds.push(['setAccountId', '9cdb7a7f17d94c92']);
-      (function() {
-        var vds = document.createElement('script');
-        vds.type='text/javascript';
-        vds.async = true;
-        vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(vds, s);
-      })();
-    })();
-  </script>
+  ${trackJs}
 </head>
 <body class="vertical-scroll" style="min-height: 680px;">
   <div id="mount" class="full-container">${content}</div>

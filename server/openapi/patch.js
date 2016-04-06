@@ -2,7 +2,7 @@ import codes from './codes';
 
 const json = (resp, obj) => {
   resp.charset = resp.charset || 'utf-8';
-  resp.set('Content-Type', 'application/json; charset=' + resp.charset);
+  resp.set('Content-Type', `application/json; charset=${resp.charset}`);
   resp.body = JSON.stringify(obj);
 };
 
@@ -23,6 +23,10 @@ module.exports = (app) => {
     json(this, obj);
   };
 
+  app.context.nf = app.response.nf = function nf() {
+    json(this, codes.notFound(codes.not_found));
+  };
+
   app.context.onerror = function onerror(err) {
     if (!err) return;
 
@@ -39,6 +43,6 @@ module.exports = (app) => {
 
     this.status = 200;
     this.length = Buffer.byteLength(this.body);
-    this.res.end(msg);
+    this.res.end(this.body);
   };
 };
