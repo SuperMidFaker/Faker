@@ -64,14 +64,46 @@ const SMS_TYPE = {
   CHANGE_PAID_PASSWORD: 6
 };
 const DEFAULT_MODULES = {
-  import:       { cls: 'import', url: '/import', text: 'moduleImport' },
-  export:       { cls: 'export', url: '/export', text: 'moduleExport' },
-  transport:    { cls: 'transport', url: '/transport', text: 'moduleTransport' },
-  forwarding:    { cls: 'forwarding', url: '/forwarding', text: 'moduleForwarding' },
-  inventory:    { cls: 'inventory', url: '/inventory', text: 'moduleInventory' },
-  tracking:     { cls: 'tracking', url: '/tracking', text: 'moduleTracking' },
-  cost:         { cls: 'cost', url: '/cost', text: 'moduleCost' },
-  performance:  { cls: 'performance', url: '/performance', text: 'modulePerformance' }
+  import: {
+    cls: 'import',
+    url: '/import',
+    text: 'moduleImport'
+  },
+  export: {
+    cls: 'export',
+    url: '/export',
+    text: 'moduleExport'
+  },
+  transport: {
+    cls: 'transport',
+    url: '/transport',
+    text: 'moduleTransport'
+  },
+  forwarding: {
+    cls: 'forwarding',
+    url: '/forwarding',
+    text: 'moduleForwarding'
+  },
+  inventory: {
+    cls: 'inventory',
+    url: '/inventory',
+    text: 'moduleInventory'
+  },
+  tracking: {
+    cls: 'tracking',
+    url: '/tracking',
+    text: 'moduleTracking'
+  },
+  cost: {
+    cls: 'cost',
+    url: '/cost',
+    text: 'moduleCost'
+  },
+  performance: {
+    cls: 'performance',
+    url: '/performance',
+    text: 'modulePerformance'
+  }
 };
 
 const APP_ENTITY_META_INFO = {
@@ -106,6 +138,7 @@ const INVITATION_STATUS = {
   REJECTED: 2,
   CANCELED: 3 // 取消邀请
 };
+
 const PARTNERSHIP_TYPE_INFO = {
   customer: 'CUS',
   customsClearanceBroker: 'CCB',
@@ -114,8 +147,48 @@ const PARTNERSHIP_TYPE_INFO = {
   warehouse: 'WHS'
 };
 
-const PARTNER_TENANT_TYPE = [ 'TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_OFFLINE' ];
+const PARTNER_TENANT_TYPE = ['TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_OFFLINE'];
 
+const CONDITION_STATE = [{
+  text: '1|是',
+  value: '1'
+}, {
+  text: '0|否',
+  value: '0'
+}];
+
+const WRAP_TYPE = [{
+  text: '1|木箱',
+  value: '1'
+}, {
+  text: '2|纸箱',
+  value: '2'
+}, {
+  text: '3|桶装',
+  value: '3'
+}, {
+  text: '4|散装',
+  value: '4'
+}, {
+  text: '5|托盘',
+  value: '5'
+}, {
+  text: '6|包',
+  value: '6'
+}, {
+  text: '7|其它',
+  value: '7'
+}];
+const FEE_TYPE = [{
+  text: '1|率',
+  value: '1'
+}, {
+  text: '2|单价',
+  value: '2'
+}, {
+  text: '3|总价',
+  value: '3'
+}];
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
@@ -134,5 +207,8 @@ export {
   BRANCH,
   PERSONNEL,
   DELEGATE_STATUS,
-  TENANT_USEBOOK
+  TENANT_USEBOOK,
+  CONDITION_STATE,
+  WRAP_TYPE,
+  FEE_TYPE
 };

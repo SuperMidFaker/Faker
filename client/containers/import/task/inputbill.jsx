@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import {CONDITION_STATE, WRAP_TYPE, FEE_TYPE} from 'universal/constants';
 import {connect} from 'react-redux';
 import {
   Button,
@@ -16,7 +17,14 @@ import {
 'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
-import {isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue} from
+import {
+  isFormDataLoaded,
+  loadSelectSource,
+  loadForm,
+  assignForm,
+  clearForm,
+  setFormValue
+} from
 '../../../../universal/redux/reducers/task';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 
@@ -24,16 +32,12 @@ const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 // const Option = Select.Option;
 const OptGroup = Select.OptGroup;
-const ButtonGroup = Button.Group;
 
 function fetchData({state, dispatch, cookie, params}) {
   const pid = parseInt(params.id, 10);
   const promises = [];
-  /* promises.push(dispatch(loadSelectOptions(cookie, {
-    delId: params.id,
-    tenantId: state.account.tenantId
-  })));
-  */
+  promises.push(dispatch(loadSelectSource()));
+
   if (pid) {
     if (!isFormDataLoaded(state.task, pid)) {
       promises.push(dispatch(loadForm(cookie, pid)));
@@ -52,7 +56,14 @@ function goBack(router) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({formData: state.importdelegate.formData, code: state.account.code, username: state.account.username, loginId: state.account.loginId, tenantId: state.account.tenantId}), {setFormValue})
+@connect(state => ({
+  formData: state.task.formData,
+  code: state.account.code,
+  username: state.account.username,
+  loginId: state.account.loginId,
+  tenantId: state.account.tenantId,
+  selectSource: state.task.selectSource
+}), {loadSelectSource, setFormValue})
 @connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
     return;
@@ -85,7 +96,8 @@ export default class InputBillEdit extends React.Component {
     code: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired
+    formData: PropTypes.object.isRequired,
+    loadSelectSource: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -245,7 +257,7 @@ export default class InputBillEdit extends React.Component {
       </FormItem>
     );
   }
-  renderSelect(labelName, placeholder, field, required, source, rules, disabled = false) {
+  renderSelect(labelName, placeholder, field, required, source = [], rules = null, disabled = false) {
     const {
       formhoc: {
         getFieldProps,
@@ -261,12 +273,16 @@ export default class InputBillEdit extends React.Component {
         <Select style={{
           width: '100%'
         }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
-          <OptGroup label={placeholder}/>
+          <OptGroup label={placeholder}>
+            {source.map((item) => (
+              <Option value={item.value} key={item.value}>{item.text}</Option>
+            ))}
+          </OptGroup>
         </Select>
       </FormItem>
     );
   }
-  renderSelect1(labelName, placeholder, field, required, source, rules, disabled = false) {
+  renderSelect1(labelName, placeholder, field, required, source = [], rules = null, disabled = false) {
     const {
       formhoc: {
         getFieldProps,
@@ -282,7 +298,11 @@ export default class InputBillEdit extends React.Component {
         <Select style={{
           width: '100%'
         }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
-          <OptGroup label={placeholder}/>
+          <OptGroup label={placeholder}>
+            {source.map((item) => (
+              <Option value={item.value} key={item.value}>{item.text}</Option>
+            ))}
+          </OptGroup>
         </Select>
       </FormItem>
     );
@@ -301,7 +321,7 @@ export default class InputBillEdit extends React.Component {
       </FormItem>
     );
   }
-  renderSelectWithoutName(field, source, disabled = false) {
+  renderSelectWithoutName(field, source = [], disabled = false) {
     const {
       formhoc: {
         getFieldProps,
@@ -315,107 +335,49 @@ export default class InputBillEdit extends React.Component {
         <Select style={{
           width: '100%'
         }} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
-          <OptGroup/>
+          <OptGroup>
+            {source.map((item) => (
+              <Option value={item.value} key={item.value}>{item.text}</Option>
+            ))}
+          </OptGroup>
         </Select>
       </FormItem>
     );
   }
   renderEditForm() {
-    const {formhoc} = this.props;
+    const {
+      selectSource: {
+        CustomsRel,
+        Trade,
+        Transac,
+        Transf,
+        Country,
+        Levytype,
+        District,
+        Curr
+      }
+    } = this.props;
     return (
       <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
         <Row>
           <Col span="6">
-            {this.renderSelect('方案模板', '选择方案模板', '', false, null, [
-              {
-                required: false
-              }
-            ])}
-            {this.renderSelect('进口口岸', '选择进口口岸', 'i_e_port', false, null, [
-              {
-                required: false
-              }
-            ])}
-            {this.renderSelect('经营单位', '选择经营单位', 'trade_co', true, null, [
-              {
-                required: true,
-                message: '请选择经营单位'
-              }
-            ])}
-            {this.renderSelect('收货单位', '选择收货单位', 'owner_code', false, null, [
-              {
-                required: false
-              }
-            ])}
 
-            {this.renderTextInput('许可证号', '输入许可证号', 'license_no', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderSelect('进口口岸', '', 'i_e_port', false, [], null, false, function(){})}
+            {this.renderSelect('收发货人', '选择收发货人', 'trade_co', true, [], null)}
+            {this.renderSelect('消费使用单位', '选择消费使用单位', 'owner_code', false, [], null)}
+
+            {this.renderTextInput('许可证号', '输入许可证号', 'license_no', false, null, null)}
+
+            {this.renderSelect('贸易国', '选择贸易国', '', false, Country, null)}
             <Row>
               <Col span="12">
-                {this.renderTextInput1('批准文号', '', 'appr_no', false, [
-                  {
-                    required: false
-                  }
-                ], null)}
-              </Col>
-              <Col span="12">
-                {this.renderSelect1('成交方式', '', 'trans_mode', false, null, [
-                  {
-                    required: false
-                  }
-                ])}
-              </Col>
-            </Row>
-            {this.renderTextInput('合同协议号', '输入合同协议号', 'contr_no', false, [
-              {
-                required: false
-              }
-            ], null)}
-          </Col>
-          <Col span="6">
-            {this.renderTextInput('预录入编号', '输入预录入编号', 'pre_entry_id', false, [
-              {
-                required: false
-              }
-            ], null)}
-            {this.renderSelect('备案号', '选择备案号', 'ems_no', true, null, [
-              {
-                required: true,
-                message: '请选择备案号'
-              }
-            ])}
-            {this.renderSelect('运输方式', '选择运输方式', 'traf_mode', false, null, [
-              {
-                required: false
-              }
-            ])}
-            {this.renderSelect('贸易方式', '选择贸易方式', 'trade_mode', true, null, [
-              {
-                required: true,
-                message: '请选择贸易方式'
-              }
-            ])}
-            {this.renderSelect('起运国', '选择起运国', 'trade_country', false, null, [
-              {
-                required: false
-              }
-            ])}
-            <Row>
-              <Col span="12">
-                {this.renderSelect1('运费', '', 'fee_mark', false, null, [
-                  {
-                    required: false
-                  }
-                ])}
+                {this.renderSelect1('杂费', '', 'other_mark', false, FEE_TYPE, null)}
               </Col>
               <Col span="6">
-                {this.renderNumberWithoutName('fee_rate')}
+                {this.renderNumberWithoutName('other_rate')}
               </Col>
               <Col span="6">
-                {this.renderSelectWithoutName('fee_curr', null)}
+                {this.renderSelectWithoutName('other_curr', Curr)}
               </Col>
             </Row>
             <Row>
@@ -423,179 +385,126 @@ export default class InputBillEdit extends React.Component {
                 {this.renderNumber1('件数', 'pack_no')}
               </Col>
               <Col span="12">
-                {this.renderSelect1('包装种类', '', 'wrap_type', false, null, [
-                  {
-                    required: false
-                  }
-                ])}
+                {this.renderSelect1('包装种类', '', 'wrap_type', false, WRAP_TYPE, null)}
               </Col>
             </Row>
           </Col>
           <Col span="6">
-            {this.renderSelect('申报地海关', '选择申报地海关', 'master_customs', false, null, [
+            {this.renderTextInput('预录入编号', '输入预录入编号', 'pre_entry_id', false, null, null)}
+            {this.renderTextInput('备案号', '输入备案号', 'ems_no', true, [
               {
-                required: false
+                required: true,
+                message: '输入备案号'
               }
             ])}
-            {this.renderDatePicker('进口日期', 'i_e_date')}
-
-            {this.renderTextInput('运输工具名称', '输入运输工具名称', 'traf_name', false, [
+            {this.renderSelect('运输方式', '选择运输方式', 'traf_mode', false, Transf, null)}
+            {this.renderSelect('监管方式', '选择监管方式', 'trade_mode', true, Trade, [
               {
-                required: false
-              }
-            ], null)}
-            {this.renderSelect('征免性质', '选择征免性质', 'cut_mode', false, null, [
-              {
-                required: false
+                required: true,
+                message: '请选择监管方式'
               }
             ])}
-            {this.renderSelect('装货港', '选择装货港', 'distinate_port', false, null, [
-              {
-                required: false
-              }
-            ])}
+            {this.renderSelect('起运国', '选择起运国', 'trade_country', false, Country, null)}
             <Row>
               <Col span="12">
-                {this.renderSelect1('保费', '', 'insur_mark', false, null, [
-                  {
-                    required: false
-                  }
-                ])}
+                {this.renderSelect1('运费', '', 'fee_mark', false, FEE_TYPE, null)}
+              </Col>
+              <Col span="6">
+                {this.renderNumberWithoutName('fee_rate')}
+              </Col>
+              <Col span="6">
+                {this.renderSelectWithoutName('fee_curr', Curr)}
+              </Col>
+            </Row>
+            {this.renderNumber('净重(千克)', 'net_wt')}
+
+          </Col>
+          <Col span="6">
+            {this.renderSelect('申报地海关', '选择申报地海关', 'master_customs', false, CustomsRel, null)}
+            {this.renderDatePicker('进口日期', 'i_e_date')}
+
+            {this.renderTextInput('运输工具名称', '输入运输工具名称', 'traf_name', false, null, null)}
+            {this.renderSelect('征免性质', '选择征免性质', 'cut_mode', false, Levytype, null)}
+            {this.renderSelect('装货港', '选择装货港', 'distinate_port', false, [], null)}
+            <Row>
+              <Col span="12">
+                {this.renderSelect1('保费', '', 'insur_mark', false, FEE_TYPE, null)}
               </Col>
               <Col span="6">
                 {this.renderNumberWithoutName('insur_rate')}
               </Col>
               <Col span="6">
-                {this.renderSelectWithoutName('insur_curr', null)}
+                {this.renderSelectWithoutName('insur_curr', Curr)}
               </Col>
             </Row>
             {this.renderNumber('毛重(千克)', 'gross_wt')}
           </Col>
           <Col span="6">
-            {this.renderTextInput('海关编号', '输入海关编号', 'entry_id', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput('海关编号', '输入海关编号', 'entry_id', false, null, null)}
             {this.renderDatePicker('申报日期', 'd_date')}
-            {this.renderTextInput('提运单号', '输入提运单号', 'bill_no', false, [
-              {
-                required: false
-              }
-            ], null)}
-            {this.renderNumber('征免比例', 'in_ratio')}
-            {this.renderSelect('境内目的地', '选择境内目的地', 'district_code', false, null, [
-              {
-                required: false
-              }
-            ])}
+            {this.renderTextInput('提运单号', '输入提运单号', 'bill_no', false, null, null)}
+            {this.renderSelect('境内目的地', '选择境内目的地', 'district_code', false, District, null)}
             <Row>
-              <Col span="12">
-                {this.renderSelect1('杂费', '', 'other_mark', false, null, [
-                  {
-                    required: false
-                  }
-                ])}
-              </Col>
-              <Col span="6">
-                {this.renderNumberWithoutName('other_rate')}
-              </Col>
-              <Col span="6">
-                {this.renderSelectWithoutName('other_curr', null)}
+              <Col span="24">
+                {this.renderSelect('成交方式', '', 'trans_mode', false, Transac, null)}
               </Col>
             </Row>
-            {this.renderNumber('净重(千克)', 'net_wt')}
+            {this.renderTextInput('合同协议号', '输入合同协议号', 'contr_no', false, null, null)}
+
           </Col>
         </Row>
         <Row>
           <Col span="6">
-            {this.renderTextInput('集装箱号', '输入集装箱号', 'jzxsl', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput('集装箱号', '输入集装箱号', 'jzxsl', false, null, null)}
           </Col>
-          <Col span="12">
-            {this.renderTextInput2(21, '随附单证', '输入随附单证', 'cert_mark', false, [
-              {
-                required: false
-              }
-            ], null)}
+          <Col span="18">
+            {this.renderTextInput2(22, '随附单证', '输入随附单证', 'cert_mark', false, null, null)}
           </Col>
-          <Col span="6">
-            {this.renderSelect('用途', '选择用途', 'use_to', false, null, [
-              {
-                required: false
-              }
-            ])}
-          </Col>
+
         </Row>
         <Row>
           <Col span="18">
-            {this.renderTextInput2(22, '唛码备注', '输入唛码备注', 'note', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput2(22, '唛码备注', '输入唛码备注', 'note', false, null, null)}
           </Col>
 
           <Col span="6">
-            {this.renderTextInput('航次号', '输入航次号', 'voyage_no', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput('航次号', '输入航次号', 'voyage_no', false, null, null)}
           </Col>
         </Row>
         <Row>
           <Col span="6">
-            {this.renderSelect('申报单位', '选择申报单位', 'agent_code', false, null, [
-              {
-                required: false
-              }
-            ])}
+            {this.renderSelect('申报单位', '选择申报单位', 'agent_code', false, [], null)}
           </Col>
           <Col span="6">
-            {this.renderTextInput('库号', '输入库号', 'library_no', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput('库号', '输入库号', 'library_no', false, null, null)}
           </Col>
           <Col span="6">
-            {this.renderTextInput('货场代码', '输入货场代码', 'prdtid', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput('货场代码', '输入货场代码', 'prdtid', false, null, null)}
           </Col>
           <Col span="6">
-            {this.renderTextInput('监管仓号', '输入监管仓号', 'storeno', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput('监管仓号', '输入监管仓号', 'storeno', false, null, null)}
           </Col>
         </Row>
         <Row>
           <Col span="12">
-            {this.renderTextInput2(21, '关联报关单', '输入关联报关单', 'ramanualno', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput2(21, '关联报关单', '输入关联报关单', 'ramanualno', false, null, null)}
           </Col>
           <Col span="12">
-            {this.renderTextInput2(21, '关联备案号', '输入关联备案号', 'radeclno', false, [
-              {
-                required: false
-              }
-            ], null)}
+            {this.renderTextInput2(21, '关联备案号', '输入关联备案号', 'radeclno', false, null, null)}
           </Col>
         </Row>
         <Row>
           <Col span="6">
             {this.renderNumber('总金额')}
+          </Col>
+          <Col span="6">
+            {this.renderSelect('特殊关系', '', 'agent_code1', false, CONDITION_STATE, null)}
+          </Col>
+          <Col span="6">
+            {this.renderSelect('价格影响', '', 'agent_code2', false, CONDITION_STATE, null)}
+          </Col>
+          <Col span="6">
+            {this.renderSelect('支付特许权使用费', '', 'agent_code3', false, CONDITION_STATE, null)}
           </Col>
         </Row>
         <Row style={{
@@ -604,16 +513,8 @@ export default class InputBillEdit extends React.Component {
             : 'inline-block'
         }}>
           <Col span="12">
-            <Button htmlType="submit" type="primary">保存</Button>
-            <Button>生成报关单</Button>
+            <Button>报关清单表体</Button>
             <Button onClick={this.handleCancel}>取消</Button>
-          </Col>
-          <Col span="12">
-            <ButtonGroup className="pull-right">
-              <Button>报关清单表体</Button>
-              <Button>集装箱</Button>
-              <Button>随附单证</Button>
-            </ButtonGroup>
           </Col>
         </Row>
       </Form>
@@ -623,7 +524,6 @@ export default class InputBillEdit extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-
           <Tabs defaultActiveKey="tab1">
             <TabPane tab="清单信息" key="tab1">
               {this.renderEditForm()}

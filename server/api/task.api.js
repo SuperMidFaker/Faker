@@ -2,11 +2,41 @@ import cobody from 'co-body';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
 import taskDao from '../models/task.db';
+import paraDao from '../models/para.db';
 
 
 export default [
-  ['get', '/v1/import/tasks', getTasks]
+  ['get', '/v1/import/tasks', getTasks],
+  ['get', '/v1/import/tasks/loadSource', loadSource]
 ];
+
+function* loadSource() {
+  try {
+    const CustomsRel = yield paraDao.getCustomsRel();
+    const Trade = yield paraDao.getTrade();
+    const Transac = yield paraDao.getTransac();
+    const Transf = yield paraDao.getTransf();
+    const Country = yield paraDao.getCountry();
+    const Levytype = yield paraDao.getLevytype();
+    const District = yield paraDao.getDistrict();
+    const Curr = yield paraDao.getCurr();
+
+
+    return Result.OK(this, {
+        CustomsRel:CustomsRel,
+        Trade:Trade,
+        Transac:Transac,
+        Transf:Transf,
+        Country:Country,
+        Levytype:Levytype,
+        District:District,
+        Curr:Curr
+    });
+  } catch (e) {
+    console.log(e);
+    return Result.InternalServerError(this, e.message);
+  }
+}
 
 function* getTasks() {
   const current = parseInt(this.request.query.currentPage || 1, 10);

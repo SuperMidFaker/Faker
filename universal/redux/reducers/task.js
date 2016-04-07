@@ -14,7 +14,8 @@ import {
   setFormValueC
 } from '../../../reusable/domains/redux/form-common';
 const actionTypes = createActionTypes('@@welogix/task/', [
-  'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL'
+  'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL',
+  'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/task/', actionTypes);
 
@@ -41,7 +42,18 @@ const initialState = {
     notAcceptCount: 0,
     haveOrderCount: 0,
     closeOrderCount: 0
-  }
+  },
+  selectSource: {
+    CustomsRel: [],
+    Trade: [],
+    Transac: [],
+    Transf: [],
+    Country: [],
+    Levytype: [],
+    District: [],
+    Curr: []
+  },
+  Port: []
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -65,10 +77,34 @@ export default function reducer(state = initialState, action) {
       return {...state,
         loading: false
       };
+    case actionTypes.SOURCE_LOAD_SUCCEED:
+      return {...state,
+        selectSource: {...state.selectSource,
+          CustomsRel: action.result.data.CustomsRel,
+          Trade: action.result.data.Trade,
+          Transac: action.result.data.Transac,
+          Transf: action.result.data.Transf,
+          Country: action.result.data.Country,
+          Levytype: action.result.data.Levytype,
+          District: action.result.data.District,
+          Curr: action.result.data.Curr
+        },
+        tasklist: action.result.data.tasklist
+      };
       // todo deal with submit fail submit loading
     default:
       return formReducer(actionTypes, state, action, {}, 'tasklist') || state;
   }
+}
+
+export function loadSelectSource() {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SOURCE_LOAD, actionTypes.SOURCE_LOAD_SUCCEED, actionTypes.SOURCE_LOAD_FAIL],
+      endpoint: 'v1/import/tasks/loadSource',
+      method: 'get'
+    }
+  };
 }
 
 export function loadTask(cookie, params) {
