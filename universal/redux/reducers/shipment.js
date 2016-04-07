@@ -11,11 +11,22 @@ const initialState = {
   filters: [
     /* { name: , value: } */
   ],
+  statusTypes: [],
   shipmentlist: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
     data: [
+      {
+        key: 1,
+        shipNo: 'T123456789012',
+        carrier: '恩诺物流',
+        mode: '公路-零担',
+        source: '上海',
+        destination: '南京',
+        pickupDate: new Date(2016, 3, 7),
+        deliveryDate: new Date(2016, 4, 7),
+      }
     ]
   }
 };
@@ -28,6 +39,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_SHIPMENT_SUCCEED:
       return { ...state, loading: false, loaded: true, shipmentlist: action.result.data };
+    default:
+      return state;
   }
 }
 

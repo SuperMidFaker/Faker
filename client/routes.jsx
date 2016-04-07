@@ -28,6 +28,7 @@ import * as ExportDelegate from './containers/export/delegate';
 import * as ExportAccept from './containers/export/accept';
 import Transport from './containers/module-transport';
 import TMSDashboard from './containers/transport/dashboard';
+import * as TMShipment from './containers/transport/shipment';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
@@ -131,7 +132,9 @@ export default(store, cookie) => {
           </Route>
           <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard}/>
-            <Route path="shipment" />
+            <Route path="shipment" component={TMShipment.List}>
+              <Route path="new" component={TMShipment.New} />
+            </Route>
           </Route>
         </Route>
       </Route>

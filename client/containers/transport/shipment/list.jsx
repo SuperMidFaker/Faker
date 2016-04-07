@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message } from 'ant-ui';
+import { Table, Button, Radio, Icon, Progress, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
+import NavLink from 'reusable/components/nav-link';
 import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
@@ -9,20 +11,19 @@ import { loadTable } from 'universal/redux/reducers/shipment';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const ProgressLine = Progress.Line;
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadTable(cookie, {
     tenantId: state.account.tenantId,
-    pageSize: state.partner.shipmentlist.pageSize,
-    currentPage: state.partner.shipmentlist.current
+    pageSize: state.shipment.shipmentlist.pageSize,
+    currentPage: state.shipment.shipmentlist.current
   }));
 }
 
@@ -44,6 +45,7 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     tenantId: state.account.tenantId,
     shipmentlist: state.shipment.shipmentlist,
+    shipmentStatusTypes: state.shipment.statusTypes,
     filters: state.shipment.filters,
     loading: state.shipment.loading
   }),
@@ -55,6 +57,7 @@ export default class ShipmentList extends React.Component {
     filters: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
+    shipmentStatusTypes: PropTypes.array.isRequired,
     loadTable: PropTypes.func.isRequired,
   }
   state = {
@@ -95,44 +98,52 @@ export default class ShipmentList extends React.Component {
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
-    title: this.msg('partnerName'),
-    dataIndex: 'name'
+    title: this.msg('shipNo'),
+    dataIndex: 'shipNo'
   }, {
-    title: this.msg('partnerType'),
-    dataIndex: 'types',
-    render: (o, record) =>
-    record.types.map(t => formatGlobalMsg(this.props.intl, t.code)).join('/') ||
-      formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer) // fallback to '客户'
+    title: this.msg('shipCarrier'),
+    dataIndex: 'carrier'
   }, {
-    title: this.msg('tenantType'),
-    dataIndex: 'tenantType',
-    render: (o, record) => formatContainerMsg(this.props.intl, record.tenantType)
+    title: this.msg('shipMode'),
+    dataIndex: 'mode',
+    // render: (o, record) => this.msg(record.mode)
   }, {
-    title: this.msg('volume'),
+    title: this.msg('shipSource'),
+    dataIndex: 'source'
+  }, {
+    title: this.msg('shipDestination'),
+    dataIndex: 'destination'
+  }, {
+    title: this.msg('shipPickupDate'),
+    dataIndex: 'pickupDate',
+    render: (o, record) => moment(record.pickupDate).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipDeliveryDate'),
+    dataIndex: 'deliveryDate',
+    render: (o, record) => moment(record.deliveryDate).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('packageNum'),
+    dataIndex: 'packageNum'
+  }, {
+    title: this.msg('shipWeight'),
+    dataIndex: 'weight'
+  }, {
+    title: this.msg('shipVolume'),
     dataIndex: 'volume'
   }, {
-    title: this.msg('revenue'),
-    dataIndex: 'revenue',
-    render: (o, record) => (record.revenue || 0.0).toFixed(2)
-  }, {
-    title: this.msg('cost'),
-    dataIndex: 'cost',
-    render: (o, record) => record.cost ? record.cost.toFixed(2) : '0.00'
-  }, {
-    title: formatContainerMsg(this.props.intl, 'opColumn'),
+    title: this.msg('shipStatus'),
+    dataIndex: 'status',
     width: 150,
     render: (text, record) => {
-      if (record.partnerTenantId === -1) {
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleSendInvitation(record)}>
-            {this.msg('sendInvitation')}
-            </a>
-          </span>
-        );
-      } else {
-        return <span />;
-      }
+      // const percent = record.status === 1 ? 0 (== 2 ? 25 : 50);
+      // record.logStatus --> active exception
+      return (
+        <div>
+          <span>未接单</span>
+          <span style={{ float: 'right' }}>在途异常</span>
+          <ProgressLine percent={100} status="active" strokeWidth={5} showInfo={false} />
+        </div>
+      );
     }
   }]
   handleSelectionClear = () => {
@@ -148,9 +159,6 @@ export default class ShipmentList extends React.Component {
       currentPage: 1,
       filters
     });
-  }
-  handleAddPartner = () => {
-    this.props.showPartnerModal();
   }
   handleShipmentFilter = (ev) => {
     const { shipmentlist, tenantId, filters } = this.props;
@@ -169,7 +177,7 @@ export default class ShipmentList extends React.Component {
     });
   }
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentStatusTypes, shipmentlist, loading, intl } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -187,10 +195,10 @@ export default class ShipmentList extends React.Component {
           <RadioGroup onChange={this.handleShipmentFilter} defaultValue="all">
             <RadioButton value="all">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
             {
-              partnershipTypes.map(
-                pst =>
-                  <RadioButton value={pst.key} key={pst.key}>
-                  {formatGlobalMsg(intl, pst.code)}({pst.count})
+              shipmentStatusTypes.map(
+                sst =>
+                  <RadioButton value={sst} key={sst}>
+                  {this.msg(sst)}
                   </RadioButton>
               )
             }
@@ -198,9 +206,11 @@ export default class ShipmentList extends React.Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type="primary" onClick={this.handleAddPartner}>
-              <Icon type="plus-circle-o" /><span>{this.msg('newPartner')}</span>
-            </Button>
+            <NavLink to="/transport/shipment/new">
+              <Button type="primary">
+                <Icon type="plus-circle-o" /><span>{this.msg('newShipment')}</span>
+              </Button>
+            </NavLink>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}

@@ -13,6 +13,7 @@ import importdelegate from './importdelegate';
 import importaccept from './importaccept';
 import exportaccept from './exportaccept';
 import task from './task';
+import shipment from './shipment';
 import warehouse from './warehouse';
 import bill from './bill';
 import notice from './notice';
@@ -33,6 +34,7 @@ export default combineReducers({
   importdelegate,
   exportaccept,
   task,
+  shipment,
   bill,
   notice,
   delegate,

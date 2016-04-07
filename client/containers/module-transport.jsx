@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import AmLeftSidebar from '../components/am-ant-leftbar';
+import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 
