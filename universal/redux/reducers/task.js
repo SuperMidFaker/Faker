@@ -6,11 +6,16 @@ import {
 } from '../../../reusable/common/redux-actions';
 import {
   appendFormAcitonTypes,
-  formReducer
+  formReducer,
+  isFormDataLoadedC,
+  loadFormC,
+  assignFormC,
+  clearFormC,
+  setFormValueC
 } from '../../../reusable/domains/redux/form-common';
-
 const actionTypes = createActionTypes('@@welogix/task/', [
-  'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL'
+  'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL',
+  'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/task/', actionTypes);
 
@@ -33,10 +38,20 @@ const initialState = {
     data: []
   },
   statusList: { // 初始化状态显示数量
-    statusValue: 0,
-    notAcceptCount: 0,
+    statusValue: 1,
     haveOrderCount: 0,
     closeOrderCount: 0
+  },
+  selectSource: {
+    CustomsRel: [],
+    Trade: [],
+    Transac: [],
+    Transf: [],
+    Country: [],
+    Levytype: [],
+    District: [],
+    Curr: [],
+    Port: []
   }
 };
 export default function reducer(state = initialState, action) {
@@ -50,8 +65,7 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         loading: false,
         statusList: {...state.statusList,
-          statusValue: action.params.currentStatus || '0',
-          notAcceptCount: action.result.data.statusList.notAcceptCount,
+          statusValue: action.params.currentStatus || '1',
           haveOrderCount: action.result.data.statusList.haveOrderCount,
           closeOrderCount: action.result.data.statusList.closeOrderCount
         },
@@ -61,10 +75,34 @@ export default function reducer(state = initialState, action) {
       return {...state,
         loading: false
       };
+    case actionTypes.SOURCE_LOAD_SUCCEED:
+      return {...state,
+        selectSource: {...state.selectSource,
+          CustomsRel: action.result.data.CustomsRel,
+          Trade: action.result.data.Trade,
+          Transac: action.result.data.Transac,
+          Transf: action.result.data.Transf,
+          Country: action.result.data.Country,
+          Levytype: action.result.data.Levytype,
+          District: action.result.data.District,
+          Curr: action.result.data.Curr,
+          Port: action.result.data.Port
+        }
+      };
       // todo deal with submit fail submit loading
     default:
       return formReducer(actionTypes, state, action, {}, 'tasklist') || state;
   }
+}
+
+export function loadSelectSource() {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SOURCE_LOAD, actionTypes.SOURCE_LOAD_SUCCEED, actionTypes.SOURCE_LOAD_FAIL],
+      endpoint: 'v1/import/tasks/loadSource',
+      method: 'get'
+    }
+  };
 }
 
 export function loadTask(cookie, params) {
@@ -77,4 +115,26 @@ export function loadTask(cookie, params) {
       cookie
     }
   };
+}
+
+export function assignForm(taskState, key) {
+  return assignFormC(key, taskState, 'tasklist', actionTypes);
+}
+
+export function isFormDataLoaded(taskState, key) {
+  return isFormDataLoadedC(key, taskState, 'tasklist');
+}
+
+export function clearForm() {
+  return clearFormC(actionTypes);
+}
+
+export function setFormValue(field, newValue) {
+  return setFormValueC(actionTypes, field, newValue);
+}
+
+export function loadForm(cookie, key) {
+  return loadFormC(cookie, 'v1/import/task', {
+    pid: key
+  }, actionTypes);
 }

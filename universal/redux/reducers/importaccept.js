@@ -36,7 +36,7 @@ const initialState = {
     data: []
   },
   statusList: { // 初始化状态显示数量
-    statusValue: '0',
+    statusValue: '1',
     notSendCount: 0,
     notAcceptCount: 0,
     acceptCount: 0,
@@ -86,7 +86,7 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         loading: false,
         statusList: {...state.statusList,
-          statusValue: action.params.currentStatus || '0',
+          statusValue: action.params.currentStatus || '1',
           invalidCount: action.result.data.statusList.invalidCount,
           notSendCount: action.result.data.statusList.notSendCount,
           notAcceptCount: action.result.data.statusList.notAcceptCount,

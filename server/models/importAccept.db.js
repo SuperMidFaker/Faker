@@ -44,6 +44,8 @@ export default {
       if (currentStatus != -1) {
         statusClause = " and \`status\`= ?";
         args.push(currentStatus);
+      } else {
+        statusClause = " and \`status\` in (1,2)";
       }
 
       const filterClause = concatFilterSql(filters, args);
@@ -59,6 +61,8 @@ export default {
       if (currentStatus != -1) {
         statusClause = " and \`status\`= ?";
         args.push(currentStatus);
+      } else {
+        statusClause = " and \`status\` in (1,2)";
       }
 
       const filterClause = concatFilterSql(filters, args);
@@ -74,7 +78,7 @@ export default {
     getStatusCount(tenantId, status, filters) {
       const args = [tenantId, status];
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where tenant_id=? and status=? ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where tenant_id=? and status in (1,2) and status=? ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
@@ -111,8 +115,7 @@ export default {
       const args = [];
       const sql = `SELECT tenant_id as \`value\`,CONCAT(tenant_id,' | ',short_name) as \'text'\ FROM sso_tenants `;
       return mysql.query(sql, args);
-    },
-    * insertImportAccept(entity, trans) {
+    }, * insertImportAccept(entity, trans) {
       let insertClause = [];
       let args = [];
       let varlueClause = [];
@@ -163,8 +166,7 @@ export default {
       const args = [tenantId];
       const sql = `SELECT distinct category FROM g_bus_delegate_files where tenant_id=?`;
       return mysql.query(sql, args);
-    },
-    * saveFileInfo(files, tenantId, delId, delno, trans) {
+    }, * saveFileInfo(files, tenantId, delId, delno, trans) {
       for (var i = 0; i < files.length; i++) {
         const file = files[i];
         if (file.fileflag === 0) {

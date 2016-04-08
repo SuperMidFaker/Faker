@@ -13,13 +13,7 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {
-  Table,
-  Button,
-  message,
-  Radio,
-  Icon
-} from 'ant-ui';
+import {Table, Button, message, Radio, Icon} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
@@ -81,7 +75,6 @@ export default class ImportAccept extends React.Component {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      curStatus: -1,
       statusValue: '',
       searchVal: '',
       sendlist: [],
@@ -139,7 +132,7 @@ export default class ImportAccept extends React.Component {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
-      currentStatus: this.state.curStatus,
+      currentStatus: this.state.statusValue,
       filters: JSON.stringify(filters)
     });
   }
@@ -154,26 +147,6 @@ export default class ImportAccept extends React.Component {
       this.props.sendlist.data.push(record);
     }
     this.context.router.push(`/import/accept/send/${status}`);
-  }
-  handleSetSendList(selectedRows) {
-    this.setState({sendlist: [], buttonText: '', sendStatus: 0});
-    let allnosend = true;
-    let allnoaccept = true;
-    selectedRows.map((record) => {
-      if (record.status !== 0) {
-        allnosend = false;
-      }
-      if (record.status !== 1) {
-        allnoaccept = false;
-      }
-    });
-
-    if (allnosend === true) {
-      this.setState({sendlist: selectedRows, buttonText: '发送', sendStatus: 0});
-    }
-    if (allnoaccept === true) {
-      this.setState({sendlist: selectedRows, buttonText: '撤回', sendStatus: 1});
-    }
   }
   createFilters(searchVal) { // 创建过滤
     return [
@@ -216,7 +189,6 @@ export default class ImportAccept extends React.Component {
       idlist,
       loading
     } = this.props;
-    const {curStatus, buttonText} = this.state;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadAccepts(null, params),
       resolve: (result) => result.data,
@@ -236,7 +208,7 @@ export default class ImportAccept extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          currentStatus: curStatus,
+          currentStatus: statusValue,
           filters: []
         };
         for (const key in filters) {
@@ -254,12 +226,12 @@ export default class ImportAccept extends React.Component {
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
       // selectedRowKeys: this.state.selectedRowKeys,
-      onSelect: (record, selected, selectedRows) => {
-        this.handleSetSendList(selectedRows);
-      },
-      onSelectAll: (selected, selectedRows) => {
-        this.handleSetSendList(selectedRows);
-      }
+      // onSelect: (record, selected, selectedRows) => {
+      //  this.handleSetSendList(selectedRows);
+      // },
+      // onSelectAll: (selected, selectedRows) => {
+      //  this.handleSetSendList(selectedRows);
+      // }
     };
 
     const filterArray = [];
@@ -299,21 +271,21 @@ export default class ImportAccept extends React.Component {
           let fontColor = '';
           let statusText = '';
           switch (record.status) {
+            case 0:
+              statusText = '待处理';
+              fontColor = '#FFD700';
+              break;
             case 1:
-              statusText = '未受理';
+              statusText = '委托中';
               fontColor = '#FF7F00';
               break;
             case 2:
-              statusText = '已接单';
+              statusText = '受理中';
               fontColor = '#00CD00';
               break;
             case 3:
               statusText = '已作废';
               fontColor = '#CCC';
-              break;
-            case 4:
-              statusText = '已撤回';
-              fontColor = '#FFD700';
               break;
             default:
               break;
@@ -371,10 +343,10 @@ export default class ImportAccept extends React.Component {
               <span>所有状态</span>
             </RadioButton>
             <RadioButton value="1">
-              <span>未受理 ({notAcceptCount})</span>
+              <span>委托中 ({notAcceptCount})</span>
             </RadioButton>
             <RadioButton value="2">
-              <span>已接单 ({acceptCount})</span>
+              <span>受理中 ({acceptCount})</span>
             </RadioButton>
           </RadioGroup>
         </div>
@@ -386,11 +358,6 @@ export default class ImportAccept extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
-          </div>
-          <div className={`bottom-fixed-row ${this.state.sendlist.length === 0
-            ? 'hide'
-            : ''}`}>
-            <Button size="large" type="primary" onClick={() => this.handleSend(this.state.sendStatus)}>{buttonText}</Button>
           </div>
         </div>
       </div>
