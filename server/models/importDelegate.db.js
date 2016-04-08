@@ -36,7 +36,7 @@ function concatFilterSql(filters, args) {
 }
 export default {
   getIdTotalCount(currentStatus, filters, tenantId) { //获取满足条件的总记录数
-      const args = [tenantId, tenantId, tenantId];
+      const args = [tenantId, tenantId];
       let statusClause = "";
 
       if (currentStatus != -1) {
@@ -45,7 +45,7 @@ export default {
       }
 
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(del_no) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ? or rec_tenant_id= ?) ${statusClause} ${filterClause}`;
+      const sql = `select count(del_no) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) ${statusClause} ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
@@ -70,9 +70,9 @@ export default {
       return mysql.query(sql, args);
     },
     getStatusCount(tenantId, status, filters) {
-      const args = [tenantId, tenantId, tenantId, status];
+      const args = [tenantId, tenantId, status];
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ? or rec_tenant_id= ?) and status=? ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) and status=? ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
@@ -83,10 +83,10 @@ export default {
       return mysql.query(sql, args);
     },
     getcustomsBrokers(tenantId) {
-      const args = [tenantId, tenantId, tenantId];
+      const args = [tenantId, tenantId];
       const sql = `SELECT t.name as short_name,t.partner_tenant_id as \`key\`  FROM sso_partners as t
-                    inner join sso_partnerships as t1 on t.partner_tenant_id=t1.partner_tenant_id and t.tenant_id=t1.tenant_id
-                    where t1.type=1 and (t.tenant_id= ? or t.send_tenant_id= ? or t.rec_tenant_id= ?) order by t.partner_tenant_id`;
+                    inner join sso_partnerships as t1 on t.partner_tenant_id=t1.partner_tenant_id and (t.tenant_id=t1.tenant_id or t.send_tenant_id=t1.send_tenant_id)
+                    where t1.type=1 and (t.tenant_id= ? or t.send_tenant_id= ?) order by t.partner_tenant_id`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
