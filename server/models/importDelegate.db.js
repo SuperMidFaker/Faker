@@ -50,7 +50,7 @@ export default {
       return mysql.query(sql, args);
     },
     getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, currentStatus, tenantId) { //分页显示数据
-      const args = [tenantId];
+      const args = [tenantId, tenantId];
 
       let statusClause = "";
       console.log(currentStatus);
@@ -63,8 +63,15 @@ export default {
       let sortColumn = sortField || 'del_id';
 
       const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-      const sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
-      where T.tenant_id= ? ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
+      const sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,
+      DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,
+      creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,
+      DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no,
+      usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T
+      LEFT JOIN sso_partners AS T1 ON
+      T.tenant_id=T1.tenant_id
+      AND T.rec_tenant_id=T1.partner_tenant_id
+      where (T.tenant_id= ? or T.send_tenant_id= ?) ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
       args.push((current - 1) * pageSize, pageSize);
       console.log(sql, args);
       return mysql.query(sql, args);
