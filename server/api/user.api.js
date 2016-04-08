@@ -286,18 +286,23 @@ function *editOrganization() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield tenantUserDao.updateUserType(prevOwnerId, TENANT_ROLE.member.name, trans);
-    yield tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans);
-    const users = yield tenantUserDao.getPersonnelInfo(currOwnerId);
+    const [ users, _, __ ] = yield [
+      tenantUserDao.getPersonnelInfo(currOwnerId),
+      tenantUserDao.updateUserType(prevOwnerId, TENANT_ROLE.member.name, trans),
+      tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans)
+    ];
     if (users.length !== 1) {
       throw new Error('not found selected owner');
     }
     const currOwner = users[0];
-    yield tenantDao.updateCorpOwnerInfo(corp.key, corp.name, currOwner.phone, currOwner.name,
-                                        currOwner.email, trans);
+    yield tenantDao.updateOrganizationInfo(
+      corp.key, corp.name, corp.subCode, currOwner.phone,
+      currOwner.name, currOwner.email, trans
+    );
     yield mysql.commit(trans);
     Result.OK(this, {
       name: corp.name,
+      subCode: corp.subCode,
       contact: currOwner.name,
       phone: currOwner.phone,
       email: currOwner.email
@@ -398,7 +403,7 @@ function *editPersonnel() {
     yield userDao.updateLoginName(personnel.loginId, personnel.phone,
       `${personnel.loginName}@${code}`, personnel.email, trans);
     if (personnel.role === TENANT_ROLE.owner.name) {
-      yield tenantDao.updateCorpOwnerInfo(body.tenantId, null, personnel.phone, personnel.name,
+      yield tenantDao.updateCorpOwnerInfo(body.tenantId, personnel.phone, personnel.name,
                                           personnel.email, trans);
     }
     yield tenantUserDao.updatePersonnel(personnel, trans);
@@ -563,7 +568,7 @@ function *updateUserProfile() {
     ];
     if (profile.role === TENANT_ROLE.owner.name) {
       yielders.push(tenantDao.updateCorpOwnerInfo(
-        body.tenantId, null, profile.phone, profile.name,
+        body.tenantId, profile.phone, profile.name,
         profile.email, trans
       ));
     }
