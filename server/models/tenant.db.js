@@ -1,7 +1,7 @@
 import mysql from '../../reusable/db-util/mysql';
 function packColumnArgs(item) {
   const columns = [
-    `code`, `aspect`, `name`, `phone`, `subdomain`, `country`, `province`, `city`,
+    `code`, `sub_code`, `aspect`, `name`, `phone`, `subdomain`, `country`, `province`, `city`,
     `district`, `address`, `logo`, `short_name`, `category_id`, `website`, `remark`,
     `level`, `email`, `contact`
   ];
@@ -92,7 +92,7 @@ export default {
     return mysql.query(sql, args);
   },
   insertCorp(corp, parentTenantId, trans) {
-    const sql = `insert into sso_tenants (code, aspect, name, phone, subdomain, country, province,
+    const sql = `insert into sso_tenants (code, sub_code, aspect, name, phone, subdomain, country, province,
       city, district, address, logo, short_name, category_id, website, remark, level, email, contact,
       parent_tenant_id, status, created_date) values (?, 'normal', NOW())`;
     const args = packColumnArgs(corp);
