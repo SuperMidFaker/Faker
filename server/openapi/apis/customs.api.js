@@ -123,7 +123,7 @@ function *billImport() {
         return this.error(codes.params_error);
       }
 
-      if (tenant && ctenant) {
+      if (tenant && ctenant && bill.head.del_no) {
         // gen del_no
         res = yield delegateDao.genDelNo(tenant.code, tenant.delegate_prefix, tenant.tenant_id);
         bill.head.external_no = bill.head.del_no;
@@ -171,6 +171,9 @@ function *partnersImport() {
     for (let i = 0; i < partners.length; i++) {
       const part = partners[i];
       const p = part.partner;
+      if (!p.code || !p.name) {
+        continue;
+      }
       let res = yield [tenantDao.getTenantInfoByCode(p.code),
         tenantDao.getTenantInfo(stenantId)];
 

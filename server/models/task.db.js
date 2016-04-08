@@ -70,7 +70,7 @@ export default {
       const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
 
       const sql = `select T1.name as short_name, del_id as \`key\`,del_no,customs_status,invoice_no,bill_no,rec_tenant_id,T2.name as rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
-      left join sso_tenant_users T2 on t2.tenant_id=T.rec_tenant_id and T2.login_id=T.rec_login_id
+      left join sso_tenant_users T2 on T2.tenant_id=T.rec_tenant_id and T2.login_id=T.rec_login_id
       where T.rec_tenant_id= ? ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
 
       args.push((current - 1) * pageSize, pageSize);
