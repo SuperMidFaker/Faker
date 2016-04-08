@@ -135,7 +135,18 @@ export default {
     const args = [amount, tenantId];
     return mysql.update(sql, args, trans);
   },
-  getTenantInfoByCode(code) {
-    return mysql.query('select * from sso_tenants where code = ? limit 1', [code]);
+  getTenantInfoByCode(code, subCode) {
+    // code => master tenant
+    let s = ' and parent_tenant_id = 0 ';
+    const args = [code];
+    if (subCode && subCode.length > 0) {
+      s = ' and sub_code = ? ';
+      args.push(subCode);
+    }
+
+    return mysql.query(`select * from sso_tenants where code = ? ${s} limit 1`, args);
+  },
+  bindSubTenant(masterTenantId, masterCode) {
+    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and (sub_code is not null or sub_code != '')`, [masterTenantId, masterCode]);
   }
 };
