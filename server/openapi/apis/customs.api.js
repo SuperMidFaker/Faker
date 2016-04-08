@@ -76,7 +76,9 @@ function billHeadsToEntryHeads(ids, head) {
   }
   const eArr = [];
   eIds.forEach(id => {
-    eArr.push(billHeadToEntryHead(id, head));
+    if (id) {
+      eArr.push(billHeadToEntryHead(id, head));
+    }
   });
 
   return eArr;
