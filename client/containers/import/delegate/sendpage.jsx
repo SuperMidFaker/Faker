@@ -37,6 +37,9 @@ export default class ImportDelegateSend extends React.Component {
     customsBrokerList: PropTypes.array.isRequired,
     params: PropTypes.object.isRequired
   }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
   constructor(props) {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);

@@ -105,6 +105,7 @@ export default(store, cookie) => {
             </Route>
             <Route path="task">
               <IndexRoute component={ImportTask.List}/>
+              <Route path="inputbill/:id" component={ImportTask.InputBill}/>
             </Route>
             <Route path="receive">
               <IndexRoute component={ImportAccept.List}/>

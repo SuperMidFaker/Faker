@@ -70,13 +70,18 @@ function billHeadToEntryHead(entryId, head) {
 }
 
 function billHeadsToEntryHeads(ids, head) {
+  if (!ids) {
+    return [];
+  }
   const eIds = ids.split(',');
   if (eIds.length === 0) {
     return [];
   }
   const eArr = [];
   eIds.forEach(id => {
-    eArr.push(billHeadToEntryHead(id, head));
+    if (id) {
+      eArr.push(billHeadToEntryHead(id, head));
+    }
   });
 
   return eArr;
@@ -110,21 +115,25 @@ function *billImport() {
   if (isArray(bills)) {
     for (let i = 0; i < bills.length; i++) {
       const bill = bills[i];
-      let res = yield [tenantDao.getTenantInfoByCode(bill.head.trade_co),
+      let res = yield [tenantDao.getTenantInfoByCode(bill.head.customer_id, bill.head.customer_subid),
         tenantDao.getTenantInfoByCode(bill.head.agent_code)];
+      if (res.length !== 2) {
+        return this.error(codes.params_error);
+      }
       const tenant = res[0][0];  // owner tenant
       const ctenant = res[1][0]; // create tenant
 
-      if (tenant.tenant_id !== this.tenant_id &&
+      // check current access token belong tenant
+      /*if (tenant.tenant_id !== this.tenant_id &&
         ctenant.tenant_id !== this.tenant_id) {
         console.log('import bill data trade_co and agent_code not valid current access token tenant');
         return this.error(codes.params_error);
-      }
+      }*/
 
-      if (tenant && ctenant) {
+      if (tenant && ctenant && bill.head.external_no) {
         // gen del_no
         res = yield delegateDao.genDelNo(tenant.code, tenant.delegate_prefix, tenant.tenant_id);
-        bill.head.external_no = bill.head.del_no;
+        // bill.head.external_no = bill.head.del_no;
         bill.head.del_no = res.del_no;
         bill.head.tenant_id = tenant.tenant_id;
         bill.head.create_tenant_id = ctenant.tenant_id;
@@ -169,7 +178,10 @@ function *partnersImport() {
     for (let i = 0; i < partners.length; i++) {
       const part = partners[i];
       const p = part.partner;
-      let res = yield [tenantDao.getTenantInfoByCode(p.code),
+      if (!p.code || !p.name) {
+        continue;
+      }
+      let res = yield [tenantDao.getTenantInfoByCode(p.code, p.sub_code),
         tenantDao.getTenantInfo(stenantId)];
 
       const name = res[1][0].name;
@@ -178,9 +190,20 @@ function *partnersImport() {
         p.category_id = p.category_id || 0;
         p.level = p.level || 0;
         p.aspect = 1;
+        p.parent_tenant_id = 0;
 
-        res = yield tenantDao.insertCorp(p, 0);
+        if (p.sub_code && p.sub_code.length > 0) {
+          const tns = yield tenantDao.getTenantInfoByCode(p.code);
+          if (tns.length > 0) {
+            p.parent_tenant_id = tns[0].tenant_id;
+          }
+        }
+
+        res = yield tenantDao.insertCorp(p, p.parent_tenant_id);
         const tid = res.insertId;
+        if (!p.sub_code) {
+          yield tenantDao.bindSubTenant(tid, p.code);
+        }
 
         yield [copsDao.insertPartner(stenantId, tid, p.name, 'TENANT_ENTERPRISE', 1),
           copsDao.insertPartner(tid, stenantId, name, 'TENANT_ENTERPRISE', 1)];
