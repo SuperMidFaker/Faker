@@ -12,12 +12,10 @@ const RadioGroup = Radio.Group;
 
 function fetchData({state, dispatch, cookie}) {
   if (!isLoaded(state, 'task')) {
-    // 当前选择租户可能被删除,所以重新加载到主租户
     return dispatch(loadTask(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.task.tasklist.pageSize,
-      loginId: state.account.loginId,
-      currentPage: state.task.tasklist.current
+      loginId: state.account.loginId
     }));
   }
 }
@@ -35,7 +33,6 @@ export default class TaskSetting extends React.Component {
   constructor(props) {
     super(props);
     this.state = { // 设置默认视图状态
-      curStatus: -1,
       statusValue: '',
       searchVal: ''
     };
@@ -65,7 +62,7 @@ export default class TaskSetting extends React.Component {
       loginId: this.props.loginId,
       pageSize: this.props.tasklist.pageSize,
       currentPage: 1,
-      currentStatus: this.state.curStatus,
+      currentStatus: this.state.statusValue,
       filters: JSON.stringify(filters)
     });
   }
@@ -99,14 +96,12 @@ export default class TaskSetting extends React.Component {
     const {
       statusList: {
         statusValue,
-        notAcceptCount,
         haveOrderCount,
         closeOrderCount
       },
       tasklist,
       loading
     } = this.props;
-    const {curStatus} = this.state;
 
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadTask(null, params),
@@ -129,7 +124,7 @@ export default class TaskSetting extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          currentStatus: curStatus,
+          currentStatus: statusValue,
           filters: []
         };
         for (const key in filters) {
@@ -182,18 +177,14 @@ export default class TaskSetting extends React.Component {
         render: (text, record) => { // 根据状态定制显示状态中文描述
           let fontColor = '';
           let statusText = '';
-          switch (record.customs_status) {
-            case 0:
-              statusText = '未受理';
-              fontColor = '#FFD700';
-              break;
+          switch (record.status) {
             case 1:
-              statusText = '已接单';
-              fontColor = '#00CD00';
+              statusText = '委托中';
+              fontColor = '#FF7F00';
               break;
             case 2:
-              statusText = '已结单';
-              fontColor = '#FF7F00';
+              statusText = '受理中';
+              fontColor = '#00CD00';
               break;
             default:
               break;
@@ -214,7 +205,7 @@ export default class TaskSetting extends React.Component {
           if (record.bill_no !== undefined) {
             returnVal = (
               <span>
-                <NavLink to={`/import/task/inputbill/${record.key}`}>录入报关清单</NavLink>
+                <NavLink to={`/import/task/inputbill/${record.key}`}>查看报关清单</NavLink>
                 <span className="ant-divider"/>
                 <a role="button" onClick={() => this.handleSend(0, record)}>更多</a>
               </span>
@@ -237,16 +228,13 @@ export default class TaskSetting extends React.Component {
           </div>
           <RadioGroup defaultValue="0" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
             <RadioButton value="-1">
-              <span>所有</span>
-            </RadioButton>
-            <RadioButton value="0">
-              <span>未受理 ({notAcceptCount})</span>
+              <span>所有状态</span>
             </RadioButton>
             <RadioButton value="1">
-              <span>已接单 ({haveOrderCount})</span>
+              <span>委托中 ({haveOrderCount})</span>
             </RadioButton>
             <RadioButton value="2">
-              <span>已结单 ({closeOrderCount})</span>
+              <span>受理中 ({closeOrderCount})</span>
             </RadioButton>
           </RadioGroup>
         </div>

@@ -26,7 +26,8 @@ function fetchData({state, dispatch, cookie}) {
     let p = dispatch(loadDelegates(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.importdelegate.idlist.pageSize,
-      currentPage: state.importdelegate.idlist.current
+      currentPage: state.importdelegate.idlist.current,
+      currentStatus: 0
     }));
     promises.push(p);
     p = dispatch(loadCustomsBrokers(cookie, state.account.tenantId));
@@ -75,7 +76,6 @@ export default class ImportDelegate extends React.Component {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      curStatus: -1,
       statusValue: '',
       searchVal: '',
       sendlist: [],
@@ -133,7 +133,7 @@ export default class ImportDelegate extends React.Component {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
-      currentStatus: this.state.curStatus,
+      currentStatus: this.state.statusValue,
       filters: JSON.stringify(filters)
     });
   }
@@ -212,7 +212,7 @@ export default class ImportDelegate extends React.Component {
       idlist,
       loading
     } = this.props;
-    const {curStatus, buttonText} = this.state;
+    const {buttonText} = this.state;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadDelegates(null, params),
       resolve: (result) => result.data,
@@ -232,7 +232,7 @@ export default class ImportDelegate extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          currentStatus: curStatus,
+          currentStatus: statusValue,
           filters: []
         };
         for (const key in filters) {

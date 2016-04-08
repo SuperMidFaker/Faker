@@ -38,8 +38,7 @@ const initialState = {
     data: []
   },
   statusList: { // 初始化状态显示数量
-    statusValue: 0,
-    notAcceptCount: 0,
+    statusValue: 1,
     haveOrderCount: 0,
     closeOrderCount: 0
   },
@@ -51,9 +50,9 @@ const initialState = {
     Country: [],
     Levytype: [],
     District: [],
-    Curr: []
-  },
-  Port: []
+    Curr: [],
+    Port: []
+  }
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -66,8 +65,7 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         loading: false,
         statusList: {...state.statusList,
-          statusValue: action.params.currentStatus || '0',
-          notAcceptCount: action.result.data.statusList.notAcceptCount,
+          statusValue: action.params.currentStatus || '1',
           haveOrderCount: action.result.data.statusList.haveOrderCount,
           closeOrderCount: action.result.data.statusList.closeOrderCount
         },
@@ -87,9 +85,9 @@ export default function reducer(state = initialState, action) {
           Country: action.result.data.Country,
           Levytype: action.result.data.Levytype,
           District: action.result.data.District,
-          Curr: action.result.data.Curr
-        },
-        tasklist: action.result.data.tasklist
+          Curr: action.result.data.Curr,
+          Port: action.result.data.Port
+        }
       };
       // todo deal with submit fail submit loading
     default:

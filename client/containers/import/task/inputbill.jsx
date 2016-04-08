@@ -37,7 +37,6 @@ function fetchData({state, dispatch, cookie, params}) {
   const pid = parseInt(params.id, 10);
   const promises = [];
   promises.push(dispatch(loadSelectSource()));
-
   if (pid) {
     if (!isFormDataLoaded(state.task, pid)) {
       promises.push(dispatch(loadForm(cookie, pid)));
@@ -47,7 +46,6 @@ function fetchData({state, dispatch, cookie, params}) {
   } else {
     promises.push(dispatch(clearForm()));
   }
-
   return Promise.all(promises);
 }
 
@@ -64,6 +62,7 @@ function goBack(router) {
   tenantId: state.account.tenantId,
   selectSource: state.task.selectSource
 }), {loadSelectSource, setFormValue})
+
 @connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
     return;
@@ -354,7 +353,8 @@ export default class InputBillEdit extends React.Component {
         Country,
         Levytype,
         District,
-        Curr
+        Curr,
+        Port
       }
     } = this.props;
     return (
@@ -362,7 +362,7 @@ export default class InputBillEdit extends React.Component {
         <Row>
           <Col span="6">
 
-            {this.renderSelect('进口口岸', '', 'i_e_port', false, [], null, false, function(){})}
+            {this.renderSelect('进口口岸', '', 'i_e_port', false, [], null)}
             {this.renderSelect('收发货人', '选择收发货人', 'trade_co', true, [], null)}
             {this.renderSelect('消费使用单位', '选择消费使用单位', 'owner_code', false, [], null)}
 
@@ -425,7 +425,7 @@ export default class InputBillEdit extends React.Component {
 
             {this.renderTextInput('运输工具名称', '输入运输工具名称', 'traf_name', false, null, null)}
             {this.renderSelect('征免性质', '选择征免性质', 'cut_mode', false, Levytype, null)}
-            {this.renderSelect('装货港', '选择装货港', 'distinate_port', false, [], null)}
+            {this.renderSelect('装货港', '选择装货港', 'distinate_port', false, Port, null)}
             <Row>
               <Col span="12">
                 {this.renderSelect1('保费', '', 'insur_mark', false, FEE_TYPE, null)}

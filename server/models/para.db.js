@@ -30,11 +30,10 @@ export default {
     const sql = `select cut_mode \`value\`,concat(cut_mode,'|',abbr_cut) \`text\` from para_levytype`;
     return mysql.query(sql);
   },
-  // 根据国别获取装货港
-  getPort(countryCode) {
-    const args=[countryCode];
-    const sql = `select  port_code \`value\`, concat(port_code,'|',port_c_cod) \`text\` from para_port_lin where port_count= ?`;
-    return mysql.query(sql, args);
+  // 获取装货港
+  getPort() {
+    const sql = `select  port_code \`value\`, concat(port_code,'|',port_c_cod) \`text\` from para_port_lin`;
+    return mysql.query(sql);
   },
   // 获取境内目的地
   getDistrict() {
