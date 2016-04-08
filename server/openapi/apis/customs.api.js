@@ -70,6 +70,9 @@ function billHeadToEntryHead(entryId, head) {
 }
 
 function billHeadsToEntryHeads(ids, head) {
+  if (!ids) {
+    return [];
+  }
   const eIds = ids.split(',');
   if (eIds.length === 0) {
     return [];
