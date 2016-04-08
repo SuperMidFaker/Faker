@@ -100,7 +100,7 @@ export default {
       for (var i = 0; i < tasklist.length; i++) {
         key.push(tasklist[i].key);
       }
-      const sql = `select seq_no , del_id from g_dec_bill_head where tenant_id = ? and del_id in (${key.join(',')})`;
+      const sql = `select external_no , del_id from g_dec_bill_head where tenant_id = ? and del_id in (${key.join(',')})`;
       let decBillList = yield mysql.query(sql, args);
       decBillList = yield this.getDecHead(decBillList, tenantId);
       console.log("decBillList", decBillList);
@@ -112,8 +112,8 @@ export default {
                 tasklist[i].children = [];
               }
               tasklist[i].children.push({
-                key: decBillList[j].seq_no,
-                del_no: decBillList[j].seq_no,
+                key: decBillList[j].external_no,
+                del_no: decBillList[j].external_no,
                 send_tenant_id: '报关清单',
                 children: decBillList[j].children
               });

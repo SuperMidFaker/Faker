@@ -353,7 +353,7 @@ export default class ImportAccept extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/receive/new')}>
-              <Icon type="plus-circle-o"/>新增
+              <Icon type="plus-circle-o"/>新增报关业务
             </Button>
           </div>
           <div className="panel-body body-responsive">
