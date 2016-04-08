@@ -117,14 +117,17 @@ function *billImport() {
       const bill = bills[i];
       let res = yield [tenantDao.getTenantInfoByCode(bill.head.trade_co),
         tenantDao.getTenantInfoByCode(bill.head.agent_code)];
+      if (res.length !== 2) {
+        return this.error(codes.params_error);
+      }
       const tenant = res[0][0];  // owner tenant
       const ctenant = res[1][0]; // create tenant
 
-      if (tenant.tenant_id !== this.tenant_id &&
+      /*if (tenant.tenant_id !== this.tenant_id &&
         ctenant.tenant_id !== this.tenant_id) {
         console.log('import bill data trade_co and agent_code not valid current access token tenant');
         return this.error(codes.params_error);
-      }
+      }*/
 
       if (tenant && ctenant && bill.head.del_no) {
         // gen del_no
