@@ -47,18 +47,40 @@ export default class ShipmentList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
   }
-  render() {
-    const { formhoc } = this.props;
+  renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
+    const { formhoc: { getFieldProps, getFieldError }} = this.props;
     return (
-      <Form form={formhoc}>
-      <Col wrapperCol="16">
-        <Row wrapperCol="12">
-          <FormItem>
-           <Input />
-          </FormItem>
-        </Row>
-      </Col>
-      </Form>
+      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
+        help={rules && getFieldError(field)} hasFeedback required={required}>
+        <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
+      </FormItem>
+    );
+  }
+  render() {
+    const { formhoc/*, formhoc: { getFieldError, getFieldProps } */} = this.props;
+    return (
+      <div className="page-body">
+        <Form form={formhoc} horizontal className="form-edit-content offset-right-col">
+          <Col span="16">
+            <Row>
+              <div className="subpanel-heading">
+                提货信息
+              </div>
+              <Col span="14">
+                <div className="subpanel-body">
+                {this.renderTextInput(
+                  '发货方', '', 'sender'
+                  // this.msg('chief'), this.msg('chiefPlaceholder'), 'contact',
+                  true//, [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}]
+                )}
+                </div>
+              </Col>
+              <Col span="10">
+              </Col>
+            </Row>
+          </Col>
+        </Form>
+      </div>
     );
   }
 }
