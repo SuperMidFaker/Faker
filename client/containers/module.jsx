@@ -5,10 +5,19 @@ import connectNav from '../../reusable/decorators/connect-nav';
 import { DEFAULT_MODULES } from '../../universal/constants';
 
 @connectNav((props, dispatch) => {
-  const moduleName = props.location.pathname.split('/')[1];
+  const moduleUrl = props.location.pathname.split('/')[1];
+  let text;
+  let moduleName;
+  Object.keys(DEFAULT_MODULES).forEach(mod => {
+    if (DEFAULT_MODULES[mod].url.indexOf(moduleUrl) > 0) {
+      moduleName = DEFAULT_MODULES[mod].cls;
+      text = DEFAULT_MODULES[mod].text;
+      return;
+    }
+  });
   dispatch(setNavTitle({
     depth: 2,
-    text: DEFAULT_MODULES[moduleName].text,
+    text,
     moduleName,
     withModuleLayout: true,
     goBackFn: null

@@ -1,9 +1,13 @@
 import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
+import {
+  appendFormAcitonTypes, formReducer, loadFormC, assignFormC, clearFormC, setFormValueC
+} from 'reusable/domains/redux/form-common';
 
 const actionTypes = createActionTypes('@@welogix/shipment/', [
   'LOAD_SHIPMENT', 'LOAD_SHIPMENT_FAIL', 'LOAD_SHIPMENT_SUCCEED',
 ]);
+appendFormAcitonTypes('@@welogix/shipments/', actionTypes);
 
 const initialState = {
   loaded: false,
@@ -28,6 +32,10 @@ const initialState = {
         deliveryDate: new Date(2016, 4, 7),
       }
     ]
+  },
+  submitting: false,
+  formData: {
+    key: null
   }
 };
 
@@ -40,7 +48,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_SHIPMENT_SUCCEED:
       return { ...state, loading: false, loaded: true, shipmentlist: action.result.data };
     default:
-      return state;
+      return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
+             || state;
   }
 }
 
@@ -55,4 +64,20 @@ export function loadTable(cookie, params) {
       cookie
     }
   };
+}
+
+export function loadForm(cookie, params) {
+  return loadFormC(cookie, 'v1/transport/shipments', params, actionTypes);
+}
+
+export function assignForm(shipmentState, shipmentId) {
+  return assignFormC(shipmentId, shipmentState, 'shipmentlist', actionTypes);
+}
+
+export function setFormValue(field, value) {
+  return setFormValueC(actionTypes, field, value);
+}
+
+export function clearForm() {
+  return clearFormC(actionTypes);
 }

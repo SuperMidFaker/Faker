@@ -61,4 +61,48 @@ export default defineMessages({
     id: 'transport.shipment.new.title',
     defaultMessage: '新建运单'
   },
+  pickupInfo: {
+    id: 'transport.shipment.pickup.info',
+    defaultMessage: '提货信息'
+  },
+  consignor: {
+    id: 'transport.shipment.consignor',
+    defaultMessage: '发货方'
+  },
+  consigorMessage: {
+    id: 'transport.shipment.consignor.message',
+    defaultMessage: '发货方不能为空'
+  },
+  loadingPort: {
+    id: 'transport.shipment.loading.port',
+    defaultMessage: '起运地'
+  },
+  contact: {
+    id: 'transport.shipment.contact',
+    defaultMessage: '联系人'
+  },
+  deliveryInfo: {
+    id: 'transport.shipment.delivery.info',
+    defaultMessage: '收货方'
+  },
+  consignee: {
+    id: 'transport.shipment.consignee',
+    defaultMessage: '收货方'
+  },
+  consigeeMessage: {
+    id: 'transport.shipment.consignee.message',
+    defaultMessage: '收货方不能为空'
+  },
+  receiptPlace: {
+    id: 'transport.shipment.receipt.place',
+    defaultMessage: '目的地'
+  },
+  client: {
+    id: 'transport.shipment.client',
+    defaultMessage: '客户'
+  },
+  lsp: {
+    id: 'transport.shipment.lsp',
+    defaultMessage: '物流服务商'
+  },
 });

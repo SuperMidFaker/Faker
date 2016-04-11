@@ -1,6 +1,7 @@
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/navbar/', [
-  'NAVB_SET_TITLE']);
+  'NAVB_SET_TITLE'
+]);
 
 const initialState = {
   navTitle: {
