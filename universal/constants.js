@@ -18,9 +18,19 @@ const DELEGATE_STATUS = {
     text: '待处理'
   },
   blocked: {
-    id: 1,
+    id: 3,
     name: 'blocked',
     text: '停用'
+  },
+  send: {
+    id: 1,
+    name: 'send',
+    text: '未受理'
+  },
+  accept: {
+    id: 2,
+    name: 'accept',
+    text: '已接单'
   }
 };
 const TENANT_ROLE = {
