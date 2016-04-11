@@ -247,7 +247,7 @@ export default class ImportAccept extends React.Component {
       }, {
         title: '客户名称',
         sorter: true,
-        dataIndex: 'send_tenant_id',
+        dataIndex: 'send_tenant_name',
         filters: filterArray,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {

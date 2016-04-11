@@ -139,7 +139,7 @@ export default {
     // code => master tenant
     let s = ' and parent_tenant_id = 0 ';
     const args = [code];
-    if (subCode && subCode.length > 0) {
+    if (subCode && subCode.length > 0 && code !== subCode) {
       s = ' and sub_code = ? ';
       args.push(subCode);
     }
@@ -147,6 +147,6 @@ export default {
     return mysql.query(`select * from sso_tenants where code = ? ${s} limit 1`, args);
   },
   bindSubTenant(masterTenantId, masterCode) {
-    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and (sub_code is not null or sub_code != '')`, [masterTenantId, masterCode]);
+    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and sub_code is not null and sub_code != ''`, [masterTenantId, masterCode]);
   }
 };
