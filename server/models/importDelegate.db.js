@@ -11,8 +11,6 @@ function putInComposition(f, args) {
   } else if (f.name === 'invoice_no') {
     sql = 'invoice_no like ?';
     args.push('%' + f.value + '%');
-  } else if (f.name === 'short_name' && f.value !== `''`) {
-    sql = `rec_tenant_id in (${f.value})`;
   }
   return sql;
 }
@@ -38,7 +36,7 @@ function concatFilterSql(filters, args) {
 }
 export default {
   getIdTotalCount(currentStatus, filters, tenantId) { //获取满足条件的总记录数
-      const args = [tenantId];
+      const args = [tenantId, tenantId];
       let statusClause = "";
 
       if (currentStatus != -1) {
@@ -47,12 +45,12 @@ export default {
       }
 
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(del_no) as count from g_bus_delegate where tenant_id= ? ${statusClause} ${filterClause}`;
+      const sql = `select count(del_no) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) ${statusClause} ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
     getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, currentStatus, tenantId) { //分页显示数据
-      const args = [tenantId];
+      const args = [tenantId, tenantId];
 
       let statusClause = "";
       console.log(currentStatus);
@@ -65,16 +63,23 @@ export default {
       let sortColumn = sortField || 'del_id';
 
       const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-      const sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
-      where T.tenant_id= ? ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
+      const sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,
+      DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,
+      creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,
+      DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no,
+      usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T
+      LEFT JOIN sso_partners AS T1 ON
+      T.tenant_id=T1.tenant_id
+      AND T.rec_tenant_id=T1.partner_tenant_id
+      where (T.tenant_id= ? or T.send_tenant_id= ?) ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
       args.push((current - 1) * pageSize, pageSize);
       console.log(sql, args);
       return mysql.query(sql, args);
     },
     getStatusCount(tenantId, status, filters) {
-      const args = [tenantId, status];
+      const args = [tenantId, tenantId, status];
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where tenant_id=? and status=? ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) and status=? ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
@@ -85,10 +90,10 @@ export default {
       return mysql.query(sql, args);
     },
     getcustomsBrokers(tenantId) {
-      const args = [tenantId];
+      const args = [tenantId, tenantId];
       const sql = `SELECT t.name as short_name,t.partner_tenant_id as \`key\`  FROM sso_partners as t
-                    inner join sso_partnerships as t1 on t.partner_tenant_id=t1.partner_tenant_id and t.tenant_id=t1.tenant_id
-                    where t1.type=1 and t.tenant_id= ? order by t.partner_tenant_id`;
+                    inner join sso_partnerships as t1 on t.partner_tenant_id=t1.partner_tenant_id and (t.tenant_id=t1.tenant_id or t.send_tenant_id=t1.send_tenant_id)
+                    where t1.type=1 and (t.tenant_id= ? or t.send_tenant_id= ?) order by t.partner_tenant_id`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
