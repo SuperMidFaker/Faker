@@ -58,7 +58,7 @@ export default class ShipmentList extends React.Component {
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     shipmentStatusTypes: PropTypes.array.isRequired,
-    loadTable: PropTypes.func.isRequired,
+    loadTable: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
@@ -105,8 +105,7 @@ export default class ShipmentList extends React.Component {
     dataIndex: 'carrier'
   }, {
     title: this.msg('shipMode'),
-    dataIndex: 'mode',
-    // render: (o, record) => this.msg(record.mode)
+    dataIndex: 'mode'
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source'

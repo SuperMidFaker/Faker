@@ -1,13 +1,13 @@
 import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
-import {
+import { isFormDataLoadedC, 
   appendFormAcitonTypes, formReducer, loadFormC, assignFormC, clearFormC, setFormValueC
 } from 'reusable/domains/redux/form-common';
 
 const actionTypes = createActionTypes('@@welogix/shipment/', [
   'LOAD_SHIPMENT', 'LOAD_SHIPMENT_FAIL', 'LOAD_SHIPMENT_SUCCEED',
 ]);
-appendFormAcitonTypes('@@welogix/shipments/', actionTypes);
+appendFormAcitonTypes('@@welogix/shipment/', actionTypes);
 
 const initialState = {
   loaded: false,
@@ -29,7 +29,7 @@ const initialState = {
         source: '上海',
         destination: '南京',
         pickupDate: new Date(2016, 3, 7),
-        deliveryDate: new Date(2016, 4, 7),
+        deliveryDate: new Date(2016, 4, 7)
       }
     ]
   },
@@ -64,6 +64,10 @@ export function loadTable(cookie, params) {
       cookie
     }
   };
+}
+
+export function isFormDataLoaded(shipmentState, shipmentId) {
+  return isFormDataLoadedC(shipmentId, shipmentState, 'shipmentlist');
 }
 
 export function loadForm(cookie, params) {
