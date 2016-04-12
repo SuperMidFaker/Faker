@@ -1,39 +1,67 @@
-import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, {PropTypes} from 'react';
+import {connect} from 'react-redux';
 import {
-  Icon, Button, Form, Input, Switch, message, Select, Tabs,
-  Row, Modal, Col, Table, Menu, Dropdown
-} from 'ant-ui';
+  Modal,
+  Icon,
+  Button,
+  Form,
+  Select,
+  Input,
+  Row,
+  Col,
+  Switch,
+  message,
+  Menu,
+  Dropdown,
+  Tabs,
+  Table
+} from
+'ant-ui';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
-import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit, loadSelectOptions,
-uploadFiles, removeFile, loadLogs, invalidDelegate } from
-'../../../../universal/redux/reducers/delegate';
-import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-const Option = Select.Option;
-const FormItem = Form.Item;
-const TabPane = Tabs.TabPane;
-const OptGroup = Select.OptGroup;
+import {
+  isFormDataLoaded,
+  loadForm,
+  assignForm,
+  clearForm,
+  setFormValue,
+  edit,
+  submit,
+  loadSelectOptions,
+  uploadFiles,
+  removeFile,
+  invalidDelegate,
+  loadLogs
+} from
+'../../../../universal/redux/reducers/exportdelegate';
+import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
+import './upload.less';
 const Dropzone = require('react-dropzone');
+const FormItem = Form.Item;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 const DropdownButton = Dropdown.Button;
+const TabPane = Tabs.TabPane;
 
 function fetchData({state, dispatch, cookie, params}) {
   const pid = parseInt(params.id, 10);
   const promises = [];
-    promises.push(dispatch(loadSelectOptions(cookie, {
+  promises.push(dispatch(loadSelectOptions(cookie, {
     delId: params.id,
     tenantId: state.account.tenantId
   })));
   if (pid) {
-    if (!isFormDataLoaded(state.delegate, pid)) {
+    if (!isFormDataLoaded(state.exportdelegate, pid)) {
       promises.push(dispatch(loadForm(cookie, pid)));
     } else {
-      promises.push(dispatch(assignForm(state.delegate, pid)));
+      promises.push(dispatch(assignForm(state.exportdelegate, pid)));
     }
-    promises.push(dispatch(loadLogs({delegateId: pid, pageSize: state.delegate.loglist.pageSize, currentPage: state.delegate.loglist.current})));
+    promises.push(dispatch(loadLogs({delegateId: pid, pageSize: state.exportdelegate.loglist.pageSize, currentPage: state.exportdelegate.loglist.current})));
   } else {
     promises.push(dispatch(clearForm()));
   }
+
+  return Promise.all(promises);
 }
 
 function goBack(router) {
@@ -41,20 +69,26 @@ function goBack(router) {
 }
 
 @connectFetch()(fetchData)
-@connect(
-  state => ({
-    selectedIndex: state.delegate.selectedIndex,
-    username: state.account.username,
-    formData: state.delegate.formData,
-    loglist: state.delegate.loglist,
-    loginId: state.account.loginId,
-    code: state.account.code,
-    tenantId: state.account.tenantId,
-    ename: state.corpDomain.name,
-    customs_code: state.delegate.customs_code,
-    selectOptions: state.delegate.selectOptions
-  }),
-  { setFormValue, edit, submit, uploadFiles, removeFile, loadLogs, invalidDelegate })
+@connect(state => ({
+  selectedIndex: state.exportdelegate.selectedIndex,
+  loglist: state.exportdelegate.loglist,
+  formData: state.exportdelegate.formData,
+  code: state.account.code,
+  username: state.account.username,
+  loginId: state.account.loginId,
+  tenantId: state.account.tenantId,
+  ename: state.corpDomain.name,
+  selectOptions: state.exportdelegate.selectOptions,
+  loading: state.exportdelegate.loading
+}), {
+  setFormValue,
+  edit,
+  submit,
+  uploadFiles,
+  removeFile,
+  invalidDelegate,
+  loadLogs
+})
 @connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
     return;
@@ -62,7 +96,9 @@ function goBack(router) {
   const isCreating = (props.formData.key === undefined || props.formData.key === null);
   dispatch(setNavTitle({
     depth: 3,
-    text: isCreating ? '新增业务单' : `业务单详情`,
+    text: isCreating
+      ? '新增报关业务'
+      : '报关业务详情',
     moduleName: '',
     goBackFn: () => goBack(router),
     withModuleLayout: false
@@ -80,19 +116,20 @@ function goBack(router) {
   },
   formPropName: 'formhoc'
 })
-export default class CorpEdit extends React.Component {
+export default class ExportDelegateEdit extends React.Component {
   static propTypes = {
+    loglist: PropTypes.object.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
-    username: PropTypes.string.isRequired,
-    submit: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired,
     selectOptions: PropTypes.object.isRequired,
     uploadFiles: PropTypes.func.isRequired,
-    removeFile: PropTypes.func.isRequired
+    removeFile: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -104,8 +141,8 @@ export default class CorpEdit extends React.Component {
     this.state = {
       current: '1',
       openKeys: [],
-      voidConfirm: false,
       modalVisible: false,
+      voidConfirm: false,
       fileCategory: ''
     };
   }
@@ -125,7 +162,7 @@ export default class CorpEdit extends React.Component {
             this.onSubmitReturn(result.error);
           });
         } else {
-          this.props.submit(this.props.formData, this.props.tenantId, this.props.selectOptions.declareFileList, this.props.loginId, this.props.username).then(result => {
+          this.props.submit(this.props.formData, JSON.stringify({username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId, declareFileList: this.props.selectOptions.declareFileList})).then(result => {
             this.onSubmitReturn(result.error);
           });
         }
@@ -137,7 +174,10 @@ export default class CorpEdit extends React.Component {
   handleCancel() {
     goBack(this.context.router);
   }
-    handleShowModal() {
+  handleSelectChange(stateKey, value) {
+    this.setState(JSON.parse(`{"${stateKey}":"${value}"}`));
+  }
+  handleShowModal() {
     this.setState({modalVisible: true});
   }
   handleOk() {
@@ -174,53 +214,13 @@ export default class CorpEdit extends React.Component {
       this.props.uploadFiles(files, files[0].name, this.props.formData.category);
     }
   }
- handleRemoveFile(index) {
-     this.props.removeFile(index);
+  handleRemoveFile(index) {
+    this.props.removeFile(index);
   }
-   handleMenuClick(e) {
+  handleMenuClick(e) {
     if (e.key === '2') {
       this.setState({voidConfirm: true});
     }
-  }
-  renderSelect(labelName, placeholder, field, required, source, rules) {
-    const {
-      formhoc: {
-        getFieldProps,
-        getFieldError
-      }
-    } = this.props;
-    return (
-      <FormItem label={labelName} labelCol={{
-        span: 6
-      }} wrapperCol={{
-        span: 18
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Select style={{
-          width: '100%'
-        }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
-          <OptGroup label={placeholder}>
-            {source.map((item) => (
-              <Option value={item.value} key={item.value}>{item.text}</Option>
-            ))
-            }
-          </OptGroup>
-        </Select>
-      </FormItem>
-    );
-  }
-  renderSwitch(labelName, field) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
-    return (
-      <FormItem label={labelName} labelCol={{
-        span: 6
-      }} wrapperCol={{
-        span: 18
-      }}>
-        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}/>
-      </FormItem>
-    );
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, disabled = false, type = 'text') {
     const {
@@ -239,20 +239,60 @@ export default class CorpEdit extends React.Component {
       </FormItem>
     );
   }
+  renderSwitch(labelName, field) {
+    const {formhoc: {
+        getFieldProps
+      }} = this.props;
+    return (
+      <FormItem label={labelName} labelCol={{
+        span: 6
+      }} wrapperCol={{
+        span: 18
+      }}>
+        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}/>
+      </FormItem>
+    );
+  }
+  renderSelect(labelName, placeholder, field, required, source, rules, disabled = false) {
+    const {
+      formhoc: {
+        getFieldProps,
+        getFieldError
+      }
+    } = this.props;
+    return (
+      <FormItem label={labelName} labelCol={{
+        span: 6
+      }} wrapperCol={{
+        span: 18
+      }} help={rules && getFieldError(field)} hasFeedback required={required}>
+        <Select style={{
+          width: '100%'
+        }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
+          <OptGroup label={placeholder}>
+            {source.map((item) => (
+              <Option value={item.value} key={item.value}>{item.text}</Option>
+            ))
+}
+          </OptGroup>
+        </Select>
+      </FormItem>
+    );
+  }
   renderStatus(status) {
     let fontColor = '';
     let statusText = '';
     switch (status) {
       case 0:
-        statusText = '未发送';
+        statusText = '待处理';
         fontColor = '#FFD700';
         break;
       case 1:
-        statusText = '未受理';
+        statusText = '委托中';
         fontColor = '#FF7F00';
         break;
       case 2:
-        statusText = '已接单';
+        statusText = '受理中';
         fontColor = '#00CD00';
         break;
       case 3:
@@ -270,29 +310,29 @@ export default class CorpEdit extends React.Component {
       </span>
     );
   }
-  renderBasicForm() {
-      const {
+  renderEditForm() {
+    const {
       selectOptions: {
         customsInfoList,
-        declareFileList,
         declareWayList,
-        tradeModeList
+        tradeModeList,
+        declareFileList
       }
     } = this.props;
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
         <Menu.Item key="1">录入报关清单</Menu.Item>
-        <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废业务单</Menu.Item>
+        <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废报关业务</Menu.Item>
       </Menu>
     );
     return (
-          <Form horizontal onSubmit={ this.handleSubmit } form={this.props.formhoc} className="form-edit-content">
-           <Row style={{
+      <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
+        <Row style={{
           display: ((this.props.formData.key === undefined || this.props.formData.key === null)
             ? 'none'
             : 'inline-block')
         }}>
-          <Col offset="2">
+          <Col offset="3">
             <div>
               <strong>{this.props.ename}</strong>
               &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
@@ -304,103 +344,104 @@ export default class CorpEdit extends React.Component {
             <div>&nbsp;</div>
           </Col>
         </Row>
-          <Row>
-              <Col span="8">
-                {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
-                  {
-                  required: true
-                  }
-                ])}
-                 {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
-                  {
-                  required: true,
-                  message: '提运单号不能为空'
-                  }
-                ])}
-                 </Col>
-              <Col span="8">
-                {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
-                  {
-                  required: true
-                  }
-                ])}
-              </Col>
-           </Row>
+        <Row>
+          <Col span="8" offset="3">
+            {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
+              {
+                required: true,
+                message: '请选择清关海关'
+              }
+            ], (this.props.formData.status === 2))}
+
+            {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
+              {
+                required: true,
+                message: '提运单号不能为空'
+              }
+            ], null, (this.props.formData.status === 2))}
+          </Col>
+          <Col span="8">
+            {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
+              {
+                required: true,
+                message: '请选择报关类型'
+              }
+            ], (this.props.formData.status === 2))}
+          </Col>
+        </Row>
+        <Row>
+          <Col span="8" offset="3">
+            {this.renderSwitch('使用手册/账册', 'usebook')}
+            {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
+            {this.renderSwitch('加急', 'urgent')}
+          </Col>
+          <Col span="8">
+            {this.renderTextInput('备案号', '', 'ems_no', false, null, null, true)}
+            {this.renderSelect('贸易方式', '选择贸易方式', 'trade_mode', false, tradeModeList, null)}
+            {this.renderTextInput('其他要求', '', 'other_note', false, null, null, false, 'textarea')}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem labelCol={{
+              span: 5
+            }} label="报关单据">
               <Row>
-                    <Col span="8">
-                        {this.renderSwitch('使用手册/账册', 'usebook')}
-                        {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
-                        {this.renderSwitch('加急', 'urgent')}
-                    </Col>
-                    <Col span="8">
-                        {this.renderTextInput('备案号', '', 'ems_no', false, null, null, true)}
-                        {this.renderSelect('贸易方式', '选择贸易方式', 'trade_mode', false, tradeModeList, null)}
-                        {this.renderTextInput('其他要求', '', 'other_note', false, null, null, false, 'textarea')}
-                    </Col>
-                </Row>
-              <Row>
-              <Col >
-                 <FormItem labelCol={{
-                  span: 5
-                }} label="报关单据">
-                  <Row>
-                    <Col span="2">
-                      <Dropzone onDrop={(files) => this.handleUpload(files)} style={{}}>
-                        <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
-                          height: 100,
-                          marginTop: 0,
-                          width: 100
-                        }}>
-                          <span>
-                            <div className="ant-upload-drag-container">
-                              <Icon type="upload"/>
-                              <p className="ant-upload-hint">选择文件</p>
-                            </div>
-                          </span>
+                <Col span="2">
+                  <Dropzone onDrop={(files) => this.handleUpload(files)} style={{}}>
+                    <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
+                      height: 100,
+                      marginTop: 0,
+                      width: 100
+                    }}>
+                      <span>
+                        <div className="ant-upload-drag-container">
+                          <Icon type="upload"/>
+                          <p className="ant-upload-hint">选择文件</p>
                         </div>
-                      </Dropzone>
-                      <span style={{
-                        cursor: 'hand'
-                      }}>
-                        <Icon type="tags"/>
-                        <label onClick={() => {
-                          this.handleShowModal();
-                        }}>选择单据类型</label>
                       </span>
-                    </Col>
+                    </div>
+                  </Dropzone>
+                  <span style={{
+                    cursor: 'hand'
+                  }}>
+                    <Icon type="tags"/>
+                    <label onClick= { () => { this.handleShowModal(); } }>选择单据类型</label>
+                  </span>
+                </Col>
 
-                    {declareFileList.map((item, index) => (
-                      <Col span="2" style={{
-                        display: (item.fileflag === -1)
-                          ? 'none'
-                          : 'inline-block'
-                      }}>
+                {declareFileList.map((item, index) => (
+                  <Col span="2" style={{
+                    display: (item.fileflag === -1)
+                      ? 'none'
+                      : 'inline-block'
+                  }}>
 
-                        <div className="ant-upload-list ant-upload-list-picture-card">
-                          <span>
-                            <div className="ant-upload-list-item ant-upload-list-item-done">
-                              <div className="ant-upload-list-item-info">
-                                <a className="ant-upload-list-item-thumbnail" target="_blank">
-                                  <img src="https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png" alt={item.doc_name}/>
-                                </a>
-                                <span>
-                                  <a href={item.url} target="_blank">
-                                    <Icon type="download"/>
-                                  </a>
-                                  <Icon type="delete" onClick={() => this.handleRemoveFile(index)} alt="删除文件"/>
-                                </span>
-                              </div>
-                            </div>
-                          </span>
-                          <div className="ant-upload-list-item-uploading-text">{item.category}</div>
+                    <div className="ant-upload-list ant-upload-list-picture-card">
+                      <span>
+                        <div className="ant-upload-list-item ant-upload-list-item-done">
+                          <div className="ant-upload-list-item-info">
+                            <a className="ant-upload-list-item-thumbnail" target="_blank">
+                              <img src="https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png" alt={item.doc_name}/>
+                            </a>
+                            <span>
+                              <a href={item.url} target="_blank">
+                                <Icon type="download"/>
+                              </a>
+                              <Icon type="delete" onClick={() => this.handleRemoveFile(index)} alt="删除文件"/>
+                            </span>
+                          </div>
                         </div>
-                      </Col>
-                    ))}
-                  </Row>
-                </FormItem>
-              </Col>
-            </Row>
-            <Row style={{
+                      </span>
+                      <div className="ant-upload-list-item-uploading-text">{item.category}</div>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row style={{
           display: this.props.formData.status === 3
             ? 'hide'
             : 'inline-block'
@@ -415,7 +456,8 @@ export default class CorpEdit extends React.Component {
             </DropdownButton>
           </Col>
         </Row>
-          </Form>);
+      </Form>
+    );
   }
   renderLogForm() {
     const {loglist, loading} = this.props;
@@ -474,7 +516,8 @@ export default class CorpEdit extends React.Component {
       </div>
     );
   }
-    render() {
+
+  render() {
     const {selectOptions: {
         declareCategoryList
       }} = this.props;
@@ -482,9 +525,10 @@ export default class CorpEdit extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
+
           <Tabs defaultActiveKey="tab1">
-            <TabPane tab="业务单" key="tab1">
-              {this.renderBasicForm()}
+            <TabPane tab="报关委托" key="tab1">
+              {this.renderEditForm()}
             </TabPane>
             <TabPane tab="操作日志" key="tab2">
               {this.renderLogForm()}
@@ -513,7 +557,7 @@ export default class CorpEdit extends React.Component {
             </Form>
           </Modal>
 
-          <Modal title="业务单作废确认" visible={this.state.voidConfirm} closable={false} onOk={() => {
+          <Modal title="报关业务作废确认" visible={this.state.voidConfirm} closable={false} onOk={() => {
             this.handleConfirmOk();
           }} onCancel={() => {
             this.handleConfirmHide();
@@ -521,7 +565,7 @@ export default class CorpEdit extends React.Component {
             <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
               <Row>
                 <Col>
-                  是否确认将业务单<strong>{this.props.formData.del_no}</strong>作废?</Col>
+                  是否确认将此报关业务<strong>{this.props.formData.del_no}</strong>作废?</Col>
               </Row>
               <Row>
                 <Col span="24">

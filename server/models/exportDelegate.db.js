@@ -45,7 +45,7 @@ export default {
       }
 
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(del_no) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) and delegate_type= 0 ${statusClause} ${filterClause}`;
+      const sql = `select count(del_no) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) and delegate_type= 1  ${statusClause} ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
@@ -71,7 +71,7 @@ export default {
       LEFT JOIN sso_partners AS T1 ON
       T.tenant_id=T1.tenant_id
       AND T.rec_tenant_id=T1.partner_tenant_id
-      where (T.tenant_id= ? or T.send_tenant_id= ?) and T.delegate_type= 0 ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
+      where (T.tenant_id= ? or T.send_tenant_id= ?)  and T.delegate_type= 1 ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
       args.push((current - 1) * pageSize, pageSize);
       console.log(sql, args);
       return mysql.query(sql, args);
@@ -79,7 +79,7 @@ export default {
     getStatusCount(tenantId, status, filters) {
       const args = [tenantId, tenantId, status];
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) and status=? and delegate_type= 0 ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or send_tenant_id= ?) and status=?  and delegate_type= 1 ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
@@ -111,7 +111,7 @@ export default {
       const args = [];
       const sql = `SELECT TRADE_MODE as \`value\`,CONCAT(TRADE_MODE,' | ',ABBR_TRADE) as \`text\` from para_trade`;
       return mysql.query(sql, args);
-    }, * insertImportDelegate(entity, trans) {
+    }, * insertExportDelegate(entity, trans) {
       let insertClause = [];
       let args = [];
       let varlueClause = [];
@@ -140,7 +140,7 @@ export default {
       console.log(sql);
       return yield mysql.query(sql, [uuid], trans);
     },
-    editImportDelegate(entity, key, trans) {
+    editExportDelegate(entity, key, trans) {
       let updateClause = [];
       let args = [];
 
