@@ -293,10 +293,30 @@ function *entryLogs() {
   return this.error(codes.params_error);
 }
 
+function *addEntries() {
+  const ids = this.reqbody.entry_id;
+  const exNo = this.reqbody.external_no;
+  if (ids && exNo) {
+    const res = yield decbillDao.getHeadByExternalNo(exNo);
+    if (res.length > 0) {
+      // pack entryId to entry heads array
+      const entryHeads = billHeadsToEntryHeads(ids, res[0]);
+      if (entryHeads.length > 0) {
+        yield entryDao.insertHead(entryHeads);
+      }
+
+      return this.ok();
+    }
+  }
+
+  return this.error(codes.params_error);
+}
+
 
 export default [
   ['post', '/customs/bills', billImport, 'import_bills_url'],
   ['get', '/customs/status', billStatus, 'bill_status_info_url'],
   ['post', '/customs/partners', partnersImport, 'import_partners_url'],
+  ['post', '/customs/entries', addEntries, 'add_entry_ids_url'],
   ['get', '/customs/entries/logs', entryLogs, 'gen_entry_logs_by_entry_id_url']
 ];
