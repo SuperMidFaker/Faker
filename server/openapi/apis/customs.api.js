@@ -17,6 +17,7 @@ import delegateDao from '../../models/delegate.db';
 import decbillDao from '../../models/decbill.db';
 import entryDao from '../../models/entry.db';
 import codes from '../codes';
+import { DELEGATE_STATUS, TENANT_LEVEL, PARTNER_TENANT_TYPE, PARTNERSHIP_TYPE_INFO } from '../../../universal/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {
@@ -35,6 +36,7 @@ function billHeadToEntryHead(entryId, head) {
     district_code: head.district_code,
     owner_code: head.owner_code,
     owner_name: head.owner_name,
+    agent_tenant_id: head.agent_tenant_id,
     agent_code: head.agent_code,
     agent_name: head.agent_name,
     voyage_no: head.voyage_no,
@@ -87,15 +89,17 @@ function billHeadsToEntryHeads(ids, head) {
   return eArr;
 }
 
-function billHeadToDelegate(head) {
+function billHeadToDelegate(head, sendName, recName, cTenantId) {
   return {
     del_no: head.del_no,
-    status: 1,
+    status: DELEGATE_STATUS.accept.id,
     del_date: head.input_date,
     invoice_no: head.invoice_no,
     bill_no: head.bill_no,
     send_tenant_id: head.tenant_id,
-    rec_tenant_id: head.create_tenant_id,
+    send_tenant_name: sendName,
+    rec_tenant_id: head.agent_tenant_id,
+    rec_tenant_name: recName,
     rec_del_date: head.input_date,
     master_customs: head.master_customs,
     declare_way_no: head.declare_way_no,
@@ -104,13 +108,14 @@ function billHeadToDelegate(head) {
     trade_mode: head.trade_mode,
     urgent: 0,
     delegate_type: head.delegate_type,
-    tenant_id: head.tenant_id,
+    tenant_id: cTenantId,
     created_date: new Date()
   };
 }
 
 function *billImport() {
   const bills = this.reqbody.bills;
+  const cTenantId = this.tenant_id;
 
   if (isArray(bills)) {
     for (let i = 0; i < bills.length; i++) {
@@ -120,26 +125,34 @@ function *billImport() {
       if (res.length !== 2) {
         return this.error(codes.params_error);
       }
-      const tenant = res[0][0];  // owner tenant
-      const ctenant = res[1][0]; // create tenant
+      const tenant = res[0][0];  // customer tenant
+      const ctenant = res[1][0]; // agent tenant
 
       // check current access token belong tenant
-      /*if (tenant.tenant_id !== this.tenant_id &&
+      /*
+      if (tenant.tenant_id !== this.tenant_id &&
         ctenant.tenant_id !== this.tenant_id) {
         console.log('import bill data trade_co and agent_code not valid current access token tenant');
         return this.error(codes.params_error);
-      }*/
+      }
+      */
 
       if (tenant && ctenant && bill.head.external_no) {
         // gen del_no
         res = yield delegateDao.genDelNo(tenant.code, tenant.delegate_prefix, tenant.tenant_id);
         // bill.head.external_no = bill.head.del_no;
+        if (bill.head.customer_subid && bill.head.customer_subid.length >= 10 &&
+          bill.head.customer_subid !== bill.head.customer_id) {
+          // change customer_id to right id and ignore customer_subid
+          bill.head.customer_id = bill.head.customer_subid;
+        }
         bill.head.del_no = res.del_no;
-        bill.head.tenant_id = tenant.tenant_id;
-        bill.head.create_tenant_id = ctenant.tenant_id;
+        bill.head.tenant_id = tenant.tenant_id; // customer tenant id
+        bill.head.agent_tenant_id = ctenant.tenant_id;
+        bill.head.create_tenant_id = cTenantId;
 
         // insert delegate
-        const de = billHeadToDelegate(bill.head);
+        const de = billHeadToDelegate(bill.head, tenant.name, ctenant.name, cTenantId);
         res = yield delegateDao.insertDe(de);
         bill.head.del_id = res.insertId;
 
@@ -148,8 +161,8 @@ function *billImport() {
         for (let j = 0; j < bill.lists.length; j++) {
           bill.lists[j].del_id = bill.head.del_id;
           bill.lists[j].del_no = bill.head.del_no;
-          bill.lists[j].tenant_id = tenant.tenant_id;
-          bill.lists[j].create_tenant_id = ctenant.tenant_id;
+          bill.lists[j].tenant_id = bill.head.tenant_id;
+          bill.lists[j].create_tenant_id = bill.head.create_tenant_id;
         }
 
         // pack entryId to entry heads array
@@ -181,6 +194,9 @@ function *partnersImport() {
       if (!p.code || !p.name) {
         continue;
       }
+      if (p.code === p.sub_code) {
+        p.sub_code = '';
+      }
       let res = yield [tenantDao.getTenantInfoByCode(p.code, p.sub_code),
         tenantDao.getTenantInfo(stenantId)];
 
@@ -188,11 +204,11 @@ function *partnersImport() {
 
       if (res[0].length === 0) {
         p.category_id = p.category_id || 0;
-        p.level = p.level || 0;
+        p.level = p.level || TENANT_LEVEL.STANDARD;
         p.aspect = 1;
         p.parent_tenant_id = 0;
 
-        if (p.sub_code && p.sub_code.length > 0) {
+        if (p.sub_code && p.sub_code.length > 0 && p.code !== p.sub_code) {
           const tns = yield tenantDao.getTenantInfoByCode(p.code);
           if (tns.length > 0) {
             p.parent_tenant_id = tns[0].tenant_id;
@@ -205,17 +221,17 @@ function *partnersImport() {
           yield tenantDao.bindSubTenant(tid, p.code);
         }
 
-        yield [copsDao.insertPartner(stenantId, tid, p.name, 'TENANT_ENTERPRISE', 1),
-          copsDao.insertPartner(tid, stenantId, name, 'TENANT_ENTERPRISE', 1)];
+        yield [copsDao.insertPartner(stenantId, tid, p.name, PARTNER_TENANT_TYPE[0], 1),
+          copsDao.insertPartner(tid, stenantId, name, PARTNER_TENANT_TYPE[0], 1)];
 
         if (isArray(part.ships) && part.ships.length > 0) {
           const arr1 = [];
           const arr2 = [];
           part.ships.forEach(v => {
-            if (v.type_code === 'CUS') {
-              arr2.push({key: 2, code: 'CBB'});
+            if (v.type_code === PARTNERSHIP_TYPE_INFO.customer) {
+              arr2.push({key: 2, code: PARTNERSHIP_TYPE_INFO.customsClearanceBroker});
             } else {
-              arr2.push({key: 0, code: 'CUS'});
+              arr2.push({key: 0, code: PARTNERSHIP_TYPE_INFO.customer});
             }
             arr1.push({key: v.type, code: v.type_code});
           });
@@ -277,10 +293,30 @@ function *entryLogs() {
   return this.error(codes.params_error);
 }
 
+function *addEntries() {
+  const ids = this.reqbody.entry_id;
+  const exNo = this.reqbody.external_no;
+  if (ids && exNo) {
+    const res = yield decbillDao.getHeadByExternalNo(exNo);
+    if (res.length > 0) {
+      // pack entryId to entry heads array
+      const entryHeads = billHeadsToEntryHeads(ids, res[0]);
+      if (entryHeads.length > 0) {
+        yield entryDao.insertHead(entryHeads);
+      }
+
+      return this.ok();
+    }
+  }
+
+  return this.error(codes.params_error);
+}
+
 
 export default [
   ['post', '/customs/bills', billImport, 'import_bills_url'],
   ['get', '/customs/status', billStatus, 'bill_status_info_url'],
   ['post', '/customs/partners', partnersImport, 'import_partners_url'],
+  ['post', '/customs/entries', addEntries, 'add_entry_ids_url'],
   ['get', '/customs/entries/logs', entryLogs, 'gen_entry_logs_by_entry_id_url']
 ];

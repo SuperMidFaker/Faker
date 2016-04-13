@@ -38,7 +38,7 @@ function concatFilterSqls(filters, args) {
   return sqlClause;
 }
 
-const colsDe = ['del_id/a', 'del_no/v', 'status/i', 'customs_status/i', 'del_date/dt', 'invoice_no/v', 'bill_no/v', 'send_tenant_id/i', 'rec_tenant_id/i', 'creater_login_id/i', 'rec_login_id/i', 'rec_del_date/dt', 'master_customs/v', 'declare_way_no/v', 'usebook/i', 'ems_no/v', 'trade_mode/v', 'urgent/i', 'delegate_type/i', 'tenant_id/i', 'other_note/v', 'created_date/dt', 'update_date/dt', 'remark/v'];
+const colsDe = ['del_id/a', 'del_no/v', 'status/i', 'del_date/dt', 'invoice_no/v', 'bill_no/v', 'send_tenant_id/i', 'send_tenant_name/v', 'rec_tenant_id/i', 'rec_tenant_name/v', 'creater_login_id/i', 'creater_login_name/v', 'rec_login_id/i', 'rec_login_name/v', 'rec_del_date/dt', 'master_customs/v', 'declare_way_no/v', 'usebook/i', 'ems_no/v', 'trade_mode/v', 'urgent/i', 'delegate_type/i', 'tenant_id/i', 'other_note/v', 'created_date/dt', 'update_date/dt', 'remark/v'];
 
 const deOrm = new Orm(colsDe, 'g_bus_delegate');
 
@@ -54,14 +54,14 @@ export default {
    */
   * genDelNo(code, prefix, tenantId) {
     const res = yield mysql.query('select count(del_id) as sum from g_bus_delegate where tenant_id = ?', [tenantId]);
-    let sum = String(res[0].sum + 1);
+    const sum = String(res[0].sum + 1);
     const dt = new Date();
     const nos = [];
     if (code) {
-      let s = code.substr(0, 5);
+      const s = code.substr(0, 5);
       let l = 5 - s.length;
       while (l > 0) {
-        s = `0${s}`;
+        nos.push('0');
         --l;
       }
       nos.push(s);
@@ -76,17 +76,17 @@ export default {
     nos.push(String(dt.getFullYear()).substr(2));
     let m = String(dt.getMonth() + 1);
     if (m.length === 1) {
-      m += '0';
+      nos.push('0');
     }
     nos.push(m);
     m = String(dt.getDate());
     if (m.length === 1) {
-      m = `0${m}`;
+      nos.push('0');
     }
     nos.push(m);
     let len = 3 - sum.length;
     while (len > 0) {
-      sum = `0${sum}`;
+      nos.push('0');
       --len;
     }
     nos.push(sum);
@@ -121,8 +121,7 @@ export default {
       sortColumn = 'del_no';
     }
     sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-    const sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
-      where T.tenant_id= ? and delegate_type=1 ${statusClause}  ${filterClause} ${sortClause}
+    const sql = `select rec_tenant_name as short_name, del_id as \`key\`,del_no,\`status\`,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,send_tenant_name,rec_tenant_id,rec_tenant_name,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T where T.tenant_id= ? and delegate_type=1 ${statusClause}  ${filterClause} ${sortClause}
       limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -187,7 +186,7 @@ export default {
       let sql = `insert into g_bus_delegate(${insertClause.join(",")},created_date,del_date)
                values(${varlueClause.join(",")},NOW(),NOW())`;
       yield mysql.insert(sql, args, trans);
-      sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,customs_status,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,master_customs,declare_way_no,usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
+      sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,master_customs,declare_way_no,usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
           where T.del_no= ? `
       return yield mysql.query(sql, [uuid], trans);
   },

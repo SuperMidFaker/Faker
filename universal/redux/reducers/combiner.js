@@ -18,6 +18,7 @@ import warehouse from './warehouse';
 import bill from './bill';
 import notice from './notice';
 import delegate from './delegate';
+import exportdelegate from './exportdelegate';
 
 export default combineReducers({
   intl,
@@ -38,5 +39,6 @@ export default combineReducers({
   bill,
   notice,
   delegate,
-  importaccept
+  importaccept,
+  exportdelegate
 });

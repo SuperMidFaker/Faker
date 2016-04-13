@@ -247,7 +247,7 @@ export default class ImportAccept extends React.Component {
       }, {
         title: '客户名称',
         sorter: true,
-        dataIndex: 'send_tenant_id',
+        dataIndex: 'send_tenant_name',
         filters: filterArray,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
@@ -353,7 +353,7 @@ export default class ImportAccept extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/receive/new')}>
-              <Icon type="plus-circle-o"/>新增
+              <Icon type="plus-circle-o"/>新增报关业务
             </Button>
           </div>
           <div className="panel-body body-responsive">
