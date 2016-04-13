@@ -1,9 +1,10 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {loadSend, sendDelegate} from '../../../../universal/redux/reducers/delegate';
+import {loadSend, sendDelegate} from '../../../../universal/redux/reducers/exportdelegate';
 import {Table, Button, Select, message} from 'ant-ui';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
+import './upload.less';
 const Option = Select.Option;
 
 function goBack(router) {
@@ -12,22 +13,22 @@ function goBack(router) {
 
 @connect(state => ({ // 从初始化state中加载数据
   tenantId: state.account.tenantId,
-  sendlist: state.delegate.sendlist,
-  customsBrokerList: state.delegate.customsBrokerList
+  sendlist: state.exportdelegate.sendlist,
+  customsBrokerList: state.exportdelegate.customsBrokerList
 }), {loadSend, sendDelegate})
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,
     text: props.params.status === '0'
-      ? '发送业务单'
-      : '撤销业务单',
+      ? '发送报关业务'
+      : '撤销报关业务',
     moduleName: '',
     goBackFn: () => goBack(router),
     withModuleLayout: false
   }));
 })
 
-export default class ExporttDelegateSend extends React.Component {
+export default class ExportDelegateSend extends React.Component {
   static propTypes = { // 属性检测
     sendlist: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -35,6 +36,9 @@ export default class ExporttDelegateSend extends React.Component {
     sendDelegate: PropTypes.func.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
     params: PropTypes.object.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);

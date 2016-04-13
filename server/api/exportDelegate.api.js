@@ -1,22 +1,22 @@
 import cobody from 'co-body';
-import idDao from '../models/importDelegate.db';
+import idDao from '../models/exportDelegate.db';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
 
 export default [
-  ['get', '/v1/import/importdelegates', importdelegates],
-  ['get', '/v1/import/status', importdelegateStatusG],
-  ['get', '/v1/import/:tid/customsBrokers', customsBrokersG],
-  ['get', '/v1/import/getSelectOptions', getSelectOptions],
-  ['delete', '/v1/import/importdelegate', delId],
-  ['post', '/v1/import/importdelegate', submitImportDelegate],
-  ['put', '/v1/import/importdelegate', editImportDelegate],
-  ['put', '/v1/import/senddelegate', sendDelegate],
-  ['put', '/v1/import/invalidDelegate', invalidDelegate],
-  ['get', '/v1/import/importdelegatelogs', importdelegatelogs],
+  ['get', '/v1/export/exportdelegates', exportdelegates],
+  ['get', '/v1/export/status', exportdelegateStatusG],
+  ['get', '/v1/export/:tid/customsBrokers', customsBrokersG],
+  ['get', '/v1/export/getSelectOptions', getSelectOptions],
+  ['delete', '/v1/export/exportdelegate', delId],
+  ['post', '/v1/export/exportdelegate', submitExportDelegate],
+  ['put', '/v1/export/exportdelegate', editExportDelegate],
+  ['put', '/v1/export/senddelegate', sendDelegate],
+  ['put', '/v1/export/invalidDelegate', invalidDelegate],
+  ['get', '/v1/export/exportdelegatelogs', exportdelegatelogs],
 ]
 
-function* importdelegates() {
+function* exportdelegates() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
@@ -57,7 +57,7 @@ function* importdelegates() {
   }
 }
 
-function* importdelegateStatusG() {
+function* exportdelegateStatusG() {
 
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
@@ -119,9 +119,9 @@ function* getSelectOptions() {
 
 
 
-function* editImportDelegate() {
+function* editExportDelegate() {
   const body = yield cobody(this);
-  const entity = body.importdelegate;
+  const entity = body.exportdelegate;
   const params = JSON.parse(body.params);
   const newEntity = {};
   newEntity.usebook = entity.usebook == true ? 1 : 0;
@@ -136,7 +136,7 @@ function* editImportDelegate() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const result = yield idDao.editImportDelegate(newEntity, entity.key, trans);
+    const result = yield idDao.editExportDelegate(newEntity, entity.key, trans);
     if (parseInt(params.status, 10) === 2) {
       yield idDao.writeLog(entity.key, params.loginId, params.username, `变更业务单:${entity.del_no}`, trans);
     }
@@ -144,15 +144,15 @@ function* editImportDelegate() {
     yield mysql.commit(trans);
     Result.OK(this);
   } catch (e) {
-    console.log('submitImport', e && e.stack);
+    console.log('submitExport', e && e.stack);
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
   }
 }
 
-function* submitImportDelegate() {
+function* submitExportDelegate() {
   const body = yield cobody(this);
-  const entity = body.importdelegate;
+  const entity = body.exportdelegate;
   const params = JSON.parse(body.params);
 
   entity.usebook = (entity.usebook || false) ? 1 : 0;
@@ -165,14 +165,14 @@ function* submitImportDelegate() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const result = yield idDao.insertImportDelegate(entity, trans);
+    const result = yield idDao.insertExportDelegate(entity, trans);
     yield idDao.writeLog(result[0].key, params.loginId, params.username, `添加业务单:${result[0].del_no}`, trans);
     yield idDao.insertUser(result[0].key, result[0].del_no, 0, params.loginId, trans);
     yield idDao.saveFileInfo(params.declareFileList, params.tenantId, result[0].key, result[0].del_no, trans);
     yield mysql.commit(trans);
     Result.OK(this, result[0]);
   } catch (e) {
-    console.log('submitImport', e && e.stack);
+    console.log('submitExport', e && e.stack);
     yield mysql.rollback(trans);
     Result.InternalServerError(this, e.message);
   }
@@ -214,7 +214,7 @@ function* invalidDelegate() {
   }
 }
 
-function* importdelegatelogs() {
+function* exportdelegatelogs() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const delegateId = parseInt(this.request.query.delegateId || 10, 10);
