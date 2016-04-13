@@ -20,8 +20,8 @@ export default {
   forbidden(obj) {
     return _extend({status: 403}, obj);
   },
-  error(obj) {
-    return _extend({status: 400}, obj);
+  error(obj, errMsg) {
+    return _extend({status: 400, err_msg: errMsg}, obj);
   },
   notFound(obj) {
     return _extend({status: 404}, obj);
