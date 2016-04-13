@@ -28,7 +28,7 @@ function *partnersG() {
     }));
     for (let i = 0; i < partners.length; ++i) {
       const partner = partners[i];
-      partner.types = partnerships.filter(ps => ps.partnerName === partner.name).map(
+      partner.types = partnerships.filter(ps => ps.partnerCode === partner.partnerCode).map(
         pt => ({
           key: pt.type,
           code: pt.name
@@ -36,6 +36,10 @@ function *partnersG() {
       );
     }
     const partnerTenants = yield tenantDao.getAllTenantsExcept(tenantId);
+    partnerTenants.forEach(pt => {
+      pt.code = pt.subCode || pt.code;
+      pt.subCode = undefined;
+    });
     return Result.OK(this, {
       partnerlist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
@@ -72,16 +76,18 @@ function *partnerOnlineP() {
     const tenantType = getTenantTypeDesc(partner.level);
     trans = yield mysql.beginTransaction();
     yield coopDao.insertPartner(
-      body.tenantId, body.partnerId, partner.name,
+      body.tenantId, body.partnerId, body.partnerCode, partner.name,
       tenantType, 0, trans
     );
     yield coopDao.deleteSinglePartnership(body.tenantId, body.partnerId, trans);
     yield coopDao.insertPartnership(
-      body.tenantId, body.partnerId, partner.name, partnerships, trans
+      body.tenantId, body.partnerId, body.partnerCode, partner.name,
+      partnerships, trans
     );
     yield coopDao.insertInvitation(
-      body.tenantId, body.partnerId, partner.name,
-      INVITATION_STATUS.NEW_SENT, null, trans);
+      body.tenantId, body.partnerId, body.partnerCode,
+      partner.name, INVITATION_STATUS.NEW_SENT, null, trans
+    );
     yield mysql.commit(trans);
     return Result.OK(this);
   } catch (e) {
@@ -100,27 +106,28 @@ function *partnerOfflineP() {
   const tenantType = PARTNER_TENANT_TYPE[2];
   let trans;
   try {
-    const partners = yield coopDao.getPartnerByPair(body.tenantId, null, body.partnerName);
+    const partners = yield coopDao.getPartnerByPair(body.tenantId, null, body.partnerCode);
     if (partners.length > 0) {
       return Result.ParamError(this, { key: 'offlinePartnerExist' });
     }
     trans = yield mysql.beginTransaction();
     const result = yield coopDao.insertPartner(
-      body.tenantId, -1, body.partnerName, tenantType, 0, trans
+      body.tenantId, -1, body.partnerCode, body.partnerName, tenantType, 0, trans
     );
-    yield coopDao.deleteOfflinePartnership(body.tenantId, body.partnerName, trans);
+    yield coopDao.deleteOfflinePartnership(body.tenantId, body.partnerCode, trans);
     yield coopDao.insertPartnership(
-      body.tenantId, -1, body.partnerName, partnerships, trans
+      body.tenantId, -1, body.partnerCode, body.partnerName, partnerships, trans
     );
     const code = getSmsCode(6);
     yield coopDao.insertInvitation(
-      body.tenantId, -1, body.partnerName,
+      body.tenantId, -1, body.partnerCode, body.partnerName,
       INVITATION_STATUS.NEW_SENT, code, trans);
     yield mysql.commit(trans);
     // sendInvitation by body.contact -> phone or email todo
     return Result.OK(this, {
       key: result.insertId,
       name: body.partnerName,
+      partnerCode: body.partnerCode,
       tenantType,
       types: partnerships,
       partnerTenantId: -1
@@ -141,16 +148,17 @@ function *receivedInvitationsG() {
       tenantId, INVITATION_STATUS.CANCELED, current, pageSize);
     const partnerships = yield coopDao.getPartnershipByInvitee(tenantId);
     const receiveds = [];
-    const invitees = yield tenantDao.getTenantInfo(tenantId);
-    if (invitees.length !== 1) {
-      throw new Error('no invitee tenant');
-    }
     for (let i = 0; i < invitations.length; i++) {
       const inviters = yield tenantDao.getTenantInfo(invitations[i].inviterId);
+      if (inviters.length !== 1) {
+        console.log('receivedInvitationsG no inviter tenant');
+        continue;
+      }
       const receive = {
         key: invitations[i].id,
         createdDate: invitations[i].createdDate,
         status: invitations[i].status,
+        code: inviters[0].subCode || inviters[0].code,
         name: inviters[0].name
       };
       receive.types = partnerships.filter(pts => pts.inviterId === invitations[i].inviterId)
@@ -193,16 +201,20 @@ function *invitationP() {
       if (partners.length === 0) {
         const inviterTenants = yield tenantDao.getTenantInfo(invitations[0].inviterId);
         const partnerName = inviterTenants[0].name;
+        const partnerCode = inviterTenants[0].subCode || inviterTenants[0].code;
         const tenantType = getTenantTypeDesc(inviterTenants[0].level);
-        yield coopDao.insertPartner(invitations[0].inviteeId, invitations[0].inviterId,
-                                    partnerName, tenantType, 1, trans);
+        yield coopDao.insertPartner(
+          invitations[0].inviteeId, invitations[0].inviterId,
+          partnerCode, partnerName, tenantType, 1, trans
+        );
         // 先删除再新建, 不在拒绝和取消时删除,因为收到和发出界面里需要显示
         // 若重新建立,则相应界面显示新的关系
         yield coopDao.deleteSinglePartnership(
           invitations[0].inviteeId, invitations[0].inviterId, trans
         );
         yield coopDao.insertPartnership(
-          invitations[0].inviteeId, invitations[0].inviterId, partnerName,
+          invitations[0].inviteeId, invitations[0].inviterId,
+          partnerCode, partnerName,
           body.partnerships.map(ps => ({
             key: partnershipTypeNames.indexOf(ps),
             code: ps
@@ -220,7 +232,7 @@ function *invitationP() {
       yield coopDao.updateInvitationStatus(status, null, body.key, trans);
       yield coopDao.rejectPartner(
         invitations[0].inviterId, invitations[0].inviteeId,
-        invitations[0].inviteeName, trans
+        invitations[0].inviteeCode, trans
       );
     }
     yield mysql.commit(trans);
@@ -246,9 +258,10 @@ function *sentInvitationsG() {
         key: invitations[i].id,
         createdDate: invitations[i].createdDate,
         name: invitations[i].name,
+        code: invitations[i].code,
         status: invitations[i].status
       };
-      sent.types = partnerships.filter(pts => pts.partnerName === invitations[i].name)
+      sent.types = partnerships.filter(pts => pts.partnerCode === invitations[i].code)
         .map(pts => ({
           key: pts.type,
           code: pts.name
@@ -280,7 +293,7 @@ function *cancelInvitation() {
     yield coopDao.updateInvitationStatus(status, null, body.key, trans);
     yield coopDao.rejectPartner(
       invitations[0].inviterId, invitations[0].inviteeId,
-      invitations[0].inviteeName, trans
+      invitations[0].inviteeCode, trans
     );
     yield mysql.commit(trans);
     return Result.OK(this, status);
@@ -297,11 +310,11 @@ function *sendOfflineInvitation() {
     trans = yield mysql.beginTransaction();
     yield coopDao.cancelInvitationByPair(
       INVITATION_STATUS.CANCELED, body.tenantId,
-      null, body.partnerName, trans
+      null, body.partnerCode, trans
     );
     const code = getSmsCode(6);
     yield coopDao.insertInvitation(
-      body.tenantId, -1, body.partnerName,
+      body.tenantId, -1, body.partnerCode, body.partnerName,
       INVITATION_STATUS.NEW_SENT, code, trans
     );
     // todo body.contact

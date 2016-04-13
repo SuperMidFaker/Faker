@@ -124,6 +124,9 @@ export default class ReceivedView extends React.Component {
     title: this.msg('partnerName'),
     dataIndex: 'name'
   }, {
+    title: this.msg('partnerCode'),
+    dataIndex: 'code'
+  }, {
     title: this.msg('inviteYouToBe'),
     dataIndex: 'types',
     render: (o, record) => {
@@ -131,7 +134,7 @@ export default class ReceivedView extends React.Component {
       if (record.types.length === 1 && record.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
         text = formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer);
       } else {
-        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/')}
+        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.code)).join('/')}
           ${this.msg('provider')}`;
       }
       return text;

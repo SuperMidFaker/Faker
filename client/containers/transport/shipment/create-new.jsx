@@ -16,9 +16,9 @@ const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-function fetchData({state, dispatch, cookie, params}) {
+function fetchData({ state, dispatch, cookie, params }) {
   const pid = parseInt(params.id, 10);
-  if (!isFormDataLoaded(state.personnel, pid)) {
+  if (!isFormDataLoaded(state.shipment, pid)) {
     return dispatch(loadForm(cookie, pid));
   } else {
     return dispatch(assignForm(state.shipment, pid));
@@ -93,7 +93,7 @@ export default class ShipmentCreate extends React.Component {
                 help={getFieldError('sender')} required
               >
                 <Select defaultValue="aa" {...getFieldProps('sender', [{
-                  required: true, message: this.msg('consigorMessage')
+                  required: true, message: this.msg('consignorMessage')
                 }])}
                 >
                   <Option value="aa">aa</Option>
@@ -114,7 +114,7 @@ export default class ShipmentCreate extends React.Component {
                 help={getFieldError('consignee')} required
               >
                 <Select defaultValue="aa" {...getFieldProps('consignee', [{
-                  required: true, message: this.msg('consigeeMessage')
+                  required: true, message: this.msg('consigneeMessage')
                 }])}
                 >
                   <Option value="aa">aa</Option>

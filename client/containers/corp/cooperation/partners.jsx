@@ -119,6 +119,9 @@ export default class PartnersView extends React.Component {
     title: this.msg('partnerName'),
     dataIndex: 'name'
   }, {
+    title: this.msg('partnerCode'),
+    dataIndex: 'partnerCode'
+  }, {
     title: this.msg('partnerType'),
     dataIndex: 'types',
     render: (o, record) =>

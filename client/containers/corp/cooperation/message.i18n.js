@@ -5,6 +5,10 @@ const messages = defineMessages({
     id: 'cooperation.partner.name',
     defaultMessage: '合作伙伴'
   },
+  partnerCode: {
+    id: 'cooperation.partner.code',
+    defaultMessage: '客户代码'
+  },
   partnerType: {
     id: 'cooperation.partner.type',
     defaultMessage: '关系'

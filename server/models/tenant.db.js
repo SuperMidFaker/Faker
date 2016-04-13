@@ -17,7 +17,7 @@ function packColumnArgs(item) {
 }
 export default {
   getAllTenantsExcept(tenantId) {
-    const sql = 'select tenant_id as id, name from sso_tenants where tenant_id != ?';
+    const sql = 'select tenant_id as id, name, code, sub_code as subCode from sso_tenants where tenant_id != ?';
     const args = [tenantId];
     return mysql.query(sql, args);
   },
@@ -39,7 +39,8 @@ export default {
     return mysql.query(sql, args);
   },
   getTenantInfo(tid) {
-    const sql = 'select name, level from sso_tenants where tenant_id = ? limit 1';
+    const sql = `select name, level, code, sub_code as subCode from sso_tenants
+      where tenant_id = ? limit 1`;
     const args = [tid];
     return mysql.query(sql, args);
   },

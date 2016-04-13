@@ -1,11 +1,13 @@
 import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
-import { isFormDataLoadedC, 
-  appendFormAcitonTypes, formReducer, loadFormC, assignFormC, clearFormC, setFormValueC
+import {
+  isFormDataLoadedC, appendFormAcitonTypes, formReducer, loadFormC,
+  assignFormC, clearFormC, setFormValueC
 } from 'reusable/domains/redux/form-common';
 
 const actionTypes = createActionTypes('@@welogix/shipment/', [
   'LOAD_SHIPMENT', 'LOAD_SHIPMENT_FAIL', 'LOAD_SHIPMENT_SUCCEED',
+  'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED'
 ]);
 appendFormAcitonTypes('@@welogix/shipment/', actionTypes);
 

@@ -44,6 +44,8 @@ export default class PartnerSetupDialog extends React.Component {
     isProviderPartner: false,
     checkedProviderTypes: [],
     tenantInput: '',
+    tenantCode: '',
+    tenantSelected: false,
     offlineContact: ''
   }
   componentWillReceiveProps(nextProps) {
@@ -60,18 +62,33 @@ export default class PartnerSetupDialog extends React.Component {
       });
     }*/
   }
-  getTenantOptions = () => {
+  getTenantOptions() {
     return this.props.partnerTenants.map(t =>
-      <Option datalink={t} key={t.id} value={t.name}>
+      <Option datalink={t} key={t.id} value={t.code}>
         {t.name}
       </Option>);
   }
   getTenantFilterOption = (input, option) => {
     return option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1;
   }
-  handleTenantInputChange = (value) => {
+  handleTenantInputChange = (value, label) => {
+    if (label === value) {
+      this.setState({
+        tenantSelected: false,
+        tenantCode: '',
+        tenantInput: value
+      });
+    } else {
+      this.setState({
+        tenantSelected: true,
+        tenantCode: value,
+        tenantInput: label
+      });
+    }
+  }
+  handleTenantCodeChange = (ev) => {
     this.setState({
-      tenantInput: value
+      tenantCode: ev.target.value
     });
   }
   handlePartnershipRadioChange = (ev) => {
@@ -84,22 +101,30 @@ export default class PartnerSetupDialog extends React.Component {
       this.setState({ isProviderPartner: true });
     }
   }
-  handlePartnerProviderTypeChange = (checkeds) => {
+  handlePartnerProviderTypeChange(codeOption) {
+    const checkeds = this.state.checkedProviderTypes;
+    const optionIdx = checkeds.indexOf(codeOption);
+    if (optionIdx === -1) {
+      checkeds.push(codeOption);
+    } else {
+      checkeds.splice(optionIdx, 1);
+    }
     this.setState({ checkedProviderTypes: checkeds });
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handlePartnerForm = () => {
-    if (this.state.tenantInput === '') {
-      message.error(this.msg('emptyPartnerName'), 10);
+    if (this.state.tenantInput === '' || this.state.tenantCode === '') {
+      message.error(this.msg('emptyPartnerInfo'), 10);
       return;
     }
-    const tenant = this.props.partnerTenants.find(elem => elem.name === this.state.tenantInput);
+    const tenant = this.props.partnerTenants.find(elem => elem.code === this.state.tenantCode);
     const selectedTenantId = tenant ? tenant.id : -1;
     const partnerships = this.state.isProviderPartner ?
       this.state.checkedProviderTypes : [ PARTNERSHIP_TYPE_INFO.customer ];
     if (selectedTenantId !== -1) {
       this.props.inviteOnlPartner(
-        this.props.tenantId, selectedTenantId, partnerships, 'invite-sent'
+        this.props.tenantId, selectedTenantId, this.state.tenantCode,
+        partnerships, 'invite-sent'
       ).then(result => {
         if (result.error) {
           message.error(getFormatMsg(result.error.message, this.msg), 10);
@@ -130,7 +155,10 @@ export default class PartnerSetupDialog extends React.Component {
     this.props.hidePartnerModal();
   }
   render() {
-    const { isProviderPartner, checkedProviderTypes, offlineContact } = this.state;
+    const {
+      isProviderPartner, checkedProviderTypes, offlineContact, tenantSelected,
+      tenantInput, tenantCode
+    } = this.state;
     const { intl, stepView, visible, partnershipTypes, isPlatformTenant } = this.props;
     let footer = <div />;
     if (stepView === 'invite-initial') {
@@ -166,10 +194,15 @@ export default class PartnerSetupDialog extends React.Component {
           <Form.Item label={this.msg('partner')} labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
             <Select combobox style={{ width: '100%' }} filterOption={this.getTenantFilterOption}
               searchPlaceholder={this.msg('companyNamePlaceholder')}
-              onChange={this.handleTenantInputChange} value={this.state.tenantInput}
+              onChange={this.handleTenantInputChange} value={tenantInput}
             >
             {this.getTenantOptions()}
             </Select>
+          </Form.Item>
+          <Form.Item label={this.msg('partnerCode')} labelCol={{span: 7}} wrapperCol={{span: 14}}>
+            <Input placeholder={this.msg('partnerCodePlaceholder')} value={tenantCode}
+              disabled={tenantSelected} onChange={this.handleTenantCodeChange}
+            />
           </Form.Item>
           <Form.Item label={this.msg('partnership')} labelCol={{ span: 7 }}
             wrapperCol={{ span: 14 }}
@@ -183,11 +216,19 @@ export default class PartnerSetupDialog extends React.Component {
           </Form.Item>
           { isProviderPartner &&
           <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
-            <Checkbox.Group options={partnershipTypes.filter(
-              pst => pst.code !== PARTNERSHIP_TYPE_INFO.customer)
-              .map(pst => formatGlobalMsg(intl, pst.code))} onChange={this.handlePartnerProviderTypeChange}
-              value={checkedProviderTypes}
-            />
+            <div className="ant-checkbox-group">
+            {
+              partnershipTypes.filter(pst => pst.code !== PARTNERSHIP_TYPE_INFO.customer)
+              .map(pst =>
+                <label className="ant-checkbox-group-item" key={pst.code}>
+                  <Checkbox checked={checkedProviderTypes.indexOf(pst.code) !== -1}
+                    onChange={() => this.handlePartnerProviderTypeChange(pst.code)}
+                  />
+                  {formatGlobalMsg(intl, pst.code)}
+                </label>
+                  )
+            }
+            </div>
           </Form.Item>
           }
         </Form>

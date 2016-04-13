@@ -24,6 +24,7 @@ const initialState = {
     visible: false,
     step: 1,
     tenantId: -1,
+    partnerCode: '',
     partnerName: ''
   },
   partnershipTypes: [
@@ -71,9 +72,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_INVITE_MODAL:
       return { ...state, inviteModal: { ...state.inviteModal, visible: false } };
     case actionTypes.SHOW_INVITE_MODAL:
-      return { ...state, inviteModal: { ...state.inviteModal,
-        visible: true, step: 1, tenantId: action.partner.tenantId,
-        partnerName: action.partner.name } };
+      return { ...state, inviteModal: {
+        ...state.inviteModal, visible: true, step: 1, tenantId: action.partner.tenantId,
+        partnerName: action.partner.name, partnerCode: action.partner.partnerCode
+      } };
     case actionTypes.SEND_INVITE_SUCCEED:
       return { ...state, inviteModal: { ...state.inviteModal, step: 2 } };
     default:
@@ -112,7 +114,7 @@ export function setModalViewport(viewport) {
   };
 }
 
-export function inviteOnlPartner(tenantId, partnerId, partnerships, viewport) {
+export function inviteOnlPartner(tenantId, partnerId, partnerCode, partnerships, viewport) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ONL_PARTNER_INVITE, actionTypes.ONL_PARTNER_INVITE_SUCCEED,
@@ -123,13 +125,14 @@ export function inviteOnlPartner(tenantId, partnerId, partnerships, viewport) {
       data: {
         tenantId,
         partnerId,
+        partnerCode,
         partnerships
       }
     }
   };
 }
 
-export function inviteOfflPartner(tenantId, partnerName, partnerships, contact, viewport) {
+export function inviteOfflPartner(tenantId, partnerName, partnerCode, partnerships, contact, viewport) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.OFFL_PARTNER_INVITE, actionTypes.OFFL_PARTNER_INVITE_SUCCEED,
@@ -140,6 +143,7 @@ export function inviteOfflPartner(tenantId, partnerName, partnerships, contact, 
       data: {
         contact,
         tenantId,
+        partnerCode,
         partnerName,
         partnerships
       }
@@ -160,17 +164,20 @@ export function showInviteModal(partner) {
   };
 }
 
-export function sendInvitation(contact, tenantId, partnerName) {
+export function sendInvitation(contact, tenantId, partnerCode) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.SEND_INVITE, actionTypes.SEND_INVITE_SUCCEED,
-        actionTypes.SEND_INVITE_FAIL],
+      types: [
+        actionTypes.SEND_INVITE,
+        actionTypes.SEND_INVITE_SUCCEED,
+        actionTypes.SEND_INVITE_FAIL
+      ],
       endpoint: 'v1/cooperation/partner/invitation',
       method: 'post',
       data: {
         contact,
         tenantId,
-        partnerName
+        partnerCode
       }
     }
   };

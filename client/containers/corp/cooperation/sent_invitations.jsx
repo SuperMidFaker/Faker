@@ -99,6 +99,9 @@ export default class SentView extends React.Component {
     title: this.msg('partnerName'),
     dataIndex: 'name'
   }, {
+    title: this.msg('partnerCode'),
+    dataIndex: 'code'
+  }, {
     title: this.msg('inviteOtherToBe'),
     dataIndex: 'types',
     render: (o, record) => {
@@ -107,7 +110,7 @@ export default class SentView extends React.Component {
           && record.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
         text = formatGlobalMsg(this.props.intl, record.types[0].name);
       } else {
-        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.name)).join('/')}
+        text = `${record.types.map(t => formatGlobalMsg(this.props.intl, t.code)).join('/')}
           ${this.msg('provider')}`;
       }
       return text;

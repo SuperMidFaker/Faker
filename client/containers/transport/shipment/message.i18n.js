@@ -69,7 +69,7 @@ export default defineMessages({
     id: 'transport.shipment.consignor',
     defaultMessage: '发货方'
   },
-  consigorMessage: {
+  consignorMessage: {
     id: 'transport.shipment.consignor.message',
     defaultMessage: '发货方不能为空'
   },
@@ -89,7 +89,7 @@ export default defineMessages({
     id: 'transport.shipment.consignee',
     defaultMessage: '收货方'
   },
-  consigeeMessage: {
+  consigneeMessage: {
     id: 'transport.shipment.consignee.message',
     defaultMessage: '收货方不能为空'
   },
