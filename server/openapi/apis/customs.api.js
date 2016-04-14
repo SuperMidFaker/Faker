@@ -123,7 +123,7 @@ function *billImport() {
       let res = yield [tenantDao.getTenantInfoByCode(bill.head.customer_id, bill.head.customer_subid),
         tenantDao.getTenantInfoByCode(bill.head.agent_code)];
       if (res.length !== 2) {
-        return this.error(codes.params_error);
+        return this.error(codes.params_error, 'customer or agent not found in partners');
       }
       const tenant = res[0][0];  // customer tenant
       const ctenant = res[1][0]; // agent tenant
@@ -180,7 +180,7 @@ function *billImport() {
     return this.ok();
   }
 
-  return this.error(codes.params_error);
+  return this.error(codes.params_error, 'bills is not array');
 }
 
 function *partnersImport() {
@@ -245,7 +245,7 @@ function *partnersImport() {
     return this.ok();
   }
 
-  return this.error(codes.params_error);
+  return this.error(codes.params_error, 'partners is not array');
 }
 
 function *billStatus() {
@@ -309,7 +309,7 @@ function *addEntries() {
     }
   }
 
-  return this.error(codes.params_error);
+  return this.error(codes.params_error, 'entry_id or external_no is empty');
 }
 
 

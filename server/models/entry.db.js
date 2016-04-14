@@ -22,9 +22,9 @@ const entryLog = new Orm(colsLog, 'g_entry_log');
 export default {
   insertHead(head) {
     if (isArray(head)) {
-      return entryHead.insertObjs(head);
+      return entryHead.replaceObjs(head);
     }
-    return entryHead.insertObj(head);
+    return entryHead.replaceObj(head);
   },
   getEntryLogs(ids) {
     return entryLog.selectObjs({entry_id: ids});
