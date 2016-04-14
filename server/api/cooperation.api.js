@@ -53,7 +53,10 @@ function *partnersG() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: partners
+        data: partners.map(pt => {
+          pt.partnerCode = separatePartnerCode(pt.partnerCode);
+          return pt;
+        })
       },
       partnershipTypes,
       partnerTenants

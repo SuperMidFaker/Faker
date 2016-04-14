@@ -18,7 +18,8 @@ wpConfig.plugins.push(
     names: ['vendor', 'manifest']
   }),
   new webpack.NamedModulesPlugin(),
-  new webpack.optimize.DedupePlugin(),
+  // https://github.com/webpack/webpack/issues/959#issuecomment-155552808
+  // new webpack.optimize.DedupePlugin(),
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
