@@ -143,8 +143,8 @@ export default class PartnerSetupDialog extends React.Component {
     const partnerships = this.state.isProviderPartner ?
       this.state.checkedProviderTypes : [ PARTNERSHIP_TYPE_INFO.customer ];
     this.props.inviteOfflPartner(
-      this.props.tenantId, this.state.tenantInput, partnerships,
-      this.state.offlineContact, 'invite-sent'
+      this.props.tenantId, this.state.tenantInput, this.state.tenantCode,
+      partnerships, this.state.offlineContact, 'invite-sent'
     ).then(result => {
       if (result.error) {
         message.error(getFormatMsg(result.error.message, this.msg), 10);

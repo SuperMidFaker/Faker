@@ -56,7 +56,7 @@ export default class PartnerInviteDialog extends React.Component {
       return message.error(this.msg('contactMissing'));
     }
     this.props.sendInvitation(
-      this.state.contact, this.props.tenantId, this.props.partnerCode
+      this.state.contact, this.props.tenantId, this.props.partnerCode, this.props.partnerName
     ).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);

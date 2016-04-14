@@ -104,5 +104,5 @@ export default defineMessages({
   lsp: {
     id: 'transport.shipment.lsp',
     defaultMessage: '物流服务商'
-  },
+  }
 });

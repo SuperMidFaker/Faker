@@ -16,7 +16,7 @@ const formatMsg = format(messages);
 export default class AmUserNav extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    avatar: PropTypes.string.isRequired
+    avatar: PropTypes.string
   }
   render() {
     const MenuItem = Menu.Item;

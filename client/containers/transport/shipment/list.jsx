@@ -134,13 +134,13 @@ export default class ShipmentList extends React.Component {
     dataIndex: 'status',
     width: 150,
     render: (text, record) => {
-      // const percent = record.status === 1 ? 0 (== 2 ? 25 : 50);
       // record.logStatus --> active exception
+      const percent = record.status === 1 ? 0 : 100;
       return (
         <div>
           <span>未接单</span>
           <span style={{ float: 'right' }}>在途异常</span>
-          <ProgressLine percent={100} status="active" strokeWidth={5} showInfo={false} />
+          <ProgressLine percent={percent} status="active" strokeWidth={5} showInfo={false} />
         </div>
       );
     }

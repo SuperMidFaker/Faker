@@ -164,7 +164,7 @@ export function showInviteModal(partner) {
   };
 }
 
-export function sendInvitation(contact, tenantId, partnerCode) {
+export function sendInvitation(contact, tenantId, partnerCode, partnerName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -177,7 +177,8 @@ export function sendInvitation(contact, tenantId, partnerCode) {
       data: {
         contact,
         tenantId,
-        partnerCode
+        partnerCode,
+        partnerName
       }
     }
   };

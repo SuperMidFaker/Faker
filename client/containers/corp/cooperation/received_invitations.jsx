@@ -96,7 +96,7 @@ export default class ReceivedView extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleAccept(invitation, index) {
     if (invitation.types.length === 1
-        && invitation.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
+        && invitation.types[0].code === PARTNERSHIP_TYPE_INFO.customer) {
       // 显示设置合作方的关系类型选择框
       this.setState({
         visibleModal: true,

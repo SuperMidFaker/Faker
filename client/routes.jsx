@@ -40,7 +40,7 @@ export default(store, cookie) => {
     function checkAuth() {
       const query = nextState.location.query;
       const { account: { subdomain }, auth: { isAuthed }} = store.getState();
-      if (!isAuthed || (query && query.subdomain && query.subdomain !== subdomain)) {
+      if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
         const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
