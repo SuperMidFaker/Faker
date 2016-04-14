@@ -12,6 +12,14 @@ const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PA
 function getTenantTypeDesc(level) {
   return level === TENANT_LEVEL.ENTERPRISE ? PARTNER_TENANT_TYPE[0] : PARTNER_TENANT_TYPE[1];
 }
+
+function separatePartnerCode(codeStr) {
+  const codes = codeStr.split('/');
+  return codes.length === 2 ? codes[1] : codes[0];
+}
+function getPartnerCode(code, subCode) {
+  return subCode ? `${code}/${subCode}` : code;
+}
 function *partnersG() {
   const current = parseInt(this.request.query.currentPage, 10);
   const pageSize = parseInt(this.request.query.pageSize, 10);
@@ -73,19 +81,20 @@ function *partnerOnlineP() {
       throw new Error('no platform partner tenant found');
     }
     const partner = partnerTenants[0];
+    const partnerCode = getPartnerCode(partner.code, partner.subCode);
     const tenantType = getTenantTypeDesc(partner.level);
     trans = yield mysql.beginTransaction();
     yield coopDao.insertPartner(
-      body.tenantId, body.partnerId, body.partnerCode, partner.name,
-      tenantType, 0, trans
+      body.tenantId, body.partnerId, partnerCode,
+      partner.name, tenantType, 0, trans
     );
     yield coopDao.deleteSinglePartnership(body.tenantId, body.partnerId, trans);
     yield coopDao.insertPartnership(
-      body.tenantId, body.partnerId, body.partnerCode, partner.name,
-      partnerships, trans
+      body.tenantId, body.partnerId, partnerCode,
+      partner.name, partnerships, trans
     );
     yield coopDao.insertInvitation(
-      body.tenantId, body.partnerId, body.partnerCode,
+      body.tenantId, body.partnerId, partnerCode,
       partner.name, INVITATION_STATUS.NEW_SENT, null, trans
     );
     yield mysql.commit(trans);
@@ -201,7 +210,7 @@ function *invitationP() {
       if (partners.length === 0) {
         const inviterTenants = yield tenantDao.getTenantInfo(invitations[0].inviterId);
         const partnerName = inviterTenants[0].name;
-        const partnerCode = inviterTenants[0].subCode || inviterTenants[0].code;
+        const partnerCode = getPartnerCode(inviterTenants[0].code, inviterTenants[0].subCode);
         const tenantType = getTenantTypeDesc(inviterTenants[0].level);
         yield coopDao.insertPartner(
           invitations[0].inviteeId, invitations[0].inviterId,
@@ -224,7 +233,8 @@ function *invitationP() {
         // 发送邀请置为取消
         yield coopDao.cancelInvitationByPair(
           INVITATION_STATUS.CANCELED, invitations[0].inviteeId,
-          invitations[0].inviterId, null, trans);
+          invitations[0].inviterId, null, trans
+        );
         yield coopDao.establishPartner(invitations[0].inviteeId, invitations[0].inviterId, trans);
       }
     } else if (body.type === 'reject') {
@@ -258,7 +268,7 @@ function *sentInvitationsG() {
         key: invitations[i].id,
         createdDate: invitations[i].createdDate,
         name: invitations[i].name,
-        code: invitations[i].code,
+        code: separatePartnerCode(invitations[i].code),
         status: invitations[i].status
       };
       sent.types = partnerships.filter(pts => pts.partnerCode === invitations[i].code)

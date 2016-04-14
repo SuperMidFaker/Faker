@@ -109,8 +109,8 @@ const messages = defineMessages({
     id: 'cooperation.invitation.cancel.failed',
     defaultMessage: '取消邀请失败'
   },
-  inviteOtherToBe: {
-    id: 'cooperation.invitation.other.tobe',
+  inviteThemToBe: {
+    id: 'cooperation.invitation.them.tobe',
     defaultMessage: '邀请对方成为'
   },
   sentDate: {

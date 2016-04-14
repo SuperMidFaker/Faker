@@ -143,6 +143,12 @@ function *getUserAccount() {
     let account;
     if (accounts.length === 1 && profiles.length === 1) {
       account = accounts[0];
+      if (account.tenantParentId !== 0) {
+        const tinfo = yield tenantDao.getTenantInfo(account.parentTenantId);
+        if (tinfo.length === 1) {
+          account.subdomain = tinfo[0].subdomain;
+        }
+      }
       profiles[0].username = profiles[0].username.split('@')[0];
     } else {
       throw new Error('current user account do not exist');

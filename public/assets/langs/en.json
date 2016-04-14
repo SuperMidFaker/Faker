@@ -73,7 +73,7 @@
   "cooperation.invitation.retrieve": "Retrieve",
   "cooperation.provider.setType": "Set provider type",
   "cooperation.invitation.cancel.failed": "Fail to cancel invitation",
-  "cooperation.invitation.other.tobe": "Invite other to be",
+  "cooperation.invitation.them.tobe": "Invite them to be",
   "cooperation.invitation.sentDate": "Sent Date",
   "corp.info.updateSuccess": "Update succeed",
   "corp.info.form.validate.error": "form validation error",

@@ -102,7 +102,7 @@ export default class SentView extends React.Component {
     title: this.msg('partnerCode'),
     dataIndex: 'code'
   }, {
-    title: this.msg('inviteOtherToBe'),
+    title: this.msg('inviteThemToBe'),
     dataIndex: 'types',
     render: (o, record) => {
       let text;

@@ -6,7 +6,7 @@ function packColumnArgs(item) {
     `level`, `email`, `contact`
   ];
   const args = [];
-  columns.forEach((c) => {
+  columns.forEach(c => {
     if (c in item) {
       args.push(item[c]);
     } else {
@@ -39,7 +39,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTenantInfo(tid) {
-    const sql = `select name, level, code, sub_code as subCode from sso_tenants
+    const sql = `select name, level, code, sub_code as subCode, subdomain from sso_tenants
       where tenant_id = ? limit 1`;
     const args = [tid];
     return mysql.query(sql, args);
