@@ -121,13 +121,14 @@ function *billImport() {
     for (let i = 0; i < bills.length; i++) {
       const bill = bills[i];
       let res = yield [tenantDao.getTenantInfoByCode(bill.head.customer_id, bill.head.customer_subid),
-        tenantDao.getTenantInfoByCode(bill.head.agent_code)];
-      if (res.length !== 2) {
+        tenantDao.getTenantInfoByCode(bill.head.agent_code),
+        tenantDao.getTenantInfo(cTenantId)];
+      if (res.length !== 3) {
         return this.error(codes.params_error, 'customer or agent not found in partners');
       }
       const tenant = res[0][0];  // customer tenant
       const ctenant = res[1][0]; // agent tenant
-
+      const cctn = res[2][0];
       // check current access token belong tenant
       /*
       if (tenant.tenant_id !== this.tenant_id &&
@@ -136,10 +137,17 @@ function *billImport() {
         return this.error(codes.params_error);
       }
       */
+      if (!bill.head.external_no) {
+        return this.error(codes.params_error, 'external_no must not be null');
+      }
 
       if (tenant && ctenant && bill.head.external_no) {
+        res = decbillDao.getHeadByExternalNo(bill.head.external_no);
+        if (res.length > 0) {
+          continue;  // bill is exist than ignore
+        }
         // gen del_no
-        res = yield delegateDao.genDelNo(tenant.code, tenant.delegate_prefix, tenant.tenant_id);
+        res = yield delegateDao.genDelNo(cctn.code, cctn.delegate_prefix, cTenantId);
         // bill.head.external_no = bill.head.del_no;
         if (bill.head.customer_subid && bill.head.customer_subid.length >= 10 &&
           bill.head.customer_subid !== bill.head.customer_id) {
@@ -204,7 +212,7 @@ function *partnersImport() {
 
       if (res[0].length === 0) {
         p.category_id = p.category_id || 0;
-        p.level = p.level || TENANT_LEVEL.STANDARD;
+        p.level = p.level || TENANT_LEVEL.ENTERPRISE;
         p.aspect = 1;
         p.parent_tenant_id = 0;
 
@@ -212,6 +220,7 @@ function *partnersImport() {
           const tns = yield tenantDao.getTenantInfoByCode(p.code);
           if (tns.length > 0) {
             p.parent_tenant_id = tns[0].tenant_id;
+            p.level = TENANT_LEVEL.STANDARD;
           }
         }
 
