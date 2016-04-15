@@ -27,6 +27,13 @@ export default class AmLeftSidebar extends React.Component {
   state = {
     openedKey: []
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.links.length > 0) {
+    this.setState({
+      openedKey: nextProps.links[0].key // todo
+    });
+    }
+  }
   componentDidMount() {
     hoverAmSubmenu();
     window.addEventListener("resize", updateDimensions);
