@@ -20,28 +20,80 @@ function hoverAmSubmenu() {
 function updateDimensions() {
   hoverAmSubmenu();
 }
+function isEqualPath(pathA, pathB) {
+  if (pathA.charAt(pathA.length - 1 ) !== '/') {
+    pathA = `${pathA}/`;
+  }
+  if (pathB.charAt(pathB.length - 1 ) !== '/') {
+    pathB = `${pathB}/`;
+  }
+  return pathA === pathB;
+}
 export default class AmLeftSidebar extends React.Component {
   static propTypes = {
-    links: PropTypes.array
+    location: PropTypes.object.isRequired,
+    links: PropTypes.array.isRequired
+    /* {
+     *   single:
+     *   key:
+     *   path:
+     *   icon:
+     *   text:
+     *   sublinks: [{
+     *     key:
+     *     path:
+     *     text:
+     *   }]
+     * }
+     */
   }
   state = {
+    selectedKeys: [],
     openedKey: []
   };
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.links.length > 0) {
-    this.setState({
-      openedKey: nextProps.links[0].key // todo
-    });
+  setOpenSelectedKeys(path) {
+    let openedKey = [];
+    let selectedKeys = [];
+    for (let i = 0; i < this.props.links.length; i++) {
+      const link = this.props.links[i];
+      if (link.single) {
+        if (isEqualPath(link.path, path)) {
+          selectedKeys = [link.key];
+          break;
+        }
+      } else {
+        let j = 0;
+        for (; j < link.sublinks.length; j++) {
+          const sublink = link.sublinks[j];
+          if (isEqualPath(sublink.path, path)) {
+            openedKey = [link.key];
+            selectedKeys = [sublink.key];
+            break;
+          }
+        }
+        if (j < link.sublinks.length) {
+          break;
+        }
+      }
     }
+    this.setState({ openedKey, selectedKeys });
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setOpenSelectedKeys(nextProps.location.pathname);
   }
   componentDidMount() {
     hoverAmSubmenu();
     window.addEventListener("resize", updateDimensions);
+    this.setOpenSelectedKeys(this.props.location.pathname);
   }
   componentWillUnmount() {
     window.removeEventListener("resize", updateDimensions);
   }
+  handleMenuSelect = ({ selectedKeys }) => {
+    this.setState({ selectedKeys });
+  }
   handleClick = (ev) => {
+    // keyPath ['subkey', 'menukey']
     this.setState({
       openedKey: ev.keyPath.slice(1)
     });
@@ -54,7 +106,9 @@ export default class AmLeftSidebar extends React.Component {
         <div className="am-scroller nano">
         <div className="nano-content">
        */}
-        <Menu prefixCls="am-sidebar" onClick={ this.handleClick } mode="vertical">
+        <Menu onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
+          prefixCls="am-sidebar" onClick={ this.handleClick } mode="vertical"
+        >
         {
           links.map(link => {
             if (link.single) {

@@ -3,13 +3,14 @@ import AmLeftSidebar from '../components/am-ant-leftbar';
 
 export default class ImportM extends React.Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired
   };
   render() {
     const linkMenus = [{
       single: true,
       key: 'import-0',
-      path: '/import/',
+      path: '/import',
       icon: 's7-display1',
       text: '看板'
     }, {
@@ -39,7 +40,7 @@ export default class ImportM extends React.Component {
     }];
     return (
       <div className="am-content">
-        <AmLeftSidebar links={ linkMenus } />
+        <AmLeftSidebar location={ this.props.location } links={ linkMenus } />
         {this.props.children}
       </div>);
   }
