@@ -17,7 +17,11 @@ import delegateDao from '../../models/delegate.db';
 import decbillDao from '../../models/decbill.db';
 import entryDao from '../../models/entry.db';
 import codes from '../codes';
-import { DELEGATE_STATUS, TENANT_LEVEL, PARTNER_TENANT_TYPE, PARTNERSHIP_TYPE_INFO } from '../../../universal/constants';
+import { DELEGATE_STATUS,
+          TENANT_LEVEL,
+          PARTNER_TENANT_TYPE,
+          PARTNERSHIP_TYPE_INFO,
+          __DEFAULT_PASSWORD__ } from '../../../universal/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {
@@ -202,13 +206,21 @@ function *partnersImport() {
       if (!p.code || !p.name) {
         continue;
       }
+      let ppcode = p.code;
       if (p.code === p.sub_code) {
         p.sub_code = '';
+      }
+      if (p.sub_code) {
+        ppcode = `${ppcode}/${p.sub_code}`;
       }
       let res = yield [tenantDao.getTenantInfoByCode(p.code, p.sub_code),
         tenantDao.getTenantInfo(stenantId)];
 
       const name = res[1][0].name;
+      let spcode = res[1][0].code;
+      if (res[1][0].subCode) {
+        spcode = `${spcode}/${res[1][0].subCode}`;
+      }
 
       if (res[0].length === 0) {
         p.category_id = p.category_id || 0;
@@ -230,8 +242,8 @@ function *partnersImport() {
           yield tenantDao.bindSubTenant(tid, p.code);
         }
 
-        yield [copsDao.insertPartner(stenantId, tid, p.name, PARTNER_TENANT_TYPE[0], 1),
-          copsDao.insertPartner(tid, stenantId, name, PARTNER_TENANT_TYPE[0], 1)];
+        yield [copsDao.insertPartner(stenantId, tid, ppcode, p.name, PARTNER_TENANT_TYPE[0], 1),
+          copsDao.insertPartner(tid, stenantId, spcode, name, PARTNER_TENANT_TYPE[0], 1)];
 
         if (isArray(part.ships) && part.ships.length > 0) {
           const arr1 = [];

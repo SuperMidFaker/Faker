@@ -194,6 +194,13 @@ export default class CorpEdit extends React.Component {
             )
           }
           {
+            this.renderTextInput(
+              formatMsg(intl, 'organSubcode'), formatMsg(intl, 'organSubcodePlaceholder'),
+              'subCode', true,
+              [{required: true, max: 20, message: formatMsg(intl, 'subcodeMessage')}]
+            )
+          }
+          {
             isCreating ? this.renderOwnerForm() : this.renderOwnerSelect()
           }
           <Row>

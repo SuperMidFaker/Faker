@@ -84,7 +84,7 @@ const DEFAULT_MODULES = {
     url: '/export',
     text: 'moduleExport'
   },
-  transport: {
+  tms: {
     cls: 'transport',
     url: '/transport',
     text: 'moduleTransport'
@@ -94,7 +94,7 @@ const DEFAULT_MODULES = {
     url: '/forwarding',
     text: 'moduleForwarding'
   },
-  inventory: {
+  wms: {
     cls: 'inventory',
     url: '/inventory',
     text: 'moduleInventory'

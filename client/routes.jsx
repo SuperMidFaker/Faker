@@ -28,6 +28,7 @@ import * as ExportDelegate from './containers/export/delegate';
 import * as ExportAccept from './containers/export/accept';
 import Transport from './containers/module-transport';
 import TMSDashboard from './containers/transport/dashboard';
+import * as TMShipment from './containers/transport/shipment';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
@@ -39,7 +40,7 @@ export default(store, cookie) => {
     function checkAuth() {
       const query = nextState.location.query;
       const { account: { subdomain }, auth: { isAuthed }} = store.getState();
-      if (!isAuthed || (query && query.subdomain && query.subdomain !== subdomain)) {
+      if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
         const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
@@ -132,6 +133,10 @@ export default(store, cookie) => {
           </Route>
           <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard}/>
+            <Route path="shipment">
+              <IndexRoute component={TMShipment.List}/>
+              <Route path="new" component={TMShipment.CreateNew} />
+            </Route>
           </Route>
         </Route>
       </Route>

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from '../../reusable/components/nav-link';
-import {Row, Col} from 'ant-ui';
-import {DEFAULT_MODULES} from '../../universal/constants';
+import { Row, Col } from 'ant-ui';
+import { DEFAULT_MODULES } from '../../universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import './module-layout.less';
@@ -17,16 +17,7 @@ export default class ModuleLayout extends React.Component {
   };
 
   static defaultProps = {
-    enabledmods: [
-      DEFAULT_MODULES.import,
-      DEFAULT_MODULES.export,
-      DEFAULT_MODULES.transport,
-      DEFAULT_MODULES.forwarding,
-      DEFAULT_MODULES.inventory,
-      DEFAULT_MODULES.tracking,
-      DEFAULT_MODULES.cost,
-      DEFAULT_MODULES.performance
-    ]
+    enabledmods: Object.keys(DEFAULT_MODULES).map(mod => DEFAULT_MODULES[mod])
   };
 
   render() {

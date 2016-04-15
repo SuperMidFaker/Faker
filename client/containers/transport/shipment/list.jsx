@@ -1,32 +1,29 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message } from 'ant-ui';
+import { Table, Button, Radio, Icon, Progress, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadPartners, showPartnerModal, showInviteModal } from
-'../../../../universal/redux/reducers/partner';
-import PartnerModal from '../../../components/partner-setup-modal';
-import InviteModal from '../../../components/partner-invite-modal';
-import SearchBar from '../../../../reusable/components/search-bar';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import connectNav from '../../../../reusable/decorators/connect-nav';
-import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
+import moment from 'moment';
+import NavLink from 'reusable/components/nav-link';
+import SearchBar from 'reusable/components/search-bar';
+import connectFetch from 'reusable/decorators/connect-fetch';
+import connectNav from 'reusable/decorators/connect-nav';
+import { loadTable } from 'universal/redux/reducers/shipment';
+import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const ProgressLine = Progress.Line;
 
 function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadPartners(cookie, {
+  return dispatch(loadTable(cookie, {
     tenantId: state.account.tenantId,
-    pageSize: state.partner.partnerlist.pageSize,
-    currentPage: state.partner.partnerlist.current
+    pageSize: state.shipment.shipmentlist.pageSize,
+    currentPage: state.shipment.shipmentlist.current
   }));
 }
 
@@ -38,8 +35,8 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'partners'),
-    moduleName: 'corp',
+    text: formatMsg(props.intl, 'listTitle'),
+    moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null
   }));
@@ -47,42 +44,27 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    partnershipTypes: state.partner.partnershipTypes,
-    partnerlist: state.partner.partnerlist,
-    filters: state.partner.filters,
-    loading: state.partner.loading
+    shipmentlist: state.shipment.shipmentlist,
+    shipmentStatusTypes: state.shipment.statusTypes,
+    filters: state.shipment.filters,
+    loading: state.shipment.loading
   }),
-  { showPartnerModal, showInviteModal, loadPartners })
-export default class PartnersView extends React.Component {
+  { loadTable })
+export default class ShipmentList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     filters: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
-    partnershipTypes: PropTypes.array.isRequired,
-    partnerlist: PropTypes.object.isRequired,
-    loadPartners: PropTypes.func.isRequired,
-    showInviteModal: PropTypes.func.isRequired,
-    showPartnerModal: PropTypes.func.isRequired
+    shipmentlist: PropTypes.object.isRequired,
+    shipmentStatusTypes: PropTypes.array.isRequired,
+    loadTable: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
   }
-  handleSendInvitation(partner) {
-    this.props.showInviteModal(partner);
-  }
-  mergeFilters(curFilters, name, value) {
-    const merged = curFilters.filter(flt => flt.name !== name);
-    if (value !== null && value !== undefined && value !== '') {
-      merged.push({
-        name,
-        value
-      });
-    }
-    return merged;
-  }
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadPartners(null, params),
+    fetcher: params => this.props.loadTable(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -111,52 +93,56 @@ export default class PartnersView extends React.Component {
       params.filters = JSON.stringify(params.filters);
       return params;
     },
-    remotes: this.props.partnerlist
+    remotes: this.props.shipmentlist
   })
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
-    title: this.msg('partnerName'),
-    dataIndex: 'name'
+    title: this.msg('shipNo'),
+    dataIndex: 'shipNo'
   }, {
-    title: this.msg('partnerCode'),
-    dataIndex: 'partnerCode'
+    title: this.msg('shipCarrier'),
+    dataIndex: 'carrier'
   }, {
-    title: this.msg('partnerType'),
-    dataIndex: 'types',
-    render: (o, record) =>
-    record.types.map(t => formatGlobalMsg(this.props.intl, t.code)).join('/') ||
-      formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer) // fallback to '客户'
+    title: this.msg('shipMode'),
+    dataIndex: 'mode'
   }, {
-    title: this.msg('tenantType'),
-    dataIndex: 'tenantType',
-    render: (o, record) => formatContainerMsg(this.props.intl, record.tenantType)
+    title: this.msg('shipSource'),
+    dataIndex: 'source'
   }, {
-    title: this.msg('volume'),
+    title: this.msg('shipDestination'),
+    dataIndex: 'destination'
+  }, {
+    title: this.msg('shipPickupDate'),
+    dataIndex: 'pickupDate',
+    render: (o, record) => moment(record.pickupDate).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipDeliveryDate'),
+    dataIndex: 'deliveryDate',
+    render: (o, record) => moment(record.deliveryDate).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('packageNum'),
+    dataIndex: 'packageNum'
+  }, {
+    title: this.msg('shipWeight'),
+    dataIndex: 'weight'
+  }, {
+    title: this.msg('shipVolume'),
     dataIndex: 'volume'
   }, {
-    title: this.msg('revenue'),
-    dataIndex: 'revenue',
-    render: (o, record) => (record.revenue || 0.0).toFixed(2)
-  }, {
-    title: this.msg('cost'),
-    dataIndex: 'cost',
-    render: (o, record) => record.cost ? record.cost.toFixed(2) : '0.00'
-  }, {
-    title: formatContainerMsg(this.props.intl, 'opColumn'),
+    title: this.msg('shipStatus'),
+    dataIndex: 'status',
     width: 150,
     render: (text, record) => {
-      if (record.partnerTenantId === -1) {
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleSendInvitation(record)}>
-            {this.msg('sendInvitation')}
-            </a>
-          </span>
-        );
-      } else {
-        return <span />;
-      }
+      // record.logStatus --> active exception
+      const percent = record.status === 1 ? 0 : 100;
+      return (
+        <div>
+          <span>未接单</span>
+          <span style={{ float: 'right' }}>在途异常</span>
+          <ProgressLine percent={percent} status="active" strokeWidth={5} showInfo={false} />
+        </div>
+      );
     }
   }]
   handleSelectionClear = () => {
@@ -166,25 +152,22 @@ export default class PartnersView extends React.Component {
     const filters = JSON.stringify(
       this.mergeFilters(this.props.filters, 'name', searchVal)
     );
-    this.props.loadPartners(null, {
+    this.props.loadTable(null, {
       tenantId: this.props.tenantId,
-      pageSize: this.props.partnerlist.pageSize,
+      pageSize: this.props.shipmentlist.pageSize,
       currentPage: 1,
       filters
     });
   }
-  handleAddPartner = () => {
-    this.props.showPartnerModal();
-  }
-  handlePartnershipFilter = (ev) => {
-    const { partnerlist, tenantId, filters } = this.props;
+  handleShipmentFilter = (ev) => {
+    const { shipmentlist, tenantId, filters } = this.props;
     const partnerType = ev.target.value;
     const typeValue = partnerType !== 'all' ? parseInt(partnerType, 10) : undefined;
     const filterArray = this.mergeFilters(filters, 'partnerType', typeValue);
-    this.props.loadPartners(null, {
+    this.props.loadTable(null, {
       tenantId,
       filters: JSON.stringify(filterArray),
-      pageSize: partnerlist.pageSize,
+      pageSize: shipmentlist.pageSize,
       currentPage: 1
     }).then(result => {
       if (result.error) {
@@ -193,8 +176,8 @@ export default class PartnersView extends React.Component {
     });
   }
   render() {
-    const { partnershipTypes, partnerlist, loading, intl } = this.props;
-    this.dataSource.remotes = partnerlist;
+    const { shipmentStatusTypes, shipmentlist, loading, intl } = this.props;
+    this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
@@ -208,13 +191,13 @@ export default class PartnersView extends React.Component {
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
           </div>
-          <RadioGroup onChange={this.handlePartnershipFilter} defaultValue="all">
+          <RadioGroup onChange={this.handleShipmentFilter} defaultValue="all">
             <RadioButton value="all">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
             {
-              partnershipTypes.map(
-                pst =>
-                  <RadioButton value={pst.key} key={pst.key}>
-                  {formatGlobalMsg(intl, pst.code)}({pst.count})
+              shipmentStatusTypes.map(
+                sst =>
+                  <RadioButton value={sst} key={sst}>
+                  {this.msg(sst)}
                   </RadioButton>
               )
             }
@@ -222,9 +205,11 @@ export default class PartnersView extends React.Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type="primary" onClick={this.handleAddPartner}>
-              <Icon type="plus-circle-o" /><span>{this.msg('newPartner')}</span>
-            </Button>
+            <NavLink to="/transport/shipment/new">
+              <Button type="primary">
+                <Icon type="plus-circle-o" /><span>{this.msg('newShipment')}</span>
+              </Button>
+            </NavLink>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
@@ -236,8 +221,6 @@ export default class PartnersView extends React.Component {
             {formatContainerMsg(intl, 'clearSelection')}
             </Button>
           </div>
-          <PartnerModal />
-          <InviteModal />
         </div>
       </div>
     );

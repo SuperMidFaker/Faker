@@ -1,23 +1,30 @@
 import React, { PropTypes } from 'react';
+import { intlShape, injectIntl } from 'react-intl';
 import AmLeftSidebar from '../components/am-ant-leftbar';
+import { format } from 'universal/i18n/helpers';
+import messages from './message.i18n';
+const formatMsg = format(messages);
 
+@injectIntl
 export default class Transport extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     children: PropTypes.object.isRequired
   };
   render() {
+    const { intl } = this.props;
     const linkMenus = [{
       single: true,
       key: 'tms-0',
-      path: '/tms/',
+      path: '/transport/',
       icon: 's7-display1',
       text: '工作台'
     }, {
       single: true,
       key: 'tms-1',
-      path: '/tms/order',
+      path: '/transport/shipment',
       icon: 's7-next-2',
-      text: '订单'
+      text: formatMsg(intl, 'transportShipment')
     }, {
       single: true,
       key: 'tms-2',

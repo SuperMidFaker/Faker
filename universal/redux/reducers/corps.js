@@ -77,6 +77,7 @@ export default function reducer(state = initialState, action) {
       const actresult = action.result.data;
       const formData = {
         key: actresult.tenant.tid,
+        subCode: actresult.tenant.subCode,
         name: actresult.tenant.name,
         coid: `${actresult.tenant.uid}`,
         poid: `${actresult.tenant.uid}`
