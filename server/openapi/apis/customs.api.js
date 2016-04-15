@@ -16,12 +16,16 @@ import dectrackDao from '../../models/dectrack.db';
 import delegateDao from '../../models/delegate.db';
 import decbillDao from '../../models/decbill.db';
 import entryDao from '../../models/entry.db';
+import userDao from '../../models/user.db';
+
 import codes from '../codes';
+import bcrypt from '../../../reusable/node-util/BCryptUtil';
 import { DELEGATE_STATUS,
           TENANT_LEVEL,
           PARTNER_TENANT_TYPE,
           PARTNERSHIP_TYPE_INFO,
-          __DEFAULT_PASSWORD__ } from '../../../universal/constants';
+          __DEFAULT_PASSWORD__,
+          ADMIN } from '../../../universal/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {
@@ -234,6 +238,13 @@ function *partnersImport() {
             p.parent_tenant_id = tns[0].tenant_id;
             p.level = TENANT_LEVEL.STANDARD;
           }
+        } else {
+          // enterprise tenant than add admin user and set default password
+          const salt = bcrypt.gensalt();
+          const pwd = bcrypt.hashpw(__DEFAULT_PASSWORD__, salt);
+          const username = `admin@${p.code}`;
+          const unid = bcrypt.hashMd5(username + Date.now());
+
         }
 
         res = yield tenantDao.insertCorp(p, p.parent_tenant_id);
