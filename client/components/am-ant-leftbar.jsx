@@ -52,31 +52,29 @@ export default class AmLeftSidebar extends React.Component {
     openedKey: []
   };
   setOpenSelectedKeys(path) {
-    let openedKey = [];
-    let selectedKeys = [];
     for (let i = 0; i < this.props.links.length; i++) {
       const link = this.props.links[i];
       if (link.single) {
         if (isEqualPath(link.path, path)) {
-          selectedKeys = [link.key];
-          break;
+          this.setState({
+            openedKey: [],
+            selectedKeys: [link.key]
+          });
+          return;
         }
       } else {
-        let j = 0;
-        for (; j < link.sublinks.length; j++) {
+        for (let j = 0; j < link.sublinks.length; j++) {
           const sublink = link.sublinks[j];
           if (isEqualPath(sublink.path, path)) {
-            openedKey = [link.key];
-            selectedKeys = [sublink.key];
-            break;
+            this.setState({
+              openedKey: [link.key],
+              selectedKeys: [sublink.key]
+            });
+            return;
           }
-        }
-        if (j < link.sublinks.length) {
-          break;
         }
       }
     }
-    this.setState({ openedKey, selectedKeys });
   }
   componentWillReceiveProps(nextProps) {
     this.setOpenSelectedKeys(nextProps.location.pathname);
