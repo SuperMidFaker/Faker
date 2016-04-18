@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import idDao from '../models/exportAccept.db';
+import idDao from '../models/exportaccept.db';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
 

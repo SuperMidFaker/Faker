@@ -15,6 +15,7 @@ function putInComposition(f, args) {
   return sql;
 }
 
+
 function concatFilterSql(filters, args) {
   let sqlClause = '';
   for (let i = 0, len = filters.length; i < len; i++) {
