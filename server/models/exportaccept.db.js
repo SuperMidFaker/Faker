@@ -133,11 +133,9 @@ export default {
       args.push(uuid);
       varlueClause.push('?');
       console.log(uuid);
-
       let sql = `insert into g_bus_delegate(${insertClause.join(",")},created_date,del_date)
                values(${varlueClause.join(",")},NOW(),NOW())`;
       yield mysql.insert(sql, args, trans);
-
       sql = `select T1.short_name, del_id as \`key\`,del_no,\`status\`,DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,master_customs,declare_way_no,usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
           where T.del_no= ? `
       console.log(sql);
