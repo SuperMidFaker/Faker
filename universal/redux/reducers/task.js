@@ -15,7 +15,8 @@ import {
 } from '../../../reusable/domains/redux/form-common';
 const actionTypes = createActionTypes('@@welogix/task/', [
   'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL',
-  'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL'
+  'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL',
+  'LIST_LOAD', 'LIST_LOAD_SUCCEED', 'LIST_LOAD_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/task/', actionTypes);
 
@@ -37,6 +38,7 @@ const initialState = {
     current: 1,
     data: []
   },
+  billlist:[],
   statusList: { // 初始化状态显示数量
     statusValue: 1,
     haveOrderCount: 0,
@@ -89,6 +91,10 @@ export default function reducer(state = initialState, action) {
           Port: action.result.data.Port
         }
       };
+    case actionTypes.LIST_LOAD_SUCCEED:
+    return {...state,
+      billlist:action.result.data
+    };
       // todo deal with submit fail submit loading
     default:
       return formReducer(actionTypes, state, action, {}, 'tasklist') || state;
@@ -117,6 +123,17 @@ export function loadTask(cookie, params) {
   };
 }
 
+export function getBillList(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.LIST_LOAD, actionTypes.LIST_LOAD_SUCCEED, actionTypes.LIST_LOAD_FAIL],
+      endpoint: 'v1/import/tasks/billlist',
+      method: 'get',
+      params
+    }
+  };
+}
+
 export function assignForm(taskState, key) {
   return assignFormC(key, taskState, 'tasklist', actionTypes);
 }
@@ -135,6 +152,6 @@ export function setFormValue(field, newValue) {
 
 export function loadForm(cookie, key) {
   return loadFormC(cookie, 'v1/import/task', {
-    pid: key
+    del_id: key
   }, actionTypes);
 }

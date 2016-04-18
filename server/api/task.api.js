@@ -7,8 +7,22 @@ import paraDao from '../models/para.db';
 
 export default [
   ['get', '/v1/import/tasks', getTasks],
+  ['get', '/v1/import/task', getTask],
+  ['get', '/v1/import/tasks/billlist', getBillList],
   ['get', '/v1/import/tasks/loadSource', loadSource]
 ];
+
+function* getTask(){
+  const del_id = parseInt(this.request.query.del_id || 0, 10);
+  const task= yield taskDao.getTask(del_id);
+
+  try {
+    return Result.OK(this, task[0]);
+  } catch (e) {
+    console.log(e);
+    return Result.InternalServerError(this, e.message);
+  }
+}
 
 function* loadSource() {
   try {
@@ -40,12 +54,24 @@ function* loadSource() {
   }
 }
 
+function* getBillList(){
+    const del_id = parseInt(this.request.query.del_id || 0, 10);
+    const billlist= yield taskDao.getBillList(del_id);
+
+    try {
+      return Result.OK(this, billlist);
+    } catch (e) {
+      console.log(e);
+      return Result.InternalServerError(this, e.message);
+    }
+}
+
 function* getTasks() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
   const loginId = parseInt(this.request.query.loginId || 0, 10);
-  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10) 
+  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10)
 
 
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];

@@ -63,7 +63,7 @@ export default {
       if (currentStatus != -1) {
         statusClause = " and T.status= ?";
         args.push(currentStatus);
-      }else {
+      } else {
         statusClause = " and T.status in (1,2)";
       }
       /*
@@ -148,6 +148,16 @@ export default {
         }
       }
       return decBillList;
+    },
+    getBillList(del_id) {
+      const args = [del_id];
+      const sql = `SELECT T.id \`key\`,T.cop_g_no,T.code_t,T.code_s,T.g_name,T.g_model,T.qty,T.unit,T.dec_price,T.dec_total FROM g_dec_bill_list T where T.del_id=?`;
+      return mysql.query(sql, args);
+    },
+    getTask(del_id){
+        const args = [del_id];
+        const sql=`select del_id \`key\`, T.* from g_bus_delegate T where del_id=?`
+        return mysql.query(sql, args);
     }
 
 }
