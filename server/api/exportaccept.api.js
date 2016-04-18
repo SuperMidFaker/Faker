@@ -118,9 +118,6 @@ function* getSelectOptions() {
   });
 }
 
-
-
-
 function* editExportAccept() {
   const body = yield cobody(this);
   const entity = body.exportaccept;
