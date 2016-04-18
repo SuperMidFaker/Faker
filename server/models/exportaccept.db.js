@@ -79,7 +79,7 @@ export default {
     getStatusCount(tenantId, status, filters) {
       const args = [tenantId, tenantId, status];
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or rec_tenant_id= ?) and status in (1,2) and status=? and delegate_type= 1  ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where (tenant_id= ? or rec_tenant_id= ?) and status in (1,2) and status=? and delegate_type= 0  ${filterClause}`;
       console.log(sql, args);
       return mysql.query(sql, args);
     },
