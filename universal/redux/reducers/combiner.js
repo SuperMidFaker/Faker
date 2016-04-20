@@ -19,6 +19,7 @@ import bill from './bill';
 import notice from './notice';
 import delegate from './delegate';
 import exportdelegate from './exportdelegate';
+import exporttask from './exporttask';
 
 export default combineReducers({
   intl,
@@ -40,5 +41,6 @@ export default combineReducers({
   notice,
   delegate,
   importaccept,
-  exportdelegate
+  exportdelegate,
+  exporttask
 });

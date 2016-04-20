@@ -34,6 +34,7 @@ import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
 import { loadAccount } from '../universal/redux/reducers/account';
 import { isLoaded } from '../reusable/common/redux-actions';
+import * as ExportTask from './containers/export/task';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -124,6 +125,10 @@ export default(store, cookie) => {
             <Route path="receive">
               <IndexRoute component={ExportAccept.List}/>
               <Route path="new" component={ExportAccept.Edit}/>
+            </Route>
+            <Route path="task">
+              <IndexRoute component={ExportTask.List}/>
+              <Route path="inputbill/:id" component={ExportTask.InputBill}/>
             </Route>
           </Route>
           <Route path="inventory" component={Inventory}>
