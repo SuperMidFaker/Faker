@@ -37,7 +37,7 @@ function concatFilterSql(filters, args) {
 
 export default {
   getTaskTotalCount(loginId, tenantId, currentStatus, filters) {
-      const args = [tenantId];
+      const args = [tenantId, tenantId, tenantId];
       let statusClause = "";
       if (currentStatus != -1) {
         statusClause = " and status= ?";
@@ -52,13 +52,13 @@ export default {
       }
       */
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(del_id) as count from g_bus_delegate where rec_tenant_id = ? ${statusClause} ${filterClause}`;
+      const sql = `select count(del_id) as count from g_bus_delegate where (rec_tenant_id = ? or tenant_id=? or send_tenant_id=?) and delegate_type=0 ${statusClause} ${filterClause}`;
 
       return mysql.query(sql, args);
     },
 
     * getTasks(current, currentStatus, loginId, filters, pageSize, tenantId, sortField, sortOrder) {
-      const args = [tenantId];
+      const args = [tenantId, tenantId, tenantId];
       let statusClause = "";
       if (currentStatus != -1) {
         statusClause = " and T.status= ?";
@@ -81,7 +81,7 @@ export default {
       const sql = `select T1.name as short_name, del_id as \`key\`,del_no,T.status,invoice_no,bill_no,rec_tenant_id,T2.name as rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no, usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T LEFT JOIN sso_partners AS T1 ON T.tenant_id=T1.tenant_id AND T.rec_tenant_id=T1.partner_tenant_id
       left join sso_tenant_users T2 on t2.tenant_id=T.rec_tenant_id and T2.login_id=T.rec_login_id
 
-      where T.rec_tenant_id= ? ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
+      where (T.rec_tenant_id= ? or T.tenant_id= ? or T.send_tenant_id= ?) and T.delegate_type= 0 ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
 
       args.push((current - 1) * pageSize, pageSize);
       let tasklist = yield mysql.query(sql, args);
@@ -89,18 +89,18 @@ export default {
       return tasklist;
     },
     getStatusCount(loginId, tenantId, status, filters) {
-      const args = [tenantId, status]; // 暂时去掉了接受人ID的选择条件
+      const args = [tenantId, tenantId, tenantId, status]; // 暂时去掉了接受人ID的选择条件
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where rec_tenant_id=? and status=? ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where (rec_tenant_id=? or send_tenant_id=? or tenant_id=?) and delegate_type=0 and status=? ${filterClause}`;
       return mysql.query(sql, args);
     }, * getDecBillHead(tasklist, tenantId) {
       const key = [0];
-      const args = [tenantId];
+      const args = [tenantId,tenantId];
 
       for (var i = 0; i < tasklist.length; i++) {
         key.push(tasklist[i].key);
       }
-      const sql = `select external_no , del_id from g_dec_bill_head where tenant_id = ? and del_id in (${key.join(',')})`;
+      const sql = `select external_no , del_id from g_dec_bill_head where (tenant_id = ? or create_tenant_id=?) and delegate_type=0 and del_id in (${key.join(',')})`;
       let decBillList = yield mysql.query(sql, args);
       decBillList = yield this.getDecHead(decBillList, tenantId);
       console.log("decBillList", decBillList);
@@ -154,10 +154,10 @@ export default {
       const sql = `SELECT T.id \`key\`,T.cop_g_no,T.code_t,T.code_s,T.g_name,T.g_model,T.qty,T.unit,T.dec_price,T.dec_total FROM g_dec_bill_list T where T.del_id=?`;
       return mysql.query(sql, args);
     },
-    getTask(del_id){
-        const args = [del_id];
-        const sql=`select del_id \`key\`, T.* from g_bus_delegate T where del_id=?`
-        return mysql.query(sql, args);
+    getTask(del_id) {
+      const args = [del_id];
+      const sql = `select del_id \`key\`, T.* from g_bus_delegate T where del_id=?`
+      return mysql.query(sql, args);
     }
 
 }
