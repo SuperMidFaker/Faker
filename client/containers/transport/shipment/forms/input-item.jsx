@@ -5,14 +5,15 @@ const FormItem = Form.Item;
 export default function InputItem(props) {
   const {
     labelName, field, colSpan, placeholder, required, rules, fieldProps,
+    addonBefore, addonAfter,
     type = 'text', formhoc: { getFieldProps, getFieldError }
   } = props;
   return (
     <FormItem label={labelName} labelCol={{span: colSpan}} wrapperCol={{span: 24 - colSpan}}
       help={rules && getFieldError(field)} hasFeedback required={required}
     >
-      <Input type={type} placeholder={placeholder}
-        {...getFieldProps(field, {rules, ...fieldProps})}
+      <Input type={type} placeholder={placeholder} addonBefore={addonBefore}
+        addonAfter={addonAfter} {...getFieldProps(field, {rules, ...fieldProps})}
       />
     </FormItem>
   );

@@ -9,6 +9,7 @@ import { isFormDataLoaded, loadForm, assignForm, setFormValue }
   from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
 import PickupInfo from './forms/pick-up';
+import GoodsInfo from './forms/goods-info';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
@@ -108,6 +109,7 @@ export default class ShipmentCreate extends React.Component {
               {this.renderTextInput(this.msg('contact'), 'consigneeContact', 4)}
             </Col>
           </Row>
+          <GoodsInfo intl={intl} labelColSpan={4} formhoc={formhoc}/>
         </Col>
         <Col span="8">
           <Row className="subform">
