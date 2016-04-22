@@ -21,6 +21,7 @@ import delegate from './delegate';
 import exportdelegate from './exportdelegate';
 import exporttask from './exporttask';
 import importtracking from './importtracking';
+import exporttracking from './exporttracking';
 
 export default combineReducers({
   intl,
@@ -44,5 +45,6 @@ export default combineReducers({
   importaccept,
   exportdelegate,
   exporttask,
-  importtracking
+  importtracking,
+  exporttracking
 });
