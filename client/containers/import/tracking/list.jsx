@@ -84,7 +84,6 @@ export default class ImportTracking extends React.Component {
     ];
   }
 
-
   render() {
     const {customsBrokerList, idlist, loading} = this.props;
     const dataSource = new Table.DataSource({
@@ -119,7 +118,6 @@ export default class ImportTracking extends React.Component {
       },
       remotes: idlist
     });
-
 
     const filterArray = [];
     // branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
@@ -157,13 +155,14 @@ export default class ImportTracking extends React.Component {
             <SearchBar placeholder="报关单号/报关业务号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <RadioGroup defaultValue="1" size="large" >
+          <RadioGroup defaultValue="-1" size="large">
             <RadioButton value="-1">
-              <span>所有状态</span>
+              <span>所有处理环节</span>
             </RadioButton>
           </RadioGroup>
         </div>
         <div className="page-body">
+          <div className="panel-header"></div>
           <div className="panel-body body-responsive">
             <Table columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
