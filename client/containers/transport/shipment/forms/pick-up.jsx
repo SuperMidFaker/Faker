@@ -7,6 +7,7 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 export default class PickupInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

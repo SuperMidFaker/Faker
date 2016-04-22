@@ -7,6 +7,7 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 export default class PickupInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -19,6 +20,9 @@ export default class PickupInfo extends React.Component {
   }
   state = {
   }
+  getComboFilter = (input, option) =>
+    option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1
+  msg = (key, values) => formatMsg(this.props.intl, key, values)
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipNo'
@@ -26,7 +30,8 @@ export default class PickupInfo extends React.Component {
     title: this.msg('shipCarrier'),
     dataIndex: 'carrier'
   }]
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  handleComboChange = (/* value, label */) => {
+  }
   render() {
     const {
       labelColSpan, formhoc, goods,
@@ -39,12 +44,11 @@ export default class PickupInfo extends React.Component {
           <div className="subform-title">{this.msg('pickupInfo')}</div>
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('')} labelCol={{span: labelColSpan}}
+          <FormItem label={this.msg('consignor')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} help={getFieldError('sender')} required
           >
-            <Select defaultValue="aa" {...getFieldProps('sender', [{
-              required: true, message: this.msg('consignorMessage')
-            }])}
+            <Select combobox defaultValue="aa" filterOption={this.getComboFilter}
+              onChange={this.handleComboChange}
             >
               <Option value="aa">aa</Option>
             </Select>
@@ -54,7 +58,7 @@ export default class PickupInfo extends React.Component {
           />
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('')} labelCol={{span: labelColSpan}}
+          <FormItem label={this.msg('consignor')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} help={getFieldError('sender')} required
           >
             <Select defaultValue="aa" {...getFieldProps('sender', [{
@@ -73,5 +77,7 @@ export default class PickupInfo extends React.Component {
             field="loadingPort" colSpan={labelColSpan} addonAfter="元"
           />
         </Col>
-        <Table columns={this.columns} dataSource={goods} />
-      </Row>
+        <Table columns={this.columns} dataSource={goods} pagination={false} />
+      </Row>);
+  }
+}

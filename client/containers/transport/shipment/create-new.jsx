@@ -109,7 +109,7 @@ export default class ShipmentCreate extends React.Component {
               {this.renderTextInput(this.msg('contact'), 'consigneeContact', 4)}
             </Col>
           </Row>
-          <GoodsInfo intl={intl} labelColSpan={4} formhoc={formhoc}/>
+          <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
         </Col>
         <Col span="8">
           <Row className="subform">

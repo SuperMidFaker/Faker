@@ -28,5 +28,7 @@ InputItem.propTypes = {
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     rules: PropTypes.array,
+    addonBefore: PropTypes.string,
+    addonAfter: PropTypes.string,
     fieldProps: PropTypes.object
 };
