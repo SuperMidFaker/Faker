@@ -3,13 +3,13 @@ import mysql from '../../reusable/db-util/mysql';
 function putInComposition(f, args) {
   let sql = '';
   if (f.name === 'del_no') {
-    sql = 'del_no like ?';
+    sql = 'geh.del_no like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'bill_no') {
-    sql = 'bill_no like ?';
+    sql = 'geh.bill_no like ?';
     args.push('%' + f.value + '%');
   } else if (f.name === 'entry_id') {
-    sql = 'entry_id like ?';
+    sql = 'geh.entry_id like ?';
     args.push('%' + f.value + '%');
   }
   return sql;
