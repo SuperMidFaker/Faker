@@ -28,7 +28,7 @@ import {
   setFormValue,
   getBillList
 } from
-'../../../../universal/redux/reducers/task';
+'../../../../universal/redux/reducers/exporttask';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 
 const FormItem = Form.Item;
@@ -59,13 +59,13 @@ function goBack(router) {
 
 @connectFetch()(fetchData)
 @connect(state => ({
-  formData: state.task.formData,
+  formData: state.exporttask.formData,
   code: state.account.code,
   username: state.account.username,
   loginId: state.account.loginId,
   tenantId: state.account.tenantId,
-  selectSource: state.task.selectSource,
-  billlist: state.task.billlist
+  selectSource: state.exporttask.selectSource,
+  billlist: state.exporttask.billlist
 }), {loadSelectSource, setFormValue, getBillList})
 
 @connectNav((props, dispatch, router) => {
@@ -372,7 +372,7 @@ export default class InputBillEdit extends React.Component {
           <Row>
             <Col span="6">
 
-              {this.renderSelect('进口口岸', '', 'i_e_port', false, [], null)}
+              {this.renderSelect('出口口岸', '', 'i_e_port', false, [], null)}
               {this.renderSelect('收发货人', '选择收发货人', 'trade_co', true, [], null)}
               {this.renderSelect('消费使用单位', '选择消费使用单位', 'owner_code', false, [], null)}
 
@@ -431,7 +431,7 @@ export default class InputBillEdit extends React.Component {
             </Col>
             <Col span="6">
               {this.renderSelect('申报地海关', '选择申报地海关', 'master_customs', false, CustomsRel, null)}
-              {this.renderDatePicker('进口日期', 'i_e_date')}
+              {this.renderDatePicker('出口日期', 'i_e_date')}
 
               {this.renderTextInput('运输工具名称', '输入运输工具名称', 'traf_name', false, null, null)}
               {this.renderSelect('征免性质', '选择征免性质', 'cut_mode', false, Levytype, null)}

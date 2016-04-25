@@ -52,7 +52,7 @@ export default {
       }
       */
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(del_id) as count from g_bus_delegate where (rec_tenant_id = ? or tenant_id=? or send_tenant_id=?) and delegate_type=0 ${statusClause} ${filterClause}`;
+      const sql = `select count(del_id) as count from g_bus_delegate where (rec_tenant_id = ? or tenant_id=? or send_tenant_id=?) and delegate_type=1 ${statusClause} ${filterClause}`;
 
       return mysql.query(sql, args);
     },
@@ -82,7 +82,7 @@ export default {
       rec_tenant_id,T.rec_login_id as rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,
       DATE_FORMAT(T.created_date,'%Y-%m-%d %H:%i') created_date,master_customs,declare_way_no,
       usebook,ems_no,trade_mode, urgent,delegate_type,other_note from g_bus_delegate as T
-      where (T.rec_tenant_id= ? or T.tenant_id= ? or T.send_tenant_id= ?) and T.delegate_type= 0 ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
+      where (T.rec_tenant_id= ? or T.tenant_id= ? or T.send_tenant_id= ?) and T.delegate_type= 1 ${statusClause} ${filterClause} ${sortClause}  limit ?, ?`;
 
       args.push((current - 1) * pageSize, pageSize);
       let tasklist = yield mysql.query(sql, args);
@@ -92,7 +92,7 @@ export default {
     getStatusCount(loginId, tenantId, status, filters) {
       const args = [tenantId, tenantId, tenantId, status]; // 暂时去掉了接受人ID的选择条件
       const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(status) as count from g_bus_delegate where (rec_tenant_id=? or send_tenant_id=? or tenant_id=?) and delegate_type=0 and status=? ${filterClause}`;
+      const sql = `select count(status) as count from g_bus_delegate where (rec_tenant_id=? or send_tenant_id=? or tenant_id=?) and delegate_type=1 and status=? ${filterClause}`;
       return mysql.query(sql, args);
     }, * getDecBillHead(tasklist, tenantId) {
       const key = [0];
@@ -101,7 +101,7 @@ export default {
       for (var i = 0; i < tasklist.length; i++) {
         key.push(tasklist[i].key);
       }
-      const sql = `select external_no , del_id from g_dec_bill_head where (tenant_id = ? or create_tenant_id=?) and delegate_type=0 and del_id in (${key.join(',')})`;
+      const sql = `select external_no , del_id from g_dec_bill_head where (tenant_id = ? or create_tenant_id=?) and delegate_type=1 and del_id in (${key.join(',')})`;
       let decBillList = yield mysql.query(sql, args);
       decBillList = yield this.getDecHead(decBillList, tenantId);
       console.log("decBillList", decBillList);

@@ -8,6 +8,7 @@ import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { isFormDataLoaded, loadForm, assignForm, setFormValue }
   from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
+import PickupInfo from './forms/pick-up';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
@@ -62,6 +63,7 @@ export default class ShipmentCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired
@@ -84,27 +86,7 @@ export default class ShipmentCreate extends React.Component {
     return (
       <Form form={formhoc} horizontal className="form-edit-content offset-mid-col">
         <Col span="14" className="subform">
-          <Row>
-            <div className="subform-heading">
-              <div className="subform-title">{this.msg('pickupInfo')}</div>
-            </div>
-            <Col span="14" className="subform-body">
-              <FormItem label={this.msg('consignor')} labelCol={{span: 4}} wrapperCol={{span: 20}}
-                help={getFieldError('sender')} required
-              >
-                <Select defaultValue="aa" {...getFieldProps('sender', [{
-                  required: true, message: this.msg('consignorMessage')
-                }])}
-                >
-                  <Option value="aa">aa</Option>
-                </Select>
-              </FormItem>
-              {this.renderTextInput(this.msg('loadingPort'), 'loadingPort', 4)}
-            </Col>
-            <Col span="10" className="subform-body">
-              {this.renderTextInput(this.msg('contact'), 'consignorContact', 4)}
-            </Col>
-          </Row>
+          <PickupInfo intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <Row>
             <div className="subform-heading">
               <div className="subform-title">{this.msg('deliveryInfo')}</div>

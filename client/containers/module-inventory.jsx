@@ -3,6 +3,7 @@ import AmLeftSidebar from '../components/am-ant-leftbar';
 
 export default class Inventory extends React.Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired
   };
   render() {
@@ -89,7 +90,7 @@ export default class Inventory extends React.Component {
     }];
     return (
       <div className="am-content">
-        <AmLeftSidebar links={ linkMenus } />
+        <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
         {this.props.children}
       </div>);
   }

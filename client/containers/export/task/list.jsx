@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {loadTask} from
-'../../../../universal/redux/reducers/task';
+import {loadExportTask} from
+'../../../../universal/redux/reducers/exporttask';
 import NavLink from '../../../../reusable/components/nav-link';
 import SearchBar from '../../../../reusable/components/search-bar';
 import {Table, Radio, Tag} from 'ant-ui';
@@ -11,21 +11,21 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({state, dispatch, cookie}) {
-  if (!isLoaded(state, 'task')) {
-    return dispatch(loadTask(cookie, {
+  if (!isLoaded(state, 'exporttask')) {
+    return dispatch(loadExportTask(cookie, {
       tenantId: state.account.tenantId,
-      pageSize: state.task.tasklist.pageSize,
+      pageSize: state.exporttask.exporttasklist.pageSize,
       loginId: state.account.loginId
     }));
   }
 }
 @connectFetch()(fetchData)
-@connect(state => ({statusList: state.task.statusList, tasklist: state.task.tasklist, loading: state.task.loading, loginId: state.account.loginId, tenantId: state.account.tenantId}), {loadTask})
-export default class TaskSetting extends React.Component {
+@connect(state => ({statusList: state.exporttask.statusList, exporttasklist: state.exporttask.exporttasklist, loading: state.exporttask.loading, loginId: state.account.loginId, tenantId: state.account.tenantId}), {loadExportTask})
+export default class ExportTaskSetting extends React.Component {
   static propTypes = {
     loading: PropTypes.bool.isRequired,
-    tasklist: PropTypes.object.isRequired,
-    loadTask: PropTypes.func.isRequired,
+    exporttasklist: PropTypes.object.isRequired,
+    loadExportTask: PropTypes.func.isRequired,
     loginId: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     statusList: PropTypes.object.isRequired
@@ -44,10 +44,10 @@ export default class TaskSetting extends React.Component {
   handleChangeStatus(e) {
     const filters = this.createFilters(this.state.searchVal);
     // 切换状态后更新table数据
-    this.props.loadTask(null, {
+    this.props.loadExportTask(null, {
       tenantId: this.props.tenantId,
       loginId: this.props.loginId,
-      pageSize: this.props.tasklist.pageSize,
+      pageSize: this.props.exporttasklist.pageSize,
       currentPage: 1,
       currentStatus: e.target.value,
       filters: JSON.stringify(filters)
@@ -57,10 +57,10 @@ export default class TaskSetting extends React.Component {
   handleSearch(value) {
     this.setState({searchVal: value});
     const filters = this.createFilters(value);
-    this.props.loadTask(null, {
+    this.props.loadExportTask(null, {
       tenantId: this.props.tenantId,
       loginId: this.props.loginId,
-      pageSize: this.props.tasklist.pageSize,
+      pageSize: this.props.exporttasklist.pageSize,
       currentPage: 1,
       currentStatus: this.state.statusValue,
       filters: JSON.stringify(filters)
@@ -99,12 +99,12 @@ export default class TaskSetting extends React.Component {
         haveOrderCount,
         closeOrderCount
       },
-      tasklist,
+      exporttasklist,
       loading
     } = this.props;
 
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadTask(null, params),
+      fetcher: (params) => this.props.loadExportTask(null, params),
       resolve: (result) => result.data,
       extraParams: {
         tenantId: this.props.tenantId
@@ -136,7 +136,7 @@ export default class TaskSetting extends React.Component {
         // console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
         return params;
       },
-      remotes: tasklist
+      remotes: exporttasklist
     });
 
     // const rowSelection = {
@@ -202,7 +202,7 @@ export default class TaskSetting extends React.Component {
           if (record.bill_no !== undefined) {
             returnVal = (
               <span>
-                <NavLink to={`/import/task/inputbill/${record.key}`}>查看报关清单</NavLink>
+                <NavLink to={`/export/task/inputbill/${record.key}`}>查看报关清单</NavLink>
                 <span className="ant-divider"/>
                 <a role="button" onClick={() => this.handleSend(0, record)}>更多</a>
               </span>

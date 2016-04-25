@@ -9,6 +9,7 @@ const formatMsg = format(messages);
 export default class Transport extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired
   };
   render() {
@@ -52,7 +53,7 @@ export default class Transport extends React.Component {
     }];
     return (
       <div className="am-content">
-        <AmLeftSidebar links={ linkMenus } />
+        <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
         {this.props.children}
       </div>);
   }

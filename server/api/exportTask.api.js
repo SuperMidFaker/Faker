@@ -1,23 +1,23 @@
 import cobody from 'co-body';
 import Result from '../../reusable/node-util/response-result';
 import mysql from '../../reusable/db-util/mysql';
-import taskDao from '../models/task.db';
+import taskDao from '../models/exportTask.db';
 import paraDao from '../models/para.db';
 
 
 export default [
-  ['get', '/v1/import/tasks', getTasks],
-  ['get', '/v1/import/task', getTask],
-  ['get', '/v1/import/tasks/billlist', getBillList],
-  ['get', '/v1/import/tasks/loadSource', loadSource]
+  ['get', '/v1/export/exporttasks', getTasks],
+  ['get', '/v1/export/exporttask', getTask],
+  ['get', '/v1/export/exporttasks/billlist', getBillList],
+  ['get', '/v1/export/exporttasks/loadSource', loadSource]
 ];
 
 function* getTask(){
   const del_id = parseInt(this.request.query.del_id || 0, 10);
-  const task= yield taskDao.getTask(del_id);
+  const exporttask= yield taskDao.getTask(del_id);
 
   try {
-    return Result.OK(this, task[0]);
+    return Result.OK(this, exporttask[0]);
   } catch (e) {
     console.log(e);
     return Result.InternalServerError(this, e.message);
@@ -80,18 +80,18 @@ function* getTasks() {
 
   try {
     const totals = yield taskDao.getTaskTotalCount(loginId, tenantId, currentStatus, filters);
-    const tasks = yield taskDao.getTasks(current, currentStatus, loginId, filters, pageSize, tenantId, sortField, sortOrder);
-    console.log(tasks);
+    const exporttasks = yield taskDao.getTasks(current, currentStatus, loginId, filters, pageSize, tenantId, sortField, sortOrder);
+    console.log(exporttasks);
     const haveOrderCount = yield taskDao.getStatusCount(loginId, tenantId, 1, filters);
     const closeOrderCount = yield taskDao.getStatusCount(loginId, tenantId, 2, filters);
 
 
     return Result.OK(this, {
-      tasklist: {
+      exporttasklist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: tasks
+        data: exporttasks
       },
       statusList: {
         haveOrderCount: haveOrderCount.length > 0 ? haveOrderCount[0].count : 0,

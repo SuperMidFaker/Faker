@@ -13,12 +13,12 @@ import {
   clearFormC,
   setFormValueC
 } from '../../../reusable/domains/redux/form-common';
-const actionTypes = createActionTypes('@@welogix/task/', [
+const actionTypes = createActionTypes('@@welogix/exporttask/', [
   'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL',
   'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL',
   'LIST_LOAD', 'LIST_LOAD_SUCCEED', 'LIST_LOAD_FAIL'
 ]);
-appendFormAcitonTypes('@@welogix/task/', actionTypes);
+appendFormAcitonTypes('@@welogix/exporttask/', actionTypes);
 
 export const TASK_EDIT_SUCCEED = actionTypes.TASK_EDIT_SUCCEED;
 const initialState = {
@@ -32,7 +32,7 @@ const initialState = {
   formData: {
     key: -1
   },
-  tasklist: {
+  exporttasklist: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
@@ -71,7 +71,7 @@ export default function reducer(state = initialState, action) {
           haveOrderCount: action.result.data.statusList.haveOrderCount,
           closeOrderCount: action.result.data.statusList.closeOrderCount
         },
-        tasklist: action.result.data.tasklist
+        exporttasklist: action.result.data.exporttasklist
       };
     case actionTypes.TASK_LOAD_FAIL:
       return {...state,
@@ -97,7 +97,7 @@ export default function reducer(state = initialState, action) {
     };
       // todo deal with submit fail submit loading
     default:
-      return formReducer(actionTypes, state, action, {}, 'tasklist') || state;
+      return formReducer(actionTypes, state, action, {}, 'exporttasklist') || state;
   }
 }
 
@@ -105,17 +105,17 @@ export function loadSelectSource() {
   return {
     [CLIENT_API]: {
       types: [actionTypes.SOURCE_LOAD, actionTypes.SOURCE_LOAD_SUCCEED, actionTypes.SOURCE_LOAD_FAIL],
-      endpoint: 'v1/import/tasks/loadSource',
+      endpoint: 'v1/export/exporttasks/loadSource',
       method: 'get'
     }
   };
 }
 
-export function loadTask(cookie, params) {
+export function loadExportTask(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.TASK_LOAD, actionTypes.TASK_LOAD_SUCCEED, actionTypes.TASK_LOAD_FAIL],
-      endpoint: 'v1/import/tasks',
+      endpoint: 'v1/export/exporttasks',
       method: 'get',
       params,
       cookie
@@ -127,19 +127,19 @@ export function getBillList(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.LIST_LOAD, actionTypes.LIST_LOAD_SUCCEED, actionTypes.LIST_LOAD_FAIL],
-      endpoint: 'v1/import/tasks/billlist',
+      endpoint: 'v1/export/exporttasks/billlist',
       method: 'get',
       params
     }
   };
 }
 
-export function assignForm(taskState, key) {
-  return assignFormC(key, taskState, 'tasklist', actionTypes);
+export function assignForm(exporttaskState, key) {
+  return assignFormC(key, exporttaskState, 'exporttasklist', actionTypes);
 }
 
-export function isFormDataLoaded(taskState, key) {
-  return isFormDataLoadedC(key, taskState, 'tasklist');
+export function isFormDataLoaded(exporttaskState, key) {
+  return isFormDataLoadedC(key, exporttaskState, 'exporttasklist');
 }
 
 export function clearForm() {
@@ -151,7 +151,7 @@ export function setFormValue(field, newValue) {
 }
 
 export function loadForm(cookie, key) {
-  return loadFormC(cookie, 'v1/import/task', {
+  return loadFormC(cookie, 'v1/export/exporttask', {
     del_id: key
   }, actionTypes);
 }
