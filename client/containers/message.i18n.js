@@ -144,6 +144,10 @@ const messages = defineMessages({
   servicePayment: {
     id: 'container.servicePayment',
     defaultMessage: '付款记录'
+  },
+  transportShipment: {
+    id: 'container.transport.shipment',
+    defaultMessage: '运单'
   }
 });
 

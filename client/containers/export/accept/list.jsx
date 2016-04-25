@@ -1,36 +1,33 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
+import NavLink from '../../../../reusable/components/nav-link';
 import {
-  submitAccept,
-  loadAccept,
+  loadAccepts,
   updateId,
   delId,
   beginEdit,
   edit,
   cancelEdit,
-  loadStatus,
   loadCustomsBrokers
 } from '../../../../universal/redux/reducers/exportaccept';
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Button, message} from 'ant-ui';
+import {Table, Button, message, Radio, Icon} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
-const ButtonGroup = Button.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 function fetchData({state, dispatch, cookie}) {
   const promises = [];
   if (!isLoaded(state, 'exportaccept')) {
-    let p = dispatch(loadAccept(cookie, {
+    let p = dispatch(loadAccepts(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.exportaccept.idlist.pageSize,
       currentPage: state.exportaccept.idlist.current
     }));
-    promises.push(p);
-
-    p = dispatch(loadStatus(cookie, {tenantId: state.account.tenantId}));
     promises.push(p);
     p = dispatch(loadCustomsBrokers(cookie, state.account.tenantId));
     promises.push(p);
@@ -42,6 +39,7 @@ function fetchData({state, dispatch, cookie}) {
 @connect(state => ({ // 从初始化state中加载数据
   tenantId: state.account.tenantId,
   idlist: state.exportaccept.idlist,
+  sendlist: state.exportaccept.sendlist,
   statusList: state.exportaccept.statusList,
   customsBrokerList: state.exportaccept.customsBrokerList,
   needUpdate: state.exportaccept.needUpdate,
@@ -50,14 +48,12 @@ function fetchData({state, dispatch, cookie}) {
 }), {
   updateId,
   delId,
-  loadAccept,
-  submitAccept,
+  loadAccepts,
   beginEdit,
   edit,
-  cancelEdit,
-  loadStatus
+  cancelEdit
 })
-export default class ImportDelegate extends React.Component {
+export default class ExportAccept extends React.Component {
   static propTypes = { // 属性检测
     idlist: PropTypes.object.isRequired,
     statusList: PropTypes.object.isRequired,
@@ -68,10 +64,9 @@ export default class ImportDelegate extends React.Component {
     delId: PropTypes.func.isRequired,
     edit: PropTypes.func.isRequired,
     cancelEdit: PropTypes.func.isRequired,
-    loadAccept: PropTypes.func.isRequired,
-    loadStatus: PropTypes.func.isRequired,
-    submitAccept: PropTypes.func.isRequired,
-    tenantId: PropTypes.number.isRequired
+    loadAccepts: PropTypes.func.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    sendlist: PropTypes.object.isRequired
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -80,13 +75,11 @@ export default class ImportDelegate extends React.Component {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      statusAll: 'ghost',
-      statusNotAccept: 'primary',
-      statusAccept: 'ghost',
-      statusInvalid: 'ghost',
-      statusRevoke:'ghost',
-      curStatus: 0,
-      searchVal: ''
+      statusValue: '',
+      searchVal: '',
+      sendlist: [],
+      buttonText: '撤回',
+      sendStatus: 1
     };
   }
   handleIdReg() {
@@ -108,7 +101,7 @@ export default class ImportDelegate extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.props.loadAccept(null, {
+          this.props.loadAccepts(null, {
             tenantId,
             pageSize,
             currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
@@ -118,57 +111,42 @@ export default class ImportDelegate extends React.Component {
       confirmString: 'DELETE'
     });
   }
-  handleChangeStatus(type, status) {
-    // 更新视图状态
-    this.setState({
-      statusAll: type === 'statusAll'
-        ? 'primary'
-        : 'ghost',
-      statusNotAccept: type === 'statusNotAccept'
-        ? 'primary'
-        : 'ghost',
-      statusAccept: type === 'statusAccept'
-        ? 'primary'
-        : 'ghost',
-      statusInvalid: type === 'statusInvalid'
-        ? 'primary'
-        : 'ghost',
-      statusRevoke: type === 'statusRevoke'
-      ? 'primary'
-      : 'ghost',
-      curStatus: status
-    });
-
+  handleChangeStatus(e) {
     const filters = this.createFilters(this.state.searchVal);
     // 切换状态后更新table数据
-    this.props.loadAccept(null, {
+    this.props.loadAccepts(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
-      currentStatus: status,
+      currentStatus: e.target.value,
       filters: JSON.stringify(filters)
     });
-    // 切换状态的时候同时更新状态数量
+
+    this.setState({statusValue: e.target.value});
   }
 
   handleSearch(value) {
     this.setState({searchVal: value});
     const filters = this.createFilters(value);
-    this.props.loadAccept(null, {
+    this.props.loadAccepts(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
-      currentStatus: this.state.curStatus,
-      filters: JSON.stringify(filters)
-    });
-
-    this.props.loadStatus(null, {
-      tenantId: this.props.tenantId,
+      currentStatus: this.state.statusValue,
       filters: JSON.stringify(filters)
     });
   }
   handleNavigationTo(to, query) {
-    this.context.router.push({ pathname: to, query });
+    this.context.router.push({pathname: to, query});
+  }
+  handleSend(status, record) {
+    this.props.sendlist.data = [];
+    if (!record) {
+      this.state.sendlist.map((item) => (this.props.sendlist.data.push(item)));
+    } else {
+      this.props.sendlist.data.push(record);
+    }
+    this.context.router.push(`/export/accept/send/${status}`);
   }
   createFilters(searchVal) { // 创建过滤
     return [
@@ -186,38 +164,33 @@ export default class ImportDelegate extends React.Component {
       ]
     ];
   }
-  renderColumnText(status, text) {
+  renderColumnText(record, text, ishref = false) {
     let style = {};
-    if (status === 3) {
+    if (record.status === 3) {
       style = {
         color: '#CCC'
       };
     }
-    return <span style={style}>{text}</span>;
+    if (ishref === true) {
+      return <NavLink to={`/export/accept/edit/${record.key}`}>{text}</NavLink>;
+    } else {
+      return <span style={style}>{text}</span>;
+    }
   }
 
   render() {
     const {
       customsBrokerList,
       statusList: {
+        statusValue,
         notAcceptCount,
-        acceptCount,
-        invalidCount,
-        revokedCount
+        acceptCount
       },
       idlist,
       loading
     } = this.props;
-    const {
-      statusAll,
-      statusAccept,
-      statusInvalid,
-      statusNotAccept,
-      statusRevoke,
-      curStatus
-    } = this.state;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadAccept(null, params),
+      fetcher: (params) => this.props.loadAccepts(null, params),
       resolve: (result) => result.data,
       extraParams: {
         tenantId: this.props.tenantId
@@ -235,7 +208,7 @@ export default class ImportDelegate extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          curStatus,
+          currentStatus: statusValue,
           filters: []
         };
         for (const key in filters) {
@@ -252,8 +225,13 @@ export default class ImportDelegate extends React.Component {
 
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
-      onSelect: (/* record, selected, selectedRows */) => {},
-      onSelectAll: (/* selected, selectedRows */) => {}
+      // selectedRowKeys: this.state.selectedRowKeys,
+      // onSelect: (record, selected, selectedRows) => {
+      //  this.handleSetSendList(selectedRows);
+      // },
+      // onSelectAll: (selected, selectedRows) => {
+      //  this.handleSetSendList(selectedRows);
+      // }
     };
 
     const filterArray = [];
@@ -265,11 +243,11 @@ export default class ImportDelegate extends React.Component {
       {
         title: '报关业务单号',
         dataIndex: 'del_no',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record, text, true)
       }, {
         title: '客户名称',
         sorter: true,
-        dataIndex: 'send_tenant_id',
+        dataIndex: 'send_tenant_name',
         filters: filterArray,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
@@ -293,21 +271,21 @@ export default class ImportDelegate extends React.Component {
           let fontColor = '';
           let statusText = '';
           switch (record.status) {
+            case 0:
+              statusText = '待处理';
+              fontColor = '#FFD700';
+              break;
             case 1:
-              statusText = '未受理';
+              statusText = '委托中';
               fontColor = '#FF7F00';
               break;
             case 2:
-              statusText = '已接单';
+              statusText = '受理中';
               fontColor = '#00CD00';
               break;
             case 3:
               statusText = '已作废';
               fontColor = '#CCC';
-              break;
-            case 4:
-              statusText = '已撤回';
-              fontColor = '#FFD700';
               break;
             default:
               break;
@@ -328,7 +306,7 @@ export default class ImportDelegate extends React.Component {
             case 1:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
                   <a href="#" className="ant-dropdown-link">接单</a>
                 </span>
@@ -336,21 +314,15 @@ export default class ImportDelegate extends React.Component {
             case 2:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
-                  <a href="#" className="ant-dropdown-link">报关清单</a>
+                  <NavLink to={`../../../export/task/inputbill/${record.key}`}>报关清单</NavLink>
                 </span>
               );
             case 3:
               return (
                 <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
-                </span>
-              );
-              case 4:
-              return (
-                <span>
-                  <a href="#" className="ant-dropdown-link">查看</a>
+                  <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                 </span>
               );
             default:
@@ -362,36 +334,27 @@ export default class ImportDelegate extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="pull-right action-btns">
-            <SearchBar placeholder="业务单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
+          <div className="tools">
+            <SearchBar placeholder="提运单号/报关业务号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
-          <h2>业务委托</h2>
+          <RadioGroup defaultValue="1" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
+            <RadioButton value="-1">
+              <span>所有状态</span>
+            </RadioButton>
+            <RadioButton value="1">
+              <span>委托中 ({notAcceptCount})</span>
+            </RadioButton>
+            <RadioButton value="2">
+              <span>受理中 ({acceptCount})</span>
+            </RadioButton>
+          </RadioGroup>
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <div className="pull-right action-btns">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/export/receive/new')}>
-              <span>新增</span>
+            <Button type="primary" onClick={() => this.handleNavigationTo('/export/receive/new')}>
+              <Icon type="plus-circle-o"/>新增报关业务
             </Button>
-            </div>
-          <ButtonGroup>
-            <Button type={statusAll} size="large" onClick={() => this.handleChangeStatus('statusAll', -1)}>
-              <span>全部</span>
-            </Button>
-            <Button type={statusNotAccept} size="large" onClick={() => this.handleChangeStatus('statusNotAccept', 1)}>
-              <span>未受理 ({notAcceptCount})</span>
-            </Button>
-            <Button type={statusAccept} size="large" onClick={() => this.handleChangeStatus('statusAccept', 2)}>
-              <span>已接单 ({acceptCount})</span>
-            </Button>
-            <Button type={statusInvalid} size="large" onClick={() => this.handleChangeStatus('statusInvalid', 3)}>
-              <span>已作废 ({invalidCount})</span>
-            </Button>
-            <Button type={statusRevoke} size="large" onClick={() => this.handleChangeStatus('statusRevoke', 4)}>
-              <span>已撤回 ({revokedCount})</span>
-            </Button>
-          </ButtonGroup>
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>

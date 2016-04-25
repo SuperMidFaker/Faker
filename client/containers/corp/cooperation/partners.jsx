@@ -50,7 +50,7 @@ function fetchData({ state, dispatch, cookie }) {
     partnershipTypes: state.partner.partnershipTypes,
     partnerlist: state.partner.partnerlist,
     filters: state.partner.filters,
-    loading: state.personnel.loading
+    loading: state.partner.loading
   }),
   { showPartnerModal, showInviteModal, loadPartners })
 export default class PartnersView extends React.Component {
@@ -118,6 +118,9 @@ export default class PartnersView extends React.Component {
   columns = [{
     title: this.msg('partnerName'),
     dataIndex: 'name'
+  }, {
+    title: this.msg('partnerCode'),
+    dataIndex: 'partnerCode'
   }, {
     title: this.msg('partnerType'),
     dataIndex: 'types',

@@ -61,9 +61,9 @@ const messages = defineMessages({
     id: 'component.region.defaultCounty',
     defaultMessage: '区县'
   },
-  emptyPartnerName: {
-    id: 'component.partner.empty.name',
-    defaultMessage: '合作伙伴名称不能为空'
+  emptyPartnerInfo: {
+    id: 'component.partner.empty.info',
+    defaultMessage: '合作伙伴名称和代码不能为空'
   },
   partnerExist: {
     id: 'cooperation.partner.new.exist',
@@ -92,6 +92,14 @@ const messages = defineMessages({
   companyNamePlaceholder: {
     id: 'component.company.name.placeholder',
     defaultMessage: '请输入公司名称'
+  },
+  partnerCode: {
+    id: 'component.partner.code',
+    defaultMessage: '企业代码:'
+  },
+  partnerCodePlaceholder: {
+    id: 'component.partner.code.placeholder',
+    defaultMessage: '合作伙伴企业代码或客户代码'
   },
   partnership: {
     id: 'component.partnership',

@@ -13,10 +13,15 @@ import importdelegate from './importdelegate';
 import importaccept from './importaccept';
 import exportaccept from './exportaccept';
 import task from './task';
+import shipment from './shipment';
 import warehouse from './warehouse';
 import bill from './bill';
 import notice from './notice';
 import delegate from './delegate';
+import exportdelegate from './exportdelegate';
+import exporttask from './exporttask';
+import importtracking from './importtracking';
+import exporttracking from './exporttracking';
 
 export default combineReducers({
   intl,
@@ -33,8 +38,13 @@ export default combineReducers({
   importdelegate,
   exportaccept,
   task,
+  shipment,
   bill,
   notice,
   delegate,
-  importaccept
+  importaccept,
+  exportdelegate,
+  exporttask,
+  importtracking,
+  exporttracking
 });

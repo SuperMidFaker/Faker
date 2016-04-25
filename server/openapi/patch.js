@@ -15,8 +15,8 @@ module.exports = (app) => {
     json(this, codes.forbidden(obj));
   };
 
-  app.context.error = app.response.error = function err(obj) {
-    json(this, codes.error(obj));
+  app.context.error = app.response.error = function err(obj, errMsg) {
+    json(this, codes.error(obj, errMsg));
   };
 
   app.context.json = app.response.json = function js(obj) {
@@ -30,7 +30,9 @@ module.exports = (app) => {
   app.context.onerror = function onerror(err) {
     if (!err) return;
 
-    console.error(err.stack || err);
+    if (!err.sql) {
+      console.error(err.stack || err);
+    }
     // nothing we can do here other
     // than delegate to the app-level
     // handler and log.
@@ -39,7 +41,7 @@ module.exports = (app) => {
       return;
     }
 
-    this.json(codes.error(codes.internal_server_error));
+    this.json(codes.error(codes.internal_server_error, err.message));
 
     this.status = 200;
     this.length = Buffer.byteLength(this.body);

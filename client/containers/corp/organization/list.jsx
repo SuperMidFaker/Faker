@@ -167,6 +167,10 @@ export default class CorpList extends React.Component {
       dataIndex: 'name',
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
+      title: formatMsg(intl, 'subcodeColumn'),
+      dataIndex: 'subCode',
+      render: (o, record) => this.renderColumnText(record.status, record.subCode)
+    }, {
       title: formatMsg(intl, 'contactColumn'),
       dataIndex: 'contact',
       render: (o, record) => this.renderColumnText(record.status, record.contact)

@@ -5,6 +5,10 @@ const messages = defineMessages({
     id: 'cooperation.partner.name',
     defaultMessage: '合作伙伴'
   },
+  partnerCode: {
+    id: 'cooperation.partner.code',
+    defaultMessage: '客户代码'
+  },
   partnerType: {
     id: 'cooperation.partner.type',
     defaultMessage: '关系'
@@ -105,8 +109,8 @@ const messages = defineMessages({
     id: 'cooperation.invitation.cancel.failed',
     defaultMessage: '取消邀请失败'
   },
-  inviteOtherToBe: {
-    id: 'cooperation.invitation.other.tobe',
+  inviteThemToBe: {
+    id: 'cooperation.invitation.them.tobe',
     defaultMessage: '邀请对方成为'
   },
   sentDate: {

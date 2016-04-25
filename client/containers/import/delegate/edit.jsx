@@ -321,7 +321,7 @@ export default class ImportDelegateEdit extends React.Component {
     } = this.props;
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
-        <Menu.Item key="1">录入报关清单</Menu.Item>
+        <Menu.Item >录入报关清单</Menu.Item>
         <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废报关业务</Menu.Item>
       </Menu>
     );
@@ -346,13 +346,7 @@ export default class ImportDelegateEdit extends React.Component {
         </Row>
         <Row>
           <Col span="8" offset="3">
-            {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
-              {
-                required: true,
-                message: '请选择清关海关'
-              }
-            ], (this.props.formData.status === 2))}
-
+            {this.renderSelect('清关海关', '选择清关海关', 'master_customs', false, customsInfoList, null)}
             {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
               {
                 required: true,
@@ -361,22 +355,17 @@ export default class ImportDelegateEdit extends React.Component {
             ], null, (this.props.formData.status === 2))}
           </Col>
           <Col span="8">
-            {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
-              {
-                required: true,
-                message: '请选择报关类型'
-              }
-            ], (this.props.formData.status === 2))}
+            {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', false, declareWayList, null)}
           </Col>
         </Row>
         <Row>
           <Col span="8" offset="3">
-            {this.renderSwitch('使用手册/账册', 'usebook')}
+            {this.renderSwitch('手册/账册', 'usebook')}
             {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
             {this.renderSwitch('加急', 'urgent')}
           </Col>
           <Col span="8">
-            {this.renderTextInput('备案号', '', 'ems_no', false, null, null, true)}
+            {this.renderTextInput('备案号', '', 'ems_no', false, null, null)}
             {this.renderSelect('贸易方式', '选择贸易方式', 'trade_mode', false, tradeModeList, null)}
             {this.renderTextInput('其他要求', '', 'other_note', false, null, null, false, 'textarea')}
           </Col>
@@ -446,12 +435,12 @@ export default class ImportDelegateEdit extends React.Component {
             ? 'hide'
             : 'inline-block'
         }}>
-          <Col span="18" offset="3">
+          <Col span="17" offset="3">
             <Button htmlType="submit" type="primary">确定</Button>
             <Button onClick={this.handleCancel}>取消</Button>
           </Col>
-          <Col span="2">
-            <DropdownButton overlay={menu} className="pull-right">
+          <Col span="3">
+            <DropdownButton overlay={menu} >
               更多选项
             </DropdownButton>
           </Col>

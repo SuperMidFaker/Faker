@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'organization.list.nameColumn',
     defaultMessage: '部门/分支机构'
   },
+  subcodeColumn: {
+    id: 'organization.list.subcodeColumn',
+    defaultMessage: '子租户代码'
+  },
   contactColumn: {
     id: 'organization.list.contactColumn',
     defaultMessage: '负责人'
@@ -44,6 +48,18 @@ const messages = defineMessages({
   organPlaceholder: {
     id: 'organization.edit.organPlaceholder',
     defaultMessage: '请输入部门或分支机构名称'
+  },
+  organSubcode: {
+    id: 'organization.edit.organSubcode',
+    defaultMessage: '子租户代码'
+  },
+  organSubcodePlaceholder: {
+    id: 'organization.edit.organSubcodePlaceholder',
+    defaultMessage: '请输入部门或分支机构代码'
+  },
+  subcodeMessage: {
+    id: 'organization.edit.subcode.message',
+    defaultMessage: '子租户代码必填,最多20位长度'
   },
   chief: {
     id: 'organization.edit.chief',

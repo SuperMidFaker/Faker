@@ -15,6 +15,7 @@ import './partner-modal.less';
   state => ({
     tenantId: state.partner.inviteModal.tenantId,
     partnerName: state.partner.inviteModal.partnerName,
+    partnerCode: state.partner.inviteModal.partnerCode,
     step: state.partner.inviteModal.step,
     visible: state.partner.inviteModal.visible
   }),
@@ -27,6 +28,7 @@ export default class PartnerInviteDialog extends React.Component {
     sendInvitation: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     partnerName: PropTypes.string.isRequired,
+    partnerCode: PropTypes.string.isRequired,
     step: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired
   }
@@ -54,7 +56,7 @@ export default class PartnerInviteDialog extends React.Component {
       return message.error(this.msg('contactMissing'));
     }
     this.props.sendInvitation(
-      this.state.contact, this.props.tenantId, this.props.partnerName
+      this.state.contact, this.props.tenantId, this.props.partnerCode, this.props.partnerName
     ).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);

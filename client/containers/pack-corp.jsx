@@ -17,6 +17,7 @@ const formatMsg = format(messages);
 export default class CorpPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    location: PropTypes.object.isRequired,
     accountType: PropTypes.string.isRequired,
     children: PropTypes.object.isRequired
   };
@@ -79,7 +80,7 @@ export default class CorpPack extends React.Component {
       <div className="am-wrapper am-fixed-sidebar">
         <AmNavBar />
         <div className="am-content">
-          <AmLeftSidebar links={ linkMenus } />
+          <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
           {this.props.children}
         </div>
       </div>);

@@ -85,7 +85,6 @@ export default class TaskSetting extends React.Component {
   renderColumnText(record, text) {
     switch (text) {
       case '报关单':
-      case '报关清单':
         return <Tag color="gray">{text}</Tag>;
       default:
         return <span>{text}</span>;
@@ -147,30 +146,29 @@ export default class TaskSetting extends React.Component {
     // };
     const columns = [
       {
-        title: '业务单号',
+        title: '平台单号',
         sorter: true,
         dataIndex: 'del_no',
         render: (o, record) => this.renderColumnText(record, record.del_no)
       }, {
-        title: '客户名称',
-        dataIndex: 'send_tenant_id',
-        render: (o, record) => this.renderColumnText(record, record.send_tenant_id)
+        title: '企业内部编号',
+        sorter: true,
+        dataIndex: 'external_no',
+        render: (o, record) => this.renderColumnText(record, record.external_no)
       }, {
-        title: '运单号',
+        title: '委托方',
+        dataIndex: 'short_name',
+        render: (o, record) => this.renderColumnText(record, record.short_name)
+      }, {
+        title: '提运单号',
         render: (o, record) => this.renderColumnText(record, record.bill_no)
       }, {
         title: '发票号',
         sorter: true,
         render: (o, record) => this.renderColumnText(record, record.invoice_no)
       }, {
-        title: '操作人',
-        render: (o, record) => this.renderColumnText(record, record.rec_login_id)
-      }, {
         title: '接单日期',
-        render: (o, record) => this.renderColumnText(record, record.del_date)
-      }, {
-        title: '申报日期',
-        render: (o, record) => this.renderColumnText(record, record.rec_del_date)
+        render: (o, record) => this.renderColumnText(record, record.created_date)
       }, {
         title: '状态',
         sorter: true,
@@ -199,7 +197,7 @@ export default class TaskSetting extends React.Component {
         }
       }, {
         title: '操作',
-        width: 150,
+        width: 140,
         render: (text, record) => { // 根据状态定制显示状态中文描述
           let returnVal;
           if (record.bill_no !== undefined) {
@@ -223,8 +221,8 @@ export default class TaskSetting extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder="业务单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
-            <a className="hidden-xs" role="button">高级搜索{statusValue}</a>
+            <SearchBar placeholder="平台单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
+            <a className="hidden-xs" role="button">高级搜索</a>
           </div>
           <RadioGroup defaultValue="0" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
             <RadioButton value="-1">

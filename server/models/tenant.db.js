@@ -6,7 +6,7 @@ function packColumnArgs(item) {
     `level`, `email`, `contact`
   ];
   const args = [];
-  columns.forEach((c) => {
+  columns.forEach(c => {
     if (c in item) {
       args.push(item[c]);
     } else {
@@ -17,7 +17,7 @@ function packColumnArgs(item) {
 }
 export default {
   getAllTenantsExcept(tenantId) {
-    const sql = 'select tenant_id as id, name from sso_tenants where tenant_id != ?';
+    const sql = 'select tenant_id as id, name, code, sub_code as subCode from sso_tenants where tenant_id != ?';
     const args = [tenantId];
     return mysql.query(sql, args);
   },
@@ -32,14 +32,15 @@ export default {
     return mysql.query(sql, args);
   },
   getPartialTenantInfo(tid) {
-    const sql = `select T.tenant_id as tid, T.name as name, user_id as uid from sso_tenants as T
-      inner join sso_tenant_users as TU on T.tenant_id = TU.tenant_id where T.tenant_id = ? and
-      TU.user_type = 'owner' limit 1`;
+    const sql = `select T.tenant_id as tid, T.name as name, sub_code as subCode, user_id as uid
+      from sso_tenants as T inner join sso_tenant_users as TU on T.tenant_id = TU.tenant_id
+      where T.tenant_id = ? and TU.user_type = 'owner' limit 1`;
     const args = [tid];
     return mysql.query(sql, args);
   },
   getTenantInfo(tid) {
-    const sql = 'select name, level from sso_tenants where tenant_id = ? limit 1';
+    const sql = `select name, level, code, sub_code as subCode, subdomain, delegate_prefix from sso_tenants
+      where tenant_id = ? limit 1`;
     const args = [tid];
     return mysql.query(sql, args);
   },
@@ -51,15 +52,17 @@ export default {
     args.push(corp.key);
     return mysql.update(sql, args, trans);
   },
-  updateCorpOwnerInfo(tenantId, tenantName, phone, contact, email, trans) {
+  updateCorpOwnerInfo(tenantId, phone, contact, email, trans) {
     const args = [];
-    let nameCol = '';
-    if (tenantName !== null && tenantName !== undefined) {
-      nameCol = 'name = ?,';
-      args.push(tenantName);
-    }
-    const sql = `update sso_tenants set ${nameCol} phone = ?, contact = ?, email = ? where tenant_id = ?`;
+    const sql = `update sso_tenants set phone = ?, contact = ?, email = ? where tenant_id = ?`;
     args.push(phone, contact, email, tenantId);
+    return mysql.update(sql, args, trans);
+  },
+  updateOrganizationInfo(tenantId, name, subCode, phone, contact, email, trans) {
+    const args = [];
+    const sql = `update sso_tenants set name = ?, sub_code = ?, phone = ?, contact = ?,
+      email = ? where tenant_id = ?`;
+    args.push(name, subCode, phone, contact, email, tenantId);
     return mysql.update(sql, args, trans);
   },
   getSubdomainCount(subdomain, tenantId) {
@@ -86,8 +89,8 @@ export default {
   },
   getPagedOrgansByParent(parentTenantId, current, pageSize) {
     const start = (current - 1) * pageSize;
-    const sql = `select tenant_id as \`key\`, name, phone, email, contact, status
-      from sso_tenants where parent_tenant_id = ? limit ?, ?`;
+    const sql = `select tenant_id as \`key\`, sub_code as subCode, name, phone, email,
+      contact, status from sso_tenants where parent_tenant_id = ? limit ?, ?`;
     const args = [parentTenantId, start, pageSize];
     return mysql.query(sql, args);
   },
@@ -139,7 +142,7 @@ export default {
     // code => master tenant
     let s = ' and parent_tenant_id = 0 ';
     const args = [code];
-    if (subCode && subCode.length > 0) {
+    if (subCode && subCode.length > 0 && code !== subCode) {
       s = ' and sub_code = ? ';
       args.push(subCode);
     }
@@ -147,6 +150,6 @@ export default {
     return mysql.query(`select * from sso_tenants where code = ? ${s} limit 1`, args);
   },
   bindSubTenant(masterTenantId, masterCode) {
-    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and (sub_code is not null or sub_code != '')`, [masterTenantId, masterCode]);
+    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and sub_code is not null and sub_code != ''`, [masterTenantId, masterCode]);
   }
 };
