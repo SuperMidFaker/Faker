@@ -16,8 +16,18 @@ import dectrackDao from '../../models/dectrack.db';
 import delegateDao from '../../models/delegate.db';
 import decbillDao from '../../models/decbill.db';
 import entryDao from '../../models/entry.db';
+import userDao from '../../models/user.db';
+import tenantUserDao from '../../models/tenant-user.db';
+
 import codes from '../codes';
-import { DELEGATE_STATUS, TENANT_LEVEL, PARTNER_TENANT_TYPE, PARTNERSHIP_TYPE_INFO } from '../../../universal/constants';
+import bcrypt from '../../../reusable/node-util/BCryptUtil';
+import { DELEGATE_STATUS,
+          TENANT_LEVEL,
+          PARTNER_TENANT_TYPE,
+          PARTNERSHIP_TYPE_INFO,
+          __DEFAULT_PASSWORD__,
+          ADMIN,
+          TENANT_ROLE } from '../../../universal/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {
@@ -67,7 +77,8 @@ function billHeadToEntryHead(entryId, head) {
     node_s: head.note,
     decl_port: head.master_customs,
     tenant_id: head.tenant_id,
-    create_tenant_id: head.create_tenant_id
+    create_tenant_id: head.create_tenant_id,
+    creater_login_id: 0
   };
 }
 
@@ -121,13 +132,14 @@ function *billImport() {
     for (let i = 0; i < bills.length; i++) {
       const bill = bills[i];
       let res = yield [tenantDao.getTenantInfoByCode(bill.head.customer_id, bill.head.customer_subid),
-        tenantDao.getTenantInfoByCode(bill.head.agent_code)];
-      if (res.length !== 2) {
+        tenantDao.getTenantInfoByCode(bill.head.agent_code),
+        tenantDao.getTenantInfo(cTenantId)];
+      if (res.length !== 3) {
         return this.error(codes.params_error, 'customer or agent not found in partners');
       }
       const tenant = res[0][0];  // customer tenant
       const ctenant = res[1][0]; // agent tenant
-
+      const cctn = res[2][0];
       // check current access token belong tenant
       /*
       if (tenant.tenant_id !== this.tenant_id &&
@@ -136,10 +148,17 @@ function *billImport() {
         return this.error(codes.params_error);
       }
       */
+      if (!bill.head.external_no) {
+        return this.error(codes.params_error, 'external_no must not be null');
+      }
 
       if (tenant && ctenant && bill.head.external_no) {
+        res = decbillDao.getHeadByExternalNo(bill.head.external_no);
+        if (res.length > 0) {
+          continue;  // bill is exist than ignore
+        }
         // gen del_no
-        res = yield delegateDao.genDelNo(tenant.code, tenant.delegate_prefix, tenant.tenant_id);
+        res = yield delegateDao.genDelNo(cctn.code, cctn.delegate_prefix, cTenantId);
         // bill.head.external_no = bill.head.del_no;
         if (bill.head.customer_subid && bill.head.customer_subid.length >= 10 &&
           bill.head.customer_subid !== bill.head.customer_id) {
@@ -194,17 +213,26 @@ function *partnersImport() {
       if (!p.code || !p.name) {
         continue;
       }
+      let ppcode = p.code;
       if (p.code === p.sub_code) {
         p.sub_code = '';
+      }
+      if (p.sub_code) {
+        ppcode = `${ppcode}/${p.sub_code}`;
       }
       let res = yield [tenantDao.getTenantInfoByCode(p.code, p.sub_code),
         tenantDao.getTenantInfo(stenantId)];
 
       const name = res[1][0].name;
+      let spcode = res[1][0].code;
+      if (res[1][0].subCode) {
+        spcode = `${spcode}/${res[1][0].subCode}`;
+      }
 
+      let uid = 0;
       if (res[0].length === 0) {
         p.category_id = p.category_id || 0;
-        p.level = p.level || TENANT_LEVEL.STANDARD;
+        p.level = p.level || TENANT_LEVEL.ENTERPRISE;
         p.aspect = 1;
         p.parent_tenant_id = 0;
 
@@ -212,7 +240,16 @@ function *partnersImport() {
           const tns = yield tenantDao.getTenantInfoByCode(p.code);
           if (tns.length > 0) {
             p.parent_tenant_id = tns[0].tenant_id;
+            p.level = TENANT_LEVEL.STANDARD;
           }
+        } else {
+          // enterprise tenant than add admin user and set default password
+          const salt = bcrypt.gensalt();
+          const pwd = bcrypt.hashpw(__DEFAULT_PASSWORD__, salt);
+          const username = `${ADMIN}@${p.code}`;
+          const unid = bcrypt.hashMd5(username + Date.now());
+          res = yield userDao.insertAccount(username, null, null, salt, pwd, unid);
+          uid = res.insertId;
         }
 
         res = yield tenantDao.insertCorp(p, p.parent_tenant_id);
@@ -221,8 +258,12 @@ function *partnersImport() {
           yield tenantDao.bindSubTenant(tid, p.code);
         }
 
-        yield [copsDao.insertPartner(stenantId, tid, p.name, PARTNER_TENANT_TYPE[0], 1),
-          copsDao.insertPartner(tid, stenantId, name, PARTNER_TENANT_TYPE[0], 1)];
+        if (uid > 0) {
+          yield tenantUserDao.insertPersonnel(0, uid, {name: '', role: TENANT_ROLE.owner.name}, {id: tid, parentId: 0});
+        }
+
+        yield [copsDao.insertPartner(stenantId, tid, ppcode, p.name, PARTNER_TENANT_TYPE[0], 1),
+          copsDao.insertPartner(tid, stenantId, spcode, name, PARTNER_TENANT_TYPE[0], 1)];
 
         if (isArray(part.ships) && part.ships.length > 0) {
           const arr1 = [];
@@ -236,8 +277,8 @@ function *partnersImport() {
             arr1.push({key: v.type, code: v.type_code});
           });
 
-          yield [copsDao.insertPartnership(stenantId, tid, p.name, arr1),
-            copsDao.insertPartnership(tid, stenantId, name, arr2)];
+          yield [copsDao.insertPartnership(stenantId, tid, ppcode, p.name, arr1),
+            copsDao.insertPartnership(tid, stenantId, spcode, name, arr2)];
         }
       }
     }
