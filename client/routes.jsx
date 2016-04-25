@@ -32,17 +32,25 @@ import * as TMSAcceptance from './containers/transport/acceptance';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
-import { loadAccount } from '../universal/redux/reducers/account';
-import { isLoaded } from '../reusable/common/redux-actions';
+import {loadAccount} from '../universal/redux/reducers/account';
+import {isLoaded} from '../reusable/common/redux-actions';
 import * as ExportTask from './containers/export/task';
+import * as ImportTracking from './containers/import/tracking';
+import * as ExportTracking from './containers/export/tracking';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
       const query = nextState.location.query;
-      const { account: { subdomain }, auth: { isAuthed }} = store.getState();
+      const {account: {
+          subdomain
+        }, auth: {
+          isAuthed
+        }} = store.getState();
       if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
-        const prevQuery = __DEV__ ? query : {};
+        const prevQuery = __DEV__
+          ? query
+          : {};
         replace({
           pathname: '/login',
           query: {
@@ -108,27 +116,36 @@ export default(store, cookie) => {
               <IndexRoute component={ImportTask.List}/>
               <Route path="inputbill/:id" component={ImportTask.InputBill}/>
             </Route>
-            <Route path="receive">
+            <Route path="accept">
               <IndexRoute component={ImportAccept.List}/>
               <Route path="new" component={ImportAccept.Edit}/>
-              <Route path="edit/:id" component={ImportDelegate.Edit}/>
+              <Route path="edit/:id" component={ImportAccept.Edit}/>
+              <Route path="send/:status" component={ImportAccept.Send}/>
+            </Route>
+            <Route path="tracking">
+              <IndexRoute component={ImportTracking.List}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
-            <IndexRoute component={ExportBoard} />
+            <IndexRoute component={ExportBoard}/>
             <Route path="delegate">
               <IndexRoute component={ExportDelegate.List}/>
               <Route path="new" component={ExportDelegate.Edit}/>
               <Route path="edit/:id" component={ExportDelegate.Edit}/>
               <Route path="exportsend/:status" component={ExportDelegate.Send}/>
             </Route>
-            <Route path="receive">
+            <Route path="accept">
               <IndexRoute component={ExportAccept.List}/>
               <Route path="new" component={ExportAccept.Edit}/>
+              <Route path="edit/:id" component={ExportAccept.Edit}/>
+              <Route path="exportsend/:status" component={ExportAccept.Send}/>
             </Route>
             <Route path="task">
               <IndexRoute component={ExportTask.List}/>
               <Route path="inputbill/:id" component={ExportTask.InputBill}/>
+            </Route>
+            <Route path="tracking">
+              <IndexRoute component={ExportTracking.List}/>
             </Route>
           </Route>
           <Route path="inventory" component={Inventory}>
