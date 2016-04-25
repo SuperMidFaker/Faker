@@ -243,7 +243,7 @@ export default class ExportAccept extends React.Component {
       {
         title: '报关业务单号',
         dataIndex: 'del_no',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text, true)
       }, {
         title: '客户名称',
         sorter: true,
@@ -306,7 +306,7 @@ export default class ExportAccept extends React.Component {
             case 1:
               return (
                 <span>
-                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
+                  <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
                   <a href="#" className="ant-dropdown-link">接单</a>
                 </span>
@@ -314,15 +314,15 @@ export default class ExportAccept extends React.Component {
             case 2:
               return (
                 <span>
-                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
+                  <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
-                  <a href="#" className="ant-dropdown-link">报关清单</a>
+                  <NavLink to={`../../../export/task/inputbill/${record.key}`}>报关清单</NavLink>
                 </span>
               );
             case 3:
               return (
                 <span>
-                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
+                  <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                 </span>
               );
             default:

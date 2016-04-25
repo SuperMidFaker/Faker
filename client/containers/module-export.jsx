@@ -22,7 +22,7 @@ export default class ExportM extends React.Component {
     }, {
       single: true,
       key: 'export-2',
-      path: '/export/receive',
+      path: '/export/accept',
       icon: 's7-mail-open-file',
       text: '报关受理'
     }, {
