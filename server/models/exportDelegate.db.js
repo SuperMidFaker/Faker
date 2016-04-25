@@ -60,9 +60,9 @@ export default {
       }
 
       const filterClause = concatFilterSql(filters, args);
-      let sortColumn = sortField || 'del_id';
+      let sortColumn = sortField || 'created_date';
+      const sortClause = ` order by ${sortColumn} ${sortOrder === 'ascend' ? 'asc' : 'desc'} `;
 
-      const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
       const sql = `select T1.name as short_name, del_id as \`key\`,del_no,\`status\`,
       DATE_FORMAT(del_date,'%Y-%m-%d %H:%i') del_date,invoice_no,bill_no,send_tenant_id,rec_tenant_id,
       creater_login_id,rec_login_id,DATE_FORMAT(rec_del_date,'%Y-%m-%d %H:%i') rec_del_date,
