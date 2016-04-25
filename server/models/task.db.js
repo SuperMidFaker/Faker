@@ -74,8 +74,8 @@ export default {
       */
       const filterClause = concatFilterSql(filters, args);
 
-      let sortColumn = sortField || 'del_id';
-      const sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
+      let sortColumn = sortField || 'created_date';
+      const sortClause = ` order by ${sortColumn} ${sortOrder === 'ascend' ? 'asc' : 'desc'} `;
 
 
       const sql = `select T.send_tenant_name as short_name, del_id as \`key\`,del_no,T.status,invoice_no,bill_no,
