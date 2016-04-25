@@ -23,8 +23,8 @@ export default {
   },
   insertAccount(username, email, phone, salt, pwdHash, unid, trans) {
     const sql = `insert into sso_login(username, email, phone, salt, password, created_date, unid)
-      values (?, ?, ?, ?, ?, ?, NOW(), ?)`;
-    const args = [username, email, phone, salt, pwdHash, userType, unid];
+      values (?, ?, ?, ?, ?, NOW(), ?)`;
+    const args = [username, email, phone, salt, pwdHash, unid];
     return mysql.insert(sql, args, trans);
   },
   deleteAccounts(accounts, trans) {

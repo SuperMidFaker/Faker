@@ -17,6 +17,7 @@ import delegateDao from '../../models/delegate.db';
 import decbillDao from '../../models/decbill.db';
 import entryDao from '../../models/entry.db';
 import userDao from '../../models/user.db';
+import tenantUserDao from '../../models/tenant-user.db';
 
 import codes from '../codes';
 import bcrypt from '../../../reusable/node-util/BCryptUtil';
@@ -25,7 +26,8 @@ import { DELEGATE_STATUS,
           PARTNER_TENANT_TYPE,
           PARTNERSHIP_TYPE_INFO,
           __DEFAULT_PASSWORD__,
-          ADMIN } from '../../../universal/constants';
+          ADMIN,
+          TENANT_ROLE } from '../../../universal/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {
@@ -75,7 +77,8 @@ function billHeadToEntryHead(entryId, head) {
     node_s: head.note,
     decl_port: head.master_customs,
     tenant_id: head.tenant_id,
-    create_tenant_id: head.create_tenant_id
+    create_tenant_id: head.create_tenant_id,
+    creater_login_id: 0
   };
 }
 
@@ -226,6 +229,7 @@ function *partnersImport() {
         spcode = `${spcode}/${res[1][0].subCode}`;
       }
 
+      let uid = 0;
       if (res[0].length === 0) {
         p.category_id = p.category_id || 0;
         p.level = p.level || TENANT_LEVEL.ENTERPRISE;
@@ -242,15 +246,20 @@ function *partnersImport() {
           // enterprise tenant than add admin user and set default password
           const salt = bcrypt.gensalt();
           const pwd = bcrypt.hashpw(__DEFAULT_PASSWORD__, salt);
-          const username = `admin@${p.code}`;
+          const username = `${ADMIN}@${p.code}`;
           const unid = bcrypt.hashMd5(username + Date.now());
-
+          res = yield userDao.insertAccount(username, null, null, salt, pwd, unid);
+          uid = res.insertId;
         }
 
         res = yield tenantDao.insertCorp(p, p.parent_tenant_id);
         const tid = res.insertId;
         if (!p.sub_code) {
           yield tenantDao.bindSubTenant(tid, p.code);
+        }
+
+        if (uid > 0) {
+          yield tenantUserDao.insertPersonnel(0, uid, {name: '', role: TENANT_ROLE.owner.name}, {id: tid, parentId: 0});
         }
 
         yield [copsDao.insertPartner(stenantId, tid, ppcode, p.name, PARTNER_TENANT_TYPE[0], 1),
@@ -268,8 +277,8 @@ function *partnersImport() {
             arr1.push({key: v.type, code: v.type_code});
           });
 
-          yield [copsDao.insertPartnership(stenantId, tid, p.name, arr1),
-            copsDao.insertPartnership(tid, stenantId, name, arr2)];
+          yield [copsDao.insertPartnership(stenantId, tid, ppcode, p.name, arr1),
+            copsDao.insertPartnership(tid, stenantId, spcode, name, arr2)];
         }
       }
     }
