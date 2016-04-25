@@ -61,41 +61,57 @@ export default defineMessages({
     id: 'transport.shipment.new.title',
     defaultMessage: '新建运单'
   },
-  pickupInfo: {
-    id: 'transport.shipment.pickup.info',
-    defaultMessage: '提货信息'
-  },
-  consignor: {
-    id: 'transport.shipment.consignor',
-    defaultMessage: '发货方'
-  },
-  consignorMessage: {
-    id: 'transport.shipment.consignor.message',
-    defaultMessage: '发货方不能为空'
-  },
-  loadingPort: {
-    id: 'transport.shipment.loading.port',
-    defaultMessage: '起运地'
-  },
-  contact: {
-    id: 'transport.shipment.contact',
-    defaultMessage: '联系人'
-  },
   deliveryInfo: {
     id: 'transport.shipment.delivery.info',
-    defaultMessage: '收货方'
+    defaultMessage: '发货信息'
+  },
+  consigner: {
+    id: 'transport.shipment.consigner',
+    defaultMessage: '发货方'
+  },
+  departurePort: {
+    id: 'transport.shipment.departure.port',
+    defaultMessage: '始运地'
+  },
+  deliveryAddr: {
+    id: 'transport.shipment.delivery.addr',
+    defaultMessage: '提货地址'
+  },
+  contact: {
+    id: 'transport.shipment.form.contact',
+    defaultMessage: '联系人'
+  },
+  mobile: {
+    id: 'transport.shipment.form.mobile',
+    defaultMessage: '电话'
+  },
+  email: {
+    id: 'transport.shipment.form.email',
+    defaultMessage: '邮箱'
+  },
+  pickupInfo: {
+    id: 'transport.shipment.pickup.info',
+    defaultMessage: '收货信息'
   },
   consignee: {
     id: 'transport.shipment.consignee',
     defaultMessage: '收货方'
   },
-  consigneeMessage: {
-    id: 'transport.shipment.consignee.message',
-    defaultMessage: '收货方不能为空'
-  },
-  receiptPlace: {
-    id: 'transport.shipment.receipt.place',
+  arrivalPort: {
+    id: 'transport.shipment.arrival.port',
     defaultMessage: '目的地'
+  },
+  pickupAddr: {
+    id: 'transport.shipment.pickup.addr',
+    defaultMessage: '交货地址'
+  },
+  consignNameMessage: {
+    id: 'transport.shipment.consign.name.message',
+    defaultMessage: '发货方或收货方不能为空'
+  },
+  addrMessage: {
+    id: 'transport.shipment.addr.message',
+    defaultMessage: '提货或交货地址不能为空'
   },
   client: {
     id: 'transport.shipment.client',

@@ -44,7 +44,6 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     tenantId: state.account.tenantId,
     shipmentlist: state.shipment.shipmentlist,
-    shipmentStatusTypes: state.shipment.statusTypes,
     filters: state.shipment.filters,
     loading: state.shipment.loading
   }),
@@ -56,7 +55,6 @@ export default class AcceptList extends React.Component {
     filters: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    shipmentStatusTypes: PropTypes.array.isRequired,
     loadTable: PropTypes.func.isRequired
   }
   state = {
@@ -133,8 +131,6 @@ export default class AcceptList extends React.Component {
     dataIndex: 'status',
     width: 150,
     render: (text, record) => {
-      // record.logStatus --> active exception
-      const percent = record.status === 1 ? 0 : 100;
       return (
         <div>
           <span>未接单</span>
@@ -174,7 +170,7 @@ export default class AcceptList extends React.Component {
     });
   }
   render() {
-    const { shipmentStatusTypes, shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading, intl } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -187,23 +183,15 @@ export default class AcceptList extends React.Component {
         <div className="page-header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-            <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} defaultValue="all">
-            <RadioButton value="all">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
-            {
-              shipmentStatusTypes.map(
-                sst =>
-                  <RadioButton value={sst} key={sst}>
-                  {this.msg(sst)}
-                  </RadioButton>
-              )
-            }
+          <RadioGroup onChange={this.handleShipmentFilter} defaultValue="unaccepted">
+            <RadioButton value="unaccepted">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
+            <RadioButton value="accepted"> {this.msg('acceptedShipment')} </RadioButton>
           </RadioGroup>
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <NavLink to="/transport/shipment/new">
+            <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
                 <Icon type="plus-circle-o" /><span>{this.msg('newShipment')}</span>
               </Button>
