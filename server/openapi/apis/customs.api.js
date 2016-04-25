@@ -235,12 +235,14 @@ function *partnersImport() {
         p.level = p.level || TENANT_LEVEL.ENTERPRISE;
         p.aspect = 1;
         p.parent_tenant_id = 0;
+        p.subdomain = p.code;
 
         if (p.sub_code && p.sub_code.length > 0 && p.code !== p.sub_code) {
           const tns = yield tenantDao.getTenantInfoByCode(p.code);
           if (tns.length > 0) {
             p.parent_tenant_id = tns[0].tenant_id;
             p.level = TENANT_LEVEL.STANDARD;
+            p.subdomain = '';
           }
         } else {
           // enterprise tenant than add admin user and set default password
