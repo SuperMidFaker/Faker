@@ -243,7 +243,7 @@ export default class ExportAccept extends React.Component {
       {
         title: '报关业务单号',
         dataIndex: 'del_no',
-        render: (text, record) => this.renderColumnText(record.status, text, true)
+        render: (text, record) => this.renderColumnText(record, text, true)
       }, {
         title: '客户名称',
         sorter: true,
