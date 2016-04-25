@@ -101,7 +101,7 @@ export default {
     },
     getDeclareWay() {
       const args = [];
-      const sql = `SELECT distinct declare_way_no as \`value\`,CONCAT(declare_way_no,' | ',declare_way_name) as \`text\` FROM g_cop_declare_way`;
+      const sql = `SELECT distinct declare_way_no as \`value\`,CONCAT(declare_way_no,' | ',declare_way_name) as \`text\` FROM g_cop_declare_way where i_e_type = 'I' `;
       return mysql.query(sql, args);
     },
     getTradeMode() {
