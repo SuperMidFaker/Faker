@@ -153,7 +153,7 @@ function *billImport() {
       }
 
       if (tenant && ctenant && bill.head.external_no) {
-        res = decbillDao.getHeadByExternalNo(bill.head.external_no);
+        res = yield decbillDao.getHeadByExternalNo(bill.head.external_no);
         if (res.length > 0) {
           continue;  // bill is exist than ignore
         }
