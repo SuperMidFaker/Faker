@@ -22,7 +22,7 @@ export default class ImportM extends React.Component {
     }, {
       single: true,
       key: 'import-2',
-      path: '/import/receive',
+      path: '/import/accept',
       icon: 's7-mail-open-file',
       text: '报关受理'
     }, {
