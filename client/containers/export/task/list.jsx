@@ -203,8 +203,6 @@ export default class ExportTaskSetting extends React.Component {
             returnVal = (
               <span>
                 <NavLink to={`/export/task/inputbill/${record.key}`}>查看报关清单</NavLink>
-                <span className="ant-divider"/>
-                <a role="button" onClick={() => this.handleSend(0, record)}>更多</a>
               </span>
             );
           } else {

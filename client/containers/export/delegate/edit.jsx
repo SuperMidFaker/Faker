@@ -36,6 +36,8 @@ import {
 '../../../../universal/redux/reducers/exportdelegate';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 import './upload.less';
+import NavLink from '../../../../reusable/components/nav-link';
+
 const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -321,7 +323,9 @@ export default class ExportDelegateEdit extends React.Component {
     } = this.props;
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
-        <Menu.Item key="1">录入报关清单</Menu.Item>
+        <Menu.Item >
+          <NavLink to={`/export/task/inputbill/${this.props.formData.key}`}>录入报关清单</NavLink>
+        </Menu.Item>
         <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废报关业务</Menu.Item>
       </Menu>
     );
@@ -335,7 +339,7 @@ export default class ExportDelegateEdit extends React.Component {
           <Col offset="3">
             <div>
               <strong>{this.props.ename}</strong>
-              &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
+              &nbsp;&nbsp;报关业务号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
             </div>
           </Col>
         </Row>
@@ -371,7 +375,7 @@ export default class ExportDelegateEdit extends React.Component {
         </Row>
         <Row>
           <Col span="8" offset="3">
-            {this.renderSwitch('使用手册/账册', 'usebook')}
+            {this.renderSwitch('手册/账册', 'usebook')}
             {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
             {this.renderSwitch('加急', 'urgent')}
           </Col>
