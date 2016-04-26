@@ -331,7 +331,7 @@ export default class ImportAcceptEdit extends React.Component {
           <Col offset="3">
             <div>
               <strong>{this.props.ename}</strong>
-              &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no}
+              &nbsp;&nbsp;报关业务号：{this.props.formData.del_no}
               {this.renderStatus(this.props.formData.status)}
             </div>
           </Col>
@@ -343,7 +343,7 @@ export default class ImportAcceptEdit extends React.Component {
         </Row>
         <Row>
           <Col span="16" offset="1">
-            {this.renderSelect('申报单位', '选择客户', 'send_tenant_id', true, shortNameList, [
+            {this.renderSelect('报关委托单位', '选择客户', 'send_tenant_id', true, shortNameList, [
               {
                 required: true
               }
@@ -453,7 +453,6 @@ export default class ImportAcceptEdit extends React.Component {
             : 'inline-block'
         }}>
           <Col span="18" offset="3">
-            <Button onClick={this.handleCancel}>一键接单</Button>
             <Button htmlType="submit" type="primary">确定</Button>
             <Button onClick={this.handleCancel}>取消</Button>
           </Col>

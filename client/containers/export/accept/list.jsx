@@ -316,13 +316,15 @@ export default class ExportAccept extends React.Component {
                 <span>
                   <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
                   <span className="ant-divider"/>
-                  <NavLink to={`../../../export/task/inputbill/${record.key}`}>报关清单</NavLink>
+                  <NavLink to={`/export/task/inputbill/${record.key}`}>报关清单</NavLink>
                 </span>
               );
             case 3:
               return (
                 <span>
                   <NavLink to={`/export/accept/edit/${record.key}`}>查看</NavLink>
+                  <span className="ant-divider"/>
+                  <NavLink to={`/export/task/inputbill/${record.key}`}>报关清单</NavLink>
                 </span>
               );
             default:

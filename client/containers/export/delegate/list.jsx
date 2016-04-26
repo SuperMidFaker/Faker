@@ -13,7 +13,14 @@ import {
 import {isLoaded} from '../../../../reusable/common/redux-actions';
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import SearchBar from '../../../../reusable/components/search-bar';
-import {Table, Button, message, Radio, Tag, Icon} from 'ant-ui';
+import {
+  Table,
+  Button,
+  message,
+  Radio,
+  Tag,
+  Icon
+} from 'ant-ui';
 import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
 
@@ -138,7 +145,7 @@ export default class ExportDelegate extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.context.router.push({ pathname: to, query });
+    this.context.router.push({pathname: to, query});
   }
   handleSend(status, record) {
     this.props.sendlist.data = [];
@@ -345,7 +352,7 @@ export default class ExportDelegate extends React.Component {
             case 1:
               return (
                 <span>
-                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
+                  <NavLink to={`/export/task/inputbill/${record.key}`}>报关清单</NavLink>
                   <span className="ant-divider"/>
                   <a role="button" onClick={() => this.handleSend(1, record)}>撤回</a>
                 </span>
@@ -353,13 +360,15 @@ export default class ExportDelegate extends React.Component {
             case 2:
               return (
                 <span>
-                    <NavLink to={`/export/delegate/edit/${record.key}`}>变更</NavLink>
+                  <NavLink to={`/export/task/inputbill/${record.key}`}>报关清单</NavLink>
+                  <span className="ant-divider"/>
+                  <NavLink to={`/export/delegate/edit/${record.key}`}>变更</NavLink>
                 </span>
               );
             case 3:
               return (
                 <span>
-                  <NavLink to={`/export/delegate/edit/${record.key}`}>查看</NavLink>
+                  <NavLink to={`/export/task/inputbill/${record.key}`}>报关清单</NavLink>
                   <span className="ant-divider"/>
                   <a role="button" onClick={() => this.handleIdRemove(record.key)}>删除</a>
                 </span>
@@ -398,7 +407,7 @@ export default class ExportDelegate extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/export/delegate/new')}>
-              <Icon type="plus-circle-o" />新增报关业务
+              <Icon type="plus-circle-o"/>新增报关业务
             </Button>
           </div>
           <div className="panel-body body-responsive">

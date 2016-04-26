@@ -36,6 +36,8 @@ import {
 '../../../../universal/redux/reducers/importdelegate';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 import './upload.less';
+import NavLink from '../../../../reusable/components/nav-link';
+
 const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -321,7 +323,9 @@ export default class ImportDelegateEdit extends React.Component {
     } = this.props;
     const menu = (
       <Menu onClick={(e) => this.handleMenuClick(e)}>
-        <Menu.Item >录入报关清单</Menu.Item>
+        <Menu.Item >
+          <NavLink to={`/import/task/inputbill/${this.props.formData.key}`}>录入报关清单</NavLink>
+        </Menu.Item>
         <Menu.Item key="2" disabled={this.props.loginId !== this.props.formData.creater_login_id}>作废报关业务</Menu.Item>
       </Menu>
     );
@@ -335,7 +339,7 @@ export default class ImportDelegateEdit extends React.Component {
           <Col offset="3">
             <div>
               <strong>{this.props.ename}</strong>
-              &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
+              &nbsp;&nbsp;报关业务号：{this.props.formData.del_no} {this.renderStatus(this.props.formData.status)}
             </div>
           </Col>
         </Row>
@@ -440,7 +444,7 @@ export default class ImportDelegateEdit extends React.Component {
             <Button onClick={this.handleCancel}>取消</Button>
           </Col>
           <Col span="3">
-            <DropdownButton overlay={menu} >
+            <DropdownButton overlay={menu}>
               更多选项
             </DropdownButton>
           </Col>
