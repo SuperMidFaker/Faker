@@ -21,6 +21,7 @@ const entryLog = new Orm(colsLog, 'g_entry_log');
 
 export default {
   insertHead(head) {
+    console.log(entryHead.replaceObjs, entryHead.replaceObj);
     if (isArray(head)) {
       return entryHead.replaceObjs(head);
     }
