@@ -18,15 +18,15 @@ export default class ConsignInfo extends React.Component {
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   renderMsgKeys = this.props.type === 'consignee' ? {
-    title: 'pickupInfo',
+    title: 'consigneeInfo',
     name: 'consignee',
     portal: 'arrivalPort',
-    addr: 'pickupAddr'
+    addr: 'deliveryAddr'
   } : {
-    title: 'deliveryInfo',
+    title: 'consignerInfo',
     name: 'consigner',
     portal: 'departurePort',
-    addr: 'deliveryAddr'
+    addr: 'pickupAddr'
   }
   renderFields = this.props.type === 'consignee' ? {
     name: 'consignee_name',
@@ -57,6 +57,16 @@ export default class ConsignInfo extends React.Component {
             field={this.renderFields.name} colSpan={labelColSpan} required
             rules={[{
               required: true, message: this.msg('consignNameMessage')
+            }]} optionField="name" optionKey="name"
+            formhoc={formhoc} optionData={[{
+              id: 'sfd1',
+              name:'始发地1'
+            }, {
+              id: 'sfd2',
+              name:'始发地2'
+            }, {
+              id: 'sfd3',
+              name:'出发地3'
             }]}
           />
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.portal)}

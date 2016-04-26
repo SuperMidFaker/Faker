@@ -12,8 +12,10 @@ import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
+import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
+const formatGlobalMsg = format(globalMessages);
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -34,7 +36,7 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatMsg(props.intl, 'listTitle'),
+    text: formatContainerMsg(props.intl, 'transportAcceptance'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null
@@ -96,48 +98,64 @@ export default class AcceptList extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
-    dataIndex: 'shipNo'
+    dataIndex: 'shipmt_no'
   }, {
-    title: this.msg('shipCarrier'),
-    dataIndex: 'carrier'
+    title: this.msg('shipRequirement'),
+    dataIndex: 'sr_name'
+  }, {
+    title: this.msg('shipPickupDate'),
+    dataIndex: 'pickup_est_date',
+    render: (o, record) => moment(record.pickupDate).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipTransitTime'),
+    dataIndex: 'transit_time'
+  }, {
+    title: this.msg('shipDeliveryDate'),
+    dataIndex: 'delivery_est_date',
+    render: (o, record) => moment(record.deliveryDate).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipConsignor'),
+    dataIndex: 'consiger_name'
+  }, {
+    title: this.msg('consignorPlace'),
+    dataIndex: 'consiger_city'
+  }, {
+    title: this.msg('consignorAddr'),
+    dataIndex: 'consiger_addr'
+  }, {
+    title: this.msg('shipConsignee'),
+    dataIndex: 'consigee_name'
+  }, {
+    title: this.msg('consigneePlace'),
+    dataIndex: 'consigee_city'
+  }, {
+    title: this.msg('consigneeAddr'),
+    dataIndex: 'consigee_addr'
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'mode'
   }, {
+    title: this.msg('packageNum'),
+    dataIndex: 'total_count'
+  }, {
+    title: this.msg('shipWeight'),
+    dataIndex: 'total_weight'
+  }, {
+    title: this.msg('shipVolume'),
+    dataIndex: 'total_volume'
+  }, {
     title: this.msg('shipSource'),
     dataIndex: 'source'
   }, {
-    title: this.msg('shipDestination'),
-    dataIndex: 'destination'
+    title: this.msg('shipCreateDate'),
+    dataIndex: 'created_date',
+    render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
   }, {
-    title: this.msg('shipPickupDate'),
-    dataIndex: 'pickupDate',
-    render: (o, record) => moment(record.pickupDate).format('YYYY.MM.DD')
+    title: this.msg('shipAcceptTime'),
+    dataIndex: 'acpt_time',
+    render: (text, record) => moment(record.acpt_time).format('YYYY.MM.DD')
   }, {
-    title: this.msg('shipDeliveryDate'),
-    dataIndex: 'deliveryDate',
-    render: (o, record) => moment(record.deliveryDate).format('YYYY.MM.DD')
-  }, {
-    title: this.msg('packageNum'),
-    dataIndex: 'packageNum'
-  }, {
-    title: this.msg('shipWeight'),
-    dataIndex: 'weight'
-  }, {
-    title: this.msg('shipVolume'),
-    dataIndex: 'volume'
-  }, {
-    title: this.msg('shipStatus'),
-    dataIndex: 'status',
-    width: 150,
-    render: (text, record) => {
-      return (
-        <div>
-          <span>未接单</span>
-          <span style={{ float: 'right' }}>在途异常</span>
-        </div>
-      );
-    }
+    title: this.msg('shipmtOP')
   }]
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
@@ -185,15 +203,15 @@ export default class AcceptList extends React.Component {
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <RadioGroup onChange={this.handleShipmentFilter} defaultValue="unaccepted">
-            <RadioButton value="unaccepted">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
-            <RadioButton value="accepted"> {this.msg('acceptedShipment')} </RadioButton>
+            <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
+            <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
         </div>
         <div className="page-body">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
-                <Icon type="plus-circle-o" /><span>{this.msg('newShipment')}</span>
+                <Icon type="plus-circle-o" /><span>{formatGlobalMsg(intl, 'createNew')}</span>
               </Button>
             </NavLink>
           </div>

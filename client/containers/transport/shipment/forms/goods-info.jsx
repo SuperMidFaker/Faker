@@ -8,7 +8,7 @@ const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class PickupInfo extends React.Component {
+export default class GoodsInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     goods: PropTypes.array.isRequired,
@@ -19,62 +19,109 @@ export default class PickupInfo extends React.Component {
     goods: [{ op: '添加'}]
   }
   state = {
+    editGoodsIndex: -1
   }
   getComboFilter = (input, option) =>
     option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   columns = [{
-    title: this.msg('shipNo'),
-    dataIndex: 'shipNo'
+    title: this.msg('goodsCode'),
+    dataIndex: 'goods_no'
   }, {
-    title: this.msg('shipCarrier'),
-    dataIndex: 'carrier'
+    title: this.msg('goodsName'),
+    dataIndex: 'name'
+  }, {
+    title: this.msg('goodsPackage'),
+    dataIndex: 'package'
+  }, {
+    title: this.msg('goodsCount'),
+    dataIndex: 'count'
+  }, {
+    title: this.msg('goodsWeight'),
+    dataIndex: 'weight'
+  }, {
+    title: this.msg('goodsVolume'),
+    dataIndex: 'volume'
+  }, {
+    title: this.msg('goodsLength'),
+    dataIndex: 'length'
+  }, {
+    title: this.msg('goodsWidth'),
+    dataIndex: 'width'
+  }, {
+    title: this.msg('goodsHeight'),
+    dataIndex: 'height'
+  }, {
+    title: this.msg('remark'),
+    dataIndex: 'remark'
+  }, {
+    title: this.msg('goodsOp'),
+    render: (text, record, index) => {
+      let rendered;
+      if (record.op) {
+        rendered = <a>{record.op}</a>;
+      } else {
+        if (this.state.editGoodsIndex === index) {
+          rendered = <span>
+            <a>{this.msg('edit')}</a>
+            <a>{this.msg('delete')}</a>
+            </span>;
+        } else {
+          rendered = <span>
+            <a>{this.msg('save')}</a>
+            <a>{this.msg('cancel')}</a>
+            </span>;
+        }
+      }
+      return rendered;
+    }
   }]
-  handleComboChange = (/* value, label */) => {
-  }
   render() {
     const {
       labelColSpan, formhoc, goods,
-      formhoc: { getFieldError, getFieldProps }
+      formhoc: { getFieldProps }
     } = this.props;
     const outerColSpan = 8;
     return (
       <Row>
         <div className="subform-heading">
-          <div className="subform-title">{this.msg('pickupInfo')}</div>
+          <div className="subform-title">{this.msg('goodsInfo')}</div>
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('consignor')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} help={getFieldError('sender')} required
+          <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
+            wrapperCol={{span: 24 - labelColSpan}} required
           >
-            <Select combobox defaultValue="aa" filterOption={this.getComboFilter}
-              onChange={this.handleComboChange}
+            <Select defaultValue="aa" {...getFieldProps('goods_type', {
+              rules: [{
+                required: true, message: this.msg('goodsTypeMust')
+              }]
+            })}
             >
               <Option value="aa">aa</Option>
             </Select>
           </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('loadingPort')}
-            field="loadingPort" colSpan={labelColSpan}
+          <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
+            field="total_count" colSpan={labelColSpan}
           />
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('consignor')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} help={getFieldError('sender')} required
+          <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
+            wrapperCol={{span: 24 - labelColSpan}}
           >
-            <Select defaultValue="aa" {...getFieldProps('sender', [{
-              required: true, message: this.msg('consignorMessage')
-            }])}
-            >
+            <Select defaultValue="aa" {...getFieldProps('package')}>
               <Option value="aa">aa</Option>
             </Select>
           </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('loadingPort')}
-            field="loadingPort" colSpan={labelColSpan} addonAfter="公斤"
+          <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
+            field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
           />
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <InputItem formhoc={formhoc} labelName={this.msg('loadingPort')}
-            field="loadingPort" colSpan={labelColSpan} addonAfter="元"
+          <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
+            field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
+            field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
           />
         </Col>
         <Table columns={this.columns} dataSource={goods} pagination={false} />
