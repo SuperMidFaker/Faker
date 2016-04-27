@@ -7,28 +7,26 @@ export default function AutoCompletionSelectItem(props) {
   const {
     labelName, field, colSpan, placeholder, required, rules,
     formhoc: { getFieldError, getFieldProps }, optionData,
-    optionField, optionKey
+    onSelect, optionField, optionKey, optionValue
   } = props;
   const getComboFilter = (input, option) =>
     option.props.datalink[optionField].toLowerCase().indexOf(input.toLowerCase()) !== -1;
-  const handleComboChange = (value, label) => {
-    console.log('value', value, 'label', label);
-  };
   const handleComboSelect = (value) => {
-    console.log('value', value);
+    if (onSelect) {
+      onSelect(value);
+    }
   };
   return (
     <FormItem label={labelName} labelCol={{span: colSpan}} required={required}
       wrapperCol={{span: 24 - colSpan}} help={getFieldError(field)}
     >
       <Select combobox filterOption={getComboFilter} placeholder={placeholder}
-        value="aa" onChange={handleComboChange} {...getFieldProps(field, { rules })}
-        onSelect={handleComboSelect}
+        {...getFieldProps(field, { rules })} onSelect={handleComboSelect}
       >
         {
           optionData.map(
             od =>
-            <Option datalink={od} value={od[optionKey]} key={od[optionKey]}>
+            <Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
             {od[optionField]}
             </Option>
           )
@@ -46,7 +44,9 @@ AutoCompletionSelectItem.propTypes = {
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     rules: PropTypes.array,
+    onSelect: PropTypes.func,
     optionData: PropTypes.array,
     optionField: PropTypes.string,
+    optionValue: PropTypes.string,
     optionKey: PropTypes.string
 };

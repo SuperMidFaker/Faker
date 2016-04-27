@@ -5,8 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { clearForm, setFormValue }
-  from 'universal/redux/reducers/shipment';
+import { loadFormRequire, setFormValue } from 'universal/redux/reducers/shipment';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ConsignInfo from '../shipment/forms/consign-info';
@@ -15,12 +14,12 @@ import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
+// import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
+// const formatGlobalMsg = format(globalMessages);
 
-function fetchData({ dispatch }) {
-  return dispatch(clearForm());
+function fetchData({ state, dispatch, cookie }) {
+  return dispatch(loadFormRequire(cookie, state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
@@ -34,7 +33,7 @@ function fetchData({ dispatch }) {
     text: formatMsg(props.intl, 'newTitle'),
     moduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: null
+    goBackFn: () => router.goBack()
   }));
 })
 @connect(
@@ -98,14 +97,17 @@ export default class ShipmentCreate extends React.Component {
               field="remark"
             />
             <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
-              field="freight_charge"
+              field="freight_charge" hasFeedback={false} rules={[{
+                type: 'integer', transform: (value) => value >= 0 ? +value : null,
+                  message: this.msg('freightChargeMustBeNumber')
+              }]}
             />
           </Row>
           <Row className="subform-buton-row">
-            <Button htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
+            <Button htmlType="submit" type="primary">{this.msg('saveAndAccept')}</Button>
           </Row>
           <Row className="subform-buton-row">
-            <Button>{formatGlobalMsg(intl, 'cancel')}</Button>
+            <Button>{this.msg('saveAsDraft')}</Button>
           </Row>
         </Col>
       </Form>

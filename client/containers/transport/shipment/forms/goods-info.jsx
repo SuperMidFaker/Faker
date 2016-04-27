@@ -52,7 +52,7 @@ export default class GoodsInfo extends React.Component {
     title: this.msg('goodsHeight'),
     dataIndex: 'height'
   }, {
-    title: this.msg('remark'),
+    title: this.msg('goodsRemark'),
     dataIndex: 'remark'
   }, {
     title: this.msg('goodsOp'),
@@ -62,15 +62,15 @@ export default class GoodsInfo extends React.Component {
         rendered = <a>{record.op}</a>;
       } else {
         if (this.state.editGoodsIndex === index) {
-          rendered = <span>
+          rendered = (<span>
             <a>{this.msg('edit')}</a>
             <a>{this.msg('delete')}</a>
-            </span>;
+            </span>);
         } else {
-          rendered = <span>
+          rendered = (<span>
             <a>{this.msg('save')}</a>
             <a>{this.msg('cancel')}</a>
-            </span>;
+            </span>);
         }
       }
       return rendered;

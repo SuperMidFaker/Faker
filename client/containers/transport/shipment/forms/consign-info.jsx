@@ -1,22 +1,66 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col } from 'ant-ui';
+import { Row, Col, Form } from 'ant-ui';
+import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
+import { setFormValue, setConsignFields } from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
+@connect(
+  (state, props) => ({
+    consignLocations: props.type === 'consignee' ?
+      state.shipment.formRequire.consigneeLocations :
+      state.shipment.formRequire.consignerLocations
+  }),
+  { setFormValue, setConsignFields }
+)
 export default class ConsignInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    consignLocations: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['consignee', 'consigner']),
     outerColSpan: PropTypes.number.isRequired,
     labelColSpan: PropTypes.number.isRequired,
+    setFormValue: PropTypes.func.isRequired,
+    setConsignFields: PropTypes.func.isRequired,
     formhoc: PropTypes.object.isRequired
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
+  handleItemSelect(name) {
+    let selectConsignLoc;
+    this.props.consignLocations.forEach(cl => {
+      if (cl.name === name) {
+        selectConsignLoc = cl;
+        return;
+      }
+    });
+    if (selectConsignLoc) {
+      this.props.setConsignFields({
+        [this.renderFields.province]: selectConsignLoc.province,
+        [this.renderFields.city]: selectConsignLoc.city,
+        [this.renderFields.district]: selectConsignLoc.district,
+        [this.renderFields.addr]: selectConsignLoc.addr,
+        [this.renderFields.contact]: selectConsignLoc.contact,
+        [this.renderFields.mobile]: selectConsignLoc.mobile,
+        [this.renderFields.email]: selectConsignLoc.email
+      });
+    }
+  }
+  handleRegionValue = (field, value) => {
+    if (field === 'province') {
+      this.props.setFormValue(this.renderFields.province, value);
+    } else if (field === 'city') {
+      this.props.setFormValue(this.renderFields.city, value);
+    } else if (field === 'district') {
+      this.props.setFormValue(this.renderFields.district, value);
+    }
+  }
   renderMsgKeys = this.props.type === 'consignee' ? {
     title: 'consigneeInfo',
     name: 'consignee',
@@ -30,14 +74,18 @@ export default class ConsignInfo extends React.Component {
   }
   renderFields = this.props.type === 'consignee' ? {
     name: 'consignee_name',
-    portal: 'consignee_province',
+    province: 'consignee_province',
+    city: 'consignee_city',
+    district: 'consignee_district',
     addr: 'consignee_addr',
     contact: 'consignee_contact',
     mobile: 'consignee_mobile',
     email: 'consignee_email'
   } : {
     name: 'consigner_name',
-    portal: 'consigner_province',
+    province: 'consigner_province',
+    city: 'consigner_city',
+    district: 'consigner_district',
     addr: 'consigner_addr',
     contact: 'consigner_contact',
     mobile: 'consigner_mobile',
@@ -45,8 +93,17 @@ export default class ConsignInfo extends React.Component {
   }
   render() {
     const {
-      outerColSpan, labelColSpan, formhoc
+      outerColSpan, labelColSpan, formhoc, consignLocations
     } = this.props;
+    const locOptions = consignLocations.map(cl => ({
+      id: cl.node_id,
+      name: cl.name
+    }));
+    const region = {
+      province: formhoc.getFieldValue(this.renderFields.province),
+      city: formhoc.getFieldValue(this.renderFields.city),
+      county: formhoc.getFieldValue(this.renderFields.district)
+    };
     return (
       <Row>
         <div className="subform-heading">
@@ -57,21 +114,16 @@ export default class ConsignInfo extends React.Component {
             field={this.renderFields.name} colSpan={labelColSpan} required
             rules={[{
               required: true, message: this.msg('consignNameMessage')
-            }]} optionField="name" optionKey="name"
-            formhoc={formhoc} optionData={[{
-              id: 'sfd1',
-              name:'始发地1'
-            }, {
-              id: 'sfd2',
-              name:'始发地2'
-            }, {
-              id: 'sfd3',
-              name:'出发地3'
-            }]}
+            }]} optionField="name" optionKey="id" optionValue="name"
+            formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.portal)}
-            field={this.renderFields.portal} colSpan={labelColSpan}
-          />
+          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: labelColSpan}}
+            wrapperCol={{span: 24 - labelColSpan}}
+          >
+            <RegionCascade withoutCountry region={region}
+              setFormValue={this.handleRegionValue}
+            />
+          </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
             field={this.renderFields.addr} colSpan={labelColSpan} required
             rules={[{

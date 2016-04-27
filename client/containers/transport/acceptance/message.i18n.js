@@ -94,11 +94,43 @@ export default defineMessages({
     defaultMessage: '新建运单'
   },
   client: {
-    id: 'transport.shipment.client',
+    id: 'transport.acceptance.client',
     defaultMessage: '客户'
   },
   lsp: {
-    id: 'transport.shipment.lsp',
+    id: 'transport.acceptance.lsp',
     defaultMessage: '物流服务商'
-  }
+  },
+  refExternalNo: {
+    id: 'transport.acceptance.ref.external',
+    defaultMessage: '外部参考号'
+  },
+  refWaybillNo: {
+    id: 'transport.acceptance.ref.waybill',
+    defaultMessage: '关联提运单号'
+  },
+  refEntryNo: {
+    id: 'transport.acceptance.ref.entryno',
+    defaultMessage: '关联报关单号'
+  },
+  remark: {
+    id: 'transport.acceptance.shipment.remark',
+    defaultMessage: '备忘'
+  },
+  freightCharge: {
+    id: 'transport.acceptance.freight.charge',
+    defaultMessage: '运费'
+  },
+  saveAndAccept: {
+    id: 'transport.acceptance.save.accept',
+    defaultMessage: '保存并接单'
+  },
+  saveAsDraft: {
+    id: 'transport.acceptance.save.draft',
+    defaultMessage: '暂存为草稿'
+  },
+  freightChargeMustBeNumber: {
+    id: 'transport.acceptance.freight.charge.be.number',
+    defaultMessage: '运费必须为整数'
+  },
 });

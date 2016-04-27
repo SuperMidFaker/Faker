@@ -173,7 +173,7 @@ export default defineMessages({
     id: 'transport.shipment.goods.height',
     defaultMessage: '高(米)'
   },
-  remark: {
+  goodsRemark: {
     id: 'transport.shipment.goods.remark',
     defaultMessage: '备忘'
   },
