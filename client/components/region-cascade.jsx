@@ -14,8 +14,12 @@ const formatMsg = format(messages);
 export default class RegionCascade extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    withoutCountry: PropTypes.bool,
     setFormValue: PropTypes.func.isRequired,
     region: PropTypes.object.isRequired
+  }
+  static defaultProps = {
+    withoutCountry: false
   }
   constructor(...args) {
     super(...args);
@@ -88,6 +92,8 @@ export default class RegionCascade extends React.Component {
     const { country, province, cities, city, counties, county, disableProvince } = this.state;
     return (
       <Row>
+        {
+          !this.props.withoutCountry &&
         <Col span="24">
           <Select value={country} style={{width: '100%'}} onChange={(value) => this.handleCountryChange(value)}>
             <OptGroup label={formatMsg(this.props.intl, 'selectCountry')}>
@@ -97,6 +103,7 @@ export default class RegionCascade extends React.Component {
             </OptGroup>
           </Select>
         </Col>
+        }
         <Col span="8">
           <Select value={province} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleProvinceChange(value)}>
             {

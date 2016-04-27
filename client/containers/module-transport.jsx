@@ -23,9 +23,9 @@ export default class Transport extends React.Component {
     }, {
       single: true,
       key: 'tms-1',
-      path: '/transport/shipment',
+      path: '/transport/acceptance',
       icon: 's7-next-2',
-      text: formatMsg(intl, 'transportShipment')
+      text: formatMsg(intl, 'transportAcceptance')
     }, {
       single: true,
       key: 'tms-2',

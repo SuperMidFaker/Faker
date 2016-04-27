@@ -5,11 +5,13 @@ import {
   assignFormC, clearFormC, setFormValueC
 } from 'reusable/domains/redux/form-common';
 
-const actionTypes = createActionTypes('@@welogix/shipment/', [
+const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
+  'SET_CONSIGN_FIELDS',
+  'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
   'LOAD_SHIPMENT', 'LOAD_SHIPMENT_FAIL', 'LOAD_SHIPMENT_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED'
 ]);
-appendFormAcitonTypes('@@welogix/shipment/', actionTypes);
+appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
 const initialState = {
   loaded: false,
@@ -36,6 +38,16 @@ const initialState = {
     ]
   },
   submitting: false,
+  formRequire: {
+    consignerLocations: [],
+    consigneeLocations: [],
+    transitModes: [],
+    vehicleTypes: [],
+    vehicleLengths: [],
+    goodsTypes: [],
+    packagings: [],
+    clients: []
+  },
   formData: {
     key: null
   }
@@ -43,6 +55,12 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_FORMREQUIRE:
+      return { ...state, formData: initialState.formData };
+    case actionTypes.LOAD_FORMREQUIRE_SUCCEED:
+      return { ...state, formRequire: {...action.result.data} };
+    case actionTypes.SET_CONSIGN_FIELDS:
+      return { ...state, formData: { ...state.formData, ...action.data }};
     case actionTypes.LOAD_SHIPMENT:
       return { ...state, loading: true };
     case actionTypes.LOAD_SHIPMENT_FAIL:
@@ -53,6 +71,29 @@ export default function reducer(state = initialState, action) {
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
              || state;
   }
+}
+
+export function loadFormRequire(cookie, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FORMREQUIRE,
+        actionTypes.LOAD_FORMREQUIRE_SUCCEED,
+        actionTypes.LOAD_FORMREQUIRE_FAIL
+      ],
+      endpoint: 'v1/transport/shipment/requires',
+      method: 'get',
+      params: { tenantId },
+      cookie
+    }
+  };
+}
+
+export function setConsignFields(data) {
+  return {
+    type: actionTypes.SET_CONSIGN_FIELDS,
+    data
+  };
 }
 
 export function loadTable(cookie, params) {
