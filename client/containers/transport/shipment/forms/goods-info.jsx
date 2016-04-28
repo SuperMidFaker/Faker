@@ -1,87 +1,293 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Select, Table } from 'ant-ui';
+import { Row, Col, Form, Input, Select, Table } from 'ant-ui';
 import InputItem from './input-item';
+import { saveLocalGoods, editLocalGoods, removeLocalGoods }
+  from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
+import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+function ColumnInput(props) {
+  const { record, field, index, state, onChange } = props;
+  function handleInputChange(ev) {
+    onChange(field, ev.target.value);
+  }
+  const selectedIndex = state.editGoodsIndex;
+  return selectedIndex === index ?
+    <Input value={state.editGoods[field] || ''} onChange={handleInputChange} />
+    : <span>{record[field] || ''}</span>;
+}
+ColumnInput.propTypes = {
+  index: PropTypes.number.isRequired,
+  state: PropTypes.object.isRequired,
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+};
+
+function ColumnSelect(props) {
+  const { record, field, index, state, options, onChange } = props;
+  function handleChange(val) {
+    onChange(field, val);
+  }
+  const selectedIndex = state.editGoodsIndex;
+  let value = '';
+  if (selectedIndex !== index && record[field]) {
+    options.forEach(opt => {
+      if (opt.value === record[field]) {
+        value = opt.name;
+        return;
+      }
+    });
+  }
+  return selectedIndex === index ? (
+    <Select value={state.editGoods[field] || ''} onChange={handleChange}>
+      {options.map(
+        op => <Option value={op.value} key={op.key}>{op.name}</Option>
+      )}
+    </Select>
+  ) : <span>{value}</span>;
+}
+ColumnSelect.propTypes = {
+  index: PropTypes.number.isRequired,
+  state: PropTypes.object.isRequired,
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  options: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+@connect(
+  state => ({
+    goods: state.shipment.formData.goodslist,
+    goodsTypes: state.shipment.formRequire.goodsTypes,
+    packagings: state.shipment.formRequire.packagings,
+  }),
+  { saveLocalGoods, editLocalGoods, removeLocalGoods }
+)
 export default class GoodsInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     goods: PropTypes.array.isRequired,
     labelColSpan: PropTypes.number.isRequired,
-    formhoc: PropTypes.object.isRequired
-  }
-  static defaultProps = {
-    goods: [{ op: '添加'}]
+    goodsTypes: PropTypes.array.isRequired,
+    packagings: PropTypes.array.isRequired,
+    formhoc: PropTypes.object.isRequired,
+    saveLocalGoods: PropTypes.func.isRequired,
+    editLocalGoods: PropTypes.func.isRequired,
+    removeLocalGoods: PropTypes.func.isRequired,
   }
   state = {
+    editGoods: {
+      goods_no: undefined,
+      name: undefined,
+      package: undefined,
+      count: undefined,
+      weight: undefined,
+      volume: undefined,
+      length: undefined,
+      width: undefined,
+      height: undefined,
+      remark: undefined,
+    },
     editGoodsIndex: -1
   }
-  getComboFilter = (input, option) =>
-    option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
-  columns = [{
-    title: this.msg('goodsCode'),
-    dataIndex: 'goods_no'
-  }, {
-    title: this.msg('goodsName'),
-    dataIndex: 'name'
-  }, {
-    title: this.msg('goodsPackage'),
-    dataIndex: 'package'
-  }, {
-    title: this.msg('goodsCount'),
-    dataIndex: 'count'
-  }, {
-    title: this.msg('goodsWeight'),
-    dataIndex: 'weight'
-  }, {
-    title: this.msg('goodsVolume'),
-    dataIndex: 'volume'
-  }, {
-    title: this.msg('goodsLength'),
-    dataIndex: 'length'
-  }, {
-    title: this.msg('goodsWidth'),
-    dataIndex: 'width'
-  }, {
-    title: this.msg('goodsHeight'),
-    dataIndex: 'height'
-  }, {
-    title: this.msg('goodsRemark'),
-    dataIndex: 'remark'
-  }, {
-    title: this.msg('goodsOp'),
-    render: (text, record, index) => {
-      let rendered;
-      if (record.op) {
-        rendered = <a>{record.op}</a>;
-      } else {
-        if (this.state.editGoodsIndex === index) {
-          rendered = (<span>
-            <a>{this.msg('edit')}</a>
-            <a>{this.msg('delete')}</a>
-            </span>);
-        } else {
-          rendered = (<span>
-            <a>{this.msg('save')}</a>
-            <a>{this.msg('cancel')}</a>
-            </span>);
-        }
-      }
-      return rendered;
+  handleGoodsAdd = (ev) => {
+    ev.preventDefault();
+    this.setState({
+      editGoodsIndex: this.props.goods.length // 取最后一个自动添加元素
+    });
+  }
+  handleGoodsListCompute = (ev) => {
+    ev.preventDefault();
+    // todo
+  }
+  handleGoodsColumnEdit = (field, value) => {
+    this.setState({
+      editGoods: { ...this.state.editGoods, [field]: value }
+    });
+  }
+  handleGoodsSave = () => {
+    if (this.state.editGoodsIndex === this.props.goods.length) {
+      // 新增
+      this.props.saveLocalGoods({
+        ...this.state.editGoods,
+        key: `goodsinfinity${this.props.goods.length}`
+      });
+    } else {
+      // 更新
+      this.props.editLocalGoods(
+        this.state.editGoods,
+        this.state.editGoodsIndex
+      );
     }
-  }]
+    this.setState({
+      editGoodsIndex: -1,
+      editGoods: {},
+    });
+  }
+  handleGoodsCancel = () => {
+    this.setState({
+      editGoods: {},
+      editGoodsIndex: -1
+    });
+  }
+  handleGoodsEdit(goods, index) {
+    this.setState({
+      editGoods: goods,
+      editGoodsIndex: index,
+    });
+  }
+  handleGoodsRemove(index) {
+    this.props.removeLocalGoods(index);
+  }
+  msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const {
-      labelColSpan, formhoc, goods,
-      formhoc: { getFieldProps }
+      labelColSpan, formhoc, goods, goodsTypes, packagings, formhoc: { getFieldProps }
     } = this.props;
     const outerColSpan = 8;
+    const columns = [{
+      title: this.msg('goodsCode'),
+      dataIndex: 'goods_no',
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="goods_no" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsName'),
+      dataIndex: 'name',
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="name" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsPackage'),
+      dataIndex: 'package',
+      width: 90,
+      render: (text, record, index) =>
+        <ColumnSelect record={record} field="package" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+          options={this.props.packagings.map(pk => ({
+            key: pk.package_code,
+            value: pk.package_code,
+            name: pk.package_name,
+          }))}
+        />
+    }, {
+      title: this.msg('goodsCount'),
+      dataIndex: 'count',
+      width: 60,
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="count" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsWeight'),
+      dataIndex: 'weight',
+      width: 80,
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="weight" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsVolume'),
+      dataIndex: 'volume',
+      width: 90,
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="volume" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsLength'),
+      dataIndex: 'length',
+      width: 60,
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="length" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsWidth'),
+      dataIndex: 'width',
+      width: 60,
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="width" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsHeight'),
+      dataIndex: 'height',
+      width: 60,
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="height" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsRemark'),
+      dataIndex: 'remark',
+      render: (text, record, index) =>
+        <ColumnInput record={record} field="remark" index={index}
+          state={this.state} onChange={this.handleGoodsColumnEdit}
+        />
+    }, {
+      title: this.msg('goodsOp'),
+      width: 100,
+      render: (text, record, index) => {
+        let rendered;
+        if (this.state.editGoodsIndex === index) {
+          rendered = (
+            <span>
+              <a onClick={this.handleGoodsSave}>
+              {formatGlobalMsg(this.props.intl, 'save')}
+              </a>
+              <span className="ant-divider" />
+              <a onClick={this.handleGoodsCancel}>
+              {formatGlobalMsg(this.props.intl, 'cancel')}
+              </a>
+            </span>
+          );
+        } else if (record.__ops) {
+          const opRendered = [];
+          record.__ops.forEach(
+            (op, idx) => {
+              if (idx !== record.__ops.length - 1) {
+                opRendered.push(
+                  <a key={`__ops0${idx}`} onClick={op.handler}>{op.name}</a>
+                );
+                opRendered.push(
+                  <span key={`__ops1${idx}`} className="ant-divider" />
+                );
+              } else {
+                opRendered.push(
+                  <a key={`__ops2${idx}`} onClick={op.handler}>{op.name}</a>
+                );
+              }
+            }
+          );
+          rendered = (<span>{opRendered}</span>);
+        } else {
+          rendered = (
+            <span>
+              <a onClick={() => this.handleGoodsEdit(record, index)}>
+              {formatGlobalMsg(this.props.intl, 'edit')}
+              </a>
+              <span className="ant-divider" />
+              <a onClick={() => this.handleGoodsRemove(index)}>
+              {formatGlobalMsg(this.props.intl, 'delete')}
+              </a>
+            </span>
+          );
+        }
+        return rendered;
+      }
+    }];
     return (
       <Row>
         <div className="subform-heading">
@@ -91,13 +297,15 @@ export default class GoodsInfo extends React.Component {
           <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} required
           >
-            <Select defaultValue="aa" {...getFieldProps('goods_type', {
+            <Select {...getFieldProps('goods_type', {
               rules: [{
                 required: true, message: this.msg('goodsTypeMust')
               }]
             })}
             >
-              <Option value="aa">aa</Option>
+            {goodsTypes.map(
+              gt => <Option value={gt.id} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
+            )}
             </Select>
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
@@ -108,8 +316,10 @@ export default class GoodsInfo extends React.Component {
           <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
-            <Select defaultValue="aa" {...getFieldProps('package')}>
-              <Option value="aa">aa</Option>
+            <Select {...getFieldProps('package')}>
+            {packagings.map(
+              pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+            )}
             </Select>
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
@@ -124,7 +334,16 @@ export default class GoodsInfo extends React.Component {
             field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
           />
         </Col>
-        <Table columns={this.columns} dataSource={goods} pagination={false} />
+        <Table columns={columns} dataSource={[...goods, {
+          key: 'goodsinfinity', __ops: [{
+            name: formatGlobalMsg(this.props.intl, 'add'),
+            handler: this.handleGoodsAdd
+          }, {
+            name: formatMsg(this.props.intl, 'compute'),
+            handler: this.handleGoodsListCompute
+          }]
+        }]} pagination={false}
+       />
       </Row>);
   }
 }

@@ -44,9 +44,12 @@ export default class ScheduleInfo extends React.Component {
           </FormItem>
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <InputItem labelName={this.msg('shipmtTransit')} colSpan={labelColSpan}
+          <InputItem type="number" labelName={this.msg('shipmtTransit')} colSpan={labelColSpan}
             addonAfter={this.msg('day')} formhoc={formhoc} field="transit_time"
-            hasFeedback={false}
+            hasFeedback={false} rules={[{
+              type: 'integer', transform: (value) => value >= 0 ? +value : null,
+              message: this.msg('timeMustBePositive')
+            }]}
           />
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">

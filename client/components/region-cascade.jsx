@@ -26,13 +26,31 @@ export default class RegionCascade extends React.Component {
     this.defaultProvince = formatMsg(this.props.intl, 'defaultProvRegions');
     this.defaultCity = formatMsg(this.props.intl, 'defaultCityRegions');
     this.defaultCounty = formatMsg(this.props.intl, 'defaultCountyRegions');
+    let cities = [];
+    let counties = [];
+    if (this.props.region.province) {
+      chinaRegions.province.forEach((prov) => {
+        if (prov.name === this.props.region.province) {
+          cities = prov.city || [];
+          return;
+        }
+      });
+    }
+    if (this.props.region.city) {
+      cities.forEach((city) => {
+        if (city.name === this.props.region.city) {
+          counties = city.county || [];
+          return;
+        }
+      });
+    }
     this.state = {
       disableProvince: false,
       country: CHINA_CODE,
       province: this.props.region.province || this.defaultProvince,
-      cities: [],
+      cities,
       city: this.props.region.city || this.defaultCity,
-      counties: [],
+      counties,
       county: this.props.region.county || this.defaultCounty
     };
   }
@@ -43,6 +61,20 @@ export default class RegionCascade extends React.Component {
         propsAsState[key] = nextProps.region[key];
       }
     });
+    chinaRegions.province.forEach((prov) => {
+      if (prov.name === propsAsState.province) {
+        propsAsState.cities = prov.city || [];
+        return;
+      }
+    });
+    if (propsAsState.cities) {
+      propsAsState.cities.forEach((city) => {
+        if (city.name === propsAsState.city) {
+          propsAsState.counties = city.county || [];
+          return;
+        }
+      });
+    }
     this.setState(propsAsState);
   }
   handleCountryChange(value) {

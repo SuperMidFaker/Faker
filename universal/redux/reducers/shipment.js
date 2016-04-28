@@ -6,7 +6,8 @@ import {
 } from 'reusable/domains/redux/form-common';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
-  'SET_CONSIGN_FIELDS',
+  'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
+  'REM_LOCAL_GOODS',
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
   'LOAD_SHIPMENT', 'LOAD_SHIPMENT_FAIL', 'LOAD_SHIPMENT_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED'
@@ -49,7 +50,8 @@ const initialState = {
     clients: []
   },
   formData: {
-    key: null
+    key: null,
+    goodslist: [],
   }
 };
 
@@ -61,6 +63,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, formRequire: {...action.result.data} };
     case actionTypes.SET_CONSIGN_FIELDS:
       return { ...state, formData: { ...state.formData, ...action.data }};
+    case actionTypes.SAVE_LOCAL_GOODS:
+      return { ...state, formData: { ...state.formData,
+        goodslist: [...state.formData.goodslist, action.data.goods] }};
+    case actionTypes.EDIT_LOCAL_GOODS: {
+      const goodslist = [...state.formData.goodslist];
+      goodslist[action.data.index] = action.data.goods;
+      return { ...state, formData: { ...state.formData, goodslist }};
+    }
+    case actionTypes.REM_LOCAL_GOODS: {
+      const goodslist = [...state.formData.goodslist];
+      goodslist.splice(action.data.index, 1);
+      return { ...state, formData: { ...state.formData, goodslist }};
+    }
     case actionTypes.LOAD_SHIPMENT:
       return { ...state, loading: true };
     case actionTypes.LOAD_SHIPMENT_FAIL:
@@ -93,6 +108,27 @@ export function setConsignFields(data) {
   return {
     type: actionTypes.SET_CONSIGN_FIELDS,
     data
+  };
+}
+
+export function saveLocalGoods(goods) {
+  return {
+    type: actionTypes.SAVE_LOCAL_GOODS,
+    data: { goods },
+  };
+}
+
+export function editLocalGoods(goods, index) {
+  return {
+    type: actionTypes.EDIT_LOCAL_GOODS,
+    data: { goods, index },
+  };
+}
+
+export function removeLocalGoods(index) {
+  return {
+    type: actionTypes.REM_LOCAL_GOODS,
+    data: { index },
   };
 }
 

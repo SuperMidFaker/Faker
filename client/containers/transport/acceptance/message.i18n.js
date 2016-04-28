@@ -133,4 +133,8 @@ export default defineMessages({
     id: 'transport.acceptance.freight.charge.be.number',
     defaultMessage: '运费必须为整数'
   },
+  formError: {
+    id: 'transport.acceptance.form.error',
+    defaultMessage: '表单存在错误'
+  },
 });

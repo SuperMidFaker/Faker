@@ -3,7 +3,7 @@ import shipmentDao from '../models/shipment.db';
 import coopDao from '../models/cooperation.db';
 import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
-import { PARTNERSHIP_TYPE_INFO } from 'universal/constant';
+import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
 
 const vehicleTypes = [{
   id: '1',
@@ -57,7 +57,7 @@ function *shipmtRequiresG() {
       transitModes,
       vehicleTypes,
       vehicleLengths,
-      goodsTypes
+      goodsTypes,
       packagings,
       clients
     });
@@ -66,6 +66,13 @@ function *shipmtRequiresG() {
   }
 }
 
+function *shipmtAcceptP() {
+}
+
+function *shipmtDraftP() {
+}
 export default [
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
+  [ 'post', '/v1/transport/shipment', shipmtAcceptP ],
+  [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
 ]
