@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Select } from 'ant-ui';
 import { format } from 'universal/i18n/helpers';
@@ -7,15 +8,26 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@connect(
+  state => ({
+    transitModes: state.shipment.formRequire.transitModes,
+    vehicleTypes: state.shipment.formRequire.vehicleTypes,
+    vehicleLengths: state.shipment.formRequire.vehicleLengths
+  })
+)
 export default class ModeInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    transitModes: PropTypes.array.isRequired,
+    vehicleTypes: PropTypes.array.isRequired,
+    vehicleLengths: PropTypes.array.isRequired,
     formhoc: PropTypes.object.isRequired
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const {
+      transitModes, vehicleTypes, vehicleLengths,
       formhoc: { getFieldProps }
     } = this.props;
     const outerColSpan = 8;
@@ -30,12 +42,14 @@ export default class ModeInfo extends React.Component {
             wrapperCol={{span: 24 - labelColSpan}} required
           >
             <Select {...getFieldProps(
-              'transit_mode', { rules: [{
+              'transport_mode', { rules: [{
                 required: true, message: this.msg('transitModeMust')
               }]}
             )}
             >
-              <Option value="aa">aa</Option>
+            {transitModes.map(
+              tm => <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
+            )}
             </Select>
           </FormItem>
         </Col>
@@ -43,8 +57,10 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleType')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
-            <Select value="aa">
-              <Option value="aa">aa</Option>
+            <Select {...getFieldProps('vehicle_type')}>
+            {vehicleTypes.map(
+              vt => <Option value={vt.id} key={`${vt.name}${vt.id}`}>{vt.name}</Option>
+            )}
             </Select>
           </FormItem>
         </Col>
@@ -52,8 +68,10 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleLength')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
-            <Select value="aa">
-              <Option value="aa">aa</Option>
+            <Select {...getFieldProps('vehicle_length')}>
+            {vehicleLengths.map(
+              vl => <Option value={vl.id} key={`${vl.name}${vl.id}`}>{vl.name}</Option>
+            )}
             </Select>
           </FormItem>
         </Col>

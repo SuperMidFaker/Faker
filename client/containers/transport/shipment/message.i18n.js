@@ -69,6 +69,10 @@ export default defineMessages({
     id: 'transport.shipment.transit.time',
     defaultMessage: '时效要求'
   },
+  timeMustBePositive: {
+    id: 'transport.shipment.time.be.positive',
+    defaultMessage: '实效时间为正整数'
+  },
   day: {
     id: 'transport.shipment.day',
     defaultMessage: '天'
@@ -181,8 +185,8 @@ export default defineMessages({
     id: 'transport.shipment.goods.op',
     defaultMessage: '操作'
   },
-  refExternalNo: {
-    id: 'transport.shipment.ref.external',
-    defaultMessage: '外部参考号'
-  },
+  compute: {
+    id: 'transport.shipment.goods.compute',
+    defaultMessage: '计算'
+  }
 });

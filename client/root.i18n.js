@@ -41,6 +41,10 @@ const messages = defineMessages({
     id: 'root.delete',
     defaultMessage: '删除'
   },
+  add: {
+    id: 'root.add',
+    defaultMessage: '添加'
+  },
   createNew: {
     id: 'root.createNew',
     defaultMessage: '新建'

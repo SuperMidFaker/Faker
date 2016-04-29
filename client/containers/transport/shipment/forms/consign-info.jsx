@@ -32,7 +32,7 @@ export default class ConsignInfo extends React.Component {
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleItemSelect(name) {
+  handleItemSelect = (name) => {
     let selectConsignLoc;
     this.props.consignLocations.forEach(cl => {
       if (cl.name === name) {
@@ -41,7 +41,9 @@ export default class ConsignInfo extends React.Component {
       }
     });
     if (selectConsignLoc) {
+      const consignKey = `${this.props.type}_id`;
       this.props.setConsignFields({
+        [consignKey]: selectConsignLoc.node_id,
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,
@@ -92,18 +94,19 @@ export default class ConsignInfo extends React.Component {
     email: 'consigner_email'
   }
   render() {
-    const {
-      outerColSpan, labelColSpan, formhoc, consignLocations
-    } = this.props;
+    const { outerColSpan, labelColSpan, formhoc, consignLocations } = this.props;
     const locOptions = consignLocations.map(cl => ({
-      id: cl.node_id,
-      name: cl.name
+      // id: cl.node_id,
+      name: cl.name,
+      key: `${cl.node_id}${cl.name}`,
     }));
     const region = {
       province: formhoc.getFieldValue(this.renderFields.province),
       city: formhoc.getFieldValue(this.renderFields.city),
       county: formhoc.getFieldValue(this.renderFields.district)
     };
+    // todo unvalidated name/addr, select name not make addr validated
+    // todo replace selected consign remove consigne()_id
     return (
       <Row>
         <div className="subform-heading">
@@ -114,7 +117,7 @@ export default class ConsignInfo extends React.Component {
             field={this.renderFields.name} colSpan={labelColSpan} required
             rules={[{
               required: true, message: this.msg('consignNameMessage')
-            }]} optionField="name" optionKey="id" optionValue="name"
+            }]} optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
           />
           <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: labelColSpan}}

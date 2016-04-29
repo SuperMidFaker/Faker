@@ -199,6 +199,40 @@ const FEE_TYPE = [{
   text: '3|总价',
   value: '3'
 }];
+
+const CONSIGN_TYPE = {
+  consigner: 0,
+  consignee: 1,
+};
+
+const SHIPMENT_EFFECTIVES = {
+  cancelled: -1,
+  draft: 0,
+  effected: 1,
+  archived: 2,
+};
+
+const SHIPMENT_SOURCE = {
+  consigned: 1,       // 委托
+  subcontracted: 2,   // 分包
+};
+
+const SHIPMENT_DISPATCH_STATUS = {
+  unconfirmed: 0,
+  confirmed: 1,
+  cancel: 2,
+};
+
+const SHIPMENT_TRACK_STATUS = {
+  unaccepted: 1,
+  undispatched: 2,
+  undelivered: 3,
+  intransit: 4,
+  delivered: 5,
+  podsubmit: 6,
+  podaccept: 7,
+};
+
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
@@ -220,5 +254,10 @@ export {
   TENANT_USEBOOK,
   CONDITION_STATE,
   WRAP_TYPE,
-  FEE_TYPE
+  FEE_TYPE,
+  CONSIGN_TYPE,
+  SHIPMENT_EFFECTIVES,
+  SHIPMENT_SOURCE,
+  SHIPMENT_DISPATCH_STATUS,
+  SHIPMENT_TRACK_STATUS,
 };
