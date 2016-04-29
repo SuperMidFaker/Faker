@@ -3,6 +3,7 @@ import { intlShape } from 'react-intl';
 import { Row, Col, Form, DatePicker } from 'ant-ui';
 import InputItem from './input-item';
 import { format } from 'universal/i18n/helpers';
+import { isPositiveInteger } from 'reusable/common/validater';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -15,9 +16,7 @@ export default class ScheduleInfo extends React.Component {
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
-    const {
-      formhoc, formhoc: { getFieldProps }
-    } = this.props;
+    const { formhoc, formhoc: { getFieldProps } } = this.props;
     const outerColSpan = 8;
     const labelColSpan = 6;
     return (
@@ -31,13 +30,7 @@ export default class ScheduleInfo extends React.Component {
           >
             <DatePicker {...getFieldProps(
               'pickup_est_date', { rules: [{
-                validator: (rule, value, callback) => {
-                  if (value === null || value === '') {
-                    callback(new Error(this.msg('pickupDateMust')));
-                  } else {
-                    callback();
-                  }
-                }
+                required: true, message: this.msg('deliveryDateMust'), type: 'date'
               }]}
             )}
             />
@@ -47,8 +40,13 @@ export default class ScheduleInfo extends React.Component {
           <InputItem type="number" labelName={this.msg('shipmtTransit')} colSpan={labelColSpan}
             addonAfter={this.msg('day')} formhoc={formhoc} field="transit_time"
             hasFeedback={false} rules={[{
-              type: 'integer', transform: (value) => value >= 0 ? +value : null,
-              message: this.msg('timeMustBePositive')
+              validator: (rule, value, callback) => {
+                if (isPositiveInteger(value)) {
+                  callback(new Error(this.msg('timeMustBePositive')));
+                } else {
+                  callback();
+                }
+              }
             }]}
           />
         </Col>
@@ -57,7 +55,7 @@ export default class ScheduleInfo extends React.Component {
             wrapperCol={{span: 24 - labelColSpan}} required
           >
             <DatePicker {...getFieldProps(
-              'delivery_est_date', { rules: [{
+              'deliver_est_date', { rules: [{
                 required: true, message: this.msg('deliveryDateMust'), type: 'date'
               }]}
             )} />

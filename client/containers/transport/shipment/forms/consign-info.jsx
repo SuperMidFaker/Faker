@@ -105,6 +105,8 @@ export default class ConsignInfo extends React.Component {
       city: formhoc.getFieldValue(this.renderFields.city),
       county: formhoc.getFieldValue(this.renderFields.district)
     };
+    // todo unvalidated name/addr, select name not make addr validated
+    // todo replace selected consign remove consigne()_id
     return (
       <Row>
         <div className="subform-heading">

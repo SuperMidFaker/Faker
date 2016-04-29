@@ -83,11 +83,19 @@ export default defineMessages({
   },
   unacceptedShipmt: {
     id: 'transport.acceptance.shipment.unaccepted',
-    defaultMessage: '已接单'
+    defaultMessage: '未接单'
   },
   acceptedShipmt: {
     id: 'transport.acceptance.shipment.accepted',
     defaultMessage: '已接单'
+  },
+  draftShipmt: {
+    id: 'transport.acceptance.shipment.draft',
+    defaultMessage: '草稿'
+  },
+  archivedShipmt: {
+    id: 'transport.acceptance.shipment.archived',
+    defaultMessage: '存档'
   },
   newTitle: {
     id: 'transport.acceptance.shipment.new.title',
@@ -96,6 +104,10 @@ export default defineMessages({
   client: {
     id: 'transport.acceptance.client',
     defaultMessage: '客户'
+  },
+  clientNameMust: {
+    id: 'transport.acceptance.client.name.must',
+    defaultMessage: '客户名称必填'
   },
   lsp: {
     id: 'transport.acceptance.lsp',
@@ -131,10 +143,22 @@ export default defineMessages({
   },
   freightChargeMustBeNumber: {
     id: 'transport.acceptance.freight.charge.be.number',
-    defaultMessage: '运费必须为整数'
+    defaultMessage: '运费必须为数字'
   },
   formError: {
     id: 'transport.acceptance.form.error',
     defaultMessage: '表单存在错误'
+  },
+  day: {
+    id: 'transport.acceptance.day',
+    defaultMessage: '天'
+  },
+  consginSource: {
+    id: 'transport.acceptance.consign.source',
+    defaultMessage: '委托'
+  },
+  subcontracSource: {
+    id: 'transport.acceptance.subcontract.source',
+    defaultMessage: '分包'
   },
 });

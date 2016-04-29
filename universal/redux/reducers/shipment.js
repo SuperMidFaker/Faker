@@ -9,18 +9,11 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
   'REM_LOCAL_GOODS',
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
-  'LOAD_SHIPMENT', 'LOAD_SHIPMENT_FAIL', 'LOAD_SHIPMENT_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED'
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
 const initialState = {
-  loaded: false,
-  loading: false,
-  filters: [
-    /* { name: , value: } */
-  ],
-  statusTypes: [],
   shipmentlist: {
     totalCount: 0,
     pageSize: 10,
@@ -38,7 +31,6 @@ const initialState = {
       }
     ]
   },
-  submitting: false,
   formRequire: {
     consignerLocations: [],
     consigneeLocations: [],
@@ -51,6 +43,7 @@ const initialState = {
   },
   formData: {
     key: null,
+    freight_charge: 0.0,
     goodslist: [],
   }
 };
@@ -76,12 +69,6 @@ export default function reducer(state = initialState, action) {
       goodslist.splice(action.data.index, 1);
       return { ...state, formData: { ...state.formData, goodslist }};
     }
-    case actionTypes.LOAD_SHIPMENT:
-      return { ...state, loading: true };
-    case actionTypes.LOAD_SHIPMENT_FAIL:
-      return { ...state, loading: false };
-    case actionTypes.LOAD_SHIPMENT_SUCCEED:
-      return { ...state, loading: false, loaded: true, shipmentlist: action.result.data };
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
              || state;
@@ -129,19 +116,6 @@ export function removeLocalGoods(index) {
   return {
     type: actionTypes.REM_LOCAL_GOODS,
     data: { index },
-  };
-}
-
-export function loadTable(cookie, params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.LOAD_SHIPMENT, actionTypes.LOAD_SHIPMENT_SUCCEED,
-        actionTypes.LOAD_SHIPMENT_FAIL],
-      endpoint: 'v1/transport/shipments',
-      method: 'get',
-      params,
-      cookie
-    }
   };
 }
 

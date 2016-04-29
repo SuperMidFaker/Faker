@@ -7,8 +7,9 @@ import NavLink from 'reusable/components/nav-link';
 import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { loadTable } from 'universal/redux/reducers/shipment';
+import { loadTable } from 'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
+import { SHIPMENT_SOURCE } from 'universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
@@ -23,8 +24,9 @@ const RadioGroup = Radio.Group;
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadTable(cookie, {
     tenantId: state.account.tenantId,
-    pageSize: state.shipment.shipmentlist.pageSize,
-    currentPage: state.shipment.shipmentlist.current
+    filters: JSON.stringify(state.transportAcceptance.table.filters),
+    pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
+    currentPage: state.transportAcceptance.table.shipmentlist.current,
   }));
 }
 
@@ -45,9 +47,9 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.shipment.shipmentlist,
-    filters: state.shipment.filters,
-    loading: state.shipment.loading
+    shipmentlist: state.transportAcceptance.table.shipmentlist,
+    filters: state.transportAcceptance.table.filters,
+    loading: state.transportAcceptance.table.loading,
   }),
   { loadTable })
 export default class AcceptList extends React.Component {
@@ -105,35 +107,40 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
-    render: (o, record) => moment(record.pickupDate).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipTransitTime'),
-    dataIndex: 'transit_time'
+    dataIndex: 'transit_time',
+    render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
   }, {
     title: this.msg('shipDeliveryDate'),
-    dataIndex: 'delivery_est_date',
-    render: (o, record) => moment(record.deliveryDate).format('YYYY.MM.DD')
+    dataIndex: 'deliver_est_date',
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
-    dataIndex: 'consiger_name'
+    dataIndex: 'consigner_name',
+    width: 140,
   }, {
     title: this.msg('consignorPlace'),
-    dataIndex: 'consiger_city'
+    render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
-    dataIndex: 'consiger_addr'
+    dataIndex: 'consigner_addr',
+    width: 120,
   }, {
     title: this.msg('shipConsignee'),
-    dataIndex: 'consigee_name'
+    dataIndex: 'consignee_name',
+    width: 140,
   }, {
     title: this.msg('consigneePlace'),
-    dataIndex: 'consigee_city'
+    render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
-    dataIndex: 'consigee_addr'
+    dataIndex: 'consignee_addr',
+    width: 120,
   }, {
     title: this.msg('shipMode'),
-    dataIndex: 'mode'
+    dataIndex: 'transport_mode'
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count'
@@ -145,7 +152,14 @@ export default class AcceptList extends React.Component {
     dataIndex: 'total_volume'
   }, {
     title: this.msg('shipSource'),
-    dataIndex: 'source'
+    dataIndex: 'source',
+    render: (o, record) => {
+      if (record.source === SHIPMENT_SOURCE.consigned) {
+        return this.msg('consginSource');
+      } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
+        return this.msg('subcontracSource');
+      }
+    }
   }, {
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
@@ -153,7 +167,8 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
-    render: (text, record) => moment(record.acpt_time).format('YYYY.MM.DD')
+    render: (text, record) => record.acpt_time ?
+     moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }, {
     title: this.msg('shipmtOP')
   }]
@@ -173,9 +188,7 @@ export default class AcceptList extends React.Component {
   }
   handleShipmentFilter = (ev) => {
     const { shipmentlist, tenantId, filters } = this.props;
-    const partnerType = ev.target.value;
-    const typeValue = partnerType !== 'all' ? parseInt(partnerType, 10) : undefined;
-    const filterArray = this.mergeFilters(filters, 'partnerType', typeValue);
+    const filterArray = this.mergeFilters(filters, 'type', ev.target.value);
     this.props.loadTable(null, {
       tenantId,
       filters: JSON.stringify(filterArray),
@@ -187,6 +200,42 @@ export default class AcceptList extends React.Component {
       }
     });
   }
+  mergeFilters(curFilters, name, value) {
+    const merged = curFilters.filter(flt => flt.name !== name);
+    if (value !== null && value !== undefined && value !== '') {
+      merged.push({
+        name,
+        value
+      });
+    }
+    return merged;
+  }
+  renderConsignLoc(shipmt, field) {
+    const province = `${field}_province`;
+    const city = `${field}_city`;
+    const county = `${field}_district`;
+    const names = [];
+    if (shipmt[city] && (shipmt[city] === '市辖区' || shipmt[city] === '县')) {
+      if (shipmt[province]) {
+        names.push(shipmt[province]);
+      }
+      if (shipmt[county]) {
+        names.push(shipmt[county]);
+      }
+      return names.join('-');
+    } else if (shipmt[county] && (shipmt[county] === '市辖区' || shipmt[county] === '县')) {
+      return shipmt[city] || '';
+    } else {
+      if (shipmt[city]) {
+        names.push(shipmt[city]);
+      }
+      if (shipmt[county]) {
+        names.push(shipmt[county]);
+      }
+      return names.join('-');
+    }
+  }
+
   render() {
     const { shipmentlist, loading, intl } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -196,15 +245,25 @@ export default class AcceptList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
+    let radioValue;
+    this.props.filters.forEach(flt => {
+      if (flt.name === 'type') {
+        radioValue = flt.value;
+        return;
+      }
+    });
     return (
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} defaultValue="unaccepted">
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
+            <span style={{marginLeft: '10px'}} />
+            <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
+            <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </div>
         <div className="page-body">

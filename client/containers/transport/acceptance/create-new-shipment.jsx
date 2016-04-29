@@ -4,9 +4,12 @@ import { Row, Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
+import { isPositiveInteger } from 'reusable/common/validater';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { loadFormRequire, setFormValue, setConsignFields, saveAndAccept, saveDraft }
+import { loadFormRequire, setFormValue, setConsignFields }
   from 'universal/redux/reducers/shipment';
+import { saveAndAccept, saveDraft }
+  from 'universal/redux/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ConsignInfo from '../shipment/forms/consign-info';
@@ -38,6 +41,8 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
     clients: state.shipment.formRequire.clients,
@@ -57,7 +62,7 @@ function fetchData({ state, dispatch, cookie }) {
             cl => cl.tid === parseInt(clientFieldId, 10)
         );
         props.setConsignFields({
-          client_id: selclients.length > 0 ? clientFieldId : null,
+          client_id: selclients.length > 0 ? clientFieldId : 0,
           client: selclients.length > 0 ? selclients[0].name : clientFieldId,
         });
       } else {
@@ -71,6 +76,7 @@ export default class ShipmentCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
@@ -81,30 +87,51 @@ export default class ShipmentCreate extends React.Component {
     saveAndAccept: PropTypes.func.isRequired,
     saveDraft: PropTypes.func.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleSaveAndAccept = () => {
+  handleSaveAndAccept = (ev) => {
+    ev.preventDefault();
     this.props.formhoc.validateFields(errors => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
-        this.props.saveAndAccept(this.props.formData).then(
+        this.props.saveAndAccept(
+          this.props.formData, {
+            tid: this.props.tenantId,
+            name: this.props.tenantName,
+            login_id: this.props.loginId,
+            login_name: this.props.loginName,
+          }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
+            } else {
+              this.context.router.goBack();
             }
           });
       }
     });
   }
-  handleDraftSave = () => {
+  handleDraftSave = (ev) => {
+    ev.preventDefault();
     this.props.formhoc.validateFields(errors => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
-        this.props.saveDraft(this.props.formData).then(
+        this.props.saveDraft(
+          this.props.formData, {
+            tid: this.props.tenantId,
+            name: this.props.tenantName,
+            login_id: this.props.loginId,
+            login_name: this.props.loginName,
+          }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
+            } else {
+              this.context.router.goBack();
             }
           });
       }
@@ -114,9 +141,10 @@ export default class ShipmentCreate extends React.Component {
     const { intl, clients, tenantName, formhoc } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.name}/${cl.tid}`,
-      value: cl.tid,
+      value: `${cl.tid}`,
       name: cl.name
     }));
+    // freight_charge be positive todo
     return (
       <Form form={formhoc} horizontal className="form-edit-content offset-mid-col">
         <Col span="14" className="subform">
@@ -131,6 +159,9 @@ export default class ShipmentCreate extends React.Component {
             <AutoCompSelectItem labelName={this.msg('client')} formhoc={formhoc}
               colSpan={4} field="client" optionData={clientOpts} required
               optionField="name" optionKey="key" optionValue="value"
+              rules={[{
+                required: true, message: this.msg('clientNameMust')
+              }]}
             />
             <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={4}
               value={tenantName} disabled
@@ -149,8 +180,7 @@ export default class ShipmentCreate extends React.Component {
             />
             <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
               field="freight_charge" hasFeedback={false} rules={[{
-                type: 'integer', transform: (value) => value >= 0 ? +value : null,
-                  message: this.msg('freightChargeMustBeNumber')
+                    type: 'float', message: this.msg('freightChargeMustBeNumber')
               }]}
             />
           </Row>
