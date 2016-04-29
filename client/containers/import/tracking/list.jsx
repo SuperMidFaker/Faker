@@ -133,7 +133,9 @@ export default class ImportTracking extends React.Component {
         dataIndex: 'process_name'
       }, {
         title: '处理时间',
-        dataIndex: 'process_date'
+        sorter: true,
+        dataIndex: 'process_date',
+        filters: filterArray
       }, {
         title: '报关业务号',
         dataIndex: 'del_no'
