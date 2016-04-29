@@ -4,7 +4,6 @@ import { Row, Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { isPositiveInteger } from 'reusable/common/validater';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { loadFormRequire, setFormValue, setConsignFields }
   from 'universal/redux/reducers/shipment';
@@ -180,7 +179,7 @@ export default class ShipmentCreate extends React.Component {
             />
             <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
               field="freight_charge" hasFeedback={false} rules={[{
-                    type: 'float', message: this.msg('freightChargeMustBeNumber')
+                    type: 'float', min: 0.0, message: this.msg('freightChargeMustBeNumber')
               }]}
             />
           </Row>
