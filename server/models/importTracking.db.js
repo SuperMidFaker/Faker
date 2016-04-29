@@ -49,7 +49,7 @@ export default {
       const args = [tenantId, tenantId, tenantId];
 
       const filterClause = concatFilterSql(filters, args);
-      let sortColumn = sortField || 'process_date';
+      let sortColumn = sortField || 'entry_id';
       const sortClause = ` order by ${sortColumn} ${sortOrder === 'ascend' ? 'asc' : 'desc'} `;
 
       const sql = `select gel.entry_id,gel.process_name,
