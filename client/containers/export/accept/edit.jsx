@@ -36,6 +36,7 @@ import {
 '../../../../universal/redux/reducers/exportaccept';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 import './upload.less';
+
 const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -331,7 +332,7 @@ export default class ExportAcceptEdit extends React.Component {
           <Col offset="3">
             <div>
               <strong>{this.props.ename}</strong>
-              &nbsp;&nbsp;&nbsp;单号：{this.props.formData.del_no}
+              &nbsp;&nbsp;报关业务号：{this.props.formData.del_no}
               {this.renderStatus(this.props.formData.status)}
             </div>
           </Col>
@@ -343,7 +344,7 @@ export default class ExportAcceptEdit extends React.Component {
         </Row>
         <Row>
           <Col span="16" offset="1">
-            {this.renderSelect('申报单位', '选择客户', 'send_tenant_id', true, shortNameList, [
+            {this.renderSelect('报关委托单位', '选择客户', 'send_tenant_id', true, shortNameList, [
               {
                 required: true
               }
@@ -377,7 +378,7 @@ export default class ExportAcceptEdit extends React.Component {
         </Row>
         <Row>
           <Col span="8" offset="3">
-            {this.renderSwitch('使用手册/账册', 'usebook')}
+            {this.renderSwitch('手册/账册', 'usebook')}
             {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
             {this.renderSwitch('加急', 'urgent')}
           </Col>
@@ -453,7 +454,6 @@ export default class ExportAcceptEdit extends React.Component {
             : 'inline-block'
         }}>
           <Col span="18" offset="3">
-            <Button onClick={this.handleCancel}>一键接单</Button>
             <Button htmlType="submit" type="primary">确定</Button>
             <Button onClick={this.handleCancel}>取消</Button>
           </Col>
