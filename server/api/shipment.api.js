@@ -171,6 +171,11 @@ function *shipmtSaveAcceptP() {
     Result.InternalServerError(this, e.message);
   }
 }
+
+function *shipmtDispatchersG() {
+  return Result.OK(this);
+}
+
 function *shipmtAcceptP() {
 }
 
@@ -204,4 +209,5 @@ export default [
   [ 'post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
+  [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
 ]

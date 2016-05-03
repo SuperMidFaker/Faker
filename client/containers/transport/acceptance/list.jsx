@@ -7,7 +7,7 @@ import NavLink from 'reusable/components/nav-link';
 import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { loadTable } from 'universal/redux/reducers/transport-acceptance';
+import { loadTable, loadAcceptDispatchers } from 'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { SHIPMENT_SOURCE } from 'universal/constants';
 import { format } from 'universal/i18n/helpers';
@@ -51,7 +51,7 @@ function fetchData({ state, dispatch, cookie }) {
     filters: state.transportAcceptance.table.filters,
     loading: state.transportAcceptance.table.loading,
   }),
-  { loadTable })
+  { loadTable, loadAcceptDispatchers })
 export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -59,6 +59,7 @@ export default class AcceptList extends React.Component {
     filters: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
+    loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired
   }
   state = {
@@ -157,7 +158,7 @@ export default class AcceptList extends React.Component {
       if (record.source === SHIPMENT_SOURCE.consigned) {
         return this.msg('consginSource');
       } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
-        return this.msg('subcontracSource');
+        return this.msg('subcontractSource');
       }
     }
   }, {
@@ -170,7 +171,38 @@ export default class AcceptList extends React.Component {
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }, {
-    title: this.msg('shipmtOP')
+    title: formatContainerMsg(this.props.intl, 'opColumn'),
+    render: (o, record) => {
+      if (record.source === SHIPMENT_SOURCE.consigned) {
+        return (
+          <span>
+            <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+            {this.msg('shipmtAccept')}
+            </a>
+            <span className="ant-divider" />
+            <NavLink to={`/transport/acceptance/shipment/edit/${record.key}`}>
+            {formatGlobalMsg(this.props.intl, 'modify')}
+            </NavLink>
+            <span className="ant-divider" />
+            <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
+            {this.msg('shipmtRevoke')}
+            </a>
+          </span>
+        );
+      } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
+        return (
+          <span>
+            <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+            {this.msg('shipmtAccept')}
+            </a>
+            <span className="ant-divider" />
+            <a role="button" onClick={() => this.handleShipmtReject(record.key)}>
+            {this.msg('shipmtReject')}
+            </a>
+          </span>
+        );
+      }
+    },
   }]
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
@@ -199,6 +231,11 @@ export default class AcceptList extends React.Component {
         message.error(result.error.message, 10);
       }
     });
+  }
+  handleShipmtAccept(dispId) {
+    this.props.loadAcceptDispatchers(
+      this.props.tenantId, dispId
+    );
   }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);

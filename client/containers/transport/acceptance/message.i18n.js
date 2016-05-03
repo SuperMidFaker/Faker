@@ -73,10 +73,6 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.accept.time',
     defaultMessage: '接单时间'
   },
-  shipmtOP: {
-    id: 'transport.acceptance.shipment.op',
-    defaultMessage: '操作'
-  },
   searchPlaceholder: {
     id: 'transport.acceptance.search.placeholder',
     defaultMessage: '搜索运单号'
@@ -157,8 +153,20 @@ export default defineMessages({
     id: 'transport.acceptance.consign.source',
     defaultMessage: '委托'
   },
-  subcontracSource: {
+  subcontractSource: {
     id: 'transport.acceptance.subcontract.source',
     defaultMessage: '分包'
+  },
+  shipmtAccept: {
+    id: 'transport.acceptance.shipmt.accept',
+    defaultMessage: '接单'
+  },
+  shipmtRevoke: {
+    id: 'transport.acceptance.shipmt.revoke',
+    defaultMessage: '作废'
+  },
+  shipmtReject: {
+    id: 'transport.acceptance.shipmt.reject',
+    defaultMessage: '退回'
   },
 });
