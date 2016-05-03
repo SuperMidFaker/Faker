@@ -55,7 +55,7 @@ export default {
   ) {
     const sql = `insert into tms_shipment_dispatch (shipmt_no, sr_tenant_id, sr_name, source,
       sp_tenant_id, sp_name, sp_acpt_login_id, sp_acpt_login_name, sp_disp_login_id, sp_disp_login_name,
-      acp_time, disp_status, status, freight_charge) values (?)`;
+      acpt_time, disp_status, status, freight_charge) values (?)`;
     const args = [
       shipmtNo, clientId, client, source, tenantId, tenantName,
       loginId, loginName, loginId, loginName, acpTime, confirmSt,

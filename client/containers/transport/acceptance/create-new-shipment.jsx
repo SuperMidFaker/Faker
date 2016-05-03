@@ -7,7 +7,7 @@ import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { loadFormRequire, setFormValue, setConsignFields }
   from 'universal/redux/reducers/shipment';
-import { saveAndAccept, saveDraft }
+import { saveAndAccept, loadTable, saveDraft }
   from 'universal/redux/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
@@ -45,9 +45,12 @@ function fetchData({ state, dispatch, cookie }) {
     tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
     clients: state.shipment.formRequire.clients,
-    submitting: state.shipment.submitting
+    submitting: state.transportAcceptance.table.submitting,
+    filters: state.transportAcceptance.table.filters,
+    pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
+    current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, saveAndAccept, saveDraft })
+  { setFormValue, setConsignFields, loadTable, saveAndAccept, saveDraft })
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -83,6 +86,10 @@ export default class ShipmentCreate extends React.Component {
     submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
+    filters: PropTypes.array.isRequired,
+    pageSize: PropTypes.number.isRequired,
+    current: PropTypes.number.isRequired,
+    loadTable: PropTypes.func.isRequired,
     saveAndAccept: PropTypes.func.isRequired,
     saveDraft: PropTypes.func.isRequired,
   }
@@ -108,6 +115,12 @@ export default class ShipmentCreate extends React.Component {
               message.error(result.error.message);
             } else {
               this.context.router.goBack();
+              this.props.loadTable(null, {
+                tenantId: this.props.tenantId,
+                filters: JSON.stringify(this.props.filters),
+                pageSize: this.props.pageSize,
+                currentPage: this.props.current,
+              });
             }
           });
       }
@@ -137,7 +150,7 @@ export default class ShipmentCreate extends React.Component {
     });
   }
   render() {
-    const { intl, clients, tenantName, formhoc } = this.props;
+    const { intl, clients, submitting, tenantName, formhoc } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.name}/${cl.tid}`,
       value: `${cl.tid}`,
@@ -179,17 +192,19 @@ export default class ShipmentCreate extends React.Component {
             />
             <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
               field="freight_charge" hasFeedback={false} rules={[{
-                    type: 'float', min: 0.0, message: this.msg('freightChargeMustBeNumber')
+                    type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
               }]}
             />
           </Row>
           <Row className="subform-buton-row">
-            <Button htmlType="submit" type="primary" onClick={this.handleSaveAndAccept}>
+            <Button htmlType="submit" type="primary" loading={submitting}
+            onClick={this.handleSaveAndAccept}
+            >
             {this.msg('saveAndAccept')}
             </Button>
           </Row>
           <Row className="subform-buton-row">
-            <Button onClick={this.handleDraftSave}>
+            <Button onClick={this.handleDraftSave} loading={submitting}>
             {this.msg('saveAsDraft')}
             </Button>
           </Row>
