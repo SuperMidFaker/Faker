@@ -2,11 +2,12 @@ import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
-  'SHOW_ACCEPT_MODAL', 'HIDE_ACCEPT_MODAL',
+  'HIDE_ACCEPT_MODAL',
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
   'LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
+  'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
 ]);
 
 const initialState = {
@@ -60,7 +61,7 @@ export default function reducer(state = initialState, action) {
       });
       return found ? {
         ...state, table: {
-          ...state.table, submitting: false,  
+          ...state.table, submitting: false,
           shipmentlist: {
             ...state.table.shipmentlist,
             totalCount: state.table.shipmentlist + 1,
@@ -79,6 +80,8 @@ export default function reducer(state = initialState, action) {
         dispatchId: action.modal.dispId }};
     case actionTypes.LOAD_DISPATCHERS_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data }};
+    case actionTypes.ACCP_DISP_SUCCEED:
+      return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
     default:
       return state;
   }
@@ -140,7 +143,7 @@ export function loadAcceptDispatchers(tenantId, dispId) {
       ],
       method: 'get',
       endpoint: 'v1/transport/shipment/dispatchers',
-      data: { tenantId },
+      params: { tenantId },
       modal: { dispId },
     }
   };
@@ -149,5 +152,20 @@ export function loadAcceptDispatchers(tenantId, dispId) {
 export function closeAcceptModal() {
   return {
     type: actionTypes.HIDE_ACCEPT_MODAL,
+  };
+}
+
+export function acceptDispShipment(shipmtDispId, acptId, acptName, disperId, disperName) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCP_DISP,
+        actionTypes.ACCP_DISP_SUCCEED,
+        actionTypes.ACCP_DISP_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/transport/shipment/accept',
+      data: { shipmtDispId, acptId, acptName, disperId, disperName },
+    }
   };
 }

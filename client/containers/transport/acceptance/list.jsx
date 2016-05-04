@@ -10,6 +10,7 @@ import connectNav from 'reusable/decorators/connect-nav';
 import { loadTable, loadAcceptDispatchers } from 'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { SHIPMENT_SOURCE } from 'universal/constants';
+import AccepterModal from '../shipment/modals/accepter';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
@@ -170,40 +171,19 @@ export default class AcceptList extends React.Component {
     dataIndex: 'acpt_time',
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
-  }, {
-    title: formatContainerMsg(this.props.intl, 'opColumn'),
-    render: (o, record) => {
-      if (record.source === SHIPMENT_SOURCE.consigned) {
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
-            {this.msg('shipmtAccept')}
-            </a>
-            <span className="ant-divider" />
-            <NavLink to={`/transport/acceptance/shipment/edit/${record.key}`}>
-            {formatGlobalMsg(this.props.intl, 'modify')}
-            </NavLink>
-            <span className="ant-divider" />
-            <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
-            {this.msg('shipmtRevoke')}
-            </a>
-          </span>
-        );
-      } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
-            {this.msg('shipmtAccept')}
-            </a>
-            <span className="ant-divider" />
-            <a role="button" onClick={() => this.handleShipmtReject(record.key)}>
-            {this.msg('shipmtReject')}
-            </a>
-          </span>
-        );
-      }
-    },
   }]
+  handleTableLoad = (filters, current) => {
+    this.props.loadTable(null, {
+      tenantId: this.props.tenantId,
+      filters: JSON.stringify(filters || this.props.filters),
+      pageSize: this.props.shipmentlist.pageSize,
+      currentPage: current || this.props.shipmentlist.current,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
@@ -219,23 +199,17 @@ export default class AcceptList extends React.Component {
     });
   }
   handleShipmentFilter = (ev) => {
-    const { shipmentlist, tenantId, filters } = this.props;
-    const filterArray = this.mergeFilters(filters, 'type', ev.target.value);
-    this.props.loadTable(null, {
-      tenantId,
-      filters: JSON.stringify(filterArray),
-      pageSize: shipmentlist.pageSize,
-      currentPage: 1
-    }).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      }
-    });
+    const filterArray = this.mergeFilters(this.props.filters, 'type', ev.target.value);
+    this.handleTableLoad(filterArray, 1);
   }
   handleShipmtAccept(dispId) {
     this.props.loadAcceptDispatchers(
       this.props.tenantId, dispId
-    );
+    ).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
   }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
@@ -289,6 +263,43 @@ export default class AcceptList extends React.Component {
         return;
       }
     });
+    let columns = this.columns;
+    if (radioValue === 'unaccepted') {
+      columns = [ ...columns, {
+        title: formatContainerMsg(this.props.intl, 'opColumn'),
+        render: (o, record) => {
+          if (record.source === SHIPMENT_SOURCE.consigned) {
+            return (
+              <span>
+              <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+              {this.msg('shipmtAccept')}
+              </a>
+              <span className="ant-divider" />
+              <NavLink to={`/transport/acceptance/shipment/edit/${record.shipmt_no}`}>
+              {formatGlobalMsg(this.props.intl, 'modify')}
+              </NavLink>
+              <span className="ant-divider" />
+              <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
+              {this.msg('shipmtRevoke')}
+              </a>
+              </span>
+            );
+          } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
+            return (
+              <span>
+              <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+              {this.msg('shipmtAccept')}
+              </a>
+              <span className="ant-divider" />
+              <a role="button" onClick={() => this.handleShipmtReject(record.key)}>
+              {this.msg('shipmtReject')}
+              </a>
+              </span>
+            );
+          }
+        }
+      }];
+    }
     return (
       <div className="main-content">
         <div className="page-header">
@@ -312,7 +323,7 @@ export default class AcceptList extends React.Component {
             </NavLink>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource}
             />
           </div>
@@ -322,6 +333,7 @@ export default class AcceptList extends React.Component {
             </Button>
           </div>
         </div>
+        <AccepterModal reload={this.handleTableLoad} />
       </div>
     );
   }

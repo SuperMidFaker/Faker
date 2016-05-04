@@ -188,5 +188,9 @@ export default defineMessages({
   compute: {
     id: 'transport.shipment.goods.compute',
     defaultMessage: '计算'
-  }
+  },
+  accepterModalTitle: {
+    id: 'transport.shipment.accepter.modal.title',
+    defaultMessage: '选择调度员'
+  },
 });

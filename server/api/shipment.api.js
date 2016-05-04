@@ -2,6 +2,7 @@ import cobody from 'co-body';
 import shipmentDao from '../models/shipment.db';
 import shipmentDispDao from '../models/shipment-disp.db';
 import coopDao from '../models/cooperation.db';
+import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
 import uuid from 'reusable/node-util/uuid32';
@@ -173,10 +174,36 @@ function *shipmtSaveAcceptP() {
 }
 
 function *shipmtDispatchersG() {
-  return Result.OK(this);
+  const tenantId = this.request.query.tenantId;
+  try {
+    const users = yield tenantUserDao.getTenantUsers(tenantId);
+    return Result.OK(this, users);
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
 }
 
 function *shipmtAcceptP() {
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    const body = yield cobody(this);
+    yield [
+      shipmentDispDao.updateAcptDisperInfo(
+        body.shipmtDispId, body.acptId, body.acptName,
+        body.disperId, body.disperName, SHIPMENT_DISPATCH_STATUS.confirmed,
+        SHIPMENT_TRACK_STATUS.undispatched, trans
+      ),
+      shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.effected, trans)
+    ];
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    Result.InternalServerError(this, e.message);
+  }
 }
 
 function *shipmtDraftP() {

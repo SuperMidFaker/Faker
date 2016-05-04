@@ -156,7 +156,6 @@ export default class ShipmentCreate extends React.Component {
       value: `${cl.tid}`,
       name: cl.name
     }));
-    // freight_charge be positive todo
     return (
       <Form form={formhoc} horizontal className="form-edit-content offset-mid-col">
         <Col span="14" className="subform">
