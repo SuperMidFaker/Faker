@@ -28,7 +28,6 @@ export default {
     const sql = `select count(S.shipmt_no) as count from tms_shipments as S
       inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
       where SD.sp_tenant_id = ? ${clause}`;
-      console.log(sql);
     return mysql.query(sql, args);
   },
   getFilteredShipments(tenantId, shipmtEff, shipmtDispType, shipmtNo) {
@@ -42,8 +41,8 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
-      SD.source as source, S.created_date as created_date, acpt_time
-      from tms_shipments as S
+      SD.source as source, S.created_date as created_date, acpt_time,
+      effective from tms_shipments as S
       inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
       where SD.sp_tenant_id = ? ${clause}`;
     return mysql.query(sql, args);
@@ -62,5 +61,12 @@ export default {
       dispSt, freightCharge || 0.0
     ];
     return mysql.insert(sql, [args], trans);
+  },
+  updateAcptDisperInfo(dispId, acpterId, acpterName, disperId, disperName, dispSt, status, trans) {
+    const sql = `update tms_shipment_dispatch set sp_acpt_login_id = ?, sp_acpt_login_name = ?,
+      sp_disp_login_id = ?, sp_disp_login_name = ?, acpt_time = NOW(), disp_status = ?,
+      status = ? where id = ?`;
+    const args = [acpterId, acpterName, disperId, disperName, dispSt, status, dispId];
+    return mysql.update(sql, args, trans);
   }
 };

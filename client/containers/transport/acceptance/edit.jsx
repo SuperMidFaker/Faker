@@ -5,10 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { loadFormRequire, setFormValue, setConsignFields }
+import { setFormValue, setConsignFields, loadForm, loadFormRequire }
   from 'universal/redux/reducers/shipment';
-import { saveAndAccept, loadTable, saveDraft }
-  from 'universal/redux/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ConsignInfo from '../shipment/forms/consign-info';
@@ -17,21 +15,32 @@ import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
+import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessages);
 
-function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadFormRequire(cookie, state.account.tenantId));
+function fetchData({ state, dispatch, params, cookie }) {
+  const promises = [];
+  const shipmtNo = params.shipmt;
+  promises.push(dispatch(loadForm(cookie, {
+    tenantId: state.account.tenantId,
+    shipmtNo
+  })));
+  promises.push(dispatch(loadFormRequire(
+    cookie, state.account.tenantId
+  )));
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)
 @injectIntl
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
+@connectNav((props, dispatch, router) => {
+  if (!props.formData) {
     return;
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: formatMsg(props.intl, 'newTitle'),
+    text: props.formData.shipmt_no,
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: () => router.goBack()
@@ -46,11 +55,8 @@ function fetchData({ state, dispatch, cookie }) {
     formData: state.shipment.formData,
     clients: state.shipment.formRequire.clients,
     submitting: state.transportAcceptance.submitting,
-    filters: state.transportAcceptance.table.filters,
-    pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
-    current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, loadTable, saveAndAccept, saveDraft })
+  { setFormValue, setConsignFields, })
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -74,7 +80,7 @@ function fetchData({ state, dispatch, cookie }) {
   },
   formPropName: 'formhoc'
 })
-export default class ShipmentCreate extends React.Component {
+export default class ShipmentEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -83,71 +89,19 @@ export default class ShipmentCreate extends React.Component {
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
-    submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
-    filters: PropTypes.array.isRequired,
-    pageSize: PropTypes.number.isRequired,
-    current: PropTypes.number.isRequired,
-    loadTable: PropTypes.func.isRequired,
-    saveAndAccept: PropTypes.func.isRequired,
-    saveDraft: PropTypes.func.isRequired,
+    submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleSaveAndAccept = (ev) => {
-    ev.preventDefault();
-    this.props.formhoc.validateFields(errors => {
-      if (errors) {
-        message.error(this.msg('formError'));
-      } else {
-        this.props.saveAndAccept(
-          this.props.formData, {
-            tid: this.props.tenantId,
-            name: this.props.tenantName,
-            login_id: this.props.loginId,
-            login_name: this.props.loginName,
-          }).then(
-          result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.context.router.goBack();
-              this.props.loadTable(null, {
-                tenantId: this.props.tenantId,
-                filters: JSON.stringify(this.props.filters),
-                pageSize: this.props.pageSize,
-                currentPage: this.props.current,
-              });
-            }
-          });
-      }
-    });
+  handleEdit = (ev) => {
+    message.info(ev.target.value);
   }
-  handleDraftSave = (ev) => {
-    ev.preventDefault();
-    this.props.formhoc.validateFields(errors => {
-      if (errors) {
-        message.error(this.msg('formError'));
-      } else {
-        this.props.saveDraft(
-          this.props.formData, {
-            tid: this.props.tenantId,
-            name: this.props.tenantName,
-            login_id: this.props.loginId,
-            login_name: this.props.loginName,
-          }).then(
-          result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.context.router.goBack();
-            }
-          });
-      }
-    });
+  handleCancel = (ev) => {
+    message.info(ev.target.value);
   }
   render() {
     const { intl, clients, submitting, tenantName, formhoc } = this.props;
@@ -177,6 +131,9 @@ export default class ShipmentCreate extends React.Component {
             <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={4}
               value={tenantName} disabled
             />
+            <InputItem formhoc={formhoc} labelName={this.msg('shipNo')} colSpan={4}
+              value={this.props.formData.shipmt_no} disabled
+            />
             <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={4}
               field="ref_external_no"
             />
@@ -191,20 +148,20 @@ export default class ShipmentCreate extends React.Component {
             />
             <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
               field="freight_charge" hasFeedback={false} rules={[{
-                    type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
+                type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
               }]}
             />
           </Row>
           <Row className="subform-buton-row">
             <Button htmlType="submit" type="primary" loading={submitting}
-            onClick={this.handleSaveAndAccept}
+            onClick={this.handleEdit}
             >
-            {this.msg('saveAndAccept')}
+            {formatGlobalMsg(intl, 'ok')}
             </Button>
           </Row>
           <Row className="subform-buton-row">
-            <Button onClick={this.handleDraftSave} loading={submitting}>
-            {this.msg('saveAsDraft')}
+            <Button onClick={this.handleCancel} loading={submitting}>
+            {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </Row>
         </Col>

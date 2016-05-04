@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
 import {
-  isFormDataLoadedC, appendFormAcitonTypes, formReducer, loadFormC,
+  isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC
 } from 'reusable/domains/redux/form-common';
 
@@ -9,28 +9,12 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
   'REM_LOCAL_GOODS',
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
-  'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED'
+  'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED',
+  'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
 const initialState = {
-  shipmentlist: {
-    totalCount: 0,
-    pageSize: 10,
-    current: 1,
-    data: [
-      {
-        key: 1,
-        shipNo: 'T123456789012',
-        carrier: '恩诺物流',
-        mode: '公路-零担',
-        source: '上海',
-        destination: '南京',
-        pickupDate: new Date(2016, 3, 7),
-        deliveryDate: new Date(2016, 4, 7)
-      }
-    ]
-  },
   formRequire: {
     consignerLocations: [],
     consigneeLocations: [],
@@ -43,6 +27,7 @@ const initialState = {
   },
   formData: {
     key: null,
+    shipmt_no: '',
     freight_charge: 0.0,
     goodslist: [],
   }
@@ -91,6 +76,22 @@ export function loadFormRequire(cookie, tenantId) {
   };
 }
 
+export function loadForm(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FORM,
+        actionTypes.LOAD_FORM_SUCCEED,
+        actionTypes.LOAD_FORM_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}
+
 export function setConsignFields(data) {
   return {
     type: actionTypes.SET_CONSIGN_FIELDS,
@@ -121,10 +122,6 @@ export function removeLocalGoods(index) {
 
 export function isFormDataLoaded(shipmentState, shipmentId) {
   return isFormDataLoadedC(shipmentId, shipmentState, 'shipmentlist');
-}
-
-export function loadForm(cookie, params) {
-  return loadFormC(cookie, 'v1/transport/shipments', params, actionTypes);
 }
 
 export function assignForm(shipmentState, shipmentId) {
