@@ -79,6 +79,11 @@ export default {
     const args = [dispId, shipmtNo];
     return mysql.update(sql, args, trans);
   },
+  updateEffective(dispId, eff, trans) {
+    const sql = 'update tms_shipments set effective = ? where disp_id = ?';
+    const args = [eff, dispId];
+    return mysql.update(sql, args, trans);
+  },
   upsertLocation(
     id, name, province, city, district, addr,
     email, contact, mobile, tenantId, type, trans

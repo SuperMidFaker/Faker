@@ -96,13 +96,6 @@ export default {
     console.log(sql, args);
     return mysql.query(sql, args); 
   },
-  getTenantPersonnelCount_test(tenantId, filters) {
-    const args = [tenantId];
-    const filterClause =  " where tenant_id=34";
-    const sql = `SELECT count(*) from g_bus_delegate  ${filterClause}`;
-    console.log(sql, args);
-    return mysql.query(sql, args); //getTenantPersonnelCount_test
-  },
   getPagedPersonnelInCorp(tenantId, current, pageSize, filters, sortField, sortOrder) {
     const args = [tenantId];
     const filterClause = concatFilterSql(filters, args);
@@ -116,23 +109,6 @@ export default {
       sso_login as L on TU.login_id = L.id where tenant_id = ? ${filterClause} ${sortClause}
       limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
-    console.log(sql, args);
-    return mysql.query(sql, args);
-  },
-  getPagedPersonnelInCorp_test(tenantId, current, pageSize, filters, sortField, sortOrder) {
-    const args = [tenantId];
-    const filterClause = " where tenant_id = ?";
-    let sortColumn = sortField;
-    let sortClause = '';
-    if (sortColumn === 'role') {
-      sortColumn = 'TU.user_type';
-      sortClause = ` order by ${sortColumn} ${sortOrder === 'descend' ? 'desc' : 'asc'} `;
-    }
-
-    const sql = `SELECT del_id as \`key\`,invoice_no,del_no,status from g_bus_delegate  ${filterClause} ${sortClause}
-      limit ?, ?`;
-    args.push((current - 1) * pageSize, pageSize);
-    console.log(sql, args);
     return mysql.query(sql, args);
   },
   insertPersonnel(creator, loginId, personnel, tenant, trans) {
@@ -160,7 +136,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTenantUsers(tenantId) {
-    const sql = 'select user_id as id, name from sso_tenant_users where tenant_id = ?';
+    const sql = 'select user_id as id, login_id as lid, name from sso_tenant_users where tenant_id = ?';
     const args = [tenantId];
     return mysql.query(sql, args);
   },
