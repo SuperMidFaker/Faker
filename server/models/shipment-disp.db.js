@@ -41,8 +41,8 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
-      SD.source as source, S.created_date as created_date, acpt_time
-      from tms_shipments as S
+      SD.source as source, S.created_date as created_date, acpt_time,
+      effective from tms_shipments as S
       inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
       where SD.sp_tenant_id = ? ${clause}`;
     return mysql.query(sql, args);
