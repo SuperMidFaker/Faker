@@ -230,6 +230,17 @@ function *shipmtDraftP() {
     Result.InternalServerError(this, e.message);
   }
 }
+
+function *shipmtRevokeP() {
+  try {
+    const body = yield cobody(this);
+    yield shipmentDao.updateEffective(body.shipmtDispId, body.eff, trans);
+    return Result.OK(this);
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
@@ -237,4 +248,5 @@ export default [
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
+  [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
 ]
