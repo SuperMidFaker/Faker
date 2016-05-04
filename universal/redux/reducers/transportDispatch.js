@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
+const actionTypes = createActionTypes('@@welogix/transport/dispatch/', [
   'SHOW_ACCEPT_MODAL', 'HIDE_ACCEPT_MODAL',
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
@@ -14,7 +14,7 @@ const initialState = {
     loaded: false,
     loading: false,
     filters: [
-      { name: 'type', value : 'unaccepted' },
+      { name: 'type', value : 'waiting' },
       /* { name: 'shipmt_no', value: ''} */
     ],
     submitting: false,
@@ -97,57 +97,5 @@ export function loadTable(cookie, params) {
       params,
       cookie
     }
-  };
-}
-
-export function saveAndAccept(shipment, sp) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_SHIPMT,
-        actionTypes.SAVE_SHIPMT_SUCCEED,
-        actionTypes.SAVE_SHIPMT_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/transport/shipment/saveaccept',
-      data: { shipment, sp },
-    }
-  };
-}
-
-export function saveDraft(shipment, sp) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_DRAFT,
-        actionTypes.SAVE_DRAFT_SUCCEED,
-        actionTypes.SAVE_DRAFT_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/transport/shipment/draft',
-      data: { shipment, sp },
-    }
-  };
-}
-
-export function loadAcceptDispatchers(tenantId, dispId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DISPATCHERS,
-        actionTypes.LOAD_DISPATCHERS_SUCCEED,
-        actionTypes.LOAD_DISPATCHERS_FAIL,
-      ],
-      method: 'get',
-      endpoint: 'v1/transport/shipment/dispatchers',
-      data: { tenantId },
-      modal: { dispId },
-    }
-  };
-}
-
-export function closeAcceptModal() {
-  return {
-    type: actionTypes.HIDE_ACCEPT_MODAL,
   };
 }
