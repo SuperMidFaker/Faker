@@ -48,9 +48,7 @@ export default(store, cookie) => {
           isAuthed
         }} = store.getState();
       if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
-        const prevQuery = __DEV__
-          ? query
-          : {};
+        const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
           query: {
