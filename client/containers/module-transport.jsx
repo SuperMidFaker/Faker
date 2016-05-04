@@ -29,7 +29,7 @@ export default class Transport extends React.Component {
     }, {
       single: true,
       key: 'tms-2',
-      path: '/tms/dispatch',
+      path: '/transport/dispatch',
       icon: 's7-mail-open-file',
       text: '调度'
     }, {

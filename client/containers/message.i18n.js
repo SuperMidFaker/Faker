@@ -152,6 +152,10 @@ const messages = defineMessages({
   transportAcceptance: {
     id: 'container.transport.acceptance',
     defaultMessage: '受理'
+  },
+  transportDispatch: {
+    id: 'container.transport.dispatch',
+    defaultMessage: '调度'
   }
 });
 
