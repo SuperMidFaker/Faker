@@ -171,8 +171,9 @@ export default class ShipmentCreate extends React.Component {
       name: cl.name
     }));
     return (
-      <Form form={formhoc} horizontal className="form-edit-content offset-mid-col">
-        <Col span="14" className="subform">
+      <div className="main-content">
+      <Form form={formhoc} horizontal>
+        <Col span="16" className="panel-wrapper">
           <ConsignInfo type="consigner" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ConsignInfo type="consignee" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ScheduleInfo intl={intl} formhoc={formhoc} />
@@ -180,39 +181,27 @@ export default class ShipmentCreate extends React.Component {
           <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
         </Col>
         <Col span="8">
-          <Row className="subform">
+          <div className="panel-wrapper right-side-panel">
             <AutoCompSelectItem labelName={this.msg('client')} formhoc={formhoc}
-              colSpan={4} field="client" optionData={clientOpts} required
+              colSpan={6} field="client" optionData={clientOpts} required
               optionField="name" optionKey="key" optionValue="value"
               rules={[{
                 required: true, message: this.msg('clientNameMust')
               }]}
             />
-            <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={4}
-              value={tenantName} disabled
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={4}
-              field="ref_external_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refWaybillNo')} colSpan={4}
-              field="ref_waybill_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refEntryNo')} colSpan={4}
-              field="ref_entry_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('remark')} colSpan={4}
-              field="remark"
-            />
-            <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
+            <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={6} value={tenantName} disabled/>
+            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={6} field="ref_external_no"/>
+            <InputItem formhoc={formhoc} labelName={this.msg('refWaybillNo')} colSpan={6} field="ref_waybill_no"/>
+            <InputItem formhoc={formhoc} labelName={this.msg('refEntryNo')} colSpan={6} field="ref_entry_no"/>
+            <InputItem formhoc={formhoc} labelName={this.msg('remark')} colSpan={6} field="remark"/>
+            <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={6}
               field="freight_charge" hasFeedback={false} rules={[{
                     type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
               }]}
             />
-          </Row>
+          </div>
           <Row className="subform-buton-row">
-            <Button htmlType="submit" type="primary" loading={submitting}
-            onClick={this.handleSaveAndAccept}
-            >
+            <Button htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
             {this.msg('saveAndAccept')}
             </Button>
           </Row>
@@ -223,6 +212,7 @@ export default class ShipmentCreate extends React.Component {
           </Row>
         </Col>
       </Form>
+      </div>
     );
   }
 }

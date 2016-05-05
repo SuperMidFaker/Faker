@@ -29,6 +29,7 @@ import * as ExportAccept from './containers/export/accept';
 import Transport from './containers/module-transport';
 import TMSDashboard from './containers/transport/dashboard';
 import * as TMSAcceptance from './containers/transport/acceptance';
+import * as TMSDispatch from './containers/transport/dispatch';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
@@ -157,6 +158,9 @@ export default(store, cookie) => {
               <IndexRoute component={TMSAcceptance.List}/>
               <Route path="shipment/new" component={TMSAcceptance.CreateNew} />
               <Route path="shipment/edit/:shipmt" component={TMSAcceptance.Edit} />
+            </Route>
+            <Route path="dispatch">
+              <IndexRoute component={TMSDispatch.List}/>
             </Route>
           </Route>
         </Route>
