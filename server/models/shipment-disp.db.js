@@ -19,19 +19,19 @@ function getShipmtClause(shipmtEff, shipmtDispType, shipmtNo, aliasS, aliasSD, a
   return `${eff} ${disp} ${shno}`;
 }
 export default {
-  getFilteredTotalCount(tenantId, shipmtEff, shipmtDispType, shipmtNo) {
-    const args = [tenantId];
+  getFilteredTotalCount(tenantId, shipmtEff, shipmtDispType, shipmtNo, dispSt) {
+    const args = [tenantId, dispSt];
     const clause = getShipmtClause(
       shipmtEff, shipmtDispType, shipmtNo,
       'S', 'SD', args
     );
     const sql = `select count(S.shipmt_no) as count from tms_shipments as S
-      inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
-      where SD.sp_tenant_id = ? ${clause}`;
+      inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where SD.sp_tenant_id = ? and disp_status = ? ${clause}`;
     return mysql.query(sql, args);
   },
-  getFilteredShipments(tenantId, shipmtEff, shipmtDispType, shipmtNo) {
-    const args = [tenantId];
+  getFilteredShipments(tenantId, shipmtEff, shipmtDispType, shipmtNo, dispSt, pageSize, current) {
+    const args = [tenantId, dispSt];
     const clause = getShipmtClause(
       shipmtEff, shipmtDispType, shipmtNo,
       'S', 'SD', args
@@ -43,8 +43,9 @@ export default {
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source as source, S.created_date as created_date, acpt_time,
       effective from tms_shipments as S
-      inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
-      where SD.sp_tenant_id = ? ${clause}`;
+      inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where SD.sp_tenant_id = ? and disp_status = ? ${clause} limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
   createAndAcceptByLSP(

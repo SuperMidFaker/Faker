@@ -104,7 +104,14 @@ export default class AcceptList extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
-    dataIndex: 'shipmt_no'
+    dataIndex: 'shipmt_no',
+    render: (o, record) => {
+      if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
+        return <span style={{ color : '#999' }}>{o}</span>;
+      } else {
+        return o;
+      }
+    }
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name'
@@ -190,9 +197,7 @@ export default class AcceptList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (searchVal) => {
-    const filters = JSON.stringify(
-      this.mergeFilters(this.props.filters, 'name', searchVal)
-    );
+    const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
     this.handleTableLoad(filters, 1);
   }
   handleShipmentFilter = (ev) => {
@@ -273,8 +278,11 @@ export default class AcceptList extends React.Component {
     if (radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
+        width: 130,
         render: (o, record, index) => {
-          if (record.source === SHIPMENT_SOURCE.consigned) {
+          if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
+            return <span />;
+          } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
                 <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
