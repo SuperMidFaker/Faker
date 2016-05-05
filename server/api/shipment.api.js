@@ -72,17 +72,12 @@ function *shipmentListG() {
     }
   });
   try {
-    const modes = yield shipmentDao.getTransitModes(tenantId);
     const totals = yield shipmentDispDao.getFilteredTotalCount(
       tenantId, shipmtType, shipmtDispType, shipmtNo
     );
     const shipmts = yield shipmentDispDao.getFilteredShipments(
       tenantId, shipmtType, shipmtDispType, shipmtNo
     );
-    shipmts.forEach(shm => {
-      shm.transport_mode =
-        modes.filter(mod => mod.mode_code === shm.transport_mode)[0].mode_name
-    });
     Result.OK(this, {
       totalCount: totals[0].count,
       pageSize,

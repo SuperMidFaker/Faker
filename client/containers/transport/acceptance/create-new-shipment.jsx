@@ -44,6 +44,7 @@ function fetchData({ state, dispatch, cookie }) {
     loginName: state.account.username,
     tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
+    transitModes: state.shipment.formRequire.transitModes,
     clients: state.shipment.formRequire.clients,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
@@ -67,6 +68,13 @@ function fetchData({ state, dispatch, cookie }) {
           client_id: selclients.length > 0 ? clientFieldId : 0,
           client: selclients.length > 0 ? selclients[0].name : clientFieldId,
         });
+      } else if (name === 'transport_mode_code') {
+        const code = fields[name].value;
+        const modes = props.transitModes.filter(tm => tm.mode_code === code);
+        props.setConsignFields({
+          transport_mode_code: code,
+          transport_mode: modes.length > 0 ? modes[0].mode_name : '',
+        });
       } else {
         props.setFormValue(name, fields[name].value || '');
       }
@@ -82,6 +90,7 @@ export default class ShipmentCreate extends React.Component {
     tenantName: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+    transitModes: PropTypes.array.isRequired,
     clients: PropTypes.array.isRequired,
     submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired,
@@ -149,6 +158,11 @@ export default class ShipmentCreate extends React.Component {
       }
     });
   }
+  /*
+  shouldComponentUpdate() {
+    return false;
+  }
+ */
   render() {
     const { intl, clients, submitting, tenantName, formhoc } = this.props;
     const clientOpts = clients.map(cl => ({

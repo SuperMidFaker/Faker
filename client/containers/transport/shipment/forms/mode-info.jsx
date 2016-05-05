@@ -42,7 +42,7 @@ export default class ModeInfo extends React.Component {
             wrapperCol={{span: 24 - labelColSpan}} required
           >
             <Select {...getFieldProps(
-              'transport_mode', { rules: [{
+              'transport_mode_code', { rules: [{
                 required: true, message: this.msg('transitModeMust')
               }]}
             )}
