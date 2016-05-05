@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select, Table } from 'ant-ui';
 import InputItem from './input-item';
-import { saveLocalGoods, editLocalGoods, removeLocalGoods }
+import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
@@ -14,6 +14,10 @@ const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+function asNumber(str) {
+  const num = Number(str);
+  return !isNaN(num) ? num : 0;
+}
 function ColumnInput(props) {
   const { record, field, index, state, onChange } = props;
   function handleInputChange(ev) {
@@ -70,7 +74,7 @@ ColumnSelect.propTypes = {
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
   }),
-  { saveLocalGoods, editLocalGoods, removeLocalGoods }
+  { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
 )
 export default class GoodsInfo extends React.Component {
   static propTypes = {
@@ -83,6 +87,7 @@ export default class GoodsInfo extends React.Component {
     saveLocalGoods: PropTypes.func.isRequired,
     editLocalGoods: PropTypes.func.isRequired,
     removeLocalGoods: PropTypes.func.isRequired,
+    setConsignFields: PropTypes.func.isRequired,
   }
   state = {
     editGoods: {
@@ -107,7 +112,19 @@ export default class GoodsInfo extends React.Component {
   }
   handleGoodsListCompute = (ev) => {
     ev.preventDefault();
-    // todo
+    let totalCount = 0;
+    let totalWeight = 0;
+    let totalVolume = 0;
+    this.props.goods.forEach(gd => {
+      totalCount += asNumber(gd.count);
+      totalWeight += asNumber(gd.weight);
+      totalVolume += asNumber(gd.volume);
+    });
+    this.props.setConsignFields({
+      total_count: totalCount,
+      total_weight: totalWeight,
+      total_volume: totalVolume,
+    });
   }
   handleGoodsColumnEdit = (field, value) => {
     this.setState({
