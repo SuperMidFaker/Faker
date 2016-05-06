@@ -41,6 +41,33 @@ function packGoodsArgs(goods) {
 }
 
 export default {
+  getCountByType(tenantId, shipmtType, shipmtNo) {
+    const args = [tenantId, shipmtType];
+    let shipmtNoWhere = '';
+    if (shipmtNo) {
+      shipmtNoWhere = 'shipmt_no like ?';
+      args.push(shipmtNoWhere);
+    }
+    const sql = `select count(shipmt_no) as count from tms_shipments
+      where tenant_id = ? and effective = ? ${shipmtNoWhere}`;
+    return mysql.query(sql, args);
+  },
+  getShipmentsByType(tenantId, shipmtType, shipmtNo, pageSize, current) {
+    const args = [tenantId, shipmtType];
+    let shipmtNoWhere = '';
+    if (shipmtNo) {
+      shipmtNoWhere = 'shipmt_no like ?';
+      args.push(shipmtNoWhere);
+    }
+    const sql = `select shipmt_no as \`key\`, shipmt_no, customer_name as sr_name, consigner_name,
+      consigner_province, consigner_city,
+      consigner_district, consigner_addr, consignee_name, consignee_province, effective,
+      consignee_city, consignee_district, consignee_addr, pickup_est_date, transit_time,
+      deliver_est_date, transport_mode, total_count, total_weight, total_volume, created_date
+      from tms_shipments where tenant_id = ? and effective = ? ${shipmtNoWhere} limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
+    return mysql.query(sql, args);
+  },
   getConsignLocations(tenantId, type) {
     const sql = `select node_id, name, province, city, district, addr, contact, email, mobile,
       postcode from tms_node_locations where tenant_id = ? and type = ?`;
@@ -59,7 +86,7 @@ export default {
     const args = [tenantId];
     return mysql.query(sql, args);
   },
-  createByLSP(shipmtNo, shipmt, spTenantId, spName, spLoginId, effecive, trans) {
+  createByLSP(shipmtNo, shipmt, spTenantId, spName, spLoginId, effective, trans) {
     const sql = `insert into tms_shipments (shipmt_no, lsp_tenant_id, lsp_name,
       customer_tenant_id, customer_name,
       ref_external_no, ref_waybill_no, ref_entry_no, transport_mode_code, consigner_name,
@@ -71,7 +98,7 @@ export default {
       tenant_id, creater_login_id, created_date) values (?, NOW())`;
     const args = [shipmtNo, spTenantId, spName, shipmt.client_id, shipmt.client];
     packShipmentArgsByLSP(shipmt, args);
-    args.push(effecive, spTenantId, spLoginId);
+    args.push(effective, spTenantId, spLoginId);
     return mysql.insert(sql, [args], trans);
   },
   updateDispId(shipmtNo, dispId, trans) {
