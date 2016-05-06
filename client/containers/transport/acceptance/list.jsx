@@ -105,6 +105,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
+    width: 150,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return <span style={{ color : '#999' }}>{o}</span>;
@@ -114,53 +115,63 @@ export default class AcceptList extends React.Component {
     }
   }, {
     title: this.msg('shipRequirement'),
-    dataIndex: 'sr_name'
+    dataIndex: 'sr_name',
+    width: 140
+  }, {
+    title: this.msg('shipMode'),
+    dataIndex: 'transport_mode',
+    width: 80
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
+    width: 150,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
+    width: 150,
     render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
+    width: 150,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consignorPlace'),
+    width: 150,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consigneePlace'),
+    width: 150,
     render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 120,
-  }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode'
+    width: 150,
   }, {
     title: this.msg('packageNum'),
-    dataIndex: 'total_count'
+    dataIndex: 'total_count',
+    width: 150
   }, {
     title: this.msg('shipWeight'),
-    dataIndex: 'total_weight'
+    dataIndex: 'total_weight',
+    width: 150
   }, {
     title: this.msg('shipVolume'),
-    dataIndex: 'total_volume'
+    dataIndex: 'total_volume',
+    width: 150
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
@@ -328,7 +339,7 @@ export default class AcceptList extends React.Component {
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
@@ -338,7 +349,7 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[4, 15]} columnsPageSize={3}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
