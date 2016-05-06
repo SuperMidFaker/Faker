@@ -2,9 +2,9 @@ import mysql from '../../reusable/db-util/mysql';
 
 function packShipmentArgsByLSP(shipmt, args) {
   const columns = [
-    `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'consigner_name',
-    `consigner_province`, `consigner_city`, `consigner_district`, `consigner_addr`,
-    `consigner_email`, 'transport_mode_code',
+    `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
+    'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
+    `consigner_addr`, `consigner_email`,
     `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
     `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
     `consignee_contact`, `consignee_mobile`, `pickup_est_date`, `transit_time`,

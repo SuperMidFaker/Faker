@@ -125,7 +125,7 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         effective, trans
       )
     ];
-    if (shipmt.consigner_id) {
+    if (!shipmt.consigner_id) {
       dbOps.push(shipmentDao.upsertLocation(
         shipmt.consigner_id, shipmt.consigner_name, shipmt.consigner_province,
         shipmt.consigner_city, shipmt.consigner_district, shipmt.consigner_addr,
@@ -133,7 +133,7 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         sp.tid, CONSIGN_TYPE.consigner, trans
       ));
     }
-    if (shipmt.consignee_id) {
+    if (!shipmt.consignee_id) {
       dbOps.push(shipmentDao.upsertLocation(
         shipmt.consignee_id, shipmt.consignee_name, shipmt.consignee_province,
         shipmt.consignee_city, shipmt.consignee_district, shipmt.consignee_addr,
