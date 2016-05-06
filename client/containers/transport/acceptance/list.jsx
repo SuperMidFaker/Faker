@@ -66,7 +66,6 @@ export default class AcceptList extends React.Component {
     loadTable: PropTypes.func.isRequired
   }
   state = {
-    radioValue: 'unaccepted',
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
@@ -181,9 +180,12 @@ export default class AcceptList extends React.Component {
         return this.msg('consginSource');
       } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
         return this.msg('subcontractSource');
+      } else {
+        return <span />;
       }
     }
   }, {
+    // todo sort with created acpt
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
     render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
@@ -193,7 +195,7 @@ export default class AcceptList extends React.Component {
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }]
-  handleTableLoad = (filters, current, callback) => {
+  handleTableLoad = (filters, current) => {
     this.props.loadTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
@@ -202,9 +204,6 @@ export default class AcceptList extends React.Component {
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
-      }
-      if (callback) {
-        callback();
       }
     });
   }
@@ -218,9 +217,8 @@ export default class AcceptList extends React.Component {
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
-    this.handleTableLoad(filterArray, 1, () => {
+    this.handleTableLoad(filterArray, 1);
       this.setState({ radioValue: targetVal });
-    });
   }
   handleShipmtAccept(dispId) {
     this.props.loadAcceptDispatchers(
@@ -285,8 +283,13 @@ export default class AcceptList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
+    let radioValue;
+    const types = this.props.filters.filter(flt => flt.name === 'type');
+    if (types.length === 1) {
+      radioValue = types[0].value;
+    }
     let columns = this.columns;
-    if (this.state.radioValue === 'unaccepted') {
+    if (radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 130,
@@ -331,12 +334,12 @@ export default class AcceptList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={this.state.radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
           <span style={{marginLeft: '10px'}} />
-          <RadioGroup onChange={this.handleShipmentFilter} value={this.state.radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>

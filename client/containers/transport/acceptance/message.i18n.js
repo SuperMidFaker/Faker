@@ -139,7 +139,7 @@ export default defineMessages({
   },
   freightChargeMustBeNumber: {
     id: 'transport.acceptance.freight.charge.be.number',
-    defaultMessage: '运费必须为数字'
+    defaultMessage: '运费必须为正数'
   },
   formError: {
     id: 'transport.acceptance.form.error',
