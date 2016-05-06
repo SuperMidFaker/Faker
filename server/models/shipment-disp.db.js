@@ -18,6 +18,19 @@ function getShipmtClause(shipmtEff, shipmtDispType, shipmtNo, aliasS, aliasSD, a
   }
   return `${eff} ${disp} ${shno}`;
 }
+
+function genDispFilters(filter) {
+  const arr = [];
+  if (filter.status === 'waiting') {
+    arr.push(' SD.sp_tenant_id = ? and SD.status = 2 and SD.disp_status = 1 ');
+  } else if (filter.status === 'dispatching') {
+    arr.push('SD.sr_tenant_id = ? and SD.status = 1 and SD.disp_status = 0 ');
+  } else if (filter.status === 'dispatched') {
+    arr.push('SD.sr_tenant_id = ? and SD.disp_status = 1 ');
+  }
+  return arr.join('');
+}
+
 export default {
   getFilteredTotalCount(tenantId, shipmtEff, shipmtDispType, shipmtNo) {
     const args = [tenantId];
@@ -45,6 +58,29 @@ export default {
       effective from tms_shipments as S
       inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
       where SD.sp_tenant_id = ? ${clause}`;
+    return mysql.query(sql, args);
+  },
+  getDispatchShipmts(tenantId, filter, offset, pageSize) {
+    const args = [tenantId];
+    const awhere = genDispFilters(filter, args);
+    args.push(offset, pageSize);
+    const sql = `select SD.id as \`key\`, S.shipmt_no, sr_name,
+      pickup_est_date, transit_time, deliver_est_date, consigner_name,
+      consigner_province, consigner_city, consigner_district, consigner_addr,
+      consignee_name, consignee_province, consignee_city, consignee_district,
+      consignee_addr, transport_mode, total_count, total_weight, total_volume,
+      SD.source, S.created_date, acpt_time,
+      effective from tms_shipments as S
+      right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where ${awhere} limit ?, ?`;
+    return mysql.query(sql, args);
+  },
+  getDispatchShipmtsCount(tenantId, filter) {
+    const args = [tenantId];
+    const awhere = genDispFilters(filter, args);
+    const sql = `select count(S.shipmt_no) as count from tms_shipments as S
+      right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where ${awhere}`;
     return mysql.query(sql, args);
   },
   createAndAcceptByLSP(

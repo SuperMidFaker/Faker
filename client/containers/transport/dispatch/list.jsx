@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message, Popover, Slider, Row, Col } from 'ant-ui';
+import { Table, Button, Radio, Icon, message, Select } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'reusable/components/nav-link';
@@ -11,6 +11,7 @@ import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
+import Condition from './condition';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -20,9 +21,9 @@ const formatContainerMsg = format(containerMessages);
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadTable(cookie, {
     tenantId: state.account.tenantId,
-    filters: JSON.stringify(state.transportDispatch.table.filters),
-    pageSize: state.transportDispatch.table.shipmentlist.pageSize,
-    currentPage: state.transportDispatch.table.shipmentlist.current,
+    filters: JSON.stringify(state.transportDispatch.filters),
+    pageSize: state.transportDispatch.shipmentlist.pageSize,
+    currentPage: state.transportDispatch.shipmentlist.current,
   }));
 }
 
@@ -43,21 +44,19 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.transportDispatch.table.shipmentlist,
-    filters: state.transportDispatch.table.filters,
-    loading: state.transportDispatch.table.loading,
+    shipmentlist: state.transportDispatch.shipmentlist,
+    filters: state.transportDispatch.filters,
+    loading: state.transportDispatch.loading,
     filterVisible: false,
-    filterConsignorStep: 20,
-    filterConsigneeStep: 20,
-    filterType: 'subline',
-    filterView: []
+    filterView: [],
+    panelHeader: []
   }),
   { loadTable })
 class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    filters: PropTypes.array.isRequired,
+    filters: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     loadTable: PropTypes.func.isRequired
@@ -67,7 +66,7 @@ class DispatchList extends React.Component {
   }
 
   componentWillMount() {
-    this.handleFilterTypeChange('subline');
+    this.handlePanelHeaderChange();
   }
 
   dataSource = new Table.DataSource({
@@ -87,17 +86,8 @@ class DispatchList extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order,
-        filters: this.props.filters
+        filters: JSON.stringify(this.props.filters)
       };
-      params.filters = params.filters.filter(
-        flt => flt.name in filters && filters[flt.name].length
-      );
-      for (const key in filters) {
-        if (filters[key] && filters[key].length > 0) {
-          params.filters = this.mergeFilters(params.filters, key, filters[key][0]);
-        }
-      }
-      params.filters = JSON.stringify(params.filters);
       return params;
     },
     remotes: this.props.shipmentlist
@@ -160,111 +150,109 @@ class DispatchList extends React.Component {
   }, {
     title: this.msg('shipmtOP'),
     render: (o, record) => {
-      return (
-        <span>
-          <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
-          {this.msg('btnTextDispatch')}
-          </a>
-          <span className="ant-divider" />
-          <a role="button" onClick={() => this.handleShipmtReject(record.key)}>
-          {this.msg('btnTextDivide')}
-          </a>
-        </span>
-      );
+      const s = this.props.filters.status;
+      if (s === 'waiting') {
+        return (
+          <span>
+            <a role="button" onClick={() => this.handleShipmtDispatch(record)}>
+            {this.msg('btnTextDispatch')}
+            </a>
+            <span className="ant-divider" />
+            <a role="button" onClick={() => this.handleShipmtDivide(record)}>
+            {this.msg('btnTextDivide')}
+            </a>
+          </span>
+        );
+      } else if (s === 'dispatching') {
+        return (
+          <span>
+            <a role="button" onClick={() => this.handleShipmtSend(record)}>
+            {this.msg('btnTextSend')}
+            </a>
+            <span className="ant-divider" />
+            <a role="button" onClick={() => this.handleShipmtReturn(record)}>
+            {this.msg('btnTextReturn')}
+            </a>
+          </span>
+        );
+      }
+      return (<span></span>);
     },
   }]
 
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleSearch = (searchVal) => {
-    const filters = JSON.stringify(
-      this.mergeFilters(this.props.filters, 'name', searchVal)
-    );
-    this.props.loadTable(null, {
-      tenantId: this.props.tenantId,
-      pageSize: this.props.shipmentlist.pageSize,
-      currentPage: 1,
-      filters
-    });
-  }
-  handleShipmentFilter = (ev) => {
+
+  handleStatusChange = (ev) => {
     const { shipmentlist, tenantId, filters } = this.props;
-    const filterArray = this.mergeFilters(filters, 'type', ev.target.value);
+    const tmp = Object.assign({}, filters);
+    tmp.status = ev.target.value;
+
     this.props.loadTable(null, {
       tenantId,
-      filters: JSON.stringify(filterArray),
+      filters: JSON.stringify(tmp),
       pageSize: shipmentlist.pageSize,
       currentPage: 1
     }).then(result => {
+      this.handlePanelHeaderChange();
+
       if (result.error) {
         message.error(result.error.message, 10);
       }
     });
   }
-  handleShipmtAccept(dispId) {
-    this.props.loadAcceptDispatchers(
-      this.props.tenantId, dispId
-    );
+
+  handleConditionChange(condition) {
+    console.log(condition);
   }
-  mergeFilters(curFilters, name, value) {
-    const merged = curFilters.filter(flt => flt.name !== name);
-    if (value !== null && value !== undefined && value !== '') {
-      merged.push({
-        name,
-        value
-      });
+
+  handlePanelHeaderChange() {
+    const { status } = this.props.filters;
+
+    const panelHeader = [];
+    if (status === 'waiting') {
+      panelHeader.push((<Condition msg={s => this.msg(s)} onConditionChange={(cd) => this.handleConditionChange(cd)}/>),
+      (<span className="ant-divider" style={{width: '0px'}}/>),
+      (<NavLink to="/transport/acceptance/shipment/new">
+              <Button>
+                <span>{this.msg('btnTextOriginShipments')}</span><Icon type="rollback" />
+              </Button>
+            </NavLink>));
+    } else if (status === 'dispatched') {
+      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={(value) => this.handleDayChange(value)}>
+        <Option value="0">最近七天</Option>
+        <Option value="1">最近一月</Option>
+      </Select>),
+      (<span className="ant-divider" style={{width: '0px'}}/>),
+      (<NavLink to="/transport/acceptance/shipment/new">
+              <Button>
+                <span>{this.msg('btnTextExport')}</span><Icon type="arrow-down" />
+              </Button>
+            </NavLink>));
     }
-    return merged;
+
+    this.setState({panelHeader});
   }
 
-  handleFilterVisibleChange(visible) {
-    this.setState({
-      filterVisible: visible
-    });
+  handleShipmtDispatch(shipmt) {
+    console.log(shipmt);
   }
 
-  handleFilterTypeChange(e) {
-    let filterType = e;
-    if (e.target) {
-      filterType = e.target.value;
-    }
-    const markscor = {
-      0: this.msg('filterProvince'),
-      20: this.msg('filterCity'),
-      40: this.msg('filterDistrict'),
-      60: this.msg('filterPlace'),
-      80: this.msg('filterConsignor')
-    };
-    const markscee = {
-      0: this.msg('filterProvince'),
-      20: this.msg('filterCity'),
-      40: this.msg('filterDistrict'),
-      60: this.msg('filterAddr'),
-      80: this.msg('filterConsignee')
-    };
-
-    const filterView = [];
-    if (filterType === 'consignor' || filterType === 'subline') {
-      filterView.push((<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignor')}：</h3></Row>),
-      (<Row><Slider step={null} max="80" marks={markscor} defaultValue={20} onChange={this.handleSliderChange.bind(this, 'consignor')}/></Row>));
-    }
-    if (filterType === 'consignee' || filterType === 'subline') {
-      filterView.push((<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignee')}：</h3></Row>),
-      (<Row><Slider step={null} max="80" marks={markscee} defaultValue={20} onChange={this.handleSliderChange.bind(this, 'consignee')}/></Row>));
-    }
-    this.setState({filterView,
-      filterType});
+  handleShipmtDivide(shipmt) {
+    console.log(shipmt);
   }
 
-  handleSliderChange(type, val) {
-    console.log(type, val);
+  handleShipmtSend(shipmt) {
+    console.log(shipmt);
   }
 
-  hideFilter() {
-    this.setState({
-      filterVisible: false
-    });
+  handleShipmtReturn(shipmt) {
+    console.log(shipmt);
+  }
+
+  handleDayChange() {
+
   }
 
   renderConsignLoc(shipmt, field) {
@@ -302,33 +290,12 @@ class DispatchList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
-    let radioValue;
-    this.props.filters.forEach(flt => {
-      if (flt.name === 'type') {
-        radioValue = flt.value;
-        return;
-      }
-    });
-    const content = (
-      <div className="dispatch-filter">
-        <Row type="flex" justify="center">
-          <RadioGroup value={this.state.filterType} onChange={this.handleFilterTypeChange.bind(this)}>
-            <RadioButton value="subline">{this.msg('filterTitleSubLine')}</RadioButton>
-            <RadioButton value="consignor">{this.msg('filterTitleConsignor')}</RadioButton>
-            <RadioButton value="consignee">{this.msg('filterTitleConsignee')}</RadioButton>
-          </RadioGroup>
-        </Row>
-        {this.state.filterView}
-        <Row type="flex" justify="end" style={{paddingTop: '20px'}}>
-          <Col span="4"><Button type="ghost" onClick={this.hideFilter.bind(this)}>{this.msg('btnTextCancel')}</Button></Col>
-          <Col span="4"><Button type="primary">{this.msg('btnTextOk')}</Button></Col>
-        </Row>
-      </div>
-    );
+    const { status } = this.props.filters;
+
     return (
       <div className="main-content">
         <div className="page-header">
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleStatusChange} value={status}>
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
@@ -336,18 +303,7 @@ class DispatchList extends React.Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Popover placement="bottomLeft" overlay={content} trigger="click"
-              visible={this.state.filterVisible} onVisibleChange={this.handleFilterVisibleChange.bind(this)}>
-              <Button>
-                <span>{this.msg('filterTitle')}</span><Icon type="down" />
-              </Button>
-            </Popover>
-            <span className="ant-divider" style={{width: '0px'}}/>
-            <NavLink to="/transport/acceptance/shipment/new">
-              <Button>
-                <Icon type="rollback" /><span>{this.msg('btnTextOriginShipments')}</span>
-              </Button>
-            </NavLink>
+            {this.state.panelHeader}
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
@@ -358,6 +314,21 @@ class DispatchList extends React.Component {
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
             {formatContainerMsg(intl, 'clearSelection')}
             </Button>
+          </div>
+        </div>
+        <div className="dock-container">
+          <div className="dock-content">
+            <div className="dock-sp-line"></div>
+            <div className="dock-sp">
+              <div className="dock-sp-body">
+                <div className="dock-sp-toolbar">
+
+                </div>
+                <div className="dock-sp-content">
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
