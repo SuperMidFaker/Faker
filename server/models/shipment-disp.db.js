@@ -32,23 +32,31 @@ function genDispFilters(filter) {
 }
 
 export default {
-  getFilteredTotalCount(tenantId, shipmtEff, shipmtDispType, shipmtNo) {
-    const args = [tenantId];
+  getFilteredTotalCount(tenantId, shipmtEff, shipmtDispType, shipmtNo, dispSt) {
+    const args = [tenantId, dispSt];
     const clause = getShipmtClause(
       shipmtEff, shipmtDispType, shipmtNo,
       'S', 'SD', args
     );
     const sql = `select count(S.shipmt_no) as count from tms_shipments as S
-      inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
-      where SD.sp_tenant_id = ? ${clause}`;
+      inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where SD.sp_tenant_id = ? and disp_status = ? ${clause}`;
     return mysql.query(sql, args);
   },
-  getFilteredShipments(tenantId, shipmtEff, shipmtDispType, shipmtNo) {
-    const args = [tenantId];
+  getFilteredShipments(
+    tenantId, shipmtEff, shipmtDispType, shipmtNo, order, dispSt, pageSize, current
+  ) {
+    const args = [tenantId, dispSt];
     const clause = getShipmtClause(
       shipmtEff, shipmtDispType, shipmtNo,
       'S', 'SD', args
     );
+    let orderClause = '';
+    if (order === 'created') {
+      orderClause = 'order by S.created_date desc';
+    } else if (order === 'accepted') {
+      orderClause = 'order by acpt_time desc';
+    }
     const sql = `select SD.id as \`key\`, S.shipmt_no as shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
       consigner_province, consigner_city, consigner_district, consigner_addr,
@@ -56,8 +64,9 @@ export default {
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source as source, S.created_date as created_date, acpt_time,
       effective from tms_shipments as S
-      inner join tms_shipment_dispatch as SD on S.disp_id = SD.id
-      where SD.sp_tenant_id = ? ${clause}`;
+      inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where SD.sp_tenant_id = ? and disp_status = ? ${clause} ${orderClause} limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
   getDispatchShipmts(tenantId, filter, offset, pageSize) {

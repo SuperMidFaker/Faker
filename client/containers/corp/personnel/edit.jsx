@@ -142,7 +142,7 @@ export default class CorpEdit extends React.Component {
               [{required: true, min: 2, message: msg('fullNameMessage')}]
             )}
             <FormItem label={msg('username')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-              help={getFieldError('loginName')} hasFeedback required>
+              help={getFieldError('loginName')} required>
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(

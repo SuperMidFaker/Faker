@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Button, message } from 'ant-ui';
+// import shallowEqual from 'react-redux/lib/utils/shallowEqual';
+import { Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
@@ -57,8 +58,7 @@ function fetchData({ state, dispatch, cookie }) {
     return props.formData;
   },
   onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
+    Object.keys(fields).forEach(name => {
       if (name === 'client') {
         const clientFieldId = fields[name].value;
         const selclients = props.clients.filter(
@@ -78,7 +78,7 @@ function fetchData({ state, dispatch, cookie }) {
       } else {
         props.setFormValue(name, fields[name].value || '');
       }
-    }
+    });
   },
   formPropName: 'formhoc'
 })
@@ -105,6 +105,11 @@ export default class ShipmentCreate extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
+  /*
+  shouldComponentUpdate(nextProps) {
+    return !shallowEqual(nextProps.formData, this.props.formData);
+  }
+ */
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSaveAndAccept = (ev) => {
     ev.preventDefault();
@@ -158,11 +163,6 @@ export default class ShipmentCreate extends React.Component {
       }
     });
   }
-  /*
-  shouldComponentUpdate() {
-    return false;
-  }
- */
   render() {
     const { intl, clients, submitting, tenantName, formhoc } = this.props;
     const clientOpts = clients.map(cl => ({
@@ -173,15 +173,21 @@ export default class ShipmentCreate extends React.Component {
     return (
       <div className="main-content">
       <Form form={formhoc} horizontal>
-        <Col span="16" className="panel-wrapper">
+       <div className="page-body">
+       <div className="panel-header"></div>
+       <div className="panel-body body-responsive">
+        <Col span="16" className="main-col">
           <ConsignInfo type="consigner" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ConsignInfo type="consignee" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ScheduleInfo intl={intl} formhoc={formhoc} />
           <ModeInfo intl={intl} formhoc={formhoc} />
           <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
         </Col>
-        <Col span="8">
-          <div className="panel-wrapper right-side-panel">
+        <Col span="8" className="right-side-col">
+            <div className="subform-heading">
+                <div className="subform-title">关联信息</div>
+            </div>
+            <div className="subform-body">
             <AutoCompSelectItem labelName={this.msg('client')} formhoc={formhoc}
               colSpan={6} field="client" optionData={clientOpts} required
               optionField="name" optionKey="key" optionValue="value"
@@ -199,18 +205,18 @@ export default class ShipmentCreate extends React.Component {
                     type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
               }]}
             />
-          </div>
-          <Row className="subform-buton-row">
-            <Button htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
+            </div>
+        </Col>
+        </div>
+        </div>
+        <div className="bottom-fixed-row">
+            <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
             {this.msg('saveAndAccept')}
             </Button>
-          </Row>
-          <Row className="subform-buton-row">
-            <Button onClick={this.handleDraftSave} loading={submitting}>
+            <Button size="large" onClick={this.handleDraftSave} loading={submitting}>
             {this.msg('saveAsDraft')}
             </Button>
-          </Row>
-        </Col>
+          </div>
       </Form>
       </div>
     );

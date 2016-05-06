@@ -66,6 +66,7 @@ export default class AcceptList extends React.Component {
     loadTable: PropTypes.func.isRequired
   }
   state = {
+    radioValue: 'unaccepted',
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
@@ -104,56 +105,74 @@ export default class AcceptList extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
-    dataIndex: 'shipmt_no'
+    dataIndex: 'shipmt_no',
+    width: 150,
+    render: (o, record) => {
+      if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
+        return <span style={{ color : '#999' }}>{o}</span>;
+      } else {
+        return o;
+      }
+    }
   }, {
     title: this.msg('shipRequirement'),
-    dataIndex: 'sr_name'
+    dataIndex: 'sr_name',
+    width: 140
+  }, {
+    title: this.msg('shipMode'),
+    dataIndex: 'transport_mode',
+    width: 80
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
+    width: 150,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
+    width: 150,
     render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
+    width: 150,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consignorPlace'),
+    width: 150,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consigneePlace'),
+    width: 150,
     render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 120,
-  }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode'
+    width: 150,
   }, {
     title: this.msg('packageNum'),
-    dataIndex: 'total_count'
+    dataIndex: 'total_count',
+    width: 150
   }, {
     title: this.msg('shipWeight'),
-    dataIndex: 'total_weight'
+    dataIndex: 'total_weight',
+    width: 150
   }, {
     title: this.msg('shipVolume'),
-    dataIndex: 'total_volume'
+    dataIndex: 'total_volume',
+    width: 150
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
@@ -174,7 +193,7 @@ export default class AcceptList extends React.Component {
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }]
-  handleTableLoad = (filters, current) => {
+  handleTableLoad = (filters, current, callback) => {
     this.props.loadTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
@@ -184,20 +203,24 @@ export default class AcceptList extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       }
+      if (callback) {
+        callback();
+      }
     });
   }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (searchVal) => {
-    const filters = JSON.stringify(
-      this.mergeFilters(this.props.filters, 'name', searchVal)
-    );
+    const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
     this.handleTableLoad(filters, 1);
   }
   handleShipmentFilter = (ev) => {
-    const filterArray = this.mergeFilters(this.props.filters, 'type', ev.target.value);
-    this.handleTableLoad(filterArray, 1);
+    const targetVal = ev.target.value;
+    const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
+    this.handleTableLoad(filterArray, 1, () => {
+      this.setState({ radioValue: targetVal });
+    });
   }
   handleShipmtAccept(dispId) {
     this.props.loadAcceptDispatchers(
@@ -262,19 +285,15 @@ export default class AcceptList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
-    let radioValue;
-    this.props.filters.forEach(flt => {
-      if (flt.name === 'type') {
-        radioValue = flt.value;
-        return;
-      }
-    });
     let columns = this.columns;
-    if (radioValue === 'unaccepted') {
+    if (this.state.radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
+        width: 130,
         render: (o, record, index) => {
-          if (record.source === SHIPMENT_SOURCE.consigned) {
+          if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
+            return <span />;
+          } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
                 <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
@@ -312,15 +331,17 @@ export default class AcceptList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={this.state.radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
-            <span style={{marginLeft: '10px'}} />
+          </RadioGroup>
+          <span style={{marginLeft: '10px'}} />
+          <RadioGroup onChange={this.handleShipmentFilter} value={this.state.radioValue}>
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
@@ -329,8 +350,8 @@ export default class AcceptList extends React.Component {
             </NavLink>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} size="middle"
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[4, 15]} columnsPageSize={3}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

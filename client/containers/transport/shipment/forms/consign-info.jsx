@@ -42,12 +42,24 @@ export default class ConsignInfo extends React.Component {
     });
     if (selectConsignLoc) {
       const consignKey = `${this.props.type}_id`;
+      this.props.setFormValue(consignKey, selectConsignLoc.node_id);
+      /*
       this.props.setConsignFields({
         [consignKey]: selectConsignLoc.node_id,
+        [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,
+        [this.renderFields.contact]: selectConsignLoc.contact,
+        [this.renderFields.mobile]: selectConsignLoc.mobile,
+        [this.renderFields.email]: selectConsignLoc.email
+      });
+     */
+      this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
+        [this.renderFields.province]: selectConsignLoc.province,
+        [this.renderFields.city]: selectConsignLoc.city,
+        [this.renderFields.district]: selectConsignLoc.district,
         [this.renderFields.contact]: selectConsignLoc.contact,
         [this.renderFields.mobile]: selectConsignLoc.mobile,
         [this.renderFields.email]: selectConsignLoc.email
@@ -96,7 +108,6 @@ export default class ConsignInfo extends React.Component {
   render() {
     const { outerColSpan, labelColSpan, formhoc, consignLocations } = this.props;
     const locOptions = consignLocations.map(cl => ({
-      // id: cl.node_id,
       name: cl.name,
       key: `${cl.node_id}${cl.name}`,
     }));
@@ -105,7 +116,6 @@ export default class ConsignInfo extends React.Component {
       city: formhoc.getFieldValue(this.renderFields.city),
       county: formhoc.getFieldValue(this.renderFields.district)
     };
-    // todo unvalidated name/addr, select name not make addr validated
     // todo replace selected consign remove consigne()_id
     return (
       <Row>
