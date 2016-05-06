@@ -230,6 +230,18 @@ function *shipmtDraftP() {
     Result.InternalServerError(this, e.message);
   }
 }
+
+function *shipmtG() {
+  const {tenantId, shipmtNo} = this.request.query;
+  try {
+    const result = yield shipmentDispDao.getShipmtWithNoAndTenantId({shipmtNo, tenantId});
+    return Result.OK(this, result);
+  }catch (e) {
+    Result.InternalServerError(this, e.message); 
+  }
+  
+}
+
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
@@ -237,4 +249,5 @@ export default [
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
+  [ 'get', '/v1/transport/shipment', shipmtG ]
 ]

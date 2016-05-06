@@ -68,5 +68,11 @@ export default {
       status = ? where id = ?`;
     const args = [acpterId, acpterName, disperId, disperName, dispSt, status, dispId];
     return mysql.update(sql, args, trans);
+  },
+  
+  getShipmtWithNoAndTenantId({shipmtNo, tenantId}) {
+    const sql = `select * from tms_shipment_dispatch where shipmt_no= ? and sp_tenant_id= ?`;
+    const args = [shipmtNo, tenantId];
+    return mysql.query(sql, args);
   }
 };
