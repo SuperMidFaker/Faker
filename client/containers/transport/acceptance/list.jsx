@@ -274,15 +274,6 @@ export default class AcceptList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
-    /*
-    let radioValue;
-    this.props.filters.forEach(flt => {
-      if (flt.name === 'type') {
-        radioValue = flt.value;
-        return;
-      }
-    });
-   */
     let columns = this.columns;
     if (this.state.radioValue === 'unaccepted') {
       columns = [ ...columns, {
