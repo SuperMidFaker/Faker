@@ -353,7 +353,7 @@ export default class AcceptList extends React.Component {
             </NavLink>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} size="middle"
               dataSource={this.dataSource} useFixedHeader columnsPageRange={[4, 15]} columnsPageSize={3}
             />
           </div>
