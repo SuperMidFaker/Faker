@@ -56,12 +56,15 @@ function *shipmentListG() {
   let shipmtNo;
   let shipmtType;
   let shipmtDispType;
+  let shipmtOrder;
   filters.forEach(flt => {
     if (flt.name === 'type') {
       if (flt.value === 'unaccepted') {
         shipmtDispType = SHIPMENT_TRACK_STATUS.unaccepted;
+        shipmtOrder = 'created';
       } else if (flt.value === 'accepted') {
         shipmtDispType = SHIPMENT_TRACK_STATUS.undispatched;
+        shipmtOrder = 'accepted';
       } else if (flt.value === 'draft') {
         shipmtType = SHIPMENT_EFFECTIVES.draft;
       } else if (flt.value === 'archived') {
@@ -77,7 +80,7 @@ function *shipmentListG() {
         tenantId, shipmtType, shipmtDispType, shipmtNo
       ),
       shipmentDispDao.getFilteredShipments(
-        tenantId, shipmtType, shipmtDispType, shipmtNo,
+        tenantId, shipmtType, shipmtDispType, shipmtNo, shipmtOrder,
         SHIPMENT_DISPATCH_STATUS.confirmed, pageSize, current
       )
     ];

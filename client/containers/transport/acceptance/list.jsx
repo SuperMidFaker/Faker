@@ -66,6 +66,7 @@ export default class AcceptList extends React.Component {
     loadTable: PropTypes.func.isRequired
   }
   state = {
+    radioValue: 'unaccepted',
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
@@ -181,7 +182,7 @@ export default class AcceptList extends React.Component {
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }]
-  handleTableLoad = (filters, current) => {
+  handleTableLoad = (filters, current, callback) => {
     this.props.loadTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
@@ -190,6 +191,9 @@ export default class AcceptList extends React.Component {
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
+      }
+      if (callback) {
+        callback();
       }
     });
   }
@@ -201,8 +205,11 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filters, 1);
   }
   handleShipmentFilter = (ev) => {
-    const filterArray = this.mergeFilters(this.props.filters, 'type', ev.target.value);
-    this.handleTableLoad(filterArray, 1);
+    const targetVal = ev.target.value;
+    const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
+    this.handleTableLoad(filterArray, 1, () => {
+      this.setState({ radioValue: targetVal });
+    });
   }
   handleShipmtAccept(dispId) {
     this.props.loadAcceptDispatchers(
@@ -267,6 +274,7 @@ export default class AcceptList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
+    /*
     let radioValue;
     this.props.filters.forEach(flt => {
       if (flt.name === 'type') {
@@ -274,8 +282,9 @@ export default class AcceptList extends React.Component {
         return;
       }
     });
+   */
     let columns = this.columns;
-    if (radioValue === 'unaccepted') {
+    if (this.state.radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 130,
@@ -320,10 +329,12 @@ export default class AcceptList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={this.state.radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
-            <span style={{marginLeft: '10px'}} />
+          </RadioGroup>
+          <span style={{marginLeft: '10px'}} />
+          <RadioGroup onChange={this.handleShipmentFilter} value={this.state.radioValue}>
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
