@@ -23,6 +23,7 @@ import exportdelegate from './exportdelegate';
 import exporttask from './exporttask';
 import importtracking from './importtracking';
 import exporttracking from './exporttracking';
+import transportDispatch from './transportDispatch';
 
 export default combineReducers({
   intl,
@@ -48,5 +49,6 @@ export default combineReducers({
   exportdelegate,
   exporttask,
   importtracking,
-  exporttracking
+  exporttracking,
+  transportDispatch
 });

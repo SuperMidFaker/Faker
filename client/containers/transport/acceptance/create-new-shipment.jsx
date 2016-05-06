@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+// import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 import { Row, Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
@@ -44,6 +45,7 @@ function fetchData({ state, dispatch, cookie }) {
     loginName: state.account.username,
     tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
+    transitModes: state.shipment.formRequire.transitModes,
     clients: state.shipment.formRequire.clients,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
@@ -67,6 +69,13 @@ function fetchData({ state, dispatch, cookie }) {
           client_id: selclients.length > 0 ? clientFieldId : 0,
           client: selclients.length > 0 ? selclients[0].name : clientFieldId,
         });
+      } else if (name === 'transport_mode_code') {
+        const code = fields[name].value;
+        const modes = props.transitModes.filter(tm => tm.mode_code === code);
+        props.setConsignFields({
+          transport_mode_code: code,
+          transport_mode: modes.length > 0 ? modes[0].mode_name : '',
+        });
       } else {
         props.setFormValue(name, fields[name].value || '');
       }
@@ -82,6 +91,7 @@ export default class ShipmentCreate extends React.Component {
     tenantName: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+    transitModes: PropTypes.array.isRequired,
     clients: PropTypes.array.isRequired,
     submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired,
@@ -96,6 +106,11 @@ export default class ShipmentCreate extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
+  /*
+  shouldComponentUpdate(nextProps) {
+    return !shallowEqual(nextProps.formData, this.props.formData);
+  }
+ */
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSaveAndAccept = (ev) => {
     ev.preventDefault();
@@ -157,8 +172,9 @@ export default class ShipmentCreate extends React.Component {
       name: cl.name
     }));
     return (
-      <Form form={formhoc} horizontal className="form-edit-content offset-mid-col">
-        <Col span="14" className="subform">
+      <div className="main-content">
+      <Form form={formhoc} horizontal>
+        <Col span="16" className="panel-wrapper">
           <ConsignInfo type="consigner" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ConsignInfo type="consignee" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ScheduleInfo intl={intl} formhoc={formhoc} />
@@ -166,39 +182,27 @@ export default class ShipmentCreate extends React.Component {
           <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
         </Col>
         <Col span="8">
-          <Row className="subform">
+          <div className="panel-wrapper right-side-panel">
             <AutoCompSelectItem labelName={this.msg('client')} formhoc={formhoc}
-              colSpan={4} field="client" optionData={clientOpts} required
+              colSpan={6} field="client" optionData={clientOpts} required
               optionField="name" optionKey="key" optionValue="value"
               rules={[{
                 required: true, message: this.msg('clientNameMust')
               }]}
             />
-            <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={4}
-              value={tenantName} disabled
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={4}
-              field="ref_external_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refWaybillNo')} colSpan={4}
-              field="ref_waybill_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refEntryNo')} colSpan={4}
-              field="ref_entry_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('remark')} colSpan={4}
-              field="remark"
-            />
-            <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
+            <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={6} value={tenantName} disabled/>
+            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={6} field="ref_external_no"/>
+            <InputItem formhoc={formhoc} labelName={this.msg('refWaybillNo')} colSpan={6} field="ref_waybill_no"/>
+            <InputItem formhoc={formhoc} labelName={this.msg('refEntryNo')} colSpan={6} field="ref_entry_no"/>
+            <InputItem formhoc={formhoc} labelName={this.msg('remark')} colSpan={6} field="remark"/>
+            <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={6}
               field="freight_charge" hasFeedback={false} rules={[{
                     type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
               }]}
             />
-          </Row>
+          </div>
           <Row className="subform-buton-row">
-            <Button htmlType="submit" type="primary" loading={submitting}
-            onClick={this.handleSaveAndAccept}
-            >
+            <Button htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
             {this.msg('saveAndAccept')}
             </Button>
           </Row>
@@ -209,6 +213,7 @@ export default class ShipmentCreate extends React.Component {
           </Row>
         </Col>
       </Form>
+      </div>
     );
   }
 }

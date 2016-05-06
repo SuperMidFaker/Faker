@@ -72,17 +72,15 @@ function *shipmentListG() {
     }
   });
   try {
-    const modes = yield shipmentDao.getTransitModes(tenantId);
-    const totals = yield shipmentDispDao.getFilteredTotalCount(
-      tenantId, shipmtType, shipmtDispType, shipmtNo
-    );
-    const shipmts = yield shipmentDispDao.getFilteredShipments(
-      tenantId, shipmtType, shipmtDispType, shipmtNo
-    );
-    shipmts.forEach(shm => {
-      shm.transport_mode =
-        modes.filter(mod => mod.mode_code === shm.transport_mode)[0].mode_name
-    });
+    const [ totals, shipmts ] = yield [
+      shipmentDispDao.getFilteredTotalCount(
+        tenantId, shipmtType, shipmtDispType, shipmtNo
+      ),
+      shipmentDispDao.getFilteredShipments(
+        tenantId, shipmtType, shipmtDispType, shipmtNo,
+        SHIPMENT_DISPATCH_STATUS.confirmed, pageSize, current
+      )
+    ];
     Result.OK(this, {
       totalCount: totals[0].count,
       pageSize,
@@ -217,7 +215,7 @@ function *shipmtDraftP() {
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.draft, trans);
     const result = yield shipmentDispDao.createAndAcceptByLSP(
       shipmtNo, shipmt.client_id, shipmt.client, SHIPMENT_SOURCE.consigned,
-      sp.tid, sp.name, null, null, SHIPMENT_DISPATCH_STATUS.unconfirmed,
+      sp.tid, sp.name, null, null, SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.unaccepted, shipmt.freight_charge, null, trans
     );
     yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
@@ -239,7 +237,16 @@ function *shipmtG() {
   }catch (e) {
     Result.InternalServerError(this, e.message); 
   }
+}
   
+function *shipmtRevokeP() {
+  try {
+    const body = yield cobody(this);
+    yield shipmentDao.updateEffective(body.shipmtDispId, body.eff);
+    return Result.OK(this);
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
 }
 
 export default [
@@ -249,5 +256,6 @@ export default [
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
+  [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'get', '/v1/transport/shipment', shipmtG ]
 ]
