@@ -105,7 +105,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 150,
+    width: 140,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return <span style={{ color : '#999' }}>{o}</span>;
@@ -116,7 +116,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    width: 140
+    width: 200
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
@@ -124,17 +124,17 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
-    width: 150,
+    width: 80,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
-    width: 150,
+    width: 80,
     render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    width: 150,
+    width: 80,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
@@ -175,6 +175,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
+    width: 40,
     render: (o, record) => {
       if (record.source === SHIPMENT_SOURCE.consigned) {
         return this.msg('consginSource');
@@ -292,7 +293,7 @@ export default class AcceptList extends React.Component {
     if (radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
-        width: 130,
+        width: 100,
         render: (o, record, index) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return <span />;
@@ -353,8 +354,8 @@ export default class AcceptList extends React.Component {
             </NavLink>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} size="middle"
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[4, 15]} columnsPageSize={3}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 18]} columnsPageSize={3}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
