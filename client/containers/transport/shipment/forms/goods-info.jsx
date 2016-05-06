@@ -255,7 +255,7 @@ export default class GoodsInfo extends React.Component {
         />
     }, {
       title: this.msg('goodsOp'),
-      width: 100,
+      width: 80,
       render: (text, record, index) => {
         let rendered;
         if (this.state.editGoodsIndex === index) {
@@ -351,7 +351,7 @@ export default class GoodsInfo extends React.Component {
             field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
           />
         </Col>
-        <Table columns={columns} dataSource={[...goods, {
+        <Table size="middle" bordered columns={columns} dataSource={[...goods, {
           key: 'goodsinfinity', __ops: [{
             name: formatGlobalMsg(this.props.intl, 'add'),
             handler: this.handleGoodsAdd
