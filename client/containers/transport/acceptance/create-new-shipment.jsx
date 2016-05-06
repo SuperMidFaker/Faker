@@ -176,7 +176,7 @@ export default class ShipmentCreate extends React.Component {
        <div className="page-body">
        <div className="panel-header"></div>
        <div className="panel-body body-responsive">
-        <Col span="16">
+        <Col span="16" className="main-col">
           <ConsignInfo type="consigner" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ConsignInfo type="consignee" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
           <ScheduleInfo intl={intl} formhoc={formhoc} />
