@@ -42,8 +42,11 @@ export default class ConsignInfo extends React.Component {
     });
     if (selectConsignLoc) {
       const consignKey = `${this.props.type}_id`;
+      this.props.setFormValue(consignKey, selectConsignLoc.node_id);
+      /*
       this.props.setConsignFields({
         [consignKey]: selectConsignLoc.node_id,
+        [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,
@@ -51,8 +54,15 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.mobile]: selectConsignLoc.mobile,
         [this.renderFields.email]: selectConsignLoc.email
       });
+     */
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
+        [this.renderFields.province]: selectConsignLoc.province,
+        [this.renderFields.city]: selectConsignLoc.city,
+        [this.renderFields.district]: selectConsignLoc.district,
+        [this.renderFields.contact]: selectConsignLoc.contact,
+        [this.renderFields.mobile]: selectConsignLoc.mobile,
+        [this.renderFields.email]: selectConsignLoc.email
       });
     }
   }

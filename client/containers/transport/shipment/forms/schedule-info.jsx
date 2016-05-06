@@ -41,7 +41,7 @@ export default class ScheduleInfo extends React.Component {
             addonAfter={this.msg('day')} formhoc={formhoc} field="transit_time"
             hasFeedback={false} rules={[{
               validator: (rule, value, callback) => {
-                if (isPositiveInteger(value)) {
+                if (!isPositiveInteger(value)) {
                   callback(new Error(this.msg('timeMustBePositive')));
                 } else {
                   callback();

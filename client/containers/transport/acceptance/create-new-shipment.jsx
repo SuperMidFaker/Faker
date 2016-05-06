@@ -58,8 +58,7 @@ function fetchData({ state, dispatch, cookie }) {
     return props.formData;
   },
   onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
+    Object.keys(fields).forEach(name => {
       if (name === 'client') {
         const clientFieldId = fields[name].value;
         const selclients = props.clients.filter(
@@ -79,7 +78,7 @@ function fetchData({ state, dispatch, cookie }) {
       } else {
         props.setFormValue(name, fields[name].value || '');
       }
-    }
+    });
   },
   formPropName: 'formhoc'
 })
