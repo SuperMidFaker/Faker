@@ -127,7 +127,7 @@ export default class RegionCascade extends React.Component {
         {
           !this.props.withoutCountry &&
         <Col span="24">
-          <Select value={country} style={{width: '100%'}} onChange={(value) => this.handleCountryChange(value)}>
+          <Select size="large" value={country} style={{width: '100%'}} onChange={(value) => this.handleCountryChange(value)}>
             <OptGroup label={formatMsg(this.props.intl, 'selectCountry')}>
               {
                 world.countries.map((ctry) => (<Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>))
@@ -137,21 +137,21 @@ export default class RegionCascade extends React.Component {
         </Col>
         }
         <Col span="8">
-          <Select value={province} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleProvinceChange(value)}>
+          <Select size="large" value={province} disabled={disableProvince} style={{width: '100%'}} onChange={(value) => this.handleProvinceChange(value)}>
             {
               chinaRegions.province.map((prov, idx) => <Option value={prov.name} key={`prov.name${idx}`}>{prov.name}</Option>)
             }
           </Select>
         </Col>
         <Col span="7" offset="1">
-          <Select value={city} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleCityChange(value)}>
+          <Select size="large" value={city} disabled={disableProvince} style={{width: '100%'}} onChange={(value) => this.handleCityChange(value)}>
           {
             cities.map((c, idx) => <Option value={c.name} key={`c.name${idx}`}>{c.name}</Option>)
           }
           </Select>
         </Col>
         <Col span="7" offset="1">
-          <Select value={county} disabled={disableProvince} style={{width: '100%', marginTop: 10}} onChange={(value) => this.handleCountyChange(value)}>
+          <Select size="large" value={county} disabled={disableProvince} style={{width: '100%'}} onChange={(value) => this.handleCountyChange(value)}>
           {
             counties.map((c, idx) => <Option value={c.name} key={`c.name${idx}`}>{c.name}</Option>)
           }
