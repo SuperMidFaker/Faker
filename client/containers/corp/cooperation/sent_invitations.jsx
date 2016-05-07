@@ -164,11 +164,11 @@ export default class SentView extends React.Component {
     };
     return (
       <div className="main-content">
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header" />
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={sentlist.loading}
-              dataSource={this.dataSource}
+              dataSource={this.dataSource} useFixedHeader
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
