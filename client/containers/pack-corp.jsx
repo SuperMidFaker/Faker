@@ -28,25 +28,25 @@ export default class CorpPack extends React.Component {
       single: true,
       key: 'corpsetting-1',
       path: '/corp/info',
-      icon: 's7-info',
+      icon: 'zmdi zmdi-info-outline',
       text: formatMsg(intl, 'corpInfo')
     }, {
       single: true,
       key: 'corpsetting-2',
       path: '/corp/personnel',
-      icon: 's7-users',
+      icon: 'zmdi zmdi-accounts-alt',
       text: formatMsg(intl, 'personnelUser')
     }, {
       invisible: this.props.accountType === BRANCH,
       single: true,
       key: 'corpsetting-3',
       path: '/corp/organization',
-      icon: 's7-network',
+      icon: 'zmdi zmdi-group',
       text: formatMsg(intl, 'organTitle')
     }, {
       single: false,
       key: 'corpsetting-4',
-      icon: 's7-share',
+      icon: 'zmdi zmdi-share',
       text: formatMsg(intl, 'partnership'),
       sublinks: [{
         key: 'partner-1',
@@ -64,7 +64,7 @@ export default class CorpPack extends React.Component {
     }, {
       single: false,
       key: 'corpsetting-5',
-      icon: 's7-tools',
+      icon: 'zmdi zmdi-star-circle',
       text: formatMsg(intl, 'serviceCenter'),
       sublinks: [{
         key: 'service-1',

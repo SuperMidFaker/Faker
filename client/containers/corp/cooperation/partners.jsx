@@ -117,30 +117,37 @@ export default class PartnersView extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('partnerName'),
-    dataIndex: 'name'
+    dataIndex: 'name',
+    width: 200
   }, {
     title: this.msg('partnerCode'),
-    dataIndex: 'partnerCode'
+    dataIndex: 'partnerCode',
+    width: 150
   }, {
     title: this.msg('partnerType'),
     dataIndex: 'types',
+    width: 100,
     render: (o, record) =>
     record.types.map(t => formatGlobalMsg(this.props.intl, t.code)).join('/') ||
       formatGlobalMsg(this.props.intl, PARTNERSHIP_TYPE_INFO.customer) // fallback to '客户'
   }, {
     title: this.msg('tenantType'),
     dataIndex: 'tenantType',
+    width: 100,
     render: (o, record) => formatContainerMsg(this.props.intl, record.tenantType)
   }, {
     title: this.msg('volume'),
-    dataIndex: 'volume'
+    dataIndex: 'volume',
+    width: 150
   }, {
     title: this.msg('revenue'),
     dataIndex: 'revenue',
+    width: 150,
     render: (o, record) => (record.revenue || 0.0).toFixed(2)
   }, {
     title: this.msg('cost'),
     dataIndex: 'cost',
+    width: 150,
     render: (o, record) => record.cost ? record.cost.toFixed(2) : '0.00'
   }, {
     title: formatContainerMsg(this.props.intl, 'opColumn'),

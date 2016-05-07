@@ -165,25 +165,31 @@ export default class CorpList extends React.Component {
     const columns = [{
       title: formatMsg(intl, 'nameColumn'),
       dataIndex: 'name',
+      width: 150,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: formatMsg(intl, 'subcodeColumn'),
       dataIndex: 'subCode',
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.subCode)
     }, {
       title: formatMsg(intl, 'contactColumn'),
       dataIndex: 'contact',
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.contact)
     }, {
       title: formatMsg(intl, 'phoneColumn'),
       dataIndex: 'phone',
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: formatMsg(intl, 'emailColumn'),
       dataIndex: 'email',
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: formatMsg(intl, 'appsColumn'),
+      width: 200,
       render: (o, record, index) => {
         const modComp = [];
         (record.apps || []).forEach((mod, idx) => {
@@ -206,6 +212,7 @@ export default class CorpList extends React.Component {
       }
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
+      width: 100,
       render: (o, record) => {
         let style = {color: '#51C23A'};
         if (record.status === ACCOUNT_STATUS.blocked.name) {

@@ -143,17 +143,8 @@ export default class CorpInfo extends React.Component {
               {this.renderTextInput(msg('fullAddress'), '', 'address')}
             </Col>
             <Col span="12">
-              <FormItem label={msg('enterpriseCode')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-                required
-              >
-                <Col span="18">
-                  <Input type="text" disabled {...getFieldProps('code')} />
-                </Col>
-                <Col span="6">
-                  <p className="ant-form-text">
-                    <a role="button">{msg('applyChange')}</a>
-                  </p>
-                </Col>
+              <FormItem label={msg('enterpriseCode')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                <Input type="text" disabled {...getFieldProps('code')} />
               </FormItem>
               <FormItem label={msg('tradeCategory')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
                 <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('type')}>
