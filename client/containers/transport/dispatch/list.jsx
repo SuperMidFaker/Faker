@@ -313,13 +313,13 @@ class DispatchList extends React.Component {
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             {this.state.panelHeader}
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
