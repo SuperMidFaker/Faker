@@ -122,13 +122,16 @@ export default class ReceivedView extends React.Component {
   }
   columns = [{
     title: this.msg('partnerName'),
-    dataIndex: 'name'
+    dataIndex: 'name',
+    width: 200
   }, {
     title: this.msg('partnerCode'),
-    dataIndex: 'code'
+    dataIndex: 'code',
+    width: 150
   }, {
     title: this.msg('inviteYouToBe'),
     dataIndex: 'types',
+    width: 150,
     render: (o, record) => {
       let text;
       if (record.types.length === 1 && record.types[0].name === PARTNERSHIP_TYPE_INFO.customer) {
@@ -142,10 +145,12 @@ export default class ReceivedView extends React.Component {
   }, {
     title: this.msg('recvDate'),
     dataIndex: 'created_date',
+    width: 100,
     render: (o, record) => moment(record.createdDate).format('YYYY-MM-DD')
   }, {
     title: formatContainerMsg(this.props.intl, 'statusColumn'),
     dataIndex: 'status',
+    width: 100,
     render: (o, record) => {
       let text = this.msg('newInvitation');
       if (record.status === 1) {

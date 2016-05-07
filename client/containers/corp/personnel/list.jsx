@@ -223,26 +223,32 @@ export default class PersonnelSetting extends React.Component {
     const columns = [{
       title: msg('fullName'),
       dataIndex: 'name',
+      width: 100,
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: msg('username'),
+      width: 150,
       render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
     }, {
       title: msg('phone'),
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: msg('email'),
       dataIndex: 'email',
+      width: 100,
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: msg('position'),
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.position)
     }, {
       title: msg('role'),
       sorter: true,
       dataIndex: 'role',
+      width: 100,
       filters: [{
         text: formatContainerMsg(intl, 'tenantManager'),
         value: TENANT_ROLE.manager.name
@@ -256,6 +262,7 @@ export default class PersonnelSetting extends React.Component {
       )
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
+      width: 100,
       render: (o, record) => {
         let style = { color: '#51C23A' };
         let text = ACCOUNT_STATUS.normal.text;
