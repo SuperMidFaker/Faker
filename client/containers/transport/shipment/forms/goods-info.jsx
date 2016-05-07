@@ -310,7 +310,8 @@ export default class GoodsInfo extends React.Component {
         <div className="subform-heading">
           <div className="subform-title">{this.msg('goodsInfo')}</div>
         </div>
-        <Col span={`${outerColSpan}`} className="subform-body">
+        <div className="subform-body">
+        <Col span={`${outerColSpan}`}>
           <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} required
           >
@@ -329,7 +330,7 @@ export default class GoodsInfo extends React.Component {
             field="total_count" colSpan={labelColSpan}
           />
         </Col>
-        <Col span={`${outerColSpan}`} className="subform-body">
+        <Col span={`${outerColSpan}`}>
           <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
@@ -343,7 +344,7 @@ export default class GoodsInfo extends React.Component {
             field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
           />
         </Col>
-        <Col span={`${outerColSpan}`} className="subform-body">
+        <Col span={`${outerColSpan}`}>
           <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
             field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
           />
@@ -361,6 +362,7 @@ export default class GoodsInfo extends React.Component {
           }]
         }]} pagination={false}
        />
+       </div>
       </Row>);
   }
 }
