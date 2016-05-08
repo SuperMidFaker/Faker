@@ -119,7 +119,7 @@ const messages = defineMessages({
   },
   partnership: {
     id: 'container.partnership',
-    defaultMessage: '合作关系'
+    defaultMessage: '协作网络'
   },
   partners: {
     id: 'container.partners',
