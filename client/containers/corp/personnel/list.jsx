@@ -228,7 +228,7 @@ export default class PersonnelSetting extends React.Component {
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: msg('username'),
-      width: 150,
+      width: 200,
       render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
     }, {
       title: msg('phone'),
@@ -237,7 +237,7 @@ export default class PersonnelSetting extends React.Component {
     }, {
       title: msg('email'),
       dataIndex: 'email',
-      width: 100,
+      width: 200,
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
@@ -262,7 +262,7 @@ export default class PersonnelSetting extends React.Component {
       )
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
-      width: 100,
+      width: 50,
       render: (o, record) => {
         let style = { color: '#51C23A' };
         let text = ACCOUNT_STATUS.normal.text;

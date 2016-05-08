@@ -118,7 +118,7 @@ export default class PartnersView extends React.Component {
   columns = [{
     title: this.msg('partnerName'),
     dataIndex: 'name',
-    width: 200
+    width: 250
   }, {
     title: this.msg('partnerCode'),
     dataIndex: 'partnerCode',
