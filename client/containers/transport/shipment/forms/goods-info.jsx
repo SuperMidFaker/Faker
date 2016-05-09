@@ -5,6 +5,7 @@ import { Row, Col, Form, Input, Select, Table } from 'ant-ui';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'universal/redux/reducers/shipment';
+import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
 import globalMessages from 'client/root.i18n';
@@ -88,6 +89,10 @@ export default class GoodsInfo extends React.Component {
     editLocalGoods: PropTypes.func.isRequired,
     removeLocalGoods: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
+  }
+  constructor(...args) {
+    super(...args);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
   state = {
     editGoods: {

@@ -5,13 +5,11 @@ import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
-import uuid from 'reusable/node-util/uuid32';
 import {
   PARTNERSHIP_TYPE_INFO, CONSIGN_TYPE, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_DISPATCH_STATUS, SHIPMENT_TRACK_STATUS
 } from 'universal/constants';
 
-uuid.init();
 const vehicleTypes = [{
   id: '1',
   name: '敞蓬车'
@@ -170,7 +168,7 @@ function *shipmtSaveAcceptP() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const shipmtNo = uuid.gen();
+    const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.effected, trans);
     const result = yield shipmentDispDao.createAndAcceptByLSP(
       shipmtNo, shipmt.client_id, shipmt.client, SHIPMENT_SOURCE.consigned,
@@ -228,7 +226,7 @@ function *shipmtDraftP() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const shipmtNo = uuid.gen();
+    const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.draft, trans);
     yield mysql.commit(trans);
     return Result.OK(this, shipmt);

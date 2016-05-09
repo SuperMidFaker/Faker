@@ -70,7 +70,7 @@ export default function reducer(state = initialState, action) {
               ? [...state.table.shipmentlist.data, action.data.result] : state.table.shipmentlist.data
           }
         }
-      } : state;
+      } : { ...state, submitting: false };
     }
     case actionTypes.SAVE_DRAFT_SUCCEED:
       return { ...state, submitting: false };

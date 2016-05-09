@@ -193,7 +193,7 @@ export default class PartnersView extends React.Component {
     });
   }
   render() {
-    const { partnershipTypes, partnerlist, loading, intl } = this.props;
+    const { partnershipTypes, partnerlist, filters, loading, intl } = this.props;
     this.dataSource.remotes = partnerlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -201,6 +201,11 @@ export default class PartnersView extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
+    const pts = filters.filter(flt => flt.name === 'partnerType');
+    let radioVal = 'all';
+    if (pts.length > 0 && pts[0].value !== undefined) {
+      radioVal = `${pts[0].value}`;
+    }
     return (
       <div className="main-content">
         <div className="page-header">
@@ -208,7 +213,7 @@ export default class PartnersView extends React.Component {
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
           </div>
-          <RadioGroup onChange={this.handlePartnershipFilter} defaultValue="all">
+          <RadioGroup onChange={this.handlePartnershipFilter} value={radioVal}>
             <RadioButton value="all">{formatContainerMsg(intl, 'allTypes')}</RadioButton>
             {
               partnershipTypes.map(
