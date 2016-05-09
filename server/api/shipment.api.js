@@ -243,10 +243,27 @@ function *shipmtDraftP() {
 function *shipmtG() {
   const {tenantId, shipmtNo} = this.request.query;
   try {
-    const result = yield shipmentDispDao.getShipmtWithNoAndTenantId({shipmtNo, tenantId});
-    return Result.OK(this, result);
+    const [formData] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
+    return Result.OK(this, {formData});
   }catch (e) {
     Result.InternalServerError(this, e.message); 
+  }
+}
+
+function *shipmtSaveEditP() {
+  const body = yield cobody(this);
+  const shipment = body.shipment;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    Result.InternalServerError(this, e.message);
   }
 }
   
@@ -268,5 +285,6 @@ export default [
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
-  [ 'get', '/v1/transport/shipment', shipmtG ]
+  [ 'get', '/v1/transport/shipment', shipmtG ],
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ]
 ]

@@ -26,6 +26,21 @@ function genDispFilters(filter) {
   return arr.join('');
 }
 
+function generateUpdateStatementWithInfo(updateInfo) {
+  const columns = [
+    `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
+    'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
+    `consigner_addr`, `consigner_email`,
+    `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
+    `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
+    `consignee_contact`, `consignee_mobile`, `transit_time`,
+    `transport_mode`, `vehicle_type`, `vehicle_length`,
+    `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
+    `total_volume`, `remark`
+  ];
+  return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
+}
+
 export default {
   getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt) {
     const args = [tenantId, dispSt];
@@ -104,9 +119,17 @@ export default {
     return mysql.update(sql, args, trans);
   },
   
-  getShipmtWithNoAndTenantId({shipmtNo, tenantId}) {
-    const sql = `select * from tms_shipment_dispatch where shipmt_no= ? and sp_tenant_id= ?`;
-    const args = [shipmtNo, tenantId];
+  getShipmtWithNo(shipmtNo) {
+    const sql = `select tms_shipments.*, tms_shipment_dispatch.sr_name from tms_shipments, tms_shipment_dispatch
+     where tms_shipments.shipmt_no= ?`;
+    const args = [shipmtNo];
     return mysql.query(sql, args);
+  },
+  
+  updateShipmtWithInfo(updateInfo, trans) {
+    const updateStatement = generateUpdateStatementWithInfo(updateInfo);
+    const sql = `update tms_shipments set ${updateStatement} where shipmt_no = ?`;
+    const args = [updateInfo.shipmt_no];
+    return mysql.update(sql, args, trans);
   }
 };
