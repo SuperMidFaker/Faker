@@ -46,10 +46,10 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.PARTNERS_LOAD:
-      return { ...state, loading: true,
-        filters: action.params.filters ? JSON.parse(action.params.filters) : [] };
+      return { ...state, loading: true, };
     case actionTypes.PARTNERS_LOAD_SUCCEED:
-      return { ...state, ...action.result.data, loading: false, loaded: true };
+      return { ...state, ...action.result.data, loading: false, loaded: true,
+        filters: action.params.filters ? JSON.parse(action.params.filters) : [] };
     case actionTypes.PARTNERS_LOAD_FAIL:
       return { ...state, loading: false, loaded: true };
     case actionTypes.SHOW_PARTNER_MODAL:

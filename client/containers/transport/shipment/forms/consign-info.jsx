@@ -6,6 +6,7 @@ import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
 import { setFormValue, setConsignFields } from 'universal/redux/reducers/shipment';
+import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -30,7 +31,10 @@ export default class ConsignInfo extends React.Component {
     setConsignFields: PropTypes.func.isRequired,
     formhoc: PropTypes.object.isRequired
   }
-
+  constructor(...args) {
+    super(...args);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleItemSelect = (name) => {
     let selectConsignLoc;

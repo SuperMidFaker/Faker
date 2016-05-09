@@ -76,7 +76,7 @@ function fetchData({ state, dispatch, cookie }) {
           transport_mode: modes.length > 0 ? modes[0].mode_name : '',
         });
       } else {
-        props.setFormValue(name, fields[name].value || '');
+        props.setFormValue(name, fields[name].value);
       }
     });
   },

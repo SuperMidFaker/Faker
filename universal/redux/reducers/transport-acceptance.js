@@ -20,6 +20,8 @@ const initialState = {
       { name: 'type', value : 'unaccepted' },
       /* { name: 'shipmt_no', value: ''} */
     ],
+    sortField: 'created_date',
+    sortOrder: 'desc',
     shipmentlist: {
       totalCount: 0,
       pageSize: 10,
@@ -70,7 +72,7 @@ export default function reducer(state = initialState, action) {
               ? [...state.table.shipmentlist.data, action.data.result] : state.table.shipmentlist.data
           }
         }
-      } : state;
+      } : { ...state, submitting: false };
     }
     case actionTypes.SAVE_DRAFT_SUCCEED:
       return { ...state, submitting: false };
