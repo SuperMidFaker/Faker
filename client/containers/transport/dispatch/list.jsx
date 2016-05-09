@@ -96,59 +96,71 @@ class DispatchList extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
-    dataIndex: 'shipmt_no'
+    dataIndex: 'shipmt_no',
+    width: 120
   }, {
     title: this.msg('shipRequirement'),
-    dataIndex: 'sr_name'
+    dataIndex: 'sr_name',
+    width: 140
+  }, {
+    title: this.msg('shipMode'),
+    dataIndex: 'transport_mode',
+    width: 80
+  }, {
+    title: this.msg('packageNum'),
+    dataIndex: 'total_count',
+    width: 40
+  }, {
+    title: this.msg('shipWeight'),
+    dataIndex: 'total_weight',
+    width: 40
+  }, {
+    title: this.msg('shipVolume'),
+    dataIndex: 'total_volume',
+    width: 40
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
+    width: 80,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consignorPlace'),
+    width: 120,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
+    width: 80,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consigneePlace'),
+    width: 120,
     render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 120,
-  }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode'
-  }, {
-    title: this.msg('packageNum'),
-    dataIndex: 'total_count'
-  }, {
-    title: this.msg('shipWeight'),
-    dataIndex: 'total_weight'
-  }, {
-    title: this.msg('shipVolume'),
-    dataIndex: 'total_volume'
+    width: 150,
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
+    width: 60,
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }, {
     title: this.msg('shipmtOP'),
+    width: 100,
     render: (o, record) => {
       const s = this.props.filters.status;
       if (s === 'waiting') {
@@ -301,13 +313,13 @@ class DispatchList extends React.Component {
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             {this.state.panelHeader}
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -316,7 +328,7 @@ class DispatchList extends React.Component {
             </Button>
           </div>
         </div>
-        <div className="dock-container">
+        <div className="dock-container hide">
           <div className="dock-content">
             <div className="dock-sp-line"></div>
             <div className="dock-sp">

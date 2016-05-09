@@ -223,26 +223,32 @@ export default class PersonnelSetting extends React.Component {
     const columns = [{
       title: msg('fullName'),
       dataIndex: 'name',
+      width: 100,
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
       title: msg('username'),
+      width: 200,
       render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
     }, {
       title: msg('phone'),
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: msg('email'),
       dataIndex: 'email',
+      width: 200,
       sorter: true,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: msg('position'),
+      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.position)
     }, {
       title: msg('role'),
       sorter: true,
       dataIndex: 'role',
+      width: 100,
       filters: [{
         text: formatContainerMsg(intl, 'tenantManager'),
         value: TENANT_ROLE.manager.name
@@ -256,6 +262,7 @@ export default class PersonnelSetting extends React.Component {
       )
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
+      width: 50,
       render: (o, record) => {
         let style = { color: '#51C23A' };
         let text = ACCOUNT_STATUS.normal.text;
@@ -321,14 +328,14 @@ export default class PersonnelSetting extends React.Component {
             }
           </Select>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
               <Icon type="plus-circle-o" />{msg('newUser')}
             </Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">{formatContainerMsg(intl, 'clearSelection')}</Button>

@@ -18,37 +18,37 @@ export default class Transport extends React.Component {
       single: true,
       key: 'tms-0',
       path: '/transport/',
-      icon: 's7-display1',
+      icon: 'zmdi zmdi-tv-list',
       text: '工作台'
     }, {
       single: true,
       key: 'tms-1',
       path: '/transport/acceptance',
-      icon: 's7-next-2',
+      icon: 'zmdi zmdi-inbox',
       text: formatMsg(intl, 'transportAcceptance')
     }, {
       single: true,
       key: 'tms-2',
       path: '/transport/dispatch',
-      icon: 's7-mail-open-file',
+      icon: 'zmdi zmdi-arrow-split',
       text: '调度'
     }, {
       single: true,
       key: 'tms-3',
-      path: '/tms/tracking',
-      icon: 's7-note',
+      path: '/transport/tracking',
+      icon: 'zmdi zmdi-assignment-check',
       text: '追踪'
     }, {
       single: true,
       key: 'tms-4',
-      path: '/tms/invoicing',
-      icon: 's7-look',
-      text: '账单'
+      path: '/transport/resources',
+      icon: 'zmdi zmdi-library',
+      text: '管理'
     }, {
       single: true,
       key: 'tms-5',
-      path: '/tms/setting',
-      icon: 's7-settings',
+      path: '/transport/settings',
+      icon: 'zmdi zmdi-settings',
       text: '设置'
     }];
     return (

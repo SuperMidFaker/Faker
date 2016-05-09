@@ -260,7 +260,7 @@ export default class GoodsInfo extends React.Component {
         />
     }, {
       title: this.msg('goodsOp'),
-      width: 100,
+      width: 80,
       render: (text, record, index) => {
         let rendered;
         if (this.state.editGoodsIndex === index) {
@@ -315,7 +315,8 @@ export default class GoodsInfo extends React.Component {
         <div className="subform-heading">
           <div className="subform-title">{this.msg('goodsInfo')}</div>
         </div>
-        <Col span={`${outerColSpan}`} className="subform-body">
+        <div className="subform-body">
+        <Col span={`${outerColSpan}`}>
           <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} required
           >
@@ -334,7 +335,7 @@ export default class GoodsInfo extends React.Component {
             field="total_count" colSpan={labelColSpan}
           />
         </Col>
-        <Col span={`${outerColSpan}`} className="subform-body">
+        <Col span={`${outerColSpan}`}>
           <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
@@ -348,7 +349,7 @@ export default class GoodsInfo extends React.Component {
             field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
           />
         </Col>
-        <Col span={`${outerColSpan}`} className="subform-body">
+        <Col span={`${outerColSpan}`}>
           <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
             field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
           />
@@ -356,7 +357,7 @@ export default class GoodsInfo extends React.Component {
             field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
           />
         </Col>
-        <Table columns={columns} dataSource={[...goods, {
+        <Table size="middle" bordered columns={columns} dataSource={[...goods, {
           key: 'goodsinfinity', __ops: [{
             name: formatGlobalMsg(this.props.intl, 'add'),
             handler: this.handleGoodsAdd
@@ -366,6 +367,7 @@ export default class GoodsInfo extends React.Component {
           }]
         }]} pagination={false}
        />
+       </div>
       </Row>);
   }
 }
