@@ -20,6 +20,8 @@ const initialState = {
       { name: 'type', value : 'unaccepted' },
       /* { name: 'shipmt_no', value: ''} */
     ],
+    sortField: 'created_date',
+    sortOrder: 'desc',
     shipmentlist: {
       totalCount: 0,
       pageSize: 10,

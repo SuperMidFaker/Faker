@@ -52,6 +52,8 @@ function fetchData({ state, dispatch, cookie }) {
     shipmentlist: state.transportAcceptance.table.shipmentlist,
     filters: state.transportAcceptance.table.filters,
     loading: state.transportAcceptance.table.loading,
+    sortField: state.transportAcceptance.table.sortField,
+    sortOrder: state.transportAcceptance.table.sortOrder,
   }),
   { loadTable, loadAcceptDispatchers, revokeShipment })
 export default class AcceptList extends React.Component {
@@ -59,6 +61,8 @@ export default class AcceptList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     filters: PropTypes.array.isRequired,
+    sortField: PropTypes.string.isRequired,
+    sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     revokeShipment: PropTypes.func.isRequired,
@@ -188,19 +192,23 @@ export default class AcceptList extends React.Component {
     // todo sort with created acpt
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
+    sorter: true,
     render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
+    sorter: true,
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
   }]
-  handleTableLoad = (filters, current) => {
+  handleTableLoad = (filters, current, sortField, sortOrder) => {
     this.props.loadTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
       pageSize: this.props.shipmentlist.pageSize,
       currentPage: current || this.props.shipmentlist.current,
+      sortField: sortField || this.props.sortField,
+      sortOrder: sortOrder || this.props.sortOrder,
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -217,8 +225,13 @@ export default class AcceptList extends React.Component {
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
-    this.handleTableLoad(filterArray, 1);
-      this.setState({ radioValue: targetVal });
+    let sortField = 'created_date';
+    let sortOrder = 'desc';
+    if (targetVal === 'accepted') {
+      sortField = 'acpt_date';
+      sortOrder = 'asc';
+    }
+    this.handleTableLoad(filterArray, 1, sortField, sortOrder);
   }
   handleShipmtAccept(dispId) {
     this.props.loadAcceptDispatchers(
