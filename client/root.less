@@ -4,7 +4,7 @@
 @am-theme-color: #fff;
 @import "./components/am-ant-leftbar.less";
 body {
-  font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","\9ED1\4F53",Arial,sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',"\9ED1\4F53",SimSun,sans-serif;
   background-color: #F0F0F0;
 }
 ol, ul {
@@ -712,20 +712,42 @@ img {
   min-height: 500px;
   margin-bottom: 72px;
   clear: both;
-  .ant-tabs-nav-container {
-    font-size: 16px;
+  &.fixed {
+      position: fixed;
+      top: 106px;
+      left: 116px;
+      right: 16px;
+      bottom: 16px;
+      margin-bottom: 0;
+      .ant-pagination {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        background: #fff;
+      }
   }
 }
+.ant-table table,
+.ant-table-header table
+ {
+  border-radius: 0;
+}
+.ant-table-header + .ant-table-body {
+  height: 460px;
+}
 .page-footer {
-    height: 50px;
+  height: 50px;
 }
 .panel-wrapper {
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   padding: 16px;
 }
+.main-col {
+  padding: 0 8px 24px 24px;
+}
 .right-side-col {
-  padding-left: 16px;
+  padding: 0 24px 24px 32px;
 }
 .body-responsive {
   overflow-x: auto;
@@ -796,10 +818,6 @@ img {
 }
 .panel-body {
   clear: both;
-  padding: 0px 20px 20px;
-  @media (max-width:767px) {
-    padding: 0;
-  }
 }
 .action-btns {
   button, a {
@@ -846,14 +864,6 @@ img {
     font-weight: 300;
     display: block;
     margin: 0;
-  }
-  &-buton-row {
-    margin: 10px;
-    padding: 0 10px;
-    button {
-      width: 100%;
-      height: 40px;
-    }
   }
   &-body {
     margin-bottom: 24px;

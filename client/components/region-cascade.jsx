@@ -26,24 +26,8 @@ export default class RegionCascade extends React.Component {
     this.defaultProvince = formatMsg(this.props.intl, 'defaultProvRegions');
     this.defaultCity = formatMsg(this.props.intl, 'defaultCityRegions');
     this.defaultCounty = formatMsg(this.props.intl, 'defaultCountyRegions');
-    let cities = [];
-    let counties = [];
-    if (this.props.region.province) {
-      chinaRegions.province.forEach((prov) => {
-        if (prov.name === this.props.region.province) {
-          cities = prov.city || [];
-          return;
-        }
-      });
-    }
-    if (this.props.region.city) {
-      cities.forEach((city) => {
-        if (city.name === this.props.region.city) {
-          counties = city.county || [];
-          return;
-        }
-      });
-    }
+    const cities = this.getCitiesFromProvince(this.props.region.province) || [];
+    const counties = this.getCountiesFromCity(cities, this.props.region.city) || [];
     this.state = {
       disableProvince: false,
       country: CHINA_CODE,
@@ -61,21 +45,57 @@ export default class RegionCascade extends React.Component {
         propsAsState[key] = nextProps.region[key];
       }
     });
-    chinaRegions.province.forEach((prov) => {
-      if (prov.name === propsAsState.province) {
-        propsAsState.cities = prov.city || [];
-        return;
-      }
-    });
-    if (propsAsState.cities) {
-      propsAsState.cities.forEach((city) => {
-        if (city.name === propsAsState.city) {
-          propsAsState.counties = city.county || [];
-          return;
-        }
-      });
+    const cities = this.getCitiesFromProvince(propsAsState.province);
+    if (cities) {
+      propsAsState.cities = cities;
+    }
+    const counties = this.getCountiesFromCity(propsAsState.cities, propsAsState.city);
+    if (counties) {
+      propsAsState.counties = counties;
     }
     this.setState(propsAsState);
+  }
+  getCitiesFromProvince(province) {
+    let cities;
+    if (province) {
+      for (let i = 0; i < chinaRegions.province.length; i++) {
+        const prov = chinaRegions.province[i];
+        if (prov.name === province) {
+          if (prov.city) {
+            if (Array.isArray(prov.city)) {
+              cities = prov.city;
+            } else {
+              cities = [prov.city];
+            }
+          } else {
+            cities = [];
+          }
+          break;
+        }
+      }
+    }
+    return cities;
+  }
+  getCountiesFromCity(cities, curCity) {
+    let counties;
+    if (cities && curCity) {
+      for (let i = 0; i < cities.length; i++) {
+        const city = cities[i];
+        if (city.name === curCity) {
+          if (city.county) {
+            if (Array.isArray(city.county)) {
+              counties = city.county;
+            } else {
+              counties = [city.county];
+            }
+          } else {
+            counties = [];
+          }
+          break;
+        }
+      }
+    }
+    return counties;
   }
   handleCountryChange(value) {
     if (value !== CHINA_CODE) {
@@ -93,26 +113,16 @@ export default class RegionCascade extends React.Component {
     this.props.setFormValue('country', value);
   }
   handleProvinceChange(value) {
-    let cities = [];
-    chinaRegions.province.forEach((prov) => {
-      if (prov.name === value) {
-        cities = prov.city || [];
-        return;
-      }
-    });
+    const cities = this.getCitiesFromProvince(value);
     this.setState({cities, city: this.defaultCity, counties: [], county: this.defaultCounty});
     this.props.setFormValue('province', value);
     this.props.setFormValue('city', undefined);
     this.props.setFormValue('district', undefined);
   }
   handleCityChange(value) {
-    let counties = [];
-    this.state.cities.forEach((city) => {
-      if (city.name === value) {
-        counties = city.county || [];
-        return;
-      }
-    });
+    const counties = this.getCountiesFromCity(
+      this.state.cities, value
+    );
     this.setState({counties, county: this.defaultCounty});
     this.props.setFormValue('city', value);
     this.props.setFormValue('district', undefined);

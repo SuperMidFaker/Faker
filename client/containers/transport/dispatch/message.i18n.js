@@ -139,7 +139,7 @@ export default defineMessages({
   },
   btnTextReturnList: {
     id: 'transport.dispatch.btn.text.returnlist',
-    defaultMessage: '表单存在错误'
+    defaultMessage: '返回列表'
   },
   btnTextDispatch: {
     id: 'transport.dispatch.btn.text.dispatch',
@@ -149,16 +149,28 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.divide',
     defaultMessage: '分段'
   },
+  btnTextSend: {
+    id: 'transport.dispatch.btn.text.send',
+    defaultMessage: '发送'
+  },
+  btnTextReturn: {
+    id: 'transport.dispatch.btn.text.return',
+    defaultMessage: '退回'
+  },
+  btnTextExport: {
+    id: 'transport.dispatch.btn.text.export',
+    defaultMessage: '导出'
+  },
   rdTextWaiting: {
     id: 'transport.dispatch.rd.text.waiting',
     defaultMessage: '待分配'
   },
-  rdTextSending: {
-    id: 'transport.dispatch.rd.text.sending',
+  rdTextDispatching: {
+    id: 'transport.dispatch.rd.text.dispatching',
     defaultMessage: '待发送'
   },
-  rdTextSended: {
-    id: 'transport.dispatch.rd.text.sended',
+  rdTextDispatched: {
+    id: 'transport.dispatch.rd.text.dispatched',
     defaultMessage: '已发送'
   }
 });

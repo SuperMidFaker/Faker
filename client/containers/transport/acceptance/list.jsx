@@ -105,6 +105,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
+    width: 140,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return <span style={{ color : '#999' }}>{o}</span>;
@@ -114,64 +115,78 @@ export default class AcceptList extends React.Component {
     }
   }, {
     title: this.msg('shipRequirement'),
-    dataIndex: 'sr_name'
+    dataIndex: 'sr_name',
+    width: 200
+  }, {
+    title: this.msg('shipMode'),
+    dataIndex: 'transport_mode',
+    width: 80
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
+    width: 80,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
+    width: 80,
     render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
+    width: 80,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consignorPlace'),
+    width: 150,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 140,
+    width: 150,
   }, {
     title: this.msg('consigneePlace'),
+    width: 150,
     render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 120,
-  }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode'
+    width: 150,
   }, {
     title: this.msg('packageNum'),
-    dataIndex: 'total_count'
+    dataIndex: 'total_count',
+    width: 150
   }, {
     title: this.msg('shipWeight'),
-    dataIndex: 'total_weight'
+    dataIndex: 'total_weight',
+    width: 150
   }, {
     title: this.msg('shipVolume'),
-    dataIndex: 'total_volume'
+    dataIndex: 'total_volume',
+    width: 150
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
+    width: 40,
     render: (o, record) => {
       if (record.source === SHIPMENT_SOURCE.consigned) {
         return this.msg('consginSource');
       } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
         return this.msg('subcontractSource');
+      } else {
+        return <span />;
       }
     }
   }, {
+    // todo sort with created acpt
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
     render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
@@ -201,8 +216,10 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filters, 1);
   }
   handleShipmentFilter = (ev) => {
-    const filterArray = this.mergeFilters(this.props.filters, 'type', ev.target.value);
+    const targetVal = ev.target.value;
+    const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
     this.handleTableLoad(filterArray, 1);
+      this.setState({ radioValue: targetVal });
   }
   handleShipmtAccept(dispId) {
     this.props.loadAcceptDispatchers(
@@ -268,17 +285,15 @@ export default class AcceptList extends React.Component {
       }
     };
     let radioValue;
-    this.props.filters.forEach(flt => {
-      if (flt.name === 'type') {
-        radioValue = flt.value;
-        return;
-      }
-    });
+    const types = this.props.filters.filter(flt => flt.name === 'type');
+    if (types.length === 1) {
+      radioValue = types[0].value;
+    }
     let columns = this.columns;
     if (radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
-        width: 130,
+        width: 100,
         render: (o, record, index) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return <span />;
@@ -323,12 +338,14 @@ export default class AcceptList extends React.Component {
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
-            <span style={{marginLeft: '10px'}} />
+          </RadioGroup>
+          <span style={{marginLeft: '10px'}} />
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
@@ -338,7 +355,7 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 18]} columnsPageSize={3}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

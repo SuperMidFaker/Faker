@@ -97,13 +97,16 @@ export default class SentView extends React.Component {
   }
   columns = [{
     title: this.msg('partnerName'),
-    dataIndex: 'name'
+    dataIndex: 'name',
+    width: 200
   }, {
     title: this.msg('partnerCode'),
-    dataIndex: 'code'
+    dataIndex: 'code',
+    width: 150
   }, {
     title: this.msg('inviteThemToBe'),
     dataIndex: 'types',
+    width: 150,
     render: (o, record) => {
       let text;
       if (record.types.length === 1
@@ -118,10 +121,12 @@ export default class SentView extends React.Component {
   }, {
     title: this.msg('sentDate'),
     dataIndex: 'created_date',
+    width: 100,
     render: (o, record) => moment(record.createdDate).format('YYYY-MM-DD')
   }, {
     title: formatContainerMsg(this.props.intl, 'statusColumn'),
     dataIndex: 'status',
+    width: 100,
     render: (o, record) => {
       let text = this.msg('invitationDue');
       if (record.status === INVITATION_STATUS.ACCEPTED) {
@@ -164,11 +169,11 @@ export default class SentView extends React.Component {
     };
     return (
       <div className="main-content">
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header" />
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={sentlist.loading}
-              dataSource={this.dataSource}
+              dataSource={this.dataSource} useFixedHeader
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   slogan: {
     id: 'container.slogan',
-    defaultMessage: '进出口物流协同云平台'
+    defaultMessage: '通关物流云平台'
   },
   applications: {
     id: 'container.applications',
@@ -119,7 +119,7 @@ const messages = defineMessages({
   },
   partnership: {
     id: 'container.partnership',
-    defaultMessage: '合作关系'
+    defaultMessage: '协作网络'
   },
   partners: {
     id: 'container.partners',

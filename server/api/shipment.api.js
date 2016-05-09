@@ -56,12 +56,15 @@ function *shipmentListG() {
   let shipmtNo;
   let shipmtType;
   let shipmtDispType;
+  let shipmtOrder;
   filters.forEach(flt => {
     if (flt.name === 'type') {
       if (flt.value === 'unaccepted') {
         shipmtDispType = SHIPMENT_TRACK_STATUS.unaccepted;
+        shipmtOrder = 'created';
       } else if (flt.value === 'accepted') {
         shipmtDispType = SHIPMENT_TRACK_STATUS.undispatched;
+        shipmtOrder = 'accepted';
       } else if (flt.value === 'draft') {
         shipmtType = SHIPMENT_EFFECTIVES.draft;
       } else if (flt.value === 'archived') {
@@ -72,21 +75,35 @@ function *shipmentListG() {
     }
   });
   try {
-    const [ totals, shipmts ] = yield [
-      shipmentDispDao.getFilteredTotalCount(
-        tenantId, shipmtType, shipmtDispType, shipmtNo
-      ),
-      shipmentDispDao.getFilteredShipments(
-        tenantId, shipmtType, shipmtDispType, shipmtNo,
-        SHIPMENT_DISPATCH_STATUS.confirmed, pageSize, current
-      )
-    ];
-    Result.OK(this, {
-      totalCount: totals[0].count,
-      pageSize,
-      current,
-      data: shipmts,
-    });
+    if (shipmtType !== undefined) {
+      const [ totals, shipmts ] = yield [
+        shipmentDao.getCountByType(tenantId, shipmtType, shipmtNo),
+        shipmentDao.getShipmentsByType(tenantId, shipmtType, shipmtNo, pageSize, current)
+      ];
+      return Result.OK(this, {
+        totalCount: totals[0].count,
+        pageSize,
+        current,
+        data: shipmts,
+      });
+    } else {
+      const [ totals, shipmts ] = yield [
+        shipmentDispDao.getFilteredTotalCount(
+          tenantId, shipmtDispType, shipmtNo,
+          SHIPMENT_DISPATCH_STATUS.confirmed
+        ),
+        shipmentDispDao.getFilteredShipments(
+          tenantId, shipmtDispType, shipmtNo, shipmtOrder,
+          SHIPMENT_DISPATCH_STATUS.confirmed, pageSize, current
+        )
+      ];
+      return Result.OK(this, {
+        totalCount: totals[0].count,
+        pageSize,
+        current,
+        data: shipmts,
+      });
+    }
   } catch (e) {
     Result.InternalServerError(this, e.message);
   }
@@ -213,12 +230,6 @@ function *shipmtDraftP() {
     trans = yield mysql.beginTransaction();
     const shipmtNo = uuid.gen();
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.draft, trans);
-    const result = yield shipmentDispDao.createAndAcceptByLSP(
-      shipmtNo, shipmt.client_id, shipmt.client, SHIPMENT_SOURCE.consigned,
-      sp.tid, sp.name, null, null, SHIPMENT_DISPATCH_STATUS.confirmed,
-      SHIPMENT_TRACK_STATUS.unaccepted, shipmt.freight_charge, null, trans
-    );
-    yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
     yield mysql.commit(trans);
     return Result.OK(this, shipmt);
   } catch (e) {

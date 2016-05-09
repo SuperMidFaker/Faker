@@ -42,8 +42,11 @@ export default class ConsignInfo extends React.Component {
     });
     if (selectConsignLoc) {
       const consignKey = `${this.props.type}_id`;
+      this.props.setFormValue(consignKey, selectConsignLoc.node_id);
+      /*
       this.props.setConsignFields({
         [consignKey]: selectConsignLoc.node_id,
+        [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,
@@ -51,8 +54,15 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.mobile]: selectConsignLoc.mobile,
         [this.renderFields.email]: selectConsignLoc.email
       });
+     */
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
+        [this.renderFields.province]: selectConsignLoc.province,
+        [this.renderFields.city]: selectConsignLoc.city,
+        [this.renderFields.district]: selectConsignLoc.district,
+        [this.renderFields.contact]: selectConsignLoc.contact,
+        [this.renderFields.mobile]: selectConsignLoc.mobile,
+        [this.renderFields.email]: selectConsignLoc.email
       });
     }
   }
@@ -114,21 +124,21 @@ export default class ConsignInfo extends React.Component {
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} colSpan={labelColSpan} required
+            field={this.renderFields.name} colSpan="3" required
             rules={[{
               required: true, message: this.msg('consignNameMessage')
             }]} optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
           />
-          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}}
+          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 3}}
+            wrapperCol={{span: 21}}
           >
             <RegionCascade withoutCountry region={region}
               setFormValue={this.handleRegionValue}
             />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} colSpan={labelColSpan} required
+            field={this.renderFields.addr} colSpan="3" required
             rules={[{
               required: true, message: this.msg('addrMessage')
             }]}

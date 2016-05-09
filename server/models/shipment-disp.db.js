@@ -1,11 +1,6 @@
 import mysql from '../../reusable/db-util/mysql';
 
-function getShipmtClause(shipmtEff, shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
-  let eff = '';
-  if (shipmtEff !== undefined && shipmtEff !== null) {
-    eff = `and ${aliasS}.effective = ?`;
-    args.push(shipmtEff);
-  }
+function getShipmtClause(shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
   if (shipmtDispType !== undefined && shipmtDispType !== null) {
     disp = `and ${aliasSD}.status = ?`;
@@ -16,36 +11,74 @@ function getShipmtClause(shipmtEff, shipmtDispType, shipmtNo, aliasS, aliasSD, a
     shno = `and ${aliasS}.shipmt_no like ?`;
     args.push(`%${shipmtNo}%`);
   }
-  return `${eff} ${disp} ${shno}`;
+  return `${disp} ${shno}`;
 }
+
+function genDispFilters(filter) {
+  const arr = [];
+  if (filter.status === 'waiting') {
+    arr.push(' SD.sp_tenant_id = ? and SD.status = 2 and SD.disp_status = 1 ');
+  } else if (filter.status === 'dispatching') {
+    arr.push('SD.sr_tenant_id = ? and SD.status = 1 and SD.disp_status = 0 ');
+  } else if (filter.status === 'dispatched') {
+    arr.push('SD.sr_tenant_id = ? and SD.disp_status = 1 ');
+  }
+  return arr.join('');
+}
+
 export default {
-  getFilteredTotalCount(tenantId, shipmtEff, shipmtDispType, shipmtNo, dispSt) {
+  getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt) {
     const args = [tenantId, dispSt];
-    const clause = getShipmtClause(
-      shipmtEff, shipmtDispType, shipmtNo,
-      'S', 'SD', args
-    );
+    const clause = getShipmtClause(shipmtDispType, shipmtNo, 'S', 'SD', args);
     const sql = `select count(S.shipmt_no) as count from tms_shipments as S
       inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
       where SD.sp_tenant_id = ? and disp_status = ? ${clause}`;
     return mysql.query(sql, args);
   },
-  getFilteredShipments(tenantId, shipmtEff, shipmtDispType, shipmtNo, dispSt, pageSize, current) {
+  getFilteredShipments(
+    tenantId, shipmtDispType, shipmtNo, order, dispSt, pageSize, current
+  ) {
     const args = [tenantId, dispSt];
-    const clause = getShipmtClause(
-      shipmtEff, shipmtDispType, shipmtNo,
-      'S', 'SD', args
-    );
+    const clause = getShipmtClause(shipmtDispType, shipmtNo, 'S', 'SD', args);
+    let orderClause = '';
+    if (order === 'created') {
+      orderClause = 'order by S.created_date desc';
+    } else if (order === 'accepted') {
+      orderClause = 'order by acpt_time desc';
+    }
     const sql = `select SD.id as \`key\`, S.shipmt_no as shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source as source, S.created_date as created_date, acpt_time,
-      effective from tms_shipments as S
-      inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
-      where SD.sp_tenant_id = ? and disp_status = ? ${clause} limit ?, ?`;
+      effective from tms_shipments as S inner join tms_shipment_dispatch as SD
+      on S.shipmt_no = SD.shipmt_no where SD.sp_tenant_id = ? and disp_status = ?
+      ${clause} ${orderClause} limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
+    return mysql.query(sql, args);
+  },
+  getDispatchShipmts(tenantId, filter, offset, pageSize) {
+    const args = [tenantId];
+    const awhere = genDispFilters(filter, args);
+    args.push(offset, pageSize);
+    const sql = `select SD.id as \`key\`, S.shipmt_no, sr_name,
+      pickup_est_date, transit_time, deliver_est_date, consigner_name,
+      consigner_province, consigner_city, consigner_district, consigner_addr,
+      consignee_name, consignee_province, consignee_city, consignee_district,
+      consignee_addr, transport_mode, total_count, total_weight, total_volume,
+      SD.source, S.created_date, acpt_time,
+      effective from tms_shipments as S
+      right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where ${awhere} limit ?, ?`;
+    return mysql.query(sql, args);
+  },
+  getDispatchShipmtsCount(tenantId, filter) {
+    const args = [tenantId];
+    const awhere = genDispFilters(filter, args);
+    const sql = `select count(S.shipmt_no) as count from tms_shipments as S
+      right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
+      where ${awhere}`;
     return mysql.query(sql, args);
   },
   createAndAcceptByLSP(
