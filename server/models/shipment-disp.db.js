@@ -52,7 +52,7 @@ function genDispFilters(filter) {
  * @return {String} update statement
  *
  */
-function generateUpdateStatementWithInfo(updateInfo, columns) {
+function generateUpdateClauseWithInfo(updateInfo, columns) {
   if(Array.isArray(updateInfo)) {
     return columns.filter(key => updateInfo.some(info => info[key] !== null)).map(key => {
       return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join("");
@@ -159,8 +159,8 @@ export default {
       `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
       `total_volume`, `remark`
     ];
-    const updateStatement = generateUpdateStatementWithInfo(shipmtInfo, columns);
-    const sql = `update tms_shipments set ${updateStatement} where shipmt_no = ?`;
+    const updateClause = generateUpdateClauseWithInfo(shipmtInfo, columns);
+    const sql = `update tms_shipments set ${updateClause} where shipmt_no = ?`;
     const args = [shipmtInfo.shipmt_no];
     return mysql.update(sql, args, trans);
   },
@@ -169,8 +169,8 @@ export default {
     const columns = [
       `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
     ];
-    const updateStatement = generateUpdateStatementWithInfo(goodsInfo, columns);
-    const sql = `UPDATE tms_shipment_manifest SET ${updateStatement} WHERE id IN (${goodsInfo.map(info => info.id).join(',')})`;
+    const updateClause = generateUpdateClauseWithInfo(goodsInfo, columns);
+    const sql = `UPDATE tms_shipment_manifest SET ${updateClause} WHERE id IN (${goodsInfo.map(info => info.id).join(',')})`;
     return mysql.update(sql);
   },
 

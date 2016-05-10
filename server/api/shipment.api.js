@@ -251,13 +251,18 @@ function *shipmtG() {
 
 function *shipmtSaveEditP() {
   const body = yield cobody(this);
-  const shipment = body.shipment;
-  const { goodslist } = shipment;
+  const { shipment, tenantId, loginId } = body;
+  const { goodslist, shipmt_no } = shipment;
+  const newGoods = goodslist.filter(goods => goods.id === undefined);
+  const editGoods = goodslist.filter(goods => goods.id !== undefined);
   let trans;
   try {
     trans = yield mysql.beginTransaction();
     yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
-    yield shipmentDispDao.updateGoodsWithInfo(goodslist);
+    yield shipmentDispDao.updateGoodsWithInfo(editGoods);
+    for(let goods of newGoods) {
+      yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
+    }
     yield mysql.commit(trans);
     return Result.OK(this);
   } catch (e) {

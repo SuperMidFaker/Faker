@@ -98,20 +98,21 @@ export default class ShipmentEdit extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleEdit = (ev) => {
+    const {formData, tenantId, loginId} = this.props
     ev.preventDefault();
-    this.props.saveEdit(this.props.formData)
-      // .then( result => {
-      //   if (result.error) {
-      //     message.error(result.error.message);
-      //   } else {
-      //     this.context.router.goBack();
-      //     this.props.loadTable(null, {
-      //       tenantId: this.props.tenantId,
-      //       pageSize: this.props.pageSize,
-      //       currentPage: this.props.current,
-      //     });
-      //   }
-      // });
+    this.props.saveEdit(formData, tenantId, loginId)
+      .then( result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.goBack();
+          this.props.loadTable(null, {
+            tenantId: this.props.tenantId,
+            pageSize: this.props.pageSize,
+            currentPage: this.props.current,
+          });
+        }
+      });
   }
   handleCancel = () => {
     this.context.router.goBack();
