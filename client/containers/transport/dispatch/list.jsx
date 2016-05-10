@@ -12,6 +12,7 @@ import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
 import Condition from './condition';
+import DispatchDock from './dispatch-dock';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -46,10 +47,7 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     shipmentlist: state.transportDispatch.shipmentlist,
     filters: state.transportDispatch.filters,
-    loading: state.transportDispatch.loading,
-    filterVisible: false,
-    filterView: [],
-    panelHeader: []
+    loading: state.transportDispatch.loading
   }),
   { loadTable })
 class DispatchList extends React.Component {
@@ -62,7 +60,10 @@ class DispatchList extends React.Component {
     loadTable: PropTypes.func.isRequired
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
+    show: false,
+    shipmts: [],
+    panelHeader: []
   }
 
   componentWillMount() {
@@ -166,11 +167,11 @@ class DispatchList extends React.Component {
       if (s === 'waiting') {
         return (
           <span>
-            <a role="button" onClick={() => this.handleShipmtDispatch(record)}>
+            <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
             {this.msg('btnTextDispatch')}
             </a>
             <span className="ant-divider" />
-            <a role="button" onClick={() => this.handleShipmtDivide(record)}>
+            <a role="button" onClick={() => this.handleDivideDockShow(record)}>
             {this.msg('btnTextDivide')}
             </a>
           </span>
@@ -196,6 +197,10 @@ class DispatchList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
 
+  msgWrapper = (s) => {
+    return this.msg(s);
+  }
+
   handleStatusChange = (ev) => {
     const { shipmentlist, tenantId, filters } = this.props;
     const tmp = Object.assign({}, filters);
@@ -215,7 +220,7 @@ class DispatchList extends React.Component {
     });
   }
 
-  handleConditionChange(condition) {
+  handleConditionChange = (condition) => {
     console.log(condition);
   }
 
@@ -224,7 +229,7 @@ class DispatchList extends React.Component {
 
     const panelHeader = [];
     if (status === 'waiting') {
-      panelHeader.push((<Condition msg={s => this.msg(s)} onConditionChange={(cd) => this.handleConditionChange(cd)}/>),
+      panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange}/>),
       (<span className="ant-divider" style={{width: '0px'}}/>),
       (<NavLink to="/transport/acceptance/shipment/new">
               <Button>
@@ -232,7 +237,7 @@ class DispatchList extends React.Component {
               </Button>
             </NavLink>));
     } else if (status === 'dispatched') {
-      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={(value) => this.handleDayChange(value)}>
+      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
         <Option value="0">最近七天</Option>
         <Option value="1">最近一月</Option>
       </Select>),
@@ -247,12 +252,22 @@ class DispatchList extends React.Component {
     this.setState({panelHeader});
   }
 
-  handleShipmtDispatch(shipmt) {
+  handleDispatchDockShow(shipmt) {
+    console.log(shipmt);
+
+    this.setState({show: true, shipmts: [shipmt]});
+  }
+
+  handleDispatchDockClose = () => {
+    this.setState({show: false, shipmts: []});
+  }
+
+  handleDivideDockShow(shipmt) {
     console.log(shipmt);
   }
 
-  handleShipmtDivide(shipmt) {
-    console.log(shipmt);
+  handleDivideDockClose = () => {
+
   }
 
   handleShipmtSend(shipmt) {
@@ -263,7 +278,7 @@ class DispatchList extends React.Component {
     console.log(shipmt);
   }
 
-  handleDayChange() {
+  handleDayChange = () => {
 
   }
 
@@ -319,7 +334,7 @@ class DispatchList extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} columnsPageRange={[7, 14]} columnsPageSize={4}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -328,21 +343,12 @@ class DispatchList extends React.Component {
             </Button>
           </div>
         </div>
-        <div className="dock-container hide">
-          <div className="dock-content">
-            <div className="dock-sp-line"></div>
-            <div className="dock-sp">
-              <div className="dock-sp-body">
-                <div className="dock-sp-toolbar">
 
-                </div>
-                <div className="dock-sp-content">
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DispatchDock key="dispDock"
+          show={this.state.show}
+          shipmts={this.state.shipmts}
+          msg={this.msgWrapper}
+          onClose={this.handleDispatchDockClose} />
       </div>
     );
   }

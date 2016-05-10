@@ -16,6 +16,8 @@ function packShipmentArgsByLSP(shipmt, args) {
     if (col in shipmt) {
       if (col === 'pickup_est_date' || col === 'deliver_est_date') {
         args.push(new Date(shipmt[col]));
+      } else if (col === 'transit_time') {
+        args.push(shipmt[col] || 0);
       } else {
         args.push(shipmt[col]);
       }
@@ -41,11 +43,26 @@ function packGoodsArgs(goods) {
 }
 
 export default {
+  *genShipmtNoAsync(tenantId) {
+    // 3位企业tms代号 + 2位年份 + 6位序号(前面补0)
+    const buf = new Buffer(3+2+6);
+    buf.fill('0');
+    const tenantTmsPrefix = 'NLO'; // todo get by tenantid
+    const year = String(new Date().getFullYear()).substr(2);
+    const shipmtSumSql = 'select count(shipmt_no) as sum from tms_shipments where tenant_id = ? and parent_no is null';
+    const args = [tenantId];
+    const counts = yield mysql.query(shipmtSumSql, args);
+    const sumStr = String(counts[0].sum + 1);
+    buf.write(tenantTmsPrefix);
+    buf.write(year, tenantTmsPrefix.length);
+    buf.write(sumStr, 11 - sumStr.length);
+    return buf.toString();
+  },
   getCountByType(tenantId, shipmtType, shipmtNo) {
     const args = [tenantId, shipmtType];
     let shipmtNoWhere = '';
     if (shipmtNo) {
-      shipmtNoWhere = 'shipmt_no like ?';
+      shipmtNoWhere = 'and shipmt_no like ?';
       args.push(shipmtNoWhere);
     }
     const sql = `select count(shipmt_no) as count from tms_shipments
@@ -56,7 +73,7 @@ export default {
     const args = [tenantId, shipmtType];
     let shipmtNoWhere = '';
     if (shipmtNo) {
-      shipmtNoWhere = 'shipmt_no like ?';
+      shipmtNoWhere = 'and shipmt_no like ?';
       args.push(shipmtNoWhere);
     }
     const sql = `select shipmt_no as \`key\`, shipmt_no, customer_name as sr_name, consigner_name,
