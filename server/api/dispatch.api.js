@@ -10,7 +10,13 @@
  */
 
 import shipmtDispDao from '../models/shipment-disp.db';
+import copsDao from '../models/cooperation.db';
+import vehiclesDao from '../models/vehicles.db';
 import Result from '../../reusable/node-util/response-result';
+import {
+  PARTNERSHIP_TYPE_INFO
+} from 'universal/constants';
+import parse from 'co-body';
 /**
  * filters => {
  *   status: waiting(待分配)/dispatching(待发送)/dispatched(已发送)
@@ -38,6 +44,52 @@ function *listShipmts() {
   });
 }
 
+function *listLsps() {
+  const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
+  const current = parseInt(this.request.query.currentPage, 10) || 10;
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  const min = (current - 1) * pageSize;
+
+  const [partners, totals] = yield [copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation, min, pageSize),
+                                    copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation)];
+  Result.OK(this, {
+    totalCount: totals[0].count,
+    pageSize,
+    current,
+    data: partners,
+  });
+}
+
+function *listVehicles() {
+  const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
+  const current = parseInt(this.request.query.currentPage, 10) || 10;
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  const min = (current - 1) * pageSize;
+  const [vehicles, totals] = yield [vehiclesDao.getVehicles(tenantId, min, pageSize),
+                                    vehiclesDao.getVehiclesCount(tenantId)];
+  Result.OK(this, {
+    totalCount: totals[0].count,
+    pageSize,
+    current,
+    data: vehicles,
+  });
+}
+
+function *doDispatch() {
+  const { tenantId,
+          loginId,
+          parentId,
+          shipmtNo,
+          partnerTenantId,
+          partnerName
+        } = yield parse(this.req);
+
+
+}
+
 export default [
-  [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ]
+  [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
+  [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
+  [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
+  [ 'post', '/v1/transport/dispatch', doDispatch ]
 ];
