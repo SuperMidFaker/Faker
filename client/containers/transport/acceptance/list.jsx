@@ -7,11 +7,12 @@ import NavLink from 'reusable/components/nav-link';
 import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { loadTable, loadAcceptDispatchers, revokeShipment }
-  from 'universal/redux/reducers/transport-acceptance';
+import { loadTable, loadAcceptDispatchers, revokeOrReject } from
+  'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'universal/constants';
 import AccepterModal from '../shipment/modals/accepter';
+import RevokejectModal from '../shipment/modals/revoke-reject';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
@@ -29,6 +30,8 @@ function fetchData({ state, dispatch, cookie }) {
     filters: JSON.stringify(state.transportAcceptance.table.filters),
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     currentPage: state.transportAcceptance.table.shipmentlist.current,
+    sortField: state.transportAcceptance.table.sortField,
+    sortOrder: state.transportAcceptance.table.sortOrder,
   }));
 }
 
@@ -55,7 +58,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
   }),
-  { loadTable, loadAcceptDispatchers, revokeShipment })
+  { loadTable, loadAcceptDispatchers, revokeOrReject })
 export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -65,7 +68,7 @@ export default class AcceptList extends React.Component {
     sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    revokeShipment: PropTypes.func.isRequired,
+    revokeOrReject: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired
   }
@@ -88,11 +91,11 @@ export default class AcceptList extends React.Component {
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         sortField: sorter.field,
-        sortOrder: sorter.order,
+        sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
         filters: this.props.filters
       };
       params.filters = params.filters.filter(
-        flt => flt.name in filters && filters[flt.name].length
+        flt => flt.name === 'type' || (flt.name in filters && filters[flt.name].length)
       );
       for (const key in filters) {
         if (filters[key] && filters[key].length > 0) {
@@ -114,7 +117,7 @@ export default class AcceptList extends React.Component {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return <span style={{ color : '#999' }}>{o}</span>;
       } else {
-        return o;
+        return <a>o</a>;
       }
     }
   }, {
@@ -190,7 +193,6 @@ export default class AcceptList extends React.Component {
       }
     }
   }, {
-    // todo sort with created acpt
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
     sorter: true,
@@ -226,11 +228,10 @@ export default class AcceptList extends React.Component {
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
+    const sortOrder = 'desc';
     let sortField = 'created_date';
-    let sortOrder = 'desc';
     if (targetVal === 'accepted') {
       sortField = 'acpt_date';
-      sortOrder = 'asc';
     }
     this.handleTableLoad(filterArray, 1, sortField, sortOrder);
   }
@@ -243,14 +244,11 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleShipmtRevoke(dispId, index) {
-    this.props.revokeShipment(
-      dispId, SHIPMENT_EFFECTIVES.cancelled, index
-    ).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      }
-    });
+  handleShipmtRevoke(dispId) {
+    this.props.revokeOrReject('revoke', dispId);
+  }
+  handleShipmtReject(dispId) {
+    this.props.revokeOrReject('reject', dispId);
   }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
@@ -307,7 +305,7 @@ export default class AcceptList extends React.Component {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 100,
-        render: (o, record, index) => {
+        render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return <span />;
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
@@ -321,7 +319,7 @@ export default class AcceptList extends React.Component {
                 {formatGlobalMsg(this.props.intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleShipmtRevoke(record.key, index)}>
+                <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
                 {this.msg('shipmtRevoke')}
                 </a>
               </span>
@@ -378,6 +376,7 @@ export default class AcceptList extends React.Component {
           </div>
         </div>
         <AccepterModal reload={this.handleTableLoad} />
+        <RevokejectModal reload={this.handleTableLoad} />
       </div>
     );
   }

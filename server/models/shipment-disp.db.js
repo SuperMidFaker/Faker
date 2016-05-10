@@ -36,16 +36,12 @@ export default {
     return mysql.query(sql, args);
   },
   getFilteredShipments(
-    tenantId, shipmtDispType, shipmtNo, order, dispSt, pageSize, current
+    tenantId, shipmtDispType, shipmtNo, dispSt, pageSize, current,
+    sortField, sortOrder
   ) {
     const args = [tenantId, dispSt];
     const clause = getShipmtClause(shipmtDispType, shipmtNo, 'S', 'SD', args);
-    let orderClause = '';
-    if (order === 'created') {
-      orderClause = 'order by S.created_date desc';
-    } else if (order === 'accepted') {
-      orderClause = 'order by acpt_time desc';
-    }
+    const sorterFd = sortField === 'created_date' ? 'S.created_date' : 'acpt_time';
     const sql = `select SD.id as \`key\`, S.shipmt_no as shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
       consigner_province, consigner_city, consigner_district, consigner_addr,
@@ -54,7 +50,7 @@ export default {
       SD.source as source, S.created_date as created_date, acpt_time,
       effective from tms_shipments as S inner join tms_shipment_dispatch as SD
       on S.shipmt_no = SD.shipmt_no where SD.sp_tenant_id = ? and disp_status = ?
-      ${clause} ${orderClause} limit ?, ?`;
+      ${clause} order by ${sorterFd} ${sortOrder} limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
@@ -101,6 +97,17 @@ export default {
       sp_disp_login_id = ?, sp_disp_login_name = ?, acpt_time = NOW(), disp_status = ?,
       status = ? where id = ?`;
     const args = [acpterId, acpterName, disperId, disperName, dispSt, status, dispId];
+    return mysql.update(sql, args, trans);
+  },
+  updateLogAction(action, dispId, trans) {
+    const sql = `update tms_shipment_dispatch set log_last_action = ?, log_last_date = NOW()
+      where id = ?`;
+    const args = [action, dispId];
+    return mysql.update(sql, args, trans);
+  },
+  updateRejectStatus(dispSt, dispId, trans) {
+    const sql = 'update tms_shipment_dispatch set disp_status = ? where id = ?';
+    const args = [dispSt, dispId];
     return mysql.update(sql, args, trans);
   }
 };
