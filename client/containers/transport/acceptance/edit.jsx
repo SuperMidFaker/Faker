@@ -100,18 +100,18 @@ export default class ShipmentEdit extends React.Component {
   handleEdit = (ev) => {
     ev.preventDefault();
     this.props.saveEdit(this.props.formData)
-      .then( result => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.context.router.goBack();
-          this.props.loadTable(null, {
-            tenantId: this.props.tenantId,
-            pageSize: this.props.pageSize,
-            currentPage: this.props.current,
-          });
-        }
-      });
+      // .then( result => {
+      //   if (result.error) {
+      //     message.error(result.error.message);
+      //   } else {
+      //     this.context.router.goBack();
+      //     this.props.loadTable(null, {
+      //       tenantId: this.props.tenantId,
+      //       pageSize: this.props.pageSize,
+      //       currentPage: this.props.current,
+      //     });
+      //   }
+      // });
   }
   handleCancel = () => {
     this.context.router.goBack();
@@ -170,9 +170,6 @@ export default class ShipmentEdit extends React.Component {
           <div className="bottom-fixed-row">
             <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleEdit}>
               {this.msg('save')}
-            </Button>
-            <Button size="large" onClick={this.handleCancel} loading={submitting}>
-              {this.msg('cancel')}
             </Button>
           </div>
         </Form>

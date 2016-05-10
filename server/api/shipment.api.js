@@ -241,8 +241,9 @@ function *shipmtDraftP() {
 function *shipmtG() {
   const {tenantId, shipmtNo} = this.request.query;
   try {
-    const [formData] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
-    return Result.OK(this, {formData});
+    const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
+    const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
+    return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
   }catch (e) {
     Result.InternalServerError(this, e.message); 
   }
@@ -251,10 +252,12 @@ function *shipmtG() {
 function *shipmtSaveEditP() {
   const body = yield cobody(this);
   const shipment = body.shipment;
+  const { goodslist } = shipment;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
     yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
+    yield shipmentDispDao.updateGoodsWithInfo(goodslist);
     yield mysql.commit(trans);
     return Result.OK(this);
   } catch (e) {
@@ -275,6 +278,17 @@ function *shipmtRevokeP() {
   }
 }
 
+function *shipmtGoodsG() {
+  const { shipmtNo } = this.request.query;
+  try {
+    const result = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
+    console.log(result);
+    return Result.OK(this, result);
+  }catch(e){
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
@@ -284,5 +298,6 @@ export default [
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'get', '/v1/transport/shipment', shipmtG ],
-  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ]
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
+  [ 'get', '/v1/transport/shipment/goods', shipmtGoodsG ]
 ]

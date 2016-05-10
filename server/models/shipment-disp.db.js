@@ -26,19 +26,40 @@ function genDispFilters(filter) {
   return arr.join('');
 }
 
-function generateUpdateStatementWithInfo(updateInfo) {
-  const columns = [
-    `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
-    'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
-    `consigner_addr`, `consigner_email`,
-    `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
-    `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
-    `consignee_contact`, `consignee_mobile`, `transit_time`,
-    `transport_mode`, `vehicle_type`, `vehicle_length`,
-    `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
-    `total_volume`, `remark`
-  ];
-  return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
+
+
+/**
+ *
+ * if updateInfo is array, execute multi update one time, such as below:
+ *
+ * UPDATE categories
+ *  SET
+ *    display_order = CASE id
+ *      WHEN 1 THEN 3
+ *      WHEN 2 THEN 4
+ *      WHEN 3 THEN 5
+ *    END,
+ *    title = CASE id
+ *    WHEN 1 THEN 'New Title 1'
+ *    WHEN 2 THEN 'New Title 2'
+ *    WHEN 3 THEN 'New Title 3'
+ *    END
+ *  WHERE id IN (1,2,3)
+ *
+ * else excute normal UPDATE
+ *
+ * @param {updateInfo, columns}
+ * @return {String} update statement
+ *
+ */
+function generateUpdateStatementWithInfo(updateInfo, columns) {
+  if(Array.isArray(updateInfo)) {
+    return columns.filter(key => updateInfo.some(info => info[key] !== null)).map(key => {
+      return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join("");
+    }).join("END,\n") + 'END\n';
+  }else {
+    return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
+  }
 }
 
 export default {
@@ -126,10 +147,36 @@ export default {
     return mysql.query(sql, args);
   },
   
-  updateShipmtWithInfo(updateInfo, trans) {
-    const updateStatement = generateUpdateStatementWithInfo(updateInfo);
+  updateShipmtWithInfo(shipmtInfo, trans) {
+    const columns = [
+      `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
+      'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
+      `consigner_addr`, `consigner_email`,
+      `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
+      `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
+      `consignee_contact`, `consignee_mobile`, `transit_time`,
+      `transport_mode`, `vehicle_type`, `vehicle_length`,
+      `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
+      `total_volume`, `remark`
+    ];
+    const updateStatement = generateUpdateStatementWithInfo(shipmtInfo, columns);
     const sql = `update tms_shipments set ${updateStatement} where shipmt_no = ?`;
-    const args = [updateInfo.shipmt_no];
+    const args = [shipmtInfo.shipmt_no];
     return mysql.update(sql, args, trans);
+  },
+
+  updateGoodsWithInfo(goodsInfo) {
+    const columns = [
+      `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
+    ];
+    const updateStatement = generateUpdateStatementWithInfo(goodsInfo, columns);
+    const sql = `UPDATE tms_shipment_manifest SET ${updateStatement} WHERE id IN (${goodsInfo.map(info => info.id).join(',')})`;
+    return mysql.update(sql);
+  },
+
+  getShipmtGoodsWithNo(shipmtNo) {
+    const sql = `select * from tms_shipment_manifest where shipmt_no = ?`;
+    const args = [shipmtNo];
+    return mysql.query(sql, args);
   }
 };
