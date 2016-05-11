@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Button, message } from 'ant-ui';
+import { Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { setFormValue, setConsignFields, loadForm, loadFormRequire }
   from 'universal/redux/reducers/shipment';
+import { saveEdit } from '../../../../universal/redux/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ConsignInfo from '../shipment/forms/consign-info';
@@ -15,9 +16,7 @@ import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
   const promises = [];
@@ -56,7 +55,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     clients: state.shipment.formRequire.clients,
     submitting: state.transportAcceptance.submitting,
   }),
-  { setFormValue, setConsignFields, })
+  { setFormValue, setConsignFields, saveEdit })
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -92,16 +91,31 @@ export default class ShipmentEdit extends React.Component {
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
+    saveEdit: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleEdit = (ev) => {
-    message.info(ev.target.value);
+    const {formData, tenantId, loginId} = this.props
+    ev.preventDefault();
+    this.props.saveEdit(formData, tenantId, loginId)
+      .then( result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.goBack();
+          this.props.loadTable(null, {
+            tenantId: this.props.tenantId,
+            pageSize: this.props.pageSize,
+            currentPage: this.props.current,
+          });
+        }
+      });
   }
-  handleCancel = (ev) => {
-    message.info(ev.target.value);
+  handleCancel = () => {
+    this.context.router.goBack();
   }
   render() {
     const { intl, clients, submitting, tenantName, formhoc } = this.props;
@@ -111,61 +125,56 @@ export default class ShipmentEdit extends React.Component {
       name: cl.name
     }));
     return (
-      <Form form={formhoc} horizontal className="form-edit-content offset-mid-col">
-        <Col span="14" className="subform">
-          <ConsignInfo type="consigner" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
-          <ConsignInfo type="consignee" intl={intl} outerColSpan={14} labelColSpan={4} formhoc={formhoc} />
-          <ScheduleInfo intl={intl} formhoc={formhoc} />
-          <ModeInfo intl={intl} formhoc={formhoc} />
-          <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
-        </Col>
-        <Col span="8">
-          <Row className="subform">
-            <AutoCompSelectItem labelName={this.msg('client')} formhoc={formhoc}
-              colSpan={4} field="client" optionData={clientOpts} required
-              optionField="name" optionKey="key" optionValue="value"
-              rules={[{
+      <div className="main-content">
+        <Form form={formhoc} horizontal>
+          <div className="page-body">
+            <div className="panel-header"></div>
+            <div className="panel-body body-responsive">
+              <Col span="16" className="main-col">
+                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ScheduleInfo intl={intl} formhoc={formhoc} />
+                <ModeInfo intl={intl} formhoc={formhoc} />
+                <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
+                <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
+              </Col>
+              <Col span="8" className="right-side-col">
+                <div className="subform-heading">
+                  <div className="subform-title">关联信息</div>
+                </div>
+                <div className="subform-body">
+                  <AutoCompSelectItem placeholder={this.msg('client')} formhoc={formhoc}
+                                      colSpan={0} field="client" optionData={clientOpts} required
+                                      optionField="name" optionKey="key" optionValue="value"
+                                      rules={[{
                 required: true, message: this.msg('clientNameMust')
               }]}
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('lsp')} colSpan={4}
-              value={tenantName} disabled
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('shipNo')} colSpan={4}
-              value={this.props.formData.shipmt_no} disabled
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={4}
-              field="ref_external_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refWaybillNo')} colSpan={4}
-              field="ref_waybill_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('refEntryNo')} colSpan={4}
-              field="ref_entry_no"
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('remark')} colSpan={4}
-              field="remark"
-            />
-            <InputItem type="number" formhoc={formhoc} labelName={this.msg('freightCharge')} colSpan={4}
-              field="freight_charge" hasFeedback={false} rules={[{
-                type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
+                  />
+                  <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} value={tenantName} disabled/>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
+                </div>
+                <div className="subform-heading">
+                  <div className="subform-title">{this.msg('freightCharge')}</div>
+                </div>
+                <div className="subform-body">
+                  <InputItem type="number" formhoc={formhoc} colSpan={0}
+                             field="freight_charge" hasFeedback={false} rules={[{
+                    type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
               }]}
-            />
-          </Row>
-          <Row className="subform-buton-row">
-            <Button htmlType="submit" type="primary" loading={submitting}
-            onClick={this.handleEdit}
-            >
-            {formatGlobalMsg(intl, 'ok')}
+                  />
+                </div>
+              </Col>
+            </div>
+          </div>
+          <div className="bottom-fixed-row">
+            <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleEdit}>
+              {this.msg('save')}
             </Button>
-          </Row>
-          <Row className="subform-buton-row">
-            <Button onClick={this.handleCancel} loading={submitting}>
-            {formatGlobalMsg(intl, 'cancel')}
-            </Button>
-          </Row>
-        </Col>
-      </Form>
+          </div>
+        </Form>
+      </div>
     );
   }
 }

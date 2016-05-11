@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
   'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
   'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
+  'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL'
 ]);
 
 const initialState = {
@@ -107,6 +108,21 @@ export function loadTable(cookie, params) {
       method: 'get',
       params,
       cookie
+    }
+  };
+}
+
+export function saveEdit(shipment, tenantId, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_EDIT,
+        actionTypes.SAVE_EDIT_SUCCEED,
+        actionTypes.SAVE_EDIT_FAIL
+      ],
+      endpoint: 'v1/transport/shipment/save_edit',
+      method: 'post',
+      data: { shipment, tenantId, loginId }
     }
   };
 }

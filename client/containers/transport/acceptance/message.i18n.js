@@ -169,4 +169,12 @@ export default defineMessages({
     id: 'transport.acceptance.shipmt.reject',
     defaultMessage: '退回'
   },
+  save: {
+    id: 'transport.acceptance.shipmt.save',
+    defaultMessage: '保存'
+  },
+  cancel: {
+    id: 'transport.acceptance.shipmt.cancel',
+    defaultMessage: '取消'
+  }
 });
