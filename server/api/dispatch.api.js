@@ -84,7 +84,6 @@ function *doDispatch() {
           partnerName
         } = yield parse(this.req);
 
-
 }
 
 export default [

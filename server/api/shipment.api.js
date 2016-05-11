@@ -238,12 +238,58 @@ function *shipmtDraftP() {
   }
 }
 
+function *shipmtG() {
+  const {tenantId, shipmtNo} = this.request.query;
+  try {
+    const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
+    const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
+    return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
+  }catch (e) {
+    Result.InternalServerError(this, e.message); 
+  }
+}
+
+function *shipmtSaveEditP() {
+  const body = yield cobody(this);
+  const { shipment, tenantId, loginId } = body;
+  const { goodslist, shipmt_no } = shipment;
+  const newGoods = goodslist.filter(goods => goods.id === undefined);
+  const editGoods = goodslist.filter(goods => goods.id !== undefined);
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
+    yield shipmentDispDao.updateGoodsWithInfo(editGoods);
+    for(let goods of newGoods) {
+      yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
+    }
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    Result.InternalServerError(this, e.message);
+  }
+}
+  
 function *shipmtRevokeP() {
   try {
     const body = yield cobody(this);
     yield shipmentDao.updateEffective(body.shipmtDispId, body.eff);
     return Result.OK(this);
   } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *shipmtGoodsG() {
+  const { shipmtNo } = this.request.query;
+  try {
+    const result = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
+    console.log(result);
+    return Result.OK(this, result);
+  }catch(e){
     return Result.InternalServerError(this, e.message);
   }
 }
@@ -256,4 +302,7 @@ export default [
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
+  [ 'get', '/v1/transport/shipment', shipmtG ],
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
+  [ 'get', '/v1/transport/shipment/goods', shipmtGoodsG ]
 ]
