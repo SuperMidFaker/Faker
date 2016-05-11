@@ -18,13 +18,13 @@ export default class SegmentDock extends React.Component {
     this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
     this.onCloseWrapper = () => {
-      this.setState({segments: [(<Button type="dashed" style={{ width: 390 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)]});
+      this.setState({segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)]});
       this.onClose();
     };
   }
 
   state = {
-    segments: [(<Button type="dashed" style={{ width: 390 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)]
+    segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)]
   }
 
   componentWillMount() {
@@ -36,10 +36,10 @@ export default class SegmentDock extends React.Component {
       const segments = [(
         <div className="segment-group">
           <Row type="flex" justify="start">
-            <Col span="10">中转站：</Col>
+            <Col span="12">中转站：</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Select defaultValue="lucy" style={{ width: 390 }}>
+            <Select defaultValue="lucy" style={{ width: 400 }}>
               <Option value="jack">Jack</Option>
               <Option value="lucy">Lucy</Option>
               <Option value="disabled" disabled>Disabled</Option>
@@ -47,12 +47,12 @@ export default class SegmentDock extends React.Component {
             </Select>
           </Row>
           <Row type="flex" justify="start">
-            <Col span="10">预计到达中转站时间：</Col>
-            <Col span="10">运输模式：</Col>
+            <Col span="12">预计到达中转站时间：</Col>
+            <Col span="12">运输模式：</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col span="10"><DatePicker defaultValue="2015-01-01" /></Col>
-            <Col span="10">
+            <Col span="12"><DatePicker defaultValue="2015-01-01" /></Col>
+            <Col span="12">
               <Select defaultValue="lucy" style={{ width: 200 }}>
                 <Option value="jack">Jack</Option>
                 <Option value="lucy">Lucy</Option>
@@ -62,12 +62,12 @@ export default class SegmentDock extends React.Component {
             </Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col span="10">预计离开中转站时间：</Col>
-            <Col span="10">运输模式：</Col>
+            <Col span="12">预计离开中转站时间：</Col>
+            <Col span="12">运输模式：</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col span="10"><DatePicker defaultValue="2015-01-01" /></Col>
-            <Col span="10">
+            <Col span="12"><DatePicker defaultValue="2015-01-01" /></Col>
+            <Col span="12">
               <Select defaultValue="lucy" style={{ width: 200 }}>
                 <Option value="jack">Jack</Option>
                 <Option value="lucy">Lucy</Option>
@@ -108,7 +108,7 @@ export default class SegmentDock extends React.Component {
       });
 
       dock = (<div className="dock-container" key="dock2">
-                <div className="dock-content">
+                <div className="dock-content" style={{width: 480}}>
                   <div className="dock-sp-line"></div>
                   <div className="dock-sp">
                     <div className="dock-sp-body">
@@ -123,16 +123,16 @@ export default class SegmentDock extends React.Component {
                         <div className="segment-container">
                           <h3>时间计划</h3>
                           <Row type="flex" justify="start">
-                            <Col span="10">提货日期：2016-5-2</Col>
-                            <Col span="10">交货日期：2016-5-6</Col>
+                            <Col span="12">提货日期：2016-5-2</Col>
+                            <Col span="12">交货日期：2016-5-6</Col>
                           </Row>
                           <h3>分段中转</h3>
                           <div className="segment-group">
                             <Row type="flex" justify="start">
-                              <Col span="10">中转站：</Col>
+                              <Col span="12">中转站：</Col>
                             </Row>
                             <Row type="flex" justify="start">
-                              <Select defaultValue="lucy" style={{ width: 390 }}>
+                              <Select defaultValue="lucy" style={{ width: 400 }}>
                                 <Option value="jack">Jack</Option>
                                 <Option value="lucy">Lucy</Option>
                                 <Option value="disabled" disabled>Disabled</Option>
@@ -140,12 +140,12 @@ export default class SegmentDock extends React.Component {
                               </Select>
                             </Row>
                             <Row type="flex" justify="start">
-                              <Col span="10">预计到达中转站时间：</Col>
-                              <Col span="10">运输模式：</Col>
+                              <Col span="12">预计到达中转站时间：</Col>
+                              <Col span="12">运输模式：</Col>
                             </Row>
                             <Row type="flex" justify="start">
-                              <Col span="10"><DatePicker defaultValue="2015-01-01" /></Col>
-                              <Col span="10">
+                              <Col span="12"><DatePicker defaultValue="2015-01-01" /></Col>
+                              <Col span="12">
                                 <Select defaultValue="lucy" style={{ width: 200 }}>
                                   <Option value="jack">Jack</Option>
                                   <Option value="lucy">Lucy</Option>
@@ -155,12 +155,12 @@ export default class SegmentDock extends React.Component {
                               </Col>
                             </Row>
                             <Row type="flex" justify="start">
-                              <Col span="10">预计离开中转站时间：</Col>
-                              <Col span="10">运输模式：</Col>
+                              <Col span="12">预计离开中转站时间：</Col>
+                              <Col span="12">运输模式：</Col>
                             </Row>
                             <Row type="flex" justify="start">
-                              <Col span="10"><DatePicker defaultValue="2015-01-01" /></Col>
-                              <Col span="10">
+                              <Col span="12"><DatePicker defaultValue="2015-01-01" /></Col>
+                              <Col span="12">
                                 <Select defaultValue="lucy" style={{ width: 200 }}>
                                   <Option value="jack">Jack</Option>
                                   <Option value="lucy">Lucy</Option>
@@ -185,7 +185,7 @@ export default class SegmentDock extends React.Component {
     }
 
     return (
-      <QueueAnim key="dockcontainer" animConfig={{translateX:[0, 600], opacity:[1, 1]}}>{dock}</QueueAnim>
+      <QueueAnim key="dockcontainer" animConfig={{translateX:[0, 480], opacity:[1, 1]}}>{dock}</QueueAnim>
     );
   }
 }

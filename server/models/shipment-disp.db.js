@@ -157,7 +157,7 @@ export default {
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time,
-      effective from tms_shipments as S
+      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id from tms_shipments as S
       right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
       where ${awhere} limit ?, ?`;
     return mysql.query(sql, args);
@@ -208,6 +208,9 @@ export default {
   },
   updateDisp(disp, trans) {
     return dispOrm.updateObj(disp, trans);
+  },
+  deleteDisp(disp, trans) {
+    return dispOrm.deleteObj(disp, trans);
   },
   getShipmtWithNo(shipmtNo) {
     const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch

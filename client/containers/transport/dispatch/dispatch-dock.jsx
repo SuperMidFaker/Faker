@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Icon, QueueAnim, Tag, Collapse, InputNumber, Button, Table } from 'ant-ui';
+import { Icon, QueueAnim, Tag, Collapse, InputNumber, Button, Table, message, Modal, Radio } from 'ant-ui';
 import { connect } from 'react-redux';
 import connectFetch from 'reusable/decorators/connect-fetch';
-import { loadLsps, loadVehicles } from 'universal/redux/reducers/transportDispatch';
+import { loadLsps, loadVehicles, doDispatch } from 'universal/redux/reducers/transportDispatch';
 
 const Panel = Collapse.Panel;
+const RadioGroup = Radio.Group;
 
 function noop() {}
 
@@ -19,9 +20,12 @@ function fetch({ state, dispatch, cookie }) {
 @connectFetch()(fetch)
 @connect(state => ({
   tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
   lsps: state.transportDispatch.lsps,
-  vehicles: state.transportDispatch.vehicles
-}), { loadLsps, loadVehicles })
+  vehicles: state.transportDispatch.vehicles,
+  vehicleLoaded: state.transportDispatch.vehicleLoaded,
+  dispatched: state.transportDispatch.dispatched,
+}), { loadLsps, loadVehicles, doDispatch })
 export default class DispatchDock extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
@@ -29,10 +33,14 @@ export default class DispatchDock extends React.Component {
     onClose: PropTypes.func.isRequired,
     msg: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
-    lsps: PropTypes.array.isRequired,
+    lsps: PropTypes.object.isRequired,
     loadLsps: PropTypes.func.isRequired,
-    vehicles: PropTypes.array.isRequired,
-    loadVehicles: PropTypes.func.isRequired
+    vehicles: PropTypes.object.isRequired,
+    loadVehicles: PropTypes.func.isRequired,
+    vehicleLoaded: PropTypes.bool.isRequired,
+    doDispatch: PropTypes.func.isRequired,
+    dispatched: PropTypes.bool.isRequired,
+    loginId: PropTypes.number.isRequired
   }
 
   constructor(props) {
@@ -43,28 +51,29 @@ export default class DispatchDock extends React.Component {
     this.consigneeCols = [{
                 title: '',
                 dataIndex: 'partner_tenant_id',
-                render: (tid, record) => (<Button type={`${record.partner_tenant_id > 0 ? 'primary' : 'ghost'}`} shape="circle" size="small" />)
+                render: (tid, record) => (<Button type={`${record.partner_tenant_id > 0 ? 'primary' : 'ghost'}`} shape="circle" size="small" style={{width: 15, height: 15}} />)
               }, {
                 title: '承运商',
-                dataIndex: 'partner_name'
+                dataIndex: 'partner_name',
+                width: 100
               }, {
                 title: '价格协议',
                 dataIndex: 'quotation_promise',
-                render: () => (<span></span>)
+                render: () => (<span>CP-2016</span>)
               }, {
                 title: '运输时效',
                 dataIndex: 'transit',
-                render: () => (<span></span>)
+                render: () => (<span>1天</span>)
               }, {
                 title: '报价（元）',
                 dataIndex: 'quotation',
-                render: () => (<InputNumber min={0} onChange={this.handleQuotationChange} />)
+                render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
               }, {
                 title: this.msg('shipmtOP'),
                 width: 100,
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.handleShipmtDispatch(record, 'tenant')}>
+                        <a role="button" onClick={this.handleShipmtDispatch.bind(this, 'tenant', record)}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
@@ -94,11 +103,16 @@ export default class DispatchDock extends React.Component {
                 title: this.msg('shipmtOP'),
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.handleShipmtDispatch(record, 'vehicle')}>
+                        <a role="button" onClick={this.handleShipmtDispatch.bind(this, 'vehicle', record)}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
               }];
+  }
+
+  state = {
+    quotation: 0,
+    podType: 'dreceipt', // none, qrcode, dreceipt
   }
 
   lspsds = new Table.DataSource({
@@ -147,20 +161,70 @@ export default class DispatchDock extends React.Component {
     remotes: this.props.vehicles
   })
 
-  handleShipmtDispatch = (tid, type) => {
+  handleShipmtDispatch(type, target) {
+    // this.showDispatchConfirm();
+    // return;
+    // TODO multi shipments dispatch
+    const { tenantId, loginId, shipmts } = this.props;
     if (type === 'tenant') {
-
+      this.props.doDispatch(null, {
+        tenantId,
+        loginId,
+        shipmtNo: shipmts[0].shipmt_no,
+        parentId: shipmts[0].key,
+        partnerName: target.partner_name,
+        partnerTenantId: target.partner_tenant_id,
+        freightCharge: this.state.quotation,
+        type
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.onClose();
+        }
+      });
     } else if (type === 'vehicle') {
 
     }
   }
 
-  handleQuotationChange() {
-
+  handleQuotationChange = val => {
+    this.setState({
+      quotation: val
+    });
   }
 
-  handlePanelChange(key) {
-    console.log(key);
+  handlePanelChange = key => {
+    if (key === '2' && !this.props.vehicleLoaded) {
+      const { vehicles, tenantId } = this.props;
+      this.props.loadVehicles(null, {
+        tenantId,
+        pageSize: vehicles.pageSize,
+        current: 1
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
+    }
+  }
+
+  handlePodTypeChange = podType => {
+    this.setState({podType});
+  }
+
+  showDispatchConfirm() {
+    Modal.confirm({
+      content: (
+        <RadioGroup onChange={this.handlePodTypeChange} value={this.state.podType}>
+          <Radio key="a" value="dreceipt"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera" />需要电子回单</Radio>
+          <Radio key="b" value="none"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera-o" />不要电子回单</Radio>
+          <Radio key="c" value="qrcode"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="qrcode" />扫描签收回单</Radio>
+        </RadioGroup>
+        ),
+      okText: this.msg('btnTextOk'),
+      cancelText: this.msg('btnTextCancel')
+    });
   }
 
   render() {

@@ -6,7 +6,7 @@ import moment from 'moment';
 import NavLink from 'reusable/components/nav-link';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { loadTable } from 'universal/redux/reducers/transportDispatch';
+import { loadTable, doSend, doReturn } from 'universal/redux/reducers/transportDispatch';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -48,9 +48,10 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     shipmentlist: state.transportDispatch.shipmentlist,
     filters: state.transportDispatch.filters,
-    loading: state.transportDispatch.loading
+    loading: state.transportDispatch.loading,
+    dispatched: state.transportDispatch.dispatched
   }),
-  { loadTable })
+  { loadTable, doReturn, doSend })
 class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -58,7 +59,10 @@ class DispatchList extends React.Component {
     filters: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    loadTable: PropTypes.func.isRequired
+    loadTable: PropTypes.func.isRequired,
+    doSend: PropTypes.func.isRequired,
+    doReturn: PropTypes.func.isRequired,
+    dispatched: PropTypes.bool.isRequired
   }
   state = {
     selectedRowKeys: [],
@@ -259,7 +263,11 @@ class DispatchList extends React.Component {
   }
 
   handleDispatchDockClose = () => {
-    this.setState({show: false, shipmts: []});
+    this.setState({show: false, shipmts: []}, () => {
+      if (this.props.dispatched) {
+        this.handleStatusChange({target:{value: 'waiting'}});
+      }
+    });
   }
 
   handleSegmentDockShow(shipmt) {
@@ -271,11 +279,34 @@ class DispatchList extends React.Component {
   }
 
   handleShipmtSend(shipmt) {
-    console.log(shipmt);
+    const { tenantId } = this.props;
+    this.props.doSend(null, {
+      tenantId,
+      dispId: shipmt.key,
+      shipmtNo: shipmt.shipmt_no
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleStatusChange({target:{value: 'dispatching'}});
+      }
+    });
   }
 
   handleShipmtReturn(shipmt) {
-    console.log(shipmt);
+    const { tenantId } = this.props;
+    this.props.doReturn(null, {
+      tenantId,
+      dispId: shipmt.key,
+      parentId: shipmt.parent_id,
+      shipmtNo: shipmt.shipmt_no
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleStatusChange({target:{value: 'dispatching'}});
+      }
+    });
   }
 
   handleDayChange = () => {
