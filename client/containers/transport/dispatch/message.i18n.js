@@ -9,6 +9,10 @@ export default defineMessages({
     id: 'transport.dispatch.ship.requirement',
     defaultMessage: '托运客户'
   },
+  shipSp: {
+    id: 'transport.dispatch.ship.sp',
+    defaultMessage: '承运商'
+  },
   shipPickupDate: {
     id: 'transport.dispatch.pickup.date',
     defaultMessage: '提货日期'

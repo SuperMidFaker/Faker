@@ -94,7 +94,7 @@ export default {
     const sql = `select count(user_id) as num from sso_tenant_users as TU inner join
       sso_login as L on login_id = id where tenant_id = ? ${filterClause}`;
     console.log(sql, args);
-    return mysql.query(sql, args); 
+    return mysql.query(sql, args);
   },
   getPagedPersonnelInCorp(tenantId, current, pageSize, filters, sortField, sortOrder) {
     const args = [tenantId];

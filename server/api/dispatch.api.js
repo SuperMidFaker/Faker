@@ -12,9 +12,14 @@
 import shipmtDispDao from '../models/shipment-disp.db';
 import copsDao from '../models/cooperation.db';
 import vehiclesDao from '../models/vehicles.db';
+import tenantDao from '../models/tenant.db';
+import tenantUserDao from '../models/tenant-user.db';
 import Result from '../../reusable/node-util/response-result';
 import {
-  PARTNERSHIP_TYPE_INFO
+  PARTNERSHIP_TYPE_INFO,
+  SHIPMENT_SOURCE,
+  SHIPMENT_DISPATCH_STATUS,
+  SHIPMENT_TRACK_STATUS
 } from 'universal/constants';
 import parse from 'co-body';
 /**
@@ -81,14 +86,93 @@ function *doDispatch() {
           parentId,
           shipmtNo,
           partnerTenantId,
-          partnerName
+          partnerName,
+          freightCharge,
+          podType,
+          type
         } = yield parse(this.req);
 
+  const [ tenants, tusers ] = yield [tenantDao.getTenantInfo(tenantId),
+    tenantUserDao.getAccountInfo(loginId)];
+
+  if (tenants.length === 0 || tusers.length === 0) {
+    return Result.ParamError(this, 'tenantId or loginId is error');
+  }
+
+  const disp = {
+    shipmt_no: shipmtNo,
+    parent_id: parentId,
+    sr_login_id: tusers[0].loginId,
+    sr_login_name: tusers[0].username,
+    sr_tenant_id: tenantId,
+    sr_name: tenants[0].name,
+    source: SHIPMENT_SOURCE.subcontracted,
+    sp_tenant_id: partnerTenantId,
+    sp_name: partnerName,
+    disp_time: new Date(),
+    freight_charge: freightCharge,
+    disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
+    status: SHIPMENT_TRACK_STATUS.unaccepted,
+    pod_type: podType
+  };
+
+  const upstatus = {
+    status: SHIPMENT_TRACK_STATUS.undelivered,
+    wheres: {
+      sp_tenant_id: tenantId,
+      shipmt_no: shipmtNo,
+      id: parentId
+    }
+  };
+
+  yield [shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus)];
+  Result.OK(this);
+}
+
+function *doSend() {
+  const { tenantId, dispId, shipmtNo } = yield parse(this.req);
+  const upstatus = {
+    disp_status: SHIPMENT_DISPATCH_STATUS.confirmed,
+    wheres: {
+      sr_tenant_id: tenantId,
+      shipmt_no: shipmtNo,
+      id: dispId
+    }
+  };
+
+  yield shipmtDispDao.updateDisp(upstatus);
+  Result.OK(this);
+}
+
+function *doReturn() {
+  const { tenantId, dispId, parentId, shipmtNo } = yield parse(this.req);
+  const upstatus = {
+    status: SHIPMENT_TRACK_STATUS.undispatched,
+    wheres: {
+      sp_tenant_id: tenantId,
+      shipmt_no: shipmtNo,
+      id: parentId
+    }
+  };
+
+  const del = {
+    wheres: {
+      id: dispId,
+      sr_tenant_id: tenantId,
+      shipmt_no: shipmtNo
+    }
+  };
+
+  yield [shipmtDispDao.updateDisp(upstatus),
+    shipmtDispDao.deleteDisp(del)];
+  Result.OK(this);
 }
 
 export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
-  [ 'post', '/v1/transport/dispatch', doDispatch ]
+  [ 'post', '/v1/transport/dispatch', doDispatch ],
+  [ 'post', '/v1/transport/dispatch/send', doSend ],
+  [ 'post', '/v1/transport/dispatch/return', doReturn ],
 ];

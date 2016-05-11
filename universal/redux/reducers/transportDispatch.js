@@ -4,7 +4,10 @@ import { createActionTypes } from 'reusable/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
   ['LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
    'LOAD_LSPS', 'LOAD_LSPS_FAIL', 'LOAD_LSPS_SUCCEED',
-   'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED']);
+   'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
+   'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
+   'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
+   'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED']);
 
 const initialState = {
   loaded: false,
@@ -33,7 +36,10 @@ const initialState = {
     current: 1,
     data: []
   },
-  dispatched: false
+  vehicleLoaded: false,
+  dispatched: false,
+  dispDockShow: false,
+  segDockShow: false
 };
 
 export default function reducer(state = initialState, action) {
@@ -45,11 +51,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_APTSHIPMENT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters)};
+        filters: JSON.parse(action.params.filters),
+        dispatched: false
+      };
     case actionTypes.LOAD_LSPS_SUCCEED:
       return { ...state, lsps: action.result.data};
     case actionTypes.LOAD_VEHICLES_SUCCEED:
-      return { ...state, vehicles: action.result.data};
+      return { ...state, vehicles: action.result.data, vehicleLoaded: true};
+    case actionTypes.DO_DISPATCH_SUCCEED:
+      return { ...state, dispatched: true};
     default:
       return state;
   }
@@ -98,6 +108,54 @@ export function loadVehicles(cookie, params) {
       endpoint: 'v1/transport/dispatch/vehicles',
       method: 'get',
       params,
+      cookie
+    }
+  };
+}
+
+export function doDispatch(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DO_DISPATCH,
+        actionTypes.DO_DISPATCH_SUCCEED,
+        actionTypes.DO_DISPATCH_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch',
+      method: 'post',
+      data: params,
+      cookie
+    }
+  };
+}
+
+export function doSend(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DO_SEND,
+        actionTypes.DO_SEND_SUCCEED,
+        actionTypes.DO_SEND_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/send',
+      method: 'post',
+      data: params,
+      cookie
+    }
+  };
+}
+
+export function doReturn(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DO_RETURN,
+        actionTypes.DO_RETURN_SUCCEED,
+        actionTypes.DO_RETURN_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/return',
+      method: 'post',
+      data: params,
       cookie
     }
   };
