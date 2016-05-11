@@ -1,22 +1,38 @@
 import React, { PropTypes } from 'react';
 import { Icon, QueueAnim, Tag, Collapse, InputNumber, Button, Table } from 'ant-ui';
+import { connect } from 'react-redux';
+import connectFetch from 'reusable/decorators/connect-fetch';
+import { loadLsps, loadVehicles } from 'universal/redux/reducers/transportDispatch';
 
 const Panel = Collapse.Panel;
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-
 function noop() {}
 
+function fetch({ state, dispatch, cookie }) {
+  return dispatch(loadLsps(cookie, {
+    tenantId: state.account.tenantId,
+    pageSize: state.transportDispatch.lsps.pageSize,
+    currentPage: state.transportDispatch.lsps.current,
+  }));
+}
+
+@connectFetch()(fetch)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  lsps: state.transportDispatch.lsps,
+  vehicles: state.transportDispatch.vehicles
+}), { loadLsps, loadVehicles })
 export default class DispatchDock extends React.Component {
   static propTypes = {
+    tenantId: PropTypes.number.isRequired,
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     msg: PropTypes.func.isRequired,
-    shipmts: PropTypes.array.isRequired
+    shipmts: PropTypes.array.isRequired,
+    lsps: PropTypes.array.isRequired,
+    loadLsps: PropTypes.func.isRequired,
+    vehicles: PropTypes.array.isRequired,
+    loadVehicles: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -27,7 +43,7 @@ export default class DispatchDock extends React.Component {
     this.consigneeCols = [{
                 title: '',
                 dataIndex: 'partner_tenant_id',
-                render: (tid, record) => (<Button type={`${record.partner_tenant_id > 0 ? 'primary' : 'ghost'}`} shape="circle" size="small"></Button>)
+                render: (tid, record) => (<Button type={`${record.partner_tenant_id > 0 ? 'primary' : 'ghost'}`} shape="circle" size="small" />)
               }, {
                 title: '承运商',
                 dataIndex: 'partner_name'
@@ -48,7 +64,7 @@ export default class DispatchDock extends React.Component {
                 width: 100,
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.handleShipmtDispatch(record.partner_tenant_id)}>
+                        <a role="button" onClick={this.handleShipmtDispatch(record, 'tenant')}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
@@ -78,19 +94,65 @@ export default class DispatchDock extends React.Component {
                 title: this.msg('shipmtOP'),
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.handleShipmtDispatch(record.partner_tenant_id)}>
+                        <a role="button" onClick={this.handleShipmtDispatch(record, 'vehicle')}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
               }];
   }
 
-  componentWillMount() {
+  lspsds = new Table.DataSource({
+    fetcher: params => this.props.loadLsps(null, params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        sortField: sorter.field,
+        sortOrder: sorter.order,
+      };
+      return params;
+    },
+    remotes: this.props.lsps
+  })
 
-  }
+  vesds = new Table.DataSource({
+    fetcher: params => this.props.loadVehicles(null, params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        sortField: sorter.field,
+        sortOrder: sorter.order,
+      };
+      return params;
+    },
+    remotes: this.props.vehicles
+  })
 
-  handleShipmtDispatch = (tid) => {
+  handleShipmtDispatch = (tid, type) => {
+    if (type === 'tenant') {
 
+    } else if (type === 'vehicle') {
+
+    }
   }
 
   handleQuotationChange() {
@@ -102,7 +164,8 @@ export default class DispatchDock extends React.Component {
   }
 
   render() {
-    const { show, shipmts } = this.props;
+    const { show, shipmts, lsps } = this.props;
+    this.lspsds.remotes = lsps;
     let dock = '';
     if (show) {
       const arr = [];
@@ -132,7 +195,7 @@ export default class DispatchDock extends React.Component {
                   <div className="dock-sp">
                     <div className="dock-sp-body">
                       <div className="dock-sp-toolbar">
-                        <a onClick={() => this.onClose() }><Icon type="cross" className="closable"/></a>
+                        <a onClick={ this.onClose }><Icon type="cross" className="closable"/></a>
                         <div className="shipno-container">
                           <span className="detail-title">共 {shipmts.length} 订单，{totalCount}件，{totalWeight}公斤，{totalVolume}立方</span>
                           {arr}
@@ -141,10 +204,10 @@ export default class DispatchDock extends React.Component {
                       <div className="dock-sp-content">
                         <Collapse defaultActiveKey={['1']} onChange={this.handlePanelChange}>
                           <Panel header="选择承运商" key="1">
-                            <Table columns={this.consigneeCols} dataSource={[]} />
+                            <Table columns={this.consigneeCols} dataSource={this.lspsds} />
                           </Panel>
                           <Panel header="选择车辆" key="2">
-                            <Table columns={this.vehicleCols} dataSource={[]} />
+                            <Table columns={this.vehicleCols} dataSource={this.vesds} />
                           </Panel>
                           <Panel header="询价" key="3">
                             <div></div>

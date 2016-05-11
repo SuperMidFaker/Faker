@@ -13,6 +13,7 @@ import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatch-dock';
+import SegmentDock from './segment-dock';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -62,6 +63,7 @@ class DispatchList extends React.Component {
   state = {
     selectedRowKeys: [],
     show: false,
+    sshow: false,
     shipmts: [],
     panelHeader: []
   }
@@ -171,8 +173,8 @@ class DispatchList extends React.Component {
             {this.msg('btnTextDispatch')}
             </a>
             <span className="ant-divider" />
-            <a role="button" onClick={() => this.handleDivideDockShow(record)}>
-            {this.msg('btnTextDivide')}
+            <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
+            {this.msg('btnTextSegment')}
             </a>
           </span>
         );
@@ -253,8 +255,6 @@ class DispatchList extends React.Component {
   }
 
   handleDispatchDockShow(shipmt) {
-    console.log(shipmt);
-
     this.setState({show: true, shipmts: [shipmt]});
   }
 
@@ -262,12 +262,12 @@ class DispatchList extends React.Component {
     this.setState({show: false, shipmts: []});
   }
 
-  handleDivideDockShow(shipmt) {
-    console.log(shipmt);
+  handleSegmentDockShow(shipmt) {
+    this.setState({sshow: true, shipmts: [shipmt]});
   }
 
-  handleDivideDockClose = () => {
-
+  handleSegmentDockClose = () => {
+    this.setState({sshow: false, shipmts: []});
   }
 
   handleShipmtSend(shipmt) {
@@ -349,6 +349,12 @@ class DispatchList extends React.Component {
           shipmts={this.state.shipmts}
           msg={this.msgWrapper}
           onClose={this.handleDispatchDockClose} />
+
+        <SegmentDock key="segDock"
+          show={this.state.sshow}
+          shipmts={this.state.shipmts}
+          msg={this.msgWrapper}
+          onClose={this.handleSegmentDockClose} />
       </div>
     );
   }

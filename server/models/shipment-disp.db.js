@@ -1,4 +1,44 @@
 import mysql from '../../reusable/db-util/mysql';
+import Orm from '../../reusable/db-util/orm';
+
+const dispCols = [
+  'id/a',
+  'shipmt_no/v',
+  'parent_id/i',
+  'sr_login_id/i',
+  'sr_login_name/v',
+  'sr_tenant_id/i',
+  'sr_name/v',
+  'source/i',
+  'sp_tenant_id/i',
+  'sp_name/v',
+  'sp_acpt_login_id/i',
+  'sp_acpt_login_name/v',
+  'sp_disp_login_id/i',
+  'sp_disp_login_name/v',
+  'disp_time/dtt',
+  'acpt_time/dtt',
+  'pickup_act_date/dtt',
+  'deliver_act_date/dtt',
+  'pod_recv_date/dt',
+  'pod_acpt_date/dt',
+  'log_last_action/v',
+  'log_last_date/dt',
+  'excp_level/v',
+  'excp_last_event/v',
+  'pod_status/v',
+  'task_id/i',
+  'task_vehicle/v',
+  'disp_status/i',
+  'status/i',
+  'freight_charge/f',
+  'surcharge/f',
+  'special_charge/f',
+  'fine/f',
+  'oper_remark/v'
+];
+
+const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');
 
 function getShipmtClause(shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
@@ -24,6 +64,59 @@ function genDispFilters(filter) {
     arr.push('SD.sr_tenant_id = ? and SD.disp_status = 1 ');
   }
   return arr.join('');
+}
+
+
+
+/**
+ *
+ * if updateInfo is array, execute multi update one time, such as below:
+ *
+ * UPDATE categories
+ *  SET
+ *    display_order = CASE id
+ *      WHEN 1 THEN 3
+ *      WHEN 2 THEN 4
+ *      WHEN 3 THEN 5
+ *    END,
+ *    title = CASE id
+ *    WHEN 1 THEN 'New Title 1'
+ *    WHEN 2 THEN 'New Title 2'
+ *    WHEN 3 THEN 'New Title 3'
+ *    END
+ *  WHERE id IN (1,2,3)
+ *
+ * else excute normal UPDATE
+ *
+ * @param {updateInfo, columns}
+ * @return {String} update statement
+ *
+ */
+function generateUpdateClauseWithInfo(updateInfo, columns) {
+  if(Array.isArray(updateInfo)) {
+    return columns.filter(key => updateInfo.some(info => info[key] !== null)).map(key => {
+      return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join("");
+    }).join("END,\n") + 'END\n';
+  }else {
+    return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
+  }
+}
+
+/**
+ * Generate delete clause by ids, like below:
+ * 
+ * `id = ids[1] OR id = ids[2] OR id = ids[3] ...`
+ * 
+ * @param {ids} Array
+ * @return {String} delete where clause
+ * 
+ */
+function generateDeleteClauseWithIds(ids) {
+  if(ids.length == 1) {
+    return `id = ${ids[0]}`
+  }else {
+    return ids.map(id => `id = ${id}`).join(' OR ');
+  }
 }
 
 export default {
@@ -109,5 +202,56 @@ export default {
     const sql = 'update tms_shipment_dispatch set disp_status = ? where id = ?';
     const args = [dispSt, dispId];
     return mysql.update(sql, args, trans);
+  },
+  addDisp(disp, trans) {
+    return dispOrm.insertObj(disp, trans);
+  },
+  updateDisp(disp, trans) {
+    return dispOrm.updateObj(disp, trans);
+  },
+  getShipmtWithNo(shipmtNo) {
+    const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch
+     WHERE tms_shipments.shipmt_no= ?`;
+    const args = [shipmtNo];
+    return mysql.query(sql, args);
+  },
+
+  updateShipmtWithInfo(shipmtInfo, trans) {
+    const columns = [
+      `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
+      'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
+      `consigner_addr`, `consigner_email`,
+      `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
+      `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
+      `consignee_contact`, `consignee_mobile`, `transit_time`,
+      `transport_mode`, `vehicle_type`, `vehicle_length`,
+      `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
+      `total_volume`, `remark`
+    ];
+    const updateClause = generateUpdateClauseWithInfo(shipmtInfo, columns);
+    const sql = `UPDATE tms_shipments SET ${updateClause} WHERE shipmt_no = ?`;
+    const args = [shipmtInfo.shipmt_no];
+    return mysql.update(sql, args, trans);
+  },
+
+  updateGoodsWithInfo(goodsInfo) {
+    const columns = [
+      `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
+    ];
+    const updateClause = generateUpdateClauseWithInfo(goodsInfo, columns);
+    const sql = `UPDATE tms_shipment_manifest SET ${updateClause} WHERE id IN (${goodsInfo.map(info => info.id).join(',')})`;
+    return mysql.update(sql);
+  },
+
+  getShipmtGoodsWithNo(shipmtNo) {
+    const sql = `SELECT * FROM tms_shipment_manifest WHERE shipmt_no = ?`;
+    const args = [shipmtNo];
+    return mysql.query(sql, args);
+  },
+
+  removeGoodsWithIds(ids) {
+    const removeClause = generateDeleteClauseWithIds(ids);
+    const sql = `DELETE FROM tms_shipment_manifest WHERE ${removeClause}`
+    return mysql.delete(sql);
   }
 };

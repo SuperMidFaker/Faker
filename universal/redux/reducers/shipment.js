@@ -7,7 +7,7 @@ import {
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
-  'REM_LOCAL_GOODS', 'SHOW_PREVIWER',
+  'REM_LOCAL_GOODS', 'SHOW_PREVIWER', 'HIDE_PREVIWER',
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED',
   'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
@@ -34,6 +34,7 @@ const initialState = {
   },
   previewer: {
     visible: false,
+    shipmt: {},
   }
 };
 
@@ -55,11 +56,22 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.REM_LOCAL_GOODS: {
       const goodslist = [...state.formData.goodslist];
-      goodslist.splice(action.data.index, 1);
-      return { ...state, formData: { ...state.formData, goodslist }};
+      const originalRemovedGoodsIds = state.formData.removedGoodsIds ? state.formData.removedGoodsIds : [];
+      const removedGoodsIds = [...originalRemovedGoodsIds, ...goodslist.splice(action.data.index, 1).map(goods => goods.id)];
+      return { ...state, formData: { ...state.formData, goodslist, removedGoodsIds }};
+    }
+    case actionTypes.LOAD_FORM:
+      return { ...state, formData: initialState.formData };
+    case actionTypes.LOAD_FORM_SUCCEED: {
+      const formData = action.result.data.formData;
+      const { sr_name } = formData;
+      return { ...state, formData: { ...state.formData, ...formData, client: sr_name } };
     }
     case actionTypes.SHOW_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: true }};
+    }
+    case actionTypes.HIDE_PREVIWER: {
+      return { ...state, previewer: { ...state.previewer, visible: false }};
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -146,5 +158,11 @@ export function clearForm() {
 export function showPreviewer() {
   return {
     type: actionTypes.SHOW_PREVIWER,
+  };
+}
+
+export function hidePreviewer() {
+  return {
+    type: actionTypes.HIDE_PREVIWER,
   };
 }

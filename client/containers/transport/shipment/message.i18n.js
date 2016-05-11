@@ -196,5 +196,53 @@ export default defineMessages({
   revokejectModalTitle: {
     id: 'transport.shipment.revokeject.modal.title',
     defaultMessage: '填写原因'
-  }
+  },
+  trackUnaccept: {
+    id: 'transport.shipment.track.unaccept',
+    defaultMessage: '待接单'
+  },
+  trackUndispatched: {
+    id: 'transport.shipment.track.undispatched',
+    defaultMessage: '待分配'
+  },
+  trackUndelivered: {
+    id: 'transport.shipment.track.undelivered',
+    defaultMessage: '已分配'
+  },
+  trackIntransit: {
+    id: 'transport.shipment.track.intransit',
+    defaultMessage: '待交货'
+  },
+  trackDelivered: {
+    id: 'transport.shipment.track.delivered',
+    defaultMessage: '已交货'
+  },
+  shipmtDetail: {
+    id: 'transport.shipment.tab.detail',
+    defaultMessage: '详情'
+  },
+  shipmtDynamic: {
+    id: 'transport.shipment.tab.dynamic',
+    defaultMessage: '动态'
+  },
+  shipmtTracking: {
+    id: 'transport.shipment.tab.tracking',
+    defaultMessage: '跟踪'
+  },
+  paneClient: {
+    id: 'transport.shipment.pane.client',
+    defaultMessage: '客户'
+  },
+  paneSource: {
+    id: 'transport.shipment.pane.source',
+    defaultMessage: '来源'
+  },
+  paneLsp: {
+    id: 'transport.shipment.pane.lsp',
+    defaultMessage: '物流服务商'
+  },
+  paneCarrier: {
+    id: 'transport.shipment.pane.carrier',
+    defaultMessage: '承运商'
+  },
 });

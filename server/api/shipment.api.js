@@ -241,6 +241,44 @@ function *shipmtDraftP() {
   }
 }
 
+function *shipmtG() {
+  const {tenantId, shipmtNo} = this.request.query;
+  try {
+    const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
+    const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
+    return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
+  }catch (e) {
+    Result.InternalServerError(this, e.message); 
+  }
+}
+
+function *shipmtSaveEditP() {
+  const body = yield cobody(this);
+  const { shipment, tenantId, loginId } = body;
+  const { goodslist, shipmt_no, removedGoodsIds } = shipment;
+  const newGoods = goodslist.filter(goods => goods.id === undefined);
+  const editGoods = goodslist.filter(goods => goods.id !== undefined);
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
+    yield shipmentDispDao.updateGoodsWithInfo(editGoods);
+    if(removedGoodsIds) { // if no goods removed in editing mode, this variable will be undefined, and we should skip it 
+      yield shipmentDispDao.removeGoodsWithIds(removedGoodsIds);
+    }
+    for(let goods of newGoods) {
+      yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
+    }
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    Result.InternalServerError(this, e.message);
+  }
+}
+  
 function *shipmtRevokeP() {
   let trans;
   try {
@@ -282,6 +320,17 @@ function *shipmtRejectP() {
   }
 }
 
+function *shipmtGoodsG() {
+  const { shipmtNo } = this.request.query;
+  try {
+    const result = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
+    console.log(result);
+    return Result.OK(this, result);
+  }catch(e){
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
@@ -291,4 +340,6 @@ export default [
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
+  [ 'get', '/v1/transport/shipment', shipmtG ],
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ]
 ]
