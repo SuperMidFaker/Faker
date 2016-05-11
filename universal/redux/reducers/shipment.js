@@ -7,7 +7,7 @@ import {
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
-  'REM_LOCAL_GOODS',
+  'REM_LOCAL_GOODS', 'SHOW_PREVIWER',
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED',
   'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
@@ -31,6 +31,9 @@ const initialState = {
     freight_charge: 0.0,
     transit_time: 0,
     goodslist: [],
+  },
+  previewer: {
+    visible: false,
   }
 };
 
@@ -54,6 +57,9 @@ export default function reducer(state = initialState, action) {
       const goodslist = [...state.formData.goodslist];
       goodslist.splice(action.data.index, 1);
       return { ...state, formData: { ...state.formData, goodslist }};
+    }
+    case actionTypes.SHOW_PREVIWER: {
+      return { ...state, previewer: { ...state.previewer, visible: true }};
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -135,4 +141,10 @@ export function setFormValue(field, value) {
 
 export function clearForm() {
   return clearFormC(actionTypes);
+}
+
+export function showPreviewer() {
+  return {
+    type: actionTypes.SHOW_PREVIWER,
+  };
 }

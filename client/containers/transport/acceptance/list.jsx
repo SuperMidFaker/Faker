@@ -7,12 +7,14 @@ import NavLink from 'reusable/components/nav-link';
 import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
+import { showPreviewer } from 'universal/redux/reducers/shipment';
 import { loadTable, loadAcceptDispatchers, revokeOrReject } from
   'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'universal/constants';
 import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
+import PreviewPanel from '../shipment/modals/preview-panel';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
@@ -58,7 +60,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
   }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject })
+  { loadTable, loadAcceptDispatchers, revokeOrReject, showPreviewer })
 export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -69,6 +71,7 @@ export default class AcceptList extends React.Component {
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
+    showPreviewer: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired
   }
@@ -117,7 +120,7 @@ export default class AcceptList extends React.Component {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return <span style={{ color : '#999' }}>{o}</span>;
       } else {
-        return <a>o</a>;
+        return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
       }
     }
   }, {
@@ -250,6 +253,9 @@ export default class AcceptList extends React.Component {
   handleShipmtReject(dispId) {
     this.props.revokeOrReject('reject', dispId);
   }
+  handleShipmtPreview(shipmtNo) {
+    this.props.showPreviewer(shipmtNo);
+  }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
     if (value !== null && value !== undefined && value !== '') {
@@ -377,6 +383,7 @@ export default class AcceptList extends React.Component {
         </div>
         <AccepterModal reload={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
+        <PreviewPanel />
       </div>
     );
   }
