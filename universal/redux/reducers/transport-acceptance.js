@@ -2,13 +2,14 @@ import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
-  'HIDE_ACCEPT_MODAL',
+  'HIDE_ACCEPT_MODAL', 'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
   'LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
   'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
   'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
+  'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
   'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL'
 ]);
 
@@ -34,7 +35,12 @@ const initialState = {
     visible: false,
     dispatchId: -1,
     dispatchers: [],
-  }
+  },
+  revokejectModal: {
+    type: '',
+    visible: false,
+    dispId: -1,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -77,11 +83,6 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SAVE_DRAFT_SUCCEED:
       return { ...state, submitting: false };
-    case actionTypes.REVOKE_SHIPMT_SUCCEED: {
-      const shipmts = [...state.table.shipmentlist.data];
-      shipmts[action.index].effective = action.data.eff;
-      return { ...state, table: { ...state.table, shipmentlist: { ...state.table.shipmentlist, data: shipmts }}};
-    }
     case actionTypes.HIDE_ACCEPT_MODAL:
       return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
     case actionTypes.LOAD_DISPATCHERS:
@@ -91,6 +92,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data }};
     case actionTypes.ACCP_DISP_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
+    case actionTypes.CLOSE_RE_MODAL:
+      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false }};
+    case actionTypes.REVOKE_OR_REJECT:
+      return {
+      ...state, revokejectModal: {
+        ...state.revokejectModal, visible: true, dispId: action.data.dispId,
+        type: action.data.type
+      }};
+    case actionTypes.REVOKE_SHIPMT_SUCCEED:
+    case actionTypes.REJECT_SHIPMT_SUCCEED:
+      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false }};
     default:
       return state;
   }
@@ -194,7 +206,20 @@ export function acceptDispShipment(shipmtDispId, acptId, acptName, disperId, dis
   };
 }
 
-export function revokeShipment(shipmtDispId, eff, index) {
+export function revokeOrReject(type, dispId) {
+  return {
+    type: actionTypes.REVOKE_OR_REJECT,
+    data: { type, dispId }
+  };
+}
+
+export function closeReModal() {
+  return {
+    type: actionTypes.CLOSE_RE_MODAL,
+  };
+}
+
+export function revokeShipment(shipmtDispId, reason) {
   return {
     [CLIENT_API]: {
       types: [
@@ -204,8 +229,22 @@ export function revokeShipment(shipmtDispId, eff, index) {
       ],
       method: 'post',
       endpoint: 'v1/transport/shipment/revoke',
-      data: { shipmtDispId, eff },
-      index,
+      data: { shipmtDispId, reason },
+    }
+  };
+}
+
+export function rejectShipment(dispId, reason) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REJECT_SHIPMT,
+        actionTypes.REJECT_SHIPMT_SUCCEED,
+        actionTypes.REJECT_SHIPMT_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/transport/shipment/reject',
+      data: { dispId, reason },
     }
   };
 }

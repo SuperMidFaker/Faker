@@ -69,7 +69,10 @@ export default {
       where tenant_id = ? and effective = ? ${shipmtNoWhere}`;
     return mysql.query(sql, args);
   },
-  getShipmentsByType(tenantId, shipmtType, shipmtNo, pageSize, current) {
+  getShipmentsByType(
+    tenantId, shipmtType, shipmtNo, pageSize, current,
+    sortField, sortOrder
+  ) {
     const args = [tenantId, shipmtType];
     let shipmtNoWhere = '';
     if (shipmtNo) {
@@ -77,11 +80,11 @@ export default {
       args.push(shipmtNoWhere);
     }
     const sql = `select shipmt_no as \`key\`, shipmt_no, customer_name as sr_name, consigner_name,
-      consigner_province, consigner_city,
-      consigner_district, consigner_addr, consignee_name, consignee_province, effective,
-      consignee_city, consignee_district, consignee_addr, pickup_est_date, transit_time,
-      deliver_est_date, transport_mode, total_count, total_weight, total_volume, created_date
-      from tms_shipments where tenant_id = ? and effective = ? ${shipmtNoWhere} limit ?, ?`;
+      consigner_province, consigner_city, consigner_district, consigner_addr, consignee_name,
+      consignee_province, effective, consignee_city, consignee_district, consignee_addr,
+      pickup_est_date, transit_time, deliver_est_date, transport_mode, total_count, total_weight,
+      total_volume, created_date from tms_shipments where tenant_id = ? and effective = ?
+      ${shipmtNoWhere} order by ${sortField} ${sortOrder} limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },

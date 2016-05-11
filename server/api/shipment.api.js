@@ -1,5 +1,6 @@
 import cobody from 'co-body';
 import shipmentDao from '../models/shipment.db';
+import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
 import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
@@ -51,18 +52,17 @@ function *shipmentListG() {
   const current = parseInt(this.request.query.currentPage, 10);
   const filters = JSON.parse(this.request.query.filters);
   const tenantId = parseInt(this.request.query.tenantId, 10);
+  const sortOrder = this.request.query.sortOrder;
+  const sortField = this.request.query.sortField;
   let shipmtNo;
   let shipmtType;
   let shipmtDispType;
-  let shipmtOrder;
   filters.forEach(flt => {
     if (flt.name === 'type') {
       if (flt.value === 'unaccepted') {
         shipmtDispType = SHIPMENT_TRACK_STATUS.unaccepted;
-        shipmtOrder = 'created';
       } else if (flt.value === 'accepted') {
         shipmtDispType = SHIPMENT_TRACK_STATUS.undispatched;
-        shipmtOrder = 'accepted';
       } else if (flt.value === 'draft') {
         shipmtType = SHIPMENT_EFFECTIVES.draft;
       } else if (flt.value === 'archived') {
@@ -76,7 +76,10 @@ function *shipmentListG() {
     if (shipmtType !== undefined) {
       const [ totals, shipmts ] = yield [
         shipmentDao.getCountByType(tenantId, shipmtType, shipmtNo),
-        shipmentDao.getShipmentsByType(tenantId, shipmtType, shipmtNo, pageSize, current)
+        shipmentDao.getShipmentsByType(
+          tenantId, shipmtType, shipmtNo, pageSize, current,
+          sortField, sortOrder
+        )
       ];
       return Result.OK(this, {
         totalCount: totals[0].count,
@@ -91,8 +94,8 @@ function *shipmentListG() {
           SHIPMENT_DISPATCH_STATUS.confirmed
         ),
         shipmentDispDao.getFilteredShipments(
-          tenantId, shipmtDispType, shipmtNo, shipmtOrder,
-          SHIPMENT_DISPATCH_STATUS.confirmed, pageSize, current
+          tenantId, shipmtDispType, shipmtNo, SHIPMENT_DISPATCH_STATUS.confirmed,
+          pageSize, current, sortField, sortOrder
         )
       ];
       return Result.OK(this, {
@@ -277,11 +280,42 @@ function *shipmtSaveEditP() {
 }
   
 function *shipmtRevokeP() {
+  let trans;
   try {
     const body = yield cobody(this);
-    yield shipmentDao.updateEffective(body.shipmtDispId, body.eff);
+    trans = yield mysql.beginTransaction();
+    const [ _, logRes, __ ] = yield [
+      shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.cancelled, trans),
+      shipmentAuxDao.createLog('revoke', body.reason, trans),
+      shipmentDispDao.updateLogAction('revoke', body.shipmtDispId, trans),
+    ];
+    yield shipmentAuxDao.createDispLogRel(logRes.insertId, body.shipmtDispId, trans);
+    yield mysql.commit(trans);
     return Result.OK(this);
   } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *shipmtRejectP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    trans = yield mysql.beginTransaction();
+    yield [
+      // todo shipmentAuxDao.createException
+      // todo set excp_level
+      shipmentDispDao.updateRejectStatus(SHIPMENT_DISPATCH_STATUS.unconfirmed, body.dispId, trans),
+    ];
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
     return Result.InternalServerError(this, e.message);
   }
 }
@@ -305,6 +339,7 @@ export default [
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
+  [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
   [ 'get', '/v1/transport/shipment', shipmtG ],
   [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ]
 ]
