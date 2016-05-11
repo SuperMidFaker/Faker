@@ -1,4 +1,44 @@
 import mysql from '../../reusable/db-util/mysql';
+import Orm from '../../reusable/db-util/orm';
+
+const dispCols = [
+  'id/a',
+  'shipmt_no/v',
+  'parent_id/i',
+  'sr_login_id/i',
+  'sr_login_name/v',
+  'sr_tenant_id/i',
+  'sr_name/v',
+  'source/i',
+  'sp_tenant_id/i',
+  'sp_name/v',
+  'sp_acpt_login_id/i',
+  'sp_acpt_login_name/v',
+  'sp_disp_login_id/i',
+  'sp_disp_login_name/v',
+  'disp_time/dtt',
+  'acpt_time/dtt',
+  'pickup_act_date/dtt',
+  'deliver_act_date/dtt',
+  'pod_recv_date/dt',
+  'pod_acpt_date/dt',
+  'log_last_action/v',
+  'log_last_date/dt',
+  'excp_level/v',
+  'excp_last_event/v',
+  'pod_status/v',
+  'task_id/i',
+  'task_vehicle/v',
+  'disp_status/i',
+  'status/i',
+  'freight_charge/f',
+  'surcharge/f',
+  'special_charge/f',
+  'fine/f',
+  'oper_remark/v'
+];
+
+const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');
 
 function getShipmtClause(shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
@@ -156,14 +196,19 @@ export default {
     const args = [acpterId, acpterName, disperId, disperName, dispSt, status, dispId];
     return mysql.update(sql, args, trans);
   },
-  
+  addDisp(disp, trans) {
+    return dispOrm.insertObj(disp, trans);
+  },
+  updateDisp(disp, trans) {
+    return dispOrm.updateObj(disp, trans);
+  },
   getShipmtWithNo(shipmtNo) {
     const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch
      WHERE tms_shipments.shipmt_no= ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
-  
+
   updateShipmtWithInfo(shipmtInfo, trans) {
     const columns = [
       `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',

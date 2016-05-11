@@ -163,5 +163,15 @@ export default {
       where tenant_id = ? and type_code = ? and partner_tenant_id != -1`;
     const args = [ tenantId, typeCode ];
     return mysql.query(sql, args);
+  },
+  getAllPartnerByTypeCode(tenantId, typeCode, offset, size) {
+    const sql = 'select partner_tenant_id, partner_name from sso_partnerships where tenant_id = ? and type_code = ? limit ?, ?';
+    const args = [ tenantId, typeCode, offset, size ];
+    return mysql.query(sql, args);
+  },
+  getAllPartnerByTypeCodeCount(tenantId, typeCode) {
+    const sql = 'select count(partner_tenant_id) as count from sso_partnerships where tenant_id = ? and type_code = ?';
+    const args = [ tenantId, typeCode];
+    return mysql.query(sql, args);
   }
 };

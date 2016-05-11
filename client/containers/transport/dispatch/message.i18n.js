@@ -145,8 +145,8 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.dispatch',
     defaultMessage: '分配'
   },
-  btnTextDivide: {
-    id: 'transport.dispatch.btn.text.divide',
+  btnTextSegment: {
+    id: 'transport.dispatch.btn.text.segment',
     defaultMessage: '分段'
   },
   btnTextSend: {
