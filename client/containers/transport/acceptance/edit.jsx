@@ -98,10 +98,10 @@ export default class ShipmentEdit extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleEdit = (ev) => {
-    const {formData, tenantId, loginId} = this.props
+    const {formData, tenantId, loginId} = this.props;
     ev.preventDefault();
     this.props.saveEdit(formData, tenantId, loginId)
-      .then( result => {
+      .then(result => {
         if (result.error) {
           message.error(result.error.message);
         } else {

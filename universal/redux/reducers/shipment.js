@@ -52,13 +52,13 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.REM_LOCAL_GOODS: {
       const goodslist = [...state.formData.goodslist];
-      goodslist.splice(action.data.index, 1);
-      return { ...state, formData: { ...state.formData, goodslist }};
+      const originalRemovedGoodsIds = state.formData.removedGoodsIds ? state.formData.removedGoodsIds : [];
+      const removedGoodsIds = [...originalRemovedGoodsIds, ...goodslist.splice(action.data.index, 1).map(goods => goods.id)];
+      return { ...state, formData: { ...state.formData, goodslist, removedGoodsIds }};
     }
     case actionTypes.LOAD_FORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_FORM_SUCCEED: {
-      console.log(action.result.data);
       const formData = action.result.data.formData;
       const { sr_name } = formData;
       return { ...state, formData: { ...state.formData, ...formData, client: sr_name } };
