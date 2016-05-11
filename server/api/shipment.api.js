@@ -256,12 +256,13 @@ function *shipmtSaveEditP() {
   const newGoods = goodslist.filter(goods => goods.id === undefined);
   const editGoods = goodslist.filter(goods => goods.id !== undefined);
   let trans;
-  console.log(removedGoodsIds);
   try {
     trans = yield mysql.beginTransaction();
     yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
     yield shipmentDispDao.updateGoodsWithInfo(editGoods);
-    yield shipmentDispDao.removeGoodsWithIds(removedGoodsIds);
+    if(removedGoodsIds) { // if no goods removed in editing mode, this variable will be undefined, and we should skip it 
+      yield shipmentDispDao.removeGoodsWithIds(removedGoodsIds);
+    }
     for(let goods of newGoods) {
       yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
     }
