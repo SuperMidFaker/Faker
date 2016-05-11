@@ -252,7 +252,7 @@ function *shipmtG() {
 function *shipmtSaveEditP() {
   const body = yield cobody(this);
   const { shipment, tenantId, loginId } = body;
-  const { goodslist, shipmt_no } = shipment;
+  const { goodslist, shipmt_no, removedGoodsIds } = shipment;
   const newGoods = goodslist.filter(goods => goods.id === undefined);
   const editGoods = goodslist.filter(goods => goods.id !== undefined);
   let trans;
@@ -260,6 +260,9 @@ function *shipmtSaveEditP() {
     trans = yield mysql.beginTransaction();
     yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
     yield shipmentDispDao.updateGoodsWithInfo(editGoods);
+    if(removedGoodsIds) { // if no goods removed in editing mode, this variable will be undefined, and we should skip it 
+      yield shipmentDispDao.removeGoodsWithIds(removedGoodsIds);
+    }
     for(let goods of newGoods) {
       yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
     }
@@ -303,6 +306,5 @@ export default [
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'get', '/v1/transport/shipment', shipmtG ],
-  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
-  [ 'get', '/v1/transport/shipment/goods', shipmtGoodsG ]
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ]
 ]

@@ -102,6 +102,23 @@ function generateUpdateClauseWithInfo(updateInfo, columns) {
   }
 }
 
+/**
+ * Generate delete clause by ids, like below:
+ * 
+ * `id = ids[1] OR id = ids[2] OR id = ids[3] ...`
+ * 
+ * @param {ids} Array
+ * @return {String} delete where clause
+ * 
+ */
+function generateDeleteClauseWithIds(ids) {
+  if(ids.length == 1) {
+    return `id = ${ids[0]}`
+  }else {
+    return ids.map(id => `id = ${id}`).join(' OR ');
+  }
+}
+
 export default {
   getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt) {
     const args = [tenantId, dispSt];
@@ -189,8 +206,8 @@ export default {
     return dispOrm.deleteObj(disp, trans);
   },
   getShipmtWithNo(shipmtNo) {
-    const sql = `select tms_shipments.*, tms_shipment_dispatch.sr_name from tms_shipments, tms_shipment_dispatch
-     where tms_shipments.shipmt_no= ?`;
+    const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch
+     WHERE tms_shipments.shipmt_no= ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
@@ -208,7 +225,7 @@ export default {
       `total_volume`, `remark`
     ];
     const updateClause = generateUpdateClauseWithInfo(shipmtInfo, columns);
-    const sql = `update tms_shipments set ${updateClause} where shipmt_no = ?`;
+    const sql = `UPDATE tms_shipments SET ${updateClause} WHERE shipmt_no = ?`;
     const args = [shipmtInfo.shipmt_no];
     return mysql.update(sql, args, trans);
   },
@@ -223,8 +240,14 @@ export default {
   },
 
   getShipmtGoodsWithNo(shipmtNo) {
-    const sql = `select * from tms_shipment_manifest where shipmt_no = ?`;
+    const sql = `SELECT * FROM tms_shipment_manifest WHERE shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
+  },
+
+  removeGoodsWithIds(ids) {
+    const removeClause = generateDeleteClauseWithIds(ids);
+    const sql = `DELETE FROM tms_shipment_manifest WHERE ${removeClause}`
+    return mysql.delete(sql);
   }
 };
