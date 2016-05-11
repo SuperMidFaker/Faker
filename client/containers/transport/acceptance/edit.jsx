@@ -9,7 +9,6 @@ import { setFormValue, setConsignFields, loadForm, loadFormRequire }
   from 'universal/redux/reducers/shipment';
 import { saveEdit } from '../../../../universal/redux/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
-import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ScheduleInfo from '../shipment/forms/schedule-info';
@@ -118,12 +117,7 @@ export default class ShipmentEdit extends React.Component {
     this.context.router.goBack();
   }
   render() {
-    const { intl, clients, submitting, tenantName, formhoc } = this.props;
-    const clientOpts = clients.map(cl => ({
-      key: `${cl.name}/${cl.tid}`,
-      value: `${cl.tid}`,
-      name: cl.name
-    }));
+    const { intl, submitting, tenantName, formhoc } = this.props;
     return (
       <div className="main-content">
         <Form form={formhoc} horizontal>
@@ -143,13 +137,7 @@ export default class ShipmentEdit extends React.Component {
                   <div className="subform-title">关联信息</div>
                 </div>
                 <div className="subform-body">
-                  <AutoCompSelectItem placeholder={this.msg('client')} formhoc={formhoc}
-                                      colSpan={0} field="client" optionData={clientOpts} required
-                                      optionField="name" optionKey="key" optionValue="value"
-                                      rules={[{
-                required: true, message: this.msg('clientNameMust')
-              }]}
-                  />
+                  <InputItem formhoc={formhoc} placeholder={this.msg('clientNameMust')} colSpan={0} field="client" disabled/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} value={tenantName} disabled/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
