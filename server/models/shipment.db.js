@@ -89,13 +89,16 @@ export default {
     return mysql.query(sql, args);
   },
   getConsignLocations(tenantId, type) {
-    const sql = `select node_id, name, province, city, district, addr, contact, email, mobile,
-      postcode from tms_node_locations where tenant_id = ? and type = ?`;
-    const args = [tenantId, type];
+    let sql = 'select node_id, name, province, city, district, addr, contact, email, mobile, postcode from tms_node_locations where tenant_id = ?';
+    const args = [tenantId];
+    if (type !== -1) {
+      sql += ' and type = ?';
+      args.push(type);
+    }
     return mysql.query(sql, args);
   },
   getTransitModes(tenantId) {
-    const sql = `select mode_code, mode_name from tms_param_trans_modes
+    const sql = `select id, mode_code, mode_name from tms_param_trans_modes
       where tenant_id = ? and enabled = 1`;
     const args = [tenantId];
     return mysql.query(sql, args);

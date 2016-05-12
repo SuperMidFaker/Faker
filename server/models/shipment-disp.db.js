@@ -26,6 +26,7 @@ const dispCols = [
   'log_last_date/dt',
   'excp_level/v',
   'excp_last_event/v',
+  'pod_type/v',
   'pod_status/v',
   'task_id/i',
   'task_vehicle/v',
@@ -104,12 +105,12 @@ function generateUpdateClauseWithInfo(updateInfo, columns) {
 
 /**
  * Generate delete clause by ids, like below:
- * 
+ *
  * `id = ids[1] OR id = ids[2] OR id = ids[3] ...`
- * 
+ *
  * @param {ids} Array
  * @return {String} delete where clause
- * 
+ *
  */
 function generateDeleteClauseWithIds(ids) {
   if(ids.length == 1) {
@@ -156,7 +157,7 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
-      SD.source, S.created_date, acpt_time,
+      SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
       effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id from tms_shipments as S
       right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
       where ${awhere} limit ?, ?`;

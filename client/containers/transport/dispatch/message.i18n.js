@@ -13,6 +13,10 @@ export default defineMessages({
     id: 'transport.dispatch.ship.sp',
     defaultMessage: '承运商'
   },
+  shipVehicle: {
+    id: 'transport.dispatch.ship.vehicle',
+    defaultMessage: '分配车辆'
+  },
   shipPickupDate: {
     id: 'transport.dispatch.pickup.date',
     defaultMessage: '提货日期'
@@ -72,6 +76,22 @@ export default defineMessages({
   shipmtBOP: {
     id: 'transport.dispatch.shipment.bop',
     defaultMessage: '批量操作'
+  },
+  shipPod: {
+    id: 'transport.dispatch.shipment.pod',
+    defaultMessage: '回单'
+  },
+  shipFreightCharge: {
+    id: 'transport.dispatch.shipment.freightcharge',
+    defaultMessage: '运费'
+  },
+  shipDispTime: {
+    id: 'transport.dispatch.shipment.dispatchedtime',
+    defaultMessage: '分配时间'
+  },
+  shipSendTime: {
+    id: 'transport.dispatch.shipment.sendtime',
+    defaultMessage: '发送时间'
   },
   filterProvince: {
     id: 'transport.dispatch.filter.province',
