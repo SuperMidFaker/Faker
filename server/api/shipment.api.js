@@ -261,13 +261,16 @@ function *shipmtSaveEditP() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
-    yield shipmentDispDao.updateGoodsWithInfo(editGoods);
+    const dbOps = [
+      shipmentDispDao.updateShipmtWithInfo(shipment, trans),
+      shipmentDispDao.updateGoodsWithInfo(editGoods),
+    ];
     if(removedGoodsIds) { // if no goods removed in editing mode, this variable will be undefined, and we should skip it 
-      yield shipmentDispDao.removeGoodsWithIds(removedGoodsIds);
+      dbOps.push(shipmentDispDao.removeGoodsWithIds(removedGoodsIds));
     }
+    yield dbOps;
     for(let goods of newGoods) {
-      yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
+      yield shipmentDao.createGoods(goods, shipmt_no, tenantId, loginId, trans);
     }
     yield mysql.commit(trans);
     return Result.OK(this);
