@@ -104,12 +104,12 @@ function generateUpdateClauseWithInfo(updateInfo, columns) {
 
 /**
  * Generate delete clause by ids, like below:
- * 
+ *
  * `id = ids[1] OR id = ids[2] OR id = ids[3] ...`
- * 
+ *
  * @param {ids} Array
  * @return {String} delete where clause
- * 
+ *
  */
 function generateDeleteClauseWithIds(ids) {
   if(ids.length == 1) {
@@ -215,7 +215,11 @@ export default {
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
-
+  getShipmtDispInfo(shipmtNo) {
+    const sql = 'select source, status from tms_shipment_dispatch where shipmt_no = ?';
+    const args = [shipmtNo];
+    return mysql.query(sql, args);
+  },
   updateShipmtWithInfo(shipmtInfo, trans) {
     const columns = [
       `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
@@ -244,7 +248,8 @@ export default {
   },
 
   getShipmtGoodsWithNo(shipmtNo) {
-    const sql = `SELECT * FROM tms_shipment_manifest WHERE shipmt_no = ?`;
+    const sql = `SELECT id as \`key\`, id, name, goods_no, package, length, width,
+      height, amount, weight, volume, remark FROM tms_shipment_manifest WHERE shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },

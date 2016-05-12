@@ -97,6 +97,10 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.new.title',
     defaultMessage: '新建运单'
   },
+  correlativeInfo: {
+    id: 'transport.acceptance.shipment.correlative',
+    defaultMessage: '关联信息'
+  },
   client: {
     id: 'transport.acceptance.client',
     defaultMessage: '客户'
@@ -108,6 +112,10 @@ export default defineMessages({
   lsp: {
     id: 'transport.acceptance.lsp',
     defaultMessage: '物流服务商'
+  },
+  lspNameMust: {
+    id: 'transport.acceptance.lsp.name.must',
+    defaultMessage: '物流服务商名称必填'
   },
   refExternalNo: {
     id: 'transport.acceptance.ref.external',

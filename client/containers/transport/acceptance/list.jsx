@@ -7,7 +7,7 @@ import NavLink from 'reusable/components/nav-link';
 import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { showPreviewer } from 'universal/redux/reducers/shipment';
+import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
 import { loadTable, loadAcceptDispatchers, revokeOrReject } from
   'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
@@ -60,7 +60,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
   }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject, showPreviewer })
+  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail })
 export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -71,7 +71,7 @@ export default class AcceptList extends React.Component {
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
-    showPreviewer: PropTypes.func.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired
   }
@@ -118,7 +118,11 @@ export default class AcceptList extends React.Component {
     width: 140,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-        return <span style={{ color : '#999' }}>{o}</span>;
+        return (
+          <a style={{ color : '#999' }} onClick={() => this.handleShipmtPreview(record.shipmt_no)}>
+          {o}
+          </a>
+        );
       } else {
         return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
       }
@@ -254,7 +258,11 @@ export default class AcceptList extends React.Component {
     this.props.revokeOrReject('reject', dispId);
   }
   handleShipmtPreview(shipmtNo) {
-    this.props.showPreviewer(shipmtNo);
+    this.props.loadShipmtDetail(shipmtNo).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
   }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);

@@ -320,12 +320,24 @@ function *shipmtRejectP() {
   }
 }
 
-function *shipmtGoodsG() {
-  const { shipmtNo } = this.request.query;
+function *shipmtDetailG() {
+  const shipmtNo = this.request.query.shipmtNo;
   try {
-    const result = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
-    console.log(result);
-    return Result.OK(this, result);
+    const [ goodslist, shipmts, shipmtdisps ] = yield [
+      shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
+      shipmentDao.getShipmtInfo(shipmtNo),
+      shipmentDispDao.getShipmtDispInfo(shipmtNo),
+    ];
+    let shipmt = {};
+    if (shipmts.length === 1) {
+      shipmt = shipmts[0];
+    }
+    shipmt.goodslist = goodslist;
+    if (shipmtdisps.length === 1) {
+      shipmt.status = shipmtdisps[0].status;
+      shipmt.source = shipmtdisps[0].source;
+    }
+    return Result.OK(this, shipmt);
   }catch(e){
     return Result.InternalServerError(this, e.message);
   }
@@ -341,5 +353,6 @@ export default [
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
   [ 'get', '/v1/transport/shipment', shipmtG ],
-  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ]
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
+  [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
 ]
