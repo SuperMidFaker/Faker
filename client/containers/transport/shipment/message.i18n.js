@@ -197,6 +197,10 @@ export default defineMessages({
     id: 'transport.shipment.revokeject.modal.title',
     defaultMessage: '填写原因'
   },
+  trackDraft: {
+    id: 'transport.shipment.track.draft',
+    defaultMessage: '草稿'
+  },
   trackUnaccept: {
     id: 'transport.shipment.track.unaccept',
     defaultMessage: '待接单'
@@ -244,5 +248,17 @@ export default defineMessages({
   paneCarrier: {
     id: 'transport.shipment.pane.carrier',
     defaultMessage: '承运商'
+  },
+  remark: {
+    id: 'transport.shipment.pane.remark',
+    defaultMessage: '备注'
+  },
+  sourceConsign: {
+    id: 'transport.shipment.source.consign',
+    defaultMessage: '客户委托'
+  },
+  sourceDispatch: {
+    id: 'transport.shipment.source.dispatch',
+    defaultMessage: '分包'
   },
 });

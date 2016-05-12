@@ -332,7 +332,7 @@ export default class GoodsInfo extends React.Component {
             </Select>
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
-            field="total_count" colSpan={labelColSpan}
+            field="total_count" colSpan={labelColSpan} hasFeedback={false}
           />
         </Col>
         <Col span={`${outerColSpan}`}>
@@ -345,7 +345,7 @@ export default class GoodsInfo extends React.Component {
             )}
             </Select>
           </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
+          <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')} hasFeedback={false}
             field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
           />
         </Col>
@@ -353,7 +353,7 @@ export default class GoodsInfo extends React.Component {
           <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
             field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
+          <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')} hasFeedback={false}
             field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
           />
         </Col>
@@ -368,6 +368,7 @@ export default class GoodsInfo extends React.Component {
         }]} pagination={false}
        />
        </div>
-      </Row>);
+      </Row>
+    );
   }
 }

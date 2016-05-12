@@ -4,6 +4,7 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC
 } from 'reusable/domains/redux/form-common';
+import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
@@ -11,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED',
   'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
+  'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -34,12 +36,16 @@ const initialState = {
   },
   previewer: {
     visible: false,
-    shipmt: {},
+    shipmt: {
+      goodslist: [],
+    },
   }
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case LOAD_APTSHIPMENT_SUCCEED:
+      return { ...state, previewer: { ...state.previewer, visible: false }};
     case actionTypes.LOAD_FORMREQUIRE:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_FORMREQUIRE_SUCCEED:
@@ -67,8 +73,8 @@ export default function reducer(state = initialState, action) {
       const { sr_name } = formData;
       return { ...state, formData: { ...state.formData, ...formData, client: sr_name } };
     }
-    case actionTypes.SHOW_PREVIWER: {
-      return { ...state, previewer: { ...state.previewer, visible: true }};
+    case actionTypes.LOAD_DETAIL_SUCCEED: {
+      return { ...state, previewer: { shipmt: action.result.data, visible: true }};
     }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false }};
@@ -155,9 +161,18 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function showPreviewer() {
+export function loadShipmtDetail(shipmtNo) {
   return {
-    type: actionTypes.SHOW_PREVIWER,
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DETAIL,
+        actionTypes.LOAD_DETAIL_SUCCEED,
+        actionTypes.LOAD_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/detail',
+      method: 'get',
+      params: { shipmtNo },
+    }
   };
 }
 

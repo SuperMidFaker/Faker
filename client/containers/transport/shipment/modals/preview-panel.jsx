@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Icon, Tabs/* , message */ } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
+import DetailPane from './tabpanes/detail-pane';
 import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
 import { hidePreviewer } from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
@@ -11,7 +12,7 @@ const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
 function getTrackStatusMsg(status) {
-  let msg = 'trackDelivered';
+  let msg = 'trackDraft';
   if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
     msg = 'trackUnaccept';
   } else if (status === SHIPMENT_TRACK_STATUS.undispatched) {
@@ -20,6 +21,8 @@ function getTrackStatusMsg(status) {
     msg = 'trackUndelivered';
   } else if (status === SHIPMENT_TRACK_STATUS.intransit) {
     msg = 'trackIntransit';
+  } else if (status === SHIPMENT_TRACK_STATUS.delivered) {
+    msg = 'trackDelivered';
   }
   return msg;
 }
@@ -36,8 +39,8 @@ export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    shipmtNo: PropTypes.string.isRequired,
-    status: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string,
+    status: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
@@ -63,6 +66,7 @@ export default class PreviewPanel extends React.Component {
           <div className="body">
             <Tabs defaultActiveKey="detail">
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
+                <DetailPane />
               </TabPane>
               <TabPane tab={this.msg('shipmtDynamic')} key="dynamic">
               动态

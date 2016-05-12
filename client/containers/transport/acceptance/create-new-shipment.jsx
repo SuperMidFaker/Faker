@@ -186,30 +186,34 @@ export default class ShipmentCreate extends React.Component {
         </Col>
         <Col span="8" className="right-side-col">
             <div className="subform-heading">
-                <div className="subform-title">关联信息</div>
+                <div className="subform-title">{this.msg('correlativeInfo')}</div>
             </div>
             <div className="subform-body">
-            <AutoCompSelectItem placeholder={this.msg('client')} formhoc={formhoc}
-              colSpan={0} field="client" optionData={clientOpts} required
-              optionField="name" optionKey="key" optionValue="value"
-              rules={[{
-                required: true, message: this.msg('clientNameMust')
-              }]}
-            />
-            <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} value={tenantName} disabled/>
-            <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
-            <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
-            <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-            </div>
-            <div className="subform-heading">
-                <div className="subform-title">{this.msg('freightCharge')}</div>
-            </div>
+              <AutoCompSelectItem formhoc={formhoc} colSpan={0} field="client"
+                optionData={clientOpts} required
+                optionField="name" optionKey="key" optionValue="value"
+                rules={[{
+                  required: true, message: this.msg('clientNameMust')
+                }]}
+              />
+              <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
+                fieldProps={{initialValue: tenantName}} disabled rules={[{
+                  required: true, message: this.msg('lspNameMust')
+                }]}
+              />
+              <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
+              <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
+              <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
+              </div>
+              <div className="subform-heading">
+                  <div className="subform-title">{this.msg('freightCharge')}</div>
+              </div>
             <div className="subform-body">
-            <InputItem type="number" formhoc={formhoc} colSpan={0}
-              field="freight_charge" hasFeedback={false} rules={[{
-                    type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
-              }]}
-            />
+              <InputItem type="number" formhoc={formhoc} colSpan={0}
+                field="freight_charge" hasFeedback={false} rules={[{
+                      type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
+                }]}
+              />
             </div>
         </Col>
         </div>

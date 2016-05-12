@@ -219,7 +219,11 @@ export default {
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
-
+  getShipmtDispInfo(shipmtNo) {
+    const sql = 'select source, status from tms_shipment_dispatch where shipmt_no = ?';
+    const args = [shipmtNo];
+    return mysql.query(sql, args);
+  },
   updateShipmtWithInfo(shipmtInfo, trans) {
     const columns = [
       `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
@@ -248,7 +252,8 @@ export default {
   },
 
   getShipmtGoodsWithNo(shipmtNo) {
-    const sql = `SELECT * FROM tms_shipment_manifest WHERE shipmt_no = ?`;
+    const sql = `SELECT id as \`key\`, id, name, goods_no, package, length, width,
+      height, amount, weight, volume, remark FROM tms_shipment_manifest WHERE shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
