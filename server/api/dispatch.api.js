@@ -8,7 +8,7 @@
  * Version: 1.0
  * Description:
  */
-
+import shipmtDao from '../models/shipment.db';
 import shipmtDispDao from '../models/shipment-disp.db';
 import copsDao from '../models/cooperation.db';
 import vehiclesDao from '../models/vehicles.db';
@@ -34,7 +34,7 @@ import parse from 'co-body';
  */
 function *listShipmts() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
-  const current = parseInt(this.request.query.currentPage, 10) || 10;
+  const current = parseInt(this.request.query.current, 10) || 1;
   const filters = JSON.parse(this.request.query.filters);
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
@@ -51,12 +51,13 @@ function *listShipmts() {
 
 function *listLsps() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
-  const current = parseInt(this.request.query.currentPage, 10) || 10;
+  const current = parseInt(this.request.query.current, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
 
   const [partners, totals] = yield [copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation, min, pageSize),
                                     copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation)];
+
   Result.OK(this, {
     totalCount: totals[0].count,
     pageSize,
@@ -67,7 +68,7 @@ function *listLsps() {
 
 function *listVehicles() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
-  const current = parseInt(this.request.query.currentPage, 10) || 10;
+  const current = parseInt(this.request.query.current, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
   const [vehicles, totals] = yield [vehiclesDao.getVehicles(tenantId, min, pageSize),
@@ -133,6 +134,7 @@ function *doSend() {
   const { tenantId, dispId, shipmtNo } = yield parse(this.req);
   const upstatus = {
     disp_status: SHIPMENT_DISPATCH_STATUS.confirmed,
+    disp_time: new Date(),
     wheres: {
       sr_tenant_id: tenantId,
       shipmt_no: shipmtNo,
@@ -168,10 +170,22 @@ function *doReturn() {
   Result.OK(this);
 }
 
+function *listSegReq() {
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  const [transitModes, nodeLocations] = yield [shipmtDao.getTransitModes(tenantId),
+    shipmtDao.getConsignLocations(tenantId, -1)];
+
+  Result.OK(this, {
+    transitModes,
+    nodeLocations
+  });
+}
+
 export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
+  [ 'get', '/v1/transport/dispatch/segrq', listSegReq ],
   [ 'post', '/v1/transport/dispatch', doDispatch ],
   [ 'post', '/v1/transport/dispatch/send', doSend ],
   [ 'post', '/v1/transport/dispatch/return', doReturn ],
