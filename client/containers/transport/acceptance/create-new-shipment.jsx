@@ -49,6 +49,8 @@ function fetchData({ state, dispatch, cookie }) {
     clients: state.shipment.formRequire.clients,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
+    sortField: state.transportAcceptance.table.sortField,
+    sortOrder: state.transportAcceptance.table.sortOrder,
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
@@ -96,6 +98,8 @@ export default class ShipmentCreate extends React.Component {
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     filters: PropTypes.array.isRequired,
+    sortField: PropTypes.string.isRequired,
+    sortOrder: PropTypes.string.isRequired,
     pageSize: PropTypes.number.isRequired,
     current: PropTypes.number.isRequired,
     loadTable: PropTypes.func.isRequired,
@@ -134,6 +138,8 @@ export default class ShipmentCreate extends React.Component {
                 filters: JSON.stringify(this.props.filters),
                 pageSize: this.props.pageSize,
                 currentPage: this.props.current,
+                sortField: this.props.sortField,
+                sortOrder: this.props.sortOrder,
               });
             }
           });

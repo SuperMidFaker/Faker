@@ -39,6 +39,16 @@ function fetchData({ state, dispatch, cookie }) {
 
 @connectFetch()(fetchData)
 @injectIntl
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    shipmentlist: state.transportAcceptance.table.shipmentlist,
+    filters: state.transportAcceptance.table.filters,
+    loading: state.transportAcceptance.table.loading,
+    sortField: state.transportAcceptance.table.sortField,
+    sortOrder: state.transportAcceptance.table.sortOrder,
+  }),
+  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
@@ -51,16 +61,6 @@ function fetchData({ state, dispatch, cookie }) {
     goBackFn: null
   }));
 })
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    shipmentlist: state.transportAcceptance.table.shipmentlist,
-    filters: state.transportAcceptance.table.filters,
-    loading: state.transportAcceptance.table.loading,
-    sortField: state.transportAcceptance.table.sortField,
-    sortOrder: state.transportAcceptance.table.sortOrder,
-  }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail })
 export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

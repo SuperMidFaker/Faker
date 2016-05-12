@@ -40,6 +40,21 @@ const dispCols = [
 
 const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');
 
+function packGoodsArgs(goods) {
+  const columns = [
+    `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
+  ];
+  const args = [];
+  columns.forEach(col => {
+    if (col in goods) {
+      args.push(goods[col]);
+    } else {
+      args.push(null);
+    }
+  });
+  return args;
+}
+
 function getShipmtClause(shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
   if (shipmtDispType !== undefined && shipmtDispType !== null) {
@@ -240,7 +255,20 @@ export default {
     const args = [shipmtInfo.shipmt_no];
     return mysql.update(sql, args, trans);
   },
-
+  createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
+    const sql = `insert into tms_shipment_manifest(name, goods_no, package,
+      length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,
+      creater_login_id, created_date) values ?`;
+    const argargs = [];
+    const createdDt = new Date();
+    for (let i = 0; i < goodslist.length; i++) {
+      const goods = goodslist[i];
+      const args = packGoodsArgs(goods);
+      args.push(shipmtNo, tenantId, loginId, createdDt);
+      argargs.push(args);
+    }
+    return mysql.insert(sql, [argargs], trans);
+  },
   updateGoodsWithInfo(goodsInfo) {
     const columns = [
       `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`

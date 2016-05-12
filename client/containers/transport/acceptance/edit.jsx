@@ -32,18 +32,6 @@ function fetchData({ state, dispatch, params, cookie }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connectNav((props, dispatch, router) => {
-  if (!props.formData) {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: props.formData.shipmt_no,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack()
-  }));
-})
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -55,6 +43,18 @@ function fetchData({ state, dispatch, params, cookie }) {
     submitting: state.transportAcceptance.submitting,
   }),
   { setFormValue, setConsignFields, saveEdit })
+@connectNav((props, dispatch, router) => {
+  if (!props.formData.shipmt_no) {
+    return;
+  }
+  dispatch(setNavTitle({
+    depth: 3,
+    text: props.formData.shipmt_no,
+    moduleName: 'transport',
+    withModuleLayout: false,
+    goBackFn: () => router.goBack()
+  }));
+})
 @Form.formify({
   mapPropsToFields(props) {
     return props.formData;
@@ -138,7 +138,9 @@ export default class ShipmentEdit extends React.Component {
                 </div>
                 <div className="subform-body">
                   <InputItem formhoc={formhoc} placeholder={this.msg('clientNameMust')} colSpan={0} field="client" disabled/>
-                  <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} value={tenantName} disabled/>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
+                    fieldProps={{ initialValue: tenantName }} disabled
+                  />
                   <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
