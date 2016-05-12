@@ -111,7 +111,23 @@ export default class SegmentDock extends React.Component {
   }
 
   handleDayChange(order, type, date) {
-    console.log(order, type, date);
+    if (order === 1) {
+      const {segGroupFirst} = this.state;
+      if (type === 'deliver') {
+        segGroupFirst.deliverEstDate = date;
+      } else if (type === 'pickup') {
+        segGroupFirst.pickupEstDate = date;
+      }
+      this.setState(segGroupFirst);
+    } else {
+      const {segGroupSecond} = this.state;
+      if (type === 'deliver') {
+        segGroupSecond.deliverEstDate = date;
+      } else if (type === 'pickup') {
+        segGroupSecond.pickupEstDate = date;
+      }
+      this.setState(segGroupSecond);
+    }
   }
 
   handleTransitModeChange(order, type, value) {
