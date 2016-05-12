@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message, Select } from 'ant-ui';
+import { Table, Button, Radio, Icon, message, Select, Modal } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'reusable/components/nav-link';
@@ -25,7 +25,7 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(state.transportDispatch.filters),
     pageSize: state.transportDispatch.shipmentlist.pageSize,
-    currentPage: state.transportDispatch.shipmentlist.current,
+    current: state.transportDispatch.shipmentlist.current,
   }));
 }
 
@@ -90,7 +90,7 @@ class DispatchList extends React.Component {
       const params = {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
-        currentPage: pagination.current,
+        current: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order,
         filters: JSON.stringify(this.props.filters)
@@ -101,19 +101,7 @@ class DispatchList extends React.Component {
   })
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  columns = [{
-    title: this.msg('shipNo'),
-    dataIndex: 'shipmt_no',
-    width: 120
-  }, {
-    title: this.msg('shipRequirement'),
-    dataIndex: 'sr_name',
-    width: 140
-  }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode',
-    width: 80
-  }, {
+  commonCols = [{
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
     width: 40
@@ -159,45 +147,116 @@ class DispatchList extends React.Component {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
     width: 150,
-  }, {
-    title: this.msg('shipAcceptTime'),
-    dataIndex: 'acpt_time',
-    width: 60,
-    render: (text, record) => record.acpt_time ?
-     moment(record.acpt_time).format('YYYY.MM.DD') : ' '
-  }, {
-    title: this.msg('shipmtOP'),
-    width: 100,
-    render: (o, record) => {
-      const s = this.props.filters.status;
-      if (s === 'waiting') {
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
-            {this.msg('btnTextDispatch')}
-            </a>
-            <span className="ant-divider" />
-            <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
-            {this.msg('btnTextSegment')}
-            </a>
-          </span>
-        );
-      } else if (s === 'dispatching') {
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleShipmtSend(record)}>
-            {this.msg('btnTextSend')}
-            </a>
-            <span className="ant-divider" />
-            <a role="button" onClick={() => this.handleShipmtReturn(record)}>
-            {this.msg('btnTextReturn')}
-            </a>
-          </span>
-        );
+  }];
+  buildCols() {
+    const s = this.props.filters.status;
+    let cols = [{
+      title: this.msg('shipNo'),
+      dataIndex: 'shipmt_no',
+      width: 120
+    }];
+    if (s === 'waiting') {
+      cols.push({
+        title: this.msg('shipRequirement'),
+        dataIndex: 'sr_name',
+        width: 140
+      }, {
+        title: this.msg('shipMode'),
+        dataIndex: 'transport_mode',
+        width: 80
+      }, {
+        title: this.msg('shipAcceptTime'),
+        dataIndex: 'acpt_time',
+        width: 60,
+        render: (text, record) => record.acpt_time ?
+         moment(record.acpt_time).format('YYYY.MM.DD') : ' '
+      });
+      cols = cols.concat(this.commonCols);
+      cols.push({
+        title: this.msg('shipmtOP'),
+        width: 100,
+        render: (o, record) => {
+            return (
+              <span>
+                <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
+                {this.msg('btnTextDispatch')}
+                </a>
+                <span className="ant-divider" />
+                <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
+                {this.msg('btnTextSegment')}
+                </a>
+              </span>
+            );
+        }
+      });
+    } else if (s === 'dispatching' || s === 'dispatched') {
+      cols.push({
+        title: this.msg('shipSp'),
+        dataIndex: 'sp_name',
+        width: 140
+      }, {
+        title: this.msg('shipVehicle'),
+        dataIndex: 'task_vehicle',
+        width: 80
+      });
+      cols = cols.concat(this.commonCols);
+      let timetitle = this.msg('shipDispTime');
+      if (s === 'dispatched') {
+        timetitle = this.msg('shipSendTime');
       }
-      return (<span></span>);
-    },
-  }]
+      cols.push({
+        title: this.msg('shipPod'),
+        dataIndex: 'pod_type',
+        width: 60,
+        render: (text) => {
+          switch (text) {
+            case 'qrcode':
+              return '扫描签收回单';
+            case 'dreceipt':
+              return '需要电子回单';
+            default:
+              return '不要电子回单';
+          }
+        }
+      }, {
+        title: this.msg('shipFreightCharge'),
+        dataIndex: 'freight_charge',
+        width: 60,
+        render: text => {
+          if (text > 0) {
+            return (<span>{text}</span>);
+          }
+        }
+      }, {
+        title: timetitle,
+        dataIndex: 'disp_time',
+        width: 60,
+        render: (text, record) => record.disp_time ?
+         moment(record.disp_time).format('YYYY.MM.DD') : ' '
+      }, {
+        title: this.msg('shipmtOP'),
+        width: 100,
+        render: (o, record) => {
+          if (s === 'dispatched') {
+            return (<span></span>);
+          }
+          return (
+            <span>
+              <a role="button" onClick={() => this.handleShipmtSend(record)}>
+              {this.msg('btnTextSend')}
+              </a>
+              <span className="ant-divider" />
+              <a role="button" onClick={() => this.handleShipmtReturn(record)}>
+              {this.msg('btnTextReturn')}
+              </a>
+            </span>
+          );
+        }
+      });
+    }
+
+    return cols;
+  }
 
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
@@ -216,7 +275,7 @@ class DispatchList extends React.Component {
       tenantId,
       filters: JSON.stringify(tmp),
       pageSize: shipmentlist.pageSize,
-      currentPage: 1
+      current: 1
     }).then(result => {
       this.handlePanelHeaderChange();
 
@@ -279,32 +338,46 @@ class DispatchList extends React.Component {
   }
 
   handleShipmtSend(shipmt) {
-    const { tenantId } = this.props;
-    this.props.doSend(null, {
-      tenantId,
-      dispId: shipmt.key,
-      shipmtNo: shipmt.shipmt_no
-    }).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleStatusChange({target:{value: 'dispatching'}});
+    Modal.confirm({
+      content: `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.sp_name}】承运商？`,
+      okText: this.msg('btnTextOk'),
+      cancelText: this.msg('btnTextCancel'),
+      onOk: () => {
+        const { tenantId } = this.props;
+        this.props.doSend(null, {
+          tenantId,
+          dispId: shipmt.key,
+          shipmtNo: shipmt.shipmt_no
+        }).then(result => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            this.handleStatusChange({target:{value: 'dispatching'}});
+          }
+        });
       }
     });
   }
 
   handleShipmtReturn(shipmt) {
-    const { tenantId } = this.props;
-    this.props.doReturn(null, {
-      tenantId,
-      dispId: shipmt.key,
-      parentId: shipmt.parent_id,
-      shipmtNo: shipmt.shipmt_no
-    }).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleStatusChange({target:{value: 'dispatching'}});
+    Modal.confirm({
+      content: `确定退回分配给【${shipmt.sp_name}】承运商的【${shipmt.shipmt_no}】的运单？`,
+      okText: this.msg('btnTextOk'),
+      cancelText: this.msg('btnTextCancel'),
+      onOk: () => {
+        const { tenantId } = this.props;
+        this.props.doReturn(null, {
+          tenantId,
+          dispId: shipmt.key,
+          parentId: shipmt.parent_id,
+          shipmtNo: shipmt.shipmt_no
+        }).then(result => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            this.handleStatusChange({target:{value: 'dispatching'}});
+          }
+        });
       }
     });
   }
@@ -350,6 +423,8 @@ class DispatchList extends React.Component {
     };
     const { status } = this.props.filters;
 
+    const cols = this.buildCols();
+    console.log(cols);
     return (
       <div className="main-content">
         <div className="page-header">
@@ -364,7 +439,7 @@ class DispatchList extends React.Component {
             {this.state.panelHeader}
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={cols} loading={loading}
               dataSource={this.dataSource} columnsPageRange={[7, 14]} columnsPageSize={4}
             />
           </div>
