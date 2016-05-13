@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js --ext .jsx client server universal webpack",
     "hot": "webpack-dev-server --config webpack/dev.js",
     "build-dev": "NODE_ENV=production webpack --progress --profile --diplay-modules --display-origins --config webpack/dev.js",
-    "dev": "nodemon",
+    "dev": "nodemon --watch server",
     "start": "npm run clean & npm run hot &  npm run dev",
     "test-build": "NODE_ENV=test webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
     "test-prod": "NODE_ENV=test node . --port=3022",
