@@ -8,7 +8,8 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
    'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
    'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
-   'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED']);
+   'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
+   'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL']);
 
 const initialState = {
   loaded: false,
@@ -40,6 +41,7 @@ const initialState = {
   lspLoaded: false,
   vehicleLoaded: false,
   dispatched: false,
+  segmented: false,
   dispDockShow: false,
   segDockShow: false,
   nodeLocations: [],
@@ -49,14 +51,15 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_APTSHIPMENT:
-      return { ...state, loading: true};
+      return { ...state, loading: true, dispatched: false};
     case actionTypes.LOAD_APTSHIPMENT_FAIL:
-      return { ...state, loading: false };
+      return { ...state, loading: false, dispatched: false };
     case actionTypes.LOAD_APTSHIPMENT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters),
         dispatched: false,
+        segmented: false,
         lspLoaded: false,
         vehicleLoaded: false
       };
@@ -69,6 +72,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
       return { ...state, nodeLocations: action.result.data.nodeLocations,
       transitModes: action.result.data.transitModes};
+    case actionTypes.SEGMENT_SUCCEED:
+      return { ...state, segmented: true};
     default:
       return state;
   }
@@ -178,9 +183,25 @@ export function loadSegRq(cookie, params) {
         actionTypes.LOAD_SEGMENT_RQ_SUCCEED,
         actionTypes.LOAD_SEGMENT_RQ_FAIL,
       ],
-      endpoint: 'v1/transport/dispatch/segrq',
+      endpoint: 'v1/transport/dispatch/segrequires',
       method: 'get',
       params,
+      cookie
+    }
+  };
+}
+
+export function segmentRequest(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEGMENT,
+        actionTypes.SEGMENT_SUCCEED,
+        actionTypes.SEGMENT_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/segment',
+      method: 'post',
+      data: params,
       cookie
     }
   };
