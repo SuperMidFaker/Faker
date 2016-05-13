@@ -182,7 +182,25 @@ function *listSegReq() {
 }
 
 function *segmentRequest() {
-  const { nodeLocation } = yield parse(this.req);
+  const { shipmtNos, segGroupFirst, segGroupSecond } = yield parse(this.req);
+  const arr = [];
+
+  const sno = shipmtNos[0].shipmtNo.substr(0, 29) + '-01';
+  const shipmt = {
+    shipmt_no: sno,
+    wheres: {
+      shipmt_no: shipmtNos[0].shipmtNo
+    }
+  };
+
+  const disp = {
+    shipmt_no: sno,
+    wheres: {
+      id: shipmtNos[0].dispId
+    }
+  };
+
+  yield [shipmtDao.copyShipmt(shipmt), shipmtDispDao.copyDisp(disp)];
 
   Result.OK(this);
 }

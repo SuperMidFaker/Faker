@@ -152,7 +152,7 @@ class DispatchList extends React.Component {
     let cols = [{
       title: this.msg('shipNo'),
       dataIndex: 'shipmt_no',
-      width: 120
+      width: 200
     }];
     if (s === 'waiting') {
       cols.push({
@@ -443,7 +443,7 @@ class DispatchList extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
