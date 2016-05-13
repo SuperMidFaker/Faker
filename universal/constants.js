@@ -47,6 +47,11 @@ const TENANT_ROLE = {
     text: 'tenantMember'
   }
 };
+
+const TENANT_ASPECT = {
+  BO: 0, // 企业主
+  SP: 1, // 服务商
+};
 const TENANT_USEBOOK = {
   owner: {
     name: 2,
@@ -239,6 +244,7 @@ export {
   APP_ENTITY_META_INFO,
   TENANT_ROLE,
   TENANT_LEVEL,
+  TENANT_ASPECT,
   INVITATION_STATUS,
   MAX_STANDARD_TENANT,
   PARTNERSHIP_TYPE_INFO,
