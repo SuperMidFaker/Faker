@@ -243,6 +243,9 @@ function *shipmtG() {
   const {tenantId, shipmtNo} = this.request.query;
   try {
     const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
+    // map some shipmtInfo props (goods_type)
+    shipmtInfo.goods_type = goodsTypes[shipmtInfo.goods_type - 1].name;
+
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
     return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
   }catch (e) {

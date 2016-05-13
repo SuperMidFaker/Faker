@@ -70,8 +70,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_FORM_SUCCEED: {
       const formData = action.result.data.formData;
-      const { sr_name } = formData;
-      return { ...state, formData: { ...state.formData, ...formData, client: sr_name } };
+      const { customer_name } = formData;
+      return { ...state, formData: { ...state.formData, ...formData, client: customer_name } };
     }
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: { shipmt: action.result.data, visible: true }};
