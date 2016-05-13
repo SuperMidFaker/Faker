@@ -13,7 +13,7 @@ import mysql from '../../reusable/db-util/mysql';
 export default {
   getVehicles(tenantId, offset, size) {
     const args = [tenantId, offset, size];
-    const sql = 'select v.vehicle_id, v.plate_number, v.trailer_number, v.type, v.load, v.length, v.vproperty, v.tenant_id, v.device_id, v.driver_id, v.created_date, d.name, d.phone, d.remark from tms_vehicles v left join tms_drivers d on d.driver_id = v.driver_id where v.tenant_id = ? limit ?,?';
+    const sql = 'select v.vehicle_id, v.plate_number, v.trailer_number, v.type, v.load_weight, v.load_volume, v.length, v.vproperty, v.tenant_id, v.device_id, v.driver_id, v.created_date, d.name, d.phone, d.remark from tms_vehicles v left join tms_drivers d on d.driver_id = v.driver_id where v.tenant_id = ? limit ?,?';
     return mysql.query(sql, args);
   },
   getVehiclesCount(tenantId) {

@@ -52,8 +52,8 @@ function *shipmentListG() {
   const current = parseInt(this.request.query.currentPage, 10);
   const filters = JSON.parse(this.request.query.filters);
   const tenantId = parseInt(this.request.query.tenantId, 10);
-  const sortOrder = this.request.query.sortOrder;
-  const sortField = this.request.query.sortField;
+  const sortOrder = this.request.query.sortOrder || 'created_date';
+  const sortField = this.request.query.sortField || 'desc';
   let shipmtNo;
   let shipmtType;
   let shipmtDispType;
@@ -159,9 +159,7 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         sp.tid, CONSIGN_TYPE.consignee, trans
       ));
     }
-    shipmt.goodslist.forEach(goods => {
-      dbOps.push(shipmentDao.createGoods(goods, shipmtNo, sp.tid, sp.login_id, trans));
-    });
+    dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
     yield dbOps;
 }
 function *shipmtSaveAcceptP() {

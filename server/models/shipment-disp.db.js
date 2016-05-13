@@ -26,6 +26,7 @@ const dispCols = [
   'log_last_date/dt',
   'excp_level/v',
   'excp_last_event/v',
+  'pod_type/v',
   'pod_status/v',
   'task_id/i',
   'task_vehicle/v',
@@ -39,6 +40,21 @@ const dispCols = [
 ];
 
 const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');
+
+function packGoodsArgs(goods) {
+  const columns = [
+    `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
+  ];
+  const args = [];
+  columns.forEach(col => {
+    if (col in goods) {
+      args.push(goods[col]);
+    } else {
+      args.push(null);
+    }
+  });
+  return args;
+}
 
 function getShipmtClause(shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
@@ -156,7 +172,7 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
-      SD.source, S.created_date, acpt_time,
+      SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
       effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id from tms_shipments as S
       right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
       where ${awhere} limit ?, ?`;
@@ -240,7 +256,20 @@ export default {
     const args = [shipmtInfo.shipmt_no];
     return mysql.update(sql, args, trans);
   },
-
+  createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
+    const sql = `insert into tms_shipment_manifest(name, goods_no, package,
+      length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,
+      creater_login_id, created_date) values ?`;
+    const argargs = [];
+    const createdDt = new Date();
+    for (let i = 0; i < goodslist.length; i++) {
+      const goods = goodslist[i];
+      const args = packGoodsArgs(goods);
+      args.push(shipmtNo, tenantId, loginId, createdDt);
+      argargs.push(args);
+    }
+    return mysql.insert(sql, [argargs], trans);
+  },
   updateGoodsWithInfo(goodsInfo) {
     const columns = [
       `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`

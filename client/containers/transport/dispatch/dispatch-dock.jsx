@@ -24,6 +24,7 @@ function fetch({ state, dispatch, cookie }) {
   lsps: state.transportDispatch.lsps,
   vehicles: state.transportDispatch.vehicles,
   vehicleLoaded: state.transportDispatch.vehicleLoaded,
+  lspLoaded: state.transportDispatch.lspLoaded,
   dispatched: state.transportDispatch.dispatched,
 }), { loadLsps, loadVehicles, doDispatch })
 export default class DispatchDock extends React.Component {
@@ -38,6 +39,7 @@ export default class DispatchDock extends React.Component {
     vehicles: PropTypes.object.isRequired,
     loadVehicles: PropTypes.func.isRequired,
     vehicleLoaded: PropTypes.bool.isRequired,
+    lspLoaded: PropTypes.bool.isRequired,
     doDispatch: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
     loginId: PropTypes.number.isRequired
@@ -73,7 +75,7 @@ export default class DispatchDock extends React.Component {
                 width: 100,
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.handleShipmtDispatch.bind(this, 'tenant', record)}>
+                        <a role="button" onClick={this.showConfirm.bind(this, 'tenant', record)}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
@@ -103,7 +105,7 @@ export default class DispatchDock extends React.Component {
                 title: this.msg('shipmtOP'),
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.handleShipmtDispatch.bind(this, 'vehicle', record)}>
+                        <a role="button" onClick={this.showConfirm.bind(this, 'vehicle', record)}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
@@ -162,10 +164,9 @@ export default class DispatchDock extends React.Component {
   })
 
   handleShipmtDispatch(type, target) {
-    // this.showDispatchConfirm();
-    // return;
     // TODO multi shipments dispatch
     const { tenantId, loginId, shipmts } = this.props;
+    const podType = this.state.podType;
     if (type === 'tenant') {
       this.props.doDispatch(null, {
         tenantId,
@@ -175,16 +176,16 @@ export default class DispatchDock extends React.Component {
         partnerName: target.partner_name,
         partnerTenantId: target.partner_tenant_id,
         freightCharge: this.state.quotation,
+        podType,
         type
       }).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
+          this.setState({quotation: 0});
           this.onClose();
         }
       });
-    } else if (type === 'vehicle') {
-
     }
   }
 
@@ -207,23 +208,43 @@ export default class DispatchDock extends React.Component {
         }
       });
     }
+    if (key === '1' && !this.props.lspLoaded) {
+      const { lsps, tenantId } = this.props;
+      this.props.loadLsps(null, {
+        tenantId,
+        pageSize: lsps.pageSize,
+        current: 1
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
+    }
   }
 
-  handlePodTypeChange = podType => {
+  handlePodTypeChange(e) {
+    const podType = e.target.value;
     this.setState({podType});
   }
 
-  showDispatchConfirm() {
+  showConfirm(type, target) {
+    const [ shipmt ] = this.props.shipmts;
     Modal.confirm({
       content: (
-        <RadioGroup onChange={this.handlePodTypeChange} value={this.state.podType}>
-          <Radio key="a" value="dreceipt"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera" />需要电子回单</Radio>
-          <Radio key="b" value="none"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera-o" />不要电子回单</Radio>
-          <Radio key="c" value="qrcode"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="qrcode" />扫描签收回单</Radio>
-        </RadioGroup>
+        <div className="dispatch-confirm">
+          <div style={{ marginBottom: 10 }}>将运单编号【{shipmt.shipmt_no}】分配给【{target.partner_name}】承运商</div>
+          <RadioGroup onChange={this.handlePodTypeChange.bind(this)} value={this.state.podType}>
+            <Radio key="a" value="dreceipt"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera" />需要电子回单</Radio>
+            <Radio key="b" value="none"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera-o" />不要电子回单</Radio>
+            <Radio key="c" value="qrcode"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="qrcode" />扫描签收回单</Radio>
+          </RadioGroup>
+        </div>
         ),
       okText: this.msg('btnTextOk'),
-      cancelText: this.msg('btnTextCancel')
+      cancelText: this.msg('btnTextCancel'),
+      onOk: () => {
+        this.handleShipmtDispatch(type, target);
+      }
     });
   }
 

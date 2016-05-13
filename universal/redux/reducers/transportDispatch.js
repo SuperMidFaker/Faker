@@ -7,7 +7,8 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
    'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
    'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
-   'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED']);
+   'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
+   'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED']);
 
 const initialState = {
   loaded: false,
@@ -36,10 +37,13 @@ const initialState = {
     current: 1,
     data: []
   },
+  lspLoaded: false,
   vehicleLoaded: false,
   dispatched: false,
   dispDockShow: false,
-  segDockShow: false
+  segDockShow: false,
+  nodeLocations: [],
+  transitModes: []
 };
 
 export default function reducer(state = initialState, action) {
@@ -52,14 +56,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters),
-        dispatched: false
+        dispatched: false,
+        lspLoaded: false,
+        vehicleLoaded: false
       };
     case actionTypes.LOAD_LSPS_SUCCEED:
-      return { ...state, lsps: action.result.data};
+      return { ...state, lsps: action.result.data, lspLoaded: true};
     case actionTypes.LOAD_VEHICLES_SUCCEED:
       return { ...state, vehicles: action.result.data, vehicleLoaded: true};
     case actionTypes.DO_DISPATCH_SUCCEED:
       return { ...state, dispatched: true};
+    case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
+      return { ...state, nodeLocations: action.result.data.nodeLocations,
+      transitModes: action.result.data.transitModes};
     default:
       return state;
   }
@@ -156,6 +165,22 @@ export function doReturn(cookie, params) {
       endpoint: 'v1/transport/dispatch/return',
       method: 'post',
       data: params,
+      cookie
+    }
+  };
+}
+
+export function loadSegRq(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SEGMENT_RQ,
+        actionTypes.LOAD_SEGMENT_RQ_SUCCEED,
+        actionTypes.LOAD_SEGMENT_RQ_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/segrq',
+      method: 'get',
+      params,
       cookie
     }
   };
