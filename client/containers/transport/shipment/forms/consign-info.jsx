@@ -128,7 +128,7 @@ export default class ConsignInfo extends React.Component {
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} colSpan="3" required
+            field={this.renderFields.name} colSpan={3} required
             rules={[{
               required: true, message: this.msg('consignNameMessage')
             }]} optionField="name" optionKey="key" optionValue="name"
@@ -142,7 +142,7 @@ export default class ConsignInfo extends React.Component {
             />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} colSpan="3" required
+            field={this.renderFields.addr} colSpan={3} required
             rules={[{
               required: true, message: this.msg('addrMessage')
             }]}

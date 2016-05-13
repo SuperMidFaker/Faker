@@ -66,7 +66,7 @@ export default defineMessages({
     defaultMessage: '体积'
   },
   shipAcceptTime: {
-    id: 'transport.acceptance.shipment.accept.time',
+    id: 'transport.dispatch.shipment.accept.time',
     defaultMessage: '接单时间'
   },
   shipmtOP: {

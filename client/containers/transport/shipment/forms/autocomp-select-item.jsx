@@ -37,9 +37,9 @@ export default function AutoCompletionSelectItem(props) {
 }
 
 AutoCompletionSelectItem.propTypes = {
-    labelName: PropTypes.string.isRequired,
+    labelName: PropTypes.string,
     field: PropTypes.string.isRequired,
-    colSpan: PropTypes.number.isRequired,
+    colSpan: PropTypes.number,
     formhoc: PropTypes.object,
     placeholder: PropTypes.string,
     required: PropTypes.bool,

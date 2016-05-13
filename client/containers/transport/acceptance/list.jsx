@@ -50,7 +50,7 @@ function fetchData({ state, dispatch, cookie }) {
   }),
   { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail })
 @connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
+  if (lifecycle !== 'componentWillReceiveProps') {
     return;
   }
   dispatch(setNavTitle({

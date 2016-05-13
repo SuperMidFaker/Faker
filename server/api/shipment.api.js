@@ -41,10 +41,13 @@ const goodsTypes = [{
   name: '普通货物'
 }, {
   id: '2',
-  name: '温控货物'
+  name: '冷链'
 }, {
   id: '3',
   name: '危险品'
+}, {
+  id: '4',
+  name: '大件'
 }];
 
 function *shipmentListG() {

@@ -22,8 +22,8 @@ export default function InputItem(props) {
 }
 
 InputItem.propTypes = {
-    labelName: PropTypes.string.isRequired,
-    colSpan: PropTypes.number.isRequired,
+    labelName: PropTypes.string,
+    colSpan: PropTypes.number,
     formhoc: PropTypes.object.isRequired,
     field: PropTypes.string,
     type: PropTypes.string,
