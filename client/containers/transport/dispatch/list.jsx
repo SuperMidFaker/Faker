@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message, Select, Modal } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'reusable/components/nav-link';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { loadTable, doSend, doReturn } from 'universal/redux/reducers/transportDispatch';
@@ -164,15 +163,15 @@ class DispatchList extends React.Component {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',
         width: 80
-      }, {
+      });
+      cols = cols.concat(this.commonCols);
+      cols.push({
         title: this.msg('shipAcceptTime'),
         dataIndex: 'acpt_time',
         width: 60,
         render: (text, record) => record.acpt_time ?
          moment(record.acpt_time).format('YYYY.MM.DD') : ' '
-      });
-      cols = cols.concat(this.commonCols);
-      cols.push({
+      }, {
         title: this.msg('shipmtOP'),
         width: 100,
         render: (o, record) => {
@@ -285,10 +284,6 @@ class DispatchList extends React.Component {
     });
   }
 
-  handleConditionChange = (condition) => {
-    console.log(condition);
-  }
-
   handlePanelHeaderChange() {
     const { status } = this.props.filters;
 
@@ -296,45 +291,41 @@ class DispatchList extends React.Component {
     if (status === 'waiting') {
       panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange}/>),
       (<span className="ant-divider" style={{width: '0px'}}/>),
-      (<NavLink to="/transport/acceptance/shipment/new">
-              <Button>
-                <span>{this.msg('btnTextOriginShipments')}</span><Icon type="rollback" />
-              </Button>
-            </NavLink>));
+      (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="rollback" /></Button>));
     } else if (status === 'dispatched') {
       panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
         <Option value="0">最近七天</Option>
         <Option value="1">最近一月</Option>
       </Select>),
       (<span className="ant-divider" style={{width: '0px'}}/>),
-      (<NavLink to="/transport/acceptance/shipment/new">
-              <Button>
-                <span>{this.msg('btnTextExport')}</span><Icon type="arrow-down" />
-              </Button>
-            </NavLink>));
+      (<Button onClick={this.handleExportDispShipmts}><span>{this.msg('btnTextExport')}</span><Icon type="arrow-down" /></Button>));
     }
 
-    this.setState({panelHeader});
+    this.setState({panelHeader, show: false, sshow: false, shipmts: []});
   }
 
   handleDispatchDockShow(shipmt) {
     this.setState({show: true, shipmts: [shipmt]});
   }
 
-  handleDispatchDockClose = () => {
-    this.setState({show: false, shipmts: []}, () => {
-      if (this.props.dispatched) {
-        this.handleStatusChange({target:{value: 'waiting'}});
-      }
-    });
+  handleDispatchDockClose = (reload) => {
+    if (typeof reload === 'boolean') {
+      this.handleStatusChange({target:{value: 'waiting'}});
+    } else {
+      this.setState({show: false, shipmts: []});
+    }
   }
 
   handleSegmentDockShow(shipmt) {
     this.setState({sshow: true, shipmts: [shipmt]});
   }
 
-  handleSegmentDockClose = () => {
-    this.setState({sshow: false, shipmts: []});
+  handleSegmentDockClose = (reload) => {
+    if (typeof reload === 'boolean') {
+      this.handleStatusChange({target:{value: 'waiting'}});
+    } else {
+      this.setState({sshow: false, shipmts: []});
+    }
   }
 
   handleShipmtSend(shipmt) {
@@ -386,6 +377,18 @@ class DispatchList extends React.Component {
 
   }
 
+  handleExportDispShipmts = () => {
+
+  }
+
+  handleConditionChange = (condition) => {
+    console.log(condition);
+  }
+
+  handleOriginShipmts = () => {
+
+  }
+
   renderConsignLoc(shipmt, field) {
     const province = `${field}_province`;
     const city = `${field}_city`;
@@ -424,7 +427,7 @@ class DispatchList extends React.Component {
     const { status } = this.props.filters;
 
     const cols = this.buildCols();
-    console.log(cols);
+
     return (
       <div className="main-content">
         <div className="page-header">

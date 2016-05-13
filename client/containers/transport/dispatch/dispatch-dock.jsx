@@ -50,6 +50,10 @@ export default class DispatchDock extends React.Component {
 
     this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
+    this.onCloseWrapper = (reload) => {
+      this.setState({quotation: 0, podType: 'dreceipt'});
+      this.onClose(reload);
+    };
     this.consigneeCols = [{
                 title: '',
                 dataIndex: 'partner_tenant_id',
@@ -182,8 +186,7 @@ export default class DispatchDock extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({quotation: 0});
-          this.onClose();
+          this.onCloseWrapper(true);
         }
       });
     }
@@ -280,7 +283,7 @@ export default class DispatchDock extends React.Component {
                   <div className="dock-sp">
                     <div className="dock-sp-body">
                       <div className="dock-sp-toolbar">
-                        <a onClick={ this.onClose }><Icon type="cross" className="closable"/></a>
+                        <a onClick={ this.onCloseWrapper }><Icon type="cross" className="closable"/></a>
                         <div className="shipno-container">
                           <span className="detail-title">共 {shipmts.length} 订单，{totalCount}件，{totalWeight}公斤，{totalVolume}立方</span>
                           {arr}

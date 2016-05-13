@@ -41,10 +41,13 @@ const goodsTypes = [{
   name: '普通货物'
 }, {
   id: '2',
-  name: '温控货物'
+  name: '冷链'
 }, {
   id: '3',
   name: '危险品'
+}, {
+  id: '4',
+  name: '大件'
 }];
 
 function *shipmentListG() {
@@ -60,9 +63,9 @@ function *shipmentListG() {
   filters.forEach(flt => {
     if (flt.name === 'type') {
       if (flt.value === 'unaccepted') {
-        shipmtDispType = SHIPMENT_TRACK_STATUS.unaccepted;
+        shipmtDispType = true;
       } else if (flt.value === 'accepted') {
-        shipmtDispType = SHIPMENT_TRACK_STATUS.undispatched;
+        shipmtDispType = false;
       } else if (flt.value === 'draft') {
         shipmtType = SHIPMENT_EFFECTIVES.draft;
       } else if (flt.value === 'archived') {
@@ -95,7 +98,7 @@ function *shipmentListG() {
         ),
         shipmentDispDao.getFilteredShipments(
           tenantId, shipmtDispType, shipmtNo, SHIPMENT_DISPATCH_STATUS.confirmed,
-          pageSize, current, sortField, sortOrder
+          pageSize, current, sortField, sortOrder, SHIPMENT_TRACK_STATUS.unaccepted
         )
       ];
       return Result.OK(this, {
@@ -159,7 +162,9 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         sp.tid, CONSIGN_TYPE.consignee, trans
       ));
     }
-    dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
+    if (shipmt.goodslist.length > 0) {
+      dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
+    }
     yield dbOps;
 }
 function *shipmtSaveAcceptP() {

@@ -233,32 +233,8 @@ export default defineMessages({
     id: 'transport.shipment.tab.tracking',
     defaultMessage: '跟踪'
   },
-  paneClient: {
-    id: 'transport.shipment.pane.client',
-    defaultMessage: '客户'
-  },
-  paneSource: {
-    id: 'transport.shipment.pane.source',
-    defaultMessage: '来源'
-  },
-  paneLsp: {
-    id: 'transport.shipment.pane.lsp',
-    defaultMessage: '物流服务商'
-  },
-  paneCarrier: {
-    id: 'transport.shipment.pane.carrier',
-    defaultMessage: '承运商'
-  },
   remark: {
     id: 'transport.shipment.pane.remark',
     defaultMessage: '备注'
-  },
-  sourceConsign: {
-    id: 'transport.shipment.source.consign',
-    defaultMessage: '客户委托'
-  },
-  sourceDispatch: {
-    id: 'transport.shipment.source.dispatch',
-    defaultMessage: '分包'
   },
 });
