@@ -181,12 +181,19 @@ function *listSegReq() {
   });
 }
 
+function *segmentRequest() {
+  const { nodeLocation } = yield parse(this.req);
+
+  Result.OK(this);
+}
+
 export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
-  [ 'get', '/v1/transport/dispatch/segrq', listSegReq ],
+  [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],
   [ 'post', '/v1/transport/dispatch', doDispatch ],
   [ 'post', '/v1/transport/dispatch/send', doSend ],
   [ 'post', '/v1/transport/dispatch/return', doReturn ],
+  [ 'post', '/v1/transport/dispatch/segment', segmentRequest ],
 ];
