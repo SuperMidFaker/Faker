@@ -26,10 +26,13 @@ const dispCols = [
   'log_last_date/dt',
   'excp_level/v',
   'excp_last_event/v',
+  'pod_id/i',
   'pod_type/v',
   'pod_status/v',
   'task_id/i',
   'task_vehicle/v',
+  'task_driver_id/i',
+  'task_driver_name/v',
   'disp_status/i',
   'status/i',
   'freight_charge/f',
@@ -230,6 +233,9 @@ export default {
   },
   deleteDisp(disp, trans) {
     return dispOrm.deleteObj(disp, trans);
+  },
+  copyDisp(disp) {
+    return dispOrm.copyWithObj(disp);
   },
   getShipmtWithNo(shipmtNo) {
     const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch

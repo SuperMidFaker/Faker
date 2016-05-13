@@ -290,7 +290,7 @@ export default class DispatchDock extends React.Component {
                         </div>
                       </div>
                       <div className="dock-sp-content">
-                        <Collapse defaultActiveKey={['1']} onChange={this.handlePanelChange}>
+                        <Collapse defaultActiveKey={['1']} onChange={this.handlePanelChange} accordion>
                           <Panel header="选择承运商" key="1">
                             <Table columns={this.consigneeCols} dataSource={this.lspsds} />
                           </Panel>
