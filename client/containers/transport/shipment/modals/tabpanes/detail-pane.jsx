@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Row, Col, Table } from 'ant-ui';
-import { SHIPMENT_SOURCE } from 'universal/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -45,15 +44,6 @@ export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmt: PropTypes.object.isRequired,
-  }
-  getSourceMsg(source) {
-    if (source === SHIPMENT_SOURCE.consigned) {
-      return this.msg('sourceConsign');
-    } else if (source === SHIPMENT_SOURCE.subcontracted) {
-      return this.msg('sourceDispatch');
-    } else {
-      return '';
-    }
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -98,25 +88,6 @@ export default class PreviewPanel extends React.Component {
     const { shipmt } = this.props;
     return (
       <div className="pane-content">
-        <Row className="pane-shipment">
-          <Col span="14">
-            <PaneFormItem label={this.msg('paneClient')} labelCol={{ span: 6 }}
-              field={ shipmt.customer_name } fieldCol={{ span:14, offset: 4 }}
-            />
-            <PaneFormItem label={this.msg('paneLsp')} labelCol={{ span: 6 }}
-              field={ shipmt.lsp_name } fieldCol={{ span:14, offset: 4 }}
-            />
-          </Col>
-          <Col span="10">
-            <PaneFormItem labelCol={{ span: 6 }} label={this.msg('paneSource')}
-              field={ this.getSourceMsg(shipmt.source) }
-              fieldCol={{ span: 18 }}
-            />
-            <PaneFormItem labelCol={{ span: 6 }} label={this.msg('paneCarrier')}
-              field={ shipmt.sr_name } fieldCol={{ span: 18 }}
-            />
-          </Col>
-        </Row>
         <Col span="12">
           <div className="subform-heading subform-padding">
             <div className="subform-title">{this.msg('consignerInfo')}</div>

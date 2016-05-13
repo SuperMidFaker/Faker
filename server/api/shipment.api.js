@@ -63,9 +63,9 @@ function *shipmentListG() {
   filters.forEach(flt => {
     if (flt.name === 'type') {
       if (flt.value === 'unaccepted') {
-        shipmtDispType = SHIPMENT_TRACK_STATUS.unaccepted;
+        shipmtDispType = true;
       } else if (flt.value === 'accepted') {
-        shipmtDispType = SHIPMENT_TRACK_STATUS.undispatched;
+        shipmtDispType = false;
       } else if (flt.value === 'draft') {
         shipmtType = SHIPMENT_EFFECTIVES.draft;
       } else if (flt.value === 'archived') {
@@ -98,7 +98,7 @@ function *shipmentListG() {
         ),
         shipmentDispDao.getFilteredShipments(
           tenantId, shipmtDispType, shipmtNo, SHIPMENT_DISPATCH_STATUS.confirmed,
-          pageSize, current, sortField, sortOrder
+          pageSize, current, sortField, sortOrder, SHIPMENT_TRACK_STATUS.unaccepted
         )
       ];
       return Result.OK(this, {
@@ -162,7 +162,9 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         sp.tid, CONSIGN_TYPE.consignee, trans
       ));
     }
-    dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
+    if (shipmt.goodslist.length > 0) {
+      dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
+    }
     yield dbOps;
 }
 function *shipmtSaveAcceptP() {
@@ -246,6 +248,9 @@ function *shipmtG() {
   const {tenantId, shipmtNo} = this.request.query;
   try {
     const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
+    // map some shipmtInfo props (goods_type)
+    shipmtInfo.goods_type = goodsTypes[shipmtInfo.goods_type - 1].name;
+
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
     return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
   }catch (e) {
@@ -262,13 +267,16 @@ function *shipmtSaveEditP() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield shipmentDispDao.updateShipmtWithInfo(shipment, trans);
-    yield shipmentDispDao.updateGoodsWithInfo(editGoods);
+    const dbOps = [
+      shipmentDispDao.updateShipmtWithInfo(shipment, trans),
+      shipmentDispDao.updateGoodsWithInfo(editGoods),
+    ];
     if(removedGoodsIds) { // if no goods removed in editing mode, this variable will be undefined, and we should skip it 
-      yield shipmentDispDao.removeGoodsWithIds(removedGoodsIds);
+      dbOps.push(shipmentDispDao.removeGoodsWithIds(removedGoodsIds));
     }
+    yield dbOps;
     for(let goods of newGoods) {
-      yield shipmentDao.createGoods(newGoods[0], shipmt_no, tenantId, loginId, trans);
+      yield shipmentDao.createGoods(goods, shipmt_no, tenantId, loginId, trans);
     }
     yield mysql.commit(trans);
     return Result.OK(this);

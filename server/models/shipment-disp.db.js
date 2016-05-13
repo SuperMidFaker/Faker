@@ -59,11 +59,14 @@ function packGoodsArgs(goods) {
   return args;
 }
 
-function getShipmtClause(shipmtDispType, shipmtNo, aliasS, aliasSD, args) {
+function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
-  if (shipmtDispType !== undefined && shipmtDispType !== null) {
+  if (shipmtDispType === false) {
+    disp = `and ${aliasSD}.status != ?`;
+    args.push(unacceptSt);
+  } else {
     disp = `and ${aliasSD}.status = ?`;
-    args.push(shipmtDispType);
+    args.push(unacceptSt);
   }
   let shno = '';
   if (shipmtNo) {
@@ -139,9 +142,9 @@ function generateDeleteClauseWithIds(ids) {
 }
 
 export default {
-  getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt) {
+  getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt, unacceptSt) {
     const args = [tenantId, dispSt];
-    const clause = getShipmtClause(shipmtDispType, shipmtNo, 'S', 'SD', args);
+    const clause = getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, 'S', 'SD', args);
     const sql = `select count(S.shipmt_no) as count from tms_shipments as S
       inner join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
       where SD.sp_tenant_id = ? and disp_status = ? ${clause}`;
@@ -149,10 +152,10 @@ export default {
   },
   getFilteredShipments(
     tenantId, shipmtDispType, shipmtNo, dispSt, pageSize, current,
-    sortField, sortOrder
+    sortField, sortOrder, unacceptSt
   ) {
     const args = [tenantId, dispSt];
-    const clause = getShipmtClause(shipmtDispType, shipmtNo, 'S', 'SD', args);
+    const clause = getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, 'S', 'SD', args);
     const sorterFd = sortField === 'created_date' ? 'S.created_date' : 'acpt_time';
     const sql = `select SD.id as \`key\`, S.shipmt_no as shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
