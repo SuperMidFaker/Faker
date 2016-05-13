@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col } from 'ant-ui';
+import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col, message } from 'ant-ui';
 import moment from 'moment';
 import connectFetch from 'reusable/decorators/connect-fetch';
-import { loadSegRq } from 'universal/redux/reducers/transportDispatch';
+import { loadSegRq, segmentRequest } from 'universal/redux/reducers/transportDispatch';
 import { connect } from 'react-redux';
 
 const Option = Select.Option;
@@ -19,7 +19,7 @@ function fetch({ state, dispatch, cookie }) {
 @connect(state => ({
   nodeLocations: state.transportDispatch.nodeLocations,
   transitModes: state.transportDispatch.transitModes
-}))
+}), {segmentRequest})
 export default class SegmentDock extends React.Component {
   static propTypes = {
     show: PropTypes.bool.isRequired,
@@ -27,7 +27,8 @@ export default class SegmentDock extends React.Component {
     msg: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
     nodeLocations: PropTypes.array.isRequired,
-    transitModes: PropTypes.array.isRequired
+    transitModes: PropTypes.array.isRequired,
+    segmentRequest: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -35,14 +36,32 @@ export default class SegmentDock extends React.Component {
 
     this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
-    this.onCloseWrapper = () => {
-      this.setState({segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)]});
-      this.onClose();
+    this.onCloseWrapper = (reload) => {
+      this.setState({
+        segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
+        twoable: false,
+        segGroupFirst: {
+          nodeLocation: {},
+          deliverEstDate: null,
+          pickupEstDate: null,
+          deliverMode: {},
+          pickupMode: {}
+        },
+        segGroupSecond: {
+          nodeLocation: {},
+          deliverEstDate: null,
+          pickupEstDate: null,
+          deliverMode: {},
+          pickupMode: {}
+        }
+      });
+      this.onClose(reload);
     };
   }
 
   state = {
     segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
+    twoable: false,
     segGroupFirst: {
       nodeLocation: {},
       deliverEstDate: null,
@@ -106,7 +125,7 @@ export default class SegmentDock extends React.Component {
   handleAddSegment(e) {
     if (e) {
       const segments = [this.buildSegmentGroup(2)];
-      this.setState({segments});
+      this.setState({segments, twoable: true});
     }
   }
 
@@ -131,11 +150,56 @@ export default class SegmentDock extends React.Component {
   }
 
   handleTransitModeChange(order, type, value) {
-    console.log(order, type, value);
+    const mode = this.props.transitModes.filter(v => v.id === value)[0];
+    if (order === 1) {
+      const {segGroupFirst} = this.state;
+      if (type === 'deliver') {
+        segGroupFirst.deliverMode = mode;
+      } else if (type === 'pickup') {
+        segGroupFirst.pickupMode = mode;
+      }
+      this.setState(segGroupFirst);
+    } else {
+      const {segGroupSecond} = this.state;
+      if (type === 'deliver') {
+        segGroupSecond.deliverMode = mode;
+      } else if (type === 'pickup') {
+        segGroupSecond.pickupMode = mode;
+      }
+      this.setState(segGroupSecond);
+    }
   }
 
   handleNodeLocationChange(order, value) {
-    console.log(order, value);
+    const nd = this.props.nodeLocations.filter(v => v.node_id === value)[0];
+    if (order === 1) {
+      const {segGroupFirst} = this.state;
+      segGroupFirst.nodeLocation = nd;
+      this.setState(segGroupFirst);
+    } else {
+      const {segGroupSecond} = this.state;
+      segGroupSecond.nodeLocation = nd;
+      this.setState(segGroupSecond);
+    }
+  }
+
+  handleSegment= () => {
+    const shipmtNos = this.props.shipmts.map(s => {
+      return {shipmtNo: s.shipmt_no, disp_id: s.key};
+    });
+
+    const { segGroupFirst, segGroupSecond } = this.state;
+    this.props.segmentRequest(null, {
+      shipmtNos,
+      segGroupFirst,
+      segGroupSecond
+    }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.onCloseWrapper(true);
+        }
+    });
   }
 
   render() {
@@ -190,7 +254,7 @@ export default class SegmentDock extends React.Component {
                           <div className="segment-btns">
                             <Button type="ghost" onClick={ this.onCloseWrapper }>{this.msg('btnTextCancel')}</Button>
                             <span className="ant-divider" style={{width: '0px'}}/>
-                            <Button type="primary">{this.msg('btnTextOk')}</Button>
+                            <Button type="primary" onClick={this.handleSegment }>{this.msg('btnTextOk')}</Button>
                           </div>
                         </div>
                       </div>
