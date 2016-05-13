@@ -8,12 +8,10 @@ import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
-import { loadTable, loadAcceptDispatchers, revokeOrReject } from
-  'universal/redux/reducers/transport-acceptance';
+import { loadTable } from
+  'universal/redux/reducers/transport-tracking';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'universal/constants';
-import AccepterModal from '../shipment/modals/accepter';
-import RevokejectModal from '../shipment/modals/revoke-reject';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -48,20 +46,20 @@ function fetchData({ state, dispatch, cookie }) {
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
   }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail })
+  { loadTable, loadShipmtDetail })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportAcceptance'),
+    text: formatContainerMsg(props.intl, 'transportTracking'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null
   }));
 })
-export default class AcceptList extends React.Component {
+export default class TrackingList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -70,9 +68,7 @@ export default class AcceptList extends React.Component {
     sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    revokeOrReject: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired
   }
   state = {
@@ -251,12 +247,6 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleShipmtRevoke(dispId) {
-    this.props.revokeOrReject('revoke', dispId);
-  }
-  handleShipmtReject(dispId) {
-    this.props.revokeOrReject('reject', dispId);
-  }
   handleShipmtPreview(shipmtNo) {
     this.props.loadShipmtDetail(shipmtNo).then(result => {
       if (result.error) {
@@ -314,47 +304,7 @@ export default class AcceptList extends React.Component {
     if (types.length === 1) {
       radioValue = types[0].value;
     }
-    let columns = this.columns;
-    if (radioValue === 'unaccepted') {
-      // todo draft modify/delete
-      columns = [ ...columns, {
-        title: formatContainerMsg(this.props.intl, 'opColumn'),
-        width: 100,
-        render: (o, record) => {
-          if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-            return <span />;
-          } else if (record.source === SHIPMENT_SOURCE.consigned) {
-            return (
-              <span>
-                <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
-                {this.msg('shipmtAccept')}
-                </a>
-                <span className="ant-divider" />
-                <NavLink to={`/transport/acceptance/shipment/edit/${record.shipmt_no}`}>
-                {formatGlobalMsg(this.props.intl, 'modify')}
-                </NavLink>
-                <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
-                {this.msg('shipmtRevoke')}
-                </a>
-              </span>
-            );
-          } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
-            return (
-              <span>
-                <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
-                {this.msg('shipmtAccept')}
-                </a>
-                <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleShipmtReject(record.key)}>
-                {this.msg('shipmtReject')}
-                </a>
-              </span>
-            );
-          }
-        }
-      }];
-    }
+    const columns = this.columns;
     return (
       <div className="main-content">
         <div className="page-header">
@@ -390,8 +340,6 @@ export default class AcceptList extends React.Component {
             </Button>
           </div>
         </div>
-        <AccepterModal reload={this.handleTableLoad} />
-        <RevokejectModal reload={this.handleTableLoad} />
         <PreviewPanel />
       </div>
     );

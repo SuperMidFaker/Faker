@@ -68,6 +68,7 @@ function fetchData({ state, dispatch, cookie }) {
         );
         props.setConsignFields({
           client_id: selclients.length > 0 ? clientFieldId : 0,
+          client_partner_id: selclients.length > 0 && selclients[0].partner_id,
           client: selclients.length > 0 ? selclients[0].name : clientFieldId,
         });
       } else if (name === 'transport_mode_code') {

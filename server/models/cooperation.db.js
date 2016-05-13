@@ -158,9 +158,9 @@ export default {
     const args = [status, inviterId, inviteeId, inviteeCode];
     return mysql.update(sql, args, trans);
   },
-  getOnlinePartnerByTypeCode(tenantId, typeCode) {
-    const sql = `select partner_tenant_id as tid, partner_name as name from sso_partnerships
-      where tenant_id = ? and type_code = ? and partner_tenant_id != -1`;
+  getPartnerByTypeCode(tenantId, typeCode) {
+    const sql = `select partner_tenant_id as tid, partner_name as name, partner_id
+      from sso_partnerships where tenant_id = ? and type_code = ?`;
     const args = [ tenantId, typeCode ];
     return mysql.query(sql, args);
   },

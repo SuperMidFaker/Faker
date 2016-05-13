@@ -118,11 +118,11 @@ function *shipmtRequiresG() {
   try {
     const [ consignerLocations, consigneeLocations, transitModes, packagings, clients ] =
       yield [
-      shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consigner),
-      shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consignee),
-      shipmentDao.getTransitModes(tenantId),
-      shipmentDao.getPackagings(tenantId),
-      coopDao.getOnlinePartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer)
+        shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consigner),
+        shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consignee),
+        shipmentDao.getTransitModes(tenantId),
+        shipmentDao.getPackagings(tenantId),
+        coopDao.getPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer)
     ];
     return Result.OK(this, {
       consignerLocations,
@@ -341,7 +341,7 @@ function *shipmtDetailG() {
       shipmt.source = shipmtdisps[0].source;
     }
     return Result.OK(this, shipmt);
-  }catch(e){
+  } catch(e) {
     return Result.InternalServerError(this, e.message);
   }
 }
