@@ -243,29 +243,35 @@ export default class ImportAccept extends React.Component {
       {
         title: '报关业务单号',
         dataIndex: 'del_no',
+        width: 120,
         render: (text, record) => this.renderColumnText(record, text, true)
       }, {
         title: '客户名称',
         sorter: true,
         dataIndex: 'send_tenant_name',
+        width: 180,
         filters: filterArray,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
         title: '委托时间',
         sorter: true,
         dataIndex: 'del_date',
+        width: 100,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
         title: '接单时间',
         dataIndex: 'rec_del_date',
+        width: 100,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
         title: '运单号',
         dataIndex: 'bill_no',
+        width: 150,
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
         title: '状态',
         dataIndex: 'status',
+        width: 80,
         sorter: true,
         render: (text, record) => { // 根据状态定制显示状态中文描述
           let fontColor = '';
@@ -300,7 +306,7 @@ export default class ImportAccept extends React.Component {
         }
       }, {
         title: '操作',
-        width: 150,
+        width: 120,
         render: (text, record) => { // 根据状态定制按钮显示
           switch (record.status) {
             case 1:
@@ -359,7 +365,7 @@ export default class ImportAccept extends React.Component {
             </Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table useFixedHeader rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
         </div>
       </div>

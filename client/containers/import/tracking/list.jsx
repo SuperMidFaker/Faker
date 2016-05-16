@@ -127,27 +127,34 @@ export default class ImportTracking extends React.Component {
     const columns = [
       {
         title: '报关单号',
-        dataIndex: 'entry_id'
+        dataIndex: 'entry_id',
+        width: 120
       }, {
         title: '处理环节',
-        dataIndex: 'process_name'
+        dataIndex: 'process_name',
+        width: 100
       }, {
         title: '处理时间',
         sorter: true,
         dataIndex: 'process_date',
+        width: 100,
         filters: filterArray
       }, {
         title: '报关业务号',
-        dataIndex: 'del_no'
+        dataIndex: 'del_no',
+        width: 120
       }, {
         title: '提运单号',
-        dataIndex: 'bill_no'
+        dataIndex: 'bill_no',
+        width: 150
       }, {
         title: '报关受理方',
-        dataIndex: 'rec_tenant_name'
+        dataIndex: 'rec_tenant_name',
+        width: 180
       }, {
         title: '报关委托方',
-        dataIndex: 'send_tenant_name'
+        dataIndex: 'send_tenant_name',
+        width: 180
       }
     ];
     return (
@@ -163,10 +170,10 @@ export default class ImportTracking extends React.Component {
             </RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body fixed">
+        <div className="page-body">
           <div className="panel-header"></div>
           <div className="panel-body body-responsive">
-            <Table columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
         </div>
       </div>
