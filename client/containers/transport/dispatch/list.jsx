@@ -148,7 +148,8 @@ class DispatchList extends React.Component {
     width: 150,
   }];
   buildCols() {
-    const s = this.props.filters.status;
+    const { status, origin } = this.props.filters;
+    const s = status;
     let cols = [{
       title: this.msg('shipNo'),
       dataIndex: 'shipmt_no',
@@ -175,6 +176,12 @@ class DispatchList extends React.Component {
         title: this.msg('shipmtOP'),
         width: 100,
         render: (o, record) => {
+          if (origin && record.segmented === 1) {
+            return (<span>
+                <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
+                {this.msg('btnTextSegmentCancel')}
+                </a></span>);
+          }
             return (
               <span>
                 <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
@@ -269,6 +276,7 @@ class DispatchList extends React.Component {
     const { shipmentlist, tenantId, filters } = this.props;
     const tmp = Object.assign({}, filters);
     tmp.status = ev.target.value;
+    tmp.origin = 0;
 
     this.props.loadTable(null, {
       tenantId,
@@ -276,29 +284,34 @@ class DispatchList extends React.Component {
       pageSize: shipmentlist.pageSize,
       current: 1
     }).then(result => {
-      this.handlePanelHeaderChange();
-
       if (result.error) {
         message.error(result.error.message, 10);
+      } else {
+        this.handlePanelHeaderChange();
       }
     });
   }
 
   handlePanelHeaderChange() {
-    const { status } = this.props.filters;
+    const { status, origin } = this.props.filters;
 
     const panelHeader = [];
-    if (status === 'waiting') {
-      panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange}/>),
-      (<span className="ant-divider" style={{width: '0px'}}/>),
-      (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="rollback" /></Button>));
-    } else if (status === 'dispatched') {
-      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
-        <Option value="0">最近七天</Option>
-        <Option value="1">最近一月</Option>
-      </Select>),
-      (<span className="ant-divider" style={{width: '0px'}}/>),
-      (<Button onClick={this.handleExportDispShipmts}><span>{this.msg('btnTextExport')}</span><Icon type="arrow-down" /></Button>));
+    if (origin) {
+      panelHeader.push((<span className="ant-divider" style={{width: '0px'}}/>),
+      (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>));
+    } else {
+      if (status === 'waiting') {
+        panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange}/>),
+        (<span className="ant-divider" style={{width: '0px'}}/>),
+        (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>));
+      } else if (status === 'dispatched') {
+        panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
+          <Option value="0">最近七天</Option>
+          <Option value="1">最近一月</Option>
+        </Select>),
+        (<span className="ant-divider" style={{width: '0px'}}/>),
+        (<Button onClick={this.handleExportDispShipmts}><span>{this.msg('btnTextExport')}</span><Icon type="arrow-down" /></Button>));
+      }
     }
 
     this.setState({panelHeader, show: false, sshow: false, shipmts: []});
@@ -385,7 +398,30 @@ class DispatchList extends React.Component {
     console.log(condition);
   }
 
+  handleOriginShipmtsReturn = () => {
+    this.handleStatusChange({target: {value: 'waiting'}});
+  }
+
   handleOriginShipmts = () => {
+    const { shipmentlist, tenantId, filters } = this.props;
+    const tmp = Object.assign({}, filters);
+    tmp.origin = 1;
+
+    this.props.loadTable(null, {
+      tenantId,
+      filters: JSON.stringify(tmp),
+      pageSize: shipmentlist.pageSize,
+      current: 1
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handlePanelHeaderChange();
+      }
+    });
+  }
+
+  handleExpandList = row => {
 
   }
 
@@ -424,9 +460,19 @@ class DispatchList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
-    const { status } = this.props.filters;
-
+    const { status, origin } = this.props.filters;
     const cols = this.buildCols();
+
+    let tb = '';
+    if (origin) {
+      tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+            />);
+    } else {
+      tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
+              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+            />);
+    }
 
     return (
       <div className="main-content">
@@ -442,9 +488,9 @@ class DispatchList extends React.Component {
             {this.state.panelHeader}
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
-            />
+            <div className="dispatch-table">
+              {tb}
+            </div>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">

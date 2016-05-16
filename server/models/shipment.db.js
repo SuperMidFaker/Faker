@@ -225,5 +225,8 @@ export default {
   },
   copyShipmt(shipmt) {
     return shipmtOrm.copyWithObj(shipmt);
+  },
+  updateShipmt(shipmt) {
+    return shipmtOrm.updateObj(shipmt);
   }
 };

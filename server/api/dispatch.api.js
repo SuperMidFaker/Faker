@@ -49,6 +49,10 @@ function *listShipmts() {
   });
 }
 
+function *listExpandShipmts() {
+
+}
+
 function *listLsps() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
   const current = parseInt(this.request.query.current, 10) || 1;
@@ -119,6 +123,7 @@ function *doDispatch() {
 
   const upstatus = {
     status: SHIPMENT_TRACK_STATUS.undelivered,
+    disp_time: new Date(),
     wheres: {
       sp_tenant_id: tenantId,
       shipmt_no: shipmtNo,
@@ -181,32 +186,122 @@ function *listSegReq() {
   });
 }
 
+function buildConsigneeSegment(sno, shipmtNo, dispId, group, idx) {
+  const shipmt = {
+    shipmt_no: `${sno}-0${idx}`,
+    consignee_name: group.nodeLocation.name,
+    consignee_province: group.nodeLocation.province,
+    consignee_city: group.nodeLocation.city,
+    consignee_district: group.nodeLocation.district,
+    consignee_addr: group.nodeLocation.addr,
+    consignee_email: group.nodeLocation.email,
+    consignee_contact: group.nodeLocation.contact,
+    consignee_mobile: group.nodeLocation.mobile,
+    deliver_est_date: group.deliverEstDate,
+    transport_mode_code: group.deliverMode.mode_code,
+    transport_mode: group.deliverMode.mode_name,
+    parent_no: shipmtNo,
+    segmented: 0,
+    wheres: {
+      shipmt_no: shipmtNo
+    }
+  };
+  const disp = {
+    shipmt_no: `${sno}-0${idx}`,
+    wheres: {
+      id: dispId
+    }
+  };
+
+  return {shipmt, disp};
+}
+
+function buildConsignerSegment(sno, shipmtNo, dispId, group, idx) {
+  const shipmt = {
+    shipmt_no: `${sno}-0${idx}`,
+    consigner_name: group.nodeLocation.name,
+    consigner_province: group.nodeLocation.province,
+    consigner_city: group.nodeLocation.city,
+    consigner_district: group.nodeLocation.district,
+    consigner_addr: group.nodeLocation.addr,
+    consigner_email: group.nodeLocation.email,
+    consigner_contact: group.nodeLocation.contact,
+    consigner_mobile: group.nodeLocation.mobile,
+    pickup_est_date: group.pickupEstDate,
+    transport_mode_code: group.pickupMode.mode_code,
+    transport_mode: group.pickupMode.mode_name,
+    parent_no: shipmtNo,
+    segmented: 0,
+    wheres: {
+      shipmt_no: shipmtNo
+    }
+  };
+  const disp = {
+    shipmt_no: `${sno}-0${idx}`,
+    wheres: {
+      id: dispId
+    }
+  };
+
+  return {shipmt, disp};
+}
+
+function validGroup(group) {
+  if (!group.nodeLocation || !group.nodeLocation.node_id) {
+    return false;
+  }
+  if (!group.pickupMode || !group.pickupMode.id) {
+    return false;
+  }
+  if (!group.deliverEstDate) {
+    return false;
+  }
+  if (!group.pickupEstDate) {
+    return false;
+  }
+  return true;
+}
+
 function *segmentRequest() {
   const { shipmtNos, segGroupFirst, segGroupSecond } = yield parse(this.req);
+  if (!validGroup(segGroupFirst)) {
+    return Result.ParamError(this, 'segGroupFirst params is not valid');
+  }
+
   const arr = [];
+  const seg = validGroup(segGroupSecond);
 
-  const sno = shipmtNos[0].shipmtNo.substr(0, 29) + '-01';
-  const shipmt = {
-    shipmt_no: sno,
-    wheres: {
-      shipmt_no: shipmtNos[0].shipmtNo
+  shipmtNos.forEach(o => {
+    let sno = o.shipmtNo;
+    if (sno.length > 29) {
+      sno = sno.substr(0, 29);
     }
-  };
-
-  const disp = {
-    shipmt_no: sno,
-    wheres: {
-      id: shipmtNos[0].dispId
+    let idx = 1;
+    let tmp = buildConsigneeSegment(sno, o.shipmtNo, o.dispId, segGroupFirst, idx);
+    arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
+    idx++;
+    tmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupFirst, idx);
+    arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
+    idx++;
+    if (seg) {
+      tmp = buildConsigneeSegment(sno, o.shipmtNo, o.dispId, segGroupSecond, idx);
+      arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
+      idx++;
+      tmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupSecond, idx);
+      arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
     }
-  };
 
-  yield [shipmtDao.copyShipmt(shipmt), shipmtDispDao.copyDisp(disp)];
+    arr.push(shipmtDao.updateShipmt({segmented: 1, wheres: {shipmt_no: o.shipmtNo}}));
+  });
+
+  yield arr;
 
   Result.OK(this);
 }
 
 export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
+  [ 'get', '/v1/transport/dispatch/expandlist', listExpandShipmts ],
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
   [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],

@@ -173,6 +173,10 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.segment',
     defaultMessage: '分段'
   },
+  btnTextSegmentCancel: {
+    id: 'transport.dispatch.btn.text.segmentcancel',
+    defaultMessage: '取消分段'
+  },
   btnTextSend: {
     id: 'transport.dispatch.btn.text.send',
     defaultMessage: '发送'

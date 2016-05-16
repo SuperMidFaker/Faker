@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col, message } from 'ant-ui';
+import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col, message, Alert } from 'ant-ui';
 import moment from 'moment';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import { loadSegRq, segmentRequest } from 'universal/redux/reducers/transportDispatch';
@@ -40,6 +40,7 @@ export default class SegmentDock extends React.Component {
       this.setState({
         segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
         twoable: false,
+        errable: false,
         segGroupFirst: {
           nodeLocation: {},
           deliverEstDate: null,
@@ -62,6 +63,7 @@ export default class SegmentDock extends React.Component {
   state = {
     segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
     twoable: false,
+    errable: false,
     segGroupFirst: {
       nodeLocation: {},
       deliverEstDate: null,
@@ -183,12 +185,36 @@ export default class SegmentDock extends React.Component {
     }
   }
 
+  validGroup(group) {
+    if (!group.nodeLocation || !group.nodeLocation.node_id) {
+      return false;
+    }
+    if (!group.pickupMode || !group.pickupMode.id) {
+      return false;
+    }
+    if (!group.deliverEstDate) {
+      return false;
+    }
+    if (!group.pickupEstDate) {
+      return false;
+    }
+    return true;
+  }
+
   handleSegment= () => {
     const shipmtNos = this.props.shipmts.map(s => {
       return {shipmtNo: s.shipmt_no, dispId: s.key};
     });
 
-    const { segGroupFirst, segGroupSecond } = this.state;
+    const { segGroupFirst, segGroupSecond, twoable } = this.state;
+    if (!this.validGroup(segGroupFirst)) {
+      this.setState({errable: true});
+      return;
+    }
+    if (twoable && !this.validGroup(segGroupSecond)) {
+      this.setState({errable: true});
+      return;
+    }
     this.props.segmentRequest(null, {
       shipmtNos,
       segGroupFirst,
@@ -228,6 +254,10 @@ export default class SegmentDock extends React.Component {
       });
 
       const sg = this.buildSegmentGroup();
+      let err = '';
+      if (this.state.errable) {
+        err = (<Alert message="分段参数错误" type="error" showIcon closable/>);
+      }
 
       dock = (<div className="dock-container" key="dock2">
                 <div className="dock-content" style={{width: 480}}>
@@ -249,6 +279,7 @@ export default class SegmentDock extends React.Component {
                             <Col span="12">交货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
                           </Row>
                           <h3>分段中转</h3>
+                          {err}
                           {sg}
                           {this.state.segments}
                           <div className="segment-btns">
