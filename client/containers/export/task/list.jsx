@@ -233,7 +233,7 @@ export default class ExportTaskSetting extends React.Component {
             </RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body fixed">
+        <div className="page-body">
           <div className="panel-header"></div>
           <div className="panel-body body-responsive">
             <Table columns={columns} loading={loading} dataSource={dataSource}/>

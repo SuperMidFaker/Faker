@@ -404,7 +404,7 @@ export default class ExportDelegate extends React.Component {
             </RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body fixed">
+        <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/export/delegate/new')}>
               <Icon type="plus-circle-o"/>新增报关业务
