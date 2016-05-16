@@ -152,7 +152,7 @@ export default class ExportTracking extends React.Component {
     ];
     return (
       <div className="main-content">
-        <div className="page-header">
+        <div className="page-header fixed">
           <div className="tools">
             <SearchBar placeholder="报关单号/报关业务号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
