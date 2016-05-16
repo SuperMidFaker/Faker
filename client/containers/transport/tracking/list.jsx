@@ -4,14 +4,13 @@ import { Table, Button, Radio, Icon, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'reusable/components/nav-link';
-import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
-import { loadTable } from
+import { loadTransitTable } from
   'universal/redux/reducers/transport-tracking';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'universal/constants';
+import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -25,13 +24,15 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadTable(cookie, {
+  return dispatch(loadTransitTable(cookie, {
     tenantId: state.account.tenantId,
-    filters: JSON.stringify(state.transportAcceptance.table.filters),
-    pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
-    currentPage: state.transportAcceptance.table.shipmentlist.current,
-    sortField: state.transportAcceptance.table.sortField,
-    sortOrder: state.transportAcceptance.table.sortOrder,
+    filters: JSON.stringify(state.transportTracking.transit.filters),
+    pageSize: state.transportTracking.transit.shipmentlist.pageSize,
+    currentPage: state.transportTracking.transit.shipmentlist.current,
+    /*
+    sortField: state.transportTracking.transit.sortField,
+    sortOrder: state.transportTracking.transit.sortOrder,
+   */
   }));
 }
 
@@ -40,13 +41,11 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.transportAcceptance.table.shipmentlist,
-    filters: state.transportAcceptance.table.filters,
-    loading: state.transportAcceptance.table.loading,
-    sortField: state.transportAcceptance.table.sortField,
-    sortOrder: state.transportAcceptance.table.sortOrder,
+    shipmentlist: state.transportTracking.transit.shipmentlist,
+    filters: state.transportTracking.transit.filters,
+    loading: state.transportTracking.transit.loading,
   }),
-  { loadTable, loadShipmtDetail })
+  { loadTransitTable, loadShipmtDetail })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -69,13 +68,13 @@ export default class TrackingList extends React.Component {
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadTable: PropTypes.func.isRequired
+    loadTransitTable: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
   }
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadTable(null, params),
+    fetcher: params => this.props.loadTransitTable(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -113,63 +112,46 @@ export default class TrackingList extends React.Component {
     dataIndex: 'shipmt_no',
     width: 140,
     render: (o, record) => {
-      if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-        return (
-          <a style={{ color : '#999' }} onClick={() => this.handleShipmtPreview(record.shipmt_no)}>
-          {o}
-          </a>
-        );
+      return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+    }
+  }, {
+    title: this.msg('shipmtStatus'),
+    dataIndex: 'status',
+    width: 140,
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return `1 ${this.msg('pendingShipmt')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        return `2 ${this.msg('acceptedShipmt')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        return `3 ${this.msg('dispatchedShipmt')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        return `4 ${this.msg('intransitShipmt')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+        return `5 ${this.msg('deliveredShipmt')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.podsubmit) {
+        return `6 ${this.msg('proofOfDelivery')}`;
       } else {
-        return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+        return <span />;
       }
     }
   }, {
-    title: this.msg('shipRequirement'),
-    dataIndex: 'sr_name',
-    width: 200
+    title: this.msg('shipmtPrevTrack'),
+    dataIndex: 'status',
   }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode',
-    width: 80
+    title: this.msg('shipmtNextUpdate'),
+    render: (/* o, record */) => {
+      return this.msg('carrierUpdate');
+    },
   }, {
-    title: this.msg('shipPickupDate'),
-    dataIndex: 'pickup_est_date',
-    width: 80,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+    title: this.msg('shipmtException'),
+    dataIndex: 'excp_level',
   }, {
-    title: this.msg('shipTransitTime'),
-    dataIndex: 'transit_time',
-    width: 80,
-    render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
+    title: this.msg('shipmtCarrier'),
+    dataIndex: 'sp_name',
   }, {
-    title: this.msg('shipDeliveryDate'),
-    dataIndex: 'deliver_est_date',
-    width: 80,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
-  }, {
-    title: this.msg('shipConsignor'),
-    dataIndex: 'consigner_name',
-    width: 150,
-  }, {
-    title: this.msg('consignorPlace'),
-    width: 150,
-    render: (o, record) => this.renderConsignLoc(record, 'consigner')
-  }, {
-    title: this.msg('consignorAddr'),
-    dataIndex: 'consigner_addr',
-    width: 150,
-  }, {
-    title: this.msg('shipConsignee'),
-    dataIndex: 'consignee_name',
-    width: 150,
-  }, {
-    title: this.msg('consigneePlace'),
-    width: 150,
-    render: (o, record) => this.renderConsignLoc(record, 'consignee')
-  }, {
-    title: this.msg('consigneeAddr'),
-    dataIndex: 'consignee_addr',
-    width: 150,
+    title: this.msg('shipmtVehicle'),
+    dataIndex: 'task_vehicle',
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
@@ -183,32 +165,51 @@ export default class TrackingList extends React.Component {
     dataIndex: 'total_volume',
     width: 150
   }, {
-    title: this.msg('shipSource'),
-    dataIndex: 'source',
-    width: 40,
-    render: (o, record) => {
-      if (record.source === SHIPMENT_SOURCE.consigned) {
-        return this.msg('consginSource');
-      } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
-        return this.msg('subcontractSource');
-      } else {
-        return <span />;
-      }
-    }
+    title: this.msg('shipmtCustomer'),
+    dataIndex: 'customer_name',
+    width: 200
   }, {
-    title: this.msg('shipCreateDate'),
-    dataIndex: 'created_date',
-    sorter: true,
-    render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
+    title: this.msg('departurePlace'),
+    width: 150,
+    render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
-    title: this.msg('shipAcceptTime'),
-    dataIndex: 'acpt_time',
-    sorter: true,
+    title: this.msg('arrivalPlace'),
+    width: 150,
+    render: (o, record) => this.renderConsignLoc(record, 'consignee')
+  }, {
+    title: this.msg('shipmtMode'),
+    dataIndex: 'transport_mode',
+    width: 80
+  }, {
+    title: this.msg('shipmtEstPickupDate'),
+    dataIndex: 'pickup_est_date',
+    width: 80,
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipmtActPickupDate'),
+    dataIndex: 'pickup_act_date',
+    width: 80,
+    render: (o, record) => moment(record.pickup_act_date).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipmtEstDeliveryDate'),
+    dataIndex: 'deliver_est_date',
+    width: 80,
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('shipmtActDeliveryDate'),
+    dataIndex: 'deliver_act_date',
+    width: 80,
+    render: (o, record) => moment(record.deliver_act_date).format('YYYY.MM.DD')
+  }, {
+    title: this.msg('proofOfDelivery'),
+    dataIndex: 'pod_type',
+    /*
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
+    */
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
-    this.props.loadTable(null, {
+    this.props.loadTransitTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
       pageSize: this.props.shipmentlist.pageSize,
@@ -304,33 +305,34 @@ export default class TrackingList extends React.Component {
     if (types.length === 1) {
       radioValue = types[0].value;
     }
-    const columns = this.columns;
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
-            <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
+            <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
+            <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
+            <RadioButton value="dispatched">{this.msg('dispatchedShipmt')}</RadioButton>
+            <RadioButton value="intransit">{this.msg('intransitShipmt')}</RadioButton>
+            <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
           <span style={{marginLeft: '10px'}} />
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
-            <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
-            <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
+            <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
+            <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
+            <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
         </div>
         <div className="page-body fixed">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
-                <Icon type="plus-circle-o" /><span>{formatGlobalMsg(intl, 'createNew')}</span>
+                <Icon type="export" /><span>{formatGlobalMsg(intl, 'export')}</span>
               </Button>
             </NavLink>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 18]} columnsPageSize={3}
             />
           </div>

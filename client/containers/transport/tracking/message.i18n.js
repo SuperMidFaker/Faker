@@ -2,52 +2,40 @@ import { defineMessages } from 'react-intl';
 
 export default defineMessages({
   shipNo: {
-    id: 'transport.acceptance.ship.no',
+    id: 'transport.tracking.shipmt.no',
     defaultMessage: '运单号'
   },
-  shipRequirement: {
-    id: 'transport.acceptance.ship.requirement',
-    defaultMessage: '托运客户'
+  shipmtStatus: {
+    id: 'transport.tracking.shipmt.status',
+    defaultMessage: '当前状态'
   },
-  shipPickupDate: {
-    id: 'transport.acceptance.pickup.date',
-    defaultMessage: '提货日期'
+  shipmtPrevTrack: {
+    id: 'transport.tracking.shipmt.prev.track',
+    defaultMessage: '上一节点时间'
   },
-  shipTransitTime: {
-    id: 'transport.acceptance.ship.transit.time',
-    defaultMessage: '运输时效'
+  shipmtNextUpdate: {
+    id: 'transport.tracking.shipmt.next.update',
+    defaultMessage: '下一节点更新'
   },
-  shipDeliveryDate: {
-    id: 'transport.acceptance.delivery.date',
-    defaultMessage: '送货日期'
+  carrierUpdate: {
+    id: 'transport.tracking.carrier.update',
+    defaultMessage: '承运商更新'
   },
-  shipConsignor: {
-    id: 'transport.acceptance.ship.consignor',
-    defaultMessage: '发货方'
+  driverUpdate: {
+    id: 'transport.tracking.driver.update',
+    defaultMessage: '司机更新'
   },
-  consignorPlace: {
-    id: 'transport.acceptance.consignor.place',
-    defaultMessage: '始发地'
+  shipmtException: {
+    id: 'transport.tracking.shipmt.exception',
+    defaultMessage: '异常'
   },
-  consignorAddr: {
-    id: 'transport.acceptance.consignor.addr',
-    defaultMessage: '发货地址'
+  shipmtCarrier: {
+    id: 'transport.tracking.shipmt.carrier',
+    defaultMessage: '承运商'
   },
-  shipConsignee: {
-    id: 'transport.acceptance.ship.consignee',
-    defaultMessage: '收货方'
-  },
-  consigneePlace: {
-    id: 'transport.acceptance.consignee.place',
-    defaultMessage: '目的地'
-  },
-  consigneeAddr: {
-    id: 'transport.acceptance.consignee.addr',
-    defaultMessage: '收货地址'
-  },
-  shipMode: {
-    id: 'transport.acceptance.shipment.mode',
-    defaultMessage: '运输方式'
+  shipmtVehicle: {
+    id: 'transport.tracking.shipmt.vehicle',
+    defaultMessage: '车辆/司机'
   },
   packageNum: {
     id: 'transport.acceptance.shipment.packageNum',
@@ -61,128 +49,92 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.volume',
     defaultMessage: '体积'
   },
+  shipmtCustomer: {
+    id: 'transport.tracking.shipmt.customer',
+    defaultMessage: '托运客户'
+  },
+  departurePlace: {
+    id: 'transport.tracking.departure.place',
+    defaultMessage: '出发地'
+  },
+  arrivalPlace: {
+    id: 'transport.tracking.arrival.place',
+    defaultMessage: '到达地'
+  },
+  shipmtMode: {
+    id: 'transport.tracking.shipment.mode',
+    defaultMessage: '运输模式'
+  },
+  shipmtEstPickupDate: {
+    id: 'transport.tracking.est.pickup.date',
+    defaultMessage: '预计提货'
+  },
+  shipmtActPickupDate: {
+    id: 'transport.tracking.act.pickup.date',
+    defaultMessage: '实际提货'
+  },
+  shipmtEstDeliveryDate: {
+    id: 'transport.tracking.est.delivery.date',
+    defaultMessage: '预计交货'
+  },
+  shipmtActDeliveryDate: {
+    id: 'transport.tracking.act.delivery.date',
+    defaultMessage: '实际交货'
+  },
+  consignorAddr: {
+    id: 'transport.acceptance.consignor.addr',
+    defaultMessage: '发货地址'
+  },
+  consigneeAddr: {
+    id: 'transport.acceptance.consignee.addr',
+    defaultMessage: '收货地址'
+  },
   shipSource: {
     id: 'transport.acceptance.shipment.source',
     defaultMessage: '来源'
-  },
-  shipCreateDate: {
-    id: 'transport.acceptance.shipment.create.date',
-    defaultMessage: '创建时间'
   },
   shipAcceptTime: {
     id: 'transport.acceptance.shipment.accept.time',
     defaultMessage: '接单时间'
   },
-  searchPlaceholder: {
-    id: 'transport.acceptance.search.placeholder',
-    defaultMessage: '搜索运单号'
+  allShipmt: {
+    id: 'transport.tracking.all.shipment',
+    defaultMessage: '所有'
   },
-  unacceptedShipmt: {
-    id: 'transport.acceptance.shipment.unaccepted',
-    defaultMessage: '未接单'
+  pendingShipmt: {
+    id: 'transport.tracking.pending.shipment',
+    defaultMessage: '待接单'
   },
   acceptedShipmt: {
-    id: 'transport.acceptance.shipment.accepted',
-    defaultMessage: '已接单'
+    id: 'transport.tracking.accepted.shipment',
+    defaultMessage: '待分配'
   },
-  draftShipmt: {
-    id: 'transport.acceptance.shipment.draft',
-    defaultMessage: '草稿'
+  dispatchedShipmt: {
+    id: 'transport.tracking.dispatched.shipment',
+    defaultMessage: '待提货'
   },
-  archivedShipmt: {
-    id: 'transport.acceptance.shipment.archived',
-    defaultMessage: '存档'
+  intransitShipmt: {
+    id: 'transport.tracking.intransit.shipment',
+    defaultMessage: '运输中'
   },
-  newTitle: {
-    id: 'transport.acceptance.shipment.new.title',
-    defaultMessage: '新建运单'
+  deliveredShipmt: {
+    id: 'transport.tracking.delivered.shipment',
+    defaultMessage: '已交货'
   },
-  correlativeInfo: {
-    id: 'transport.acceptance.shipment.correlative',
-    defaultMessage: '关联信息'
+  proofOfDelivery: {
+    id: 'transport.tracking.proof.delivery',
+    defaultMessage: '回单'
   },
-  client: {
-    id: 'transport.acceptance.client',
-    defaultMessage: '客户'
+  uploadedPOD: {
+    id: 'transport.tracking.uploaded.pod',
+    defaultMessage: '待审核回单'
   },
-  clientNameMust: {
-    id: 'transport.acceptance.client.name.must',
-    defaultMessage: '客户名称必填'
+  submittedPOD: {
+    id: 'transport.tracking.submitted.pod',
+    defaultMessage: '已提交回单'
   },
-  lsp: {
-    id: 'transport.acceptance.lsp',
-    defaultMessage: '物流服务商'
+  passedPOD: {
+    id: 'transport.tracking.passed.pod',
+    defaultMessage: '已接受回单'
   },
-  lspNameMust: {
-    id: 'transport.acceptance.lsp.name.must',
-    defaultMessage: '物流服务商名称必填'
-  },
-  refExternalNo: {
-    id: 'transport.acceptance.ref.external',
-    defaultMessage: '外部参考号'
-  },
-  refWaybillNo: {
-    id: 'transport.acceptance.ref.waybill',
-    defaultMessage: '关联提运单号'
-  },
-  refEntryNo: {
-    id: 'transport.acceptance.ref.entryno',
-    defaultMessage: '关联报关单号'
-  },
-  remark: {
-    id: 'transport.acceptance.shipment.remark',
-    defaultMessage: '备注'
-  },
-  freightCharge: {
-    id: 'transport.acceptance.freight.charge',
-    defaultMessage: '运费'
-  },
-  saveAndAccept: {
-    id: 'transport.acceptance.save.accept',
-    defaultMessage: '保存并接单'
-  },
-  saveAsDraft: {
-    id: 'transport.acceptance.save.draft',
-    defaultMessage: '暂存为草稿'
-  },
-  freightChargeMustBeNumber: {
-    id: 'transport.acceptance.freight.charge.be.number',
-    defaultMessage: '运费必须为正数'
-  },
-  formError: {
-    id: 'transport.acceptance.form.error',
-    defaultMessage: '表单存在错误'
-  },
-  day: {
-    id: 'transport.acceptance.day',
-    defaultMessage: '天'
-  },
-  consginSource: {
-    id: 'transport.acceptance.consign.source',
-    defaultMessage: '委托'
-  },
-  subcontractSource: {
-    id: 'transport.acceptance.subcontract.source',
-    defaultMessage: '分包'
-  },
-  shipmtAccept: {
-    id: 'transport.acceptance.shipmt.accept',
-    defaultMessage: '接单'
-  },
-  shipmtRevoke: {
-    id: 'transport.acceptance.shipmt.revoke',
-    defaultMessage: '作废'
-  },
-  shipmtReject: {
-    id: 'transport.acceptance.shipmt.reject',
-    defaultMessage: '退回'
-  },
-  save: {
-    id: 'transport.acceptance.shipmt.save',
-    defaultMessage: '保存'
-  },
-  cancel: {
-    id: 'transport.acceptance.shipmt.cancel',
-    defaultMessage: '取消'
-  }
 });

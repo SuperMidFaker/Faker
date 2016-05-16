@@ -1,12 +1,12 @@
 import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
+const actionTypes = createActionTypes('@@welogix/transport/tracking/', [
   'HIDE_ACCEPT_MODAL', 'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
-  'LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
+  'LOAD_SHIPMT', 'LOAD_SHIPMT_FAIL', 'LOAD_SHIPMT_SUCCEED',
   'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
   'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
   'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
@@ -15,15 +15,17 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
 
 const initialState = {
   submitting: false,
-  table: {
+  transit: {
     loaded: false,
     loading: false,
     filters: [
-      { name: 'type', value : 'unaccepted' },
+      { name: 'type', value : 'all' },
       /* { name: 'shipmt_no', value: ''} */
     ],
+    /*
     sortField: 'created_date',
     sortOrder: 'desc',
+   */
     shipmentlist: {
       totalCount: 0,
       pageSize: 10,
@@ -31,27 +33,19 @@ const initialState = {
       data: [],
     }
   },
-  acceptModal: {
-    visible: false,
-    dispatchId: -1,
-    dispatchers: [],
-  },
-  revokejectModal: {
-    type: '',
-    visible: false,
-    dispId: -1,
+  pod: {
+    loaded: false,
   },
 };
 
-export const LOAD_APTSHIPMENT_SUCCEED = actionTypes.LOAD_APTSHIPMENT_SUCCEED;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_APTSHIPMENT:
+    case actionTypes.LOAD_SHIPMT:
       return { ...state, table: { ...state.table, loading: true,
     }};
-    case actionTypes.LOAD_APTSHIPMENT_FAIL:
+    case actionTypes.LOAD_SHIPMT_FAIL:
       return { ...state, table: { ...state.table, loading: false }};
-    case actionTypes.LOAD_APTSHIPMENT_SUCCEED:
+    case actionTypes.LOAD_SHIPMT_SUCCEED:
       return { ...state, table: { ...state.table, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
@@ -109,15 +103,15 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadTable(cookie, params) {
+export function loadTransitTable(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_APTSHIPMENT,
-        actionTypes.LOAD_APTSHIPMENT_SUCCEED,
-        actionTypes.LOAD_APTSHIPMENT_FAIL,
+        actionTypes.LOAD_SHIPMT,
+        actionTypes.LOAD_SHIPMT_SUCCEED,
+        actionTypes.LOAD_SHIPMT_FAIL,
       ],
-      endpoint: 'v1/transport/shipments',
+      endpoint: 'v1/transport/tracking/shipmts',
       method: 'get',
       params,
       cookie

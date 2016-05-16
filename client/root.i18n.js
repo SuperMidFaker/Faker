@@ -49,6 +49,10 @@ const messages = defineMessages({
     id: 'root.createNew',
     defaultMessage: '新建'
   },
+  export: {
+    id: 'root.export',
+    defaultMessage: '导出'
+  },
   save: {
     id: 'root.save',
     defaultMessage: '保存'

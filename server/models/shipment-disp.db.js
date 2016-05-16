@@ -85,7 +85,17 @@ function genDispFilters(filter) {
   return arr.join('');
 }
 
-
+function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
+  let clause = '';
+  for (let i = 0; i < filters.length; i++) {
+    const flt = filters[i];
+    if (flt.name === 'shipmt_no') {
+      clause = `${clause} and ${aliasS}.shipmt_no like ?`;
+      args.push(flt.value);
+    }
+  }
+  return clause;
+}
 
 /**
  *
@@ -259,6 +269,14 @@ export default {
     const args = [shipmtInfo.shipmt_no];
     return mysql.update(sql, args, trans);
   },
+  getTrackingCount(tenantId, filters) {
+    const args = [ tenantId ];
+    const filters = getTrackingShipmtClause(filters, 'S', 'SD', args);
+    const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
+      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?`;
+    return mysql.query(sql, args);
+  },
+  // getTrackingShipments
   createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
     const sql = `insert into tms_shipment_manifest(name, goods_no, package,
       length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,
