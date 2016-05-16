@@ -9,16 +9,17 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
    'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
    'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
-   'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL']);
+   'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
+   'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED']);
 
 const initialState = {
   loaded: false,
   loading: false,
   filters: {
     status: 'waiting',
-    type: 'subline',
-    typeConsignorStep: 20,
-    typeConsigneeStep: 20
+    segmented: 0,
+    merged: 0,
+    origin: 0
   },
   shipmentlist: {
     totalCount: 0,
@@ -26,6 +27,7 @@ const initialState = {
     current: 1,
     data: [],
   },
+  expandList: {},
   lsps: {
     totalCount: 0,
     pageSize: 10,
@@ -200,6 +202,22 @@ export function segmentRequest(cookie, params) {
         actionTypes.SEGMENT_FAIL,
       ],
       endpoint: 'v1/transport/dispatch/segment',
+      method: 'post',
+      data: params,
+      cookie
+    }
+  };
+}
+
+export function loadExpandList(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEGMENT,
+        actionTypes.SEGMENT_SUCCEED,
+        actionTypes.SEGMENT_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/expandlist',
       method: 'post',
       data: params,
       cookie
