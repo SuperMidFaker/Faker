@@ -315,7 +315,7 @@ export default class PersonnelSetting extends React.Component {
     }];
     return (
       <div className="main-content">
-        <div className="page-header">
+        <div className="page-header fixed">
           <div className="tools">
             <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
