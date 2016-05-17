@@ -1,5 +1,6 @@
 import mysql from '../../reusable/db-util/mysql';
 import Orm from '../../reusable/db-util/orm';
+import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
 
 const dispCols = [
   'id/a',
@@ -105,6 +106,21 @@ function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
     if (flt.name === 'shipmt_no') {
       clause = `${clause} and ${aliasS}.shipmt_no like ?`;
       args.push(flt.value);
+    }
+    if (flt.name === 'type' && flt.value !== 'all') {
+      clause = `${clause} and ${aliasSD}.status = ?`;
+      const targetVal = flt.value;
+      if (targetVal === 'pending') {
+        args.push(SHIPMENT_TRACK_STATUS.unaccepted);
+      } else if (targetVal === 'accepted') {
+        args.push(SHIPMENT_TRACK_STATUS.undispatched);
+      } else if (targetVal === 'dispatched') {
+        args.push(SHIPMENT_TRACK_STATUS.undelivered);
+      } else if (targetVal === 'intransit') {
+        args.push(SHIPMENT_TRACK_STATUS.intransit);
+      } else {
+        args.push(SHIPMENT_TRACK_STATUS.delivered);
+      }
     }
   }
   return clause;
@@ -287,12 +303,27 @@ export default {
   },
   getTrackingCount(tenantId, filters) {
     const args = [ tenantId ];
-    const filters = getTrackingShipmtClause(filters, 'S', 'SD', args);
+    const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
     const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
-      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?`;
+      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
+      and effective = 1 ${whereCond}`;
     return mysql.query(sql, args);
   },
-  // getTrackingShipments
+  getTrackingShipments(tenantId, filters, pageSize, current) {
+    const args = [ tenantId ];
+    const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
+    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
+      customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
+      consigner_province, consigner_city, consignee_province, consignee_city,
+      pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight, total_volume,
+      sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time, pickup_act_date,
+      deliver_act_date, pod_recv_date, pod_acpt_date, excp_level, excp_last_event,
+      pod_id, pod_type,
+      pod_status, task_vehicle, disp_status, status from tms_shipment_dispatch as SD inner join
+      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
+      ${whereCond}`;
+    return mysql.query(sql, args);
+  },
   createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
     const sql = `insert into tms_shipment_manifest(name, goods_no, package,
       length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,

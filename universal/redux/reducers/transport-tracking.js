@@ -41,12 +41,11 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_SHIPMT:
-      return { ...state, table: { ...state.table, loading: true,
-    }};
+      return { ...state, transit: { ...state.transit, loading: true, }};
     case actionTypes.LOAD_SHIPMT_FAIL:
-      return { ...state, table: { ...state.table, loading: false }};
+      return { ...state, transit: { ...state.transit, loading: false }};
     case actionTypes.LOAD_SHIPMT_SUCCEED:
-      return { ...state, table: { ...state.table, loading: false,
+      return { ...state, transit: { ...state.transit, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
     }};

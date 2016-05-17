@@ -25,6 +25,22 @@ export default defineMessages({
     id: 'transport.tracking.driver.update',
     defaultMessage: '司机更新'
   },
+  updateVehicleDriver: {
+    id: 'transport.tracking.update.drivervehicle',
+    defaultMessage: '更新车辆司机'
+  },
+  updatePickup: {
+    id: 'transport.tracking.update.pickup',
+    defaultMessage: '更新提货'
+  },
+  updateDelivery: {
+    id: 'transport.tracking.update.delivery',
+    defaultMessage: '更新交货'
+  },
+  submitPod: {
+    id: 'transport.tracking.submit.pod',
+    defaultMessage: '提交回单'
+  },
   shipmtException: {
     id: 'transport.tracking.shipmt.exception',
     defaultMessage: '异常'
@@ -81,22 +97,6 @@ export default defineMessages({
     id: 'transport.tracking.act.delivery.date',
     defaultMessage: '实际交货'
   },
-  consignorAddr: {
-    id: 'transport.acceptance.consignor.addr',
-    defaultMessage: '发货地址'
-  },
-  consigneeAddr: {
-    id: 'transport.acceptance.consignee.addr',
-    defaultMessage: '收货地址'
-  },
-  shipSource: {
-    id: 'transport.acceptance.shipment.source',
-    defaultMessage: '来源'
-  },
-  shipAcceptTime: {
-    id: 'transport.acceptance.shipment.accept.time',
-    defaultMessage: '接单时间'
-  },
   allShipmt: {
     id: 'transport.tracking.all.shipment',
     defaultMessage: '所有'
@@ -136,5 +136,33 @@ export default defineMessages({
   passedPOD: {
     id: 'transport.tracking.passed.pod',
     defaultMessage: '已接受回单'
+  },
+  sendAction: {
+    id: 'transport.tracking.action.send',
+    defaultMessage: '发送'
+  },
+  acceptAction: {
+    id: 'transport.tracking.action.accept',
+    defaultMessage: '接单'
+  },
+  dispatchAction: {
+    id: 'transport.tracking.action.dispatch',
+    defaultMessage: '分配'
+  },
+  pickupAction: {
+    id: 'transport.tracking.action.pickup',
+    defaultMessage: '提货'
+  },
+  deliverAction: {
+    id: 'transport.tracking.action.deliver',
+    defaultMessage: '交货'
+  },
+  podUploadAction: {
+    id: 'transport.tracking.action.pod.upload',
+    defaultMessage: '上传'
+  },
+  ownFleet: {
+    id: 'transport.tracking.own.fleet',
+    defaultMessage: '我的车队'
   },
 });

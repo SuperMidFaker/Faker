@@ -238,6 +238,15 @@ const SHIPMENT_TRACK_STATUS = {
   podaccept: 7,
 };
 
+const SHIPMENT_POD_STATUS = {
+  unrequired: 0,
+  pending: 1,
+  rejectByUs: -1,
+  acceptByUs: 2,
+  rejectByClient: -2,
+  acceptByClient: 3,
+};
+
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
@@ -266,4 +275,5 @@ export {
   SHIPMENT_SOURCE,
   SHIPMENT_DISPATCH_STATUS,
   SHIPMENT_TRACK_STATUS,
+  SHIPMENT_POD_STATUS,
 };

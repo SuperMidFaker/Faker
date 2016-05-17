@@ -6,17 +6,17 @@ import mysql from '../../reusable/db-util/mysql';
 import Result from '../../reusable/node-util/response-result';
 
 function *trackingShipmtListG() {
-  const tenantId = this.request.query.tenantId;
+  const tenantId = parseInt(this.request.query.tenantId, 10);
   const filters = JSON.parse(this.request.query.filters);
-  const pageSize = this.request.query.pageSize;
-  const current = this.request.query.currentPage;
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
   try {
     const totalCounts = yield shipmentDispDao.getTrackingCount(tenantId, filters);
     const shipments = yield shipmentDispDao.getTrackingShipments(
       tenantId, filters, pageSize, current
     );
     return Result.OK(this, {
-      count: totalCounts[0].count,
+      totalCount: totalCounts[0].count,
       pageSize,
       current,
       data: shipments

@@ -10,7 +10,7 @@ import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
 import { loadTransitTable } from
   'universal/redux/reducers/transport-tracking';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'universal/constants';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -63,8 +63,10 @@ export default class TrackingList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     filters: PropTypes.array.isRequired,
+    /*
     sortField: PropTypes.string.isRequired,
     sortOrder: PropTypes.string.isRequired,
+   */
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
@@ -137,11 +139,69 @@ export default class TrackingList extends React.Component {
     }
   }, {
     title: this.msg('shipmtPrevTrack'),
-    dataIndex: 'status',
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return `${this.msg('sendAction')}
+        ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        return `${this.msg('acceptAction')}
+        ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        return `${this.msg('dispatchAction')}
+        ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        return `${this.msg('pickupAction')}
+        ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+        return `${this.msg('deliverAction')}
+        ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.podsubmit) {
+        return `${this.msg('podUploadAction')}
+        ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: this.msg('shipmtNextUpdate'),
-    render: (/* o, record */) => {
-      return this.msg('carrierUpdate');
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return this.msg('carrierUpdate');
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        if (record.sp_tenant_id === -1) {
+          // 线下客户手动更新
+          return <a>{this.msg('updateVehicleDriver')}</a>;
+        } else {
+          return this.msg('carrierUpdate');
+        }
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        if (record.sp_tenant_id === -1) {
+          return <a>{this.msg('updatePickup')}</a>;
+        } else if (record.sp_tenant_id === 0) {
+          // 已分配给车队
+          return this.msg('driverUpdate');
+        } else {
+          return this.msg('carrierUpdate');
+        }
+      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        if (record.sp_tenant_id === -1) {
+          return <a>{this.msg('updateDelivery')}</a>;
+        } else if (record.sp_tenant_id === 0) {
+          return this.msg('driverUpdate');
+        } else {
+          return this.msg('carrierUpdate');
+        }
+      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+        if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
+          return <span />;
+        } else if (record.sp_tenant_id === -1) {
+          return <a>{this.msg('submitPod')}</a>;
+        } else if (record.sp_tenant_id === 0) {
+          return this.msg('driverUpdate');
+        } else {
+          return this.msg('carrierUpdate');
+        }
+      } else {
+        return this.msg('carrierUpdate');
+      }
     },
   }, {
     title: this.msg('shipmtException'),
@@ -149,6 +209,29 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('shipmtCarrier'),
     dataIndex: 'sp_name',
+    render: (o, record) => {
+      if (record.sp_name) {
+        if (record.sp_tenant_id > 0) {
+          return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-green" />
+              {record.sp_name}
+            </span>
+          );
+        } else if (record.sp_tenant_id === -1) {
+          return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-grey" />
+              {record.sp_name}
+            </span>
+          );
+        } else {
+          return record.sp_name;
+        }
+      } else {
+        return this.msg('ownFleet');
+      }
+    }
   }, {
     title: this.msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
@@ -189,7 +272,11 @@ export default class TrackingList extends React.Component {
     title: this.msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
     width: 80,
-    render: (o, record) => moment(record.pickup_act_date).format('YYYY.MM.DD')
+    render: (o, record) => record.pickup_act_date ?
+      (<span className="mdc-text-green">
+      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
+      </span>
+      ) : <span />
   }, {
     title: this.msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -199,23 +286,34 @@ export default class TrackingList extends React.Component {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 80,
-    render: (o, record) => moment(record.deliver_act_date).format('YYYY.MM.DD')
+    render: (o, record) => record.deliver_act_date ?
+      (<span className="mdc-text-green">
+      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
+      </span>
+      ) : <span />
   }, {
     title: this.msg('proofOfDelivery'),
     dataIndex: 'pod_type',
-    /*
-    render: (text, record) => record.acpt_time ?
-     moment(record.acpt_time).format('YYYY.MM.DD') : ' '
-    */
+    render: (text, record) => {
+      if (record.pod_type === 'none') {
+        return <Icon type="tags-o" />;
+      } else if (record.pod_type === 'dreceipt') {
+        return <Icon type="tags" />;
+      } else {
+        return <Icon type="qrcode" />;
+      }
+    }
   }]
-  handleTableLoad = (filters, current, sortField, sortOrder) => {
+  handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
     this.props.loadTransitTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
       pageSize: this.props.shipmentlist.pageSize,
       currentPage: current || this.props.shipmentlist.current,
+      /*
       sortField: sortField || this.props.sortField,
       sortOrder: sortOrder || this.props.sortOrder,
+     */
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -224,10 +322,6 @@ export default class TrackingList extends React.Component {
   }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
-    this.handleTableLoad(filters, 1);
   }
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
@@ -268,27 +362,14 @@ export default class TrackingList extends React.Component {
   renderConsignLoc(shipmt, field) {
     const province = `${field}_province`;
     const city = `${field}_city`;
-    const county = `${field}_district`;
     const names = [];
-    if (shipmt[city] && (shipmt[city] === '市辖区' || shipmt[city] === '县')) {
-      if (shipmt[province]) {
-        names.push(shipmt[province]);
-      }
-      if (shipmt[county]) {
-        names.push(shipmt[county]);
-      }
-      return names.join('-');
-    } else if (shipmt[county] && (shipmt[county] === '市辖区' || shipmt[county] === '县')) {
-      return shipmt[city] || '';
-    } else {
-      if (shipmt[city]) {
-        names.push(shipmt[city]);
-      }
-      if (shipmt[county]) {
-        names.push(shipmt[county]);
-      }
-      return names.join('-');
+    if (shipmt[province]) {
+      names.push(shipmt[province]);
     }
+    if (shipmt[city] && !(shipmt[city] === '市辖区' || shipmt[city] === '县')) {
+      names.push(shipmt[city]);
+    }
+    return names.join('-');
   }
 
   render() {
