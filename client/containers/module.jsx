@@ -4,11 +4,12 @@ import { setNavTitle } from '../../universal/redux/reducers/navbar';
 import connectNav from '../../reusable/decorators/connect-nav';
 import { DEFAULT_MODULES } from '../../universal/constants';
 
-@connectNav((props, dispatch/* , router, lifecycle */) => {
-  // if (lifecycle !== 'componentDidMount') {
-  //   return;
-  // }
-  const moduleUrl = props.location.pathname.split('/')[1];
+@connectNav((props, dispatch) => {
+  let pathname = props.location.pathname;
+  if (pathname[0] !== '/') {
+    pathname = `/${pathname}`;
+  }
+  const moduleUrl = pathname.split('/')[1];
   let text;
   let moduleName;
   Object.keys(DEFAULT_MODULES).forEach(mod => {

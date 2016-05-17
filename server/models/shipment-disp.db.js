@@ -279,9 +279,18 @@ export default {
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
-  getShipmtDispInfo(shipmtNo) {
-    const sql = 'select source, status from tms_shipment_dispatch where shipmt_no = ?';
+  getShipmtDispInfo(shipmtNo, tenantId, sourceType) {
     const args = [shipmtNo];
+    let tenantClause = '';
+    if (tenantId && sourceType) {
+      if (sourceType === 'sr') {
+        tenantClause = 'and sr_tenant_id = ?';
+      } else if (sourceType === 'sp') {
+        tenantClause = 'and sp_tenant_id = ?';
+      }
+      args.push(tenantId);
+    }
+    const sql = `select source, status from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
   },
   updateShipmtWithInfo(shipmtInfo, trans) {

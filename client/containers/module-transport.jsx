@@ -100,6 +100,7 @@ export default class Transport extends React.Component {
       <div className="am-content">
         <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
         {this.props.children}
-      </div>);
+      </div>
+    );
   }
 }

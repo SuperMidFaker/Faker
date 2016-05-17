@@ -170,7 +170,7 @@ export default class PreviewPanel extends React.Component {
           </Col>
           <Col span="8">
             <PaneFormItem labelCol={{ span: 6, offset: 1 }} label={this.msg('vehicleLength')}
-              field={ shipmt.vehicle_length } fieldCol={{ span: 17 }}
+              field={shipmt.vehicle_length} fieldCol={{ span: 17 }}
             />
           </Col>
           <Col span="24">

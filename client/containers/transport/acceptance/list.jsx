@@ -258,7 +258,7 @@ export default class AcceptList extends React.Component {
     this.props.revokeOrReject('reject', dispId);
   }
   handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo).then(result => {
+    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }

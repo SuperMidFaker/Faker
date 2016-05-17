@@ -333,17 +333,8 @@ export default class TrackingList extends React.Component {
     }
     this.handleTableLoad(filterArray, 1, sortField, sortOrder);
   }
-  handleShipmtAccept(dispId) {
-    this.props.loadAcceptDispatchers(
-      this.props.tenantId, dispId
-    ).then(result => {
-      if (result.error) {
-        message.error(result.error.message);
-      }
-    });
-  }
   handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo).then(result => {
+    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
