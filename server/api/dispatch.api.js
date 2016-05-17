@@ -331,7 +331,7 @@ function *segmentCancelRequest() {
 function *segmentCancelCheck() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const shipmtNo = this.request.query.shipmtNo;
-  const [ res ] = yield shipmtDispDao.countShipmtSubdisp(tenantId, shipmtNo);
+  let [ res ] = yield shipmtDispDao.countShipmtSubdisp(tenantId, shipmtNo);
   if (!res) {
     res = {count: 0};
   }
