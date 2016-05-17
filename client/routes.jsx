@@ -34,6 +34,7 @@ import TMSDashboard from './containers/transport/dashboard';
 import * as TMSAcceptance from './containers/transport/acceptance';
 import * as TMSDispatch from './containers/transport/dispatch';
 import * as TMSTracking from './containers/transport/tracking';
+import * as TMSResources from './containers/transport/resources';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
@@ -165,6 +166,13 @@ export default(store, cookie) => {
             </Route>
             <Route path="tracking">
               <IndexRoute component={TMSTracking.List}/>
+            </Route>
+            <Route path="resources">
+              <IndexRoute component={TMSResources.MainContainer} />
+              <Route path="add_car" component={TMSResources.CarFormContainer} />
+              <Route path="edit_car/:car_id" component={TMSResources.CarFormContainer} />
+              <Route path="add_driver" component={TMSResources.DriverFormContainer} />
+              <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
             </Route>
           </Route>
         </Route>
