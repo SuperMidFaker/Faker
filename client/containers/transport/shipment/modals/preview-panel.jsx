@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs/* , message */ } from 'ant-ui';
+import { Button, Icon, Tabs, Tag/* , message */ } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
@@ -54,7 +54,7 @@ export default class PreviewPanel extends React.Component {
         <div className="activity-panel">
           <div className="header">
             <span className="title">{shipmtNo}</span>
-            <span className="status">{this.msg(getTrackStatusMsg(status))}</span>
+            <Tag color="blue">{this.msg(getTrackStatusMsg(status))}</Tag>
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline"><Icon type="export" /></Button>
               <Button type="ghost" shape="circle-outline"><Icon type="share-alt" /></Button>
