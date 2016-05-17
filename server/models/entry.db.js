@@ -28,6 +28,6 @@ export default {
     return entryHead.replaceObj(head);
   },
   getEntryLogs(ids) {
-    return entryLog.selectObjs({entry_id: ids});
+    return entryLog.selectObjs({wheres:{entry_id: ids}});
   }
 };

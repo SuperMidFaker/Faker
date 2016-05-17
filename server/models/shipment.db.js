@@ -52,6 +52,7 @@ const cols = ['shipmt_no/v',
   'created_date/dtt'];
 
 const shipmtOrm = new Orm(cols, 'tms_shipments');
+shipmtOrm.asalias = 'S';
 
 function packShipmentArgsByLSP(shipmt, args) {
   const columns = [
@@ -96,6 +97,7 @@ function packGoodsArgs(goods) {
 }
 
 export default {
+  shipmentOrm: shipmtOrm,
   *genShipmtNoAsync(tenantId) {
     // 3位企业tms代号 + 2位年份 + 6位序号(前面补0)
     const buf = new Buffer(3+2+6);
@@ -228,5 +230,8 @@ export default {
   },
   updateShipmt(shipmt) {
     return shipmtOrm.updateObj(shipmt);
+  },
+  deleteShipmt(shipmt) {
+    return shipmtOrm.deleteObj(shipmt);
   }
 };
