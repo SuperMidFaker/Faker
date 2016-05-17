@@ -38,6 +38,7 @@ import {isLoaded} from '../reusable/common/redux-actions';
 import * as ExportTask from './containers/export/task';
 import * as ImportTracking from './containers/import/tracking';
 import * as ExportTracking from './containers/export/tracking';
+import * as TMSResources from './containers/transport/resources';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -161,6 +162,13 @@ export default(store, cookie) => {
             </Route>
             <Route path="dispatch">
               <IndexRoute component={TMSDispatch.List}/>
+            </Route>
+            <Route path="resources">
+              <IndexRoute component={TMSResources.MainContainer} />
+              <Route path="add_car" component={TMSResources.CarFormContainer} />
+              <Route path="edit_car/:car_id" component={TMSResources.CarFormContainer} />
+              <Route path="add_driver" component={TMSResources.DriverFormContainer} />
+              <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
             </Route>
           </Route>
         </Route>
