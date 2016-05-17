@@ -381,7 +381,7 @@ export default class ImportDelegate extends React.Component {
     ];
     return (
       <div className="main-content">
-        <div className="page-header">
+        <div className="page-header fixed">
           <div className="tools">
             <SearchBar placeholder="提运单号/报关业务号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
@@ -404,7 +404,7 @@ export default class ImportDelegate extends React.Component {
             </RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
+        <div className="page-body fixed">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
               <Icon type="plus-circle-o"/>新增报关业务

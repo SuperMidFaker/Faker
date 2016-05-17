@@ -26,10 +26,13 @@ const dispCols = [
   'log_last_date/dt',
   'excp_level/v',
   'excp_last_event/v',
+  'pod_id/i',
   'pod_type/v',
   'pod_status/v',
   'task_id/i',
   'task_vehicle/v',
+  'task_driver_id/i',
+  'task_driver_name/v',
   'disp_status/i',
   'status/i',
   'freight_charge/f',
@@ -73,14 +76,24 @@ function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, 
   return `${disp} ${shno}`;
 }
 
-function genDispFilters(filter) {
+function genDispFilters(filter, args) {
   const arr = [];
   if (filter.status === 'waiting') {
     arr.push(' SD.sp_tenant_id = ? and SD.status = 2 and SD.disp_status = 1 ');
   } else if (filter.status === 'dispatching') {
-    arr.push('SD.sr_tenant_id = ? and SD.status = 1 and SD.disp_status = 0 ');
+    arr.push(' SD.sr_tenant_id = ? and SD.status = 1 and SD.disp_status = 0 ');
   } else if (filter.status === 'dispatched') {
-    arr.push('SD.sr_tenant_id = ? and SD.disp_status = 1 ');
+    arr.push(' SD.sr_tenant_id = ? and SD.disp_status = 1 ');
+  }
+  if (filter.origin) {
+    arr.push(' and parent_no is null ');
+  } else {
+    Object.keys(filter).forEach(key => {
+      if (key !== 'status' && key !== 'origin') {
+        arr.push(' and ', key, '=?');
+        args.push(filter[key]);
+      }
+    });
   }
   return arr.join('');
 }
@@ -186,7 +199,7 @@ export default {
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
-      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id from tms_shipments as S
+      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented from tms_shipments as S
       right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
       where ${awhere} limit ?, ?`;
     return mysql.query(sql, args);
@@ -240,6 +253,9 @@ export default {
   },
   deleteDisp(disp, trans) {
     return dispOrm.deleteObj(disp, trans);
+  },
+  copyDisp(disp) {
+    return dispOrm.copyWithObj(disp);
   },
   getShipmtWithNo(shipmtNo) {
     const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch

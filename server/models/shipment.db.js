@@ -1,4 +1,57 @@
 import mysql from '../../reusable/db-util/mysql';
+import Orm from '../../reusable/db-util/orm';
+
+const cols = ['shipmt_no/v',
+  'parent_no/v',
+  'disp_id/i',
+  'ref_external_no/v',
+  'ref_waybill_no/v',
+  'ref_entry_no/v',
+  'customer_tenant_id/i',
+  'customer_name/v',
+  'lsp_tenant_id/i',
+  'lsp_name/v',
+  'consigner_name/v',
+  'consigner_province/v',
+  'consigner_city/v',
+  'consigner_district/v',
+  'consigner_addr/v',
+  'consigner_email/v',
+  'consigner_contact/v',
+  'consigner_mobile/v',
+  'consignee_name/v',
+  'consignee_province/v',
+  'consignee_city/v',
+  'consignee_district/v',
+  'consignee_addr/v',
+  'consignee_email/v',
+  'consignee_contact/v',
+  'consignee_mobile/v',
+  'pickup_est_date/dtt',
+  'transit_time/i',
+  'deliver_est_date/dtt',
+  'transport_mode_code/v',
+  'transport_mode/v',
+  'bol_no/v',
+  'container_no/v',
+  'vehicle_type/i',
+  'vehicle_length/i',
+  'package/v',
+  'goods_type/i',
+  'insure_value/e',
+  'total_count/f',
+  'total_weight/f',
+  'total_volume/f',
+  'remark/v',
+  'source/v',
+  'segmented/i',
+  'merged/i',
+  'effective/i',
+  'tenant_id/i',
+  'creater_login_id/i',
+  'created_date/dtt'];
+
+const shipmtOrm = new Orm(cols, 'tms_shipments');
 
 function packShipmentArgsByLSP(shipmt, args) {
   const columns = [
@@ -170,4 +223,10 @@ export default {
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
+  copyShipmt(shipmt) {
+    return shipmtOrm.copyWithObj(shipmt);
+  },
+  updateShipmt(shipmt) {
+    return shipmtOrm.updateObj(shipmt);
+  }
 };

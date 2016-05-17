@@ -216,7 +216,7 @@ export default class ExportTaskSetting extends React.Component {
     ];
     return (
       <div className="main-content">
-        <div className="page-header">
+        <div className="page-header fixed">
           <div className="tools">
             <SearchBar placeholder="业务单号/发票号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
             <a className="hidden-xs" role="button">高级搜索</a>
