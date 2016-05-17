@@ -59,7 +59,7 @@ const columns = [
     key: 'operations',
     render: (_, record) => (
       <span>
-        <Link to={`/edit_driver/${record.id}`}>修改</Link>
+        <Link to={`/transport/resources/edit_driver/${record.driver_id}`}>修改</Link>
       </span>
     )
   }
@@ -70,7 +70,7 @@ const rowSelection = {
   }
 };
 
-export default function DriverList(props) {
+function DriverList(props) {
   const { dataSource, onAddDriverBtnClicked } = props;
   return (
     <div>
@@ -86,3 +86,5 @@ DriverList.propTyps = {
   dataSource: PropTypes.array,
   onAddDriverBtnClicked: PropTypes.func.isRequired, // 点击新建司机按钮后执行的回调函数
 };
+
+export default DriverList;

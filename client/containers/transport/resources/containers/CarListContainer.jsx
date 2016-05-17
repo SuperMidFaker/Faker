@@ -2,8 +2,15 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import CarList from '../components/CarList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
+import { loadCarList } from '../../../../../universal/redux/reducers/transportResources';
+import connectFetch from 'reusable/decorators/connect-fetch';
 
-@connect(state => ({cars: state.cars || []}))
+function fetchData({dispatch}) {
+  return dispatch(loadCarList());
+}
+
+@connectFetch()(fetchData)
+@connect(state => ({cars: state.transportResources.cars || []}))
 export default class CarListContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,   // 服务器返回的车辆数组

@@ -23,11 +23,14 @@ const lengthTypes = {
   '2': 5.2
 };
 
+const vpropertyTypes = {
+  '0': '司机自有车辆',
+  '1': '公司车辆'
+};
+
 export function transformRawCarDataToDisplayData(car) {
   const displayData = Object.assign({}, car);
 
-  // map the driver_id to driver name
-  // displayData.driver = drivers.find(driver => driver.id === car.driver_id).name;
   // map status code such as 0, 1 to status test
   displayData.status = displayData.status ? statusTexts[displayData.status] : statusTexts[0];
   // map connect_type code to connect_type text
@@ -36,6 +39,10 @@ export function transformRawCarDataToDisplayData(car) {
   displayData.type = carTypes[displayData.type];
   // map car length code to length text
   displayData.length = lengthTypes[displayData.length];
+  // map vpropetry code to text
+  displayData.vproperty = vpropertyTypes[displayData.vproperty];
+  // add `key` unique props
+  displayData.key = displayData.vehicle_id;
 
   return displayData;
 }

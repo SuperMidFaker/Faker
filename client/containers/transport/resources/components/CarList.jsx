@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
 import { Button, Table } from 'ant-ui';
 import { Link } from 'react-router';
-import { store } from '../index';
 
 function editAndStopCarOperations(record) {
   return (
     <span>
-      <Link to={`/edit_car/${record.id}`}>修改</Link>
+      <Link to={`/transport/resources/edit_car/${record.vehicle_id}`}>修改</Link>
       <span className="ant-divider"></span>
       <a href=""
-         onClick={ () => store.dispatch({type: 'STOP_CAR', carId: record.id}) }
+         // onClick={ () => store.dispatch({type: 'STOP_CAR', carId: record.vehicle_id}) }
          disabled={record.status === '在途中'}>
         停用
       </a>
@@ -17,10 +16,14 @@ function editAndStopCarOperations(record) {
   );
 }
 
-function resumeCarOperaions(record) {
+function resumeCarOperaions() {
   return (
     <span>
-      <a href="" onClick={ () => store.dispatch({type: 'RESUME_CAR', carId: record.id}) }>启用</a>
+      <a href=""
+         // onClick={ () => store.dispatch({type: 'RESUME_CAR', carId: record.vehicle_id})}
+      >
+        启用
+      </a>
     </span>
   );
 }
@@ -28,7 +31,7 @@ function resumeCarOperaions(record) {
 const columns = [
   {
     title: '车牌号',
-    dataIndex: 'plaste_number',
+    dataIndex: 'plate_number',
     key: 'plaste_number',
   },
   {

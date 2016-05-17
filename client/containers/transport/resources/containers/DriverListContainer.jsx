@@ -1,8 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DriverList from '../components/DriverList.jsx';
+import connectFetch from 'reusable/decorators/connect-fetch';
+import { loadDriverList } from '../../../../../universal/redux/reducers/transportResources';
 
-@connect(state => ({drivers: state.drivers || []}))
+function fetchData({dispatch}) {
+  return dispatch(loadDriverList());
+}
+
+@connectFetch()(fetchData)
+@connect(state => ({drivers: state.transportResources.drivers}))
 export default class DriverListContainer extends Component {
   static propTypes = {
     drivers: PropTypes.array.isRequired, // 服务器返回的司机数组

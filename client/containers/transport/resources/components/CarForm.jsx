@@ -21,13 +21,13 @@ export default class CarForm extends Component {
     const { mode, form, drivers, onSubmitBtnClicked } = this.props;
     const getFieldProps = form.getFieldProps;
     const driversOptions = drivers ? drivers.map(driver =>
-      <Option value={driver.id} key={driver.id}>{driver.name}</Option>
+      <Option value={driver.driver_id} key={driver.driver_id}>{driver.name}</Option>
     ) : '';
 
     return (
       <Form horizontal onSubmit={onSubmitBtnClicked}>
         <FormItem label="车牌号:" required {...formItemLayout}>
-          <Input {...getFieldProps('plaste_number')} required disabled={mode === 'edit'}/>
+          <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'}/>
         </FormItem>
         <FormItem label="挂车牌号:" {...formItemLayout}>
           <Input {...getFieldProps('trailer_number')}/>
