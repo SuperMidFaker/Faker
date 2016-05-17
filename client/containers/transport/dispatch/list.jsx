@@ -178,7 +178,7 @@ class DispatchList extends React.Component {
         render: (o, record) => {
           if (origin && record.segmented === 1) {
             return (<span>
-                <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
+                <a role="button" onClick={() => this.handleSegmentCancelConfirm(record)}>
                 {this.msg('btnTextSegmentCancel')}
                 </a></span>);
           }
@@ -339,6 +339,10 @@ class DispatchList extends React.Component {
     } else {
       this.setState({sshow: false, shipmts: []});
     }
+  }
+
+  handleSegmentCancelConfirm = (shipmt) => {
+
   }
 
   handleShipmtSend(shipmt) {

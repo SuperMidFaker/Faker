@@ -1,5 +1,6 @@
 import mysql from '../../reusable/db-util/mysql';
 import Orm from '../../reusable/db-util/orm';
+import { shipmentOrm } from './shipment.db';
 
 const dispCols = [
   'id/a',
@@ -43,6 +44,7 @@ const dispCols = [
 ];
 
 const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');
+dispOrm.asalias = 'SD';
 
 function packGoodsArgs(goods) {
   const columns = [
@@ -76,26 +78,26 @@ function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, 
   return `${disp} ${shno}`;
 }
 
-function genDispFilters(filter, args) {
-  const arr = [];
+function genDispFilters(filter, tenantId) {
+  const wheres = {};
   if (filter.status === 'waiting') {
-    arr.push(' SD.sp_tenant_id = ? and SD.status = 2 and SD.disp_status = 1 ');
+    wheres[' SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatching') {
-    arr.push(' SD.sr_tenant_id = ? and SD.status = 1 and SD.disp_status = 0 ');
+    wheres[' SD.status = 1 and SD.disp_status = 0 and SD.sr_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatched') {
-    arr.push(' SD.sr_tenant_id = ? and SD.disp_status = 1 ');
+    wheres[' SD.disp_status = 1 and SD.sr_tenant_id '] = tenantId;
   }
   if (filter.origin) {
-    arr.push(' and parent_no is null ');
+    wheres.parent_no = 'is_null'; // parent_no is null
   } else {
     Object.keys(filter).forEach(key => {
       if (key !== 'status' && key !== 'origin') {
-        arr.push(' and ', key, '=?');
-        args.push(filter[key]);
+        wheres[key] = filter[key];
       }
     });
   }
-  return arr.join('');
+
+  return wheres;
 }
 
 
@@ -152,6 +154,7 @@ function generateDeleteClauseWithIds(ids) {
 }
 
 export default {
+  orm: dispOrm,
   getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt, unacceptSt) {
     const args = [tenantId, dispSt];
     const clause = getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, 'S', 'SD', args);
@@ -180,27 +183,31 @@ export default {
     return mysql.query(sql, args);
   },
   getDispatchShipmts(tenantId, filter, offset, pageSize) {
-    const args = [tenantId];
-    const awhere = genDispFilters(filter, args);
-    args.push(offset, pageSize);
-    const sql = `select SD.id as \`key\`, S.shipmt_no, sr_name,
+    const awhere = genDispFilters(filter, tenantId);
+    const obj = {
+      fields: `SD.id as \`key\`, S.shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
-      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented from tms_shipments as S
-      right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
-      where ${awhere} limit ?, ?`;
-    return mysql.query(sql, args);
+      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented`,
+      ons1: 'S.shipmt_no = SD.shipmt_no',
+      wheres: awhere,
+      _limits: {min: offset, max: pageSize}
+    };
+
+    return dispOrm.leftJoin(shipmentOrm, obj);
   },
   getDispatchShipmtsCount(tenantId, filter) {
-    const args = [tenantId];
-    const awhere = genDispFilters(filter, args);
-    const sql = `select count(S.shipmt_no) as count from tms_shipments as S
-      right join tms_shipment_dispatch as SD on S.shipmt_no = SD.shipmt_no
-      where ${awhere}`;
-    return mysql.query(sql, args);
+    const awhere = genDispFilters(filter, tenantId);
+    const obj = {
+      fields: `count(S.shipmt_no) as count`,
+      ons1: 'S.shipmt_no = SD.shipmt_no',
+      wheres: awhere
+    };
+
+    return dispOrm.leftJoin(shipmentOrm, obj);
   },
   createAndAcceptByLSP(
     shipmtNo, clientId, client, source, tenantId, tenantName,
@@ -246,6 +253,9 @@ export default {
   },
   copyDisp(disp) {
     return dispOrm.copyWithObj(disp);
+  },
+  countShipmtSubdisp(tenantId, shipmtNo) {
+    return dispOrm.selectObjs({fields: ['count(shipmt_no) as count'], wheres: {parent_id: 'max_0', shipmt_no: shipmtNo}});
   },
   getShipmtWithNo(shipmtNo) {
     const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch
