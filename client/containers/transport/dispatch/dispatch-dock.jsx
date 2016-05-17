@@ -61,22 +61,22 @@ export default class DispatchDock extends React.Component {
               }, {
                 title: '承运商',
                 dataIndex: 'partner_name',
-                width: 100
+                width: 200
               }, {
                 title: '价格协议',
                 dataIndex: 'quotation_promise',
-                render: () => (<span>CP-2016</span>)
+                render: () => (<span></span>)
               }, {
                 title: '运输时效',
                 dataIndex: 'transit',
-                render: () => (<span>1天</span>)
+                render: () => (<span></span>)
               }, {
                 title: '报价（元）',
                 dataIndex: 'quotation',
                 render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
               }, {
                 title: this.msg('shipmtOP'),
-                width: 100,
+                width: 60,
                 render: (o, record) => {
                   return (<span>
                         <a role="button" onClick={this.showConfirm.bind(this, 'tenant', record)}>
@@ -292,13 +292,10 @@ export default class DispatchDock extends React.Component {
                       <div className="dock-sp-content">
                         <Collapse defaultActiveKey={['1']} onChange={this.handlePanelChange} accordion>
                           <Panel header="选择承运商" key="1">
-                            <Table columns={this.consigneeCols} dataSource={this.lspsds} />
+                            <Table size="middle" columns={this.consigneeCols} pagination={false} dataSource={this.lspsds} useFixedHeader />
                           </Panel>
                           <Panel header="选择车辆" key="2">
-                            <Table columns={this.vehicleCols} dataSource={this.vesds} />
-                          </Panel>
-                          <Panel header="询价" key="3">
-                            <div></div>
+                            <Table size="middle" columns={this.vehicleCols} pagination={false} dataSource={this.vesds} useFixedHeader/>
                           </Panel>
                         </Collapse>
                       </div>
