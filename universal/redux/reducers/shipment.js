@@ -161,7 +161,7 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function loadShipmtDetail(shipmtNo) {
+export function loadShipmtDetail(shipmtNo, tenantId, sourceType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -171,7 +171,7 @@ export function loadShipmtDetail(shipmtNo) {
       ],
       endpoint: 'v1/transport/shipment/detail',
       method: 'get',
-      params: { shipmtNo },
+      params: { shipmtNo, tenantId, sourceType },
     }
   };
 }

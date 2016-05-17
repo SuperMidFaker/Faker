@@ -118,11 +118,11 @@ function *shipmtRequiresG() {
   try {
     const [ consignerLocations, consigneeLocations, transitModes, packagings, clients ] =
       yield [
-      shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consigner),
-      shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consignee),
-      shipmentDao.getTransitModes(tenantId),
-      shipmentDao.getPackagings(tenantId),
-      coopDao.getOnlinePartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer)
+        shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consigner),
+        shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consignee),
+        shipmentDao.getTransitModes(tenantId),
+        shipmentDao.getPackagings(tenantId),
+        coopDao.getPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer)
     ];
     return Result.OK(this, {
       consignerLocations,
@@ -331,23 +331,40 @@ function *shipmtRejectP() {
 
 function *shipmtDetailG() {
   const shipmtNo = this.request.query.shipmtNo;
+  const tenantId = this.request.query.tenantId;
+  const sourceType = this.request.query.sourceType;
   try {
     const [ goodslist, shipmts, shipmtdisps ] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
-      shipmentDispDao.getShipmtDispInfo(shipmtNo),
+      shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, sourceType),
     ];
     let shipmt = {};
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
+      if (shipmt.vehicle_type) {
+        for (let i = 0; i < vehicleTypes.length; i++) {
+          const vt = vehicleTypes[i];
+          if (parseInt(vt.id, 10) === shipmt.vehicle_type) {
+            shipmt.vehicle_type = vt.name
+          }
+        }
+      }
+      if (shipmt.vehicle_length) {
+        for (let i = 0; i < vehicleLengths.length; i++) {
+          const vl = vehicleLengths[i];
+          if (parseInt(vl.id, 10) === shipmt.vehicle_length) {
+            shipmt.vehicle_length = vl.name
+          }
+        }
+      }
     }
     shipmt.goodslist = goodslist;
     if (shipmtdisps.length === 1) {
       shipmt.status = shipmtdisps[0].status;
-      shipmt.source = shipmtdisps[0].source;
     }
     return Result.OK(this, shipmt);
-  }catch(e){
+  } catch(e) {
     return Result.InternalServerError(this, e.message);
   }
 }

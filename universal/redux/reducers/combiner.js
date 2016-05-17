@@ -14,6 +14,7 @@ import importaccept from './importaccept';
 import exportaccept from './exportaccept';
 import task from './task';
 import transportAcceptance from './transport-acceptance';
+import transportTracking from './transport-tracking';
 import shipment from './shipment';
 import warehouse from './warehouse';
 import bill from './bill';
@@ -24,6 +25,7 @@ import exporttask from './exporttask';
 import importtracking from './importtracking';
 import exporttracking from './exporttracking';
 import transportDispatch from './transportDispatch';
+import transportResources from './transportResources';
 
 export default combineReducers({
   intl,
@@ -40,8 +42,9 @@ export default combineReducers({
   importdelegate,
   exportaccept,
   task,
-  transportAcceptance,
   shipment,
+  transportAcceptance,
+  transportTracking,
   bill,
   notice,
   delegate,
@@ -50,5 +53,6 @@ export default combineReducers({
   exporttask,
   importtracking,
   exporttracking,
-  transportDispatch
+  transportDispatch,
+  transportResources,
 });

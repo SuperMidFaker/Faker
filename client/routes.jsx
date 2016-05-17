@@ -22,22 +22,24 @@ import ImportDashboard from './containers/import/dashboard';
 import * as ImportDelegate from './containers/import/delegate';
 import * as ImportTask from './containers/import/task';
 import * as ImportAccept from './containers/import/accept';
+import * as ImportTracking from './containers/import/tracking';
 import ExportM from './containers/module-export';
 import ExportBoard from './containers/export/dashboard';
 import * as ExportDelegate from './containers/export/delegate';
 import * as ExportAccept from './containers/export/accept';
+import * as ExportTask from './containers/export/task';
+import * as ExportTracking from './containers/export/tracking';
 import Transport from './containers/module-transport';
 import TMSDashboard from './containers/transport/dashboard';
 import * as TMSAcceptance from './containers/transport/acceptance';
 import * as TMSDispatch from './containers/transport/dispatch';
+import * as TMSTracking from './containers/transport/tracking';
+import * as TMSResources from './containers/transport/resources';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
 import {loadAccount} from '../universal/redux/reducers/account';
 import {isLoaded} from '../reusable/common/redux-actions';
-import * as ExportTask from './containers/export/task';
-import * as ImportTracking from './containers/import/tracking';
-import * as ExportTracking from './containers/export/tracking';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -161,6 +163,16 @@ export default(store, cookie) => {
             </Route>
             <Route path="dispatch">
               <IndexRoute component={TMSDispatch.List}/>
+            </Route>
+            <Route path="tracking">
+              <IndexRoute component={TMSTracking.List}/>
+            </Route>
+            <Route path="resources">
+              <IndexRoute component={TMSResources.MainContainer} />
+              <Route path="add_car" component={TMSResources.CarFormContainer} />
+              <Route path="edit_car/:car_id" component={TMSResources.CarFormContainer} />
+              <Route path="add_driver" component={TMSResources.DriverFormContainer} />
+              <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
             </Route>
           </Route>
         </Route>

@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-// import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 import { Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'reusable/decorators/connect-fetch';
@@ -68,6 +67,7 @@ function fetchData({ state, dispatch, cookie }) {
         );
         props.setConsignFields({
           client_id: selclients.length > 0 ? clientFieldId : 0,
+          client_partner_id: selclients.length > 0 && selclients[0].partner_id,
           client: selclients.length > 0 ? selclients[0].name : clientFieldId,
         });
       } else if (name === 'transport_mode_code') {
@@ -109,11 +109,6 @@ export default class ShipmentCreate extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
-  /*
-  shouldComponentUpdate(nextProps) {
-    return !shallowEqual(nextProps.formData, this.props.formData);
-  }
- */
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSaveAndAccept = (ev) => {
     ev.preventDefault();

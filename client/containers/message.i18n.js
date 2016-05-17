@@ -156,7 +156,11 @@ const messages = defineMessages({
   transportDispatch: {
     id: 'container.transport.dispatch',
     defaultMessage: '调度'
-  }
+  },
+  transportTracking: {
+    id: 'container.transport.tracking',
+    defaultMessage: '跟踪'
+  },
 });
 
 export default messages;

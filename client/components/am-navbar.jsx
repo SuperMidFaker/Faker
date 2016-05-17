@@ -50,16 +50,18 @@ export default class AmNavBar extends React.Component {
       } else {
         amTitleNav = (
           <a role="button" aria-expanded="false" className="dropdown-toggle">
-            <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
+            <i className={`hidden-xs zmdi zmdi-${moduleName}`} />
             {navTitle.text}
-          </a>);
+          </a>
+        );
       }
     } else if (navTitle.depth === 3) {
       amTitleNav = (
         <a role="button" onClick={navTitle.goBackFn}>
-          <i className="zmdi zmdi-arrow-left"></i>
+          <i className="zmdi zmdi-arrow-left" />
           {navTitle.text}
-        </a>);
+        </a>
+      );
     }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
