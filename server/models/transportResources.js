@@ -6,7 +6,7 @@ const driverColumns = [
 ];
 
 const carColumns = [
-  'vehicle_id', 'plate_number', 'trailer_number', 'type', 'length', 'load_weight', 'load_volume', 'vproperty', 'driver_id'
+  'vehicle_id', 'plate_number', 'trailer_number', 'type', 'length', 'load_weight', 'load_volume', 'vproperty', 'driver_id', 'status'
 ];
 
 function generateValuesWithInfoAndColumns({columns, info}) {
@@ -44,7 +44,7 @@ export function addCarWithInfo(carInfo) {
 
 export function getCarList() {
   const sql = `
-    SELECT plate_number, trailer_number, type, length, load_weight, load_volume, vproperty, v.driver_id,  v.vehicle_id, d.name AS driver_name
+    SELECT plate_number, trailer_number, type, length, load_weight, load_volume, vproperty, status, v.driver_id,  v.vehicle_id, d.name AS driver_name
     FROM tms_vehicles AS v 
     INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id;
   `;
