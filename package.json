@@ -39,7 +39,7 @@
   "license": "MIT",
   "pre-commit": [],
   "dependencies": {
-    "ant-ui": "^0.12.1",
+    "ant-ui": "^1.0.0",
     "babel": "^5.8.35",
     "bcrypt": "^0.8.5",
     "co-body": "^4.0.0",

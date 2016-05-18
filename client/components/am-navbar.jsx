@@ -39,7 +39,7 @@ export default class AmNavBar extends React.Component {
     if (navTitle.depth === 2) {
       if (navTitle.withModuleLayout) {
         amTitleNav = (
-          <Popover placement="bottomLeft" trigger="hover" overlay={<ModuleLayout />}>
+          <Popover placement="bottomLeft" trigger="hover" content={<ModuleLayout />}>
             <a role="button" aria-expanded="false" className="dropdown-toggle">
               <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
               {formatMsg(intl, navTitle.text)}
@@ -85,7 +85,7 @@ export default class AmNavBar extends React.Component {
               <AmUserNav />
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
-              <Popover placement="bottomLeft" trigger="hover" overlay={
+              <Popover placement="bottomLeft" trigger="hover" content={
                 <Menu selectedKeys={[curLocale]} onClick={this.handleClick}>
                   <MenuItem key="zh">
                     <span>{ formatGlobalMsg(intl, 'chinese') }</span>
