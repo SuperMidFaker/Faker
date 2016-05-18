@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Button, Table } from 'ant-ui';
+import { Button, Table, Spin } from 'ant-ui';
 import { Link } from 'react-router';
-import SpinWrapper from './SpinnerWrapper';
 
 function editAndStopCarOperations(record) {
   return (
@@ -93,12 +92,12 @@ export default function CarList(props) {
   const { onAddCarBtnClicked, dataSource, visible, loading } = props;
   if (visible) {
     return (
-      <SpinWrapper spinning={loading}>
+      <Spin spining={loading}>
         <div style={{marginBottom: 16}}>
           <Button type="primary" size="large" onClick={onAddCarBtnClicked}>新建车辆</Button>
         </div>
         <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />
-      </SpinWrapper>
+      </Spin>
     );
   } else {
     return <div></div>;
