@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { loadTable, doSend, doReturn } from 'universal/redux/reducers/transportDispatch';
+import { loadTable, doSend, doReturn, segmentCancelRequest, segmentCancelCheckRequest, loadExpandList } from 'universal/redux/reducers/transportDispatch';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -48,10 +48,11 @@ function fetchData({ state, dispatch, cookie }) {
     shipmentlist: state.transportDispatch.shipmentlist,
     filters: state.transportDispatch.filters,
     loading: state.transportDispatch.loading,
-    dispatched: state.transportDispatch.dispatched
+    dispatched: state.transportDispatch.dispatched,
+    expandList: state.transportDispatch.expandList,
   }),
-  { loadTable, doReturn, doSend })
-class DispatchList extends React.Component {
+  { loadTable, doReturn, doSend, segmentCancelRequest, segmentCancelCheckRequest, loadExpandList })
+export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -61,7 +62,11 @@ class DispatchList extends React.Component {
     loadTable: PropTypes.func.isRequired,
     doSend: PropTypes.func.isRequired,
     doReturn: PropTypes.func.isRequired,
-    dispatched: PropTypes.bool.isRequired
+    segmentCancelRequest: PropTypes.func.isRequired,
+    segmentCancelCheckRequest: PropTypes.func.isRequired,
+    loadExpandList: PropTypes.func.isRequired,
+    dispatched: PropTypes.bool.isRequired,
+    expandList: PropTypes.array.isRequired
   }
   state = {
     selectedRowKeys: [],
@@ -147,11 +152,18 @@ class DispatchList extends React.Component {
     dataIndex: 'consignee_addr',
     width: 150,
   }];
-  buildCols() {
+  buildCols(sub) {
     const { status, origin } = this.props.filters;
     const s = status;
+    let t = this.msg('shipNo');
+    if (origin) {
+      t = this.msg('originShipNo');
+    }
+    if (sub) {
+      t = this.msg('segmentShipNo');
+    }
     let cols = [{
-      title: this.msg('shipNo'),
+      title: t,
       dataIndex: 'shipmt_no',
       width: 200
     }];
@@ -176,23 +188,27 @@ class DispatchList extends React.Component {
         title: this.msg('shipmtOP'),
         width: 100,
         render: (o, record) => {
-          if (origin && record.segmented === 1) {
-            return (<span>
-                <a role="button" onClick={() => this.handleSegmentCancelConfirm(record)}>
-                {this.msg('btnTextSegmentCancel')}
-                </a></span>);
+          if (origin) {
+            if (record.segmented === 1 && !sub) {
+              return (<span>
+                  <a role="button" onClick={() => this.handleSegmentCancelConfirm(record)}>
+                  {this.msg('btnTextSegmentCancel')}
+                  </a></span>);
+            } else {
+              return (<span></span>);
+            }
           }
-            return (
-              <span>
-                <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
-                {this.msg('btnTextDispatch')}
-                </a>
-                <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
-                {this.msg('btnTextSegment')}
-                </a>
-              </span>
-            );
+          return (
+            <span>
+              <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
+              {this.msg('btnTextDispatch')}
+              </a>
+              <span className="ant-divider" />
+              <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
+              {this.msg('btnTextSegment')}
+              </a>
+            </span>
+          );
         }
       });
     } else if (s === 'dispatching' || s === 'dispatched') {
@@ -285,7 +301,7 @@ class DispatchList extends React.Component {
       current: 1
     }).then(result => {
       if (result.error) {
-        message.error(result.error.message, 10);
+        message.error(result.error.message, 5);
       } else {
         this.handlePanelHeaderChange();
       }
@@ -318,31 +334,73 @@ class DispatchList extends React.Component {
   }
 
   handleDispatchDockShow(shipmt) {
-    this.setState({show: true, shipmts: [shipmt]});
+    this.setState({show: true, shipmts: [shipmt], selectedRowKeys: [shipmt.key]});
+  }
+
+  handleBatchDockShow(type) {
+    const { shipmentlist } = this.props;
+    const { selectedRowKeys } = this.state;
+    const shipmts = [];
+    shipmentlist.data.forEach(s => {
+      if (selectedRowKeys.indexOf(s.key) > -1) {
+        shipmts.push(s);
+      }
+    });
+    if (type === 'dispatch') {
+      this.setState({show: true, shipmts});
+    } else {
+      this.setState({sshow: true, shipmts});
+    }
   }
 
   handleDispatchDockClose = (reload) => {
     if (typeof reload === 'boolean') {
       this.handleStatusChange({target:{value: 'waiting'}});
     } else {
-      this.setState({show: false, shipmts: []});
+      this.setState({show: false, shipmts: [], selectedRowKeys: []});
     }
   }
 
   handleSegmentDockShow(shipmt) {
-    this.setState({sshow: true, shipmts: [shipmt]});
+    this.setState({sshow: true, shipmts: [shipmt], selectedRowKeys: [shipmt.key]});
   }
 
   handleSegmentDockClose = (reload) => {
     if (typeof reload === 'boolean') {
       this.handleStatusChange({target:{value: 'waiting'}});
     } else {
-      this.setState({sshow: false, shipmts: []});
+      this.setState({sshow: false, shipmts: [], selectedRowKeys: []});
     }
   }
 
   handleSegmentCancelConfirm = (shipmt) => {
-
+    const { tenantId } = this.props;
+    this.props.segmentCancelCheckRequest(null, {
+      tenantId,
+      shipmtNo: shipmt.shipmt_no
+    }).then(rs => {
+      if (!rs.data) {
+        message.error(`${shipmt.shipmt_no}-分段运单中已存在预分配，不能取消分段，必须分配退回后才能操作！`, 5);
+      } else {
+        Modal.confirm({
+          content: `确定取消对运单编号为【${shipmt.shipmt_no}】的分段？`,
+          okText: this.msg('btnTextOk'),
+          cancelText: this.msg('btnTextCancel'),
+          onOk: () => {
+            this.props.segmentCancelRequest(null, {
+              tenantId,
+              shipmtNo: shipmt.shipmt_no
+            }).then(result => {
+              if (result.error) {
+                message.error(result.error.message, 5);
+              } else {
+                this.handleOriginShipmts();
+              }
+            });
+          }
+        });
+      }
+    });
   }
 
   handleShipmtSend(shipmt) {
@@ -358,7 +416,7 @@ class DispatchList extends React.Component {
           shipmtNo: shipmt.shipmt_no
         }).then(result => {
           if (result.error) {
-            message.error(result.error.message, 10);
+            message.error(result.error.message, 5);
           } else {
             this.handleStatusChange({target:{value: 'dispatching'}});
           }
@@ -381,7 +439,7 @@ class DispatchList extends React.Component {
           shipmtNo: shipmt.shipmt_no
         }).then(result => {
           if (result.error) {
-            message.error(result.error.message, 10);
+            message.error(result.error.message, 5);
           } else {
             this.handleStatusChange({target:{value: 'dispatching'}});
           }
@@ -418,7 +476,7 @@ class DispatchList extends React.Component {
       current: 1
     }).then(result => {
       if (result.error) {
-        message.error(result.error.message, 10);
+        message.error(result.error.message, 5);
       } else {
         this.handlePanelHeaderChange();
       }
@@ -426,7 +484,21 @@ class DispatchList extends React.Component {
   }
 
   handleExpandList = row => {
+    const { tenantId } = this.props;
+    if (!this.props.expandList[row.shipmt_no]) {
+      this.props.loadExpandList(null, {
+        tenantId,
+        shipmtNo: row.shipmt_no
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        }
+      });
+    }
+    const ccols = this.buildCols(true);
 
+    return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
+        useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4} />);
   }
 
   renderConsignLoc(shipmt, field) {
@@ -497,6 +569,14 @@ class DispatchList extends React.Component {
             </div>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <Button type="primary" size="large" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
+            {this.msg('btnTextBatchDispatch')}
+            </Button>
+            <span className="ant-divider" style={{width: '0px'}}/>
+            <Button type="ghost" size="large" onClick={() => { this.handleBatchDockShow(); }}>
+            {this.msg('btnTextBatchSegment')}
+            </Button>
+
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
             {formatContainerMsg(intl, 'clearSelection')}
             </Button>
@@ -518,5 +598,3 @@ class DispatchList extends React.Component {
     );
   }
 }
-
-export default DispatchList;

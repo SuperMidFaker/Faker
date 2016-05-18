@@ -5,6 +5,14 @@ export default defineMessages({
     id: 'transport.dispatch.ship.no',
     defaultMessage: '运单号'
   },
+  originShipNo: {
+    id: 'transport.dispatch.ship.origin_no',
+    defaultMessage: '原始运单号'
+  },
+  segmentShipNo: {
+    id: 'transport.dispatch.ship.segment_no',
+    defaultMessage: '分段运运单号'
+  },
   shipRequirement: {
     id: 'transport.dispatch.ship.requirement',
     defaultMessage: '托运客户'
@@ -159,7 +167,7 @@ export default defineMessages({
   },
   btnTextOriginShipments: {
     id: 'transport.dispatch.btn.text.origin',
-    defaultMessage: '显示原始订单'
+    defaultMessage: '显示被分段的运单'
   },
   btnTextReturnList: {
     id: 'transport.dispatch.btn.text.returnlist',
@@ -169,9 +177,17 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.dispatch',
     defaultMessage: '分配'
   },
+  btnTextBatchDispatch: {
+    id: 'transport.dispatch.btn.text.batch_dispatch',
+    defaultMessage: '批量分配'
+  },
   btnTextSegment: {
     id: 'transport.dispatch.btn.text.segment',
     defaultMessage: '分段'
+  },
+  btnTextBatchSegment: {
+    id: 'transport.dispatch.btn.text.batch_segment',
+    defaultMessage: '批量分段'
   },
   btnTextSegmentCancel: {
     id: 'transport.dispatch.btn.text.segmentcancel',
