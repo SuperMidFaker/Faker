@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Button, Table } from 'ant-ui';
 import { Link } from 'react-router';
+import SpinWrapper from './SpinnerWrapper';
 
 function editAndStopCarOperations(record) {
   return (
@@ -89,15 +90,15 @@ const rowSelection = {
 };
 
 export default function CarList(props) {
-  const { onAddCarBtnClicked, dataSource, visible } = props;
+  const { onAddCarBtnClicked, dataSource, visible, loading } = props;
   if (visible) {
     return (
-      <div>
+      <SpinWrapper spinning={loading}>
         <div style={{marginBottom: 16}}>
           <Button type="primary" size="large" onClick={onAddCarBtnClicked}>新建车辆</Button>
         </div>
         <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />
-      </div>
+      </SpinWrapper>
     );
   } else {
     return <div></div>;
@@ -108,4 +109,5 @@ CarList.propTypes = {
   dataSource: PropTypes.array,
   onAddCarBtnClicked: PropTypes.func.isRequired,  // 点击新建车辆时触发的回调函数
   visible: PropTypes.bool.isRequired,             // 组件是否可见
+  loading: PropTypes.bool.isRequired,             // 组件是否在加载
 };

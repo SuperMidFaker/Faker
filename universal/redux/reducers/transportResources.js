@@ -15,14 +15,19 @@ const initialState = {
   cars: [],
   drivers: [],
   selectedMenuItemKey: '0',
+  loading: false
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_DRIVERLIST:
+      return { ...state, loading: true };
     case actionTypes.LOAD_DRIVERLIST_SUCCEED:
-      return { ...state, drivers: action.result.data };
+      return { ...state, drivers: action.result.data, loading: false };
+    case actionTypes.LOAD_CARLIST:
+      return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
-      return { ...state, cars: action.result.data };
+      return { ...state, cars: action.result.data, loading: false };
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey: action.key };
     default:

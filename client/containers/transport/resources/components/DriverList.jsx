@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table, Button } from 'ant-ui';
 import { Link } from 'react-router';
+import SpinWrapper from './SpinnerWrapper';
 
 const columns = [
   {
@@ -71,15 +72,15 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, visible } = props;
+  const { dataSource, onAddDriverBtnClicked, visible, loading } = props;
   if (visible) {
     return (
-      <div>
+      <SpinWrapper spinning={loading}>
         <div style={{marginBottom: 16}}>
           <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
         </div>
         <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
-      </div>
+      </SpinWrapper>
     );
   } else {
     return <div></div>;
@@ -90,6 +91,7 @@ DriverList.propTyps = {
   dataSource: PropTypes.array,
   onAddDriverBtnClicked: PropTypes.func.isRequired, // 点击新建司机按钮后执行的回调函数
   visible: PropTypes.bool.isRequired,               // 组件是否可见
+  loading: PropTypes.bool.isRequired,               // 组件是否正在加载
 };
 
 export default DriverList;
