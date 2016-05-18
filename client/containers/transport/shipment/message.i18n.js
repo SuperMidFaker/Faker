@@ -179,7 +179,7 @@ export default defineMessages({
   },
   goodsRemark: {
     id: 'transport.shipment.goods.remark',
-    defaultMessage: '备忘'
+    defaultMessage: '备注'
   },
   goodsOp: {
     id: 'transport.shipment.goods.op',
