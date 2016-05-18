@@ -58,7 +58,7 @@ export default class PreviewPanel extends React.Component {
         <div className="panel-content">
           <div className="header">
             <span className="title">{shipmtNo}</span>
-            <Tag color="blue">{this.msg(getTrackStatusMsg(status))}</Tag>
+            <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline"><Icon type="export" /></Button>
               <Button type="ghost" shape="circle-outline"><Icon type="share-alt" /></Button>
