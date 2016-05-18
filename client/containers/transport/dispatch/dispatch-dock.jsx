@@ -302,12 +302,9 @@ export default class DispatchDock extends React.Component {
         }
       });
 
-<<<<<<< HEAD
-      dock = (<div className="dock-container" key="dock1" onClick={(e) => {e.stopPropagation();}}>
-=======
 /*
-      dock = (<div className="dock-container" key="dock1">
->>>>>>> 2aabebfae7ab13ef81d12a308c8df2d9fea30a12
+      dock = (<div className="dock-container" key="dock1" onClick={(e) => {e.stopPropagation();}}>
+
                 <div className="dock-content">
                   <div className="dock-sp">
                     <div className="dock-sp-body">
@@ -368,5 +365,3 @@ export default class DispatchDock extends React.Component {
     );
   }
 }
-
-export default DispatchDock;
