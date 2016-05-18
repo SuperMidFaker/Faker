@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button } from 'ant-ui';
+import { Table, Button, Spin } from 'ant-ui';
 import { Link } from 'react-router';
 
 const columns = [
@@ -71,20 +71,26 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked } = props;
-  return (
-    <div>
-      <div style={{marginBottom: 16}}>
-        <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
-      </div>
-      <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
-    </div>
-  );
+  const { dataSource, onAddDriverBtnClicked, visible, loading } = props;
+  if (visible) {
+    return (
+      <Spin spining={loading}>
+        <div style={{marginBottom: 16}}>
+          <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
+        </div>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
+      </Spin>
+    );
+  } else {
+    return <div></div>;
+  }
 }
 
 DriverList.propTyps = {
   dataSource: PropTypes.array,
   onAddDriverBtnClicked: PropTypes.func.isRequired, // 点击新建司机按钮后执行的回调函数
+  visible: PropTypes.bool.isRequired,               // 组件是否可见
+  loading: PropTypes.bool.isRequired,               // 组件是否正在加载
 };
 
 export default DriverList;

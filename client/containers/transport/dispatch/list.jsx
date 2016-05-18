@@ -165,13 +165,13 @@ export default class DispatchList extends React.Component {
     let cols = [{
       title: t,
       dataIndex: 'shipmt_no',
-      width: 200
+      width: 140
     }];
     if (s === 'waiting') {
       cols.push({
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
-        width: 140
+        width: 180
       }, {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',
@@ -215,7 +215,7 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipSp'),
         dataIndex: 'sp_name',
-        width: 140
+        width: 180
       }, {
         title: this.msg('shipVehicle'),
         dataIndex: 'task_vehicle',
@@ -229,7 +229,7 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipPod'),
         dataIndex: 'pod_type',
-        width: 60,
+        width: 100,
         render: (text) => {
           switch (text) {
             case 'qrcode':

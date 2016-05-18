@@ -216,5 +216,13 @@ export default defineMessages({
   rdTextDispatched: {
     id: 'transport.dispatch.rd.text.dispatched',
     defaultMessage: '已发送'
+  },
+  tabTextCarrier: {
+    id: 'transport.dispatch.tab.text.carrier',
+    defaultMessage: '选择承运商'
+  },
+  tabTextVehicle: {
+    id: 'transport.dispatch.tab.text.vehicle',
+    defaultMessage: '选择车辆'
   }
 });

@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Icon, QueueAnim, Tag, Collapse, InputNumber, Button, Table, message, Modal, Radio } from 'ant-ui';
+import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Radio, Tabs } from 'ant-ui';
 import { connect } from 'react-redux';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch } from 'universal/redux/reducers/transportDispatch';
 
-const Panel = Collapse.Panel;
 const RadioGroup = Radio.Group;
+const TabPane = Tabs.TabPane;
 
 function noop() {}
 
@@ -57,26 +57,30 @@ export default class DispatchDock extends React.Component {
     this.consigneeCols = [{
                 title: '',
                 dataIndex: 'partner_tenant_id',
+                width: 30,
                 render: (tid, record) => (<Button type={`${record.partner_tenant_id > 0 ? 'primary' : 'ghost'}`} shape="circle" size="small" style={{width: 15, height: 15}} />)
               }, {
                 title: '承运商',
                 dataIndex: 'partner_name',
-                width: 200
+                width: 180
               }, {
                 title: '价格协议',
                 dataIndex: 'quotation_promise',
+                width: 100,
                 render: () => (<span></span>)
               }, {
                 title: '运输时效',
                 dataIndex: 'transit',
+                width: 80,
                 render: () => (<span></span>)
               }, {
                 title: '报价（元）',
                 dataIndex: 'quotation',
+                width: 120,
                 render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
               }, {
                 title: this.msg('shipmtOP'),
-                width: 60,
+                width: 50,
                 render: (o, record) => {
                   return (<span>
                         <a role="button" onClick={this.showConfirm.bind(this, 'tenant', record)}>
@@ -86,33 +90,41 @@ export default class DispatchDock extends React.Component {
               }];
     this.vehicleCols = [{
                 title: '车牌',
-                dataIndex: 'plate_number'
+                dataIndex: 'plate_number',
+                width: 50
               }, {
                 title: '司机',
                 dataIndex: 'name'
+                width: 50
               }, {
                 title: '车型',
-                dataIndex: 'type'
+                dataIndex: 'type',
+                width: 50
               }, {
                 title: '车长',
-                dataIndex: 'length'
+                dataIndex: 'length',
+                width: 30
               }, {
                 title: '载重',
+                width: 30,
                 dataIndex: 'load_weight'
               }, {
                 title: '已分配',
                 dataIndex: 'dispatched',
+                width: 20,
                 render: () => {
                   return (<span>否</span>);
                 }
               }, {
                 title: '在途',
                 dataIndex: 'driving',
+                width: 20,
                 render: () => {
                   return (<span>否</span>);
                 }
               }, {
                 title: this.msg('shipmtOP'),
+                width: 50,
                 render: (o, record) => {
                   return (<span>
                         <a role="button" onClick={this.showConfirm.bind(this, 'vehicle', record)}>
@@ -206,8 +218,8 @@ export default class DispatchDock extends React.Component {
     });
   }
 
-  handlePanelChange = key => {
-    if (key === '2' && !this.props.vehicleLoaded) {
+  handleTabChange = key => {
+    if (key === 'vehicle' && !this.props.vehicleLoaded) {
       const { vehicles, tenantId } = this.props;
       this.props.loadVehicles(null, {
         tenantId,
@@ -219,7 +231,7 @@ export default class DispatchDock extends React.Component {
         }
       });
     }
-    if (key === '1' && !this.props.lspLoaded) {
+    if (key === 'carrier' && !this.props.lspLoaded) {
       const { lsps, tenantId } = this.props;
       this.props.loadLsps(null, {
         tenantId,
@@ -290,9 +302,13 @@ export default class DispatchDock extends React.Component {
         }
       });
 
+<<<<<<< HEAD
       dock = (<div className="dock-container" key="dock1" onClick={(e) => {e.stopPropagation();}}>
+=======
+/*
+      dock = (<div className="dock-container" key="dock1">
+>>>>>>> 2aabebfae7ab13ef81d12a308c8df2d9fea30a12
                 <div className="dock-content">
-                  <div className="dock-sp-line"></div>
                   <div className="dock-sp">
                     <div className="dock-sp-body">
                       <div className="dock-sp-toolbar">
@@ -303,19 +319,48 @@ export default class DispatchDock extends React.Component {
                         </div>
                       </div>
                       <div className="dock-sp-content">
-                        <Collapse defaultActiveKey={['1']} onChange={this.handlePanelChange} accordion>
-                          <Panel header="选择承运商" key="1">
-                            <Table size="middle" columns={this.consigneeCols} pagination={false} dataSource={this.lspsds} useFixedHeader />
-                          </Panel>
-                          <Panel header="选择车辆" key="2">
-                            <Table size="middle" columns={this.vehicleCols} pagination={false} dataSource={this.vesds} useFixedHeader/>
-                          </Panel>
-                        </Collapse>
+                        <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
+                          <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
+                            <Table columns={this.consigneeCols} dataSource={this.lspsds} pagination={false} />
+                          </TabPane>
+                          <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
+                            <Table columns={this.vehicleCols} dataSource={this.vesds} pagination={false} />
+                          </TabPane>
+                        </Tabs>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>);
+              </div>);*/
+        dock = (
+          <div className="dock-panel inside">
+            <div className="panel-content">
+              <div className="header">
+                <span className="title">分配 {shipmts.length}个运单</span>
+                <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
+                <div className="pull-right">
+                  <Button type="ghost" shape="circle-outline" onClick={ this.onCloseWrapper }>
+                    <Icon type="cross" />
+                  </Button>
+                </div>
+              </div>
+              <div className="body">
+                <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
+                  <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
+                    <div className="pane-content tab-pane">
+                      <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} pagination={false} />
+                    </div>
+                  </TabPane>
+                  <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
+                    <div className="pane-content tab-pane">
+                      <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} pagination={false} />
+                    </div>
+                  </TabPane>
+                </Tabs>
+              </div>
+            </div>
+          </div>
+        );
     }
 
     return (

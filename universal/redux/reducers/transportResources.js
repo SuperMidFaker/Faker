@@ -7,20 +7,52 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'LOAD_CARLIST', 'LOAD_CARLIST_SUCCEED', 'LOAD_CARLIST_FAIL',
   'ADD_DRIVER', 'ADD_DRIVER_SUCCEED', 'ADD_DRIVER_FAIL',
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
-  'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL'
+  'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
+  'SET_MENU_ITEM_KEY',
 ]);
 
 const initialState = {
   cars: [],
-  drivers: []
+  drivers: [],
+  selectedMenuItemKey: '0',
+  loading: false
 };
+
+/**
+ * 根据key, value来跟新一个数组中的特定对象, 并返回包含更新过的数组
+ * @param {}
+ * @return {}
+ */
+function updateArray({array, key, value, updateInfo}) {
+  const updatingItem = array.find(item => item[key] === value);
+  const updatingItemIndex = array.findIndex(item => item[key] === value);
+  const newItem = Object.assign({}, updatingItem, updateInfo);
+  return [
+    ...array.slice(0, updatingItemIndex),
+    newItem,
+    ...array.slice(updatingItemIndex + 1)
+  ];
+}
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_DRIVERLIST:
+      return { ...state, loading: true };
     case actionTypes.LOAD_DRIVERLIST_SUCCEED:
-      return { ...state, drivers: action.result.data };
+      return { ...state, drivers: action.result.data, loading: false };
+    case actionTypes.EDIT_CAR:
+      return { ...state, loading: true };
+    case actionTypes.EDIT_CAR_SUCCEED: {
+      const { carId, carInfo } = action.result.data;
+      const cars = updateArray({array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo});
+      return { ...state, loading: false, cars };
+    }
+    case actionTypes.LOAD_CARLIST:
+      return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
-      return { ...state, cars: action.result.data };
+      return { ...state, cars: action.result.data, loading: false };
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey: action.key };
     default:
       return state;
   }
@@ -45,9 +77,9 @@ export function editCar({carId, carInfo}) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CARLIST,
-        actionTypes.LOAD_CARLIST_SUCCEED,
-        actionTypes.LOAD_CARLIST_FAIL
+        actionTypes.EDIT_CAR,
+        actionTypes.EDIT_CAR_SUCCEED,
+        actionTypes.EDIT_CAR_FAIL
       ],
       endpoint: 'v1/transport/resources/edit_car',
       method: 'post',
@@ -112,4 +144,8 @@ export function loadDriverList() {
       method: 'get'
     }
   };
+}
+
+export function setMenuItemKey(key) {
+  return {type: actionTypes.SET_MENU_ITEM_KEY, key};
 }
