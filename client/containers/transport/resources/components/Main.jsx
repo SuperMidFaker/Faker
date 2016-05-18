@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Menu } from 'ant-ui';
-import CarListContainer from '../containers/CarListContainer.jsx';
-import DriverListContainer from '../containers/DriverListContainer.jsx';
+import CarListContainer from '../containers/CarListContainer';
+import DriverListContainer from '../containers/DriverListContainer';
+import ContentWrapper from './ContentWrapper';
 
 const MenuItem = Menu.Item;
 
@@ -16,14 +17,10 @@ export default function Main(props) {
         <MenuItem key="3">价格管理</MenuItem>
         <MenuItem key="4">线路管理</MenuItem>
       </Menu>
-      <div className="main-content">
-        <div className="page-body fixed">
-          <div className="panel-body body-responsive">
-            <CarListContainer />
-            <DriverListContainer />
-          </div>
-        </div>
-      </div>
+      <ContentWrapper>
+        <CarListContainer />
+        <DriverListContainer />
+      </ContentWrapper>
     </div>
 
   );

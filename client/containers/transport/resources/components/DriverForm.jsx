@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Form, Input, Button } from 'ant-ui';
+import ContentWrapper from './ContentWrapper';
 
 const FormItem = Form.Item;
 
@@ -21,20 +22,22 @@ export default class DriverForm extends Component {
     const getFieldProps = form.getFieldProps;
 
     return (
-      <Form horizontal onSubmit={onSubmitBtnClicked}>
-        <FormItem {...formItemLayout} label="姓名" required>
-          <Input {...getFieldProps('name')} required/>
-        </FormItem>
-        <FormItem {...formItemLayout} label="手机号码" required>
-          <Input {...getFieldProps('phone')} required/>
-        </FormItem>
-        <FormItem {...formItemLayout} label="备注">
-          <Input {...getFieldProps('remark')} type="textarea"/>
-        </FormItem>
-        <FormItem wrapperCol={{span:16, offset: 6}} style={{marginTop: 16}}>
-          <Button type="primary" htmlType="submit">{ mode === 'edit' ? '修改' : '新建' }</Button>
-        </FormItem>
-      </Form>
+      <ContentWrapper>
+        <Form horizontal onSubmit={onSubmitBtnClicked}>
+          <FormItem {...formItemLayout} label="姓名" required>
+            <Input {...getFieldProps('name')} required/>
+          </FormItem>
+          <FormItem {...formItemLayout} label="手机号码" required>
+            <Input {...getFieldProps('phone')} required/>
+          </FormItem>
+          <FormItem {...formItemLayout} label="备注">
+            <Input {...getFieldProps('remark')} type="textarea"/>
+          </FormItem>
+          <FormItem wrapperCol={{span:16, offset: 6}} style={{marginTop: 16}}>
+            <Button type="primary" htmlType="submit">{ mode === 'edit' ? '修改' : '新建' }</Button>
+          </FormItem>
+        </Form>
+      </ContentWrapper>
     );
   }
 }

@@ -9,6 +9,9 @@ export default class MainContainer extends Component {
     selectedKey: PropTypes.string.isRequired,  // 当前选中的MenuItem key
     setMenuItemKey: PropTypes.func.isRequired, // 改变当前选中的MenuItem key的action creator
   }
+  componentWillMount() {
+    this.props.setMenuItemKey('0');
+  }
   handleMenuItemClick = (e) => {
     this.props.setMenuItemKey(e.key);
   }
