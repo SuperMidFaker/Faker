@@ -158,7 +158,7 @@ function *billImport() {
           continue;  // bill is exist than ignore
         }
         // gen del_no
-        res = yield delegateDao.genDelNo(cctn.code, cctn.delegate_prefix, cTenantId);
+        res = yield delegateDao.genDelNo(cctn.subdomain, cctn.delegate_prefix, cTenantId);
         // bill.head.external_no = bill.head.del_no;
         if (bill.head.customer_subid && bill.head.customer_subid.length >= 10 &&
           bill.head.customer_subid !== bill.head.customer_id) {

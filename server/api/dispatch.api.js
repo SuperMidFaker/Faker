@@ -50,7 +50,11 @@ function *listShipmts() {
 }
 
 function *listExpandShipmts() {
-
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  const shipmtNo = this.request.query.shipmtNo;
+  // no more than 3 so use 0, 100
+  const res = yield shipmtDispDao.getDispatchShipmts(tenantId, {'S.parent_no': shipmtNo}, 0, 100);
+  Result.OK(this, res);
 }
 
 function *listLsps() {
@@ -84,12 +88,13 @@ function *listVehicles() {
     data: vehicles,
   });
 }
-
+/**
+ * 分配接口
+ */
 function *doDispatch() {
   const { tenantId,
           loginId,
-          parentId,
-          shipmtNo,
+          shipmtNos,
           partnerTenantId,
           partnerName,
           freightCharge,
@@ -104,37 +109,47 @@ function *doDispatch() {
     return Result.ParamError(this, 'tenantId or loginId is error');
   }
 
-  const disp = {
-    shipmt_no: shipmtNo,
-    parent_id: parentId,
-    sr_login_id: tusers[0].loginId,
-    sr_login_name: tusers[0].username,
-    sr_tenant_id: tenantId,
-    sr_name: tenants[0].name,
-    source: SHIPMENT_SOURCE.subcontracted,
-    sp_tenant_id: partnerTenantId,
-    sp_name: partnerName,
-    disp_time: new Date(),
-    freight_charge: freightCharge,
-    disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
-    status: SHIPMENT_TRACK_STATUS.unaccepted,
-    pod_type: podType
-  };
-
-  const upstatus = {
-    status: SHIPMENT_TRACK_STATUS.undelivered,
-    disp_time: new Date(),
-    wheres: {
-      sp_tenant_id: tenantId,
+  const arr = [];
+  shipmtNos.forEach(s => {
+    const shipmtNo = s.shipmtNo;
+    const parentId = s.dispId;
+    // 新建tms_shipment_dispatch记录
+    const disp = {
       shipmt_no: shipmtNo,
-      id: parentId
-    }
-  };
+      parent_id: parentId,
+      sr_login_id: tusers[0].loginId,
+      sr_login_name: tusers[0].username,
+      sr_tenant_id: tenantId,
+      sr_name: tenants[0].name,
+      source: SHIPMENT_SOURCE.subcontracted,
+      sp_tenant_id: partnerTenantId,
+      sp_name: partnerName,
+      disp_time: new Date(),
+      freight_charge: freightCharge,
+      disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
+      status: SHIPMENT_TRACK_STATUS.unaccepted,
+      pod_type: podType
+    };
+    // 更新之前dispatch记录的状态和时间
+    const upstatus = {
+      status: SHIPMENT_TRACK_STATUS.undelivered,
+      disp_time: new Date(),
+      wheres: {
+        sp_tenant_id: tenantId,
+        shipmt_no: shipmtNo,
+        id: parentId
+      }
+    };
 
-  yield [shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus)];
+    arr.push(shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus));
+  });
+
+  yield arr;
   Result.OK(this);
 }
-
+/**
+ * 分配承运商后确认分配
+ */
 function *doSend() {
   const { tenantId, dispId, shipmtNo } = yield parse(this.req);
   const upstatus = {
@@ -150,9 +165,12 @@ function *doSend() {
   yield shipmtDispDao.updateDisp(upstatus);
   Result.OK(this);
 }
-
+/**
+ * 分配承运商后取消分配
+ */
 function *doReturn() {
   const { tenantId, dispId, parentId, shipmtNo } = yield parse(this.req);
+  // 删除新建的dispatch记录，更新之前dispatch记录的状态
   const upstatus = {
     status: SHIPMENT_TRACK_STATUS.undispatched,
     wheres: {
@@ -261,7 +279,9 @@ function validGroup(group) {
   }
   return true;
 }
-
+/**
+ * 分段(一分为二或者一分为三)
+ */
 function *segmentRequest() {
   const { shipmtNos, segGroupFirst, segGroupSecond } = yield parse(this.req);
   if (!validGroup(segGroupFirst)) {
@@ -270,7 +290,7 @@ function *segmentRequest() {
 
   const arr = [];
   const seg = validGroup(segGroupSecond);
-
+  //
   shipmtNos.forEach(o => {
     let sno = o.shipmtNo;
     if (sno.length > 29) {
@@ -280,14 +300,16 @@ function *segmentRequest() {
     let tmp = buildConsigneeSegment(sno, o.shipmtNo, o.dispId, segGroupFirst, idx);
     arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
     idx++;
-    tmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupFirst, idx);
-    arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
-    idx++;
     if (seg) {
-      tmp = buildConsigneeSegment(sno, o.shipmtNo, o.dispId, segGroupSecond, idx);
+      let stmp = buildConsigneeSegment(sno, o.shipmtNo, o.dispId, segGroupSecond, idx);
+      tmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupFirst, idx);
+      Object.assign(tmp.shipmt, stmp.shipmt);
       arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
       idx++;
-      tmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupSecond, idx);
+      stmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupSecond, idx);
+      arr.push(shipmtDao.copyShipmt(stmp.shipmt), shipmtDispDao.copyDisp(stmp.disp));
+    } else {
+      tmp = buildConsignerSegment(sno, o.shipmtNo, o.dispId, segGroupFirst, idx);
       arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
     }
 
@@ -298,6 +320,40 @@ function *segmentRequest() {
 
   Result.OK(this);
 }
+/**
+ * 取消分段
+ * 需要检查是否已经有子运单分配承运商
+ */
+function *segmentCancelRequest() {
+  const { tenantId, shipmtNo } = yield parse(this.req);
+  const res = yield shipmtDispDao.getSegmentShipmtStatus(tenantId, shipmtNo);
+  const b = res.every(v => {
+    return v.status <= 2;
+  });
+  if (!b) {
+    return Result.ParamError(this, 'shipmtNo has dispatched');
+  }
+
+  // TODO delete shipment and shipment dispatch
+  const arr = [];
+  res.forEach(v => {
+    arr.push(shipmtDao.deleteShipmt({wheres: {shipmt_no: v.shipmt_no}}));
+    arr.push(shipmtDispDao.deleteDisp({wheres: {id: v.id}}));
+  });
+  arr.push(shipmtDao.updateShipmt({segmented: 0, wheres: {shipmt_no: shipmtNo}}));
+  yield arr;
+  Result.OK(this);
+}
+
+function *segmentCancelCheckRequest() {
+  const { tenantId, shipmtNo } = yield parse(this.req);
+  const res = yield shipmtDispDao.getSegmentShipmtStatus(tenantId, shipmtNo);
+
+  const b = res.every(v => {
+    return v.status <= 2;
+  });
+  Result.OK(this, b);
+}
 
 export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
@@ -305,6 +361,8 @@ export default [
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
   [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],
+  [ 'post', '/v1/transport/dispatch/segment/cancel', segmentCancelRequest ],
+  [ 'post', '/v1/transport/dispatch/segment/cancelcheck', segmentCancelCheckRequest ],
   [ 'post', '/v1/transport/dispatch', doDispatch ],
   [ 'post', '/v1/transport/dispatch/send', doSend ],
   [ 'post', '/v1/transport/dispatch/return', doReturn ],

@@ -1,8 +1,16 @@
 .pane-content {
-  padding: 0 10px;
+  border-top: 1px solid #d9d9d9;
+  padding: 24px;
   .pane-shipment {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
   }
+  &.tab-pane {
+    border-top: none;
+    padding: 0 24px;
+  }
+}
+.pane-section {
+  margin-bottom: 16px;
 }
 .pane-form-item {
   position: relative;
@@ -19,17 +27,12 @@
   }
   label {
     font-size: 12px;
-    text-align: right;
     vertical-align: middle;
     color: #999;
   }
   .pane-field {
-    font-size: 14px;
-    text-align: right;
+    font-size: 12px;
     vertical-align: middle;
     display: inline-block;
   }
-}
-.subform-padding {
-  padding-left: 10px;
 }

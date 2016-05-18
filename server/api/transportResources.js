@@ -59,7 +59,7 @@ function *editCar() {
     console.log(body);
     const { carInfo, carId } = body;
     yield TransportResourcesDao.updateCarWithInfo({carInfo, carId});
-    return Result.OK(this);
+    return Result.OK(this, { carId , carInfo });
   } catch(e) {
     return Result.InternalServerError(this, e.message);
   }

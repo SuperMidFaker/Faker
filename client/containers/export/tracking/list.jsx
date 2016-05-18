@@ -163,10 +163,10 @@ export default class ExportTracking extends React.Component {
             </RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
-          <div className="panel-header"></div>
+        <div className="page-body fixed">
+          <div className="panel-min-header">&nbsp;</div>
           <div className="panel-body body-responsive">
-            <Table columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 @import "../../../../variable.less";
-@preview-panel-width: 650px;
+@preview-panel-width: 680px;
 .preview-panel {
   position: fixed;
   width: @preview-panel-width;
@@ -7,37 +7,34 @@
   right: 0;
   bottom: 0;
   z-index: 50;
-  background-color: #fafafa;
+  background-color: #fff;
   transition: transform 218ms ease;
   transform: translate(@preview-panel-width + 10px);
-  box-shadow: -3px 0 3px rgba(0, 0, 0, .1);
+  box-shadow: 0 7px 21px rgba(0,0,0,.3);
   &.inside {
     transform: translate(0);
   }
-  .activity-panel {
+  .panel-content {
     position: relative;
     width: 100%;
     height: 100%;
     .header {
       position: relative;
       overflow: hidden;
-      height: 50px;
-      line-height: 50px;
       z-index: 2;
-      padding: 10px 20px;
+      padding: 16px;
       .title {
-        color: #383838;
-        font-size: 17px;
-        font-weight: 300;
+        color: #666;
+        font-size: 16px;
+        font-weight: 500;
       }
-      .status {
-        background-color: #bbb;
-        padding: 5px 15px;
+      .ant-tag{
+        margin-left: 8px;
       }
     }
     .body {
       position: absolute;
-      top: 50px;
+      top: 56px;
       width: 100%;
       left: 0;
       right: 0;

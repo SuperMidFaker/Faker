@@ -161,6 +161,7 @@ function* submitExportDelegate() {
   entity.creater_login_id = params.loginId;
   entity.status = 0;
   entity.delegate_type = 1;
+  entity.send_tenant_id = params.tenantId;
 
   let trans;
   try {

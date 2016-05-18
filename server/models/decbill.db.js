@@ -16,6 +16,6 @@ export default {
     return decBillList.insertObjs(lists);
   },
   getHeadByExternalNo(externalNo) {
-    return decBillHead.selectObjs({external_no: externalNo, _limits: {min: 1}});
+    return decBillHead.selectObjs({wheres: {external_no: externalNo, _limits: {min: 1}}});
   }
 };

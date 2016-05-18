@@ -26,6 +26,9 @@ img {
 .ant-popover-placement-bottom, .ant-popover-placement-bottomRight, .ant-popover-placement-bottomLeft {
   margin-top: 0;
 }
+.ant-menu-root {
+  font-size: 14px;
+}
 .ant-menu-vertical {
   border-right: none;
 }
@@ -709,7 +712,7 @@ img {
   .tools {
     float: right;
   }
-  
+
   @media (max-width:767px) {
     .tools {
       float: none;
@@ -828,6 +831,36 @@ img {
     }
   }
 }
+
+.panel-min-header {
+  position: relative;
+  margin-bottom: 0px;
+  padding: 10px 10px 0 10px;
+  min-height: 5px;
+  span {
+    vertical-align: middle;
+  }
+  .tools {
+    float: right;
+  }
+  .left-tools {
+    display: inline-block;
+    width: 220px;
+    input {
+      width: 140px;
+      margin-right: 4px;
+    }
+  }
+  @media (max-width:767px) {
+    margin-bottom: 10px;
+    padding: 10px 10px 0 10px;
+    .tools {
+      float: none;
+      margin-bottom: 10px;
+    }
+  }
+}
+
 .panel-body {
   clear: both;
 }
@@ -873,14 +906,14 @@ img {
   }
   &-heading > &-title {
     font-size: 14px;
-    font-weight: 300;
+    font-weight: 400;
     display: block;
     margin: 0;
   }
   &-body {
     margin-bottom: 24px;
     .ant-form-item {
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
     }
   }
 

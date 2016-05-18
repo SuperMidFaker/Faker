@@ -149,28 +149,35 @@ export default class TaskSetting extends React.Component {
         title: '平台单号',
         sorter: true,
         dataIndex: 'del_no',
+        width: 120,
         render: (o, record) => this.renderColumnText(record, record.del_no)
       }, {
         title: '企业内部编号',
         sorter: true,
         dataIndex: 'external_no',
+        width: 150,
         render: (o, record) => this.renderColumnText(record, record.external_no)
       }, {
         title: '委托方',
         dataIndex: 'short_name',
+        width: 180,
         render: (o, record) => this.renderColumnText(record, record.short_name)
       }, {
         title: '提运单号',
+        width: 150,
         render: (o, record) => this.renderColumnText(record, record.bill_no)
       }, {
         title: '发票号',
+        width: 150,
         sorter: true,
         render: (o, record) => this.renderColumnText(record, record.invoice_no)
       }, {
         title: '接单日期',
+        width: 100,
         render: (o, record) => this.renderColumnText(record, record.created_date)
       }, {
         title: '状态',
+        width: 80,
         sorter: true,
         render: (text, record) => { // 根据状态定制显示状态中文描述
           let fontColor = '';
@@ -197,7 +204,7 @@ export default class TaskSetting extends React.Component {
         }
       }, {
         title: '操作',
-        width: 140,
+        width: 120,
         render: (text, record) => { // 根据状态定制显示状态中文描述
           let returnVal;
           if (record.bill_no !== undefined) {
@@ -235,9 +242,9 @@ export default class TaskSetting extends React.Component {
           </RadioGroup>
         </div>
         <div className="page-body fixed">
-          <div className="panel-header"></div>
+          <div className="panel-min-header">&nbsp;</div>
           <div className="panel-body body-responsive">
-            <Table columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
         </div>
       </div>
