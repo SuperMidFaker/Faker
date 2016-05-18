@@ -241,8 +241,8 @@ export default class TaskSetting extends React.Component {
             </RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body">
-          <div className="panel-header"></div>
+        <div className="page-body fixed">
+          <div className="panel-min-header">&nbsp;</div>
           <div className="panel-body body-responsive">
             <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource}/>
           </div>
