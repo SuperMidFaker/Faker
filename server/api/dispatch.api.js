@@ -50,7 +50,11 @@ function *listShipmts() {
 }
 
 function *listExpandShipmts() {
-
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  const shipmtNo = this.request.query.shipmtNo;
+  // no more than 3 so use 0, 100
+  const res = yield shipmtDispDao.getDispatchShipmts(tenantId, {'S.parent_no': shipmtNo}, 0, 100);
+  Result.OK(this, res);
 }
 
 function *listLsps() {
@@ -90,8 +94,7 @@ function *listVehicles() {
 function *doDispatch() {
   const { tenantId,
           loginId,
-          parentId,
-          shipmtNo,
+          shipmtNos,
           partnerTenantId,
           partnerName,
           freightCharge,
@@ -105,35 +108,43 @@ function *doDispatch() {
   if (tenants.length === 0 || tusers.length === 0) {
     return Result.ParamError(this, 'tenantId or loginId is error');
   }
-  // 新建tms_shipment_dispatch记录
-  const disp = {
-    shipmt_no: shipmtNo,
-    parent_id: parentId,
-    sr_login_id: tusers[0].loginId,
-    sr_login_name: tusers[0].username,
-    sr_tenant_id: tenantId,
-    sr_name: tenants[0].name,
-    source: SHIPMENT_SOURCE.subcontracted,
-    sp_tenant_id: partnerTenantId,
-    sp_name: partnerName,
-    disp_time: new Date(),
-    freight_charge: freightCharge,
-    disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
-    status: SHIPMENT_TRACK_STATUS.unaccepted,
-    pod_type: podType
-  };
-  // 更新之前dispatch记录的状态和时间
-  const upstatus = {
-    status: SHIPMENT_TRACK_STATUS.undelivered,
-    disp_time: new Date(),
-    wheres: {
-      sp_tenant_id: tenantId,
-      shipmt_no: shipmtNo,
-      id: parentId
-    }
-  };
 
-  yield [shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus)];
+  const arr = [];
+  shipmtNos.forEach(s => {
+    const shipmtNo = s.shipmtNo;
+    const parentId = s.dispId;
+    // 新建tms_shipment_dispatch记录
+    const disp = {
+      shipmt_no: shipmtNo,
+      parent_id: parentId,
+      sr_login_id: tusers[0].loginId,
+      sr_login_name: tusers[0].username,
+      sr_tenant_id: tenantId,
+      sr_name: tenants[0].name,
+      source: SHIPMENT_SOURCE.subcontracted,
+      sp_tenant_id: partnerTenantId,
+      sp_name: partnerName,
+      disp_time: new Date(),
+      freight_charge: freightCharge,
+      disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
+      status: SHIPMENT_TRACK_STATUS.unaccepted,
+      pod_type: podType
+    };
+    // 更新之前dispatch记录的状态和时间
+    const upstatus = {
+      status: SHIPMENT_TRACK_STATUS.undelivered,
+      disp_time: new Date(),
+      wheres: {
+        sp_tenant_id: tenantId,
+        shipmt_no: shipmtNo,
+        id: parentId
+      }
+    };
+
+    arr.push(shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus));
+  });
+
+  yield arr;
   Result.OK(this);
 }
 /**
@@ -314,28 +325,34 @@ function *segmentRequest() {
  * 需要检查是否已经有子运单分配承运商
  */
 function *segmentCancelRequest() {
-  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
-  const shipmtNo = this.request.query.shipmtNo;
-  const [ res ] = yield shipmtDispDao.countShipmtSubdisp(tenantId, shipmtNo);
-  if (res && res.count > 0) {
+  const { tenantId, shipmtNo } = yield parse(this.req);
+  const res = yield shipmtDispDao.getSegmentShipmtStatus(tenantId, shipmtNo);
+  const b = res.every(v => {
+    return v.status <= 2;
+  });
+  if (!b) {
     return Result.ParamError(this, 'shipmtNo has dispatched');
   }
 
   // TODO delete shipment and shipment dispatch
-
+  const arr = [];
+  res.forEach(v => {
+    arr.push(shipmtDao.deleteShipmt({wheres: {shipmt_no: v.shipmt_no}}));
+    arr.push(shipmtDispDao.deleteDisp({wheres: {id: v.id}}));
+  });
+  arr.push(shipmtDao.updateShipmt({segmented: 0, wheres: {shipmt_no: shipmtNo}}));
+  yield arr;
   Result.OK(this);
 }
-/**
- * 检查是否已经有子运单分配承运商，如果有则不能进行取消分段
- */
-function *segmentCancelCheck() {
-  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
-  const shipmtNo = this.request.query.shipmtNo;
-  let [ res ] = yield shipmtDispDao.countShipmtSubdisp(tenantId, shipmtNo);
-  if (!res) {
-    res = {count: 0};
-  }
-  Result.OK(this, res);
+
+function *segmentCancelCheckRequest() {
+  const { tenantId, shipmtNo } = yield parse(this.req);
+  const res = yield shipmtDispDao.getSegmentShipmtStatus(tenantId, shipmtNo);
+
+  const b = res.every(v => {
+    return v.status <= 2;
+  });
+  Result.OK(this, b);
 }
 
 export default [
@@ -345,7 +362,7 @@ export default [
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
   [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],
   [ 'post', '/v1/transport/dispatch/segment/cancel', segmentCancelRequest ],
-  [ 'get', '/v1/transport/dispatch/segment/cancelcheck', segmentCancelCheck ],
+  [ 'post', '/v1/transport/dispatch/segment/cancelcheck', segmentCancelCheckRequest ],
   [ 'post', '/v1/transport/dispatch', doDispatch ],
   [ 'post', '/v1/transport/dispatch/send', doSend ],
   [ 'post', '/v1/transport/dispatch/return', doReturn ],

@@ -89,7 +89,7 @@ function genDispFilters(filter, tenantId) {
     wheres[' SD.disp_status = 1 and SD.sr_tenant_id '] = tenantId;
   }
   if (filter.origin) {
-    wheres.parent_no = 'is_null'; // parent_no is null
+    wheres[' S.segmented '] = 1; // parent_no is null
   } else {
     Object.keys(filter).forEach(key => {
       if (key !== 'status' && key !== 'origin') {
@@ -210,6 +210,7 @@ export default {
   },
   getDispatchShipmts(tenantId, filter, offset, pageSize) {
     const awhere = genDispFilters(filter, tenantId);
+    console.log(awhere);
     const obj = {
       fields: `SD.id as \`key\`, S.shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
@@ -219,6 +220,7 @@ export default {
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
       effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented`,
       ons1: 'S.shipmt_no = SD.shipmt_no',
+      _orders: 'acpt_time desc',
       wheres: awhere,
       _limits: {min: offset, max: pageSize}
     };
@@ -280,8 +282,13 @@ export default {
   copyDisp(disp) {
     return dispOrm.copyWithObj(disp);
   },
-  countShipmtSubdisp(tenantId, shipmtNo) {
-    return dispOrm.selectObjs({fields: ['count(shipmt_no) as count'], wheres: {parent_id: 'max_0', shipmt_no: shipmtNo}});
+  getSegmentShipmtStatus(tenantId, shipmtNo) {
+    const obj = {
+      fields: 'S.shipmt_no, SD.id, SD.status',
+      ons1: 'SD.shipmt_no = S.shipmt_no',
+      wheres: {'S.parent_no': shipmtNo}
+    };
+    return shipmentOrm.leftJoin(dispOrm, obj);
   },
   getShipmtWithNo(shipmtNo) {
     const sql = `SELECT tms_shipments.*, tms_shipment_dispatch.sr_name FROM tms_shipments, tms_shipment_dispatch

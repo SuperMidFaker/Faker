@@ -10,7 +10,8 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
    'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
    'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
-   'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED']);
+   'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
+   'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL']);
 
 const initialState = {
   loaded: false,
@@ -76,6 +77,11 @@ export default function reducer(state = initialState, action) {
       transitModes: action.result.data.transitModes};
     case actionTypes.SEGMENT_SUCCEED:
       return { ...state, segmented: true};
+    case actionTypes.LOAD_EXPANDLIST_SUCCEED: {
+      const expandList = { ...state.expandList };
+      expandList[action.params.shipmtNo] = action.result.data;
+      return { ...state, expandList };
+    }
     default:
       return state;
   }
@@ -209,17 +215,49 @@ export function segmentRequest(cookie, params) {
   };
 }
 
+export function segmentCancelRequest(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEGMENT_CANCEL,
+        actionTypes.SEGMENT_CANCEL_SUCCEED,
+        actionTypes.SEGMENT_CANCEL_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/segment/cancel',
+      method: 'post',
+      data: params,
+      cookie
+    }
+  };
+}
+
+export function segmentCancelCheckRequest(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEGMENT_CANCEL,
+        actionTypes.SEGMENT_CANCEL_SUCCEED,
+        actionTypes.SEGMENT_CANCEL_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/segment/cancelcheck',
+      method: 'post',
+      data: params,
+      cookie
+    }
+  };
+}
+
 export function loadExpandList(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SEGMENT,
-        actionTypes.SEGMENT_SUCCEED,
-        actionTypes.SEGMENT_FAIL,
+        actionTypes.LOAD_EXPANDLIST,
+        actionTypes.LOAD_EXPANDLIST_SUCCEED,
+        actionTypes.LOAD_EXPANDLIST_FAIL,
       ],
       endpoint: 'v1/transport/dispatch/expandlist',
-      method: 'post',
-      data: params,
+      method: 'get',
+      params,
       cookie
     }
   };

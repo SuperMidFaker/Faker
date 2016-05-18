@@ -94,7 +94,7 @@ export default class DispatchDock extends React.Component {
                 width: 50
               }, {
                 title: '司机',
-                dataIndex: 'driver_name',
+                dataIndex: 'name'
                 width: 50
               }, {
                 title: '车型',
@@ -106,16 +106,22 @@ export default class DispatchDock extends React.Component {
                 width: 30
               }, {
                 title: '载重',
-                dataIndex: 'load',
-                width: 30
+                width: 30,
+                dataIndex: 'load_weight'
               }, {
                 title: '已分配',
                 dataIndex: 'dispatched',
-                width: 20
+                width: 20,
+                render: () => {
+                  return (<span>否</span>);
+                }
               }, {
                 title: '在途',
                 dataIndex: 'driving',
-                width: 20
+                width: 20,
+                render: () => {
+                  return (<span>否</span>);
+                }
               }, {
                 title: this.msg('shipmtOP'),
                 width: 50,
@@ -183,12 +189,14 @@ export default class DispatchDock extends React.Component {
     // TODO multi shipments dispatch
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
+    const shipmtNos = shipmts.map(s => {
+      return {shipmtNo: s.shipmt_no, dispId: s.key};
+    });
     if (type === 'tenant') {
       this.props.doDispatch(null, {
         tenantId,
         loginId,
-        shipmtNo: shipmts[0].shipmt_no,
-        parentId: shipmts[0].key,
+        shipmtNos,
         partnerName: target.partner_name,
         partnerTenantId: target.partner_tenant_id,
         freightCharge: this.state.quotation,
@@ -244,10 +252,14 @@ export default class DispatchDock extends React.Component {
 
   showConfirm(type, target) {
     const [ shipmt ] = this.props.shipmts;
+    let msg = `将运单编号【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运商`;
+    if (type === 'vehicle') {
+      msg = `将运单编号【${shipmt.shipmt_no}】分配给【${target.plate_number}】`;
+    }
     Modal.confirm({
       content: (
         <div className="dispatch-confirm">
-          <div style={{ marginBottom: 10 }}>将运单编号【{shipmt.shipmt_no}】分配给【{target.partner_name}】承运商</div>
+          <div style={{ marginBottom: 10 }}>{msg}</div>
           <RadioGroup onChange={this.handlePodTypeChange.bind(this)} value={this.state.podType}>
             <Radio key="a" value="dreceipt"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera" />需要电子回单</Radio>
             <Radio key="b" value="none"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera-o" />不要电子回单</Radio>
@@ -264,8 +276,9 @@ export default class DispatchDock extends React.Component {
   }
 
   render() {
-    const { show, shipmts, lsps } = this.props;
+    const { show, shipmts, lsps, vehicles } = this.props;
     this.lspsds.remotes = lsps;
+    this.vesds.remotes = vehicles;
     let dock = '';
     if (show) {
       const arr = [];
@@ -289,8 +302,12 @@ export default class DispatchDock extends React.Component {
         }
       });
 
+<<<<<<< HEAD
+      dock = (<div className="dock-container" key="dock1" onClick={(e) => {e.stopPropagation();}}>
+=======
 /*
       dock = (<div className="dock-container" key="dock1">
+>>>>>>> 2aabebfae7ab13ef81d12a308c8df2d9fea30a12
                 <div className="dock-content">
                   <div className="dock-sp">
                     <div className="dock-sp-body">
@@ -351,3 +368,5 @@ export default class DispatchDock extends React.Component {
     );
   }
 }
+
+export default DispatchDock;
