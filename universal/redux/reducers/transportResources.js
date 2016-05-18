@@ -7,12 +7,14 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'LOAD_CARLIST', 'LOAD_CARLIST_SUCCEED', 'LOAD_CARLIST_FAIL',
   'ADD_DRIVER', 'ADD_DRIVER_SUCCEED', 'ADD_DRIVER_FAIL',
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
-  'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL'
+  'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
+  'SET_MENU_ITEM_KEY'
 ]);
 
 const initialState = {
   cars: [],
-  drivers: []
+  drivers: [],
+  selectedMenuItemKey: '0',
 };
 
 export default function reducer(state = initialState, action) {
@@ -21,6 +23,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, drivers: action.result.data };
     case actionTypes.LOAD_CARLIST_SUCCEED:
       return { ...state, cars: action.result.data };
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey: action.key };
     default:
       return state;
   }
@@ -112,4 +116,8 @@ export function loadDriverList() {
       method: 'get'
     }
   };
+}
+
+export function setMenuItemKey(key) {
+  return {type: actionTypes.SET_MENU_ITEM_KEY, key};
 }

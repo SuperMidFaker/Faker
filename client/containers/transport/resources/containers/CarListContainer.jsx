@@ -10,10 +10,11 @@ function fetchData({dispatch}) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({cars: state.transportResources.cars || []}))
+@connect(state => ({cars: state.transportResources.cars, selectedMenuItemKey: state.transportResources.selectedMenuItemKey}))
 export default class CarListContainer extends Component {
   static propTypes = {
-    cars: PropTypes.array.isRequired,   // 服务器返回的车辆数组
+    cars: PropTypes.array.isRequired,                 // 服务器返回的车辆数组
+    selectedMenuItemKey: PropTypes.string.isRequired, // 当先选中的menuItem key
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
@@ -24,7 +25,9 @@ export default class CarListContainer extends Component {
   render() {
     const dataSource = this.props.cars.map(transformRawCarDataToDisplayData);
     return (
-      <CarList dataSource={dataSource} onAddCarBtnClicked={this.handleAddCarBtnClicked}/>
+      <CarList dataSource={dataSource}
+               visible={this.props.selectedMenuItemKey === '0'}
+               onAddCarBtnClicked={this.handleAddCarBtnClicked}/>
     );
   }
 }

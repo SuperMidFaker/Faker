@@ -71,20 +71,25 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked } = props;
-  return (
-    <div>
-      <div style={{marginBottom: 16}}>
-        <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
+  const { dataSource, onAddDriverBtnClicked, visible } = props;
+  if (visible) {
+    return (
+      <div>
+        <div style={{marginBottom: 16}}>
+          <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
+        </div>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
       </div>
-      <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
-    </div>
-  );
+    );
+  } else {
+    return <div></div>;
+  }
 }
 
 DriverList.propTyps = {
   dataSource: PropTypes.array,
   onAddDriverBtnClicked: PropTypes.func.isRequired, // 点击新建司机按钮后执行的回调函数
+  visible: PropTypes.bool.isRequired,               // 组件是否可见
 };
 
 export default DriverList;
