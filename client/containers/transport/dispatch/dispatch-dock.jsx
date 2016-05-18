@@ -94,7 +94,7 @@ export default class DispatchDock extends React.Component {
                 width: 50
               }, {
                 title: '司机',
-                dataIndex: 'name'
+                dataIndex: 'name',
                 width: 50
               }, {
                 title: '车型',
