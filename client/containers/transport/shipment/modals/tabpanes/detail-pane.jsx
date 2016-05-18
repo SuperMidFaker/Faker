@@ -23,7 +23,7 @@ function PaneFormItem(props) {
   const fieldCls = `pane-field ${getColCls(fieldCol)}`;
   return (
     <div className="pane-form-item">
-      <label className={labelCls}>{label}</label>
+      <label className={labelCls}>{label}：</label>
       <div className={fieldCls}>{field}</div>
     </div>
   );
@@ -87,10 +87,11 @@ export default class PreviewPanel extends React.Component {
   render() {
     const { shipmt } = this.props;
     return (
-      <div className="pane-content">
+      <div className="pane-content tab-pane">
+        <Row className="pane-section">
         <Col span="12">
-          <div className="subform-heading subform-padding">
-            <div className="subform-title">{this.msg('consignerInfo')}</div>
+          <div className="subform-heading">
+            <h3 className="subform-title">{this.msg('consignerInfo')}</h3>
           </div>
           <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
             field={ shipmt.consigner_name } fieldCol={{ span: 18 }}
@@ -112,8 +113,8 @@ export default class PreviewPanel extends React.Component {
           />
         </Col>
         <Col span="12">
-          <div className="subform-heading subform-padding">
-            <div className="subform-title">{this.msg('consigneeInfo')}</div>
+          <div className="subform-heading">
+            <h3 className="subform-title">{this.msg('consigneeInfo')}</h3>
           </div>
           <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consignee')}
             field={ shipmt.consignee_name } fieldCol={{ span: 18 }}
@@ -134,54 +135,55 @@ export default class PreviewPanel extends React.Component {
             field={ shipmt.consignee_mobile } fieldCol={{ span: 18 }}
           />
         </Col>
-        <Row>
-          <div className="subform-heading subform-padding">
-            <div className="subform-title">{this.msg('scheduleInfo')}</div>
+        </Row>
+        <Row className="pane-section">
+          <div className="subform-heading">
+            <h3 className="subform-title">{this.msg('scheduleInfo')}</h3>
           </div>
-          <Col span="7" offset="1">
-            <PaneFormItem labelCol={{ span: 7 }} label={this.msg('pickupDate')}
-              field={ moment(shipmt.pickup_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 17 }}
+          <Col span="8">
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupDate')}
+              field={ moment(shipmt.pickup_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
             />
           </Col>
           <Col span="8">
-            <PaneFormItem labelCol={{ span: 6, offset: 1 }} label={this.msg('shipmtTransit')}
-              field={ `${shipmt.transit_time || 0}${this.msg('day')}` } fieldCol={{ span: 17 }}
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('shipmtTransit')}
+              field={ `${shipmt.transit_time || 0}${this.msg('day')}` } fieldCol={{ span: 16 }}
             />
           </Col>
           <Col span="8">
-            <PaneFormItem labelCol={{ span: 6, offset: 1 }} label={this.msg('deliveryDate')}
-              field={ moment(shipmt.deliver_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 17 }}
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryDate')}
+              field={ moment(shipmt.deliver_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
             />
           </Col>
         </Row>
-        <Row>
-          <div className="subform-heading subform-padding">
-            <div className="subform-title">{this.msg('transitModeInfo')}</div>
+        <Row className="pane-section">
+          <div className="subform-heading">
+            <h3 className="subform-title">{this.msg('transitModeInfo')}</h3>
           </div>
-          <Col span="7" offset="1">
-            <PaneFormItem labelCol={{ span: 7 }} label={this.msg('transitModeInfo')}
-              field={ shipmt.transport_mode } fieldCol={{ span: 17 }}
+          <Col span="8">
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
+              field={ shipmt.transport_mode } fieldCol={{ span: 16 }}
             />
           </Col>
           <Col span="8">
-            <PaneFormItem labelCol={{ span: 6, offset: 1 }} label={this.msg('vehicleType')}
-              field={ shipmt.vehicle_type } fieldCol={{ span: 17 }}
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
+              field={ shipmt.vehicle_type } fieldCol={{ span: 16 }}
             />
           </Col>
           <Col span="8">
-            <PaneFormItem labelCol={{ span: 6, offset: 1 }} label={this.msg('vehicleLength')}
-              field={shipmt.vehicle_length} fieldCol={{ span: 17 }}
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
+              field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
             />
           </Col>
           <Col span="24">
-            <PaneFormItem labelCol={{ span: 1, offset: 2 }} label={this.msg('remark')}
+            <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
               field={ shipmt.remark } fieldCol={{ span: 21 }}
             />
           </Col>
         </Row>
-        <Row>
-          <div className="subform-heading subform-padding">
-            <div className="subform-title">{this.msg('goodsInfo')}</div>
+        <Row className="pane-section">
+          <div className="subform-heading">
+            <h3 className="subform-title">{this.msg('goodsInfo')}</h3>
           </div>
           <Table size="middle" bordered columns={this.columns} pagination={false}
             dataSource={shipmt.goodslist}

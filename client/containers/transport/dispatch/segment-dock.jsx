@@ -87,7 +87,7 @@ export default class SegmentDock extends React.Component {
     const mds = this.props.transitModes.map(t =>
       <Option key={t.id} value={t.id}>{t.mode_name}</Option>);
     const s = (
-      <div className="segment-group">
+      <div className="pane-section">
         <Row type="flex" justify="start">
           <Col span="12">中转站：</Col>
         </Row>
@@ -259,6 +259,7 @@ export default class SegmentDock extends React.Component {
         err = (<Alert message="分段参数错误" type="error" showIcon closable/>);
       }
 
+      /*
       dock = (<div className="dock-container" key="dock2">
                 <div className="dock-content" style={{width: 480}}>
                   <div className="dock-sp-line"></div>
@@ -293,6 +294,44 @@ export default class SegmentDock extends React.Component {
                   </div>
                 </div>
               </div>);
+              */
+        dock = (
+          <div className="dock-panel inside">
+            <div className="panel-content">
+              <div className="header">
+                <span className="title">分段 {shipmts.length}个运单</span>
+                <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
+                <div className="pull-right">
+                  <Button type="ghost" shape="circle-outline" onClick={ this.onCloseWrapper }>
+                    <Icon type="cross" />
+                  </Button>
+                </div>
+              </div>
+              <div className="body">
+                        <div className="pane-content">
+                          <div className="subform-heading">
+                            <h3 className="subform-title">时间计划</h3>
+                          </div>
+                          <Row className="pane-section" type="flex" justify="start">
+                            <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
+                            <Col span="12">交货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
+                          </Row>
+                          <div className="subform-heading">
+                            <h3 className="subform-title">分段中转</h3>
+                          </div>
+                          {err}
+                          {sg}
+                          {this.state.segments}
+                          <div style={{ marginTop: 24 }}>
+                            <Button type="ghost" onClick={ this.onCloseWrapper }>{this.msg('btnTextCancel')}</Button>
+                            <span className="ant-divider" style={{width: '0px'}}/>
+                            <Button type="primary" onClick={this.handleSegment }>{this.msg('btnTextOk')}</Button>
+                          </div>
+                        </div>
+              </div>
+            </div>
+          </div>
+        );
     }
 
     return (

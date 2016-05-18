@@ -51,7 +51,7 @@ export default class PreviewPanel extends React.Component {
     const { visible, shipmtNo, status } = this.props;
     return (
       <div className={`preview-panel ${visible ? 'inside' : ''}`}>
-        <div className="activity-panel">
+        <div className="panel-content">
           <div className="header">
             <span className="title">{shipmtNo}</span>
             <Tag color="blue">{this.msg(getTrackStatusMsg(status))}</Tag>
