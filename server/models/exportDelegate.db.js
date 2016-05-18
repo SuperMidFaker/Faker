@@ -1,4 +1,6 @@
 import mysql from '../../reusable/db-util/mysql';
+import tenantDao from '../models/tenant.db';
+import delegateDao from '../models/delegate.db';
 
 function putInComposition(f, args) {
   let sql = '';
@@ -124,8 +126,9 @@ export default {
         }
       }
 
-      const result = yield mysql.query(`SELECT REPLACE(uuid(),'-','') as uid`, [], trans);
-      const uuid = result[0].uid;
+      let res = yield tenantDao.getTenantInfo(entity.tenant_id);
+      const result = yield delegateDao.genDelNo(res[0].subdomain, '', entity.tenant_id);
+      const uuid = result.del_no;
       insertClause.push('del_no');
       args.push(uuid);
       varlueClause.push('?');
