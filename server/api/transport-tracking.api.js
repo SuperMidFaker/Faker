@@ -22,7 +22,7 @@ function *trackingShipmtListG() {
       data: shipments
     });
   } catch (e) {
-    /* handle error */
+    return Result.InternalServerError(this, e.message);
   }
 }
 

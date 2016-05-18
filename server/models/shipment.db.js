@@ -219,7 +219,7 @@ export default {
       consigner_contact, consigner_mobile, consignee_name, consignee_province, consignee_city,
       consignee_district, consignee_addr, consignee_contact, consignee_mobile,
       pickup_est_date, transit_time, deliver_est_date, transport_mode, vehicle_type, vehicle_length,
-      package, goods_type, remark from tms_shipments where shipmt_no = ?`;
+      package, goods_type, effective, remark from tms_shipments where shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },

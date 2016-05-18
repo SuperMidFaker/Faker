@@ -139,6 +139,7 @@ export default class TrackingList extends React.Component {
     }
   }, {
     title: this.msg('shipmtPrevTrack'),
+    width: 140,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return `${this.msg('sendAction')}
@@ -162,6 +163,7 @@ export default class TrackingList extends React.Component {
     },
   }, {
     title: this.msg('shipmtNextUpdate'),
+    width: 140,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return this.msg('carrierUpdate');
@@ -205,10 +207,12 @@ export default class TrackingList extends React.Component {
     },
   }, {
     title: this.msg('shipmtException'),
+    width: 140,
     dataIndex: 'excp_level',
   }, {
     title: this.msg('shipmtCarrier'),
     dataIndex: 'sp_name',
+    width: 140,
     render: (o, record) => {
       if (record.sp_name) {
         if (record.sp_tenant_id > 0) {
@@ -235,6 +239,7 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
+    width: 140
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
