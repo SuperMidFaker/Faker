@@ -47,6 +47,13 @@ export default function reducer(state = initialState, action) {
       const cars = updateArray({array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo});
       return { ...state, loading: false, cars };
     }
+    case actionTypes.EDIT_DRIVER:
+      return { ...state, loading: true };
+    case actionTypes.EDIT_DRIVER_SUCCEED: {
+      const { driverId, driverInfo } = action.result.data;
+      const drivers = updateArray({array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo});
+      return { ...state, loading: false, drivers };
+    }
     case actionTypes.LOAD_CARLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:

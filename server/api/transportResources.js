@@ -28,7 +28,7 @@ function *editDriver() {
     const body = yield cobody(this);
     const { driverId, driverInfo } = body;
     yield TransportResourcesDao.updateDriverWithInfo({driverId, driverInfo});
-    return Result.OK(this);
+    return Result.OK(this, { driverId, driverInfo });
   } catch(e) {
     return Result.InternalServerError(this, e.message);
   }

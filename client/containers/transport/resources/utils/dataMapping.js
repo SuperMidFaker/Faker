@@ -1,4 +1,4 @@
-const statusTexts = {
+const carStatusTexts = {
   '-1': '已停用',
   '0': '不在途',
   '1': '在途'
@@ -28,11 +28,16 @@ const vpropertyTypes = {
   '1': '公司车辆'
 };
 
+const driverStatusTexts = {
+  '0': '不可用',
+  '1': '可用'
+};
+
 export function transformRawCarDataToDisplayData(car) {
   const displayData = Object.assign({}, car);
 
   // map status code such as 0, 1 to status test
-  displayData.status = displayData.status ? statusTexts[displayData.status] : statusTexts[0];
+  displayData.status = displayData.status != undefined ? carStatusTexts[displayData.status] : carStatusTexts[0];
   // map connect_type code to connect_type text
   displayData.connect_type = displayData.connect_type ? connectTypes[displayData.connect_type] : connectTypes[0];
   // map car type code to type text
@@ -41,6 +46,14 @@ export function transformRawCarDataToDisplayData(car) {
   displayData.length = lengthTypes[displayData.length];
   // map vpropetry code to text
   displayData.vproperty = vpropertyTypes[displayData.vproperty];
+
+  return displayData;
+}
+
+export function transformRawDriverDataToDisplayData(driver) {
+  const displayData = Object.assign({}, driver);
+
+  displayData.status = displayData.status !== undefined ? driverStatusTexts[displayData.status] : driverStatusTexts[1];
 
   return displayData;
 }

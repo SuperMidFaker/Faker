@@ -71,7 +71,7 @@ export default function CarList(props) {
       key: 'connect_type'
     },
     {
-      title: '是否在途',
+      title: '状态',
       dataIndex: 'status',
       key: 'status'
     },
