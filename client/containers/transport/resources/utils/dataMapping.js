@@ -41,8 +41,17 @@ export function transformRawCarDataToDisplayData(car) {
   displayData.length = lengthTypes[displayData.length];
   // map vpropetry code to text
   displayData.vproperty = vpropertyTypes[displayData.vproperty];
-  // add `key` unique props
-  displayData.key = displayData.vehicle_id;
 
   return displayData;
+}
+
+/**
+ * 给数组每个成员增加一个唯一的key,主要是因为react生成列表时需要唯一key
+ * @param {arr<Array>}
+ * @return {Array}
+ */
+export function addUniqueKeys(arr) {
+  return arr.map((item, index) => {
+    return {...item, key: index};
+  });
 }

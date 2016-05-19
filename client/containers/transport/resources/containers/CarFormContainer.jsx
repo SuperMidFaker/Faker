@@ -2,18 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import CarForm from '../components/CarForm.jsx';
-import { addCar, editCar, loadDriverList } from '../../../../../universal/redux/reducers/transportResources';
-import connectFetch from 'reusable/decorators/connect-fetch';
+import { addCar, editCar } from '../../../../../universal/redux/reducers/transportResources';
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 
 // TODO: fix display problem when eidt a car
 
-function fetchData({dispatch}) {
-  return dispatch(loadDriverList());
-}
-
-@connectFetch()(fetchData)
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,

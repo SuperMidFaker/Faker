@@ -5,7 +5,7 @@ import { setMenuItemKey } from '../../../../../universal/redux/reducers/transpor
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 
-@connectNav((props, dispatch, router) => {
+@connectNav((props, dispatch) => {
   dispatch(setNavTitle({
     depth: 2,
     text: '资源',
