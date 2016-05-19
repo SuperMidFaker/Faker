@@ -336,7 +336,7 @@ export default class AcceptList extends React.Component {
         width: 150,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-            return <span />;
+            return (<span className="na-operation">NA</span>);
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
@@ -372,6 +372,7 @@ export default class AcceptList extends React.Component {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           return (
             <span>
