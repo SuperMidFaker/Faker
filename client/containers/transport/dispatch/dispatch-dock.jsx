@@ -209,6 +209,25 @@ export default class DispatchDock extends React.Component {
           this.onCloseWrapper(true);
         }
       });
+    } else if (type === 'vehicle') {
+      this.props.doDispatch(null, {
+        tenantId,
+        loginId,
+        shipmtNos,
+        taskId: target.vehicle_id,
+        taskVehicle: target.plate_number,
+        taskDriverId: target.driver_id,
+        taskDriverName: target.name,
+        freightCharge: this.state.quotation,
+        podType,
+        type
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.onCloseWrapper(true);
+        }
+      });
     }
   }
 
