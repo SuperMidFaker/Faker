@@ -49,6 +49,14 @@ function *listShipmts() {
   });
 }
 
+function *listShipmtsGrouped() {
+  const filters = JSON.parse(this.request.query.filters);
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+
+  const shipmts = yield shipmtDispDao.getShipmtsGrouped(tenantId, filters);
+  Result.OK(this, shipmts);
+}
+
 function *listExpandShipmts() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const shipmtNo = this.request.query.shipmtNo;
@@ -95,11 +103,16 @@ function *doDispatch() {
   const { tenantId,
           loginId,
           shipmtNos,
+          partnerId,
           partnerTenantId,
           partnerName,
           freightCharge,
           podType,
-          type
+          type,
+          taskId,
+          taskVehicle,
+          taskDriverId,
+          taskDriverName
         } = yield parse(this.req);
 
   const [ tenants, tusers ] = yield [tenantDao.getTenantInfo(tenantId),
@@ -122,14 +135,26 @@ function *doDispatch() {
       sr_tenant_id: tenantId,
       sr_name: tenants[0].name,
       source: SHIPMENT_SOURCE.subcontracted,
-      sp_tenant_id: partnerTenantId,
-      sp_name: partnerName,
       disp_time: new Date(),
-      freight_charge: freightCharge,
       disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
       status: SHIPMENT_TRACK_STATUS.unaccepted,
       pod_type: podType
     };
+
+    if (type === 'tenant') {
+      disp.sp_partner_id = partnerId;
+      disp.sp_tenant_id = partnerTenantId;
+      disp.sp_name = partnerName;
+      disp.freight_charge = freightCharge;
+      if (disp.sp_tenant_id === -1 || !disp.sp_tenant_id) {
+        disp.status = SHIPMENT_TRACK_STATUS.undispatched;
+      }
+    } else {
+      disp.task_id = taskId;
+      disp.task_vehicle = taskVehicle;
+      disp.task_driver_id = taskDriverId;
+      disp.task_driver_name = taskDriverName;
+    }
     // 更新之前dispatch记录的状态和时间
     const upstatus = {
       status: SHIPMENT_TRACK_STATUS.undelivered,
@@ -358,6 +383,8 @@ function *segmentCancelCheckRequest() {
 export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
   [ 'get', '/v1/transport/dispatch/expandlist', listExpandShipmts ],
+  [ 'get', '/v1/transport/dispatch/shipmts/grouped', listShipmtsGrouped ],
+  [ 'get', '/v1/transport/dispatch/shipmts/groupedsub', listShipmtsGrouped ],
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
   [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],

@@ -9,9 +9,11 @@ const dispCols = [
   'parent_id/i',
   'sr_login_id/i',
   'sr_login_name/v',
+  'sr_partner_id/i',
   'sr_tenant_id/i',
   'sr_name/v',
   'source/i',
+  'sp_partner_id/i',
   'sp_tenant_id/i',
   'sp_name/v',
   'sp_acpt_login_id/i',
@@ -84,7 +86,7 @@ function genDispFilters(filter, tenantId) {
   if (filter.status === 'waiting') {
     wheres[' SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatching') {
-    wheres[' SD.status = 1 and SD.disp_status = 0 and SD.sr_tenant_id '] = tenantId;
+    wheres[' SD.disp_status = 0 and SD.sr_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatched') {
     wheres[' SD.disp_status = 1 and SD.sr_tenant_id '] = tenantId;
   }
@@ -92,7 +94,7 @@ function genDispFilters(filter, tenantId) {
     wheres[' S.segmented '] = 1; // parent_no is null
   } else {
     Object.keys(filter).forEach(key => {
-      if (key !== 'status' && key !== 'origin') {
+      if (['status', 'origin', 'type', 'consignerStep', 'consigneeStep'].indexOf(key) === -1) {
         wheres[key] = filter[key];
       }
     });
@@ -179,6 +181,61 @@ function generateDeleteClauseWithIds(ids) {
   }
 }
 
+function genGroupBy(filter) {
+  let strGroup;
+  let {type, consignerStep, consigneeStep} = filter;
+  if (type === 'consigner') {
+    consigneeStep = -1;
+  } else if (type === 'consignee') {
+    consignerStep = -1;
+  }
+  switch (consignerStep) {
+    case -1:
+      strGroup = '';
+      break;
+    case 20:
+      strGroup = 'consigner_city';
+      break;
+    case 40:
+      strGroup = 'consigner_district';
+      break;
+    case 60:
+      strGroup = 'consigner_addr';
+      break;
+    case 80:
+      strGroup = 'consigner_addr,consigner_name';
+      break;
+    default:
+      strGroup = 'consigner_province';
+      break;
+  }
+
+  switch (consigneeStep) {
+    case -1:
+      strGroup += '';
+      break;
+    case 20:
+      strGroup += ',consignee_city';
+      break;
+    case 40:
+      strGroup += ',consignee_district';
+      break;
+    case 60:
+      strGroup += ',consignee_addr';
+      break;
+    case 80:
+      strGroup += ',consignee_addr,consignee_name';
+      break;
+    default:
+      strGroup += ',consignee_province';
+      break;
+  }
+  if (strGroup && strGroup.substr(0, 1) === ',') {
+    strGroup = strGroup.substr(1);
+  }
+  return strGroup;
+}
+
 export default {
   orm: dispOrm,
   getFilteredTotalCount(tenantId, shipmtDispType, shipmtNo, dispSt, unacceptSt) {
@@ -210,7 +267,6 @@ export default {
   },
   getDispatchShipmts(tenantId, filter, offset, pageSize) {
     const awhere = genDispFilters(filter, tenantId);
-    console.log(awhere);
     const obj = {
       fields: `SD.id as \`key\`, S.shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
@@ -218,7 +274,7 @@ export default {
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
-      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented`,
+      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented, SD.task_id, SD.task_vehicle`,
       ons1: 'S.shipmt_no = SD.shipmt_no',
       _orders: 'acpt_time desc',
       wheres: awhere,
@@ -384,5 +440,23 @@ export default {
     const removeClause = generateDeleteClauseWithIds(ids);
     const sql = `DELETE FROM tms_shipment_manifest WHERE ${removeClause}`
     return mysql.delete(sql);
+  },
+  getShipmtsGrouped(tenantId, filter) {
+    const awhere = {
+      'SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id': tenantId
+    };
+    const strGroup = genGroupBy(filter);
+    const obj = {
+      fields: `SD.id as \`key\`, count(S.shipmt_no) as count, consigner_name,
+      consigner_province, consigner_city, consigner_district, consigner_addr,
+      consignee_name, consignee_province, consignee_city, consignee_district,
+      consignee_addr, sum(total_count) as total_count, sum(total_weight) as total_weight, sum(total_volume) as total_volume`,
+      ons1: 'S.shipmt_no = SD.shipmt_no',
+      _orders: 'acpt_time desc',
+      _groups: strGroup,
+      wheres: awhere
+    };
+
+    return dispOrm.leftJoin(shipmentOrm, obj);
   }
 };

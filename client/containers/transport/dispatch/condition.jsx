@@ -21,7 +21,7 @@ class Condition extends React.Component {
 
   state = {
     type: 'subline',
-    consignorStep: 20,
+    consignerStep: 20,
     consigneeStep: 20,
     filterVisible: false,
     filterView: []
@@ -56,9 +56,9 @@ class Condition extends React.Component {
     };
 
     const filterView = [];
-    if (type === 'consignor' || type === 'subline') {
+    if (type === 'consigner' || type === 'subline') {
       filterView.push((<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignor')}：</h3></Row>),
-      (<Row><Slider key="consignor" step={null} max="80" marks={markscor} defaultValue={this.state.consignorStep} onChange={this.handleSliderChange.bind(this, 'consignor')}/></Row>));
+      (<Row><Slider key="consignor" step={null} max="80" marks={markscor} defaultValue={this.state.consignerStep} onChange={this.handleSliderChange.bind(this, 'consignor')}/></Row>));
     }
     if (type === 'consignee' || type === 'subline') {
       filterView.push((<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignee')}：</h3></Row>),
@@ -69,8 +69,8 @@ class Condition extends React.Component {
 
   handleSliderChange(type, val) {
     if (type === 'consignor') {
-      const consignorStep = val;
-      this.setState({consignorStep});
+      const consignerStep = val;
+      this.setState({consignerStep});
     } else if (type === 'consignee') {
       const consigneeStep = val;
       this.setState({consigneeStep});
@@ -84,11 +84,11 @@ class Condition extends React.Component {
   }
 
   handleOk() {
-    const {type, consignorStep, consigneeStep} = this.state;
+    const {type, consignerStep, consigneeStep} = this.state;
     this.setState({
       filterVisible: false
     }, () => {
-      this.onConditionChange({type, consignorStep, consigneeStep});
+      this.onConditionChange({type, consignerStep, consigneeStep});
     });
   }
 
@@ -98,7 +98,7 @@ class Condition extends React.Component {
         <Row type="flex" justify="center">
           <RadioGroup onChange={this.handleFilterTypeChange.bind(this)} value={this.state.type}>
             <RadioButton value="subline">{this.msg('filterTitleSubLine')}</RadioButton>
-            <RadioButton value="consignor">{this.msg('filterTitleConsignor')}</RadioButton>
+            <RadioButton value="consigner">{this.msg('filterTitleConsignor')}</RadioButton>
             <RadioButton value="consignee">{this.msg('filterTitleConsignee')}</RadioButton>
           </RadioGroup>
         </Row>
@@ -111,6 +111,7 @@ class Condition extends React.Component {
     );
     return (
       <Popover placement="bottomLeft" content={content} trigger="click"
+        overlayStyle={{left: 132}}
         visible={this.state.filterVisible} onVisibleChange={this.handleFilterVisibleChange.bind(this)}>
         <Button>
           <span>{this.msg('filterTitle')}</span><Icon type="down" />
