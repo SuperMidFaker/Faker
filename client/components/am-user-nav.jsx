@@ -46,7 +46,7 @@ export default class AmUserNav extends React.Component {
       </Menu>);
     return (
       <li className="dropdown">
-        <Popover placement="bottomLeft" trigger="click" overlay={userMenu}>
+        <Popover placement="bottomLeft" trigger="click" content={userMenu}>
           <a role="button" aria-expanded="false" className="dropdown-toggle">
             <img src={avatar || defaultAvatar } />
             <span className="angle-down s7-angle-down"></span>

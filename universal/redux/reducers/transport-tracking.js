@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/', [
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
-  'LOAD_SHIPMT', 'LOAD_SHIPMT_FAIL', 'LOAD_SHIPMT_SUCCEED',
+  'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
   'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
   'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
@@ -38,13 +38,14 @@ const initialState = {
   },
 };
 
+export const LOAD_TRANSHIPMT_SUCCEED = actionTypes.LOAD_TRANSHIPMT_SUCCEED;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_SHIPMT:
+    case actionTypes.LOAD_TRANSHIPMT:
       return { ...state, transit: { ...state.transit, loading: true, }};
-    case actionTypes.LOAD_SHIPMT_FAIL:
+    case actionTypes.LOAD_TRANSHIPMT_FAIL:
       return { ...state, transit: { ...state.transit, loading: false }};
-    case actionTypes.LOAD_SHIPMT_SUCCEED:
+    case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
       return { ...state, transit: { ...state.transit, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
@@ -106,9 +107,9 @@ export function loadTransitTable(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_SHIPMT,
-        actionTypes.LOAD_SHIPMT_SUCCEED,
-        actionTypes.LOAD_SHIPMT_FAIL,
+        actionTypes.LOAD_TRANSHIPMT,
+        actionTypes.LOAD_TRANSHIPMT_SUCCEED,
+        actionTypes.LOAD_TRANSHIPMT_FAIL,
       ],
       endpoint: 'v1/transport/tracking/shipmts',
       method: 'get',

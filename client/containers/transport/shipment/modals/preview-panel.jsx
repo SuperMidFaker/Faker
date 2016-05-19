@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Icon, Tabs, Tag/* , message */ } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
-import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'universal/constants';
 import { hidePreviewer } from 'universal/redux/reducers/shipment';
 import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
@@ -11,9 +11,11 @@ import './preview-panel.less';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
-function getTrackStatusMsg(status) {
+function getTrackStatusMsg(status, eff) {
   let msg = 'trackDraft';
-  if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
+  if (eff === SHIPMENT_EFFECTIVES.cancelled) {
+    msg = 'trackNullified';
+  } else if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
     msg = 'trackUnaccept';
   } else if (status === SHIPMENT_TRACK_STATUS.undispatched) {
     msg = 'trackUndispatched';
@@ -32,6 +34,7 @@ function getTrackStatusMsg(status) {
     visible: state.shipment.previewer.visible,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     status: state.shipment.previewer.shipmt.status,
+    effective: state.shipment.previewer.shipmt.effective,
   }),
   { hidePreviewer }
 )
@@ -41,6 +44,7 @@ export default class PreviewPanel extends React.Component {
     visible: PropTypes.bool.isRequired,
     shipmtNo: PropTypes.string,
     status: PropTypes.number,
+    effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
@@ -48,13 +52,13 @@ export default class PreviewPanel extends React.Component {
     this.props.hidePreviewer();
   }
   render() {
-    const { visible, shipmtNo, status } = this.props;
+    const { visible, shipmtNo, status, effective } = this.props;
     return (
       <div className={`preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
             <span className="title">{shipmtNo}</span>
-            <Tag color="blue">{this.msg(getTrackStatusMsg(status))}</Tag>
+            <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline"><Icon type="export" /></Button>
               <Button type="ghost" shape="circle-outline"><Icon type="share-alt" /></Button>

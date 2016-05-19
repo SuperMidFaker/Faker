@@ -5,6 +5,7 @@ import {
   assignFormC, clearFormC, setFormValueC
 } from 'reusable/domains/redux/form-common';
 import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
+import { LOAD_TRANSHIPMT_SUCCEED } from './transport-tracking';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
@@ -45,6 +46,7 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case LOAD_APTSHIPMENT_SUCCEED:
+    case LOAD_TRANSHIPMT_SUCCEED:
       return { ...state, previewer: { ...state.previewer, visible: false }};
     case actionTypes.LOAD_FORMREQUIRE:
       return { ...state, formData: initialState.formData };

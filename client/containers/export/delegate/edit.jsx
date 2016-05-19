@@ -455,7 +455,7 @@ export default class ExportDelegateEdit extends React.Component {
             <Button onClick={this.handleCancel}>取消</Button>
           </Col>
           <Col span="2">
-            <DropdownButton overlay={menu} className="pull-right">
+            <DropdownButton content={menu} className="pull-right">
               更多选项
             </DropdownButton>
           </Col>

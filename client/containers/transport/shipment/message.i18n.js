@@ -201,6 +201,10 @@ export default defineMessages({
     id: 'transport.shipment.track.draft',
     defaultMessage: '草稿'
   },
+  trackNullified: {
+    id: 'transport.shipment.track.nullified',
+    defaultMessage: '作废'
+  },
   trackUnaccept: {
     id: 'transport.shipment.track.unaccept',
     defaultMessage: '待接单'

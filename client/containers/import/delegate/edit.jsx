@@ -444,7 +444,7 @@ export default class ImportDelegateEdit extends React.Component {
             <Button onClick={this.handleCancel}>取消</Button>
           </Col>
           <Col span="3">
-            <DropdownButton overlay={menu}>
+            <DropdownButton content={menu}>
               更多选项
             </DropdownButton>
           </Col>

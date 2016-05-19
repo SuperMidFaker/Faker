@@ -110,7 +110,7 @@ class Condition extends React.Component {
       </div>
     );
     return (
-      <Popover placement="bottomLeft" overlay={content} trigger="click"
+      <Popover placement="bottomLeft" content={content} trigger="click"
         visible={this.state.filterVisible} onVisibleChange={this.handleFilterVisibleChange.bind(this)}>
         <Button>
           <span>{this.msg('filterTitle')}</span><Icon type="down" />

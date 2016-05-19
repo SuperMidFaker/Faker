@@ -316,58 +316,60 @@ export default class GoodsInfo extends React.Component {
           <div className="subform-title">{this.msg('goodsInfo')}</div>
         </div>
         <div className="subform-body">
-        <Col span={`${outerColSpan}`}>
-          <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} required
-          >
-            <Select {...getFieldProps('goods_type', {
-              rules: [{
-                required: true, message: this.msg('goodsTypeMust')
-              }]
-            })}
+          <Col span={`${outerColSpan}`}>
+            <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
+              wrapperCol={{span: 24 - labelColSpan}} required
             >
-            {goodsTypes.map(
-              gt => <Option value={gt.id} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
-            )}
-            </Select>
-          </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
-            field="total_count" colSpan={labelColSpan} hasFeedback={false}
-          />
-        </Col>
-        <Col span={`${outerColSpan}`}>
-          <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}}
-          >
-            <Select {...getFieldProps('package')}>
-            {packagings.map(
-              pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-            )}
-            </Select>
-          </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')} hasFeedback={false}
-            field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
-          />
-        </Col>
-        <Col span={`${outerColSpan}`}>
-          <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
-            field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
-          />
-          <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')} hasFeedback={false}
-            field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
-          />
-        </Col>
-        <Table size="middle" bordered columns={columns} dataSource={[...goods, {
-          key: 'goodsinfinity', __ops: [{
-            name: formatGlobalMsg(this.props.intl, 'add'),
-            handler: this.handleGoodsAdd
-          }, {
-            name: formatMsg(this.props.intl, 'compute'),
-            handler: this.handleGoodsListCompute
-          }]
-        }]} pagination={false}
-       />
-       </div>
+              <Select {...getFieldProps('goods_type', {
+                rules: [{
+                  required: true, message: this.msg('goodsTypeMust')
+                }]
+              })}
+              >
+              {goodsTypes.map(
+                gt => <Option value={gt.id} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
+              )}
+              </Select>
+            </FormItem>
+            <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
+              field="total_count" colSpan={labelColSpan} hasFeedback={false}
+            />
+          </Col>
+          <Col span={`${outerColSpan}`}>
+            <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
+              wrapperCol={{span: 24 - labelColSpan}}
+            >
+              <Select {...getFieldProps('package')}>
+              {packagings.map(
+                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+              )}
+              </Select>
+            </FormItem>
+            <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')} hasFeedback={false}
+              field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
+            />
+          </Col>
+          <Col span={`${outerColSpan}`}>
+            <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
+              field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
+            />
+            <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')} hasFeedback={false}
+              field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
+            />
+          </Col>
+          <Col span="24" className="subform-body">
+            <Table size="middle" bordered columns={columns} dataSource={[...goods, {
+              key: 'goodsinfinity', __ops: [{
+                name: formatGlobalMsg(this.props.intl, 'add'),
+                handler: this.handleGoodsAdd
+              }, {
+                name: formatMsg(this.props.intl, 'compute'),
+                handler: this.handleGoodsListCompute
+              }]
+            }]} pagination={false}
+            />
+          </Col>
+        </div>
       </Row>
     );
   }
