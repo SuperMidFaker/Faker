@@ -37,7 +37,7 @@ export function transformRawCarDataToDisplayData(car) {
   const displayData = Object.assign({}, car);
 
   // map status code such as 0, 1 to status test
-  displayData.status = displayData.status != undefined ? carStatusTexts[displayData.status] : carStatusTexts[0];
+  displayData.status = displayData.status !== undefined ? carStatusTexts[displayData.status] : carStatusTexts[0];
   // map connect_type code to connect_type text
   displayData.connect_type = displayData.connect_type ? connectTypes[displayData.connect_type] : connectTypes[0];
   // map car type code to type text

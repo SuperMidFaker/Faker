@@ -212,7 +212,7 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('shipmtCarrier'),
     dataIndex: 'sp_name',
-    width: 140,
+    width: 160,
     render: (o, record) => {
       if (record.sp_name) {
         if (record.sp_tenant_id > 0) {
@@ -239,19 +239,19 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
-    width: 140
+    width: 120
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 150
+    width: 50
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 150
+    width: 50
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 150
+    width: 50
   }, {
     title: this.msg('shipmtCustomer'),
     dataIndex: 'customer_name',
@@ -271,12 +271,12 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
-    width: 80,
+    width: 100,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
-    width: 80,
+    width: 100,
     render: (o, record) => record.pickup_act_date ?
       (<span className="mdc-text-green">
       {moment(record.pickup_act_date).format('YYYY.MM.DD')}
@@ -285,12 +285,12 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    width: 80,
+    width: 100,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
-    width: 80,
+    width: 100,
     render: (o, record) => record.deliver_act_date ?
       (<span className="mdc-text-green">
       {moment(record.deliver_act_date).format('YYYY.MM.DD')}
@@ -299,6 +299,7 @@ export default class TrackingList extends React.Component {
   }, {
     title: this.msg('proofOfDelivery'),
     dataIndex: 'pod_type',
+    width: 100,
     render: (text, record) => {
       if (record.pod_type === 'none') {
         return <Icon type="tags-o" />;
@@ -410,7 +411,7 @@ export default class TrackingList extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 18]} columnsPageSize={3}
+              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
