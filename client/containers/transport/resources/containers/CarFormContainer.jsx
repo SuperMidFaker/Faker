@@ -6,8 +6,6 @@ import { addCar, editCar } from '../../../../../universal/redux/reducers/transpo
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 
-// TODO: fix display problem when eidt a car
-
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,
