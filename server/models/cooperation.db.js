@@ -171,7 +171,7 @@ export default {
   },
   getAllPartnerByTypeCodeCount(tenantId, typeCode) {
     const sql = 'select count(partner_tenant_id) as count from sso_partnerships where tenant_id = ? and type_code = ?';
-    const args = [ tenantId, typeCode];
+    const args = [ tenantId, typeCode ];
     return mysql.query(sql, args);
   }
 };

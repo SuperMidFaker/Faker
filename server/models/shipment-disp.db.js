@@ -238,16 +238,17 @@ export default {
     return dispOrm.leftJoin(shipmentOrm, obj);
   },
   createAndAcceptByLSP(
-    shipmtNo, clientId, client, source, tenantId, tenantName,
-    loginId, loginName, confirmSt, dispSt, freightCharge, acpTime,
-    trans
+    shipmtNo, clientId, client, srPartnerId, source, tenantId, tenantName,
+    spPartnerId, loginId, loginName, confirmSt, dispSt, freightCharge,
+    acpTime, trans
   ) {
-    const sql = `insert into tms_shipment_dispatch (shipmt_no, sr_tenant_id, sr_name, source,
-      sp_tenant_id, sp_name, sp_acpt_login_id, sp_acpt_login_name, sp_disp_login_id, sp_disp_login_name,
+    const sql = `insert into tms_shipment_dispatch (shipmt_no, sr_tenant_id, sr_name,
+      sr_partner_id, source, sp_tenant_id, sp_name, sp_partner_id, sp_acpt_login_id,
+      sp_acpt_login_name, sp_disp_login_id, sp_disp_login_name,
       acpt_time, disp_status, status, freight_charge) values (?)`;
     const args = [
-      shipmtNo, clientId, client, source, tenantId, tenantName,
-      loginId, loginName, loginId, loginName, acpTime, confirmSt,
+      shipmtNo, clientId, client, srPartnerId, source, tenantId, tenantName,
+      spPartnerId, loginId, loginName, loginId, loginName, acpTime, confirmSt,
       dispSt, freightCharge || 0.0
     ];
     return mysql.insert(sql, [args], trans);

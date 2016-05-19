@@ -61,14 +61,14 @@ function fetchData({ state, dispatch, cookie }) {
   onFieldsChange(props, fields) {
     Object.keys(fields).forEach(name => {
       if (name === 'client') {
-        const clientFieldId = fields[name].value;
+        const clientFieldId = parseInt(fields[name].value, 10);
         const selclients = props.clients.filter(
-            cl => cl.tid === parseInt(clientFieldId, 10)
+            cl => cl.partner_id === clientFieldId
         );
         props.setConsignFields({
-          client_id: selclients.length > 0 ? clientFieldId : 0,
-          client_partner_id: selclients.length > 0 && selclients[0].partner_id,
-          client: selclients.length > 0 ? selclients[0].name : clientFieldId,
+          client_id: selclients.length > 0 ? selclients[0].tid : -1,
+          client_partner_id: selclients.length > 0 ? clientFieldId : -1,
+          client: selclients.length > 0 ? selclients[0].name : fields[name].value,
         });
       } else if (name === 'transport_mode_code') {
         const code = fields[name].value;
@@ -167,8 +167,8 @@ export default class ShipmentCreate extends React.Component {
   render() {
     const { intl, clients, submitting, tenantName, formhoc } = this.props;
     const clientOpts = clients.map(cl => ({
-      key: `${cl.name}/${cl.tid}`,
-      value: `${cl.tid}`,
+      key: `${cl.partner_id}/${cl.tid}`,
+      value: `${cl.partner_id}`,
       name: cl.name
     }));
     return (
@@ -186,36 +186,36 @@ export default class ShipmentCreate extends React.Component {
             <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
           </Col>
           <Col span="8" className="right-side-col">
+            <div className="subform-heading">
+              <div className="subform-title">{this.msg('correlativeInfo')}</div>
+            </div>
+            <div className="subform-body">
+              <AutoCompSelectItem formhoc={formhoc} colSpan={0} field="client"
+                optionData={clientOpts} required
+                optionField="name" optionKey="key" optionValue="value"
+                rules={[{
+                  required: true, message: this.msg('clientNameMust')
+                }]}
+              />
+              <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
+                fieldProps={{initialValue: tenantName}} disabled rules={[{
+                  required: true, message: this.msg('lspNameMust')
+                }]}
+              />
+              <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
+              <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
+              <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
+              </div>
               <div className="subform-heading">
-                  <div className="subform-title">{this.msg('correlativeInfo')}</div>
+                  <div className="subform-title">{this.msg('freightCharge')}</div>
               </div>
-              <div className="subform-body">
-                <AutoCompSelectItem formhoc={formhoc} colSpan={0} field="client"
-                  optionData={clientOpts} required
-                  optionField="name" optionKey="key" optionValue="value"
-                  rules={[{
-                    required: true, message: this.msg('clientNameMust')
-                  }]}
-                />
-                <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
-                  fieldProps={{initialValue: tenantName}} disabled rules={[{
-                    required: true, message: this.msg('lspNameMust')
-                  }]}
-                />
-                <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
-                <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
-                <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-                </div>
-                <div className="subform-heading">
-                    <div className="subform-title">{this.msg('freightCharge')}</div>
-                </div>
-              <div className="subform-body">
-                <InputItem type="number" formhoc={formhoc} colSpan={0}
-                  field="freight_charge" hasFeedback={false} rules={[{
-                        type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
-                  }]}
-                />
-              </div>
+            <div className="subform-body">
+              <InputItem type="number" formhoc={formhoc} colSpan={0}
+                field="freight_charge" hasFeedback={false} rules={[{
+                      type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
+                }]}
+              />
+            </div>
           </Col>
           </div>
           </div>

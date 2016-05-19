@@ -6,10 +6,12 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
+  'ACCEPT_DRAFT', 'ACCEPT_DRAFT_SUCCEED', 'ACCEPT_DRAFT_FAIL',
   'LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
   'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
   'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
   'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
+  'DEL_DRAFT', 'DEL_DRAFT_SUCCEED', 'DEL_DRAFT_FAIL',
   'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL'
 ]);
 
@@ -166,6 +168,36 @@ export function saveDraft(shipment, sp) {
       method: 'post',
       endpoint: 'v1/transport/shipment/draft',
       data: { shipment, sp },
+    }
+  };
+}
+
+export function acceptDraft(shipment, loginId, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCEPT_DRAFT,
+        actionTypes.ACCEPT_DRAFT_SUCCEED,
+        actionTypes.ACCEPT_DRAFT_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/transport/shipment/draft/saveaccept',
+      data: { shipment, loginId, loginName, tenantId },
+    }
+  };
+}
+
+export function delDraft(shipmtno) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_DRAFT,
+        actionTypes.DEL_DRAFT_SUCCEED,
+        actionTypes.DEL_DRAFT_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/transport/shipment/draft/del',
+      data: { shipmtno },
     }
   };
 }

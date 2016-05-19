@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_FORMREQUIRE', 'LOAD_FORMREQUIRE_FAIL', 'LOAD_FORMREQUIRE_SUCCEED',
   'EDIT_SHIPMENT', 'EDIT_SHIPMENT_FAIL', 'EDIT_SHIPMENT_SUCCEED',
   'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
+  'LOAD_DRAFTFORM', 'LOAD_DRAFTFORM_SUCCEED', 'LOAD_DRAFTFORM_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
@@ -75,6 +76,12 @@ export default function reducer(state = initialState, action) {
       const { customer_name } = formData;
       return { ...state, formData: { ...state.formData, ...formData, client: customer_name } };
     }
+    case actionTypes.LOAD_DRAFTFORM:
+      return { ...state, formData: initialState.formData };
+    case actionTypes.LOAD_DRAFTFORM_SUCCEED:
+      return { ...state, formData: { ...state.formData, ...action.result.data.shipmt,
+        client: action.result.data.shipmt.customer_name, goodslist: action.result.data.goodslist
+      }};
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: { shipmt: action.result.data, visible: true }};
     }
@@ -112,6 +119,22 @@ export function loadForm(cookie, params) {
         actionTypes.LOAD_FORM_FAIL,
       ],
       endpoint: 'v1/transport/shipment',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}
+
+export function loadDraftForm(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DRAFTFORM,
+        actionTypes.LOAD_DRAFTFORM_SUCCEED,
+        actionTypes.LOAD_DRAFTFORM_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/draft',
       method: 'get',
       params,
       cookie

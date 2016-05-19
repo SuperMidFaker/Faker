@@ -160,6 +160,7 @@ export default(store, cookie) => {
               <IndexRoute component={TMSAcceptance.List}/>
               <Route path="shipment/new" component={TMSAcceptance.CreateNew} />
               <Route path="shipment/edit/:shipmt" component={TMSAcceptance.Edit} />
+              <Route path="shipment/draft/:shipmt" component={TMSAcceptance.Draft} />
             </Route>
             <Route path="dispatch">
               <IndexRoute component={TMSDispatch.List}/>

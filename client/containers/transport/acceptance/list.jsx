@@ -8,7 +8,7 @@ import SearchBar from 'reusable/components/search-bar';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
-import { loadTable, loadAcceptDispatchers, revokeOrReject } from
+import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft } from
   'universal/redux/reducers/transport-acceptance';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'universal/constants';
@@ -48,7 +48,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
   }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail })
+  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail, delDraft })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -70,6 +70,7 @@ export default class AcceptList extends React.Component {
     sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
+    delDraft: PropTypes.func.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
@@ -257,6 +258,15 @@ export default class AcceptList extends React.Component {
   handleShipmtReject(dispId) {
     this.props.revokeOrReject('reject', dispId);
   }
+  handleShipmtDraftDel(shipmtNo) {
+    this.props.delDraft(shipmtNo).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad(undefined, 1);
+      }
+    });
+  }
   handleShipmtPreview(shipmtNo) {
     this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp').then(result => {
       if (result.error) {
@@ -316,7 +326,6 @@ export default class AcceptList extends React.Component {
     }
     let columns = this.columns;
     if (radioValue === 'unaccepted') {
-      // todo draft modify/delete
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 100,
@@ -352,6 +361,24 @@ export default class AcceptList extends React.Component {
               </span>
             );
           }
+        }
+      }];
+    } else if (radioValue === 'draft') {
+      columns = [ ...columns, {
+        title: formatContainerMsg(this.props.intl, 'opColumn'),
+        width: 100,
+        render: (o, record) => {
+          return (
+            <span>
+              <NavLink to={`/transport/acceptance/shipment/draft/${record.shipmt_no}`}>
+              {formatGlobalMsg(this.props.intl, 'modify')}
+              </NavLink>
+              <span className="ant-divider" />
+              <a role="button" onClick={() => this.handleShipmtDraftDel(record.shipmt_no)}>
+              {formatGlobalMsg(this.props.intl, 'delete')}
+              </a>
+            </span>
+          );
         }
       }];
     }

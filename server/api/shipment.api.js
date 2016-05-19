@@ -177,8 +177,9 @@ function *shipmtSaveAcceptP() {
     const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.effected, trans);
     const result = yield shipmentDispDao.createAndAcceptByLSP(
-      shipmtNo, shipmt.client_id, shipmt.client, SHIPMENT_SOURCE.consigned,
-      sp.tid, sp.name, sp.login_id, sp.login_name, SHIPMENT_DISPATCH_STATUS.confirmed,
+      shipmtNo, shipmt.client_id, shipmt.client, shipmt.client_partner_id,
+      SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
+      sp.login_name, SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipmt.freight_charge, new Date(), trans
     );
     yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
@@ -221,7 +222,24 @@ function *shipmtAcceptP() {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    Result.InternalServerError(this, e.message);
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *shipmtDraftG() {
+  const shipmtno = this.request.query.shipmtno;
+  try {
+    const shipmts = yield shipmentDao.getDraftShipmt(shipmtno);
+    if (shipmts.length !== 1) {
+      throw new Error('draft shipment not found');
+    }
+    const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtno);
+    return Result.OK(this, {
+      shipmt: shipmts[0],
+      goodslist,
+    });
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
   }
 }
 
@@ -244,6 +262,60 @@ function *shipmtDraftP() {
   }
 }
 
+function *shipmtDraftSaveAcceptP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const { shipment, loginName, loginId, tenantId } = body;
+    const { goodslist, shipmt_no, removedGoodsIds } = shipment;
+    const newGoods = goodslist.filter(goods => goods.id === undefined);
+    const editGoods = goodslist.filter(goods => goods.id !== undefined);
+    trans = yield mysql.beginTransaction();
+    const dbOps = [
+      shipmentDispDao.updateShipmtWithInfo(shipment, trans),
+    ];
+    if (editGoods.length > 0) {
+      dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
+    }
+    if(removedGoodsIds) {
+      // if no goods removed in editing mode, this variable will be undefined,
+      // and we should skip it
+      dbOps.push(shipmentDispDao.removeGoodsWithIds(removedGoodsIds));
+    }
+    if (newGoods.length > 0) {
+      dbOps.push(shipmentDispDao.createGoods(newGoods, shipmt_no, tenantId, loginId, trans));
+    }
+    yield dbOps;
+    const result = yield shipmentDispDao.createAndAcceptByLSP(
+      shipmt_no, shipment.customer_tenant_id, shipment.customer_name,
+      shipment.customer_partner_id, SHIPMENT_SOURCE.subcontracted,
+      shipment.lsp_tenant_id, shipment.lsp_name, shipment.lsp_partner_id,
+      loginId, loginName, SHIPMENT_DISPATCH_STATUS.confirmed,
+      SHIPMENT_TRACK_STATUS.undispatched, shipment.freight_charge,
+      new Date(), trans
+    );
+    yield shipmentDao.updateDispIdEffective(shipmt_no, result.insertId, SHIPMENT_EFFECTIVES.effected, trans);
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *shipmtDraftDelP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    yield shipmentDao.delDraft(body.shipmtno);
+    return Result.OK(this);
+  } catch (e) {
+    Result.InternalServerError(this, e.message);
+  }
+}
+
 function *shipmtG() {
   const {tenantId, shipmtNo} = this.request.query;
   try {
@@ -254,7 +326,7 @@ function *shipmtG() {
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
     return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
   }catch (e) {
-    Result.InternalServerError(this, e.message); 
+    Result.InternalServerError(this, e.message);
   }
 }
 
@@ -269,15 +341,19 @@ function *shipmtSaveEditP() {
     trans = yield mysql.beginTransaction();
     const dbOps = [
       shipmentDispDao.updateShipmtWithInfo(shipment, trans),
-      shipmentDispDao.updateGoodsWithInfo(editGoods),
     ];
-    if(removedGoodsIds) { // if no goods removed in editing mode, this variable will be undefined, and we should skip it 
+    if (editGoods.length > 0) {
+      dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
+    }
+    if(removedGoodsIds) {
+      // if no goods removed in editing mode, this variable will be undefined,
+      // and we should skip it
       dbOps.push(shipmentDispDao.removeGoodsWithIds(removedGoodsIds));
     }
-    yield dbOps;
-    for(let goods of newGoods) {
-      yield shipmentDao.createGoods(goods, shipmt_no, tenantId, loginId, trans);
+    if (newGoods.length > 0) {
+      dbOps.push(shipmentDispDao.createGoods(newGoods, shipmt_no, tenantId, loginId, trans));
     }
+    yield dbOps;
     yield mysql.commit(trans);
     return Result.OK(this);
   } catch (e) {
@@ -287,7 +363,7 @@ function *shipmtSaveEditP() {
     Result.InternalServerError(this, e.message);
   }
 }
-  
+
 function *shipmtRevokeP() {
   let trans;
   try {
@@ -374,7 +450,10 @@ export default [
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
   [ 'post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
+  [ 'get', '/v1/transport/shipment/draft', shipmtDraftG ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
+  [ 'post', '/v1/transport/shipment/draft/saveaccept', shipmtDraftSaveAcceptP ],
+  [ 'post', '/v1/transport/shipment/draft/del', shipmtDraftDelP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],

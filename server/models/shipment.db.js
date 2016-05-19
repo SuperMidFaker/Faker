@@ -81,21 +81,6 @@ function packShipmentArgsByLSP(shipmt, args) {
   });
 }
 
-function packGoodsArgs(goods) {
-  const columns = [
-    `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
-  ];
-  const args = [];
-  columns.forEach(col => {
-    if (col in goods) {
-      args.push(goods[col]);
-    } else {
-      args.push(null);
-    }
-  });
-  return args;
-}
-
 export default {
   shipmentOrm: shipmtOrm,
   *genShipmtNoAsync(tenantId) {
@@ -189,6 +174,11 @@ export default {
     const args = [eff, dispId];
     return mysql.update(sql, args, trans);
   },
+  updateDispIdEffective(shipmtNo, dispId, eff, trans) {
+    const sql = 'update tms_shipments set effective = ?, disp_id = ? where shipmt_no = ?';
+    const args = [eff, dispId, shipmtNo];
+    return mysql.update(sql, args, trans);
+  },
   upsertLocation(
     id, name, province, city, district, addr,
     email, contact, mobile, tenantId, type, trans
@@ -207,23 +197,33 @@ export default {
     ];
     return mysql.insert(sql, args, trans);
   },
-  createGoods(goods, shipmtNo, tenantId, loginId, trans) {
-    const sql = `insert into tms_shipment_manifest(name, goods_no, package,
-      length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,
-      creater_login_id, created_date) values (?, NOW())`;
-    const args = packGoodsArgs(goods);
-    args.push(shipmtNo, tenantId, loginId);
-    return mysql.insert(sql, [args], trans);
-  },
   getShipmtInfo(shipmtNo) {
     const sql = `select shipmt_no, customer_name, lsp_name, consigner_name,
-      consigner_province, consigner_city, consigner_district, consigner_addr,
-      consigner_contact, consigner_mobile, consignee_name, consignee_province, consignee_city,
-      consignee_district, consignee_addr, consignee_contact, consignee_mobile,
-      pickup_est_date, transit_time, deliver_est_date, transport_mode, vehicle_type, vehicle_length,
+      consigner_province, consigner_city, consigner_district, consigner_addr, consigner_contact,
+      consigner_mobile, consignee_name, consignee_province, consignee_city, consignee_district,
+      consignee_addr, consignee_contact, consignee_mobile, pickup_est_date, transit_time,
+      deliver_est_date, transport_mode, vehicle_type, vehicle_length,
       package, goods_type, effective, remark from tms_shipments where shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
+  },
+  getDraftShipmt(shipmtno) {
+    const sql = `select shipmt_no, ref_external_no, ref_waybill_no, ref_entry_no,
+      customer_name, customer_tenant_id, customer_partner_id, lsp_tenant_id, lsp_partner_id,
+      lsp_name, consigner_name, consigner_province, consigner_city,
+      consigner_district, consigner_addr, consigner_email, consigner_contact,
+      consigner_mobile, consignee_name, consignee_province, consignee_city, consignee_district,
+      consignee_addr, consignee_email, consignee_contact, consignee_mobile, pickup_est_date,
+      transit_time, deliver_est_date, transport_mode_code, transport_mode, vehicle_type, vehicle_length,
+      package, goods_type, insure_value, total_count, total_weight, total_volume, remark
+      from tms_shipments where shipmt_no = ?`;
+    const args = [shipmtno];
+    return mysql.query(sql, args);
+  },
+  delDraft(shipmtNo, trans) {
+    const sql = 'delete from tms_shipments where shipmt_no = ?';
+    const args = [shipmtNo];
+    return mysql.delete(sql, args, trans);
   },
   copyShipmt(shipmt) {
     return shipmtOrm.copyWithObj(shipmt);

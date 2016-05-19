@@ -322,12 +322,12 @@ export default class GoodsInfo extends React.Component {
             >
               <Select {...getFieldProps('goods_type', {
                 rules: [{
-                  required: true, message: this.msg('goodsTypeMust')
+                  required: true, type: 'number', message: this.msg('goodsTypeMust')
                 }]
               })}
               >
               {goodsTypes.map(
-                gt => <Option value={gt.id} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
+                gt => <Option value={parseInt(gt.id, 10)} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
               )}
               </Select>
             </FormItem>

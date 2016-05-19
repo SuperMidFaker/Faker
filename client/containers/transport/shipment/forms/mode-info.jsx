@@ -59,7 +59,7 @@ export default class ModeInfo extends React.Component {
           >
             <Select {...getFieldProps('vehicle_type')}>
             {vehicleTypes.map(
-              vt => <Option value={vt.id} key={`${vt.name}${vt.id}`}>{vt.name}</Option>
+              vt => <Option value={parseInt(vt.id, 10)} key={`${vt.name}${vt.id}`}>{vt.name}</Option>
             )}
             </Select>
           </FormItem>
@@ -70,7 +70,7 @@ export default class ModeInfo extends React.Component {
           >
             <Select {...getFieldProps('vehicle_length')}>
             {vehicleLengths.map(
-              vl => <Option value={vl.id} key={`${vl.name}${vl.id}`}>{vl.name}</Option>
+              vl => <Option value={parseInt(vl.id, 10)} key={`${vl.name}${vl.id}`}>{vl.name}</Option>
             )}
             </Select>
           </FormItem>
