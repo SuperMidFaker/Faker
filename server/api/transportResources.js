@@ -15,7 +15,8 @@ function *addDriver() {
 
 function *getDriverList() {
   try {
-    const result = yield TransportResourcesDao.getDriverList();
+    const { tenantId } = this.request.query;
+    const result = yield TransportResourcesDao.getDriverList(tenantId);
     return Result.OK(this, result);
   } catch(e) {
     return Result.InternalServerError(this, e.message);
@@ -27,7 +28,7 @@ function *editDriver() {
     const body = yield cobody(this);
     const { driverId, driverInfo } = body;
     yield TransportResourcesDao.updateDriverWithInfo({driverId, driverInfo});
-    return Result.OK(this);
+    return Result.OK(this, { driverId, driverInfo });
   } catch(e) {
     return Result.InternalServerError(this, e.message);
   }
@@ -37,6 +38,7 @@ function *addCar() {
   try {
     const body = yield cobody(this);
     const { carInfo } = body;
+    console.log(carInfo);
     yield TransportResourcesDao.addCarWithInfo(carInfo);
     return Result.OK(this);
   } catch(e) {
@@ -46,7 +48,8 @@ function *addCar() {
 
 function *getCarList() {
   try {
-    const result = yield TransportResourcesDao.getCarList();
+    const { tenantId } = this.request.query;
+    const result = yield TransportResourcesDao.getCarList(tenantId);
     return Result.OK(this, result);
   } catch(e) {
     return Result.InternalServerError(this, e.message);  

@@ -47,6 +47,13 @@ export default function reducer(state = initialState, action) {
       const cars = updateArray({array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo});
       return { ...state, loading: false, cars };
     }
+    case actionTypes.EDIT_DRIVER:
+      return { ...state, loading: true };
+    case actionTypes.EDIT_DRIVER_SUCCEED: {
+      const { driverId, driverInfo } = action.result.data;
+      const drivers = updateArray({array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo});
+      return { ...state, loading: false, drivers };
+    }
     case actionTypes.LOAD_CARLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
@@ -88,7 +95,7 @@ export function editCar({carId, carInfo}) {
   };
 }
 
-export function loadCarList() {
+export function loadCarList(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -97,7 +104,8 @@ export function loadCarList() {
         actionTypes.LOAD_CARLIST_FAIL
       ],
       endpoint: 'v1/transport/resources/car_list',
-      method: 'get'
+      method: 'get',
+      params: { tenantId }
     }
   };
 }
@@ -132,7 +140,7 @@ export function editDriver({driverId, driverInfo}) {
   };
 }
 
-export function loadDriverList() {
+export function loadDriverList(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -141,7 +149,8 @@ export function loadDriverList() {
         actionTypes.LOAD_DRIVERLIST_FAIL
       ],
       endpoint: 'v1/transport/resources/driver_list',
-      method: 'get'
+      method: 'get',
+      params: { tenantId }
     }
   };
 }

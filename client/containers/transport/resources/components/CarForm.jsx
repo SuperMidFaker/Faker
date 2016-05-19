@@ -36,17 +36,17 @@ export default class CarForm extends Component {
           </FormItem>
           <FormItem label="车型:" required {...formItemLayout}>
             <Select {...getFieldProps('type', {initialValue: '0'})} required>
-              <Option value="0">敞篷车</Option>
-              <Option value="1">厢式车</Option>
-              <Option value="2">两者均可</Option>
-              <Option value="3">轿运车</Option>
+              <Option value={0}>敞篷车</Option>
+              <Option value={1}>厢式车</Option>
+              <Option value={2}>两者均可</Option>
+              <Option value={3}>轿运车</Option>
             </Select>
           </FormItem>
           <FormItem label="车长" required {...formItemLayout}>
             <Select {...getFieldProps('length', {initialValue: '0'})} required>
-              <Option value="0">2.0</Option>
-              <Option value="1">4.2</Option>
-              <Option value="2">5.2</Option>
+              <Option value={0}>2.0</Option>
+              <Option value={1}>4.2</Option>
+              <Option value={2}>5.2</Option>
             </Select>
           </FormItem>
           <FormItem label="额定载重(顿):" required {...formItemLayout}>
@@ -57,8 +57,8 @@ export default class CarForm extends Component {
           </FormItem>
           <FormItem label="车辆所有权" {...formItemLayout} required>
             <Select {...getFieldProps('vproperty', {initialValue: '0'})} required>
-              <Option value="0">司机自有车辆</Option>
-              <Option value="1">公司车辆</Option>
+              <Option value={0}>司机自有车辆</Option>
+              <Option value={1}>公司车辆</Option>
             </Select>
           </FormItem>
           <FormItem label="指派司机:" {...formItemLayout} required>

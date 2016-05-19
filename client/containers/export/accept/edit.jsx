@@ -36,7 +36,6 @@ import {
 '../../../../universal/redux/reducers/exportaccept';
 import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
 import './upload.less';
-
 const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -378,7 +377,7 @@ export default class ExportAcceptEdit extends React.Component {
         </Row>
         <Row>
           <Col span="8" offset="3">
-            {this.renderSwitch('手册/账册', 'usebook')}
+            {this.renderSwitch('使用手册/账册', 'usebook')}
             {this.renderTextInput('发票号码', '请输入发票号码', 'invoice_no', false, null, null)}
             {this.renderSwitch('加急', 'urgent')}
           </Col>

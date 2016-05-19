@@ -4,16 +4,17 @@ import CarList from '../components/CarList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadCarList, editCar } from '../../../../../universal/redux/reducers/transportResources';
 import connectFetch from 'reusable/decorators/connect-fetch';
+import { addUniqueKeys } from '../utils/dataMapping';
 
-function fetchData({dispatch}) {
-  return dispatch(loadCarList());
+function fetchData({dispatch, state}) {
+  return dispatch(loadCarList(state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
 @connect(state => ({
   cars: state.transportResources.cars,
   selectedMenuItemKey: state.transportResources.selectedMenuItemKey,
-  loading: state.transportResources.loading
+  loading: state.transportResources.loading,
 }), { editCar })
 export default class CarListContainer extends Component {
   static propTypes = {
@@ -38,7 +39,7 @@ export default class CarListContainer extends Component {
     const { cars, selectedMenuItemKey, loading } = this.props;
     const dataSource = cars.map(transformRawCarDataToDisplayData);
     return (
-      <CarList dataSource={dataSource}
+      <CarList dataSource={addUniqueKeys(dataSource)}
                visible={selectedMenuItemKey === '0'}
                loading={loading}
                onStopCarBtnClick={this.handleStopCarBtnClick}

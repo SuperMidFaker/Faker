@@ -360,7 +360,7 @@ export default class ExportAccept extends React.Component {
         </div>
         <div className="page-body fixed">
           <div className="panel-header">
-            <Button type="primary" onClick={() => this.handleNavigationTo('/export/receive/new')}>
+            <Button type="primary" onClick={() => this.handleNavigationTo('/export/accept/new')}>
               <Icon type="plus-circle-o"/>新增报关业务
             </Button>
           </div>
