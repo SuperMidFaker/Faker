@@ -23,7 +23,11 @@ function fetchData({dispatch}) {
     goBackFn: () => router.goBack()
   }));
 })
-@connect(state => ({drivers: state.transportResources.drivers, cars: state.transportResources.cars}), { addCar, editCar })
+@connect(state => ({
+  drivers: state.transportResources.drivers,
+  cars: state.transportResources.cars,
+  tenantId: state.account.tenantId
+}), { addCar, editCar })
 @Form.formify()
 export default class CarFormContainer extends Component {
   static propTypes = {
@@ -33,15 +37,16 @@ export default class CarFormContainer extends Component {
     form: PropTypes.object.isRequired,     // @Form.formify创建的对象
     addCar: PropTypes.func.isRequired,     // 增加车辆的actionCreator
     editCar: PropTypes.func.isRequired,    // 修改车辆信息的actionCreator
+    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
   handleCarSave = (e) => {
     e.preventDefault();
-    const { form } = this.props;
+    const { form, tenantId } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addCar(newCarInfo);
+    this.props.addCar({...newCarInfo, tenant_id: tenantId});
     this.context.router.goBack();
   }
   handleCarEdit = (e) => {

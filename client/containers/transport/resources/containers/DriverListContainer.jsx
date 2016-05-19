@@ -4,8 +4,8 @@ import DriverList from '../components/DriverList.jsx';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import { loadDriverList } from '../../../../../universal/redux/reducers/transportResources';
 
-function fetchData({dispatch}) {
-  return dispatch(loadDriverList());
+function fetchData({dispatch, state}) {
+  return dispatch(loadDriverList(state.account.tenantId));
 }
 
 @connectFetch()(fetchData)

@@ -5,15 +5,15 @@ import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadCarList, editCar } from '../../../../../universal/redux/reducers/transportResources';
 import connectFetch from 'reusable/decorators/connect-fetch';
 
-function fetchData({dispatch}) {
-  return dispatch(loadCarList());
+function fetchData({dispatch, state}) {
+  return dispatch(loadCarList(state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
 @connect(state => ({
   cars: state.transportResources.cars,
   selectedMenuItemKey: state.transportResources.selectedMenuItemKey,
-  loading: state.transportResources.loading
+  loading: state.transportResources.loading,
 }), { editCar })
 export default class CarListContainer extends Component {
   static propTypes = {

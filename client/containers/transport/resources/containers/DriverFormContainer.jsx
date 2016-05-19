@@ -15,7 +15,7 @@ import { setNavTitle } from 'universal/redux/reducers/navbar';
     goBackFn: () => router.goBack()
   }));
 })
-@connect(state => ({drivers: state.transportResources.drivers}), { addDriver, editDriver })
+@connect(state => ({drivers: state.transportResources.drivers, tenantId: state.account.tenantId}), { addDriver, editDriver })
 @Form.formify()
 export default class DriverFormContainer extends Component {
   static propTypes = {
@@ -24,16 +24,17 @@ export default class DriverFormContainer extends Component {
     drivers: PropTypes.array.isRequired,  // 服务器返回的司机数组
     dispatch: PropTypes.func.isRequired,  // store.dispatch函数
     addDriver: PropTypes.func.isRequied,  // 增加车辆的actionCreator
-    editDriver: PropTypes.func.isRquired, // 修改车辆信息的actionCreator
+    editDriver: PropTypes.func.isRequired, // 修改车辆信息的actionCreator
+    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
   handleDriverAdd = (e) => {
     e.preventDefault();
-    const { form } = this.props;
+    const { form, tenantId } = this.props;
     const newDriverInfo = form.getFieldsValue();
-    this.props.addDriver(newDriverInfo);
+    this.props.addDriver({...newDriverInfo, tenant_id: tenantId});
     this.context.router.goBack();
   }
   handleDriverEdit = (e) => {
