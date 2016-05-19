@@ -74,7 +74,7 @@ function DriverList(props) {
   const { dataSource, onAddDriverBtnClicked, visible, loading } = props;
   if (visible) {
     return (
-      <Spin spining={loading}>
+      <Spin spinning={loading}>
         <div style={{marginBottom: 16}}>
           <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
         </div>

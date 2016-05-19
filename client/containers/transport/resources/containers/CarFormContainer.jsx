@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import CarForm from '../components/CarForm.jsx';
 import { addCar, editCar, loadDriverList } from '../../../../../universal/redux/reducers/transportResources';
 import connectFetch from 'reusable/decorators/connect-fetch';
+import connectNav from 'reusable/decorators/connect-nav';
+import { setNavTitle } from 'universal/redux/reducers/navbar';
 
 // TODO: fix display problem when eidt a car
 
@@ -12,6 +14,15 @@ function fetchData({dispatch}) {
 }
 
 @connectFetch()(fetchData)
+@connectNav((props, dispatch, router) => {
+  dispatch(setNavTitle({
+    depth: 3,
+    text: '车辆信息',
+    muduleName: 'transport',
+    withModuleLayout: false,
+    goBackFn: () => router.goBack()
+  }));
+})
 @connect(state => ({drivers: state.transportResources.drivers, cars: state.transportResources.cars}), { addCar, editCar })
 @Form.formify()
 export default class CarFormContainer extends Component {

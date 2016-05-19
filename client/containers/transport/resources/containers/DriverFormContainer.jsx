@@ -3,7 +3,18 @@ import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import DriverForm from '../components/DriverForm.jsx';
 import { addDriver, editDriver } from '../../../../../universal/redux/reducers/transportResources';
+import connectNav from 'reusable/decorators/connect-nav';
+import { setNavTitle } from 'universal/redux/reducers/navbar';
 
+@connectNav((props, dispatch, router) => {
+  dispatch(setNavTitle({
+    depth: 3,
+    text: '司机信息',
+    muduleName: 'transport',
+    withModuleLayout: false,
+    goBackFn: () => router.goBack()
+  }));
+})
 @connect(state => ({drivers: state.transportResources.drivers}), { addDriver, editDriver })
 @Form.formify()
 export default class DriverFormContainer extends Component {
