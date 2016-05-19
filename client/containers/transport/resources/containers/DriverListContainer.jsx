@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import DriverList from '../components/DriverList.jsx';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import { loadDriverList } from '../../../../../universal/redux/reducers/transportResources';
+import { addUniqueKeys } from '../utils/dataMapping';
 
-function fetchData({dispatch}) {
-  return dispatch(loadDriverList());
+function fetchData({dispatch, state}) {
+  return dispatch(loadDriverList(state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
@@ -29,7 +30,7 @@ export default class DriverListContainer extends Component {
   render() {
     const { drivers, selectedMenuItemKey, loading } = this.props;
     return (
-      <DriverList dataSource={drivers}
+      <DriverList dataSource={addUniqueKeys(drivers)}
                   visible={selectedMenuItemKey === '1'}
                   loading={loading}
                   onAddDriverBtnClicked={this.handleAddDriverBtnClicked} />

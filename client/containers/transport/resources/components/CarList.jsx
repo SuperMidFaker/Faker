@@ -91,7 +91,7 @@ export default function CarList(props) {
 
   if (visible) {
     return (
-      <Spin spining={loading}>
+      <Spin spinning={loading}>
         <div style={{marginBottom: 16}}>
           <Button type="primary" size="large" onClick={onAddCarBtnClick}>新建车辆</Button>
         </div>

@@ -88,7 +88,7 @@ export function editCar({carId, carInfo}) {
   };
 }
 
-export function loadCarList() {
+export function loadCarList(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -97,7 +97,8 @@ export function loadCarList() {
         actionTypes.LOAD_CARLIST_FAIL
       ],
       endpoint: 'v1/transport/resources/car_list',
-      method: 'get'
+      method: 'get',
+      params: { tenantId }
     }
   };
 }
@@ -132,7 +133,7 @@ export function editDriver({driverId, driverInfo}) {
   };
 }
 
-export function loadDriverList() {
+export function loadDriverList(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -141,7 +142,8 @@ export function loadDriverList() {
         actionTypes.LOAD_DRIVERLIST_FAIL
       ],
       endpoint: 'v1/transport/resources/driver_list',
-      method: 'get'
+      method: 'get',
+      params: { tenantId }
     }
   };
 }

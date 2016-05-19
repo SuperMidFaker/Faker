@@ -6,7 +6,9 @@ const driverColumns = [
 ];
 
 const carColumns = [
-  'vehicle_id', 'plate_number', 'trailer_number', 'type', 'length', 'load_weight', 'load_volume', 'vproperty', 'driver_id', 'status'
+  'vehicle_id', 'plate_number', 'trailer_number', 'type', 'length',
+  'load_weight', 'load_volume', 'vproperty', 'driver_id', 'status',
+  'tenant_id'
 ];
 
 function generateValuesWithInfoAndColumns({columns, info}) {
@@ -25,8 +27,8 @@ export function addDriverWithInfo(driverInfo) {
   return mysql.insert(sql);
 }
 
-export function getDriverList() {
-  const sql = `SELECT driver_id, name, phone, remark FROM tms_drivers;`;
+export function getDriverList(tenantId) {
+  const sql = `SELECT driver_id, name, phone, remark FROM tms_drivers WHERE tenant_id = ${tenantId};`;
   return mysql.query(sql);
 }
 
@@ -42,11 +44,12 @@ export function addCarWithInfo(carInfo) {
   return mysql.insert(sql);
 }
 
-export function getCarList() {
+export function getCarList(tenantId) {
   const sql = `
     SELECT plate_number, trailer_number, type, length, load_weight, load_volume, vproperty, status, v.driver_id,  v.vehicle_id, d.name AS driver_name
     FROM tms_vehicles AS v 
-    INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id;
+    INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id
+    WHERE v.tenant_id = ${tenantId};
   `;
   console.log(sql);
   return mysql.query(sql);
