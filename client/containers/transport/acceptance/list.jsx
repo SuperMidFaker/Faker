@@ -116,7 +116,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 140,
+    width: 120,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return (
@@ -131,10 +131,12 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    width: 200
+
+    width: 220
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
+
     width: 80
   }, {
     title: this.msg('shipPickupDate'),
@@ -154,7 +156,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    width: 150,
+    width: 200,
   }, {
     title: this.msg('consignorPlace'),
     width: 150,
@@ -162,11 +164,11 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 150,
+    width: 230,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 150,
+    width: 200,
   }, {
     title: this.msg('consigneePlace'),
     width: 150,
@@ -174,19 +176,19 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 150,
+    width: 230,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 150
+    width: 50
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 150
+    width: 50
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 150
+    width: 50
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
@@ -203,11 +205,13 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
+    width: 100,
     sorter: true,
     render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
+    width: 100,
     sorter: true,
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('YYYY.MM.DD') : ' '
@@ -328,7 +332,8 @@ export default class AcceptList extends React.Component {
     if (radioValue === 'unaccepted') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
-        width: 100,
+        fixed: 'right',
+        width: 150,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return <span />;
@@ -408,7 +413,7 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 18]} columnsPageSize={3}
+              dataSource={this.dataSource} scroll={{ x: 2330, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

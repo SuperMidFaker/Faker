@@ -121,7 +121,6 @@ export default(store, cookie) => {
               <IndexRoute component={ImportAccept.List}/>
               <Route path="new" component={ImportAccept.Edit}/>
               <Route path="edit/:id" component={ImportAccept.Edit}/>
-              <Route path="send/:status" component={ImportAccept.Send}/>
             </Route>
             <Route path="tracking">
               <IndexRoute component={ImportTracking.List}/>
@@ -139,7 +138,6 @@ export default(store, cookie) => {
               <IndexRoute component={ExportAccept.List}/>
               <Route path="new" component={ExportAccept.Edit}/>
               <Route path="edit/:id" component={ExportAccept.Edit}/>
-              <Route path="exportsend/:status" component={ExportAccept.Send}/>
             </Route>
             <Route path="task">
               <IndexRoute component={ExportTask.List}/>

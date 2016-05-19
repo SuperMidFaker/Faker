@@ -1,10 +1,10 @@
-import React, { PropTypes } from 'react';
-import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Radio, Tabs } from 'ant-ui';
+import React, { PropTypes, Component } from 'react';
+import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Tabs } from 'ant-ui';
 import { connect } from 'react-redux';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch } from 'universal/redux/reducers/transportDispatch';
+import MContent from './MContent';
 
-const RadioGroup = Radio.Group;
 const TabPane = Tabs.TabPane;
 
 function noop() {}
@@ -27,7 +27,7 @@ function fetch({ state, dispatch, cookie }) {
   lspLoaded: state.transportDispatch.lspLoaded,
   dispatched: state.transportDispatch.dispatched,
 }), { loadLsps, loadVehicles, doDispatch })
-export default class DispatchDock extends React.Component {
+export default class DispatchDock extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     show: PropTypes.bool.isRequired,
@@ -83,7 +83,7 @@ export default class DispatchDock extends React.Component {
                 width: 50,
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.showConfirm.bind(this, 'tenant', record)}>
+                        <a role="button" onClick={() => this.showConfirm('tenant', record)}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
@@ -127,7 +127,7 @@ export default class DispatchDock extends React.Component {
                 width: 50,
                 render: (o, record) => {
                   return (<span>
-                        <a role="button" onClick={this.showConfirm.bind(this, 'vehicle', record)}>
+                        <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
                         {this.msg('btnTextDispatch')}
                         </a></span>);
                 }
@@ -197,8 +197,28 @@ export default class DispatchDock extends React.Component {
         tenantId,
         loginId,
         shipmtNos,
+        partnerId: target.partner_id,
         partnerName: target.partner_name,
         partnerTenantId: target.partner_tenant_id,
+        freightCharge: this.state.quotation,
+        podType,
+        type
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.onCloseWrapper(true);
+        }
+      });
+    } else if (type === 'vehicle') {
+      this.props.doDispatch(null, {
+        tenantId,
+        loginId,
+        shipmtNos,
+        taskId: target.vehicle_id,
+        taskVehicle: target.plate_number,
+        taskDriverId: target.driver_id,
+        taskDriverName: target.name,
         freightCharge: this.state.quotation,
         podType,
         type
@@ -245,8 +265,7 @@ export default class DispatchDock extends React.Component {
     }
   }
 
-  handlePodTypeChange(e) {
-    const podType = e.target.value;
+  handlePodTypeChange = podType => {
     this.setState({podType});
   }
 
@@ -257,16 +276,7 @@ export default class DispatchDock extends React.Component {
       msg = `将运单编号【${shipmt.shipmt_no}】分配给【${target.plate_number}】`;
     }
     Modal.confirm({
-      content: (
-        <div className="dispatch-confirm">
-          <div style={{ marginBottom: 10 }}>{msg}</div>
-          <RadioGroup onChange={this.handlePodTypeChange.bind(this)} value={this.state.podType}>
-            <Radio key="a" value="dreceipt"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera" />需要电子回单</Radio>
-            <Radio key="b" value="none"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera-o" />不要电子回单</Radio>
-            <Radio key="c" value="qrcode"><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="qrcode" />扫描签收回单</Radio>
-          </RadioGroup>
-        </div>
-        ),
+      content: (<MContent msg={msg} onChange={this.handlePodTypeChange} />),
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {

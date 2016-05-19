@@ -11,7 +11,8 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
    'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
    'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
-   'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL']);
+   'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
+   'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL']);
 
 const initialState = {
   loaded: false,
@@ -81,6 +82,20 @@ export default function reducer(state = initialState, action) {
       const expandList = { ...state.expandList };
       expandList[action.params.shipmtNo] = action.result.data;
       return { ...state, expandList };
+    }
+    case actionTypes.GROUPED_LIST_SUCCEED: {
+      const {shipmentlist, filters} = {...state};
+      shipmentlist.data = action.result.data;
+      shipmentlist.totalCount = shipmentlist.data.length;
+      const tmp = JSON.parse(action.params.filters);
+      return { ...state, loading: false,
+        loaded: true, shipmentlist,
+        filters: Object.assign(tmp, filters),
+        dispatched: false,
+        segmented: false,
+        lspLoaded: false,
+        vehicleLoaded: false
+      };
     }
     default:
       return state;
@@ -256,6 +271,38 @@ export function loadExpandList(cookie, params) {
         actionTypes.LOAD_EXPANDLIST_FAIL,
       ],
       endpoint: 'v1/transport/dispatch/expandlist',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}
+
+export function loadShipmtsGrouped(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GROUPED_LIST,
+        actionTypes.GROUPED_LIST_SUCCEED,
+        actionTypes.GROUPED_LIST_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/shipmts/grouped',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}
+
+export function loadShipmtsGroupedSub(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EXPANDLIST,
+        actionTypes.LOAD_EXPANDLIST_SUCCEED,
+        actionTypes.LOAD_EXPANDLIST_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/shipmts/groupedsub',
       method: 'get',
       params,
       cookie

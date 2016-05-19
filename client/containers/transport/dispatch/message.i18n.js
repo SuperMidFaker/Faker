@@ -29,16 +29,16 @@ export default defineMessages({
     id: 'transport.dispatch.pickup.date',
     defaultMessage: '提货日期'
   },
-  shipConsignor: {
-    id: 'transport.dispatch.ship.consignor',
+  shipConsigner: {
+    id: 'transport.dispatch.ship.consigner',
     defaultMessage: '发货方'
   },
-  consignorPlace: {
-    id: 'transport.dispatch.consignor.place',
+  consignerPlace: {
+    id: 'transport.dispatch.consigner.place',
     defaultMessage: '起运地'
   },
-  consignorAddr: {
-    id: 'transport.dispatch.consignor.addr',
+  consignerAddr: {
+    id: 'transport.dispatch.consigner.addr',
     defaultMessage: '发货地址'
   },
   shipDeliveryDate: {

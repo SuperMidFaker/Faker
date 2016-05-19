@@ -350,7 +350,9 @@ export default class ImportDelegate extends React.Component {
             case 0:
               return (
                 <span>
-                  <NavLink to={`/import/delegate/edit/${record.key}`}>修改</NavLink>
+                  <NavLink to={`/import/delegate/edit/${record.key}`}>
+                    修改
+                  </NavLink>
                   <span className="ant-divider"/>
                   <a role="button" onClick={() => this.handleSend(0, record)}>发送</a>
                 </span>
@@ -412,9 +414,12 @@ export default class ImportDelegate extends React.Component {
         </div>
         <div className="page-body fixed">
           <div className="panel-header">
-            <Button type="primary" onClick={() => this.handleNavigationTo('/import/delegate/new')}>
-              <Icon type="plus-circle-o"/>新增报关业务
-            </Button>
+            <NavLink to="/import/delegate/new">
+              <Button type="primary">
+                <Icon type="plus-circle-o"/>
+                <span>新增报关业务</span>
+              </Button>
+            </NavLink>
           </div>
           <div className="panel-body body-responsive">
             <Table useFixedHeader rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>

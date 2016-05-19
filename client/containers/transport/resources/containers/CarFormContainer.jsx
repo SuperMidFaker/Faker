@@ -2,17 +2,24 @@ import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import CarForm from '../components/CarForm.jsx';
-import { addCar, editCar, loadDriverList } from '../../../../../universal/redux/reducers/transportResources';
-import connectFetch from 'reusable/decorators/connect-fetch';
+import { addCar, editCar } from '../../../../../universal/redux/reducers/transportResources';
+import connectNav from 'reusable/decorators/connect-nav';
+import { setNavTitle } from 'universal/redux/reducers/navbar';
 
-// TODO: fix display problem when eidt a car
-
-function fetchData({dispatch}) {
-  return dispatch(loadDriverList());
-}
-
-@connectFetch()(fetchData)
-@connect(state => ({drivers: state.transportResources.drivers, cars: state.transportResources.cars}), { addCar, editCar })
+@connectNav((props, dispatch, router) => {
+  dispatch(setNavTitle({
+    depth: 3,
+    text: '车辆信息',
+    muduleName: 'transport',
+    withModuleLayout: false,
+    goBackFn: () => router.goBack()
+  }));
+})
+@connect(state => ({
+  drivers: state.transportResources.drivers,
+  cars: state.transportResources.cars,
+  tenantId: state.account.tenantId
+}), { addCar, editCar })
 @Form.formify()
 export default class CarFormContainer extends Component {
   static propTypes = {
@@ -22,15 +29,16 @@ export default class CarFormContainer extends Component {
     form: PropTypes.object.isRequired,     // @Form.formify创建的对象
     addCar: PropTypes.func.isRequired,     // 增加车辆的actionCreator
     editCar: PropTypes.func.isRequired,    // 修改车辆信息的actionCreator
+    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
   handleCarSave = (e) => {
     e.preventDefault();
-    const { form } = this.props;
+    const { form, tenantId } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addCar(newCarInfo);
+    this.props.addCar({...newCarInfo, tenant_id: tenantId});
     this.context.router.goBack();
   }
   handleCarEdit = (e) => {
