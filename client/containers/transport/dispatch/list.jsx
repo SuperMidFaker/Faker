@@ -5,14 +5,20 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
-import { loadTable, doSend, doReturn, segmentCancelRequest, segmentCancelCheckRequest, loadExpandList } from 'universal/redux/reducers/transportDispatch';
+import { loadTable,
+         doSend,
+         doReturn,
+         segmentCancelRequest,
+         segmentCancelCheckRequest,
+         loadExpandList,
+         loadShipmtsGrouped } from 'universal/redux/reducers/transportDispatch';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
 import Condition from './condition';
-import DispatchDock from './dispatch-dock';
-import SegmentDock from './segment-dock';
+import DispatchDock from './dispatchDock';
+import SegmentDock from './segmentDock';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -51,7 +57,13 @@ function fetchData({ state, dispatch, cookie }) {
     dispatched: state.transportDispatch.dispatched,
     expandList: state.transportDispatch.expandList,
   }),
-  { loadTable, doReturn, doSend, segmentCancelRequest, segmentCancelCheckRequest, loadExpandList })
+  { loadTable,
+    doReturn,
+    doSend,
+    segmentCancelRequest,
+    segmentCancelCheckRequest,
+    loadExpandList,
+    loadShipmtsGrouped })
 export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -64,6 +76,7 @@ export default class DispatchList extends React.Component {
     doReturn: PropTypes.func.isRequired,
     segmentCancelRequest: PropTypes.func.isRequired,
     segmentCancelCheckRequest: PropTypes.func.isRequired,
+    loadShipmtsGrouped: PropTypes.func.isRequired,
     loadExpandList: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
     expandList: PropTypes.array.isRequired
@@ -123,15 +136,15 @@ export default class DispatchList extends React.Component {
     width: 80,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
-    title: this.msg('shipConsignor'),
+    title: this.msg('shipConsigner'),
     dataIndex: 'consigner_name',
     width: 150,
   }, {
-    title: this.msg('consignorPlace'),
+    title: this.msg('consignerPlace'),
     width: 120,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
-    title: this.msg('consignorAddr'),
+    title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
     width: 150,
   }, {
@@ -330,7 +343,7 @@ export default class DispatchList extends React.Component {
       }
     }
 
-    this.setState({panelHeader, show: false, sshow: false, shipmts: []});
+    this.setState({panelHeader, show: false, sshow: false, shipmts: [], selectedRowKeys: []});
   }
 
   handleDispatchDockShow(shipmt) {
@@ -404,8 +417,12 @@ export default class DispatchList extends React.Component {
   }
 
   handleShipmtSend(shipmt) {
+    let msg = `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.sp_name}】承运商？`;
+    if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
+      msg = `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.task_vehicle}】车辆？`;
+    }
     Modal.confirm({
-      content: `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.sp_name}】承运商？`,
+      content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
@@ -426,8 +443,13 @@ export default class DispatchList extends React.Component {
   }
 
   handleShipmtReturn(shipmt) {
+    let msg = `确定退回分配给【${shipmt.sp_name}】承运商的【${shipmt.shipmt_no}】的运单？`;
+    if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
+      msg = `确定退回分配给【${shipmt.task_vehicle}】的【${shipmt.shipmt_no}】的运单？`;
+    }
+
     Modal.confirm({
-      content: `确定退回分配给【${shipmt.sp_name}】承运商的【${shipmt.shipmt_no}】的运单？`,
+      content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
@@ -457,7 +479,17 @@ export default class DispatchList extends React.Component {
   }
 
   handleConditionChange = (condition) => {
-    console.log(condition);
+    const {tenantId, shipmentlist} = this.props;
+    this.props.loadShipmtsGrouped(null, {
+      tenantId,
+      filters: JSON.stringify(condition),
+      pageSize: shipmentlist.pageSize,
+      current: 1
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
   }
 
   handleOriginShipmtsReturn = () => {
@@ -550,6 +582,21 @@ export default class DispatchList extends React.Component {
             />);
     }
 
+    let btns = (
+        <div style={{float: 'left'}}>
+          <Button type="primary" size="large" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
+          {this.msg('btnTextBatchDispatch')}
+          </Button>
+          <span className="ant-divider" style={{width: '0px'}}/>
+          <Button type="ghost" size="large" onClick={() => { this.handleBatchDockShow(); }}>
+          {this.msg('btnTextBatchSegment')}
+          </Button>
+        </div>
+      );
+    if (status !== 'waiting') {
+      btns = '';
+    }
+
     return (
       <div className="main-content">
         <div className="page-header">
@@ -569,13 +616,7 @@ export default class DispatchList extends React.Component {
             </div>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button type="primary" size="large" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
-            {this.msg('btnTextBatchDispatch')}
-            </Button>
-            <span className="ant-divider" style={{width: '0px'}}/>
-            <Button type="ghost" size="large" onClick={() => { this.handleBatchDockShow(); }}>
-            {this.msg('btnTextBatchSegment')}
-            </Button>
+            {btns}
 
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
             {formatContainerMsg(intl, 'clearSelection')}
