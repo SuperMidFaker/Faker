@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Table, Button } from 'ant-ui';
+import { Table, Button, Radio } from 'ant-ui';
 import { Link } from 'react-router';
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const rowSelection = {
   onSelect() {
@@ -80,9 +83,20 @@ export default function NodeList(props) {
   ];
   if (visible) {
     return (
-      <div>
-        <Button size="large" type="primary" style={{marginBottom: 16}}>新建节点</Button>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} />
+      <div className="main-content">
+        <div className="page-header">
+          <RadioGroup defaultValue="0" size="large">
+            <RadioButton value="0">发货地</RadioButton>
+            <RadioButton value="1">收获地</RadioButton>
+            <RadioButton value="2">中转地</RadioButton>
+          </RadioGroup>
+        </div>
+        <div className="page-body">
+          <div className="panel-body body-responsive" style={{padding: 20}}>
+            <Button size="large" type="primary" style={{marginBottom: 16}}>新建节点</Button>
+            <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
+          </div>
+        </div>
       </div>
     );
   } else {
