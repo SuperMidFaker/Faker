@@ -4,7 +4,11 @@ import * as TransportResourcesDao from '../models/transportResources';
 
 function *addDriver() {
   const body = yield cobody(this);
-  const { driverInfo } = body;
+  let { driverInfo } = body;
+  // set default value
+  if (!driverInfo.status) {
+    driverInfo.status = 1;
+  }
   try {
     yield TransportResourcesDao.addDriverWithInfo(driverInfo);
     return Result.OK(this);
