@@ -56,13 +56,22 @@ export function getCarList(tenantId) {
     INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id
     WHERE v.tenant_id = ${tenantId};
   `;
-  console.log(sql);
   return mysql.query(sql);
 }
 
 export function updateCarWithInfo({carInfo, carId}) {
   const updateClause = generateUpdateClauseWithInfo(carInfo, carColumns);
   const sql = `UPDATE tms_vehicles SET ${updateClause} WHERE vehicle_id = ${carId}`;
+  return mysql.query(sql);
+}
+
+export function getNodeList(tenantId) {
+  const sql = `
+    SELECT node_id, name, node_code, ref_partner_id, ref_partner_name, type, CONCAT_WS('/', province, city, district) AS district, 
+      addr, geo_longitude, contact, email, mobile, remark
+    FROM tms_node_locations
+    WHERE tenant_id = ${tenantId};
+  `;
   console.log(sql);
   return mysql.query(sql);
 }

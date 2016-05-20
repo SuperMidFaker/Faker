@@ -68,11 +68,22 @@ function *editCar() {
   }
 }
 
+function *getNodeList() {
+  try {
+    const { tenantId } = this.request.query;
+    const result = yield TransportResourcesDao.getNodeList(tenantId);
+    return Result.OK(this, result);
+  } catch(e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   ['post', '/v1/transport/resources/add_driver', addDriver],
   ['get', '/v1/transport/resources/driver_list', getDriverList],
   ['post', '/v1/transport/resources/edit_driver', editDriver],
   ['post', '/v1/transport/resources/add_car', addCar],
   ['get', '/v1/transport/resources/car_list', getCarList],
-  ['post', '/v1/transport/resources/edit_car', editCar]
+  ['post', '/v1/transport/resources/edit_car', editCar],
+  ['get', '/v1/transport/resources/node_list', getNodeList],
 ];

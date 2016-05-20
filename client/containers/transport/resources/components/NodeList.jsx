@@ -3,13 +3,13 @@ import { Table, Button } from 'ant-ui';
 import { Link } from 'react-router';
 
 const rowSelection = {
-  onSelect(){}
+  onSelect() {
+
+  }
 };
 
 export default function NodeList(props) {
-
-  const { onDeleteBtnClick, dataSource } = props;
-  
+  const { onDeleteBtnClick, dataSource, visible } = props;
   const columns = [
     {
       title: '名称',
@@ -43,8 +43,8 @@ export default function NodeList(props) {
     },
     {
       title: '联系电话',
-      dataIndex: 'phone',
-      key: 'phone'
+      dataIndex: 'mobile',
+      key: 'mobile'
     },
     {
       title: '联系邮箱',
@@ -70,7 +70,7 @@ export default function NodeList(props) {
           <span>
             <Link to={`/edit_node/${record.node_id}`}>修改</Link>
             <span className="ant-divider"></span>
-            <a onClick={() => onDeleteBtnClick(record.node_id)}>
+            <a onClick={() => onDeleteBtnClick(record.node_id)} style={{color: 'red'}}>
               删除
             </a>
           </span>
@@ -78,16 +78,22 @@ export default function NodeList(props) {
       }
     }
   ];
-
-  return (
-    <div>
-      <Button size="large" type="primary" style={{marginBottom: 16}}>新建节点</Button>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}></Table>
-    </div>
-  );
+  if (visible) {
+    return (
+      <div>
+        <Button size="large" type="primary" style={{marginBottom: 16}}>新建节点</Button>
+        <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} />
+      </div>
+    );
+  } else {
+    return (
+      <div></div>
+    );
+  }
 }
 
 NodeList.propsTypes = {
   dataSource: PropTypes.array.isRequired,
+  visible: PropTypes.bool.isRequired,            // 组件是否可见
   onDeleteBtnClick: PropTypes.func.isRequired,   // 删除按钮点击时触发的回调函数
 };

@@ -9,11 +9,13 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
   'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
   'SET_MENU_ITEM_KEY',
+  'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL'
 ]);
 
 const initialState = {
   cars: [],
   drivers: [],
+  nodes: [],
   selectedMenuItemKey: '0',
   loading: false
 };
@@ -58,6 +60,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
       return { ...state, cars: action.result.data, loading: false };
+    case actionTypes.LOAD_NODELIST:
+      return { ...state, loading: true };
+    case actionTypes.LOAD_NODELIST_SUCCEED:
+      return { ...state, loading: false, nodes: action.result.data };
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey: action.key };
     default:
@@ -65,6 +71,9 @@ export default function reducer(state = initialState, action) {
   }
 }
 
+/**
+ * 车辆相关的action creator
+ */
 export function addCar(carInfo) {
   return {
     [CLIENT_API]: {
@@ -110,6 +119,9 @@ export function loadCarList(tenantId) {
   };
 }
 
+/**
+ * 司机有关的action creator
+ */
 export function addDriver(driverInfo) {
   return {
     [CLIENT_API]: {
@@ -149,6 +161,24 @@ export function loadDriverList(tenantId) {
         actionTypes.LOAD_DRIVERLIST_FAIL
       ],
       endpoint: 'v1/transport/resources/driver_list',
+      method: 'get',
+      params: { tenantId }
+    }
+  };
+}
+
+/**
+ * 节点相关的action creator
+ */
+export function loadNodeList(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NODELIST,
+        actionTypes.LOAD_NODELIST_SUCCEED,
+        actionTypes.LOAD_NODELIST_FAIL
+      ],
+      endpoint: 'v1/transport/resources/node_list',
       method: 'get',
       params: { tenantId }
     }
