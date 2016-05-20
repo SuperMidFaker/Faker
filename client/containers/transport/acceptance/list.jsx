@@ -334,7 +334,7 @@ export default class AcceptList extends React.Component {
         width: 150,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-            return <span />;
+            return (<span className="na-operation">NA</span>);
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>

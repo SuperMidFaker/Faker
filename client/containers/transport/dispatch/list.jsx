@@ -138,7 +138,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsigner'),
     dataIndex: 'consigner_name',
-    width: 150,
+    width: 180,
   }, {
     title: this.msg('consignerPlace'),
     width: 120,
@@ -146,7 +146,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
-    width: 150,
+    width: 200,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -155,7 +155,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 150,
+    width: 180,
   }, {
     title: this.msg('consigneePlace'),
     width: 120,
@@ -163,7 +163,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 150,
+    width: 200,
   }];
   buildCols(sub) {
     const { status, origin } = this.props.filters;
@@ -178,7 +178,7 @@ export default class DispatchList extends React.Component {
     let cols = [{
       title: t,
       dataIndex: 'shipmt_no',
-      width: 140
+      width: 100
     }];
     if (s === 'waiting') {
       cols.push({
@@ -194,12 +194,13 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipAcceptTime'),
         dataIndex: 'acpt_time',
-        width: 60,
+        width: 80,
         render: (text, record) => record.acpt_time ?
          moment(record.acpt_time).format('YYYY.MM.DD') : ' '
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           if (origin) {
             if (record.segmented === 1 && !sub) {
@@ -208,7 +209,7 @@ export default class DispatchList extends React.Component {
                   {this.msg('btnTextSegmentCancel')}
                   </a></span>);
             } else {
-              return (<span></span>);
+              return (<span className="na-operation">NA</span>);
             }
           }
           return (
@@ -265,15 +266,16 @@ export default class DispatchList extends React.Component {
       }, {
         title: timetitle,
         dataIndex: 'disp_time',
-        width: 60,
+        width: 80,
         render: (text, record) => record.disp_time ?
          moment(record.disp_time).format('YYYY.MM.DD') : ' '
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           if (s === 'dispatched') {
-            return (<span></span>);
+            return (<span className="na-operation">NA</span>);
           }
           return (
             <span>
@@ -530,7 +532,7 @@ export default class DispatchList extends React.Component {
     const ccols = this.buildCols(true);
 
     return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
-        useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4} />);
+        scroll={{ x: 2320, y: 460 }} />);
   }
 
   renderConsignLoc(shipmt, field) {
@@ -574,11 +576,11 @@ export default class DispatchList extends React.Component {
     let tb = '';
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     } else {
       tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     }
 
