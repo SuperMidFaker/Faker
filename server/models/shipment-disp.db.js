@@ -32,9 +32,12 @@ const dispCols = [
   'excp_last_event/v',
   'pod_id/i',
   'pod_type/v',
+  'auditor/v',
+  'audit_date/dtt',
   'pod_status/v',
   'task_id/i',
   'task_vehicle/v',
+  'vehicle_connect_type/i',
   'task_driver_id/i',
   'task_driver_name/v',
   'disp_status/i',
@@ -43,7 +46,7 @@ const dispCols = [
   'surcharge/f',
   'special_charge/f',
   'fine/f',
-  'oper_remark/v'
+  'task_remark/v'
 ];
 
 const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');

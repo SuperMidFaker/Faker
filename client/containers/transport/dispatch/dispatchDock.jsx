@@ -215,6 +215,7 @@ export default class DispatchDock extends Component {
         tenantId,
         loginId,
         shipmtNos,
+        connectType: target.connect_type,
         taskId: target.vehicle_id,
         taskVehicle: target.plate_number,
         taskDriverId: target.driver_id,

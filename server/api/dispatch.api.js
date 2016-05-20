@@ -57,6 +57,10 @@ function *listShipmtsGrouped() {
   Result.OK(this, shipmts);
 }
 
+function *listShipmtsGroupedSub() {
+
+}
+
 function *listExpandShipmts() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const shipmtNo = this.request.query.shipmtNo;
@@ -112,7 +116,8 @@ function *doDispatch() {
           taskId,
           taskVehicle,
           taskDriverId,
-          taskDriverName
+          taskDriverName,
+          connectType
         } = yield parse(this.req);
 
   const [ tenants, tusers ] = yield [tenantDao.getTenantInfo(tenantId),
@@ -152,6 +157,7 @@ function *doDispatch() {
     } else {
       disp.task_id = taskId;
       disp.task_vehicle = taskVehicle;
+      disp.vehicle_connect_type = connectType;
       disp.task_driver_id = taskDriverId;
       disp.task_driver_name = taskDriverName;
     }
@@ -384,7 +390,7 @@ export default [
   [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
   [ 'get', '/v1/transport/dispatch/expandlist', listExpandShipmts ],
   [ 'get', '/v1/transport/dispatch/shipmts/grouped', listShipmtsGrouped ],
-  [ 'get', '/v1/transport/dispatch/shipmts/groupedsub', listShipmtsGrouped ],
+  [ 'get', '/v1/transport/dispatch/shipmts/groupedsub', listShipmtsGroupedSub ],
   [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
   [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
   [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],

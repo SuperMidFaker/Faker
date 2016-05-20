@@ -58,15 +58,20 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true, dispatched: false};
     case actionTypes.LOAD_APTSHIPMENT_FAIL:
       return { ...state, loading: false, dispatched: false };
-    case actionTypes.LOAD_APTSHIPMENT_SUCCEED:
+    case actionTypes.LOAD_APTSHIPMENT_SUCCEED: {
+      const filters = JSON.parse(action.params.filters);
+      delete filters.type;
+      delete filters.consignerStep;
+      delete filters.consigneeStep;
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters),
+        filters,
         dispatched: false,
         segmented: false,
         lspLoaded: false,
         vehicleLoaded: false
       };
+    }
     case actionTypes.LOAD_LSPS_SUCCEED:
       return { ...state, lsps: action.result.data, lspLoaded: true};
     case actionTypes.LOAD_VEHICLES_SUCCEED:
