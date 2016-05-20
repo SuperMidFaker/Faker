@@ -131,7 +131,7 @@ export default {
     return mysql.query(sql, args);
   },
   getConsignLocations(tenantId, type) {
-    let sql = 'select node_id, name, province, city, district, addr, contact, email, mobile, postcode from tms_node_locations where tenant_id = ?';
+    let sql = 'select node_id, name, node_code, province, city, district, addr, contact, email, mobile, geo_longitude, geo_latitude, geo_radius from tms_node_locations where tenant_id = ?';
     const args = [tenantId];
     if (type !== -1) {
       sql += ' and type = ?';

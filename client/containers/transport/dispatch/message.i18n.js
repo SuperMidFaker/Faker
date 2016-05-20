@@ -5,6 +5,10 @@ export default defineMessages({
     id: 'transport.dispatch.ship.no',
     defaultMessage: '运单号'
   },
+  shipNoCount: {
+    id: 'transport.dispatch.ship.no_count',
+    defaultMessage: '运单数'
+  },
   originShipNo: {
     id: 'transport.dispatch.ship.origin_no',
     defaultMessage: '原始运单号'
