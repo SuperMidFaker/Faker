@@ -172,6 +172,8 @@ export default(store, cookie) => {
               <Route path="edit_car/:car_id" component={TMSResources.CarFormContainer} />
               <Route path="add_driver" component={TMSResources.DriverFormContainer} />
               <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
+              <Route path="add_node" component={TMSResources.NodeFormContainer}></Route>
+              <Route path="edit_node/:node_id" component={TMSResources.NodeFormContainer}></Route>
             </Route>
           </Route>
         </Route>
