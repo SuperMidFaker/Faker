@@ -16,17 +16,23 @@ function fetchData({dispatch, state}) {
   nodeType: state.transportResources.nodeType
 }), { setNodeType })
 export default class NodeListContainer extends Component {
-  componentDidMount() {
-    this.props.setNodeType(0);
-  }
-  static propTeyps = {
+  static propTypes = {
     nodes: PropTypes.array.isRequired,                // 节点数组,包括发货地、收获地和中转地
     selectedMenuItemKey: PropTypes.string.isRequired, // 当前选中的menuItem key
     nodeType: PropTypes.number.isRequired,            // 当前选中的节点类型
     setNodeType: PropTypes.func.isRequired,           // 改变节点类型的action creator
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
+  componentDidMount() {
+    this.props.setNodeType(0);
+  }
   handleDeleteBtnClick = () => {
     console.log('delete clicked');
+  }
+  handleAddNoteBtnClick = () => {
+    this.context.router.push('/transport/resources/add_node');
   }
   handleNodeTypeChange = (currentNodeType) => {
     this.props.setNodeType(currentNodeType);
@@ -40,6 +46,7 @@ export default class NodeListContainer extends Component {
       <NodeList dataSource={dataSource}
                 visible={selectedMenuItemKey === '2'}
                 nodeType={nodeType}
+                onAddNoteBtnClick={this.handleAddNoteBtnClick}
                 onRadioButtonChange={this.handleNodeTypeChange}
                 onDeleteBtnClick={this.handleDeleteBtnClick} />
     );

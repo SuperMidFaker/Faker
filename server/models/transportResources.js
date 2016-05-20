@@ -11,6 +11,12 @@ const carColumns = [
   'tenant_id'
 ];
 
+const nodeColumns =[
+  'name', 'node_code', 'type', 'province', 'city', 
+  'district', 'addr', 'contact', 'email', 'mobile', 'remark',
+  'tenant_id'
+];
+
 function generateValuesWithInfoAndColumns({columns, info}) {
   return columns.map(col => {
     if (info[col] === undefined) {
@@ -72,6 +78,18 @@ export function getNodeList(tenantId) {
     FROM tms_node_locations
     WHERE tenant_id = ${tenantId};
   `;
-  console.log(sql);
   return mysql.query(sql);
+}
+
+export function addNode(nodeInfo) {
+  const values = generateValuesWithInfoAndColumns({columns: nodeColumns, info: nodeInfo});
+  const sql = `INSERT INTO tms_node_locations(${nodeColumns.join(' ,')}) VALUES(${values.join(', ')});`;
+  return mysql.insert(sql);
+}
+
+export function updateNodeWithInfo({nodeInfo, nodeId}) {
+  const updateClause = generateUpdateClauseWithInfo(nodeInfo, nodeColumns);
+  const sql = `UPDATE tms_node_locations SET ${updateClause} WHERE node_id = ${nodeId}`;
+  console.log(sql);
+  return mysql.update(sql);
 }

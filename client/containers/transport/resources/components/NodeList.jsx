@@ -13,7 +13,7 @@ const rowSelection = {
 };
 
 export default function NodeList(props) {
-  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange } = props;
+  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
   const columns = [
     {
       title: '名称',
@@ -72,7 +72,7 @@ export default function NodeList(props) {
       render: (_, record) => {
         return (
           <span>
-            <Link to={`/edit_node/${record.node_id}`}>修改</Link>
+            <Link to={`/transport/resources/edit_node/${record.node_id}`}>修改</Link>
             <span className="ant-divider"></span>
             <a onClick={() => onDeleteBtnClick(record.node_id)} style={{color: 'red'}}>
               删除
@@ -94,7 +94,7 @@ export default function NodeList(props) {
         </div>
         <div className="page-body">
           <div className="panel-body body-responsive" style={{padding: 20}}>
-            <Button size="large" type="primary" style={{marginBottom: 16}}>新建{nodeTypes[nodeType]}</Button>
+            <Button size="large" type="primary" style={{marginBottom: 16}} onClick={onAddNoteBtnClick}>新建{nodeTypes[nodeType]}</Button>
             <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
           </div>
         </div>
@@ -113,4 +113,5 @@ NodeList.propsTypes = {
   nodeType: PropTypes.number.isRequired,          // 当前选中的node类型
   onDeleteBtnClick: PropTypes.func.isRequired,    // 删除按钮点击时触发的回调函数
   onRadioButtonChange: PropTypes.func.isRequired, // radio button改变时触发的回调函数
+  onAddNoteBtnClick: PropTypes.func.isRequired,   // 新建按钮点击后执行的回调函数
 };

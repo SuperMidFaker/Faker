@@ -9,7 +9,9 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
   'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
   'SET_MENU_ITEM_KEY', 'SET_NODE_TYPE',
-  'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL'
+  'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL',
+  'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
+  'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL'
 ]);
 
 const initialState = {
@@ -184,6 +186,36 @@ export function loadNodeList(tenantId) {
       endpoint: 'v1/transport/resources/node_list',
       method: 'get',
       params: { tenantId }
+    }
+  };
+}
+
+export function addNode(nodeInfo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_NODE,
+        actionTypes.ADD_NODE_SUCCEED,
+        actionTypes.ADD_NODE_FAIL
+      ],
+      endpoint: 'v1/transport/resources/add_node',
+      method: 'post',
+      data: { nodeInfo }
+    }
+  };
+}
+
+export function editNode({nodeId, nodeInfo}) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_NODE,
+        actionTypes.EDIT_NODE_SUCCEED,
+        actionTypes.EDIT_NODE_FAIL
+      ],
+      endpoint: 'v1/transport/resources/edit_node',
+      method: 'post',
+      data: { nodeId, nodeInfo }
     }
   };
 }
