@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table, Button, Radio } from 'ant-ui';
 import { Link } from 'react-router';
+import { nodeTypes } from '../utils/dataMapping';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -12,7 +13,7 @@ const rowSelection = {
 };
 
 export default function NodeList(props) {
-  const { onDeleteBtnClick, dataSource, visible } = props;
+  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange } = props;
   const columns = [
     {
       title: '名称',
@@ -85,15 +86,15 @@ export default function NodeList(props) {
     return (
       <div className="main-content">
         <div className="page-header">
-          <RadioGroup defaultValue="0" size="large">
-            <RadioButton value="0">发货地</RadioButton>
-            <RadioButton value="1">收获地</RadioButton>
-            <RadioButton value="2">中转地</RadioButton>
+          <RadioGroup defaultValue={nodeType} size="large" onChange={(e) => onRadioButtonChange(e.target.value)}>
+            <RadioButton value={0}>发货地</RadioButton>
+            <RadioButton value={1}>收获地</RadioButton>
+            <RadioButton value={2}>中转地</RadioButton>
           </RadioGroup>
         </div>
         <div className="page-body">
           <div className="panel-body body-responsive" style={{padding: 20}}>
-            <Button size="large" type="primary" style={{marginBottom: 16}}>新建节点</Button>
+            <Button size="large" type="primary" style={{marginBottom: 16}}>新建{nodeTypes[nodeType]}</Button>
             <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
           </div>
         </div>
@@ -108,6 +109,8 @@ export default function NodeList(props) {
 
 NodeList.propsTypes = {
   dataSource: PropTypes.array.isRequired,
-  visible: PropTypes.bool.isRequired,            // 组件是否可见
-  onDeleteBtnClick: PropTypes.func.isRequired,   // 删除按钮点击时触发的回调函数
+  visible: PropTypes.bool.isRequired,             // 组件是否可见
+  nodeType: PropTypes.number.isRequired,          // 当前选中的node类型
+  onDeleteBtnClick: PropTypes.func.isRequired,    // 删除按钮点击时触发的回调函数
+  onRadioButtonChange: PropTypes.func.isRequired, // radio button改变时触发的回调函数
 };

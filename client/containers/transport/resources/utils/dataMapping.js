@@ -33,6 +33,8 @@ const driverStatusTexts = {
   '1': '可用'
 };
 
+export const nodeTypes = ['发货地', '收获地', '中转地'];
+
 export function transformRawCarDataToDisplayData(car) {
   const displayData = Object.assign({}, car);
 

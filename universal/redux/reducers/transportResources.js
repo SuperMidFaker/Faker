@@ -8,7 +8,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'ADD_DRIVER', 'ADD_DRIVER_SUCCEED', 'ADD_DRIVER_FAIL',
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
   'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
-  'SET_MENU_ITEM_KEY',
+  'SET_MENU_ITEM_KEY', 'SET_NODE_TYPE',
   'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL'
 ]);
 
@@ -17,7 +17,8 @@ const initialState = {
   drivers: [],
   nodes: [],
   selectedMenuItemKey: '0',
-  loading: false
+  loading: false,
+  nodeType: 0
 };
 
 /**
@@ -64,6 +65,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.LOAD_NODELIST_SUCCEED:
       return { ...state, loading: false, nodes: action.result.data };
+    case actionTypes.SET_NODE_TYPE:
+      return { ...state, nodeType: action.nodeType };
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey: action.key };
     default:
@@ -183,6 +186,10 @@ export function loadNodeList(tenantId) {
       params: { tenantId }
     }
   };
+}
+
+export function setNodeType(nodeType) {
+  return {type: actionTypes.SET_NODE_TYPE, nodeType};
 }
 
 export function setMenuItemKey(key) {

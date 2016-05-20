@@ -3,7 +3,6 @@ import { Menu } from 'ant-ui';
 import CarListContainer from '../containers/CarListContainer';
 import DriverListContainer from '../containers/DriverListContainer';
 import NodeListContainer from '../containers/NodeListContainer';
-import ContentWrapper from './ContentWrapper';
 
 const MenuItem = Menu.Item;
 
