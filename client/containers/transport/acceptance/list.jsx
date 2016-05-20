@@ -131,17 +131,15 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-
     width: 220
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
-
     width: 80
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipTransitTime'),
@@ -151,7 +149,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignor'),
@@ -412,7 +410,7 @@ export default class AcceptList extends React.Component {
               </Button>
             </NavLink>
           </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2330, y: 460 }}
             />

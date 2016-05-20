@@ -7,10 +7,14 @@ import NavLink from 'reusable/components/nav-link';
 import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
-import { loadTransitTable } from
+import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
   'universal/redux/reducers/transport-tracking';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'universal/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
+  'universal/constants';
+import VehicleModal from './modals/vehicle-updater';
+import PickupOrDeliverModal from './modals/pickup-deliver-updater';
+import PodModal from './modals/pod-submit';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -36,6 +40,22 @@ function fetchData({ state, dispatch, cookie }) {
   }));
 }
 
+function RowUpdater(props) {
+  const { label, onAnchored, row } = props;
+  function handleClick() {
+    if (onAnchored) {
+      onAnchored(row);
+    }
+  }
+  return <a onClick={handleClick}>{label}</a>;
+}
+
+RowUpdater.propTypes = {
+  label: PropTypes.string.isRequired,
+  onAnchored: PropTypes.func,
+  row: PropTypes.object,
+};
+
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
@@ -45,7 +65,7 @@ function fetchData({ state, dispatch, cookie }) {
     filters: state.transportTracking.transit.filters,
     loading: state.transportTracking.transit.loading,
   }),
-  { loadTransitTable, loadShipmtDetail })
+  { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -69,6 +89,9 @@ export default class TrackingList extends React.Component {
    */
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
+    showVehicleModal: PropTypes.func.isRequired,
+    showDateModal: PropTypes.func.isRequired,
+    showPodModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadTransitTable: PropTypes.func.isRequired
   }
@@ -170,24 +193,53 @@ export default class TrackingList extends React.Component {
       } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
         if (record.sp_tenant_id === -1) {
           // 线下客户手动更新
-          return <a>{this.msg('updateVehicleDriver')}</a>;
+          return (
+            <RowUpdater label={this.msg('updateVehicleDriver')}
+              onAnchored={this.handleShowVehicleModal} row={record}
+            />
+          );
         } else {
           return this.msg('carrierUpdate');
         }
       } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
         if (record.sp_tenant_id === -1) {
-          return <a>{this.msg('updatePickup')}</a>;
+          return (
+            <RowUpdater label={this.msg('updatePickup')}
+              onAnchored={this.handleShowPickModal} row={record}
+            />
+          );
         } else if (record.sp_tenant_id === 0) {
           // 已分配给车队
-          return this.msg('driverUpdate');
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            // 线下司机
+            return (
+              <RowUpdater label={this.msg('updatePickup')}
+              onAnchored={this.handleShowPickModal} row={record}
+              />
+            );
+          } else {
+            return this.msg('driverUpdate');
+          }
         } else {
           return this.msg('carrierUpdate');
         }
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (record.sp_tenant_id === -1) {
-          return <a>{this.msg('updateDelivery')}</a>;
+          return (
+            <RowUpdater label={this.msg('updateDelivery')}
+            onAnchored={this.handleShowDeliverModal} row={record}
+            />
+          );
         } else if (record.sp_tenant_id === 0) {
-          return this.msg('driverUpdate');
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            return (
+              <RowUpdater label={this.msg('updateDelivery')}
+              onAnchored={this.handleShowDeliverModal} row={record}
+              />
+            );
+          } else {
+            return this.msg('driverUpdate');
+          }
         } else {
           return this.msg('carrierUpdate');
         }
@@ -195,9 +247,21 @@ export default class TrackingList extends React.Component {
         if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
           return <span />;
         } else if (record.sp_tenant_id === -1) {
-          return <a>{this.msg('submitPod')}</a>;
+          return (
+            <RowUpdater label={this.msg('submitPod')}
+            onAnchored={this.handleShowPodModal} row={record}
+            />
+          );
         } else if (record.sp_tenant_id === 0) {
-          return this.msg('driverUpdate');
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            return (
+              <RowUpdater label={this.msg('submitPod')}
+              onAnchored={this.handleShowPodModal} row={record}
+              />
+            );
+          } else {
+            return this.msg('driverUpdate');
+          }
         } else {
           return this.msg('carrierUpdate');
         }
@@ -329,6 +393,18 @@ export default class TrackingList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleShowVehicleModal = row => {
+    this.props.showVehicleModal(row.disp_id);
+  }
+  handleShowPickModal = row => {
+    this.props.showDateModal(row.disp_id, 'pickup');
+  }
+  handleShowDeliverModal = row => {
+    this.props.showDateModal(row.disp_id, 'deliver');
+  }
+  handleShowPodModal = (row) => {
+    this.props.showPodModal(row.disp_id);
+  }
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
@@ -421,6 +497,9 @@ export default class TrackingList extends React.Component {
           </div>
         </div>
         <PreviewPanel />
+        <VehicleModal onOK={this.handleTableLoad} />
+        <PickupOrDeliverModal onOK={this.handleTableLoad} />
+        <PodModal onOK={this.handleTableLoad} />
       </div>
     );
   }

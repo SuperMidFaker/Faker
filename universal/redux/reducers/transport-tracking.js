@@ -2,15 +2,14 @@ import { CLIENT_API } from 'reusable/redux-middlewares/api';
 import { createActionTypes } from 'reusable/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/', [
-  'HIDE_ACCEPT_MODAL', 'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',
-  'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
+  'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL', 'SHOW_POD_MODAL',
+  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'HIDE_POD_MODAL',
+  'SAVE_VEHICLE', 'SAVE_VEHICLE_SUCCEED', 'SAVE_VEHICLE_FAIL',
+  'SAVE_DATE', 'SAVE_DATE_SUCCEED', 'SAVE_DATE_FAIL',
+  'SAVE_POD', 'SAVE_POD_SUCCEED', 'SAVE_POD_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
-  'ACCP_DISP', 'ACCP_DISP_FAIL', 'ACCP_DISP_SUCCEED',
-  'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
-  'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
-  'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL'
 ]);
 
 const initialState = {
@@ -31,7 +30,20 @@ const initialState = {
       pageSize: 10,
       current: 1,
       data: [],
-    }
+    },
+    vehicleModal: {
+      visible: false,
+      dispId: -1,
+    },
+    dateModal: {
+      visible: false,
+      dispId: -1,
+      type: 'pickup',
+    },
+    podModal: {
+      visible: false,
+      dispId: -1,
+    },
   },
   pod: {
     loaded: false,
@@ -50,54 +62,31 @@ export default function reducer(state = initialState, action) {
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
     }};
-    case actionTypes.SAVE_SHIPMT:
-    case actionTypes.SAVE_DRAFT:
-      return { ...state, submitting: true };
-    case actionTypes.SAVE_SHIPMT_FAIL:
-    case actionTypes.SAVE_DRAFT_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.SAVE_SHIPMT_SUCCEED: {
-      let found = false;
-      state.table.filters.forEach(flt => {
-        if (flt.name === 'type' && flt.value === 'accepted') {
-          found = true;
-          return;
-        }
-      });
-      return found ? {
-        ...state, submitting: false, table: {
-          ...state.table,
-          shipmentlist: {
-            ...state.table.shipmentlist,
-            totalCount: state.table.shipmentlist + 1,
-            data: state.table.shipmentlist.pageSize * state.table.shipmentlist.current < state.table.shipmentlist.totalCount
-              ? [...state.table.shipmentlist.data, action.data.result] : state.table.shipmentlist.data
-          }
-        }
-      } : { ...state, submitting: false };
-    }
-    case actionTypes.SAVE_DRAFT_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.HIDE_ACCEPT_MODAL:
-      return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
-    case actionTypes.LOAD_DISPATCHERS:
-      return { ...state, acceptModal: { ...state.acceptModal, visible: true,
-        dispatchId: action.modal.dispId }};
-    case actionTypes.LOAD_DISPATCHERS_SUCCEED:
-      return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data }};
-    case actionTypes.ACCP_DISP_SUCCEED:
-      return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
-    case actionTypes.CLOSE_RE_MODAL:
-      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false }};
-    case actionTypes.REVOKE_OR_REJECT:
-      return {
-      ...state, revokejectModal: {
-        ...state.revokejectModal, visible: true, dispId: action.data.dispId,
-        type: action.data.type
+    case actionTypes.SHOW_VEHICLE_MODAL:
+      return { ...state, transit: { ...state.transit,
+        vehicleModal: { visible: true, dispId: action.data.dispId }
       }};
-    case actionTypes.REVOKE_SHIPMT_SUCCEED:
-    case actionTypes.REJECT_SHIPMT_SUCCEED:
-      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false }};
+    case actionTypes.HIDE_VEHICLE_MODAL:
+      return { ...state, transit: { ...state.transit,
+        vehicleModal: { visible: false, dispId: -1 }
+      }};
+    case actionTypes.SHOW_DATE_MODAL:
+      return { ...state, transit: { ...state.transit,
+        dateModal: { visible: true, dispId: action.data.dispId,
+          type: action.data.type }
+      }};
+    case actionTypes.HIDE_DATE_MODAL:
+      return { ...state, transit: { ...state.transit,
+        dateModal: { visible: false, dispId: -1 }
+      }};
+    case actionTypes.SHOW_POD_MODAL:
+      return { ...state, transit: { ...state.transit,
+        podModal: { visible: true, dispId: action.data.dispId }
+      }};
+    case actionTypes.HIDE_POD_MODAL:
+      return { ...state, transit: { ...state.transit,
+        podModal: { visible: false, dispId: -1 }
+      }};
     default:
       return state;
   }
@@ -119,127 +108,86 @@ export function loadTransitTable(cookie, params) {
   };
 }
 
-export function saveEdit(shipment, tenantId, loginId) {
+export function showVehicleModal(dispId) {
+  return {
+    type: actionTypes.SHOW_VEHICLE_MODAL,
+    data: { dispId },
+  };
+}
+
+export function closeVehicleModal() {
+  return {
+    type: actionTypes.HIDE_VEHICLE_MODAL,
+  };
+}
+
+export function saveVehicle(dispId, plate, driver, remark) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_EDIT,
-        actionTypes.SAVE_EDIT_SUCCEED,
-        actionTypes.SAVE_EDIT_FAIL
+        actionTypes.SAVE_VEHICLE,
+        actionTypes.SAVE_VEHICLE_SUCCEED,
+        actionTypes.SAVE_VEHICLE_FAIL,
       ],
-      endpoint: 'v1/transport/shipment/save_edit',
+      endpoint: 'v1/transport/tracking/vehicle',
       method: 'post',
-      data: { shipment, tenantId, loginId }
+      data: { dispId, plate, driver, remark },
     }
   };
 }
 
-export function saveAndAccept(shipment, sp) {
+export function showDateModal(dispId, type) {
+  return {
+    type: actionTypes.SHOW_DATE_MODAL,
+    data: { dispId, type },
+  };
+}
+
+export function closeDateModal() {
+  return {
+    type: actionTypes.HIDE_DATE_MODAL,
+  };
+}
+
+export function savePickOrDeliverDate(type, dispId, actDate) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_SHIPMT,
-        actionTypes.SAVE_SHIPMT_SUCCEED,
-        actionTypes.SAVE_SHIPMT_FAIL,
+        actionTypes.SAVE_DATE,
+        actionTypes.SAVE_DATE_SUCCEED,
+        actionTypes.SAVE_DATE_FAIL,
       ],
+      endpoint: 'v1/transport/tracking/pickordeliverdate',
       method: 'post',
-      endpoint: 'v1/transport/shipment/saveaccept',
-      data: { shipment, sp },
+      data: { dispId, type, actDate },
     }
   };
 }
 
-export function saveDraft(shipment, sp) {
+export function showPodModal(dispId) {
+  return {
+    type: actionTypes.SHOW_POD_MODAL,
+    data: { dispId },
+  };
+}
+
+export function closePodModal() {
+  return {
+    type: actionTypes.HIDE_POD_MODAL,
+  };
+}
+
+export function saveSubmitPod(dispId, signStatus, signRemark, photos) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_DRAFT,
-        actionTypes.SAVE_DRAFT_SUCCEED,
-        actionTypes.SAVE_DRAFT_FAIL,
+        actionTypes.SAVE_POD,
+        actionTypes.SAVE_POD_SUCCEED,
+        actionTypes.SAVE_POD_FAIL,
       ],
+      endpoint: 'v1/transport/tracking/pod',
       method: 'post',
-      endpoint: 'v1/transport/shipment/draft',
-      data: { shipment, sp },
-    }
-  };
-}
-
-export function loadAcceptDispatchers(tenantId, dispId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DISPATCHERS,
-        actionTypes.LOAD_DISPATCHERS_SUCCEED,
-        actionTypes.LOAD_DISPATCHERS_FAIL,
-      ],
-      method: 'get',
-      endpoint: 'v1/transport/shipment/dispatchers',
-      params: { tenantId },
-      modal: { dispId },
-    }
-  };
-}
-
-export function closeAcceptModal() {
-  return {
-    type: actionTypes.HIDE_ACCEPT_MODAL,
-  };
-}
-
-export function acceptDispShipment(shipmtDispId, acptId, acptName, disperId, disperName) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ACCP_DISP,
-        actionTypes.ACCP_DISP_SUCCEED,
-        actionTypes.ACCP_DISP_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/transport/shipment/accept',
-      data: { shipmtDispId, acptId, acptName, disperId, disperName },
-    }
-  };
-}
-
-export function revokeOrReject(type, dispId) {
-  return {
-    type: actionTypes.REVOKE_OR_REJECT,
-    data: { type, dispId }
-  };
-}
-
-export function closeReModal() {
-  return {
-    type: actionTypes.CLOSE_RE_MODAL,
-  };
-}
-
-export function revokeShipment(shipmtDispId, reason) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.REVOKE_SHIPMT,
-        actionTypes.REVOKE_SHIPMT_SUCCEED,
-        actionTypes.REVOKE_SHIPMT_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/transport/shipment/revoke',
-      data: { shipmtDispId, reason },
-    }
-  };
-}
-
-export function rejectShipment(dispId, reason) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.REJECT_SHIPMT,
-        actionTypes.REJECT_SHIPMT_SUCCEED,
-        actionTypes.REJECT_SHIPMT_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/transport/shipment/reject',
-      data: { dispId, reason },
+      data: { dispId, signStatus, signRemark, photos },
     }
   };
 }
