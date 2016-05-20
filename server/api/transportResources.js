@@ -68,11 +68,46 @@ function *editCar() {
   }
 }
 
+function *getNodeList() {
+  try {
+    const { tenantId } = this.request.query;
+    const result = yield TransportResourcesDao.getNodeList(tenantId);
+    return Result.OK(this, result);
+  } catch(e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *addNode() {
+  try {
+    const body = yield cobody(this);
+    const { nodeInfo } = body;
+    yield TransportResourcesDao.addNode(nodeInfo);
+    return Result.OK(this);
+  } catch(e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *editNode() {
+  try {
+    const body = yield cobody(this);
+    const { nodeInfo, nodeId } = body;
+    yield TransportResourcesDao.updateNodeWithInfo({nodeInfo, nodeId});
+    return Result.OK(this, {nodeInfo, nodeId});
+  } catch(e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   ['post', '/v1/transport/resources/add_driver', addDriver],
   ['get', '/v1/transport/resources/driver_list', getDriverList],
   ['post', '/v1/transport/resources/edit_driver', editDriver],
   ['post', '/v1/transport/resources/add_car', addCar],
   ['get', '/v1/transport/resources/car_list', getCarList],
-  ['post', '/v1/transport/resources/edit_car', editCar]
+  ['post', '/v1/transport/resources/edit_car', editCar],
+  ['get', '/v1/transport/resources/node_list', getNodeList],
+  ['post', '/v1/transport/resources/add_node', addNode],
+  ['post', '/v1/transport/resources/edit_node', editNode]
 ];
