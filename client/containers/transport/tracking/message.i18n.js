@@ -165,4 +165,72 @@ export default defineMessages({
     id: 'transport.tracking.own.fleet',
     defaultMessage: '我的车队'
   },
+  vehicleModalTitle: {
+    id: 'transport.tracking.modal.vehicle.title',
+    defaultMessage: '更新车辆司机'
+  },
+  vehiclePlate: {
+    id: 'transport.tracking.modal.vehicle.plate',
+    defaultMessage: '车牌'
+  },
+  driverName: {
+    id: 'transport.tracking.modal.driver.name',
+    defaultMessage: '司机名称'
+  },
+  taskRemark: {
+    id: 'transport.tracking.modal.task.remark',
+    defaultMessage: '备注'
+  },
+  remarkPlaceholder: {
+    id: 'transport.tracking.modal.remark.placeholder',
+    defaultMessage: '司机联系方式等信息'
+  },
+  pickupModalTitle: {
+    id: 'transport.tracking.modal.pickup.title',
+    defaultMessage: '更新提货时间'
+  },
+  deliverModalTitle: {
+    id: 'transport.tracking.modal.deliver.title',
+    defaultMessage: '更新交货时间'
+  },
+  chooseActualTime: {
+    id: 'transport.tracking.modal.choose.actual.time',
+    defaultMessage: '选择实际时间'
+  },
+  podModalTitle: {
+    id: 'transport.tracking.modal.pod.title',
+    defaultMessage: '上传回单'
+  },
+  signStatus: {
+    id: 'transport.tracking.modal.pod.signstatus',
+    defaultMessage: '签收状态'
+  },
+  normalSign: {
+    id: 'transport.tracking.modal.pod.sign.normal',
+    defaultMessage: '正常签收'
+  },
+  abnormalSign: {
+    id: 'transport.tracking.modal.pod.sign.abnormal',
+    defaultMessage: '异常签收'
+  },
+  refusedSign: {
+    id: 'transport.tracking.modal.pod.sign.refused',
+    defaultMessage: '拒绝签收'
+  },
+  signRemark: {
+    id: 'transport.tracking.modal.pod.sign.abnormal',
+    defaultMessage: '签收备注'
+  },
+  signRemarkPlaceholder: {
+    id: 'transport.tracking.modal.pod.signremark.placeholder',
+    defaultMessage: '货差/货损/拒签原因'
+  },
+  podPhoto: {
+    id: 'transport.tracking.modal.pod.photo',
+    defaultMessage: '回单照片'
+  },
+  clickSubmit: {
+    id: 'transport.tracking.modal.pod.click.submit',
+    defaultMessage: '点击上传'
+  },
 });
