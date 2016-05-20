@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Menu } from 'ant-ui';
 import CarListContainer from '../containers/CarListContainer';
 import DriverListContainer from '../containers/DriverListContainer';
+import NodeListContainer from '../containers/NodeListContainer';
 import ContentWrapper from './ContentWrapper';
 
 const MenuItem = Menu.Item;
@@ -20,6 +21,7 @@ export default function Main(props) {
       <ContentWrapper>
         <CarListContainer />
         <DriverListContainer />
+        <NodeListContainer />
       </ContentWrapper>
     </div>
 
