@@ -714,27 +714,27 @@ img {
   margin-bottom: 72px;
   clear: both;
   &.fixed {
+    position: fixed;
+    top: 106px;
+    left: 116px;
+    right: 16px;
+    bottom: 16px;
+    margin-bottom: 0;
+    .ant-pagination {
       position: fixed;
-      top: 106px;
-      left: 116px;
-      right: 16px;
       bottom: 16px;
-      margin-bottom: 0;
-      .ant-pagination {
-        position: fixed;
-        bottom: 16px;
-        right: 16px;
-        background: #fff;
-      }
+      right: 16px;
+      background: #fff;
+    }
+    @media (max-width:767px) {
+      top: 146px;
+      left: 76px;
+    }
   }
 }
-.ant-table table,
-.ant-table-header table
- {
+.ant-table,
+.ant-table-header {
   border-radius: 0;
-}
-.ant-table-header + .ant-table-body {
-  height: 460px;
 }
 .page-footer {
   height: 50px;

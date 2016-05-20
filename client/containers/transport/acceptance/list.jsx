@@ -412,7 +412,7 @@ export default class AcceptList extends React.Component {
               </Button>
             </NavLink>
           </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2330, y: 460 }}
             />
