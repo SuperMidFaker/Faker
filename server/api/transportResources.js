@@ -104,6 +104,17 @@ function *editNode() {
   }
 }
 
+function *removeNode() {
+  try {
+    const body = yield cobody(this);
+    const { nodeId } = body;
+    yield TransportResourcesDao.removeNodeWithId(nodeId);
+    return Result.OK(this, { nodeId });
+  } catch(e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   ['post', '/v1/transport/resources/add_driver', addDriver],
   ['get', '/v1/transport/resources/driver_list', getDriverList],
@@ -113,5 +124,6 @@ export default [
   ['post', '/v1/transport/resources/edit_car', editCar],
   ['get', '/v1/transport/resources/node_list', getNodeList],
   ['post', '/v1/transport/resources/add_node', addNode],
-  ['post', '/v1/transport/resources/edit_node', editNode]
+  ['post', '/v1/transport/resources/edit_node', editNode],
+  ['post', '/v1/transport/resources/remove_node', removeNode]
 ];

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Spin } from 'ant-ui';
+import { Table, Button } from 'ant-ui';
 import { Link } from 'react-router';
 
 const rowSelection = {
@@ -8,7 +8,7 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, visible, loading, onStopDriverBtnClick, onResumeDriverBtnClick } = props;
+  const { dataSource, onAddDriverBtnClicked, visible, onStopDriverBtnClick, onResumeDriverBtnClick } = props;
 
   function editAndStopDriverOperations(record) {
     return (
@@ -76,14 +76,14 @@ function DriverList(props) {
 
   if (visible) {
     return (
-      <div className="page-body">
-        <div className="panel-body body-responsive" style={{padding: 20}}>
-          <Spin spinning={loading}>
+      <div className="main-content">
+        <div className="page-body">
+          <div className="panel-body body-responsive" style={{padding: 20}}>
             <div style={{marginBottom: 16}}>
               <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
             </div>
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
-          </Spin>
+          </div>
         </div>
       </div>
     );
@@ -96,7 +96,6 @@ DriverList.propTyps = {
   dataSource: PropTypes.array,
   onAddDriverBtnClicked: PropTypes.func.isRequired,   // 点击新建司机按钮后执行的回调函数
   visible: PropTypes.bool.isRequired,                 // 组件是否可见
-  loading: PropTypes.bool.isRequired,                 // 组件是否正在加载
   onStopDriverBtnClick: PropTypes.func.isRequired,    // 点击停止车辆按钮的回调函数
   onResumeDriverBtnClick: PropTypes.func.isRequired,  // 点击启用车辆按钮的回调函数
 };

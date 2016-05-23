@@ -11,7 +11,9 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'SET_MENU_ITEM_KEY', 'SET_NODE_TYPE',
   'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL',
   'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
-  'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL'
+  'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
+  'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
+  'CHANGE_REGION'
 ]);
 
 const initialState = {
@@ -20,7 +22,12 @@ const initialState = {
   nodes: [],
   selectedMenuItemKey: '0',
   loading: false,
-  nodeType: 0
+  nodeType: 0,
+  region: {
+    province: '',
+    city: '',
+    district: ''
+  }
 };
 
 /**
@@ -67,10 +74,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.LOAD_NODELIST_SUCCEED:
       return { ...state, loading: false, nodes: action.result.data };
+    case actionTypes.REMOVE_NODE:
+      return { ...state, loading: true };
+    case actionTypes.REMOVE_NODE_SUCCEED: {
+      const { nodeId: removedNodeId } = action.result.data;
+      const nodes = state.nodes.filter(node => node.node_id !== removedNodeId);
+      return { ...state, loading: false, nodes };
+    }
     case actionTypes.SET_NODE_TYPE:
       return { ...state, nodeType: action.nodeType };
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey: action.key };
+    case actionTypes.CHANGE_REGION:
+      return { ...state, region: action.region };
     default:
       return state;
   }
@@ -220,10 +236,29 @@ export function editNode({nodeId, nodeInfo}) {
   };
 }
 
+export function removeNode(nodeId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_NODE,
+        actionTypes.REMOVE_NODE_SUCCEED,
+        actionTypes.REMOVE_NODE_FAIL
+      ],
+      endpoint: 'v1/transport/resources/remove_node',
+      method: 'post',
+      data: { nodeId }
+    }
+  };
+}
+
 export function setNodeType(nodeType) {
   return {type: actionTypes.SET_NODE_TYPE, nodeType};
 }
 
 export function setMenuItemKey(key) {
   return {type: actionTypes.SET_MENU_ITEM_KEY, key};
+}
+
+export function changeRegion(region) {
+  return {type: actionTypes.CHANGE_REGION, region};
 }
