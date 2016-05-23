@@ -178,7 +178,7 @@ export default class DispatchList extends React.Component {
     let cols = [{
       title: t,
       dataIndex: 'shipmt_no',
-      width: 100
+      width: 150
     }];
     if (s === 'waiting') {
       cols.push({
