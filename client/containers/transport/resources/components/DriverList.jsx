@@ -76,12 +76,14 @@ function DriverList(props) {
 
   if (visible) {
     return (
-      <div className="page-body">
-        <div className="panel-body body-responsive" style={{padding: 20}}>
-          <div style={{marginBottom: 16}}>
-            <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
+      <div className="main-content">
+        <div className="page-body">
+          <div className="panel-body body-responsive" style={{padding: 20}}>
+            <div style={{marginBottom: 16}}>
+              <Button type="primary" size="large" onClick={onAddDriverBtnClicked}>新建司机</Button>
+            </div>
+            <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
           </div>
-          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
         </div>
       </div>
     );
