@@ -594,7 +594,7 @@ export default class DispatchList extends React.Component {
     const ccols = this.buildCols('sub');
 
     return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
-        useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4} />);
+        scroll={{ x: 2320, y: 460 }} />);
   }
 
   handleConditionExpandList = row => {
@@ -650,7 +650,7 @@ export default class DispatchList extends React.Component {
     if (type) {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     }
 
