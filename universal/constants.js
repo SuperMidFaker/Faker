@@ -253,6 +253,10 @@ const SHIPMENT_POD_STATUS = {
   acceptByClient: 3,
 };
 
+const SHIPMENT_POD_TYPE = {
+  qrcode: 1,
+  paperprint: 2,
+};
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
@@ -283,4 +287,5 @@ export {
   SHIPMENT_TRACK_STATUS,
   SHIPMENT_POD_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
+  SHIPMENT_POD_TYPE,
 };

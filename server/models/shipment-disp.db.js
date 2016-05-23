@@ -70,7 +70,7 @@ function packGoodsArgs(goods) {
 function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
   if (shipmtDispType === false) {
-    disp = `and ${aliasSD}.status != ?`;
+    disp = `and parent_no is NULL and ${aliasSD}.status != ?`;
     args.push(unacceptSt);
   } else {
     disp = `and ${aliasSD}.status = ?`;
@@ -392,7 +392,7 @@ export default {
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
     const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
-      and effective = 1 ${whereCond}`;
+      and effective = 1 and disp_status = 1 ${whereCond}`;
     return mysql.query(sql, args);
   },
   getTrackingShipments(tenantId, filters, pageSize, current) {
@@ -407,22 +407,27 @@ export default {
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
-      ${whereCond}`;
+      and disp_status = 1 ${whereCond}`;
     return mysql.query(sql, args);
   },
   updateDispInfo(dispId, dispFieldValues, trans) {
     const args = [];
-    let setClause = '';
+    const setClause = [];
     Object.keys(dispFieldValues).forEach(column => {
-      setClause = `${setClause}${column}=?,`;
+      setClause.push(`${column} = ?`);
       args.push(dispFieldValues[column]);
     });
     if (setClause.length > 0) {
-      const sql = `update tms_shipment_dispatch set ${setClause.substring(0, setClause.length - 1)} where id = ?`;
+      const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where id = ?`;
       args.push(dispId);
       return mysql.update(sql, args, trans);
     }
-  }, 
+  },
+  updateStatusByShipmtNo(shipmtNo, status, trans) {
+    const sql = 'update tms_shipment_dispatch set status = ? where shipmt_no = ?';
+    const args = [ status, shipmtNo ];
+    return mysql.update(sql, args, trans);
+  },
   createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
     const sql = `insert into tms_shipment_manifest(name, goods_no, package,
       length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,

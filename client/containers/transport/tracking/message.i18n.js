@@ -229,8 +229,8 @@ export default defineMessages({
     id: 'transport.tracking.modal.pod.photo',
     defaultMessage: '回单照片'
   },
-  clickSubmit: {
+  photoSubmit: {
     id: 'transport.tracking.modal.pod.click.submit',
-    defaultMessage: '点击上传'
+    defaultMessage: '上传照片'
   },
 });
