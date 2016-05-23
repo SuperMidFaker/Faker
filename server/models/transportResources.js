@@ -90,6 +90,11 @@ export function addNode(nodeInfo) {
 export function updateNodeWithInfo({nodeInfo, nodeId}) {
   const updateClause = generateUpdateClauseWithInfo(nodeInfo, nodeColumns);
   const sql = `UPDATE tms_node_locations SET ${updateClause} WHERE node_id = ${nodeId}`;
-  console.log(sql);
   return mysql.update(sql);
+}
+
+export function removeNodeWithId(nodeId) {
+  const sql = `DELETE FROM tms_node_locations WHERE node_id = ${nodeId};`;
+  console.log(sql);
+  return mysql.delete(sql);
 }

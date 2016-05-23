@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL',
   'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
   'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
+  'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
   'CHANGE_REGION'
 ]);
 
@@ -73,6 +74,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.LOAD_NODELIST_SUCCEED:
       return { ...state, loading: false, nodes: action.result.data };
+    case actionTypes.REMOVE_NODE:
+      return { ...state, loading: true };
+    case actionTypes.REMOVE_NODE_SUCCEED: {
+      const { nodeId: removedNodeId } = action.result.data;
+      const nodes = state.nodes.filter(node => node.node_id !== removedNodeId);
+      return { ...state, loading: false, nodes };
+    }
     case actionTypes.SET_NODE_TYPE:
       return { ...state, nodeType: action.nodeType };
     case actionTypes.SET_MENU_ITEM_KEY:
@@ -224,6 +232,21 @@ export function editNode({nodeId, nodeInfo}) {
       endpoint: 'v1/transport/resources/edit_node',
       method: 'post',
       data: { nodeId, nodeInfo }
+    }
+  };
+}
+
+export function removeNode(nodeId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_NODE,
+        actionTypes.REMOVE_NODE_SUCCEED,
+        actionTypes.REMOVE_NODE_FAIL
+      ],
+      endpoint: 'v1/transport/resources/remove_node',
+      method: 'post',
+      data: { nodeId }
     }
   };
 }
