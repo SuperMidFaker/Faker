@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message, Select, Modal } from 'ant-ui';
+import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'reusable/decorators/connect-fetch';
@@ -172,13 +172,13 @@ export default class DispatchList extends React.Component {
     if (origin) {
       t = this.msg('originShipNo');
     }
-    if (sub) {
+    if (sub === 'sub') {
       t = this.msg('segmentShipNo');
     }
     let cols = [{
       title: t,
       dataIndex: 'shipmt_no',
-      width: 100
+      width: 150
     }];
     if (s === 'waiting') {
       cols.push({
@@ -203,7 +203,7 @@ export default class DispatchList extends React.Component {
         fixed: 'right',
         render: (o, record) => {
           if (origin) {
-            if (record.segmented === 1 && !sub) {
+            if (record.segmented === 1 && sub !== 'sub') {
               return (<span>
                   <a role="button" onClick={() => this.handleSegmentCancelConfirm(record)}>
                   {this.msg('btnTextSegmentCancel')}
@@ -295,6 +295,57 @@ export default class DispatchList extends React.Component {
     return cols;
   }
 
+  buildConditionCols() {
+    const cols = [{
+      title: this.msg('shipNoCount'),
+      dataIndex: 'count',
+      width: 100
+    }, {
+      title: this.msg('shipConsigner'),
+      dataIndex: 'consigner_name',
+      width: 180,
+    }, {
+      title: this.msg('consignerPlace'),
+      width: 120,
+      render: (o, record) => this.renderConsignLoc(record, 'consigner')
+    }, {
+      title: this.msg('consignerAddr'),
+      dataIndex: 'consigner_addr',
+      width: 200,
+    }, {
+      title: this.msg('shipConsignee'),
+      dataIndex: 'consignee_name',
+      width: 180,
+    }, {
+      title: this.msg('consigneePlace'),
+      width: 120,
+      render: (o, record) => this.renderConsignLoc(record, 'consignee')
+    }, {
+      title: this.msg('consigneeAddr'),
+      dataIndex: 'consignee_addr',
+      width: 200,
+    }, {
+        title: this.msg('shipmtOP'),
+        width: 100,
+        fixed: 'right',
+        render: (o, record) => {
+          return (
+            <span>
+              <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
+              {this.msg('btnTextDispatch')}
+              </a>
+              <span className="ant-divider" />
+              <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
+              {this.msg('btnTextSegment')}
+              </a>
+            </span>
+          );
+        }
+      }];
+
+    return cols;
+  }
+
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
@@ -324,10 +375,19 @@ export default class DispatchList extends React.Component {
   }
 
   handlePanelHeaderChange() {
-    const { status, origin } = this.props.filters;
+    const { status, origin, type } = this.props.filters;
 
     const panelHeader = [];
-    if (origin) {
+    if (type) {
+      const tmp = (<div className="dispatch-condition-head">
+        <Button onClick={this.handleOriginShipmtsReturn}>
+          <span>{this.msg('btnTextReturnList')}</span>
+          <Icon type="eye-o" />
+        </Button>
+        <Alert message="消息提示的文案" type="info" showIcon />
+        </div>);
+      panelHeader.push(tmp);
+    } else if (origin) {
       panelHeader.push((<span className="ant-divider" style={{width: '0px'}}/>),
       (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>));
     } else {
@@ -490,6 +550,8 @@ export default class DispatchList extends React.Component {
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        this.handlePanelHeaderChange();
       }
     });
   }
@@ -529,10 +591,14 @@ export default class DispatchList extends React.Component {
         }
       });
     }
-    const ccols = this.buildCols(true);
+    const ccols = this.buildCols('sub');
 
     return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
         scroll={{ x: 2320, y: 460 }} />);
+  }
+
+  handleConditionExpandList = row => {
+
   }
 
   renderConsignLoc(shipmt, field) {
@@ -570,16 +636,20 @@ export default class DispatchList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
-    const { status, origin } = this.props.filters;
-    const cols = this.buildCols();
+    const { status, origin, type } = this.props.filters;
+    let cols = this.buildCols();
 
-    let tb = '';
+    let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }} 
+            />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }} 
             />);
-    } else {
-      tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
+    }
+    if (type) {
+      cols = this.buildConditionCols();
+      tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     }

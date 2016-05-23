@@ -238,6 +238,12 @@ const SHIPMENT_TRACK_STATUS = {
   podaccept: 7,
 };
 
+const SHIPMENT_VEHICLE_CONNECT = {
+  disconnected: 0,
+  app: 1,
+  g7: 2,
+};
+
 const SHIPMENT_POD_STATUS = {
   unrequired: 0,
   pending: 1,
@@ -276,4 +282,5 @@ export {
   SHIPMENT_DISPATCH_STATUS,
   SHIPMENT_TRACK_STATUS,
   SHIPMENT_POD_STATUS,
+  SHIPMENT_VEHICLE_CONNECT,
 };
