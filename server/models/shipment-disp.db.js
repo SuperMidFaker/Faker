@@ -67,7 +67,7 @@ function packGoodsArgs(goods) {
 function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, args) {
   let disp = '';
   if (shipmtDispType === false) {
-    disp = `and ${aliasSD}.status != ?`;
+    disp = `and parent_no is NULL and ${aliasSD}.status != ?`;
     args.push(unacceptSt);
   } else {
     disp = `and ${aliasSD}.status = ?`;
@@ -389,7 +389,7 @@ export default {
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
     const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
-      and effective = 1 ${whereCond}`;
+      and effective = 1 and disp_status = 1 ${whereCond}`;
     return mysql.query(sql, args);
   },
   getTrackingShipments(tenantId, filters, pageSize, current) {
@@ -404,7 +404,7 @@ export default {
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
-      ${whereCond}`;
+      and disp_status = 1 ${whereCond}`;
     return mysql.query(sql, args);
   },
   updateDispInfo(dispId, dispFieldValues, trans) {
