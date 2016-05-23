@@ -381,12 +381,18 @@ export default class DispatchList extends React.Component {
     const {type} = this.props.cond;
     const panelHeader = [];
     if (type !== 'none') {
+      let str = '已经按线路汇总';
+      if (type === 'consigner') {
+        str = '已经按发货汇总';
+      } else if (type === 'consignee') {
+        str = '已经按到货汇总';
+      }
       const tmp = (<div className="dispatch-condition-head">
         <Button onClick={this.handleOriginShipmtsReturn}>
           <span>{this.msg('btnTextReturnList')}</span>
           <Icon type="eye-o" />
         </Button>
-        <Alert message="消息提示的文案" type="info" showIcon />
+        <Alert message={str} type="info" showIcon />
         </div>);
       panelHeader.push(tmp);
     } else if (origin) {
