@@ -14,7 +14,6 @@ function fetchData({dispatch, state}) {
 @connect(state => ({
   cars: state.transportResources.cars,
   selectedMenuItemKey: state.transportResources.selectedMenuItemKey,
-  loading: state.transportResources.loading,
 }), { editCar })
 export default class CarListContainer extends Component {
   static propTypes = {
@@ -36,12 +35,11 @@ export default class CarListContainer extends Component {
     this.props.editCar({carId, carInfo: {status: 0}});
   }
   render() {
-    const { cars, selectedMenuItemKey, loading } = this.props;
+    const { cars, selectedMenuItemKey } = this.props;
     const dataSource = cars.map(transformRawCarDataToDisplayData);
     return (
       <CarList dataSource={addUniqueKeys(dataSource)}
                visible={selectedMenuItemKey === '0'}
-               loading={loading}
                onStopCarBtnClick={this.handleStopCarBtnClick}
                onResumeCarBtnClick={this.handleResumeCarBtnClick}
                onAddCarBtnClick={this.handleAddCarBtnClick}/>

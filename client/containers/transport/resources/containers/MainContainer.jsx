@@ -14,7 +14,10 @@ import { setNavTitle } from 'universal/redux/reducers/navbar';
     goBackFn: null
   }));
 })
-@connect(state => ({selectedKey: state.transportResources.selectedMenuItemKey}), {setMenuItemKey})
+@connect(state => ({
+  selectedKey: state.transportResources.selectedMenuItemKey,
+  loading: state.transportResources.loading
+}), {setMenuItemKey})
 export default class MainContainer extends Component {
   static propTypes = {
     selectedKey: PropTypes.string.isRequired,  // 当前选中的MenuItem key
@@ -24,8 +27,11 @@ export default class MainContainer extends Component {
     this.props.setMenuItemKey(e.key);
   }
   render() {
+    const { selectedKey, loading } = this.props;
     return (
-      <Main selectedKeys={[this.props.selectedKey]} onClick={this.handleMenuItemClick}/>
+      <Main selectedKeys={[selectedKey]}
+            onClick={this.handleMenuItemClick}
+            loading={loading}/>
     );
   }
 }

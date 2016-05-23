@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import NodeForm from '../components/NodeForm';
-import { addNode, editNode } from '../../../../../universal/redux/reducers/transportResources';
+import { addNode, editNode, changeRegion } from '../../../../../universal/redux/reducers/transportResources';
 import connectNav from 'reusable/decorators/connect-nav';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 
@@ -18,15 +18,18 @@ import { setNavTitle } from 'universal/redux/reducers/navbar';
 @connect(state => ({
   nodes: state.transportResources.nodes,
   nodeType: state.transportResources.nodeType,
+  region: state.transportResources.region,
   tenantId: state.account.tenantId
-}), { addNode, editNode })
+}), { addNode, editNode, changeRegion })
 @Form.formify()
 export default class NodeFormConainer extends Component {
   static propTypes = {
-    nodes: PropTypes.array.isRequired,    // 节点数组
-    nodeType: PropTypes.number.isRequired, // 当前正在操作的节点类型,根据这个值向后台插入具体的node type
-    addNode: PropTypes.func.isRequired,  // 增加node的action creator
-    editNode: PropTypes.func.isRequired, // 更新node的action creator
+    nodes: PropTypes.array.isRequired,        // 节点数组
+    nodeType: PropTypes.number.isRequired,    // 当前正在操作的节点类型,根据这个值向后台插入具体的node type
+    addNode: PropTypes.func.isRequired,       // 增加node的action creator
+    editNode: PropTypes.func.isRequired,      // 更新node的action creator
+    changeRegion: PropTypes.func.isRequired,  // region级联选项改变时发生的action creator
+    region: PropTypes.object.isRequired,      // 代表级联选项的值
     tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
@@ -34,36 +37,46 @@ export default class NodeFormConainer extends Component {
   }
   handleAddNode = (e) => {
     e.preventDefault();
-    const { form, nodeType, tenantId } = this.props;
+    const { form, nodeType, tenantId, region } = this.props;
     const nodeInfoInForm = form.getFieldsValue();
-    const nodeInfo = Object.assign({}, nodeInfoInForm, { type: nodeType, tenant_id: tenantId });
+    const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
     this.props.addNode(nodeInfo);
     this.context.router.goBack();
   }
   handleEditNode = (e) => {
     e.preventDefault();
-    const { form, params } = this.props;
+    const { form, params, region } = this.props;
     const nodeInfoInform = form.getFieldsValue();
+    const nodeInfo = { ...nodeInfoInform, ...region };
     const nodeId = params.node_id;
-    this.props.editNode({nodeId, nodeInfo: nodeInfoInform});
+    this.props.editNode({nodeId, nodeInfo});
     this.context.router.goBack();
+  }
+  handleRegionChange = (value) => {
+    const [province, city, district] = value;
+    const region = Object.assign({}, {province, city, district});
+    this.props.changeRegion(region);
   }
   render() {
     const { form, params, nodes } = this.props;
     if (params.node_id) {
       const editNodeId = parseInt(params.node_id, 10);
       const editNodeInfo = nodes.find(node => node.node_id === editNodeId);
-      console.log(editNodeInfo);
+      const { province, city, district } = editNodeInfo;
+      const region = [province, city, district];
       return (
         <NodeForm mode="edit"
-                       form={form}
-                       node={editNodeInfo}
-                       onSubmitBtnClick={this.handleEditNode} />
+                  form={form}
+                  node={editNodeInfo}
+                  region={region}
+                  onRegionChange={this.handleRegionChange}
+                  onSubmitBtnClick={this.handleEditNode} />
       );
     } else {
       return (
         <NodeForm mode="add"
                   form={form}
+                  onRegionChange={this.handleRegionChange}
                   onSubmitBtnClick={this.handleAddNode}/>
       );
     }
