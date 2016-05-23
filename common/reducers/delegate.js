@@ -1,7 +1,7 @@
-import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
-import { createActionTypes } from '../../../reusable/common/redux-actions';
+import { CLIENT_API } from '../api';
+import { createActionTypes } from '../../client/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
-  clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
+  clearFormC, setFormValueC } from './form-common';
 import { CORP_EDIT_SUCCEED } from './corps';
 const actionTypes = createActionTypes('@@welogix/delegate/', [
   'SWITCH_TENANT', 'SEND_LOAD_SUCCEED',

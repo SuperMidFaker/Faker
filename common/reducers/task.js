@@ -1,9 +1,9 @@
 import {
   CLIENT_API
-} from '../../../reusable/redux-middlewares/api';
+} from '../api';
 import {
   createActionTypes
-} from '../../../reusable/common/redux-actions';
+} from '../../client/common/redux-actions';
 import {
   appendFormAcitonTypes,
   formReducer,
@@ -12,7 +12,7 @@ import {
   assignFormC,
   clearFormC,
   setFormValueC
-} from '../../../reusable/domains/redux/form-common';
+} from './form-common';
 const actionTypes = createActionTypes('@@welogix/task/', [
   'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL',
   'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL',

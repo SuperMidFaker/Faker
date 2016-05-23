@@ -10,7 +10,7 @@ import { isFormDataLoaded, loadForm, setFormValue, uploadImg, edit } from
   '../../../universal/redux/reducers/corps';
 import { checkCorpDomain } from '../../../universal/redux/reducers/corp-domain';
 import { validatePhone } from '../../../reusable/common/validater';
-import { TENANT_LEVEL } from '../../../universal/constants';
+import { TENANT_LEVEL } from '../../../common/constants';
 const Dropzone = require('react-dropzone');
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';

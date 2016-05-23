@@ -1,9 +1,9 @@
-import { CLIENT_API } from 'reusable/redux-middlewares/api';
-import { createActionTypes } from 'reusable/common/redux-actions';
+import { CLIENT_API } from '../api';
+import { createActionTypes } from '../../client/common/redux-actions';
 import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC
-} from 'reusable/domains/redux/form-common';
+} from './form-common';
 import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
 import { LOAD_TRANSHIPMT_SUCCEED } from './transport-tracking';
 

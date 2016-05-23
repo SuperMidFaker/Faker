@@ -11,7 +11,7 @@ import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
 import { isLoaded } from '../../../../reusable/common/redux-actions';
-import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../universal/constants';
+import { ACCOUNT_STATUS, TENANT_ROLE } from '../../../../common/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';

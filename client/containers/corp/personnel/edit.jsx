@@ -9,7 +9,7 @@ import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, 
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
 import { isLoginNameExist, checkLoginName } from 'reusable/domains/redux/checker-reducer';
 import { validatePhone } from '../../../../reusable/common/validater';
-import { TENANT_ROLE } from '../../../../universal/constants';
+import { TENANT_ROLE } from '../../../../common/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';

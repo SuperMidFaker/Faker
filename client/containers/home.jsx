@@ -6,7 +6,7 @@ import AmNavBar from '../components/am-navbar';
 import NavLink from '../../reusable/components/nav-link';
 import ModuleLayout from '../components/module-layout';
 import { setNavTitle } from '../../universal/redux/reducers/navbar';
-import { PERSONNEL } from '../../universal/constants';
+import { PERSONNEL } from '../../common/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import './home.less';

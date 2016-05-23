@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
-import { loadCorpByDomain } from '../universal/redux/reducers/corp-domain';
-import { loadTranslation } from '../universal/redux/reducers/intl';
-import { isLoaded } from '../reusable/common/redux-actions';
-import connectFetch from '../reusable/decorators/connect-fetch';
+import { loadCorpByDomain } from '../common/reducers/corp-domain';
+import { loadTranslation } from '../common/reducers/intl';
+import { isLoaded } from './common/redux-actions';
+import connectFetch from './common/connect-fetch';
 import './root.less';
 
 function fetchData({ state, dispatch, cookie, location }) {

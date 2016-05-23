@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from '../../reusable/components/nav-link';
+import NavLink from './nav-link';
 import { Row, Col } from 'ant-ui';
-import { DEFAULT_MODULES } from '../../universal/constants';
+import { DEFAULT_MODULES } from '../../common/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import './module-layout.less';

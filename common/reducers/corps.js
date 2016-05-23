@@ -1,8 +1,8 @@
-import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
-import { createActionTypes } from '../../../reusable/common/redux-actions';
-import { CHINA_CODE, TENANT_ROLE } from '../../../universal/constants';
+import { CLIENT_API } from '../api';
+import { createActionTypes } from '../../client/common/redux-actions';
+import { CHINA_CODE, TENANT_ROLE } from '../constants';
 import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValueC } from
-'../../../reusable/domains/redux/form-common';
+'./form-common';
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'OPEN_TENANT_APPS_EDITOR', 'CLOSE_TENANT_APPS_EDITOR',

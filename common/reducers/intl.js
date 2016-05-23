@@ -1,5 +1,5 @@
 import { CLIENT_API } from '../api';
-import { createActionTypes } from '../../../reusable/common/redux-actions';
+import { createActionTypes } from '../../client/common/redux-actions';
 const initialState = {
   loaded: false,
   locale: '',

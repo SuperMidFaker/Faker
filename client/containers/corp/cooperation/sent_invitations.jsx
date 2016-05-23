@@ -7,7 +7,7 @@ import { loadSents, cancel } from '../../../../universal/redux/reducers/invitati
 import connectFetch from '../../../../reusable/decorators/connect-fetch';
 import connectNav from '../../../../reusable/decorators/connect-nav';
 import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { INVITATION_STATUS, PARTNERSHIP_TYPE_INFO } from '../../../../universal/constants';
+import { INVITATION_STATUS, PARTNERSHIP_TYPE_INFO } from '../../../../common/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';

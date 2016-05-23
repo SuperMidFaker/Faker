@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from '../components/am-navbar';
 import AmLeftSidebar from '../components/am-ant-leftbar';
-import { BRANCH } from '../../universal/constants';
+import { BRANCH } from '../../common/constants';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);

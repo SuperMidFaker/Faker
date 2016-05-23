@@ -1,4 +1,4 @@
-import hoistStatics from '../browser-util/hoist-non-react-statics';
+import hoistStatics from '../util/hoist-non-react-statics';
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'WrappedComponent';
 }

@@ -1,8 +1,8 @@
-import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
-import { createActionTypes } from '../../../reusable/common/redux-actions';
+import { CLIENT_API } from '../api';
+import { createActionTypes } from '../../client/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
-  clearFormC, setFormValueC } from '../../../reusable/domains/redux/form-common';
-import { TENANT_ROLE } from '../../../universal/constants';
+  clearFormC, setFormValueC } from './form-common';
+import { TENANT_ROLE } from '../constants';
 import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
 import { PROFILE_UPDATE_SUCCEED } from './account';
 
