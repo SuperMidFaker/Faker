@@ -7,39 +7,22 @@ import { format } from 'universal/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 
-function ModalInput(props) {
-  const { type = 'text', value, onChange, field, placeholder = '' } = props;
-  function handleChange(ev) {
-    if (onChange) {
-      onChange(field, ev.target.value);
-    }
-  }
-  return (
-    <Input type={type} placeholder={placeholder}
-      value={value} onChange={handleChange}
-    />
-  );
-}
-ModalInput.propTypes = {
-  type: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  field: PropTypes.string,
-  placeholder: PropTypes.string,
-};
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
+    submitter: state.account.username,
     visible: state.transportTracking.transit.podModal.visible,
     dispId: state.transportTracking.transit.podModal.dispId,
+    shipmtNo: state.transportTracking.transit.podModal.shipmtNo,
   }),
   { closePodModal, saveSubmitPod })
 export default class VehicleUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
     saveSubmitPod: PropTypes.func.isRequired,
@@ -47,23 +30,41 @@ export default class VehicleUpdater extends React.Component {
   state = {
     signStatus: '',
     remark: '',
-    uploadPhoto: '',
+    photoList: [],
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (ev) => {
     this.setState({ remark: ev.target.value });
   }
-  handleSignRadioChange = (value) => {
-    this.setState({ signStatus: value });
+  handleSignRadioChange = ev => {
+    this.setState({ signStatus: ev.target.value });
+  }
+  handlePhotoUpload = info => {
+    if (info.file.status === 'done' && info.file.response) {
+      if (info.file.response.status === 200) {
+        const photos = [...this.state.photoList];
+        photos.push({
+          uid: info.file.uid,
+          name: info.file.name,
+          status: 'done',
+          url: info.file.response.data,
+        });
+        this.setState({ photoList: photos });
+      } else {
+        message.error(info.file.response.msg);
+      }
+    }
   }
   handleOk = () => {
-    const { dispId, onOK } = this.props;
-    const { vehiclePlate, driverName, remark } = this.state;
-    this.props.saveSubmitPod(dispId, vehiclePlate, driverName, remark).then(
+    const { shipmtNo, submitter, dispId, onOK } = this.props;
+    const { signStatus, remark, photoList } = this.state;
+    const photos = photoList.map(ph => ph.url).join(',');
+    this.props.saveSubmitPod(shipmtNo, dispId, submitter, signStatus, remark, photos).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
         } else {
+          this.props.closePodModal();
           onOK();
         }
       });
@@ -92,15 +93,17 @@ export default class VehicleUpdater extends React.Component {
             wrapperCol={{span: 24 - colSpan}}
           >
             <Input type="textarea" placeholder={this.msg('signRemarkPlaceholder')}
-              row="4" value={remark} onChange={this.handleFieldChange}
+              rows="5" value={remark} onChange={this.handleFieldChange}
             />
           </FormItem>
           <FormItem label={this.msg('podPhoto')} labelCol={{span: colSpan}}
             wrapperCol={{span: 24 - colSpan}}
           >
-            <Upload>
+            <Upload action="/v1/upload/img" listType="picture"
+            onChange={this.handlePhotoUpload} fileList={this.state.photoList}
+            >
               <Button icon="upload" type="ghost" />
-              { this.msg('clickSubmit') }
+              { this.msg('photoSubmit') }
             </Upload>
           </FormItem>
         </Form>

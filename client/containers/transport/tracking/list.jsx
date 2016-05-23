@@ -135,7 +135,7 @@ export default class TrackingList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 140,
+    width: 150,
     render: (o, record) => {
       return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
     }
@@ -397,13 +397,13 @@ export default class TrackingList extends React.Component {
     this.props.showVehicleModal(row.disp_id);
   }
   handleShowPickModal = row => {
-    this.props.showDateModal(row.disp_id, 'pickup');
+    this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
   }
   handleShowDeliverModal = row => {
-    this.props.showDateModal(row.disp_id, 'deliver');
+    this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
   handleShowPodModal = (row) => {
-    this.props.showPodModal(row.disp_id);
+    this.props.showPodModal(row.disp_id, row.shipmt_no);
   }
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;

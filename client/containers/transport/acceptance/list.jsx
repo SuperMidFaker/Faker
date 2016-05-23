@@ -116,7 +116,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 120,
+    width: 150,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return (

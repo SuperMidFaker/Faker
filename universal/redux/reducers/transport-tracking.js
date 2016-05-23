@@ -38,10 +38,12 @@ const initialState = {
     dateModal: {
       visible: false,
       dispId: -1,
+      shipmtNo: '',
       type: 'pickup',
     },
     podModal: {
       visible: false,
+      shipmtNo: '',
       dispId: -1,
     },
   },
@@ -72,8 +74,11 @@ export default function reducer(state = initialState, action) {
       }};
     case actionTypes.SHOW_DATE_MODAL:
       return { ...state, transit: { ...state.transit,
-        dateModal: { visible: true, dispId: action.data.dispId,
-          type: action.data.type }
+        dateModal: {
+          visible: true, dispId: action.data.dispId,
+          type: action.data.type,
+          shipmtNo: action.data.shipmtNo,
+        }
       }};
     case actionTypes.HIDE_DATE_MODAL:
       return { ...state, transit: { ...state.transit,
@@ -81,7 +86,10 @@ export default function reducer(state = initialState, action) {
       }};
     case actionTypes.SHOW_POD_MODAL:
       return { ...state, transit: { ...state.transit,
-        podModal: { visible: true, dispId: action.data.dispId }
+        podModal: {
+          visible: true, dispId: action.data.dispId,
+          shipmtNo: action.data.shipmtNo,
+        }
       }};
     case actionTypes.HIDE_POD_MODAL:
       return { ...state, transit: { ...state.transit,
@@ -136,10 +144,10 @@ export function saveVehicle(dispId, plate, driver, remark) {
   };
 }
 
-export function showDateModal(dispId, type) {
+export function showDateModal(dispId, shipmtNo, type) {
   return {
     type: actionTypes.SHOW_DATE_MODAL,
-    data: { dispId, type },
+    data: { dispId, type, shipmtNo },
   };
 }
 
@@ -149,7 +157,7 @@ export function closeDateModal() {
   };
 }
 
-export function savePickOrDeliverDate(type, dispId, actDate) {
+export function savePickOrDeliverDate(type, shipmtNo, dispId, actDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -159,15 +167,15 @@ export function savePickOrDeliverDate(type, dispId, actDate) {
       ],
       endpoint: 'v1/transport/tracking/pickordeliverdate',
       method: 'post',
-      data: { dispId, type, actDate },
+      data: { shipmtNo, dispId, type, actDate },
     }
   };
 }
 
-export function showPodModal(dispId) {
+export function showPodModal(dispId, shipmtNo) {
   return {
     type: actionTypes.SHOW_POD_MODAL,
-    data: { dispId },
+    data: { dispId, shipmtNo },
   };
 }
 
@@ -177,7 +185,7 @@ export function closePodModal() {
   };
 }
 
-export function saveSubmitPod(dispId, signStatus, signRemark, photos) {
+export function saveSubmitPod(shipmtNo, dispId, submitter, signStatus, signRemark, photos) {
   return {
     [CLIENT_API]: {
       types: [
@@ -187,7 +195,7 @@ export function saveSubmitPod(dispId, signStatus, signRemark, photos) {
       ],
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
-      data: { dispId, signStatus, signRemark, photos },
+      data: { shipmtNo, dispId, submitter, signStatus, signRemark, photos },
     }
   };
 }

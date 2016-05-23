@@ -14,12 +14,14 @@ const FormItem = Form.Item;
     visible: state.transportTracking.transit.dateModal.visible,
     type: state.transportTracking.transit.dateModal.type,
     dispId: state.transportTracking.transit.dateModal.dispId,
+    shipmtNo: state.transportTracking.transit.dateModal.shipmtNo,
   }),
   { closeDateModal, savePickOrDeliverDate })
 export default class VehicleUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
@@ -33,8 +35,8 @@ export default class VehicleUpdater extends React.Component {
     this.setState({ actDate: value });
   }
   handleOk = () => {
-    const { type, dispId, onOK } = this.props;
-    this.props.savePickOrDeliverDate(type, dispId, this.state.actDate).then(
+    const { type, shipmtNo, dispId, onOK } = this.props;
+    this.props.savePickOrDeliverDate(type, shipmtNo, dispId, this.state.actDate).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
