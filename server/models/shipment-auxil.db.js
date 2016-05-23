@@ -12,4 +12,10 @@ export default {
     const args = [dispId, logId];
     return mysql.insert(sql, [args], trans);
   },
+  createPod(type, signStatus, signRemark, photos, submitter, trans) {
+    const sql = `insert into tms_shipment_pods(type, sign_status, sign_remark,
+      photos, submitter, submit_date, created_date) values (?, NOW(), NOW())`;
+    const args = [ type, signStatus, signRemark, photos, submitter ];
+    return mysql.insert(sql, [args], trans);
+  }
 };

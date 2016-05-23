@@ -397,13 +397,13 @@ export default class TrackingList extends React.Component {
     this.props.showVehicleModal(row.disp_id);
   }
   handleShowPickModal = row => {
-    this.props.showDateModal(row.disp_id, 'pickup');
+    this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
   }
   handleShowDeliverModal = row => {
-    this.props.showDateModal(row.disp_id, 'deliver');
+    this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
   handleShowPodModal = (row) => {
-    this.props.showPodModal(row.disp_id);
+    this.props.showPodModal(row.disp_id, row.shipmt_no);
   }
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;

@@ -409,17 +409,22 @@ export default {
   },
   updateDispInfo(dispId, dispFieldValues, trans) {
     const args = [];
-    let setClause = '';
+    const setClause = [];
     Object.keys(dispFieldValues).forEach(column => {
-      setClause = `${setClause}${column}=?,`;
+      setClause.push(`${column} = ?`);
       args.push(dispFieldValues[column]);
     });
     if (setClause.length > 0) {
-      const sql = `update tms_shipment_dispatch set ${setClause.substring(0, setClause.length - 1)} where id = ?`;
+      const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where id = ?`;
       args.push(dispId);
       return mysql.update(sql, args, trans);
     }
-  }, 
+  },
+  updateStatusByShipmtNo(shipmtNo, status, trans) {
+    const sql = 'update tms_shipment_dispatch set status = ? where shipmt_no = ?';
+    const args = [ status, shipmtNo ];
+    return mysql.update(sql, args, trans);
+  },
   createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
     const sql = `insert into tms_shipment_manifest(name, goods_no, package,
       length, width, height, amount, weight, volume, remark, shipmt_no, tenant_id,
