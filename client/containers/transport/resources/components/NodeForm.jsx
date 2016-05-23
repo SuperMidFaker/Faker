@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Button, Input } from 'ant-ui';
+import { Form, Button, Input, Cascader } from 'ant-ui';
 import ContentWrapper from './ContentWrapper';
+import regionOptions from '../utils/region.json';
 
 const FormItem = Form.Item;
 
@@ -18,9 +19,11 @@ export default class CarForm extends Component {
     }
   }
   render() {
-    const { mode, form, onSubmitBtnClick } = this.props;
+    const { mode, form, onSubmitBtnClick, onRegionChange, region } = this.props;
     const getFieldProps = form.getFieldProps;
-
+    const { province, city, district } = region;
+    const regionValues = [province, city, district];
+    console.log(regionValues);
     return (
       <ContentWrapper>
         <Form horizontal onSubmit={onSubmitBtnClick}>
@@ -29,6 +32,12 @@ export default class CarForm extends Component {
           </FormItem>
           <FormItem label="外部代码:" {...formItemLayout}>
             <Input {...getFieldProps('node_code')}/>
+          </FormItem>
+          <FormItem label="区域" {...formItemLayout}>
+            <Cascader options={regionOptions}
+                      value={regionValues}
+                      placeholder="请输入地区"
+                      onChange={(value) => onRegionChange(value)}/>
           </FormItem>
           <FormItem label="具体地址:" required {...formItemLayout}>
             <Input {...getFieldProps('addr')} required/>
@@ -59,4 +68,6 @@ CarForm.propTypes = {
   onSubmitBtnClick: PropTypes.func.isRequired,    // 创建按钮点击时执行的回调函数
   form: PropTypes.object.isRequired,              // 对应于antd中的form对象
   node: PropTypes.object,                         // 编辑的节点信息, 只有在mode='edit'时才需要
+  onRegionChange: PropTypes.func.isRequired,      // 区域级联选项改变时执行的回调函数
+  region: PropTypes.object.isRequired,            // 区域信息对象,用于Cascader控件的展示信息
 };

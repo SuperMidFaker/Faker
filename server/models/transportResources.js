@@ -73,8 +73,8 @@ export function updateCarWithInfo({carInfo, carId}) {
 
 export function getNodeList(tenantId) {
   const sql = `
-    SELECT node_id, name, node_code, ref_partner_id, ref_partner_name, type, CONCAT_WS('/', province, city, district) AS district, 
-      addr, geo_longitude, contact, email, mobile, remark
+    SELECT node_id, name, node_code, ref_partner_id, ref_partner_name, type, CONCAT_WS('/', province, city, district) AS region, 
+    province, city, district, addr, geo_longitude, contact, email, mobile, remark
     FROM tms_node_locations
     WHERE tenant_id = ${tenantId};
   `;

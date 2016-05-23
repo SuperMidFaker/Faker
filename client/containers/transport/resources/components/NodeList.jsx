@@ -32,8 +32,8 @@ export default function NodeList(props) {
     },
     {
       title: '省/城市/县区',
-      dataIndex: 'district',
-      key: 'district'
+      dataIndex: 'region',
+      key: 'region'
     },
     {
       title: '地址/坐标',
@@ -88,7 +88,7 @@ export default function NodeList(props) {
         <div className="page-header">
           <RadioGroup defaultValue={nodeType} size="large" onChange={(e) => onRadioButtonChange(e.target.value)}>
             <RadioButton value={0}>发货地</RadioButton>
-            <RadioButton value={1}>收获地</RadioButton>
+            <RadioButton value={1}>收货地</RadioButton>
             <RadioButton value={2}>中转地</RadioButton>
           </RadioGroup>
         </div>
