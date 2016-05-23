@@ -39,8 +39,8 @@ export default {
     return mysql.query(sql, args);
   },
   getTenantInfo(tid) {
-    const sql = `select name, level, code, sub_code as subCode, subdomain, delegate_prefix from sso_tenants
-      where tenant_id = ? limit 1`;
+    const sql = `select name, level, code, sub_code as subCode, subdomain, delegate_prefix
+    from sso_tenants where tenant_id = ? limit 1`;
     const args = [tid];
     return mysql.query(sql, args);
   },

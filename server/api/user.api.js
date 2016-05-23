@@ -217,6 +217,7 @@ function *submitCorp() {
   corp.level = parentTenantId === 0 ? TENANT_LEVEL.ENTERPRISE : TENANT_LEVEL.STANDARD;
   corp.category_id = corp.category_id || parentTenant.category_id;
   corp.aspect = corp.aspect || parentTenant.aspect;
+  corp.subdomain = parentTenant.subdomain;
   const salt = bCryptUtil.gensalt();
   const pwdHash = bCryptUtil.hashpw(__DEFAULT_PASSWORD__, salt);
   const unid = bCryptUtil.hashMd5(corp.phone + salt + Date.now());

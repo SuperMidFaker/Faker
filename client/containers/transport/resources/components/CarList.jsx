@@ -91,12 +91,14 @@ export default function CarList(props) {
 
   if (visible) {
     return (
-      <div className="page-body">
-        <div className="panel-body body-responsive" style={{padding: 20}}>
-          <div style={{marginBottom: 16}}>
-            <Button type="primary" size="large" onClick={onAddCarBtnClick}>新建车辆</Button>
+      <div className="main-content">
+        <div className="page-body">
+          <div className="panel-body body-responsive" style={{padding: 20}}>
+            <div style={{marginBottom: 16}}>
+              <Button type="primary" size="large" onClick={onAddCarBtnClick}>新建车辆</Button>
+            </div>
+            <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
           </div>
-          <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
         </div>
       </div>
     );

@@ -288,7 +288,7 @@ function *shipmtDraftSaveAcceptP() {
     yield dbOps;
     const result = yield shipmentDispDao.createAndAcceptByLSP(
       shipmt_no, shipment.customer_tenant_id, shipment.customer_name,
-      shipment.customer_partner_id, SHIPMENT_SOURCE.subcontracted,
+      shipment.customer_partner_id, SHIPMENT_SOURCE.consigned,
       shipment.lsp_tenant_id, shipment.lsp_name, shipment.lsp_partner_id,
       loginId, loginName, SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipment.freight_charge,
