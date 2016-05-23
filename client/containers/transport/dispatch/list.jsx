@@ -640,11 +640,11 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }} 
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }} 
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     }
     if (type) {
