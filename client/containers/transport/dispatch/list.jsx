@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import connectFetch from 'reusable/decorators/connect-fetch';
 import connectNav from 'reusable/decorators/connect-nav';
 import { loadTable,
          doSend,
@@ -12,7 +11,8 @@ import { loadTable,
          segmentCancelCheckRequest,
          loadExpandList,
          loadShipmtsGrouped,
-         loadShipmtsGroupedSub } from 'universal/redux/reducers/transportDispatch';
+         loadShipmtsGroupedSub,
+         removeGroupedSubShipmt } from 'universal/redux/reducers/transportDispatch';
 import { setNavTitle } from 'universal/redux/reducers/navbar';
 import { format } from 'universal/i18n/helpers';
 import messages from './message.i18n';
@@ -56,7 +56,8 @@ const formatContainerMsg = format(containerMessages);
     segmentCancelCheckRequest,
     loadExpandList,
     loadShipmtsGrouped,
-    loadShipmtsGroupedSub })
+    loadShipmtsGroupedSub,
+    removeGroupedSubShipmt })
 export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -71,6 +72,7 @@ export default class DispatchList extends React.Component {
     segmentCancelCheckRequest: PropTypes.func.isRequired,
     loadShipmtsGroupedSub: PropTypes.func.isRequired,
     loadShipmtsGrouped: PropTypes.func.isRequired,
+    removeGroupedSubShipmt: PropTypes.func.isRequired,
     loadExpandList: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
     expandList: PropTypes.array.isRequired,
@@ -195,9 +197,10 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           if (sub === 'merge') {
-            return (<span><a role="button" onClick={() => this.handleSegmentCancelConfirm(record)}>
+            return (<span><a role="button" onClick={() => this.handleRemoveShipmt(record)}>
                   {this.msg('btnTextRemove')}
                   </a></span>);
           }
@@ -271,6 +274,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           if (s === 'dispatched') {
             return (<span className="na-operation">NA</span>);
@@ -325,15 +329,16 @@ export default class DispatchList extends React.Component {
     }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
-              {this.msg('btnTextBatchDispatch')}
+              <a role="button" onClick={() => this.handleCondDispatchDockShow(record)}>
+              {this.msg('btnTextDispatch')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
-              {this.msg('btnTextBatchSegment')}
+              <a role="button" onClick={() => this.handleCondSegmentDockShow(record)}>
+              {this.msg('btnTextSegment')}
               </a>
             </span>
           );
@@ -594,7 +599,11 @@ export default class DispatchList extends React.Component {
         useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4} />);
   }
 
-  handleConditionExpandList = row => {
+  handleRemoveShipmt = row => {
+    this.props.removeGroupedSubShipmt(row.parentKey, row.shipmt_no);
+  }
+
+  genFilters(row) {
     const {type, consignerStep, consigneeStep} = this.props.cond;
     const filters = {};
     let cer = false;
@@ -649,7 +658,51 @@ export default class DispatchList extends React.Component {
         break;
       }
     }
+    return filters;
+  }
 
+  handleCondDispatchDockShow = row => {
+    const {tenantId} = this.props;
+    const filters = this.genFilters(row);
+    if (!this.props.expandList[row.key]) {
+      this.props.loadShipmtsGroupedSub(null, {
+        tenantId,
+        filters: JSON.stringify(filters),
+        shipmtNo: row.key
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else {
+          this.setState({show: true, shipmts: result.data});
+        }
+      });
+    } else {
+      this.setState({show: true, shipmts: this.props.expandList[row.key]});
+    }
+  }
+
+  handleCondSegmentDockShow = row => {
+    const {tenantId} = this.props;
+    const filters = this.genFilters(row);
+    if (!this.props.expandList[row.key]) {
+      this.props.loadShipmtsGroupedSub(null, {
+        tenantId,
+        filters: JSON.stringify(filters),
+        shipmtNo: row.key
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else {
+          this.setState({sshow: true, shipmts: result.data});
+        }
+      });
+    } else {
+      this.setState({sshow: true, shipmts: this.props.expandList[row.key]});
+    }
+  }
+
+  handleConditionExpandList = row => {
+    const filters = this.genFilters(row);
     const { tenantId } = this.props;
     if (!this.props.expandList[row.key]) {
       this.props.loadShipmtsGroupedSub(null, {
@@ -708,17 +761,17 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
             />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource}
+              dataSource={this.dataSource} useFixedHeader
             />);
     }
 

@@ -107,7 +107,25 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.REMOVE_GROUPEDSUB: {
       const {expandList} = {...state};
-
+      const keys = Object.keys(expandList);
+      let idx = -1;
+      let key = '';
+      for (let i = 0; i < keys.length; i++) {
+        key = keys[i];
+        for (let j = 0; j < expandList[key].length; j++) {
+          const val = expandList[key][j];
+          if (val.shipmt_no === action.data.shipmtNo) {
+            idx = i;
+            break;
+          }
+        }
+        if (idx > -1) {
+          break;
+        }
+      }
+      if (idx > -1) {
+        expandList[key].splice(idx, 1);
+      }
       return {...state, expandList};
     }
     default:
