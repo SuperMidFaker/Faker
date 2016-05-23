@@ -25,9 +25,6 @@ export default class NodeListContainer extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
-  componentDidMount() {
-    this.props.setNodeType(0);
-  }
   handleDeleteBtnClick = () => {
     console.log('delete clicked');
   }
