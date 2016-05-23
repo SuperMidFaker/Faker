@@ -13,6 +13,14 @@ const messages = defineMessages({
     id: 'root.english',
     defaultMessage: '英文'
   },
+  helpdesk: {
+    id: 'root.helpdesk',
+    defaultMessage: '帮助中心'
+  },
+  onlinecs: {
+    id: 'root.onlinecs',
+    defaultMessage: '在线客服'
+  },
   desc: {
     id: 'root.desc',
     defaultMessage: '描述'

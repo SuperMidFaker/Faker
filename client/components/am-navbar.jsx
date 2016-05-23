@@ -98,7 +98,6 @@ export default class AmNavBar extends React.Component {
                 <li className="dropdown">
                   <a className="dropdown-toggle" role="button" aria-expanded="false">
                     <span className="icon s7-global"></span>
-                    <span className="angle-down s7-angle-down"></span>
                   </a>
                 </li>
               </Popover>
@@ -107,16 +106,22 @@ export default class AmNavBar extends React.Component {
                   <span className="icon s7-comment"></span>
                 </a>
               </li>
-              <li className="dropdown hidden-xs">
-                <a className="dropdown-toggle" role="button" aria-expanded="false">
-                  <span className="icon s7-bell"></span>
-                </a>
-              </li>
+              <Popover placement="bottomLeft" trigger="hover" content={
+                <Menu>
+                  <MenuItem>
+                    <span>{ formatGlobalMsg(intl, 'helpdesk') }</span>
+                  </MenuItem>
+                  <MenuItem>
+                    <span>{ formatGlobalMsg(intl, 'onlinecs') }</span>
+                  </MenuItem>
+                </Menu>
+              }>
               <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" role="button" aria-expanded="false">
                   <span className="icon s7-help1"></span>
                 </a>
               </li>
+              </Popover>
             </ul>
           </div>
         </div>

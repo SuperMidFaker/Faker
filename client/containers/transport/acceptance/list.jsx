@@ -116,7 +116,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 120,
+    width: 150,
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return (
@@ -410,7 +410,7 @@ export default class AcceptList extends React.Component {
               </Button>
             </NavLink>
           </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2330, y: 460 }}
             />
