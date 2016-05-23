@@ -21,9 +21,7 @@ export default class CarForm extends Component {
   render() {
     const { mode, form, onSubmitBtnClick, onRegionChange, region } = this.props;
     const getFieldProps = form.getFieldProps;
-    const { province, city, district } = region;
-    const regionValues = [province, city, district];
-    console.log(regionValues);
+    const regionValues = region || [];
     return (
       <ContentWrapper>
         <Form horizontal onSubmit={onSubmitBtnClick}>
@@ -35,7 +33,7 @@ export default class CarForm extends Component {
           </FormItem>
           <FormItem label="区域" {...formItemLayout}>
             <Cascader options={regionOptions}
-                      value={regionValues}
+                      defaultValue={regionValues}
                       placeholder="请输入地区"
                       onChange={(value) => onRegionChange(value)}/>
           </FormItem>
@@ -69,5 +67,5 @@ CarForm.propTypes = {
   form: PropTypes.object.isRequired,              // 对应于antd中的form对象
   node: PropTypes.object,                         // 编辑的节点信息, 只有在mode='edit'时才需要
   onRegionChange: PropTypes.func.isRequired,      // 区域级联选项改变时执行的回调函数
-  region: PropTypes.object.isRequired,            // 区域信息对象,用于Cascader控件的展示信息
+  region: PropTypes.array,                        // 可选,编辑模式下才需要,表示区域信息对象,用于Cascader控件的展示信息
 };

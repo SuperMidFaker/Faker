@@ -55,14 +55,15 @@ export default class NodeFormConainer extends Component {
   handleRegionChange = (value) => {
     const [province, city, district] = value;
     const region = Object.assign({}, {province, city, district});
-    console.log(region);
     this.props.changeRegion(region);
   }
   render() {
-    const { form, params, nodes, region } = this.props;
+    const { form, params, nodes } = this.props;
     if (params.node_id) {
       const editNodeId = parseInt(params.node_id, 10);
       const editNodeInfo = nodes.find(node => node.node_id === editNodeId);
+      const { province, city, district } = editNodeInfo;
+      const region = [province, city, district];
       return (
         <NodeForm mode="edit"
                   form={form}
@@ -75,7 +76,6 @@ export default class NodeFormConainer extends Component {
       return (
         <NodeForm mode="add"
                   form={form}
-                  region={region}
                   onRegionChange={this.handleRegionChange}
                   onSubmitBtnClick={this.handleAddNode}/>
       );
