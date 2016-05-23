@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Radio, Spin } from 'ant-ui';
+import { Table, Button, Radio } from 'ant-ui';
 import { Link } from 'react-router';
 import { nodeTypes } from '../utils/dataMapping';
 
@@ -13,7 +13,7 @@ const rowSelection = {
 };
 
 export default function NodeList(props) {
-  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange, onAddNoteBtnClick, loading } = props;
+  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
   const columns = [
     {
       title: '名称',
@@ -94,10 +94,8 @@ export default function NodeList(props) {
         </div>
         <div className="page-body">
           <div className="panel-body body-responsive" style={{padding: 20}}>
-            <Spin spinning={loading}>
-              <Button size="large" type="primary" style={{marginBottom: 16}} onClick={onAddNoteBtnClick}>新建{nodeTypes[nodeType]}</Button>
-              <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
-            </Spin>
+            <Button size="large" type="primary" style={{marginBottom: 16}} onClick={onAddNoteBtnClick}>新建{nodeTypes[nodeType]}</Button>
+            <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
           </div>
         </div>
       </div>
@@ -111,7 +109,6 @@ export default function NodeList(props) {
 
 NodeList.propsTypes = {
   dataSource: PropTypes.array.isRequired,
-  loading: PropTypes.bool.isRequired,             // 组件是否正在加载中
   visible: PropTypes.bool.isRequired,             // 组件是否可见
   nodeType: PropTypes.number.isRequired,          // 当前选中的node类型
   onDeleteBtnClick: PropTypes.func.isRequired,    // 删除按钮点击时触发的回调函数

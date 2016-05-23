@@ -17,7 +17,6 @@ function fetchData({dispatch, state}) {
   nodes: state.transportResources.nodes,
   selectedMenuItemKey: state.transportResources.selectedMenuItemKey,
   nodeType: state.transportResources.nodeType,
-  loading: state.transportResources.loading
 }), { setNodeType, removeNode })
 export default class NodeListContainer extends Component {
   static propTypes = {
@@ -46,14 +45,13 @@ export default class NodeListContainer extends Component {
     this.props.setNodeType(currentNodeType);
   }
   render() {
-    const { nodes, selectedMenuItemKey, nodeType, loading } = this.props;
+    const { nodes, selectedMenuItemKey, nodeType } = this.props;
     const toDisplayNodes = nodes.filter(node => node.type === nodeType);
     const dataSource = addUniqueKeys(toDisplayNodes);
     return (
       <NodeList dataSource={dataSource}
                 visible={selectedMenuItemKey === '2'}
                 nodeType={nodeType}
-                loading={loading}
                 onAddNoteBtnClick={this.handleAddNoteBtnClick}
                 onRadioButtonChange={this.handleNodeTypeChange}
                 onDeleteBtnClick={this.handleDeleteBtnClick} />

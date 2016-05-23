@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Menu } from 'ant-ui';
+import { Menu, Spin } from 'ant-ui';
 import CarListContainer from '../containers/CarListContainer';
 import DriverListContainer from '../containers/DriverListContainer';
 import NodeListContainer from '../containers/NodeListContainer';
@@ -7,7 +7,7 @@ import NodeListContainer from '../containers/NodeListContainer';
 const MenuItem = Menu.Item;
 
 export default function Main(props) {
-  const { selectedKeys, onClick } = props;
+  const { selectedKeys, onClick, loading } = props;
   return (
     <div>
       <Menu mode="horizontal" selectedKeys={selectedKeys} onClick={onClick}>
@@ -17,9 +17,11 @@ export default function Main(props) {
         <MenuItem key="3">价格管理</MenuItem>
         <MenuItem key="4">线路管理</MenuItem>
       </Menu>
-      <CarListContainer />
-      <DriverListContainer />
-      <NodeListContainer />
+      <Spin spinning={loading}>
+        <CarListContainer />
+        <DriverListContainer />
+        <NodeListContainer />
+      </Spin>
     </div>
 
   );
@@ -27,5 +29,6 @@ export default function Main(props) {
 
 Main.propTyps = {
   selectedKeys: PropTypes.array.isRequired,  // 选中的menuItem keys
-  onClick: PropTypes.func.isRequired,        // itemItem点击后执行的回调函数
+  onClick: PropTypes.func.isRequired,        // itemItem点击后执行的回调函数,
+  loading: PropTypes.bool.isRequired,        // 表示是否正在加载数据
 };

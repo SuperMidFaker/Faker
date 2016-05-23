@@ -13,7 +13,6 @@ function fetchData({dispatch, state}) {
 @connect(state => ({
   drivers: state.transportResources.drivers,
   selectedMenuItemKey: state.transportResources.selectedMenuItemKey,
-  loading: state.transportResources.loading
 }), { editDriver })
 export default class DriverListContainer extends Component {
   static propTypes = {
@@ -34,12 +33,11 @@ export default class DriverListContainer extends Component {
     this.props.editDriver({driverId, driverInfo: {status: 1}});
   }
   render() {
-    const { drivers, selectedMenuItemKey, loading } = this.props;
+    const { drivers, selectedMenuItemKey } = this.props;
     const dataSource = drivers.map(transformRawDriverDataToDisplayData);
     return (
       <DriverList dataSource={addUniqueKeys(dataSource)}
                   visible={selectedMenuItemKey === '1'}
-                  loading={loading}
                   onStopDriverBtnClick={this.handleStopDriverBtnClick}
                   onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
                   onAddDriverBtnClicked={this.handleAddDriverBtnClicked} />

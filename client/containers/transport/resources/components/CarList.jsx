@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Table, Spin } from 'ant-ui';
+import { Button, Table } from 'ant-ui';
 import { Link } from 'react-router';
 
 const rowSelection = {
@@ -8,7 +8,7 @@ const rowSelection = {
 };
 
 export default function CarList(props) {
-  const { onAddCarBtnClick, dataSource, visible, loading, onStopCarBtnClick, onResumeCarBtnClick } = props;
+  const { onAddCarBtnClick, dataSource, visible, onStopCarBtnClick, onResumeCarBtnClick } = props;
 
   function editAndStopCarOperations(record) {
     return (
@@ -93,12 +93,10 @@ export default function CarList(props) {
     return (
       <div className="page-body">
         <div className="panel-body body-responsive" style={{padding: 20}}>
-          <Spin spinning={loading}>
-            <div style={{marginBottom: 16}}>
-              <Button type="primary" size="large" onClick={onAddCarBtnClick}>新建车辆</Button>
-            </div>
-            <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
-          </Spin>
+          <div style={{marginBottom: 16}}>
+            <Button type="primary" size="large" onClick={onAddCarBtnClick}>新建车辆</Button>
+          </div>
+          <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
         </div>
       </div>
     );
@@ -111,7 +109,6 @@ CarList.propTypes = {
   dataSource: PropTypes.array,
   onAddCarBtnClick: PropTypes.func.isRequired,  // 点击新建车辆时触发的回调函数
   visible: PropTypes.bool.isRequired,             // 组件是否可见
-  loading: PropTypes.bool.isRequired,             // 组件是否在加载
   onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数
   onResumeCarBtnClick: PropTypes.func.isRequired, // 启用按钮点击后执行的回调函数
 };
