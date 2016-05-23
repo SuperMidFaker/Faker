@@ -44,6 +44,7 @@ app.use(kLogger());
 app.use(assets(path.resolve(__dirname, '..', 'public')));
 app.use(authWeixin());
 // 页面路由在routes.jsx进行权限判断
+console.time('load route');
 app.use(loadRoute(__dirname, 'routes'));
 
 // 受限API用户验证
@@ -54,5 +55,7 @@ app.use(koaJwtOptions.unless({
   path: [/^\/public/,/dist/, /assets/]
 }));
 app.use(loadRoute(__dirname, 'api'));
+console.timeEnd('load route');
 
 app.listen(__PORT__);
+console.log('server start to listen');

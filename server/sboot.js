@@ -7,7 +7,7 @@ require('babel/register')({
   stage: 0,
   blacklist: ['regenerator']
 });
-
+console.time('starting web server');
 if (!isNaN(argv.port)) {
   process.env.PORT = parseInt(argv.port, 10);
 }
@@ -34,5 +34,6 @@ if (argv.api) {
     .development(__DEV__)
     .server(rootDir, function() {
       require('./koa');
+      console.timeEnd('starting web server');
      });
 }

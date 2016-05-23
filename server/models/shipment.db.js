@@ -86,18 +86,22 @@ function packShipmentArgsByLSP(shipmt, args) {
 export default {
   shipmentOrm: shipmtOrm,
   *genShipmtNoAsync(tenantId) {
-    // 3位企业tms代号 + 2位年份 + 6位序号(前面补0)
-    const buf = new Buffer(3+2+6);
+    const subdomainSql = 'select subdomain from sso_tenants where tenant_id = ?';
+    const subs = yield mysql.query(subdomainSql, [ tenantId ]);
+    const tenantTmsPrefix = subs[0].subdomain.length <= 16 ? subs[0].subdomain
+      : subs[0].subdomain.substr(16);
+    // 最长16位企业tms代号(目前用企业子域名) + 2位年份 + 6位序号(前面补0)
+    const totalLen = tenantTmsPrefix.length + 2 + 6;
+    const buf = new Buffer(totalLen);
     buf.fill('0');
-    const tenantTmsPrefix = 'NLO'; // todo get by tenantid
     const year = String(new Date().getFullYear()).substr(2);
     const shipmtSumSql = 'select count(shipmt_no) as sum from tms_shipments where tenant_id = ? and parent_no is null';
     const args = [tenantId];
     const counts = yield mysql.query(shipmtSumSql, args);
     const sumStr = String(counts[0].sum + 1);
-    buf.write(tenantTmsPrefix);
+    buf.write(tenantTmsPrefix.toUpperCase());
     buf.write(year, tenantTmsPrefix.length);
-    buf.write(sumStr, 11 - sumStr.length);
+    buf.write(sumStr, totalLen - sumStr.length);
     return buf.toString();
   },
   getCountByType(tenantId, shipmtType, shipmtNo) {
