@@ -58,7 +58,12 @@ function *listShipmtsGrouped() {
 }
 
 function *listShipmtsGroupedSub() {
+  const filters = JSON.parse(this.request.query.filters);
+  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  filters.status = 'waiting';
 
+  const shipmts = yield shipmtDispDao.getDispatchShipmts(tenantId, filters, 0, 100);
+  Result.OK(this, shipmts);
 }
 
 function *listExpandShipmts() {
@@ -155,6 +160,8 @@ function *doDispatch() {
         disp.status = SHIPMENT_TRACK_STATUS.undispatched;
       }
     } else {
+      disp.sp_partner_id = 0;
+      disp.sp_tenant_id = 0;
       disp.task_id = taskId;
       disp.task_vehicle = taskVehicle;
       disp.vehicle_connect_type = connectType;
