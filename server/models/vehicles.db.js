@@ -8,7 +8,7 @@
  * Version: 1.0
  * Description:
  */
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 
 export default {
   getVehicles(tenantId, offset, size) {

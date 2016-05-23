@@ -1,4 +1,4 @@
-import makeConfig from '../reusable/domains/bootstrap/make-universal-config';
+import makeConfig from './makeUniversalConfig';
 var port = 3022;
 if (!isNaN(process.env.PORT)) {
   port = parseInt(process.env.PORT, 10);

@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 import Orm from '../../reusable/db-util/orm';
 import { shipmentOrm } from './shipment.db';
 import { SHIPMENT_TRACK_STATUS } from 'universal/constants';

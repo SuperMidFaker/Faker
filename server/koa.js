@@ -3,10 +3,10 @@ import kLogger from 'koa-logger';
 import assets from 'koa-static';
 import fs from 'fs';
 import path from 'path';
-import authWeixin from '../reusable/koa-middlewares/weixin-auth';
-import loadRoute from '../reusable/koa-middlewares/route-loader';
-import { koaJwtOptions } from '../reusable/node-util/jwt-kit';
-import Result from '../reusable/node-util/response-result';
+import authWeixin from './middlewares/weixin-auth';
+import loadRoute from './middlewares/route-loader';
+import { koaJwtOptions } from './util/jwt-kit';
+import Result from './util/response-result';
 // import { ssoRedirectUrl } from '../reusable/node-util/redirection';
 
 const app = koa();

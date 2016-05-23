@@ -4,10 +4,10 @@ import serialize from 'serialize-javascript';
 import { match } from 'react-router';
 import { addLocaleData } from 'react-intl';
 import createLocation from 'history/lib/createLocation';
-import createStore from './redux/configureStore';
+import createStore from '../common/configureStore';
 import routes from '../client/routes';
 import App from '../client/app';
-import fetchInitialState from '../reusable/node-util/fetch-initial-state';
+import fetchInitialState from './util/fetch-initial-state';
 import thirdPart from './thirdPart';
 
 let trackJs = '';

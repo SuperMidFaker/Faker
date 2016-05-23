@@ -1,4 +1,4 @@
-import { CLIENT_API } from '../../../reusable/redux-middlewares/api';
+import { CLIENT_API } from '../api';
 import { createActionTypes } from '../../../reusable/common/redux-actions';
 const initialState = {
   loaded: false,

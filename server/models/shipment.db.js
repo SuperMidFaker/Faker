@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 import Orm from '../../reusable/db-util/orm';
 
 const cols = ['shipmt_no/v',

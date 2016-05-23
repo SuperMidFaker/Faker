@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 
 function getDefaultPartnerClause(tenantId, args) {
   args.push(tenantId);

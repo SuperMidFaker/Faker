@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 function packColumnArgs(item) {
   const columns = [
     `code`, `sub_code`, `aspect`, `name`, `phone`, `subdomain`, `country`, `province`, `city`,

@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 import tenantDao from '../models/tenant.db';
 import delegateDao from '../models/delegate.db';
 
