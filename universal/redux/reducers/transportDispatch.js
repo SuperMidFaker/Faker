@@ -12,7 +12,8 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
    'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
    'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
-   'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL']);
+   'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL',
+   'REMOVE_GROUPEDSUB']);
 
 const initialState = {
   loaded: false,
@@ -22,6 +23,11 @@ const initialState = {
     segmented: 0,
     merged: 0,
     origin: 0
+  },
+  cond: {
+    type: 'none',
+    consignerStep: 20,
+    consigneeStep: 20
   },
   shipmentlist: {
     totalCount: 0,
@@ -60,12 +66,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, dispatched: false };
     case actionTypes.LOAD_APTSHIPMENT_SUCCEED: {
       const filters = JSON.parse(action.params.filters);
-      delete filters.type;
-      delete filters.consignerStep;
-      delete filters.consigneeStep;
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters,
+        cond: {type: 'none'},
         dispatched: false,
         segmented: false,
         lspLoaded: false,
@@ -89,18 +93,22 @@ export default function reducer(state = initialState, action) {
       return { ...state, expandList };
     }
     case actionTypes.GROUPED_LIST_SUCCEED: {
-      const {shipmentlist, filters} = {...state};
+      const {shipmentlist} = {...state};
       shipmentlist.data = action.result.data;
       shipmentlist.totalCount = shipmentlist.data.length;
-      const tmp = JSON.parse(action.params.filters);
       return { ...state, loading: false,
         loaded: true, shipmentlist,
-        filters: Object.assign(tmp, filters),
+        cond: JSON.parse(action.params.filters),
         dispatched: false,
         segmented: false,
         lspLoaded: false,
         vehicleLoaded: false
       };
+    }
+    case actionTypes.REMOVE_GROUPEDSUB: {
+      const {expandList} = {...state};
+
+      return {...state, expandList};
     }
     default:
       return state;
@@ -313,4 +321,8 @@ export function loadShipmtsGroupedSub(cookie, params) {
       cookie
     }
   };
+}
+
+export function removeGroupedSubShipmt(key, shipmtNo) {
+  return {type: actionTypes.REMOVE_GROUPEDSUB, data: {key, shipmtNo}};
 }

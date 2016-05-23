@@ -205,6 +205,10 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.return',
     defaultMessage: '退回'
   },
+  btnTextRemove: {
+    id: 'transport.dispatch.btn.text.remove',
+    defaultMessage: '移出'
+  },
   btnTextExport: {
     id: 'transport.dispatch.btn.text.export',
     defaultMessage: '导出'
