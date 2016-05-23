@@ -200,6 +200,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           if (origin) {
             if (record.segmented === 1 && sub !== 'sub') {
@@ -271,6 +272,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           if (s === 'dispatched') {
             return (<span className="na-operation">NA</span>);
@@ -325,6 +327,7 @@ export default class DispatchList extends React.Component {
     }, {
         title: this.msg('shipmtOP'),
         width: 100,
+        fixed: 'right',
         render: (o, record) => {
           return (
             <span>
@@ -637,11 +640,11 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }} 
             />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4}
+              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }} 
             />);
     }
     if (type) {
