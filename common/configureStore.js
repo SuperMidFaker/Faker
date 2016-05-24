@@ -1,6 +1,6 @@
 import { compose, createStore, applyMiddleware } from 'redux';
-import createClientApi from './requester';
-import rootReducers from './reducers/combiner';
+import createClientApi from 'common/reduxMiddlewares/requester';
+import rootReducers from './reducers';
 
 function createReduxStore(initialState, rootReducer) {
   let createMiddlewaredStore;
@@ -21,8 +21,8 @@ function createReduxStore(initialState, rootReducer) {
 export default function configureStore (initialState) {
   const store = createReduxStore(initialState, rootReducers);
   if (module.hot) {
-    module.hot.accept('./reducers/combiner', () => {
-      const nextRootReducer = require('./reducers/combiner');
+    module.hot.accept('./reducers', () => {
+      const nextRootReducer = require('./reducers');
       store.replaceReducer(nextRootReducer);
     });
   }
