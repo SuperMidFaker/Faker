@@ -18,7 +18,7 @@ import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES, APP_ENTITY_META_I
   from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
+import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/containers/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);

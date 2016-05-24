@@ -10,7 +10,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
+import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/containers/message.i18n';
 import './acc.less';
 const formatMsg = format(messages);

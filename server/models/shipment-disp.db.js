@@ -91,7 +91,7 @@ function genDispFilters(filter, tenantId) {
   } else if (filter.status === 'dispatching') {
     wheres[' SD.disp_status = 0 and SD.sr_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatched') {
-    wheres[' SD.disp_status = 1 and SD.sr_tenant_id '] = tenantId;
+    wheres[' SD.disp_status > 0 and SD.sr_tenant_id '] = tenantId;
   }
   if (filter.origin) {
     wheres[' S.segmented '] = 1; // parent_no is null
@@ -277,7 +277,7 @@ export default {
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
-      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented, SD.task_id, SD.task_vehicle`,
+      effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented, SD.task_id, SD.task_vehicle, SD.disp_status`,
       ons1: 'S.shipmt_no = SD.shipmt_no',
       _orders: 'acpt_time desc',
       wheres: awhere,

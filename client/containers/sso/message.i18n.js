@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
+  slogan: {
+    id: 'container.slogan',
+    defaultMessage: '通关物流云平台'
+  },
   loginEmptyParam: {
     id: 'sso.login.empty.param',
     defaultMessage: '用户名或密码为空'

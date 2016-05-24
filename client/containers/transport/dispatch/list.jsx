@@ -277,6 +277,10 @@ export default class DispatchList extends React.Component {
         fixed: 'right',
         render: (o, record) => {
           if (s === 'dispatched') {
+            if (record.disp_status === 3) {
+              return (<span><a role="button" onClick={() => this.handleShipmtReturn(record)}>
+                      {this.msg('btnTextReturn')}</a></span>);
+            }
             return (<span className="na-operation">NA</span>);
           }
           return (
