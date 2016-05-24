@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DriverList from '../components/DriverList.jsx';
-import connectFetch from 'reusable/decorators/connect-fetch';
-import { loadDriverList, editDriver } from '../../../../../universal/redux/reducers/transportResources';
+import connectFetch from 'client/common/connect-fetch';
+import { loadDriverList, editDriver } from 'common/reducers/transportResources';
 import { addUniqueKeys, transformRawDriverDataToDisplayData } from '../utils/dataMapping';
 
 function fetchData({dispatch, state}) {

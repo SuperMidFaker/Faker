@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { submit, setValue } from '../../../universal/redux/reducers/auth';
-import NavLink from '../../../reusable/components/nav-link';
-import { getFormatMsg } from 'reusable/browser-util/react-ant';
-import { format } from 'universal/i18n/helpers';
+import { submit, setValue } from '../../../common/reducers/auth';
+import NavLink from '../../components/nav-link';
+import { getFormatMsg } from 'client/util/react-ant';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 

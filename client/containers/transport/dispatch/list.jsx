@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import connectNav from 'reusable/decorators/connect-nav';
+import connectNav from 'client/common/connect-nav';
 import { loadTable,
          doSend,
          doReturn,
@@ -12,9 +12,9 @@ import { loadTable,
          loadExpandList,
          loadShipmtsGrouped,
          loadShipmtsGroupedSub,
-         removeGroupedSubShipmt } from 'universal/redux/reducers/transportDispatch';
-import { setNavTitle } from 'universal/redux/reducers/navbar';
-import { format } from 'universal/i18n/helpers';
+         removeGroupedSubShipmt } from 'common/reducers/transportDispatch';
+import { setNavTitle } from 'common/reducers/navbar';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
 import Condition from './condition';

@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Tabs } from 'ant-ui';
 import { connect } from 'react-redux';
-import connectFetch from 'reusable/decorators/connect-fetch';
-import { loadLsps, loadVehicles, doDispatch } from 'universal/redux/reducers/transportDispatch';
+import connectFetch from 'client/common/connect-fetch';
+import { loadLsps, loadVehicles, doDispatch } from 'common/reducers/transportDispatch';
 import MContent from './MContent';
 
 const TabPane = Tabs.TabPane;

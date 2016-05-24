@@ -12,7 +12,7 @@
 "use strict";
 var UPYun = require("./upyun").UPYun;
 var upyunClient = module.exports;
-var config = require("./upyun.config");
+var config = require("../../config/upyun.config");
 
 upyunClient.init = function (config) {
     if (!config) {
@@ -33,7 +33,7 @@ upyunClient.saveFile = function (base64file, prefix, isRes, suffix) {
         };
     }
 
-    if (base64file.indexOf("http://") > -1 || 
+    if (base64file.indexOf("http://") > -1 ||
         base64file.indexOf("https://") > -1) {
         return function (done) {
             done(null, [base64file, base64file]);
@@ -58,7 +58,7 @@ upyunClient.saveFile = function (base64file, prefix, isRes, suffix) {
         return function (done) {
             self.client.writeFile(filePath, buffer, true, function (err, data) {
                 done(reBuildErr(err), filePath);
-            });  
+            });
         };
     }
 };

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Select } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { CHINA_CODE } from '../../common/constants';
-import { format } from 'universal/i18n/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import world from './worldwide-regions.json';
 import chinaRegions from './china-regions.json';

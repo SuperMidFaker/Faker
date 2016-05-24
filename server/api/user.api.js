@@ -1,18 +1,18 @@
 import cobody from 'co-body';
-import Result from '../../reusable/node-util/response-result';
-import mysql from '../../reusable/db-util/mysql';
+import Result from '../util/response-result';
+import mysql from '../util/mysql';
 import userDao from '../models/user.db';
 import tenantDao from '../models/tenant.db';
 import tenantUserDao from '../models/tenant-user.db';
 import smsDao from '../models/sms.db';
-import bCryptUtil from '../../reusable/node-util/BCryptUtil';
-import { isMobile, getSmsCode } from '../../reusable/common/validater';
-import smsUtil from '../../reusable/node-util/sms-util';
+import bCryptUtil from '../util/BCryptUtil';
+import { isMobile, getSmsCode } from '../../common/validater';
+import smsUtil from '../util/sms-util';
 import {
   __DEFAULT_PASSWORD__, TENANT_LEVEL, TENANT_ROLE,
   ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE
-} from '../../universal/constants';
-import { genJwtCookie } from 'reusable/node-util/jwt-kit';
+} from 'common/constants';
+import { genJwtCookie } from '../util/jwt-kit';
 
 export default [
    ['post', '/public/v1/login', loginUserP],

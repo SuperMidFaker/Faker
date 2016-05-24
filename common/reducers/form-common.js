@@ -1,4 +1,4 @@
-import { CLIENT_API } from '../api';
+import { CLIENT_API } from '../requester';
 export function appendFormAcitonTypes(domain, actypes) {
   ['FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
   'FORM_ASSIGN', 'FORM_CLEAR', 'SET_FORM_VALUE'].forEach(
@@ -27,7 +27,7 @@ export function formReducer(actionTypes, state, action, defaultForm, stateFormNa
     return { ...state, formData: form };
   }
   default:
-    return;
+    return state;
   }
 }
 
@@ -57,7 +57,7 @@ export function loadFormC(cookie, endpoint, params, actionTypes) {
 
 export function assignFormC(wantedKey, state, stateListName, actionTypes) {
   let index = -1;
-  state[stateListName].data.forEach((c, idx)=> {
+  state[stateListName].data.forEach((c, idx) => {
     if (c.key === wantedKey) {
       index = idx;
       return;

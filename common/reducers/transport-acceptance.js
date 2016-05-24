@@ -1,5 +1,5 @@
-import { CLIENT_API } from '../api';
-import { createActionTypes } from '../../client/common/redux-actions';
+import { CLIENT_API } from '../requester';
+import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'HIDE_ACCEPT_MODAL', 'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',

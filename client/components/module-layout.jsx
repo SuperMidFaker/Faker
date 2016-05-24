@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import { Row, Col } from 'ant-ui';
 import { DEFAULT_MODULES } from '../../common/constants';
-import { format } from 'universal/i18n/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import './module-layout.less';
 const formatMsg = format(messages);

@@ -1,6 +1,6 @@
 import request from 'superagent';
 import moment from 'moment';
-import SmsConfig from './sms.config';
+import SmsConfig from '../../config/sms.config';
 import bCryptUtil from './BCryptUtil';
 export default {
   sendSms(phone, code) {

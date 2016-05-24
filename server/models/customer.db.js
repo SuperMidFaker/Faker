@@ -1,4 +1,4 @@
-import mysql from '../db-util/mysql';
+import mysql from '../util/mysql';
 import userDao from './user.db';
 import bcrypt from '../node-util/BCryptUtil';
 import { __DEFAULT_PASSWORD__, CUSTOMER } from '../common/constants';

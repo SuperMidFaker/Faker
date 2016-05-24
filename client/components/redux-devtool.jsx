@@ -9,4 +9,3 @@ export default createDevTools(
    <LogMonitor theme="solarized"/>
   </DockMonitor>
 );
-

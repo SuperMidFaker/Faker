@@ -17,8 +17,8 @@ import {
   Table
 } from
 'ant-ui';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import connectNav from '../../../../reusable/decorators/connect-nav';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
 import {
   isFormDataLoaded,
   loadForm,
@@ -33,10 +33,10 @@ import {
   invalidDelegate,
   loadLogs
 } from
-'../../../../universal/redux/reducers/exportdelegate';
-import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
+'common/reducers/exportdelegate';
+import {setNavTitle} from 'common/reducers/navbar';
 import './upload.less';
-import NavLink from '../../../../reusable/components/nav-link';
+import NavLink from '../../../components/nav-link';
 
 const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;

@@ -1,7 +1,7 @@
 import mysql from '../util/mysql';
-import Orm from '../../reusable/db-util/orm';
+import Orm from '../util/orm';
 import { shipmentOrm } from './shipment.db';
-import { SHIPMENT_TRACK_STATUS } from 'universal/constants';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 
 const dispCols = [
   'id/a',

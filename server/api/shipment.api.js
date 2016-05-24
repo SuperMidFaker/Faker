@@ -4,12 +4,12 @@ import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
 import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
-import mysql from '../../reusable/db-util/mysql';
-import Result from '../../reusable/node-util/response-result';
+import mysql from '../util/mysql';
+import Result from '../util/response-result';
 import {
   PARTNERSHIP_TYPE_INFO, CONSIGN_TYPE, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_DISPATCH_STATUS, SHIPMENT_TRACK_STATUS
-} from 'universal/constants';
+} from 'common/constants';
 
 const vehicleTypes = [{
   id: '1',

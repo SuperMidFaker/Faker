@@ -1,7 +1,7 @@
 import cobody from 'co-body';
 import idDao from '../models/importAccept.db';
-import Result from '../../reusable/node-util/response-result';
-import mysql from '../../reusable/db-util/mysql';
+import Result from '../util/response-result';
+import mysql from '../util/mysql';
 
 export default [
   ['get', '/v1/import/importaccepts', importaccepts],
@@ -20,7 +20,7 @@ function* importaccepts() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
-  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10) 
+  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10)
 
 
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];

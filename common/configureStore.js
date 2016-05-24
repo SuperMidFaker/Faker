@@ -1,12 +1,12 @@
 import { compose, createStore, applyMiddleware } from 'redux';
-import createClientApi from './api';
+import createClientApi from './requester';
 import rootReducers from './reducers/combiner';
 
 function createReduxStore(initialState, rootReducer) {
   let createMiddlewaredStore;
   const apiMiddleware = createClientApi();
   if (__DEV__ && __DEVTOOLS__) {
-    const ReduxDevTool = require('../../components/redux-devtool');
+    const ReduxDevTool = require('../client/components/redux-devtool');
     const composers = [ReduxDevTool.instrument()];
     createMiddlewaredStore = compose(applyMiddleware(apiMiddleware), ...composers)(createStore);
   } else {

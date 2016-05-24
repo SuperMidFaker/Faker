@@ -10,8 +10,6 @@ export default function connectFetch(conn = {deferred: false}) {
   return (...fetchers) => {
     return Wrapped => {
       class WrappedComponent extends Component {
-        static prefetchers = !conn.deferred ? fetchers : [];
-        static deferredfetchers = conn.deferred ? fetchers : [];
         static propTypes = {
           location: PropTypes.object.isRequired,
           params: PropTypes.object.isRequired
@@ -27,11 +25,15 @@ export default function connectFetch(conn = {deferred: false}) {
             location, params}));
           Promise.all(promises);
         }
+
+        static deferredfetchers = conn.deferred ? fetchers : [];
+        static prefetchers = !conn.deferred ? fetchers : [];
+
         render() {
           return <Wrapped {...this.props} />;
         }
       }
       return argumentContainer(WrappedComponent, Wrapped, 'Fetch');
-    }
-  }
+    };
+  };
 }

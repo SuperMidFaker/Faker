@@ -1,5 +1,5 @@
-import { CLIENT_API } from '../api';
-import { createActionTypes } from '../../client/common/redux-actions';
+import { CLIENT_API } from '../requester';
+import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/invitation/', [
   'RECEIVEDS_LOAD', 'RECEIVEDS_LOAD_SUCCEED', 'RECEIVEDS_LOAD_FAIL',

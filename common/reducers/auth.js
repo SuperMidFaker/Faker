@@ -1,4 +1,4 @@
-import { CLIENT_API } from '../api';
+import { CLIENT_API } from '../requester';
 import { CPD_LOAD_FAIL } from './corp-domain';
 import { ACC_LOAD_SUCCEED } from './account';
 const LOGIN = '@@qm-auth/auth/LOGIN';

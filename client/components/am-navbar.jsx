@@ -6,7 +6,7 @@ import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
 import ModuleLayout from './module-layout';
 import { loadTranslation } from '../../common/reducers/intl';
-import { format } from '../common/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);

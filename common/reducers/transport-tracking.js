@@ -1,5 +1,5 @@
-import { CLIENT_API } from '../api';
-import { createActionTypes } from '../../client/common/redux-actions';
+import { CLIENT_API } from '../requester';
+import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL', 'SHOW_POD_MODAL',

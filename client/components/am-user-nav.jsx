@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Popover, Menu } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
-import { format } from '../common/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 

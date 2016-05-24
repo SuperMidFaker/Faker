@@ -1,10 +1,10 @@
 import cobody from 'co-body';
-import Result from '../../reusable/node-util/response-result';
-import mysql from '../../reusable/db-util/mysql';
-import weixinDao from 'reusable/models/weixin.db';
-import bCryptUtil from '../../reusable/node-util/BCryptUtil';
-import * as weixinOAuth from '../../reusable/node-util/weixin-oauth';
-import { genJwtCookie } from 'reusable/node-util/jwt-kit';
+import Result from '../util/response-result';
+import mysql from '../util/mysql';
+import weixinDao from '../models/weixin.db';
+import bCryptUtil from '../util/BCryptUtil';
+import * as weixinOAuth from '../util/weixin-oauth';
+import { genJwtCookie } from '../util/jwt-kit';
 
 function *bindWxUserP() {
   const body = yield cobody(this);

@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { submitWarehouse, loadWarehouses, updateWh, delWh, beginEdit, edit, cancelEdit } from '../../../universal/redux/reducers/warehouse';
-import { isLoaded } from '../../../reusable/common/redux-actions';
-import connectFetch from '../../../reusable/decorators/connect-fetch';
-import { toNumber } from '../../../reusable/common/transformer';
+import { submitWarehouse, loadWarehouses, updateWh, delWh, beginEdit, edit, cancelEdit } from 'common/reducers/warehouse';
+import { isLoaded } from 'client/common/redux-actions';
+import connectFetch from 'client/common/connect-fetch';
+import { toNumber } from 'client/common/transformer';
 import {Table, Button, Icon, Form, Input, Radio, Row, Col, DatePicker, Select, message} from 'ant-ui';
 const FormItem = Form.Item;
 const Option = Select.Option;

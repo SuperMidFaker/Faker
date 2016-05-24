@@ -29,5 +29,5 @@ export default function connectNav(navCallback) {
       }
     }
     return argumentContainer(WrappedComponent, Wrapped, 'Nav');
-  }
+  };
 }

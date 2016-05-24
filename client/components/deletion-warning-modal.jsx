@@ -24,14 +24,8 @@ class WarningModal extends React.Component {
       okLoading: false
     };
   }
-  close() {
-    this.setState({
-      visible: false
-    });
-    this.props.close();
-  }
   onCancel() {
-    let cancelFn = this.props.onCancel;
+    const cancelFn = this.props.onCancel;
     if (cancelFn) {
       let ret;
       if (cancelFn.length) {
@@ -51,7 +45,7 @@ class WarningModal extends React.Component {
   }
 
   onOk() {
-    let okFn = this.props.onOk;
+    const okFn = this.props.onOk;
     if (okFn) {
       let ret;
       if (okFn.length) {
@@ -68,6 +62,13 @@ class WarningModal extends React.Component {
     } else {
       this.close();
     }
+  }
+
+  close() {
+    this.setState({
+      visible: false
+    });
+    this.props.close();
   }
 
   handleInputChange(ev) {
@@ -120,21 +121,21 @@ class WarningModal extends React.Component {
 export default function (props) {
   const div = document.createElement('div');
   document.body.appendChild(div);
-  props = props || {};
-  props.iconClassType  = props.iconClassName || 'question-circle';
+  const tprops = props || {};
+  tprops.iconClassType = tprops.iconClassName || 'question-circle';
 
-  props.width = props.width || 416;
+  tprops.width = tprops.width || 416;
   // 默认为 true，保持向下兼容
-  if (!('okCancel' in props)) {
-    props.okCancel = true;
+  if (!('okCancel' in tprops)) {
+    tprops.okCancel = true;
   }
-  props.okText = props.okText || (props.okCancel ? '确定' : '知道了');
-  props.cancelText = props.cancelText || '取消';
+  tprops.okText = tprops.okText || (tprops.okCancel ? '确定' : '知道了');
+  tprops.cancelText = tprops.cancelText || '取消';
 
-  props.close = () => {
+  tprops.close = () => {
     ReactDOM.unmountComponentAtNode(div);
     div.parentNode.removeChild(div);
   };
-  ReactDOM.render(<WarningModal {...props} />, div, function () {
-  });
+  function noop() {}
+  ReactDOM.render(<WarningModal {...tprops} />, div, noop);
 }

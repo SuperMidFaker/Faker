@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import AmLeftSidebar from '../components/am-ant-leftbar';
-import { TENANT_ASPECT } from 'universal/constants';
-import { format } from 'universal/i18n/helpers';
+import { TENANT_ASPECT } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 

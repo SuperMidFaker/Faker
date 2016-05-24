@@ -2,9 +2,9 @@ import cobody from 'co-body';
 import shipmentDao from '../models/shipment.db';
 import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_TYPE } from 'universal/constants';
-import mysql from '../../reusable/db-util/mysql';
-import Result from '../../reusable/node-util/response-result';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_TYPE } from 'common/constants';
+import mysql from '../util/mysql';
+import Result from '../util/response-result';
 
 function *trackingShipmtListG() {
   const tenantId = parseInt(this.request.query.tenantId, 10);
@@ -29,7 +29,7 @@ function *trackingShipmtListG() {
 
 function *trackingVehicleUpdateP() {
   try {
-    const body = yield cobody(this); 
+    const body = yield cobody(this);
     const { dispId, plate, driver, remark } = body;
     yield shipmentDispDao.updateDispInfo(dispId, {
       task_vehicle: plate,

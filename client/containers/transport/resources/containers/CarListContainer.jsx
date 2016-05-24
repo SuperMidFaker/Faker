@@ -2,8 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import CarList from '../components/CarList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
-import { loadCarList, editCar } from '../../../../../universal/redux/reducers/transportResources';
-import connectFetch from 'reusable/decorators/connect-fetch';
+import { loadCarList, editCar } from 'common/reducers/transportResources';
+import connectFetch from 'client/common/connect-fetch';
 import { addUniqueKeys } from '../utils/dataMapping';
 
 function fetchData({dispatch, state}) {

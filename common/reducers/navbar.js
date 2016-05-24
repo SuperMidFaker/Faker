@@ -1,4 +1,4 @@
-import { createActionTypes } from '../../client/common/redux-actions';
+import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/navbar/', [
   'NAVB_SET_TITLE'
 ]);

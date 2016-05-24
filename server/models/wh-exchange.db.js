@@ -1,4 +1,4 @@
-import mysql from '../db-util/mysql';
+import mysql from '../util/mysql';
 
 function prepareParam(item, columns) {
   const args = [];

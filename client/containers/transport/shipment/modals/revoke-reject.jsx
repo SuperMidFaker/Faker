@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Input, message } from 'ant-ui';
 import { closeReModal, revokeShipment, rejectShipment } from
-  'universal/redux/reducers/transport-acceptance';
-import { format } from 'universal/i18n/helpers';
+  'common/reducers/transport-acceptance';
+import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 

@@ -2,18 +2,18 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'reusable/decorators/connect-fetch';
-import connectNav from 'reusable/decorators/connect-nav';
-import { setNavTitle } from 'universal/redux/reducers/navbar';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { setFormValue, setConsignFields, loadDraftForm, loadFormRequire }
-  from 'universal/redux/reducers/shipment';
-import { acceptDraft, loadTable } from 'universal/redux/reducers/transport-acceptance';
+  from 'common/reducers/shipment';
+import { acceptDraft, loadTable } from 'common/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
-import { format } from 'universal/i18n/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 

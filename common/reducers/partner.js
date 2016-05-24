@@ -1,5 +1,5 @@
-import { CLIENT_API } from '../api';
-import { createActionTypes } from '../../client/common/redux-actions';
+import { CLIENT_API } from '../requester';
+import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
   'SHOW_PARTNER_MODAL', 'HIDE_PARTNER_MODAL', 'SET_MODAL_VIEWPORT',

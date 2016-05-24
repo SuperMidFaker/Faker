@@ -50,4 +50,4 @@ export {
   validatePhone,
   isMobile,
   getSmsCode
-}
+};

@@ -4,9 +4,9 @@ import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select, Table } from 'ant-ui';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
-  from 'universal/redux/reducers/shipment';
+  from 'common/reducers/shipment';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
-import { format } from 'universal/i18n/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);

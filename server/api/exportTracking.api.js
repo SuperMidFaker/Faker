@@ -1,7 +1,7 @@
 import cobody from 'co-body';
 import idDao from '../models/exportTracking.db';
-import Result from '../../reusable/node-util/response-result';
-import mysql from '../../reusable/db-util/mysql';
+import Result from '../util/response-result';
+import mysql from '../util/mysql';
 
 export default [
   ['get', '/v1/export/exporttracking', exporttracking],

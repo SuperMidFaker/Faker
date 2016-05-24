@@ -4,19 +4,19 @@ import { intlShape, injectIntl } from 'react-intl';
 import {
   loadOrgans, delCorp, switchStatus, switchTenantApp,
   openTenantAppsEditor, closeTenantAppsEditor, INITIAL_LIST_PAGE_SIZE
-} from '../../../../universal/redux/reducers/corps';
+} from 'common/reducers/corps';
 import { Table, Button, Icon, message } from 'ant-ui';
-import NavLink from '../../../../reusable/components/nav-link';
-import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
+import NavLink from '../../../components/nav-link';
+import showWarningModal from 'client/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';
-import { isLoaded } from '../../../../reusable/common/redux-actions';
-import { resolveCurrentPageNumber } from '../../../../reusable/browser-util/react-ant';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import connectNav from '../../../../reusable/decorators/connect-nav';
-import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
+import { isLoaded } from 'client/common/redux-actions';
+import { resolveCurrentPageNumber } from 'client/util/react-ant';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES, APP_ENTITY_META_INFO }
-  from 'universal/constants';
-import { format } from 'universal/i18n/helpers';
+  from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';

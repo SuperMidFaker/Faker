@@ -1,6 +1,6 @@
-import { CLIENT_API } from '../../redux-middlewares/api';
-import { createActionTypes } from '../../common/redux-actions';
-import messages from '../../common/message.i18n';
+import { CLIENT_API } from '../requester';
+import { createActionTypes } from 'client/common/redux-actions';
+import messages from 'common/message.i18n';
 const actionTypes = createActionTypes('@@welogix/reusable/checker/',
   ['CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL']);
 

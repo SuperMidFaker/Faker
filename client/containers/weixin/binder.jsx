@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loginBind } from 'universal/redux/reducers/weixin';
+import { loginBind } from 'common/reducers/weixin';
 
 @connect(
   state => ({

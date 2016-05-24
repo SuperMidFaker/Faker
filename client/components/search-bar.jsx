@@ -1,5 +1,5 @@
-import React,{ PropTypes } from 'react';
-import { Input, Icon } from 'ant-ui';
+import React, { PropTypes } from 'react';
+import { Icon } from 'ant-ui';
 import './search-bar.less';
 export default class SearchBar extends React.Component {
   static propTypes = {

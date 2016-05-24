@@ -1,4 +1,4 @@
-import mysql from '../db-util/mysql';
+import mysql from '../util/mysql';
 
 export default {
   getAppInfo(appId, appSecret) {

@@ -1,5 +1,5 @@
-import { CLIENT_API } from '../api';
-import { createActionTypes } from '../../client/common/redux-actions';
+import { CLIENT_API } from '../requester';
+import { createActionTypes } from 'client/common/redux-actions';
 import { CHINA_CODE, TENANT_ROLE } from '../constants';
 import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValueC } from
 './form-common';

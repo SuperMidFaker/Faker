@@ -1,6 +1,6 @@
 export function toNonNullProperties(obj) {
   const retObj = {};
-  for (let key in obj) {
+  for (const key in obj) {
     if (obj[key]) {
       retObj[key] = obj[key];
     }
@@ -12,10 +12,10 @@ export function toNumber(v) {
   if (!v || (v.trim && !v.trim())) {
     return undefined;
   }
-  var num = Number(v);
+  let num = Number(v);
   // num === ' '
   if (!isNaN(num)) {
-    num = parseInt(v);
+    num = parseInt(v, 10);
   }
   return isNaN(num) ? v : num;
 }

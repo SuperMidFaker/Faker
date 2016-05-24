@@ -1,9 +1,9 @@
 import {
   CLIENT_API
-} from '../api';
+} from '../requester';
 import {
   createActionTypes
-} from '../../client/common/redux-actions';
+} from 'client/common/redux-actions';
 import {
   appendFormAcitonTypes,
   formReducer,
