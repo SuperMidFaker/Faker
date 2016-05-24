@@ -1,7 +1,7 @@
 import mysql from '../util/mysql';
 import userDao from './user.db';
-import bcrypt from '../node-util/BCryptUtil';
-import { __DEFAULT_PASSWORD__, CUSTOMER } from '../common/constants';
+import bcrypt from '../util/BCryptUtil';
+import { __DEFAULT_PASSWORD__, CUSTOMER } from 'common/constants';
 
 function prepareParam(item, columns) {
   const args = [];
