@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 import { generateUpdateClauseWithInfo } from './utils';
 
 const driverColumns = [
@@ -12,7 +12,7 @@ const carColumns = [
 ];
 
 const nodeColumns =[
-  'name', 'node_code', 'type', 'province', 'city', 
+  'name', 'node_code', 'type', 'province', 'city',
   'district', 'addr', 'contact', 'email', 'mobile', 'remark',
   'tenant_id'
 ];
@@ -58,7 +58,7 @@ export function addCarWithInfo(carInfo) {
 export function getCarList(tenantId) {
   const sql = `
     SELECT plate_number, trailer_number, type, length, load_weight, load_volume, vproperty, v.status, v.driver_id,  v.vehicle_id, d.name AS driver_name
-    FROM tms_vehicles AS v 
+    FROM tms_vehicles AS v
     INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id
     WHERE v.tenant_id = ${tenantId};
   `;
@@ -73,7 +73,7 @@ export function updateCarWithInfo({carInfo, carId}) {
 
 export function getNodeList(tenantId) {
   const sql = `
-    SELECT node_id, name, node_code, ref_partner_id, ref_partner_name, type, CONCAT_WS('/', province, city, district) AS region, 
+    SELECT node_id, name, node_code, ref_partner_id, ref_partner_name, type, CONCAT_WS('/', province, city, district) AS region,
     province, city, district, addr, geo_longitude, contact, email, mobile, remark
     FROM tms_node_locations
     WHERE tenant_id = ${tenantId};

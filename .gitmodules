@@ -1,3 +1,0 @@
-[submodule "reusable"]
-	path = reusable
-	url = git@git.welogix.cn:saas/qm-reusable.git

@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 export default {
   getSmsById(smsId) {
     var sql = 'select code from sso_sms where id = ?';

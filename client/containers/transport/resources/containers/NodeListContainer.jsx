@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'ant-ui';
 import NodeList from '../components/NodeList.jsx';
-import connectFetch from 'reusable/decorators/connect-fetch';
-import { loadNodeList, setNodeType, removeNode } from '../../../../../universal/redux/reducers/transportResources';
+import connectFetch from 'client/common/connect-fetch';
+import { loadNodeList, setNodeType, removeNode } from 'common/reducers/transportResources';
 import { addUniqueKeys } from '../utils/dataMapping';
 
 const confirm = Modal.confirm;

@@ -1,7 +1,7 @@
 import { sync as globSync } from 'glob';
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import Result from 'reusable/node-util/response-result';
+import Result from '../util/response-result';
 
 function *getIntlMessages() {
   const locale = this.request.query.locale;

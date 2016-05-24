@@ -38,8 +38,8 @@ import * as TMSResources from './containers/transport/resources';
 import Inventory from './containers/module-inventory';
 import Warehouse from './containers/inventory/warehouse';
 import Notice from './containers/inventory/notice';
-import {loadAccount} from '../universal/redux/reducers/account';
-import {isLoaded} from '../reusable/common/redux-actions';
+import {loadAccount} from 'common/reducers/account';
+import {isLoaded} from 'client/common/redux-actions';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {

@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const wpConfig = require('./wpbase');
-const config = require('../universal/config');
+const config = require('../config');
 
 wpConfig.entry.app = config.get('client_entry');
 

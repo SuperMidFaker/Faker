@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import connectFetch from '../../../reusable/decorators/connect-fetch';
-import { load, submit, update, del, beginEdit, edit, cancelEdit } from '../../../universal/redux/reducers/notice';
-import { isLoaded } from '../../../reusable/common/redux-actions';
+import connectFetch from 'client/common/connect-fetch';
+import { load, submit, update, del, beginEdit, edit, cancelEdit } from 'common/reducers/notice';
+import { isLoaded } from 'client/common/redux-actions';
 import {Table, Button, Icon, Form, Input, Row, Col, message} from 'ant-ui';
 const FormItem = Form.Item;
 

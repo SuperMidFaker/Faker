@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 function putInComposition(f, args) {
   let sql = '';
   if (f.name === 'username') {

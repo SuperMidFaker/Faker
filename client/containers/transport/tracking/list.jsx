@@ -3,20 +3,20 @@ import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'reusable/components/nav-link';
-import connectFetch from 'reusable/decorators/connect-fetch';
-import connectNav from 'reusable/decorators/connect-nav';
-import { loadShipmtDetail } from 'universal/redux/reducers/shipment';
+import NavLink from 'client/components/nav-link';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
-  'universal/redux/reducers/transport-tracking';
-import { setNavTitle } from 'universal/redux/reducers/navbar';
+  'common/reducers/transport-tracking';
+import { setNavTitle } from 'common/reducers/navbar';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
-  'universal/constants';
+  'common/constants';
 import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
 import PodModal from './modals/pod-submit';
 import PreviewPanel from '../shipment/modals/preview-panel';
-import { format } from 'universal/i18n/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
 import globalMessages from 'client/root.i18n';

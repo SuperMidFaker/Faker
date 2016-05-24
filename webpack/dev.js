@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const wpConfig = require('./wpbase');
-const config = require('../universal/config');
+const config = require('../config');
 
 wpConfig.entry.app = [
   'webpack/hot/dev-server',

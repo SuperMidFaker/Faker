@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Select } from 'ant-ui';
-import { format } from 'universal/i18n/helpers';
+import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
