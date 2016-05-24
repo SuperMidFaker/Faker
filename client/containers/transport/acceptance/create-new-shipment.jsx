@@ -200,7 +200,7 @@ export default class ShipmentCreate extends React.Component {
               <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
                 fieldProps={{initialValue: tenantName}} disabled rules={[{
                   required: true, message: this.msg('lspNameMust')
-                }]}
+                }]} field="lsp"
               />
               <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
               <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>

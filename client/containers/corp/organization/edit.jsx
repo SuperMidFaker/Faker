@@ -101,12 +101,13 @@ export default class CorpEdit extends React.Component {
             this.onSubmitReturn(result.error);
           });
         } else {
-          const { account: { tenantId, aspect, code, category_id }} = this.props;
+          const { account: { tenantId, aspect, code, subdomain, category_id }} = this.props;
           const tenant = {
             tenantId,
             aspect,
             code,
-            category_id
+            category_id,
+            subdomain,
           };
           this.props.submit(this.props.formData, tenant).then(result => {
             this.onSubmitReturn(result.error);
