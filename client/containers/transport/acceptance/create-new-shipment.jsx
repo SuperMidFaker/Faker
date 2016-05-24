@@ -190,7 +190,7 @@ export default class ShipmentCreate extends React.Component {
               <div className="subform-title">{this.msg('correlativeInfo')}</div>
             </div>
             <div className="subform-body">
-              <AutoCompSelectItem formhoc={formhoc} colSpan={0} field="client"
+              <AutoCompSelectItem formhoc={formhoc} placeholder={this.msg('client')} colSpan={0} field="client"
                 optionData={clientOpts} required
                 optionField="name" optionKey="key" optionValue="value"
                 rules={[{
