@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import AmNavBar from '../components/am-navbar';
-import { setNavTitle } from '../../universal/redux/reducers/navbar';
-import connectNav from '../../reusable/decorators/connect-nav';
-import { DEFAULT_MODULES } from '../../universal/constants';
+import { setNavTitle } from 'common/reducers/navbar';
+import connectNav from 'client/common/connect-nav';
+import { DEFAULT_MODULES } from 'common/constants';
 
 @connectNav((props, dispatch) => {
   let pathname = props.location.pathname;

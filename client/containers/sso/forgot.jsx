@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { requestSms, verifySms } from '../../../universal/redux/reducers/auth';
-import { format } from 'universal/i18n/helpers';
+import { requestSms, verifySms } from 'common/reducers/auth';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);

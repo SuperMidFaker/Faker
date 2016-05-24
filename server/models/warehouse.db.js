@@ -1,4 +1,4 @@
-import mysql from '../db-util/mysql';
+import mysql from '../util/mysql';
 function prepareAllParameter(wh) {
   const args = [];
   const whColumns = [`wh_no`, `wh_mode`, `wh_name`, `wh_short_name`, `open_date`, `acreage`, `day_rent`,

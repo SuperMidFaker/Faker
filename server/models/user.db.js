@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 export default {
   getUserByAccount(account, code) {
     const sql = `SELECT id, username, phone, email, password, unid FROM sso_login WHERE phone = ?

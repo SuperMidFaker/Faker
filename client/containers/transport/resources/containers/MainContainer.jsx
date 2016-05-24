@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Main from '../components/Main';
-import { setMenuItemKey } from '../../../../../universal/redux/reducers/transportResources';
-import connectNav from 'reusable/decorators/connect-nav';
-import { setNavTitle } from 'universal/redux/reducers/navbar';
+import { setMenuItemKey } from 'common/reducers/transportResources';
+import connectNav from 'client/common/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({

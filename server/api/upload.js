@@ -1,6 +1,6 @@
 import cobusboy from 'co-busboy';
-import Result from '../../reusable/node-util/response-result';
-import fileUtil from '../../reusable/node-util/fileUtil';
+import Result from '../util/response-result';
+import fileUtil from '../util/fileUtil';
 
 export default [
    ['post', '/v1/upload/img/', uploadImgs]
@@ -23,7 +23,7 @@ function *uploadImgs() {
   try {
     const part = yield parts;
     const buf = yield saveBuffer(part);
-    const prefix = !!parts.field ? parts.field.prefix : 'tms'; 
+    const prefix = !!parts.field ? parts.field.prefix : 'tms';
     const fpath = yield fileUtil.saveFileWithBuffer(buf, prefix);
     Result.OK(this, fileUtil.getFileUrl(fpath));
   } catch (e) {

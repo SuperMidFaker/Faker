@@ -2,15 +2,15 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Input, Select, Row, Col, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import connectNav from '../../../../reusable/decorators/connect-nav';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
 import { loadOrganizationForm, clearForm, setFormValue, editOrganization, submit } from
-  '../../../../universal/redux/reducers/corps';
+  'common/reducers/corps';
 import { isLoginNameExist, checkLoginName } from
-  '../../../../reusable/domains/redux/checker-reducer';
-import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { validatePhone } from '../../../../reusable/common/validater';
-import { format } from 'universal/i18n/helpers';
+  'common/reducers/checker-reducer';
+import { setNavTitle } from 'common/reducers/navbar';
+import { validatePhone } from 'common/validater';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';

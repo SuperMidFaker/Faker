@@ -1,4 +1,4 @@
-const argv = require('../reusable/node-util/minimist')(process.argv.slice(2));
+const argv = require('./util/minimist')(process.argv.slice(2));
 
 const path = require('path');
 process.env.NODE_PATH = path.resolve(__dirname, '..');
@@ -17,7 +17,7 @@ if (argv.api) {
 } else {
   // https://github.com/visionmedia/superagent/issues/205
   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-  const config = require('../universal/config');
+  const config = require('../config');
   const rootDir = config.get('project_root');
   var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 
@@ -30,7 +30,7 @@ if (argv.api) {
   global.__API_ROOT__ = `http://localhost:${__PORT__}/`;
   global.__PRODUCTIONS_ROOT_GROUP__ = config.get('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__');
   global.__PRODUCTIONS_DOMAIN_GROUP__ = config.get('__PRODUCTIONS_DOMAIN_GROUP__');
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../reusable/webpack/isomorphic'))
+  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic'))
     .development(__DEV__)
     .server(rootDir, function() {
       require('./koa');

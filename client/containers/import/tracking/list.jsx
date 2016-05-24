@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {loadTracking, loadCustomsBrokers} from '../../../../universal/redux/reducers/importtracking';
-import {isLoaded} from '../../../../reusable/common/redux-actions';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import SearchBar from '../../../../reusable/components/search-bar';
+import {loadTracking, loadCustomsBrokers} from 'common/reducers/importtracking';
+import {isLoaded} from 'client/common/redux-actions';
+import connectFetch from 'client/common/connect-fetch';
+import SearchBar from 'client/components/search-bar';
 import {Table, Radio} from 'ant-ui';
 
 const RadioButton = Radio.Button;

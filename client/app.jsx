@@ -10,7 +10,7 @@ export default class App extends Component {
     routerHistory: PropTypes.object
   }
   renderDevTools () {
-    const ReduxDevTool = require('../reusable/components/redux-devtool');
+    const ReduxDevTool = require('./components/redux-devtool');
     return <ReduxDevTool />;
   }
 

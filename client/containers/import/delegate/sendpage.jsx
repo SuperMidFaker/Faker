@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {loadSend, sendDelegate} from '../../../../universal/redux/reducers/importdelegate';
+import {loadSend, sendDelegate} from 'common/reducers/importdelegate';
 import {Table, Button, Select, message} from 'ant-ui';
-import connectNav from '../../../../reusable/decorators/connect-nav';
-import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
+import connectNav from 'client/common/connect-nav';
+import {setNavTitle} from 'common/reducers/navbar';
 import './upload.less';
 const Option = Select.Option;
 

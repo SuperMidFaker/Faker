@@ -1,11 +1,11 @@
 import cobody from 'co-body';
 import coopDao from '../models/cooperation.db';
 import tenantDao from '../models/tenant.db';
-import mysql from '../../reusable/db-util/mysql';
-import Result from '../../reusable/node-util/response-result';
-import { getSmsCode } from '../../reusable/common/validater';
+import mysql from '../util/mysql';
+import Result from '../util/response-result';
+import { getSmsCode } from '../../common/validater';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE }
-  from '../../universal/constants';
+  from 'common/constants';
 
 const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
 

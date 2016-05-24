@@ -1,4 +1,4 @@
-import mysql from '../db-util/mysql';
+import mysql from '../util/mysql';
 function prepareArgs(input) {
   const args = [];
   const columns = [`payer_id`, `payee_id`, `subject`, `body`, `amount`, `batch_no`,

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col, message, Alert } from 'ant-ui';
 import moment from 'moment';
-import connectFetch from 'reusable/decorators/connect-fetch';
-import { loadSegRq, segmentRequest } from 'universal/redux/reducers/transportDispatch';
+import connectFetch from 'client/common/connect-fetch';
+import { loadSegRq, segmentRequest } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
 
 const Option = Select.Option;
