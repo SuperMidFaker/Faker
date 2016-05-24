@@ -164,7 +164,16 @@ export default(store, cookie) => {
               <IndexRoute component={TMSDispatch.List}/>
             </Route>
             <Route path="tracking">
-              <IndexRoute component={TMSTracking.List}/>
+              <Route path="land" component={TMSTracking.Tab}>
+                <Route path="view" component={TMSTracking.List}>
+                  <IndexRoute component={TMSTracking.List} />
+                  <Route path="status/:state" component={TMSTracking.List} />
+                  <Route path="pod/:state" component={TMSTracking.List} />
+                  <Route path="exception/:state" component={TMSTracking.List} />
+                </Route>
+              </Route>
+              <Route path="air" component={TMSTracking.Tab} />
+              <Route path="express" component={TMSTracking.Tab} />
             </Route>
             <Route path="resources">
               <IndexRoute component={TMSResources.MainContainer} />
