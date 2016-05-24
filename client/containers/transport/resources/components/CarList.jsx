@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Table } from 'ant-ui';
+import { Button, Table, Icon } from 'ant-ui';
 import { Link } from 'react-router';
 
 const rowSelection = {
@@ -93,10 +93,10 @@ export default function CarList(props) {
     return (
       <div className="main-content">
         <div className="page-body">
-          <div className="panel-body body-responsive" style={{padding: 20}}>
-            <div style={{marginBottom: 16}}>
-              <Button type="primary" size="large" onClick={onAddCarBtnClick}>新建车辆</Button>
-            </div>
+          <div className="panel-header">
+            <Button type="primary" onClick={onAddCarBtnClick}><Icon type="plus-circle-o" />新增车辆</Button>
+          </div>
+          <div className="panel-body padding">
             <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
           </div>
         </div>

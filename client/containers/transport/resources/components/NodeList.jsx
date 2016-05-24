@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Radio } from 'ant-ui';
+import { Table, Button, Radio, Icon } from 'ant-ui';
 import { Link } from 'react-router';
 import { nodeTypes } from '../utils/dataMapping';
 
@@ -93,8 +93,10 @@ export default function NodeList(props) {
           </RadioGroup>
         </div>
         <div className="page-body">
-          <div className="panel-body body-responsive" style={{padding: 20}}>
-            <Button size="large" type="primary" style={{marginBottom: 16}} onClick={onAddNoteBtnClick}>新建{nodeTypes[nodeType]}</Button>
+          <div className="panel-header">
+            <Button type="primary" onClick={onAddNoteBtnClick}><Icon type="plus-circle-o" />新增{nodeTypes[nodeType]}</Button>
+          </div>
+          <div className="panel-body padding">
             <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
           </div>
         </div>

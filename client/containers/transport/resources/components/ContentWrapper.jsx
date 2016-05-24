@@ -4,7 +4,7 @@ export default function ContentWrapper(props) {
   return (
     <div className="main-content">
       <div className="page-body">
-        <div className="panel-body body-responsive" style={{padding: 20}}>
+        <div className="panel-body padding">
           {props.children}
         </div>
       </div>
