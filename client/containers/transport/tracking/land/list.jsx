@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message } from 'ant-ui';
+import { Table, Button, Icon, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -15,7 +15,7 @@ import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } 
 import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
 import PodModal from './modals/pod-submit';
-import PreviewPanel from '../shipment/modals/preview-panel';
+import PreviewPanel from '../../shipment/modals/preview-panel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
@@ -24,13 +24,20 @@ const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-
-function fetchData({ state, dispatch, cookie }) {
+function fetchData({ state, dispatch, params, cookie }) {
+  const newfilters = state.transportTracking.transit.filters.map(flt => {
+    if (flt.name === 'type') {
+      return {
+        name: 'type',
+        value: params.state
+      };
+    } else {
+      return flt;
+    }
+  });
   return dispatch(loadTransitTable(cookie, {
     tenantId: state.account.tenantId,
-    filters: JSON.stringify(state.transportTracking.transit.filters),
+    filters: JSON.stringify(newfilters),
     pageSize: state.transportTracking.transit.shipmentlist.pageSize,
     currentPage: state.transportTracking.transit.shipmentlist.current,
     /*
@@ -98,6 +105,32 @@ export default class TrackingList extends React.Component {
   state = {
     selectedRowKeys: []
   }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    if (nextProps.params.state !== this.props.params.state) {
+      const newfilters = nextProps.filters.map(flt => {
+        if (flt.name === 'type') {
+          return {
+            name: 'type',
+            value: nextProps.params.state
+          };
+        } else {
+          return flt;
+        }
+      });
+      this.props.loadTransitTable(null, {
+        tenantId: nextProps.tenantId,
+        filters: JSON.stringify(newfilters),
+        pageSize: nextProps.shipmentlist.pageSize,
+        currentPage: nextProps.shipmentlist.current,
+        /*
+           sortField: state.transportTracking.transit.sortField,
+           sortOrder: state.transportTracking.transit.sortOrder,
+           */
+      });
+    }
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTransitTable(null, params),
     resolve: result => result.data,
@@ -130,7 +163,6 @@ export default class TrackingList extends React.Component {
     },
     remotes: this.props.shipmentlist
   })
-
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
@@ -454,34 +486,13 @@ export default class TrackingList extends React.Component {
         this.setState({ selectedRowKeys });
       }
     };
-    let radioValue;
-    const types = this.props.filters.filter(flt => flt.name === 'type');
-    if (types.length === 1) {
-      radioValue = types[0].value;
-    }
     return (
-      <div className="main-content">
-        <div className="page-header">
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
-            <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
-            <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
-            <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
-            <RadioButton value="dispatched">{this.msg('dispatchedShipmt')}</RadioButton>
-            <RadioButton value="intransit">{this.msg('intransitShipmt')}</RadioButton>
-            <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
-          </RadioGroup>
-          <span style={{marginLeft: '10px'}} />
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
-            <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
-            <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
-            <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
-          </RadioGroup>
-        </div>
-        <div className="page-body fixed">
+      <div>
+        <div className="page-body">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
-              <Button type="primary">
-                <Icon type="export" /><span>{formatGlobalMsg(intl, 'export')}</span>
+              <Button icon="export" type="primary">
+                <span>{formatGlobalMsg(intl, 'export')}</span>
               </Button>
             </NavLink>
           </div>

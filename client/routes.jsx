@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, IndexRoute} from 'react-router';
+import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import Root from './root';
 import Home from './containers/home';
 import SSO from './containers/pack-sso';
@@ -164,16 +164,16 @@ export default(store, cookie) => {
               <IndexRoute component={TMSDispatch.List}/>
             </Route>
             <Route path="tracking">
-              <Route path="land" component={TMSTracking.Tab}>
-                <Route path="view" component={TMSTracking.List}>
-                  <IndexRoute component={TMSTracking.List} />
-                  <Route path="status/:state" component={TMSTracking.List} />
-                  <Route path="pod/:state" component={TMSTracking.List} />
-                  <Route path="exception/:state" component={TMSTracking.List} />
+              <IndexRedirect to="/transport/tracking/land/shipmt/status/all" />
+              <Route path="land" component={TMSTracking.Menu}>
+                <Route path="shipmt" component={TMSTracking.LandWrapper}>
+                  <Route path="status/:state" component={TMSTracking.LandList} />
+                  <Route path="pod/:state" component={TMSTracking.LandList} />
+                  <Route path="exception/:state" component={TMSTracking.LandList} />
                 </Route>
               </Route>
-              <Route path="air" component={TMSTracking.Tab} />
-              <Route path="express" component={TMSTracking.Tab} />
+              <Route path="air" component={TMSTracking.Menu} />
+              <Route path="express" component={TMSTracking.Menu} />
             </Route>
             <Route path="resources">
               <IndexRoute component={TMSResources.MainContainer} />
