@@ -4,8 +4,8 @@ const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
-const config = require('../universal/config');
-const isomorphicPlugin = new WebpackIsomorphicPlugin(require('../reusable/webpack/isomorphic'));
+const config = require('../config');
+const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./isomorphic'));
 const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 
 const wpConfig = {
@@ -44,13 +44,13 @@ const wpConfig = {
     preLoaders: [{
       test: /\.(js|jsx)$/,
       loader: 'eslint-loader',
-      include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'universal')],
+      include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'common')],
       exclude: [nodeModulesPath]
     }],
     loaders: [{
       test: /\.(js|jsx)$/, // All .js and .jsx files
       loader: 'babel', // babel loads jsx and es6-7
-      include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'universal'), path.resolve(__dirname, '..', 'reusable')],
+      include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'common')],
       exclude: [nodeModulesPath],  // exclude node_modules so that they are not all compiled
       query: {
         optional: ['runtime'],

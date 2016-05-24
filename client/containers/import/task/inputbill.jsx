@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {CONDITION_STATE, WRAP_TYPE, FEE_TYPE} from 'universal/constants';
+import {CONDITION_STATE, WRAP_TYPE, FEE_TYPE} from 'common/constants';
 import {connect} from 'react-redux';
 import {
   Button,
@@ -17,8 +17,8 @@ import {
   Table
 } from
 'ant-ui';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import connectNav from '../../../../reusable/decorators/connect-nav';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
 import {
   // isFormDataLoaded,
   loadSelectSource,
@@ -28,8 +28,8 @@ import {
   setFormValue,
   getBillList
 } from
-'../../../../universal/redux/reducers/task';
-import {setNavTitle} from '../../../../universal/redux/reducers/navbar';
+'common/reducers/task';
+import {setNavTitle} from 'common/reducers/navbar';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;

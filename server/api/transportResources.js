@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import Result from '../../reusable/node-util/response-result';
+import Result from '../util/response-result';
 import * as TransportResourcesDao from '../models/transportResources';
 
 function *addDriver() {
@@ -24,7 +24,7 @@ function *getDriverList() {
     return Result.OK(this, result);
   } catch(e) {
     return Result.InternalServerError(this, e.message);
-  } 
+  }
 }
 
 function *editDriver() {
@@ -56,8 +56,8 @@ function *getCarList() {
     const result = yield TransportResourcesDao.getCarList(tenantId);
     return Result.OK(this, result);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);  
-  } 
+    return Result.InternalServerError(this, e.message);
+  }
 }
 
 function *editCar() {

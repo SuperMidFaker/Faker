@@ -1,12 +1,12 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {loadTask} from
-'../../../../universal/redux/reducers/task';
-import NavLink from '../../../../reusable/components/nav-link';
-import SearchBar from '../../../../reusable/components/search-bar';
+'common/reducers/task';
+import NavLink from 'client/components/nav-link';
+import SearchBar from 'client/components/search-bar';
 import {Table, Radio, Tag} from 'ant-ui';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import {isLoaded} from '../../../../reusable/common/redux-actions';
+import connectFetch from 'client/common/connect-fetch';
+import {isLoaded} from 'client/common/redux-actions';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 

@@ -1,6 +1,6 @@
 import cobody from 'co-body';
-import whDao from '../../reusable/models/warehouse.db';
-import Result from '../../reusable/node-util/response-result';
+import whDao from '../models/warehouse.db';
+import Result from '../util/response-result';
 
 export default [
   ['get', '/v1/wewms/warehouses', warehouseG],

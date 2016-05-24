@@ -1,6 +1,6 @@
 import cobody from 'co-body';
-import Result from '../../reusable/node-util/response-result';
-import mysql from '../../reusable/db-util/mysql';
+import Result from '../util/response-result';
+import mysql from '../util/mysql';
 import taskDao from '../models/task.db';
 import paraDao from '../models/para.db';
 

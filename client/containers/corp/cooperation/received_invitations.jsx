@@ -4,12 +4,12 @@ import { Table, Button, Input, message, Modal, Checkbox } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { loadReceiveds, change } from
-'../../../../universal/redux/reducers/invitation';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import connectNav from '../../../../reusable/decorators/connect-nav';
-import { setNavTitle } from '../../../../universal/redux/reducers/navbar';
-import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
-import { format } from 'universal/i18n/helpers';
+'common/reducers/invitation';
+import connectFetch from 'client/common/connect-fetch';
+import connectNav from 'client/common/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
+import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 import containerMessages from 'client/containers/message.i18n';

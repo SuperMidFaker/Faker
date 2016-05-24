@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import NavLink from '../../../../reusable/components/nav-link';
+import NavLink from 'client/components/nav-link';
 import {
   loadAccepts,
   updateId,
@@ -9,13 +9,13 @@ import {
   edit,
   cancelEdit,
   loadCustomsBrokers
-} from '../../../../universal/redux/reducers/importaccept';
-import {isLoaded} from '../../../../reusable/common/redux-actions';
-import connectFetch from '../../../../reusable/decorators/connect-fetch';
-import SearchBar from '../../../../reusable/components/search-bar';
+} from 'common/reducers/importaccept';
+import {isLoaded} from 'client/common/redux-actions';
+import connectFetch from 'client/common/connect-fetch';
+import SearchBar from 'client/components/search-bar';
 import {Table, Button, message, Radio, Icon} from 'ant-ui';
-import showWarningModal from '../../../../reusable/components/deletion-warning-modal';
-import {resolveCurrentPageNumber} from '../../../../reusable/browser-util/react-ant';
+import showWarningModal from 'client/components/deletion-warning-modal';
+import {resolveCurrentPageNumber} from 'client/util/react-ant';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;

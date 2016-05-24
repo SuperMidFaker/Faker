@@ -1,4 +1,4 @@
-import db from '../../reusable/db-util/mysql';
+import db from '../util/mysql';
 
 
 export default {

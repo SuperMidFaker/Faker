@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import NodeForm from '../components/NodeForm';
-import { addNode, editNode, changeRegion } from '../../../../../universal/redux/reducers/transportResources';
-import connectNav from 'reusable/decorators/connect-nav';
-import { setNavTitle } from 'universal/redux/reducers/navbar';
+import { addNode, editNode, changeRegion } from 'common/reducers/transportResources';
+import connectNav from 'client/common/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({

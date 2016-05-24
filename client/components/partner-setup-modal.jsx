@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { PARTNERSHIP_TYPE_INFO } from 'universal/constants';
-import { getFormatMsg } from 'reusable/browser-util/react-ant';
+import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
+import { getFormatMsg } from 'client/util/react-ant';
 import { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner } from
-  '../../universal/redux/reducers/partner';
-import { format } from 'universal/i18n/helpers';
+  'common/reducers/partner';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/root.i18n';
 const formatMsg = format(messages);

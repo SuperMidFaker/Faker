@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import NavLink from '../../reusable/components/nav-link';
+import NavLink from './nav-link';
 import { Menu } from 'ant-ui';
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;

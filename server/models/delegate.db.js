@@ -1,5 +1,5 @@
-import mysql from '../../reusable/db-util/mysql';
-import Orm from '../../reusable/db-util/orm';
+import mysql from '../util/mysql';
+import Orm from '../util/orm';
 import { prng } from 'crypto';
 
 function putInCompositions(f, args) {

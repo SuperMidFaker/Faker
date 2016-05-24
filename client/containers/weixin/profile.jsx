@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadWelogixProfile, unbindAccount } from 'universal/redux/reducers/weixin';
-import connectFetch from 'reusable/decorators/connect-fetch';
+import { loadWelogixProfile, unbindAccount } from 'common/reducers/weixin';
+import connectFetch from 'client/common/connect-fetch';
 
 function fetchData({ state, dispatch, cookie }) {
   if (!state.weixin.profile.loaded) {

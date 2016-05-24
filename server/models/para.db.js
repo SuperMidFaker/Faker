@@ -1,4 +1,4 @@
-import mysql from '../../reusable/db-util/mysql';
+import mysql from '../util/mysql';
 export default {
   // 获取海关基本信息
   getCustomsRel() {
