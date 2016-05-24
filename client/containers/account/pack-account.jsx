@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import AmNavBar from '../components/am-navbar';
+import AmNavBar from 'client/components/am-navbar';
 
 export default class AccountPack extends React.Component {
   static propTypes = {

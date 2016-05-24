@@ -8,7 +8,7 @@ import { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner
   'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
+import globalMessages from 'client/common/root.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 import './partner-modal.less';

@@ -21,6 +21,7 @@ app.use(function *catchAuthError(next) {
   try {
     yield next; // Attempt to go through the JWT or App Validator
   } catch(e) {
+    console.log(e.stack);
     if (e.status === 401) {
       Result.Error(this, Result.HttpStatus.UNAUTHORIZED);
       // this.redirect(ssoRedirectUrl(this.request));

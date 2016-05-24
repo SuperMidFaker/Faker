@@ -18,7 +18,7 @@ import PreviewPanel from '../shipment/modals/preview-panel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/containers/message.i18n';
-import globalMessages from 'client/root.i18n';
+import globalMessages from 'client/common/root.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);

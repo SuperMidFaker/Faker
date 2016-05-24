@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import AmLeftSidebar from '../components/am-ant-leftbar';
+import AmLeftSidebar from 'client/components/am-ant-leftbar';
 
 export default class Inventory extends React.Component {
   static propTypes = {
