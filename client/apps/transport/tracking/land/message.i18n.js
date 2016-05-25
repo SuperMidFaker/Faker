@@ -233,4 +233,24 @@ export default defineMessages({
     id: 'transport.tracking.modal.pod.click.submit',
     defaultMessage: '上传照片'
   },
+  auditPod: {
+    id: 'transport.tracking.table.pod.audit',
+    defaultMessage: '审核'
+  },
+  rejectByUs: {
+    id: 'transport.tracking.table.pod.rejectby.us',
+    defaultMessage: '我方退回'
+  },
+  submitToUpper: {
+    id: 'transport.tracking.table.pod.submit.to',
+    defaultMessage: '已提交'
+  },
+  resubmitPod: {
+    id: 'transport.tracking.table.pod.resubmit',
+    defaultMessage: '重新提交'
+  },
+  acceptByUpper: {
+    id: 'transport.tracking.table.pod.accept.by.upper',
+    defaultMessage: '客户接受'
+  },
 });

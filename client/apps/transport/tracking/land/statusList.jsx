@@ -5,13 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
-  'common/reducers/landStatus';
-import { setNavTitle } from 'common/reducers/navbar';
+  'common/reducers/trackingLandStatus';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
+import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
 import PodModal from './modals/pod-submit';
@@ -25,7 +24,7 @@ const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
-  const newfilters = state.landStatus.filters.map(flt => {
+  const newfilters = state.trackingLandStatus.filters.map(flt => {
     if (flt.name === 'type') {
       return {
         name: 'type',
@@ -38,49 +37,21 @@ function fetchData({ state, dispatch, params, cookie }) {
   return dispatch(loadTransitTable(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
-    pageSize: state.landStatus.shipmentlist.pageSize,
-    currentPage: state.landStatus.shipmentlist.current,
+    pageSize: state.trackingLandStatus.shipmentlist.pageSize,
+    currentPage: state.trackingLandStatus.shipmentlist.current,
   }));
 }
-
-function RowUpdater(props) {
-  const { label, onAnchored, row } = props;
-  function handleClick() {
-    if (onAnchored) {
-      onAnchored(row);
-    }
-  }
-  return <a onClick={handleClick}>{label}</a>;
-}
-
-RowUpdater.propTypes = {
-  label: PropTypes.string.isRequired,
-  onAnchored: PropTypes.func,
-  row: PropTypes.object,
-};
 
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.landStatus.shipmentlist,
-    filters: state.landStatus.filters,
-    loading: state.landStatus.loading,
+    shipmentlist: state.trackingLandStatus.shipmentlist,
+    filters: state.trackingLandStatus.filters,
+    loading: state.trackingLandStatus.loading,
   }),
   { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    text: formatContainerMsg(props.intl, 'transportTracking'),
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null
-  }));
-})
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

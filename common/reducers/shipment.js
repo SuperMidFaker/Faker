@@ -5,7 +5,7 @@ import {
   assignFormC, clearFormC, setFormValueC
 } from './form-common';
 import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
-import { LOAD_TRANSHIPMT_SUCCEED } from './landStatus';
+import { LOAD_TRANSHIPMT_SUCCEED } from './trackingLandStatus';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',

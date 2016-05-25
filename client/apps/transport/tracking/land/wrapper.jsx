@@ -12,12 +12,16 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    filters: state.landStatus.filters,
+    statusfilters: state.trackingLandStatus.filters,
+    podfilters: state.trackingLandPod.filters,
   })
 )
 export default class TrackingLandWrapper extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    location: PropTypes.object.isRequired,
+    statusfilters: PropTypes.array,
+    podfilters: PropTypes.array,
     children: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -35,8 +39,15 @@ export default class TrackingLandWrapper extends React.Component {
     );
   }
   render() {
+    const locName = this.props.location.pathname.split('/')[5];
+    let propFilters = [];
+    if (locName === 'status') {
+      propFilters = this.props.statusfilters;
+    } else if (locName === 'pod') {
+      propFilters = this.props.podfilters;
+    }
     let radioValue;
-    const types = this.props.filters.filter(flt => flt.name === 'type');
+    const types = propFilters.filter(flt => flt.name === 'type');
     if (types.length === 1) {
       radioValue = types[0].value;
     }

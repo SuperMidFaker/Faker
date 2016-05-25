@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Radio, Upload, Button, Modal, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { closePodModal, saveSubmitPod } from 'common/reducers/trackingLandStatus';
+import { closePodModal, saveAuditPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -12,25 +12,40 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    submitter: state.account.username,
-    visible: state.trackingLandStatus.podModal.visible,
-    dispId: state.trackingLandStatus.podModal.dispId,
-    shipmtNo: state.trackingLandStatus.podModal.shipmtNo,
+    auditor: state.account.username,
+    auditModal: state.trackingLandPod.auditModal,
   }),
-  { closePodModal, saveSubmitPod })
-export default class PodSubmitter extends React.Component {
+  { closePodModal, saveAuditPod })
+export default class PodAuditModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    dispId: PropTypes.number.isRequired,
-    shipmtNo: PropTypes.string.isRequired,
+    auditor: PropTypes.string.isRequired,
+    auditModal: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
-    saveSubmitPod: PropTypes.func.isRequired,
+    saveAuditPod: PropTypes.func.isRequired,
   }
   state = {
     signStatus: '',
     remark: '',
     photoList: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auditModal.dispId !== this.props.auditModal.dispId) {
+      const photoList = [];
+      nextProps.auditModal.photos.split(',').forEach((ph, index) => {
+        photoList.push({
+          uid: -index,
+          status: 'done',
+          url: ph,
+        });
+      });
+      this.setState({
+        signStatus: nextProps.auditModal.signStatus,
+        remark: nextProps.auditModal.signRemark,
+        photoList,
+      });
+    }
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (ev) => {
@@ -56,10 +71,10 @@ export default class PodSubmitter extends React.Component {
     }
   }
   handleOk = () => {
-    const { shipmtNo, submitter, dispId, onOK } = this.props;
+    const { auditor, dispId, onOK } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
-    this.props.saveSubmitPod(shipmtNo, dispId, submitter, signStatus, remark, photos).then(
+    this.props.saveAuditPod(dispId, auditor, signStatus, remark, photos).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
@@ -73,7 +88,8 @@ export default class PodSubmitter extends React.Component {
     this.props.closePodModal();
   }
   render() {
-    const { signStatus, remark } = this.state;
+    const { readonly, } = this.props;
+    const { signStatus, remark, photoList } = this.state;
     const colSpan = 4;
     return (
       <Modal title={this.msg('podModalTitle')} onCancel={this.handleCancel}
@@ -84,9 +100,9 @@ export default class PodSubmitter extends React.Component {
             wrapperCol={{span: 24 - colSpan}}
           >
             <RadioGroup onChange={this.handleSignRadioChange} value={signStatus}>
-              <Radio key="normal" value={1}>{this.msg('normalSign')}</Radio>
-              <Radio key="abnormal" value={2}>{this.msg('abnormalSign')}</Radio>
-              <Radio key="refused" value={3}>{this.msg('refusedSign')}</Radio>
+              <Radio key="normal" value={1} disabled={readonly}>{this.msg('normalSign')}</Radio>
+              <Radio key="abnormal" value={2} disabled={readonly}>{this.msg('abnormalSign')}</Radio>
+              <Radio key="refused" value={3} disabled={readonly}>{this.msg('refusedSign')}</Radio>
             </RadioGroup>
           </FormItem>
           <FormItem label={this.msg('signRemark')} labelCol={{span: colSpan}}
@@ -94,15 +110,16 @@ export default class PodSubmitter extends React.Component {
           >
             <Input type="textarea" placeholder={this.msg('signRemarkPlaceholder')}
               rows="5" value={remark} onChange={this.handleFieldChange}
+              disabled={readonly}
             />
           </FormItem>
           <FormItem label={this.msg('podPhoto')} labelCol={{span: colSpan}}
             wrapperCol={{span: 24 - colSpan}}
           >
             <Upload action="/v1/upload/img" listType="picture"
-            onChange={this.handlePhotoUpload} fileList={this.state.photoList}
+            onChange={this.handlePhotoUpload} fileList={photoList}
             >
-              <Button icon="upload" type="ghost" />
+              <Button icon="upload" type="ghost" disabled={readonly} />
               { this.msg('photoSubmit') }
             </Upload>
           </FormItem>

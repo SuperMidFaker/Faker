@@ -1,12 +1,25 @@
 import React, { PropTypes } from 'react';
 import { Menu } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
+import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
+const formatContainerMsg = format(containerMessages);
 const MenuItem = Menu.Item;
 
 @injectIntl
+@connectNav((props, dispatch) => {
+  dispatch(setNavTitle({
+    depth: 2,
+    text: formatContainerMsg(props.intl, 'transportTracking'),
+    moduleName: 'transport',
+    withModuleLayout: false,
+    goBackFn: null
+  }));
+})
 export default class TrackingMenu extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

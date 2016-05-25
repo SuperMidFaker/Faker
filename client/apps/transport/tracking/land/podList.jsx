@@ -5,16 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
-  'common/reducers/landStatus';
-import { setNavTitle } from 'common/reducers/navbar';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
-  'common/constants';
-import VehicleModal from './modals/vehicle-updater';
-import PickupOrDeliverModal from './modals/pickup-deliver-updater';
-import PodModal from './modals/pod-submit';
+import { loadPodTable, loadPod, showAuditModal } from
+  'common/reducers/trackingLandPod';
+import { SHIPMENT_POD_STATUS } from 'common/constants';
+import RowUpdater from './rowUpdater';
+import PodAuditModal from './modals/pod-audit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -25,7 +21,7 @@ const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
-  const newfilters = state.landStatus.filters.map(flt => {
+  const newfilters = state.trackingLandPod.filters.map(flt => {
     if (flt.name === 'type') {
       return {
         name: 'type',
@@ -35,52 +31,24 @@ function fetchData({ state, dispatch, params, cookie }) {
       return flt;
     }
   });
-  return dispatch(loadTransitTable(cookie, {
+  return dispatch(loadPodTable(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
-    pageSize: state.landStatus.shipmentlist.pageSize,
-    currentPage: state.landStatus.shipmentlist.current,
+    pageSize: state.trackingLandPod.shipmentlist.pageSize,
+    currentPage: state.trackingLandPod.shipmentlist.current,
   }));
 }
-
-function RowUpdater(props) {
-  const { label, onAnchored, row } = props;
-  function handleClick() {
-    if (onAnchored) {
-      onAnchored(row);
-    }
-  }
-  return <a onClick={handleClick}>{label}</a>;
-}
-
-RowUpdater.propTypes = {
-  label: PropTypes.string.isRequired,
-  onAnchored: PropTypes.func,
-  row: PropTypes.object,
-};
 
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.landStatus.shipmentlist,
-    filters: state.landStatus.filters,
-    loading: state.landStatus.loading,
+    shipmentlist: state.trackingLandPod.shipmentlist,
+    filters: state.trackingLandPod.filters,
+    loading: state.trackingLandPod.loading,
   }),
-  { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    text: formatContainerMsg(props.intl, 'transportTracking'),
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null
-  }));
-})
+  { loadPodTable, loadShipmtDetail, loadPod, showAuditModal })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -92,11 +60,10 @@ export default class LandStatusList extends React.Component {
    */
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    showVehicleModal: PropTypes.func.isRequired,
-    showDateModal: PropTypes.func.isRequired,
-    showPodModal: PropTypes.func.isRequired,
+    loadPod: PropTypes.func.isRequired,
+    showAuditModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadTransitTable: PropTypes.func.isRequired
+    loadPodTable: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
@@ -114,7 +81,7 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
-      this.props.loadTransitTable(null, {
+      this.props.loadPodTable(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
         pageSize: nextProps.shipmentlist.pageSize,
@@ -127,7 +94,7 @@ export default class LandStatusList extends React.Component {
     }
   }
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadTransitTable(null, params),
+    fetcher: params => this.props.loadPodTable(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -166,29 +133,16 @@ export default class LandStatusList extends React.Component {
     render: (o, record) => {
       return (
         <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
-        row={record.shipmt_no}
-        />);
+        row={record}
+        />
+      );
     }
   }, {
     title: this.msg('shipmtStatus'),
     dataIndex: 'status',
     width: 140,
-    render: (o, record) => {
-      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return `1 ${this.msg('pendingShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-        return `2 ${this.msg('acceptedShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-        return `3 ${this.msg('dispatchedShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        return `4 ${this.msg('intransitShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        return `5 ${this.msg('deliveredShipmt')}`;
-      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-        return `6 ${this.msg('proofOfDelivery')}`;
-      } else {
-        return <span />;
-      }
+    render: () => {
+      return `6 ${this.msg('proofOfDelivery')}`;
     }
   }, {
     title: this.msg('shipmtPrevTrack'),
@@ -198,88 +152,50 @@ export default class LandStatusList extends React.Component {
       ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
     },
   }, {
-    title: this.msg('shipmtNextUpdate'),
+    title: this.msg('proofOfDelivery'),
     width: 140,
     render: (o, record) => {
-      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return this.msg('carrierUpdate');
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-        if (record.sp_tenant_id === -1) {
-          // 线下客户手动更新
-          return (
-            <RowUpdater label={this.msg('updateVehicleDriver')}
+      if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
+        return (
+          <div>
+            <Icon type="tags" />
+            <RowUpdater label={this.msg('auditPod')}
+              onAnchored={this.handleShowAuditModal} row={record}
+            />
+          </div>
+        );
+      } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
+        return (
+          <span>
+            <i className="mdc-text-red anticon anticon-tags" />
+            {this.msg('rejectByUs')}
+          </span>
+        );
+      } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
+        return (
+          <span>
+            <Icon type="tags" />
+            {this.msg('submitToUpper')}
+          </span>
+        );
+      } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
+        return (
+          <div>
+            <i className="mdc-text-red anticon anticon-tags" />
+            <RowUpdater label={this.msg('resubmitPod')}
               onAnchored={this.handleShowVehicleModal} row={record}
             />
-          );
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-        if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('updatePickup')}
-              onAnchored={this.handleShowPickModal} row={record}
-            />
-          );
-        } else if (record.sp_tenant_id === 0) {
-          // 已分配给车队
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            // 线下司机
-            return (
-              <RowUpdater label={this.msg('updatePickup')}
-              onAnchored={this.handleShowPickModal} row={record}
-              />
-            );
-          } else {
-            return this.msg('driverUpdate');
-          }
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('updateDelivery')}
-            onAnchored={this.handleShowDeliverModal} row={record}
-            />
-          );
-        } else if (record.sp_tenant_id === 0) {
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            return (
-              <RowUpdater label={this.msg('updateDelivery')}
-              onAnchored={this.handleShowDeliverModal} row={record}
-              />
-            );
-          } else {
-            return this.msg('driverUpdate');
-          }
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
-          return <span />;
-        } else if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('submitPod')}
-            onAnchored={this.handleShowPodModal} row={record}
-            />
-          );
-        } else if (record.sp_tenant_id === 0) {
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            return (
-              <RowUpdater label={this.msg('submitPod')}
-              onAnchored={this.handleShowPodModal} row={record}
-              />
-            );
-          } else {
-            return this.msg('driverUpdate');
-          }
-        } else {
-          return this.msg('carrierUpdate');
-        }
+          </div>
+        );
       } else {
-        return this.msg('carrierUpdate');
+        const tagIcon = record.pod_type === 'qrcode' ? <Icon type="qrcode" /> :
+          <Icon type="tags" />;
+        return (
+          <span>
+            {tagIcon}
+            {this.msg('acceptByUpper')}
+          </span>
+        );
       }
     },
   }, {
@@ -373,22 +289,9 @@ export default class LandStatusList extends React.Component {
       {moment(record.deliver_act_date).format('YYYY.MM.DD')}
       </span>
       ) : <span />
-  }, {
-    title: this.msg('proofOfDelivery'),
-    dataIndex: 'pod_type',
-    width: 100,
-    render: (text, record) => {
-      if (record.pod_type === 'none') {
-        return <Icon type="tags-o" />;
-      } else if (record.pod_type === 'dreceipt') {
-        return <Icon type="tags" />;
-      } else {
-        return <Icon type="qrcode" />;
-      }
-    }
   }]
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
-    this.props.loadTransitTable(null, {
+    this.props.loadPodTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
       pageSize: this.props.shipmentlist.pageSize,
@@ -406,20 +309,17 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowVehicleModal = row => {
-    this.props.showVehicleModal(row.disp_id);
+  handleShowAuditModal = (row) => {
+    this.props.loadPod(row.pod_id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.showAuditModal(row.disp_id);
+      }
+    });
   }
-  handleShowPickModal = row => {
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
-  }
-  handleShowDeliverModal = row => {
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
-  }
-  handleShowPodModal = (row) => {
-    this.props.showPodModal(row.disp_id, row.shipmt_no);
-  }
-  handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr').then(result => {
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -479,9 +379,7 @@ export default class LandStatusList extends React.Component {
           </div>
         </div>
         <PreviewPanel />
-        <VehicleModal onOK={this.handleTableLoad} />
-        <PickupOrDeliverModal onOK={this.handleTableLoad} />
-        <PodModal onOK={this.handleTableLoad} />
+        <PodAuditModal onOK={this.handleTableLoad} />
       </div>
     );
   }

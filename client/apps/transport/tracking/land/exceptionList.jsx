@@ -5,13 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
-  'common/reducers/landStatus';
-import { setNavTitle } from 'common/reducers/navbar';
+  'common/reducers/trackingLandStatus';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
+import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
 import PodModal from './modals/pod-submit';
@@ -43,22 +42,6 @@ function fetchData({ state, dispatch, params, cookie }) {
   }));
 }
 
-function RowUpdater(props) {
-  const { label, onAnchored, row } = props;
-  function handleClick() {
-    if (onAnchored) {
-      onAnchored(row);
-    }
-  }
-  return <a onClick={handleClick}>{label}</a>;
-}
-
-RowUpdater.propTypes = {
-  label: PropTypes.string.isRequired,
-  onAnchored: PropTypes.func,
-  row: PropTypes.object,
-};
-
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
@@ -69,18 +52,6 @@ RowUpdater.propTypes = {
     loading: state.landStatus.loading,
   }),
   { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    text: formatContainerMsg(props.intl, 'transportTracking'),
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null
-  }));
-})
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
