@@ -50,7 +50,6 @@ export default class NodeListContainer extends Component {
     const dataSource = addUniqueKeys(toDisplayNodes);
     return (
       <NodeList dataSource={dataSource}
-                visible={selectedMenuItemKey === '2'}
                 nodeType={nodeType}
                 onAddNoteBtnClick={this.handleAddNoteBtnClick}
                 onRadioButtonChange={this.handleNodeTypeChange}

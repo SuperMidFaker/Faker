@@ -6,8 +6,20 @@ import NodeListContainer from '../containers/NodeListContainer';
 
 const MenuItem = Menu.Item;
 
+const styles = {
+  show: {
+    display: 'block'
+  },
+  hidden: {
+    display: 'none'
+  }
+};
+
 export default function Main(props) {
   const { selectedKeys, onClick, loading } = props;
+  const [selectedKey] = selectedKeys;
+  const content = [<CarListContainer />, <DriverListContainer />, <NodeListContainer />]
+     .map((container, index) => <div style={ parseInt(selectedKey) === index ? styles.show: styles.hidden} key={index}>{container}</div>);
   return (
     <div>
       <Menu mode="horizontal" selectedKeys={selectedKeys} onClick={onClick}>
@@ -18,9 +30,7 @@ export default function Main(props) {
         <MenuItem key="4">线路管理</MenuItem>
       </Menu>
       <Spin spinning={loading}>
-        <CarListContainer />
-        <DriverListContainer />
-        <NodeListContainer />
+        {content}
       </Spin>
     </div>
 

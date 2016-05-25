@@ -39,7 +39,6 @@ export default class CarListContainer extends Component {
     const dataSource = cars.map(transformRawCarDataToDisplayData);
     return (
       <CarList dataSource={addUniqueKeys(dataSource)}
-               visible={selectedMenuItemKey === '0'}
                onStopCarBtnClick={this.handleStopCarBtnClick}
                onResumeCarBtnClick={this.handleResumeCarBtnClick}
                onAddCarBtnClick={this.handleAddCarBtnClick}/>

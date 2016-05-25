@@ -37,7 +37,6 @@ export default class DriverListContainer extends Component {
     const dataSource = drivers.map(transformRawDriverDataToDisplayData);
     return (
       <DriverList dataSource={addUniqueKeys(dataSource)}
-                  visible={selectedMenuItemKey === '1'}
                   onStopDriverBtnClick={this.handleStopDriverBtnClick}
                   onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
                   onAddDriverBtnClicked={this.handleAddDriverBtnClicked} />

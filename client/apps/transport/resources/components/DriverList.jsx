@@ -73,29 +73,24 @@ function DriverList(props) {
       }
     }
   ];
-
-  if (visible) {
-    return (
-      <div className="main-content">
-        <div className="page-body">
-          <div className="panel-header">
-            <Button type="primary" onClick={onAddDriverBtnClicked}><Icon type="plus-circle-o" />新增司机</Button>
-          </div>
-          <div className="panel-body padding">
-            <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
-          </div>
+  
+  return (
+    <div className="main-content">
+      <div className="page-body">
+        <div className="panel-header">
+          <Button type="primary" onClick={onAddDriverBtnClicked}><Icon type="plus-circle-o" />新增司机</Button>
+        </div>
+        <div className="panel-body padding">
+          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
         </div>
       </div>
-    );
-  } else {
-    return <div></div>;
-  }
+    </div>
+  );
 }
 
 DriverList.propTyps = {
   dataSource: PropTypes.array,
   onAddDriverBtnClicked: PropTypes.func.isRequired,   // 点击新建司机按钮后执行的回调函数
-  visible: PropTypes.bool.isRequired,                 // 组件是否可见
   onStopDriverBtnClick: PropTypes.func.isRequired,    // 点击停止车辆按钮的回调函数
   onResumeDriverBtnClick: PropTypes.func.isRequired,  // 点击启用车辆按钮的回调函数
 };
