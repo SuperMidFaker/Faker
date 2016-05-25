@@ -6,8 +6,10 @@ function createReduxStore(initialState, rootReducer) {
   let createMiddlewaredStore;
   const client = requester();
   if (__DEV__ && __DEVTOOLS__) {
-    const ReduxDevTool = require('../client/components/redux-devtool');
-    const composers = [ReduxDevTool.instrument()];
+    const composers = [];
+    if (typeof devToolsExtension === 'function') {
+      composers.push(window.devToolsExtension());
+    }
     createMiddlewaredStore = compose(applyMiddleware(client), ...composers)(createStore);
   } else {
     createMiddlewaredStore = applyMiddleware(client)(createStore);
