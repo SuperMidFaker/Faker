@@ -12,9 +12,9 @@ import parse from 'co-body';
 import util from 'util';
 
 
-import appDao from '../../../reusable/models/app.db';
+import appDao from '../../models/app.db';
 import codes from '../codes';
-import bcrypt from '../../../reusable/node-util/BCryptUtil';
+import bcrypt from '../../util/BCryptUtil';
 
 const KEY = 'lkasdjo9q23u54120934il.mZD;fljopwu2-341';
 const DEFAULT_INTERVAL = 2592000;  // one mounth seconds

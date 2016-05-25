@@ -1,4 +1,4 @@
-import { CLIENT_API } from '../requester';
+import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/resources/', [

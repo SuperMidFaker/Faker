@@ -12,7 +12,7 @@
 import koa from 'koa';
 import kLogger from 'koa-logger';
 import patch from './patch';
-import loadRoute from '../../reusable/koa-middlewares/route-loader';
+import loadRoute from '../middlewares/route-loader';
 import verify from './verify';
 
 const app = koa();

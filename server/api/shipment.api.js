@@ -391,7 +391,7 @@ function *shipmtRejectP() {
     yield [
       // todo shipmentAuxDao.createException
       // todo set excp_level
-      shipmentDispDao.updateRejectStatus(SHIPMENT_DISPATCH_STATUS.unconfirmed, body.dispId, trans),
+      shipmentDispDao.updateRejectStatus(SHIPMENT_DISPATCH_STATUS.cancel, body.dispId, trans),
     ];
     yield mysql.commit(trans);
     return Result.OK(this);

@@ -20,14 +20,14 @@ import userDao from '../../models/user.db';
 import tenantUserDao from '../../models/tenant-user.db';
 
 import codes from '../codes';
-import bcrypt from '../../../reusable/node-util/BCryptUtil';
+import bcrypt from '../../util/BCryptUtil';
 import { DELEGATE_STATUS,
           TENANT_LEVEL,
           PARTNER_TENANT_TYPE,
           PARTNERSHIP_TYPE_INFO,
           __DEFAULT_PASSWORD__,
           ADMIN,
-          TENANT_ROLE } from '../../../universal/constants';
+          TENANT_ROLE } from 'common/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {

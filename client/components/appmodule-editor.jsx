@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { APP_ENTITY_META_INFO } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/root.i18n';
+import globalMessages from 'client/common/root.i18n';
 import './appmodule-editor.less';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);

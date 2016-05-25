@@ -11,7 +11,7 @@
 
 import parse from 'co-body';
 import codes from './codes';
-import appDao from '../../reusable/models/app.db';
+import appDao from '../models/app.db';
 
 const ignores = ['/v1/token', '/v1/authorize', '/v1'];
 
