@@ -29,8 +29,8 @@ const initialState = {
     readonly: true,
     visible: false,
     dispId: -1,
-    signStatus: '',
-    signRemark: '',
+    sign_status: '',
+    sign_remark: '',
     photos: '',
   },
 };
@@ -47,6 +47,10 @@ export default function reducer(state = initialState, action) {
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
     };
+    case actionTypes.LOAD_POD_SUCCEED:
+      return { ...state, auditModal: {
+        ...state.auditModal, ...action.result.data
+    }};
     case actionTypes.SHOW_AUDIT_MODAL:
       return { ...state,
         auditModal: {

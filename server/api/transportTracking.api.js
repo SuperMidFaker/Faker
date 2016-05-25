@@ -126,10 +126,21 @@ function *trackingPodShipmtListG() {
   }
 }
 
+function *trackingPodG() {
+  const podId = parseInt(this.request.query.podId, 10);
+  try {
+    const pods = yield shipmentAuxDao.getPod(podId);
+    return Result.OK(this, pods.length === 1 ? pods[0] : {});
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/tracking/shipmts', trackingShipmtListG ],
   [ 'post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP ],
   [ 'post', '/v1/transport/tracking/pickordeliverdate', trackingPickDeliverDateP ],
   [ 'post', '/v1/transport/tracking/pod', trackingPodUpdateP ],
   [ 'get', '/v1/transport/tracking/pod/shipmts', trackingPodShipmtListG ],
+  [ 'get', '/v1/transport/tracking/pod', trackingPodG ],
 ];
