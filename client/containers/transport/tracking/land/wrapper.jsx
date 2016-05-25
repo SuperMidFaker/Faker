@@ -12,7 +12,7 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    filters: state.transportTracking.transit.filters,
+    filters: state.landStatus.filters,
   })
 )
 export default class TrackingLandWrapper extends React.Component {

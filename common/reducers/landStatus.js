@@ -1,7 +1,7 @@
 import { CLIENT_API } from '../requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/transport/tracking/', [
+const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL', 'SHOW_POD_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'HIDE_POD_MODAL',
   'SAVE_VEHICLE', 'SAVE_VEHICLE_SUCCEED', 'SAVE_VEHICLE_FAIL',
@@ -13,42 +13,36 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/', [
 ]);
 
 const initialState = {
-  submitting: false,
-  transit: {
-    loaded: false,
-    loading: false,
-    filters: [
-      { name: 'type', value : 'all' },
-      /* { name: 'shipmt_no', value: ''} */
-    ],
-    /*
-    sortField: 'created_date',
-    sortOrder: 'desc',
-   */
-    shipmentlist: {
-      totalCount: 0,
-      pageSize: 10,
-      current: 1,
-      data: [],
-    },
-    vehicleModal: {
-      visible: false,
-      dispId: -1,
-    },
-    dateModal: {
-      visible: false,
-      dispId: -1,
-      shipmtNo: '',
-      type: 'pickup',
-    },
-    podModal: {
-      visible: false,
-      shipmtNo: '',
-      dispId: -1,
-    },
+  loaded: false,
+  loading: false,
+  filters: [
+    { name: 'type', value : 'all' },
+    /* { name: 'shipmt_no', value: ''} */
+  ],
+  /*
+     sortField: 'created_date',
+     sortOrder: 'desc',
+     */
+  shipmentlist: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
   },
-  pod: {
-    loaded: false,
+  vehicleModal: {
+    visible: false,
+    dispId: -1,
+  },
+  dateModal: {
+    visible: false,
+    dispId: -1,
+    shipmtNo: '',
+    type: 'pickup',
+  },
+  podModal: {
+    visible: false,
+    shipmtNo: '',
+    dispId: -1,
   },
 };
 
@@ -56,45 +50,45 @@ export const LOAD_TRANSHIPMT_SUCCEED = actionTypes.LOAD_TRANSHIPMT_SUCCEED;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_TRANSHIPMT:
-      return { ...state, transit: { ...state.transit, loading: true, }};
+      return { ...state, loading: true };
     case actionTypes.LOAD_TRANSHIPMT_FAIL:
-      return { ...state, transit: { ...state.transit, loading: false }};
+      return { ...state, loading: false };
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state, transit: { ...state.transit, loading: false,
+      return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
-    }};
+    };
     case actionTypes.SHOW_VEHICLE_MODAL:
-      return { ...state, transit: { ...state.transit,
+      return { ...state,
         vehicleModal: { visible: true, dispId: action.data.dispId }
-      }};
+      };
     case actionTypes.HIDE_VEHICLE_MODAL:
-      return { ...state, transit: { ...state.transit,
+      return { ...state,
         vehicleModal: { visible: false, dispId: -1 }
-      }};
+      };
     case actionTypes.SHOW_DATE_MODAL:
-      return { ...state, transit: { ...state.transit,
+      return { ...state,
         dateModal: {
           visible: true, dispId: action.data.dispId,
           type: action.data.type,
           shipmtNo: action.data.shipmtNo,
         }
-      }};
+      };
     case actionTypes.HIDE_DATE_MODAL:
-      return { ...state, transit: { ...state.transit,
+      return { ...state,
         dateModal: { visible: false, dispId: -1 }
-      }};
+      };
     case actionTypes.SHOW_POD_MODAL:
-      return { ...state, transit: { ...state.transit,
+      return { ...state,
         podModal: {
           visible: true, dispId: action.data.dispId,
           shipmtNo: action.data.shipmtNo,
         }
-      }};
+      };
     case actionTypes.HIDE_POD_MODAL:
-      return { ...state, transit: { ...state.transit,
+      return { ...state,
         podModal: { visible: false, dispId: -1 }
-      }};
+      };
     default:
       return state;
   }

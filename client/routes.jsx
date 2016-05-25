@@ -167,9 +167,9 @@ export default(store, cookie) => {
               <IndexRedirect to="/transport/tracking/land/shipmt/status/all" />
               <Route path="land" component={TMSTracking.Menu}>
                 <Route path="shipmt" component={TMSTracking.LandWrapper}>
-                  <Route path="status/:state" component={TMSTracking.LandList} />
-                  <Route path="pod/:state" component={TMSTracking.LandList} />
-                  <Route path="exception/:state" component={TMSTracking.LandList} />
+                  <Route path="status/:state" component={TMSTracking.LandStatusList} />
+                  <Route path="pod/:state" component={TMSTracking.LandPodList} />
+                  <Route path="exception/:state" component={TMSTracking.LandExceptionList} />
                 </Route>
               </Route>
               <Route path="air" component={TMSTracking.Menu} />

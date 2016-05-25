@@ -8,7 +8,7 @@ import connectFetch from 'client/common/connect-fetch';
 import connectNav from 'client/common/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
-  'common/reducers/transport-tracking';
+  'common/reducers/landStatus';
 import { setNavTitle } from 'common/reducers/navbar';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
@@ -25,7 +25,7 @@ const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
-  const newfilters = state.transportTracking.transit.filters.map(flt => {
+  const newfilters = state.landStatus.filters.map(flt => {
     if (flt.name === 'type') {
       return {
         name: 'type',
@@ -38,12 +38,8 @@ function fetchData({ state, dispatch, params, cookie }) {
   return dispatch(loadTransitTable(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
-    pageSize: state.transportTracking.transit.shipmentlist.pageSize,
-    currentPage: state.transportTracking.transit.shipmentlist.current,
-    /*
-    sortField: state.transportTracking.transit.sortField,
-    sortOrder: state.transportTracking.transit.sortOrder,
-   */
+    pageSize: state.landStatus.shipmentlist.pageSize,
+    currentPage: state.landStatus.shipmentlist.current,
   }));
 }
 
@@ -68,9 +64,9 @@ RowUpdater.propTypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.transportTracking.transit.shipmentlist,
-    filters: state.transportTracking.transit.filters,
-    loading: state.transportTracking.transit.loading,
+    shipmentlist: state.landStatus.shipmentlist,
+    filters: state.landStatus.filters,
+    loading: state.landStatus.loading,
   }),
   { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -85,7 +81,7 @@ RowUpdater.propTypes = {
     goBackFn: null
   }));
 })
-export default class TrackingList extends React.Component {
+export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -107,7 +103,6 @@ export default class TrackingList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (nextProps.params.state !== this.props.params.state) {
       const newfilters = nextProps.filters.map(flt => {
         if (flt.name === 'type') {
@@ -169,7 +164,10 @@ export default class TrackingList extends React.Component {
     dataIndex: 'shipmt_no',
     width: 150,
     render: (o, record) => {
-      return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+      return (
+        <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
+        row={record}
+        />);
     }
   }, {
     title: this.msg('shipmtStatus'),
@@ -186,7 +184,7 @@ export default class TrackingList extends React.Component {
         return `4 ${this.msg('intransitShipmt')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
         return `5 ${this.msg('deliveredShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.podsubmit) {
+      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
         return `6 ${this.msg('proofOfDelivery')}`;
       } else {
         return <span />;
@@ -211,7 +209,7 @@ export default class TrackingList extends React.Component {
       } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
         return `${this.msg('deliverAction')}
         ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.podsubmit) {
+      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
         return `${this.msg('podUploadAction')}
         ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
       }
@@ -437,18 +435,8 @@ export default class TrackingList extends React.Component {
   handleShowPodModal = (row) => {
     this.props.showPodModal(row.disp_id, row.shipmt_no);
   }
-  handleShipmentFilter = (ev) => {
-    const targetVal = ev.target.value;
-    const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
-    const sortOrder = 'desc';
-    let sortField = 'created_date';
-    if (targetVal === 'accepted') {
-      sortField = 'acpt_date';
-    }
-    this.handleTableLoad(filterArray, 1, sortField, sortOrder);
-  }
-  handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr').then(result => {
+  handleShipmtPreview = row => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }

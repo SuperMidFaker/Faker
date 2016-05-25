@@ -14,7 +14,7 @@ import importaccept from './importaccept';
 import exportaccept from './exportaccept';
 import task from './task';
 import transportAcceptance from './transport-acceptance';
-import transportTracking from './transport-tracking';
+import landStatus from './landStatus';
 import shipment from './shipment';
 import warehouse from './warehouse';
 import bill from './bill';
@@ -44,7 +44,7 @@ export default combineReducers({
   task,
   shipment,
   transportAcceptance,
-  transportTracking,
+  landStatus,
   bill,
   notice,
   delegate,

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Radio, Upload, Button, Modal, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { closePodModal, saveSubmitPod } from 'common/reducers/transport-tracking';
+import { closePodModal, saveSubmitPod } from 'common/reducers/landStatus';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -13,9 +13,9 @@ const RadioGroup = Radio.Group;
 @connect(
   state => ({
     submitter: state.account.username,
-    visible: state.transportTracking.transit.podModal.visible,
-    dispId: state.transportTracking.transit.podModal.dispId,
-    shipmtNo: state.transportTracking.transit.podModal.shipmtNo,
+    visible: state.landStatus.podModal.visible,
+    dispId: state.landStatus.podModal.dispId,
+    shipmtNo: state.landStatus.podModal.shipmtNo,
   }),
   { closePodModal, saveSubmitPod })
 export default class VehicleUpdater extends React.Component {
