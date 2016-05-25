@@ -25,21 +25,23 @@ const KNOWN_STATICS = {
 
 
 function hoistNonReactStatics(targetComponent, sourceComponent) {
+  const component = targetComponent;
   const keys = Object.getOwnPropertyNames(sourceComponent);
   for (let index = 0; index < keys.length; ++index) {
     if (!REACT_STATICS[keys[index]] && !KNOWN_STATICS[keys[index]]) {
-      targetComponent[keys[index]] = sourceComponent[keys[index]];
+      component[keys[index]] = sourceComponent[keys[index]];
     }
   }
 
-  return targetComponent;
+  return component;
 }
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'WrappedComponent';
 }
 export function argumentContainer(Container, WrappedComponent, containerName) {
-  Container.displayName = `${containerName}(${getDisplayName(WrappedComponent)})`;
-  Container.WrappedComponent = WrappedComponent;
-  return hoistNonReactStatics(Container, WrappedComponent);
+  const Con = Container;
+  Con.displayName = `${containerName}(${getDisplayName(WrappedComponent)})`;
+  Con.WrappedComponent = WrappedComponent;
+  return hoistNonReactStatics(Con, WrappedComponent);
 }

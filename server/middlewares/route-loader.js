@@ -11,7 +11,7 @@ export default function loadRoute(rootDir, route, prefix) {
     const fpath = path.resolve(routeDir, file);
     const status = fs.statSync(fpath);
     if (status.isFile()) {
-      const routes = require(fpath);
+      const routes = require(fpath);// path.join('..', route, file.substr(0, file.length - 3)));
       if (routes.length > 0) {
         routes.forEach(r => {
           if (r.length === 4) {

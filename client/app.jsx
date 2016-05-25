@@ -9,10 +9,6 @@ export default class App extends Component {
     routingContext: PropTypes.object,
     routerHistory: PropTypes.object
   }
-  renderDevTools () {
-    const ReduxDevTool = require('./components/redux-devtool');
-    return <ReduxDevTool />;
-  }
 
   renderRouter () {
     if (this.props.routingContext) {
@@ -32,7 +28,6 @@ export default class App extends Component {
       <Provider store={store}>
           <div className="full-container">
           { this.renderRouter() }
-          { __DEVTOOLS__ && this.renderDevTools() }
           </div>
       </Provider>
     );
