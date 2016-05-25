@@ -53,7 +53,7 @@ export default (server_port, dirName, appName) => {
     });
     config.set('__API_ROOT__', '/');
     // config.set('CDN_URL', 'http://welogix-web-cdn.b0.upaiyun.com');
-    config.set('CDN_URL', 'http://s.welogix.cn');
+    config.set('CDN_URL', '//s.welogix.cn');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
   }
   config.set('__PRODUCTIONS_DOMAIN_GROUP__', config.get('__PRODUCTIONS_ROOT_GROUP__'));
