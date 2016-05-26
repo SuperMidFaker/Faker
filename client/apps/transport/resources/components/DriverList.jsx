@@ -8,7 +8,7 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, visible, onStopDriverBtnClick, onResumeDriverBtnClick } = props;
+  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick } = props;
 
   function editAndStopDriverOperations(record) {
     return (
@@ -73,7 +73,6 @@ function DriverList(props) {
       }
     }
   ];
-  
   return (
     <div className="main-content">
       <div className="page-body">

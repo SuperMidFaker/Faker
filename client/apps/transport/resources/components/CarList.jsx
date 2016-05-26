@@ -8,7 +8,7 @@ const rowSelection = {
 };
 
 export default function CarList(props) {
-  const { onAddCarBtnClick, dataSource, visible, onStopCarBtnClick, onResumeCarBtnClick } = props;
+  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick } = props;
 
   function editAndStopCarOperations(record) {
     return (
@@ -88,7 +88,6 @@ export default function CarList(props) {
       }
     }
   ];
-  
   return (
     <div className="main-content">
       <div className="page-body">

@@ -13,7 +13,7 @@ const rowSelection = {
 };
 
 export default function NodeList(props) {
-  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
+  const { onDeleteBtnClick, dataSource, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
   const columns = [
     {
       title: '名称',
@@ -82,7 +82,6 @@ export default function NodeList(props) {
       }
     }
   ];
-  
   return (
     <div className="main-content">
       <div className="page-header">
