@@ -1,5 +1,5 @@
 import cobusboy from 'co-busboy';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import fileUtil from '../util/fileUtil';
 
 export default [
@@ -25,9 +25,9 @@ function *uploadImgs() {
     const buf = yield saveBuffer(part);
     const prefix = !!parts.field ? parts.field.prefix : 'tms';
     const fpath = yield fileUtil.saveFileWithBuffer(buf, prefix);
-    Result.OK(this, fileUtil.getFileUrl(fpath));
+    Result.ok(this, fileUtil.getFileUrl(fpath));
   } catch (e) {
     console.log(e);
-    Result.InternalServerError(this, 'upload exception');
+    Result.internalServerError(this, 'upload exception');
   }
 }

@@ -1,5 +1,5 @@
-import makeConfig from './makeUniversalConfig';
-var port = 3022;
+import makeConfig from './makeConfig';
+let port = 3022;
 if (!isNaN(process.env.PORT)) {
   port = parseInt(process.env.PORT, 10);
 }

@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import * as TransportResourcesDao from '../models/transportResources';
 
 function *addDriver() {
@@ -11,9 +11,9 @@ function *addDriver() {
   }
   try {
     yield TransportResourcesDao.addDriverWithInfo(driverInfo);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -21,9 +21,9 @@ function *getDriverList() {
   try {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getDriverList(tenantId);
-    return Result.OK(this, result);
+    return Result.ok(this, result);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -32,9 +32,9 @@ function *editDriver() {
     const body = yield cobody(this);
     const { driverId, driverInfo } = body;
     yield TransportResourcesDao.updateDriverWithInfo({driverId, driverInfo});
-    return Result.OK(this, { driverId, driverInfo });
+    return Result.ok(this, { driverId, driverInfo });
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -44,9 +44,9 @@ function *addCar() {
     const { carInfo } = body;
     console.log(carInfo);
     yield TransportResourcesDao.addCarWithInfo(carInfo);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -54,9 +54,9 @@ function *getCarList() {
   try {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getCarList(tenantId);
-    return Result.OK(this, result);
+    return Result.ok(this, result);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -66,9 +66,9 @@ function *editCar() {
     console.log(body);
     const { carInfo, carId } = body;
     yield TransportResourcesDao.updateCarWithInfo({carInfo, carId});
-    return Result.OK(this, { carId , carInfo });
+    return Result.ok(this, { carId , carInfo });
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -76,9 +76,9 @@ function *getNodeList() {
   try {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getNodeList(tenantId);
-    return Result.OK(this, result);
+    return Result.ok(this, result);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -87,9 +87,9 @@ function *addNode() {
     const body = yield cobody(this);
     const { nodeInfo } = body;
     yield TransportResourcesDao.addNode(nodeInfo);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -98,9 +98,9 @@ function *editNode() {
     const body = yield cobody(this);
     const { nodeInfo, nodeId } = body;
     yield TransportResourcesDao.updateNodeWithInfo({nodeInfo, nodeId});
-    return Result.OK(this, {nodeInfo, nodeId});
+    return Result.ok(this, {nodeInfo, nodeId});
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -109,9 +109,9 @@ function *removeNode() {
     const body = yield cobody(this);
     const { nodeId } = body;
     yield TransportResourcesDao.removeNodeWithId(nodeId);
-    return Result.OK(this, { nodeId });
+    return Result.ok(this, { nodeId });
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 

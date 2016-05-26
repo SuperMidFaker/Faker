@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import mysql from '../util/mysql';
 import userDao from '../models/user.db';
 import tenantDao from '../models/tenant.db';
@@ -48,7 +48,7 @@ function *loginUserP() {
   const username = body.username;
   const password = body.password;
   if (!username || !password) {
-    return Result.ParamError(this, { key: 'loginEmptyParam' });
+    return Result.paramError(this, { key: 'loginEmptyParam' });
   }
   try {
     const users = yield userDao.getUserByAccount(username, body.code);
@@ -72,39 +72,39 @@ function *loginUserP() {
           }
         }
         genJwtCookie(this.cookies, user.id, userType, body.remember);
-        return Result.OK(this, { userType: user.user_type, unid: user.unid });
+        return Result.ok(this, { userType: user.user_type, unid: user.unid });
       } else {
-        return Result.ParamError(this, { key: 'loginErrorParam' });
+        return Result.paramError(this, { key: 'loginErrorParam' });
       }
     } else {
-      return Result.NotFound(this, { key: 'loginUserNotFound', values: { username }});
+      return Result.notFound(this, { key: 'loginUserNotFound', values: { username }});
     }
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, { key: 'loginExceptionError' });
+    return Result.internalServerError(this, { key: 'loginExceptionError' });
   }
 }
 
 function *requestSmsCodeP() {
   const body = yield cobody(this);
   if (!body.phone || !isMobile(body.phone)) {
-    return Result.ParamError(this, { key: 'invalidPhone' });
+    return Result.paramError(this, { key: 'invalidPhone' });
   }
   try {
     const phone = body.phone;
     const users = yield userDao.getUserByPhone(phone);
     if (users.length === 0) {
-      return Result.NotFound(this, { key: 'phoneNotfound' });
+      return Result.notFound(this, { key: 'phoneNotfound' });
     }
     const userId = users[0].id;
     const smsCode = getSmsCode(6);
     const msg = yield smsUtil.sendSms(phone, smsCode);
     console.log('sendsms result msg', msg);
     const result = yield smsDao.insertSms(phone, smsCode, SMS_TYPE.WEB_LOGIN_PWD_FORGET);
-    return Result.OK(this, { smsId: result.insertId, userId });
+    return Result.ok(this, { smsId: result.insertId, userId });
   } catch (e) {
     console.log(e.stack);
-    return Result.InternalServerError(this, { key: 'requestCodeException' });
+    return Result.internalServerError(this, { key: 'requestCodeException' });
   }
 }
 
@@ -117,22 +117,22 @@ function *verifySmsCodeP() {
   try {
     const smsItems = yield smsDao.getSmsById(smsId);
     if (smsItems.length === 0 || smsItems[0].code !== smsCode) {
-      return Result.ParamError(this, { key: 'invalidSmsCode' });
+      return Result.paramError(this, { key: 'invalidSmsCode' });
     } else {
       const salt = bCryptUtil.gensalt();
       const pwdHash = bCryptUtil.hashpw(bCryptUtil.md5(newPwd), salt);
       yield userDao.updatePassword(salt, pwdHash, userId);
-      return Result.OK(this);
+      return Result.ok(this);
     }
   } catch (e) {
-    return Result.InternalServerError(this, { key: 'smsCodeVerifyException' });
+    return Result.internalServerError(this, { key: 'smsCodeVerifyException' });
   }
 }
 
 function *getUserAccount() {
   const userType = this.state.user.userType;
   if (userType === ADMIN) {
-    return Result.OK(this, { username: 'root' });
+    return Result.ok(this, { username: 'root' });
   }
   const curUserId = this.state.user.userId;
   try {
@@ -153,9 +153,9 @@ function *getUserAccount() {
     } else {
       throw new Error('current user account do not exist');
     }
-    Result.OK(this, { ...account, type: userType, profile: profiles[0] });
+    Result.ok(this, { ...account, type: userType, profile: profiles[0] });
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -185,9 +185,9 @@ function *getOrganizations() {
       current,
       data: corps
     };
-    Result.OK(this, data);
+    Result.ok(this, data);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -201,9 +201,9 @@ function *getCorpInfo() {
       throw new Error('企业租户不存在');
     }
     const tenant = tenants[0];
-    Result.OK(this, tenant);
+    Result.ok(this, tenant);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -240,11 +240,11 @@ function *submitCorp() {
     yield tenantDao.updateUserCount(corp.key, 1, trans);
     yield tenantDao.updateUserCount(parentTenantId, 1, trans);
     yield mysql.commit(trans);
-    Result.OK(this, corp);
+    Result.ok(this, corp);
   } catch (e) {
     console.log('submitCorp', e && e.stack);
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -262,10 +262,10 @@ function *editCorp() {
     yield tenantUserDao.updateOwnerInfo(loginIds[0].id, corp.contact, corp.position, trans);
     yield tenantDao.updateCorp(corp, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -277,12 +277,12 @@ function *getOrganization() {
       throw new Error('未找到该组织机构');
     }
     const users = yield tenantUserDao.getTenantUsers(corpId);
-    return Result.OK(this, {
+    return Result.ok(this, {
       tenant: tenants[0],
       users
     });
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 function *editOrganization() {
@@ -307,7 +307,7 @@ function *editOrganization() {
       currOwner.name, currOwner.email, trans
     );
     yield mysql.commit(trans);
-    Result.OK(this, {
+    Result.ok(this, {
       name: corp.name,
       subCode: corp.subCode,
       contact: currOwner.name,
@@ -316,7 +316,7 @@ function *editOrganization() {
     });
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -338,10 +338,10 @@ function *delCorp() {
     console.log('decrease user count ', lids.length);
     yield tenantDao.updateUserCount(body.parentTenantId, -lids.length, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -360,7 +360,7 @@ function *getCorpPersonnels() {
       )
     ];
     // 换页,切换页数时从这里传到reducer里更新
-    Result.OK(this, {
+    Result.ok(this, {
       totalCount: counts[0].num,
       current,
       pageSize,
@@ -370,7 +370,7 @@ function *getCorpPersonnels() {
       })
     });
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -393,10 +393,10 @@ function *submitPersonnel() {
     yield tenantDao.updateUserCount(tenant.id, 1, trans);
     yield tenantDao.updateUserCount(tenant.parentId, 1, trans);
     yield mysql.commit(trans);
-    Result.OK(this, { pid: result.insertId, loginId, status: 0 });
+    Result.ok(this, { pid: result.insertId, loginId, status: 0 });
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -415,10 +415,10 @@ function *editPersonnel() {
     }
     yield tenantUserDao.updatePersonnel(personnel, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -434,10 +434,10 @@ function *delPersonnel() {
     yield tenantDao.updateUserCount(body.tenant.id, -1, trans);
     yield tenantDao.updateUserCount(body.tenant.parentId, -1, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -445,9 +445,9 @@ function *getTenantsUnderMain() {
   const tenantId = this.params.tid;
   try {
     const branches = yield tenantDao.getAttachedTenants(tenantId);
-    Result.OK(this, branches);
+    Result.ok(this, branches);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 function *getPersonnelInfo() {
@@ -458,9 +458,9 @@ function *getPersonnelInfo() {
       throw new Error('用户不存在');
     }
     personnels.forEach(pers => pers.loginName = pers.loginName.split('@')[0]);
-    Result.OK(this, personnels[0]);
+    Result.ok(this, personnels[0]);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -478,15 +478,15 @@ function *changePassword() {
         const salt = bCryptUtil.gensalt();
         const pwdHash = bCryptUtil.hashpw(body.newPwd, salt);
         const result = yield userDao.updatePassword(salt, pwdHash, curUserId);
-        Result.OK(this);
+        Result.ok(this);
       } else {
-        Result.ParamError(this, { key: 'incorretOldPwd' });
+        Result.paramError(this, { key: 'incorretOldPwd' });
       }
     } else {
-      Result.InternalServerError(this, { key: 'invalidUser' });
+      Result.internalServerError(this, { key: 'invalidUser' });
     }
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -496,9 +496,9 @@ function *isSubdomainExist() {
   try {
     const cnts = yield tenantDao.getSubdomainCount(subdomain, tenantId);
     const unexist = (cnts.length === 0 || cnts[0].count === 0);
-    Result.OK(this, { exist: !unexist });
+    Result.ok(this, { exist: !unexist });
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -509,9 +509,9 @@ function *isLoginNameExist() {
   try {
     const cnts = yield tenantUserDao.getLoginNameCount(loginName, loginId, tenantId);
     const unexist = (cnts.length === 0 || cnts[0].count === 0);
-    Result.OK(this, { exist: !unexist });
+    Result.ok(this, { exist: !unexist });
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -519,9 +519,9 @@ function *switchCorpStatus() {
   const body = yield cobody(this);
   try {
     yield tenantDao.updateStatus(body.tenantId, body.status);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -529,9 +529,9 @@ function *switchPersonnelStatus() {
   const body = yield cobody(this);
   try {
     yield tenantUserDao.updateStatus(body.pid, body.status);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -542,9 +542,9 @@ function *getCorpBySubdomain() {
    if (result.length === 0) {
      throw ({ key: 'subdomainNotFound' });
    }
-   Result.OK(this, result[0]);
+   Result.ok(this, result[0]);
   } catch (e) {
-    Result.InternalServerError(this, e.message || e);
+    Result.internalServerError(this, e.message || e);
   }
 }
 
@@ -552,9 +552,9 @@ function *switchTenantApp() {
   const body = yield cobody(this);
   try {
     yield tenantDao.changeOverTenantApp(body.tenantId, body.checked, body.app);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -581,9 +581,9 @@ function *updateUserProfile() {
     }
     yield yielders;
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }

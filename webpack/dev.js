@@ -12,7 +12,7 @@ wpConfig.devServer = {
   contentBase: config.get('webpack_dev_path'),
   hot: true,
   quiet: true,
-  //noInfo: true,
+  // noInfo: true,
   inline: true,
   progress: true,
   stats: {
@@ -21,7 +21,7 @@ wpConfig.devServer = {
   host: '0.0.0.0',
   port: config.get('webpack_port')
 };
-wpConfig.devtool = 'source-map',
+wpConfig.devtool = 'source-map';
 
 wpConfig.plugins.push(
   new webpack.optimize.CommonsChunkPlugin({

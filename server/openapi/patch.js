@@ -1,30 +1,24 @@
 import codes from './codes';
-
-const json = (resp, obj) => {
-  resp.charset = resp.charset || 'utf-8';
-  resp.set('Content-Type', `application/json; charset=${resp.charset}`);
-  resp.body = JSON.stringify(obj);
-};
+import Result, { patch } from '../util/responseResult';
+/* eslint-disable no-param-reassign */
 
 module.exports = (app) => {
+  patch(app);
+
   app.context.ok = app.response.ok = function ok(obj) {
-    json(this, codes.ok(obj));
+    Result.ok(this, obj);
   };
 
   app.context.forbidden = app.response.forbidden = function fbd(obj) {
-    json(this, codes.forbidden(obj));
+    this.json(codes.forbidden(obj));
   };
 
   app.context.error = app.response.error = function err(obj, errMsg) {
-    json(this, codes.error(obj, errMsg));
-  };
-
-  app.context.json = app.response.json = function js(obj) {
-    json(this, obj);
+    this.json(codes.error(obj, errMsg));
   };
 
   app.context.nf = app.response.nf = function nf() {
-    json(this, codes.notFound(codes.not_found));
+    this.json(codes.notFound(codes.not_found));
   };
 
   app.context.onerror = function onerror(err) {
@@ -48,3 +42,4 @@ module.exports = (app) => {
     this.res.end(this.body);
   };
 };
+/* eslint-enable no-param-reassign */
