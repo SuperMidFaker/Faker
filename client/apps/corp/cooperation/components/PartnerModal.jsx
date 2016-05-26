@@ -1,16 +1,15 @@
 /**
  * 添加partner时弹出的通用Modal组件, 参考自antd中的Model.confirm组件
  * @param {config<Object>} 配置对象, 参数如下:
- * { 
- *    onOk(value){}:        确认按钮按下后执行的函数,参数是当前选中的partner值
- *    partnerlist<Array>:   用于下拉选项的partner数组
+ * {
+ *    onOk(value){}:           确认按钮按下后执行的函数,参数是当前选中的tenant的id
+ *    partnerTenants<Array>:   用于下拉选项的tenants数组
  * }
  * @return {}
- * 
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Icon, Button, Form, Select } from 'ant-ui';
+import { Modal, Button, Form, Select } from 'ant-ui';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;
@@ -21,18 +20,17 @@ const formItemLayout = {
   wrapperCol: {span: 14}
 };
 
-function PartnerModal(config) {
+function partnerModal(config) {
   const props = { ...config };
-  let div = document.createElement('div');
+  const div = document.createElement('div');
   document.body.appendChild(div);
 
   let d;
   let selectedPartnerValue;
 
-  let width = props.width || 520;
-  let style = props.style || {};
-  
-  const partnerOptions = props.partnerlist.map((partner, index) => <Option value={partner.name} key={index}>{partner.name}</Option>);
+  const width = props.width || 520;
+  const style = props.style || {};
+  const tenantOptions = props.partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
 
   function close() {
     d.setState({
@@ -48,20 +46,21 @@ function PartnerModal(config) {
 
   function onOk() {
     close();
-    props.onOk && props.onOk(selectedPartnerValue);
+    if (props.onOk) {
+      props.onOk(selectedPartnerValue);
+    }
   }
-  
   function handleSelectedPartnerValueChange(value) {
     selectedPartnerValue = value;
   }
 
-  let body = (
+  const body = (
     <div>
       <div className="ant-confirm-body">
         <Form horizontal>
           <FormItem {...formItemLayout} label="添加的合作伙伴:">
             <Select onChange={handleSelectedPartnerValueChange}>
-              {partnerOptions}
+              {tenantOptions}
             </Select>
           </FormItem>
         </Form>
@@ -96,9 +95,9 @@ function PartnerModal(config) {
       width={width}>
       <div style={{ zoom: 1, overflow: 'hidden' }}>{body}</div>
     </Modal>
-    , div, function () {
+    , div, function A() {
       d = this;
     });
 }
 
-export default PartnerModal;
+export default partnerModal;

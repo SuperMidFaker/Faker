@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Icon, Button } from 'ant-ui';
-// import PartnerModal from 'client/components/partner-setup-modal';
-import PartnerModal from './PartnerModal';
+import partnerModal from './PartnerModal';
 
 const partnerTypes = {
   CUS: '客户',
@@ -19,16 +18,10 @@ const tenantTypes = {
   TENANT_OFFLINE: '非平台租户'
 };
 
-function handleEditBtnClick(itemId) {
-  console.log('Base edit btn');
+function handleEditBtnClick() {
 }
 
-function handleStopBtnClick(itemId) {
-  console.log('Base stopo btn');
-}
-
-function handleResumeBtnClick(itemId) {
-  console.log('Base resume btn');
+function handleStopBtnClick() {
 }
 
 function renderOperations(itemInfo) {
@@ -42,7 +35,7 @@ function renderOperations(itemInfo) {
   );
 }
 
-let rowSelection = {
+const rowSelection = {
   onChange() {}
 };
 
@@ -63,9 +56,13 @@ let columns = [
     key: 'tenantType',
     render: (_, record) => {
       if (record.tenantType === 'TENANT_OFFLINE') {
-        return <a>邀请加入</a>
+        return (
+          <a>邀请加入</a>
+        );
       } else {
-        return <span>{tenantTypes[record.tenantType]}</span>
+        return (
+          <span>{tenantTypes[record.tenantType]}</span>
+        );
       }
     }
   },
@@ -100,17 +97,16 @@ let columns = [
 ];
 
 export default function BaseListWrapper(config) {
-  return (WrappedComponent) => {
+  return () => {
     return class BaseList extends Component {
       onAddBtnClick = () => {
-        // this.props.showPartnerModal();
-        PartnerModal({
-          partnerlist: [{name: 'zank'}, {name: 'ywwhack'}],
+        const { partnerTenants } = this.props;
+        partnerModal({
+          partnerTenants,
           onOk(value) {
             console.log(value);
           }
         });
-        console.log('Base props add btn');
       }
       render() {
         const { type } = config;
@@ -120,7 +116,7 @@ export default function BaseListWrapper(config) {
           columns = config.columns;
         }
         if (config.updatedColumns) {
-          for (let column of config.updatedColumns) {
+          for (const column of config.updatedColumns) {
             columns[column.col] = column.content;
           }
         }
@@ -145,6 +141,6 @@ export default function BaseListWrapper(config) {
           </div>
         );
       }
-    }
-  }
+    };
+  };
 }
