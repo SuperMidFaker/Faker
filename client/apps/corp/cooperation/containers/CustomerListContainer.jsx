@@ -11,7 +11,6 @@ const listConfig = {
 };
 
 function fetchData({ state, dispatch, cookie }) {
-  console.log('hehe');
   return dispatch(loadPartners(cookie, {
     tenantId: state.account.tenantId,
     pageSize: state.partner.partnerlist.pageSize,
@@ -20,7 +19,9 @@ function fetchData({ state, dispatch, cookie }) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({partnerlist: state.partner.partnerlist.data}))
+@connect(state => ({
+  partnerlist: state.partner.partnerlist.data
+}), { showPartnerModal })
 @BaseListWrapper(listConfig)
 export default class CustomerListContainer extends Component {
   

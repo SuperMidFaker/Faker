@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Icon, Button } from 'ant-ui';
+// import PartnerModal from 'client/components/partner-setup-modal';
+import PartnerModal from './PartnerModal';
 
 const partnerTypes = {
   CUS: '客户',
@@ -8,6 +10,13 @@ const partnerTypes = {
   WHS: '仓储提供商',
   CCB: '报关提供商',
   FWD: '货代提供商'
+};
+
+const tenantTypes = {
+  TENANT_ENTERPRISE: '企业租户',
+  TENANT_BRANCH: '企业子租户',
+  TENANT_EXT: '扩展租户',
+  TENANT_OFFLINE: '非平台租户'
 };
 
 function handleEditBtnClick(itemId) {
@@ -22,12 +31,7 @@ function handleResumeBtnClick(itemId) {
   console.log('Base resume btn');
 }
 
-function onAddBtnClick(config) {
-  console.log('Base add btn');
-}
-
 function renderOperations(itemInfo) {
-  console.log('Base render operations');
   const {itemId} = itemInfo;
   return (
     <span>
@@ -50,18 +54,25 @@ let columns = [
   },
   {
     title: '客户代码',
-    dataIndex: 'partner_code',
-    key: 'partner_code'
+    dataIndex: 'partnerCode',
+    key: 'partnerCode'
   },
   {
     title: '是否平台租户',
-    dataIndex: 'tenant_type',
-    key: 'tenant_type'
+    dataIndex: 'tenantType',
+    key: 'tenantType',
+    render: (_, record) => {
+      if (record.tenantType === 'TENANT_OFFLINE') {
+        return <a>邀请加入</a>
+      } else {
+        return <span>{tenantTypes[record.tenantType]}</span>
+      }
+    }
   },
   {
     title: '业务量',
-    dataIndex: 'bussiness_volume',
-    key: 'bussiness_volume'
+    dataIndex: 'volume',
+    key: 'volume'
   },
   {
     title: '营收',
@@ -91,6 +102,16 @@ let columns = [
 export default function BaseListWrapper(config) {
   return (WrappedComponent) => {
     return class BaseList extends Component {
+      onAddBtnClick = () => {
+        // this.props.showPartnerModal();
+        PartnerModal({
+          partnerlist: [{name: 'zank'}, {name: 'ywwhack'}],
+          onOk(value) {
+            console.log(value);
+          }
+        });
+        console.log('Base props add btn');
+      }
       render() {
         const { type } = config;
         const partnerTypeName = partnerTypes[type];
@@ -110,13 +131,12 @@ export default function BaseListWrapper(config) {
         columns[0].title = columns[1].title = `${partnerTypeName}名称`;
         // end columns configuration
         const { partnerlist = [] } = this.props;
-        console.log(partnerlist);
-        const dataSource = partnerlist/*.filter(partner => partner.type === type)*/;
+        const dataSource = partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
         return (
           <div className="main-content">
             <div className="page-body">
               <div className="panel-header">
-                <Button type="primary" onClick={onAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
+                <Button type="primary" onClick={this.onAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
               </div>
               <div className="panel-body padding">
                 <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
