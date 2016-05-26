@@ -66,11 +66,9 @@ export default function create(options) {
       path: [/^\/public/, /dist/, /assets/]
     }));
   }
-  console.time('load route');
   if (opts.middlewares && isArray(opts.middlewares)) {
     opts.middlewares.forEach(m => app.use(m));
   }
-  console.timeEnd('load route');
   if (opts.port) {
     app.listen(opts.port);
   }

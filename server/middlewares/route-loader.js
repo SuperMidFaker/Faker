@@ -5,6 +5,7 @@ import koaRoute from 'koa-router';
 // https://github.com/drGrove/koa-boilerplate/blob/master/routes/index.js
 // https://github.com/koajs/api-boilerplate/blob/master/lib/load/index.js
 export default function loadRoute(rootDir, route, prefix) {
+  console.time(`load route ${route}`);
   const routeDir = path.resolve(rootDir, route);
   const kroute = koaRoute({prefix: (prefix || '')});
   fs.readdirSync(routeDir).forEach((file) => {
@@ -23,5 +24,6 @@ export default function loadRoute(rootDir, route, prefix) {
       }
     }
   });
+  console.timeEnd(`load route ${route}`);
   return kroute.routes();
 }
