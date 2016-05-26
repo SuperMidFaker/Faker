@@ -1,6 +1,6 @@
 import cobody from 'co-body';
 import idDao from '../models/exportTracking.db';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import mysql from '../util/mysql';
 
 export default [
@@ -21,7 +21,7 @@ function* exporttracking() {
     const totals = yield idDao.getIdTotalCount(filters, tenantId);
     const ids = yield idDao.getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, tenantId);
 
-    return Result.OK(this, {
+    return Result.ok(this, {
       idlist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
@@ -31,12 +31,12 @@ function* exporttracking() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
 function* customsBrokersG() {
   const tenantId = this.params.tid;
   const cbs = yield idDao.getcustomsBrokers(tenantId);
-  return Result.OK(this, cbs);
+  return Result.ok(this, cbs);
 }

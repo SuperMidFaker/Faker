@@ -385,6 +385,8 @@ class OrmObject {
         return key;
       });
       sqlArr.push(tmpArr.join());
+    } else {
+      sqlArr.push(Object.keys(this.mapping).join());
     }
     sqlArr.push(` from ${_this.tbname} `);
     if (obj._orders) {
@@ -472,6 +474,13 @@ class OrmObject {
         sqlArr.push(obj.fields.join());
       } else {
         sqlArr.push(obj.fields);
+      }
+    } else {
+      sqlArr.push(`${this.asalias}.`, Object.keys(this.mapping).join(`,${this.asalias}.`));
+      sqlArr.push(`,${orm1.asalias}.`, Object.keys(orm1.mapping).join(`,${orm1.asalias}.`));
+
+      if (orm2 && typeof orm2 === 'function') {
+        sqlArr.push(`,${orm2.asalias}.`, Object.keys(orm2.mapping).join(`,${orm2.asalias}.`));
       }
     }
 

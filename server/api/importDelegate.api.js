@@ -1,6 +1,6 @@
 import cobody from 'co-body';
 import idDao from '../models/importDelegate.db';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import mysql from '../util/mysql';
 
 export default [
@@ -37,7 +37,7 @@ function* importdelegates() {
     const invalidCount = yield idDao.getStatusCount(tenantId, 3, filters);
 
 
-    return Result.OK(this, {
+    return Result.ok(this, {
       idlist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
@@ -53,7 +53,7 @@ function* importdelegates() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -68,7 +68,7 @@ function* importdelegateStatusG() {
     const acceptCount = yield idDao.getStatusCount(tenantId, 2, filters);
     const invalidCount = yield idDao.getStatusCount(tenantId, 3, filters);
 
-    return Result.OK(this, {
+    return Result.ok(this, {
       notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
       notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
       acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
@@ -76,7 +76,7 @@ function* importdelegateStatusG() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -84,17 +84,17 @@ function* delId() {
   const body = yield cobody(this);
   try {
     yield idDao.deleteId(body.idkey);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, '删除进口委托数据异常');
+    return Result.internalServerError(this, '删除进口委托数据异常');
   }
 }
 
 function* customsBrokersG() {
   const tenantId = this.params.tid;
   const cbs = yield idDao.getcustomsBrokers(tenantId);
-  return Result.OK(this, cbs);
+  return Result.ok(this, cbs);
 }
 
 function* getSelectOptions() {
@@ -107,7 +107,7 @@ function* getSelectOptions() {
 
   const declareFileList = yield idDao.getDeclareFileList(tenantId, delId);
   const declareCategoryList = yield idDao.getDeclareCategoryList(tenantId);
-  return Result.OK(this, {
+  return Result.ok(this, {
     customsInfoList: customsInfoList,
     declareWayList: declareWayList,
     tradeModeList: tradeModeList,
@@ -142,11 +142,11 @@ function* editImportDelegate() {
     }
     yield idDao.saveFileInfo(params.declareFileList, params.tenantId, entity.key, entity.del_no, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     console.log('submitImport', e && e.stack);
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -171,11 +171,11 @@ function* submitImportDelegate() {
     yield idDao.insertUser(result[0].key, result[0].del_no, 0, params.loginId, trans);
     yield idDao.saveFileInfo(params.declareFileList, params.tenantId, result[0].key, result[0].del_no, trans);
     yield mysql.commit(trans);
-    Result.OK(this, result[0]);
+    Result.ok(this, result[0]);
   } catch (e) {
     console.log('submitImport', e && e.stack);
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -186,10 +186,10 @@ function* sendDelegate() {
   const status = this.request.query.status;
   try {
     yield idDao.sendDelegate(tenantId, sendlist, customsBroker, status);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     console.log('send', e && e.stack);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -207,11 +207,11 @@ function* invalidDelegate() {
     yield idDao.invalidDelegate(tenantId, loginId, username, delegateId, reason, trans);
     yield idDao.writeLog(delegateId, loginId, username, `作废业务单:${del_no}`, trans);
     yield mysql.commit(trans);
-    Result.OK(this);
+    Result.ok(this);
   } catch (e) {
     console.log('invalid', e && e.stack);
     yield mysql.rollback(trans);
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -224,7 +224,7 @@ function* importdelegatelogs() {
     const totals = yield idDao.getLogsCount(delegateId);
     const logs = yield idDao.getLogs(current, pageSize, delegateId);
 
-    return Result.OK(this, {
+    return Result.ok(this, {
       loglist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
@@ -234,6 +234,6 @@ function* importdelegatelogs() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }

@@ -4,10 +4,10 @@ import serialize from 'serialize-javascript';
 import { match } from 'react-router';
 import { addLocaleData } from 'react-intl';
 import createLocation from 'history/lib/createLocation';
-import createStore from '../common/configureStore';
-import routes from '../client/routes';
-import App from '../client/app';
-import fetchInitialState from './util/fetch-initial-state';
+import createStore from 'common/configureStore';
+import routes from 'client/routes';
+import App from 'client/app';
+import fetchInitialState from '../util/fetch-initial-state';
 import thirdPart from './thirdPart';
 
 let trackJs = '';
@@ -52,10 +52,10 @@ function getRequestLocale(request) {
   if (!locale) {
     const accept = request.acceptsLanguages() || '';
     const reg = /(^|,\s*)([a-z-]+)/gi;
-    let match;
-    while (match = reg.exec(accept)) {
+    let m;
+    while (m = reg.exec(accept)) {
       if (!locale) {
-        locale = match[2];
+        locale = m[2];
       }
     }
     locale = locale && locale.split('-')[0];

@@ -9,18 +9,10 @@
  * Description:
  */
 
-import koa from 'koa';
-import kLogger from 'koa-logger';
+import create from '../util/koaServer';
 import patch from './patch';
 import loadRoute from '../middlewares/route-loader';
 import verify from './verify';
-
-const app = koa();
-
-patch(app);
-
-app.use(kLogger());
-app.use(verify);
 
 const dispatch = loadRoute(__dirname, 'apis', '/v1');
 const apis = {};
@@ -30,16 +22,16 @@ for (let i = 0; i < dispatch.router.stack.length; i++) {
     apis[r.name] = r.path;
   }
 }
-app.use(dispatch);
-
-app.use(function *nf() {
-  return this.json(apis);
-});
-
 const port = process.env.PORT || 3023;
-// if (!isNaN(process.env.PORT)) {
-//   port = parseInt(process.env.PORT, 10);
-// }
-
-app.listen(port);
+create({
+  port,
+  prepare: patch,
+  middlewares: [
+    verify,
+    dispatch,
+    function *nf() {
+      return this.json(apis);
+    }
+  ]
+});
 console.log(`api start listen on ${port}`);
