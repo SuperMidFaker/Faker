@@ -2,7 +2,7 @@
  * 添加partner时弹出的通用Modal组件, 参考自antd中的Model.confirm组件
  * @param {config<Object>} 配置对象, 参数如下:
  * {
- *    onOk(value){}:           确认按钮按下后执行的函数,参数是当前选中的tenant的id
+ *    onOk(value){}:           确认按钮按下后执行的函数,参数是当前选中的tenant对象
  *    partnerTenants<Array>:   用于下拉选项的tenants数组
  * }
  * @return {}
@@ -26,7 +26,7 @@ function partnerModal(config) {
   document.body.appendChild(div);
 
   let d;
-  let selectedPartnerValue;
+  let selectedPartnerTenant;
 
   const width = props.width || 520;
   const style = props.style || {};
@@ -47,11 +47,11 @@ function partnerModal(config) {
   function onOk() {
     close();
     if (props.onOk) {
-      props.onOk(selectedPartnerValue);
+      props.onOk(selectedPartnerTenant);
     }
   }
   function handleSelectedPartnerValueChange(value) {
-    selectedPartnerValue = value;
+    selectedPartnerTenant = props.partnerTenants.find(tenant => tenant.id === value);
   }
 
   const body = (

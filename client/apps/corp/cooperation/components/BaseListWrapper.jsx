@@ -100,11 +100,14 @@ export default function BaseListWrapper(config) {
   return () => {
     return class BaseList extends Component {
       onAddBtnClick = () => {
-        const { partnerTenants } = this.props;
+        const { partnerTenants, tenantId } = this.props;
+        let partnerships = config.partnerships;
+        partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
         partnerModal({
           partnerTenants,
-          onOk(value) {
-            console.log(value);
+          onOk: (partnerTenant) => {
+            const inviteInfo = {partnerCode: partnerTenant.code, partnerId: partnerTenant.id, tenantId, partnerships};
+            this.props.inviteOnlPartner(tenantId, partnerTenant.id, partnerTenant.code, partnerships);
           }
         });
       }
@@ -124,7 +127,8 @@ export default function BaseListWrapper(config) {
           const insertIndex = config.insertColumn.col;
           columns = [...columns.slice(0, insertIndex), config.insertColumn.content, ...columns.slice(insertIndex + 1)];
         }
-        columns[0].title = columns[1].title = `${partnerTypeName}名称`;
+        columns[0].title = `${partnerTypeName}名称`;
+        columns[1].title = `${partnerTypeName}代码`;
         // end columns configuration
         const { partnerlist = [] } = this.props;
         const dataSource = partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
