@@ -4,7 +4,7 @@ import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_POD_TYPE } from 'common/constants';
 import mysql from '../util/mysql';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 
 function *trackingShipmtListG() {
   const tenantId = parseInt(this.request.query.tenantId, 10);
@@ -16,14 +16,14 @@ function *trackingShipmtListG() {
     const shipments = yield shipmentDispDao.getTrackingShipments(
       tenantId, filters, pageSize, current
     );
-    return Result.OK(this, {
+    return Result.ok(this, {
       totalCount: totalCounts[0].count,
       pageSize,
       current,
       data: shipments
     });
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -37,9 +37,9 @@ function *trackingVehicleUpdateP() {
       task_remark: remark,
       status: SHIPMENT_TRACK_STATUS.undelivered,
     });
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -66,12 +66,12 @@ function *trackingPickDeliverDateP() {
       shipmtNo, fields.status, trans
     );
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -96,12 +96,12 @@ function *trackingPodUpdateP() {
     //   shipmtNo, SHIPMENT_TRACK_STATUS.podsubmit, trans
     // );
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -115,14 +115,14 @@ function *trackingPodShipmtListG() {
     const shipments = yield shipmentDispDao.getTrackingPodShipments(
       tenantId, filters, pageSize, current
     );
-    return Result.OK(this, {
+    return Result.ok(this, {
       totalCount: totalCounts[0].count,
       pageSize,
       current,
       data: shipments
     });
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -130,9 +130,9 @@ function *trackingPodG() {
   const podId = parseInt(this.request.query.podId, 10);
   try {
     const pods = yield shipmentAuxDao.getPod(podId);
-    return Result.OK(this, pods.length === 1 ? pods[0] : {});
+    return Result.ok(this, pods.length === 1 ? pods[0] : {});
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -164,12 +164,12 @@ function *trackingPodAuditP() {
       }, trans),
     ]
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -192,12 +192,12 @@ function *trackingPodReturnP() {
       }, trans),
     ];
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -220,12 +220,12 @@ function *trackingPodResubmitP() {
       }, trans),
     ]
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -239,14 +239,14 @@ function *trackingExcpShipmtsG() {
     const shipments = yield shipmentDispDao.getTrackingShipments(
       tenantId, filters, pageSize, current
     );
-    return Result.OK(this, {
+    return Result.ok(this, {
       totalCount: totalCounts[0].count,
       pageSize,
       current,
       data: shipments
     });
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
