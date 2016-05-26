@@ -253,4 +253,12 @@ export default defineMessages({
     id: 'transport.tracking.table.pod.accept.by.upper',
     defaultMessage: '客户接受'
   },
+  auditPass: {
+    id: 'transport.tracking.pod.modal.audit.paas',
+    defaultMessage: '通过'
+  },
+  auditReturn: {
+    id: 'transport.tracking.pod.modal.audit.return',
+    defaultMessage: '退回'
+  },
 });

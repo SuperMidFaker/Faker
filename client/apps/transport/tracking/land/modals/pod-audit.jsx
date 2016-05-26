@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Radio, Upload, Button, Modal, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { closePodModal, saveAuditPod } from 'common/reducers/trackingLandPod';
+import { closePodModal, passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -15,7 +15,7 @@ const RadioGroup = Radio.Group;
     auditor: state.account.username,
     auditModal: state.trackingLandPod.auditModal,
   }),
-  { closePodModal, saveAuditPod })
+  { closePodModal, passAudit, returnAudit })
 export default class PodAuditModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -23,7 +23,8 @@ export default class PodAuditModal extends React.Component {
     auditModal: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
-    saveAuditPod: PropTypes.func.isRequired,
+    returnAudit: PropTypes.func.isRequired,
+    passAudit: PropTypes.func.isRequired,
   }
   state = {
     signStatus: '',
@@ -41,8 +42,8 @@ export default class PodAuditModal extends React.Component {
         });
       });
       this.setState({
-        signStatus: nextProps.auditModal.signStatus,
-        remark: nextProps.auditModal.signRemark,
+        signStatus: nextProps.auditModal.sign_status,
+        remark: nextProps.auditModal.sign_remark,
         photoList,
       });
     }
@@ -53,6 +54,11 @@ export default class PodAuditModal extends React.Component {
   }
   handleSignRadioChange = ev => {
     this.setState({ signStatus: ev.target.value });
+  }
+  handlePhotoRemove = (/* file */) => {
+    if (this.props.readonly) {
+      return;
+    }
   }
   handlePhotoUpload = info => {
     if (info.file.status === 'done' && info.file.response) {
@@ -70,11 +76,14 @@ export default class PodAuditModal extends React.Component {
       }
     }
   }
-  handleOk = () => {
+  handleAuditPass = () => {
+    /*
     const { auditor, dispId, onOK } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
-    this.props.saveAuditPod(dispId, auditor, signStatus, remark, photos).then(
+   */
+    const { auditModal: { dispId, parentDispId, podId }, auditor, onOK } = this.props;
+    this.props.passAudit(podId, dispId, parentDispId, auditor).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
@@ -84,16 +93,26 @@ export default class PodAuditModal extends React.Component {
         }
       });
   }
-  handleCancel = () => {
-    this.props.closePodModal();
+  handleAuditReturn = () => {
+    const { auditModal: { dispId }, onOK } = this.props;
+    this.props.returnAudit(dispId).then(
+      result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.props.closePodModal();
+          onOK();
+        }
+      });
   }
   render() {
-    const { readonly, } = this.props;
+    const { auditModal: { readonly, visible }} = this.props;
     const { signStatus, remark, photoList } = this.state;
     const colSpan = 4;
     return (
-      <Modal title={this.msg('podModalTitle')} onCancel={this.handleCancel}
-        onOk={this.handleOk} visible={this.props.visible}
+      <Modal title={this.msg('podModalTitle')} onCancel={this.handleAuditReturn}
+        onOk={this.handleAuditPass} visible={visible} okText={this.msg('auditPass')}
+        cancelText={this.msg('auditReturn')}
       >
         <Form className="row">
           <FormItem label={this.msg('signStatus')} labelCol={{span: colSpan}}
@@ -116,7 +135,7 @@ export default class PodAuditModal extends React.Component {
           <FormItem label={this.msg('podPhoto')} labelCol={{span: colSpan}}
             wrapperCol={{span: 24 - colSpan}}
           >
-            <Upload action="/v1/upload/img" listType="picture"
+            <Upload action="/v1/upload/img" listType="picture" onRemove={this.handlePhotoRemove}
             onChange={this.handlePhotoUpload} fileList={photoList}
             >
               <Button icon="upload" type="ghost" disabled={readonly} />

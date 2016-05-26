@@ -6,7 +6,7 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadPodTable, loadPod, showAuditModal } from
+import { loadPodTable, loadPod, showAuditModal, resubmitPod } from
   'common/reducers/trackingLandPod';
 import { SHIPMENT_POD_STATUS } from 'common/constants';
 import RowUpdater from './rowUpdater';
@@ -48,7 +48,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandPod.filters,
     loading: state.trackingLandPod.loading,
   }),
-  { loadPodTable, loadShipmtDetail, loadPod, showAuditModal })
+  { loadPodTable, loadShipmtDetail, loadPod, showAuditModal, resubmitPod })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -62,6 +62,7 @@ export default class LandStatusList extends React.Component {
     shipmentlist: PropTypes.object.isRequired,
     loadPod: PropTypes.func.isRequired,
     showAuditModal: PropTypes.func.isRequired,
+    resubmitPod: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired
   }
@@ -183,7 +184,7 @@ export default class LandStatusList extends React.Component {
           <div>
             <i className="mdc-text-red anticon anticon-tags" />
             <RowUpdater label={this.msg('resubmitPod')}
-              onAnchored={this.handleShowVehicleModal} row={record}
+              onAnchored={this.handleResubmit} row={record}
             />
           </div>
         );
@@ -314,7 +315,16 @@ export default class LandStatusList extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.showAuditModal(row.disp_id);
+        this.props.showAuditModal(row.disp_id, row.parent_id, row.pod_id);
+      }
+    });
+  }
+  handleResubmit = row => {
+    this.props.resubmitPod(row.disp_id, row.parent_id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
       }
     });
   }

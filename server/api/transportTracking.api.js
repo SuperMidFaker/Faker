@@ -136,6 +136,99 @@ function *trackingPodG() {
   }
 }
 
+function *trackingPodAuditP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const { podId, dispId, parentDispId, auditor } = body;
+    trans = yield mysql.beginTransaction();
+    yield [
+      // 更新当前调度为pod被审核接受
+      shipmentDispDao.updateDispInfo(dispId, {
+        auditor,
+        audit_date: new Date(),
+        pod_status: SHIPMENT_POD_STATUS.acceptByUs,
+      }, trans),
+      // 上级调度为pod待审核
+      shipmentDispDao.updateDispInfo(parentDispId, {
+        pod_recv_date: new Date(),
+        pod_id: podId,
+        pod_status: SHIPMENT_POD_STATUS.pending,
+        status: SHIPMENT_TRACK_STATUS.podsubmit,
+      }, trans),
+      // 下级调度为pod已接受
+      shipmentDispDao.updateDispByParentId(dispId, {
+        pod_status: SHIPMENT_POD_STATUS.acceptByClient,
+        pod_acpt_date: new Date(),
+        status: SHIPMENT_TRACK_STATUS.podaccept,
+      }, trans),
+    ]
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *trackingPodReturnP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const { dispId } = body;
+    trans = yield mysql.beginTransaction();
+    // todo 添加回单异常
+    yield [
+      // 更新当前调度为pod拒绝
+      shipmentDispDao.updateDispInfo(dispId, {
+        pod_status: SHIPMENT_POD_STATUS.rejectByUs,
+        // status: SHIPMENT_TRACK_STATUS.delivered,
+      }, trans),
+      // 下级调度为pod已接受
+      shipmentDispDao.updateDispByParentId(dispId, {
+        pod_status: SHIPMENT_POD_STATUS.rejectByClient,
+      }, trans),
+    ];
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
+function *trackingPodResubmitP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const { dispId, parentDispId } = body;
+    trans = yield mysql.beginTransaction();
+    yield [
+      // 更新当前调度为pod被审核接受
+      shipmentDispDao.updateDispInfo(dispId, {
+        pod_status: SHIPMENT_POD_STATUS.acceptByUs,
+      }, trans),
+      // 上级调度为pod待审核
+      shipmentDispDao.updateDispInfo(parentDispId, {
+        pod_recv_date: new Date(),
+        pod_status: SHIPMENT_POD_STATUS.pending,
+        status: SHIPMENT_TRACK_STATUS.podsubmit,
+      }, trans),
+    ]
+    yield mysql.commit(trans);
+    return Result.OK(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/tracking/shipmts', trackingShipmtListG ],
   [ 'post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP ],
@@ -143,4 +236,7 @@ export default [
   [ 'post', '/v1/transport/tracking/pod', trackingPodUpdateP ],
   [ 'get', '/v1/transport/tracking/pod/shipmts', trackingPodShipmtListG ],
   [ 'get', '/v1/transport/tracking/pod', trackingPodG ],
+  [ 'post', '/v1/transport/tracking/pod/audit', trackingPodAuditP ],
+  [ 'post', '/v1/transport/tracking/pod/return', trackingPodReturnP ],
+  [ 'post', '/v1/transport/tracking/pod/resubmit', trackingPodResubmitP ],
 ];

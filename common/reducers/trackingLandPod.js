@@ -4,6 +4,8 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/pod/', [
   'SHOW_AUDIT_MODAL', 'HIDE_AUDIT_MODAL',
   'AUDIT_POD', 'AUDIT_POD_SUCCEED', 'AUDIT_POD_FAIL',
+  'RETURN_POD', 'RETURN_POD_SUCCEED', 'RETURN_POD_FAIL',
+  'RESUBMIT_POD', 'RESUMBIT_POD_SUCCEED', 'RESUBMIT_POD_FAIL',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
   'LOAD_POD', 'LOAD_POD_SUCCEED', 'LOAD_POD_FAIL',
 ]);
@@ -29,6 +31,8 @@ const initialState = {
     readonly: true,
     visible: false,
     dispId: -1,
+    parentDispId: -1,
+    podId: -1,
     sign_status: '',
     sign_remark: '',
     photos: '',
@@ -54,7 +58,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_AUDIT_MODAL:
       return { ...state,
         auditModal: {
-          visible: true, dispId: action.data.dispId, readonly: true,
+          ...state.auditModal, visible: true, dispId: action.data.dispId, readonly: true,
+          parentDispId: action.data.parentDispId, podId: action.data.podId,
         }
       };
     case actionTypes.HIDE_AUDIT_MODAL:
@@ -95,10 +100,10 @@ export function loadPod(podId) {
   };
 }
 
-export function showAuditModal(dispId) {
+export function showAuditModal(dispId, parentDispId, podId) {
   return {
     type: actionTypes.SHOW_AUDIT_MODAL,
-    data: { dispId },
+    data: { dispId, parentDispId, podId },
   };
 }
 
@@ -108,7 +113,7 @@ export function closePodModal() {
   };
 }
 
-export function saveAuditPod(shipmtNo, dispId, submitter, signStatus, signRemark, photos) {
+export function passAudit(podId, dispId, parentDispId, auditor) {
   return {
     [CLIENT_API]: {
       types: [
@@ -118,7 +123,37 @@ export function saveAuditPod(shipmtNo, dispId, submitter, signStatus, signRemark
       ],
       endpoint: 'v1/transport/tracking/pod/audit',
       method: 'post',
-      data: { shipmtNo, dispId, submitter, signStatus, signRemark, photos },
+      data: { podId, dispId, parentDispId, auditor },
+    }
+  };
+}
+
+export function returnAudit(dispId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RETURN_POD,
+        actionTypes.RETURN_POD_SUCCEED,
+        actionTypes.RETURN_POD_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/pod/return',
+      method: 'post',
+      data: { dispId },
+    }
+  };
+}
+
+export function resubmitPod(dispId, parentDispId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RESUBMIT_POD,
+        actionTypes.RESUMBIT_POD_SUCCEED,
+        actionTypes.RESUBMIT_POD_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/pod/resubmit',
+      method: 'post',
+      data: { dispId, parentDispId },
     }
   };
 }

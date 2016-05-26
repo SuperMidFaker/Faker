@@ -447,7 +447,7 @@ export default {
     const args = [ tenantId ];
     const whereCond = getTrackingPodClause(filters, 'S', 'SD', args);
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
-      customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
+      parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
       pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
@@ -468,6 +468,19 @@ export default {
     if (setClause.length > 0) {
       const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where id = ?`;
       args.push(dispId);
+      return mysql.update(sql, args, trans);
+    }
+  },
+  updateDispByParentId(parentDispId, dispFieldValues, trans) {
+    const args = [];
+    const setClause = [];
+    Object.keys(dispFieldValues).forEach(column => {
+      setClause.push(`${column} = ?`);
+      args.push(dispFieldValues[column]);
+    });
+    if (setClause.length > 0) {
+      const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where parent_id = ?`;
+      args.push(parentDispId);
       return mysql.update(sql, args, trans);
     }
   },

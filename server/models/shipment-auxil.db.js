@@ -13,7 +13,7 @@ export default {
     return mysql.insert(sql, [args], trans);
   },
   getPod(podId) {
-    const sql = 'select sign_status, sign_remark, photos, submitter where pod_id = ?';
+    const sql = 'select sign_status, sign_remark, photos, submitter from tms_shipment_pods where id = ?';
     const args = [podId];
     return mysql.query(sql, args);
   },
