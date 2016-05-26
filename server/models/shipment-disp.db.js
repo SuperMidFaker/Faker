@@ -1,7 +1,7 @@
 import mysql from '../util/mysql';
 import Orm from '../util/orm';
 import { shipmentOrm } from './shipment.db';
-import { SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'common/constants';
 
 const dispCols = [
   'id/a',
@@ -131,6 +131,31 @@ function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
     }
   }
   return clause;
+}
+
+function getTrackingPodClause(filters, aliasS, aliasSD, args) {
+  let clause = '';
+  for (let i = 0; i < filters.length; i++) {
+    const flt = filters[i];
+    if (flt.name === 'type') {
+      const targetVal = flt.value;
+      if (targetVal === 'uploaded') {
+        clause = `and (pod_status = ? or pod_status = ?)`;
+        args.push(SHIPMENT_POD_STATUS.pending);
+        args.push(SHIPMENT_POD_STATUS.rejectByUs);
+      } else if (targetVal === 'submitted') {
+        clause = `and (pod_status = ? or pod_status = ?)`;
+        args.push(SHIPMENT_POD_STATUS.acceptByUs);
+        args.push(SHIPMENT_POD_STATUS.rejectByClient);
+      } else if (targetVal === 'passed') {
+        clause = `and pod_status = ?`;
+        args.push(SHIPMENT_POD_STATUS.acceptByClient);
+      } else {
+        clause = '';
+      }
+    }
+  }
+  return `and pod_type != 'none' ${clause}`;
 }
 
 /**
@@ -410,6 +435,29 @@ export default {
       and disp_status = 1 ${whereCond}`;
     return mysql.query(sql, args);
   },
+  getTrackingPodCount(tenantId, filters) {
+    const args = [ tenantId ];
+    const whereCond = getTrackingPodClause(filters, 'S', 'SD', args);
+    const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
+      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
+      and effective = 1 and disp_status = 1 ${whereCond}`;
+    return mysql.query(sql, args);
+  },
+  getTrackingPodShipments(tenantId, filters, pageSize, current) {
+    const args = [ tenantId ];
+    const whereCond = getTrackingPodClause(filters, 'S', 'SD', args);
+    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
+      parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
+      consigner_province, consigner_city, consignee_province, consignee_city,
+      pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
+      total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
+      pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
+      excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
+      disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
+      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
+      and disp_status = 1 ${whereCond}`;
+    return mysql.query(sql, args);
+  },
   updateDispInfo(dispId, dispFieldValues, trans) {
     const args = [];
     const setClause = [];
@@ -420,6 +468,19 @@ export default {
     if (setClause.length > 0) {
       const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where id = ?`;
       args.push(dispId);
+      return mysql.update(sql, args, trans);
+    }
+  },
+  updateDispByParentId(parentDispId, dispFieldValues, trans) {
+    const args = [];
+    const setClause = [];
+    Object.keys(dispFieldValues).forEach(column => {
+      setClause.push(`${column} = ?`);
+      args.push(dispFieldValues[column]);
+    });
+    if (setClause.length > 0) {
+      const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where parent_id = ?`;
+      args.push(parentDispId);
       return mysql.update(sql, args, trans);
     }
   },
