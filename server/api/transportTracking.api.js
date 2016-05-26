@@ -229,6 +229,27 @@ function *trackingPodResubmitP() {
   }
 }
 
+function *trackingExcpShipmtsG() {
+  const tenantId = parseInt(this.request.query.tenantId, 10);
+  const filters = JSON.parse(this.request.query.filters);
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
+  try {
+    const totalCounts = yield shipmentDispDao.getTrackingCount(tenantId, filters);
+    const shipments = yield shipmentDispDao.getTrackingShipments(
+      tenantId, filters, pageSize, current
+    );
+    return Result.OK(this, {
+      totalCount: totalCounts[0].count,
+      pageSize,
+      current,
+      data: shipments
+    });
+  } catch (e) {
+    return Result.InternalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/tracking/shipmts', trackingShipmtListG ],
   [ 'post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP ],
@@ -239,4 +260,5 @@ export default [
   [ 'post', '/v1/transport/tracking/pod/audit', trackingPodAuditP ],
   [ 'post', '/v1/transport/tracking/pod/return', trackingPodReturnP ],
   [ 'post', '/v1/transport/tracking/pod/resubmit', trackingPodResubmitP ],
+  [ 'get', '/v1/transport/tracking/exception/shipmts', trackingExcpShipmtsG ],
 ];

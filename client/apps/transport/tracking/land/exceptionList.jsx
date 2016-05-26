@@ -6,10 +6,9 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
-  'common/reducers/trackingLandStatus';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
-  'common/constants';
+import { loadExcpShipments, showPodModal, showDateModal, showVehicleModal } from
+  'common/reducers/trackingLandException';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
@@ -24,7 +23,7 @@ const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
-  const newfilters = state.landStatus.filters.map(flt => {
+  const newfilters = state.trackingLandException.filters.map(flt => {
     if (flt.name === 'type') {
       return {
         name: 'type',
@@ -34,11 +33,11 @@ function fetchData({ state, dispatch, params, cookie }) {
       return flt;
     }
   });
-  return dispatch(loadTransitTable(cookie, {
+  return dispatch(loadExcpShipments(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
-    pageSize: state.landStatus.shipmentlist.pageSize,
-    currentPage: state.landStatus.shipmentlist.current,
+    pageSize: state.trackingLandException.shipmentlist.pageSize,
+    currentPage: state.trackingLandException.shipmentlist.current,
   }));
 }
 
@@ -47,11 +46,11 @@ function fetchData({ state, dispatch, params, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shipmentlist: state.landStatus.shipmentlist,
-    filters: state.landStatus.filters,
-    loading: state.landStatus.loading,
+    shipmentlist: state.trackingLandException.shipmentlist,
+    filters: state.trackingLandException.filters,
+    loading: state.trackingLandException.loading,
   }),
-  { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
+  { loadExcpShipments, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -67,7 +66,7 @@ export default class LandStatusList extends React.Component {
     showDateModal: PropTypes.func.isRequired,
     showPodModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadTransitTable: PropTypes.func.isRequired
+    loadExcpShipments: PropTypes.func.isRequired
   }
   state = {
     selectedRowKeys: []
@@ -85,7 +84,7 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
-      this.props.loadTransitTable(null, {
+      this.props.loadExcpShipments(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
         pageSize: nextProps.shipmentlist.pageSize,
@@ -98,7 +97,7 @@ export default class LandStatusList extends React.Component {
     }
   }
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadTransitTable(null, params),
+    fetcher: params => this.props.loadExcpShipments(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -183,91 +182,6 @@ export default class LandStatusList extends React.Component {
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
         return `${this.msg('podUploadAction')}
         ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
-      }
-    },
-  }, {
-    title: this.msg('shipmtNextUpdate'),
-    width: 140,
-    render: (o, record) => {
-      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return this.msg('carrierUpdate');
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-        if (record.sp_tenant_id === -1) {
-          // 线下客户手动更新
-          return (
-            <RowUpdater label={this.msg('updateVehicleDriver')}
-              onAnchored={this.handleShowVehicleModal} row={record}
-            />
-          );
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-        if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('updatePickup')}
-              onAnchored={this.handleShowPickModal} row={record}
-            />
-          );
-        } else if (record.sp_tenant_id === 0) {
-          // 已分配给车队
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            // 线下司机
-            return (
-              <RowUpdater label={this.msg('updatePickup')}
-              onAnchored={this.handleShowPickModal} row={record}
-              />
-            );
-          } else {
-            return this.msg('driverUpdate');
-          }
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('updateDelivery')}
-            onAnchored={this.handleShowDeliverModal} row={record}
-            />
-          );
-        } else if (record.sp_tenant_id === 0) {
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            return (
-              <RowUpdater label={this.msg('updateDelivery')}
-              onAnchored={this.handleShowDeliverModal} row={record}
-              />
-            );
-          } else {
-            return this.msg('driverUpdate');
-          }
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
-          return <span />;
-        } else if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('submitPod')}
-            onAnchored={this.handleShowPodModal} row={record}
-            />
-          );
-        } else if (record.sp_tenant_id === 0) {
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            return (
-              <RowUpdater label={this.msg('submitPod')}
-              onAnchored={this.handleShowPodModal} row={record}
-              />
-            );
-          } else {
-            return this.msg('driverUpdate');
-          }
-        } else {
-          return this.msg('carrierUpdate');
-        }
-      } else {
-        return this.msg('carrierUpdate');
       }
     },
   }, {
@@ -376,7 +290,7 @@ export default class LandStatusList extends React.Component {
     }
   }]
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
-    this.props.loadTransitTable(null, {
+    this.props.loadExcpShipments(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
       pageSize: this.props.shipmentlist.pageSize,

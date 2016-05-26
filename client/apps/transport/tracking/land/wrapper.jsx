@@ -14,6 +14,7 @@ const RadioGroup = Radio.Group;
   state => ({
     statusfilters: state.trackingLandStatus.filters,
     podfilters: state.trackingLandPod.filters,
+    excpfilters: state.trackingLandException.filters,
   })
 )
 export default class TrackingLandWrapper extends React.Component {
@@ -22,6 +23,7 @@ export default class TrackingLandWrapper extends React.Component {
     location: PropTypes.object.isRequired,
     statusfilters: PropTypes.array,
     podfilters: PropTypes.array,
+    excpfilters: PropTypes.array,
     children: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -38,6 +40,11 @@ export default class TrackingLandWrapper extends React.Component {
       `/transport/tracking/land/shipmt/pod/${ev.target.value}`
     );
   }
+  handleExcpNav = (ev) => {
+    this.context.router.push(
+      `/transport/tracking/land/shipmt/exception/${ev.target.value}`
+    );
+  }
   render() {
     const locName = this.props.location.pathname.split('/')[5];
     let propFilters = [];
@@ -45,6 +52,8 @@ export default class TrackingLandWrapper extends React.Component {
       propFilters = this.props.statusfilters;
     } else if (locName === 'pod') {
       propFilters = this.props.podfilters;
+    } else if (locName === 'exception') {
+      propFilters = this.props.excpfilters;
     }
     let radioValue;
     const types = propFilters.filter(flt => flt.name === 'type');
@@ -67,6 +76,12 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
             <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
+          </RadioGroup>
+          <span style={{marginLeft: '10px'}} />
+          <RadioGroup onChange={this.handleExcpNav} value={radioValue}>
+            <RadioButton value="warning">{this.msg('exceptionWarn')}</RadioButton>
+            <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
+            <RadioButton value="loss">{this.msg('exceptionLoss')}</RadioButton>
           </RadioGroup>
         </div>
         { this.props.children }

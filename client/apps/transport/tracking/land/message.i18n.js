@@ -137,6 +137,18 @@ export default defineMessages({
     id: 'transport.tracking.passed.pod',
     defaultMessage: '已接受回单'
   },
+  exceptionWarn: {
+    id: 'transport.tracking.exception.warning',
+    defaultMessage: '预警'
+  },
+  exceptionErr: {
+    id: 'transport.tracking.exception.error',
+    defaultMessage: '异常'
+  },
+  exceptionLoss: {
+    id: 'transport.tracking.exception.loss',
+    defaultMessage: '损差'
+  },
   sendAction: {
     id: 'transport.tracking.action.send',
     defaultMessage: '发送'
