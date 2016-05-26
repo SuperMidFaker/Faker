@@ -5,7 +5,7 @@ import shipmentDispDao from '../models/shipment-disp.db';
 import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../util/mysql';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import {
   PARTNERSHIP_TYPE_INFO, CONSIGN_TYPE, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_DISPATCH_STATUS, SHIPMENT_TRACK_STATUS
@@ -84,7 +84,7 @@ function *shipmentListG() {
           sortField, sortOrder
         )
       ];
-      return Result.OK(this, {
+      return Result.ok(this, {
         totalCount: totals[0].count,
         pageSize,
         current,
@@ -101,7 +101,7 @@ function *shipmentListG() {
           pageSize, current, sortField, sortOrder, SHIPMENT_TRACK_STATUS.unaccepted
         )
       ];
-      return Result.OK(this, {
+      return Result.ok(this, {
         totalCount: totals[0].count,
         pageSize,
         current,
@@ -109,7 +109,7 @@ function *shipmentListG() {
       });
     }
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -124,7 +124,7 @@ function *shipmtRequiresG() {
         shipmentDao.getPackagings(tenantId),
         coopDao.getPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer)
     ];
-    return Result.OK(this, {
+    return Result.ok(this, {
       consignerLocations,
       consigneeLocations,
       transitModes,
@@ -135,7 +135,7 @@ function *shipmtRequiresG() {
       clients,
     });
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -184,12 +184,12 @@ function *shipmtSaveAcceptP() {
     );
     yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
     yield mysql.commit(trans);
-    return Result.OK(this, shipmt);
+    return Result.ok(this, shipmt);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -197,9 +197,9 @@ function *shipmtDispatchersG() {
   const tenantId = this.request.query.tenantId;
   try {
     const users = yield tenantUserDao.getTenantUsers(tenantId);
-    return Result.OK(this, users);
+    return Result.ok(this, users);
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -217,12 +217,12 @@ function *shipmtAcceptP() {
       shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.effected, trans)
     ];
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -234,12 +234,12 @@ function *shipmtDraftG() {
       throw new Error('draft shipment not found');
     }
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtno);
-    return Result.OK(this, {
+    return Result.ok(this, {
       shipmt: shipmts[0],
       goodslist,
     });
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -253,12 +253,12 @@ function *shipmtDraftP() {
     const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.draft, trans);
     yield mysql.commit(trans);
-    return Result.OK(this, shipmt);
+    return Result.ok(this, shipmt);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -296,12 +296,12 @@ function *shipmtDraftSaveAcceptP() {
     );
     yield shipmentDao.updateDispIdEffective(shipmt_no, result.insertId, SHIPMENT_EFFECTIVES.effected, trans);
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -310,9 +310,9 @@ function *shipmtDraftDelP() {
   try {
     const body = yield cobody(this);
     yield shipmentDao.delDraft(body.shipmtno);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -322,9 +322,9 @@ function *shipmtG() {
     const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
 
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
-    return Result.OK(this, {formData: {...shipmtInfo, goodslist}});
+    return Result.ok(this, {formData: {...shipmtInfo, goodslist}});
   }catch (e) {
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -353,12 +353,12 @@ function *shipmtSaveEditP() {
     }
     yield dbOps;
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -374,12 +374,12 @@ function *shipmtRevokeP() {
     ];
     yield shipmentAuxDao.createDispLogRel(logRes.insertId, body.shipmtDispId, trans);
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -394,12 +394,12 @@ function *shipmtRejectP() {
       shipmentDispDao.updateRejectStatus(SHIPMENT_DISPATCH_STATUS.cancel, body.dispId, trans),
     ];
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     if (trans) {
       yield mysql.rollback(trans);
     }
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -437,9 +437,9 @@ function *shipmtDetailG() {
     if (shipmtdisps.length === 1) {
       shipmt.status = shipmtdisps[0].status;
     }
-    return Result.OK(this, shipmt);
+    return Result.ok(this, shipmt);
   } catch(e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 

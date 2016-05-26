@@ -2,7 +2,7 @@ import cobody from 'co-body';
 import coopDao from '../models/cooperation.db';
 import tenantDao from '../models/tenant.db';
 import mysql from '../util/mysql';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import { getSmsCode } from '../../common/validater';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE }
   from 'common/constants';
@@ -48,7 +48,7 @@ function *partnersG() {
       pt.code = pt.subCode || pt.code;
       pt.subCode = undefined;
     });
-    return Result.OK(this, {
+    return Result.ok(this, {
       partnerlist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
@@ -63,7 +63,7 @@ function *partnersG() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -77,7 +77,7 @@ function *partnerOnlineP() {
   try {
     const partners = yield coopDao.getPartnerByPair(body.tenantId, body.partnerId);
     if (partners.length > 0) {
-      return Result.ParamError(this, { key: 'partnerExist' });
+      return Result.paramError(this, { key: 'partnerExist' });
     }
     const partnerTenants = yield tenantDao.getTenantInfo(body.partnerId);
     if (partnerTenants.length !== 1) {
@@ -101,11 +101,11 @@ function *partnerOnlineP() {
       partner.name, INVITATION_STATUS.NEW_SENT, null, trans
     );
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     console.log(e && e.stack);
     yield mysql.rollback(trans);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -120,7 +120,7 @@ function *partnerOfflineP() {
   try {
     const partners = yield coopDao.getPartnerByPair(body.tenantId, null, body.partnerCode);
     if (partners.length > 0) {
-      return Result.ParamError(this, { key: 'offlinePartnerExist' });
+      return Result.paramError(this, { key: 'offlinePartnerExist' });
     }
     trans = yield mysql.beginTransaction();
     const result = yield coopDao.insertPartner(
@@ -136,7 +136,7 @@ function *partnerOfflineP() {
       INVITATION_STATUS.NEW_SENT, code, trans);
     yield mysql.commit(trans);
     // sendInvitation by body.contact -> phone or email todo
-    return Result.OK(this, {
+    return Result.ok(this, {
       key: result.insertId,
       name: body.partnerName,
       partnerCode: body.partnerCode,
@@ -146,7 +146,7 @@ function *partnerOfflineP() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -180,7 +180,7 @@ function *receivedInvitationsG() {
         }));
       receiveds.push(receive);
     }
-    return Result.OK(this, {
+    return Result.ok(this, {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
       current,
@@ -189,7 +189,7 @@ function *receivedInvitationsG() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -249,11 +249,11 @@ function *invitationP() {
       );
     }
     yield mysql.commit(trans);
-    return Result.OK(this, status);
+    return Result.ok(this, status);
   } catch (e) {
     yield mysql.rollback(trans);
     console.log(e && e.stack);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -281,7 +281,7 @@ function *sentInvitationsG() {
         }));
       sents.push(sent);
     }
-    return Result.OK(this, {
+    return Result.ok(this, {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
       current,
@@ -289,7 +289,7 @@ function *sentInvitationsG() {
     });
   } catch (e) {
     console.log(e && e.stack);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -309,10 +309,10 @@ function *cancelInvitation() {
       invitations[0].inviteeCode, trans
     );
     yield mysql.commit(trans);
-    return Result.OK(this, status);
+    return Result.ok(this, status);
   } catch (e) {
     yield mysql.rollback(trans);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -332,10 +332,10 @@ function *sendOfflineInvitation() {
     );
     // todo body.contact
     yield mysql.commit(trans);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 export default [

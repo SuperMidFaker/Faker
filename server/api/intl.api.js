@@ -1,7 +1,7 @@
 import { sync as globSync } from 'glob';
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 
 function *getIntlMessages() {
   const locale = this.request.query.locale;
@@ -16,7 +16,7 @@ function *getIntlMessages() {
       return collection;
     }, {});
     const messages = translations[locale];
-    return messages ? Result.OK(this, messages) : Result.NotFound(this);
+    return messages ? Result.ok(this, messages) : Result.notFound(this);
 }
 
 export default [

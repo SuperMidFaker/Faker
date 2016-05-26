@@ -1,6 +1,6 @@
 import renderHtml from '../htmlRender';
-import weixinDao from '../models/weixin.db';
-import * as weixinOAuth from '../util/weixin-oauth';
+import weixinDao from '../../models/weixin.db';
+import * as weixinOAuth from '../../util/weixin-oauth';
 
 function *renderWxPage() {
   try {
@@ -20,4 +20,4 @@ export default [
   ['get', '/weixin/bind', renderWxPage],
   ['get', '/weixin/account', renderWxPage],
   ['get', '/weixin/welogix/businesss', renderBusinessPage]
-]
+];

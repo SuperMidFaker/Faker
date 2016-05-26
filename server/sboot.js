@@ -19,7 +19,7 @@ if (argv.api) {
   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
   const config = require('../config');
   const rootDir = config.get('project_root');
-  var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+  const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 
   global.__CLIENT__ = false;
   global.__DEV__ = config.get('__DEV__');
@@ -27,13 +27,15 @@ if (argv.api) {
   global.__DEVTOOLS__ = config.get('__DEVTOOLS__');
   global.__PORT__ = config.get('server_port');
   global.__CDN__ = config.get('CDN_URL');
+  /* eslint-disable no-undef */
   global.__API_ROOT__ = `http://localhost:${__PORT__}/`;
+  /* eslint-enable no-undef */
   global.__PRODUCTIONS_ROOT_GROUP__ = config.get('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__');
   global.__PRODUCTIONS_DOMAIN_GROUP__ = config.get('__PRODUCTIONS_DOMAIN_GROUP__');
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic'))
     .development(__DEV__)
-    .server(rootDir, function() {
-      require('./koa');
+    .server(rootDir, () => {
+      require('./web');
       console.timeEnd('starting web server');
      });
 }

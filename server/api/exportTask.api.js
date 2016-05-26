@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import mysql from '../util/mysql';
 import taskDao from '../models/exportTask.db';
 import paraDao from '../models/para.db';
@@ -17,10 +17,10 @@ function* getTask(){
   const exporttask= yield taskDao.getTask(del_id);
 
   try {
-    return Result.OK(this, exporttask[0]);
+    return Result.ok(this, exporttask[0]);
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -37,7 +37,7 @@ function* loadSource() {
     const Port = yield paraDao.getPort();
 
 
-    return Result.OK(this, {
+    return Result.ok(this, {
         CustomsRel:CustomsRel,
         Trade:Trade,
         Transac:Transac,
@@ -50,7 +50,7 @@ function* loadSource() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -59,10 +59,10 @@ function* getBillList(){
     const billlist= yield taskDao.getBillList(del_id);
 
     try {
-      return Result.OK(this, billlist);
+      return Result.ok(this, billlist);
     } catch (e) {
       console.log(e);
-      return Result.InternalServerError(this, e.message);
+      return Result.internalServerError(this, e.message);
     }
 }
 
@@ -86,7 +86,7 @@ function* getTasks() {
     const closeOrderCount = yield taskDao.getStatusCount(loginId, tenantId, 2, filters);
 
 
-    return Result.OK(this, {
+    return Result.ok(this, {
       exporttasklist: {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
@@ -100,6 +100,6 @@ function* getTasks() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
