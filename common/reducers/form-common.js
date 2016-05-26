@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 export function appendFormAcitonTypes(domain, actypes) {
   ['FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
   'FORM_ASSIGN', 'FORM_CLEAR', 'SET_FORM_VALUE'].forEach(
+    /* eslint-disable no-param-reassign */
     act => actypes[act] = `${domain}${act}`);
 }
 

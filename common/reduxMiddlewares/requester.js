@@ -26,8 +26,9 @@ function apiRequestPromise() {
           request.set('cookie', option.cookie);
         }
         request.end((err, resp) => {
-          console.log('api mw err', err, 'body', resp && resp.body);
           if (err || !resp.body || resp.body.status !== 200) {
+            /* eslint-disable no-console */
+            console.log('api mw err', err, 'body', resp && resp.body);
             return reject((resp && resp.body) || err);
           }
           return resolve(resp.body);
