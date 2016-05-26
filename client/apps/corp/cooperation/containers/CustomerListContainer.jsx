@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { PARTNERSHIP_TYPE_INFO } from '../../../../../common/constants';
-import baseListWrapper from '../components/BaseListWrapper';
+import BaseList from '../components/BaseList';
 import { loadPartners, inviteOnlPartner } from 'common/reducers/partner';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
@@ -24,6 +24,5 @@ function fetchData({ state, dispatch, cookie }) {
   partnerTenants: state.partner.partnerTenants,
   tenantId: state.account.tenantId
 }), { inviteOnlPartner })
-@baseListWrapper(listConfig)
-export default class CustomerListContainer extends React.Component {
+export default class CustomerListContainer extends BaseList {
 }

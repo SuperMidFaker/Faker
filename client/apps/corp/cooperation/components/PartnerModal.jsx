@@ -58,7 +58,7 @@ function partnerModal(config) {
     <div>
       <div className="ant-confirm-body">
         <Form horizontal>
-          <FormItem {...formItemLayout} label="添加的合作伙伴:">
+          <FormItem {...formItemLayout} label="合作伙伴:">
             <Select onChange={handleSelectedPartnerValueChange}>
               {tenantOptions}
             </Select>
