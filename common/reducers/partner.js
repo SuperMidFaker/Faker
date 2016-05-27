@@ -8,7 +8,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'ONL_PARTNER_INVITE', 'ONL_PARTNER_INVITE_SUCCEED', 'ONL_PARTNER_INVITE_FAIL',
   'OFFL_PARTNER_INVITE', 'OFFL_PARTNER_INVITE_SUCCEED', 'OFFL_PARTNER_INVITE_FAIL',
   'OFFLINE_PARTNER', 'OFFLINE_PARTNER_SUCCEED', 'OFFLINE_PARTNER_FAIL',
-  'SEND_INVITE', 'SEND_INVITE_SUCCEED', 'SEND_INVITE_FAIL'
+  'SEND_INVITE', 'SEND_INVITE_SUCCEED', 'SEND_INVITE_FAIL',
+  'SET_MENU_ITEM_KEY'
 ]);
 
 const initialState = {
@@ -43,7 +44,8 @@ const initialState = {
   },
   recevieablePartnerTenants: [
     /* { id, name, code } */
-  ]
+  ],
+  selectedMenuItemKey: '0' // 记录当前MenuItemKey的值
 };
 
 export default function reducer(state = initialState, action) {
@@ -81,6 +83,8 @@ export default function reducer(state = initialState, action) {
       } };
     case actionTypes.SEND_INVITE_SUCCEED:
       return { ...state, inviteModal: { ...state.inviteModal, step: 2 } };
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey:action.selectedMenuItemKey };
     default:
       return state;
   }
@@ -184,5 +188,12 @@ export function sendInvitation(contact, tenantId, partnerCode, partnerName) {
         partnerName
       }
     }
+  };
+}
+
+export function setMenuItemKey(selectedMenuItemKey) {
+  return {
+    type: actionTypes.SET_MENU_ITEM_KEY,
+    selectedMenuItemKey
   };
 }

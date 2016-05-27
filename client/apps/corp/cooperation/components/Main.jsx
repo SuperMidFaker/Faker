@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Menu } from 'ant-ui';
 import CustomerListContainer from '../containers/CustomerListContainer';
+import SupplierListContainer from '../containers/SupplierListContainer';
 
 const MenuItem = Menu.Item;
 
-export default function Main() {
+export default function Main(props) {
+  const { selectedMenuItemKey, onMenuClick } = props;
+  const content = [<CustomerListContainer />, <SupplierListContainer />]
+    .map((container, index) => <div style={{display: index === selectedMenuItemKey ? 'display' : 'none'}} key={index}>{container}</div>);
   return (
     <div>
-      <Menu selectedKeys={['0']} mode="horizontal">
+      <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuClick}>
         <MenuItem key="0">客户</MenuItem>
         <MenuItem key="1">供应商</MenuItem>
         <MenuItem key="2">关联企业</MenuItem>
         <MenuItem key="3">物流供应商</MenuItem>
         <MenuItem key="4">邀请伙伴</MenuItem>
       </Menu>
-      <CustomerListContainer />
+      {content}
     </div>
   );
 }
+
+Main.propTypes = {
+  selectedMenuItemKey: PropTypes.string.isRequired,        // 当前选中的Menu Itemm key
+  onMenuItemClick: PropTypes.func.isRequired,            // Menu Item 被点击时执行的回调函数
+};

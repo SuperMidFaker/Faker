@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react'
 import { connect } from 'react-redux';
 import BaseList from '../components/BaseList';
 import { inviteOnlPartner } from 'common/reducers/partner';
@@ -8,10 +8,10 @@ import { inviteOnlPartner } from 'common/reducers/partner';
   partnerTenants: state.partner.recevieablePartnerTenants,
   tenantId: state.account.tenantId
 }), { inviteOnlPartner })
-export default class CustomerListContainer extends BaseList {
+export default class SupplierListContainer extends BaseList {
   constructor() {
     super();
-    this.type = 'CUS';
-    this.partnerships = ['CUS'];
+    this.type = 'SUP';
+    this.partnerships = ['SUP'];
   }
 }
