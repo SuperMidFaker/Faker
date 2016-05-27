@@ -104,24 +104,25 @@ export default class BaseList extends Component {
     super();
     this.type = 'CUS';
     this.partnerships = ['CUS'];
-    this.columns = defaultColumns;
   }
   onAddBtnClick = () => {
-    const { partnerTenants, tenantId, partnerlist } = this.props;
+    const { partnerTenants, tenantId } = this.props;
     let partnerships = this.partnerships;
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
-    const filteredPartnerTenants = partnerTenants.filter(tenant => !partnerlist.find(partner => partner.partnerTenantId === tenant.id));
-    console.log(filteredPartnerTenants, 'changed');
     partnerModal({
-      partnerTenants: filteredPartnerTenants,
+      partnerTenants,
       onOk: (partnerTenant) => {
         this.props.inviteOnlPartner(tenantId, partnerTenant.id, partnerTenant.code, partnerships);
       }
     });
   }
+  updateColumns(columns) { // 子类重载这个方法来自定义新的columns结构
+    return columns;
+  }
   render() {
-    const { columns, type } = this;
+    const { type } = this;
     const partnerTypeName = partnerTypes[type];
+    const columns = this.updateColumns(defaultColumns);
     columns[0].title = `${partnerTypeName}名称`;
     columns[1].title = `${partnerTypeName}代码`;
     const { partnerlist = [] } = this.props;

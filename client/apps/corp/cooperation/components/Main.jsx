@@ -1,10 +1,10 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Menu } from 'ant-ui';
 import CustomerListContainer from '../containers/CustomerListContainer';
 
 const MenuItem = Menu.Item;
 
-export default function Main(props) {
+export default function Main() {
   return (
     <div>
       <Menu selectedKeys={['0']} mode="horizontal">
