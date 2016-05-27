@@ -54,15 +54,15 @@ export default defineMessages({
     defaultMessage: '车辆/司机'
   },
   packageNum: {
-    id: 'transport.acceptance.shipment.packageNum',
+    id: 'transport.tracking.shipment.packageNum',
     defaultMessage: '件数'
   },
   shipWeight: {
-    id: 'transport.acceptance.shipment.weight',
+    id: 'transport.tracking.shipment.weight',
     defaultMessage: '重量'
   },
   shipVolume: {
-    id: 'transport.acceptance.shipment.volume',
+    id: 'transport.tracking.shipment.volume',
     defaultMessage: '体积'
   },
   shipmtCustomer: {
