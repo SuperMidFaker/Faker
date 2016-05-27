@@ -28,5 +28,6 @@ create({
     loadRoute(__dirname, '../api')
   ]
 });
+
 console.log('server start to listen');
 /* eslint-enable no-undef, no-console */
