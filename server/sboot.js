@@ -35,7 +35,11 @@ if (argv.api) {
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic'))
     .development(__DEV__)
     .server(rootDir, () => {
-      require('./web');
+      if (argv.admin) {
+        require('./admin');
+      } else {
+        require('./web');
+      }
       console.timeEnd('starting web server');
      });
 }
