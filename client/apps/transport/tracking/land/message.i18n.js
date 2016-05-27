@@ -230,7 +230,7 @@ export default defineMessages({
     defaultMessage: '拒绝签收'
   },
   signRemark: {
-    id: 'transport.tracking.modal.pod.sign.abnormal',
+    id: 'transport.tracking.modal.pod.sign.remark',
     defaultMessage: '签收备注'
   },
   signRemarkPlaceholder: {
