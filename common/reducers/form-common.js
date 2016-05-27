@@ -1,9 +1,12 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
+/* eslint-disable no-param-reassign */
 export function appendFormAcitonTypes(domain, actypes) {
   ['FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
   'FORM_ASSIGN', 'FORM_CLEAR', 'SET_FORM_VALUE'].forEach(
+    /* eslint-disable no-param-reassign */
     act => actypes[act] = `${domain}${act}`);
 }
+/* eslint-enable no-param-reassign */
 
 export function formReducer(actionTypes, state, action, defaultForm, stateFormName) {
   switch (action.type) {

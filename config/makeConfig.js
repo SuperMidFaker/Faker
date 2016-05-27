@@ -1,14 +1,15 @@
 import path from 'path';
 const env = process.env.NODE_ENV = (process.env.NODE_ENV || 'development').trim();
-export default (server_port, dirName, appName) => {
+export default (serverPort, dirName, appName) => {
   const config = new Map();
 
-  const __DEV__ = env === 'development' || env === 'home';;
+  const __DEV__ = env === 'development' || env === 'home';
   const __TEST_PROD__ = env === 'test';
   const __PROD__ = env === 'production';
   // ------------------------------------
   // Environment
   // ------------------------------------
+  config.set('app_name', appName);
   config.set('env', env);
   config.set('__DEVTOOLS__', env === 'development');
   config.set('__DEV__', __DEV__);
@@ -18,12 +19,12 @@ export default (server_port, dirName, appName) => {
   // Server
   // ------------------------------------
   config.set('server_host', 'localhost');
-  config.set('server_port', server_port);
+  config.set('server_port', serverPort);
 
   // ------------------------------------
   // Webpack
   // ------------------------------------
-  config.set('webpack_port', server_port + 1);
+  config.set('webpack_port', serverPort + 1);
   config.set('webpack_dev_path', `http://${config.get('server_host')}:${config.get('webpack_port')}/`);
   config.set('webpack_dist', 'dist');
   config.set('CDN_URL', '');
@@ -68,4 +69,4 @@ export default (server_port, dirName, appName) => {
   config.set('client_entry', path.resolve(dirName, '..', 'client/cboot.js'));
 
   return config;
-}
+};

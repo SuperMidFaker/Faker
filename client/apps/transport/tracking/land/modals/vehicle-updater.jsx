@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Modal, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeVehicleModal, saveVehicle } from 'common/reducers/transport-tracking';
+import { closeVehicleModal, saveVehicle } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -31,8 +31,8 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.transportTracking.transit.vehicleModal.visible,
-    dispId: state.transportTracking.transit.vehicleModal.dispId,
+    visible: state.trackingLandStatus.vehicleModal.visible,
+    dispId: state.trackingLandStatus.vehicleModal.dispId,
   }),
   { closeVehicleModal, saveVehicle })
 export default class VehicleUpdater extends React.Component {

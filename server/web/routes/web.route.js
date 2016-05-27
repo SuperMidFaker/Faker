@@ -1,5 +1,5 @@
 import renderHtml from '../htmlRender';
-import { clearJwtCookie } from '../util/jwt-kit';
+import { clearJwtCookie } from '../../util/jwt-kit';
 
 function *renderWebPage() {
   try {

@@ -14,7 +14,7 @@ import copsDao from '../models/cooperation.db';
 import vehiclesDao from '../models/vehicles.db';
 import tenantDao from '../models/tenant.db';
 import tenantUserDao from '../models/tenant-user.db';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import {
   PARTNERSHIP_TYPE_INFO,
   SHIPMENT_SOURCE,
@@ -41,7 +41,7 @@ function *listShipmts() {
 
   const [shipmts, totals] = yield [shipmtDispDao.getDispatchShipmts(tenantId, filters, min, pageSize),
                                     shipmtDispDao.getDispatchShipmtsCount(tenantId, filters)];
-  Result.OK(this, {
+  Result.ok(this, {
     totalCount: totals[0].count,
     pageSize,
     current,
@@ -54,7 +54,7 @@ function *listShipmtsGrouped() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
 
   const shipmts = yield shipmtDispDao.getShipmtsGrouped(tenantId, filters);
-  Result.OK(this, shipmts);
+  Result.ok(this, shipmts);
 }
 
 function *listShipmtsGroupedSub() {
@@ -63,7 +63,7 @@ function *listShipmtsGroupedSub() {
   filters.status = 'waiting';
 
   const shipmts = yield shipmtDispDao.getDispatchShipmts(tenantId, filters, 0, 100);
-  Result.OK(this, shipmts);
+  Result.ok(this, shipmts);
 }
 
 function *listExpandShipmts() {
@@ -71,7 +71,7 @@ function *listExpandShipmts() {
   const shipmtNo = this.request.query.shipmtNo;
   // no more than 3 so use 0, 100
   const res = yield shipmtDispDao.getDispatchShipmts(tenantId, {'S.parent_no': shipmtNo}, 0, 100);
-  Result.OK(this, res);
+  Result.ok(this, res);
 }
 
 function *listLsps() {
@@ -83,7 +83,7 @@ function *listLsps() {
   const [partners, totals] = yield [copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation, min, pageSize),
                                     copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation)];
 
-  Result.OK(this, {
+  Result.ok(this, {
     totalCount: totals[0].count,
     pageSize,
     current,
@@ -98,7 +98,7 @@ function *listVehicles() {
   const min = (current - 1) * pageSize;
   const [vehicles, totals] = yield [vehiclesDao.getVehicles(tenantId, min, pageSize),
                                     vehiclesDao.getVehiclesCount(tenantId)];
-  Result.OK(this, {
+  Result.ok(this, {
     totalCount: totals[0].count,
     pageSize,
     current,
@@ -129,7 +129,7 @@ function *doDispatch() {
     tenantUserDao.getAccountInfo(loginId)];
 
   if (tenants.length === 0 || tusers.length === 0) {
-    return Result.ParamError(this, 'tenantId or loginId is error');
+    return Result.paramError(this, 'tenantId or loginId is error');
   }
 
   const arr = [];
@@ -183,7 +183,7 @@ function *doDispatch() {
   });
 
   yield arr;
-  Result.OK(this);
+  Result.ok(this);
 }
 /**
  * 分配承运商后确认分配
@@ -201,7 +201,7 @@ function *doSend() {
   };
 
   yield shipmtDispDao.updateDisp(upstatus);
-  Result.OK(this);
+  Result.ok(this);
 }
 /**
  * 分配承运商后取消分配
@@ -228,7 +228,7 @@ function *doReturn() {
 
   yield [shipmtDispDao.updateDisp(upstatus),
     shipmtDispDao.deleteDisp(del)];
-  Result.OK(this);
+  Result.ok(this);
 }
 
 function *listSegReq() {
@@ -236,7 +236,7 @@ function *listSegReq() {
   const [transitModes, nodeLocations] = yield [shipmtDao.getTransitModes(tenantId),
     shipmtDao.getConsignLocations(tenantId, -1)];
 
-  Result.OK(this, {
+  Result.ok(this, {
     transitModes,
     nodeLocations
   });
@@ -323,7 +323,7 @@ function validGroup(group) {
 function *segmentRequest() {
   const { shipmtNos, segGroupFirst, segGroupSecond } = yield parse(this.req);
   if (!validGroup(segGroupFirst)) {
-    return Result.ParamError(this, 'segGroupFirst params is not valid');
+    return Result.paramError(this, 'segGroupFirst params is not valid');
   }
 
   const arr = [];
@@ -356,7 +356,7 @@ function *segmentRequest() {
 
   yield arr;
 
-  Result.OK(this);
+  Result.ok(this);
 }
 /**
  * 取消分段
@@ -369,7 +369,7 @@ function *segmentCancelRequest() {
     return v.status <= 2;
   });
   if (!b) {
-    return Result.ParamError(this, 'shipmtNo has dispatched');
+    return Result.paramError(this, 'shipmtNo has dispatched');
   }
 
   // TODO delete shipment and shipment dispatch
@@ -380,7 +380,7 @@ function *segmentCancelRequest() {
   });
   arr.push(shipmtDao.updateShipmt({segmented: 0, wheres: {shipmt_no: shipmtNo}}));
   yield arr;
-  Result.OK(this);
+  Result.ok(this);
 }
 
 function *segmentCancelCheckRequest() {
@@ -390,7 +390,7 @@ function *segmentCancelCheckRequest() {
   const b = res.every(v => {
     return v.status <= 2;
   });
-  Result.OK(this, b);
+  Result.ok(this, b);
 }
 
 export default [

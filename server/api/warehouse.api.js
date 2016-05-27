@@ -1,6 +1,6 @@
 import cobody from 'co-body';
 import whDao from '../models/warehouse.db';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 
 export default [
   ['get', '/v1/wewms/warehouses', warehouseG],
@@ -18,12 +18,12 @@ function *warehouseG() {
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const corpId = parseInt(this.request.query.corpId || 0, 10);
   if (!corpId) {
-    return Result.ParamError(this, 'corpid incorrect');
+    return Result.paramError(this, 'corpid incorrect');
   }
   try {
     const totals = yield whDao.getWhTotalCount(corpId);
     const whs = yield whDao.getPagedWhsByCorp(current, pageSize, corpId);
-    return Result.OK(this, {
+    return Result.ok(this, {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
       current,
@@ -31,7 +31,7 @@ function *warehouseG() {
     });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -40,10 +40,10 @@ function *warehouseP() {
   try {
     // todo check duplicates by wh_code maybe
     const result = yield whDao.insertWh(body.warehouse, body.corpId, body.tenantId);
-    return Result.OK(this, { id: result.insertId });
+    return Result.ok(this, { id: result.insertId });
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, '添加仓库异常');
+    return Result.internalServerError(this, '添加仓库异常');
   }
 }
 
@@ -57,10 +57,10 @@ function *getWarehouses() {
     };
     var records = yield whDao.getSlicedWarehouses(body, this.state.user.userId);
     records = packRespRecords(records, body.since_id && !body.max_id);/*使用since_id数据库内取出为按u_code从小到大排列*/
-    Result.OK(this, records);
+    Result.ok(this, records);
   } catch (e) {
     /* handle error */
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -85,10 +85,10 @@ function *getInbound() {
     var body = yield cobody(this);
     var records = yield whDao.getSlicedInbound(body, this.state.user.userId);
     records = packRespRecords(records, body.since_id && !body.max_id);
-    Result.OK(this, records);
+    Result.ok(this, records);
   } catch (e) {
     /* handle error */
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -97,10 +97,10 @@ function *getOutbound() {
     var body = yield cobody(this);
     var records = yield whDao.getSlicedOutbound(body, this.state.user.userId);
     records = packRespRecords(records, body.since_id && !body.max_id);
-    Result.OK(this, records);
+    Result.ok(this, records);
   } catch (e) {
     /* handle error */
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -109,10 +109,10 @@ function *getInventory() {
     var body = yield cobody(this);
     var records = yield whDao.getSlicedInventory(body, this.state.user.userId);
     records = packRespRecords(records, body.since_id && !body.max_id);
-    Result.OK(this, records);
+    Result.ok(this, records);
   } catch (e) {
     /* handle error */
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }
 
@@ -121,9 +121,9 @@ function *getFee() {
     var body = yield cobody(this);
     var records = yield whDao.getSlicedFee(body, this.state.user.userId);
     records = packRespRecords(records, body.since_id && !body.max_id);
-    Result.OK(this, records);
+    Result.ok(this, records);
   } catch (e) {
     /* handle error */
-    Result.InternalServerError(this, e.message);
+    Result.internalServerError(this, e.message);
   }
 }

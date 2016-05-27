@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, DatePicker, Modal, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/transport-tracking';
+import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -11,10 +11,10 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.transportTracking.transit.dateModal.visible,
-    type: state.transportTracking.transit.dateModal.type,
-    dispId: state.transportTracking.transit.dateModal.dispId,
-    shipmtNo: state.transportTracking.transit.dateModal.shipmtNo,
+    visible: state.trackingLandStatus.dateModal.visible,
+    type: state.trackingLandStatus.dateModal.type,
+    dispId: state.trackingLandStatus.dateModal.dispId,
+    shipmtNo: state.trackingLandStatus.dateModal.shipmtNo,
   }),
   { closeDateModal, savePickOrDeliverDate })
 export default class VehicleUpdater extends React.Component {

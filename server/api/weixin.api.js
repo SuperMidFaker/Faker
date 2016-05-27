@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import Result from '../util/response-result';
+import Result from '../util/responseResult';
 import mysql from '../util/mysql';
 import weixinDao from '../models/weixin.db';
 import bCryptUtil from '../util/BCryptUtil';
@@ -11,7 +11,7 @@ function *bindWxUserP() {
   const username = body.username;
   const password = body.password;
   if (!username || !password) {
-    return Result.ParamError(this, '手机号或密码为空');
+    return Result.paramError(this, '手机号或密码为空');
   }
   try {
     const users = yield weixinDao.getUserByPhone(username);
@@ -25,14 +25,14 @@ function *bindWxUserP() {
         const openid = weixinOAuth.getWxCookie(this.cookies).openid;
         weixinOAuth.setCookie(this.cookies, openid, user.id);
         yield weixinDao.updateAuthLoginId(openid, user.id);
-        return Result.OK(this);
+        return Result.ok(this);
       }
     } else {
-      return Result.NotFound(this, '用户不存在');
+      return Result.notFound(this, '用户不存在');
     }
   } catch (e) {
     console.log(e);
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -43,9 +43,9 @@ function *wlProfileG() {
     if (wls.length === 0) {
       throw new Error('user not exist');
     }
-    return Result.OK(this, wls[0]);
+    return Result.ok(this, wls[0]);
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -54,9 +54,9 @@ function *unbindWxUserP() {
     const openid = weixinOAuth.getWxCookie(this.cookies).openid;
     yield weixinDao.updateAuthLoginId(openid, -1);
     weixinOAuth.setCookie(this.cookies, openid, undefined);
-    return Result.OK(this);
+    return Result.ok(this);
   } catch (e) {
-    return Result.InternalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
   }
 }
 
