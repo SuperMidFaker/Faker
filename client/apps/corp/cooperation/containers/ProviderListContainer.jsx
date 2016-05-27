@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Radio } from 'ant-ui';
+import { Radio, Icon } from 'ant-ui';
 import BaseList from '../components/BaseList';
 import { inviteOnlPartner, setProviderType } from 'common/reducers/partner';
+import { providerShorthandTypes } from '../util/dataMapping';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -23,8 +24,15 @@ export default class CustomerListContainer extends BaseList {
     const retColumns = [...columns];
     const providerSeviceColumn = {
       title: '物流服务',
-      dataIndex: 'provider_mode',
-      key: 'provider_mode'
+      dataIndex: 'providerTypes',
+      key: 'providerTypes',
+      render(_, record) {
+        return (
+          <span>
+            {record.providerTypes.join(',')}<a><Icon type="edit"/></a>
+          </span>
+        );
+      }
     };
     retColumns[0].title = '提供商名称';
     retColumns[1].title = '提供商代码';
@@ -36,11 +44,14 @@ export default class CustomerListContainer extends BaseList {
   }
   dataSourceFromPartnerlist(partnerlist) {
     const { type } = this;
+    let dataSource = [];
     if (type === 'ALL') {
-      return partnerlist.filter(partner => partner.types.some(pType => ['TRS', 'CCB', 'WHS', 'FWD'].includes(pType.code)));
+      dataSource = partnerlist.filter(partner => partner.types.some(pType => ['TRS', 'CCB', 'WHS', 'FWD'].includes(pType.code)));
     } else {
-      return partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
+      dataSource = partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
     }
+    dataSource = dataSource.map(data => ({...data, providerTypes: data.types.map(type => providerShorthandTypes[type.code])}));
+    return dataSource;
   }
   setHeader() {
     const { providerType = 'ALL' } = this.props;
