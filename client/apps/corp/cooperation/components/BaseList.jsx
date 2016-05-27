@@ -8,7 +8,8 @@ const partnerTypes = {
   TRS: '运输提供商',
   WHS: '仓储提供商',
   CCB: '报关提供商',
-  FWD: '货代提供商'
+  FWD: '货代提供商',
+  ALL: '提供商'
 };
 
 const tenantTypes = {
@@ -116,19 +117,35 @@ export default class BaseList extends Component {
       }
     });
   }
+  setHeader() { // 子类通过这个方法来设置头部UI,默认不显示头部UI
+    return (
+      <div></div>
+    );
+  }
   updateColumns(columns) { // 子类重载这个方法来自定义新的columns结构
-    return columns;
+    const { type } = this;
+    const retColumns = [...columns];
+    const partnerTypeName = partnerTypes[type];
+    retColumns[0].title = `${partnerTypeName}名称`;
+    retColumns[1].title = `${partnerTypeName}代码`;
+    return retColumns;
+  }
+  dataSourceFromPartnerlist(partnerlist) {  // 子类重载这个方法来展示数据
+    const { type } = this;
+    return partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
   }
   render() {
     const { type } = this;
     const partnerTypeName = partnerTypes[type];
     const columns = this.updateColumns(defaultColumns);
-    columns[0].title = `${partnerTypeName}名称`;
-    columns[1].title = `${partnerTypeName}代码`;
     const { partnerlist = [] } = this.props;
-    const dataSource = partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
+    const dataSource = this.dataSourceFromPartnerlist(partnerlist);
+    const header = this.setHeader();
     return (
       <div className="main-content">
+        <div className="page-header">
+          {header}
+        </div>
         <div className="page-body">
           <div className="panel-header">
             <Button type="primary" onClick={this.onAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
