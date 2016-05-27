@@ -1,4 +1,4 @@
-import { React } from 'react'
+import React from 'react';
 import { connect } from 'react-redux';
 import BaseList from '../components/BaseList';
 import { inviteOnlPartner } from 'common/reducers/partner';

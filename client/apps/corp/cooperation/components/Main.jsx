@@ -6,12 +6,12 @@ import SupplierListContainer from '../containers/SupplierListContainer';
 const MenuItem = Menu.Item;
 
 export default function Main(props) {
-  const { selectedMenuItemKey, onMenuClick } = props;
+  const { selectedMenuItemKey, onMenuItemClick } = props;
   const content = [<CustomerListContainer />, <SupplierListContainer />]
-    .map((container, index) => <div style={{display: index === selectedMenuItemKey ? 'display' : 'none'}} key={index}>{container}</div>);
+    .map((container, index) => <div style={{display: index === parseInt(selectedMenuItemKey, 10) ? 'block' : 'none'}} key={index}>{container}</div>);
   return (
     <div>
-      <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuClick}>
+      <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuItemClick}>
         <MenuItem key="0">客户</MenuItem>
         <MenuItem key="1">供应商</MenuItem>
         <MenuItem key="2">关联企业</MenuItem>
