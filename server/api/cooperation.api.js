@@ -44,6 +44,7 @@ function *partnersG() {
       );
     }
     const partnerTenants = yield tenantDao.getAllTenantsExcept(tenantId);
+    const recevieablePartnerTenants = yield coopDao.getReceiveablePartnerTenants(tenantId);
     partnerTenants.forEach(pt => {
       pt.code = pt.subCode || pt.code;
       pt.subCode = undefined;
@@ -59,7 +60,8 @@ function *partnersG() {
         })
       },
       partnershipTypes,
-      partnerTenants
+      partnerTenants,
+      recevieablePartnerTenants
     });
   } catch (e) {
     console.log(e);

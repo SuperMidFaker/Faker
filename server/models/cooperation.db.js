@@ -173,5 +173,15 @@ export default {
     const sql = 'select count(partner_id) as count from sso_partnerships where tenant_id = ? and type_code = ?';
     const args = [ tenantId, typeCode];
     return mysql.query(sql, args);
+  },
+  getReceiveablePartnerTenants(tenantId) {
+    const sql = `
+      SELECT T.tenant_id AS id, T.code AS code, T.name AS name
+      FROM sso_tenants AS T
+      WHERE T.tenant_id != ${tenantId} 
+            AND T.tenant_id NOT IN(SELECT partner_tenant_id FROM sso_partners AS P WHERE P.tenant_id = ${tenantId})
+            AND T.tenant_id NOT IN(SELECT invitee_tenant_id FROM sso_partner_invitations AS I WHERE I.inviter_tenant_id = ${tenantId}  AND I.status IN (0, 1));
+    `;
+    return mysql.query(sql);
   }
 };

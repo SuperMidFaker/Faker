@@ -314,14 +314,14 @@ export default class DispatchDock extends Component {
       });
 
 /*
-      dock = (<div className="dock-container" key="dock1" onClick={(e) => {e.stopPropagation();}}>
+      dock = (<div className="dock-containers" key="dock1" onClick={(e) => {e.stopPropagation();}}>
 
                 <div className="dock-content">
                   <div className="dock-sp">
                     <div className="dock-sp-body">
                       <div className="dock-sp-toolbar">
                         <a onClick={ this.onCloseWrapper }><Icon type="cross" className="closable"/></a>
-                        <div className="shipno-container">
+                        <div className="shipno-containers">
                           <span className="detail-title">共 {shipmts.length} 订单，{totalCount}件，{totalWeight}公斤，{totalVolume}立方</span>
                           {arr}
                         </div>
