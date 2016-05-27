@@ -5,7 +5,7 @@ export const partnerTypes = {
   WHS: '仓储提供商',
   CCB: '报关提供商',
   FWD: '货代提供商',
-  ALL: '提供商'
+  ALL: '物流提供商'
 };
 
 export const providerShorthandTypes = {
