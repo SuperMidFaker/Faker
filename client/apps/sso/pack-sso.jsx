@@ -22,7 +22,7 @@ export default class SSOPack extends React.Component {
               <div className="login-container">
                 <div className="panel panel-default">
                   <div className="panel-heading">
-                    <img src="http://cdn.welogix.cn/assets/img/welogix-badge.png" alt="logo" width="120px" className="logo-img" />
+                    <img src="https://cdn.welogix.cn/assets/img/welogix-badge.png" alt="logo" width="120px" className="logo-img" />
                     <span>{formatMsg(this.props.intl, 'slogan')}</span>
                   </div>
                   {this.props.children}
