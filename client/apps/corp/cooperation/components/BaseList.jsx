@@ -107,11 +107,13 @@ export default class BaseList extends Component {
     this.columns = defaultColumns;
   }
   onAddBtnClick = () => {
-    const { partnerTenants, tenantId } = this.props;
+    const { partnerTenants, tenantId, partnerlist } = this.props;
     let partnerships = this.partnerships;
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
+    const filteredPartnerTenants = partnerTenants.filter(tenant => !partnerlist.find(partner => partner.partnerTenantId === tenant.id));
+    console.log(filteredPartnerTenants, 'changed');
     partnerModal({
-      partnerTenants,
+      partnerTenants: filteredPartnerTenants,
       onOk: (partnerTenant) => {
         this.props.inviteOnlPartner(tenantId, partnerTenant.id, partnerTenant.code, partnerships);
       }

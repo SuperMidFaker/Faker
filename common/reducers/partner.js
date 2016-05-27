@@ -40,7 +40,10 @@ const initialState = {
     data: [
       /* { key:, name:, types: [{key:, name:}], other db column } */
     ]
-  }
+  },
+  recevieablePartnerTenants: [
+    /* { id, name, code } */
+  ]
 };
 
 export default function reducer(state = initialState, action) {
