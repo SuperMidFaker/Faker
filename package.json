@@ -39,7 +39,7 @@
   "license": "MIT",
   "pre-commit": [],
   "dependencies": {
-    "ant-ui": "^1.0.0",
+    "ant-ui": "^1.1.0",
     "babel": "^5.8.38",
     "bcrypt": "^0.8.6",
     "classnames": "^2.2.5",
@@ -56,7 +56,6 @@
     "koa-static": "^2.0.0",
     "moment": "^2.13.0",
     "mysql": "^2.9.0",
-    "normalize.css": "^4.1.1",
     "react": "^0.14.8",
     "react-dom": "^0.14.8",
     "react-dropzone": "^3.4.0",
