@@ -133,6 +133,7 @@ export default class LandStatusList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
+    fixed: 'left',
     width: 150,
     render: (o, record) => {
       return (
@@ -143,7 +144,8 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('shipmtStatus'),
     dataIndex: 'status',
-    width: 140,
+    fixed: 'left',
+    width: 100,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return `1 ${this.msg('pendingShipmt')}`;
@@ -163,6 +165,7 @@ export default class LandStatusList extends React.Component {
     }
   }, {
     title: this.msg('shipmtPrevTrack'),
+    fixed: 'left',
     width: 140,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -187,6 +190,7 @@ export default class LandStatusList extends React.Component {
     },
   }, {
     title: this.msg('shipmtNextUpdate'),
+    fixed: 'left',
     width: 140,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
