@@ -118,19 +118,19 @@ export default class DispatchList extends React.Component {
   commonCols = [{
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 40
+    width: 80
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 40
+    width: 80
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 40
+    width: 80
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsigner'),
@@ -143,11 +143,11 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
-    width: 200,
+    width: 220,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: this.msg('shipConsignee'),
@@ -160,7 +160,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 200,
+    width: 220,
   }];
   buildCols(sub) {
     const { status, origin } = this.props.filters;
@@ -175,13 +175,15 @@ export default class DispatchList extends React.Component {
     let cols = [{
       title: t,
       dataIndex: 'shipmt_no',
+      fixed: 'left',
       width: 150
     }];
     if (s === 'waiting') {
       cols.push({
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
-        width: 180
+        fixed: 'left',
+        width: 220
       }, {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',
@@ -231,7 +233,8 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipSp'),
         dataIndex: 'sp_name',
-        width: 180
+        fixed: 'left',
+        width: 220
       }, {
         title: this.msg('shipVehicle'),
         dataIndex: 'task_vehicle',
@@ -820,7 +823,6 @@ export default class DispatchList extends React.Component {
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             {btns}
-
             <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
             {formatContainerMsg(intl, 'clearSelection')}
             </Button>
