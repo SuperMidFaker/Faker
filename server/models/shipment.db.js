@@ -95,13 +95,21 @@ export default {
     const buf = new Buffer(totalLen);
     buf.fill('0');
     const year = String(new Date().getFullYear()).substr(2);
-    const shipmtSumSql = 'select count(shipmt_no) as sum from tms_shipments where tenant_id = ? and parent_no is null';
-    const args = [tenantId];
-    const counts = yield mysql.query(shipmtSumSql, args);
-    const sumStr = String(counts[0].sum + 1);
+    const shipmtnoSql = `
+      select shipmt_no from tms_shipments where tenant_id = ? and parent_no is null
+      order by shipmt_no desc limit 1
+    `;
+    const args = [ tenantId ];
+    const shipmtnos = yield mysql.query(shipmtnoSql, args);
+    let newnoStr = '1';
+    if (shipmtnos.length === 1) {
+      const biggestNo = shipmtnos[0].shipmt_no;
+      newnoStr = biggestNo.substr(biggestNo.length - 1 - 6);
+      newnoStr = String(parseInt(newnoStr, 10) + 1);
+    }
     buf.write(tenantTmsPrefix.toUpperCase());
     buf.write(year, tenantTmsPrefix.length);
-    buf.write(sumStr, totalLen - sumStr.length);
+    buf.write(newnoStr, totalLen - newnoStr.length);
     return buf.toString();
   },
   getCountByType(tenantId, shipmtType, shipmtNo) {
