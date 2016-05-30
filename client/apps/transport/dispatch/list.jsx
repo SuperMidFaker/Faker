@@ -166,23 +166,31 @@ export default class DispatchList extends React.Component {
     const { status, origin } = this.props.filters;
     const s = status;
     let t = this.msg('shipNo');
+    let fixedLeft = 'left';
+    let fixedRight = 'right';
     if (origin) {
       t = this.msg('originShipNo');
     }
     if (sub === 'sub') {
       t = this.msg('segmentShipNo');
+      fixedLeft = false;
+      fixedRight = false;
+    }
+    if (sub === 'merge') {
+      fixedLeft = false;
+      fixedRight = false;
     }
     let cols = [{
       title: t,
       dataIndex: 'shipmt_no',
-      fixed: 'left',
+      fixed: fixedLeft,
       width: 150
     }];
     if (s === 'waiting') {
       cols.push({
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
-        fixed: 'left',
+        fixed: fixedLeft,
         width: 220
       }, {
         title: this.msg('shipMode'),
@@ -199,7 +207,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
-        fixed: 'right',
+        fixed: fixedRight,
         render: (o, record) => {
           if (sub === 'merge') {
             return (<span><a role="button" onClick={() => this.handleRemoveShipmt(record)}>
@@ -233,7 +241,7 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipSp'),
         dataIndex: 'sp_name',
-        fixed: 'left',
+        fixed: fixedLeft,
         width: 220
       }, {
         title: this.msg('shipVehicle'),
@@ -277,7 +285,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
-        fixed: 'right',
+        fixed: fixedRight,
         render: (o, record) => {
           if (s === 'dispatched') {
             if (record.disp_status === 3) {
@@ -631,8 +639,10 @@ export default class DispatchList extends React.Component {
     }
     if (cer) {
       switch (consignerStep) {
-      case 20:
+      case 20: {
+      filters.consigner_province = row.consigner_province;
       filters.consigner_city = row.consigner_city;
+      }
         break;
       case 40:
       filters.consigner_district = row.consigner_district;
@@ -652,8 +662,10 @@ export default class DispatchList extends React.Component {
     }
     if (cee) {
       switch (consigneeStep) {
-      case 20:
+      case 20: {
+      filters.consignee_province = row.consignee_province;
       filters.consignee_city = row.consignee_city;
+      }
         break;
       case 40:
       filters.consignee_district = row.consignee_district;
@@ -784,7 +796,7 @@ export default class DispatchList extends React.Component {
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} useFixedHeader
+              dataSource={this.dataSource} scroll={{ x: 1900, y: 460 }}
             />);
     }
 

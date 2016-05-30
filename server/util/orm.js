@@ -521,7 +521,7 @@ class OrmObject {
         w.args.push(obj._limits.max);
       }
     }
-
+    console.log(sqlArr.concat(w.sqlArr).join(''), args.concat(w.args));
     return db.query(sqlArr.concat(w.sqlArr).join(''), args.concat(w.args));
   }
 

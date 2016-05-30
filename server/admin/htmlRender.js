@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDom from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import { match } from 'react-router';
-import { addLocaleData } from 'react-intl';
 import createLocation from 'history/lib/createLocation';
 import createStore from 'common/configureStore';
 import routes from 'client/routes';
@@ -34,22 +33,6 @@ function renderAsHtml(pageCss, pageJs, content) {
 </html>`;
 }
 
-// https://github.com/koa-modules/locale/blob/master/index.js
-function getRequestLocale(request) {
-  let locale = request.query.locale;
-  if (!locale) {
-    const accept = request.acceptsLanguages() || '';
-    const reg = /(^|,\s*)([a-z-]+)/gi;
-    let m;
-    while (m = reg.exec(accept)) {
-      if (!locale) {
-        locale = m[2];
-      }
-    }
-    locale = locale && locale.split('-')[0];
-  }
-  return locale || 'zh';
-}
 export default function render(request) {
   if (__DEV__) {
     webpackIsomorphicTools.refresh();
@@ -59,8 +42,6 @@ export default function render(request) {
     const location = createLocation(url);
     const store = createStore();
     const cookie = request.get('cookie');
-    const curLocale = getRequestLocale(request);
-    store.getState().intl = { locale:  curLocale };
     match({ routes: routes(store, cookie), location }, (err, redirection, props) => {
       if (err) {
         reject([500], err);
@@ -69,7 +50,6 @@ export default function render(request) {
       } else if (!props) {
         reject([404]);
       } else {
-        addLocaleData(require(`react-intl/locale-data/${curLocale}`));
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
             const component = (<App routingContext = {props} store = {store} />);
