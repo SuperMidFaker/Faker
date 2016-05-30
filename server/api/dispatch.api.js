@@ -62,6 +62,8 @@ function *listShipmtsGroupedSub() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   filters.status = 'waiting';
 
+  filters['S.segmented'] = 0;
+
   const shipmts = yield shipmtDispDao.getDispatchShipmts(tenantId, filters, 0, 100);
   Result.ok(this, shipmts);
 }

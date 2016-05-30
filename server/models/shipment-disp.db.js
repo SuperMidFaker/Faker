@@ -295,6 +295,11 @@ export default {
   },
   getDispatchShipmts(tenantId, filter, offset, pageSize) {
     const awhere = genDispFilters(filter, tenantId);
+    let order = 'acpt_time desc';
+    if (filter.status !== 'waiting') {
+      order = 'disp_time desc';
+    }
+
     const obj = {
       fields: `SD.id as \`key\`, S.shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, consigner_name,
@@ -304,7 +309,7 @@ export default {
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
       effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented, SD.task_id, SD.task_vehicle, SD.disp_status`,
       ons1: 'S.shipmt_no = SD.shipmt_no',
-      _orders: 'acpt_time desc',
+      _orders: order,
       wheres: awhere,
       _limits: {min: offset, max: pageSize}
     };
@@ -526,7 +531,7 @@ export default {
   },
   getShipmtsGrouped(tenantId, filter) {
     const awhere = {
-      'SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id': tenantId
+      'S.segmented = 0 and SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id': tenantId
     };
     const strGroup = genGroupBy(filter);
     const obj = {

@@ -4,11 +4,13 @@ import serialize from 'serialize-javascript';
 import { match } from 'react-router';
 import { addLocaleData } from 'react-intl';
 import createLocation from 'history/lib/createLocation';
-import createStore from 'common/configureStore';
-import routes from 'client/routes';
-import App from 'client/app';
+import createStore from 'common/webReduxStore';
+import routes from 'client/apps/routes';
+import appWrapped from 'client/common/appWrapped';
 import fetchInitialState from '../util/fetch-initial-state';
 import thirdPart from './thirdPart';
+
+const App = appWrapped(routes);
 
 let trackJs = '';
 if (__PROD__) {
