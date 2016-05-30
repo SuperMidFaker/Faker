@@ -3,62 +3,45 @@
  * @param {config<Object>} 配置对象, 参数如下:
  * {
  *    onOk(value){}:           确认按钮按下后执行的函数,参数是当前选中的tenant对象
- *    partnerTenants<Array>:   用于下拉选项的tenants数组
+ *    partnerTenants<Array>:   在mode='add'模式下的下拉选项的tenants数组, add模式下需要
+ *    providerValues<Array>:   在mode='editProvider'模式下默认选中的provider types数组, editProvider模式下需要
  * }
  * @return {}
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Form, Select } from 'ant-ui';
+import { Modal, Button, Form, Select, Checkbox } from 'ant-ui';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const CheckboxGroup = Checkbox.Group;
 
 const formItemLayout = {
   labelCol: {span: 6},
   wrapperCol: {span: 14}
 };
 
-function partnerModal(config) {
-  const props = { ...config };
-  const div = document.createElement('div');
-  document.body.appendChild(div);
+function addForm(props) {
+  const { onCancel, close, partnerTenants } = props;
+  const tenantOptions = partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
+  let selectedPartnerValue;
 
-  let d;
-  let selectedPartnerTenant;
-
-  const width = props.width || 520;
-  const style = props.style || {};
-  const tenantOptions = props.partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
-
-  function close() {
-    d.setState({
-      visible: false,
-    });
-    ReactDOM.unmountComponentAtNode(div);
-    div.parentNode.removeChild(div);
+  function handleSelectedPartnerValueChange(value) {
+    selectedPartnerValue = partnerTenants.find(tenant => tenant.id === parseInt(value, 10));
   }
-
-  function onCancel() {
-    close();
-  }
-
   function onOk() {
     close();
     if (props.onOk) {
-      props.onOk(selectedPartnerTenant);
+      props.onOk(selectedPartnerValue);
     }
   }
-  function handleSelectedPartnerValueChange(value) {
-    selectedPartnerTenant = props.partnerTenants.find(tenant => tenant.id === value);
-  }
 
-  const body = (
+  return (
     <div>
       <div className="ant-confirm-body">
         <Form horizontal>
-          <FormItem {...formItemLayout} label="合作伙伴:">
+          <FormItem {...formItemLayout} label="添加合作伙伴:">
             <Select onChange={handleSelectedPartnerValueChange}>
               {tenantOptions}
             </Select>
@@ -75,6 +58,79 @@ function partnerModal(config) {
       </div>
     </div>
   );
+}
+
+function editProviderForm(props) {
+  const options = [
+    {label: '货代', value: 'FWD'},
+    {label: '报关', value: 'CCB'},
+    {label: '运输', value: 'TRS'},
+    {label: '仓储', value: 'WHS'}
+  ];
+  const { onCancel, close } = props;
+  let { checkedProviderValues = [] } = props;
+
+  function handleProvierChange(checkedValues) {
+    checkedProviderValues = checkedValues;
+    document.getElementById('yProviderBtn').disabled = checkedProviderValues.length === 0;
+  }
+  function onOk() {
+    close();
+    if (props.onOk) {
+      props.onOk(checkedProviderValues);
+    }
+  }
+
+  return (
+    <div>
+      <div className="ant-confirm-body">
+        <Form horizontal>
+          <CheckboxGroup
+            options={options}
+            defaultValue={checkedProviderValues}
+            onChange={handleProvierChange} {...formItemLayout}/>
+        </Form>
+      </div>
+      <div className="ant-confirm-btns">
+        <Button type="ghost" size="large" onClick={onCancel}>
+          取消
+        </Button>
+        <Button type="primary" size="large" onClick={onOk} id="yProviderBtn">
+          添加
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function partnerModal(config) {
+  const props = { ...config };
+  const div = document.createElement('div');
+  document.body.appendChild(div);
+
+  let d;
+
+  const width = props.width || 520;
+  const style = props.style || {};
+
+  function close() {
+    d.setState({
+      visible: false,
+    });
+    ReactDOM.unmountComponentAtNode(div);
+    div.parentNode.removeChild(div);
+  }
+
+  function onCancel() {
+    close();
+  }
+
+  let body;
+  if (props.mode === 'editProvider') {
+    body = editProviderForm({onCancel, close, onOk: props.onOk, checkedProviderValues: props.providerValues});
+  } else {
+    body = addForm({onCancel, close, onOk: props.onOk, partnerTenants: props.partnerTenants});
+  }
 
   const classString = classNames({
     'ant-confirm': true,
