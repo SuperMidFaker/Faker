@@ -23,11 +23,12 @@ const formItemLayout = {
 };
 
 function addForm(props) {
-  const { onCancel, close, tenantOptions } = props;
+  const { onCancel, close, partnerTenants } = props;
+  const tenantOptions = partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
   let selectedPartnerValue;
 
   function handleSelectedPartnerValueChange(value) {
-    selectedPartnerValue = value;
+    selectedPartnerValue = partnerTenants.find(tenant => tenant.id === parseInt(value, 10));
   }
   function onOk() {
     close();
@@ -108,7 +109,6 @@ function partnerModal(config) {
   document.body.appendChild(div);
 
   let d;
-  let selectedPartnerTenant;
 
   const width = props.width || 520;
   const style = props.style || {};
@@ -129,8 +129,7 @@ function partnerModal(config) {
   if (props.mode === 'editProvider') {
     body = editProviderForm({onCancel, close, onOk: props.onOk, checkedProviderValues: props.providerValues});
   } else {
-    const tenantOptions = props.partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
-    body = addForm({onCancel, close, onOk: props.onOk, tenantOptions});
+    body = addForm({onCancel, close, onOk: props.onOk, partnerTenants: props.partnerTenants});
   }
 
   const classString = classNames({
