@@ -66,7 +66,7 @@ export default (serverPort, dirName, appName) => {
   // Project
   // ------------------------------------
   config.set('project_root', path.resolve(dirName, '..'));
-  config.set('client_entry', path.resolve(dirName, '..', 'client/cboot.js'));
+  config.set('client_entry', path.resolve(dirName, '..', 'client/apps/cboot.js'));
 
   return config;
 };
