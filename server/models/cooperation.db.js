@@ -77,12 +77,12 @@ export default {
     const args = [tenantId, partnerId, partnerCode];
     return mysql.delete(sql, args, trans);
   },
-  insertPartnership(tenantId, partnerId, partnerCode, partnerName, partnerships, trans) {
-    const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id,
+  insertPartnership(partnerKey, tenantId, partnerId, partnerCode, partnerName, partnerships, trans) {
+    const sql = `insert into sso_partnerships(partner_id, tenant_id, partner_tenant_id,
       partner_code, partner_name, type, type_code) values ?`;
     const args = [];
     partnerships.forEach(pts => {
-      args.push([tenantId, partnerId, partnerCode, partnerName, pts.key, pts.code]);
+      args.push([partnerKey, tenantId, partnerId, partnerCode, partnerName, pts.key, pts.code]);
     });
     return mysql.insert(sql, [args], trans);
   },
@@ -97,10 +97,10 @@ export default {
     const args = [tenantId, partnerCode];
     return mysql.delete(sql, args, trans);
   },
-  insertInvitation(tenantId, partnerId, partnerCode, partnerName, status, code, trans) {
-    const sql = `insert into sso_partner_invitations(inviter_tenant_id, invitee_tenant_id,
+  insertInvitation(partnerKey, tenantId, partnerId, partnerCode, partnerName, status, code, trans) {
+    const sql = `insert into sso_partner_invitations(partner_id, inviter_tenant_id, invitee_tenant_id,
       invitee_code, invitee_name, status, invitation_code, created_date) values (?, NOW())`;
-    const args = [tenantId, partnerId, partnerCode, partnerName, status, code];
+    const args = [partnerKey, tenantId, partnerId, partnerCode, partnerName, status, code];
     return mysql.insert(sql, [args], trans);
   },
   getReceivedInvitationCount(tenantId) {

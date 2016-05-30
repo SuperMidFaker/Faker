@@ -89,19 +89,21 @@ function *partnerOnlineP() {
     const partnerCode = getPartnerCode(partner.code, partner.subCode);
     const tenantType = getTenantTypeDesc(partner.level);
     trans = yield mysql.beginTransaction();
-    yield coopDao.insertPartner(
+    const result = yield coopDao.insertPartner(
       body.tenantId, body.partnerId, partnerCode,
       partner.name, tenantType, 0, trans
     );
     yield coopDao.deleteSinglePartnership(body.tenantId, body.partnerId, trans);
-    yield coopDao.insertPartnership(
-      body.tenantId, body.partnerId, partnerCode,
-      partner.name, partnerships, trans
-    );
-    yield coopDao.insertInvitation(
-      body.tenantId, body.partnerId, partnerCode,
-      partner.name, INVITATION_STATUS.NEW_SENT, null, trans
-    );
+    yield [
+      coopDao.insertPartnership(
+        result.insertId, body.tenantId, body.partnerId, partnerCode,
+        partner.name, partnerships, trans
+      ),
+      coopDao.insertInvitation(
+        result.insertId, body.tenantId, body.partnerId, partnerCode,
+        partner.name, INVITATION_STATUS.NEW_SENT, null, trans
+      ),
+    ];
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
@@ -130,11 +132,11 @@ function *partnerOfflineP() {
     );
     yield coopDao.deleteOfflinePartnership(body.tenantId, body.partnerCode, trans);
     yield coopDao.insertPartnership(
-      body.tenantId, -1, body.partnerCode, body.partnerName, partnerships, trans
+      result.insertId, body.tenantId, -1, body.partnerCode, body.partnerName, partnerships, trans
     );
     const code = getSmsCode(6);
     yield coopDao.insertInvitation(
-      body.tenantId, -1, body.partnerCode, body.partnerName,
+      result.insertId, body.tenantId, -1, body.partnerCode, body.partnerName,
       INVITATION_STATUS.NEW_SENT, code, trans);
     yield mysql.commit(trans);
     // sendInvitation by body.contact -> phone or email todo
@@ -217,7 +219,7 @@ function *invitationP() {
         const partnerName = inviterTenants[0].name;
         const partnerCode = getPartnerCode(inviterTenants[0].code, inviterTenants[0].subCode);
         const tenantType = getTenantTypeDesc(inviterTenants[0].level);
-        yield coopDao.insertPartner(
+        const result = yield coopDao.insertPartner(
           invitations[0].inviteeId, invitations[0].inviterId,
           partnerCode, partnerName, tenantType, 1, trans
         );
@@ -227,7 +229,7 @@ function *invitationP() {
           invitations[0].inviteeId, invitations[0].inviterId, trans
         );
         yield coopDao.insertPartnership(
-          invitations[0].inviteeId, invitations[0].inviterId,
+          result.insertId, invitations[0].inviteeId, invitations[0].inviterId,
           partnerCode, partnerName,
           body.partnerships.map(ps => ({
             key: partnershipTypeNames.indexOf(ps),
@@ -329,7 +331,7 @@ function *sendOfflineInvitation() {
     );
     const code = getSmsCode(6);
     yield coopDao.insertInvitation(
-      body.tenantId, -1, body.partnerCode, body.partnerName,
+      body.partnerKey, body.tenantId, -1, body.partnerCode, body.partnerName,
       INVITATION_STATUS.NEW_SENT, code, trans
     );
     // todo body.contact
