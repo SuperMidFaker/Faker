@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Icon, Button } from 'ant-ui';
+import { Table, Icon, Button, message } from 'ant-ui';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
 import partnerModal from './partnerModal';
 
@@ -98,6 +98,7 @@ export default class BaseList extends Component {
       partnerTenants,
       onOk: (partnerTenant) => {
         this.props.inviteOnlPartner(tenantId, partnerTenant.id, partnerTenant.code, partnerships);
+        message.success('合作邀请已发出');
       }
     });
   }

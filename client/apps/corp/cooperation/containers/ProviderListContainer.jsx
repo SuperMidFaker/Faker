@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Radio, Icon } from 'ant-ui';
+import { Radio, Icon, message } from 'ant-ui';
 import BaseList from '../components/BaseList';
-import { inviteOnlPartner, setProviderType } from 'common/reducers/partner';
+import { inviteOnlPartner, setProviderType, editProviderTypes } from 'common/reducers/partner';
 import { providerShorthandTypes } from '../util/dataMapping';
 import partnerModal from '../components/partnerModal';
 
@@ -14,7 +14,7 @@ const RadioGroup = Radio.Group;
   partnerTenants: state.partner.recevieablePartnerTenants,
   tenantId: state.account.tenantId,
   providerKey: state.partner.providerKey
-}), { inviteOnlPartner, setProviderType })
+}), { inviteOnlPartner, setProviderType, editProviderTypes })
 export default class ProviderListContainer extends BaseList {
   constructor() {
     super();
@@ -30,7 +30,7 @@ export default class ProviderListContainer extends BaseList {
       render: (_, record) => {
         return (
           <span>
-            {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record.types.map(pType => pType.code))}><Icon type="edit"/></a>
+            {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record)}><Icon type="edit"/></a>
           </span>
         );
       }
@@ -72,12 +72,17 @@ export default class ProviderListContainer extends BaseList {
     this.type = providerType;
     this.setState({});  // TODO: avoid use setState() method
   }
-  handleEditProvider = (providerTypes) => {
+  handleEditProvider = (record) => {
+    const { tenantId } = this.props;
+    const { partnerTenantId } = record;
+    const providerValues = record.types.map(pType => pType.code);
     partnerModal({
       mode: 'editProvider',
-      providerValues: providerTypes,
-      onOk(checkedValues) {
-        console.log(checkedValues);
+      providerValues,
+      onOk: (providerTypes) => {
+        this.props.editProviderTypes({tenantId, partnerTenantId, providerTypes});
+        message.success('物流服务修改成功');
+        console.log(providerTypes);
       }
     });
   }

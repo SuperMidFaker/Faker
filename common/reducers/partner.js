@@ -9,7 +9,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'OFFL_PARTNER_INVITE', 'OFFL_PARTNER_INVITE_SUCCEED', 'OFFL_PARTNER_INVITE_FAIL',
   'OFFLINE_PARTNER', 'OFFLINE_PARTNER_SUCCEED', 'OFFLINE_PARTNER_FAIL',
   'SEND_INVITE', 'SEND_INVITE_SUCCEED', 'SEND_INVITE_FAIL',
-  'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE'
+  'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
+  'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL'
 ]);
 
 const initialState = {
@@ -205,5 +206,24 @@ export function setProviderType(providerType) {
   return {
     type: actionTypes.SET_PROVIDER_TYPE,
     providerType
+  };
+}
+
+export function editProviderTypes({tenantId, partnerTenantId, providerTypes}) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_PROVIDER_TYPES,
+        actionTypes.EDIT_PROVIDER_TYPES_SUCCEED,
+        actionTypes.EDIT_PROVIDER_TYPES_FAIL
+      ],
+      endpoint: 'v1/cooperation/partner/edit_provider_types',
+      method: 'post',
+      data: {
+        tenantId,
+        partnerTenantId,
+        providerTypes
+      }
+    }  
   };
 }

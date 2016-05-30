@@ -4,7 +4,7 @@ import tenantDao from '../models/tenant.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import { getSmsCode } from '../../common/validater';
-import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE }
+import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
 
 const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
@@ -340,6 +340,27 @@ function *sendOfflineInvitation() {
     return Result.internalServerError(this, e.message);
   }
 }
+
+function *editProviderTypes() {
+  const body = yield cobody(this);
+  const { tenantId, partnerTenantId, providerTypes } = body;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    const partnerships = providerTypes.map(type => ({key: PARTNERSHIP[type], code: type}));
+    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfo(partnerTenantId);
+    console.log(partnerTenantInfo);
+    // 更改关系时,先删除原有的关系,再插入新的关系
+    yield coopDao.removePartnerships(tenantId, partnerTenantId, trans);
+    const result = yield coopDao.insertPartnership(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, partnerships, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    yield mysql.rollback(trans);
+    Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'post', '/v1/cooperation/partner/online', partnerOnlineP ],
@@ -348,5 +369,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation', invitationP ],
   [ 'get', '/v1/cooperation/invitations/out', sentInvitationsG ],
   [ 'post', '/v1/cooperation/invitation/cancel', cancelInvitation ],
-  [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ]
+  [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ],
+  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes]
 ]
