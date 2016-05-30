@@ -183,5 +183,9 @@ export default {
             AND T.tenant_id NOT IN(SELECT invitee_tenant_id FROM sso_partner_invitations AS I WHERE I.inviter_tenant_id = ${tenantId}  AND I.status IN (0, 1));
     `;
     return mysql.query(sql);
+  },
+  removePartnerships(tenantId, partnerTenantId, trans) {
+    const sql = `DELETE FROM sso_partnerships WHERE tenant_id = ${tenantId} AND partner_tenant_id = ${partnerTenantId};`;
+    return mysql.query(sql, [], trans);
   }
 };
