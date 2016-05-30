@@ -81,7 +81,7 @@ export default class ProviderListContainer extends BaseList {
       providerValues,
       onOk: (providerTypes) => {
         this.props.editProviderTypes({tenantId, partnerTenantId, providerTypes});
-        this.props.editProviderTypesLocal({key: record.key, providerTypes: providerTypes});
+        this.props.editProviderTypesLocal({key: record.key, providerTypes});
         message.success('物流服务修改成功');
         console.log(providerTypes);
       }

@@ -11,7 +11,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'OFFLINE_PARTNER', 'OFFLINE_PARTNER_SUCCEED', 'OFFLINE_PARTNER_FAIL',
   'SEND_INVITE', 'SEND_INVITE_SUCCEED', 'SEND_INVITE_FAIL',
   'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
-  'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL'
+  'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL',
+  'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL'
 ]);
 
 const initialState = {
@@ -250,5 +251,24 @@ export function editProviderTypesLocal({key, providerTypes}) {
     type: actionTypes.EDIT_PROVIDER_TYPES_LOCAL,
     key,
     providerTypes
+  };
+}
+
+export function addPartner({tenantId, partnerTenantId, partnerships}) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_PARTNER,
+        actionTypes.ADD_PARTNER_SUCCEED,
+        actionTypes.ADD_PARTNER_FAIL
+      ],
+      endpoint: 'v1/cooperation/partner/add',
+      method: 'post',
+      data: {
+        tenantId,
+        partnerTenantId,
+        partnerships
+      }
+    }
   };
 }

@@ -352,12 +352,30 @@ function *editProviderTypes() {
     console.log(partnerTenantInfo);
     // 更改关系时,先删除原有的关系,再插入新的关系
     yield coopDao.removePartnerships(tenantId, partnerTenantId, trans);
-    const result = yield coopDao.insertPartnership(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, partnerships, trans);
+    yield coopDao.insertPartnership(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, partnerships, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
     yield mysql.rollback(trans);
-    Result.internalServerError(this, e.message);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *addPartner() {
+  const body = yield cobody(this);
+  const { tenantId, partnerTenantId, partnerships: partnerTypes } = body;
+  const partnerships = partnerTypes.map(type => ({key: PARTNERSHIP[type], code: type}));
+  let trans;
+  try {
+    console.log(body);
+    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfo(partnerTenantId);
+    yield coopDao.insertPartner(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, PARTNER_TENANT_TYPE[partnerTenantInfo.level], 1, trans);
+    yield coopDao.insertPartnership(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, partnerships, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
   }
 }
 
@@ -370,5 +388,6 @@ export default [
   [ 'get', '/v1/cooperation/invitations/out', sentInvitationsG ],
   [ 'post', '/v1/cooperation/invitation/cancel', cancelInvitation ],
   [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ],
-  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes]
+  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes],
+  [ 'post', '/v1/cooperation/partner/add', addPartner ]
 ]
