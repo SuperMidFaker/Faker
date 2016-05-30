@@ -8,7 +8,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'ONL_PARTNER_INVITE', 'ONL_PARTNER_INVITE_SUCCEED', 'ONL_PARTNER_INVITE_FAIL',
   'OFFL_PARTNER_INVITE', 'OFFL_PARTNER_INVITE_SUCCEED', 'OFFL_PARTNER_INVITE_FAIL',
   'OFFLINE_PARTNER', 'OFFLINE_PARTNER_SUCCEED', 'OFFLINE_PARTNER_FAIL',
-  'SEND_INVITE', 'SEND_INVITE_SUCCEED', 'SEND_INVITE_FAIL'
+  'SEND_INVITE', 'SEND_INVITE_SUCCEED', 'SEND_INVITE_FAIL',
+  'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE'
 ]);
 
 const initialState = {
@@ -40,7 +41,12 @@ const initialState = {
     data: [
       /* { key:, name:, types: [{key:, name:}], other db column } */
     ]
-  }
+  },
+  recevieablePartnerTenants: [
+    /* { id, name, code } */
+  ],
+  selectedMenuItemKey: '0',  // 记录当前MenuItemKey的值,
+  providerType: 'ALL'        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
 };
 
 export default function reducer(state = initialState, action) {
@@ -78,6 +84,10 @@ export default function reducer(state = initialState, action) {
       } };
     case actionTypes.SEND_INVITE_SUCCEED:
       return { ...state, inviteModal: { ...state.inviteModal, step: 2 } };
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey:action.selectedMenuItemKey };
+    case actionTypes.SET_PROVIDER_TYPE:
+      return { ...state, providerType: action.providerType };
     default:
       return state;
   }
@@ -181,5 +191,19 @@ export function sendInvitation(contact, tenantId, partnerCode, partnerName) {
         partnerName
       }
     }
+  };
+}
+
+export function setMenuItemKey(selectedMenuItemKey) {
+  return {
+    type: actionTypes.SET_MENU_ITEM_KEY,
+    selectedMenuItemKey
+  };
+}
+
+export function setProviderType(providerType) {
+  return {
+    type: actionTypes.SET_PROVIDER_TYPE,
+    providerType
   };
 }

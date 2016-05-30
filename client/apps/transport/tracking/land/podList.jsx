@@ -130,6 +130,7 @@ export default class LandStatusList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
+    fixed: 'left',
     width: 150,
     render: (o, record) => {
       return (
@@ -139,21 +140,8 @@ export default class LandStatusList extends React.Component {
       );
     }
   }, {
-    title: this.msg('shipmtStatus'),
-    dataIndex: 'status',
-    width: 140,
-    render: () => {
-      return `6 ${this.msg('proofOfDelivery')}`;
-    }
-  }, {
-    title: this.msg('shipmtPrevTrack'),
-    width: 140,
-    render: (o, record) => {
-      return `${this.msg('podUploadAction')}
-      ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
-    },
-  }, {
     title: this.msg('proofOfDelivery'),
+    fixed: 'left',
     width: 140,
     render: (o, record) => {
       if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
@@ -198,6 +186,20 @@ export default class LandStatusList extends React.Component {
           </span>
         );
       }
+    },
+  }, {
+      title: this.msg('shipmtStatus'),
+    dataIndex: 'status',
+    width: 100,
+    render: () => {
+      return `6 ${this.msg('proofOfDelivery')}`;
+    }
+  }, {
+    title: this.msg('shipmtPrevTrack'),
+    width: 140,
+    render: (o, record) => {
+      return `${this.msg('podUploadAction')}
+      ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
     },
   }, {
     title: this.msg('shipmtException'),

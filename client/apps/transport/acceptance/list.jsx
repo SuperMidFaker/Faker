@@ -117,6 +117,7 @@ export default class AcceptList extends React.Component {
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     width: 150,
+    fixed: 'left',
     render: (o, record) => {
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         return (
@@ -131,6 +132,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
+    fixed: 'left',
     width: 220
   }, {
     title: this.msg('shipMode'),
@@ -162,7 +164,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 230,
+    width: 220,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
@@ -174,19 +176,19 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 230,
+    width: 220,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 50
+    width: 80
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 50
+    width: 80
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 50
+    width: 80
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
@@ -412,7 +414,7 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2330, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2500, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

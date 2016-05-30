@@ -13,7 +13,7 @@ const rowSelection = {
 };
 
 export default function NodeList(props) {
-  const { onDeleteBtnClick, dataSource, visible, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
+  const { onDeleteBtnClick, dataSource, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
   const columns = [
     {
       title: '名称',
@@ -82,36 +82,29 @@ export default function NodeList(props) {
       }
     }
   ];
-  if (visible) {
-    return (
-      <div className="main-content">
-        <div className="page-header">
-          <RadioGroup defaultValue={nodeType} size="large" onChange={(e) => onRadioButtonChange(e.target.value)}>
-            <RadioButton value={0}>发货地</RadioButton>
-            <RadioButton value={1}>收货地</RadioButton>
-            <RadioButton value={2}>中转地</RadioButton>
-          </RadioGroup>
+  return (
+    <div className="main-content">
+      <div className="page-header">
+        <RadioGroup defaultValue={nodeType} size="large" onChange={(e) => onRadioButtonChange(e.target.value)}>
+          <RadioButton value={0}>发货地</RadioButton>
+          <RadioButton value={1}>收货地</RadioButton>
+          <RadioButton value={2}>中转地</RadioButton>
+        </RadioGroup>
+      </div>
+      <div className="page-body">
+        <div className="panel-header">
+          <Button type="primary" onClick={onAddNoteBtnClick}><Icon type="plus-circle-o" />新增{nodeTypes[nodeType]}</Button>
         </div>
-        <div className="page-body">
-          <div className="panel-header">
-            <Button type="primary" onClick={onAddNoteBtnClick}><Icon type="plus-circle-o" />新增{nodeTypes[nodeType]}</Button>
-          </div>
-          <div className="panel-body padding">
-            <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
-          </div>
+        <div className="panel-body padding">
+          <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
         </div>
       </div>
-    );
-  } else {
-    return (
-      <div></div>
-    );
-  }
+    </div>
+  );
 }
 
 NodeList.propsTypes = {
   dataSource: PropTypes.array.isRequired,
-  visible: PropTypes.bool.isRequired,             // 组件是否可见
   nodeType: PropTypes.number.isRequired,          // 当前选中的node类型
   onDeleteBtnClick: PropTypes.func.isRequired,    // 删除按钮点击时触发的回调函数
   onRadioButtonChange: PropTypes.func.isRequired, // radio button改变时触发的回调函数

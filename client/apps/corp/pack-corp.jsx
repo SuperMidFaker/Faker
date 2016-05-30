@@ -44,23 +44,11 @@ export default class CorpPack extends React.Component {
       icon: 'zmdi zmdi-group',
       text: formatMsg(intl, 'organTitle')
     }, {
-      single: false,
+      single: true,
       key: 'corpsetting-4',
+      path: '/corp/partners',
       icon: 'zmdi zmdi-share',
-      text: formatMsg(intl, 'partnership'),
-      sublinks: [{
-        key: 'partner-1',
-        path: '/corp/partners',
-        text: formatMsg(intl, 'partners')
-      }, {
-        key: 'partner-2',
-        path: '/corp/partners/invitations/in',
-        text: formatMsg(intl, 'recvInvitations')
-      }, {
-        key: 'partner-3',
-        path: '/corp/partners/invitations/out',
-        text: formatMsg(intl, 'sentInvitations')
-      }]
+      text: formatMsg(intl, 'partnership')
     }, {
       single: false,
       key: 'corpsetting-5',

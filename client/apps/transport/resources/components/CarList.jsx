@@ -8,7 +8,7 @@ const rowSelection = {
 };
 
 export default function CarList(props) {
-  const { onAddCarBtnClick, dataSource, visible, onStopCarBtnClick, onResumeCarBtnClick } = props;
+  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick } = props;
 
   function editAndStopCarOperations(record) {
     return (
@@ -88,29 +88,23 @@ export default function CarList(props) {
       }
     }
   ];
-
-  if (visible) {
-    return (
-      <div className="main-content">
-        <div className="page-body">
-          <div className="panel-header">
-            <Button type="primary" onClick={onAddCarBtnClick}><Icon type="plus-circle-o" />新增车辆</Button>
-          </div>
-          <div className="panel-body padding">
-            <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
-          </div>
+  return (
+    <div className="main-content">
+      <div className="page-body">
+        <div className="panel-header">
+          <Button type="primary" onClick={onAddCarBtnClick}><Icon type="plus-circle-o" />新增车辆</Button>
+        </div>
+        <div className="panel-body padding">
+          <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
         </div>
       </div>
-    );
-  } else {
-    return <div></div>;
-  }
+    </div>
+  );
 }
 
 CarList.propTypes = {
   dataSource: PropTypes.array,
-  onAddCarBtnClick: PropTypes.func.isRequired,  // 点击新建车辆时触发的回调函数
-  visible: PropTypes.bool.isRequired,             // 组件是否可见
+  onAddCarBtnClick: PropTypes.func.isRequired,    // 点击新建车辆时触发的回调函数
   onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数
   onResumeCarBtnClick: PropTypes.func.isRequired, // 启用按钮点击后执行的回调函数
 };

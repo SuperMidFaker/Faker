@@ -132,6 +132,7 @@ export default class LandStatusList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
+    fixed: 'left',
     width: 150,
     render: (o, record) => {
       return (
@@ -140,9 +141,14 @@ export default class LandStatusList extends React.Component {
         />);
     }
   }, {
+    title: this.msg('shipmtException'),
+    fixed: 'left',
+    width: 140,
+    dataIndex: 'excp_level',
+  }, {
     title: this.msg('shipmtStatus'),
     dataIndex: 'status',
-    width: 140,
+    width: 100,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return `1 ${this.msg('pendingShipmt')}`;
@@ -184,10 +190,6 @@ export default class LandStatusList extends React.Component {
         ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
       }
     },
-  }, {
-    title: this.msg('shipmtException'),
-    width: 140,
-    dataIndex: 'excp_level',
   }, {
     title: this.msg('shipmtCarrier'),
     dataIndex: 'sp_name',
