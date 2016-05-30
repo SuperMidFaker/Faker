@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Icon, Button } from 'ant-ui';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
-import partnerModal from './PartnerModal';
+import partnerModal from './partnerModal';
 
 function handleEditBtnClick() {
 }

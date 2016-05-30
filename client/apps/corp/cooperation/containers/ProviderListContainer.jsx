@@ -4,6 +4,7 @@ import { Radio, Icon } from 'ant-ui';
 import BaseList from '../components/BaseList';
 import { inviteOnlPartner, setProviderType } from 'common/reducers/partner';
 import { providerShorthandTypes } from '../util/dataMapping';
+import partnerModal from '../components/partnerModal';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -26,10 +27,10 @@ export default class CustomerListContainer extends BaseList {
       title: '物流服务',
       dataIndex: 'providerTypes',
       key: 'providerTypes',
-      render(_, record) {
+      render: (_, record) => {
         return (
           <span>
-            {record.providerTypes.join(',')}<a><Icon type="edit"/></a>
+            {record.providerTypes.join(',')}<a onClick={this.handleEditProvider}><Icon type="edit"/></a>
           </span>
         );
       }
@@ -50,7 +51,7 @@ export default class CustomerListContainer extends BaseList {
     } else {
       dataSource = partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
     }
-    dataSource = dataSource.map(data => ({...data, providerTypes: data.types.map(type => providerShorthandTypes[type.code])}));
+    dataSource = dataSource.map(data => ({...data, providerTypes: data.types.map(pType => providerShorthandTypes[pType.code])}));
     return dataSource;
   }
   setHeader() {
@@ -70,5 +71,14 @@ export default class CustomerListContainer extends BaseList {
     this.props.setProviderType(providerType);
     this.type = providerType;
     this.setState({});  // TODO: avoid use setState() method
+  }
+  handleEditProvider = () => {
+    partnerModal({
+      mode: 'editProvider',
+      providerValues: ['CCB', 'TRS'],
+      onOk(checkedValues) {
+        console.log(checkedValues);
+      }
+    });
   }
 }
