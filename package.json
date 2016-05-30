@@ -7,7 +7,7 @@
     "clean": "rm -rf public/dist",
     "debug": "node --debug .",
     "lint": "eslint --ext .js --ext .jsx client server universal webpack",
-    "hot": "webpack-dev-server --config webpack/dev.js",
+    "hot": "node scripts/translation/buildcmd.js && webpack-dev-server --config webpack/dev.js",
     "build-dev": "NODE_ENV=production webpack --progress --profile --diplay-modules --display-origins --config webpack/dev.js",
     "dev": "nodemon --watch server",
     "start": "npm run clean & npm run hot &  npm run dev",
@@ -39,7 +39,7 @@
   "license": "MIT",
   "pre-commit": [],
   "dependencies": {
-    "ant-ui": "^1.2.1",
+    "ant-ui": "^1.2.2",
     "babel": "^5.8.38",
     "bcrypt": "^0.8.6",
     "classnames": "^2.2.5",

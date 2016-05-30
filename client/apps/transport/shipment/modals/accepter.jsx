@@ -51,9 +51,9 @@ export default class AccepterModal extends React.Component {
   handleCancel = () => {
     this.props.closeAcceptModal();
   }
-  handleSelect = (value, label) => {
+  handleSelect = ({ key, label }) => {
     this.setState({
-      disperId: value,
+      disperId: key,
       disperName: label,
     });
   }
@@ -66,7 +66,7 @@ export default class AccepterModal extends React.Component {
       >
         <Row>
           <Col span="18" offset="3">
-            <Select style={{width: '90%'}} onChange={this.handleSelect}>
+            <Select labelInValue style={{width: '90%'}} onChange={this.handleSelect}>
             {
               dispatchers.map(
                 disp =>

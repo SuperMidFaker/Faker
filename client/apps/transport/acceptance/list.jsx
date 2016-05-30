@@ -371,7 +371,7 @@ export default class AcceptList extends React.Component {
     } else if (radioValue === 'draft') {
       columns = [ ...columns, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
-        width: 100,
+        width: 110,
         fixed: 'right',
         render: (o, record) => {
           return (
