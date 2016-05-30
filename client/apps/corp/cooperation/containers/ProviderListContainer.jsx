@@ -15,7 +15,7 @@ const RadioGroup = Radio.Group;
   tenantId: state.account.tenantId,
   providerKey: state.partner.providerKey
 }), { inviteOnlPartner, setProviderType })
-export default class CustomerListContainer extends BaseList {
+export default class ProviderListContainer extends BaseList {
   constructor() {
     super();
     this.type = 'ALL';
@@ -30,7 +30,7 @@ export default class CustomerListContainer extends BaseList {
       render: (_, record) => {
         return (
           <span>
-            {record.providerTypes.join(',')}<a onClick={this.handleEditProvider}><Icon type="edit"/></a>
+            {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record.types.map(pType => pType.code))}><Icon type="edit"/></a>
           </span>
         );
       }
@@ -72,10 +72,10 @@ export default class CustomerListContainer extends BaseList {
     this.type = providerType;
     this.setState({});  // TODO: avoid use setState() method
   }
-  handleEditProvider = () => {
+  handleEditProvider = (providerTypes) => {
     partnerModal({
       mode: 'editProvider',
-      providerValues: ['CCB', 'TRS'],
+      providerValues: providerTypes,
       onOk(checkedValues) {
         console.log(checkedValues);
       }

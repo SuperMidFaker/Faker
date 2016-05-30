@@ -3,7 +3,8 @@
  * @param {config<Object>} 配置对象, 参数如下:
  * {
  *    onOk(value){}:           确认按钮按下后执行的函数,参数是当前选中的tenant对象
- *    partnerTenants<Array>:   用于下拉选项的tenants数组
+ *    partnerTenants<Array>:   在mode='add'模式下的下拉选项的tenants数组, add模式下需要
+ *    providerValues<Array>:   在mode='editProvider'模式下默认选中的provider types数组, editProvider模式下需要
  * }
  * @return {}
  */
@@ -69,7 +70,6 @@ function editProviderForm(props) {
   let { checkedProviderValues = [] } = props;
 
   function handleProvierChange(checkedValues) {
-    console.log('checked = ', checkedValues);
     checkedProviderValues = checkedValues;
     document.getElementById('yProviderBtn').disabled = checkedProviderValues.length === 0;
   }
@@ -132,28 +132,6 @@ function partnerModal(config) {
     const tenantOptions = props.partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
     body = addForm({onCancel, close, onOk: props.onOk, tenantOptions});
   }
-
-  // const body = (
-  //   <div>
-  //     <div className="ant-confirm-body">
-  //       <Form horizontal>
-  //         <FormItem {...formItemLayout} label="合作伙伴:">
-  //           <Select onChange={handleSelectedPartnerValueChange}>
-  //             {tenantOptions}
-  //           </Select>
-  //         </FormItem>
-  //       </Form>
-  //     </div>
-  //     <div className="ant-confirm-btns">
-  //       <Button type="ghost" size="large" onClick={onCancel}>
-  //         取消
-  //       </Button>
-  //       <Button type="primary" size="large" onClick={onOk}>
-  //         添加
-  //       </Button>
-  //     </div>
-  //   </div>
-  // );
 
   const classString = classNames({
     'ant-confirm': true,
