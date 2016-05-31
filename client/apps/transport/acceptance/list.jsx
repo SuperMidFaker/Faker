@@ -192,7 +192,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
-    width: 40,
+    width: 50,
     render: (o, record) => {
       if (record.source === SHIPMENT_SOURCE.consigned) {
         return this.msg('consginSource');
