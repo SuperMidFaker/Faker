@@ -10,11 +10,10 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Form, Select, Checkbox } from 'ant-ui';
+import { Modal, Button, Form, Checkbox, Input } from 'ant-ui';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 
 const formItemLayout = {
@@ -22,51 +21,61 @@ const formItemLayout = {
   wrapperCol: {span: 14}
 };
 
-function addForm(props) {
-  const { onCancel, close, partnerTenants } = props;
-  const tenantOptions = partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
-  let selectedPartnerValue;
+const options = [
+  {label: '货代', value: 'FWD'},
+  {label: '报关', value: 'CCB'},
+  {label: '运输', value: 'TRS'},
+  {label: '仓储', value: 'WHS'}
+];
 
-  function handleSelectedPartnerValueChange(value) {
-    selectedPartnerValue = partnerTenants.find(tenant => tenant.id === parseInt(value, 10));
-  }
-  function onOk() {
+function addForm(props) {
+  const { onCancel, close, isProvider } = props;
+  let { partnerships = [] } = props; // 新增物流提供商的时候才用的到
+
+  function onOk(e) {
+    e.preventDefault();
     close();
     if (props.onOk) {
-      props.onOk(selectedPartnerValue);
+      const partnerName = document.getElementById('yPartnerName').value;
+      const partnerCode = document.getElementById('yPartnerCode').value;
+      props.onOk({partnerName, partnerCode, partnerships});
     }
   }
-
+  function handleProviderChange(value) {
+    partnerships = value;
+  }
+  const providerCheckbox = (
+    <FormItem {...formItemLayout} label="物流提供商类型:" required>
+      <CheckboxGroup
+        options={options}
+        defaultValue={partnerships}
+        onChange={handleProviderChange}/>
+    </FormItem>
+  );
   return (
-    <div>
-      <div className="ant-confirm-body">
-        <Form horizontal>
-          <FormItem {...formItemLayout} label="添加合作伙伴:">
-            <Select onChange={handleSelectedPartnerValueChange}>
-              {tenantOptions}
-            </Select>
-          </FormItem>
-        </Form>
-      </div>
-      <div className="ant-confirm-btns">
-        <Button type="ghost" size="large" onClick={onCancel}>
-          取消
-        </Button>
-        <Button type="primary" size="large" onClick={onOk}>
-          添加
-        </Button>
-      </div>
+    <div className="ant-confirm-body">
+      <Form horizontal onSubmit={onOk}>
+        <FormItem {...formItemLayout} label="合作伙伴名称:" required>
+          <Input required id="yPartnerName"/>
+        </FormItem>
+        <FormItem {...formItemLayout} label="合作伙伴代码:" required>
+          <Input required id="yPartnerCode"/>
+        </FormItem>
+        {isProvider ? providerCheckbox : ''}
+        <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
+          <Button type="ghost" size="large" onClick={onCancel} style={{ marginRight: 12 }}>
+            取消
+          </Button>
+          <Button type="primary" size="large" htmlType="submit">
+            添加
+          </Button>
+        </FormItem>
+      </Form>
     </div>
   );
 }
 
 function editProviderForm(props) {
-  const options = [
-    {label: '货代', value: 'FWD'},
-    {label: '报关', value: 'CCB'},
-    {label: '运输', value: 'TRS'},
-    {label: '仓储', value: 'WHS'}
-  ];
   const { onCancel, close } = props;
   let { checkedProviderValues = [] } = props;
 
@@ -129,7 +138,7 @@ function partnerModal(config) {
   if (props.mode === 'editProvider') {
     body = editProviderForm({onCancel, close, onOk: props.onOk, checkedProviderValues: props.providerValues});
   } else {
-    body = addForm({onCancel, close, onOk: props.onOk, partnerTenants: props.partnerTenants});
+    body = addForm({onCancel, close, ...props});
   }
 
   const classString = classNames({

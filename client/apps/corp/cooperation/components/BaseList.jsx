@@ -90,16 +90,14 @@ export default class BaseList extends Component {
     this.type = 'CUS';
     this.partnerships = ['CUS'];
   }
-  onAddBtnClick = () => {
-    const { partnerTenants, tenantId } = this.props;
+  onAddBtnClick() {
+    const { tenantId } = this.props;
     let partnerships = this.partnerships;
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
     partnerModal({
-      partnerTenants,
-      onOk: (partnerTenant) => {
-        // this.props.inviteOnlPartner(tenantId, partnerTenant.id, partnerTenant.code, partnerships);
-        this.props.addPartner({tenantId, partnerTenantId: partnerTenant.id, partnerships});
-        message.success('合作邀请已发出');
+      onOk: (partnerInfo) => {
+        this.props.addPartner({tenantId, partnerInfo, partnerships});
+        message.success('合作伙伴已添加');
       }
     });
   }
@@ -134,7 +132,7 @@ export default class BaseList extends Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type="primary" onClick={this.onAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
+            <Button type="primary" onClick={this.onAddBtnClick.bind(this)}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
           </div>
           <div className="panel-body padding">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>

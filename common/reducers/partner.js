@@ -87,6 +87,7 @@ export default function reducer(state = initialState, action) {
       } };
     case actionTypes.SEND_INVITE_SUCCEED:
       return { ...state, inviteModal: { ...state.inviteModal, step: 2 } };
+    // above need to refactor
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey:action.selectedMenuItemKey };
     case actionTypes.SET_PROVIDER_TYPE:
@@ -106,6 +107,11 @@ export default function reducer(state = initialState, action) {
           data: [...originPartnerlist.slice(0, partnerTenantIndex), updatePartnerTenant, ...originPartnerlist.slice(partnerTenantIndex + 1)]
         }
       };
+    }
+    case actionTypes.ADD_PARTNER_SUCCEED: {
+      const { newPartner } = action.result.data;
+      const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
+      return { ...state, partnerlist: updatePartnerlist };
     }
     default:
       return state;
@@ -227,7 +233,7 @@ export function setProviderType(providerType) {
   };
 }
 
-export function editProviderTypes({tenantId, partnerTenantId, providerTypes}) {
+export function editProviderTypes({tenantId, partnerInfo, providerTypes}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -239,7 +245,7 @@ export function editProviderTypes({tenantId, partnerTenantId, providerTypes}) {
       method: 'post',
       data: {
         tenantId,
-        partnerTenantId,
+        partnerInfo,
         providerTypes
       }
     }
@@ -254,7 +260,7 @@ export function editProviderTypesLocal({key, providerTypes}) {
   };
 }
 
-export function addPartner({tenantId, partnerTenantId, partnerships}) {
+export function addPartner({tenantId, partnerInfo, partnerships}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -266,7 +272,7 @@ export function addPartner({tenantId, partnerTenantId, partnerships}) {
       method: 'post',
       data: {
         tenantId,
-        partnerTenantId,
+        partnerInfo,
         partnerships
       }
     }
