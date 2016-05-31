@@ -13,16 +13,31 @@ import {
 
 const vehicleTypes = [{
   id: '1',
-  name: '敞蓬车'
+  name: '牵引'
 }, {
   id: '2',
   name: '厢式车'
 }, {
   id: '3',
-  name: '两者均可'
+  name: '低栏'
 }, {
   id: '4',
-  name: '轿运车'
+  name: '高栏'
+}, {
+  id: '5',
+  name: '平板'
+}, {
+  id: '6',
+  name: '集装箱'
+}, {
+  id: '7',
+  name: '罐式车'
+}, {
+  id: '8',
+  name: '冷藏'
+}, {
+  id: '9',
+  name: '超宽车'
 }];
 
 const vehicleLengths = [{
@@ -34,6 +49,18 @@ const vehicleLengths = [{
 }, {
   id: '3',
   name: '5.2'
+}, {
+  id: '4',
+  name: '6.8'
+}, {
+  id: '5',
+  name: '9.6'
+}, {
+  id: '6',
+  name: '13'
+}, {
+  id: '7',
+  name: '17.5'
 }];
 
 const goodsTypes = [{
