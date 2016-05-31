@@ -8,7 +8,7 @@ const store = configureStore(window.__INITIAL_STATE__);
 if (__DEV__) {
   window.Perf = require('react/lib/ReactDefaultPerf');
 }
-const App = appWrapped(require('./routes'));
+const App = appWrapped(require('./routes'), true);
 ReactDom.render(
   <App routerHistory={browserHistory} store={store} />,
   document.getElementById('mount')

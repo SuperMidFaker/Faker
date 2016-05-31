@@ -515,7 +515,8 @@ export default class DispatchList extends React.Component {
         this.props.doSend(null, {
           tenantId,
           dispId: shipmt.key,
-          shipmtNo: shipmt.shipmt_no
+          shipmtNo: shipmt.shipmt_no,
+          parentId: shipmt.parent_id
         }).then(result => {
           if (result.error) {
             message.error(result.error.message, 5);
