@@ -85,13 +85,13 @@ export default class ProviderListContainer extends BaseList {
   }
   handleEditProvider = (record) => {
     const { tenantId } = this.props;
-    const { partnerTenantId } = record;
+    const partnerInfo = { partnerName: record.name, partnerCode: record.partnerCode, partnerTenantId: record.partnerTenantId };
     const providerValues = record.types.map(pType => pType.code);
     partnerModal({
       mode: 'editProvider',
       providerValues,
       onOk: (providerTypes) => {
-        this.props.editProviderTypes({tenantId, partnerTenantId, providerTypes});
+        this.props.editProviderTypes({tenantId, partnerInfo, providerTypes});
         this.props.editProviderTypesLocal({key: record.key, providerTypes});
         message.success('物流服务修改成功');
       }

@@ -158,7 +158,6 @@ export default {
       FROM sso_tenants where name = '${name}' AND (code = '${code}' OR sub_code = '${code}')
       Limit 1
     `;
-    console.log(sql);
     return mysql.query(sql);
   }
 };
