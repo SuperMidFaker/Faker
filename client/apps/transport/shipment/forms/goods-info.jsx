@@ -19,6 +19,14 @@ function asNumber(str) {
   const num = Number(str);
   return !isNaN(num) ? num : 0;
 }
+
+function showValue(val) {
+  if (val === null || val === undefined) {
+    return '';
+  } else {
+    return val;
+  }
+}
 function ColumnInput(props) {
   const { record, field, index, state, onChange } = props;
   function handleInputChange(ev) {
@@ -26,8 +34,8 @@ function ColumnInput(props) {
   }
   const selectedIndex = state.editGoodsIndex;
   return selectedIndex === index ?
-    <Input value={state.editGoods[field] || ''} onChange={handleInputChange} />
-    : <span>{record[field] || ''}</span>;
+    <Input value={showValue(state.editGoods[field])} onChange={handleInputChange} />
+    : <span>{showValue(record[field])}</span>;
 }
 ColumnInput.propTypes = {
   index: PropTypes.number.isRequired,
@@ -53,7 +61,7 @@ function ColumnSelect(props) {
     });
   }
   return selectedIndex === index ? (
-    <Select value={state.editGoods[field] || ''} onChange={handleChange}>
+    <Select value={showValue(state.editGoods[field])} onChange={handleChange}>
       {options.map(
         op => <Option value={op.value} key={op.key}>{op.name}</Option>
       )}
@@ -137,16 +145,22 @@ export default class GoodsInfo extends React.Component {
     });
   }
   handleGoodsSave = () => {
+    const { length, width, height } = this.state.editGoods;
+    const volume = asNumber(length) * asNumber(width) * asNumber(height);
     if (this.state.editGoodsIndex === this.props.goods.length) {
       // 新增
       this.props.saveLocalGoods({
         ...this.state.editGoods,
+        volume,
         key: `goodsinfinity${this.props.goods.length}`
       });
     } else {
       // 更新
       this.props.editLocalGoods(
-        this.state.editGoods,
+        {
+          ...this.state.editGoods,
+          volume,
+        },
         this.state.editGoodsIndex
       );
     }

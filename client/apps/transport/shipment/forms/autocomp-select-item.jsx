@@ -7,11 +7,20 @@ export default function AutoCompletionSelectItem(props) {
   const {
     labelName, field, colSpan, placeholder, required, rules,
     formhoc: { getFieldError, getFieldProps }, optionData,
-    optionField, optionKey, optionValue, allowClear,
-    onSelect, onChange,
+    optionField, optionKey, optionValue, filterFields = [],
+    allowClear, onSelect, onChange,
   } = props;
-  const getComboFilter = (input, option) =>
-    option.props.datalink[optionField].toLowerCase().indexOf(input.toLowerCase()) !== -1;
+  const getComboFilter = (input, option) => {
+    const optFields = [ ...filterFields, optionField ]; // fallback to optionField
+    for (let i = 0; i < optFields.length; i++) {
+      const fld = optFields[i];
+      const found = option.props.datalink[fld].toLowerCase().indexOf(input.toLowerCase()) !== -1;
+      if (found) {
+        return true;
+      }
+    }
+    return false;
+  };
   const handleComboSelect = (value) => {
     if (onSelect) {
       onSelect(value);
@@ -51,5 +60,6 @@ AutoCompletionSelectItem.propTypes = {
     optionData: PropTypes.array,
     optionField: PropTypes.string,
     optionValue: PropTypes.string,
-    optionKey: PropTypes.string
+    optionKey: PropTypes.string,
+    filterFields: PropTypes.array, // 优先筛选判断的字段名称列表
 };

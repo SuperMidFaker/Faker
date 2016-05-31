@@ -107,7 +107,7 @@ function genDispFilters(filter, tenantId) {
 }
 
 function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
-  let clause = '';
+  let clause = 'and effective = 1 and (disp_status = 1 or disp_status = 2)';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
     if (flt.name === 'shipmt_no') {
@@ -422,7 +422,7 @@ export default {
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
     const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
-      and effective = 1 and disp_status = 1 ${whereCond}`;
+      ${whereCond}`;
     return mysql.query(sql, args);
   },
   getTrackingShipments(tenantId, filters, pageSize, current) {
@@ -436,8 +436,8 @@ export default {
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
-      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
-      and disp_status = 1 ${whereCond} order by disp_time desc`;
+      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
+      ${whereCond} order by disp_time desc`;
     return mysql.query(sql, args);
   },
   getTrackingPodCount(tenantId, filters) {

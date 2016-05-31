@@ -159,8 +159,8 @@ export default {
     return mysql.update(sql, args, trans);
   },
   getPartnerByTypeCode(tenantId, typeCode) {
-    const sql = `select partner_tenant_id as tid, partner_name as name, partner_id
-      from sso_partnerships where tenant_id = ? and type_code = ?`;
+    const sql = `select partner_tenant_id as tid, partner_name as name, partner_id,
+      partner_code from sso_partnerships where tenant_id = ? and type_code = ?`;
     const args = [ tenantId, typeCode ];
     return mysql.query(sql, args);
   },

@@ -170,7 +170,8 @@ export default class ShipmentCreate extends React.Component {
     const clientOpts = clients.map(cl => ({
       key: `${cl.partner_id}/${cl.tid}`,
       value: `${cl.partner_id}`,
-      name: cl.name
+      code: cl.partner_code,
+      name: cl.name,
     }));
     return (
       <div className="main-content">
@@ -192,7 +193,7 @@ export default class ShipmentCreate extends React.Component {
             </div>
             <div className="subform-body">
               <AutoCompSelectItem formhoc={formhoc} placeholder={this.msg('client')} colSpan={0} field="client"
-                optionData={clientOpts} required
+                required optionData={clientOpts} filterFields={[ 'code' ]}
                 optionField="name" optionKey="key" optionValue="value"
                 rules={[{
                   required: true, message: this.msg('clientNameMust')
