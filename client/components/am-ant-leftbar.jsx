@@ -16,18 +16,22 @@ function hoverAmSubmenu() {
     } else {
       submenuUL.css('bottom', 0);
     }
-  })
+  });
+  /* eslint-enable */
 }
 function updateDimensions() {
   hoverAmSubmenu();
 }
 function isEqualPath(pathA, pathB) {
-  if (pathA.charAt(pathA.length - 1 ) !== '/') {
+  /* eslint-disable */
+  if (pathA.charAt(pathA.length - 1) !== '/') {
     pathA = `${pathA}/`;
   }
-  if (pathB.charAt(pathB.length - 1 ) !== '/') {
+  if (pathB.charAt(pathB.length - 1) !== '/') {
     pathB = `${pathB}/`;
   }
+
+  /* eslint-enable */
   return pathA === pathB;
 }
 export default class AmLeftSidebar extends React.Component {
@@ -52,6 +56,18 @@ export default class AmLeftSidebar extends React.Component {
     selectedKeys: [],
     openedKey: []
   };
+
+  componentDidMount() {
+    hoverAmSubmenu();
+    window.addEventListener('resize', updateDimensions);
+    this.setOpenSelectedKeys(this.props.location.pathname);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setOpenSelectedKeys(nextProps.location.pathname);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', updateDimensions);
+  }
   setOpenSelectedKeys(path) {
     for (let i = 0; i < this.props.links.length; i++) {
       const link = this.props.links[i];
@@ -76,17 +92,6 @@ export default class AmLeftSidebar extends React.Component {
         }
       }
     }
-  }
-  componentWillReceiveProps(nextProps) {
-    this.setOpenSelectedKeys(nextProps.location.pathname);
-  }
-  componentDidMount() {
-    hoverAmSubmenu();
-    window.addEventListener("resize", updateDimensions);
-    this.setOpenSelectedKeys(this.props.location.pathname);
-  }
-  componentWillUnmount() {
-    window.removeEventListener("resize", updateDimensions);
   }
   handleMenuSelect = ({ selectedKeys }) => {
     this.setState({ selectedKeys });
@@ -113,14 +118,14 @@ export default class AmLeftSidebar extends React.Component {
             if (link.single) {
               return (<MenuItem key={link.key}>
                 <NavLink to={ link.path }>
-                  <i className={ 'icon ' + link.icon }></i>
+                  <i className={ `icon  ${link.icon}` }></i>
                   <span>{link.text}</span>
                 </NavLink>
               </MenuItem>);
             } else {
               return (
                 <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'am-sidebar-submenu-expanded' : ''}
-                      title={<div><i className={ 'icon ' + link.icon }></i><span>{link.text}</span></div>}>
+                      title={<div><i className={ `icon  ${link.icon}` }></i><span>{link.text}</span></div>}>
                   {
                     link.sublinks.map(sub => {
                       return (<MenuItem key={sub.key}>

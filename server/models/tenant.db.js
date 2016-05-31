@@ -72,7 +72,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTenantByDomain(subdomain) {
-    const sql = 'select logo, code, name from sso_tenants where subdomain = ? and level = 1';
+    const sql = 'select logo, code, name from sso_tenants where subdomain = ? and level >= 1';
     const args = [subdomain];
     return mysql.query(sql, args);
   },

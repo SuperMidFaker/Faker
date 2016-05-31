@@ -22,11 +22,7 @@ export default [
    ['get', '/home', renderWebPage],
    ['get', '/login', renderWebPage],
    ['get', '/forgot', renderWebPage],
-   ['get', '/corp/*', renderWebPage],
-   ['get', '/inventory*', renderWebPage],
-   ['get', '/transport*', renderWebPage],
-   ['get', '/import*', renderWebPage],
-   ['get', '/export*', renderWebPage],
+   ['get', '/manager*', renderWebPage],
    ['get', '/account/password', renderWebPage],
    ['get', '/account/profile', renderWebPage],
    ['get', '/account/logout', logoutUser]
