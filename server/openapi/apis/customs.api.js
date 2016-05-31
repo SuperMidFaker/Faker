@@ -264,8 +264,10 @@ function *partnersImport() {
           yield tenantUserDao.insertPersonnel(0, uid, {name: '', role: TENANT_ROLE.owner.name}, {id: tid, parentId: 0});
         }
 
-        yield [copsDao.insertPartner(stenantId, tid, ppcode, p.name, PARTNER_TENANT_TYPE[0], 1),
-          copsDao.insertPartner(tid, stenantId, spcode, name, PARTNER_TENANT_TYPE[0], 1)];
+        const results = yield [
+          copsDao.insertPartner(stenantId, tid, ppcode, p.name, PARTNER_TENANT_TYPE[0], 1),
+          copsDao.insertPartner(tid, stenantId, spcode, name, PARTNER_TENANT_TYPE[0], 1)
+        ];
 
         if (isArray(part.ships) && part.ships.length > 0) {
           const arr1 = [];
@@ -279,8 +281,10 @@ function *partnersImport() {
             arr1.push({key: v.type, code: v.type_code});
           });
 
-          yield [copsDao.insertPartnership(stenantId, tid, ppcode, p.name, arr1),
-            copsDao.insertPartnership(tid, stenantId, spcode, name, arr2)];
+          yield [
+            copsDao.insertPartnership(results[0].insertId, stenantId, tid, ppcode, p.name, arr1),
+            copsDao.insertPartnership(results[0].insertId, tid, stenantId, spcode, name, arr2),
+          ];
         }
       }
     }

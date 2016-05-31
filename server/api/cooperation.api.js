@@ -345,16 +345,14 @@ function *sendOfflineInvitation() {
 
 function *editProviderTypes() {
   const body = yield cobody(this);
-  const { tenantId, partnerTenantId, providerTypes } = body;
+  const { tenantId, partnerInfo, providerTypes } = body;
+  const { partnerTenantId, partnerName, partnerCode } = partnerInfo;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const partnerships = providerTypes.map(type => ({key: PARTNERSHIP[type], code: type}));
-    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfo(partnerTenantId);
-    console.log(partnerTenantInfo);
     // 更改关系时,先删除原有的关系,再插入新的关系
-    yield coopDao.removePartnerships(tenantId, partnerTenantId, trans);
-    yield coopDao.insertPartnership(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, partnerships, trans);
+    yield coopDao.removePartnerships(tenantId, partnerName, partnerCode, trans);
+    yield coopDao.insertPartnerships(tenantId, partnerTenantId, partnerName, partnerCode, providerTypes, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
@@ -365,16 +363,28 @@ function *editProviderTypes() {
 
 function *addPartner() {
   const body = yield cobody(this);
-  const { tenantId, partnerTenantId, partnerships: partnerTypes } = body;
-  const partnerships = partnerTypes.map(type => ({key: PARTNERSHIP[type], code: type}));
+  const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
+  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership}))}; // 返回给客户端的新增partner
+  let addPartnerResult;
   let trans;
   try {
-    console.log(body);
-    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfo(partnerTenantId);
-    yield coopDao.insertPartner(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, PARTNER_TENANT_TYPE[partnerTenantInfo.level], 1, trans);
-    yield coopDao.insertPartnership(tenantId, partnerTenantId, partnerTenantInfo.code, partnerTenantInfo.name, partnerships, trans);
+    // 根据partner的name和code查询是否存在这个租户,不存在就创建一个线下的partner,如果存在则根据线上用户的信息创建partner
+    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfoWithNameAndCode(partnerName, partnerCode);
+    if (partnerTenantInfo) { // 存在
+      const partnerTenantId = partnerTenantInfo.tenant_id;
+      const tenantType = PARTNER_TENANT_TYPE[partnerTenantInfo.level];
+      addPartnerResult = yield coopDao.insertPartner(tenantId, partnerTenantInfo.tenant_id, partnerCode, partnerName, tenantType, 0, trans);
+      yield coopDao.insertPartnerships(tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
+      newPartner = {...newPartner, partnerTenantId, tenantType };
+    } else {
+      addPartnerResult = yield coopDao.insertPartner(tenantId, -1, partnerCode, partnerName, PARTNER_TENANT_TYPE[3], 0, trans);
+      yield coopDao.insertPartnerships(tenantId, -1, partnerName, partnerCode, partnerships, trans);
+      newPartner = {...newPartner, partnerTenantId: -1, tenantType: PARTNER_TENANT_TYPE[3] };
+    }
+    // add `key` to newPartner
+    newPartner.key = addPartnerResult.insertId;
     yield mysql.commit(trans);
-    return Result.ok(this);
+    return Result.ok(this, { newPartner });
   } catch(e) {
     yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
