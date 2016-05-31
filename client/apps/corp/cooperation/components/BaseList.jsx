@@ -91,14 +91,12 @@ export default class BaseList extends Component {
     this.partnerships = ['CUS'];
   }
   onAddBtnClick = () => {
-    const { partnerTenants, tenantId } = this.props;
+    const { tenantId } = this.props;
     let partnerships = this.partnerships;
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
     partnerModal({
-      partnerTenants,
-      onOk: (partnerTenant) => {
-        // this.props.inviteOnlPartner(tenantId, partnerTenant.id, partnerTenant.code, partnerships);
-        this.props.addPartner({tenantId, partnerTenantId: partnerTenant.id, partnerships});
+      onOk: (partnerInfo) => {
+        this.props.addPartner({tenantId, partnerInfo, partnerships});
         message.success('合作邀请已发出');
       }
     });

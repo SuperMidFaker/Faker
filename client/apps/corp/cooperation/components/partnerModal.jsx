@@ -10,11 +10,10 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Form, Select, Checkbox } from 'ant-ui';
+import { Modal, Button, Form, Checkbox, Input } from 'ant-ui';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 
 const formItemLayout = {
@@ -23,39 +22,36 @@ const formItemLayout = {
 };
 
 function addForm(props) {
-  const { onCancel, close, partnerTenants } = props;
-  const tenantOptions = partnerTenants.map((tenant, index) => <Option value={tenant.id} key={index}>{tenant.name}</Option>);
-  let selectedPartnerValue;
+  const { onCancel, close } = props;
 
-  function handleSelectedPartnerValueChange(value) {
-    selectedPartnerValue = partnerTenants.find(tenant => tenant.id === parseInt(value, 10));
-  }
-  function onOk() {
+  function onOk(e) {
+    e.preventDefault();
     close();
     if (props.onOk) {
-      props.onOk(selectedPartnerValue);
+      const partnerName = document.getElementById('yPartnerName').value;
+      const partnerCode = document.getElementById('yPartnerCode').value;
+      props.onOk({partnerName, partnerCode});
     }
   }
 
   return (
-    <div>
-      <div className="ant-confirm-body">
-        <Form horizontal>
-          <FormItem {...formItemLayout} label="添加合作伙伴:">
-            <Select onChange={handleSelectedPartnerValueChange}>
-              {tenantOptions}
-            </Select>
-          </FormItem>
-        </Form>
-      </div>
-      <div className="ant-confirm-btns">
-        <Button type="ghost" size="large" onClick={onCancel}>
-          取消
-        </Button>
-        <Button type="primary" size="large" onClick={onOk}>
-          添加
-        </Button>
-      </div>
+    <div className="ant-confirm-body">
+      <Form horizontal onSubmit={onOk}>
+        <FormItem {...formItemLayout} label="合作伙伴名称:" required>
+          <Input required id="yPartnerName"/>
+        </FormItem>
+        <FormItem {...formItemLayout} label="合作伙伴代码:" required>
+          <Input required id="yPartnerCode"/>
+        </FormItem>
+        <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
+          <Button type="ghost" size="large" onClick={onCancel} style={{ marginRight: 12 }}>
+            取消
+          </Button>
+          <Button type="primary" size="large" htmlType="submit">
+            添加
+          </Button>
+        </FormItem>
+      </Form>
     </div>
   );
 }
