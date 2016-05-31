@@ -58,7 +58,8 @@ export default class ScheduleInfo extends React.Component {
               'deliver_est_date', { rules: [{
                 required: true, message: this.msg('deliveryDateMust'), type: 'date'
               }]}
-            )} />
+            )}
+            />
           </FormItem>
         </Col>
       </Row>

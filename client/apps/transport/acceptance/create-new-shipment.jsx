@@ -143,6 +143,13 @@ export default class ShipmentCreate extends React.Component {
   }
   handleDraftSave = (ev) => {
     ev.preventDefault();
+    if (!this.props.formData.consigner_name || !this.props.formData.consignee_name) {
+      this.props.formhoc.validateFields([
+        'consigner_name',
+        'consignee_name',
+      ]);
+      return;
+    }
     this.props.saveDraft(
       this.props.formData, {
         tid: this.props.tenantId,

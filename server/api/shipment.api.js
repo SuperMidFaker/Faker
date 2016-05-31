@@ -179,7 +179,7 @@ function *shipmtSaveAcceptP() {
     const result = yield shipmentDispDao.createAndAcceptByLSP(
       shipmtNo, shipmt.client_id, shipmt.client, shipmt.client_partner_id,
       SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
-      sp.login_name, SHIPMENT_DISPATCH_STATUS.confirmed,
+      sp.login_name, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipmt.freight_charge, new Date(), trans
     );
     yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
@@ -206,8 +206,8 @@ function *shipmtDispatchersG() {
 function *shipmtAcceptP() {
   let trans;
   try {
-    trans = yield mysql.beginTransaction();
     const body = yield cobody(this);
+    trans = yield mysql.beginTransaction();
     yield [
       shipmentDispDao.updateAcptDisperInfo(
         body.shipmtDispId, body.acptId, body.acptName,
@@ -249,8 +249,8 @@ function *shipmtDraftP() {
   const sp = body.sp;
   let trans;
   try {
-    trans = yield mysql.beginTransaction();
     const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
+    trans = yield mysql.beginTransaction();
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.draft, trans);
     yield mysql.commit(trans);
     return Result.ok(this, shipmt);
@@ -290,7 +290,7 @@ function *shipmtDraftSaveAcceptP() {
       shipmt_no, shipment.customer_tenant_id, shipment.customer_name,
       shipment.customer_partner_id, SHIPMENT_SOURCE.consigned,
       shipment.lsp_tenant_id, shipment.lsp_name, shipment.lsp_partner_id,
-      loginId, loginName, SHIPMENT_DISPATCH_STATUS.confirmed,
+      loginId, loginName, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipment.freight_charge,
       new Date(), trans
     );
@@ -448,8 +448,8 @@ export default [
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
   [ 'post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
-  [ 'get', '/v1/transport/shipment/draft', shipmtDraftG ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
+  [ 'get', '/v1/transport/shipment/draft', shipmtDraftG ],
   [ 'post', '/v1/transport/shipment/draft/saveaccept', shipmtDraftSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/draft/del', shipmtDraftDelP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],

@@ -102,24 +102,30 @@ export default class ShipmentDraftEdit extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleDraftAccept = (ev) => {
-    const { formData, loginId, loginName, tenantId } = this.props;
     ev.preventDefault();
-    this.props.acceptDraft(formData, loginId, loginName, tenantId)
-      .then(result => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.context.router.goBack();
-          this.props.loadTable(null, {
-            tenantId: this.props.tenantId,
-            pageSize: this.props.pageSize,
-            currentPage: this.props.current,
-            filters: JSON.stringify(this.props.filters),
-            sortField: this.props.sortField,
-            sortOrder: this.props.sortOrder,
-          });
-        }
-      });
+    this.props.formhoc.validateFields(errors => {
+      if (errors) {
+        message.error(this.msg('formError'));
+      } else {
+        const { formData, loginId, loginName, tenantId } = this.props;
+        this.props.acceptDraft(formData, loginId, loginName, tenantId)
+        .then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.context.router.goBack();
+            this.props.loadTable(null, {
+              tenantId: this.props.tenantId,
+              pageSize: this.props.pageSize,
+              currentPage: this.props.current,
+              filters: JSON.stringify(this.props.filters),
+              sortField: this.props.sortField,
+              sortOrder: this.props.sortOrder,
+            });
+          }
+        });
+      }
+    });
   }
   render() {
     const { intl, submitting, formhoc } = this.props;

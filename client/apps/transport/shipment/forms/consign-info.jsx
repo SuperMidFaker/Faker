@@ -70,6 +70,21 @@ export default class ConsignInfo extends React.Component {
       });
     }
   }
+  handleAutoInputChange = (val) => {
+    if (val === undefined || val === '') {
+      const consignKey = `${this.props.type}_id`;
+      this.props.setFormValue(consignKey, undefined);
+      this.props.formhoc.setFieldsValue({
+        [this.renderFields.addr]: undefined,
+        [this.renderFields.province]: undefined,
+        [this.renderFields.city]: undefined,
+        [this.renderFields.district]: undefined,
+        [this.renderFields.contact]: undefined,
+        [this.renderFields.mobile]: undefined,
+        [this.renderFields.email]:undefined,
+      });
+    }
+  }
   handleRegionValue = (field, value) => {
     if (field === 'province') {
       this.props.setFormValue(this.renderFields.province, value);
@@ -120,7 +135,6 @@ export default class ConsignInfo extends React.Component {
       city: formhoc.getFieldValue(this.renderFields.city),
       county: formhoc.getFieldValue(this.renderFields.district)
     };
-    // todo replace selected consign remove consigne()_id
     return (
       <Row>
         <div className="subform-heading">
@@ -133,6 +147,7 @@ export default class ConsignInfo extends React.Component {
               required: true, message: this.msg('consignNameMessage')
             }]} optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
+            allowClear onChange={this.handleAutoInputChange}
           />
           <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 3}}
             wrapperCol={{span: 21}}

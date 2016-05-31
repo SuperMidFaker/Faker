@@ -328,17 +328,17 @@ export default {
   },
   createAndAcceptByLSP(
     shipmtNo, clientId, client, srPartnerId, source, tenantId, tenantName,
-    spPartnerId, loginId, loginName, confirmSt, dispSt, freightCharge,
+    spPartnerId, loginId, loginName, podType, confirmSt, dispSt, freightCharge,
     acpTime, trans
   ) {
     const sql = `insert into tms_shipment_dispatch (shipmt_no, sr_tenant_id, sr_name,
       sr_partner_id, source, sp_tenant_id, sp_name, sp_partner_id, sp_acpt_login_id,
-      sp_acpt_login_name, sp_disp_login_id, sp_disp_login_name,
+      sp_acpt_login_name, sp_disp_login_id, sp_disp_login_name, pod_type,
       acpt_time, disp_status, status, freight_charge) values (?)`;
     const args = [
       shipmtNo, clientId, client, srPartnerId, source, tenantId, tenantName,
-      spPartnerId, loginId, loginName, loginId, loginName, acpTime, confirmSt,
-      dispSt, freightCharge || 0.0
+      spPartnerId, loginId, loginName, loginId, loginName, podType, acpTime,
+      confirmSt, dispSt, freightCharge || 0.0,
     ];
     return mysql.insert(sql, [args], trans);
   },

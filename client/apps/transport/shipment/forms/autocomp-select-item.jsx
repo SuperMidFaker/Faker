@@ -7,7 +7,8 @@ export default function AutoCompletionSelectItem(props) {
   const {
     labelName, field, colSpan, placeholder, required, rules,
     formhoc: { getFieldError, getFieldProps }, optionData,
-    onSelect, optionField, optionKey, optionValue
+    optionField, optionKey, optionValue, allowClear,
+    onSelect, onChange,
   } = props;
   const getComboFilter = (input, option) =>
     option.props.datalink[optionField].toLowerCase().indexOf(input.toLowerCase()) !== -1;
@@ -21,7 +22,8 @@ export default function AutoCompletionSelectItem(props) {
       wrapperCol={{span: 24 - colSpan}} help={getFieldError(field)}
     >
       <Select combobox filterOption={getComboFilter} placeholder={placeholder}
-        {...getFieldProps(field, { rules })} onSelect={handleComboSelect}
+        {...getFieldProps(field, { onChange, rules })} onSelect={handleComboSelect}
+        allowClear={allowClear}
       >
         {
           optionData.map(
@@ -43,6 +45,7 @@ AutoCompletionSelectItem.propTypes = {
     formhoc: PropTypes.object,
     placeholder: PropTypes.string,
     required: PropTypes.bool,
+    allowClear: PropTypes.bool,
     rules: PropTypes.array,
     onSelect: PropTypes.func,
     optionData: PropTypes.array,

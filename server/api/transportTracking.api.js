@@ -142,19 +142,18 @@ function *trackingPodAuditP() {
     const body = yield cobody(this);
     const { podId, dispId, parentDispId, auditor } = body;
     trans = yield mysql.beginTransaction();
-    yield [
-      // 更新当前调度为pod被审核接受
+    // 默认当前pod为审核接受已提交
+    let currPodStatus = SHIPMENT_POD_STATUS.acceptByUs;
+    if (!parentDispId) {
+      // 当前为货主时,直接修改为客户已接受
+      currPodStatus = SHIPMENT_POD_STATUS.acceptByClient;
+    }
+    const dbUpdates = [
+      // 更新当前调度pod状态
       shipmentDispDao.updateDispInfo(dispId, {
         auditor,
         audit_date: new Date(),
-        pod_status: SHIPMENT_POD_STATUS.acceptByUs,
-      }, trans),
-      // 上级调度为pod待审核
-      shipmentDispDao.updateDispInfo(parentDispId, {
-        pod_recv_date: new Date(),
-        pod_id: podId,
-        pod_status: SHIPMENT_POD_STATUS.pending,
-        status: SHIPMENT_TRACK_STATUS.podsubmit,
+        pod_status: currPodStatus,
       }, trans),
       // 下级调度为pod已接受
       shipmentDispDao.updateDispByParentId(dispId, {
@@ -162,7 +161,20 @@ function *trackingPodAuditP() {
         pod_acpt_date: new Date(),
         status: SHIPMENT_TRACK_STATUS.podaccept,
       }, trans),
-    ]
+    ];
+    if (parentDispId) {
+      // 如果存在上游客户,上级调度为pod待审核
+      dbUpdates.push(
+        shipmentDispDao.updateDispInfo(
+          parentDispId, {
+            pod_recv_date: new Date(),
+            pod_id: podId,
+            pod_status: SHIPMENT_POD_STATUS.pending,
+            status: SHIPMENT_TRACK_STATUS.podsubmit,
+        }, trans)
+      );
+    }
+    yield dbUpdates;
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
