@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, RouterContext } from 'react-router';
 
-export default function appWrapped(routes) {
+export default (routes, dynamic) => {
   class App extends Component {
     static propTypes = {
       store: PropTypes.object.isRequired,
@@ -10,10 +10,15 @@ export default function appWrapped(routes) {
       routerHistory: PropTypes.object
     }
 
-    renderRouter () {
+    renderRouter() {
       if (this.props.routingContext) {
         return <RouterContext {...this.props.routingContext} />;
       } else {
+        if (dynamic) {
+          return (
+            <Router history={this.props.routerHistory} routes={routes} />
+          );
+        }
         return (
           <Router history={this.props.routerHistory}>
           {routes(this.props.store)}
@@ -22,7 +27,7 @@ export default function appWrapped(routes) {
       }
     }
 
-    render () {
+    render() {
       const { store } = this.props;
       return (
         <Provider store={store}>
@@ -35,4 +40,4 @@ export default function appWrapped(routes) {
   }
 
   return App;
-}
+};

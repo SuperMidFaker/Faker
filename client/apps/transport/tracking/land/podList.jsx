@@ -202,9 +202,9 @@ export default class LandStatusList extends React.Component {
       ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
     },
   }, {
-    title: this.msg('shipmtException'),
-    width: 140,
-    dataIndex: 'excp_level',
+    title: this.msg('shipmtCustomer'),
+    dataIndex: 'customer_name',
+    width: 200
   }, {
     title: this.msg('shipmtCarrier'),
     dataIndex: 'sp_name',
@@ -237,6 +237,10 @@ export default class LandStatusList extends React.Component {
     dataIndex: 'task_vehicle',
     width: 120
   }, {
+    title: this.msg('shipmtException'),
+    width: 140,
+    dataIndex: 'excp_level',
+  }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
     width: 50
@@ -248,10 +252,6 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
     width: 50
-  }, {
-    title: this.msg('shipmtCustomer'),
-    dataIndex: 'customer_name',
-    width: 200
   }, {
     title: this.msg('departurePlace'),
     width: 150,
