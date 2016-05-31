@@ -254,7 +254,7 @@ export function editProviderTypesLocal({key, providerTypes}) {
   };
 }
 
-export function addPartner({tenantId, partnerTenantId, partnerships}) {
+export function addPartner({tenantId, partnerInfo, partnerships}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -266,7 +266,7 @@ export function addPartner({tenantId, partnerTenantId, partnerships}) {
       method: 'post',
       data: {
         tenantId,
-        partnerTenantId,
+        partnerInfo,
         partnerships
       }
     }

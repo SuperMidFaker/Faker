@@ -184,6 +184,7 @@ export default {
     `;
     return mysql.query(sql);
   },
+  // TODO: above db opetaion need to refactor
   removePartnerships(tenantId, partnerTenantId, trans) {
     const sql = `DELETE FROM sso_partnerships WHERE tenant_id = ${tenantId} AND partner_tenant_id = ${partnerTenantId};`;
     return mysql.query(sql, [], trans);

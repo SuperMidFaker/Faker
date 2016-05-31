@@ -151,5 +151,14 @@ export default {
   },
   bindSubTenant(masterTenantId, masterCode) {
     return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and sub_code is not null and sub_code != ''`, [masterTenantId, masterCode]);
+  },
+  getTenantInfoWithNameAndCode(name, code) {
+    const sql = `
+      SELECT tenant_id, name, level, code, sub_code as subCode
+      FROM sso_tenants where name = '${name}' AND (code = '${code}' OR sub_code = '${code}')
+      Limit 1
+    `;
+    console.log(sql);
+    return mysql.query(sql);
   }
 };
