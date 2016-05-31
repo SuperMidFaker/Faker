@@ -19,7 +19,8 @@ import {
   PARTNERSHIP_TYPE_INFO,
   SHIPMENT_SOURCE,
   SHIPMENT_DISPATCH_STATUS,
-  SHIPMENT_TRACK_STATUS
+  SHIPMENT_TRACK_STATUS,
+  SHIPMENT_VEHICLE_CONNECT
 } from 'common/constants';
 import parse from 'co-body';
 /**
@@ -159,6 +160,7 @@ function *doDispatch() {
       disp.sp_name = partnerName;
       disp.freight_charge = freightCharge;
       if (disp.sp_tenant_id === -1 || !disp.sp_tenant_id) {
+        disp.acpt_time = new Date();
         disp.status = SHIPMENT_TRACK_STATUS.undispatched;
       }
     } else {
@@ -169,19 +171,12 @@ function *doDispatch() {
       disp.vehicle_connect_type = connectType;
       disp.task_driver_id = taskDriverId;
       disp.task_driver_name = taskDriverName;
-    }
-    // 更新之前dispatch记录的状态和时间
-    const upstatus = {
-      status: SHIPMENT_TRACK_STATUS.undelivered,
-      disp_time: new Date(),
-      wheres: {
-        sp_tenant_id: tenantId,
-        shipmt_no: shipmtNo,
-        id: parentId
+      if (connectType === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+        disp.status = SHIPMENT_TRACK_STATUS.undelivered;
       }
-    };
+    }
 
-    arr.push(shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus));
+    arr.push(shipmtDispDao.addDisp(disp));
   });
 
   yield arr;
@@ -191,7 +186,18 @@ function *doDispatch() {
  * 分配承运商后确认分配
  */
 function *doSend() {
-  const { tenantId, dispId, shipmtNo } = yield parse(this.req);
+  const { tenantId, dispId, shipmtNo, parentId } = yield parse(this.req);
+  // 更新之前dispatch记录的状态和时间
+  const upParentStatus = {
+    status: SHIPMENT_TRACK_STATUS.undelivered,
+    disp_time: new Date(),
+    wheres: {
+      sp_tenant_id: tenantId,
+      shipmt_no: shipmtNo,
+      id: parentId
+    }
+  };
+
   const upstatus = {
     disp_status: SHIPMENT_DISPATCH_STATUS.confirmed,
     disp_time: new Date(),
@@ -202,7 +208,7 @@ function *doSend() {
     }
   };
 
-  yield shipmtDispDao.updateDisp(upstatus);
+  yield [shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus)];
   Result.ok(this);
 }
 /**
