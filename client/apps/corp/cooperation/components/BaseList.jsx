@@ -97,7 +97,7 @@ export default class BaseList extends Component {
     partnerModal({
       onOk: (partnerInfo) => {
         this.props.addPartner({tenantId, partnerInfo, partnerships});
-        message.success('合作邀请已发出');
+        message.success('合作伙伴已添加');
       }
     });
   }

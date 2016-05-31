@@ -87,6 +87,7 @@ export default function reducer(state = initialState, action) {
       } };
     case actionTypes.SEND_INVITE_SUCCEED:
       return { ...state, inviteModal: { ...state.inviteModal, step: 2 } };
+    // above need to refactor
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey:action.selectedMenuItemKey };
     case actionTypes.SET_PROVIDER_TYPE:
@@ -106,6 +107,11 @@ export default function reducer(state = initialState, action) {
           data: [...originPartnerlist.slice(0, partnerTenantIndex), updatePartnerTenant, ...originPartnerlist.slice(partnerTenantIndex + 1)]
         }
       };
+    }
+    case actionTypes.ADD_PARTNER_SUCCEED: {
+      const { newPartner } = action.result.data;
+      const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
+      return { ...state, partnerlist: updatePartnerlist };
     }
     default:
       return state;
