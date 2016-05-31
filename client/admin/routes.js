@@ -1,7 +1,7 @@
 import React from 'react';
-import { Route, IndexRoute, IndexRedirect } from 'react-router';
+import { Route, IndexRoute } from 'react-router';
 import Root from 'client/apps/root';
-import Home from 'client/apps/home';
+import Home from 'client/admin/home';
 import SSO from 'client/apps/sso/pack-sso';
 import Login from 'client/apps/sso/login';
 import Forgot from 'client/apps/sso/forgot';
@@ -10,6 +10,7 @@ import MyProfile from 'client/apps/account/profile';
 import Password from 'client/apps/account/password';
 import {loadAccount} from 'common/reducers/account';
 import {isLoaded} from 'client/common/redux-actions';
+import Manager from './manager';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -50,6 +51,7 @@ export default(store, cookie) => {
           <Route path="profile" component={MyProfile}/>
           <Route path="password" component={Password}/>
         </Route>
+        <Route path="manager" component={Manager}/>
       </Route>
     </Route>
   );

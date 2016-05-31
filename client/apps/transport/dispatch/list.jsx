@@ -20,6 +20,8 @@ import containerMessages from 'client/apps/message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
+import { loadShipmtDetail } from 'common/reducers/shipment';
+import PreviewPanel from '../shipment/modals/preview-panel';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -57,7 +59,8 @@ const formatContainerMsg = format(containerMessages);
     loadExpandList,
     loadShipmtsGrouped,
     loadShipmtsGroupedSub,
-    removeGroupedSubShipmt })
+    removeGroupedSubShipmt,
+    loadShipmtDetail })
 export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -76,7 +79,8 @@ export default class DispatchList extends React.Component {
     loadExpandList: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
     expandList: PropTypes.array.isRequired,
-    cond: PropTypes.object.isRequired
+    cond: PropTypes.object.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -166,8 +170,8 @@ export default class DispatchList extends React.Component {
     const { status, origin } = this.props.filters;
     const s = status;
     let t = this.msg('shipNo');
-    let fixedLeft = 'left';
-    let fixedRight = 'right';
+    let fixedLeft = false;
+    let fixedRight = false;
     if (origin) {
       t = this.msg('originShipNo');
     }
@@ -184,7 +188,13 @@ export default class DispatchList extends React.Component {
       title: t,
       dataIndex: 'shipmt_no',
       fixed: fixedLeft,
-      width: 150
+      width: 150,
+      render: (o, record) => {
+        if (!sub) {
+          return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+        }
+        return (<span>{o}</span>);
+      }
     }];
     if (s === 'waiting') {
       cols.push({
@@ -288,7 +298,7 @@ export default class DispatchList extends React.Component {
         fixed: fixedRight,
         render: (o, record) => {
           if (s === 'dispatched') {
-            if (record.disp_status === 3) {
+            if (record.disp_status === 2) {
               return (<span><a role="button" onClick={() => this.handleShipmtReturn(record)}>
                       {this.msg('btnTextReturn')}</a></span>);
             }
@@ -344,7 +354,6 @@ export default class DispatchList extends React.Component {
     }, {
         title: this.msg('shipmtOP'),
         width: 100,
-        fixed: 'right',
         render: (o, record) => {
           return (
             <span>
@@ -369,6 +378,14 @@ export default class DispatchList extends React.Component {
 
   msgWrapper = (s) => {
     return this.msg(s);
+  }
+
+  handleShipmtPreview(shipmtNo) {
+    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp').then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
   }
 
   handleStatusChange = (ev) => {
@@ -529,6 +546,7 @@ export default class DispatchList extends React.Component {
   }
 
   handleShipmtReturn(shipmt) {
+    const { status } = this.props.filters;
     let msg = `确定退回分配给【${shipmt.sp_name}】承运商的【${shipmt.shipmt_no}】的运单？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
       msg = `确定退回分配给【${shipmt.task_vehicle}】的【${shipmt.shipmt_no}】的运单？`;
@@ -549,7 +567,7 @@ export default class DispatchList extends React.Component {
           if (result.error) {
             message.error(result.error.message, 5);
           } else {
-            this.handleStatusChange({target:{value: 'dispatching'}});
+            this.handleStatusChange({target:{value: status}});
           }
         });
       }
@@ -841,7 +859,7 @@ export default class DispatchList extends React.Component {
             </Button>
           </div>
         </div>
-
+        <PreviewPanel />
         <DispatchDock key="dispDock"
           show={this.state.show}
           shipmts={this.state.shipmts}
