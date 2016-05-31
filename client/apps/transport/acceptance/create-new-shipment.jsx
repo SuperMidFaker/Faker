@@ -143,26 +143,20 @@ export default class ShipmentCreate extends React.Component {
   }
   handleDraftSave = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields(errors => {
-      if (errors) {
-        message.error(this.msg('formError'));
-      } else {
-        this.props.saveDraft(
-          this.props.formData, {
-            tid: this.props.tenantId,
-            name: this.props.tenantName,
-            login_id: this.props.loginId,
-            login_name: this.props.loginName,
-          }).then(
-          result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.context.router.goBack();
-            }
-          });
-      }
-    });
+    this.props.saveDraft(
+      this.props.formData, {
+        tid: this.props.tenantId,
+        name: this.props.tenantName,
+        login_id: this.props.loginId,
+        login_name: this.props.loginName,
+      }).then(
+      result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.goBack();
+        }
+      });
   }
   render() {
     const { intl, clients, submitting, tenantName, formhoc } = this.props;

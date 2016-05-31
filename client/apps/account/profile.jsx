@@ -138,7 +138,7 @@ export default class MyProfile extends React.Component {
               [{required: true, min: 2, message: cmsg('fullNameMessage')}]
             )}
             <FormItem label={cmsg('username')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-              help={getFieldError('loginName')} hasFeedback required>
+              help={getFieldError('loginName')} hasFeedback={false} required>
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('username', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(

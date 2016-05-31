@@ -437,7 +437,7 @@ export default {
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
-      and disp_status = 1 ${whereCond}`;
+      and disp_status = 1 ${whereCond} order by disp_time desc`;
     return mysql.query(sql, args);
   },
   getTrackingPodCount(tenantId, filters) {
