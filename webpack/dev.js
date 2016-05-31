@@ -1,12 +1,6 @@
-const path = require('path');
 const webpack = require('webpack');
 const wpConfig = require('./wpbase');
 const config = require('../config');
-
-const args = process.argv;
-if (args.length === 5 && args[4] === 'admin') {
-  config.set('client_entry', 'client/admin/aboot.js');
-}
 
 wpConfig.entry.app = [
   'webpack/hot/dev-server',
