@@ -34,7 +34,7 @@ export default {
     const sqlClause = getPartnerWhereClause(filters, tenantId, args);
     const sql = `select id as \`key\`, name, partner_code as partnerCode,
       tenant_type as tenantType, tenant_id as tenantId, partner_tenant_id as partnerTenantId,
-      business_volume as volume, revenue, cost from sso_partners where ${sqlClause} limit ?,?`;
+      business_volume as volume, revenue, cost from sso_partners where ${sqlClause}`;
     console.log(sql, args);
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -77,15 +77,15 @@ export default {
     const args = [tenantId, partnerId, partnerCode];
     return mysql.delete(sql, args, trans);
   },
-  insertPartnership(tenantId, partnerId, partnerCode, partnerName, partnerships, trans) {
-    const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id,
-      partner_code, partner_name, type, type_code) values ?`;
-    const args = [];
-    partnerships.forEach(pts => {
-      args.push([tenantId, partnerId, partnerCode, partnerName, pts.key, pts.code]);
-    });
-    return mysql.insert(sql, [args], trans);
-  },
+  // insertPartnership(tenantId, partnerId, partnerCode, partnerName, partnerships, trans) {
+  //   const sql = `insert into sso_partnerships(tenant_id, partner_tenant_id,
+  //     partner_code, partner_name, type, type_code) values ?`;
+  //   const args = [];
+  //   partnerships.forEach(pts => {
+  //     args.push([tenantId, partnerId, partnerCode, partnerName, pts.key, pts.code]);
+  //   });
+  //   return mysql.insert(sql, [args], trans);
+  // },
   deleteSinglePartnership(tenantId, partnerId, trans) {
     const sql = 'delete from sso_partnerships where tenant_id = ? and partner_tenant_id = ?';
     const args = [tenantId, partnerId];
@@ -184,8 +184,19 @@ export default {
     `;
     return mysql.query(sql);
   },
-  removePartnerships(tenantId, partnerTenantId, trans) {
-    const sql = `DELETE FROM sso_partnerships WHERE tenant_id = ${tenantId} AND partner_tenant_id = ${partnerTenantId};`;
-    return mysql.query(sql, [], trans);
+  // TODO: above db opetaion need to refactor
+  removePartnerships(tenantId, partnerName, partnerCode, trans) {
+    const sql = `DELETE FROM sso_partnerships WHERE tenant_id = ${tenantId} AND partner_name = '${partnerName}' AND partner_code = '${partnerCode}';`;
+    return mysql.delete(sql, [], trans);
+  },
+  insertPartnerships(tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans) {
+    const sql = `
+      INSERT INTO sso_partnerships(tenant_id, partner_tenant_id, partner_code, partner_name, type_code) values ?
+    `;
+      const args = [];
+      partnerships.forEach(pts => {
+        args.push([tenantId, partnerTenantId, partnerCode, partnerName, pts]);
+      });
+      return mysql.insert(sql, [args], trans);
   }
 };
