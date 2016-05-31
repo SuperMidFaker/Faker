@@ -266,6 +266,36 @@ const SHIPMENT_POD_TYPE = {
   qrcode: 1,
   paperprint: 2,
 };
+
+const VEHICLE_STATUS = {
+  disabled: {value: -1, text: '停用'},
+  notUse: {value: 0, text: '不在途'},
+  inUse: {value: 1, text: '在途'}
+};
+
+const VEHICLE_TYPES = [
+  {value:0, text: '敞篷车'},
+  {value:1, text: '厢式车'},
+  {value:2, text: '两者均可'},
+  {value:3, text: '轿运车'}
+];
+
+const VEHICLE_LENGTH_TYPES = [
+  {value:0, text: 2.0},
+  {value:1, text: 4.2},
+  {value:2, text: 5.2},
+];
+
+const VPROPROTY_TYPES = {
+  selfVehicle: {value: 0, text: '司机自有车辆'},
+  publicVehicle: {value: 1, text: '公有车辆'}
+};
+
+const DRIVER_STATUS = {
+  notUse: {value: 0, text: '不可用'},
+  inUse: {value: 1, text: '可用'}
+};
+
 export {
   __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
@@ -297,5 +327,10 @@ export {
   SHIPMENT_POD_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
   SHIPMENT_POD_TYPE,
-  PARTNERSHIP
+  PARTNERSHIP,
+  VEHICLE_STATUS,
+  VEHICLE_TYPES,
+  VEHICLE_LENGTH_TYPES,
+  VPROPROTY_TYPES,
+  DRIVER_STATUS
 };
