@@ -90,7 +90,7 @@ export default class BaseList extends Component {
     this.type = 'CUS';
     this.partnerships = ['CUS'];
   }
-  onAddBtnClick = () => {
+  onAddBtnClick() {
     const { tenantId } = this.props;
     let partnerships = this.partnerships;
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
@@ -132,7 +132,7 @@ export default class BaseList extends Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type="primary" onClick={this.onAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
+            <Button type="primary" onClick={this.onAddBtnClick.bind(this)}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
           </div>
           <div className="panel-body padding">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>

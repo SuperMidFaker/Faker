@@ -21,8 +21,16 @@ const formItemLayout = {
   wrapperCol: {span: 14}
 };
 
+const options = [
+  {label: '货代', value: 'FWD'},
+  {label: '报关', value: 'CCB'},
+  {label: '运输', value: 'TRS'},
+  {label: '仓储', value: 'WHS'}
+];
+
 function addForm(props) {
-  const { onCancel, close } = props;
+  const { onCancel, close, isProvider } = props;
+  let { partnerships = [] } = props; // 新增物流提供商的时候才用的到
 
   function onOk(e) {
     e.preventDefault();
@@ -30,10 +38,20 @@ function addForm(props) {
     if (props.onOk) {
       const partnerName = document.getElementById('yPartnerName').value;
       const partnerCode = document.getElementById('yPartnerCode').value;
-      props.onOk({partnerName, partnerCode});
+      props.onOk({partnerName, partnerCode, partnerships});
     }
   }
-
+  function handleProviderChange(value) {
+    partnerships = value;
+  }
+  const providerCheckbox = (
+    <FormItem {...formItemLayout} label="物流提供商类型:" required>
+      <CheckboxGroup
+        options={options}
+        defaultValue={partnerships}
+        onChange={handleProviderChange}/>
+    </FormItem>
+  );
   return (
     <div className="ant-confirm-body">
       <Form horizontal onSubmit={onOk}>
@@ -43,6 +61,7 @@ function addForm(props) {
         <FormItem {...formItemLayout} label="合作伙伴代码:" required>
           <Input required id="yPartnerCode"/>
         </FormItem>
+        {isProvider ? providerCheckbox : ''}
         <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
           <Button type="ghost" size="large" onClick={onCancel} style={{ marginRight: 12 }}>
             取消
@@ -57,12 +76,6 @@ function addForm(props) {
 }
 
 function editProviderForm(props) {
-  const options = [
-    {label: '货代', value: 'FWD'},
-    {label: '报关', value: 'CCB'},
-    {label: '运输', value: 'TRS'},
-    {label: '仓储', value: 'WHS'}
-  ];
   const { onCancel, close } = props;
   let { checkedProviderValues = [] } = props;
 
@@ -125,7 +138,7 @@ function partnerModal(config) {
   if (props.mode === 'editProvider') {
     body = editProviderForm({onCancel, close, onOk: props.onOk, checkedProviderValues: props.providerValues});
   } else {
-    body = addForm({onCancel, close, onOk: props.onOk, partnerTenants: props.partnerTenants});
+    body = addForm({onCancel, close, ...props});
   }
 
   const classString = classNames({
