@@ -197,6 +197,10 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.segmentcancel',
     defaultMessage: '取消分段'
   },
+  btnTextBatchSend: {
+    id: 'transport.dispatch.btn.text.batch_send',
+    defaultMessage: '批量发送'
+  },
   btnTextSend: {
     id: 'transport.dispatch.btn.text.send',
     defaultMessage: '发送'

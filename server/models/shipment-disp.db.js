@@ -41,6 +41,7 @@ const dispCols = [
   'task_driver_id/i',
   'task_driver_name/v',
   'disp_status/i',
+  'child_send_status/i',
   'status/i',
   'freight_charge/f',
   'surcharge/f',
@@ -48,6 +49,8 @@ const dispCols = [
   'fine/f',
   'task_remark/v'
 ];
+
+// note:child_send_status only used in dispatch.api.js with doDispatch api
 
 const dispOrm = new Orm(dispCols, 'tms_shipment_dispatch');
 dispOrm.asalias = 'SD';
@@ -87,7 +90,7 @@ function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, 
 function genDispFilters(filter, tenantId) {
   const wheres = {};
   if (filter.status === 'waiting') {
-    wheres[' SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id '] = tenantId;
+    wheres[' SD.child_send_status = 0 and SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatching') {
     wheres[' SD.disp_status = 0 and SD.sr_tenant_id '] = tenantId;
   } else if (filter.status === 'dispatched') {
@@ -302,11 +305,12 @@ export default {
 
     const obj = {
       fields: `SD.id as \`key\`, S.shipmt_no, sr_name,
-      pickup_est_date, transit_time, deliver_est_date, consigner_name,
+      pickup_est_date, transit_time, deliver_est_date, customer_tenant_id, lsp_tenant_id, consigner_name,
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
+      SD.sr_tenant_id, SD.sp_tenant_id,
       effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented, SD.task_id, SD.task_vehicle, SD.disp_status`,
       ons1: 'S.shipmt_no = SD.shipmt_no',
       _orders: order,
