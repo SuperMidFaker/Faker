@@ -386,19 +386,15 @@ function *shipmtDetailG() {
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
       if (shipmt.vehicle_type) {
-        for (let i = 0; i < vehicleTypes.length; i++) {
-          const vt = vehicleTypes[i];
-          if (parseInt(vt.value, 10) === shipmt.vehicle_type) {
-            shipmt.vehicle_type = vt.name;
-          }
+        const vt = vehicleTypes[shipmt.vehicle_type];
+        if (vt) {
+          shipmt.vehicle_type = vt.text;
         }
       }
       if (shipmt.vehicle_length) {
-        for (let i = 0; i < vehicleLengths.length; i++) {
-          const vl = vehicleLengths[i];
-          if (parseInt(vl.value, 10) === shipmt.vehicle_length) {
-            shipmt.vehicle_length = vl.name;
-          }
+        const vl = vehicleLengths[shipmt.vehicle_length];
+        if (vl) {
+          shipmt.vehicle_length = vl.text;
         }
       }
     }

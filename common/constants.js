@@ -233,16 +233,16 @@ const DRIVER_STATUS = {
 
 const GOODS_TYPES = [{
   value: 0,
-  name: '普通货物'
+  text: '普通货物'
 }, {
   value: 1,
-  name: '冷链'
+  text: '冷链'
 }, {
   value: 2,
-  name: '危险品'
+  text: '危险品'
 }, {
   value: 3,
-  name: '大件'
+  text: '大件'
 }];
 
 const ENTERPRISE = 'enterprise';
