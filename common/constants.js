@@ -274,16 +274,25 @@ const VEHICLE_STATUS = {
 };
 
 const VEHICLE_TYPES = [
-  {value:0, text: '敞篷车'},
-  {value:1, text: '厢式车'},
-  {value:2, text: '两者均可'},
-  {value:3, text: '轿运车'}
+  {value:1, text: '牵引'},
+  {value:2, text: '厢式车'},
+  {value:3, text: '低栏'},
+  {value:4, text: '高栏'},
+  {value:5, text: '平板'},
+  {value:6, text: '集装箱'},
+  {value:7, text: '罐式车'},
+  {value:8, text: '冷藏'},
+  {value:9, text: '超宽车'}
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  {value:0, text: 2.0},
-  {value:1, text: 4.2},
-  {value:2, text: 5.2},
+  {value:1, text: '2.0'},
+  {value:2, text: '4.2'},
+  {value:3, text: '5.2'},
+  {value:4, text: '6.8'},
+  {value:5, text: '9.6'},
+  {value:6, text: '13'},
+  {value:7, text: '17.5'},
 ];
 
 const VPROPROTY_TYPES = {
@@ -295,6 +304,20 @@ const DRIVER_STATUS = {
   notUse: {value: 0, text: '不可用'},
   inUse: {value: 1, text: '可用'}
 };
+
+const GOODS_TYPES = [{
+  value: '1',
+  name: '普通货物'
+}, {
+  value: '2',
+  name: '冷链'
+}, {
+  value: '3',
+  name: '危险品'
+}, {
+  value: '4',
+  name: '大件'
+}];
 
 export {
   __DEFAULT_PASSWORD__,
@@ -332,5 +355,6 @@ export {
   VEHICLE_TYPES,
   VEHICLE_LENGTH_TYPES,
   VPROPROTY_TYPES,
-  DRIVER_STATUS
+  DRIVER_STATUS,
+  GOODS_TYPES
 };

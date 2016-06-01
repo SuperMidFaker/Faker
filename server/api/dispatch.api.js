@@ -70,10 +70,18 @@ function *listShipmtsGroupedSub() {
 }
 
 function *listExpandShipmts() {
-  const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
-  const shipmtNo = this.request.query.shipmtNo;
+  const query = this.request.query;
+  const tenantId = parseInt(query.tenantId, 10) || 0;
+  const shipmtNo = query.shipmtNo;
+  const srTenantId = parseInt(query.srTenantId, 10) || 0;
+  const spTenantId = parseInt(query.spTenantId, 10) || 0;
   // no more than 3 so use 0, 100
-  const res = yield shipmtDispDao.getDispatchShipmts(tenantId, {'S.parent_no': shipmtNo}, 0, 100);
+  const params = {
+    'S.parent_no': shipmtNo,
+    'SD.sp_tenant_id': spTenantId,
+    'SD.sr_tenant_id': srTenantId
+  };
+  const res = yield shipmtDispDao.getDispatchShipmts(tenantId, params, 0, 100);
   Result.ok(this, res);
 }
 
@@ -175,8 +183,17 @@ function *doDispatch() {
         disp.status = SHIPMENT_TRACK_STATUS.undelivered;
       }
     }
+    // 更新之前dispatch记录的状态和时间
+    const upstatus = {
+      child_send_status: 1,
+      wheres: {
+        sp_tenant_id: tenantId,
+        shipmt_no: shipmtNo,
+        id: parentId
+      }
+    };
 
-    arr.push(shipmtDispDao.addDisp(disp));
+    arr.push(shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus));
   });
 
   yield arr;
@@ -186,29 +203,37 @@ function *doDispatch() {
  * 分配承运商后确认分配
  */
 function *doSend() {
-  const { tenantId, dispId, shipmtNo, parentId } = yield parse(this.req);
-  // 更新之前dispatch记录的状态和时间
-  const upParentStatus = {
-    status: SHIPMENT_TRACK_STATUS.undelivered,
-    disp_time: new Date(),
-    wheres: {
-      sp_tenant_id: tenantId,
-      shipmt_no: shipmtNo,
-      id: parentId
-    }
-  };
+  const { tenantId, list } = yield parse(this.req);
+  const alist = JSON.parse(list);
+  const arr = [];
+  alist.forEach(t => {
+    const { dispId, shipmtNo, parentId } = t;
+    // 更新之前dispatch记录的状态和时间
+    const upParentStatus = {
+      status: SHIPMENT_TRACK_STATUS.undelivered,
+      disp_time: new Date(),
+      child_send_status: 2,
+      wheres: {
+        sp_tenant_id: tenantId,
+        shipmt_no: shipmtNo,
+        id: parentId
+      }
+    };
 
-  const upstatus = {
-    disp_status: SHIPMENT_DISPATCH_STATUS.confirmed,
-    disp_time: new Date(),
-    wheres: {
-      sr_tenant_id: tenantId,
-      shipmt_no: shipmtNo,
-      id: dispId
-    }
-  };
+    const upstatus = {
+      disp_status: SHIPMENT_DISPATCH_STATUS.confirmed,
+      disp_time: new Date(),
+      wheres: {
+        sr_tenant_id: tenantId,
+        shipmt_no: shipmtNo,
+        id: dispId
+      }
+    };
 
-  yield [shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus)];
+    arr.push(shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus));
+  });
+
+  yield arr;
   Result.ok(this);
 }
 /**
@@ -219,6 +244,7 @@ function *doReturn() {
   // 删除新建的dispatch记录，更新之前dispatch记录的状态
   const upstatus = {
     status: SHIPMENT_TRACK_STATUS.undispatched,
+    child_send_status: 0,
     wheres: {
       sp_tenant_id: tenantId,
       shipmt_no: shipmtNo,
