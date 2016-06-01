@@ -145,10 +145,6 @@ export default defineMessages({
     id: 'transport.acceptance.save.draft',
     defaultMessage: '暂存为草稿'
   },
-  freightChargeMustBeNumber: {
-    id: 'transport.acceptance.freight.charge.be.number',
-    defaultMessage: '运费必须为正数'
-  },
   formError: {
     id: 'transport.acceptance.form.error',
     defaultMessage: '表单存在错误'

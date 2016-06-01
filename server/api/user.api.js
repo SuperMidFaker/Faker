@@ -9,9 +9,10 @@ import bCryptUtil from '../util/BCryptUtil';
 import { isMobile, getSmsCode } from '../../common/validater';
 import smsUtil from '../util/sms-util';
 import {
-  __DEFAULT_PASSWORD__, TENANT_LEVEL, TENANT_ROLE,
-  ACCOUNT_STATUS, ADMIN, ENTERPRISE, BRANCH, PERSONNEL, SMS_TYPE
+  TENANT_LEVEL, TENANT_ROLE,
+  ACCOUNT_STATUS, ENTERPRISE, BRANCH, PERSONNEL
 } from 'common/constants';
+import {__DEFAULT_PASSWORD__, SMS_TYPE, ADMIN } from '../util/constants';
 import { genJwtCookie } from '../util/jwt-kit';
 
 export default [

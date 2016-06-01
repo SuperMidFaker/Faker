@@ -27,6 +27,7 @@ const initialState = {
     vehicleLengths: [],
     goodsTypes: [],
     packagings: [],
+    containerPackagings: [],
     clients: []
   },
   formData: {

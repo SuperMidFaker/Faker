@@ -82,6 +82,7 @@ ColumnSelect.propTypes = {
     goods: state.shipment.formData.goodslist,
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
+    containerPackagings: state.shipment.formRequire.containerPackagings,
   }),
   { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
 )
@@ -92,6 +93,7 @@ export default class GoodsInfo extends React.Component {
     labelColSpan: PropTypes.number.isRequired,
     goodsTypes: PropTypes.array.isRequired,
     packagings: PropTypes.array.isRequired,
+    containerPackagings: PropTypes.array.isRequired,
     formhoc: PropTypes.object.isRequired,
     saveLocalGoods: PropTypes.func.isRequired,
     editLocalGoods: PropTypes.func.isRequired,
@@ -190,8 +192,14 @@ export default class GoodsInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const {
-      labelColSpan, formhoc, goods, goodsTypes, packagings, formhoc: { getFieldProps }
+      labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldProps, getFieldValue },
+      packagings, containerPackagings,
     } = this.props;
+    const apackagings = getFieldValue('transport_mode_code') === 'CTN' ? containerPackagings
+      : packagings.map(pk => ({
+          key: pk.package_code,
+          value: pk.package_name,
+      }));
     const outerColSpan = 8;
     const columns = [{
       title: this.msg('goodsCode'),
@@ -214,10 +222,10 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnSelect record={record} field="package" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-          options={this.props.packagings.map(pk => ({
-            key: pk.package_code,
-            value: pk.package_code,
-            name: pk.package_name,
+          options={apackagings.map(pk => ({
+            key: pk.key,
+            value: pk.key,
+            name: pk.value,
           }))}
         />
     }, {
@@ -344,7 +352,7 @@ export default class GoodsInfo extends React.Component {
               })}
               >
               {goodsTypes.map(
-                gt => <Option value={parseInt(gt.id, 10)} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
+                gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
               )}
               </Select>
             </FormItem>
@@ -357,8 +365,8 @@ export default class GoodsInfo extends React.Component {
               wrapperCol={{span: 24 - labelColSpan}}
             >
               <Select {...getFieldProps('package')}>
-              {packagings.map(
-                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+              {apackagings.map(
+                pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
               )}
               </Select>
             </FormItem>

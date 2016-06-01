@@ -518,6 +518,40 @@ export default class DispatchList extends React.Component {
     });
   }
 
+  handleShipmtBatchSend() {
+    const { shipmentlist } = this.props;
+    const { selectedRowKeys } = this.state;
+    const count = selectedRowKeys.length;
+    const list = [];
+    shipmentlist.data.forEach(s => {
+      if (selectedRowKeys.indexOf(s.key) > -1) {
+        list.push({dispId: s.key, shipmtNo: s.shipmt_no, parentId: s.parent_id});
+      }
+    });
+
+    Modal.confirm({
+      content: `确定发送${count}个运单？`,
+      okText: this.msg('btnTextOk'),
+      cancelText: this.msg('btnTextCancel'),
+      onOk: () => {
+        if (count === 0) {
+          return;
+        }
+        const { tenantId } = this.props;
+        this.props.doSend(null, {
+          tenantId,
+          list: JSON.stringify(list)
+        }).then(result => {
+          if (result.error) {
+            message.error(result.error.message, 5);
+          } else {
+            this.handleStatusChange({target:{value: 'dispatching'}});
+          }
+        });
+      }
+    });
+  }
+
   handleShipmtSend(shipmt) {
     let msg = `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.sp_name}】承运商？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
@@ -531,9 +565,9 @@ export default class DispatchList extends React.Component {
         const { tenantId } = this.props;
         this.props.doSend(null, {
           tenantId,
-          dispId: shipmt.key,
+          list: JSON.stringify([{dispId: shipmt.key,
           shipmtNo: shipmt.shipmt_no,
-          parentId: shipmt.parent_id
+          parentId: shipmt.parent_id}])
         }).then(result => {
           if (result.error) {
             message.error(result.error.message, 5);
@@ -626,7 +660,9 @@ export default class DispatchList extends React.Component {
     if (!this.props.expandList[row.shipmt_no]) {
       this.props.loadExpandList(null, {
         tenantId,
-        shipmtNo: row.shipmt_no
+        shipmtNo: row.shipmt_no,
+        srTenantId: row.sr_tenant_id,
+        spTenantId: row.sp_tenant_id
       }).then(result => {
         if (result.error) {
           message.error(result.error.message, 5);
@@ -819,19 +855,27 @@ export default class DispatchList extends React.Component {
             />);
     }
 
-    let btns = (
+    let btns = '';
+    if (status === 'waiting') {
+      btns = (
         <div style={{float: 'left'}}>
           <Button type="primary" size="large" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
           {this.msg('btnTextBatchDispatch')}
           </Button>
           <span className="ant-divider" style={{width: '0px'}}/>
-          <Button type="ghost" size="large" onClick={() => { this.handleBatchDockShow(); }}>
+          <Button type="ghost" size="large" onClick={() => this.handleBatchDockShow() }>
           {this.msg('btnTextBatchSegment')}
           </Button>
         </div>
       );
-    if (status !== 'waiting') {
-      btns = '';
+    } else if (status === 'dispatching') {
+      btns = (
+        <div style={{float: 'left'}}>
+          <Button type="primary" size="large" onClick={() => this.handleShipmtBatchSend() }>
+          {this.msg('btnTextBatchSend')}
+          </Button>
+        </div>
+      );
     }
 
     return (

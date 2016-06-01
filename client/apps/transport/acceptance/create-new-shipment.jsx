@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, message } from 'ant-ui';
+import { Col, Form, Button, InputNumber, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -18,6 +18,7 @@ import ModeInfo from '../shipment/forms/mode-info';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadFormRequire(cookie, state.account.tenantId));
@@ -212,11 +213,11 @@ export default class ShipmentCreate extends React.Component {
                   <div className="subform-title">{this.msg('freightCharge')}</div>
               </div>
             <div className="subform-body">
-              <InputItem type="number" formhoc={formhoc} colSpan={0}
-                field="freight_charge" hasFeedback={false} rules={[{
-                      type: 'number', transform: value => Number(value), min: 0, message: this.msg('freightChargeMustBeNumber')
-                }]}
-              />
+              <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+                <InputNumber style={{ width: '100%' }} min={0} step={0.1}
+                { ...formhoc.getFieldProps('freight_charge') }
+                />
+              </FormItem>
             </div>
           </Col>
           </div>

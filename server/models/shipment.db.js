@@ -64,7 +64,7 @@ function packShipmentArgsByLSP(shipmt, args) {
     `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
     `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
     `consignee_contact`, `consignee_mobile`, `pickup_est_date`, `transit_time`,
-    `deliver_est_date`, `transport_mode`, `vehicle_type`, `vehicle_length`,
+    `deliver_est_date`, `transport_mode`, 'container_no', `vehicle_type`, `vehicle_length`,
     `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
     `total_volume`, `remark`
   ];
@@ -170,7 +170,8 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr, consigner_email,
       consigner_contact, consigner_mobile, consignee_name, consignee_province, consignee_city,
       consignee_district, consignee_addr, consignee_email, consignee_contact, consignee_mobile,
-      pickup_est_date, transit_time, deliver_est_date, transport_mode, vehicle_type, vehicle_length,
+      pickup_est_date, transit_time, deliver_est_date, transport_mode, container_no,
+      vehicle_type, vehicle_length,
       package, goods_type, insure_value, total_count, total_weight, total_volume, remark, effective,
       tenant_id, creater_login_id, created_date) values (?, NOW())`;
     const args = [shipmtNo, spTenantId, null, spName, shipmt.client_id, shipmt.client_partner_id, shipmt.client];

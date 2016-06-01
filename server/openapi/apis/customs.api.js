@@ -21,13 +21,13 @@ import tenantUserDao from '../../models/tenant-user.db';
 
 import codes from '../codes';
 import bcrypt from '../../util/BCryptUtil';
-import { DELEGATE_STATUS,
-          TENANT_LEVEL,
+import { TENANT_LEVEL,
           PARTNER_TENANT_TYPE,
           PARTNERSHIP_TYPE_INFO,
-          __DEFAULT_PASSWORD__,
-          ADMIN,
           TENANT_ROLE } from 'common/constants';
+import { DELEGATE_STATUS,
+         __DEFAULT_PASSWORD__,
+         ADMIN } from '../../util/constants';
 
 function billHeadToEntryHead(entryId, head) {
   return {

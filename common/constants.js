@@ -1,4 +1,3 @@
-const __DEFAULT_PASSWORD__ = '123456';
 const ACCOUNT_STATUS = {
   normal: {
     id: 0,
@@ -9,28 +8,6 @@ const ACCOUNT_STATUS = {
     id: 1,
     name: 'blocked',
     text: 'accountDisabled'
-  }
-};
-const DELEGATE_STATUS = {
-  normal: {
-    id: 0,
-    name: 'normal',
-    text: '待处理'
-  },
-  blocked: {
-    id: 3,
-    name: 'blocked',
-    text: '停用'
-  },
-  send: {
-    id: 1,
-    name: 'send',
-    text: '未受理'
-  },
-  accept: {
-    id: 2,
-    name: 'accept',
-    text: '已接单'
   }
 };
 const TENANT_ROLE = {
@@ -47,36 +24,9 @@ const TENANT_ROLE = {
     text: 'tenantMember'
   }
 };
-
 const TENANT_ASPECT = {
   BO: 0, // 企业主
   SP: 1, // 服务商
-};
-const TENANT_USEBOOK = {
-  owner: {
-    name: 2,
-    text: '拥有者'
-  },
-  manager: {
-    name: 1,
-    text: '是'
-  },
-  member: {
-    name: 0,
-    text: '否'
-  }
-};
-const ADMIN = 'admin';
-const ENTERPRISE = 'enterprise';
-const BRANCH = 'branch';
-const PERSONNEL = 'personnel';
-const SMS_TYPE = {
-  REG: 1,
-  LOGIN: 2,
-  RESET_PWD: 3,
-  WEB_LOGIN_PWD_FORGET: 4,
-  CHANGE_PHONE: 5,
-  CHANGE_PAID_PASSWORD: 6
 };
 const DEFAULT_MODULES = {
   import: {
@@ -120,7 +70,6 @@ const DEFAULT_MODULES = {
     text: 'modulePerformance'
   }
 };
-
 const APP_ENTITY_META_INFO = {
   import: {
     name: 'importApp',
@@ -139,21 +88,17 @@ const APP_ENTITY_META_INFO = {
     desc: 'wmsAppDesc'
   }
 };
-
 const TENANT_LEVEL = {
   STANDARD: 0,
   ENTERPRISE: 1,
   PLATFORM: 2
 };
-const CHINA_CODE = 'CN';
-const MAX_STANDARD_TENANT = 10;
 const INVITATION_STATUS = {
   NEW_SENT: 0,
   ACCEPTED: 1,
   REJECTED: 2,
   CANCELED: 3 // 取消邀请
 };
-
 const PARTNERSHIP_TYPE_INFO = {
   customer: 'CUS',
   customsClearanceBroker: 'CCB',
@@ -161,7 +106,6 @@ const PARTNERSHIP_TYPE_INFO = {
   transportation: 'TRS',
   warehouse: 'WHS'
 };
-
 const PARTNERSHIP = {
   CUS: 0,
   CCB: 1,
@@ -180,7 +124,6 @@ const CONDITION_STATE = [{
   text: '0|否',
   value: '0'
 }];
-
 const WRAP_TYPE = [{
   text: '1|木箱',
   value: '1'
@@ -213,12 +156,6 @@ const FEE_TYPE = [{
   text: '3|总价',
   value: '3'
 }];
-
-const CONSIGN_TYPE = {
-  consigner: 0,
-  consignee: 1,
-};
-
 const SHIPMENT_EFFECTIVES = {
   cancelled: -1,
   draft: 0,
@@ -231,12 +168,6 @@ const SHIPMENT_SOURCE = {
   subcontracted: 2,   // 分包
 };
 
-const SHIPMENT_DISPATCH_STATUS = {
-  unconfirmed: 0,
-  confirmed: 1,
-  cancel: 2,
-};
-
 const SHIPMENT_TRACK_STATUS = {
   unaccepted: 1,
   undispatched: 2,
@@ -246,7 +177,6 @@ const SHIPMENT_TRACK_STATUS = {
   podsubmit: 6,
   podaccept: 7,
 };
-
 const SHIPMENT_VEHICLE_CONNECT = {
   disconnected: 0,
   app: 1,
@@ -262,10 +192,6 @@ const SHIPMENT_POD_STATUS = {
   acceptByClient: 3,
 };
 
-const SHIPMENT_POD_TYPE = {
-  qrcode: 1,
-  paperprint: 2,
-};
 
 const VEHICLE_STATUS = {
   disabled: {value: -1, text: '停用'},
@@ -274,16 +200,25 @@ const VEHICLE_STATUS = {
 };
 
 const VEHICLE_TYPES = [
-  {value:0, text: '敞篷车'},
+  {value:0, text: '牵引'},
   {value:1, text: '厢式车'},
-  {value:2, text: '两者均可'},
-  {value:3, text: '轿运车'}
+  {value:2, text: '低栏'},
+  {value:3, text: '高栏'},
+  {value:4, text: '平板'},
+  {value:5, text: '集装箱'},
+  {value:6, text: '罐式车'},
+  {value:7, text: '冷藏'},
+  {value:8, text: '超宽车'}
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  {value:0, text: 2.0},
-  {value:1, text: 4.2},
-  {value:2, text: 5.2},
+  {value:0, text: '2.0'},
+  {value:1, text: '4.2'},
+  {value:2, text: '5.2'},
+  {value:3, text: '6.8'},
+  {value:4, text: '9.6'},
+  {value:5, text: '13'},
+  {value:6, text: '17.5'},
 ];
 
 const VPROPROTY_TYPES = {
@@ -296,8 +231,38 @@ const DRIVER_STATUS = {
   inUse: {value: 1, text: '可用'}
 };
 
+const GOODS_TYPES = [{
+  value: 0,
+  text: '普通货物'
+}, {
+  value: 1,
+  text: '冷链'
+}, {
+  value: 2,
+  text: '危险品'
+}, {
+  value: 3,
+  text: '大件'
+}];
+
+const CONTAINER_PACKAGE_TYPE = [{
+  key: 'GP20',
+  value: 'GP20',
+}, {
+  key: 'GP40',
+  value: 'GP40',
+}, {
+  key: 'HQ40',
+  value: 'HQ40',
+}];
+
+const ENTERPRISE = 'enterprise';
+const BRANCH = 'branch';
+const PERSONNEL = 'personnel';
+const CHINA_CODE = 'CN';
+const MAX_STANDARD_TENANT = 10;
+
 export {
-  __DEFAULT_PASSWORD__,
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
   TENANT_ROLE,
@@ -309,28 +274,23 @@ export {
   PARTNER_TENANT_TYPE,
   CHINA_CODE,
   ACCOUNT_STATUS,
-  SMS_TYPE,
-  ADMIN,
   ENTERPRISE,
   BRANCH,
   PERSONNEL,
-  DELEGATE_STATUS,
-  TENANT_USEBOOK,
   CONDITION_STATE,
   WRAP_TYPE,
   FEE_TYPE,
-  CONSIGN_TYPE,
   SHIPMENT_EFFECTIVES,
   SHIPMENT_SOURCE,
-  SHIPMENT_DISPATCH_STATUS,
   SHIPMENT_TRACK_STATUS,
   SHIPMENT_POD_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
-  SHIPMENT_POD_TYPE,
   PARTNERSHIP,
   VEHICLE_STATUS,
   VEHICLE_TYPES,
   VEHICLE_LENGTH_TYPES,
   VPROPROTY_TYPES,
-  DRIVER_STATUS
+  DRIVER_STATUS,
+  GOODS_TYPES,
+  CONTAINER_PACKAGE_TYPE,
 };
