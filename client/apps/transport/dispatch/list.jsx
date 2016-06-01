@@ -170,10 +170,12 @@ export default class DispatchList extends React.Component {
     const { status, origin } = this.props.filters;
     const s = status;
     let t = this.msg('shipNo');
-    let fixedLeft = false;
-    let fixedRight = false;
+    let fixedLeft = 'left';
+    let fixedRight = 'right';
     if (origin) {
       t = this.msg('originShipNo');
+      fixedLeft = false;
+      fixedRight = false;
     }
     if (sub === 'sub') {
       t = this.msg('segmentShipNo');
