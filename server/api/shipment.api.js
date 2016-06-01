@@ -7,75 +7,17 @@ import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import {
-  PARTNERSHIP_TYPE_INFO, CONSIGN_TYPE, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
-  SHIPMENT_DISPATCH_STATUS, SHIPMENT_TRACK_STATUS
+  PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
+  SHIPMENT_TRACK_STATUS,
+  VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES
 } from 'common/constants';
+import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
 
-const vehicleTypes = [{
-  id: '1',
-  name: '牵引'
-}, {
-  id: '2',
-  name: '厢式车'
-}, {
-  id: '3',
-  name: '低栏'
-}, {
-  id: '4',
-  name: '高栏'
-}, {
-  id: '5',
-  name: '平板'
-}, {
-  id: '6',
-  name: '集装箱'
-}, {
-  id: '7',
-  name: '罐式车'
-}, {
-  id: '8',
-  name: '冷藏'
-}, {
-  id: '9',
-  name: '超宽车'
-}];
+const vehicleTypes = VEHICLE_TYPES;
 
-const vehicleLengths = [{
-  id: '1',
-  name: '2.0'
-}, {
-  id: '2',
-  name: '4.2'
-}, {
-  id: '3',
-  name: '5.2'
-}, {
-  id: '4',
-  name: '6.8'
-}, {
-  id: '5',
-  name: '9.6'
-}, {
-  id: '6',
-  name: '13'
-}, {
-  id: '7',
-  name: '17.5'
-}];
+const vehicleLengths = VEHICLE_LENGTH_TYPES;
 
-const goodsTypes = [{
-  id: '1',
-  name: '普通货物'
-}, {
-  id: '2',
-  name: '冷链'
-}, {
-  id: '3',
-  name: '危险品'
-}, {
-  id: '4',
-  name: '大件'
-}];
+const goodsTypes = GOODS_TYPES;
 
 function *shipmentListG() {
   const pageSize = parseInt(this.request.query.pageSize, 10);
@@ -446,16 +388,16 @@ function *shipmtDetailG() {
       if (shipmt.vehicle_type) {
         for (let i = 0; i < vehicleTypes.length; i++) {
           const vt = vehicleTypes[i];
-          if (parseInt(vt.id, 10) === shipmt.vehicle_type) {
-            shipmt.vehicle_type = vt.name
+          if (parseInt(vt.value, 10) === shipmt.vehicle_type) {
+            shipmt.vehicle_type = vt.name;
           }
         }
       }
       if (shipmt.vehicle_length) {
         for (let i = 0; i < vehicleLengths.length; i++) {
           const vl = vehicleLengths[i];
-          if (parseInt(vl.id, 10) === shipmt.vehicle_length) {
-            shipmt.vehicle_length = vl.name
+          if (parseInt(vl.value, 10) === shipmt.vehicle_length) {
+            shipmt.vehicle_length = vl.name;
           }
         }
       }

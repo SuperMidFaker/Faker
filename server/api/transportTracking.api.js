@@ -1,8 +1,8 @@
 import cobody from 'co-body';
-import shipmentDao from '../models/shipment.db';
 import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_POD_TYPE } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'common/constants';
+import { SHIPMENT_POD_TYPE } from '../util/constants';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 

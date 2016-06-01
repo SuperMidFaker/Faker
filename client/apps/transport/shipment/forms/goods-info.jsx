@@ -341,7 +341,7 @@ export default class GoodsInfo extends React.Component {
               })}
               >
               {goodsTypes.map(
-                gt => <Option value={parseInt(gt.id, 10)} key={`${gt.name}${gt.id}`}>{gt.name}</Option>
+                gt => <Option value={parseInt(gt.value, 10)} key={`${gt.name}${gt.value}`}>{gt.name}</Option>
               )}
               </Select>
             </FormItem>
