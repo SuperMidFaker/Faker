@@ -165,7 +165,6 @@ export default class LandStatusList extends React.Component {
     }
   }, {
     title: this.msg('shipmtPrevTrack'),
-    fixed: 'left',
     width: 140,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -190,7 +189,6 @@ export default class LandStatusList extends React.Component {
     },
   }, {
     title: this.msg('shipmtNextUpdate'),
-    fixed: 'left',
     width: 140,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {

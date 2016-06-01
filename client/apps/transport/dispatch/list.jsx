@@ -672,7 +672,7 @@ export default class DispatchList extends React.Component {
     const ccols = this.buildCols('sub');
 
     return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
-        useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4} size="small" />);
+        size="small" />);
   }
 
   handleRemoveShipmt = row => {
@@ -798,7 +798,7 @@ export default class DispatchList extends React.Component {
     const ccols = this.buildCols('merge');
 
     return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.key] || []}
-      useFixedHeader columnsPageRange={[7, 14]} columnsPageSize={4} size="small" />);
+       size="small" />);
   }
 
   renderConsignLoc(shipmt, field) {
