@@ -24,8 +24,11 @@ export default class ScheduleInfo extends React.Component {
     });
   }
   handleTransitChange = value => {
-    const pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
+    let pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
     if (pickupDt && typeof value === 'number') {
+      if (typeof pickupDt === 'string') {
+        pickupDt = new Date(pickupDt);
+      }
       const deliverDate = new Date(
         pickupDt.getTime() + value * ONE_DAY_MS
       );

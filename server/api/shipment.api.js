@@ -290,7 +290,6 @@ function *shipmtG() {
   const {tenantId, shipmtNo} = this.request.query;
   try {
     const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
-
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
     return Result.ok(this, {formData: {...shipmtInfo, goodslist}});
   }catch (e) {
