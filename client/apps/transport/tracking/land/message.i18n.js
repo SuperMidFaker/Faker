@@ -183,11 +183,11 @@ export default defineMessages({
   },
   vehiclePlate: {
     id: 'transport.tracking.modal.vehicle.plate',
-    defaultMessage: '车牌'
+    defaultMessage: '车牌号'
   },
   driverName: {
     id: 'transport.tracking.modal.driver.name',
-    defaultMessage: '司机名称'
+    defaultMessage: '司机姓名'
   },
   taskRemark: {
     id: 'transport.tracking.modal.task.remark',
@@ -195,7 +195,7 @@ export default defineMessages({
   },
   remarkPlaceholder: {
     id: 'transport.tracking.modal.remark.placeholder',
-    defaultMessage: '司机联系方式等信息'
+    defaultMessage: '司机联系方式等'
   },
   pickupModalTitle: {
     id: 'transport.tracking.modal.pickup.title',
