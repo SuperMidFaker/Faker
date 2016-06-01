@@ -6,7 +6,8 @@
  */
 'use strict';
 const fs = require('fs');
-const region = require('./../../../../components/china-regions');
+const path = require('path');
+const region = require('./china-regions');
 const provinces = region.province;
 
 const transformedRegion = [];
@@ -34,7 +35,6 @@ for(let province of provinces) {
   transformedRegion.push({label: province.name, value: province.name, children: cityChildren});
 }
 
-const locaction = `${__dirname}/region.json`;
-
+const locaction = path.resolve(__dirname, '..', '..', 'client/components/china-regions.json');
 fs.writeFileSync(locaction, JSON.stringify(transformedRegion, null, ' '));
 console.log(`文件生成完毕, 位置在${locaction}`);

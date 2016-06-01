@@ -1,6 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
 import BaseList from '../components/BaseList';
+import { connect } from 'react-redux';
 import { inviteOnlPartner, addPartner } from 'common/reducers/partner';
 
 @connect(state => ({

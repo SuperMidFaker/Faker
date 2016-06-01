@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Button, Input, Cascader } from 'ant-ui';
+import { Form, Button, Input } from 'ant-ui';
 import ContentWrapper from './ContentWrapper';
-import regionOptions from '../utils/region.json';
+import Cascader from 'client/components/region-cascade';
 
 const FormItem = Form.Item;
 
@@ -32,10 +32,7 @@ export default class CarForm extends Component {
             <Input {...getFieldProps('node_code')}/>
           </FormItem>
           <FormItem label="区域" {...formItemLayout}>
-            <Cascader options={regionOptions}
-                      defaultValue={regionValues}
-                      placeholder="请输入地区"
-                      onChange={(value) => onRegionChange(value)}/>
+            <Cascader region={regionValues} uncontrolled onCascadeChange={onRegionChange} />
           </FormItem>
           <FormItem label="具体地址:" required {...formItemLayout}>
             <Input {...getFieldProps('addr')} required/>

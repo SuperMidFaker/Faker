@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Select } from 'ant-ui';
+import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -28,10 +29,52 @@ export default class ModeInfo extends React.Component {
   render() {
     const {
       transitModes, vehicleTypes, vehicleLengths,
-      formhoc: { getFieldProps }
+      formhoc: { getFieldProps, getFieldValue }
     } = this.props;
-    const outerColSpan = 8;
-    const labelColSpan = 6;
+    let outerColSpan = 24;
+    let labelColSpan = 2;
+    const modeCode = getFieldValue('transport_mode_code');
+    const modeEditCols = [];
+    if (modeCode === 'FTL') {
+      // 整车,修改车型,车长
+      outerColSpan = 8;
+      labelColSpan = 6;
+      modeEditCols.push(
+        <Col key="vehicle_type" span={`${outerColSpan}`} className="subform-body">
+          <FormItem label={this.msg('vehicleType')} labelCol={{span: labelColSpan}}
+            wrapperCol={{span: 24 - labelColSpan}}
+          >
+            <Select {...getFieldProps('vehicle_type')}>
+            {vehicleTypes.map(
+              vt => <Option value={vt.id} key={`${vt.name}${vt.id}`}>{vt.name}</Option>
+            )}
+            </Select>
+          </FormItem>
+        </Col>,
+        <Col key="vehicle_length" span={`${outerColSpan}`} className="subform-body">
+          <FormItem label={this.msg('vehicleLength')} labelCol={{span: labelColSpan}}
+            wrapperCol={{span: 24 - labelColSpan}}
+          >
+            <Select {...getFieldProps('vehicle_length')}>
+            {vehicleLengths.map(
+              vl => <Option value={vl.id} key={`${vl.name}${vl.id}`}>{vl.name}</Option>
+            )}
+            </Select>
+          </FormItem>
+        </Col>
+      );
+    } else if (modeCode === 'CTN') {
+      // 集装箱,修改箱号
+      outerColSpan = 12;
+      labelColSpan = 4;
+      modeEditCols.push(
+        <Col key="container_no" span={`${outerColSpan}`} className="subform-body">
+          <InputItem labelName={this.msg('containerNo')} field="container_no"
+          colSpan={labelColSpan} formhoc={this.props.formhoc}
+          />
+        </Col>
+      );
+    }
     return (
       <Row>
         <div className="subform-heading">
@@ -42,9 +85,12 @@ export default class ModeInfo extends React.Component {
             wrapperCol={{span: 24 - labelColSpan}} required
           >
             <Select {...getFieldProps(
-              'transport_mode_code', { rules: [{
-                required: true, message: this.msg('transitModeMust')
-              }]}
+              'transport_mode_code', {
+                rules: [{
+                  required: true, message: this.msg('transitModeMust')
+                }],
+                onChange: this.handleCodeChange,
+              }
             )}
             >
             {transitModes.map(
@@ -53,28 +99,7 @@ export default class ModeInfo extends React.Component {
             </Select>
           </FormItem>
         </Col>
-        <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('vehicleType')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}}
-          >
-            <Select {...getFieldProps('vehicle_type')}>
-            {vehicleTypes.map(
-              vt => <Option value={parseInt(vt.id, 10)} key={`${vt.name}${vt.id}`}>{vt.name}</Option>
-            )}
-            </Select>
-          </FormItem>
-        </Col>
-        <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('vehicleLength')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}}
-          >
-            <Select {...getFieldProps('vehicle_length')}>
-            {vehicleLengths.map(
-              vl => <Option value={parseInt(vl.id, 10)} key={`${vl.name}${vl.id}`}>{vl.name}</Option>
-            )}
-            </Select>
-          </FormItem>
-        </Col>
+        { modeEditCols }
       </Row>
     );
   }

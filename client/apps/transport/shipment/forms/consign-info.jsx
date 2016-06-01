@@ -81,7 +81,7 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.district]: undefined,
         [this.renderFields.contact]: undefined,
         [this.renderFields.mobile]: undefined,
-        [this.renderFields.email]:undefined,
+        [this.renderFields.email]: undefined,
       });
     }
   }
@@ -133,7 +133,7 @@ export default class ConsignInfo extends React.Component {
     const region = {
       province: formhoc.getFieldValue(this.renderFields.province),
       city: formhoc.getFieldValue(this.renderFields.city),
-      county: formhoc.getFieldValue(this.renderFields.district)
+      district: formhoc.getFieldValue(this.renderFields.district)
     };
     return (
       <Row>
@@ -152,9 +152,7 @@ export default class ConsignInfo extends React.Component {
           <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 3}}
             wrapperCol={{span: 21}}
           >
-            <RegionCascade withoutCountry region={region}
-              setFormValue={this.handleRegionValue}
-            />
+            <RegionCascade region={region} setFormValue={this.handleRegionValue} />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
             field={this.renderFields.addr} colSpan={3} required

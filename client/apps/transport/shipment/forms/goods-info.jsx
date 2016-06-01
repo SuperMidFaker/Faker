@@ -146,7 +146,10 @@ export default class GoodsInfo extends React.Component {
   }
   handleGoodsSave = () => {
     const { length, width, height } = this.state.editGoods;
-    const volume = asNumber(length) * asNumber(width) * asNumber(height);
+    let volume = this.state.editGoods.volume;
+    if (volume === undefined || volume === null) {
+      volume = asNumber(length) * asNumber(width) * asNumber(height);
+    }
     if (this.state.editGoodsIndex === this.props.goods.length) {
       // 新增
       this.props.saveLocalGoods({

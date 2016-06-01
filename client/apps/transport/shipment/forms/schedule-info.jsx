@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, DatePicker } from 'ant-ui';
-import InputItem from './input-item';
+import { Row, Col, Form, InputNumber, DatePicker } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
-import { isPositiveInteger } from 'common/validater';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -25,11 +23,11 @@ export default class ScheduleInfo extends React.Component {
       'deliver_est_date': deliverDate,
     });
   }
-  handleTransitChange = ev => {
+  handleTransitChange = value => {
     const pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
-    if (pickupDt) {
+    if (pickupDt && typeof value === 'number') {
       const deliverDate = new Date(
-        pickupDt.getTime() + ev.target.value * ONE_DAY_MS
+        pickupDt.getTime() + value * ONE_DAY_MS
       );
       this.props.formhoc.setFieldsValue({
         'deliver_est_date': deliverDate,
@@ -46,7 +44,7 @@ export default class ScheduleInfo extends React.Component {
     });
   }
   render() {
-    const { formhoc, formhoc: { getFieldProps } } = this.props;
+    const { formhoc: { getFieldProps } } = this.props;
     const outerColSpan = 8;
     const labelColSpan = 6;
     return (
@@ -58,7 +56,7 @@ export default class ScheduleInfo extends React.Component {
           <FormItem label={this.msg('pickupDate')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} required
           >
-            <DatePicker {...getFieldProps(
+            <DatePicker style={{ width: '100%' }} {...getFieldProps(
               'pickup_est_date', {
                 onChange: this.handlePickupChange,
                 rules: [{
@@ -70,25 +68,25 @@ export default class ScheduleInfo extends React.Component {
           </FormItem>
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <InputItem type="number" labelName={this.msg('shipmtTransit')} colSpan={labelColSpan}
-            addonAfter={this.msg('day')} formhoc={formhoc} field="transit_time"
-            fieldProps={{ onChange: this.handleTransitChange }}
-            hasFeedback={false} rules={[{
-              validator: (rule, value, callback) => {
-                if (value && !isPositiveInteger(value)) {
-                  callback(new Error(this.msg('timeMustBePositive')));
-                } else {
-                  callback();
-                }
-              }
-            }]}
-          />
+          <FormItem label={this.msg('shipmtTransit')} labelCol={{span: labelColSpan}}
+            wrapperCol={{span: 24 - labelColSpan}} required
+          >
+            <InputNumber style={{ width: '100%' }} min={0} { ...getFieldProps(
+              'transit_time', {
+                onChange: this.handleTransitChange,
+                rules: [{
+                  required: true, message: this.msg('tranistTimeMust'), type: 'number'
+                }]
+              })
+            }
+            />
+          </FormItem>
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
           <FormItem label={this.msg('deliveryDate')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} required
           >
-            <DatePicker {...getFieldProps(
+            <DatePicker style={{ width: '100%' }} {...getFieldProps(
               'deliver_est_date', {
                 onChange: this.handleDeliveryChange,
                 rules: [{

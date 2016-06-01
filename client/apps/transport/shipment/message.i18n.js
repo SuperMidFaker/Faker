@@ -67,11 +67,11 @@ export default defineMessages({
   },
   shipmtTransit: {
     id: 'transport.shipment.transit.time',
-    defaultMessage: '时效要求'
+    defaultMessage: '时效(天)'
   },
-  timeMustBePositive: {
-    id: 'transport.shipment.time.be.positive',
-    defaultMessage: '实效时间为正整数'
+  tranistTimeMust: {
+    id: 'transport.shipment.tranist.time.must',
+    defaultMessage: '实效时间必填'
   },
   day: {
     id: 'transport.shipment.day',
@@ -100,6 +100,10 @@ export default defineMessages({
   vehicleLength: {
     id: 'transport.shipment.vehicle.length',
     defaultMessage: '车长'
+  },
+  containerNo: {
+    id: 'transport.shipment.container.no',
+    defaultMessage: '箱号'
   },
   goodsInfo: {
     id: 'transport.shipment.goods.info',

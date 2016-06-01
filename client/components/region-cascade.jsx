@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Col, Select } from 'ant-ui';
+import { Row, Select, Cascader } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { CHINA_CODE } from '../../common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -10,163 +10,121 @@ const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const formatMsg = format(messages);
 
+function isPropsChange(nextProps, props, field) {
+    return Object.prototype.hasOwnProperty.call(nextProps, field) &&
+      nextProps[field] && nextProps[field] !== props[field];
+}
 @injectIntl
 export default class RegionCascade extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    withoutCountry: PropTypes.bool,
-    setFormValue: PropTypes.func.isRequired,
-    region: PropTypes.object.isRequired
+    withCountry: PropTypes.bool,
+    uncontrolled: PropTypes.bool, // 值由cascade本身控制, true时region传入数组结构
+    region: PropTypes.oneOfType([
+      PropTypes.shape({
+        country: PropTypes.string,
+        province: PropTypes.string,
+        city: PropTypes.string,
+        district: PropTypes.string,
+      }),
+      PropTypes.array,  // [ 'province', 'city', 'district' ]
+    ]),
+    setFormValue: PropTypes.func, // 'province'/'city'/'district', value
+    onCascadeChange: PropTypes.func, // ant-design cascade本身的onChange参数
   }
   static defaultProps = {
-    withoutCountry: false
+    withCountry: false,
+    uncontrolled: false,
   }
   constructor(...args) {
     super(...args);
-    this.defaultProvince = formatMsg(this.props.intl, 'defaultProvRegions');
-    this.defaultCity = formatMsg(this.props.intl, 'defaultCityRegions');
-    this.defaultCounty = formatMsg(this.props.intl, 'defaultCountyRegions');
-    const cities = this.getCitiesFromProvince(this.props.region.province) || [];
-    const counties = this.getCountiesFromCity(cities, this.props.region.city) || [];
     this.state = {
-      disableProvince: false,
+      disableCascader: false,
       country: CHINA_CODE,
-      province: this.props.region.province || this.defaultProvince,
-      cities,
-      city: this.props.region.city || this.defaultCity,
-      counties,
-      county: this.props.region.county || this.defaultCounty
+      areaItems: !this.props.uncontrolled && this.props.region.province ?
+        [ this.props.region.province, this.props.region.city, this.props.region.district ]
+        : [],
     };
   }
   componentWillReceiveProps(nextProps) {
-    const propsAsState = {};
-    ['country', 'province', 'city', 'county'].forEach((key) => {
-      if (nextProps.region[key] && nextProps.region[key] !== this.state[key]) {
-        propsAsState[key] = nextProps.region[key];
+    if (!nextProps.uncontrolled) {
+      const propsAsState = {};
+      if (nextProps.region.country !== this.props.region.country) {
+        propsAsState.country = nextProps.region.country;
       }
-    });
-    const cities = this.getCitiesFromProvince(propsAsState.province);
-    if (cities) {
-      propsAsState.cities = cities;
-    }
-    const counties = this.getCountiesFromCity(propsAsState.cities, propsAsState.city);
-    if (counties) {
-      propsAsState.counties = counties;
-    }
-    this.setState(propsAsState);
-  }
-  getCitiesFromProvince(province) {
-    let cities;
-    if (province) {
-      for (let i = 0; i < chinaRegions.province.length; i++) {
-        const prov = chinaRegions.province[i];
-        if (prov.name === province) {
-          if (prov.city) {
-            if (Array.isArray(prov.city)) {
-              cities = prov.city;
-            } else {
-              cities = [prov.city];
-            }
-          } else {
-            cities = [];
-          }
-          break;
-        }
+      if (!nextProps.region.province) {
+        // 清空
+        propsAsState.areaItems = [];
+      } else if (
+        isPropsChange(nextProps.region, this.props.region, 'province') ||
+        isPropsChange(nextProps.region, this.props.region, 'city') ||
+        isPropsChange(nextProps.region, this.props.region, 'district')
+      ) {
+        propsAsState.areaItems = [
+          nextProps.region.province,
+          nextProps.region.city,
+          nextProps.region.district,
+        ];
+      } else {
+        propsAsState.areaItems = this.state.areaItems;
       }
+      this.setState(propsAsState);
     }
-    return cities;
   }
-  getCountiesFromCity(cities, curCity) {
-    let counties;
-    if (cities && curCity) {
-      for (let i = 0; i < cities.length; i++) {
-        const city = cities[i];
-        if (city.name === curCity) {
-          if (city.county) {
-            if (Array.isArray(city.county)) {
-              counties = city.county;
-            } else {
-              counties = [city.county];
-            }
-          } else {
-            counties = [];
-          }
-          break;
-        }
-      }
-    }
-    return counties;
-  }
-  handleCountryChange(value) {
+  handleCountryChange = (value) => {
     if (value !== CHINA_CODE) {
       this.setState({
-        disableProvince: true,
-        province: this.defaultProvince,
-        cities: [],
-        city: this.defaultCity,
-        counties: [],
-        county: this.defaultCounty
+        disableCascader: true,
+        areaItems: [],
       });
     } else {
-      this.setState({disableProvince: false});
+      this.setState({
+        disableCascader: false
+      });
     }
-    this.props.setFormValue('country', value);
+    if ('setFormValue' in this.props) {
+      this.props.setFormValue('country', value);
+      this.props.setFormValue('province', undefined);
+      this.props.setFormValue('city', undefined);
+      this.props.setFormValue('district', undefined);
+    }
   }
-  handleProvinceChange(value) {
-    const cities = this.getCitiesFromProvince(value);
-    this.setState({cities, city: this.defaultCity, counties: [], county: this.defaultCounty});
-    this.props.setFormValue('province', value);
-    this.props.setFormValue('city', undefined);
-    this.props.setFormValue('district', undefined);
-  }
-  handleCityChange(value) {
-    const counties = this.getCountiesFromCity(
-      this.state.cities, value
-    );
-    this.setState({counties, county: this.defaultCounty});
-    this.props.setFormValue('city', value);
-    this.props.setFormValue('district', undefined);
-  }
-  handleCountyChange(value) {
-    this.props.setFormValue('district', value);
+  handleCascaderChange = (areas) => {
+    this.setState({ areaItems: areas });
+    if (this.props.onCascadeChange) {
+      this.props.onCascadeChange(areas);
+    }
+    if ('setFormValue' in this.props) {
+      const [ province, city, district ] = areas;
+      this.props.setFormValue('province', province);
+      this.props.setFormValue('city', city);
+      this.props.setFormValue('district', district);
+    }
   }
   render() {
-    const { country, province, cities, city, counties, county, disableProvince } = this.state;
+    const { areaItems, country, disableCascader } = this.state;
+    const { intl, region, uncontrolled } = this.props;
+    let valueProps = { value: areaItems };
+    if (uncontrolled) {
+      valueProps = { defaultValue: region };
+    }
     return (
       <Row>
         {
-          !this.props.withoutCountry &&
-        <Col span="24">
-          <Select size="large" value={country} style={{width: '100%'}} onChange={(value) => this.handleCountryChange(value)}>
-            <OptGroup label={formatMsg(this.props.intl, 'selectCountry')}>
-              {
-                world.countries.map((ctry) => (<Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>))
-              }
+          this.props.withCountry &&
+          <Select size="large" value={country} style={{width: '100%'}} onChange={this.handleCountryChange}>
+            <OptGroup label={formatMsg(intl, 'selectCountry')}>
+            {
+              world.countries.map(ctry => <Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>)
+            }
             </OptGroup>
           </Select>
-        </Col>
         }
-        <Col span="8">
-          <Select size="large" value={province} disabled={disableProvince} style={{width: '100%'}} onChange={(value) => this.handleProvinceChange(value)}>
-            {
-              chinaRegions.province.map((prov, idx) => <Option value={prov.name} key={`prov.name${idx}`}>{prov.name}</Option>)
-            }
-          </Select>
-        </Col>
-        <Col span="7" offset="1">
-          <Select size="large" value={city} disabled={disableProvince} style={{width: '100%'}} onChange={(value) => this.handleCityChange(value)}>
-          {
-            cities.map((c, idx) => <Option value={c.name} key={`c.name${idx}`}>{c.name}</Option>)
-          }
-          </Select>
-        </Col>
-        <Col span="7" offset="1">
-          <Select size="large" value={county} disabled={disableProvince} style={{width: '100%'}} onChange={(value) => this.handleCountyChange(value)}>
-          {
-            counties.map((c, idx) => <Option value={c.name} key={`c.name${idx}`}>{c.name}</Option>)
-          }
-          </Select>
-        </Col>
-      </Row>);
+        <Cascader options={chinaRegions} onChange={this.handleCascaderChange} expandTrigger="hover"
+        placeholder={formatMsg(intl, 'defaultCascaderRegion')} disabled={disableCascader}
+        { ...valueProps }
+        />
+      </Row>
+    );
   }
 }

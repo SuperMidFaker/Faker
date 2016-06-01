@@ -137,8 +137,10 @@ export default class CorpInfo extends React.Component {
                   message: msg('shortNameMessage')}]
               )}
               <FormItem label={msg('location')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Region setFormValue={this.props.setFormValue} region={{
-                  country, province, city, county: district}} />
+                <Region withCountry setFormValue={this.props.setFormValue} region={{
+                  country, province, city, district
+                }}
+                />
               </FormItem>
               {this.renderTextInput(msg('fullAddress'), '', 'address')}
             </Col>
