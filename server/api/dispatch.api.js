@@ -18,10 +18,10 @@ import Result from '../util/responseResult';
 import {
   PARTNERSHIP_TYPE_INFO,
   SHIPMENT_SOURCE,
-  SHIPMENT_DISPATCH_STATUS,
   SHIPMENT_TRACK_STATUS,
   SHIPMENT_VEHICLE_CONNECT
 } from 'common/constants';
+import { SHIPMENT_DISPATCH_STATUS } from '../util/constants';
 import parse from 'co-body';
 /**
  * filters => {

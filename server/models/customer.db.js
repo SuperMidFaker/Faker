@@ -1,7 +1,8 @@
 import mysql from '../util/mysql';
 import userDao from './user.db';
 import bcrypt from '../util/BCryptUtil';
-import { __DEFAULT_PASSWORD__, CUSTOMER } from 'common/constants';
+import {__DEFAULT_PASSWORD__, } from '../util/constants';
+import { CUSTOMER } from 'common/constants';
 
 function prepareParam(item, columns) {
   const args = [];
