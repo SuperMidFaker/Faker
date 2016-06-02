@@ -383,6 +383,7 @@ function *shipmtDetailG() {
       shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, sourceType),
     ];
     let shipmt = {};
+    let tracking = {};
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
       if (shipmt.vehicle_type) {
@@ -397,12 +398,17 @@ function *shipmtDetailG() {
           shipmt.vehicle_length = vl.text;
         }
       }
+      tracking.created_date = shipmt.created_date;
     }
     shipmt.goodslist = goodslist;
     if (shipmtdisps.length === 1) {
       shipmt.status = shipmtdisps[0].status;
+      tracking = { ...tracking, ...shipmtdisps[0] };
     }
-    return Result.ok(this, shipmt);
+    return Result.ok(this, {
+      shipmt,
+      tracking,
+    });
   } catch(e) {
     return Result.internalServerError(this, e.message);
   }

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Icon, Tabs, Tag/* , message */ } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
+import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
@@ -76,7 +77,7 @@ export default class PreviewPanel extends React.Component {
               动态
               </TabPane>
               <TabPane tab={this.msg('shipmtTracking')} key="tracking">
-              追踪
+                <TrackingPane />
               </TabPane>
             </Tabs>
           </div>

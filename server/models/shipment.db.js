@@ -213,12 +213,12 @@ export default {
     return mysql.insert(sql, args, trans);
   },
   getShipmtInfo(shipmtNo) {
-    const sql = `select shipmt_no, customer_name, lsp_name, consigner_name,
-      consigner_province, consigner_city, consigner_district, consigner_addr, consigner_contact,
-      consigner_mobile, consignee_name, consignee_province, consignee_city, consignee_district,
-      consignee_addr, consignee_contact, consignee_mobile, pickup_est_date, transit_time,
-      deliver_est_date, transport_mode, vehicle_type, vehicle_length, container_no,
-      package, goods_type, effective, remark from tms_shipments where shipmt_no = ?`;
+    const sql = `select shipmt_no, customer_name, lsp_name, consigner_name, consigner_province,
+      consigner_city, consigner_district, consigner_addr, consigner_contact, consigner_mobile,
+      consignee_name, consignee_province, consignee_city, consignee_district, consignee_addr,
+      consignee_contact, consignee_mobile, pickup_est_date, transit_time, deliver_est_date,
+      transport_mode, transport_mode_code, vehicle_type, vehicle_length, container_no, package,
+      goods_type, effective, remark, created_date from tms_shipments where shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },

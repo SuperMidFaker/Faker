@@ -42,6 +42,8 @@ const initialState = {
     shipmt: {
       goodslist: [],
     },
+    tracking: {
+    },
   }
 };
 
@@ -85,7 +87,8 @@ export default function reducer(state = initialState, action) {
         goodslist: action.result.data.goodslist
       }};
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state, previewer: { shipmt: action.result.data, visible: true }};
+      return { ...state, previewer: { shipmt: action.result.data.shipmt,
+        tracking: action.result.data.tracking, visible: true }};
     }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false }};
