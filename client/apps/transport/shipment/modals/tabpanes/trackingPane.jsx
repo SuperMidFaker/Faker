@@ -9,6 +9,7 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const Step = Steps.Step;
 
+const timeFormat = 'YYYY-MM-DD HH:mm';
 function PaddingSpan() {
   return <div style={{ marginBottom: '20px' }} />;
 }
@@ -29,27 +30,27 @@ export default class PreviewPanel extends React.Component {
     const trackingSteps = [{
       title: this.msg('trackCreate'),
       desc: tracking.created_date ?
-        moment(tracking.created_date).format('YYYY-MM-DD HH:mm') : <PaddingSpan />,
+        moment(tracking.created_date).format(timeFormat) : <PaddingSpan />,
     }, {
       title: this.msg('trackAccept'),
       desc: tracking.acpt_time ?
-        moment(tracking.acpt_time).format('YY-MM-DD HH:mm') : <PaddingSpan />,
+        moment(tracking.acpt_time).format(timeFormat) : <PaddingSpan />,
     }, {
       title: this.msg('trackDispatch'),
       desc: tracking.disp_time && tracking.status === SHIPMENT_TRACK_STATUS.undelivered ?
-        moment(tracking.disp_time).format('YY-MM-DD HH:mm') : <PaddingSpan />,
+        moment(tracking.disp_time).format(timeFormat) : <PaddingSpan />,
     }, {
       title: this.msg('trackPickup'),
       desc: tracking.pickup_act_time ?
-        moment(tracking.pickup_act_time).format('YY-MM-DD HH:mm') : <PaddingSpan />,
+        moment(tracking.pickup_act_time).format(timeFormat) : <PaddingSpan />,
     }, {
       title: this.msg('trackDeliver'),
       desc: tracking.deliver_act_time ?
-        moment(tracking.deliver_act_time).format('YY-MM-DD HH:mm') : <PaddingSpan />,
+        moment(tracking.deliver_act_time).format(timeFormat) : <PaddingSpan />,
     }, {
       title: this.msg('trackPod'),
       desc: tracking.pod_recv_date ?
-        moment(tracking.pod_recv_date).format('YY-MM-DD HH:mm') : <PaddingSpan />,
+        moment(tracking.pod_recv_date).format(timeFormat) : <PaddingSpan />,
     }];
     return (
       <div>
