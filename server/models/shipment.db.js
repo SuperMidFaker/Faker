@@ -217,7 +217,7 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr, consigner_contact,
       consigner_mobile, consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, consignee_contact, consignee_mobile, pickup_est_date, transit_time,
-      deliver_est_date, transport_mode, vehicle_type, vehicle_length,
+      deliver_est_date, transport_mode, vehicle_type, vehicle_length, container_no,
       package, goods_type, effective, remark from tms_shipments where shipmt_no = ?`;
     const args = [shipmtNo];
     return mysql.query(sql, args);
@@ -225,11 +225,11 @@ export default {
   getDraftShipmt(shipmtno) {
     const sql = `select shipmt_no, ref_external_no, ref_waybill_no, ref_entry_no,
       customer_name, customer_tenant_id, customer_partner_id, lsp_tenant_id, lsp_partner_id,
-      lsp_name, consigner_name, consigner_province, consigner_city,
-      consigner_district, consigner_addr, consigner_email, consigner_contact,
-      consigner_mobile, consignee_name, consignee_province, consignee_city, consignee_district,
-      consignee_addr, consignee_email, consignee_contact, consignee_mobile, pickup_est_date,
-      transit_time, deliver_est_date, transport_mode_code, transport_mode, vehicle_type, vehicle_length,
+      lsp_name, consigner_name, consigner_province, consigner_city, consigner_district,
+      consigner_addr, consigner_email, consigner_contact, consigner_mobile, consignee_name,
+      consignee_province, consignee_city, consignee_district, consignee_addr, consignee_email,
+      consignee_contact, consignee_mobile, pickup_est_date, transit_time, deliver_est_date,
+      transport_mode_code, transport_mode, vehicle_type, vehicle_length, container_no,
       package, goods_type, insure_value, total_count, total_weight, total_volume, remark
       from tms_shipments where shipmt_no = ?`;
     const args = [shipmtno];

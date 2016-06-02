@@ -187,9 +187,12 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
  */
 function generateUpdateClauseWithInfo(updateInfo, columns) {
   if(Array.isArray(updateInfo)) {
-    return columns.filter(key => updateInfo.some(info => info[key] !== null)).map(key => {
-      return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join("");
-    }).join("END,\n") + 'END\n';
+    return columns.filter(key => updateInfo.some(
+      info => info[key] !== null
+    )).map(key => {
+      return `${key} = CASE id\n` + updateInfo.map(info => `WHEN ${info.id} THEN '${info[key]}'\n`)
+      .join('');
+    }).join('END,\n') + 'END\n';
   }else {
     return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
   }
@@ -406,9 +409,10 @@ export default {
   },
   updateShipmtWithInfo(shipmtInfo, trans) {
     const columns = [
+      'customer_tenant_id', 'customer_name', 'customer_partner_id',
       `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
       'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
-      `consigner_addr`, `consigner_email`,
+      `consigner_addr`, `consigner_email`, 'container_no',
       `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
       `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
       `consignee_contact`, `consignee_mobile`, `transit_time`,

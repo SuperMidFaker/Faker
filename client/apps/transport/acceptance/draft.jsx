@@ -7,8 +7,9 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { setFormValue, setConsignFields, loadDraftForm, loadFormRequire }
   from 'common/reducers/shipment';
-import { acceptDraft, loadTable } from 'common/reducers/transport-acceptance';
+import { acceptDraft, loadTable, saveEdit } from 'common/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
+import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ScheduleInfo from '../shipment/forms/schedule-info';
@@ -37,6 +38,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     loginId: state.account.loginId,
     loginName: state.account.username,
     transitModes: state.shipment.formRequire.transitModes,
+    clients: state.shipment.formRequire.clients,
     formData: state.shipment.formData,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
@@ -45,7 +47,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, acceptDraft, loadTable })
+  { setFormValue, setConsignFields, acceptDraft, loadTable, saveEdit })
 @connectNav((props, dispatch, router) => {
   if (!props.formData.shipmt_no) {
     return;
@@ -64,7 +66,17 @@ function fetchData({ state, dispatch, params, cookie }) {
   },
   onFieldsChange(props, fields) {
     Object.keys(fields).forEach(name => {
-      if (name === 'transport_mode_code') {
+      if (name === 'customer_name') {
+        const clientFieldId = parseInt(fields[name].value, 10);
+        const selclients = props.clients.filter(
+            cl => cl.partner_id === clientFieldId
+        );
+        props.setConsignFields({
+          customer_tenant_id: selclients.length > 0 ? selclients[0].tid : -1,
+          customer_partner_id: selclients.length > 0 ? clientFieldId : -1,
+          customer_name: selclients.length > 0 ? selclients[0].name : fields[name].value,
+        });
+      } else if (name === 'transport_mode_code') {
         const code = fields[name].value;
         const modes = props.transitModes.filter(tm => tm.mode_code === code);
         props.setConsignFields({
@@ -85,6 +97,7 @@ export default class ShipmentDraftEdit extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     transitModes: PropTypes.array.isRequired,
+    clients: PropTypes.array.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     setFormValue: PropTypes.func.isRequired,
@@ -96,6 +109,7 @@ export default class ShipmentDraftEdit extends React.Component {
     current: PropTypes.number.isRequired,
     submitting: PropTypes.bool.isRequired,
     acceptDraft: PropTypes.func.isRequired,
+    saveEdit: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -128,13 +142,44 @@ export default class ShipmentDraftEdit extends React.Component {
       }
     });
   }
+  handleDraftSave = (ev) => {
+    ev.preventDefault();
+    if (!this.props.formData.consigner_name || !this.props.formData.consignee_name) {
+      this.props.formhoc.validateFields([
+        'consigner_name',
+        'consignee_name',
+      ]);
+      return;
+    }
+    this.props.saveEdit(this.props.formData, this.props.tenantId, this.props.loginId)
+      .then(result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.goBack();
+          this.props.loadTable(null, {
+            tenantId: this.props.tenantId,
+            pageSize: this.props.pageSize,
+            currentPage: this.props.current,
+            filters: JSON.stringify(this.props.filters),
+            sortField: this.props.sortField,
+            sortOrder: this.props.sortOrder,
+          });
+        }
+      });
+  }
   render() {
-    const { intl, submitting, formhoc } = this.props;
+    const { intl, clients, submitting, formhoc } = this.props;
+    const clientOpts = clients.map(cl => ({
+      key: `${cl.partner_id}/${cl.tid}`,
+      value: `${cl.partner_id}`,
+      code: cl.partner_code,
+      name: cl.name,
+    }));
     return (
       <div className="main-content">
         <Form form={formhoc} horizontal>
           <div className="page-body">
-            <div className="panel-header"></div>
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
@@ -149,7 +194,14 @@ export default class ShipmentDraftEdit extends React.Component {
                   <div className="subform-title">{this.msg('correlativeInfo')}</div>
                 </div>
                 <div className="subform-body">
-                  <InputItem formhoc={formhoc} placeholder={this.msg('clientNameMust')} colSpan={0} field="client" disabled/>
+                  <AutoCompSelectItem formhoc={formhoc} placeholder={this.msg('client')}
+                    colSpan={0} field="customer_name"
+                    required optionData={clientOpts} filterFields={[ 'code' ]}
+                    optionField="name" optionKey="key" optionValue="value"
+                    rules={[{
+                      required: true, message: this.msg('clientNameMust')
+                    }]}
+                  />
                   <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} field="lsp_name" disabled />
                   <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
@@ -170,7 +222,10 @@ export default class ShipmentDraftEdit extends React.Component {
           </div>
           <div className="bottom-fixed-row">
             <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleDraftAccept}>
-              {this.msg('saveAndAccept')}
+            {this.msg('saveAndAccept')}
+            </Button>
+            <Button size="large" htmlType="submit" loading={submitting} onClick={this.handleDraftSave}>
+            {this.msg('saveAsDraft')}
             </Button>
           </div>
         </Form>

@@ -163,6 +163,14 @@ export default class ShipmentCreate extends React.Component {
           message.error(result.error.message);
         } else {
           this.context.router.goBack();
+          this.props.loadTable(null, {
+            tenantId: this.props.tenantId,
+            filters: JSON.stringify(this.props.filters),
+            pageSize: this.props.pageSize,
+            currentPage: this.props.current,
+            sortField: this.props.sortField,
+            sortOrder: this.props.sortOrder,
+          });
         }
       });
   }
@@ -177,59 +185,59 @@ export default class ShipmentCreate extends React.Component {
     return (
       <div className="main-content">
         <Form form={formhoc} horizontal>
-         <div className="page-body">
-         <div className="panel-header"></div>
-         <div className="panel-body body-responsive">
-          <Col span="16" className="main-col">
-            <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
-            <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
-            <ScheduleInfo intl={intl} formhoc={formhoc} />
-            <ModeInfo intl={intl} formhoc={formhoc} />
-            <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
-            <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
-          </Col>
-          <Col span="8" className="right-side-col">
-            <div className="subform-heading">
-              <div className="subform-title">{this.msg('correlativeInfo')}</div>
+          <div className="page-body">
+            <div className="panel-header" />
+            <div className="panel-body body-responsive">
+              <Col span="16" className="main-col">
+                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ScheduleInfo intl={intl} formhoc={formhoc} />
+                <ModeInfo intl={intl} formhoc={formhoc} />
+                <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
+                <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
+              </Col>
+              <Col span="8" className="right-side-col">
+                <div className="subform-heading">
+                  <div className="subform-title">{this.msg('correlativeInfo')}</div>
+                </div>
+                <div className="subform-body">
+                  <AutoCompSelectItem formhoc={formhoc} placeholder={this.msg('client')} colSpan={0} field="client"
+                    required optionData={clientOpts} filterFields={[ 'code' ]}
+                    optionField="name" optionKey="key" optionValue="value"
+                    rules={[{
+                      required: true, message: this.msg('clientNameMust')
+                    }]}
+                  />
+                  <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
+                    fieldProps={{initialValue: tenantName}} disabled rules={[{
+                      required: true, message: this.msg('lspNameMust')
+                    }]} field="lsp"
+                  />
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
+                  </div>
+                  <div className="subform-heading">
+                      <div className="subform-title">{this.msg('freightCharge')}</div>
+                  </div>
+                <div className="subform-body">
+                  <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+                    <InputNumber style={{ width: '100%' }} min={0} step={0.1}
+                    { ...formhoc.getFieldProps('freight_charge') }
+                    />
+                  </FormItem>
+                </div>
+              </Col>
             </div>
-            <div className="subform-body">
-              <AutoCompSelectItem formhoc={formhoc} placeholder={this.msg('client')} colSpan={0} field="client"
-                required optionData={clientOpts} filterFields={[ 'code' ]}
-                optionField="name" optionKey="key" optionValue="value"
-                rules={[{
-                  required: true, message: this.msg('clientNameMust')
-                }]}
-              />
-              <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
-                fieldProps={{initialValue: tenantName}} disabled rules={[{
-                  required: true, message: this.msg('lspNameMust')
-                }]} field="lsp"
-              />
-              <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
-              <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
-              <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-              </div>
-              <div className="subform-heading">
-                  <div className="subform-title">{this.msg('freightCharge')}</div>
-              </div>
-            <div className="subform-body">
-              <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                <InputNumber style={{ width: '100%' }} min={0} step={0.1}
-                { ...formhoc.getFieldProps('freight_charge') }
-                />
-              </FormItem>
-            </div>
-          </Col>
-          </div>
           </div>
           <div className="bottom-fixed-row">
-              <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
-              {this.msg('saveAndAccept')}
-              </Button>
-              <Button size="large" onClick={this.handleDraftSave} loading={submitting}>
-              {this.msg('saveAsDraft')}
-              </Button>
-            </div>
+            <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
+            {this.msg('saveAndAccept')}
+            </Button>
+            <Button size="large" onClick={this.handleDraftSave} loading={submitting}>
+            {this.msg('saveAsDraft')}
+            </Button>
+          </div>
         </Form>
       </div>
     );

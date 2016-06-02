@@ -80,8 +80,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DRAFTFORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_DRAFTFORM_SUCCEED:
-      return { ...state, formData: { ...state.formData, ...action.result.data.shipmt,
-        client: action.result.data.shipmt.customer_name, goodslist: action.result.data.goodslist
+      return { ...state, formData: {
+        ...state.formData, ...action.result.data.shipmt,
+        goodslist: action.result.data.goodslist
       }};
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: { shipmt: action.result.data, visible: true }};
