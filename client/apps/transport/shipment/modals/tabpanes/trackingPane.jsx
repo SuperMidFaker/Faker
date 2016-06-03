@@ -98,7 +98,10 @@ export default class PreviewPanel extends React.Component {
           />
         ),
       });
-      if (tracking.downstream_status > SHIPMENT_TRACK_STATUS.unaccepted) {
+      if (
+        tracking.status === tracking.downstream_status
+        || tracking.downstream_status > SHIPMENT_TRACK_STATUS.unaccepted
+      ) {
         currentStep = currentStep + 2;
       }
     }
