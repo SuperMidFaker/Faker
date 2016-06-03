@@ -104,6 +104,9 @@ export default class PreviewPanel extends React.Component {
       ) {
         currentStep = currentStep + 2;
       }
+    } else if (tracking.status === tracking.downstream_status) {
+      // 下游不显示时但从下游查看,status需加2
+      currentStep = currentStep + 2;
     }
     trackingSteps.push(
      {
