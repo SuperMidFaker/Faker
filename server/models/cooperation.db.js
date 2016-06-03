@@ -198,5 +198,23 @@ export default {
         args.push([partnerKey, tenantId, partnerTenantId, partnerCode, partnerName, pts]);
       });
       return mysql.insert(sql, [args], trans);
+  },
+  getToInvitesWithTenantId(tenantId) {
+    const sql = `
+      SELECT P.name, P.partner_code AS code, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
+      FROM sso_partners AS P
+      INNER JOIN sso_partnerships AS PS
+      ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
+      WHERE P.tenant_id = ${tenantId} AND P.partner_tenant_id = -1
+            AND NOT EXISTS(
+              SELECT 1 FROM sso_partner_invitations AS PI
+              WHERE PI.inviter_tenant_id = P.tenant_id 
+                      AND PI.invitee_code = P.partner_code
+                      AND PI.invitee_name = P.name
+                      AND PI.status <= 2
+            );
+    `;
+    console.log(sql);
+    return mysql.query(sql);
   }
 };
