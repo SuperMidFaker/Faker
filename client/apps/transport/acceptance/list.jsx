@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message } from 'ant-ui';
+import { Table, Button, Radio, Icon, message, Popconfirm } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -380,9 +380,11 @@ export default class AcceptList extends React.Component {
               {formatGlobalMsg(this.props.intl, 'modify')}
               </NavLink>
               <span className="ant-divider" />
-              <a role="button" onClick={() => this.handleShipmtDraftDel(record.shipmt_no)}>
-              {formatGlobalMsg(this.props.intl, 'delete')}
-              </a>
+              <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={() => this.handleShipmtDraftDel(record.shipmt_no)}>
+                <a role="button">
+                {formatGlobalMsg(this.props.intl, 'delete')}
+                </a>
+              </Popconfirm>
             </span>
           );
         }
