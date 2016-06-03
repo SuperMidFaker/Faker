@@ -165,16 +165,27 @@ export default class PreviewPanel extends React.Component {
               field={ shipmt.transport_mode } fieldCol={{ span: 16 }}
             />
           </Col>
+          { shipmt.transport_mode_code === 'FTL' &&
           <Col span="8">
             <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
               field={ shipmt.vehicle_type } fieldCol={{ span: 16 }}
             />
           </Col>
+          }
+          { shipmt.transport_mode_code === 'FTL' &&
           <Col span="8">
             <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
               field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
             />
           </Col>
+          }
+          { shipmt.transport_mode_code === 'CTN' &&
+          <Col span="8">
+            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
+              field={shipmt.container_no} fieldCol={{ span: 16 }}
+            />
+          </Col>
+          }
           <Col span="24">
             <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
               field={ shipmt.remark } fieldCol={{ span: 21 }}

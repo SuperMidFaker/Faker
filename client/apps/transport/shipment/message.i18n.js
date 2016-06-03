@@ -229,6 +229,34 @@ export default defineMessages({
     id: 'transport.shipment.track.delivered',
     defaultMessage: '已交货'
   },
+  trackingStepTitle: {
+    id: 'transport.shipment.track.step.title',
+    defaultMessage: '状态跟踪'
+  },
+  trackCreate: {
+    id: 'transport.shipment.track.create',
+    defaultMessage: '创建'
+  },
+  trackAccept: {
+    id: 'transport.shipment.track.accept',
+    defaultMessage: '接单'
+  },
+  trackDispatch: {
+    id: 'transport.shipment.track.dispatch',
+    defaultMessage: '分配'
+  },
+  trackPickup: {
+    id: 'transport.shipment.track.pickup',
+    defaultMessage: '提货'
+  },
+  trackDeliver: {
+    id: 'transport.shipment.track.deliver',
+    defaultMessage: '交货'
+  },
+  trackPod: {
+    id: 'transport.shipment.track.pod',
+    defaultMessage: '回单'
+  },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',
     defaultMessage: '详情'

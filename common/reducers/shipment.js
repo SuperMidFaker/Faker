@@ -42,8 +42,15 @@ const initialState = {
     shipmt: {
       goodslist: [],
     },
+    tracking: {
+    },
   }
 };
+
+function transformJsonDate(val) {
+  // Date类型在JSON stringify/parse以后仍然是string类型,先转换
+  return typeof val === 'string' ? new Date(val) : val;
+}
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -75,16 +82,23 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORM_SUCCEED: {
       const formData = action.result.data.formData;
       const { customer_name } = formData;
-      return { ...state, formData: { ...state.formData, ...formData, client: customer_name } };
+      return { ...state, formData: { ...state.formData, ...formData,
+        client: customer_name, pickup_est_date: transformJsonDate(formData.pickup_est_date),
+        deliver_est_date: transformJsonDate(formData.deliver_est_date),
+      }};
     }
     case actionTypes.LOAD_DRAFTFORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_DRAFTFORM_SUCCEED:
-      return { ...state, formData: { ...state.formData, ...action.result.data.shipmt,
-        client: action.result.data.shipmt.customer_name, goodslist: action.result.data.goodslist
+      return { ...state, formData: {
+        ...state.formData, ...action.result.data.shipmt,
+        pickup_est_date: transformJsonDate(action.result.data.shipmt.pickup_est_date),
+        deliver_est_date: transformJsonDate(action.result.data.shipmt.deliver_est_date),
+        goodslist: action.result.data.goodslist
       }};
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state, previewer: { shipmt: action.result.data, visible: true }};
+      return { ...state, previewer: { shipmt: action.result.data.shipmt,
+        tracking: action.result.data.tracking, visible: true }};
     }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false }};

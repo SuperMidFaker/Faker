@@ -187,9 +187,12 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
  */
 function generateUpdateClauseWithInfo(updateInfo, columns) {
   if(Array.isArray(updateInfo)) {
-    return columns.filter(key => updateInfo.some(info => info[key] !== null)).map(key => {
-      return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join("");
-    }).join("END,\n") + 'END\n';
+    return columns.filter(key => updateInfo.some(
+      info => info[key] !== null
+    )).map(key => {
+      return `${key} = CASE id\n` + updateInfo.map(info => `WHEN ${info.id} THEN '${info[key]}'\n`)
+      .join('');
+    }).join('END,\n') + 'END\n';
   }else {
     return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
   }
@@ -401,25 +404,9 @@ export default {
       }
       args.push(tenantId);
     }
-    const sql = `select source, status from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
+    const sql = `select status, sr_name, sp_name, sp_tenant_id, disp_time, acpt_time, pickup_act_date,
+      deliver_act_date, pod_recv_date from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
-  },
-  updateShipmtWithInfo(shipmtInfo, trans) {
-    const columns = [
-      `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
-      'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
-      `consigner_addr`, `consigner_email`,
-      `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
-      `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
-      `consignee_contact`, `consignee_mobile`, `transit_time`,
-      `transport_mode`, `vehicle_type`, `vehicle_length`,
-      `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
-      `total_volume`, `remark`
-    ];
-    const updateClause = generateUpdateClauseWithInfo(shipmtInfo, columns);
-    const sql = `UPDATE tms_shipments SET ${updateClause} WHERE shipmt_no = ?`;
-    const args = [shipmtInfo.shipmt_no];
-    return mysql.update(sql, args, trans);
   },
   getTrackingCount(tenantId, filters) {
     const args = [ tenantId ];
