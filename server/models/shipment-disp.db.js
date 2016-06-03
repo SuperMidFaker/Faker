@@ -404,8 +404,8 @@ export default {
       }
       args.push(tenantId);
     }
-    const sql = `select status,disp_time, acpt_time, pickup_act_date, deliver_act_date,
-      pod_recv_date from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
+    const sql = `select status, sr_name, sp_name, sp_tenant_id, disp_time, acpt_time, pickup_act_date,
+      deliver_act_date, pod_recv_date from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
   },
   getTrackingCount(tenantId, filters) {

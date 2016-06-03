@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { setFormValue, setConsignFields, loadForm, loadFormRequire }
   from 'common/reducers/shipment';
-import { saveEdit } from 'common/reducers/transport-acceptance';
+import { loadTable, saveEdit } from 'common/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
@@ -42,8 +42,13 @@ function fetchData({ state, dispatch, params, cookie }) {
     formData: state.shipment.formData,
     transitModes: state.shipment.formRequire.transitModes,
     submitting: state.transportAcceptance.submitting,
+    filters: state.transportAcceptance.table.filters,
+    sortField: state.transportAcceptance.table.sortField,
+    sortOrder: state.transportAcceptance.table.sortOrder,
+    pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
+    current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, saveEdit })
+  { setFormValue, setConsignFields, loadTable, saveEdit })
 @connectNav((props, dispatch, router) => {
   if (!props.formData.shipmt_no) {
     return;
@@ -85,10 +90,16 @@ export default class ShipmentEdit extends React.Component {
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     transitModes: PropTypes.array.isRequired,
+    filters: PropTypes.array.isRequired,
+    sortField: PropTypes.string.isRequired,
+    sortOrder: PropTypes.string.isRequired,
+    pageSize: PropTypes.number.isRequired,
+    current: PropTypes.number.isRequired,
+    submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
-    submitting: PropTypes.bool.isRequired,
-    saveEdit: PropTypes.func.isRequired
+    saveEdit: PropTypes.func.isRequired,
+    loadTable: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
@@ -111,6 +122,9 @@ export default class ShipmentEdit extends React.Component {
               tenantId: this.props.tenantId,
               pageSize: this.props.pageSize,
               currentPage: this.props.current,
+              filters: JSON.stringify(this.props.filters),
+              sortField: this.props.sortField,
+              sortOrder: this.props.sortOrder,
             });
           }
         });

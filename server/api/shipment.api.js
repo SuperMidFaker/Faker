@@ -377,13 +377,14 @@ function *shipmtDetailG() {
   const tenantId = this.request.query.tenantId;
   const sourceType = this.request.query.sourceType;
   try {
-    const [ goodslist, shipmts, shipmtdisps ] = yield [
+    const [ goodslist, shipmts, shipmtSrDisps, shipmtSpDisps ] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
-      shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, sourceType),
+      shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, 'sr'),
+      shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, 'sp'),
     ];
     let shipmt = {};
-    let tracking = {};
+    let tracking;
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
       if (shipmt.vehicle_type) {
@@ -398,12 +399,56 @@ function *shipmtDetailG() {
           shipmt.vehicle_length = vl.text;
         }
       }
-      tracking.created_date = shipmt.created_date;
     }
     shipmt.goodslist = goodslist;
-    if (shipmtdisps.length === 1) {
-      shipmt.status = shipmtdisps[0].status;
-      tracking = { ...tracking, ...shipmtdisps[0] };
+    if (sourceType === 'sr' && shipmtSrDisps.length === 1) {
+      // 上游dispatch为shipmtSpDisps[0]
+      // 下游dispatch为shipmtSrDisps[0]
+      shipmt.status = shipmtSrDisps[0].status;
+      const upstream = shipmtSpDisps.length === 1;
+      // 下游dispatch若为司机或者线下,则不需要显示
+      const downstream = shipmtSrDisps[0].sp_tenant_id > 0;
+      tracking = {
+        upstream,
+        downstream,
+        created_date: shipmt.created_date,
+        upstream_name:
+          upstream ? shipmtSpDisps[0].sp_name : null,
+        upstream_acpt_time:
+          upstream ?  shipmtSpDisps[0].acpt_time: null,
+        upstream_disp_time:
+          upstream ? shipmtSpDisps[0].disp_time: null,
+        downstream_name: downstream ? shipmtSrDisps[0].sp_name : null,
+        downstream_acpt_time: downstream ? shipmtSrDisps[0].acpt_time : null,
+        downstream_disp_time: downstream ? shipmtSrDisps[0].disp_time : null,
+        pickup_act_date: shipmtSrDisps[0].pickup_act_date,
+        deliver_act_date: shipmtSrDisps[0].deliver_act_date,
+        pod_recv_date: shipmtSrDisps[0].pod_recv_date,
+        upstream_status: upstream ? shipmtSpDisps[0].status : null,
+        downstream_status: shipmtSrDisps[0].status,
+        status: shipmtSrDisps[0].status,
+      };
+    } else if (sourceType === 'sp' && shipmtSpDisps.length === 1) {
+      shipmt.status = shipmtSpDisps[0].status;
+      // 下游dispatch若为司机或者线下,则不需要显示
+      const downstream = shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id > 0;
+      tracking = {
+        upstream: true,
+        downstream,
+        created_date: shipmt.created_date,
+        upstream_name: shipmtSpDisps[0].sp_name,
+        upstream_acpt_time: shipmtSpDisps[0].acpt_time,
+        upstream_disp_time: shipmtSpDisps[0].disp_time,
+        downstream_name: downstream ? shipmtSrDisps[0].sp_name : null,
+        downstream_acpt_time: downstream ? shipmtSrDisps[0].acpt_time : null,
+        downstream_disp_time: downstream ? shipmtSrDisps[0].disp_time : null,
+        pickup_act_date: shipmtSpDisps[0].pickup_act_date,
+        deliver_act_date: shipmtSpDisps[0].deliver_act_date,
+        pod_recv_date: shipmtSpDisps[0].pod_recv_date,
+        upstream_status: shipmtSpDisps[0].status,
+        downstream_status: downstream ? shipmtSrDisps[0].status : null,
+        status: shipmtSpDisps[0].status,
+      };
     }
     return Result.ok(this, {
       shipmt,

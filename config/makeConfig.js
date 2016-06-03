@@ -27,7 +27,7 @@ export default (serverPort, dirName, appName) => {
   config.set('webpack_port', serverPort + 1);
   config.set('webpack_dev_path', `http://${config.get('server_host')}:${config.get('webpack_port')}/`);
   config.set('webpack_dist', 'dist');
-  config.set('CDN_URL', '');
+  config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
   config.set('__API_ROOT__', `http://${config.get('server_host')}:${config.get('server_port')}/`);
   // todo how to make the port configurable
   config.set('__PRODUCTIONS_ROOT_GROUP__', {
@@ -53,7 +53,6 @@ export default (serverPort, dirName, appName) => {
       'wewms': 'http://wms.wetms.com/'
     });
     config.set('__API_ROOT__', '/');
-    config.set('CDN_URL', '//welogix-web-cdn.b0.upaiyun.com');
     // config.set('CDN_URL', 'http://s.welogix.cn');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
   }
