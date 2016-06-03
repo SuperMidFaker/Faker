@@ -12,13 +12,13 @@ export default function ToInviteList(props) {
   const columns = [
     {
       title: '合作伙伴',
-      dataIndex: 'partner_name',
-      key: 'partner_name'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
       title: '代码',
-      dataIndex: 'partner_code',
-      key: 'partner_code'
+      dataIndex: 'code',
+      key: 'code'
     },
     {
       title: '关系类型',
@@ -47,13 +47,13 @@ export default function ToInviteList(props) {
       dataIndex: 'operation',
       key: 'operation',
       render(_, record) {
-        const partnerInfo = {
-          partnerName: record.partner_name,
-          partnerCode: record.partner_code,
-          partnerTenantId: record.partner_tenant_id
+        const inviteeInfo = {
+          name: record.name,
+          code: record.code,
+          tenantId: record.tenant_id
         };
         return (
-          <a onClick={() => onInviteBtnClick(partnerInfo)}>邀请加入</a>
+          <a onClick={() => onInviteBtnClick(inviteeInfo)}>邀请加入</a>
         );
       }
     }

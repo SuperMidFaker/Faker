@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvitationList from '../components/InvitationList';
 import inviteModal from '../components/inviteModal';
-import { changeInvitationType, loadToInvites } from 'common/reducers/invitation';
+import { changeInvitationType, loadToInvites, inviteOfflinePartner, removeInvitee } from 'common/reducers/invitation';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
 function fetchData({ state, dispatch }) {
@@ -12,18 +12,20 @@ function fetchData({ state, dispatch }) {
 @connectFetch()(fetchData)
 @connect((state) => ({
   invitationType: state.invitation.invitationType,
-  toInvites: state.invitation.toInvites
-}), { changeInvitationType })
+  toInvites: state.invitation.toInvites,
+  tenantId: state.account.tenantId
+}), { changeInvitationType, inviteOfflinePartner, removeInvitee })
 export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
     this.props.changeInvitationType(invitationType);
   }
   handleInviteBtnClick = (inviteeInfo) => {
-    if (inviteeInfo.partnerTenantId === -1) { // 线下邀请
+    const { tenantId } = this.props;
+    if (inviteeInfo.tenantId === -1) { // 线下邀请
       inviteModal({
-        onOk: (concatInfo) => {
-          console.log(concatInfo);
-          console.log(inviteeInfo);
+        onOk: (contactInfo) => {
+          this.props.inviteOfflinePartner({tenantId, contactInfo, inviteeInfo});
+          this.props.removeInvitee(inviteeInfo);
         }
       });
     }

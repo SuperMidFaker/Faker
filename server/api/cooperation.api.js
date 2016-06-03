@@ -396,17 +396,31 @@ function *getToInvites() {
   try {
     const rawInvites = yield coopDao.getToInvitesWithTenantId(tenantId);
     // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
-    const toInvites = rawInvites.map(invite => ({...invite, partnerships: [invite.partnerships]})).reduce((total, invite) => {
-      const foundIndex = total.findIndex(item => invite.partner_code === item.partner_code && invite.partner_name === item.partner_name);
+    const toInvites = rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
+      const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
       if (foundIndex !== -1) {
-        total[foundIndex].partnerships.push(invite.partnerships[0]);
+        total[foundIndex].partnerships.push(invitee.partnerships[0]);
       } else {
-        total.push(invite);
+        total.push(invitee);
       }
       return total;
     }, []);
     return Result.ok(this, { toInvites });
   } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *inviteOfflinePartner() {
+  const body = yield cobody(this);
+  const { tenantId, inviteeInfo, concactInfo } = body;
+  let trans;
+  try {
+    console.log(body);
+    yield coopDao.insertInvitation(null, tenantId, -1, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    return Result.ok(this);
+  } catch(e) {
+    yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
   }
 }
@@ -420,7 +434,8 @@ export default [
   [ 'get', '/v1/cooperation/invitations/out', sentInvitationsG ],
   [ 'post', '/v1/cooperation/invitation/cancel', cancelInvitation ],
   [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ],
-  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes],
+  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
-  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites]
+  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
+  [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ]
 ]
