@@ -8,13 +8,18 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 export default function InvitationList(props) {
-  const { invitationType } = props;
+  const { invitationType, onInvitationTypeChange } = props;
   const components = [<ToInviteList />, <ReceiveInvitationList />, <SendInvitationList />];
   const content = components[invitationType];
+
+  function handleInvitationTypeChange(e) {
+    onInvitationTypeChange(e.target.value);
+  }
+
   return (
     <div className="main-content">
       <div className="page-header">
-        <RadioGroup defaultValue={invitationType}>
+        <RadioGroup defaultValue={invitationType} onChange={handleInvitationTypeChange}>
           <RadioButton value="0">待邀请</RadioButton>
           <RadioButton value="1">收到的邀请</RadioButton>
           <RadioButton value="2">发出的邀请</RadioButton>

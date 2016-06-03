@@ -5,7 +5,8 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
   'RECEIVEDS_LOAD', 'RECEIVEDS_LOAD_SUCCEED', 'RECEIVEDS_LOAD_FAIL',
   'SENTS_LOAD', 'SENTS_LOAD_SUCCEED', 'SENTS_LOAD_FAIL',
   'INVITATION_CHANGE', 'INVITATION_CHANGE_SUCCEED', 'INVITATION_CHANGE_FAIL',
-  'INVITATION_CANCEL', 'INVITATION_CANCEL_SUCCEED', 'INVITATION_CANCEL_FAIL'
+  'INVITATION_CANCEL', 'INVITATION_CANCEL_SUCCEED', 'INVITATION_CANCEL_FAIL',
+  'CHANGE_INVITATION_TYPE'
 ]);
 
 const initialState = {
@@ -27,7 +28,8 @@ const initialState = {
     data: [
       /* { key:, name:, other db column } */
     ]
-  }
+  },
+  invitationType: '0', // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
 };
 
 export default function reducer(state = initialState, action) {
@@ -64,6 +66,8 @@ export default function reducer(state = initialState, action) {
       sents.data[action.index].status = action.result.data;
       return { ...state, sents };
     }
+    case actionTypes.CHANGE_INVITATION_TYPE:
+      return { ...state, invitationType: action.invitationType };
     default:
       return state;
   }
@@ -124,5 +128,12 @@ export function cancel(key, index) {
         key
       }
     }
+  };
+}
+
+export function changeInvitationType(invitationType) {
+  return {
+    type: actionTypes.CHANGE_INVITATION_TYPE,
+    invitationType
   };
 }
