@@ -113,7 +113,7 @@ export function setProviderType(providerType) {
   };
 }
 
-export function editProviderTypes({tenantId, partnerInfo, providerTypes}) {
+export function editProviderTypes({partnerKey, tenantId, partnerInfo, providerTypes}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -124,9 +124,10 @@ export function editProviderTypes({tenantId, partnerInfo, providerTypes}) {
       endpoint: 'v1/cooperation/partner/edit_provider_types',
       method: 'post',
       data: {
+        partnerKey,
         tenantId,
         partnerInfo,
-        providerTypes
+        providerTypes,
       }
     }
   };

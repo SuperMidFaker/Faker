@@ -345,14 +345,14 @@ function *sendOfflineInvitation() {
 
 function *editProviderTypes() {
   const body = yield cobody(this);
-  const { tenantId, partnerInfo, providerTypes } = body;
+  const { partnerKey, tenantId, partnerInfo, providerTypes } = body;
   const { partnerTenantId, partnerName, partnerCode } = partnerInfo;
   let trans;
   try {
     trans = yield mysql.beginTransaction();
     // 更改关系时,先删除原有的关系,再插入新的关系
     yield coopDao.removePartnerships(tenantId, partnerName, partnerCode, trans);
-    yield coopDao.insertPartnerships(tenantId, partnerTenantId, partnerName, partnerCode, providerTypes, trans);
+    yield coopDao.insertPartnerships(partnerKey, tenantId, partnerTenantId, partnerName, partnerCode, providerTypes, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
@@ -374,11 +374,11 @@ function *addPartner() {
       const partnerTenantId = partnerTenantInfo.tenant_id;
       const tenantType = PARTNER_TENANT_TYPE[partnerTenantInfo.level];
       addPartnerResult = yield coopDao.insertPartner(tenantId, partnerTenantInfo.tenant_id, partnerCode, partnerName, tenantType, 0, trans);
-      yield coopDao.insertPartnerships(tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
+      yield coopDao.insertPartnerships(addPartnerResul.insertId, tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
       newPartner = {...newPartner, partnerTenantId, tenantType };
     } else {
       addPartnerResult = yield coopDao.insertPartner(tenantId, -1, partnerCode, partnerName, PARTNER_TENANT_TYPE[3], 0, trans);
-      yield coopDao.insertPartnerships(tenantId, -1, partnerName, partnerCode, partnerships, trans);
+      yield coopDao.insertPartnerships(addPartnerResult.insertId, tenantId, -1, partnerName, partnerCode, partnerships, trans);
       newPartner = {...newPartner, partnerTenantId: -1, tenantType: PARTNER_TENANT_TYPE[3] };
     }
     // add `key` to newPartner

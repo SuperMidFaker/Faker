@@ -189,13 +189,13 @@ export default {
     const sql = `DELETE FROM sso_partnerships WHERE tenant_id = ${tenantId} AND partner_name = '${partnerName}' AND partner_code = '${partnerCode}';`;
     return mysql.delete(sql, [], trans);
   },
-  insertPartnerships(tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans) {
+  insertPartnerships(partnerKey, tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans) {
     const sql = `
-      INSERT INTO sso_partnerships(tenant_id, partner_tenant_id, partner_code, partner_name, type_code) values ?
+      INSERT INTO sso_partnerships(partner_id, tenant_id, partner_tenant_id, partner_code, partner_name, type_code) values ?
     `;
       const args = [];
       partnerships.forEach(pts => {
-        args.push([tenantId, partnerTenantId, partnerCode, partnerName, pts]);
+        args.push([partnerKey, tenantId, partnerTenantId, partnerCode, partnerName, pts]);
       });
       return mysql.insert(sql, [args], trans);
   },
