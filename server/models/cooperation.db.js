@@ -201,9 +201,11 @@ export default {
   },
   getToInvitesWithTenantId(tenantId) {
     const sql = `
-      SELECT name AS partner_name, partner_code
-      FROM sso_partners
-      WHERE tenant_id = ${tenantId} AND partner_tenant_id = -1
+      SELECT P.name AS partner_name, P.partner_code, PS.type_code AS partnerships
+      FROM sso_partners AS P
+      INNER JOIN sso_partnerships AS PS
+      ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
+      WHERE P.tenant_id = ${tenantId} AND P.partner_tenant_id = -1;
     `;
     console.log(sql);
     return mysql.query(sql);

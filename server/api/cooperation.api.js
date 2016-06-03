@@ -394,7 +394,17 @@ function *addPartner() {
 function *getToInvites() {
   const tenantId = this.request.query.tenantId;
   try {
-    const toInvites = yield coopDao.getToInvitesWithTenantId(tenantId);
+    const rawInvites = yield coopDao.getToInvitesWithTenantId(tenantId);
+    // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
+    const toInvites = rawInvites.map(invite => ({...invite, partnerships: [invite.partnerships]})).reduce((total, invite) => {
+      const foundIndex = total.findIndex(item => invite.partner_code === item.partner_code && invite.partner_name === item.partner_name);
+      if (foundIndex !== -1) {
+        total[foundIndex].partnerships.push(invite.partnerships[0]);
+      } else {
+        total.push(invite);
+      }
+      return total;
+    }, []);
     return Result.ok(this, { toInvites });
   } catch(e) {
     return Result.internalServerError(this, e.message);

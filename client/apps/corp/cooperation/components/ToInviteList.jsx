@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
+import { partnerTypes, providerShorthandTypes } from '../util/dataMapping';
 
 const rowSelection = {
   onChange() {}
@@ -22,7 +23,19 @@ export default function ToInviteList(props) {
     {
       title: '关系类型',
       dataIndex: 'partnerships',
-      key: 'partnerships'
+      key: 'partnerships',
+      render(_, record) {
+        const partnerships = record.partnerships;
+        let content;
+        if (partnerships.length === 1) {
+          content = partnerTypes[partnerships[0]];
+        } else {
+          content = `${partnerships.map(ps => providerShorthandTypes[ps]).join('/')}提供商`;
+        }
+        return (
+          <span>{content}</span>
+        );
+      }
     },
     {
       title: '创建日期',
