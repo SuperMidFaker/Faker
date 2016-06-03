@@ -10,7 +10,7 @@ const RadioButton = Radio.Button;
 export default function InvitationList(props) {
   const { invitationType, onInvitationTypeChange, toInvites, onInviteBtnClick } = props;
   const components = [
-    <ToInviteList toInvites={toInvites} onInviteBtnClick={onInviteBtnClick}/>, 
+    <ToInviteList toInvites={toInvites} onInviteBtnClick={onInviteBtnClick}/>,
     <ReceiveInvitationList />,
     <SendInvitationList />
   ];

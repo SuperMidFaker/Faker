@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvitationList from '../components/InvitationList';
+import inviteModal from '../components/inviteModal';
 import { changeInvitationType, loadToInvites } from 'common/reducers/invitation';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
-function fetchData({ state, dispatch, cookie }) {
+function fetchData({ state, dispatch }) {
   return dispatch(loadToInvites(state.account.tenantId));
 }
 
@@ -19,13 +20,18 @@ export default class InvitationListContainer extends Component {
   }
   handleInviteBtnClick = (inviteeInfo) => {
     if (inviteeInfo.partnerTenantId === -1) { // 线下邀请
-      console.log(inviteeInfo);
+      inviteModal({
+        onOk: (concatInfo) => {
+          console.log(concatInfo);
+          console.log(inviteeInfo);
+        }
+      });
     }
   }
   render() {
     const { invitationType = '0', toInvites } = this.props;
     return (
-      <InvitationList 
+      <InvitationList
         invitationType={invitationType}
         toInvites={toInvites}
         onInviteBtnClick={this.handleInviteBtnClick}

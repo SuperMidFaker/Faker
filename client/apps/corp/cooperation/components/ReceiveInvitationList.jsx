@@ -31,7 +31,7 @@ const columns = [
     title: '操作',
     dataIndex: 'operation',
     key: 'operation',
-    render(_, record) {
+    render() {
       return (
         <span>
           <a>接受</a>
@@ -47,7 +47,7 @@ const rowSelection = {
   onChange() {}
 };
 
-export default function ReceiveInvitationList(props) {
+export default function ReceiveInvitationList() {
   return (
     <Table columns={columns} dataSource={[{partner: 'zank'}]} rowSelection={rowSelection}/>
   );
