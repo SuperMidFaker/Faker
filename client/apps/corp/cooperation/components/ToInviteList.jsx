@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
 
 const rowSelection = {
@@ -6,17 +6,17 @@ const rowSelection = {
 };
 
 export default function ToInviteList(props) {
-  const { toInvitations, onInviteBtnClick } = props;
+  const { toInvites, onInviteBtnClick } = props;
 
   const columns = [
     {
       title: '合作伙伴',
-      dataIndex: 'partner',
-      key: 'partner'
+      dataIndex: 'partner_name',
+      key: 'partner_name'
     },
     {
       title: '代码',
-      dataIndex: 'parter_code',
+      dataIndex: 'partner_code',
       key: 'partner_code'
     },
     {
@@ -40,8 +40,12 @@ export default function ToInviteList(props) {
       }
     }
   ];
-  
   return (
-    <Table columns={columns} dataSource={toInvitations} rowSelection={rowSelection}/>
+    <Table columns={columns} dataSource={toInvites} rowSelection={rowSelection}/>
   );
 }
+
+ToInviteList.propTypes = {
+  toInvites: PropTypes.array.isRequired,        // 待邀请的列表数组
+  onInviteBtnClick: PropTypes.func.isRequired,  // 邀请加入按钮点击时执行的回调函数
+};

@@ -6,7 +6,8 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
   'SENTS_LOAD', 'SENTS_LOAD_SUCCEED', 'SENTS_LOAD_FAIL',
   'INVITATION_CHANGE', 'INVITATION_CHANGE_SUCCEED', 'INVITATION_CHANGE_FAIL',
   'INVITATION_CANCEL', 'INVITATION_CANCEL_SUCCEED', 'INVITATION_CANCEL_FAIL',
-  'CHANGE_INVITATION_TYPE'
+  'CHANGE_INVITATION_TYPE',
+  'LOAD_TO_INVITES', 'LOAD_TO_INVITES_SUCCEED', 'LOAD_TO_INVITES_FAIL'
 ]);
 
 const initialState = {
@@ -30,6 +31,7 @@ const initialState = {
     ]
   },
   invitationType: '0', // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
+  toInvites: [],       // 待邀请的列表数组
 };
 
 export default function reducer(state = initialState, action) {
@@ -68,6 +70,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.CHANGE_INVITATION_TYPE:
       return { ...state, invitationType: action.invitationType };
+    case actionTypes.LOAD_TO_INVITES_SUCCEED:
+      return { ...state, toInvites: action.result.data.toInvites };
     default:
       return state;
   }
@@ -135,5 +139,20 @@ export function changeInvitationType(invitationType) {
   return {
     type: actionTypes.CHANGE_INVITATION_TYPE,
     invitationType
+  };
+}
+
+export function loadToInvites(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TO_INVITES,
+        actionTypes.LOAD_TO_INVITES_SUCCEED,
+        actionTypes.LOAD_TO_INVITES_FAIL
+      ],
+      endpoint: 'v1/cooperation/invitation/to_invites',
+      method: 'get',
+      params: { tenantId }
+    }
   };
 }

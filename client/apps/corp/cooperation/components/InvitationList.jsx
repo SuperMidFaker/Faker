@@ -8,9 +8,9 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 export default function InvitationList(props) {
-  const { invitationType, onInvitationTypeChange, toInvitations, onInviteBtnClick } = props;
+  const { invitationType, onInvitationTypeChange, toInvites, onInviteBtnClick } = props;
   const components = [
-    <ToInviteList toInvitations={toInvitations} onInviteBtnClick={onInviteBtnClick}/>, 
+    <ToInviteList toInvites={toInvites} onInviteBtnClick={onInviteBtnClick}/>, 
     <ReceiveInvitationList />,
     <SendInvitationList />
   ];
@@ -38,6 +38,6 @@ export default function InvitationList(props) {
 
 InvitationList.propTypes = {
   invitationType: PropTypes.string.isRequired,   // 邀请的类型,'0', '1', '2'依次对应['待邀请', '发出的邀请', '收到的邀请']
-  toInvitations: PropTypes.array.isRequired,     // 待邀请的列表数组
+  toInvites: PropTypes.array.isRequired,         // 待邀请的列表数组
   onInviteBtnClick: PropTypes.func.isRequired,   // 邀请加入按钮点击时执行的回调函数
 };

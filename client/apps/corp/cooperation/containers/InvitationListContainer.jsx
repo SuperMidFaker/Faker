@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvitationList from '../components/InvitationList';
-import { changeInvitationType } from 'common/reducers/invitation';
+import { changeInvitationType, loadToInvites } from 'common/reducers/invitation';
+import connectFetch from 'client/common/decorators/connect-fetch';
 
-@connect((state) => ({invitationType: state.invitation.invitationType}), { changeInvitationType })
+function fetchData({ state, dispatch, cookie }) {
+  return dispatch(loadToInvites(state.account.tenantId));
+}
+
+@connectFetch()(fetchData)
+@connect((state) => ({
+  invitationType: state.invitation.invitationType,
+  toInvites: state.invitation.toInvites
+}), { changeInvitationType })
 export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
     this.props.changeInvitationType(invitationType);
@@ -12,11 +21,11 @@ export default class InvitationListContainer extends Component {
     console.log(invitationId);
   }
   render() {
-    const { invitationType = '0' } = this.props;
+    const { invitationType = '0', toInvites } = this.props;
     return (
       <InvitationList 
         invitationType={invitationType}
-        toInvitations={[{partner: 'zank', id: 0}, {partner: 'ywwhack', id: 1}]}
+        toInvites={toInvites}
         onInviteBtnClick={this.handleInviteBtnClick}
         onInvitationTypeChange={this.handleInvitationTypeChange}/>
     );

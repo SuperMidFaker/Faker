@@ -391,6 +391,16 @@ function *addPartner() {
   }
 }
 
+function *getToInvites() {
+  const tenantId = this.request.query.tenantId;
+  try {
+    const toInvites = yield coopDao.getToInvitesWithTenantId(tenantId);
+    return Result.ok(this, { toInvites });
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'post', '/v1/cooperation/partner/online', partnerOnlineP ],
@@ -401,5 +411,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation/cancel', cancelInvitation ],
   [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes],
-  [ 'post', '/v1/cooperation/partner/add', addPartner ]
+  [ 'post', '/v1/cooperation/partner/add', addPartner ],
+  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites]
 ]

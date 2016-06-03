@@ -198,5 +198,14 @@ export default {
         args.push([tenantId, partnerTenantId, partnerCode, partnerName, pts]);
       });
       return mysql.insert(sql, [args], trans);
+  },
+  getToInvitesWithTenantId(tenantId) {
+    const sql = `
+      SELECT name AS partner_name, partner_code
+      FROM sso_partners
+      WHERE tenant_id = ${tenantId} AND partner_tenant_id = -1
+    `;
+    console.log(sql);
+    return mysql.query(sql);
   }
 };
