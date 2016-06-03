@@ -201,7 +201,7 @@ export default {
   },
   getToInvitesWithTenantId(tenantId) {
     const sql = `
-      SELECT P.name AS partner_name, P.partner_code, PS.type_code AS partnerships
+      SELECT P.name AS partner_name, P.partner_code, PS.type_code AS partnerships, PS.partner_tenant_id
       FROM sso_partners AS P
       INNER JOIN sso_partnerships AS PS
       ON P.name = PS.partner_name AND P.partner_code = PS.partner_code

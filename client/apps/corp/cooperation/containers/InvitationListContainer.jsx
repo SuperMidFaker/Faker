@@ -17,8 +17,10 @@ export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
     this.props.changeInvitationType(invitationType);
   }
-  handleInviteBtnClick = (invitationId) => {
-    console.log(invitationId);
+  handleInviteBtnClick = (inviteeInfo) => {
+    if (inviteeInfo.partnerTenantId === -1) { // 线下邀请
+      console.log(inviteeInfo);
+    }
   }
   render() {
     const { invitationType = '0', toInvites } = this.props;

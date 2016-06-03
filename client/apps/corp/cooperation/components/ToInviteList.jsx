@@ -47,8 +47,13 @@ export default function ToInviteList(props) {
       dataIndex: 'operation',
       key: 'operation',
       render(_, record) {
+        const partnerInfo = {
+          partnerName: record.partner_name,
+          partnerCode: record.partner_code,
+          partnerTenantId: record.partner_tenant_id
+        };
         return (
-          <a onClick={() => onInviteBtnClick(record.id)}>邀请加入</a>
+          <a onClick={() => onInviteBtnClick(partnerInfo)}>邀请加入</a>
         );
       }
     }
