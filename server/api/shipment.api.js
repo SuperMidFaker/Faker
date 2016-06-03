@@ -242,7 +242,7 @@ function *shipmtDraftSaveAcceptP() {
     const editGoods = goodslist.filter(goods => goods.id !== undefined);
     trans = yield mysql.beginTransaction();
     const dbOps = [
-      shipmentDispDao.updateShipmtWithInfo(shipment, trans),
+      shipmentDao.updateShipmtWithInfo(shipment, trans),
     ];
     if (editGoods.length > 0) {
       dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
@@ -307,7 +307,7 @@ function *shipmtSaveEditP() {
   try {
     trans = yield mysql.beginTransaction();
     const dbOps = [
-      shipmentDispDao.updateShipmtWithInfo(shipment, trans),
+      shipmentDao.updateShipmtWithInfo(shipment, trans),
     ];
     if (editGoods.length > 0) {
       dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
@@ -420,13 +420,13 @@ export default [
   [ 'post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
+  [ 'get', '/v1/transport/shipment', shipmtG ],
+  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
   [ 'get', '/v1/transport/shipment/draft', shipmtDraftG ],
   [ 'post', '/v1/transport/shipment/draft/saveaccept', shipmtDraftSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/draft/del', shipmtDraftDelP ],
   [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
-  [ 'get', '/v1/transport/shipment', shipmtG ],
-  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
 ]

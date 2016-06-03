@@ -248,5 +248,12 @@ export default {
   },
   deleteShipmt(shipmt) {
     return shipmtOrm.deleteObj(shipmt);
-  }
+  },
+  updateShipmtWithInfo(shipmtInfo, trans) {
+    const shipmt = {};
+    Object.keys(shipmtInfo).filter(key => key !== 'shipmt_no')
+      .forEach(key => shipmt[key] = shipmtInfo[key]);
+    shipmt.wheres = { 'shipmt_no': shipmtInfo.shipmt_no };
+    return shipmtOrm.updateObj(shipmt, trans);
+  },
 };

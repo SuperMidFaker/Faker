@@ -40,7 +40,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     loginName: state.account.username,
     tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
-    clients: state.shipment.formRequire.clients,
+    transitModes: state.shipment.formRequire.transitModes,
     submitting: state.transportAcceptance.submitting,
   }),
   { setFormValue, setConsignFields, saveEdit })
@@ -61,21 +61,18 @@ function fetchData({ state, dispatch, params, cookie }) {
     return props.formData;
   },
   onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
-      if (name === 'client') {
-        const clientFieldId = fields[name].value;
-        const selclients = props.clients.filter(
-            cl => cl.tid === parseInt(clientFieldId, 10)
-        );
+    Object.keys(fields).forEach(name => {
+      if (name === 'transport_mode_code') {
+        const code = fields[name].value;
+        const modes = props.transitModes.filter(tm => tm.mode_code === code);
         props.setConsignFields({
-          client_id: selclients.length > 0 ? clientFieldId : 0,
-          client: selclients.length > 0 ? selclients[0].name : clientFieldId,
+          transport_mode_code: code,
+          transport_mode: modes.length > 0 ? modes[0].mode_name : '',
         });
       } else {
-        props.setFormValue(name, fields[name].value || '');
+        props.setFormValue(name, fields[name].value);
       }
-    }
+    });
   },
   formPropName: 'formhoc'
 })
@@ -87,7 +84,7 @@ export default class ShipmentEdit extends React.Component {
     tenantName: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
-    clients: PropTypes.array.isRequired,
+    transitModes: PropTypes.array.isRequired,
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -98,21 +95,27 @@ export default class ShipmentEdit extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleEdit = (ev) => {
-    const {formData, tenantId, loginId} = this.props;
     ev.preventDefault();
-    this.props.saveEdit(formData, tenantId, loginId)
-      .then(result => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.context.router.goBack();
-          this.props.loadTable(null, {
-            tenantId: this.props.tenantId,
-            pageSize: this.props.pageSize,
-            currentPage: this.props.current,
-          });
-        }
-      });
+    this.props.formhoc.validateFields(errors => {
+      if (errors) {
+        message.error(this.msg('formError'));
+      } else {
+        const {formData, tenantId, loginId} = this.props;
+        this.props.saveEdit(formData, tenantId, loginId)
+        .then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.context.router.goBack();
+            this.props.loadTable(null, {
+              tenantId: this.props.tenantId,
+              pageSize: this.props.pageSize,
+              currentPage: this.props.current,
+            });
+          }
+        });
+      }
+    });
   }
   handleCancel = () => {
     this.context.router.goBack();
