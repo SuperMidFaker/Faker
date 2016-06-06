@@ -19,7 +19,9 @@ import {
   PARTNERSHIP_TYPE_INFO,
   SHIPMENT_SOURCE,
   SHIPMENT_TRACK_STATUS,
-  SHIPMENT_VEHICLE_CONNECT
+  SHIPMENT_VEHICLE_CONNECT,
+  VEHICLE_TYPES,
+  VEHICLE_LENGTH_TYPES
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS } from '../util/constants';
 import parse from 'co-body';
@@ -272,7 +274,9 @@ function *listSegReq() {
 
   Result.ok(this, {
     transitModes,
-    nodeLocations
+    nodeLocations,
+    vehicleLengths: VEHICLE_LENGTH_TYPES,
+    vehicleTypes: VEHICLE_TYPES
   });
 }
 
