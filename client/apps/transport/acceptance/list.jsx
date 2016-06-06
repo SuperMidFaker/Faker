@@ -26,6 +26,17 @@ const formatGlobalMsg = format(globalMessages);
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+function TransitTimeLabel(props) {
+  const { time, tformat } = props;
+  let msg;
+  if (time === 0) {
+    msg = tformat('transitTimeToday');
+  } else {
+    msg = `${time}${tformat('day')}`;
+  }
+  return <span>{msg}</span>;
+}
+
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadTable(cookie, {
     tenantId: state.account.tenantId,
@@ -147,7 +158,7 @@ export default class AcceptList extends React.Component {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
     width: 80,
-    render: (o, record) => <span>{record.transit_time}{this.msg('day')}</span>
+    render: (o, record) => <TransitTimeLabel time={record.transit_time} tformat={this.msg} />
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
