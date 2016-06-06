@@ -62,8 +62,8 @@ function *trackingPickDeliverDateP() {
     }
     trans = yield mysql.beginTransaction();
     yield shipmentDispDao.updateDispInfo(dispId, fields, trans);
-    yield shipmentDispDao.updateStatusByShipmtNo(
-      shipmtNo, fields.status, trans
+    yield shipmentDispDao.updateDispByShipmtNo(
+      shipmtNo, fields, trans
     );
     yield mysql.commit(trans);
     return Result.ok(this);
@@ -92,7 +92,7 @@ function *trackingPodUpdateP() {
       pod_recv_date: new Date(),
     };
     yield shipmentDispDao.updateDispInfo(dispId, dispFields, trans);
-    // yield shipmentDispDao.updateStatusByShipmtNo(
+    // yield shipmentDispDao.updateDispByShipmtNo(
     //   shipmtNo, SHIPMENT_TRACK_STATUS.podsubmit, trans
     // );
     yield mysql.commit(trans);

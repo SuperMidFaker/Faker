@@ -17,6 +17,10 @@ export default defineMessages({
     id: 'transport.acceptance.ship.transit.time',
     defaultMessage: '运输时效'
   },
+  transitTimeToday: {
+    id: 'transport.acceptance.transit.time.today',
+    defaultMessage: '当日'
+  },
   shipDeliveryDate: {
     id: 'transport.acceptance.delivery.date',
     defaultMessage: '送货日期'
