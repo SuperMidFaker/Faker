@@ -231,6 +231,21 @@ export default {
     const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE ${tenantField} = ${tenantId} ORDER BY status;`;
     return mysql.query(sql);
   },
+  getSendInvitationsByTenantId(tenantId) {
+    const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE inviter_tenant_id = ${tenantId} ORDER BY status;`;
+    return mysql.query(sql);
+  },
+  getReceiveInvitationsByTenantId(tenantId) {
+    const sql = `
+      SELECT PI.id, T.name, T.code AS code, PI.status
+      FROM sso_partner_invitations AS PI
+      INNER JOIN sso_tenants AS T ON T.tenant_id = ${tenantId}
+      WHERE invitee_tenant_id = ${tenantId}
+      ORDER BY status
+      ;
+    `;
+    return mysql.query(sql);
+  },
   getInvitationInfo(invKey) {
     const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId,
       invitee_code as inviteeCode from sso_partner_invitations where id = ?`;

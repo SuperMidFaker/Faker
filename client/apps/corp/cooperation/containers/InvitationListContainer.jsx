@@ -36,7 +36,7 @@ export default class InvitationListContainer extends Component {
         }
       });
     } else { // 线上邀请
-      // this.props.inviteOnlinePartner({tenantId, inviteeInfo});
+      this.props.inviteOnlinePartner({tenantId, inviteeInfo});
     }
   }
   handleCancelInvitebtnClick = (id) => {

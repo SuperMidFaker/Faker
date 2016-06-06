@@ -140,8 +140,8 @@ function *getToInvites() {
   const tenantId = this.request.query.tenantId;
   try {
     const offlineInvites = yield coopDao.getOfflineInvitesWithTenantId(tenantId);
-    // const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
-    const rawInvites = [...offlineInvites];
+    const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
+    const rawInvites = [...offlineInvites, ...onlineInvites];
     // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
     const toInvites = rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
       const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
@@ -189,7 +189,7 @@ function *inviteOnlinePartner() {
 function *getSendInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
-    const sendInvitations = yield coopDao.getInvitationsByTenantId(tenantId, 0);
+    const sendInvitations = yield coopDao.getSendInvitationsByTenantId(tenantId);
     return Result.ok(this, {sendInvitations});
   } catch(e) {
     return Result.internalServerError(this, e.message);
@@ -199,7 +199,7 @@ function *getSendInvitations() {
 function *getReceiveInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
-    const receiveInvitations = yield coopDao.getInvitationsByTenantId(tenantId, 1);
+    const receiveInvitations = yield coopDao.getReceiveInvitationsByTenantId(tenantId);
     console.log(receiveInvitations);
     return Result.ok(this, {receiveInvitations});
   } catch (e) {
@@ -222,7 +222,6 @@ function *rejectInvitation() {
 
 function *acceptInvitation() {
   const body = yield cobody(this);
-  console.log('fuck');
   const { id } = body;
   let trans;
   try {
