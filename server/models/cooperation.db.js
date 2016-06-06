@@ -221,16 +221,6 @@ export default {
     `;
     return mysql.query(sql);
   },
-  getInvitationsByTenantId(tenantId, tenantType) {
-    let tenantField;
-    if (tenantType === 0) { // 邀请方
-      tenantField = 'inviter_tenant_id';
-    } else { // 被邀方
-      tenantField = 'invitee_tenant_id';
-    }
-    const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE ${tenantField} = ${tenantId} ORDER BY status;`;
-    return mysql.query(sql);
-  },
   getSendInvitationsByTenantId(tenantId) {
     const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE inviter_tenant_id = ${tenantId} ORDER BY status;`;
     return mysql.query(sql);
