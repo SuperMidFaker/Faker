@@ -26,6 +26,8 @@ function fetch({ state, dispatch, cookie }) {
   vehicleLoaded: state.transportDispatch.vehicleLoaded,
   lspLoaded: state.transportDispatch.lspLoaded,
   dispatched: state.transportDispatch.dispatched,
+  vehicleTypes: state.transportDispatch.vehicleTypes,
+  vehicleLengths: state.transportDispatch.vehicleLengths
 }), { loadLsps, loadVehicles, doDispatch })
 export default class DispatchDock extends Component {
   static propTypes = {
@@ -42,7 +44,9 @@ export default class DispatchDock extends Component {
     lspLoaded: PropTypes.bool.isRequired,
     doDispatch: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
-    loginId: PropTypes.number.isRequired
+    loginId: PropTypes.number.isRequired,
+    vehicleTypes: PropTypes.array.isRequired,
+    vehicleLengths: PropTypes.array.isRequired
   }
 
   constructor(props) {
@@ -58,7 +62,11 @@ export default class DispatchDock extends Component {
                 title: '',
                 dataIndex: 'partner_tenant_id',
                 width: 30,
-                render: (tid, record) => (<Button type={`${record.partner_tenant_id > 0 ? 'primary' : 'ghost'}`} shape="circle" size="small" style={{width: 15, height: 15}} />)
+                render: (tid, record) => {
+                  return (<span>
+                        <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
+                      </span>);
+                }
               }, {
                 title: '承运商',
                 dataIndex: 'partner_name',
@@ -99,11 +107,23 @@ export default class DispatchDock extends Component {
               }, {
                 title: '车型',
                 dataIndex: 'type',
-                width: 50
+                width: 50,
+                render: (t) => {
+                  if (this.props.vehicleTypes) {
+                    return this.props.vehicleTypes[t].text;
+                  }
+                  return '';
+                }
               }, {
                 title: '车长',
                 dataIndex: 'length',
-                width: 30
+                width: 30,
+                render: (l) => {
+                  if (this.props.vehicleLengths) {
+                    return this.props.vehicleLengths[l].text;
+                  }
+                  return '';
+                }
               }, {
                 title: '载重',
                 width: 30,

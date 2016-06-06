@@ -4,6 +4,7 @@ import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'ant-u
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadTable,
          doSend,
          doReturn,
@@ -12,6 +13,7 @@ import { loadTable,
          loadExpandList,
          loadShipmtsGrouped,
          loadShipmtsGroupedSub,
+         loadSegRq,
          removeGroupedSubShipmt } from 'common/reducers/transportDispatch';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
@@ -28,6 +30,13 @@ const RadioGroup = Radio.Group;
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 
+function fetch({ state, dispatch, cookie }) {
+  return dispatch(loadSegRq(cookie, {
+    tenantId: state.account.tenantId
+  }));
+}
+
+@connectFetch()(fetch)
 @injectIntl
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {

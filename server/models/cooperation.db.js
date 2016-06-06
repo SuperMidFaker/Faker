@@ -65,12 +65,6 @@ export default {
     const args = [partnerName, code, tenantType, partnerId, tenantId, established];
     return mysql.insert(sql, [args], trans);
   },
-  establishPartner(tenantId, partnerId, trans) {
-    const sql = `update sso_partners set established = 1 where tenant_id = ?
-      and partner_tenant_id = ?`;
-    const args = [tenantId, partnerId];
-    return mysql.update(sql, args, trans);
-  },
   rejectPartner(tenantId, partnerId, partnerCode, trans) {
     const sql = `delete from sso_partners where tenant_id = ? and partner_tenant_id = ?
       and partner_code = ? and established != 1`;
@@ -141,12 +135,6 @@ export default {
     const args = [tenantId];
     return mysql.query(sql, args);
   },
-  getInvitationInfo(invKey) {
-    const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId,
-      invitee_code as inviteeCode from sso_partner_invitations where id = ?`;
-    const args = [invKey];
-    return mysql.query(sql, args);
-  },
   updateInvitationStatus(status, acceptDate, key, trans) {
     const sql = 'update sso_partner_invitations set status = ?, accept_date = ? where id = ?';
     const args = [status, acceptDate, key];
@@ -199,7 +187,7 @@ export default {
       });
       return mysql.insert(sql, [args], trans);
   },
-  getToInvitesWithTenantId(tenantId) {
+  getOfflineInvitesWithTenantId(tenantId) {
     const sql = `
       SELECT P.name, P.partner_code AS code, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
       FROM sso_partners AS P
@@ -214,7 +202,45 @@ export default {
                       AND PI.status <= 2
             );
     `;
-    console.log(sql);
     return mysql.query(sql);
-  }
+  },
+  getOnlineInvitesWithTenantId(tenantId) {
+    const sql = `
+      SELECT P.name, P.partner_code AS code, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
+      FROM sso_partners AS P
+      INNER JOIN sso_partnerships AS PS
+      ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
+      WHERE P.tenant_id = ${tenantId} AND P.established = 0 AND P.partner_tenant_id != -1
+            AND NOT EXISTS(
+              SELECT 1 FROM sso_partner_invitations AS PI
+              WHERE PI.inviter_tenant_id = P.tenant_id 
+                      AND PI.invitee_code = P.partner_code
+                      AND PI.invitee_name = P.name
+                      AND PI.status <= 2
+            );
+    `;
+    return mysql.query(sql);
+  },
+  getInvitationsByTenantId(tenantId, tenantType) {
+    let tenantField;
+    if (tenantType === 0) { // 邀请方
+      tenantField = 'inviter_tenant_id';
+    } else { // 被邀方
+      tenantField = 'invitee_tenant_id';
+    }
+    const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE ${tenantField} = ${tenantId} ORDER BY status;`;
+    return mysql.query(sql);
+  },
+  getInvitationInfo(invKey) {
+    const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId,
+      invitee_code as inviteeCode from sso_partner_invitations where id = ?`;
+    const args = [invKey];
+    return mysql.query(sql, args);
+  },
+  establishPartner(tenantId, partnerId, trans) {
+    const sql = `update sso_partners set established = 1 where tenant_id = ?
+      and partner_tenant_id = ?`;
+    const args = [tenantId, partnerId];
+    return mysql.update(sql, args, trans);
+  },
 };
