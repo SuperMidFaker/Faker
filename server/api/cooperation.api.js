@@ -191,12 +191,29 @@ function *getReceiveInvitations() {
   }
 }
 
-function *changeInvitationStatus() {
+function *rejectInvitation() {
   const body = yield cobody(this);
   const { status, id } = body;
   let trans;
   try {
-    yield coopDao.updateInvitationStatus(status, null, id, trans);
+    yield coopDao.updateInvitationStatus(2, null, id, trans);
+    return Result.ok(this);
+  } catch (e) {
+    yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *acceptInvitation() {
+  const body = yield cobody(this);
+  console.log('fuck');
+  const { id } = body;
+  let trans;
+  try {
+    // 接受时,需要同时更新invitation表中的status和partnerships中的establish
+    const invitationInfo = yield coopDao.getInvitationInfo(id);
+    yield coopDao.establishPartner(invitationInfo.inviterId, invitationInfo.inviteeId, trans);
+    yield coopDao.updateInvitationStatus(1, null, id, trans);
     return Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
@@ -213,5 +230,6 @@ export default [
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
-  [ 'post', '/v1/cooperation/invitation/change_invitation_status', changeInvitationStatus ]
+  [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
+  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
 ]

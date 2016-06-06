@@ -12,7 +12,8 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
   'CANCEL_INVITE', 'CANCEL_INVITE_SUCCEED', 'CANCEL_INVITE_FAIL',
   'LOAD_SEND_INVITATIONS', 'LOAD_SEND_INVITATIONS_SUCCEED', 'LOAD_SEND_INVITATIONS_FAIL',
   'LOAD_RECEIVE_INVITATIONS', 'LOAD_RECEIVE_INVITATIONS_SUCCEED', 'LOAD_RECEIVE_INVITATIONS_FAIL',
-  'CHANGE_INVITATION_STATUS', 'CHANGE_INVITATION_STATUS_SUCCEED', 'CHANGE_INVITATION_STATUS_FAIL'
+  'REJECT_INVITATION', 'REJECT_INVITATION_SUCCEED', 'REJECT_INVITATION_FAIL',
+  'ACCEPT_INVITATION', 'ACCEPT_INVITATION_SUCCEED', 'ACCEPT_INVITATION_FAIL'
 ]);
 
 const initialState = {
@@ -79,7 +80,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_RECEIVE_INVITATIONS_SUCCEED:
       return { ...state, receiveInvitations: action.result.data.receiveInvitations };
-    case actionTypes.CHANGE_INVITATION_STATUS: {
+    case actionTypes.ACCEPT_INVITATION_SUCCEED:
+    case actionTypes.REJECT_INVITATION_SUCCEED: {
       const recevieInvitaions = state.receiveInvitations;
       const updateInvitation = recevieInvitaions.find(invitation => invitation.id === action.id);
       const index = recevieInvitaions.findIndex(invitaion => invitaion.id === action.id);
@@ -89,36 +91,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-export function loadReceiveds(cookie, params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.RECEIVEDS_LOAD, actionTypes.RECEIVEDS_LOAD_SUCCEED,
-        actionTypes.RECEIVEDS_LOAD_FAIL],
-      endpoint: 'v1/cooperation/invitations/in',
-      method: 'get',
-      params,
-      cookie
-    }
-  };
-}
-
-export function change(key, type, index, partnerships) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.INVITATION_CHANGE, actionTypes.INVITATION_CHANGE_SUCCEED,
-        actionTypes.INVITATION_CHANGE_FAIL],
-      endpoint: 'v1/cooperation/invitation',
-      method: 'post',
-      index,
-      data: {
-        key,
-        partnerships,
-        type
-      }
-    }
-  };
 }
 
 export function changeInvitationType(invitationType) {
@@ -186,19 +158,36 @@ export function loadReceiveInvitations(tenantId) {
   };
 }
 
-export function changeInvitationStatus(id, status) {
+export function acceptInvitation(id) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.CHANGE_INVITATION_STATUS,
-        actionTypes.CHANGE_INVITATION_STATUS_SUCCEED,
-        actionTypes.CHANGE_INVITATION_STATUS_FAIL
+        actionTypes.ACCEPT_INVITATION,
+        actionTypes.ACCEPT_INVITATION_SUCCEED,
+        actionTypes.ACCEPT_INVITATION_FAIL
       ],
-      endpoint: 'v1/cooperation/invitation/change_invitation_status',
+      endpoint: 'v1/cooperation/invitation/accept_invitation',
       method: 'post',
       id,
-      status,
-      data: { id, status }
+      status: 1,
+      data: { id }
+    }
+  };
+}
+
+export function rejectInvitation(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REJECT_INVITATION,
+        actionTypes.REJECT_INVITATION_SUCCEED,
+        actionTypes.REJECT_INVITATION_FAIL
+      ],
+      endpoint: 'v1/cooperation/invitation/reject_invitation',
+      method: 'post',
+      id,
+      status: 2,
+      data: { id }
     }
   };
 }

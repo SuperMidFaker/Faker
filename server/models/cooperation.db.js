@@ -65,12 +65,6 @@ export default {
     const args = [partnerName, code, tenantType, partnerId, tenantId, established];
     return mysql.insert(sql, [args], trans);
   },
-  establishPartner(tenantId, partnerId, trans) {
-    const sql = `update sso_partners set established = 1 where tenant_id = ?
-      and partner_tenant_id = ?`;
-    const args = [tenantId, partnerId];
-    return mysql.update(sql, args, trans);
-  },
   rejectPartner(tenantId, partnerId, partnerCode, trans) {
     const sql = `delete from sso_partners where tenant_id = ? and partner_tenant_id = ?
       and partner_code = ? and established != 1`;
@@ -139,12 +133,6 @@ export default {
     const sql = `select type, type_code as name, partner_code as partnerCode
       from sso_partnerships where tenant_id = ?`;
     const args = [tenantId];
-    return mysql.query(sql, args);
-  },
-  getInvitationInfo(invKey) {
-    const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId,
-      invitee_code as inviteeCode from sso_partner_invitations where id = ?`;
-    const args = [invKey];
     return mysql.query(sql, args);
   },
   updateInvitationStatus(status, acceptDate, key, trans) {
@@ -224,7 +212,18 @@ export default {
       tenantField = 'invitee_tenant_id';
     }
     const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE ${tenantField} = ${tenantId} ORDER BY status;`;
-    console.log(sql);
     return mysql.query(sql);
-  }
+  },
+  getInvitationInfo(invKey) {
+    const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId,
+      invitee_code as inviteeCode from sso_partner_invitations where id = ?`;
+    const args = [invKey];
+    return mysql.query(sql, args);
+  },
+  establishPartner(tenantId, partnerId, trans) {
+    const sql = `update sso_partners set established = 1 where tenant_id = ?
+      and partner_tenant_id = ?`;
+    const args = [tenantId, partnerId];
+    return mysql.update(sql, args, trans);
+  },
 };
