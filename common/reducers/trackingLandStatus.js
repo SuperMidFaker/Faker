@@ -108,10 +108,10 @@ export function loadTransitTable(cookie, params) {
   };
 }
 
-export function showVehicleModal(dispId) {
+export function showVehicleModal(dispId, shipmtNo) {
   return {
     type: actionTypes.SHOW_VEHICLE_MODAL,
-    data: { dispId },
+    data: { dispId, shipmtNo },
   };
 }
 

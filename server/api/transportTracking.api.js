@@ -28,15 +28,20 @@ function *trackingShipmtListG() {
 }
 
 function *trackingVehicleUpdateP() {
+  let trans;
   try {
     const body = yield cobody(this);
-    const { dispId, plate, driver, remark } = body;
-    yield shipmentDispDao.updateDispInfo(dispId, {
+    trans = yield mysql.beginTransaction();
+    const { dispId, shipmtNo, plate, driver, remark } = body;
+    const fields = {
       task_vehicle: plate,
       task_driver_name: driver,
       task_remark: remark,
       status: SHIPMENT_TRACK_STATUS.undelivered,
-    });
+    };
+    yield shipmentDispDao.updateDispInfo(dispId, fields, trans);
+    yield shipmentDispDao.updateDispByShipmtNo(shipmtNo, fields, trans);
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
     return Result.internalServerError(this, e.message);

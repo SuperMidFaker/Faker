@@ -397,7 +397,7 @@ export default class LandStatusList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleShowVehicleModal = row => {
-    this.props.showVehicleModal(row.disp_id);
+    this.props.showVehicleModal(row.disp_id, row.shipmt_no);
   }
   handleShowPickModal = row => {
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');

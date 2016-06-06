@@ -30,9 +30,20 @@ function apiRequestPromise() {
             /* eslint-disable no-console */
             console.log('api mw err', err, 'body', resp && resp.body);
             /* eslint-enable no-console */
+            if (resp.body.status === 401) {
+              // 在浏览器端验证api请求验证错误时跳转至login页面
+              if (!(typeof document === 'undefined' ||
+                    typeof window === 'undefined' ||
+                      !window.location)) {
+                const originLoc = window.location;
+                window.location.href =
+                  `/login?next=${encodeURIComponent(originLoc.pathname)}`;
+              }
+            }
             return reject((resp && resp.body) || err);
+          } else {
+            return resolve(resp.body);
           }
-          return resolve(resp.body);
         });
       });
     };
