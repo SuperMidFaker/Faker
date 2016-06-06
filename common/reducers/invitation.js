@@ -5,11 +5,12 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
   'RECEIVEDS_LOAD', 'RECEIVEDS_LOAD_SUCCEED', 'RECEIVEDS_LOAD_FAIL',
   'SENTS_LOAD', 'SENTS_LOAD_SUCCEED', 'SENTS_LOAD_FAIL',
   'INVITATION_CHANGE', 'INVITATION_CHANGE_SUCCEED', 'INVITATION_CHANGE_FAIL',
-  'INVITATION_CANCEL', 'INVITATION_CANCEL_SUCCEED', 'INVITATION_CANCEL_FAIL',
   'CHANGE_INVITATION_TYPE',
   'LOAD_TO_INVITES', 'LOAD_TO_INVITES_SUCCEED', 'LOAD_TO_INVITES_FAIL',
   'INVITE_OFFLINE_PARTNER', 'INVITE_OFFLINE_PARTNER_SUCCEED', 'INVITE_OFFLINE_PARTNER_FAIL',
-  'REMOVE_INVITEE'
+  'REMOVE_INVITEE',
+  'CANCEL_INVITE', 'CANCEL_INVITE_SUCCEED', 'CANCEL_INVITE_FAIL',
+  'LOAD_SEND_INVITATIONS', 'LOAD_SEND_INVITATIONS_SUCCEED', 'LOAD_SEND_INVITATIONS_FAIL'
 ]);
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
   },
   invitationType: '0', // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
   toInvites: [],       // 待邀请的列表数组
+  sendInvitations: [], // 发出的邀请列表数组
 };
 
 export default function reducer(state = initialState, action) {
@@ -65,11 +67,6 @@ export default function reducer(state = initialState, action) {
       receiveds.data[action.index].status = action.result.data;
       return { ...state, receiveds };
     }
-    case actionTypes.INVITATION_CANCEL_SUCCEED: {
-      const sents = { ...state.sents };
-      sents.data[action.index].status = action.result.data;
-      return { ...state, sents };
-    }
     case actionTypes.CHANGE_INVITATION_TYPE:
       return { ...state, invitationType: action.invitationType };
     case actionTypes.LOAD_TO_INVITES_SUCCEED:
@@ -78,6 +75,15 @@ export default function reducer(state = initialState, action) {
       const removedInvitee = action.inviteeInfo;
       const toInvites = state.toInvites.filter(invitee => !(invitee.code === removedInvitee.code && invitee.name === removedInvitee.name));
       return { ...state, toInvites };
+    }
+    case actionTypes.LOAD_SEND_INVITATIONS_SUCCEED:
+      return { ...state, sendInvitations: action.result.data.sendInvitations };
+    case actionTypes.CANCEL_INVITE_SUCCEED: {
+      const sendInvitations = state.sendInvitations;
+      const cancelInvitation = sendInvitations.find(invitation => invitation.id === action.id);
+      const index = sendInvitations.findIndex(invitaion => invitaion.id === action.id);
+      const newInvitation = {...cancelInvitation, status: 3};
+      return {...state, sendInvitations: [...sendInvitations.slice(0, index), newInvitation, ...sendInvitations.slice(index + 1)]};
     }
     default:
       return state;
@@ -127,21 +133,6 @@ export function loadSents(cookie, params) {
   };
 }
 
-export function cancel(key, index) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.INVITATION_CANCEL, actionTypes.INVITATION_CANCEL_SUCCEED,
-        actionTypes.INVITATION_CANCEL_FAIL],
-      endpoint: 'v1/cooperation/invitation/cancel',
-      method: 'post',
-      index,
-      data: {
-        key
-      }
-    }
-  };
-}
-
 export function changeInvitationType(invitationType) {
   return {
     type: actionTypes.CHANGE_INVITATION_TYPE,
@@ -187,5 +178,39 @@ export function removeInvitee(inviteeInfo) {
   return {
     type: actionTypes.REMOVE_INVITEE,
     inviteeInfo
+  };
+}
+
+// 发出邀请相关action
+export function loadSendInvitations(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SEND_INVITATIONS,
+        actionTypes.LOAD_SEND_INVITATIONS_SUCCEED,
+        actionTypes.LOAD_SEND_INVITATIONS_FAIL
+      ],
+      endpoint: 'v1/cooperation/invitation/send_invitations',
+      method: 'get',
+      params: { tenantId }
+    }
+  };
+}
+
+export function cancelInvite(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_INVITE,
+        actionTypes.CANCEL_INVITE_SUCCEED,
+        actionTypes.CANCEL_INVITE_FAIL
+      ],
+      endpoint: 'v1/cooperation/invitation/cancel_invite',
+      method: 'post',
+      id,
+      data: {
+        id
+      }
+    }
   };
 }

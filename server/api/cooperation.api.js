@@ -261,59 +261,23 @@ function *invitationP() {
   }
 }
 
-function *sentInvitationsG() {
-  const current = parseInt(this.request.query.currentPage, 10);
-  const pageSize = parseInt(this.request.query.pageSize, 10);
-  const tenantId = parseInt(this.request.query.tenantId, 10);
-  try {
-    const totals = yield coopDao.getSentInvitationCount(tenantId);
-    const invitations = yield coopDao.getSentInvitations(tenantId, current, pageSize);
-    const partnerships = yield coopDao.getPartnershipByInviter(tenantId);
-    const sents = [];
-    for (let i = 0; i < invitations.length; i++) {
-      const sent = {
-        key: invitations[i].id,
-        createdDate: invitations[i].createdDate,
-        name: invitations[i].name,
-        code: separatePartnerCode(invitations[i].code),
-        status: invitations[i].status
-      };
-      sent.types = partnerships.filter(pts => pts.partnerCode === invitations[i].code)
-        .map(pts => ({
-          key: pts.type,
-          code: pts.name
-        }));
-      sents.push(sent);
-    }
-    return Result.ok(this, {
-      totalCount: totals.length > 0 ? totals[0].count : 0,
-      pageSize,
-      current,
-      data: sents
-    });
-  } catch (e) {
-    console.log(e && e.stack);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *cancelInvitation() {
-  const body = yield cobody(this);
+function *cancelInvite() {
+  const { id } = yield cobody(this);
   let trans;
   try {
-    const invitations = yield coopDao.getInvitationInfo(body.key);
+    const invitations = yield coopDao.getInvitationInfo(id);
     if (invitations.length !== 1) {
       throw new Error('invitation not found');
     }
     const status = INVITATION_STATUS.CANCELED;
     trans = yield mysql.beginTransaction();
-    yield coopDao.updateInvitationStatus(status, null, body.key, trans);
-    yield coopDao.rejectPartner(
-      invitations[0].inviterId, invitations[0].inviteeId,
-      invitations[0].inviteeCode, trans
-    );
+    yield coopDao.updateInvitationStatus(status, null, id, trans);
+    // yield coopDao.rejectPartner(
+    //   invitations[0].inviterId, invitations[0].inviteeId,
+    //   invitations[0].inviteeCode, trans
+    // );
     yield mysql.commit(trans);
-    return Result.ok(this, status);
+    return Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
@@ -374,7 +338,7 @@ function *addPartner() {
       const partnerTenantId = partnerTenantInfo.tenant_id;
       const tenantType = PARTNER_TENANT_TYPE[partnerTenantInfo.level];
       addPartnerResult = yield coopDao.insertPartner(tenantId, partnerTenantInfo.tenant_id, partnerCode, partnerName, tenantType, 0, trans);
-      yield coopDao.insertPartnerships(addPartnerResul.insertId, tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
+      yield coopDao.insertPartnerships(addPartnerResult.insertId, tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
       newPartner = {...newPartner, partnerTenantId, tenantType };
     } else {
       addPartnerResult = yield coopDao.insertPartner(tenantId, -1, partnerCode, partnerName, PARTNER_TENANT_TYPE[3], 0, trans);
@@ -425,14 +389,26 @@ function *inviteOfflinePartner() {
   }
 }
 
+function *getSendInvitations() {
+  console.log('fuck');
+  const tenantId = this.request.query.tenantId;
+  try {
+    const sendInvitations = yield coopDao.getSendInvitationsByTenantId(tenantId);
+    console.log(sendInvitations);
+    return Result.ok(this, {sendInvitations});
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'post', '/v1/cooperation/partner/online', partnerOnlineP ],
   [ 'post', '/v1/cooperation/partner/offline', partnerOfflineP ],
   [ 'get', '/v1/cooperation/invitations/in', receivedInvitationsG ],
   [ 'post', '/v1/cooperation/invitation', invitationP ],
-  [ 'get', '/v1/cooperation/invitations/out', sentInvitationsG ],
-  [ 'post', '/v1/cooperation/invitation/cancel', cancelInvitation ],
+  [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
+  [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
   [ 'post', '/v1/cooperation/partner/invitation', sendOfflineInvitation ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],

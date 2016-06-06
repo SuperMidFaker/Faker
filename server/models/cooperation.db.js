@@ -214,6 +214,10 @@ export default {
                       AND PI.status <= 2
             );
     `;
+    return mysql.query(sql);
+  },
+  getSendInvitationsByTenantId(tenantId) {
+    const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE inviter_tenant_id = ${tenantId} ORDER BY status;`;
     console.log(sql);
     return mysql.query(sql);
   }
