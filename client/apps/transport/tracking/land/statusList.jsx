@@ -406,7 +406,7 @@ export default class LandStatusList extends React.Component {
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
   handleShowPodModal = (row) => {
-    this.props.showPodModal(row.disp_id, row.shipmt_no);
+    this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = row => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr').then(result => {

@@ -84,12 +84,13 @@ function *trackingPodUpdateP() {
   let trans;
   try {
     const body = yield cobody(this);
-    const { dispId, shipmtNo, submitter, signStatus, signRemark, photos } = body;
+    const { dispId, parentDispId, shipmtNo, submitter, signStatus, signRemark, photos } = body;
     trans = yield mysql.beginTransaction();
     const result = yield shipmentAuxDao.createPod(
       SHIPMENT_POD_TYPE.paperprint, signStatus, signRemark,
       photos, submitter, trans
     );
+    // 承运商手动上传回单时标记为已提交,上级标记为待审核
     const dispFields = {
       pod_id: result.insertId,
       status: SHIPMENT_TRACK_STATUS.podsubmit,
