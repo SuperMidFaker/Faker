@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
   'CHANGE_INVITATION_TYPE',
   'LOAD_TO_INVITES', 'LOAD_TO_INVITES_SUCCEED', 'LOAD_TO_INVITES_FAIL',
   'INVITE_OFFLINE_PARTNER', 'INVITE_OFFLINE_PARTNER_SUCCEED', 'INVITE_OFFLINE_PARTNER_FAIL',
+  'INVITE_ONLINE_PARTNER', 'INVITE_ONLINE_PARTNER_SUCCEED', 'INVITE_ONLINE_PARTNER_FAIL',
   'REMOVE_INVITEE',
   'CANCEL_INVITE', 'CANCEL_INVITE_SUCCEED', 'CANCEL_INVITE_FAIL',
   'LOAD_SEND_INVITATIONS', 'LOAD_SEND_INVITATIONS_SUCCEED', 'LOAD_SEND_INVITATIONS_FAIL',
@@ -130,6 +131,24 @@ export function inviteOfflinePartner({tenantId, inviteeInfo, contactInfo}) {
         tenantId,
         inviteeInfo,
         contactInfo
+      }
+    }
+  };
+}
+
+export function inviteOnlinePartner({tenantId, inviteeInfo}) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INVITE_ONLINE_PARTNER,
+        actionTypes.INVITE_ONLINE_PARTNER_SUCCEED,
+        actionTypes.INVITE_ONLINE_PARTNER_FAIL
+      ],
+      endpoint: 'v1/cooperation/invitation/invite_online_partner',
+      method: 'post',
+      data: {
+        tenantId,
+        inviteeInfo
       }
     }
   };

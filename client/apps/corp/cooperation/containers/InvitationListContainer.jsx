@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvitationList from '../components/InvitationList';
 import inviteModal from '../components/inviteModal';
-import { changeInvitationType, loadToInvites, inviteOfflinePartner, removeInvitee, cancelInvite,
+import { changeInvitationType, loadToInvites, inviteOfflinePartner, inviteOnlinePartner, removeInvitee, cancelInvite,
   loadSendInvitations, loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'common/reducers/invitation';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
@@ -21,7 +21,7 @@ function fetchData({ state, dispatch }) {
   sendInvitations: state.invitation.sendInvitations,
   receiveInvitations: state.invitation.receiveInvitations,
   tenantId: state.account.tenantId
-}), { changeInvitationType, inviteOfflinePartner, removeInvitee, cancelInvite, rejectInvitation, acceptInvitation })
+}), { changeInvitationType, inviteOfflinePartner, inviteOnlinePartner, removeInvitee, cancelInvite, rejectInvitation, acceptInvitation })
 export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
     this.props.changeInvitationType(invitationType);
@@ -35,6 +35,8 @@ export default class InvitationListContainer extends Component {
           this.props.removeInvitee(inviteeInfo);
         }
       });
+    } else { // 线上邀请
+      // this.props.inviteOnlinePartner({tenantId, inviteeInfo});
     }
   }
   handleCancelInvitebtnClick = (id) => {

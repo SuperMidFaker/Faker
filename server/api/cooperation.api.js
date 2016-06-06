@@ -139,7 +139,9 @@ function *addPartner() {
 function *getToInvites() {
   const tenantId = this.request.query.tenantId;
   try {
-    const rawInvites = yield coopDao.getToInvitesWithTenantId(tenantId);
+    const offlineInvites = yield coopDao.getOfflineInvitesWithTenantId(tenantId);
+    // const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
+    const rawInvites = [...offlineInvites];
     // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
     const toInvites = rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
       const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
@@ -161,8 +163,22 @@ function *inviteOfflinePartner() {
   const { tenantId, inviteeInfo, concactInfo } = body;
   let trans;
   try {
-    console.log(body);
     yield coopDao.insertInvitation(null, tenantId, -1, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    // TODO: 发送短信或者邮件给线下用户
+    return Result.ok(this);
+  } catch(e) {
+    yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *inviteOnlinePartner() {
+  const body = yield cobody(this);
+  const { tenantId, inviteeInfo } = body;
+  let trans;
+  try {
+    console.log(body);
+    yield coopDao.insertInvitation(null, tenantId, inviteeInfo.tenantId, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
     return Result.ok(this);
   } catch(e) {
     yield mysql.rollback(trans);
@@ -230,6 +246,7 @@ export default [
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
+  [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
 ]
