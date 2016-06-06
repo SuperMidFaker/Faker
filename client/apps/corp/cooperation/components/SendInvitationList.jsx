@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
 
 const rowSelection = {
@@ -64,3 +64,8 @@ export default function SendInvitation(props) {
     <Table columns={columns} dataSource={sendInvitations} rowSelection={rowSelection}/>
   );
 }
+
+SendInvitation.propTypes = {
+  sendInvitations: PropTypes.array.isRequired,        // 发送的邀请
+  onCancelInviteBtnClick: PropTypes.func.isRequired   // 点击取消时执行的回调函数
+};
