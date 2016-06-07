@@ -11,70 +11,70 @@ const rowSelection = {
  * 协作网络List列表的基类
  */
 export default class BaseList extends Component {
-  defaultColumns = [
-    {
-      title: '客户名称',
-      dataIndex: 'name',
-      key: 'name'
-    },
-    {
-      title: '客户代码',
-      dataIndex: 'partnerCode',
-      key: 'partnerCode'
-    },
-    {
-      title: '是否平台租户',
-      dataIndex: 'tenantType',
-      key: 'tenantType',
-      render: (_, record) => {
-        if (record.tenantType === 'TENANT_OFFLINE') {
-          return (
-            <a>邀请加入</a>
-          );
-        } else {
-          return (
-            <span>{tenantTypes[record.tenantType]}</span>
-          );
-        }
-      }
-    },
-    {
-      title: '业务量',
-      dataIndex: 'volume',
-      key: 'volume'
-    },
-    {
-      title: '营收',
-      dataIndex: 'revenue',
-      key: 'revenue'
-    },
-    {
-      title: '成本',
-      dataIndex: 'cost',
-      key: 'cost'
-    },
-    {
-      title: '创建日期',
-      dataIndex: 'create_date',
-      key: 'create_date'
-    },
-    {
-      title: '操作',
-      dataIndex: 'operaions',
-      key: 'operations',
-      render: (_, record) => {
-        if (record.status === 1) {
-          return this.renderEditAndStopOperations(record);
-        } else {
-          return this.renderDeleteAndResumeOperations(record);
-        }
-      }
-    },
-  ]
   constructor() {
     super();
     this.type = 'CUS';
     this.partnerships = ['CUS'];
+    this.defaultColumns = [
+      {
+        title: '客户名称',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: '客户代码',
+        dataIndex: 'partnerCode',
+        key: 'partnerCode'
+      },
+      {
+        title: '是否平台租户',
+        dataIndex: 'tenantType',
+        key: 'tenantType',
+        render: (_, record) => {
+          if (record.tenantType === 'TENANT_OFFLINE') {
+            return (
+              <a>邀请加入</a>
+            );
+          } else {
+            return (
+              <span>{tenantTypes[record.tenantType]}</span>
+            );
+          }
+        }
+      },
+      {
+        title: '业务量',
+        dataIndex: 'volume',
+        key: 'volume'
+      },
+      {
+        title: '营收',
+        dataIndex: 'revenue',
+        key: 'revenue'
+      },
+      {
+        title: '成本',
+        dataIndex: 'cost',
+        key: 'cost'
+      },
+      {
+        title: '创建日期',
+        dataIndex: 'created_date',
+        key: 'created_date'
+      },
+      {
+        title: '操作',
+        dataIndex: 'operaions',
+        key: 'operations',
+        render: (_, record) => {
+          if (record.status === 1) {
+            return this.renderEditAndStopOperations(record);
+          } else {
+            return this.renderDeleteAndResumeOperations(record);
+          }
+        }
+      },
+    ];
   }
   onAddBtnClick() {
     const { tenantId } = this.props;
@@ -108,9 +108,10 @@ export default class BaseList extends Component {
   }
   handleStopBtnClick(id) {
     this.props.changePartnerStatus(id, 0);
-    console.log(id);
   }
-  handleDeleteBtnClick() {}
+  handleDeleteBtnClick(id) {
+    this.props.deletePartner(id);
+  }
   handleResumeBtnClick(id) {
     this.props.changePartnerStatus(id, 1);
   }

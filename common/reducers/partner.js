@@ -7,7 +7,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
-  'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL'
+  'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
+  'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL'
 ]);
 
 const initialState = {
@@ -47,6 +48,21 @@ const initialState = {
   providerType: 'ALL'        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
 };
 
+function partnerReducer(state, action) {
+  const foundPartner = state.find(partner => partner.key === action.id);
+  const foundPartnerIndex = state.findIndex(partner => partner.key === action.id);
+  switch (action.type) {
+    case actionTypes.DELETE_PARTNER_SUCCEED:
+      return [...state.slice(0, foundPartnerIndex), ...state.slice(foundPartnerIndex + 1)];
+    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
+      const updatedPartner = {...foundPartner, status: action.status};
+      return [...state.slice(0, foundPartnerIndex), updatedPartner, ...state.slice(foundPartnerIndex + 1)];
+    }
+    default:
+      return state;
+  }
+}
+
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.PARTNERS_LOAD:
@@ -82,15 +98,9 @@ export default function reducer(state = initialState, action) {
       const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
       return { ...state, partnerlist: updatePartnerlist };
     }
-    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
-      const { id, status } = action.result.data;
-      const originPartners = state.partnerlist.data;
-      const updatingPartner = originPartners.find(partner => partner.key === id);
-      const index = originPartners.findIndex(partner => partner.key === id);
-      const updatedPartner = {...updatingPartner, status};
-      const allPartners = [originPartners.slice(0, index), updatedPartner, originPartners.slice(index + 1)];
-      return { ...state, partnerlist: { ...state.partnerlist, data: allPartners } };
-    }
+    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
+    case actionTypes.DELETE_PARTNER_SUCCEED:
+      return {...state, partnerlist: {...state.partnerlist, data: partnerReducer(state.partnerlist.data, action)}};
     default:
       return state;
   }
@@ -185,6 +195,24 @@ export function changePartnerStatus(id, status) {
       data: {
         id,
         status
+      }
+    }
+  };
+}
+
+export function deletePartner(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_PARTNER,
+        actionTypes.DELETE_PARTNER_SUCCEED,
+        actionTypes.DELETE_PARTNER_FAIL
+      ],
+      endpoint: 'v1/cooperation/partner/delete',
+      method: 'post',
+      id,
+      data: {
+        id,
       }
     }
   };
