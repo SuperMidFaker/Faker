@@ -127,6 +127,7 @@ function *addPartner() {
   let trans;
   try {
     // 根据partner的name和code查询是否存在这个租户,不存在就创建一个线下的partner,如果存在则根据线上用户的信息创建partner
+    trans = yield mysql.beginTransaction();
     const [ partnerTenantInfo ] = yield tenantDao.getTenantInfoWithNameAndCode(partnerName, partnerCode);
     if (partnerTenantInfo) { // 存在
       const partnerTenantId = partnerTenantInfo.tenant_id;
@@ -168,8 +169,10 @@ function *inviteOfflinePartner() {
   const { tenantId, inviteeInfo, concactInfo } = body;
   let trans;
   try {
+    trans = yield mysql.beginTransaction();
     yield coopDao.insertInvitation(null, tenantId, -1, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
     // TODO: 发送短信或者邮件给线下用户
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
     yield mysql.rollback(trans);
@@ -182,8 +185,9 @@ function *inviteOnlinePartner() {
   const { tenantId, inviteeInfo } = body;
   let trans;
   try {
-    console.log(body);
+    trans = yield mysql.beginTransaction();
     yield coopDao.insertInvitation(null, tenantId, inviteeInfo.tenantId, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
     yield mysql.rollback(trans);
@@ -218,7 +222,9 @@ function *rejectInvitation() {
   const { status, id } = body;
   let trans;
   try {
+    trans = yield mysql.beginTransaction();
     yield coopDao.updateInvitationStatus(2, null, id, trans);
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
@@ -232,9 +238,11 @@ function *acceptInvitation() {
   let trans;
   try {
     // 接受时,需要同时更新invitation表中的status和partnerships中的establish
+    trans = yield mysql.beginTransaction();
     const invitationInfo = yield coopDao.getInvitationInfo(id);
     yield coopDao.establishPartner(invitationInfo.inviterId, invitationInfo.inviteeId, trans);
     yield coopDao.updateInvitationStatus(1, null, id, trans);
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
@@ -247,7 +255,24 @@ function *changePartnerStatus() {
   const { id, status } = body;
   let trans;
   try {
+    trans = yield mysql.beginTransaction();
     yield coopDao.updatePartnerStatus(id, status, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *deletePartner() {
+  const body = yield cobody(this);
+  const { id } = body;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield coopDao.deletePartner(id, trans);
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
     mysql.rollback(trans);
@@ -267,5 +292,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
-  [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ]
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ],
+  [ 'post', '/v1/cooperation/partner/delete', deletePartner ]
 ]

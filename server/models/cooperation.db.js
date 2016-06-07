@@ -253,5 +253,9 @@ export default {
   updatePartnerStatus(partnerId, status, trans) {
     const sql = `UPDATE sso_partners SET status = ${status} WHERE id = ${partnerId}`;
     return mysql.update(sql, null, trans);
+  },
+  deletePartner(partnerId, trans) {
+    const sql = `DELETE FROM sso_partners WHERE id = ${partnerId};`;
+    return mysql.delete(sql, null, trans);
   }
 };
