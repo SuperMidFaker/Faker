@@ -230,9 +230,13 @@ export default {
   },
   getReceiveInvitationsByTenantId(tenantId) {
     const sql = `
-      SELECT PI.id, T.name, T.code AS code, PI.status FROM sso_partner_invitations AS PI
-      INNER JOIN sso_tenants AS T ON T.tenant_id = ${tenantId}
-      WHERE invitee_tenant_id = ${tenantId}
+      SELECT type_code AS partnerships, PPI.id, PPI.name, PPI.code, PPI.status 
+      FROM sso_partnerships AS P INNER JOIN
+        (SELECT PI.id, T.name, T.code AS code, PI.status, PI.invitee_tenant_id, PI.inviter_tenant_id 
+	        FROM sso_partner_invitations AS PI
+	        INNER JOIN sso_tenants AS T ON T.tenant_id = PI.inviter_tenant_id
+	        WHERE invitee_tenant_id = 34) AS PPI 
+	        ON PPI.invitee_tenant_id = P.partner_tenant_id AND PPI.inviter_tenant_id = P.tenant_id
       ORDER BY status
       ;
     `;

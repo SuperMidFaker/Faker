@@ -210,8 +210,9 @@ function *getReceiveInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
     const rawInvitations = yield coopDao.getReceiveInvitationsByTenantId(tenantId);
+    const receiveInvitations = transformInvitations(rawInvitations);
     console.log(rawInvitations);
-    return Result.ok(this, {receiveInvitations: rawInvitations});
+    return Result.ok(this, {receiveInvitations});
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
