@@ -405,8 +405,8 @@ export default {
       args.push(tenantId);
     }
     const sql = `select status, sr_name, sp_name, sp_tenant_id, disp_time, acpt_time, pickup_act_date,
-      deliver_act_date, pod_recv_date, disp_status from tms_shipment_dispatch where shipmt_no = ?
-      ${tenantClause}`;
+      deliver_act_date, pod_recv_date, disp_status, task_vehicle, vehicle_connect_type
+      from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
   },
   getTrackingCount(tenantId, filters) {
@@ -427,8 +427,8 @@ export default {
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
-      disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
-      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
+      disp_status, status, id as disp_id, parent_id from tms_shipment_dispatch as SD
+      inner join tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
       ${whereCond} order by disp_time desc`;
     return mysql.query(sql, args);
   },

@@ -384,6 +384,7 @@ function *shipmtDetailG() {
     ];
     let shipmt = {};
     let tracking;
+    let shipmtCreator;
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
       if (shipmt.vehicle_type) {
@@ -397,6 +398,11 @@ function *shipmtDetailG() {
         if (vl) {
           shipmt.vehicle_length = vl.text;
         }
+      }
+      if (shipmt.tenant_id === shipmt.customer_tenant_id) {
+        shipmtCreator = shipmt.customer_name;
+      } else if (shipmt.tenant_id === shipmt.lsp_tenant_id) {
+        shipmtCreator = shipmt.lsp_name;
       }
     }
     shipmt.goodslist = goodslist;
@@ -424,6 +430,8 @@ function *shipmtDetailG() {
         pod_recv_date: shipmtSrDisps[0].pod_recv_date,
         upstream_status: upstream ? shipmtSpDisps[0].status : -1,
         downstream_status: downstream ? shipmtSrDisps[0].status : -1,
+        vehicle: shipmtSrDisps[0].task_vehicle,
+        poder: shipmtSrDisps[0].sp_name || shipmtSrDisps[0].sr_name,
       };
     } else if (sourceType === 'sp' && shipmtSpDisps.length === 1) {
       // 下游dispatch若为司机,则不需要显示
@@ -442,8 +450,11 @@ function *shipmtDetailG() {
         pod_recv_date: shipmtSpDisps[0].pod_recv_date,
         upstream_status: shipmtSpDisps[0].status,
         downstream_status: downstream ? shipmtSrDisps[0].status : -1,
+        vehicle: shipmtSpDisps[0].task_vehicle,
+        poder: downstream ? shipmtSrDisps[0].sp_name : shipmtSpDisps[0].sp_name,
       };
     }
+    tracking.creator = shipmtCreator;
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstream_disp_status > 0 ?
       tracking.downstream_status : tracking.upstream_status;

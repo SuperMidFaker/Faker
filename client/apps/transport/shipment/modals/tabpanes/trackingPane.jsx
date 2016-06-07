@@ -49,6 +49,7 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackCreate'),
       desc: (
         <StepDesc texts={[
+          tracking.creator,
           tracking.created_date && moment(tracking.created_date).format(timeFormat),
         ]}
         />
@@ -60,8 +61,8 @@ export default class PreviewPanel extends React.Component {
         title: this.msg('trackAccept'),
         desc: (
           <StepDesc texts={[
-            tracking.upstream_acpt_time && moment(tracking.upstream_acpt_time).format(timeFormat),
             tracking.upstream_name,
+            tracking.upstream_acpt_time && moment(tracking.upstream_acpt_time).format(timeFormat),
           ]}
           />
         ),
@@ -70,6 +71,7 @@ export default class PreviewPanel extends React.Component {
         title: this.msg('trackDispatch'),
         desc: (
           <StepDesc texts={[
+            tracking.upstream_name,
             tracking.upstream_disp_time && tracking.upstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
               moment(tracking.upstream_disp_time).format(timeFormat),
           ]}
@@ -83,8 +85,8 @@ export default class PreviewPanel extends React.Component {
         title: this.msg('trackAccept'),
         desc: (
           <StepDesc texts={[
-            tracking.downstream_acpt_time && moment(tracking.downstream_acpt_time).format(timeFormat),
             tracking.downstream_name,
+            tracking.downstream_acpt_time && moment(tracking.downstream_acpt_time).format(timeFormat),
           ]}
           />
         ),
@@ -93,6 +95,7 @@ export default class PreviewPanel extends React.Component {
         title: this.msg('trackDispatch'),
         desc: (
           <StepDesc texts={[
+            tracking.downstream_name,
             tracking.downstream_disp_time && tracking.downstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
               moment(tracking.downstream_disp_time).format(timeFormat),
           ]}
@@ -111,6 +114,7 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackPickup'),
       desc: (
         <StepDesc texts={[
+          tracking.vehicle,
           tracking.pickup_act_date && moment(tracking.pickup_act_date).format(timeFormat),
         ]}
         />
@@ -119,6 +123,7 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackDeliver'),
       desc: (
         <StepDesc texts={[
+          tracking.vehicle,
           tracking.deliver_act_date && moment(tracking.deliver_act_date).format(timeFormat),
         ]}
         />
@@ -127,6 +132,7 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackPod'),
       desc: (
         <StepDesc texts={[
+          tracking.poder,
           tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
         ]}
         />

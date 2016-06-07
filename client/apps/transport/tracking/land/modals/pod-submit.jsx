@@ -15,6 +15,7 @@ const RadioGroup = Radio.Group;
     submitter: state.account.username,
     visible: state.trackingLandStatus.podModal.visible,
     dispId: state.trackingLandStatus.podModal.dispId,
+    parentDispId: state.trackingLandStatus.podModal.parentDispId,
     shipmtNo: state.trackingLandStatus.podModal.shipmtNo,
   }),
   { closePodModal, saveSubmitPod })
@@ -22,6 +23,7 @@ export default class PodSubmitter extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
+    parentDispId: PropTypes.number,
     shipmtNo: PropTypes.string.isRequired,
     onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
@@ -56,10 +58,11 @@ export default class PodSubmitter extends React.Component {
     }
   }
   handleOk = () => {
-    const { shipmtNo, submitter, dispId, onOK } = this.props;
+    const { shipmtNo, submitter, dispId, parentDispId, onOK } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
-    this.props.saveSubmitPod(shipmtNo, dispId, submitter, signStatus, remark, photos).then(
+    this.props.saveSubmitPod(shipmtNo, dispId, parentDispId, submitter,
+                             signStatus, remark, photos).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
