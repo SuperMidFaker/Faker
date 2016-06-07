@@ -101,8 +101,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.EDIT_PARTNER_SUCCEED: {
       const partners = [ ...state.partnerlist.data ];
-      partners[action.index].name = action.data.name;
-      partners[action.index].partner_code = action.data.code;
+      const partner = partners.find(pt => pt.key === action.data.partnerId);
+      partner.name = action.data.name;
+      partner.partner_code = action.data.code;
       return { ...state, partnerlist: { ...state.partnerlist, data: partners }};
     }
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
@@ -187,7 +188,7 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
   };
 }
 
-export function editPartner(partnerId, name, code, index) {
+export function editPartner(partnerId, name, code) {
   return {
     [CLIENT_API]: {
       types: [
@@ -202,7 +203,6 @@ export function editPartner(partnerId, name, code, index) {
         name,
         code,
       },
-      index,
     }
   };
 }
