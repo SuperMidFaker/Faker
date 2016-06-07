@@ -32,8 +32,8 @@ export default function ReceiveInvitationList(props) {
     },
     {
       title: '收到时间',
-      dataIndex: 'create_time',
-      key: 'create_time'
+      dataIndex: 'created_date',
+      key: 'created_date'
     },
     {
       title: '状态',

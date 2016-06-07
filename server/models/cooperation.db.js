@@ -34,7 +34,7 @@ export default {
     const sqlClause = getPartnerWhereClause(filters, tenantId, args);
     const sql = `select id as \`key\`, name, partner_code as partnerCode,
       tenant_type as tenantType, tenant_id as tenantId, partner_tenant_id as partnerTenantId,
-      business_volume as volume, revenue, cost, status from sso_partners where ${sqlClause}`;
+      business_volume as volume, revenue, cost, status, created_date from sso_partners where ${sqlClause}`;
     console.log(sql, args);
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -189,7 +189,7 @@ export default {
   },
   getOfflineInvitesWithTenantId(tenantId) {
     const sql = `
-      SELECT P.name, P.partner_code AS code, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
+      SELECT P.name, P.partner_code AS code, P.created_date, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
       FROM sso_partners AS P
       INNER JOIN sso_partnerships AS PS
       ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
@@ -206,7 +206,7 @@ export default {
   },
   getOnlineInvitesWithTenantId(tenantId) {
     const sql = `
-      SELECT P.name, P.partner_code AS code, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
+      SELECT P.name, P.partner_code AS code, P.created_date, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
       FROM sso_partners AS P
       INNER JOIN sso_partnerships AS PS
       ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
@@ -223,16 +223,16 @@ export default {
   },
   getSendInvitationsByTenantId(tenantId) {
     const sql = `
-      SELECT PI.id, invitee_name AS name, invitee_code AS code, status, PS.type_code AS partnerships FROM sso_partner_invitations AS PI
+      SELECT PI.id, PI.invitee_name AS name, PI.invitee_code AS code, PI.status, PI.created_date, PS.type_code AS partnerships FROM sso_partner_invitations AS PI
       INNER JOIN sso_partnerships AS PS ON invitee_name = partner_name AND invitee_code = partner_code
       WHERE inviter_tenant_id = ${tenantId} ORDER BY status;`;
     return mysql.query(sql);
   },
   getReceiveInvitationsByTenantId(tenantId) {
     const sql = `
-      SELECT type_code AS partnerships, PPI.id, PPI.name, PPI.code, PPI.status 
+      SELECT P.type_code AS partnerships, PPI.id, PPI.name, PPI.code, PPI.status, PPI.created_date
       FROM sso_partnerships AS P INNER JOIN
-        (SELECT PI.id, T.name, T.code AS code, PI.status, PI.invitee_tenant_id, PI.inviter_tenant_id 
+        (SELECT PI.id, T.name, T.code AS code, PI.status, PI.invitee_tenant_id, PI.inviter_tenant_id, PI.created_date
 	        FROM sso_partner_invitations AS PI
 	        INNER JOIN sso_tenants AS T ON T.tenant_id = PI.inviter_tenant_id
 	        WHERE invitee_tenant_id = 34) AS PPI 
@@ -255,7 +255,7 @@ export default {
     return mysql.update(sql, args, trans);
   },
   updatePartnerStatus(partnerId, status, trans) {
-    const sql = `UPDATE sso_partners SET status = ${status} WHERE id = ${partnerId}`;
+    const sql = `UPDATE sso_partners SET status = ${status}, accept_date = NOW() WHERE id = ${partnerId}`;
     return mysql.update(sql, null, trans);
   },
   deletePartner(partnerId, trans) {
