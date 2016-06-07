@@ -32,8 +32,8 @@ export default function ToInviteList(props) {
     },
     {
       title: '创建日期',
-      dataIndex: 'create_time',
-      key: 'create_time'
+      dataIndex: 'created_date',
+      key: 'created_date'
     },
     {
       title: '操作',

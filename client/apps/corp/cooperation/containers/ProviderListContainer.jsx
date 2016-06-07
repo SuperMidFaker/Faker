@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Radio, Icon, message } from 'ant-ui';
 import BaseList from '../components/BaseList';
-import { setProviderType, editProviderTypes, editProviderTypesLocal, addPartner, editPartner, changePartnerStatus } from 'common/reducers/partner';
+import { setProviderType, editProviderTypes, editProviderTypesLocal, addPartner, editPartner, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import { providerShorthandTypes } from '../util/dataMapping';
 import partnerModal from '../components/partnerModal';
 
@@ -16,7 +16,7 @@ const RadioGroup = Radio.Group;
   providerType: state.partner.providerType
 }), {
   setProviderType, editProviderTypes, editProviderTypesLocal,
-  addPartner, editPartner, changePartnerStatus,
+  addPartner, editPartner, changePartnerStatus, deletePartner
 })
 export default class ProviderListContainer extends BaseList {
   constructor() {

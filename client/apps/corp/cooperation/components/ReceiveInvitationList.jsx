@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
+import { mapPartnerships } from '../util/dataMapping';
 
 const rowSelection = {
   onChange() {}
@@ -22,12 +23,17 @@ export default function ReceiveInvitationList(props) {
     {
       title: '邀请我方成为',
       dataIndex: 'partnerships',
-      key: 'partnerships'
+      key: 'partnerships',
+      render(_, record) {
+        return (
+          <span>{mapPartnerships(record.partnerships)}</span>
+        );
+      }
     },
     {
       title: '收到时间',
-      dataIndex: 'create_time',
-      key: 'create_time'
+      dataIndex: 'created_date',
+      key: 'created_date'
     },
     {
       title: '状态',

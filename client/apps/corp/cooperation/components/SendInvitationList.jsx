@@ -31,8 +31,8 @@ export default function SendInvitation(props) {
     },
     {
       title: '发出时间',
-      dataIndex: 'create_time',
-      key: 'create_time'
+      dataIndex: 'created_date',
+      key: 'created_date'
     },
     {
       title: '状态',

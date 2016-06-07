@@ -123,7 +123,9 @@ export default class BaseList extends Component {
   handleStopBtnClick(id) {
     this.props.changePartnerStatus(id, 0);
   }
-  handleDeleteBtnClick() {}
+  handleDeleteBtnClick(id) {
+    this.props.deletePartner(id);
+  }
   handleResumeBtnClick(id) {
     this.props.changePartnerStatus(id, 1);
   }
