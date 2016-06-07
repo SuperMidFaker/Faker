@@ -69,6 +69,7 @@ export default class NodeFormConainer extends Component {
                   form={form}
                   node={editNodeInfo}
                   region={region}
+                  changeRegion={this.props.changeRegion}
                   onRegionChange={this.handleRegionChange}
                   onSubmitBtnClick={this.handleEditNode} />
       );
