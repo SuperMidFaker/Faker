@@ -1,11 +1,16 @@
 const path = require('path');
-const config = require('./dev');
+const wpConfig = require('./dev');
+const config = require('../config');
 
-delete config.entry.app;
+delete wpConfig.entry.app;
 
-config.entry.admin = [
+wpConfig.entry.admin = [
   'webpack/hot/dev-server',
-  path.resolve(__dirname, '..', 'client/admin/aboot.js')
+  path.resolve(__dirname, '..', 'client/admin/aboot.js'),
 ];
 
-module.exports = config;
+wpConfig.devServer.contentBase = config.get('webpack_admin_path');
+wpConfig.devServer.port = config.get('webpack_admin_port');
+wpConfig.output.publicPath = config.get('webpack_admin_public_path');
+
+module.exports = wpConfig;

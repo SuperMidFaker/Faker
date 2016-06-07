@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
-import Root from 'client/apps/root';
+import Root from './root';
 import Home from 'client/admin/home';
 import SSO from 'client/apps/sso/pack-sso';
 import Login from 'client/apps/sso/login';
@@ -16,12 +16,8 @@ export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
       const query = nextState.location.query;
-      const {account: {
-          subdomain
-        }, auth: {
-          isAuthed
-        }} = store.getState();
-      if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
+      const { auth: { isAuthed }} = store.getState();
+      if (!isAuthed) {
         const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
