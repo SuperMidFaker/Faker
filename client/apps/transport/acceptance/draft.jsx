@@ -180,6 +180,7 @@ export default class ShipmentDraftEdit extends React.Component {
       <div className="main-content">
         <Form form={formhoc} horizontal>
           <div className="page-body">
+            <div className="panel-header"></div>
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
