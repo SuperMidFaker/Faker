@@ -11,6 +11,16 @@ const rowSelection = {
  * 协作网络List列表的基类
  */
 export default class BaseList extends Component {
+  constructor() {
+    super();
+    this.type = 'CUS';
+    this.partnerships = ['CUS'];
+  }
+  setHeader() { // 子类通过这个方法来设置头部UI,默认不显示头部UI
+    return (
+      <div />
+    );
+  }
   defaultColumns = [
     {
       title: '客户名称',
@@ -71,27 +81,6 @@ export default class BaseList extends Component {
       }
     },
   ]
-  constructor() {
-    super();
-    this.type = 'CUS';
-    this.partnerships = ['CUS'];
-  }
-  onAddBtnClick() {
-    const { tenantId } = this.props;
-    let partnerships = this.partnerships;
-    partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
-    partnerModal({
-      onOk: (partnerInfo) => {
-        this.props.addPartner({tenantId, partnerInfo, partnerships});
-        message.success('合作伙伴已添加');
-      }
-    });
-  }
-  setHeader() { // 子类通过这个方法来设置头部UI,默认不显示头部UI
-    return (
-      <div></div>
-    );
-  }
   updateColumns(columns) { // 子类重载这个方法来自定义新的columns结构
     const { type } = this;
     const retColumns = [...columns];
@@ -104,21 +93,45 @@ export default class BaseList extends Component {
     const { type } = this;
     return partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
   }
-  handleEditBtnClick() {
+  handleAddBtnClick = () => {
+    const { tenantId } = this.props;
+    let partnerships = this.partnerships;
+    partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
+    partnerModal({
+      onOk: (partnerInfo) => {
+        this.props.addPartner({tenantId, partnerInfo, partnerships});
+        message.success('合作伙伴已添加');
+      },
+    });
+  }
+  handleEditBtnClick(key, name, code) {
+    partnerModal({
+      onOk: (ename, ecode) => {
+        this.props.editPartner(key, ename, ecode).then(
+          result => {
+            if (result.error) {
+              message.error(result.error.message);
+            }
+          });
+      },
+      editInfo: {
+        name,
+        code,
+      },
+    });
   }
   handleStopBtnClick(id) {
     this.props.changePartnerStatus(id, 0);
-    console.log(id);
   }
   handleDeleteBtnClick() {}
   handleResumeBtnClick(id) {
     this.props.changePartnerStatus(id, 1);
   }
   renderEditAndStopOperations(itemInfo) {
-    const {key} = itemInfo;
+    const { key, name, partnerCode } = itemInfo;
     return (
       <span>
-        <a onClick={() => this.handleEditBtnClick(key)}>修改</a>
+        <a onClick={() => this.handleEditBtnClick(key, name, partnerCode)}>修改</a>
         <span className="ant-divider"></span>
         <a onClick={() => this.handleStopBtnClick(key)}>停用</a>
       </span>
@@ -148,7 +161,7 @@ export default class BaseList extends Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type="primary" onClick={this.onAddBtnClick.bind(this)}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
+            <Button type="primary" onClick={this.handleAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
           </div>
           <div className="panel-body padding">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>

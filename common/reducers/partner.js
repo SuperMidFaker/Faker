@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
+  'EDIT_PARTNER', 'EDIT_PARTNER_SUCCEED', 'EDIT_PARTNER_FAIL',
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL'
 ]);
 
@@ -165,6 +166,25 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
         tenantId,
         partnerInfo,
         partnerships
+      }
+    }
+  };
+}
+
+export function editPartner(partnerId, name, code) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_PARTNER,
+        actionTypes.EDIT_PARTNER_SUCCEED,
+        actionTypes.EDIT_PARTNER_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/edit',
+      method: 'post',
+      data: {
+        partnerId,
+        name,
+        code,
       }
     }
   };
