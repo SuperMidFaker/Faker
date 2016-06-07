@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
+  'EDIT_PARTNER', 'EDIT_PARTNER_SUCCEED', 'EDIT_PARTNER_FAIL',
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
   'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL'
 ]);
@@ -98,6 +99,12 @@ export default function reducer(state = initialState, action) {
       const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
       return { ...state, partnerlist: updatePartnerlist };
     }
+    case actionTypes.EDIT_PARTNER_SUCCEED: {
+      const partners = [ ...state.partnerlist.data ];
+      partners[action.index].name = action.data.name;
+      partners[action.index].partner_code = action.data.code;
+      return { ...state, partnerlist: { ...state.partnerlist, data: partners }};
+    }
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
     case actionTypes.DELETE_PARTNER_SUCCEED:
       return {...state, partnerlist: {...state.partnerlist, data: partnerReducer(state.partnerlist.data, action)}};
@@ -176,6 +183,26 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
         partnerInfo,
         partnerships
       }
+    }
+  };
+}
+
+export function editPartner(partnerId, name, code, index) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_PARTNER,
+        actionTypes.EDIT_PARTNER_SUCCEED,
+        actionTypes.EDIT_PARTNER_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/edit',
+      method: 'post',
+      data: {
+        partnerId,
+        name,
+        code,
+      },
+      index,
     }
   };
 }

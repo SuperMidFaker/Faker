@@ -110,7 +110,8 @@ function *editProviderTypes() {
     trans = yield mysql.beginTransaction();
     // 更改关系时,先删除原有的关系,再插入新的关系
     yield coopDao.removePartnerships(tenantId, partnerName, partnerCode, trans);
-    yield coopDao.insertPartnerships(partnerKey, tenantId, partnerTenantId, partnerName, partnerCode, providerTypes, trans);
+    yield coopDao.insertPartnerships(partnerKey, tenantId, partnerTenantId,
+                                     partnerName, partnerCode, providerTypes, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
@@ -146,6 +147,25 @@ function *addPartner() {
     return Result.ok(this, { newPartner });
   } catch(e) {
     yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *editPartner() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const { partnerId, name, code } = body;
+    trans = yield mysql.beginTransaction();
+    yield coopDao.updatePartnerById(partnerId, name, code, trans);
+    yield coopDao.updatePartnershipById(partnerId, name, code, trans);
+    yield coopDao.updateInvitationById(partnerId, name, code, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
     return Result.internalServerError(this, e.message);
   }
 }
@@ -288,6 +308,7 @@ export default [
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
+  [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],

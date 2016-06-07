@@ -259,6 +259,20 @@ export default {
     const sql = `UPDATE sso_partners SET status = ${status} WHERE id = ${partnerId}`;
     return mysql.update(sql, null, trans);
   },
+  updatePartnerById(partnerId, name, code, trans) {
+    const sql = 'update sso_partners set name = ?, partner_code = ? where id = ?';
+    return mysql.update(sql, [ name, code, partnerId ], trans);
+  },
+  updatePartnershipById(partnerId, name, code, trans) {
+    const sql = `update sso_partnerships set partner_name = ?, partner_code = ?
+      where partner_id = ?`;
+    return mysql.update(sql, [ name, code, partnerId ], trans);
+  },
+  updateInvitationById(partnerId, name, code, trans) {
+    const sql = `update sso_partner_invitations set invitee_name = ?, invitee_code = ?
+      where partner_id = ?`;
+    return mysql.update(sql, [ name, code, partnerId ], trans);
+  },
   deletePartner(partnerId, trans) {
     const sql = `DELETE FROM sso_partners WHERE id = ${partnerId};`;
     return mysql.delete(sql, null, trans);
