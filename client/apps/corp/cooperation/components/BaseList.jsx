@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Icon, Button, message } from 'ant-ui';
+import { Table, Icon, Button, message, Popconfirm } from 'ant-ui';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
 import partnerModal from './partnerModal';
 
@@ -143,7 +143,9 @@ export default class BaseList extends Component {
     const {key} = itemInfo;
     return (
       <span>
-        <a onClick={() => this.handleDeleteBtnClick(key)}>删除</a>
+        <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(key)}>
+          <a>删除</a>
+        </Popconfirm>
         <span className="ant-divider"></span>
         <a onClick={() => this.handleResumeBtnClick(key)}>启用</a>
       </span>

@@ -1,12 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal } from 'ant-ui';
 import NodeList from '../components/NodeList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadNodeList, setNodeType, removeNode } from 'common/reducers/transportResources';
 import { addUniqueKeys } from '../utils/dataMapping';
-
-const confirm = Modal.confirm;
 
 function fetchData({dispatch, state}) {
   return dispatch(loadNodeList(state.account.tenantId));
@@ -29,12 +26,7 @@ export default class NodeListContainer extends Component {
     router: PropTypes.object.isRequired
   }
   handleDeleteBtnClick = (nodeId) => {
-    confirm({
-      title: '您真的要删除这个节点么?',
-      onOk: () => {
-        this.props.removeNode(nodeId);
-      }
-    });
+    this.props.removeNode(nodeId);
   }
   handleAddNoteBtnClick = () => {
     this.context.router.push('/transport/resources/add_node');
