@@ -83,12 +83,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, partnerlist: updatePartnerlist };
     }
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
-      const { id, status } = action.result.data;
+      const { id, status } = action;
       const originPartners = state.partnerlist.data;
       const updatingPartner = originPartners.find(partner => partner.key === id);
       const index = originPartners.findIndex(partner => partner.key === id);
       const updatedPartner = {...updatingPartner, status};
-      const allPartners = [originPartners.slice(0, index), updatedPartner, originPartners.slice(index + 1)];
+      const allPartners = [...originPartners.slice(0, index), updatedPartner, ...originPartners.slice(index + 1)];
       return { ...state, partnerlist: { ...state.partnerlist, data: allPartners } };
     }
     default:
