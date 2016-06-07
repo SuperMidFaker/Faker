@@ -6,7 +6,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'PARTNERS_LOAD', 'PARTNERS_LOAD_SUCCEED', 'PARTNERS_LOAD_FAIL',
   'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL',
-  'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL'
+  'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
+  'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL'
 ]);
 
 const initialState = {
@@ -80,6 +81,15 @@ export default function reducer(state = initialState, action) {
       const { newPartner } = action.result.data;
       const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
       return { ...state, partnerlist: updatePartnerlist };
+    }
+    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
+      const { id, status } = action.result.data;
+      const originPartners = state.partnerlist.data;
+      const updatingPartner = originPartners.find(partner => partner.key === id);
+      const index = originPartners.findIndex(partner => partner.key === id);
+      const updatedPartner = {...updatingPartner, status};
+      const allPartners = [originPartners.slice(0, index), updatedPartner, originPartners.slice(index + 1)];
+      return { ...state, partnerlist: { ...state.partnerlist, data: allPartners } };
     }
     default:
       return state;
@@ -155,6 +165,26 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
         tenantId,
         partnerInfo,
         partnerships
+      }
+    }
+  };
+}
+
+export function changePartnerStatus(id, status) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHANGE_PARTNER_STATUS,
+        actionTypes.CHANGE_PARTNER_STATUS_SUCCEED,
+        actionTypes.CHANGE_PARTNER_STATUS_FAIL
+      ],
+      endpoint: 'v1/cooperation/partner/change_status',
+      method: 'post',
+      id,
+      status,
+      data: {
+        id,
+        status
       }
     }
   };

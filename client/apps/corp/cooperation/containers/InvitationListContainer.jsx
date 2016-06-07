@@ -21,7 +21,7 @@ function fetchData({ state, dispatch }) {
   sendInvitations: state.invitation.sendInvitations,
   receiveInvitations: state.invitation.receiveInvitations,
   tenantId: state.account.tenantId
-}), { changeInvitationType, inviteOfflinePartner, inviteOnlinePartner, removeInvitee, cancelInvite, rejectInvitation, acceptInvitation })
+}), { changeInvitationType, inviteOfflinePartner, inviteOnlinePartner, removeInvitee, cancelInvite, rejectInvitation, acceptInvitation, loadSendInvitations })
 export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
     this.props.changeInvitationType(invitationType);
@@ -32,12 +32,13 @@ export default class InvitationListContainer extends Component {
       inviteModal({
         onOk: (contactInfo) => {
           this.props.inviteOfflinePartner({tenantId, contactInfo, inviteeInfo});
-          this.props.removeInvitee(inviteeInfo);
         }
       });
     } else { // 线上邀请
-      // this.props.inviteOnlinePartner({tenantId, inviteeInfo});
+      this.props.inviteOnlinePartner({tenantId, inviteeInfo});
     }
+    this.props.removeInvitee(inviteeInfo);
+    this.props.loadSendInvitations(tenantId);
   }
   handleCancelInvitebtnClick = (id) => {
     this.props.cancelInvite(id);

@@ -34,7 +34,7 @@ export default {
     const sqlClause = getPartnerWhereClause(filters, tenantId, args);
     const sql = `select id as \`key\`, name, partner_code as partnerCode,
       tenant_type as tenantType, tenant_id as tenantId, partner_tenant_id as partnerTenantId,
-      business_volume as volume, revenue, cost from sso_partners where ${sqlClause}`;
+      business_volume as volume, revenue, cost, status from sso_partners where ${sqlClause}`;
     console.log(sql, args);
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -221,14 +221,21 @@ export default {
     `;
     return mysql.query(sql);
   },
-  getInvitationsByTenantId(tenantId, tenantType) {
-    let tenantField;
-    if (tenantType === 0) { // 邀请方
-      tenantField = 'inviter_tenant_id';
-    } else { // 被邀方
-      tenantField = 'invitee_tenant_id';
-    }
-    const sql = `SELECT id, invitee_name AS name, invitee_code AS code, status FROM sso_partner_invitations WHERE ${tenantField} = ${tenantId} ORDER BY status;`;
+  getSendInvitationsByTenantId(tenantId) {
+    const sql = `
+      SELECT PI.id, invitee_name AS name, invitee_code AS code, status, PS.type_code AS partnerships FROM sso_partner_invitations AS PI
+      INNER JOIN sso_partnerships AS PS ON invitee_name = partner_name AND invitee_code = partner_code
+      WHERE inviter_tenant_id = ${tenantId} ORDER BY status;`;
+    return mysql.query(sql);
+  },
+  getReceiveInvitationsByTenantId(tenantId) {
+    const sql = `
+      SELECT PI.id, T.name, T.code AS code, PI.status FROM sso_partner_invitations AS PI
+      INNER JOIN sso_tenants AS T ON T.tenant_id = ${tenantId}
+      WHERE invitee_tenant_id = ${tenantId}
+      ORDER BY status
+      ;
+    `;
     return mysql.query(sql);
   },
   getInvitationInfo(invKey) {
@@ -243,4 +250,8 @@ export default {
     const args = [tenantId, partnerId];
     return mysql.update(sql, args, trans);
   },
+  updatePartnerStatus(partnerId, status, trans) {
+    const sql = `UPDATE sso_partners SET status = ${status} WHERE id = ${partnerId}`;
+    return mysql.update(sql, null, trans);
+  }
 };

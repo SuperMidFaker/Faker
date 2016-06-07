@@ -20,6 +20,19 @@ function separatePartnerCode(codeStr) {
 function getPartnerCode(code, subCode) {
   return subCode ? `${code}/${subCode}` : code;
 }
+
+function transformInvitations(rawInvites) {
+  return rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
+    const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
+    if (foundIndex !== -1) {
+      total[foundIndex].partnerships.push(invitee.partnerships[0]);
+    } else {
+      total.push(invitee);
+    }
+    return total;
+  }, []);
+}
+
 function *partnersG() {
   const current = parseInt(this.request.query.currentPage, 10);
   const pageSize = parseInt(this.request.query.pageSize, 10);
@@ -140,18 +153,10 @@ function *getToInvites() {
   const tenantId = this.request.query.tenantId;
   try {
     const offlineInvites = yield coopDao.getOfflineInvitesWithTenantId(tenantId);
-    // const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
-    const rawInvites = [...offlineInvites];
+    const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
+    const rawInvites = [...offlineInvites, ...onlineInvites];
     // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
-    const toInvites = rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
-      const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
-      if (foundIndex !== -1) {
-        total[foundIndex].partnerships.push(invitee.partnerships[0]);
-      } else {
-        total.push(invitee);
-      }
-      return total;
-    }, []);
+    const toInvites = transformInvitations(rawInvites);
     return Result.ok(this, { toInvites });
   } catch(e) {
     return Result.internalServerError(this, e.message);
@@ -189,7 +194,8 @@ function *inviteOnlinePartner() {
 function *getSendInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
-    const sendInvitations = yield coopDao.getInvitationsByTenantId(tenantId, 0);
+    const rawInvitations = yield coopDao.getSendInvitationsByTenantId(tenantId);
+    const sendInvitations = transformInvitations(rawInvitations);
     return Result.ok(this, {sendInvitations});
   } catch(e) {
     return Result.internalServerError(this, e.message);
@@ -199,9 +205,9 @@ function *getSendInvitations() {
 function *getReceiveInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
-    const receiveInvitations = yield coopDao.getInvitationsByTenantId(tenantId, 1);
-    console.log(receiveInvitations);
-    return Result.ok(this, {receiveInvitations});
+    const rawInvitations = yield coopDao.getReceiveInvitationsByTenantId(tenantId);
+    console.log(rawInvitations);
+    return Result.ok(this, {receiveInvitations: rawInvitations});
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
@@ -222,7 +228,6 @@ function *rejectInvitation() {
 
 function *acceptInvitation() {
   const body = yield cobody(this);
-  console.log('fuck');
   const { id } = body;
   let trans;
   try {
@@ -233,6 +238,19 @@ function *acceptInvitation() {
     return Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *changePartnerStatus() {
+  const body = yield cobody(this);
+  const { id, status } = body;
+  let trans;
+  try {
+    yield coopDao.updatePartnerStatus(id, status, trans);
+    return Result.ok(this);
+  } catch(e) {
+    mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
   }
 }
@@ -248,5 +266,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
-  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
+  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ]
 ]
