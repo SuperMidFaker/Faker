@@ -405,7 +405,8 @@ export default {
       args.push(tenantId);
     }
     const sql = `select status, sr_name, sp_name, sp_tenant_id, disp_time, acpt_time, pickup_act_date,
-      deliver_act_date, pod_recv_date from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
+      deliver_act_date, pod_recv_date, disp_status, task_vehicle, vehicle_connect_type
+      from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
   },
   getTrackingCount(tenantId, filters) {
@@ -426,8 +427,8 @@ export default {
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
-      disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
-      tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
+      disp_status, status, id as disp_id, parent_id from tms_shipment_dispatch as SD
+      inner join tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
       ${whereCond} order by disp_time desc`;
     return mysql.query(sql, args);
   },
@@ -480,10 +481,18 @@ export default {
       return mysql.update(sql, args, trans);
     }
   },
-  updateStatusByShipmtNo(shipmtNo, status, trans) {
-    const sql = 'update tms_shipment_dispatch set status = ? where shipmt_no = ?';
-    const args = [ status, shipmtNo ];
-    return mysql.update(sql, args, trans);
+  updateDispByShipmtNo(shipmtNo, dispFieldValues, trans) {
+    const args = [];
+    const setClause = [];
+    Object.keys(dispFieldValues).forEach(column => {
+      setClause.push(`${column} = ?`);
+      args.push(dispFieldValues[column]);
+    });
+    if (setClause.length > 0) {
+      const sql = `update tms_shipment_dispatch set ${setClause.join(',')} where shipmt_no = ?`;
+      args.push(shipmtNo);
+      return mysql.update(sql, args, trans);
+    }
   },
   createGoods(goodslist, shipmtNo, tenantId, loginId, trans) {
     const sql = `insert into tms_shipment_manifest(name, goods_no, package,

@@ -1,21 +1,13 @@
 import React, { PropTypes } from 'react';
 import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col, message, Alert } from 'ant-ui';
 import moment from 'moment';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadSegRq, segmentRequest } from 'common/reducers/transportDispatch';
+import { segmentRequest } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
 
 const Option = Select.Option;
 
 function noop() {}
 
-function fetch({ state, dispatch, cookie }) {
-  return dispatch(loadSegRq(cookie, {
-    tenantId: state.account.tenantId
-  }));
-}
-
-@connectFetch()(fetch)
 @connect(state => ({
   nodeLocations: state.transportDispatch.nodeLocations,
   transitModes: state.transportDispatch.transitModes

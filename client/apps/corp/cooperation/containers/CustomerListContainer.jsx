@@ -1,12 +1,12 @@
 import BaseList from '../components/BaseList';
 import { connect } from 'react-redux';
-import { inviteOnlPartner, addPartner } from 'common/reducers/partner';
+import { inviteOnlPartner, addPartner, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 
 @connect(state => ({
   partnerlist: state.partner.partnerlist.data,
   partnerTenants: state.partner.recevieablePartnerTenants,
   tenantId: state.account.tenantId
-}), { inviteOnlPartner, addPartner })
+}), { inviteOnlPartner, addPartner, changePartnerStatus, deletePartner })
 export default class CustomerListContainer extends BaseList {
   constructor() {
     super();

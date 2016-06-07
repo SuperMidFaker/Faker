@@ -28,15 +28,20 @@ function *trackingShipmtListG() {
 }
 
 function *trackingVehicleUpdateP() {
+  let trans;
   try {
     const body = yield cobody(this);
-    const { dispId, plate, driver, remark } = body;
-    yield shipmentDispDao.updateDispInfo(dispId, {
+    trans = yield mysql.beginTransaction();
+    const { dispId, shipmtNo, plate, driver, remark } = body;
+    const fields = {
       task_vehicle: plate,
       task_driver_name: driver,
       task_remark: remark,
       status: SHIPMENT_TRACK_STATUS.undelivered,
-    });
+    };
+    yield shipmentDispDao.updateDispInfo(dispId, fields, trans);
+    yield shipmentDispDao.updateDispByShipmtNo(shipmtNo, fields, trans);
+    yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -62,8 +67,8 @@ function *trackingPickDeliverDateP() {
     }
     trans = yield mysql.beginTransaction();
     yield shipmentDispDao.updateDispInfo(dispId, fields, trans);
-    yield shipmentDispDao.updateStatusByShipmtNo(
-      shipmtNo, fields.status, trans
+    yield shipmentDispDao.updateDispByShipmtNo(
+      shipmtNo, fields, trans
     );
     yield mysql.commit(trans);
     return Result.ok(this);
@@ -79,22 +84,28 @@ function *trackingPodUpdateP() {
   let trans;
   try {
     const body = yield cobody(this);
-    const { dispId, shipmtNo, submitter, signStatus, signRemark, photos } = body;
+    const { dispId, parentDispId, shipmtNo, submitter, signStatus, signRemark, photos } = body;
     trans = yield mysql.beginTransaction();
     const result = yield shipmentAuxDao.createPod(
       SHIPMENT_POD_TYPE.paperprint, signStatus, signRemark,
       photos, submitter, trans
     );
-    const dispFields = {
+    // 承运商手动上传回单时标记为已提交,上级标记为待审核
+    let dispFields = {
+      pod_id: result.insertId,
+      status: SHIPMENT_TRACK_STATUS.podaccept,
+      pod_status: SHIPMENT_POD_STATUS.acceptByUs,
+      pod_recv_date: new Date(),
+      pod_acpt_date: new Date(),
+    };
+    yield shipmentDispDao.updateDispInfo(dispId, dispFields, trans);
+    dispFields = {
       pod_id: result.insertId,
       status: SHIPMENT_TRACK_STATUS.podsubmit,
       pod_status: SHIPMENT_POD_STATUS.pending,
       pod_recv_date: new Date(),
     };
-    yield shipmentDispDao.updateDispInfo(dispId, dispFields, trans);
-    // yield shipmentDispDao.updateStatusByShipmtNo(
-    //   shipmtNo, SHIPMENT_TRACK_STATUS.podsubmit, trans
-    // );
+    yield shipmentDispDao.updateDispInfo(parentDispId, dispFields, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {

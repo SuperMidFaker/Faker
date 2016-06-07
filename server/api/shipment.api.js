@@ -247,7 +247,7 @@ function *shipmtDraftSaveAcceptP() {
     if (editGoods.length > 0) {
       dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
     }
-    if(removedGoodsIds) {
+    if (removedGoodsIds) {
       // if no goods removed in editing mode, this variable will be undefined,
       // and we should skip it
       dbOps.push(shipmentDispDao.removeGoodsWithIds(removedGoodsIds));
@@ -276,7 +276,6 @@ function *shipmtDraftSaveAcceptP() {
 }
 
 function *shipmtDraftDelP() {
-  let trans;
   try {
     const body = yield cobody(this);
     yield shipmentDao.delDraft(body.shipmtno);
@@ -287,12 +286,12 @@ function *shipmtDraftDelP() {
 }
 
 function *shipmtG() {
-  const {tenantId, shipmtNo} = this.request.query;
+  const { shipmtNo } = this.request.query;
   try {
     const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
     return Result.ok(this, {formData: {...shipmtInfo, goodslist}});
-  }catch (e) {
+  } catch (e) {
     Result.internalServerError(this, e.message);
   }
 }
@@ -312,7 +311,7 @@ function *shipmtSaveEditP() {
     if (editGoods.length > 0) {
       dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
     }
-    if(removedGoodsIds) {
+    if (removedGoodsIds) {
       // if no goods removed in editing mode, this variable will be undefined,
       // and we should skip it
       dbOps.push(shipmentDispDao.removeGoodsWithIds(removedGoodsIds));
@@ -385,6 +384,7 @@ function *shipmtDetailG() {
     ];
     let shipmt = {};
     let tracking;
+    let shipmtCreator;
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
       if (shipmt.vehicle_type) {
@@ -399,42 +399,45 @@ function *shipmtDetailG() {
           shipmt.vehicle_length = vl.text;
         }
       }
+      if (shipmt.tenant_id === shipmt.customer_tenant_id) {
+        shipmtCreator = shipmt.customer_name;
+      } else if (shipmt.tenant_id === shipmt.lsp_tenant_id) {
+        shipmtCreator = shipmt.lsp_name;
+      }
     }
     shipmt.goodslist = goodslist;
+    let downstream_disp_status;
+    // 上游dispatch为shipmtSpDisps[0]
+    // 下游dispatch为shipmtSrDisps[0]
     if (sourceType === 'sr' && shipmtSrDisps.length === 1) {
-      // 上游dispatch为shipmtSpDisps[0]
-      // 下游dispatch为shipmtSrDisps[0]
-      shipmt.status = shipmtSrDisps[0].status;
       const upstream = shipmtSpDisps.length === 1;
-      // 下游dispatch若为司机或者线下,则不需要显示
-      const downstream = shipmtSrDisps[0].sp_tenant_id > 0;
+      // 下游dispatch若为司机,则不需要显示
+      const downstream = shipmtSrDisps[0].sp_tenant_id !== 0;
+      downstream_disp_status = shipmtSrDisps[0].disp_status;
       tracking = {
-        upstream,
-        downstream,
         created_date: shipmt.created_date,
         upstream_name:
           upstream ? shipmtSpDisps[0].sp_name : null,
         upstream_acpt_time:
-          upstream ?  shipmtSpDisps[0].acpt_time: null,
+          upstream ? shipmtSpDisps[0].acpt_time : null,
         upstream_disp_time:
-          upstream ? shipmtSpDisps[0].disp_time: null,
+          upstream ? shipmtSpDisps[0].disp_time : null,
         downstream_name: downstream ? shipmtSrDisps[0].sp_name : null,
         downstream_acpt_time: downstream ? shipmtSrDisps[0].acpt_time : null,
         downstream_disp_time: downstream ? shipmtSrDisps[0].disp_time : null,
         pickup_act_date: shipmtSrDisps[0].pickup_act_date,
         deliver_act_date: shipmtSrDisps[0].deliver_act_date,
         pod_recv_date: shipmtSrDisps[0].pod_recv_date,
-        upstream_status: upstream ? shipmtSpDisps[0].status : null,
-        downstream_status: shipmtSrDisps[0].status,
-        status: shipmtSrDisps[0].status,
+        upstream_status: upstream ? shipmtSpDisps[0].status : -1,
+        downstream_status: downstream ? shipmtSrDisps[0].status : -1,
+        vehicle: shipmtSrDisps[0].task_vehicle,
+        poder: shipmtSrDisps[0].sp_name || shipmtSrDisps[0].sr_name,
       };
     } else if (sourceType === 'sp' && shipmtSpDisps.length === 1) {
-      shipmt.status = shipmtSpDisps[0].status;
-      // 下游dispatch若为司机或者线下,则不需要显示
-      const downstream = shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id > 0;
+      // 下游dispatch若为司机,则不需要显示
+      const downstream = shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id !== 0;
+      downstream_disp_status = downstream ? shipmtSrDisps[0].disp_status : -1;
       tracking = {
-        upstream: true,
-        downstream,
         created_date: shipmt.created_date,
         upstream_name: shipmtSpDisps[0].sp_name,
         upstream_acpt_time: shipmtSpDisps[0].acpt_time,
@@ -446,15 +449,20 @@ function *shipmtDetailG() {
         deliver_act_date: shipmtSpDisps[0].deliver_act_date,
         pod_recv_date: shipmtSpDisps[0].pod_recv_date,
         upstream_status: shipmtSpDisps[0].status,
-        downstream_status: downstream ? shipmtSrDisps[0].status : null,
-        status: shipmtSpDisps[0].status,
+        downstream_status: downstream ? shipmtSrDisps[0].status : -1,
+        vehicle: shipmtSpDisps[0].task_vehicle,
+        poder: downstream ? shipmtSrDisps[0].sp_name : shipmtSpDisps[0].sp_name,
       };
     }
+    tracking.creator = shipmtCreator;
+    shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
+      && downstream_disp_status > 0 ?
+      tracking.downstream_status : tracking.upstream_status;
     return Result.ok(this, {
       shipmt,
       tracking,
     });
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -474,4 +482,4 @@ export default [
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
-]
+];

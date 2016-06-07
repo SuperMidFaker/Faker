@@ -55,7 +55,9 @@ const initialState = {
   dispDockShow: false,
   segDockShow: false,
   nodeLocations: [],
-  transitModes: []
+  transitModes: [],
+  vehicleLengths: [],
+  vehicleTypes: []
 };
 
 export default function reducer(state = initialState, action) {
@@ -84,7 +86,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, dispatched: true};
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
       return { ...state, nodeLocations: action.result.data.nodeLocations,
-      transitModes: action.result.data.transitModes};
+      transitModes: action.result.data.transitModes,
+      vehicleLengths: action.result.data.vehicleLengths,
+      vehicleTypes: action.result.data.vehicleTypes
+    };
     case actionTypes.SEGMENT_SUCCEED:
       return { ...state, segmented: true};
     case actionTypes.LOAD_EXPANDLIST_SUCCEED: {

@@ -49,19 +49,20 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackCreate'),
       desc: (
         <StepDesc texts={[
+          tracking.creator,
           tracking.created_date && moment(tracking.created_date).format(timeFormat),
         ]}
         />
       ),
     }];
-    let currentStep = tracking.status - 1;
-    if (tracking.upstream) {
+    let currentStep = 0;
+    if (tracking.upstream_status >= SHIPMENT_TRACK_STATUS.unaccepted) {
       trackingSteps.push({
         title: this.msg('trackAccept'),
         desc: (
           <StepDesc texts={[
-            tracking.upstream_acpt_time && moment(tracking.upstream_acpt_time).format(timeFormat),
             tracking.upstream_name,
+            tracking.upstream_acpt_time && moment(tracking.upstream_acpt_time).format(timeFormat),
           ]}
           />
         ),
@@ -70,20 +71,22 @@ export default class PreviewPanel extends React.Component {
         title: this.msg('trackDispatch'),
         desc: (
           <StepDesc texts={[
-            tracking.upstream_disp_time && tracking.upstream_status === SHIPMENT_TRACK_STATUS.undelivered &&
+            tracking.upstream_name,
+            tracking.upstream_disp_time && tracking.upstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
               moment(tracking.upstream_disp_time).format(timeFormat),
           ]}
           />
         ),
       });
+      currentStep = tracking.upstream_status - 1;
     }
-    if (tracking.downstream) {
+    if (tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted) {
       trackingSteps.push({
         title: this.msg('trackAccept'),
         desc: (
           <StepDesc texts={[
-            tracking.downstream_acpt_time && moment(tracking.downstream_acpt_time).format(timeFormat),
             tracking.downstream_name,
+            tracking.downstream_acpt_time && moment(tracking.downstream_acpt_time).format(timeFormat),
           ]}
           />
         ),
@@ -92,17 +95,18 @@ export default class PreviewPanel extends React.Component {
         title: this.msg('trackDispatch'),
         desc: (
           <StepDesc texts={[
-            tracking.downstream_disp_time && tracking.downstream_status === SHIPMENT_TRACK_STATUS.undelivered &&
+            tracking.downstream_name,
+            tracking.downstream_disp_time && tracking.downstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
               moment(tracking.downstream_disp_time).format(timeFormat),
           ]}
           />
         ),
       });
-      if (
-        tracking.status === tracking.downstream_status
-        || tracking.downstream_status > SHIPMENT_TRACK_STATUS.unaccepted
-      ) {
-        currentStep = currentStep + 2;
+      if (tracking.upstream_status < SHIPMENT_TRACK_STATUS.unaccepted) {
+        // 客户查看没有上游
+        currentStep = tracking.downstream_status - 1;
+      } else {
+        currentStep = tracking.downstream_status - 1 + 2;
       }
     }
     trackingSteps.push(
@@ -110,7 +114,8 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackPickup'),
       desc: (
         <StepDesc texts={[
-          tracking.pickup_act_time && moment(tracking.pickup_act_time).format(timeFormat),
+          tracking.vehicle,
+          tracking.pickup_act_date && moment(tracking.pickup_act_date).format(timeFormat),
         ]}
         />
       ),
@@ -118,7 +123,8 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackDeliver'),
       desc: (
         <StepDesc texts={[
-          tracking.deliver_act_time && moment(tracking.deliver_act_time).format(timeFormat),
+          tracking.vehicle,
+          tracking.deliver_act_date && moment(tracking.deliver_act_date).format(timeFormat),
         ]}
         />
       ),
@@ -126,6 +132,7 @@ export default class PreviewPanel extends React.Component {
       title: this.msg('trackPod'),
       desc: (
         <StepDesc texts={[
+          tracking.poder,
           tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
         ]}
         />

@@ -81,6 +81,7 @@ export default function reducer(state = initialState, action) {
         podModal: {
           visible: true, dispId: action.data.dispId,
           shipmtNo: action.data.shipmtNo,
+          parentDispId: action.data.parentDispId,
         }
       };
     case actionTypes.HIDE_POD_MODAL:
@@ -108,10 +109,10 @@ export function loadTransitTable(cookie, params) {
   };
 }
 
-export function showVehicleModal(dispId) {
+export function showVehicleModal(dispId, shipmtNo) {
   return {
     type: actionTypes.SHOW_VEHICLE_MODAL,
-    data: { dispId },
+    data: { dispId, shipmtNo },
   };
 }
 
@@ -164,10 +165,10 @@ export function savePickOrDeliverDate(type, shipmtNo, dispId, actDate) {
   };
 }
 
-export function showPodModal(dispId, shipmtNo) {
+export function showPodModal(dispId, parentDispId, shipmtNo) {
   return {
     type: actionTypes.SHOW_POD_MODAL,
-    data: { dispId, shipmtNo },
+    data: { dispId, parentDispId, shipmtNo },
   };
 }
 
@@ -177,7 +178,8 @@ export function closePodModal() {
   };
 }
 
-export function saveSubmitPod(shipmtNo, dispId, submitter, signStatus, signRemark, photos) {
+export function saveSubmitPod(shipmtNo, dispId, parentDispId,
+                              submitter, signStatus, signRemark, photos) {
   return {
     [CLIENT_API]: {
       types: [
@@ -187,7 +189,7 @@ export function saveSubmitPod(shipmtNo, dispId, submitter, signStatus, signRemar
       ],
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
-      data: { shipmtNo, dispId, submitter, signStatus, signRemark, photos },
+      data: { shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
     }
   };
 }

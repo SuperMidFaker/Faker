@@ -26,6 +26,8 @@ function getTrackStatusMsg(status, eff) {
     msg = 'trackIntransit';
   } else if (status === SHIPMENT_TRACK_STATUS.delivered) {
     msg = 'trackDelivered';
+  } else if (status > SHIPMENT_TRACK_STATUS.delivered) {
+    msg = 'trackPod';
   }
   return msg;
 }

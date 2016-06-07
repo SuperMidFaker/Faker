@@ -2,19 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvitationList from '../components/InvitationList';
 import inviteModal from '../components/inviteModal';
-import { changeInvitationType, loadToInvites, inviteOfflinePartner, removeInvitee } from 'common/reducers/invitation';
+import { changeInvitationType, loadToInvites, inviteOfflinePartner, inviteOnlinePartner, removeInvitee, cancelInvite,
+  loadSendInvitations, loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'common/reducers/invitation';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadToInvites(state.account.tenantId));
+  const promises = [];
+  promises.push(dispatch(loadToInvites(state.account.tenantId)));
+  promises.push(dispatch(loadSendInvitations(state.account.tenantId)));
+  promises.push(dispatch(loadReceiveInvitations(state.account.tenantId)));
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)
 @connect((state) => ({
   invitationType: state.invitation.invitationType,
   toInvites: state.invitation.toInvites,
+  sendInvitations: state.invitation.sendInvitations,
+  receiveInvitations: state.invitation.receiveInvitations,
   tenantId: state.account.tenantId
-}), { changeInvitationType, inviteOfflinePartner, removeInvitee })
+}), { changeInvitationType, inviteOfflinePartner, inviteOnlinePartner, removeInvitee, cancelInvite, rejectInvitation, acceptInvitation, loadSendInvitations })
 export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
     this.props.changeInvitationType(invitationType);
@@ -25,18 +32,35 @@ export default class InvitationListContainer extends Component {
       inviteModal({
         onOk: (contactInfo) => {
           this.props.inviteOfflinePartner({tenantId, contactInfo, inviteeInfo});
-          this.props.removeInvitee(inviteeInfo);
         }
       });
+    } else { // 线上邀请
+      this.props.inviteOnlinePartner({tenantId, inviteeInfo});
     }
+    this.props.removeInvitee(inviteeInfo);
+    this.props.loadSendInvitations(tenantId);
+  }
+  handleCancelInvitebtnClick = (id) => {
+    this.props.cancelInvite(id);
+  }
+  handleAcceptBtnClick = (id) => {
+    this.props.acceptInvitation(id);
+  }
+  handleRejectBtnClick = (id) => {
+    this.props.rejectInvitation(id);
   }
   render() {
-    const { invitationType = '0', toInvites } = this.props;
+    const { invitationType = '0', toInvites, sendInvitations, receiveInvitations } = this.props;
     return (
       <InvitationList
         invitationType={invitationType}
         toInvites={toInvites}
+        receiveInvitations={receiveInvitations}
+        sendInvitations={sendInvitations}
         onInviteBtnClick={this.handleInviteBtnClick}
+        onAcceptBtnClick={this.handleAcceptBtnClick}
+        onRejectBtnClick={this.handleRejectBtnClick}
+        onCancelInviteBtnClick={this.handleCancelInvitebtnClick}
         onInvitationTypeChange={this.handleInvitationTypeChange}/>
     );
   }
