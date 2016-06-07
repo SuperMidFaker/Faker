@@ -72,9 +72,9 @@ export default class BaseList extends Component {
       title: '操作',
       dataIndex: 'operaions',
       key: 'operations',
-      render: (_, record) => {
+      render: (_, record, index) => {
         if (record.status === 1) {
-          return this.renderEditAndStopOperations(record);
+          return this.renderEditAndStopOperations(record, index);
         } else {
           return this.renderDeleteAndResumeOperations(record);
         }
@@ -104,10 +104,10 @@ export default class BaseList extends Component {
       },
     });
   }
-  handleEditBtnClick(key, name, code) {
+  handleEditBtnClick(key, name, code, index) {
     partnerModal({
       onOk: (ename, ecode) => {
-        this.props.editPartner(key, ename, ecode).then(
+        this.props.editPartner(key, ename, ecode, index).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
@@ -129,11 +129,11 @@ export default class BaseList extends Component {
   handleResumeBtnClick(id) {
     this.props.changePartnerStatus(id, 1);
   }
-  renderEditAndStopOperations(itemInfo) {
+  renderEditAndStopOperations(itemInfo, index) {
     const { key, name, partnerCode } = itemInfo;
     return (
       <span>
-        <a onClick={() => this.handleEditBtnClick(key, name, partnerCode)}>修改</a>
+        <a onClick={() => this.handleEditBtnClick(key, name, partnerCode, index)}>修改</a>
         <span className="ant-divider"></span>
         <a onClick={() => this.handleStopBtnClick(key)}>停用</a>
       </span>

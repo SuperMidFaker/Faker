@@ -99,6 +99,12 @@ export default function reducer(state = initialState, action) {
       const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
       return { ...state, partnerlist: updatePartnerlist };
     }
+    case actionTypes.EDIT_PARTNER_SUCCEED: {
+      const partners = [ ...state.partnerlist.data ];
+      partners[action.index].name = action.data.name;
+      partners[action.index].partner_code = action.data.code;
+      return { ...state, partnerlist: { ...state.partnerlist, data: partners }};
+    }
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
     case actionTypes.DELETE_PARTNER_SUCCEED:
       return {...state, partnerlist: {...state.partnerlist, data: partnerReducer(state.partnerlist.data, action)}};
@@ -181,7 +187,7 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
   };
 }
 
-export function editPartner(partnerId, name, code) {
+export function editPartner(partnerId, name, code, index) {
   return {
     [CLIENT_API]: {
       types: [
@@ -195,7 +201,8 @@ export function editPartner(partnerId, name, code) {
         partnerId,
         name,
         code,
-      }
+      },
+      index,
     }
   };
 }
