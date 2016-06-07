@@ -255,7 +255,7 @@ export default {
     return mysql.update(sql, args, trans);
   },
   updatePartnerStatus(partnerId, status, trans) {
-    const sql = `UPDATE sso_partners SET status = ${status}, accept_date = NOW() WHERE id = ${partnerId}`;
+    const sql = `UPDATE sso_partners SET status = ${status} WHERE id = ${partnerId}`;
     return mysql.update(sql, null, trans);
   },
   deletePartner(partnerId, trans) {
