@@ -34,7 +34,7 @@ export default {
     const sqlClause = getPartnerWhereClause(filters, tenantId, args);
     const sql = `select id as \`key\`, name, partner_code as partnerCode,
       tenant_type as tenantType, tenant_id as tenantId, partner_tenant_id as partnerTenantId,
-      business_volume as volume, revenue, cost from sso_partners where ${sqlClause}`;
+      business_volume as volume, revenue, cost, status from sso_partners where ${sqlClause}`;
     console.log(sql, args);
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -250,4 +250,8 @@ export default {
     const args = [tenantId, partnerId];
     return mysql.update(sql, args, trans);
   },
+  updatePartnerStatus(partnerId, status, trans) {
+    const sql = `UPDATE sso_partners SET status = ${status} WHERE id = ${partnerId}`;
+    return mysql.update(sql, null, trans);
+  }
 };

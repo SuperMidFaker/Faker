@@ -242,6 +242,19 @@ function *acceptInvitation() {
   }
 }
 
+function *changePartnerStatus() {
+  const body = yield cobody(this);
+  const { id, status } = body;
+  let trans;
+  try {
+    yield coopDao.updatePartnerStatus(id, status, trans);
+    return Result.ok(this);
+  } catch(e) {
+    mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
@@ -253,5 +266,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
-  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
+  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ]
 ]
