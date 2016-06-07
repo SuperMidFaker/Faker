@@ -14,8 +14,12 @@ export default function InvitationList(props) {
   } = props;
   const components = [
     <ToInviteList toInvites={toInvites} onInviteBtnClick={onInviteBtnClick}/>,
-    <ReceiveInvitationList receiveInvitations={receiveInvitations} onAcceptBtnClick={onAcceptBtnClick} onRejectBtnClick={onRejectBtnClick}/>,
-    <SendInvitationList sendInvitations={sendInvitations} onCancelInviteBtnClick={onCancelInviteBtnClick}/>
+    <ReceiveInvitationList receiveInvitations={receiveInvitations}
+    onAcceptBtnClick={onAcceptBtnClick} onRejectBtnClick={onRejectBtnClick}
+    />,
+    <SendInvitationList sendInvitations={sendInvitations}
+    onCancelInviteBtnClick={onCancelInviteBtnClick}
+    />,
   ];
   const content = components[invitationType];
 

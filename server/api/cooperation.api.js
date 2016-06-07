@@ -157,9 +157,11 @@ function *editPartner() {
     const body = yield cobody(this);
     const { partnerId, name, code } = body;
     trans = yield mysql.beginTransaction();
-    yield coopDao.updatePartnerById(partnerId, name, code, trans);
-    yield coopDao.updatePartnershipById(partnerId, name, code, trans);
-    yield coopDao.updateInvitationById(partnerId, name, code, trans);
+    yield [
+      coopDao.updatePartnerById(partnerId, name, code, trans),
+      coopDao.updatePartnershipById(partnerId, name, code, trans),
+      coopDao.updateInvitationById(partnerId, name, code, trans),
+    ];
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
@@ -190,7 +192,8 @@ function *inviteOfflinePartner() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield coopDao.insertInvitation(null, tenantId, -1, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    yield coopDao.insertInvitation(inviteeInfo.partnerId, tenantId, -1,
+                                   inviteeInfo.code, inviteeInfo.name, 0, null, trans);
     // TODO: 发送短信或者邮件给线下用户
     yield mysql.commit(trans);
     return Result.ok(this);
@@ -206,7 +209,8 @@ function *inviteOnlinePartner() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    yield coopDao.insertInvitation(null, tenantId, inviteeInfo.tenantId, inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    yield coopDao.insertInvitation(inviteeInfo.partnerId, tenantId, inviteeInfo.tenantId,
+                                   inviteeInfo.code, inviteeInfo.name, 0, null, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {

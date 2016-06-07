@@ -167,7 +167,7 @@ export default {
     const sql = `
       SELECT T.tenant_id AS id, T.code AS code, T.name AS name
       FROM sso_tenants AS T
-      WHERE T.tenant_id != ${tenantId} 
+      WHERE T.tenant_id != ${tenantId}
             AND T.tenant_id NOT IN(SELECT partner_tenant_id FROM sso_partners AS P WHERE P.tenant_id = ${tenantId})
             AND T.tenant_id NOT IN(SELECT invitee_tenant_id FROM sso_partner_invitations AS I WHERE I.inviter_tenant_id = ${tenantId}  AND I.status IN (0, 1));
     `;
@@ -190,37 +190,35 @@ export default {
   },
   getOfflineInvitesWithTenantId(tenantId) {
     const sql = `
-      SELECT P.name, P.partner_code AS code, P.created_date, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
-      FROM sso_partners AS P
-      INNER JOIN sso_partnerships AS PS
+      SELECT P.id as partner_id, P.name, P.partner_code AS code, P.created_date,
+      PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
+      FROM sso_partners AS P INNER JOIN sso_partnerships AS PS
       ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
-      WHERE P.tenant_id = ${tenantId} AND P.partner_tenant_id = -1
+      WHERE P.tenant_id = ? AND P.partner_tenant_id = -1
             AND NOT EXISTS(
               SELECT 1 FROM sso_partner_invitations AS PI
-              WHERE PI.inviter_tenant_id = P.tenant_id 
+              WHERE PI.inviter_tenant_id = P.tenant_id
                       AND PI.invitee_code = P.partner_code
                       AND PI.invitee_name = P.name
                       AND PI.status <= 2
-            );
-    `;
-    return mysql.query(sql);
+            )`;
+    return mysql.query(sql, [ tenantId ]);
   },
   getOnlineInvitesWithTenantId(tenantId) {
     const sql = `
-      SELECT P.name, P.partner_code AS code, P.created_date, PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
-      FROM sso_partners AS P
-      INNER JOIN sso_partnerships AS PS
+      SELECT P.id as partner_id, P.name, P.partner_code AS code, P.created_date,
+      PS.type_code AS partnerships, PS.partner_tenant_id AS tenant_id
+      FROM sso_partners AS P INNER JOIN sso_partnerships AS PS
       ON P.name = PS.partner_name AND P.partner_code = PS.partner_code
-      WHERE P.tenant_id = ${tenantId} AND P.established = 0 AND P.partner_tenant_id != -1
+      WHERE P.tenant_id = ? AND P.established = 0 AND P.partner_tenant_id != -1
             AND NOT EXISTS(
               SELECT 1 FROM sso_partner_invitations AS PI
-              WHERE PI.inviter_tenant_id = P.tenant_id 
+              WHERE PI.inviter_tenant_id = P.tenant_id
                       AND PI.invitee_code = P.partner_code
                       AND PI.invitee_name = P.name
                       AND PI.status <= 2
-            );
-    `;
-    return mysql.query(sql);
+            )`;
+    return mysql.query(sql, [ tenantId ]);
   },
   getSendInvitationsByTenantId(tenantId) {
     const sql = `
@@ -234,14 +232,12 @@ export default {
       SELECT P.type_code AS partnerships, PPI.id, PPI.name, PPI.code, PPI.status, PPI.created_date
       FROM sso_partnerships AS P INNER JOIN
         (SELECT PI.id, T.name, T.code AS code, PI.status, PI.invitee_tenant_id, PI.inviter_tenant_id, PI.created_date
-	        FROM sso_partner_invitations AS PI
-	        INNER JOIN sso_tenants AS T ON T.tenant_id = PI.inviter_tenant_id
-	        WHERE invitee_tenant_id = 34) AS PPI 
-	        ON PPI.invitee_tenant_id = P.partner_tenant_id AND PPI.inviter_tenant_id = P.tenant_id
-      ORDER BY status
-      ;
-    `;
-    return mysql.query(sql);
+          FROM sso_partner_invitations AS PI
+          INNER JOIN sso_tenants AS T ON T.tenant_id = PI.inviter_tenant_id
+          WHERE invitee_tenant_id = ?) AS PPI
+          ON PPI.invitee_tenant_id = P.partner_tenant_id AND PPI.inviter_tenant_id = P.tenant_id
+      ORDER BY status`;
+    return mysql.query(sql, [ tenantId ]);
   },
   getInvitationInfo(invKey) {
     const sql = `select inviter_tenant_id as inviterId, invitee_tenant_id as inviteeId,
