@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Radio, Icon } from 'ant-ui';
+import { Table, Button, Radio, Icon, Popconfirm } from 'ant-ui';
 import { Link } from 'react-router';
 import { nodeTypes } from '../utils/dataMapping';
 
@@ -74,9 +74,9 @@ export default function NodeList(props) {
           <span>
             <Link to={`/transport/resources/edit_node/${record.node_id}`}>修改</Link>
             <span className="ant-divider"></span>
-            <a onClick={() => onDeleteBtnClick(record.node_id)} style={{color: 'red'}}>
-              删除
-            </a>
+            <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
+              <a>删除</a>
+            </Popconfirm>
           </span>
         );
       }
