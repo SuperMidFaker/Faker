@@ -91,16 +91,21 @@ function *trackingPodUpdateP() {
       photos, submitter, trans
     );
     // 承运商手动上传回单时标记为已提交,上级标记为待审核
-    const dispFields = {
+    let dispFields = {
+      pod_id: result.insertId,
+      status: SHIPMENT_TRACK_STATUS.podaccept,
+      pod_status: SHIPMENT_POD_STATUS.acceptByUs,
+      pod_recv_date: new Date(),
+      pod_acpt_date: new Date(),
+    };
+    yield shipmentDispDao.updateDispInfo(dispId, dispFields, trans);
+    dispFields = {
       pod_id: result.insertId,
       status: SHIPMENT_TRACK_STATUS.podsubmit,
       pod_status: SHIPMENT_POD_STATUS.pending,
       pod_recv_date: new Date(),
     };
-    yield shipmentDispDao.updateDispInfo(dispId, dispFields, trans);
-    // yield shipmentDispDao.updateDispByShipmtNo(
-    //   shipmtNo, SHIPMENT_TRACK_STATUS.podsubmit, trans
-    // );
+    yield shipmentDispDao.updateDispInfo(parentDispId, dispFields, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
