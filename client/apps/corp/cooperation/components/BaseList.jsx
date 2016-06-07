@@ -65,8 +65,8 @@ export default class BaseList extends Component {
     },
     {
       title: '创建日期',
-      dataIndex: 'create_date',
-      key: 'create_date'
+      dataIndex: 'created_date',
+      key: 'created_date'
     },
     {
       title: '操作',
