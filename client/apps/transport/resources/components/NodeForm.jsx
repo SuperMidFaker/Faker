@@ -12,10 +12,11 @@ const formItemLayout = {
 
 export default class CarForm extends Component {
   componentDidMount() {
-    const { node, form, mode } = this.props;
+    const { node, form, mode, region, changeRegion } = this.props;
     const setFieldsValue = form.setFieldsValue;
     if (mode === 'edit') {
       setFieldsValue(node);
+      changeRegion(region);
     }
   }
   render() {
@@ -65,4 +66,5 @@ CarForm.propTypes = {
   node: PropTypes.object,                         // 编辑的节点信息, 只有在mode='edit'时才需要
   onRegionChange: PropTypes.func.isRequired,      // 区域级联选项改变时执行的回调函数
   region: PropTypes.array,                        // 可选,编辑模式下才需要,表示区域信息对象,用于Cascader控件的展示信息
+  changeRegion: PropTypes.func,                   // 可选,编辑模式下更改当前被选中的省市区
 };
