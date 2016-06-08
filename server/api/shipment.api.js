@@ -63,7 +63,7 @@ function *shipmentListG() {
       const [ totals, shipmts ] = yield [
         shipmentDispDao.getFilteredTotalCount(
           tenantId, shipmtDispType, shipmtNo,
-          SHIPMENT_DISPATCH_STATUS.confirmed
+          SHIPMENT_DISPATCH_STATUS.confirmed, SHIPMENT_TRACK_STATUS.unaccepted
         ),
         shipmentDispDao.getFilteredShipments(
           tenantId, shipmtDispType, shipmtNo, SHIPMENT_DISPATCH_STATUS.confirmed,

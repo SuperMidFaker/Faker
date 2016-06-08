@@ -2,14 +2,10 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/invitation/', [
-  'RECEIVEDS_LOAD', 'RECEIVEDS_LOAD_SUCCEED', 'RECEIVEDS_LOAD_FAIL',
-  'SENTS_LOAD', 'SENTS_LOAD_SUCCEED', 'SENTS_LOAD_FAIL',
-  'INVITATION_CHANGE', 'INVITATION_CHANGE_SUCCEED', 'INVITATION_CHANGE_FAIL',
   'CHANGE_INVITATION_TYPE',
   'LOAD_TO_INVITES', 'LOAD_TO_INVITES_SUCCEED', 'LOAD_TO_INVITES_FAIL',
   'INVITE_OFFLINE_PARTNER', 'INVITE_OFFLINE_PARTNER_SUCCEED', 'INVITE_OFFLINE_PARTNER_FAIL',
   'INVITE_ONLINE_PARTNER', 'INVITE_ONLINE_PARTNER_SUCCEED', 'INVITE_ONLINE_PARTNER_FAIL',
-  'REMOVE_INVITEE',
   'CANCEL_INVITE', 'CANCEL_INVITE_SUCCEED', 'CANCEL_INVITE_FAIL',
   'LOAD_SEND_INVITATIONS', 'LOAD_SEND_INVITATIONS_SUCCEED', 'LOAD_SEND_INVITATIONS_FAIL',
   'LOAD_RECEIVE_INVITATIONS', 'LOAD_RECEIVE_INVITATIONS_SUCCEED', 'LOAD_RECEIVE_INVITATIONS_FAIL',
@@ -18,25 +14,6 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
 ]);
 
 const initialState = {
-  receiveds: {
-    loading: false,
-    pageSize: 10,
-    current: 1,
-    totalCount: 0,
-    providerTypes: [],
-    data: [
-      /* { key:, name:, other db column } */
-    ]
-  },
-  sents: {
-    loading: false,
-    pageSize: 10,
-    current: 1,
-    totalCount: 0,
-    data: [
-      /* { key:, name:, other db column } */
-    ]
-  },
   invitationType: '0',    // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
   toInvites: [],          // 待邀请的列表数组
   sendInvitations: [],    // 发出的邀请列表数组
@@ -45,29 +22,14 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.RECEIVEDS_LOAD:
-      return { ...state, receiveds: { ...state.receiveds, loading: true } };
-    case actionTypes.RECEIVEDS_LOAD_SUCCEED:
-      return {
-        ...state,
-        receiveds: {
-          ...state.receiveds, loading: false, ...action.result.data
-        }
-      };
-    case actionTypes.RECEIVEDS_LOAD_FAIL:
-      return { ...state, receiveds: { ...state.receiveds, loading: false } };
-    case actionTypes.INVITATION_CHANGE_SUCCEED: {
-      const receiveds = { ...state.receiveds };
-      receiveds.data[action.index].status = action.result.data;
-      return { ...state, receiveds };
-    }
     case actionTypes.CHANGE_INVITATION_TYPE:
       return { ...state, invitationType: action.invitationType };
     case actionTypes.LOAD_TO_INVITES_SUCCEED:
       return { ...state, toInvites: action.result.data.toInvites };
-    case actionTypes.REMOVE_INVITEE: {
-      const removedInvitee = action.inviteeInfo;
-      const toInvites = state.toInvites.filter(invitee => !(invitee.code === removedInvitee.code && invitee.name === removedInvitee.name));
+    case actionTypes.INVITE_ONLINE_PARTNER_SUCCEED:
+    case actionTypes.INVITE_OFFLINE_PARTNER_SUCCEED: {
+      const { partnerId } = action;
+      const toInvites = state.toInvites.filter(invitee => invitee.partner_id !== partnerId);
       return { ...state, toInvites };
     }
     case actionTypes.LOAD_SEND_INVITATIONS_SUCCEED:
@@ -127,6 +89,7 @@ export function inviteOfflinePartner({tenantId, inviteeInfo, contactInfo}) {
       ],
       endpoint: 'v1/cooperation/invitation/invite_offline_partner',
       method: 'post',
+      partnerId: inviteeInfo.partnerId,
       data: {
         tenantId,
         inviteeInfo,
@@ -146,6 +109,7 @@ export function inviteOnlinePartner({tenantId, inviteeInfo}) {
       ],
       endpoint: 'v1/cooperation/invitation/invite_online_partner',
       method: 'post',
+      partnerId: inviteeInfo.partnerId,
       data: {
         tenantId,
         inviteeInfo
@@ -227,7 +191,7 @@ export function loadSendInvitations(tenantId) {
   };
 }
 
-export function cancelInvite(id) {
+export function cancelInvite(id, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -239,7 +203,8 @@ export function cancelInvite(id) {
       method: 'post',
       id,
       data: {
-        id
+        id,
+        partnerId
       }
     }
   };

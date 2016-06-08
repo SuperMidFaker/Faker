@@ -125,14 +125,15 @@ upyunClient.getResFileUrl = function (path) {
 };
 
 upyunClient.createSavePath = function (prefix, fileName) {
-    var d = new Date();
-    var str = "/" + d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate() + "/";
-    var path = str;
-    if (!!fileName) {
-        path += fileName;
-    } else {
-        path += d.getTime();
+    const d = new Date();
+    let name = `${d.getTime()}`;
+    if (fileName) {
+      const lastDotIndex = fileName.lastIndexOf('.');
+      const origname = fileName.substring(0, lastDotIndex)
+      const suffix = fileName.substring(lastDotIndex + 1);
+      name = `${origname}-${d.getTime()}.${suffix}`;
     }
+    const path = `/${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}/${name}`;
     return (!prefix ? path : "/" + prefix + path);
 };
 
