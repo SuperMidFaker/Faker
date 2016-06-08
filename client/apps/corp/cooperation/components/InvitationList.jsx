@@ -1,25 +1,18 @@
 import React, { PropTypes } from 'react';
 import { Radio } from 'ant-ui';
-import ToInviteList from './ToInviteList';
-import ReceiveInvitationList from './ReceiveInvitationList';
-import SendInvitationList from './SendInvitationList';
+import ToInviteListContainer from '../containers/ToInviteListContainer';
+import ReceiveInvitationListContainer from '../containers/ReceiveInvitationListContainer';
+import SendInvitationListContainer from '../containers/SendInvitationListContainer';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 export default function InvitationList(props) {
-  const { invitationType, onInvitationTypeChange, toInvites, sendInvitations,
-    receiveInvitations, onInviteBtnClick, onCancelInviteBtnClick,
-    onAcceptBtnClick, onRejectBtnClick
-  } = props;
+  const { invitationType, onInvitationTypeChange } = props;
   const components = [
-    <ToInviteList toInvites={toInvites} onInviteBtnClick={onInviteBtnClick}/>,
-    <ReceiveInvitationList receiveInvitations={receiveInvitations}
-    onAcceptBtnClick={onAcceptBtnClick} onRejectBtnClick={onRejectBtnClick}
-    />,
-    <SendInvitationList sendInvitations={sendInvitations}
-    onCancelInviteBtnClick={onCancelInviteBtnClick}
-    />,
+    <ToInviteListContainer />,
+    <ReceiveInvitationListContainer />,
+    <SendInvitationListContainer />,
   ];
   const content = components[invitationType];
 
@@ -48,11 +41,4 @@ export default function InvitationList(props) {
 
 InvitationList.propTypes = {
   invitationType: PropTypes.string.isRequired,        // 邀请的类型,'0', '1', '2'依次对应['待邀请', '发出的邀请', '收到的邀请']
-  toInvites: PropTypes.array.isRequired,              // 待邀请的列表数组
-  sendInvitations: PropTypes.array.isRequired,        // 发送的邀请的列表数组
-  receiveInvitations: PropTypes.array.isRequired,     // 收到的邀请
-  onInviteBtnClick: PropTypes.func.isRequired,        // 邀请加入按钮点击时执行的回调函数
-  onCancelInviteBtnClick: PropTypes.func.isRequired,  // 取消邀请按钮点击后执行的回调函数
-  onRejectBtnClick: PropTypes.func.isRequired,
-  onAcceptBtnClick: PropTypes.func.isRequired
 };

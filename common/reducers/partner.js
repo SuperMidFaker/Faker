@@ -9,7 +9,8 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
   'EDIT_PARTNER', 'EDIT_PARTNER_SUCCEED', 'EDIT_PARTNER_FAIL',
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
-  'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL'
+  'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL',
+  'INVITE_PARTNER'
 ]);
 
 const initialState = {
@@ -64,6 +65,10 @@ function partnerReducer(state, action) {
       const updatePartner = {...foundPartner, name, partnerCode: code };
       return [...state.slice(0, foundPartnerIndex), updatePartner, ...state.slice(foundPartnerIndex + 1)];
     }
+    case actionTypes.INVITE_PARTNER: {
+      const invitedPartner = {...foundPartner, invited: 1};
+      return [...state.slice(0, foundPartnerIndex), invitedPartner, ...state.slice(foundPartnerIndex + 1)];
+    }
     default:
       return state;
   }
@@ -107,6 +112,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EDIT_PARTNER_SUCCEED:
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
     case actionTypes.DELETE_PARTNER_SUCCEED:
+    case actionTypes.INVITE_PARTNER:
       return {...state, partnerlist: {...state.partnerlist, data: partnerReducer(state.partnerlist.data, action)}};
     default:
       return state;
@@ -243,5 +249,12 @@ export function deletePartner(id) {
         id,
       }
     }
+  };
+}
+
+export function invitePartner(id) {
+  return {
+    type: actionTypes.INVITE_PARTNER,
+    id
   };
 }
