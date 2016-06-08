@@ -151,7 +151,7 @@ export default class DispatchList extends React.Component {
     width: 180,
   }, {
     title: this.msg('consignerPlace'),
-    width: 120,
+    width: 180,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignerAddr'),
@@ -168,7 +168,7 @@ export default class DispatchList extends React.Component {
     width: 180,
   }, {
     title: this.msg('consigneePlace'),
-    width: 120,
+    width: 180,
     render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
@@ -852,11 +852,11 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2420, y: 460 }}
             />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2320, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2420, y: 460 }}
             />);
     }
     if (type !== 'none') {

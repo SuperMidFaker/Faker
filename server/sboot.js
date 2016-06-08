@@ -25,7 +25,7 @@ if (argv.api) {
   global.__DEV__ = config.get('__DEV__');
   global.__PROD__ = config.get('__PROD__');
   global.__DEVTOOLS__ = config.get('__DEVTOOLS__');
-  global.__PORT__ = config.get('server_port');
+  global.__PORT__ = process.env.PORT || config.get('server_port');
   global.__CDN__ = config.get('CDN_URL');
   /* eslint-disable no-undef */
   global.__API_ROOT__ = `http://localhost:${__PORT__}/`;

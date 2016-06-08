@@ -322,7 +322,7 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('shipmtCustomer'),
     dataIndex: 'customer_name',
-    width: 200
+    width: 240
   }, {
     title: this.msg('departurePlace'),
     width: 150,

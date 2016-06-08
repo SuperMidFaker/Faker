@@ -45,7 +45,7 @@ export default {
     return mysql.query(sql, args);
   },
   updateCorp(corp, trans) {
-    const sql = `update sso_tenants set code = ?, aspect = ?, name = ?, phone = ?, subdomain = ?,
+    const sql = `update sso_tenants set code = ?, sub_code = ?, aspect = ?, name = ?, phone = ?, subdomain = ?,
       country = ?, province = ?, city = ?, district = ?, address = ?, logo = ?, short_name = ?,
       category_id = ?, website = ?, remark = ?, level = ?, email = ?, contact = ? where tenant_id = ?`;
     const args = packColumnArgs(corp);
