@@ -170,7 +170,7 @@ export default class AcceptList extends React.Component {
     width: 200,
   }, {
     title: this.msg('consignorPlace'),
-    width: 150,
+    width: 180,
     render: (o, record) => this.renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
@@ -182,7 +182,7 @@ export default class AcceptList extends React.Component {
     width: 200,
   }, {
     title: this.msg('consigneePlace'),
-    width: 150,
+    width: 180,
     render: (o, record) => this.renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
@@ -427,7 +427,7 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2500, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2560, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
