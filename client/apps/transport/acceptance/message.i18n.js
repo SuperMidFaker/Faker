@@ -105,9 +105,13 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.correlative',
     defaultMessage: '关联信息'
   },
+  customerInfo: {
+    id: 'transport.acceptance.customerInfo',
+    defaultMessage: '客户信息'
+  },
   client: {
     id: 'transport.acceptance.client',
-    defaultMessage: '客户'
+    defaultMessage: '客户名称'
   },
   clientNameMust: {
     id: 'transport.acceptance.client.name.must',
@@ -123,7 +127,7 @@ export default defineMessages({
   },
   refExternalNo: {
     id: 'transport.acceptance.ref.external',
-    defaultMessage: '外部参考号'
+    defaultMessage: '客户单号'
   },
   refWaybillNo: {
     id: 'transport.acceptance.ref.waybill',
