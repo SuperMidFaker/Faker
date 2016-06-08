@@ -17,7 +17,10 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({toInvites: state.invitation.toInvites}), { inviteOnlinePartner, inviteOfflinePartner })
+@connect(state => ({
+  toInvites: state.invitation.toInvites,
+  tenantId: state.account.tenantId
+}), { inviteOnlinePartner, inviteOfflinePartner })
 export default class ToInviteList extends Component {
   static propTypes = {
     toInvites: PropTypes.array.isRequired,            // 待邀请的partner
@@ -59,7 +62,7 @@ export default class ToInviteList extends Component {
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
-      render(_, record) {
+      render: (_, record) => {
         const inviteeInfo = {
           name: record.name,
           code: record.code,

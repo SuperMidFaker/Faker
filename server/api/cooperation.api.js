@@ -299,6 +299,8 @@ function *deletePartner() {
   try {
     trans = yield mysql.beginTransaction();
     yield coopDao.deletePartner(id, trans);
+    yield coopDao.deletePartnershipsByPartnerId(id, trans);
+    yield coopDao.deletePartnershipsByPartnerId(id, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {

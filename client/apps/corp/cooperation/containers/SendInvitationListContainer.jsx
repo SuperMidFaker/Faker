@@ -76,7 +76,7 @@ export default class SendInvitation extends Component {
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
-      render(_, record) {
+      render: (_, record) => {
         if (record.status === 0) {
           return (<a onClick={() => this.handleCancelInviteBtnClick(record.id, record.partnerId)}>取消邀请</a>);
         } else {

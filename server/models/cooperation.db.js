@@ -273,6 +273,14 @@ export default {
     const sql = `DELETE FROM sso_partners WHERE id = ${partnerId};`;
     return mysql.delete(sql, null, trans);
   },
+  deletePartnershipsByPartnerId(partnerId, trans) {
+    const sql = `DELETE FROM sso_partnerships WHERE partner_id = ${partnerId};`;
+    return mysql.delete(sql, null, trans);
+  },
+  deletePartnerInvitationsByPartnerId(partnerId, trans) {
+    const sql = `DELETE FROM sso_partner_invitations WHERE partner_id = ${partnerId};`;
+    return mysql.delete(sql, null, trans);
+  },
   updatePartnerInvited(partnerId, invitedStatus,  trans) {
     const sql = `UPDATE sso_partners SET invited = ${invitedStatus};`;
     return mysql.update(sql, null, trans);

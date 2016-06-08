@@ -3,6 +3,7 @@ import { Table, Icon, Button, message, Popconfirm } from 'ant-ui';
 import moment from 'moment';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
 import partnerModal from './partnerModal';
+import inviteModal from './inviteModal';
 
 const rowSelection = {
   onChange() {}
@@ -39,13 +40,19 @@ export default class BaseList extends Component {
       key: 'tenantType',
       render: (_, record) => {
         if (record.tenantType === 'TENANT_OFFLINE') {
-          if (record.invited === 0) {
-            return (
-              <a>邀请加入</a>
-            );
-          } else {
+          if (record.invited === 1) {
             return (
               <span>已邀请</span>
+            );
+          } else {
+            const inviteeInfo = {
+              name: record.name,
+              code: record.partnerCode,
+              tenantId: record.tenantId,
+              partnerId: record.key,
+            };
+            return (
+              <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
             );
           }
         } else {
@@ -130,6 +137,15 @@ export default class BaseList extends Component {
         name,
         code,
       },
+    });
+  }
+  handleInviteBtnClick(inviteeInfo) {
+    const { tenantId } = this.props;
+    inviteModal({
+      onOk: (contactInfo) => {
+        this.props.inviteOfflinePartner({tenantId, contactInfo, inviteeInfo});
+        this.props.invitePartner(inviteeInfo.partnerId);
+      }
     });
   }
   handleStopBtnClick(id) {

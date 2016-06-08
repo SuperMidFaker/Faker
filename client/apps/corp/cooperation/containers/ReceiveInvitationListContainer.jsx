@@ -75,7 +75,7 @@ export default class ReceiveInvitationList extends Component {
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
-      render(_, record) {
+      render: (_, record) => {
         if (record.status === 0) {
           return (
             <span>
