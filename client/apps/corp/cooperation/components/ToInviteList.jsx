@@ -49,7 +49,8 @@ export default function ToInviteList(props) {
         const inviteeInfo = {
           name: record.name,
           code: record.code,
-          tenantId: record.tenant_id
+          tenantId: record.tenant_id,
+          partnerId: record.partner_id,
         };
         return (
           <a onClick={() => onInviteBtnClick(inviteeInfo)}>邀请加入</a>
