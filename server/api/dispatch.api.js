@@ -89,7 +89,7 @@ function *listExpandShipmts() {
 
 function *listLsps() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
-  const current = parseInt(this.request.query.current, 10) || 1;
+  const current = parseInt(this.request.query.currentPage, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
 
@@ -108,7 +108,7 @@ function *listLsps() {
 
 function *listVehicles() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
-  const current = parseInt(this.request.query.current, 10) || 1;
+  const current = parseInt(this.request.query.currentPage, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
   const [vehicles, totals] = yield [vehiclesDao.getVehicles(tenantId, min, pageSize),
