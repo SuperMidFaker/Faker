@@ -112,7 +112,7 @@ export default class BaseList extends Component {
     const { type } = this;
     return partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
   }
-  handleAddBtnClick = () => {
+  handleAddBtnClick() {
     const { tenantId } = this.props;
     let partnerships = this.partnerships;
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
@@ -193,7 +193,7 @@ export default class BaseList extends Component {
         </div>
         <div className="page-body">
           <div className="panel-header">
-            <Button type="primary" onClick={this.handleAddBtnClick}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
+            <Button type="primary" onClick={() => this.handleAddBtnClick()}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
           </div>
           <div className="panel-body padding">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>

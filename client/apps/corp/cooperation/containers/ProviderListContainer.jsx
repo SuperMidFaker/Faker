@@ -26,8 +26,9 @@ export default class ProviderListContainer extends BaseList {
     this.type = 'ALL';
     this.partnerships = ['TRS'];
   }
-  onAddBtnClick() {
+  handleAddBtnClick() {
     const { tenantId, providerType } = this.props;
+    console.log('child click');
     partnerModal({
       isProvider: true,
       partnerships: this.type === 'ALL' ? [] : [providerType],
