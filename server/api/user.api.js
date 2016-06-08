@@ -133,7 +133,7 @@ function *verifySmsCodeP() {
 function *getUserAccount() {
   const userType = this.state.user.userType;
   if (userType === ADMIN) {
-    return Result.ok(this, { username: 'root' });
+    return Result.ok(this, { username: 'root', level: TENANT_LEVEL.PLATFORM });
   }
   const curUserId = this.state.user.userId;
   try {
