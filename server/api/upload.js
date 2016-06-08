@@ -22,9 +22,10 @@ function *uploadImgs() {
   const parts = cobusboy(this, { autoFields: true });
   try {
     const part = yield parts;
+    const filename = part.filename;
     const buf = yield saveBuffer(part);
-    const prefix = !!parts.field ? parts.field.prefix : 'tms';
-    const fpath = yield fileUtil.saveFileWithBuffer(buf, prefix);
+    const prefix = !!parts.field ? parts.field.prefix : null;
+    const fpath = yield fileUtil.saveFileWithBuffer(buf, prefix, filename);
     Result.ok(this, fileUtil.getFileUrl(fpath));
   } catch (e) {
     console.log(e);
