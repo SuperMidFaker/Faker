@@ -1,17 +1,28 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Table } from 'ant-ui';
 import moment from 'moment';
+import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { mapPartnerships } from '../util/dataMapping';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadSendInvitations, cancelInvite } from 'common/reducers/invitation';
 
 const rowSelection = {
   onChange() {}
 };
 
-export default function ReceiveInvitationList(props) {
-  const { receiveInvitations, onAcceptBtnClick, onRejectBtnClick } = props;
+function fetchData({ state, dispatch }) {
+  return dispatch(loadSendInvitations(state.account.tenantId));
+}
 
-  const columns = [
+@connectFetch()(fetchData)
+@connect(state => ({sendInvitations: state.invitation.sendInvitations}), { cancelInvite })
+export default class SendInvitation extends Component {
+  static propTypes = {
+    sendInvitations: PropTypes.array.isRequired,  // 发出的邀请
+    cancelInvite: PropTypes.func.isRequired,      // 取消邀请的action creator
+  }
+  columns = [
     {
       title: '合作伙伴',
       dataIndex: 'name',
@@ -23,7 +34,7 @@ export default function ReceiveInvitationList(props) {
       key: 'code'
     },
     {
-      title: '邀请我方成为',
+      title: '邀请对方成为',
       dataIndex: 'partnerships',
       key: 'partnerships',
       render(_, record) {
@@ -33,7 +44,7 @@ export default function ReceiveInvitationList(props) {
       }
     },
     {
-      title: '收到时间',
+      title: '发出时间',
       dataIndex: 'created_date',
       key: 'created_date',
       render(_, record) {
@@ -49,11 +60,13 @@ export default function ReceiveInvitationList(props) {
       render(_, record) {
         switch (record.status) {
           case 0:
-            return (<span>待回应</span>);
+            return (<span>待定</span>);
           case 1:
             return (<span>已接受</span>);
           case 2:
             return (<span>已拒绝</span>);
+          case 3:
+            return (<span>已取消</span>);
           default:
             return null;
         }
@@ -65,28 +78,20 @@ export default function ReceiveInvitationList(props) {
       key: 'operation',
       render(_, record) {
         if (record.status === 0) {
-          return (
-            <span>
-              <a onClick={() => onAcceptBtnClick(record.id)}>接受</a>
-              <span className="ant-divider"></span>
-              <a onClick={() => onRejectBtnClick(record.id)}>拒绝</a>
-            </span>
-          );
+          return (<a onClick={() => this.handleCancelInviteBtnClick(record.id, record.partnerId)}>取消邀请</a>);
         } else {
           return null;
         }
       }
     }
-  ];
-
-  const dataSource = receiveInvitations.filter(invitation => invitation.status !== 3);
-  return (
-    <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>
-  );
+  ]
+  handleCancelInviteBtnClick = (id, partnerId) => {
+    this.props.cancelInvite(id, partnerId);
+  }
+  render() {
+    const { sendInvitations } = this.props;
+    return (
+      <Table columns={this.columns} dataSource={addUniqueKeys(sendInvitations)} rowSelection={rowSelection}/>
+    );
+  }
 }
-
-ReceiveInvitationList.propTypes = {
-  receiveInvitations: PropTypes.array.isRequired,       // 收到的邀请
-  onAcceptBtnClick: PropTypes.func.isRequired,          // 接受按钮点击后执行的回调函数
-  onRejectBtnClick: PropTypes.func.isRequired,          // 拒绝按钮点击后执行的回调函数
-};

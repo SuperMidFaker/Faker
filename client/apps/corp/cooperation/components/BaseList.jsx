@@ -39,9 +39,15 @@ export default class BaseList extends Component {
       key: 'tenantType',
       render: (_, record) => {
         if (record.tenantType === 'TENANT_OFFLINE') {
-          return (
-            <a>邀请加入</a>
-          );
+          if (record.invited === 0) {
+            return (
+              <a>邀请加入</a>
+            );
+          } else {
+            return (
+              <span>已邀请</span>
+            );
+          }
         } else {
           return (
             <span>{tenantTypes[record.tenantType]}</span>
