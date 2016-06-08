@@ -376,12 +376,12 @@ export default class DispatchDock extends Component {
                 <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
                   <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
                     <div className="pane-content tab-pane">
-                      <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} pagination={false} />
+                      <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
                     </div>
                   </TabPane>
                   <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
                     <div className="pane-content tab-pane">
-                      <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} pagination={false} />
+                      <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
                     </div>
                   </TabPane>
                 </Tabs>
