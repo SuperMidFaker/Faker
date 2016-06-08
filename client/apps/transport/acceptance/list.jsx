@@ -144,7 +144,7 @@ export default class AcceptList extends React.Component {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
     fixed: 'left',
-    width: 220
+    width: 240
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
