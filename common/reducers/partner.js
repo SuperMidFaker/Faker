@@ -59,6 +59,11 @@ function partnerReducer(state, action) {
       const updatedPartner = {...foundPartner, status: action.status};
       return [...state.slice(0, foundPartnerIndex), updatedPartner, ...state.slice(foundPartnerIndex + 1)];
     }
+    case actionTypes.EDIT_PARTNER_SUCCEED: {
+      const { name, code } = action.editInfo;
+      const updatePartner = {...foundPartner, name, partnerCode: code };
+      return [...state.slice(0, foundPartnerIndex), updatePartner, ...state.slice(foundPartnerIndex + 1)];
+    }
     default:
       return state;
   }
@@ -99,13 +104,7 @@ export default function reducer(state = initialState, action) {
       const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
       return { ...state, partnerlist: updatePartnerlist };
     }
-    case actionTypes.EDIT_PARTNER_SUCCEED: {
-      const partners = [ ...state.partnerlist.data ];
-      const partner = partners.find(pt => pt.key === action.data.partnerId);
-      partner.name = action.data.name;
-      partner.partner_code = action.data.code;
-      return { ...state, partnerlist: { ...state.partnerlist, data: partners }};
-    }
+    case actionTypes.EDIT_PARTNER_SUCCEED:
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
     case actionTypes.DELETE_PARTNER_SUCCEED:
       return {...state, partnerlist: {...state.partnerlist, data: partnerReducer(state.partnerlist.data, action)}};
@@ -198,6 +197,8 @@ export function editPartner(partnerId, name, code) {
       ],
       endpoint: 'v1/cooperation/partner/edit',
       method: 'post',
+      id: partnerId,
+      editInfo: { name, code },
       data: {
         partnerId,
         name,

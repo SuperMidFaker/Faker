@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
+import moment from 'moment';
+import { addUniqueKeys } from 'client/util/dataTransform';
 import { mapPartnerships } from '../util/dataMapping';
 
 const rowSelection = {
@@ -33,7 +35,12 @@ export default function ReceiveInvitationList(props) {
     {
       title: '收到时间',
       dataIndex: 'created_date',
-      key: 'created_date'
+      key: 'created_date',
+      render(_, record) {
+        return (
+          <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
+        );
+      }
     },
     {
       title: '状态',
@@ -74,7 +81,7 @@ export default function ReceiveInvitationList(props) {
 
   const dataSource = receiveInvitations.filter(invitation => invitation.status !== 3);
   return (
-    <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
+    <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>
   );
 }
 

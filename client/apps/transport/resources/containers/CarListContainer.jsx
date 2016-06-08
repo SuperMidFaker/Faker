@@ -4,7 +4,6 @@ import CarList from '../components/CarList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadCarList, editCar } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { addUniqueKeys } from '../utils/dataMapping';
 
 function fetchData({dispatch, state}) {
   return dispatch(loadCarList(state.account.tenantId));
@@ -36,7 +35,7 @@ export default class CarListContainer extends Component {
     const { cars } = this.props;
     const dataSource = cars.map(transformRawCarDataToDisplayData);
     return (
-      <CarList dataSource={addUniqueKeys(dataSource)}
+      <CarList dataSource={dataSource}
                onStopCarBtnClick={this.handleStopCarBtnClick}
                onResumeCarBtnClick={this.handleResumeCarBtnClick}
                onAddCarBtnClick={this.handleAddCarBtnClick}/>

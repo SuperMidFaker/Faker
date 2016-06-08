@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import NodeList from '../components/NodeList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadNodeList, setNodeType, removeNode } from 'common/reducers/transportResources';
-import { addUniqueKeys } from '../utils/dataMapping';
 
 function fetchData({dispatch, state}) {
   return dispatch(loadNodeList(state.account.tenantId));
@@ -37,9 +36,8 @@ export default class NodeListContainer extends Component {
   render() {
     const { nodes, nodeType } = this.props;
     const toDisplayNodes = nodes.filter(node => node.type === nodeType);
-    const dataSource = addUniqueKeys(toDisplayNodes);
     return (
-      <NodeList dataSource={dataSource}
+      <NodeList dataSource={toDisplayNodes}
                 nodeType={nodeType}
                 onAddNoteBtnClick={this.handleAddNoteBtnClick}
                 onRadioButtonChange={this.handleNodeTypeChange}
