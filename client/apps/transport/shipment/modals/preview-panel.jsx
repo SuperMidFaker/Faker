@@ -63,8 +63,6 @@ export default class PreviewPanel extends React.Component {
             <span className="title">{shipmtNo}</span>
             <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
             <div className="pull-right">
-              <Button type="ghost" shape="circle-outline"><Icon type="export" /></Button>
-              <Button type="ghost" shape="circle-outline"><Icon type="share-alt" /></Button>
               <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
                 <Icon type="cross" />
               </Button>
@@ -74,9 +72,6 @@ export default class PreviewPanel extends React.Component {
             <Tabs defaultActiveKey="detail">
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
-              </TabPane>
-              <TabPane tab={this.msg('shipmtDynamic')} key="dynamic">
-              动态
               </TabPane>
               <TabPane tab={this.msg('shipmtTracking')} key="tracking">
                 <TrackingPane />
