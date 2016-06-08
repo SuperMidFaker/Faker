@@ -143,7 +143,6 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    fixed: 'left',
     width: 240
   }, {
     title: this.msg('shipMode'),
@@ -417,7 +416,7 @@ export default class AcceptList extends React.Component {
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body fixed">
+        <div className="page-body">
           <div className="panel-header">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary">
