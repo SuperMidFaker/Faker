@@ -28,7 +28,6 @@ export default class ProviderListContainer extends BaseList {
   }
   handleAddBtnClick() {
     const { tenantId, providerType } = this.props;
-    console.log('child click');
     partnerModal({
       isProvider: true,
       partnerships: this.type === 'ALL' ? [] : [providerType],

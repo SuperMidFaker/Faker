@@ -124,7 +124,7 @@ function *editProviderTypes() {
 function *addPartner() {
   const body = yield cobody(this);
   const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
-  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership}))}; // 返回给客户端的新增partner
+  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})), status: 1}; // 返回给客户端的新增partner
   let addPartnerResult;
   let trans;
   try {

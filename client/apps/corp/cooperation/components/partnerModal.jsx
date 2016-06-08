@@ -143,7 +143,7 @@ function partnerModal(config) {
   const props = { ...config };
   const div = document.createElement('div');
   document.body.appendChild(div);
-console.log(config);
+
   let d;
 
   const width = props.width || 520;
