@@ -62,6 +62,8 @@ export default function reducer(state = initialState, action) {
         const corplist = {...state.corplist};
         corplist.data[state.selectedIndex] = action.data.corp;
         return {...state, selectedIndex: -1, corplist};
+      } else {
+        return state;
       }
     }
     // organization

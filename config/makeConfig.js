@@ -25,13 +25,13 @@ export default (serverPort, dirName, appName) => {
   // Webpack
   // ------------------------------------
   config.set('webpack_port', serverPort + 1);
-  config.set('webpack_admin_port', serverPort + 3);
   config.set('webpack_dev_path', `http://${config.get('server_host')}:${config.get('webpack_port')}/`);
-  config.set('webpack_admin_path', `http://${config.get('server_host')}:${config.get('webpack_admin_port')}/`);
   config.set('webpack_dist', 'dist');
+  config.set('webpack_admin_port', serverPort + 3);
+  config.set('webpack_admin_path', `http://${config.get('server_host')}:${config.get('webpack_admin_port')}/`);
   config.set('webpack_admin_public_path', `${config.get('webpack_admin_path')}${config.get('webpack_dist')}/`);
   config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
-  config.set('__API_ROOT__', `http://${config.get('server_host')}:${config.get('server_port')}/`);
+  config.set('__API_ROOT__', '/'); // `http://${config.get('server_host')}:${config.get('server_port')}/`);
   // todo how to make the port configurable
   config.set('__PRODUCTIONS_ROOT_GROUP__', {
     'sso': `http://${config.get('server_host')}:3020/`,
@@ -55,7 +55,7 @@ export default (serverPort, dirName, appName) => {
       'sso': 'http://sso.wetms.com/',
       'wewms': 'http://wms.wetms.com/'
     });
-    config.set('__API_ROOT__', '/');
+    // config.set('__API_ROOT__', '/');
     // config.set('CDN_URL', 'http://s.welogix.cn');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
   }
