@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
 import moment from 'moment';
+import { addUniqueKeys } from 'client/util/dataTransform';
 import { mapPartnerships } from '../util/dataMapping';
 
 const rowSelection = {
@@ -59,7 +60,7 @@ export default function ToInviteList(props) {
     }
   ];
   return (
-    <Table columns={columns} dataSource={toInvites} rowSelection={rowSelection}/>
+    <Table columns={columns} dataSource={addUniqueKeys(toInvites)} rowSelection={rowSelection}/>
   );
 }
 

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table, Button, Icon } from 'ant-ui';
 import { Link } from 'react-router';
+import { addUniqueKeys } from 'client/util/dataTransform';
 
 const rowSelection = {
   onSelect() {
@@ -80,7 +81,7 @@ function DriverList(props) {
           <Button type="primary" onClick={onAddDriverBtnClicked}><Icon type="plus-circle-o" />新增司机</Button>
         </div>
         <div className="panel-body padding">
-          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
+          <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection}/>
         </div>
       </div>
     </div>
