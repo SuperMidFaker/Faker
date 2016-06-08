@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import DriverList from '../components/DriverList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadDriverList, editDriver } from 'common/reducers/transportResources';
-import { addUniqueKeys, transformRawDriverDataToDisplayData } from '../utils/dataMapping';
+import { transformRawDriverDataToDisplayData } from '../utils/dataMapping';
 
 function fetchData({dispatch, state}) {
   return dispatch(loadDriverList(state.account.tenantId));
@@ -34,7 +34,7 @@ export default class DriverListContainer extends Component {
     const { drivers } = this.props;
     const dataSource = drivers.map(transformRawDriverDataToDisplayData);
     return (
-      <DriverList dataSource={addUniqueKeys(dataSource)}
+      <DriverList dataSource={dataSource}
                   onStopDriverBtnClick={this.handleStopDriverBtnClick}
                   onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
                   onAddDriverBtnClicked={this.handleAddDriverBtnClicked} />

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table, Button, Radio, Icon, Popconfirm } from 'ant-ui';
 import { Link } from 'react-router';
+import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
 
 const RadioButton = Radio.Button;
@@ -96,7 +97,7 @@ export default function NodeList(props) {
           <Button type="primary" onClick={onAddNoteBtnClick}><Icon type="plus-circle-o" />新增{nodeTypes[nodeType]}</Button>
         </div>
         <div className="panel-body padding">
-          <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource}/>
+          <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)}/>
         </div>
       </div>
     </div>

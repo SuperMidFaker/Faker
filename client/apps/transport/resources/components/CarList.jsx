@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Button, Table, Icon } from 'ant-ui';
 import { Link } from 'react-router';
+import { addUniqueKeys } from 'client/util/dataTransform';
 
 const rowSelection = {
   onSelect() {
@@ -95,7 +96,7 @@ export default function CarList(props) {
           <Button type="primary" onClick={onAddCarBtnClick}><Icon type="plus-circle-o" />新增车辆</Button>
         </div>
         <div className="panel-body padding">
-          <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
+          <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>
         </div>
       </div>
     </div>
