@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Table } from 'ant-ui';
+import moment from 'moment';
 import { mapPartnerships } from '../util/dataMapping';
 
 const rowSelection = {
@@ -32,7 +33,12 @@ export default function SendInvitation(props) {
     {
       title: '发出时间',
       dataIndex: 'created_date',
-      key: 'created_date'
+      key: 'created_date',
+      render(_, record) {
+        return (
+          <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
+        );
+      }
     },
     {
       title: '状态',

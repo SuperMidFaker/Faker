@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Icon, Button, message, Popconfirm } from 'ant-ui';
+import moment from 'moment';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
 import partnerModal from './partnerModal';
 
@@ -66,7 +67,12 @@ export default class BaseList extends Component {
     {
       title: '创建日期',
       dataIndex: 'created_date',
-      key: 'created_date'
+      key: 'created_date',
+      render(_, record) {
+        return (
+          <span>{moment(record.created_date).format('YYYY/MM/DD HH:MM')}</span>
+        );
+      }
     },
     {
       title: '操作',
