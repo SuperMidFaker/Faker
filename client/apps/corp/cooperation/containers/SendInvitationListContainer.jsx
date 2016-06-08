@@ -1,16 +1,28 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Table } from 'ant-ui';
 import moment from 'moment';
+import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { mapPartnerships } from '../util/dataMapping';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadSendInvitations, cancelInvite } from 'common/reducers/invitation';
 
 const rowSelection = {
   onChange() {}
 };
 
-export default function SendInvitation(props) {
-  const { onCancelInviteBtnClick, sendInvitations } = props;
-  const columns = [
+function fetchData({ state, dispatch }) {
+  return dispatch(loadSendInvitations(state.account.tenantId));
+}
+
+@connectFetch()(fetchData)
+@connect(state => ({sendInvitations: state.invitation.sendInvitations}), { cancelInvite })
+export default class SendInvitation extends Component {
+  static propTypes = {
+    sendInvitations: PropTypes.array.isRequired,  // 发出的邀请
+    cancelInvite: PropTypes.func.isRequired,      // 取消邀请的action creator
+  }
+  columns = [
     {
       title: '合作伙伴',
       dataIndex: 'name',
@@ -64,21 +76,22 @@ export default function SendInvitation(props) {
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
-      render(_, record) {
+      render: (_, record) => {
         if (record.status === 0) {
-          return (<a onClick={() => onCancelInviteBtnClick(record.id)}>取消邀请</a>);
+          return (<a onClick={() => this.handleCancelInviteBtnClick(record.id, record.partnerId)}>取消邀请</a>);
         } else {
           return null;
         }
       }
     }
-  ];
-  return (
-    <Table columns={columns} dataSource={addUniqueKeys(sendInvitations)} rowSelection={rowSelection}/>
-  );
+  ]
+  handleCancelInviteBtnClick = (id, partnerId) => {
+    this.props.cancelInvite(id, partnerId);
+  }
+  render() {
+    const { sendInvitations } = this.props;
+    return (
+      <Table columns={this.columns} dataSource={addUniqueKeys(sendInvitations)} rowSelection={rowSelection}/>
+    );
+  }
 }
-
-SendInvitation.propTypes = {
-  sendInvitations: PropTypes.array.isRequired,        // 发送的邀请
-  onCancelInviteBtnClick: PropTypes.func.isRequired   // 点击取消时执行的回调函数
-};

@@ -43,7 +43,7 @@ class PartnerForm extends React.Component {
       inEdit,
       partnerName: inEdit ? this.props.editInfo.name : '',
       partnerCode: inEdit ? this.props.editInfo.code : '',
-      partnerships: this.props.partnership || [],
+      partnerships: this.props.partnerships || [],
     };
   }
   handleOk = (ev) => {

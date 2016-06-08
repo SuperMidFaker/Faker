@@ -83,7 +83,7 @@ function *partnersG() {
 }
 
 function *cancelInvite() {
-  const { id } = yield cobody(this);
+  const { id, partnerId } = yield cobody(this);
   let trans;
   try {
     const invitations = yield coopDao.getInvitationInfo(id);
@@ -93,6 +93,7 @@ function *cancelInvite() {
     const status = INVITATION_STATUS.CANCELED;
     trans = yield mysql.beginTransaction();
     yield coopDao.updateInvitationStatus(status, null, id, trans);
+    yield coopDao.updatePartnerInvited(partnerId, 0, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
@@ -123,7 +124,7 @@ function *editProviderTypes() {
 function *addPartner() {
   const body = yield cobody(this);
   const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
-  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership}))}; // 返回给客户端的新增partner
+  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})), status: 1}; // 返回给客户端的新增partner
   let addPartnerResult;
   let trans;
   try {
@@ -194,6 +195,7 @@ function *inviteOfflinePartner() {
     trans = yield mysql.beginTransaction();
     yield coopDao.insertInvitation(inviteeInfo.partnerId, tenantId, -1,
                                    inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    yield coopDao.updatePartnerInvited(inviteeInfo.partnerId, 1, trans);
     // TODO: 发送短信或者邮件给线下用户
     yield mysql.commit(trans);
     return Result.ok(this);
@@ -211,6 +213,7 @@ function *inviteOnlinePartner() {
     trans = yield mysql.beginTransaction();
     yield coopDao.insertInvitation(inviteeInfo.partnerId, tenantId, inviteeInfo.tenantId,
                                    inviteeInfo.code, inviteeInfo.name, 0, null, trans);
+    yield coopDao.updatePartnerInvited(inviteeInfo.partnerId, 1, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
@@ -296,6 +299,8 @@ function *deletePartner() {
   try {
     trans = yield mysql.beginTransaction();
     yield coopDao.deletePartner(id, trans);
+    yield coopDao.deletePartnershipsByPartnerId(id, trans);
+    yield coopDao.deletePartnershipsByPartnerId(id, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {

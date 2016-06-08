@@ -34,7 +34,7 @@ export default {
     const sqlClause = getPartnerWhereClause(filters, tenantId, args);
     const sql = `select id as \`key\`, name, partner_code as partnerCode,
       tenant_type as tenantType, tenant_id as tenantId, partner_tenant_id as partnerTenantId,
-      business_volume as volume, revenue, cost, status, created_date from sso_partners where ${sqlClause}`;
+      business_volume as volume, revenue, cost, status, invited, created_date from sso_partners where ${sqlClause}`;
     console.log(sql, args);
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -222,9 +222,9 @@ export default {
   },
   getSendInvitationsByTenantId(tenantId) {
     const sql = `
-      SELECT PI.id, PI.invitee_name AS name, PI.invitee_code AS code, PI.status, PI.created_date, PS.type_code AS partnerships FROM sso_partner_invitations AS PI
+      SELECT PI.id, PI.partner_id AS partnerId, PI.invitee_name AS name, PI.invitee_code AS code, PI.status, PI.created_date, PS.type_code AS partnerships FROM sso_partner_invitations AS PI
       INNER JOIN sso_partnerships AS PS ON invitee_name = partner_name AND invitee_code = partner_code
-      WHERE inviter_tenant_id = ${tenantId} ORDER BY status;`;
+      WHERE inviter_tenant_id = ${tenantId} ORDER BY status, created_date DESC;`;
     return mysql.query(sql);
   },
   getReceiveInvitationsByTenantId(tenantId) {
@@ -236,7 +236,7 @@ export default {
           INNER JOIN sso_tenants AS T ON T.tenant_id = PI.inviter_tenant_id
           WHERE invitee_tenant_id = ?) AS PPI
           ON PPI.invitee_tenant_id = P.partner_tenant_id AND PPI.inviter_tenant_id = P.tenant_id
-      ORDER BY status`;
+      ORDER BY status, created_date DESC;`;
     return mysql.query(sql, [ tenantId ]);
   },
   getInvitationInfo(invKey) {
@@ -272,5 +272,17 @@ export default {
   deletePartner(partnerId, trans) {
     const sql = `DELETE FROM sso_partners WHERE id = ${partnerId};`;
     return mysql.delete(sql, null, trans);
+  },
+  deletePartnershipsByPartnerId(partnerId, trans) {
+    const sql = `DELETE FROM sso_partnerships WHERE partner_id = ${partnerId};`;
+    return mysql.delete(sql, null, trans);
+  },
+  deletePartnerInvitationsByPartnerId(partnerId, trans) {
+    const sql = `DELETE FROM sso_partner_invitations WHERE partner_id = ${partnerId};`;
+    return mysql.delete(sql, null, trans);
+  },
+  updatePartnerInvited(partnerId, invitedStatus, trans) {
+    const sql = `UPDATE sso_partners SET invited = ${invitedStatus} WHERE id = ${partnerId};`;
+    return mysql.update(sql, null, trans);
   }
 };

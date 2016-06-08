@@ -1,6 +1,7 @@
 import BaseList from '../components/BaseList';
 import { connect } from 'react-redux';
-import { inviteOnlPartner, addPartner, editPartner, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { inviteOnlPartner, addPartner, editPartner, changePartnerStatus, deletePartner, invitePartner } from 'common/reducers/partner';
+import { inviteOfflinePartner } from 'common/reducers/invitation';
 
 @connect(state => ({
   partnerlist: state.partner.partnerlist.data,
@@ -8,7 +9,7 @@ import { inviteOnlPartner, addPartner, editPartner, changePartnerStatus, deleteP
   tenantId: state.account.tenantId,
 }), {
   inviteOnlPartner, addPartner, editPartner,
-  changePartnerStatus, deletePartner
+  changePartnerStatus, deletePartner, inviteOfflinePartner, invitePartner
 })
 export default class SupplierListContainer extends BaseList {
   constructor() {
