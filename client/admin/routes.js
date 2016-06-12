@@ -8,7 +8,8 @@ import Forgot from 'client/apps/sso/forgot';
 import PackAccount from 'client/apps/account/pack-account';
 import MyProfile from 'client/apps/account/profile';
 import Password from 'client/apps/account/password';
-import PackTenant from './tenantManager/pack';
+import PackTenantMgr from './tenantManager/pack';
+import TenantMgrDashboard from './tenantManager/dashboard';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { TENANT_LEVEL } from 'common/constants';
@@ -18,7 +19,7 @@ export default(store, cookie) => {
     function checkAuth() {
       const query = nextState.location.query;
       const { auth: { isAuthed }, account: { level }} = store.getState();
-      if (!isAuthed && level === TENANT_LEVEL.PLATFORM) {
+      if (!(isAuthed && level === TENANT_LEVEL.PLATFORM)) {
         const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
@@ -48,7 +49,9 @@ export default(store, cookie) => {
           <Route path="profile" component={MyProfile}/>
           <Route path="password" component={Password}/>
         </Route>
-        <Route path="manager" component={PackTenant}/>
+        <Route path="manager" component={PackTenantMgr}>
+          <IndexRoute component={TenantMgrDashboard} />
+        </Route>
       </Route>
     </Route>
   );
