@@ -68,7 +68,7 @@ class OrmObject {
     case 'v':
       type = 'varchar';
       def = str => {
-        if (!str) return '';
+        if (str === null || str === undefined) return str;
         if (typeof str === 'string') return str;
         if (typeof str === 'object') return JSON.stringify(str);
         if (typeof str !== 'string') {

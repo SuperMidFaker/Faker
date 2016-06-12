@@ -44,6 +44,8 @@ const initialState = {
     },
     tracking: {
     },
+    charges: {
+    },
   }
 };
 
@@ -97,8 +99,12 @@ export default function reducer(state = initialState, action) {
         goodslist: action.result.data.goodslist
       }};
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state, previewer: { shipmt: action.result.data.shipmt,
-        tracking: action.result.data.tracking, visible: true }};
+      return { ...state, previewer: {
+        shipmt: action.result.data.shipmt,
+        tracking: action.result.data.tracking,
+        charges: action.result.data.charges,
+        visible: true,
+      }};
     }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false }};

@@ -8,7 +8,7 @@ import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import {
   PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
-  SHIPMENT_TRACK_STATUS,
+  SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT,
   VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES, CONTAINER_PACKAGE_TYPE,
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
@@ -116,7 +116,8 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         effective, trans
       )
     ];
-    if (!shipmt.consigner_id) {
+    if (!shipmt.consigner_id && shipmt.consigner_name
+        && shipmt.consigner_name.trim().length > 0) {
       dbOps.push(shipmentDao.upsertLocation(
         shipmt.consigner_id, shipmt.consigner_name, shipmt.consigner_province,
         shipmt.consigner_city, shipmt.consigner_district, shipmt.consigner_addr,
@@ -124,7 +125,8 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
         sp.tid, CONSIGN_TYPE.consigner, trans
       ));
     }
-    if (!shipmt.consignee_id) {
+    if (!shipmt.consignee_id && shipmt.consignee_name
+        && shipmt.consignee_name.trim().length > 0) {
       dbOps.push(shipmentDao.upsertLocation(
         shipmt.consignee_id, shipmt.consignee_name, shipmt.consignee_province,
         shipmt.consignee_city, shipmt.consignee_district, shipmt.consignee_addr,
@@ -137,6 +139,33 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
     }
     yield dbOps;
 }
+
+function *shipmtSavePendingP() {
+  const body = yield cobody(this);
+  const shipmt = body.shipment;
+  const sp = body.sp;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
+    yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.effected, trans);
+    const result = yield shipmentDispDao.createAndAcceptByLSP(
+      shipmtNo, shipmt.client_id, shipmt.client, shipmt.client_partner_id,
+      SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
+      sp.login_name, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
+      SHIPMENT_TRACK_STATUS.unaccepted, shipmt.freight_charge, new Date(), trans
+    );
+    yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this, shipmt);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    Result.internalServerError(this, e.message);
+  }
+}
+
 function *shipmtSaveAcceptP() {
   const body = yield cobody(this);
   const shipmt = body.shipment;
@@ -307,6 +336,9 @@ function *shipmtSaveEditP() {
     trans = yield mysql.beginTransaction();
     const dbOps = [
       shipmentDao.updateShipmtWithInfo(shipment, trans),
+      shipmentDispDao.updateDispInfo(shipment.disp_id, {
+       freight_charge: shipment.freight_charge,
+      }, trans),
     ];
     if (editGoods.length > 0) {
       dbOps.push(shipmentDispDao.updateGoodsWithInfo(editGoods));
@@ -384,6 +416,11 @@ function *shipmtDetailG() {
     ];
     let shipmt = {};
     let tracking;
+    const charges = {
+      earnings:  shipmtSpDisps.length === 1 ? shipmtSpDisps[0].freight_charge : null,
+      payout: shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id !== 0
+        ? shipmtSrDisps[0].freight_charge : null,
+    };
     let shipmtCreator;
     if (shipmts.length === 1) {
       shipmt = shipmts[0];
@@ -455,12 +492,15 @@ function *shipmtDetailG() {
       };
     }
     tracking.creator = shipmtCreator;
+    tracking.vehicle_connect_type = shipmtSrDisps.length === 1 ?
+      shipmtSrDisps[0].vehicle_connect_type : SHIPMENT_VEHICLE_CONNECT.disconnected;
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstream_disp_status > 0 ?
       tracking.downstream_status : tracking.upstream_status;
     return Result.ok(this, {
       shipmt,
       tracking,
+      charges,
     });
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -470,6 +510,7 @@ function *shipmtDetailG() {
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
+  [ 'post', '/v1/transport/shipment/save', shipmtSavePendingP ],
   [ 'post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP ],
   [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
   [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],

@@ -228,18 +228,10 @@ export default class LandStatusList extends React.Component {
         }
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (record.sp_tenant_id === -1) {
-          return (
-            <RowUpdater label={this.msg('updateDelivery')}
-            onAnchored={this.handleShowDeliverModal} row={record}
-            />
-          );
+          return this.renderIntransitUpdater(record);
         } else if (record.sp_tenant_id === 0) {
           if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            return (
-              <RowUpdater label={this.msg('updateDelivery')}
-              onAnchored={this.handleShowDeliverModal} row={record}
-              />
-            );
+            return this.renderIntransitUpdater(record);
           } else {
             return this.msg('driverUpdate');
           }
@@ -405,6 +397,8 @@ export default class LandStatusList extends React.Component {
   handleShowDeliverModal = row => {
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
+  handleShowTransitModal = row => {
+  }
   handleShowPodModal = (row) => {
     this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
@@ -436,6 +430,17 @@ export default class LandStatusList extends React.Component {
       names.push(shipmt[city]);
     }
     return names.join('-');
+  }
+
+  renderIntransitUpdater(record) {
+    // 时效大于1天显示在途位置更新,否则显示更新交货
+    return record.transit_time > 1 ?
+      (<RowUpdater label={this.msg('updateInTransit')}
+        onAnchored={this.handleShowTransitModal} row={record}
+      />) :
+      (<RowUpdater label={this.msg('updateDelivery')}
+      onAnchored={this.handleShowDeliverModal} row={record}
+      />);
   }
 
   render() {

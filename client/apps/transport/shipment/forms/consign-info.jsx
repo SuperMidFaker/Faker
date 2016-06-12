@@ -124,6 +124,30 @@ export default class ConsignInfo extends React.Component {
     mobile: 'consigner_mobile',
     email: 'consigner_email'
   }
+  renderRules = this.props.type === 'consignee' ? {
+    name: {
+    },
+    portal: {
+      required: true,
+    },
+    addr: {
+    },
+  } : {
+    name: {
+      required: true,
+      rules: [{
+        required: true, message: this.msg('consignerNameMessage')
+      }],
+    },
+    portal: {
+    },
+    addr: {
+      required: true,
+      rules: [{
+        required: true, message: this.msg('consignerAddrMessage')
+      }],
+    },
+  }
   render() {
     const { outerColSpan, labelColSpan, formhoc, consignLocations } = this.props;
     const locOptions = consignLocations.map(cl => ({
@@ -133,7 +157,7 @@ export default class ConsignInfo extends React.Component {
     const region = {
       province: formhoc.getFieldValue(this.renderFields.province),
       city: formhoc.getFieldValue(this.renderFields.city),
-      district: formhoc.getFieldValue(this.renderFields.district)
+      district: formhoc.getFieldValue(this.renderFields.district),
     };
     return (
       <Row>
@@ -142,23 +166,18 @@ export default class ConsignInfo extends React.Component {
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} colSpan={3} required
-            rules={[{
-              required: true, message: this.msg('consignNameMessage')
-            }]} optionField="name" optionKey="key" optionValue="name"
+            field={this.renderFields.name} colSpan={3} { ...this.renderRules.name }
+            optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
             allowClear onChange={this.handleAutoInputChange}
           />
           <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 3}}
-            wrapperCol={{span: 21}}
+            wrapperCol={{span: 21}} { ...this.renderRules.portal }
           >
             <RegionCascade region={region} setFormValue={this.handleRegionValue} />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} colSpan={3} required
-            rules={[{
-              required: true, message: this.msg('addrMessage')
-            }]}
+            field={this.renderFields.addr} colSpan={3} { ...this.renderRules.addr }
           />
         </Col>
         <Col span={`${24 - outerColSpan}`} className="subform-body">

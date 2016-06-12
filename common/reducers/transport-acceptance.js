@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'HIDE_ACCEPT_MODAL', 'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',
   'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
+  'SAVE_PENDING', 'SAVE_PENDING_SUCCEED', 'SAVE_PENDING_FAIL',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
   'ACCEPT_DRAFT', 'ACCEPT_DRAFT_SUCCEED', 'ACCEPT_DRAFT_FAIL',
   'LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
@@ -58,32 +59,16 @@ export default function reducer(state = initialState, action) {
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
     }};
+    case actionTypes.SAVE_PENDING:
     case actionTypes.SAVE_SHIPMT:
     case actionTypes.SAVE_DRAFT:
       return { ...state, submitting: true };
+    case actionTypes.SAVE_PENDING_FAIL:
     case actionTypes.SAVE_SHIPMT_FAIL:
     case actionTypes.SAVE_DRAFT_FAIL:
       return { ...state, submitting: false };
-    case actionTypes.SAVE_SHIPMT_SUCCEED: {
-      let found = false;
-      state.table.filters.forEach(flt => {
-        if (flt.name === 'type' && flt.value === 'accepted') {
-          found = true;
-          return;
-        }
-      });
-      return found ? {
-        ...state, submitting: false, table: {
-          ...state.table,
-          shipmentlist: {
-            ...state.table.shipmentlist,
-            totalCount: state.table.shipmentlist + 1,
-            data: state.table.shipmentlist.pageSize * state.table.shipmentlist.current < state.table.shipmentlist.totalCount
-              ? [...state.table.shipmentlist.data, action.data.result] : state.table.shipmentlist.data
-          }
-        }
-      } : { ...state, submitting: false };
-    }
+    case actionTypes.SAVE_PENDING_SUCCEED:
+    case actionTypes.SAVE_SHIPMT_SUCCEED:
     case actionTypes.SAVE_DRAFT_SUCCEED:
       return { ...state, submitting: false };
     case actionTypes.HIDE_ACCEPT_MODAL:
@@ -138,6 +123,21 @@ export function saveEdit(shipment, tenantId, loginId) {
       endpoint: 'v1/transport/shipment/save_edit',
       method: 'post',
       data: { shipment, tenantId, loginId }
+    }
+  };
+}
+
+export function savePending(shipment, sp) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_PENDING,
+        actionTypes.SAVE_PENDING_SUCCEED,
+        actionTypes.SAVE_PENDING_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/transport/shipment/save',
+      data: { shipment, sp },
     }
   };
 }
