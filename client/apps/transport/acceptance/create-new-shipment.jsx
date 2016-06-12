@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, InputNumber, message, Row, Tooltip } from 'ant-ui';
+import { Col, Form, Button, InputNumber, message, Row, Tooltip, Popconfirm } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -131,6 +131,7 @@ export default class ShipmentCreate extends React.Component {
             if (result.error) {
               message.error(result.error.message);
             } else {
+              message.success(this.msg('shipmtOpSuccess'));
               this.context.router.goBack();
               this.props.loadTable(null, {
                 tenantId: this.props.tenantId,
@@ -162,6 +163,7 @@ export default class ShipmentCreate extends React.Component {
             if (result.error) {
               message.error(result.error.message);
             } else {
+              message.success(this.msg('shipmtOpSuccess'));
               this.context.router.goBack();
               this.props.loadTable(null, {
                 tenantId: this.props.tenantId,
@@ -189,6 +191,7 @@ export default class ShipmentCreate extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
+          message.success(this.msg('shipmtOpSuccess'));
           this.context.router.goBack();
           this.props.loadTable(null, {
             tenantId: this.props.tenantId,
@@ -273,9 +276,11 @@ export default class ShipmentCreate extends React.Component {
             <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
             {formatGlobalMsg(intl, 'save')}
             </Button>
-            <Button size="large" loading={submitting} onClick={this.handleSaveAndAccept}>
-            {this.msg('saveAndAccept')}
-            </Button>
+            <Popconfirm placement="top" title={this.msg('saveAndAcceptConfirm')} onConfirm={() => this.handleSaveAndAccept}>
+              <Button size="large" loading={submitting}>
+              {this.msg('saveAndAccept')}
+              </Button>
+            </Popconfirm>
             <Button size="large" loading={submitting} onClick={this.handleDraftSave}>
             {this.msg('saveAsDraft')}
             </Button>

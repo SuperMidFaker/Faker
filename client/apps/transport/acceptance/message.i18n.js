@@ -147,7 +147,11 @@ export default defineMessages({
   },
   saveAndAccept: {
     id: 'transport.acceptance.save.accept',
-    defaultMessage: '保存并接单'
+    defaultMessage: '一键接单'
+  },
+  saveAndAcceptConfirm: {
+    id: 'transport.acceptance.save.accept.confirm',
+    defaultMessage: '接单后不能再修改，确定？'
   },
   saveAsDraft: {
     id: 'transport.acceptance.save.draft',
@@ -155,7 +159,11 @@ export default defineMessages({
   },
   formError: {
     id: 'transport.acceptance.form.error',
-    defaultMessage: '表单存在错误'
+    defaultMessage: '运单信息不完整'
+  },
+  shipmtOpSuccess: {
+    id: 'transport.acceptance.op.success',
+    defaultMessage: '运单操作成功'
   },
   day: {
     id: 'transport.acceptance.day',
