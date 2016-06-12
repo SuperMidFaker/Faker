@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadFormRequire, setFormValue, setConsignFields }
   from 'common/reducers/shipment';
-import { saveAndAccept, loadTable, saveDraft }
+import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
@@ -17,6 +17,8 @@ import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import globalMessages from 'client/common/root.i18n';
+const formatGlobalMsg = format(globalMessages);
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 
@@ -42,7 +44,7 @@ function fetchData({ state, dispatch, cookie }) {
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, loadTable, saveAndAccept, saveDraft })
+  { setFormValue, setConsignFields, loadTable, savePending, saveAndAccept, saveDraft })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -104,6 +106,7 @@ export default class ShipmentCreate extends React.Component {
     pageSize: PropTypes.number.isRequired,
     current: PropTypes.number.isRequired,
     loadTable: PropTypes.func.isRequired,
+    savePending: PropTypes.func.isRequired,
     saveAndAccept: PropTypes.func.isRequired,
     saveDraft: PropTypes.func.isRequired,
   }
@@ -111,6 +114,37 @@ export default class ShipmentCreate extends React.Component {
     router: PropTypes.object.isRequired
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
+  handleSavePending = (ev) => {
+    ev.preventDefault();
+    this.props.formhoc.validateFields(errors => {
+      if (errors) {
+        message.error(this.msg('formError'));
+      } else {
+        this.props.savePending(
+          this.props.formData, {
+            tid: this.props.tenantId,
+            name: this.props.tenantName,
+            login_id: this.props.loginId,
+            login_name: this.props.loginName,
+          }).then(
+          result => {
+            if (result.error) {
+              message.error(result.error.message);
+            } else {
+              this.context.router.goBack();
+              this.props.loadTable(null, {
+                tenantId: this.props.tenantId,
+                filters: JSON.stringify(this.props.filters),
+                pageSize: this.props.pageSize,
+                currentPage: this.props.current,
+                sortField: this.props.sortField,
+                sortOrder: this.props.sortOrder,
+              });
+            }
+          });
+      }
+    });
+  }
   handleSaveAndAccept = (ev) => {
     ev.preventDefault();
     this.props.formhoc.validateFields(errors => {
@@ -144,13 +178,6 @@ export default class ShipmentCreate extends React.Component {
   }
   handleDraftSave = (ev) => {
     ev.preventDefault();
-    if (!this.props.formData.consigner_name || !this.props.formData.consignee_name) {
-      this.props.formhoc.validateFields([
-        'consigner_name',
-        'consignee_name',
-      ]);
-      return;
-    }
     this.props.saveDraft(
       this.props.formData, {
         tid: this.props.tenantId,
@@ -243,10 +270,13 @@ export default class ShipmentCreate extends React.Component {
             </div>
           </div>
           <div className="bottom-fixed-row">
-            <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleSaveAndAccept}>
+            <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
+            {formatGlobalMsg(intl, 'save')}
+            </Button>
+            <Button size="large" loading={submitting} onClick={this.handleSaveAndAccept}>
             {this.msg('saveAndAccept')}
             </Button>
-            <Button size="large" onClick={this.handleDraftSave} loading={submitting}>
+            <Button size="large" loading={submitting} onClick={this.handleDraftSave}>
             {this.msg('saveAsDraft')}
             </Button>
           </div>

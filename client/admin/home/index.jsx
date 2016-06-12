@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu } from 'ant-ui';
 import AmNavBar from 'client/components/am-navbar';
 import ModuleLayout from 'client/components/module-layout';
 import { setNavTitle } from 'common/reducers/navbar';

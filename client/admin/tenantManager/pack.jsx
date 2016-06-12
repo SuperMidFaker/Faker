@@ -36,7 +36,7 @@ function getLinksByAspect() {
   }];
 }
 
-export default class Transport extends React.Component {
+export default class PackTenantMgr extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired

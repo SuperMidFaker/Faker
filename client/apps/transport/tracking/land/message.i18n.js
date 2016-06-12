@@ -37,6 +37,10 @@ export default defineMessages({
     id: 'transport.tracking.update.delivery',
     defaultMessage: '更新交货'
   },
+  updateIntransit: {
+    id: 'transport.tracking.update.intransit',
+    defaultMessage: '在途追踪'
+  },
   submitPod: {
     id: 'transport.tracking.submit.pod',
     defaultMessage: '提交回单'

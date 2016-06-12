@@ -20,6 +20,7 @@ const FormItem = Form.Item;
 export default class VehicleUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    visible: PropTypes.bool.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

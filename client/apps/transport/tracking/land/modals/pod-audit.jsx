@@ -105,14 +105,24 @@ export default class PodAuditModal extends React.Component {
         }
       });
   }
+  handleAuditCancel = () => {
+    this.props.closePodModal();
+  }
   render() {
     const { auditModal: { readonly, visible }} = this.props;
     const { signStatus, remark, photoList } = this.state;
     const colSpan = 4;
     return (
-      <Modal title={this.msg('podModalTitle')} onCancel={this.handleAuditReturn}
-        onOk={this.handleAuditPass} visible={visible} okText={this.msg('auditPass')}
-        cancelText={this.msg('auditReturn')}
+      <Modal title={this.msg('podModalTitle')} onCancel={this.handleAuditCancel}
+        visible={visible}
+        footer={[
+          <Button key="return" type="ghost" size="large" onClick={this.handleAuditReturn}>
+          {this.msg('auditReturn')}
+          </Button>,
+          <Button key="pass" type="primary" size="large" onClick={this.handleAuditPass}>
+          {this.msg('auditPass')}
+          </Button>,
+        ]}
       >
         <Form className="row">
           <FormItem label={this.msg('signStatus')} labelCol={{span: colSpan}}

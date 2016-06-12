@@ -49,13 +49,13 @@ export default defineMessages({
     id: 'transport.shipment.delivery.addr',
     defaultMessage: '交货地址'
   },
-  consignNameMessage: {
-    id: 'transport.shipment.consign.name.message',
-    defaultMessage: '发货方或收货方不能为空'
+  consignerNameMessage: {
+    id: 'transport.shipment.consigner.name.message',
+    defaultMessage: '发货方不能为空'
   },
-  addrMessage: {
-    id: 'transport.shipment.addr.message',
-    defaultMessage: '提货或交货地址不能为空'
+  consignerAddrMessage: {
+    id: 'transport.shipment.consigner.addr.message',
+    defaultMessage: '提货地址不能为空'
   },
   scheduleInfo: {
     id: 'transport.shipment.schedule.info',
@@ -261,6 +261,22 @@ export default defineMessages({
     id: 'transport.shipment.track.pod',
     defaultMessage: '回单'
   },
+  chargeItem: {
+    id: 'transport.shipment.track.charge.item',
+    defaultMessage: '项目'
+  },
+  chargeFee: {
+    id: 'transport.shipment.track.charge.fee',
+    defaultMessage: '金额'
+  },
+  trackEarnings: {
+    id: 'transport.shipment.track.earnings',
+    defaultMessage: '收入'
+  },
+  trackPay: {
+    id: 'transport.shipment.track.pay',
+    defaultMessage: '支出'
+  },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',
     defaultMessage: '详情'
@@ -272,6 +288,10 @@ export default defineMessages({
   shipmtTracking: {
     id: 'transport.shipment.tab.tracking',
     defaultMessage: '跟踪'
+  },
+  shipmtCharge: {
+    id: 'transport.shipment.tab.charge',
+    defaultMessage: '运费'
   },
   remark: {
     id: 'transport.shipment.pane.remark',

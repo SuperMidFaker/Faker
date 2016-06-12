@@ -11,8 +11,8 @@ export default function connectFetch(conn = {deferred: false}) {
     return Wrapped => {
       class WrappedComponent extends Component {
         static propTypes = {
-          location: PropTypes.object.isRequired,
-          params: PropTypes.object.isRequired
+          location: PropTypes.object,
+          params: PropTypes.object,
         }
         static contextTypes = {
           store: PropTypes.object.isRequired

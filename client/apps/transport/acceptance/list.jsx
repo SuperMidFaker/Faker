@@ -105,8 +105,8 @@ export default class AcceptList extends React.Component {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
-        sortField: sorter.field,
-        sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
+        sortField: sorter.field || this.props.sortField,
+        sortOrder: this.props.sortOrder,
         filters: this.props.filters
       };
       params.filters = params.filters.filter(

@@ -405,7 +405,7 @@ export default {
       args.push(tenantId);
     }
     const sql = `select status, sr_name, sp_name, sp_tenant_id, disp_time, acpt_time, pickup_act_date,
-      deliver_act_date, pod_recv_date, disp_status, task_vehicle, vehicle_connect_type
+      deliver_act_date, pod_recv_date, disp_status, task_vehicle, vehicle_connect_type, freight_charge
       from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
   },
@@ -423,8 +423,9 @@ export default {
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
       customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
-      pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
-      total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
+      pickup_est_date, deliver_est_date, transit_time, transport_mode, total_count,
+      total_weight, total_volume, sp_tenant_id, sp_partner_id, sp_name,
+      disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id, parent_id from tms_shipment_dispatch as SD
