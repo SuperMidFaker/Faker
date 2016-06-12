@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, InputNumber, message } from 'ant-ui';
+import { Col, Form, Button, InputNumber, message, Row } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -143,6 +143,17 @@ export default class ShipmentEdit extends React.Component {
             <div className="panel-header"></div>
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
+                <Row>
+                  <div className="subform-heading">
+                    <div className="subform-title">{this.msg('customerInfo')}</div>
+                  </div>
+                  <Col span="16" className="subform-body">
+                    <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={3} field="client" disabled/>
+                  </Col>
+                  <Col span="8" className="subform-body">
+                    <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={6} field="ref_external_no"/>
+                  </Col>
+                </Row>
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
@@ -155,11 +166,9 @@ export default class ShipmentEdit extends React.Component {
                   <div className="subform-title">关联信息</div>
                 </div>
                 <div className="subform-body">
-                  <InputItem formhoc={formhoc} placeholder={this.msg('clientNameMust')} colSpan={0} field="client" disabled/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
                     fieldProps={{ initialValue: tenantName }} disabled
                   />
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refExternalNo')} colSpan={0} field="ref_external_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
                 </div>

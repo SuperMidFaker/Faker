@@ -275,7 +275,7 @@ export default defineMessages({
   },
   trackPay: {
     id: 'transport.shipment.track.pay',
-    defaultMessage: '支出'
+    defaultMessage: '成本'
   },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',
