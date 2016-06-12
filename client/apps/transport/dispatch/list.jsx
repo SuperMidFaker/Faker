@@ -261,7 +261,6 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipSp'),
         dataIndex: 'sp_name',
-        fixed: fixedLeft,
         width: 220
       }, {
         title: this.msg('shipVehicle'),

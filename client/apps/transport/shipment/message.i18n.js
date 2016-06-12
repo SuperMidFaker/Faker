@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  customerInfo: {
+    id: 'transport.shipment.customer.info',
+    defaultMessage: '客户信息'
+  },
   consignerInfo: {
     id: 'transport.shipment.consigner.info',
     defaultMessage: '发货信息'
