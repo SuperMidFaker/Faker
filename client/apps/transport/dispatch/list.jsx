@@ -223,7 +223,7 @@ export default class DispatchList extends React.Component {
         dataIndex: 'acpt_time',
         width: 80,
         render: (text, record) => record.acpt_time ?
-         moment(record.acpt_time).format('YYYY.MM.DD') : ' '
+         moment(record.acpt_time).format('MM-DD HH:mm') : ' '
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
@@ -300,7 +300,7 @@ export default class DispatchList extends React.Component {
         dataIndex: 'disp_time',
         width: 80,
         render: (text, record) => record.disp_time ?
-         moment(record.disp_time).format('YYYY.MM.DD') : ' '
+         moment(record.disp_time).format('MM-DD HH:mm') : ' '
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
