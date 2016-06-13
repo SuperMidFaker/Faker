@@ -221,7 +221,7 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipAcceptTime'),
         dataIndex: 'acpt_time',
-        width: 80,
+        width: 100,
         render: (text, record) => record.acpt_time ?
          moment(record.acpt_time).format('MM-DD HH:mm') : ' '
       }, {
