@@ -186,7 +186,7 @@ const SHIPMENT_VEHICLE_CONNECT = {
 const TRACKING_POINT_FROM_TYPE = {
   manual: 0,
   app: 1,
-  g7: 2,
+  gps: 2,
 };
 
 const SHIPMENT_POD_STATUS = {

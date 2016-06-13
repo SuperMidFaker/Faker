@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Col, Steps, Table } from 'ant-ui';
-import { SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, TRACKING_POINT_FROM_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -13,6 +13,20 @@ const timeFormat = 'YYYY-MM-DD HH:mm';
 
 function rowKeyFn(row) {
   return row.id;
+}
+
+function renderConsignLoc(row) {
+  const names = [];
+  if (row.province) {
+    names.push(row.province);
+  }
+  if (row.city && !(row.city === '市辖区' || row.city === '县')) {
+    names.push(row.city);
+  }
+  if (row.district) {
+    names.push(row.district);
+  }
+  return names.join('-');
 }
 function StepDesc(props) {
   const texts = props.texts.filter(txt => txt);
@@ -50,19 +64,25 @@ export default class PreviewPanel extends React.Component {
   columns = [{
     title: this.msg('trackingPoistion'),
     render: (o, record) => {
-      return record.province;
+      return renderConsignLoc(record);
     },
   }, {
     title: this.msg('poistionMode'),
     dataIndex: 'from',
     render: (o, record) => {
-      return record.from;
+      if (record.from === TRACKING_POINT_FROM_TYPE.manual) {
+        return this.msg('posModeManual');
+      } else if (record.from === TRACKING_POINT_FROM_TYPE.app) {
+        return this.msg('posModeApp');
+      } else {
+        return this.msg('posModeGPS');
+      }
     },
   }, {
     title: this.msg('poistionTime'),
     dataIndex: 'location_time',
     render: (o, record) => {
-      return record.from;
+      return moment(record.location_time).format('MM-DD HH:mm');
     },
   }]
   pagination={
@@ -179,7 +199,7 @@ export default class PreviewPanel extends React.Component {
           }
           </Steps>
         </Col>
-        <Col offset={1} span={15}>
+        <Col span={15}>
           <h3>{this.msg('trackingPoistionTitle')}</h3>
           <Table rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
             pagination={this.pagination}

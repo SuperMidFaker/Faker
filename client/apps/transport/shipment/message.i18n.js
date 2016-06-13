@@ -309,6 +309,18 @@ export default defineMessages({
     id: 'transport.shipment.pane.position.mode',
     defaultMessage: '模式'
   },
+  posModeManual: {
+    id: 'transport.shipment.pane.pos.mode.manual',
+    defaultMessage: '手工'
+  },
+  posModeApp: {
+    id: 'transport.shipment.pane.pos.mode.app',
+    defaultMessage: 'APP'
+  },
+  posModeGPS: {
+    id: 'transport.shipment.pane.pos.mode.gps',
+    defaultMessage: 'GPS'
+  },
   poistionTime: {
     id: 'transport.shipment.pane.position.time',
     defaultMessage: '上报时间'
