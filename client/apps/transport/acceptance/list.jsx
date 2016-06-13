@@ -217,14 +217,14 @@ export default class AcceptList extends React.Component {
     dataIndex: 'created_date',
     width: 100,
     sorter: true,
-    render: (text, record) => moment(record.created_date).format('YYYY.MM.DD')
+    render: (text, record) => moment(record.created_date).format('MM-DD HH:mm')
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
     width: 100,
     sorter: true,
     render: (text, record) => record.acpt_time ?
-     moment(record.acpt_time).format('YYYY.MM.DD') : ' '
+     moment(record.acpt_time).format('MM-DD HH:mm') : ' '
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
     this.props.loadTable(null, {

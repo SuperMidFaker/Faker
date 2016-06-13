@@ -77,6 +77,7 @@ export default class Home extends React.Component {
             </div>
           </div>
         </div>
+        <script src="//assets.kf5.com/supportbox/main.js" id="kf5-provide-supportBox" kf5-domain="welogix.kf5.com"></script>
       </div>);
   }
 }

@@ -56,27 +56,27 @@ function getLinksByAspect(aspect, intl) {
     }, {
       single: true,
       key: 'tms-1',
-      path: '/transport/acceptance',
+      path: '/transport/shipping',
       icon: 'zmdi zmdi-inbox',
       text: '托运',
     }, {
       single: true,
-      key: 'tms-3',
+      key: 'tms-2',
       path: '/transport/tracking',
-      icon: 'zmdi zmdi-assignment-check',
+      icon: 'zmdi zmdi-eye',
       text: '追踪'
     }, {
       single: true,
-      key: 'tms-2',
-      path: '/transport/dispatch',
-      icon: 'zmdi zmdi-arrow-split',
-      text: '对帐'
+      key: 'tms-3',
+      path: '/transport/resources',
+      icon: 'zmdi zmdi-library',
+      text: '管理'
     }, {
       single: true,
       key: 'tms-4',
-      path: '/transport/resources',
-      icon: 'zmdi zmdi-library',
-      text: '报表'
+      path: '/transport/settings',
+      icon: 'zmdi zmdi-settings',
+      text: '设置'
     }];
   }
 }
