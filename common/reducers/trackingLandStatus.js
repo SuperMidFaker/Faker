@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SHOW_LOC_MODAL',
   'HIDE_LOC_MODAL',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
+  'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
   'SAVE_VEHICLE', 'SAVE_VEHICLE_SUCCEED', 'SAVE_VEHICLE_FAIL',
   'SAVE_DATE', 'SAVE_DATE_SUCCEED', 'SAVE_DATE_FAIL',
   'SAVE_POD', 'SAVE_POD_SUCCEED', 'SAVE_POD_FAIL',
@@ -54,6 +55,7 @@ const initialState = {
       transit_time: -1,
     },
   },
+  locReportedShipments: [],
 };
 
 export const LOAD_TRANSHIPMT_SUCCEED = actionTypes.LOAD_TRANSHIPMT_SUCCEED;
@@ -112,6 +114,12 @@ export default function reducer(state = initialState, action) {
           visible: false, transit: {}
         }
       };
+    case actionTypes.REPORT_LOC_SUCCEED:
+      return {
+        ...state, locReportedShipments: [
+          ...state.locReportedShipments, action.data.shipmtNo
+        ]
+    };
     default:
       return state;
   }
@@ -242,6 +250,21 @@ export function saveSubmitPod(shipmtNo, dispId, parentDispId,
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
       data: { shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
+    }
+  };
+}
+
+export function loadShipmtLastPoint(shipmtNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_LASTPOINT,
+        actionTypes.LOAD_LASTPOINT_SUCCEED,
+        actionTypes.LOAD_LASTPOINT_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/lastpoint',
+      method: 'get',
+      params: { shipmtNo },
     }
   };
 }

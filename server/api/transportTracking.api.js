@@ -106,6 +106,16 @@ function *trackingPointP() {
   }
 }
 
+function *trackingLastPointG() {
+  const shipmtNo = this.request.query.shipmtNo;
+  try {
+    const lastPoints = yield shipmentAuxDao.getLastPoint(shipmtNo);
+    return Result.ok(this, lastPoints.length === 1 ? lastPoints[0] : {});
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 function *trackingPodUpdateP() {
   let trans;
   try {
@@ -304,6 +314,7 @@ export default [
   [ 'post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP ],
   [ 'post', '/v1/transport/tracking/pickordeliverdate', trackingPickDeliverDateP ],
   [ 'post', '/v1/transport/tracking/point', trackingPointP ],
+  [ 'get', '/v1/transport/tracking/lastpoint', trackingLastPointG ],
   [ 'post', '/v1/transport/tracking/pod', trackingPodUpdateP ],
   [ 'get', '/v1/transport/tracking/pod/shipmts', trackingPodShipmtListG ],
   [ 'get', '/v1/transport/tracking/pod', trackingPodG ],

@@ -224,14 +224,15 @@ export default class ShipmentCreate extends React.Component {
                   </div>
                   <Col span="16" className="subform-body">
                     <Tooltip placement="top" title="请先选择客户">
-                     <a href="#">
-                    <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={3} field="client"
-                    required optionData={clientOpts} filterFields={[ 'code' ]}
-                    optionField="name" optionKey="key" optionValue="value"
-                    rules={[{
-                      required: true, message: this.msg('clientNameMust')
-                    }]} />
-                    </a>
+                      <a href="#">
+                        <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={3} field="client"
+                        required optionData={clientOpts} filterFields={[ 'code' ]}
+                        optionField="name" optionKey="key" optionValue="value"
+                        rules={[{
+                          required: true, message: this.msg('clientNameMust')
+                        }]}
+                        />
+                      </a>
                     </Tooltip>
                   </Col>
                   <Col span="8" className="subform-body">

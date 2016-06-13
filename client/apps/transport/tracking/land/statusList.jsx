@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Icon, message } from 'ant-ui';
+import { Table, Button, Icon, Tooltip, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadTransitTable, showPodModal, showDateModal, showVehicleModal, showLocModal } from
-  'common/reducers/trackingLandStatus';
+import {
+  loadTransitTable, showPodModal, showDateModal, showVehicleModal,
+  showLocModal, loadShipmtLastPoint
+} from 'common/reducers/trackingLandStatus';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
 import RowUpdater from './rowUpdater';
@@ -51,10 +53,11 @@ function fetchData({ state, dispatch, params, cookie }) {
     shipmentlist: state.trackingLandStatus.shipmentlist,
     filters: state.trackingLandStatus.filters,
     loading: state.trackingLandStatus.loading,
+    reportedShipmts: state.trackingLandStatus.locReportedShipments,
   }),
   {
     loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
-    showVehicleModal, showLocModal,
+    showVehicleModal, showLocModal, loadShipmtLastPoint,
   }
 )
 export default class LandStatusList extends React.Component {
@@ -68,15 +71,18 @@ export default class LandStatusList extends React.Component {
    */
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
+    reportedShipmts: PropTypes.array.isRequired,
     showVehicleModal: PropTypes.func.isRequired,
     showDateModal: PropTypes.func.isRequired,
     showPodModal: PropTypes.func.isRequired,
     showLocModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadTransitTable: PropTypes.func.isRequired
+    loadTransitTable: PropTypes.func.isRequired,
+    loadShipmtLastPoint: PropTypes.func.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    lastLocReportTime: '',
+    selectedRowKeys: [],
   }
 
   componentWillReceiveProps(nextProps) {
@@ -420,6 +426,11 @@ export default class LandStatusList extends React.Component {
       }
     });
   }
+  handleReportLocHover = row => {
+    this.props.loadShipmtLastPoint(row.shipmt_no).then(result => {
+      this.setState({ lastLocReportTime: new Date(result.data.location_time) });
+    });
+  }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
     if (value !== null && value !== undefined && value !== '') {
@@ -444,10 +455,23 @@ export default class LandStatusList extends React.Component {
   }
 
   renderIntransitUpdater(record) {
+    const reported = this.props.reportedShipmts.indexOf(record.shipmt_no) >= 0;
+    const locLabel = (
+      <Tooltip title={
+        `上次更新时间:${this.state.lastLocReportTime ? moment(this.state.lastLocReportTime).format('MM-DD HH:mm') : ''}`
+      }
+      >
+        <span>{this.msg('reportTransitLoc')}</span>
+      </Tooltip>
+    );
     return (
       <span>
-        <RowUpdater label={this.msg('reportTransitLoc')}
+        <RowUpdater label={locLabel}
           onAnchored={this.handleShowTransitModal} row={record}
+          anchorProps={{
+            className: reported ? 'mdc-text-grey' : '',
+            onHover: this.handleReportLocHover,
+          }}
         />
         <span className="ant-divider" />
         <RowUpdater label={this.msg('updateDelivery')}

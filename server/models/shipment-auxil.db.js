@@ -45,4 +45,10 @@ export default {
     const args = [ shipmtNo ];
     return mysql.query(sql, args);
   },
+  getLastPoint(shipmtNo) {
+    const sql = `select P.location_time from tms_tracking_points P inner join tms_shipment_point_relation PR
+      on PR.point_id = P.id where PR.shipmt_no = ? order by P.location_time desc limit 1`;
+    const args = [ shipmtNo ];
+    return mysql.query(sql, args);
+  },
 };

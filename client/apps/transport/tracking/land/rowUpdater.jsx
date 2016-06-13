@@ -1,17 +1,25 @@
 import React, { PropTypes } from 'react';
 
 export default function RowUpdater(props) {
-  const { label, onAnchored, row } = props;
+  const { label, onAnchored, row, anchorProps } = props;
   function handleClick() {
     if (onAnchored) {
       onAnchored(row);
     }
   }
-  return <a onClick={handleClick}>{label}</a>;
+  function handleHover() {
+    if (anchorProps && anchorProps.onHover) {
+      anchorProps.onHover(row);
+    }
+  }
+  return <a onClick={handleClick} onMouseEnter={handleHover} {...anchorProps}>{label}</a>;
 }
 
 RowUpdater.propTypes = {
-  label: PropTypes.string.isRequired,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]),
   onAnchored: PropTypes.func,
   row: PropTypes.object,
 };
