@@ -120,7 +120,7 @@ export default class RegionCascade extends React.Component {
             </OptGroup>
           </Select>
         }
-        <Cascader options={chinaRegions} onChange={this.handleCascaderChange} expandTrigger="hover"
+        <Cascader size="large" options={chinaRegions} onChange={this.handleCascaderChange} expandTrigger="hover"
         placeholder={formatMsg(intl, 'defaultCascaderRegion')} disabled={disableCascader}
         { ...valueProps }
         />

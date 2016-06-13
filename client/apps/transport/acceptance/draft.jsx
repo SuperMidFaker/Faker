@@ -128,6 +128,7 @@ export default class ShipmentDraftEdit extends React.Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
+            message.success(this.msg('shipmtOpSuccess'));
             this.context.router.goBack();
             this.props.loadTable(null, {
               tenantId: this.props.tenantId,
