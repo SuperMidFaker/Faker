@@ -80,6 +80,32 @@ function *trackingPickDeliverDateP() {
   }
 }
 
+function *trackingPointP() {
+  let trans;
+  try {
+    const body = yield cobody(this);
+    const { tenantId, shipmtNo, parentNo, point } = body;
+    trans = yield mysql.beginTransaction();
+    const result = yield shipmentAuxDao.createPoint(point, tenantId, trans);
+    const dbs = [
+      shipmentAuxDao.createShipmentPointRel(shipmtNo, result.insertId, trans)
+    ];
+    if (parentNo) {
+      dbs.push(
+        shipmentAuxDao.createShipmentPointRel(parentNo, result.insertId, trans)
+      );
+    }
+    yield dbs;
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch (e) {
+    if (trans) {
+      yield mysql.rollback(trans);
+    }
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 function *trackingPodUpdateP() {
   let trans;
   try {
@@ -277,6 +303,7 @@ export default [
   [ 'get', '/v1/transport/tracking/shipmts', trackingShipmtListG ],
   [ 'post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP ],
   [ 'post', '/v1/transport/tracking/pickordeliverdate', trackingPickDeliverDateP ],
+  [ 'post', '/v1/transport/tracking/point', trackingPointP ],
   [ 'post', '/v1/transport/tracking/pod', trackingPodUpdateP ],
   [ 'get', '/v1/transport/tracking/pod/shipmts', trackingPodShipmtListG ],
   [ 'get', '/v1/transport/tracking/pod', trackingPodG ],

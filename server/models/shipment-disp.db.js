@@ -425,7 +425,7 @@ export default {
       consigner_province, consigner_city, consignee_province, consignee_city,
       pickup_est_date, deliver_est_date, transit_time, transport_mode, total_count,
       total_weight, total_volume, sp_tenant_id, sp_partner_id, sp_name,
-      disp_time, acpt_time,
+      disp_time, acpt_time, parent_no,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id, parent_id from tms_shipment_dispatch as SD

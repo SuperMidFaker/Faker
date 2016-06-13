@@ -408,14 +408,14 @@ function *shipmtDetailG() {
   const tenantId = this.request.query.tenantId;
   const sourceType = this.request.query.sourceType;
   try {
-    const [ goodslist, shipmts, shipmtSrDisps, shipmtSpDisps ] = yield [
+    const [ goodslist, shipmts, shipmtSrDisps, shipmtSpDisps, points ] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
       shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, 'sr'),
       shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, 'sp'),
+      shipmentAuxDao.getShipmentPoints(shipmtNo),
     ];
     let shipmt = {};
-    let tracking;
     const charges = {
       earnings:  shipmtSpDisps.length === 1 ? shipmtSpDisps[0].freight_charge : null,
       payout: shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id !== 0
@@ -444,6 +444,7 @@ function *shipmtDetailG() {
     }
     shipmt.goodslist = goodslist;
     let downstream_disp_status;
+    let tracking;
     // 上游dispatch为shipmtSpDisps[0]
     // 下游dispatch为shipmtSrDisps[0]
     if (sourceType === 'sr' && shipmtSrDisps.length === 1) {
@@ -492,8 +493,7 @@ function *shipmtDetailG() {
       };
     }
     tracking.creator = shipmtCreator;
-    tracking.vehicle_connect_type = shipmtSrDisps.length === 1 ?
-      shipmtSrDisps[0].vehicle_connect_type : SHIPMENT_VEHICLE_CONNECT.disconnected;
+    tracking.points = points;
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstream_disp_status > 0 ?
       tracking.downstream_status : tracking.upstream_status;

@@ -11,8 +11,8 @@ const OptGroup = Select.OptGroup;
 const formatMsg = format(messages);
 
 function isPropsChange(nextProps, props, field) {
-    return Object.prototype.hasOwnProperty.call(nextProps, field) &&
-      nextProps[field] && nextProps[field] !== props[field];
+  return Object.prototype.hasOwnProperty.call(nextProps, field) &&
+    nextProps[field] && nextProps[field] !== props[field];
 }
 @injectIntl
 export default class RegionCascade extends React.Component {
@@ -41,13 +41,13 @@ export default class RegionCascade extends React.Component {
     this.state = {
       disableCascader: false,
       country: CHINA_CODE,
-      areaItems: !this.props.uncontrolled && this.props.region.province ?
+      areaItems: !this.props.uncontrolled && this.props.region && this.props.region.province ?
         [ this.props.region.province, this.props.region.city, this.props.region.district ]
         : [],
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.uncontrolled) {
+    if (!nextProps.uncontrolled && nextProps.region) {
       const propsAsState = {};
       if (nextProps.region.country !== this.props.region.country) {
         propsAsState.country = nextProps.region.country;

@@ -6,13 +6,14 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadTransitTable, showPodModal, showDateModal, showVehicleModal } from
+import { loadTransitTable, showPodModal, showDateModal, showVehicleModal, showLocModal } from
   'common/reducers/trackingLandStatus';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
+import LocationModal from './modals/intransitLocationUpdater';
 import PodModal from './modals/pod-submit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { format } from 'client/common/i18n/helpers';
@@ -51,7 +52,11 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandStatus.filters,
     loading: state.trackingLandStatus.loading,
   }),
-  { loadTransitTable, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
+  {
+    loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
+    showVehicleModal, showLocModal,
+  }
+)
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -66,6 +71,7 @@ export default class LandStatusList extends React.Component {
     showVehicleModal: PropTypes.func.isRequired,
     showDateModal: PropTypes.func.isRequired,
     showPodModal: PropTypes.func.isRequired,
+    showLocModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadTransitTable: PropTypes.func.isRequired
   }
@@ -398,6 +404,11 @@ export default class LandStatusList extends React.Component {
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
   handleShowTransitModal = row => {
+    this.props.showLocModal({
+      shipmt_no: row.shipmt_no,
+      parent_no: row.parent_no,
+      pickup_act_date: row.pickup_act_date,
+    });
   }
   handleShowPodModal = (row) => {
     this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
@@ -433,14 +444,17 @@ export default class LandStatusList extends React.Component {
   }
 
   renderIntransitUpdater(record) {
-    // 时效大于1天显示在途位置更新,否则显示更新交货
-    return record.transit_time > 1 ?
-      (<RowUpdater label={this.msg('updateInTransit')}
-        onAnchored={this.handleShowTransitModal} row={record}
-      />) :
-      (<RowUpdater label={this.msg('updateDelivery')}
-      onAnchored={this.handleShowDeliverModal} row={record}
-      />);
+    return (
+      <span>
+        <RowUpdater label={this.msg('reportTransitLoc')}
+          onAnchored={this.handleShowTransitModal} row={record}
+        />
+        <span className="ant-divider" />
+        <RowUpdater label={this.msg('updateDelivery')}
+        onAnchored={this.handleShowDeliverModal} row={record}
+        />
+      </span>
+    );
   }
 
   render() {
@@ -476,6 +490,7 @@ export default class LandStatusList extends React.Component {
         <PreviewPanel />
         <VehicleModal onOK={this.handleTableLoad} />
         <PickupOrDeliverModal onOK={this.handleTableLoad} />
+        <LocationModal onOK={this.handleTableLoad} />
         <PodModal onOK={this.handleTableLoad} />
       </div>
     );

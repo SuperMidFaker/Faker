@@ -146,8 +146,7 @@ export default class ShipmentCreate extends React.Component {
       }
     });
   }
-  handleSaveAndAccept = (ev) => {
-    ev.preventDefault();
+  handleSaveAndAccept = () => {
     this.props.formhoc.validateFields(errors => {
       if (errors) {
         message.error(this.msg('formError'));
@@ -276,7 +275,7 @@ export default class ShipmentCreate extends React.Component {
             <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
             {formatGlobalMsg(intl, 'save')}
             </Button>
-            <Popconfirm placement="top" title={this.msg('saveAndAcceptConfirm')} onConfirm={() => this.handleSaveAndAccept}>
+            <Popconfirm placement="top" title={this.msg('saveAndAcceptConfirm')} onConfirm={this.handleSaveAndAccept}>
               <Button size="large" loading={submitting}>
               {this.msg('saveAndAccept')}
               </Button>

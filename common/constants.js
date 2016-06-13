@@ -183,6 +183,12 @@ const SHIPMENT_VEHICLE_CONNECT = {
   g7: 2,
 };
 
+const TRACKING_POINT_FROM_TYPE = {
+  manual: 0,
+  app: 1,
+  g7: 2,
+};
+
 const SHIPMENT_POD_STATUS = {
   unrequired: 0,
   pending: 1,
@@ -285,6 +291,7 @@ export {
   SHIPMENT_TRACK_STATUS,
   SHIPMENT_POD_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
+  TRACKING_POINT_FROM_TYPE,
   PARTNERSHIP,
   VEHICLE_STATUS,
   VEHICLE_TYPES,

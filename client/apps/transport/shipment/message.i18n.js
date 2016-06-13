@@ -297,4 +297,20 @@ export default defineMessages({
     id: 'transport.shipment.pane.remark',
     defaultMessage: '备注'
   },
+  trackingPoistionTitle: {
+    id: 'transport.shipment.pane.tracking.position.title',
+    defaultMessage: '位置'
+  },
+  trackingPoistion: {
+    id: 'transport.shipment.pane.tracking.position',
+    defaultMessage: '地点'
+  },
+  poistionMode: {
+    id: 'transport.shipment.pane.position.mode',
+    defaultMessage: '模式'
+  },
+  poistionTime: {
+    id: 'transport.shipment.pane.position.time',
+    defaultMessage: '上报时间'
+  },
 });

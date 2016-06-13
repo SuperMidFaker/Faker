@@ -37,9 +37,25 @@ export default defineMessages({
     id: 'transport.tracking.update.delivery',
     defaultMessage: '更新交货'
   },
-  updateIntransit: {
-    id: 'transport.tracking.update.intransit',
-    defaultMessage: '在途追踪'
+  reportTransitLoc: {
+    id: 'transport.tracking.report.transit.loc',
+    defaultMessage: '上报位置'
+  },
+  reportTime: {
+    id: 'transport.tracking.report.transit.time',
+    defaultMessage: '上报时间'
+  },
+  reportTimeMust: {
+    id: 'transport.tracking.report.transit.time.must',
+    defaultMessage: '上报时间必填'
+  },
+  reportPosition: {
+    id: 'transport.tracking.report.transit.position',
+    defaultMessage: '位置'
+  },
+  reportLocAddr: {
+    id: 'transport.tracking.report.transit.addr',
+    defaultMessage: '详细地址'
   },
   submitPod: {
     id: 'transport.tracking.submit.pod',

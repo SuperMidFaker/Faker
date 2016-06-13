@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Steps } from 'ant-ui';
+import { Col, Steps, Table } from 'ant-ui';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -10,6 +10,10 @@ const formatMsg = format(messages);
 const Step = Steps.Step;
 
 const timeFormat = 'YYYY-MM-DD HH:mm';
+
+function rowKeyFn(row) {
+  return row.id;
+}
 function StepDesc(props) {
   const texts = props.texts.filter(txt => txt);
   return texts.length > 0 ? (
@@ -17,8 +21,8 @@ function StepDesc(props) {
     {
     texts.map(
       (txt, i) => (
-        <div>
-          <span key={`stepdesc${i}`}>{txt}</span>
+        <div key={`${txt}${i}`}>
+          <span>{txt}</span>
           <br />
         </div>
       )
@@ -43,6 +47,30 @@ export default class PreviewPanel extends React.Component {
     tracking: PropTypes.object.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  columns = [{
+    title: this.msg('trackingPoistion'),
+    render: (o, record) => {
+      return record.province;
+    },
+  }, {
+    title: this.msg('poistionMode'),
+    dataIndex: 'from',
+    render: (o, record) => {
+      return record.from;
+    },
+  }, {
+    title: this.msg('poistionTime'),
+    dataIndex: 'location_time',
+    render: (o, record) => {
+      return record.from;
+    },
+  }]
+  pagination={
+    current: 1,
+    total: this.props.tracking.points.length,
+    pageSize: 10,
+    size: 'small',
+  }
   render() {
     const { tracking } = this.props;
     const trackingSteps = [{
@@ -144,9 +172,18 @@ export default class PreviewPanel extends React.Component {
           <h3>{this.msg('trackingStepTitle')}</h3>
           <Steps current={currentStep} direction="vertical">
           {
-            trackingSteps.map((ts, i) => <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />)
+            trackingSteps.map(
+              (ts, i) =>
+              <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
+            )
           }
           </Steps>
+        </Col>
+        <Col offset={1} span={15}>
+          <h3>{this.msg('trackingPoistionTitle')}</h3>
+          <Table rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
+            pagination={this.pagination}
+          />
         </Col>
       </div>
     );
