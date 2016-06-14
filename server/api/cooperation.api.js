@@ -3,9 +3,9 @@ import coopDao from '../models/cooperation.db';
 import tenantDao from '../models/tenant.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import { getSmsCode } from '../../common/validater';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
+import { Partner, Partnership, Invitation } from '../models/sequelize';
 
 const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
 
@@ -309,6 +309,26 @@ function *deletePartner() {
   }
 }
 
+function *getPartner() {
+  const tenantId = this.request.query.tenantId;
+  try {
+    const partners = yield Partner.findAll({where: {tenant_id: tenantId}});
+    const partnerlist = [];
+    for (let partner of partners) {
+      const types = [];
+      const partnerships = yield partner.getPartnerships().then(ps => ps.map(p => p.get()));
+      partnerships.forEach(ps => {
+        types.push({key: ps.type, code: ps.type_code});
+      });
+      partnerlist.push({...partner.get(), types});
+    }
+    return Result.ok(this, {partnerlist}); 
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+  
+}
+
 export default [
   [ 'get', '/v1/cooperation/partners', partnersG ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
@@ -323,5 +343,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
   [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ],
-  [ 'post', '/v1/cooperation/partner/delete', deletePartner ]
+  [ 'post', '/v1/cooperation/partner/delete', deletePartner ],
+  [ 'get', '/v2/cooperation/partners', getPartner ]
 ]
