@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
+import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadTable,
@@ -149,15 +150,17 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsigner'),
     dataIndex: 'consigner_name',
-    width: 180,
+    width: 190,
+    render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('consignerPlace'),
-    width: 180,
-    render: (o, record) => renderConsignLoc(record, 'consigner')
+    width: 190,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />,
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
-    width: 220,
+    width: 210,
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -166,15 +169,17 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 180,
+    width: 190,
+    render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 180,
-    render: (o, record) => renderConsignLoc(record, 'consignee')
+    width: 190,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 220,
+    width: 210,
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
   }];
   buildCols(sub) {
     const { status, origin } = this.props.filters;
@@ -212,7 +217,8 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
-        width: 240
+        width: 230,
+        render: (o) => <TrimSpan text={o} maxLen={15} />,
       }, {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',
@@ -299,7 +305,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: timetitle,
         dataIndex: 'disp_time',
-        width: 80,
+        width: 100,
         render: (text, record) => record.disp_time ?
          moment(record.disp_time).format('MM-DD HH:mm') : ' '
       }, {

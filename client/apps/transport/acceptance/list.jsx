@@ -4,6 +4,7 @@ import { Table, Button, Radio, Icon, message, Popconfirm } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
+import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -144,7 +145,8 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    width: 240
+    width: 240,
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
@@ -168,26 +170,30 @@ export default class AcceptList extends React.Component {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
     width: 200,
+    render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('consignorPlace'),
-    width: 180,
-    render: (o, record) => renderConsignLoc(record, 'consigner')
+    width: 200,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />,
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
     width: 220,
+    render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
     width: 200,
+    render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 180,
-    render: (o, record) => renderConsignLoc(record, 'consignee')
+    width: 200,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
     width: 220,
+    render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',

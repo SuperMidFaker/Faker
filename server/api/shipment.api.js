@@ -444,7 +444,7 @@ function *shipmtDetailG() {
     }
     shipmt.goodslist = goodslist;
     let downstream_disp_status;
-    let tracking;
+    let tracking = {};
     // 上游dispatch为shipmtSpDisps[0]
     // 下游dispatch为shipmtSrDisps[0]
     if (sourceType === 'sr' && shipmtSrDisps.length === 1) {

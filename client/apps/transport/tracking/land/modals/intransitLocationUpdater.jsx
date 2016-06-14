@@ -42,7 +42,7 @@ export default class LocationUpdater extends React.Component {
     this.setState({ [field]: value });
   }
   disabledDateRange = (current) => {
-    return current && (current.getTime() < new Date(this.props.transit.pickup_act_date).getTime()
+    return current && (new Date(this.props.transit.pickup_act_date).getTime() - current.getTime() > ONE_DAY_MS
       || Date.now() - current.getTime() > ONE_DAY_MS || Date.now() < current.getTime());
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)

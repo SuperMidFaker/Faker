@@ -1,18 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Icon, message } from 'ant-ui';
+import { Table, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadPodTable, loadPod, showAuditModal, resubmitPod } from
   'common/reducers/trackingLandPod';
-import { SHIPMENT_POD_STATUS } from 'common/constants';
-import RowUpdater from './rowUpdater';
 import PodAuditModal from './modals/pod-audit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
-import { renderConsignLoc } from '../../common/consignLocation';
+import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -66,6 +63,14 @@ export default class LandStatusList extends React.Component {
     resubmitPod: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired
+  }
+  constructor(...args) {
+    super(...args);
+    this.columns = makeColumns('pod', {
+      onShipmtPreview: this.handleShipmtPreview,
+      onShowAuditModal: this.handleShowAuditModal,
+      onResubmit: this.handleResubmit,
+    }, this.msg);
   }
   state = {
     selectedRowKeys: []
@@ -128,7 +133,7 @@ export default class LandStatusList extends React.Component {
     remotes: this.props.shipmentlist
   })
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  columns = [{
+  /* columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
@@ -244,15 +249,15 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 50
+    width: 80
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 50
+    width: 80
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 50
+    width: 80
   }, {
     title: this.msg('departurePlace'),
     width: 150,
@@ -293,7 +298,7 @@ export default class LandStatusList extends React.Component {
       {moment(record.deliver_act_date).format('YYYY.MM.DD')}
       </span>
       ) : <span />
-  }]
+  }] */
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
     this.props.loadPodTable(null, {
       tenantId: this.props.tenantId,
