@@ -5,7 +5,7 @@ import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
-import { Partner, Partnership, Invitation } from '../models/sequelize';
+import { Partner, Partnership, Invitation, Tenant } from '../models/sequelize';
 import transformUnderscoreToCamel from '../util/transformUnderscoreToCamel';
 
 const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
@@ -32,55 +32,6 @@ function transformInvitations(rawInvites) {
     }
     return total;
   }, []);
-}
-
-function *partnersG() {
-  const current = parseInt(this.request.query.currentPage, 10);
-  const pageSize = parseInt(this.request.query.pageSize, 10);
-  const tenantId = parseInt(this.request.query.tenantId, 10);
-  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
-  try {
-    const totals = yield coopDao.getPartnersTotalCount(tenantId, filters);
-    const partners = yield coopDao.getPagedPartners(tenantId, current, pageSize, filters);
-    const partnerships = yield coopDao.getTenantPartnerships(tenantId, filters);
-    const partnershipTypes = partnershipTypeNames.map((name, index) => ({
-      key: `${index}`, // used as RadionButton key
-      code: name,
-      count: partnerships.filter(pts => pts.name === name).length
-    }));
-    for (let i = 0; i < partners.length; ++i) {
-      const partner = partners[i];
-      partner.types = partnerships.filter(ps => ps.partnerCode === partner.partnerCode).map(
-        pt => ({
-          key: pt.type,
-          code: pt.name
-        })
-      );
-    }
-    const partnerTenants = yield tenantDao.getAllTenantsExcept(tenantId);
-    const recevieablePartnerTenants = yield coopDao.getReceiveablePartnerTenants(tenantId);
-    partnerTenants.forEach(pt => {
-      pt.code = pt.subCode || pt.code;
-      pt.subCode = undefined;
-    });
-    return Result.ok(this, {
-      partnerlist: {
-        totalCount: totals.length > 0 ? totals[0].count : 0,
-        pageSize,
-        current,
-        data: partners.map(pt => {
-          pt.partnerCode = separatePartnerCode(pt.partnerCode);
-          return pt;
-        })
-      },
-      partnershipTypes,
-      partnerTenants,
-      recevieablePartnerTenants
-    });
-  } catch (e) {
-    console.log(e);
-    return Result.internalServerError(this, e.message);
-  }
 }
 
 function *cancelInvite() {
@@ -149,6 +100,67 @@ function *addPartner() {
     return Result.ok(this, { newPartner });
   } catch(e) {
     yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *addPartner2() {
+  const body = yield cobody(this);
+  const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
+  try {
+    const partnerTenant = yield Tenant.findOne({
+      where: { name: partnerName,  $or: [{code: partnerCode}, {sub_code: partnerCode}]}
+    });
+    console.log(partnerTenant);
+    let partner;
+    // 添加partner
+    if (partnerTenant) { // 线上租户
+      const existPartner = yield Partner.findOne({
+        where: { name: partnerName, partner_code: partnerCode, partner_tenant_id: partnerTenant.tenant_id, tenant_id: tenantId }
+      });
+      if (!existPartner) {
+        const tenantType = PARTNER_TENANT_TYPE[partnerTenant.level];
+        partner = yield Partner.create({
+          name: partnerName,
+          partner_code: partnerCode,
+          tenant_type: tenantType,
+          partner_tenant_id: partnerTenant.tenant_id,
+          tenant_id: tenantId
+        });
+      } else {
+        throw new Error('该合作伙伴已添加');
+      }
+    } else { // 线下租户
+      const existPartner = yield Partner.findOne({
+        where: { name: partnerName, partner_code: partnerCode, partner_tenant_id: -1, tenant_id: tenantId }
+      });
+      if (!existPartner) {
+        partner = yield Partner.create({
+          name: partnerName,
+          partner_code: partnerCode,
+          tenant_type: PARTNER_TENANT_TYPE[3],
+          partner_tenant_id: -1, 
+          tenant_id: tenantId});
+      } else {
+        throw new Error('该合作伙伴已添加');
+      }
+    }
+    // 添加partnerships
+    for(let typeCode of partnerships) {
+      const partnership = yield Partnership.create({
+        partner_id: partner.id,
+        tenant_id: tenantId,
+        partner_tenant_id: partner.partner_tenant_id,
+        partner_name: partnerName,
+        partner_code: partnerCode,
+        type_code: typeCode
+      });
+    }
+    // 返回给客户端的新增partner
+    const newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})), 
+      status: 1, partnerTenantId: partner.partner_tenant_id, tenantType: partner.tenant_type, key: partner.id};
+    return Result.ok(this, { newPartner });
+  } catch(e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -314,8 +326,12 @@ function *getPartner() {
   const tenantId = this.request.query.tenantId;
   try {
     const partners = yield Partner.findAll({
-      where: {tenant_id: tenantId}
+      where: {tenant_id: tenantId},
+      order: [
+        ['created_date', 'DESC']
+      ]
     });
+    console.log(partners.map(partner => partner.get()));
     const partnerlist = [];
     for (let partner of partners) {
       const types = [];
@@ -323,7 +339,7 @@ function *getPartner() {
       partnerships.forEach(ps => {
         types.push({key: ps.type, code: ps.type_code});
       });
-      partnerlist.push({...transformUnderscoreToCamel(partner.get()), types});
+      partnerlist.push({...transformUnderscoreToCamel(partner.get(), ['created_date']), types});
     }
     return Result.ok(this, {partnerlist: partnerlist}); 
   } catch(e) {
@@ -332,12 +348,13 @@ function *getPartner() {
 }
 
 export default [
-  [ 'get', '/v1/cooperation/partners', partnersG ],
+  [ 'get', '/v1/cooperation/partners', getPartner ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
   [ 'get', '/v1/cooperation/invitation/receive_invitations', getReceiveInvitations ],
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
+  [ 'post', '/v2/cooperation/partner/add', addPartner2 ],
   [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
@@ -345,6 +362,5 @@ export default [
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
   [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ],
-  [ 'post', '/v1/cooperation/partner/delete', deletePartner ],
-  [ 'get', '/v2/cooperation/partners', getPartner ]
+  [ 'post', '/v1/cooperation/partner/delete', deletePartner ]
 ]

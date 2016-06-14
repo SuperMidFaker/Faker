@@ -75,8 +75,7 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.ADD_PARTNER_SUCCEED: {
       const { newPartner } = action.result.data;
-      const updatePartnerlist = { ...state.partnerlist, data: [...state.partnerlist.data, newPartner] };
-      return { ...state, partnerlist: updatePartnerlist };
+      return { ...state, partnerlist: [newPartner, ...state.partnerlist] };
     }
     case actionTypes.EDIT_PARTNER_SUCCEED:
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
@@ -96,7 +95,7 @@ export function loadPartners(cookie, params) {
         actionTypes.LOAD_PARTNERS_SUCCEED,
         actionTypes.LOAD_PARTNERS_FAIL
       ],
-      endpoint: 'v2/cooperation/partners',
+      endpoint: 'v1/cooperation/partners',
       method: 'get',
       params,
       cookie
@@ -154,7 +153,7 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
         actionTypes.ADD_PARTNER_SUCCEED,
         actionTypes.ADD_PARTNER_FAIL
       ],
-      endpoint: 'v1/cooperation/partner/add',
+      endpoint: 'v2/cooperation/partner/add',
       method: 'post',
       data: {
         tenantId,
