@@ -57,6 +57,14 @@ export default defineMessages({
     id: 'transport.tracking.report.transit.addr',
     defaultMessage: '详细地址'
   },
+  noReportTooltipTitle: {
+    id: 'transport.tracking.report.tooltip.title.none',
+    defaultMessage: '暂未更新'
+  },
+  reportTooltipTitle: {
+    id: 'transport.tracking.report.tooltip.title',
+    defaultMessage: '上次更新时间:{lastTime}'
+  },
   submitPod: {
     id: 'transport.tracking.submit.pod',
     defaultMessage: '提交回单'

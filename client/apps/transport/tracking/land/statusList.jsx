@@ -81,7 +81,7 @@ export default class LandStatusList extends React.Component {
     loadShipmtLastPoint: PropTypes.func.isRequired,
   }
   state = {
-    lastLocReportTime: '',
+    lastLocReportTime: null,
     selectedRowKeys: [],
   }
 
@@ -141,7 +141,7 @@ export default class LandStatusList extends React.Component {
     },
     remotes: this.props.shipmentlist
   })
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
@@ -428,7 +428,9 @@ export default class LandStatusList extends React.Component {
   }
   handleReportLocHover = row => {
     this.props.loadShipmtLastPoint(row.shipmt_no).then(result => {
-      this.setState({ lastLocReportTime: new Date(result.data.location_time) });
+      if (!result.error) {
+        this.setState({ lastLocReportTime: result.data.location_time });
+      }
     });
   }
   mergeFilters(curFilters, name, value) {
@@ -456,11 +458,12 @@ export default class LandStatusList extends React.Component {
 
   renderIntransitUpdater(record) {
     const reported = this.props.reportedShipmts.indexOf(record.shipmt_no) >= 0;
+    const ttMsg = this.state.lastLocReportTime ?
+      this.msg('reportTooltipTitle', {
+        lastTime: moment(this.state.lastLocReportTime).format('MM-DD HH:mm')
+    }) : this.msg('noReportTooltipTitle');
     const locLabel = (
-      <Tooltip title={
-        `上次更新时间:${this.state.lastLocReportTime ? moment(this.state.lastLocReportTime).format('MM-DD HH:mm') : ''}`
-      }
-      >
+      <Tooltip title={ttMsg}>
         <span>{this.msg('reportTransitLoc')}</span>
       </Tooltip>
     );

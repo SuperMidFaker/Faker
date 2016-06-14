@@ -41,7 +41,7 @@ export default {
   },
   getShipmentPoints(shipmtNo) {
     const sql = `select P.* from tms_tracking_points P inner join tms_shipment_point_relation PR
-      on PR.point_id = P.id where PR.shipmt_no = ?`;
+      on PR.point_id = P.id where PR.shipmt_no = ? order by P.location_time desc`;
     const args = [ shipmtNo ];
     return mysql.query(sql, args);
   },
