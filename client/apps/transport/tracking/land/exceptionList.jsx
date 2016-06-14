@@ -14,6 +14,7 @@ import VehicleModal from './modals/vehicle-updater';
 import PickupOrDeliverModal from './modals/pickup-deliver-updater';
 import PodModal from './modals/pod-submit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
+import { renderConsignLoc } from '../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -240,11 +241,11 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('departurePlace'),
     width: 150,
-    render: (o, record) => this.renderConsignLoc(record, 'consigner')
+    render: (o, record) => renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('arrivalPlace'),
     width: 150,
-    render: (o, record) => this.renderConsignLoc(record, 'consignee')
+    render: (o, record) => renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('shipmtMode'),
     dataIndex: 'transport_mode',
@@ -338,18 +339,6 @@ export default class LandStatusList extends React.Component {
       });
     }
     return merged;
-  }
-  renderConsignLoc(shipmt, field) {
-    const province = `${field}_province`;
-    const city = `${field}_city`;
-    const names = [];
-    if (shipmt[province]) {
-      names.push(shipmt[province]);
-    }
-    if (shipmt[city] && !(shipmt[city] === '市辖区' || shipmt[city] === '县')) {
-      names.push(shipmt[city]);
-    }
-    return names.join('-');
   }
 
   render() {

@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Col, Steps, Table } from 'ant-ui';
 import { SHIPMENT_TRACK_STATUS, TRACKING_POINT_FROM_TYPE } from 'common/constants';
+import { renderLoc } from '../../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -15,19 +16,6 @@ function rowKeyFn(row) {
   return row.id;
 }
 
-function renderConsignLoc(row) {
-  const names = [];
-  if (row.province) {
-    names.push(row.province);
-  }
-  if (row.city && !(row.city === '市辖区' || row.city === '县')) {
-    names.push(row.city);
-  }
-  if (row.district) {
-    names.push(row.district);
-  }
-  return names.join('-');
-}
 function StepDesc(props) {
   const texts = props.texts.filter(txt => txt);
   return texts.length > 0 ? (
@@ -64,7 +52,7 @@ export default class PreviewPanel extends React.Component {
   columns = [{
     title: this.msg('trackingPoistion'),
     render: (o, record) => {
-      return renderConsignLoc(record);
+      return renderLoc(record, 'province', 'city', 'district');
     },
   }, {
     title: this.msg('poistionMode'),

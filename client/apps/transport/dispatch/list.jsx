@@ -24,6 +24,7 @@ import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import PreviewPanel from '../shipment/modals/preview-panel';
+import { renderConsignLoc } from '../common/consignLocation';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -152,7 +153,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consignerPlace'),
     width: 180,
-    render: (o, record) => this.renderConsignLoc(record, 'consigner')
+    render: (o, record) => renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
@@ -169,7 +170,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consigneePlace'),
     width: 180,
-    render: (o, record) => this.renderConsignLoc(record, 'consignee')
+    render: (o, record) => renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
@@ -343,7 +344,7 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('consignerPlace'),
       width: 120,
-      render: (o, record) => this.renderConsignLoc(record, 'consigner')
+      render: (o, record) => renderConsignLoc(record, 'consigner')
     }, {
       title: this.msg('consignerAddr'),
       dataIndex: 'consigner_addr',
@@ -355,7 +356,7 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('consigneePlace'),
       width: 120,
-      render: (o, record) => this.renderConsignLoc(record, 'consignee')
+      render: (o, record) => renderConsignLoc(record, 'consignee')
     }, {
       title: this.msg('consigneeAddr'),
       dataIndex: 'consignee_addr',
@@ -808,32 +809,6 @@ export default class DispatchList extends React.Component {
 
     return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.key] || []}
        size="small" />);
-  }
-
-  renderConsignLoc(shipmt, field) {
-    const province = `${field}_province`;
-    const city = `${field}_city`;
-    const county = `${field}_district`;
-    const names = [];
-    if (shipmt[city] && (shipmt[city] === '市辖区' || shipmt[city] === '县')) {
-      if (shipmt[province]) {
-        names.push(shipmt[province]);
-      }
-      if (shipmt[county]) {
-        names.push(shipmt[county]);
-      }
-      return names.join('-');
-    } else if (shipmt[county] && (shipmt[county] === '市辖区' || shipmt[county] === '县')) {
-      return shipmt[city] || '';
-    } else {
-      if (shipmt[city]) {
-        names.push(shipmt[city]);
-      }
-      if (shipmt[county]) {
-        names.push(shipmt[county]);
-      }
-      return names.join('-');
-    }
   }
 
   render() {

@@ -15,6 +15,7 @@ import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'common/constants';
 import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import PreviewPanel from '../shipment/modals/preview-panel';
+import { renderConsignLoc } from '../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -170,7 +171,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consignorPlace'),
     width: 180,
-    render: (o, record) => this.renderConsignLoc(record, 'consigner')
+    render: (o, record) => renderConsignLoc(record, 'consigner')
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
@@ -182,7 +183,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consigneePlace'),
     width: 180,
-    render: (o, record) => this.renderConsignLoc(record, 'consignee')
+    render: (o, record) => renderConsignLoc(record, 'consignee')
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
@@ -298,32 +299,6 @@ export default class AcceptList extends React.Component {
     }
     return merged;
   }
-  renderConsignLoc(shipmt, field) {
-    const province = `${field}_province`;
-    const city = `${field}_city`;
-    const county = `${field}_district`;
-    const names = [];
-    if (shipmt[city] && (shipmt[city] === '市辖区' || shipmt[city] === '县')) {
-      if (shipmt[province]) {
-        names.push(shipmt[province]);
-      }
-      if (shipmt[county]) {
-        names.push(shipmt[county]);
-      }
-      return names.join('-');
-    } else if (shipmt[county] && (shipmt[county] === '市辖区' || shipmt[county] === '县')) {
-      return shipmt[city] || '';
-    } else {
-      if (shipmt[city]) {
-        names.push(shipmt[city]);
-      }
-      if (shipmt[county]) {
-        names.push(shipmt[county]);
-      }
-      return names.join('-');
-    }
-  }
-
   render() {
     const { shipmentlist, loading, intl } = this.props;
     this.dataSource.remotes = shipmentlist;
