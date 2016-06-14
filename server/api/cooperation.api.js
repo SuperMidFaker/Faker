@@ -6,6 +6,7 @@ import Result from '../util/responseResult';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
 import { Partner, Partnership, Invitation } from '../models/sequelize';
+import transformUnderscoreToCamel from '../util/transformUnderscoreToCamel';
 
 const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
 
@@ -312,7 +313,9 @@ function *deletePartner() {
 function *getPartner() {
   const tenantId = this.request.query.tenantId;
   try {
-    const partners = yield Partner.findAll({where: {tenant_id: tenantId}});
+    const partners = yield Partner.findAll({
+      where: {tenant_id: tenantId}
+    });
     const partnerlist = [];
     for (let partner of partners) {
       const types = [];
@@ -320,13 +323,12 @@ function *getPartner() {
       partnerships.forEach(ps => {
         types.push({key: ps.type, code: ps.type_code});
       });
-      partnerlist.push({...partner.get(), types});
+      partnerlist.push({...transformUnderscoreToCamel(partner.get()), types});
     }
-    return Result.ok(this, {partnerlist}); 
+    return Result.ok(this, {partnerlist: partnerlist}); 
   } catch(e) {
     return Result.internalServerError(this, e.message);
   }
-  
 }
 
 export default [
