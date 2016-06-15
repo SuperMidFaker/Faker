@@ -4,8 +4,7 @@ import { inviteOnlPartner, addPartner, editPartner, changePartnerStatus, deleteP
 import { inviteOfflinePartner } from 'common/reducers/invitation';
 
 @connect(state => ({
-  partnerlist: state.partner.partnerlist.data,
-  partnerTenants: state.partner.recevieablePartnerTenants,
+  partnerlist: state.partner.partnerlist,
   tenantId: state.account.tenantId,
 }), {
   inviteOnlPartner, addPartner, editPartner,
