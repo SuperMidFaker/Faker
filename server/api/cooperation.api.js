@@ -1,7 +1,6 @@
 import cobody from 'co-body';
 import Sequelize from 'sequelize';
 import coopDao from '../models/cooperation.db';
-import tenantDao from '../models/tenant.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
@@ -35,41 +34,26 @@ function transformInvitations(rawInvites) {
   }, []);
 }
 
-function *cancelInvite() {
-  const { id, partnerId } = yield cobody(this);
-  let trans;
+function *getPartner() {
+  const tenantId = this.request.query.tenantId;
   try {
-    const invitations = yield coopDao.getInvitationInfo(id);
-    if (invitations.length !== 1) {
-      throw new Error('invitation not found');
+    const partners = yield Partner.findAll({
+      where: {tenant_id: tenantId},
+      order: [
+        ['created_date', 'DESC']
+      ]
+    });
+    const partnerlist = [];
+    for (let partner of partners) {
+      const types = [];
+      const partnerships = yield partner.getPartnerships().then(ps => ps.map(p => p.get()));
+      partnerships.forEach(ps => {
+        types.push({key: ps.type, code: ps.type_code});
+      });
+      partnerlist.push({...transformUnderscoreToCamel(partner.get(), ['created_date']), types});
     }
-    const status = INVITATION_STATUS.CANCELED;
-    trans = yield mysql.beginTransaction();
-    yield coopDao.updateInvitationStatus(status, null, id, trans);
-    yield coopDao.updatePartnerInvited(partnerId, 0, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch (e) {
-    yield mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *editProviderTypes() {
-  const body = yield cobody(this);
-  const { partnerKey, tenantId, partnerInfo, providerTypes } = body;
-  const { partnerTenantId, partnerName, partnerCode } = partnerInfo;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    // 更改关系时,先删除原有的关系,再插入新的关系
-    yield coopDao.removePartnerships(tenantId, partnerName, partnerCode, trans);
-    yield coopDao.insertPartnerships(partnerKey, tenantId, partnerTenantId,
-                                     partnerName, partnerCode, providerTypes, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
+    return Result.ok(this, {partnerlist: partnerlist});
   } catch(e) {
-    yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
   }
 }
@@ -108,7 +92,7 @@ function *addPartner() {
           name: partnerName,
           partner_code: partnerCode,
           tenant_type: PARTNER_TENANT_TYPE[3],
-          partner_tenant_id: -1, 
+          partner_tenant_id: -1,
           tenant_id: tenantId});
       } else {
         throw new Error('该合作伙伴已添加');
@@ -126,10 +110,92 @@ function *addPartner() {
       });
     }
     // 返回给客户端的新增partner
-    const newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})), 
+    const newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})),
       status: 1, partnerTenantId: partner.partner_tenant_id, tenantType: partner.tenant_type, key: partner.id};
     return Result.ok(this, { newPartner });
   } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *deletePartner() {
+  const body = yield cobody(this);
+  const { id } = body;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield coopDao.deletePartner(id, trans);
+    yield coopDao.deletePartnershipsByPartnerId(id, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *changePartnerAndPartnershipStatus() {
+  const body = yield cobody(this);
+  const { id, status } = body;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield coopDao.updatePartnerStatus(id, status, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *changePartnerAndPartnershipStatus2() {
+  const body = yield cobody(this);
+  const { id, status } = body;
+  try {
+    yield Partner.update({status}, {where: {id}});
+    yield Partnership.update({status}, {where: {partner_id: id}});
+    return Result.ok(this);
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *cancelInvite() {
+  const { id, partnerId } = yield cobody(this);
+  let trans;
+  try {
+    const invitations = yield coopDao.getInvitationInfo(id);
+    if (invitations.length !== 1) {
+      throw new Error('invitation not found');
+    }
+    const status = INVITATION_STATUS.CANCELED;
+    trans = yield mysql.beginTransaction();
+    yield coopDao.updateInvitationStatus(status, null, id, trans);
+    yield coopDao.updatePartnerInvited(partnerId, 0, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch (e) {
+    yield mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *editProviderTypes() {
+  const body = yield cobody(this);
+  const { partnerKey, tenantId, partnerInfo, providerTypes } = body;
+  const { partnerTenantId, partnerName, partnerCode } = partnerInfo;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    // 更改关系时,先删除原有的关系,再插入新的关系
+    yield coopDao.removePartnerships(tenantId, partnerName, partnerCode, trans);
+    yield coopDao.insertPartnerships(partnerKey, tenantId, partnerTenantId,
+                                     partnerName, partnerCode, providerTypes, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
   }
 }
@@ -259,74 +325,20 @@ function *acceptInvitation() {
   }
 }
 
-function *changePartnerStatus() {
-  const body = yield cobody(this);
-  const { id, status } = body;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.updatePartnerStatus(id, status, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch(e) {
-    mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *deletePartner() {
-  const body = yield cobody(this);
-  const { id } = body;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.deletePartner(id, trans);
-    yield coopDao.deletePartnershipsByPartnerId(id, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch(e) {
-    mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *getPartner() {
-  const tenantId = this.request.query.tenantId;
-  try {
-    const partners = yield Partner.findAll({
-      where: {tenant_id: tenantId},
-      order: [
-        ['created_date', 'DESC']
-      ]
-    });
-    const partnerlist = [];
-    for (let partner of partners) {
-      const types = [];
-      const partnerships = yield partner.getPartnerships().then(ps => ps.map(p => p.get()));
-      partnerships.forEach(ps => {
-        types.push({key: ps.type, code: ps.type_code});
-      });
-      partnerlist.push({...transformUnderscoreToCamel(partner.get(), ['created_date']), types});
-    }
-    return Result.ok(this, {partnerlist: partnerlist}); 
-  } catch(e) {
-    return Result.internalServerError(this, e.message);
-  }
-}
-
 export default [
   [ 'get', '/v1/cooperation/partners', getPartner ],
+  [ 'post', '/v1/cooperation/partner/delete', deletePartner ],
+  [ 'post', '/v1/cooperation/partner/add', addPartner ],
+  [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
   [ 'get', '/v1/cooperation/invitation/receive_invitations', getReceiveInvitations ],
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
-  [ 'post', '/v1/cooperation/partner/add', addPartner ],
-  [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
-  [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ],
-  [ 'post', '/v1/cooperation/partner/delete', deletePartner ]
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
+  [ 'post', '/v2/cooperation/partner/change_status', changePartnerAndPartnershipStatus2 ]
 ]

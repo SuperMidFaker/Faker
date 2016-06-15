@@ -42,7 +42,8 @@ export const Partnership = sequelize.define('sso_partnerships', {
   partner_name: STRING,
   partner_code: STRING,
   type: INTEGER,
-  type_code: STRING
+  type_code: STRING,
+  status: INTEGER
 });
 
 export const Invitation = sequelize.define('sso_partner_invitations', {
@@ -92,5 +93,3 @@ export const Tenant = sequelize.define('sso_tenants', {
 });
 
 Partner.hasMany(Partnership, {as: 'Partnerships', foreignKey: 'partner_id'});
-
-Partner.findOne().then(partner => console.log(partner.get()));
