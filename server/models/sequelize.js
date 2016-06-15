@@ -33,6 +33,13 @@ export const Partner = sequelize.define('sso_partners', {
     type: DATE,
     defaultValue: NOW
   }
+}, {
+  instanceMethods: {
+    transformPartnerships() {
+      this.setDataValue('partnerships', this.getDataValue('partnerships').map(ps => ps.type_code));
+      return this;
+    }
+  }
 });
 
 export const Partnership = sequelize.define('sso_partnerships', {
@@ -92,4 +99,5 @@ export const Tenant = sequelize.define('sso_tenants', {
   created_date: DATE
 });
 
-Partner.hasMany(Partnership, {as: 'Partnerships', foreignKey: 'partner_id'});
+Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id'});
+Partnership.belongsTo(Partner, {foreignKey: 'partner_id'});

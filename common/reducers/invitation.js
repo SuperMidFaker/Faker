@@ -72,7 +72,7 @@ export function loadToInvites(tenantId) {
         actionTypes.LOAD_TO_INVITES_SUCCEED,
         actionTypes.LOAD_TO_INVITES_FAIL
       ],
-      endpoint: 'v1/cooperation/invitation/to_invites',
+      endpoint: 'v2/cooperation/invitation/to_invites',
       method: 'get',
       params: { tenantId }
     }

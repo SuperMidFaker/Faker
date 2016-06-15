@@ -221,6 +221,27 @@ function *getToInvites() {
   }
 }
 
+function *getToInvites2() {
+  const tenantId = this.request.query.tenantId;
+  try {
+    const rawToInvites = yield Partner.findAll({
+      where: {tenant_id: tenantId, invited: 0},
+      attributes: [['id', 'partner_id'], 'name', ['partner_code', 'code'], 'created_date', ['partner_tenant_id', 'tenant_id']],
+      include: [
+        {model: Partnership, as: 'partnerships'}
+      ],
+      order: [
+        ['created_date', 'DESC']
+      ]
+    });
+    const toInvites = rawToInvites.map(invitee => invitee.transformPartnerships().get())
+    console.log(toInvites);
+    return Result.ok(this, { toInvites });
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 function *inviteOfflinePartner() {
   const body = yield cobody(this);
   const { tenantId, inviteeInfo, concactInfo } = body;
@@ -316,14 +337,15 @@ export default [
   [ 'post', '/v1/cooperation/partner/delete', deletePartner ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
   [ 'post', '/v1/cooperation/partner/edit', editPartner ],
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
+  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
+  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
+  [ 'get', '/v2/cooperation/invitation/to_invites', getToInvites2 ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
   [ 'get', '/v1/cooperation/invitation/receive_invitations', getReceiveInvitations ],
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
-  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
-  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
-  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
-  [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
+  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
 ]
