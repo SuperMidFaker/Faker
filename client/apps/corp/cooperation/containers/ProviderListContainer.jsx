@@ -11,8 +11,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @connect(state => ({
-  partnerlist: state.partner.partnerlist.data,
-  partnerTenants: state.partner.recevieablePartnerTenants,
+  partnerlist: state.partner.partnerlist,
   tenantId: state.account.tenantId,
   providerType: state.partner.providerType
 }), {
