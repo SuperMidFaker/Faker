@@ -92,10 +92,14 @@ function *listLsps() {
   const current = parseInt(this.request.query.currentPage, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
-
+  const filter = {
+    partner_name:this.request.query.carrier,
+  };
   const [partners, totals] = yield [
-    copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation, min, pageSize),
-    copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation)
+    copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation,
+                                    filter, min, pageSize),
+    copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation,
+                                         filter),
   ];
 
   Result.ok(this, {

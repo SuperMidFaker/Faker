@@ -3,6 +3,7 @@ import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Tabs 
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch } from 'common/reducers/transportDispatch';
+import SearchBar from 'client/components/search-bar';
 import MContent from './MContent';
 
 const TabPane = Tabs.TabPane;
@@ -289,7 +290,19 @@ export default class DispatchDock extends Component {
   handlePodTypeChange = podType => {
     this.setState({podType});
   }
-
+  handleCarrierSearch = value => {
+    const { lsps, tenantId } = this.props;
+    this.props.loadLsps(null, {
+      tenantId,
+      pageSize: lsps.pageSize,
+      current: 1,
+      carrier: value,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   showConfirm(type, target) {
     const [ shipmt ] = this.props.shipmts;
     let msg = `将运单编号【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运商`;
@@ -376,6 +389,10 @@ export default class DispatchDock extends Component {
                 <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
                   <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
                     <div className="pane-content tab-pane">
+                      <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
+                        onInputSearch={this.handleCarrierSearch}
+                      />
+                      <div style={{ marginBottom: '5px' }} />
                       <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
                     </div>
                   </TabPane>
