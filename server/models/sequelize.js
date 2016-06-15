@@ -1,6 +1,7 @@
 import Sequelize, { STRING, INTEGER, DATE, TEXT, NOW } from 'sequelize';
+import { mysql } from '../../config/db.config';
 
-const sequelize = new Sequelize('mysql://root:qeemo1234@192.168.0.200:3306/qm_saas', {
+const sequelize = new Sequelize(`mysql://${mysql.user}:${mysql.password}@${mysql.host}:3306/${mysql.database}`, {
   define: {
     timestamps: false,
     freezeTabName: true
@@ -91,3 +92,5 @@ export const Tenant = sequelize.define('sso_tenants', {
 });
 
 Partner.hasMany(Partnership, {as: 'Partnerships', foreignKey: 'partner_id'});
+
+Partner.findOne().then(partner => console.log(partner.get()));
