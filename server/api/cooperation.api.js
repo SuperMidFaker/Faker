@@ -46,7 +46,7 @@ function *getPartner() {
         {model: Partnership, as: 'partnerships'}
       ]
     });
-    const partnerlist = partners.map(partner => partner.transformPartnerships().get());
+    const partnerlist = partners.map(partner => transformUnderscoreToCamel(partner.transformPartnerships().get(), ['created_date']));
     return Result.ok(this, { partnerlist });
   } catch(e) {
     return Result.internalServerError(this, e.message);
