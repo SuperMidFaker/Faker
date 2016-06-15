@@ -193,7 +193,7 @@ export function changePartnerStatus(id, status) {
         actionTypes.CHANGE_PARTNER_STATUS_SUCCEED,
         actionTypes.CHANGE_PARTNER_STATUS_FAIL
       ],
-      endpoint: 'v2/cooperation/partner/change_status',
+      endpoint: 'v1/cooperation/partner/change_status',
       method: 'post',
       id,
       status,

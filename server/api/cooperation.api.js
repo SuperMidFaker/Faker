@@ -137,21 +137,6 @@ function *deletePartner() {
 function *changePartnerAndPartnershipStatus() {
   const body = yield cobody(this);
   const { id, status } = body;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.updatePartnerStatus(id, status, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch(e) {
-    mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *changePartnerAndPartnershipStatus2() {
-  const body = yield cobody(this);
-  const { id, status } = body;
   try {
     yield Partner.update({status}, {where: {id}});
     yield Partnership.update({status}, {where: {partner_id: id}});
@@ -340,5 +325,4 @@ export default [
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
   [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
-  [ 'post', '/v2/cooperation/partner/change_status', changePartnerAndPartnershipStatus2 ]
 ]
