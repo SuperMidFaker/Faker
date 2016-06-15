@@ -106,7 +106,8 @@ function *addPartner() {
         partner_tenant_id: partner.partner_tenant_id,
         partner_name: partnerName,
         partner_code: partnerCode,
-        type_code: typeCode
+        type_code: typeCode,
+        status: partnerTenant ? 0 : 1 // 线上租户只有接受了邀请才能status才为1
       });
     }
     // 返回给客户端的新增partner
