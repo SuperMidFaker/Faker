@@ -20,13 +20,13 @@ import { setNavTitle } from 'common/reducers/navbar';
   cars: state.transportResources.cars,
   tenantId: state.account.tenantId
 }), { addCar, editCar })
-@Form.formify()
+@Form.create()
 export default class CarFormContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,      // 服务器返回的车辆数组
     drivers: PropTypes.array.isRequired,   // 服务器返回的司机数组
     params: PropTypes.object.isRequired,   // :car_id参数
-    form: PropTypes.object.isRequired,     // @Form.formify创建的对象
+    form: PropTypes.object.isRequired,     // @Form.create的对象
     addCar: PropTypes.func.isRequired,     // 增加车辆的actionCreator
     editCar: PropTypes.func.isRequired,    // 修改车辆信息的actionCreator
     tenantId: PropTypes.number.isRequired,

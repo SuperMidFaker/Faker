@@ -21,7 +21,7 @@ import { setNavTitle } from 'common/reducers/navbar';
   region: state.transportResources.region,
   tenantId: state.account.tenantId
 }), { addNode, editNode, changeRegion })
-@Form.formify()
+@Form.create()
 export default class NodeFormConainer extends Component {
   static propTypes = {
     nodes: PropTypes.array.isRequired,        // 节点数组

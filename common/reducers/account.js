@@ -19,7 +19,6 @@ const initialState = {
 const actions = [
   'ACC_LOAD', 'ACC_LOAD_SUCCEED', 'ACC_LOAD_FAIL',
   'PWD_CHANGE', 'PWD_CHANGE_SUCCEED', 'PWD_CHANGE_FAIL',
-  'SET_PROFILE_VALUE',
   'PROFILE_UPDATE', 'PROFILE_UPDATE_SUCCEED', 'PROFILE_UPDATE_FAIL'
 ];
 const domain = '@@welogix/account/';
@@ -31,8 +30,10 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.ACC_LOAD_SUCCEED:
       return { ...state, loaded: true, ...action.result.data };
-    case actionTypes.SET_PROFILE_VALUE:
-      return { ...state, profile: { ...state.profile, [action.data.field]: action.data.value }};
+    case actionTypes.PROFILE_UPDATE_SUCCEED:
+      return { ...state, profile: {
+      ...state.profile, ...action.data.profile
+    }};
     default:
       return state;
   }
@@ -57,13 +58,6 @@ export function changePassword(oldPwd, newPwd) {
       method: 'put',
       data: { oldPwd, newPwd }
     }
-  };
-}
-
-export function setProfileValue(field, value) {
-  return {
-    type: actionTypes.SET_PROFILE_VALUE,
-    data: { field, value }
   };
 }
 
