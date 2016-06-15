@@ -75,9 +75,7 @@ export default function reducer(state = initialState, action) {
         vehicleModal: { visible: true, dispId: action.data.dispId }
       };
     case actionTypes.HIDE_VEHICLE_MODAL:
-      return { ...state,
-        vehicleModal: { visible: false, dispId: -1 }
-      };
+      return { ...state, vehicleModal: initialState.vehicleModal };
     case actionTypes.SHOW_DATE_MODAL:
       return { ...state,
         dateModal: {
@@ -87,9 +85,7 @@ export default function reducer(state = initialState, action) {
         }
       };
     case actionTypes.HIDE_DATE_MODAL:
-      return { ...state,
-        dateModal: { visible: false, dispId: -1 }
-      };
+      return { ...state, dateModal: initialState.dateModal };
     case actionTypes.SHOW_POD_MODAL:
       return { ...state,
         podModal: {
@@ -99,9 +95,7 @@ export default function reducer(state = initialState, action) {
         }
       };
     case actionTypes.HIDE_POD_MODAL:
-      return { ...state,
-        podModal: { visible: false, dispId: -1 }
-      };
+      return { ...state, podModal: initialState.podModal };
     case actionTypes.SHOW_LOC_MODAL:
       return {
         ...state, locModal: {
