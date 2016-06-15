@@ -60,104 +60,106 @@ export default class DispatchDock extends Component {
       this.onClose(reload);
     };
     this.consigneeCols = [{
-                title: '',
-                dataIndex: 'partner_tenant_id',
-                width: 30,
-                render: (tid, record) => {
-                  return (<span>
-                        <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
-                      </span>);
-                }
-              }, {
-                title: '承运商',
-                dataIndex: 'partner_name',
-                width: 180
-              }, {
-                title: '价格协议',
-                dataIndex: 'quotation_promise',
-                width: 100,
-                render: () => (<span></span>)
-              }, {
-                title: '运输时效',
-                dataIndex: 'transit',
-                width: 80,
-                render: () => (<span></span>)
-              }, {
-                title: '报价（元）',
-                dataIndex: 'quotation',
-                width: 120,
-                render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
-              }, {
-                title: this.msg('shipmtOP'),
-                width: 50,
-                render: (o, record) => {
-                  return (<span>
-                        <a role="button" onClick={() => this.showConfirm('tenant', record)}>
-                        {this.msg('btnTextDispatch')}
-                        </a></span>);
-                }
-              }];
+      title: '',
+      dataIndex: 'partner_tenant_id',
+      width: 30,
+      render: (tid, record) => {
+        return (<span>
+                <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
+                </span>);
+      }
+    }, {
+      title: '承运商',
+      dataIndex: 'partner_name',
+      width: 180
+    }, {
+      title: '价格协议',
+      dataIndex: 'quotation_promise',
+      width: 100,
+      render: () => (<span></span>)
+    }, {
+      title: '运输时效',
+      dataIndex: 'transit',
+      width: 80,
+      render: () => (<span></span>)
+    }, {
+      title: '报价（元）',
+      dataIndex: 'quotation',
+      width: 120,
+      render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
+    }, {
+      title: this.msg('shipmtOP'),
+      width: 50,
+      render: (o, record) => {
+        return (<span>
+                <a role="button" onClick={() => this.showConfirm('tenant', record)}>
+                {this.msg('btnTextDispatch')}
+                </a></span>);
+      }
+    }];
     this.vehicleCols = [{
-                title: '车牌',
-                dataIndex: 'plate_number',
-                width: 50
-              }, {
-                title: '司机',
-                dataIndex: 'name',
-                width: 50
-              }, {
-                title: '车型',
-                dataIndex: 'type',
-                width: 50,
-                render: (t) => {
-                  if (this.props.vehicleTypes) {
-                    return this.props.vehicleTypes[t].text;
-                  }
-                  return '';
-                }
-              }, {
-                title: '车长',
-                dataIndex: 'length',
-                width: 30,
-                render: (l) => {
-                  if (this.props.vehicleLengths) {
-                    return this.props.vehicleLengths[l].text;
-                  }
-                  return '';
-                }
-              }, {
-                title: '载重',
-                width: 30,
-                dataIndex: 'load_weight'
-              }, {
-                title: '已分配',
-                dataIndex: 'dispatched',
-                width: 20,
-                render: () => {
-                  return (<span>否</span>);
-                }
-              }, {
-                title: '在途',
-                dataIndex: 'driving',
-                width: 20,
-                render: () => {
-                  return (<span>否</span>);
-                }
-              }, {
-                title: this.msg('shipmtOP'),
-                width: 50,
-                render: (o, record) => {
-                  return (<span>
-                        <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
-                        {this.msg('btnTextDispatch')}
-                        </a></span>);
-                }
-              }];
+      title: '车牌',
+      dataIndex: 'plate_number',
+      width: 50
+    }, {
+      title: '司机',
+      dataIndex: 'name',
+      width: 50
+    }, {
+      title: '车型',
+      dataIndex: 'type',
+      width: 50,
+      render: (t) => {
+        if (this.props.vehicleTypes) {
+          return this.props.vehicleTypes[t].text;
+        }
+        return '';
+      }
+    }, {
+      title: '车长',
+      dataIndex: 'length',
+      width: 30,
+      render: (l) => {
+        if (this.props.vehicleLengths) {
+          return this.props.vehicleLengths[l].text;
+        }
+        return '';
+      }
+    }, {
+      title: '载重',
+      width: 30,
+      dataIndex: 'load_weight'
+    }, {
+      title: '已分配',
+      dataIndex: 'dispatched',
+      width: 20,
+      render: () => {
+        return (<span>否</span>);
+      }
+    }, {
+      title: '在途',
+      dataIndex: 'driving',
+      width: 20,
+      render: () => {
+        return (<span>否</span>);
+      }
+    }, {
+      title: this.msg('shipmtOP'),
+      width: 50,
+      render: (o, record) => {
+        return (<span>
+                <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
+                {this.msg('btnTextDispatch')}
+                </a></span>);
+      }
+    }];
   }
 
   state = {
     quotation: 0,
     podType: 'dreceipt', // none, qrcode, dreceipt
+    carrierSearch: '',
+    plateSearch: '',
   }
 
   lspsds = new Table.DataSource({
@@ -175,6 +177,7 @@ export default class DispatchDock extends Component {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
+        carrier: this.state.carrierSearch,
         sortField: sorter.field,
         sortOrder: sorter.order,
       };
@@ -198,6 +201,7 @@ export default class DispatchDock extends Component {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
+        plate: this.state.plateSearch,
         sortField: sorter.field,
         sortOrder: sorter.order,
       };
@@ -302,6 +306,25 @@ export default class DispatchDock extends Component {
         message.error(result.error.message, 10);
       }
     });
+    this.setState({
+      carrierSearch: value
+    });
+  }
+  handlePlateSearch = value => {
+    const { vehicles, tenantId } = this.props;
+    this.props.loadVehicles(null, {
+      tenantId,
+      pageSize: vehicles.pageSize,
+      current: 1,
+      plate: value,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+    this.setState({
+      plateSearch: value
+    });
   }
   showConfirm(type, target) {
     const [ shipmt ] = this.props.shipmts;
@@ -390,7 +413,7 @@ export default class DispatchDock extends Component {
                   <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
                     <div className="pane-content tab-pane">
                       <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
-                        onInputSearch={this.handleCarrierSearch}
+                        onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
                       />
                       <div style={{ marginBottom: '5px' }} />
                       <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
@@ -398,6 +421,10 @@ export default class DispatchDock extends Component {
                   </TabPane>
                   <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
                     <div className="pane-content tab-pane">
+                      <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
+                        onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
+                      />
+                      <div style={{ marginBottom: '5px' }} />
                       <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
                     </div>
                   </TabPane>

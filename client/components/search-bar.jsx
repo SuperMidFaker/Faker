@@ -7,8 +7,11 @@ export default class SearchBar extends React.Component {
     value: PropTypes.string,
     onInputSearch: PropTypes.func.isRequired
   }
-  state = {
-    value: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: props.value || '',
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -30,6 +33,7 @@ export default class SearchBar extends React.Component {
           onChange={this.handleChange} value={this.state.value}
         />
         <Icon type="search" />
-      </div>);
+      </div>
+    );
   }
 }
