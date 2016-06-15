@@ -26,8 +26,8 @@ const initialState = {
 };
 
 function partnerReducer(state, action) {
-  const foundPartner = state.find(partner => partner.key === action.id);
-  const foundPartnerIndex = state.findIndex(partner => partner.key === action.id);
+  const foundPartner = state.find(partner => partner.id === action.id);
+  const foundPartnerIndex = state.findIndex(partner => partner.id === action.id);
   switch (action.type) {
     case actionTypes.DELETE_PARTNER_SUCCEED:
       return [...state.slice(0, foundPartnerIndex), ...state.slice(foundPartnerIndex + 1)];
@@ -81,7 +81,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
     case actionTypes.DELETE_PARTNER_SUCCEED:
     case actionTypes.INVITE_PARTNER:
-      return {...state, partnerlist: {...state.partnerlist, data: partnerReducer(state.partnerlist.data, action)}};
+      return {...state, partnerlist: partnerReducer(state.partnerlist, action)};
     default:
       return state;
   }
@@ -153,7 +153,7 @@ export function addPartner({tenantId, partnerInfo, partnerships}) {
         actionTypes.ADD_PARTNER_SUCCEED,
         actionTypes.ADD_PARTNER_FAIL
       ],
-      endpoint: 'v2/cooperation/partner/add',
+      endpoint: 'v1/cooperation/partner/add',
       method: 'post',
       data: {
         tenantId,

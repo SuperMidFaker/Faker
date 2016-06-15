@@ -49,7 +49,7 @@ export default class BaseList extends Component {
               name: record.name,
               code: record.partnerCode,
               tenantId: record.tenantId,
-              partnerId: record.key,
+              partnerId: record.id,
             };
             return (
               <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
@@ -158,24 +158,24 @@ export default class BaseList extends Component {
     this.props.changePartnerStatus(id, 1);
   }
   renderEditAndStopOperations(itemInfo) {
-    const { key, name, partnerCode } = itemInfo;
+    const { id, name, partnerCode } = itemInfo;
     return (
       <span>
-        <a onClick={() => this.handleEditBtnClick(key, name, partnerCode)}>修改</a>
+        <a onClick={() => this.handleEditBtnClick(id, name, partnerCode)}>修改</a>
         <span className="ant-divider"></span>
-        <a onClick={() => this.handleStopBtnClick(key)}>停用</a>
+        <a onClick={() => this.handleStopBtnClick(id)}>停用</a>
       </span>
     );
   }
   renderDeleteAndResumeOperations(itemInfo) {
-    const {key} = itemInfo;
+    const { id } = itemInfo;
     return (
       <span>
-        <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(key)}>
+        <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(id)}>
           <a>删除</a>
         </Popconfirm>
         <span className="ant-divider"></span>
-        <a onClick={() => this.handleResumeBtnClick(key)}>启用</a>
+        <a onClick={() => this.handleResumeBtnClick(id)}>启用</a>
       </span>
     );
   }

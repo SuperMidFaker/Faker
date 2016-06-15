@@ -1,4 +1,5 @@
 import cobody from 'co-body';
+import Sequelize from 'sequelize';
 import coopDao from '../models/cooperation.db';
 import tenantDao from '../models/tenant.db';
 import mysql from '../util/mysql';
@@ -76,42 +77,10 @@ function *editProviderTypes() {
 function *addPartner() {
   const body = yield cobody(this);
   const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
-  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})), status: 1}; // 返回给客户端的新增partner
-  let addPartnerResult;
-  let trans;
-  try {
-    // 根据partner的name和code查询是否存在这个租户,不存在就创建一个线下的partner,如果存在则根据线上用户的信息创建partner
-    trans = yield mysql.beginTransaction();
-    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfoWithNameAndCode(partnerName, partnerCode);
-    if (partnerTenantInfo) { // 存在
-      const partnerTenantId = partnerTenantInfo.tenant_id;
-      const tenantType = PARTNER_TENANT_TYPE[partnerTenantInfo.level];
-      addPartnerResult = yield coopDao.insertPartner(tenantId, partnerTenantInfo.tenant_id, partnerCode, partnerName, tenantType, 0, trans);
-      yield coopDao.insertPartnerships(addPartnerResult.insertId, tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
-      newPartner = {...newPartner, partnerTenantId, tenantType };
-    } else {
-      addPartnerResult = yield coopDao.insertPartner(tenantId, -1, partnerCode, partnerName, PARTNER_TENANT_TYPE[3], 0, trans);
-      yield coopDao.insertPartnerships(addPartnerResult.insertId, tenantId, -1, partnerName, partnerCode, partnerships, trans);
-      newPartner = {...newPartner, partnerTenantId: -1, tenantType: PARTNER_TENANT_TYPE[3] };
-    }
-    // add `key` to newPartner
-    newPartner.key = addPartnerResult.insertId;
-    yield mysql.commit(trans);
-    return Result.ok(this, { newPartner });
-  } catch(e) {
-    yield mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *addPartner2() {
-  const body = yield cobody(this);
-  const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
   try {
     const partnerTenant = yield Tenant.findOne({
       where: { name: partnerName,  $or: [{code: partnerCode}, {sub_code: partnerCode}]}
     });
-    console.log(partnerTenant);
     let partner;
     // 添加partner
     if (partnerTenant) { // 线上租户
@@ -313,7 +282,6 @@ function *deletePartner() {
     trans = yield mysql.beginTransaction();
     yield coopDao.deletePartner(id, trans);
     yield coopDao.deletePartnershipsByPartnerId(id, trans);
-    yield coopDao.deletePartnershipsByPartnerId(id, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
@@ -331,7 +299,6 @@ function *getPartner() {
         ['created_date', 'DESC']
       ]
     });
-    console.log(partners.map(partner => partner.get()));
     const partnerlist = [];
     for (let partner of partners) {
       const types = [];
@@ -354,7 +321,6 @@ export default [
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
-  [ 'post', '/v2/cooperation/partner/add', addPartner2 ],
   [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
