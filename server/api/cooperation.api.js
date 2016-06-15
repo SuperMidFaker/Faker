@@ -1,11 +1,12 @@
 import cobody from 'co-body';
+import Sequelize from 'sequelize';
 import coopDao from '../models/cooperation.db';
-import tenantDao from '../models/tenant.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import { getSmsCode } from '../../common/validater';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
+import { Partner, Partnership, Invitation, Tenant } from '../models/sequelize';
+import transformUnderscoreToCamel from '../util/transformUnderscoreToCamel';
 
 const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
 
@@ -33,51 +34,114 @@ function transformInvitations(rawInvites) {
   }, []);
 }
 
-function *partnersG() {
-  const current = parseInt(this.request.query.currentPage, 10);
-  const pageSize = parseInt(this.request.query.pageSize, 10);
-  const tenantId = parseInt(this.request.query.tenantId, 10);
-  const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
+function *getPartner() {
+  const tenantId = this.request.query.tenantId;
   try {
-    const totals = yield coopDao.getPartnersTotalCount(tenantId, filters);
-    const partners = yield coopDao.getPagedPartners(tenantId, current, pageSize, filters);
-    const partnerships = yield coopDao.getTenantPartnerships(tenantId, filters);
-    const partnershipTypes = partnershipTypeNames.map((name, index) => ({
-      key: `${index}`, // used as RadionButton key
-      code: name,
-      count: partnerships.filter(pts => pts.name === name).length
-    }));
-    for (let i = 0; i < partners.length; ++i) {
-      const partner = partners[i];
-      partner.types = partnerships.filter(ps => ps.partnerCode === partner.partnerCode).map(
-        pt => ({
-          key: pt.type,
-          code: pt.name
-        })
-      );
+    const partners = yield Partner.findAll({
+      where: {tenant_id: tenantId},
+      order: [
+        ['created_date', 'DESC']
+      ]
+    });
+    const partnerlist = [];
+    for (let partner of partners) {
+      const types = [];
+      const partnerships = yield partner.getPartnerships().then(ps => ps.map(p => p.get()));
+      partnerships.forEach(ps => {
+        types.push({key: ps.type, code: ps.type_code});
+      });
+      partnerlist.push({...transformUnderscoreToCamel(partner.get(), ['created_date']), types});
     }
-    const partnerTenants = yield tenantDao.getAllTenantsExcept(tenantId);
-    const recevieablePartnerTenants = yield coopDao.getReceiveablePartnerTenants(tenantId);
-    partnerTenants.forEach(pt => {
-      pt.code = pt.subCode || pt.code;
-      pt.subCode = undefined;
+    return Result.ok(this, {partnerlist: partnerlist});
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *addPartner() {
+  const body = yield cobody(this);
+  const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
+  try {
+    const partnerTenant = yield Tenant.findOne({
+      where: { name: partnerName,  $or: [{code: partnerCode}, {sub_code: partnerCode}]}
     });
-    return Result.ok(this, {
-      partnerlist: {
-        totalCount: totals.length > 0 ? totals[0].count : 0,
-        pageSize,
-        current,
-        data: partners.map(pt => {
-          pt.partnerCode = separatePartnerCode(pt.partnerCode);
-          return pt;
-        })
-      },
-      partnershipTypes,
-      partnerTenants,
-      recevieablePartnerTenants
-    });
-  } catch (e) {
-    console.log(e);
+    let partner;
+    // 添加partner
+    if (partnerTenant) { // 线上租户
+      const existPartner = yield Partner.findOne({
+        where: { name: partnerName, partner_code: partnerCode, partner_tenant_id: partnerTenant.tenant_id, tenant_id: tenantId }
+      });
+      if (!existPartner) {
+        const tenantType = PARTNER_TENANT_TYPE[partnerTenant.level];
+        partner = yield Partner.create({
+          name: partnerName,
+          partner_code: partnerCode,
+          tenant_type: tenantType,
+          partner_tenant_id: partnerTenant.tenant_id,
+          tenant_id: tenantId
+        });
+      } else {
+        throw new Error('该合作伙伴已添加');
+      }
+    } else { // 线下租户
+      const existPartner = yield Partner.findOne({
+        where: { name: partnerName, partner_code: partnerCode, partner_tenant_id: -1, tenant_id: tenantId }
+      });
+      if (!existPartner) {
+        partner = yield Partner.create({
+          name: partnerName,
+          partner_code: partnerCode,
+          tenant_type: PARTNER_TENANT_TYPE[3],
+          partner_tenant_id: -1,
+          tenant_id: tenantId});
+      } else {
+        throw new Error('该合作伙伴已添加');
+      }
+    }
+    // 添加partnerships
+    for(let typeCode of partnerships) {
+      const partnership = yield Partnership.create({
+        partner_id: partner.id,
+        tenant_id: tenantId,
+        partner_tenant_id: partner.partner_tenant_id,
+        partner_name: partnerName,
+        partner_code: partnerCode,
+        type_code: typeCode
+      });
+    }
+    // 返回给客户端的新增partner
+    const newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})),
+      status: 1, partnerTenantId: partner.partner_tenant_id, tenantType: partner.tenant_type, key: partner.id};
+    return Result.ok(this, { newPartner });
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *deletePartner() {
+  const body = yield cobody(this);
+  const { id } = body;
+  let trans;
+  try {
+    trans = yield mysql.beginTransaction();
+    yield coopDao.deletePartner(id, trans);
+    yield coopDao.deletePartnershipsByPartnerId(id, trans);
+    yield mysql.commit(trans);
+    return Result.ok(this);
+  } catch(e) {
+    mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *changePartnerAndPartnershipStatus() {
+  const body = yield cobody(this);
+  const { id, status } = body;
+  try {
+    yield Partner.update({status}, {where: {id}});
+    yield Partnership.update({status}, {where: {partner_id: id}});
+    return Result.ok(this);
+  } catch(e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -115,37 +179,6 @@ function *editProviderTypes() {
                                      partnerName, partnerCode, providerTypes, trans);
     yield mysql.commit(trans);
     return Result.ok(this);
-  } catch(e) {
-    yield mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *addPartner() {
-  const body = yield cobody(this);
-  const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
-  let newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})), status: 1}; // 返回给客户端的新增partner
-  let addPartnerResult;
-  let trans;
-  try {
-    // 根据partner的name和code查询是否存在这个租户,不存在就创建一个线下的partner,如果存在则根据线上用户的信息创建partner
-    trans = yield mysql.beginTransaction();
-    const [ partnerTenantInfo ] = yield tenantDao.getTenantInfoWithNameAndCode(partnerName, partnerCode);
-    if (partnerTenantInfo) { // 存在
-      const partnerTenantId = partnerTenantInfo.tenant_id;
-      const tenantType = PARTNER_TENANT_TYPE[partnerTenantInfo.level];
-      addPartnerResult = yield coopDao.insertPartner(tenantId, partnerTenantInfo.tenant_id, partnerCode, partnerName, tenantType, 0, trans);
-      yield coopDao.insertPartnerships(addPartnerResult.insertId, tenantId, partnerTenantId, partnerName, partnerCode, partnerships, trans);
-      newPartner = {...newPartner, partnerTenantId, tenantType };
-    } else {
-      addPartnerResult = yield coopDao.insertPartner(tenantId, -1, partnerCode, partnerName, PARTNER_TENANT_TYPE[3], 0, trans);
-      yield coopDao.insertPartnerships(addPartnerResult.insertId, tenantId, -1, partnerName, partnerCode, partnerships, trans);
-      newPartner = {...newPartner, partnerTenantId: -1, tenantType: PARTNER_TENANT_TYPE[3] };
-    }
-    // add `key` to newPartner
-    newPartner.key = addPartnerResult.insertId;
-    yield mysql.commit(trans);
-    return Result.ok(this, { newPartner });
   } catch(e) {
     yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
@@ -277,51 +310,19 @@ function *acceptInvitation() {
   }
 }
 
-function *changePartnerStatus() {
-  const body = yield cobody(this);
-  const { id, status } = body;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.updatePartnerStatus(id, status, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch(e) {
-    mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *deletePartner() {
-  const body = yield cobody(this);
-  const { id } = body;
-  let trans;
-  try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.deletePartner(id, trans);
-    yield coopDao.deletePartnershipsByPartnerId(id, trans);
-    yield coopDao.deletePartnershipsByPartnerId(id, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch(e) {
-    mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
 export default [
-  [ 'get', '/v1/cooperation/partners', partnersG ],
+  [ 'get', '/v1/cooperation/partners', getPartner ],
+  [ 'post', '/v1/cooperation/partner/delete', deletePartner ],
+  [ 'post', '/v1/cooperation/partner/add', addPartner ],
+  [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
   [ 'get', '/v1/cooperation/invitation/receive_invitations', getReceiveInvitations ],
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
-  [ 'post', '/v1/cooperation/partner/add', addPartner ],
-  [ 'post', '/v1/cooperation/partner/edit', editPartner ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
-  [ 'post', '/v1/cooperation/partner/change_status', changePartnerStatus ],
-  [ 'post', '/v1/cooperation/partner/delete', deletePartner ]
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
 ]

@@ -8,9 +8,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadPartners(cookie, {
-    tenantId: state.account.tenantId,
-    pageSize: state.partner.partnerlist.pageSize,
-    currentPage: state.partner.partnerlist.current
+    tenantId: state.account.tenantId
   }));
 }
 
