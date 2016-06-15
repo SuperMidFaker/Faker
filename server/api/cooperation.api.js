@@ -41,18 +41,13 @@ function *getPartner() {
       where: {tenant_id: tenantId},
       order: [
         ['created_date', 'DESC']
+      ],
+      include: [
+        {model: Partnership, as: 'partnerships'}
       ]
     });
-    const partnerlist = [];
-    for (let partner of partners) {
-      const types = [];
-      const partnerships = yield partner.getPartnerships().then(ps => ps.map(p => p.get()));
-      partnerships.forEach(ps => {
-        types.push({key: ps.type, code: ps.type_code});
-      });
-      partnerlist.push({...transformUnderscoreToCamel(partner.get(), ['created_date']), types});
-    }
-    return Result.ok(this, {partnerlist: partnerlist});
+    const partnerlist = partners.map(partner => partner.transformPartnerships().get());
+    return Result.ok(this, { partnerlist });
   } catch(e) {
     return Result.internalServerError(this, e.message);
   }
@@ -210,20 +205,6 @@ function *editPartner() {
 function *getToInvites() {
   const tenantId = this.request.query.tenantId;
   try {
-    const offlineInvites = yield coopDao.getOfflineInvitesWithTenantId(tenantId);
-    const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
-    const rawInvites = [...offlineInvites, ...onlineInvites];
-    // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
-    const toInvites = transformInvitations(rawInvites);
-    return Result.ok(this, { toInvites });
-  } catch(e) {
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *getToInvites2() {
-  const tenantId = this.request.query.tenantId;
-  try {
     const rawToInvites = yield Partner.findAll({
       where: {tenant_id: tenantId, invited: 0},
       attributes: [['id', 'partner_id'], 'name', ['partner_code', 'code'], 'created_date', ['partner_tenant_id', 'tenant_id']],
@@ -340,7 +321,6 @@ export default [
   [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
   [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
   [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
-  [ 'get', '/v2/cooperation/invitation/to_invites', getToInvites2 ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
   [ 'get', '/v1/cooperation/invitation/receive_invitations', getReceiveInvitations ],
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
