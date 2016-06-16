@@ -11,13 +11,13 @@
     "__PROD__": false,
     "__DEVTOOLS__": false,
     "__API_ROOT__": false
-  },  
+  },
   "rules": {
     "comma-dangle": [0, "never"],
     "key-spacing": [0, {
       "beforeColon": true,
       "afterColon": true
-    }], 
+    }],
     "no-else-return": 0,
     "space-before-function-paren": [0, "always"],
     "id-length":[0],

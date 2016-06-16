@@ -3,7 +3,6 @@ import ReactDom from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import { match } from 'react-router';
 import { addLocaleData } from 'react-intl';
-import createLocation from 'history/lib/createLocation';
 import createStore from 'common/adminReduxStore';
 import routes from 'client/admin/routes';
 import appWrapped from 'client/common/appWrapped';
@@ -59,12 +58,11 @@ export default function render(request) {
   }
   return new Promise((resolve, reject) => {
     const url = request.url;
-    const location = createLocation(url);
     const store = createStore();
     const cookie = request.get('cookie');
     const curLocale = getRequestLocale(request);
     store.getState().intl = { locale:  curLocale };
-    match({ routes: routes(store, cookie), location }, (err, redirection, props) => {
+    match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {
       if (err) {
         reject([500], err);
       } else if (redirection) {
