@@ -2,12 +2,12 @@ import mysql from '../util/mysql';
 import { generateUpdateClauseWithInfo } from './utils';
 
 const driverColumns = [
-  'name', 'phone', 'remark', 'vehicle_id', 'tenant_id', 'created_date', 'status'
+  'name', 'phone', 'remark', 'vehicle_id', 'tenant_id', 'status'
 ];
 
 const carColumns = [
   'vehicle_id', 'plate_number', 'trailer_number', 'type', 'length',
-  'load_weight', 'load_volume', 'vproperty', 'driver_id', 'status',
+  'load_weight', 'load_volume', 'vproperty', 'driver_id',
   'tenant_id'
 ];
 
@@ -29,7 +29,7 @@ function generateValuesWithInfoAndColumns({columns, info}) {
 
 export function addDriverWithInfo(driverInfo) {
   const values = generateValuesWithInfoAndColumns({info: driverInfo, columns: driverColumns});
-  const sql = `INSERT INTO tms_drivers(${driverColumns.join(', ')}) VALUES (${values.join(', ')});`;
+  const sql = `INSERT INTO tms_drivers(${driverColumns.join(', ')}, created_date) VALUES (${values.join(', ')}, NOW());`;
   return mysql.insert(sql);
 }
 
@@ -51,7 +51,7 @@ export function updateDriverWithInfo({driverInfo, driverId}) {
 
 export function addCarWithInfo(carInfo) {
   const values = generateValuesWithInfoAndColumns({info: carInfo, columns: carColumns});
-  const sql = `INSERT INTO tms_vehicles(${carColumns}) VALUES (${values.join(', ')});`;
+  const sql = `INSERT INTO tms_vehicles(${carColumns}, status, created_date) VALUES (${values.join(', ')}, 0, NOW());`;
   return mysql.insert(sql);
 }
 
@@ -59,14 +59,14 @@ export function getCarList(tenantId) {
   const sql = `
     SELECT plate_number, trailer_number, type, length, load_weight, load_volume, vproperty, v.status, v.driver_id,  v.vehicle_id, d.name AS driver_name
     FROM tms_vehicles AS v
-    INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id
+    LEFT JOIN tms_drivers AS d ON v.driver_id = d.driver_id
     WHERE v.tenant_id = ${tenantId};
   `;
   return mysql.query(sql);
 }
 
 export function updateCarWithInfo({carInfo, carId}) {
-  const updateClause = generateUpdateClauseWithInfo(carInfo, carColumns);
+  const updateClause = generateUpdateClauseWithInfo(carInfo, [...carColumns, 'status']);
   const sql = `UPDATE tms_vehicles SET ${updateClause} WHERE vehicle_id = ${carId}`;
   return mysql.query(sql);
 }
@@ -83,7 +83,7 @@ export function getNodeList(tenantId) {
 
 export function addNode(nodeInfo) {
   const values = generateValuesWithInfoAndColumns({columns: nodeColumns, info: nodeInfo});
-  const sql = `INSERT INTO tms_node_locations(${nodeColumns.join(' ,')}) VALUES(${values.join(', ')});`;
+  const sql = `INSERT INTO tms_node_locations(${nodeColumns.join(' ,')}, created_date) VALUES(${values.join(', ')}, NOW());`;
   return mysql.insert(sql);
 }
 
@@ -95,6 +95,10 @@ export function updateNodeWithInfo({nodeInfo, nodeId}) {
 
 export function removeNodeWithId(nodeId) {
   const sql = `DELETE FROM tms_node_locations WHERE node_id = ${nodeId};`;
-  console.log(sql);
   return mysql.delete(sql);
+}
+
+export function searchVehicleWithNumber(tenantId, vehicleNumber) {
+  const sql = `SELECT * FROM tms_vehicles WHERE tenant_id = ${tenantId} AND plate_number = '${vehicleNumber}'`;
+  return mysql.query(sql);
 }

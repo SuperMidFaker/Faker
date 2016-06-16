@@ -41,18 +41,13 @@ function *getPartner() {
       where: {tenant_id: tenantId},
       order: [
         ['created_date', 'DESC']
+      ],
+      include: [
+        {model: Partnership, as: 'partnerships'}
       ]
     });
-    const partnerlist = [];
-    for (let partner of partners) {
-      const types = [];
-      const partnerships = yield partner.getPartnerships().then(ps => ps.map(p => p.get()));
-      partnerships.forEach(ps => {
-        types.push({key: ps.type, code: ps.type_code});
-      });
-      partnerlist.push({...transformUnderscoreToCamel(partner.get(), ['created_date']), types});
-    }
-    return Result.ok(this, {partnerlist: partnerlist});
+    const partnerlist = partners.map(partner => transformUnderscoreToCamel(partner.transformPartnerships().get(), ['created_date']));
+    return Result.ok(this, { partnerlist });
   } catch(e) {
     return Result.internalServerError(this, e.message);
   }
@@ -106,7 +101,8 @@ function *addPartner() {
         partner_tenant_id: partner.partner_tenant_id,
         partner_name: partnerName,
         partner_code: partnerCode,
-        type_code: typeCode
+        type_code: typeCode,
+        status: partnerTenant ? 0 : 1 // 线上租户只有接受了邀请才能status才为1
       });
     }
     // 返回给客户端的新增partner
@@ -209,11 +205,18 @@ function *editPartner() {
 function *getToInvites() {
   const tenantId = this.request.query.tenantId;
   try {
-    const offlineInvites = yield coopDao.getOfflineInvitesWithTenantId(tenantId);
-    const onlineInvites = yield coopDao.getOnlineInvitesWithTenantId(tenantId);
-    const rawInvites = [...offlineInvites, ...onlineInvites];
-    // TODO: 优化查询的方式, 下面这个方法用于合并partnerships
-    const toInvites = transformInvitations(rawInvites);
+    const rawToInvites = yield Partner.findAll({
+      where: {tenant_id: tenantId, invited: 0},
+      attributes: [['id', 'partner_id'], 'name', ['partner_code', 'code'], 'created_date', ['partner_tenant_id', 'tenant_id']],
+      include: [
+        {model: Partnership, as: 'partnerships'}
+      ],
+      order: [
+        ['created_date', 'DESC']
+      ]
+    });
+    const toInvites = rawToInvites.map(invitee => invitee.transformPartnerships().get())
+    console.log(toInvites);
     return Result.ok(this, { toInvites });
   } catch(e) {
     return Result.internalServerError(this, e.message);
@@ -315,14 +318,14 @@ export default [
   [ 'post', '/v1/cooperation/partner/delete', deletePartner ],
   [ 'post', '/v1/cooperation/partner/add', addPartner ],
   [ 'post', '/v1/cooperation/partner/edit', editPartner ],
+  [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
+  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
+  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'get', '/v1/cooperation/invitation/send_invitations', getSendInvitations ],
   [ 'get', '/v1/cooperation/invitation/receive_invitations', getReceiveInvitations ],
   [ 'post', '/v1/cooperation/invitation/cancel_invite', cancelInvite ],
-  [ 'post', '/v1/cooperation/partner/edit_provider_types', editProviderTypes ],
-  [ 'get', '/v1/cooperation/invitation/to_invites', getToInvites ],
   [ 'post', '/v1/cooperation/invitation/invite_offline_partner', inviteOfflinePartner ],
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
-  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ],
-  [ 'post', '/v1/cooperation/partner/change_status', changePartnerAndPartnershipStatus ],
+  [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
 ]
