@@ -129,7 +129,7 @@ export default class DispatchList extends React.Component {
     remotes: this.props.shipmentlist
   })
 
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   commonCols = [{
     title: this.msg('packageNum'),
     dataIndex: 'total_count',

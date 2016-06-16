@@ -22,6 +22,15 @@ function getPartnerWhereClause(filters, tenantId, args) {
   });
   return `${defaultClause} ${nameLikeClause} ${partnershipClause}`;
 }
+
+function genPartnershipClause(filter, args) {
+  let clause = '';
+  if (filter.partner_name) {
+    clause = `${clause} and partner_name like ?`;
+    args.push(`%${filter.partner_name}%`);
+  }
+  return clause;
+}
 export default {
   getPartnersTotalCount(tenantId, filters) {
     const args = [];
@@ -153,14 +162,19 @@ export default {
     const args = [ tenantId, typeCode ];
     return mysql.query(sql, args);
   },
-  getAllPartnerByTypeCode(tenantId, typeCode, offset, size) {
-    const sql = 'select partner_id, partner_tenant_id, partner_name from sso_partnerships where tenant_id = ? and type_code = ? limit ?, ?';
-    const args = [ tenantId, typeCode, offset, size ];
+  getAllPartnerByTypeCode(tenantId, typeCode, filter, offset, size) {
+    const args = [ tenantId, typeCode ];
+    const partnerTypeWhere = genPartnershipClause(filter, args);
+    const sql = `select partner_id, partner_tenant_id, partner_name from sso_partnerships
+      where tenant_id = ? and type_code = ? ${partnerTypeWhere} limit ?, ?`;
+    args.push(offset, size);
     return mysql.query(sql, args);
   },
-  getAllPartnerByTypeCodeCount(tenantId, typeCode) {
-    const sql = 'select count(partner_id) as count from sso_partnerships where tenant_id = ? and type_code = ?';
+  getAllPartnerByTypeCodeCount(tenantId, typeCode, filter) {
     const args = [ tenantId, typeCode];
+    const partnerTypeWhere = genPartnershipClause(filter, args);
+    const sql = `select count(partner_id) as count from sso_partnerships
+      where tenant_id = ? and type_code = ? ${partnerTypeWhere}`;
     return mysql.query(sql, args);
   },
   getReceiveablePartnerTenants(tenantId) {

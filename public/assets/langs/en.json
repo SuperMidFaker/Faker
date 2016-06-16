@@ -172,7 +172,7 @@
   "container.servicePayment": "Payment",
   "sso.login.empty.param": "Empty username or password",
   "sso.login.error.param": "Wrong username or password",
-  "sso.login.user.notfound": "User{username} do not exist",
+  "sso.login.user.notfound": "User({username}) do not exist",
   "sso.login.error.exception": "Login exception",
   "sso.forgot.invalid.phone": "Wrong phone number",
   "sso.forgot.notfound.phone": "Phone number do not exist",

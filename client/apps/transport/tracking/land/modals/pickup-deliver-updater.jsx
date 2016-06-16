@@ -17,7 +17,7 @@ const FormItem = Form.Item;
     shipmtNo: state.trackingLandStatus.dateModal.shipmtNo,
   }),
   { closeDateModal, savePickOrDeliverDate })
-export default class VehicleUpdater extends React.Component {
+export default class PickupDeliverUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -29,7 +29,7 @@ export default class VehicleUpdater extends React.Component {
     savePickOrDeliverDate: PropTypes.func.isRequired,
   }
   state = {
-    actDate: '',
+    actDate: null,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (value) => {

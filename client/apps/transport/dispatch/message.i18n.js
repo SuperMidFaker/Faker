@@ -233,6 +233,14 @@ export default defineMessages({
     id: 'transport.dispatch.tab.text.carrier',
     defaultMessage: '选择承运商'
   },
+  carrierSearchPlaceholder: {
+    id: 'transport.dispatch.tab.carrier.search.placeholder',
+    defaultMessage: '查找承运商名称'
+  },
+  vehicleSearchPlaceholder: {
+    id: 'transport.dispatch.tab.vehicle.search.placeholder',
+    defaultMessage: '查找车牌号'
+  },
   tabTextVehicle: {
     id: 'transport.dispatch.tab.text.vehicle',
     defaultMessage: '选择车辆'

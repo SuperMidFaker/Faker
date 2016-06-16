@@ -28,7 +28,7 @@ const FormItem = Form.Item;
     depth: 1
   }));
 })
-@Form.formify({
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class ChangePassword extends React.Component {

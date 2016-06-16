@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Icon, Button, Upload, Form, Input, Row, Col, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import { setProfileValue, updateProfile } from 'common/reducers/account';
+import { updateProfile } from 'common/reducers/account';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
 import { validatePhone } from 'common/validater';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -18,14 +18,42 @@ const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 const FormItem = Form.Item;
 
+function FormInput(props) {
+  const {
+    label, hasFeedback, required, placeholder,
+    addonAfter, getFieldProps, field, rules, fieldProps,
+  } = props;
+  return (
+    <FormItem label={label} labelCol={{span: 6}} wrapperCol={{span: 18}}
+      hasFeedback={hasFeedback} required={required}
+    >
+      <Input type="text" addonAfter={addonAfter} placeholder={placeholder}
+      {...getFieldProps(field, {rules, ...fieldProps})}
+      />
+    </FormItem>
+  );
+}
+
+FormInput.propTypes = {
+  label: PropTypes.string.isRequired,
+  hasFeedback: PropTypes.bool,
+  required: PropTypes.bool,
+  placeholder: PropTypes.string,
+  addonAfter: PropTypes.string,
+  field: PropTypes.string,
+  rules: PropTypes.array,
+  getFieldProps: PropTypes.func,
+  fieldProps: PropTypes.object,
+};
 @injectIntl
 @connect(
   state => ({
     profile: state.account.profile,
     tenantId: state.account.tenantId,
-    code: state.account.code
+    parentTenantId: state.account.parentTenantId,
+    code: state.account.code,
   }),
-  { setProfileValue, updateProfile, checkLoginName }
+  { updateProfile, checkLoginName }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
@@ -35,16 +63,7 @@ const FormItem = Form.Item;
     depth: 1
   }));
 })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.profile;
-  },
-  onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
-      props.setProfileValue(name, fields[name].value);
-    }
-  },
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class MyProfile extends React.Component {
@@ -54,19 +73,27 @@ export default class MyProfile extends React.Component {
     profile: PropTypes.object.isRequired,
     code: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
+    parentTenantId: PropTypes.number.isRequired,
     checkLoginName: PropTypes.func.isRequired,
-    setProfileValue: PropTypes.func.isRequired,
     updateProfile: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
+  }
+  state = {
+    avatar: '',
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values);
   handleSubmit = (ev) => {
     ev.preventDefault();
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
-        this.props.updateProfile(this.props.profile, this.props.code, this.props.tenantId).then(
+        const profile = {
+          ...this.props.profile,
+          ...this.props.formhoc.getFieldsValue(),
+          avatar: this.state.avatar,
+        };
+        this.props.updateProfile(profile, this.props.code, this.props.tenantId).then(
           result => {
             if (result.error) {
               message.error(getFormatMsg(result.error.message, this.msg), 10);
@@ -87,23 +114,16 @@ export default class MyProfile extends React.Component {
     const upfile = info.file;
     if (upfile.status === 'done') {
       if (upfile.response.status === 200) {
-        this.props.setProfileValue('avatar', upfile.response.data);
+        this.setState({
+          avatar: upfile.response.data
+        });
       } else {
         message.error(upfile.response.msg);
       }
     }
   }
-  renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps, getFieldError }} = this.props;
-    return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
-      </FormItem>
-    );
-  }
   render() {
-    const { intl, formhoc: { getFieldProps, getFieldError }, code } = this.props;
+    const { intl, profile, formhoc: { getFieldProps }, code } = this.props;
     const cmsg = (descriptor) => formatContainerMsg(intl, descriptor);
     const uploadProps = {
       action: '/v1/upload/img',
@@ -111,7 +131,7 @@ export default class MyProfile extends React.Component {
       showUploadList: false,
       onChange: this.handleAvatarChange
     };
-    const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
+    const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (
       <div className="acc-panel">
         <div className="panel-heading">
@@ -124,7 +144,7 @@ export default class MyProfile extends React.Component {
               wrapperCol={{span: 18}}
             >
               <div className="acc-avatar"
-                style={{backgroundImage: `url(${this.props.profile.avatar || defaultAvatar})`}}
+                style={{backgroundImage: `url(${this.state.avatar || initialAvatar})`}}
               />
               <Upload {...uploadProps}>
                 <Button type="ghost">
@@ -133,31 +153,35 @@ export default class MyProfile extends React.Component {
                 </Button>
               </Upload>
             </FormItem>
-            {this.renderTextInput(
-              cmsg('fullName'), '', 'name', true,
+            <FormInput label={cmsg('fullName')} field="name" required rules={
               [{required: true, min: 2, message: cmsg('fullNameMessage')}]
-            )}
-            <FormItem label={cmsg('username')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-              help={getFieldError('loginName')} hasFeedback={false} required>
-              <Input type="text" addonAfter={`@${code}`} {...getFieldProps('username', {
-                rules: [{
-                  validator: (rule, value, callback) => isLoginNameExist(
-                    value, code, this.props.profile.loginId,
-                    this.props.tenantId, callback, message, this.props.checkLoginName,
-                    (msgs, descriptor) => format(msgs)(intl, descriptor))
-                }]
-              })}
-              />
-            </FormItem>
-            {this.renderTextInput(
-              cmsg('phone'), '', 'phone', true,
-              [{ validator: (rule, value, callback) => validatePhone(value, callback,
-                  (msgs, descriptor) => format(msgs)(intl, descriptor)) }]
-            )}
-            {this.renderTextInput(
-              'Email', '', 'email', false,
-              [{ type: 'email', message: cmsg('emailError') }]
-            )}
+            } fieldProps={{ initialValue: profile.name }} hasFeedback
+            getFieldProps={getFieldProps}
+            />
+            <FormInput label={cmsg('username')} required field="username"
+            addonAfter={`@${code}`} rules={[{
+              validator: (rule, value, callback) => isLoginNameExist(
+                value, code, profile.loginId,
+                this.props.parentTenantId || this.props.tenantId,
+                callback, message, this.props.checkLoginName,
+                (msgs, descriptor) => format(msgs)(intl, descriptor)
+              )
+            }]} fieldProps={{ initialValue: profile.username }}
+            getFieldProps={getFieldProps}
+            />
+            <FormInput label={cmsg('phone')} field="phone" required hasFeedback
+            rules={[{
+              validator: (rule, value, callback) => validatePhone(
+                value, callback,
+                (msgs, descriptor) => format(msgs)(intl, descriptor)
+              )}]}
+            fieldProps={{ initialValue: profile.phone }}
+            getFieldProps={getFieldProps}
+            />
+            <FormInput label="Email" field="email" getFieldProps={getFieldProps}
+            rules={[{ type: 'email', message: cmsg('emailError') }]}
+            fieldProps={{ initialValue: profile.email }}
+            />
             <Row>
               <Col span="18" offset="6">
                 <Button htmlType="submit" type="primary">
@@ -170,6 +194,7 @@ export default class MyProfile extends React.Component {
             </Row>
           </Form>
         </div>
-      </div>);
+      </div>
+    );
   }
 }

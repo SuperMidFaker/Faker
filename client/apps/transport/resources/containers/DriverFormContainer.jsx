@@ -16,10 +16,10 @@ import { setNavTitle } from 'common/reducers/navbar';
   }));
 })
 @connect(state => ({drivers: state.transportResources.drivers, tenantId: state.account.tenantId}), { addDriver, editDriver })
-@Form.formify()
+@Form.create()
 export default class DriverFormContainer extends Component {
   static propTypes = {
-    form: PropTypes.object.isRequired,     // @Form.formify创建的form对象
+    form: PropTypes.object.isRequired,     // @Form.create的form对象
     params: PropTypes.object.isRequired,   // 用于获取:driver_id参数
     drivers: PropTypes.array.isRequired,   // 服务器返回的司机数组
     dispatch: PropTypes.func.isRequired,   // store.dispatch函数

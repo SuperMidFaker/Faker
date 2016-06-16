@@ -92,10 +92,14 @@ function *listLsps() {
   const current = parseInt(this.request.query.currentPage, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
-
+  const filter = {
+    partner_name:this.request.query.carrier,
+  };
   const [partners, totals] = yield [
-    copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation, min, pageSize),
-    copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation)
+    copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation,
+                                    filter, min, pageSize),
+    copsDao.getAllPartnerByTypeCodeCount(tenantId, PARTNERSHIP_TYPE_INFO.transportation,
+                                         filter),
   ];
 
   Result.ok(this, {
@@ -110,9 +114,12 @@ function *listVehicles() {
   const pageSize = parseInt(this.request.query.pageSize, 10) || 10;
   const current = parseInt(this.request.query.currentPage, 10) || 1;
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
+  const plate = this.request.query.plate;
   const min = (current - 1) * pageSize;
-  const [vehicles, totals] = yield [vehiclesDao.getVehicles(tenantId, min, pageSize),
-                                    vehiclesDao.getVehiclesCount(tenantId)];
+  const [ vehicles, totals ] = yield [
+    vehiclesDao.getVehicles(tenantId, plate, min, pageSize),
+    vehiclesDao.getVehiclesCount(tenantId, plate),
+  ];
   Result.ok(this, {
     totalCount: totals[0].count,
     pageSize,
