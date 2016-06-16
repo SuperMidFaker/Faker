@@ -110,7 +110,7 @@ export default class BaseList extends Component {
   }
   dataSourceFromPartnerlist(partnerlist) {  // 子类重载这个方法来展示数据
     const { type } = this;
-    return partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
+    return partnerlist.filter(partner => partner.partnerships.some(ps => ps === type));
   }
   handleAddBtnClick() {
     const { tenantId } = this.props;

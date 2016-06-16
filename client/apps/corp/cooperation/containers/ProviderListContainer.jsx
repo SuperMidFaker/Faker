@@ -62,11 +62,11 @@ export default class ProviderListContainer extends BaseList {
     const { type } = this;
     let dataSource = [];
     if (type === 'ALL') {
-      dataSource = partnerlist.filter(partner => partner.types.some(pType => ['TRS', 'CCB', 'WHS', 'FWD'].includes(pType.code)));
+      dataSource = partnerlist.filter(partner => partner.partnerships.some(ps => ['TRS', 'CCB', 'WHS', 'FWD'].includes(ps)));
     } else {
-      dataSource = partnerlist.filter(partner => partner.types.some(pType => pType.code === type));
+      dataSource = partnerlist.filter(partner => partner.partnerships.some(ps => ps === type));
     }
-    dataSource = dataSource.map(data => ({...data, providerTypes: data.types.filter(pType => ['TRS', 'CCB', 'WHS', 'FWD'].includes(pType.code)).map(pType => providerShorthandTypes[pType.code])}));
+    dataSource = dataSource.map(data => ({...data, providerTypes: data.partnerships.filter(ps => ['TRS', 'CCB', 'WHS', 'FWD'].includes(ps)).map(ps => providerShorthandTypes[ps])}));
     return dataSource;
   }
   setHeader() {

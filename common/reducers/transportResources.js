@@ -13,12 +13,14 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
   'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
   'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
-  'CHANGE_REGION'
+  'CHANGE_REGION',
+  'VALIDATE_VEHICLE', 'VALIDATE_VEHICLE_SUCCEED', 'VALIDATE_VEHICLE_FAIL'
 ]);
 
 const initialState = {
   cars: [],
   drivers: [],
+  vehicleValidate: true,
   nodes: [],
   selectedMenuItemKey: '0',
   loading: false,
@@ -59,6 +61,8 @@ export default function reducer(state = initialState, action) {
       const cars = updateArray({array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo});
       return { ...state, loading: false, cars };
     }
+    case actionTypes.ADD_CAR:
+      return { ...state, vehicleValidate: true };
     case actionTypes.EDIT_DRIVER:
       return { ...state, loading: true };
     case actionTypes.EDIT_DRIVER_SUCCEED: {
@@ -87,6 +91,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, selectedMenuItemKey: action.key };
     case actionTypes.CHANGE_REGION:
       return { ...state, region: action.region };
+    case actionTypes.VALIDATE_VEHICLE_SUCCEED:
+      return { ...state, vehicleValidate: action.result.data.vehicleValidate };
     default:
       return state;
   }
@@ -136,6 +142,21 @@ export function loadCarList(tenantId) {
       endpoint: 'v1/transport/resources/car_list',
       method: 'get',
       params: { tenantId }
+    }
+  };
+}
+
+export function validateVehicle(tenantId, vehicleNumber) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VALIDATE_VEHICLE,
+        actionTypes.VALIDATE_VEHICLE_SUCCEED,
+        actionTypes.VALIDATE_VEHICLE_FAIL
+      ],
+      endpoint: 'v1/transport/resources/validate_vehicle',
+      method: 'get',
+      params: { tenantId, vehicleNumber }
     }
   };
 }
