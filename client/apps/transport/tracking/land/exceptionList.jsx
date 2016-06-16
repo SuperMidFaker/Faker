@@ -6,13 +6,9 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadExcpShipments, showPodModal, showDateModal, showVehicleModal } from
-  'common/reducers/trackingLandException';
+import { loadExcpShipments } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import RowUpdater from './rowUpdater';
-import VehicleModal from './modals/vehicle-updater';
-import PickupOrDeliverModal from './modals/pickup-deliver-updater';
-import PodModal from './modals/pod-submit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
@@ -51,7 +47,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandException.filters,
     loading: state.trackingLandException.loading,
   }),
-  { loadExcpShipments, loadShipmtDetail, showPodModal, showDateModal, showVehicleModal })
+  { loadExcpShipments, loadShipmtDetail })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -63,9 +59,6 @@ export default class LandStatusList extends React.Component {
    */
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    showVehicleModal: PropTypes.func.isRequired,
-    showDateModal: PropTypes.func.isRequired,
-    showPodModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadExcpShipments: PropTypes.func.isRequired
   }
@@ -311,18 +304,6 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowVehicleModal = row => {
-    this.props.showVehicleModal(row.disp_id);
-  }
-  handleShowPickModal = row => {
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
-  }
-  handleShowDeliverModal = row => {
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
-  }
-  handleShowPodModal = (row) => {
-    this.props.showPodModal(row.disp_id, row.shipmt_no);
-  }
   handleShipmtPreview(shipmtNo) {
     this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr').then(result => {
       if (result.error) {
@@ -372,9 +353,6 @@ export default class LandStatusList extends React.Component {
           </div>
         </div>
         <PreviewPanel />
-        <VehicleModal onOK={this.handleTableLoad} />
-        <PickupOrDeliverModal onOK={this.handleTableLoad} />
-        <PodModal onOK={this.handleTableLoad} />
       </div>
     );
   }

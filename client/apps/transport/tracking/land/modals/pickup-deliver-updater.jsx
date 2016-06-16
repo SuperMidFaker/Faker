@@ -16,7 +16,11 @@ const FormItem = Form.Item;
     dispId: state.trackingLandStatus.dateModal.dispId,
     shipmtNo: state.trackingLandStatus.dateModal.shipmtNo,
   }),
-  { closeDateModal, savePickOrDeliverDate })
+  { closeDateModal, savePickOrDeliverDate }
+)
+@Form.create({
+  formPropName: 'formhoc',
+})
 export default class PickupDeliverUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -24,51 +28,60 @@ export default class PickupDeliverUpdater extends React.Component {
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
+    formhoc: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
     savePickOrDeliverDate: PropTypes.func.isRequired,
   }
-  state = {
-    actDate: null,
-  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  handleFieldChange = (value) => {
-    this.setState({ actDate: value });
-  }
   handleOk = () => {
-    const { type, shipmtNo, dispId, onOK } = this.props;
-    this.props.savePickOrDeliverDate(type, shipmtNo, dispId, this.state.actDate).then(
-      result => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.props.closeDateModal();
-          onOK();
-        }
-      });
+    this.props.formhoc.validateFields(errors => {
+      if (!errors) {
+        const { formhoc, type, shipmtNo, dispId, onOK } = this.props;
+        const { actDate } = formhoc.getFieldsValue();
+        this.props.savePickOrDeliverDate(type, shipmtNo, dispId, actDate).then(
+          result => {
+            if (result.error) {
+              message.error(result.error.message);
+            } else {
+              this.props.closeDateModal();
+              formhoc.resetFields();
+              onOK();
+            }
+          });
+      }
+    });
   }
   handleCancel = () => {
     this.props.closeDateModal();
+    this.props.formhoc.resetFields();
   }
   render() {
-    const { actDate } = this.state;
+    const { formhoc, formhoc: { getFieldProps }} = this.props;
     const colSpan = 6;
     let title;
+    let ruleMsg;
     if (this.props.type === 'pickup') {
       title = this.msg('pickupModalTitle');
+      ruleMsg = this.msg('pickupTimeMust');
     } else {
       title = this.msg('deliverModalTitle');
+      ruleMsg = this.msg('deliverTimeMust');
     }
     return (
       <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
       visible={this.props.visible}
       >
-        <Form className="row">
+        <Form className="row" form={formhoc}>
           <FormItem label={this.msg('chooseActualTime')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+            wrapperCol={{span: 24 - colSpan}} required
           >
-            <DatePicker showTime value={actDate} onChange={this.handleFieldChange}
-              format="yyyy-MM-dd HH:mm:ss"
+            <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
+            { ...getFieldProps('actDate', {
+              rules: [{
+                type: 'date', required: true, message: ruleMsg
+              }],
+            })}
             />
           </FormItem>
         </Form>

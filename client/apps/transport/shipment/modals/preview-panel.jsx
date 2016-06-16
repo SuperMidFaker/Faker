@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag/* , message */ } from 'ant-ui';
+import { Button, Icon, Tabs, Tag } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -36,6 +36,7 @@ function getTrackStatusMsg(status, eff) {
 @connect(
   state => ({
     visible: state.shipment.previewer.visible,
+    tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     status: state.shipment.previewer.shipmt.status,
     effective: state.shipment.previewer.shipmt.effective,
@@ -46,6 +47,7 @@ export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+    tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
     status: PropTypes.number,
     effective: PropTypes.number,
@@ -56,7 +58,7 @@ export default class PreviewPanel extends React.Component {
     this.props.hidePreviewer();
   }
   render() {
-    const { visible, shipmtNo, status, effective } = this.props;
+    const { visible, tabKey, shipmtNo, status, effective } = this.props;
     return (
       <div className={`preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
@@ -70,7 +72,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Tabs defaultActiveKey="detail">
+            <Tabs activeKey={`${tabKey || 'detail'}`}>
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
               </TabPane>
