@@ -60,7 +60,7 @@ export default class PreviewPanel extends React.Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey !== this.props.tabKey) {
+    if (nextProps.tabKey !== this.state.tabKey) {
       this.setState({ tabKey: nextProps.tabKey || 'detail' });
     }
   }
