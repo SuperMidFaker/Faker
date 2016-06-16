@@ -99,5 +99,5 @@ export const Tenant = sequelize.define('sso_tenants', {
   created_date: DATE
 });
 
-Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id'});
-Partnership.belongsTo(Partner, {foreignKey: 'partner_id'});
+Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id', constraint: false});
+Partnership.belongsTo(Partner, {foreignKey: 'partner_id', constraint: false});

@@ -1,5 +1,4 @@
 import cobody from 'co-body';
-import Sequelize from 'sequelize';
 import coopDao from '../models/cooperation.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
@@ -117,15 +116,25 @@ function *addPartner() {
 function *deletePartner() {
   const body = yield cobody(this);
   const { id } = body;
-  let trans;
   try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.deletePartner(id, trans);
-    yield coopDao.deletePartnershipsByPartnerId(id, trans);
-    yield mysql.commit(trans);
+    yield Partner.destroy({where: {id}});
+    yield Partnership.destroy({where: {partner_id: id}});
+    yield Invitation.destroy({where: {partner_id: id}});
     return Result.ok(this);
   } catch(e) {
-    mysql.rollback(trans);
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *editPartner() {
+  const body = yield cobody(this);
+  const { partnerId, name, code } = body;
+  try {
+    yield Partner.update({name, partner_code: code}, {where: {id: partnerId}});
+    yield Partnership.update({partner_name: name, partner_code: code}, {where: {partner_id: partnerId}});
+    yield Invitation.update({invitee_name: name, invitee_code: code}, {where: {partner_id: partnerId}});
+    return Result.ok(this);
+  } catch(e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -164,40 +173,17 @@ function *cancelInvite() {
 
 function *editProviderTypes() {
   const body = yield cobody(this);
-  const { partnerKey, tenantId, partnerInfo, providerTypes } = body;
-  const { partnerTenantId, partnerName, partnerCode } = partnerInfo;
+  const { partnerId, tenantId, partnerships } = body;
   let trans;
   try {
-    trans = yield mysql.beginTransaction();
-    // 更改关系时,先删除原有的关系,再插入新的关系
-    yield coopDao.removePartnerships(tenantId, partnerName, partnerCode, trans);
-    yield coopDao.insertPartnerships(partnerKey, tenantId, partnerTenantId,
-                                     partnerName, partnerCode, providerTypes, trans);
+    const partnership = yield Partnership.findOne({where: {partner_id: partnerId}, attributes: {exclude: ['id', 'type_code']}});
+    const partnershipInfo = partnership.get();
+    yield Partnership.destroy({where: {partner_id: partnerId}});
+    yield Partnership.bulkCreate(partnerships.map(ps => ({...partnershipInfo, type_code: ps})));
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
     yield mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
-function *editPartner() {
-  let trans;
-  try {
-    const body = yield cobody(this);
-    const { partnerId, name, code } = body;
-    trans = yield mysql.beginTransaction();
-    yield [
-      coopDao.updatePartnerById(partnerId, name, code, trans),
-      coopDao.updatePartnershipById(partnerId, name, code, trans),
-      coopDao.updateInvitationById(partnerId, name, code, trans),
-    ];
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch (e) {
-    if (trans) {
-      yield mysql.rollback(trans);
-    }
     return Result.internalServerError(this, e.message);
   }
 }
@@ -215,8 +201,7 @@ function *getToInvites() {
         ['created_date', 'DESC']
       ]
     });
-    const toInvites = rawToInvites.map(invitee => invitee.transformPartnerships().get())
-    console.log(toInvites);
+    const toInvites = rawToInvites.map(invitee => invitee.transformPartnerships().get());
     return Result.ok(this, { toInvites });
   } catch(e) {
     return Result.internalServerError(this, e.message);
