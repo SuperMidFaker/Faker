@@ -182,7 +182,7 @@ export default class PreviewPanel extends React.Component {
           {
             trackingSteps.map(
               (ts, i) =>
-              <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
+                <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
             )
           }
           </Steps>

@@ -53,12 +53,26 @@ export default class PreviewPanel extends React.Component {
     effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabKey: props.tabKey || 'detail',
+    };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.tabKey !== this.props.tabKey) {
+      this.setState({ tabKey: nextProps.tabKey || 'detail' });
+    }
+  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  handleTabChange = (tabKey) => {
+    this.setState({ tabKey });
+  }
   handleClose = () => {
     this.props.hidePreviewer();
   }
   render() {
-    const { visible, tabKey, shipmtNo, status, effective } = this.props;
+    const { visible, shipmtNo, status, effective } = this.props;
     return (
       <div className={`preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
@@ -72,7 +86,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Tabs defaultActiveKey={`${tabKey || 'detail'}`}>
+            <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
               </TabPane>
