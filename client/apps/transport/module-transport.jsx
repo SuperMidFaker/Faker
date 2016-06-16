@@ -57,7 +57,7 @@ function getLinksByAspect(aspect, intl) {
       single: true,
       key: 'tms-1',
       path: '/transport/shipping',
-      icon: 'zmdi zmdi-inbox',
+      icon: 'zmdi zmdi-mail-send',
       text: '托运',
     }, {
       single: true,
