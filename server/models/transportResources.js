@@ -59,7 +59,7 @@ export function getCarList(tenantId) {
   const sql = `
     SELECT plate_number, trailer_number, type, length, load_weight, load_volume, vproperty, v.status, v.driver_id,  v.vehicle_id, d.name AS driver_name
     FROM tms_vehicles AS v
-    INNER JOIN tms_drivers AS d ON v.driver_id = d.driver_id
+    LEFT JOIN tms_drivers AS d ON v.driver_id = d.driver_id
     WHERE v.tenant_id = ${tenantId};
   `;
   return mysql.query(sql);
@@ -95,6 +95,10 @@ export function updateNodeWithInfo({nodeInfo, nodeId}) {
 
 export function removeNodeWithId(nodeId) {
   const sql = `DELETE FROM tms_node_locations WHERE node_id = ${nodeId};`;
-  console.log(sql);
   return mysql.delete(sql);
+}
+
+export function searchVehicleWithNumber(tenantId, vehicleNumber) {
+  const sql = `SELECT * FROM tms_vehicles WHERE tenant_id = ${tenantId} AND plate_number = '${vehicleNumber}'`;
+  return mysql.query(sql);
 }

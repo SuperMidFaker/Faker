@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import CarForm from '../components/CarForm.jsx';
-import { addCar, editCar } from 'common/reducers/transportResources';
+import { addCar, editCar, validateVehicle } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 
@@ -18,8 +18,9 @@ import { setNavTitle } from 'common/reducers/navbar';
 @connect(state => ({
   drivers: state.transportResources.drivers,
   cars: state.transportResources.cars,
+  vehicleValidate: state.transportResources.vehicleValidate,
   tenantId: state.account.tenantId
-}), { addCar, editCar })
+}), { addCar, editCar, validateVehicle })
 @Form.formify()
 export default class CarFormContainer extends Component {
   static propTypes = {
@@ -49,12 +50,16 @@ export default class CarFormContainer extends Component {
     this.props.editCar({carId, carInfo: editCarInfo});
     this.context.router.goBack();
   }
+  handleVehicleNumberBlur = (e) => {
+    const vehicleNumber = e.target.value;
+    const { tenantId } = this.props;
+    this.props.validateVehicle(tenantId, vehicleNumber);
+  }
   render() {
-    const { cars, params, form, drivers } = this.props;
+    const { cars, params, form, drivers, vehicleValidate } = this.props;
     if (params.car_id !== undefined) { // if this exits, represent edit mode
       const carId = parseInt(params.car_id, 10);
       const editCarInfo = cars.find(car => car.vehicle_id === carId);
-      // const displayedCarInfo = transformRawCarDataToDisplayData(editCarInfo);
       return (
         <CarForm mode="edit"
                  form={form}
@@ -67,6 +72,8 @@ export default class CarFormContainer extends Component {
         <CarForm mode="add"
                  form={form}
                  drivers={drivers}
+                 vehicleValidate={vehicleValidate}
+                 onVehicleNumberBlur={this.handleVehicleNumberBlur}
                  onSubmitBtnClicked={this.handleCarSave}/>
       );
     }
