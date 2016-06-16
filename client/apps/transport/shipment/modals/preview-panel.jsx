@@ -72,7 +72,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Tabs activeKey={`${tabKey || 'detail'}`}>
+            <Tabs defaultActiveKey={`${tabKey || 'detail'}`}>
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
               </TabPane>
