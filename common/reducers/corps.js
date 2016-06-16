@@ -6,7 +6,6 @@ import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValue
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'OPEN_TENANT_APPS_EDITOR', 'CLOSE_TENANT_APPS_EDITOR',
-  'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
   'CORP_EDIT', 'CORP_EDIT_SUCCEED', 'CORP_EDIT_FAIL',
@@ -52,18 +51,13 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     // corp/info
-    case actionTypes.IMG_UPLOAD_SUCCEED: {
-      const form = { ...state.formData };
-      form[action.field] = action.result.data;
-      return { ...state, formData: form };
-    }
     case actionTypes.CORP_EDIT_SUCCEED: {
       if (state.selectedIndex !== -1) {
         const corplist = {...state.corplist};
         corplist.data[state.selectedIndex] = action.data.corp;
         return {...state, selectedIndex: -1, corplist};
       } else {
-        return state;
+        return { ...state, formData: action.data.corp };
       }
     }
     // organization
@@ -166,18 +160,6 @@ export function edit(corp) {
       endpoint: 'v1/user/corp',
       method: 'put',
       data: { corp }
-    }
-  };
-}
-
-export function uploadImg(field, pics) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.IMG_UPLOAD, actionTypes.IMG_UPLOAD_SUCCEED, actionTypes.IMG_UPLOAD_FAIL],
-      endpoint: 'v1/upload/img',
-      method: 'post',
-      files: pics,
-      field
     }
   };
 }

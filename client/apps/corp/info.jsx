@@ -1,17 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Form, Input, Row, Col, Select, Tabs, message } from 'ant-ui';
+import {
+  Icon, Button, Form, Input, Row, Col, Select, Tabs, Upload, message
+  } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { setNavTitle } from 'common/reducers/navbar';
 import connectNav from 'client/common/decorators/connect-nav';
-import { isFormDataLoaded, loadForm, setFormValue, uploadImg, edit } from
+import { isFormDataLoaded, loadForm, edit } from
   'common/reducers/corps';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
 import { validatePhone } from 'common/validater';
 import { TENANT_LEVEL } from '../../../common/constants';
-const Dropzone = require('react-dropzone');
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -23,6 +24,7 @@ const formatContainerMsg = format(containerMessages);
 const Option = Select.Option;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
+const Dragger = Upload.Dragger;
 
 function fetchData({state, dispatch, cookie}) {
   const corpId = state.account.tenantId;
@@ -49,17 +51,8 @@ function fetchData({state, dispatch, cookie}) {
   state => ({
     formData: state.corps.formData
   }),
-  { uploadImg, setFormValue, edit, checkCorpDomain })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
-  onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
-      props.setFormValue(name, fields[name].value);
-    }
-  },
+  { edit, checkCorpDomain })
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class CorpInfo extends React.Component {
@@ -68,18 +61,50 @@ export default class CorpInfo extends React.Component {
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
-    setFormValue: PropTypes.func.isRequired,
     checkCorpDomain: PropTypes.func.isRequired,
-    uploadImg: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
+  constructor(props) {
+    super(props);
+    const { country, province, city, district, logo } = this.props.formData;
+    this.state = { country, province, city, district, logo };
+  }
+  componentWillReceiveProps(nextProps) {
+    const newState = {};
+    ['country', 'province', 'city', 'district', 'logo'].forEach(fld => {
+      if (nextProps.formData[fld] !== this.props.formData[fld]) {
+        newState[fld] = nextProps.formData[fld];
+      }
+    });
+    this.setState(newState);
+  }
+  handleRegionChange = (field, value) => {
+    this.setState({ [field]: value });
+  }
+  handleImgUpload = (upinfo) => {
+    const file = upinfo.file;
+    if (file.status === 'done') {
+      if (file.response.status === 200) {
+        this.setState({
+          logo: file.response.data
+        });
+      } else {
+        message.error(file.response.msg);
+      }
+    }
+  }
   handleSubmit = () => {
-    const { intl } = this.props;
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
-        this.props.edit(this.props.formData).then(result => {
+        const { intl, formhoc, formData } = this.props;
+        const form = {
+          ...formData,
+          ...formhoc.getFieldsValue(),
+          ...this.state,
+        };
+        this.props.edit(form).then(result => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -88,39 +113,34 @@ export default class CorpInfo extends React.Component {
         });
       } else {
         this.forceUpdate();
-        message.error(formatMsg(intl, 'formValidateErr'), 10);
       }
     });
   }
   handleCancel() {
     this.context.router.goBack();
   }
-  /*
-  isCorpDomainExist(value, callback) {
-    this.props.checkCorpDomain(value, this.props.formData.key).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-        callback();
-      } else if (result.data.exist) {
-        callback(new Error('企业子域名已存在'));
-      } else {
-        callback();
-      }
-    });
-  }
-  */
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps, getFieldError }} = this.props;
+    const { formhoc: { getFieldProps }} = this.props;
     return (
       <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
+        hasFeedback required={required}
+      >
+        <Input type="text" placeholder={placeholder} {
+          ...getFieldProps(field, {rules, ...fieldProps})
+        }
+        />
       </FormItem>
     );
   }
   renderBasicForm() {
-    const { formData: { country, province, city, district }, formhoc: { getFieldProps }, intl }
-      = this.props;
+    const {
+      formData: {
+        name, short_name, address,
+        code, type, remark, website, contact, phone, email,
+      },
+      formhoc: { getFieldProps }, intl
+    } = this.props;
+    const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
       <div className="panel-body body-responsive">
@@ -129,35 +149,49 @@ export default class CorpInfo extends React.Component {
             <Col span="12">
               {this.renderTextInput(
                 msg('companyName'), msg('companyNameTip'), 'name', true,
-                [{required: true, message: msg('companyNameRequired')}]
+                [{required: true, message: msg('companyNameRequired')}],
+                { initialValue: name }
               )}
               {this.renderTextInput(
                 msg('companyShortName'), '', 'short_name', false,
-                [{ type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
-                  message: msg('shortNameMessage')}]
+                [{
+                  type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
+                  message: msg('shortNameMessage')
+                }],
+                { initialValue: short_name }
               )}
               <FormItem label={msg('location')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Region withCountry setFormValue={this.props.setFormValue} region={{
+                <Region withCountry setFormValue={this.handleRegionChange} region={{
                   country, province, city, district
                 }}
                 />
               </FormItem>
-              {this.renderTextInput(msg('fullAddress'), '', 'address')}
+              {
+                this.renderTextInput(
+                  msg('fullAddress'), '', 'address', false, undefined,
+                  { initialValue: address }
+                )
+              }
             </Col>
             <Col span="12">
               <FormItem label={msg('enterpriseCode')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Input type="text" disabled {...getFieldProps('code')} />
+                <Input type="text" disabled {...getFieldProps('code', { initialValue: code })} />
               </FormItem>
               <FormItem label={msg('tradeCategory')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Select defaultValue="lucy" style={{width:'100%'}} {...getFieldProps('type')}>
+                <Select defaultValue="lucy" style={{width:'100%'}}
+                {...getFieldProps('type', { initialValue: type})}
+                >
                   <Option value="freight">货代</Option>
                 </Select>
               </FormItem>
               <FormItem label={msg('companyAbout')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Input type="textarea" rows="3" {...getFieldProps('remark')} />
+                <Input type="textarea" rows="3" {...getFieldProps('remark', { initialValue: remark })} />
               </FormItem>
               <FormItem label={msg('companyWebsite')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Input type="text" addonBefore="http://" {...getFieldProps('website')} />
+                <Input type="text" addonBefore="http://" {
+                  ...getFieldProps('website', { initialValue: website })
+                }
+                />
               </FormItem>
             </Col>
           </Row>
@@ -169,14 +203,17 @@ export default class CorpInfo extends React.Component {
                   message: msg('contactRequired'),
                   type: 'string',
                   whitespace: true
-                }], {transform: (value) => (value.trim())}
+                }], {
+                  transform: (value) => (value.trim()),
+                  initialValue: contact,
+                }
               )}
               {this.renderTextInput(msg('phone'), '', 'phone', true, [{
                 validator: (rule, value, callback) => validatePhone(
                   value, callback,
                   (msgs, descriptor) => format(msgs)(intl, descriptor)
                 )
-              }])}
+              }], { initialValue: phone })}
             </Col>
             <Col span="12">
               <FormItem label={msg('position')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
@@ -184,7 +221,8 @@ export default class CorpInfo extends React.Component {
               </FormItem>
               {this.renderTextInput(
                 'Email', '', 'email', false,
-                [{type: 'email', message: formatContainerMsg(intl, 'emailError')}]
+                [{type: 'email', message: formatContainerMsg(intl, 'emailError')}],
+                { initialValue: email }
               )}
             </Col>
           </Row>
@@ -199,7 +237,7 @@ export default class CorpInfo extends React.Component {
       </div>);
   }
   renderEnterpriseForm() {
-    const {formData: { logo: logoPng }, formhoc: { getFieldProps, getFieldError }, intl } = this.props;
+    const { formData: { subdomain }, intl } = this.props;
     const msg = (descriptor) => formatMsg(intl, descriptor);
     return (
       <div className="panel-body body-responsive">
@@ -207,32 +245,28 @@ export default class CorpInfo extends React.Component {
           <Row>
             <Col span="12">
               <FormItem label="LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>
-                  <img src={logoPng || '/assets/img/wetms.png'} style={{
-                    height: 120, width: 120, margin: 10,
-                    border: '1px solid #e0e0e0', borderRadius: 60
-                  }}
-                  />
-                  <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } style={{}}>
-                    <div className="ant-upload ant-upload-drag" title={msg('dragHint')}
-                      style={{height: 140, marginTop: 20}}
-                    >
-                      <span>
-                        <div className="ant-upload-drag-container">
-                          <Icon type="upload" />
-                          <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
-                        </div>
-                      </span>
-                    </div>
-                  </Dropzone>
+                <img src={this.state.logo || '/assets/img/wetms.png'} style={{
+                  height: 120, width: 120, margin: 10,
+                  border: '1px solid #e0e0e0', borderRadius: 60
+                }}
+                />
+                <div title={msg('dragHint')} style={{height: 140, marginTop: 20}}>
+                  <Dragger onChange={this.handleImgUpload} showUploadList={false}
+                  action="/v1/upload/img"
+                  >
+                    <Icon type="upload" />
+                    <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
+                  </Dragger>
+                </div>
               </FormItem>
             </Col>
           </Row>
           <Row>
             <Col span="12">
-              <FormItem label={msg('loginSubdomain')} labelCol={{span: 6}} wrapperCol={{span: 16}}
-                help={getFieldError('subdomain')}
+              <FormItem label={msg('loginSubdomain')} labelCol={{span: 6}}
+              wrapperCol={{span: 16}}
               >
-                <Input type="text" addonAfter=".welogix.cn" disabled {...getFieldProps('subdomain')} />
+                <Input type="text" addonAfter=".welogix.cn" disabled value={subdomain} />
               </FormItem>
             </Col>
           </Row>

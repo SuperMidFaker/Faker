@@ -61,16 +61,7 @@ function goBack(router) {
     withModuleLayout: false
   }));
 })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
-  onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
-      props.setFormValue(name, fields[name].value);
-    }
-  },
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class CorpEdit extends React.Component {
@@ -87,6 +78,10 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired
   }
+  state = {
+    adminChecked: false,
+    role: '',
+  }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
@@ -97,16 +92,27 @@ export default class CorpEdit extends React.Component {
       goBack(this.context.router);
     }
   }
+  handleAdminCheck = (checked) => {
+    this.setState({
+      adminChecked: checked,
+      role: checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name,
+    })
+  }
   handleSubmit = (ev) => {
     ev.preventDefault();
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
+        const form = {
+          ...this.props.formData,
+          ...this.getFieldsValue(),
+          role: this.state.role,
+        };
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData, this.props.code, this.props.tenant.id).then(
+          this.props.edit(form, this.props.code, this.props.tenant.id).then(
             result => this.onSubmitReturn(result.error)
           );
         } else {
-          this.props.submit(this.props.formData, this.props.code, this.props.tenant).then(
+          this.props.submit(form, this.props.code, this.props.tenant).then(
             result => this.onSubmitReturn(result.error)
           );
         }
@@ -119,16 +125,17 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
-    const { formhoc: { getFieldProps, getFieldError }} = this.props;
+    const { formhoc: { getFieldProps }} = this.props;
     return (
       <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
+        hasFeedback required={required}
+      >
         <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
   }
   render() {
-    const { submitting, intl, formhoc: { getFieldProps, getFieldError }, code } = this.props;
+    const { formData: { name, loginName, password, phone, email, position }, submitting, intl, formhoc: { getFieldProps }, code } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
     const msg = (descriptor) => formatMsg(intl, descriptor);
@@ -139,17 +146,20 @@ export default class CorpEdit extends React.Component {
           className="form-edit-content offset-right-col">
             {this.renderTextInput(
               msg('fullName'), msg('fullNamePlaceholder'), 'name', true,
-              [{required: true, min: 2, message: msg('fullNameMessage')}]
+              [{required: true, min: 2, message: msg('fullNameMessage')}],
+              { initialValue: name }
             )}
             <FormItem label={msg('username')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-              help={getFieldError('loginName')} required>
+            required
+            >
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(
                     value, code, this.props.formData.loginId,
                     this.props.tenant.id, callback, message, this.props.checkLoginName,
                     (msgs, descriptor) => format(msgs)(intl, descriptor))
-                }]
+                }],
+                initialValue: loginName,
               })}
               />
             </FormItem>
@@ -157,27 +167,33 @@ export default class CorpEdit extends React.Component {
               isCreating && this.renderTextInput(
                 msg('password'), msg('passwordPlaceholder'), 'password', true,
                 [{required: true, min: 6, message: msg('passwordMessage')}],
-                null, 'password')
+                { initialValue: password }, 'password')
             }
             {this.renderTextInput(
               msg('phone'), msg('phonePlaceholder'), 'phone', true,
-              [{ validator: (rule, value, callback) => validatePhone(value, callback,
-                  (msgs, descriptor) => format(msgs)(intl, descriptor)) }]
+              [{
+                validator: (rule, value, callback) => validatePhone(value, callback,
+                  (msgs, descriptor) => format(msgs)(intl, descriptor))
+              }],
+              { initialValue: phone }
             )}
             {this.renderTextInput(
               'Email', msg('emailPlaceholder'), 'email', false,
-              [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }]
+              [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
+              { initialValue: email }
             )}
-            {this.renderTextInput(msg('position'), '', 'position')}
+            {
+              this.renderTextInput(
+                msg('position'), '', 'position', false, undefined,
+                { initialValue: position }
+              )
+            }
             {this.props.formData.role !== TENANT_ROLE.owner.name &&
             <FormItem label={msg('isAdmin')} labelCol={{span: 6}} wrapperCol={{span: 18}}>
-              <Switch checkedChildren={<Icon type="check" />}
-                unCheckedChildren={<Icon type="cross" />}
-                onChange={checked =>
-                  this.props.setFormValue(
-                    'role', checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name)}
-                checked={this.props.formData.role
-                  && this.props.formData.role === TENANT_ROLE.manager.name}
+              <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
+                onChange={this.handleAdminCheck} checked={
+                  this.state.adminChecked || this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name
+                }
               />
             </FormItem>}
             <Row>
