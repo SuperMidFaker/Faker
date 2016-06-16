@@ -233,6 +233,34 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'task_vehicle',
     width: 120
   }, {
+    title: msg('shipmtEstPickupDate'),
+    dataIndex: 'pickup_est_date',
+    width: 100,
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+  }, {
+    title: msg('shipmtActPickupDate'),
+    dataIndex: 'pickup_act_date',
+    width: 100,
+    render: (o, record) => record.pickup_act_date ?
+      (<span className="mdc-text-green">
+      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
+      </span>
+      ) : <span />
+  }, {
+    title: msg('shipmtEstDeliveryDate'),
+    dataIndex: 'deliver_est_date',
+    width: 100,
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
+  }, {
+    title: msg('shipmtActDeliveryDate'),
+    dataIndex: 'deliver_act_date',
+    width: 100,
+    render: (o, record) => record.deliver_act_date ?
+      (<span className="mdc-text-green">
+      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
+      </span>
+      ) : <span />
+  }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
     width: 80
@@ -261,34 +289,6 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',
     width: 80
-  }, {
-    title: msg('shipmtEstPickupDate'),
-    dataIndex: 'pickup_est_date',
-    width: 100,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
-  }, {
-    title: msg('shipmtActPickupDate'),
-    dataIndex: 'pickup_act_date',
-    width: 100,
-    render: (o, record) => record.pickup_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
-  }, {
-    title: msg('shipmtEstDeliveryDate'),
-    dataIndex: 'deliver_est_date',
-    width: 100,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
-  }, {
-    title: msg('shipmtActDeliveryDate'),
-    dataIndex: 'deliver_act_date',
-    width: 100,
-    render: (o, record) => record.deliver_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
   });
   if (type !== 'pod') {
     columns.push({
