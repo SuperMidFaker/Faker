@@ -89,8 +89,8 @@ export default class PreviewPanel extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Row className="pane-section">
-          <Col span="12">
-            <Card title={this.msg('consignerInfo')} bodyStyle={{ padding: 16 }}>
+          <Col span="12" style={{paddingRight: 8}}>
+            <Card bodyStyle={{ padding: 16 }}>
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
                 field={ shipmt.consigner_name } fieldCol={{ span: 18 }}
               />
@@ -111,8 +111,8 @@ export default class PreviewPanel extends React.Component {
               />
             </Card>
           </Col>
-          <Col span="12">
-            <Card title={this.msg('consigneeInfo')} bodyStyle={{ padding: 16 }}>
+          <Col span="12" style={{paddingLeft: 8}}>
+            <Card bodyStyle={{ padding: 16 }}>
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consignee')}
                 field={ shipmt.consignee_name } fieldCol={{ span: 18 }}
               />
@@ -135,7 +135,7 @@ export default class PreviewPanel extends React.Component {
           </Col>
         </Row>
         <Row className="pane-section">
-          <Card title={this.msg('scheduleInfo')} bodyStyle={{ padding: 16 }}>
+          <Card bodyStyle={{ padding: 16 }}>
             <Row>
               <Col span="8">
                 <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupDate')}
@@ -153,11 +153,7 @@ export default class PreviewPanel extends React.Component {
                 />
               </Col>
             </Row>
-          </Card>
-        </Row>
-        <Row className="pane-section">
-        <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 16 }}>
-          <Row>
+            <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
                 field={ shipmt.transport_mode } fieldCol={{ span: 16 }}
