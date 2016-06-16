@@ -145,6 +145,11 @@ export default function makeColumns(type, handlers, msg) {
         },
       });
     }
+    columns.push({
+      title: msg('shipmtException'),
+      width: 80,
+      dataIndex: 'excp_level',
+    });
   } else {
     columns.push({
       title: msg('proofOfDelivery'),
@@ -197,10 +202,6 @@ export default function makeColumns(type, handlers, msg) {
     });
   }
   columns.push({
-    title: msg('shipmtException'),
-    width: 100,
-    dataIndex: 'excp_level',
-  }, {
     title: msg('shipmtCarrier'),
     dataIndex: 'sp_name',
     width: 200,
@@ -304,6 +305,12 @@ export default function makeColumns(type, handlers, msg) {
           return <Icon type="qrcode" />;
         }
       }
+    });
+  } else {
+    columns.push({
+      title: msg('shipmtException'),
+      width: 80,
+      dataIndex: 'excp_level',
     });
   }
   return columns;
