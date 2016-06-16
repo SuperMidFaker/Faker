@@ -235,7 +235,7 @@ export default defineMessages({
   },
   trackingStepTitle: {
     id: 'transport.shipment.track.step.title',
-    defaultMessage: '状态跟踪'
+    defaultMessage: '状态'
   },
   trackCreate: {
     id: 'transport.shipment.track.create',
