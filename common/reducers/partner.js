@@ -1,11 +1,10 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
-import { PARTNERSHIP } from 'common/constants';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
-  'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL', 'EDIT_PROVIDER_TYPES_LOCAL',
+  'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
   'EDIT_PARTNER', 'EDIT_PARTNER_SUCCEED', 'EDIT_PARTNER_FAIL',
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
@@ -44,6 +43,10 @@ function partnerReducer(state, action) {
       const invitedPartner = {...foundPartner, invited: 1};
       return [...state.slice(0, foundPartnerIndex), invitedPartner, ...state.slice(foundPartnerIndex + 1)];
     }
+    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED: {
+      const updatePartner = {...foundPartner, partnerships: action.partnerships};
+      return [...state.slice(0, foundPartnerIndex), updatePartner, ...state.slice(foundPartnerIndex + 1)];
+    }
     default:
       return state;
   }
@@ -57,22 +60,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, selectedMenuItemKey:action.selectedMenuItemKey };
     case actionTypes.SET_PROVIDER_TYPE:
       return { ...state, providerType: action.providerType };
-    case actionTypes.EDIT_PROVIDER_TYPES_LOCAL: {
-      const key = action.key;
-      const providerTypes = action.providerTypes;
-      const originPartnerlist = state.partnerlist.data;
-      const partnerTenant = originPartnerlist.find(partner => partner.key === key);
-      const partnerTenantIndex = originPartnerlist.findIndex(partner => partner.key === key);
-      const updatePartnerTenant = { ...partnerTenant, types: providerTypes.map(pType => ({key: PARTNERSHIP[pType], code: pType})) };
-      partnerTenant.types = providerTypes.map(pType => ({key: PARTNERSHIP[pType], code: pType}));
-      return {
-        ...state,
-        partnerlist: {
-          ...state.partnerlist,
-          data: [...originPartnerlist.slice(0, partnerTenantIndex), updatePartnerTenant, ...originPartnerlist.slice(partnerTenantIndex + 1)]
-        }
-      };
-    }
     case actionTypes.ADD_PARTNER_SUCCEED: {
       const { newPartner } = action.result.data;
       return { ...state, partnerlist: [newPartner, ...state.partnerlist] };
@@ -81,6 +68,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
     case actionTypes.DELETE_PARTNER_SUCCEED:
     case actionTypes.INVITE_PARTNER:
+    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED:
       return {...state, partnerlist: partnerReducer(state.partnerlist, action)};
     default:
       return state;
@@ -117,7 +105,7 @@ export function setProviderType(providerType) {
   };
 }
 
-export function editProviderTypes({partnerKey, tenantId, partnerInfo, providerTypes}) {
+export function editProviderTypes({id, tenantId, partnerships}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -127,21 +115,14 @@ export function editProviderTypes({partnerKey, tenantId, partnerInfo, providerTy
       ],
       endpoint: 'v1/cooperation/partner/edit_provider_types',
       method: 'post',
+      id,
+      partnerships,
       data: {
-        partnerKey,
+        partnerId: id,
         tenantId,
-        partnerInfo,
-        providerTypes,
+        partnerships,
       }
     }
-  };
-}
-
-export function editProviderTypesLocal({key, providerTypes}) {
-  return {
-    type: actionTypes.EDIT_PROVIDER_TYPES_LOCAL,
-    key,
-    providerTypes
   };
 }
 
