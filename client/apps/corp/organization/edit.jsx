@@ -4,7 +4,7 @@ import { Button, Form, Input, Select, Row, Col, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadOrganizationForm, clearForm, setFormValue, editOrganization, submit } from
+import { loadOrganizationForm, clearForm, editOrganization, submit } from
   'common/reducers/corps';
 import { isLoginNameExist, checkLoginName } from
   'common/reducers/checker-reducer';
@@ -40,9 +40,9 @@ function goBack(router) {
     formData: state.corps.formData,
     corpUsers: state.corps.corpUsers,
     submitting: state.corps.submitting,
-    account: state.account
+    account: state.account,
   }),
-  { setFormValue, editOrganization, submit, checkLoginName })
+  { editOrganization, submit, checkLoginName })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle === 'componentDidMount') {
     return;
@@ -56,16 +56,7 @@ function goBack(router) {
     withModuleLayout: false
   }));
 })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
-  onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
-      props.setFormValue(name, fields[name].value);
-    }
-  },
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class CorpEdit extends React.Component {
@@ -79,7 +70,6 @@ export default class CorpEdit extends React.Component {
     editOrganization: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
-    setFormValue: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -95,9 +85,13 @@ export default class CorpEdit extends React.Component {
     ev.preventDefault();
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
+        const form = {
+          ...this.props.formData,
+          ...this.props.formhoc.getFieldsValue(),
+        };
         if (this.props.formData.key) {
           // only with poid coid(owner id) and organization name
-          this.props.editOrganization(this.props.formData).then(result => {
+          this.props.editOrganization(form).then(result => {
             this.onSubmitReturn(result.error);
           });
         } else {
@@ -109,7 +103,7 @@ export default class CorpEdit extends React.Component {
             category_id,
             subdomain,
           };
-          this.props.submit(this.props.formData, tenant).then(result => {
+          this.props.submit(form, tenant).then(result => {
             this.onSubmitReturn(result.error);
           });
         }
@@ -122,25 +116,28 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps, getFieldError }} = this.props;
+    const { formhoc: { getFieldProps }} = this.props;
     return (
       <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
+        hasFeedback required={required}>
         <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
       </FormItem>
     );
   }
   renderOwnerForm() {
-    const { formhoc: { getFieldProps, getFieldError }, intl, account: { code, tenantId }} = this.props;
+    const {
+      formhoc: { getFieldProps }, intl,
+      formData: { contact, loginName, phone, email }, account: { code, tenantId }
+    } = this.props;
     return (
       <div>
         {this.renderTextInput(
           formatMsg(intl, 'chief'), formatMsg(intl, 'chiefPlaceholder'), 'contact',
-          true, [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}]
+          true, [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}],
+          { initialValue: contact }
         )}
         <FormItem label={formatMsg(intl, 'username')} labelCol={{span: 6}}
           wrapperCol={{span: 18}} hasFeedback required
-          help={getFieldError('loginName')}
         >
           <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
             rules: [{
@@ -150,7 +147,8 @@ export default class CorpEdit extends React.Component {
                 this.props.checkLoginName,
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               )
-            }]
+            }],
+            initialValue: loginName
           })} />
         </FormItem>
         {this.renderTextInput(formatMsg(intl, 'phone'), '', 'phone', true, [{
@@ -158,20 +156,23 @@ export default class CorpEdit extends React.Component {
             value, callback,
             (msgs, descriptor) => format(msgs)(intl, descriptor)
           )
-        }])}
+        }], { initialValue: phone })}
         {this.renderTextInput('Email', '', 'email', false, [{
           type: 'email',
-          message: formatContainerMsg(intl, 'emailError')}])}
-      </div>);
+          message: formatContainerMsg(intl, 'emailError')}],
+          { initialValue: email})}
+      </div>
+    );
   }
   renderOwnerSelect() {
-    const { corpUsers, intl, formhoc: { getFieldProps, getFieldError }} = this.props;
+    const { corpUsers, intl, formhoc: { getFieldProps }} = this.props;
     return (
       <FormItem label={formatMsg(intl, 'chief')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        help={getFieldError('coid')} required>
+        required>
         <Select style={{ width: '100%' }} { ...getFieldProps(
           'coid', {
-            rules: [{required: true, message: formatMsg(intl, 'chiefRequired')}]
+            rules: [{required: true, message: formatMsg(intl, 'chiefRequired')}],
+            initialValue: this.props.formData.coid,
           }) }
         >
           {
@@ -182,7 +183,7 @@ export default class CorpEdit extends React.Component {
   }
   render() {
     const isCreating = this.props.formData.key === null;
-    const { intl, submitting } = this.props;
+    const { formData: { name, subCode }, intl, submitting } = this.props;
     return (
       <div className="page-body">
         <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
@@ -191,14 +192,16 @@ export default class CorpEdit extends React.Component {
           {
             this.renderTextInput(
               formatMsg(intl, 'organName'), formatMsg(intl, 'organPlaceholder'), 'name', true,
-              [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}]
+              [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}],
+              { initialValue: name }
             )
           }
           {
             this.renderTextInput(
               formatMsg(intl, 'organSubcode'), formatMsg(intl, 'organSubcodePlaceholder'),
               'subCode', true,
-              [{required: true, max: 20, message: formatMsg(intl, 'subcodeMessage')}]
+              [{required: true, max: 20, message: formatMsg(intl, 'subcodeMessage')}],
+              { initialValue: subCode }
             )
           }
           {
@@ -211,6 +214,7 @@ export default class CorpEdit extends React.Component {
             </Col>
           </Row>
         </Form>
-      </div>);
+      </div>
+    );
   }
 }

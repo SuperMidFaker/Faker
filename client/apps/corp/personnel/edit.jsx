@@ -4,7 +4,7 @@ import { Icon, Button, Form, Input, Row, Col, Switch, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { isFormDataLoaded, loadForm, assignForm, clearForm, setFormValue, edit, submit } from
+import { isFormDataLoaded, loadForm, assignForm, clearForm, edit, submit } from
 'common/reducers/personnel';
 import { setNavTitle } from 'common/reducers/navbar';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
@@ -44,9 +44,9 @@ function goBack(router) {
     formData: state.personnel.formData,
     submitting: state.personnel.submitting,
     code: state.account.code,
-    tenant: state.personnel.tenant
+    tenant: state.personnel.tenant,
   }),
-  { setFormValue, edit, submit, checkLoginName })
+  { edit, submit, checkLoginName })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle === 'componentDidMount') {
     return;
@@ -76,14 +76,12 @@ export default class CorpEdit extends React.Component {
     edit: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     checkLoginName: PropTypes.func.isRequired,
-    setFormValue: PropTypes.func.isRequired
-  }
-  state = {
-    adminChecked: false,
-    role: '',
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
+  }
+  state = {
+    role: '',
   }
   onSubmitReturn(error) {
     if (error) {
@@ -94,9 +92,8 @@ export default class CorpEdit extends React.Component {
   }
   handleAdminCheck = (checked) => {
     this.setState({
-      adminChecked: checked,
       role: checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name,
-    })
+    });
   }
   handleSubmit = (ev) => {
     ev.preventDefault();
@@ -104,8 +101,8 @@ export default class CorpEdit extends React.Component {
       if (!errors) {
         const form = {
           ...this.props.formData,
-          ...this.getFieldsValue(),
-          role: this.state.role,
+          ...this.props.formhoc.getFieldsValue(),
+          role: this.state.role || this.props.formData.role,
         };
         if (this.props.formData.key) {
           this.props.edit(form, this.props.code, this.props.tenant.id).then(
@@ -135,7 +132,10 @@ export default class CorpEdit extends React.Component {
     );
   }
   render() {
-    const { formData: { name, loginName, password, phone, email, position }, submitting, intl, formhoc: { getFieldProps }, code } = this.props;
+    const {
+      formData: { name, loginName, password, phone, email, position },
+      submitting, intl, formhoc: { getFieldProps }, code,
+    } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
     const msg = (descriptor) => formatMsg(intl, descriptor);
@@ -191,8 +191,12 @@ export default class CorpEdit extends React.Component {
             {this.props.formData.role !== TENANT_ROLE.owner.name &&
             <FormItem label={msg('isAdmin')} labelCol={{span: 6}} wrapperCol={{span: 18}}>
               <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                onChange={this.handleAdminCheck} checked={
-                  this.state.adminChecked || this.props.formData.role && this.props.formData.role === TENANT_ROLE.manager.name
+                { ...getFieldProps(
+                  'adminChecked', {
+                    valuePropName: 'checked',
+                    initialValue: this.props.formData.role === TENANT_ROLE.manager.name,
+                    onChange: this.handleAdminCheck,
+                  })
                 }
               />
             </FormItem>}

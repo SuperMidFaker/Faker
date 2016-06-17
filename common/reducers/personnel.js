@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
-  clearFormC, setFormValueC } from './form-common';
+  clearFormC } from './form-common';
 import { TENANT_ROLE } from '../constants';
 import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
 import { PROFILE_UPDATE_SUCCEED } from './account';
@@ -148,10 +148,6 @@ export function assignForm(personnelState, persId) {
 
 export function clearForm() {
   return clearFormC(actionTypes);
-}
-
-export function setFormValue(field, newValue) {
-  return setFormValueC(actionTypes, field, newValue);
 }
 
 export function loadPersonnel(cookie, params) {
