@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, InputNumber, message, Row, Tooltip, Popconfirm } from 'ant-ui';
+import { Col, Form, Button, InputNumber, message, Popconfirm } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -10,7 +10,6 @@ import { loadFormRequire, setFormValue, setConsignFields }
 import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
-import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
 import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
@@ -37,7 +36,6 @@ function fetchData({ state, dispatch, cookie }) {
     tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
     transitModes: state.shipment.formRequire.transitModes,
-    clients: state.shipment.formRequire.clients,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
     sortField: state.transportAcceptance.table.sortField,
@@ -59,29 +57,16 @@ function fetchData({ state, dispatch, cookie }) {
   }));
 })
 @Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
   onFieldsChange(props, fields) {
     Object.keys(fields).forEach(name => {
-      if (name === 'client') {
-        const clientFieldId = parseInt(fields[name].value, 10);
-        const selclients = props.clients.filter(
-            cl => cl.partner_id === clientFieldId
-        );
-        props.setConsignFields({
-          client_id: selclients.length > 0 ? selclients[0].tid : -1,
-          client_partner_id: selclients.length > 0 ? clientFieldId : -1,
-          client: selclients.length > 0 ? selclients[0].name : fields[name].value,
-        });
-      } else if (name === 'transport_mode_code') {
+      if (name === 'transport_mode_code') {
         const code = fields[name].value;
         const modes = props.transitModes.filter(tm => tm.mode_code === code);
         props.setConsignFields({
           transport_mode_code: code,
           transport_mode: modes.length > 0 ? modes[0].mode_name : '',
         });
-      } else {
+      } else if (name !== 'customer_name') {
         props.setFormValue(name, fields[name].value);
       }
     });
@@ -97,7 +82,6 @@ export default class ShipmentCreate extends React.Component {
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     transitModes: PropTypes.array.isRequired,
-    clients: PropTypes.array.isRequired,
     submitting: PropTypes.bool.isRequired,
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
@@ -205,13 +189,9 @@ export default class ShipmentCreate extends React.Component {
       });
   }
   render() {
-    const { intl, clients, submitting, tenantName, formhoc } = this.props;
-    const clientOpts = clients.map(cl => ({
-      key: `${cl.partner_id}/${cl.tid}`,
-      value: `${cl.partner_id}`,
-      code: cl.partner_code,
-      name: cl.name,
-    }));
+    const { intl, submitting, tenantName, formhoc, formData: {
+      ref_waybill_no, ref_entry_no, remark, freight_charge,
+    }} = this.props;
     return (
       <div className="main-content">
         <Form form={formhoc} horizontal>
@@ -219,30 +199,13 @@ export default class ShipmentCreate extends React.Component {
             <div className="panel-header" />
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
-                <Row>
-                  <div className="subform-heading">
-                    <div className="subform-title">{this.msg('customerInfo')}</div>
-                  </div>
-                  <Col span="16" className="subform-body">
-                    <Tooltip placement="top" title="请先选择客户">
-                      <div>
-                        <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={3} field="client"
-                        required optionData={clientOpts} filterFields={[ 'code' ]}
-                        optionField="name" optionKey="key" optionValue="value"
-                        rules={[{
-                          required: true, message: this.msg('clientNameMust')
-                        }]}
-                        />
-                      </div>
-                    </Tooltip>
-                  </Col>
-                  <Col span="8" className="subform-body">
-                    <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8} field="ref_external_no"/>
-                  </Col>
-                </Row>
                 <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
-                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
-                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
+                labelColSpan={8} formhoc={formhoc}
+                />
+                <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
+                labelColSpan={8} formhoc={formhoc}
+                />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
                 <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>
@@ -257,17 +220,28 @@ export default class ShipmentCreate extends React.Component {
                       required: true, message: this.msg('lspNameMust')
                     }]} field="lsp"
                   />
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-                  <InputItem type="textarea" autosize formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
-                  </div>
-                  <div className="subform-heading">
-                      <div className="subform-title">{this.msg('freightCharge')}</div>
-                  </div>
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')}
+                  colSpan={0} field="ref_waybill_no"
+                  fieldProps={{initialValue: ref_waybill_no}}
+                  />
+                  <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')}
+                  colSpan={0} field="ref_entry_no"
+                  fieldProps={{initialValue: ref_entry_no}}
+                  />
+                  <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')}
+                  colSpan={0} field="remark"
+                  fieldProps={{initialValue: remark}}
+                  />
+                </div>
+                <div className="subform-heading">
+                  <div className="subform-title">{this.msg('freightCharge')}</div>
+                </div>
                 <div className="subform-body">
                   <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                    <InputNumber style={{ width: '100%' }} min={0} step={1}
-                    { ...formhoc.getFieldProps('freight_charge') }
+                    <InputNumber style={{ width: '100%' }} min={0} step={0.1}
+                    { ...formhoc.getFieldProps('freight_charge', {
+                      initialValue: freight_charge
+                    }) }
                     />
                   </FormItem>
                 </div>

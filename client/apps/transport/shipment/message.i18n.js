@@ -9,6 +9,18 @@ export default defineMessages({
     id: 'transport.shipment.customer.tooltip.title',
     defaultMessage: '请先选择客户'
   },
+  client: {
+    id: 'transport.acceptance.client',
+    defaultMessage: '客户名称'
+  },
+  clientNameMust: {
+    id: 'transport.acceptance.client.name.must',
+    defaultMessage: '客户名称必填'
+  },
+  refExternalNo: {
+    id: 'transport.acceptance.ref.external',
+    defaultMessage: '客户单号'
+  },
   consignerInfo: {
     id: 'transport.shipment.consigner.info',
     defaultMessage: '发货信息'

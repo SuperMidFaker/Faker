@@ -42,7 +42,6 @@ export default(store, cookie) => {
     <Route path="/" component={Root}>
       <Route component={SSO}>
         <Route path="login" component={Login}/>
-        <Route path="forgot" component={Forgot}/>
       </Route>
       <Route onEnter={requireAuth}>
         <IndexRoute component={Home}/>

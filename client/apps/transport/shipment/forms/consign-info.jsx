@@ -12,8 +12,38 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 
+function getRenderFields(type) {
+  return type === 'consignee' ? {
+    name: 'consignee_name',
+    province: 'consignee_province',
+    city: 'consignee_city',
+    district: 'consignee_district',
+    addr: 'consignee_addr',
+    contact: 'consignee_contact',
+    mobile: 'consignee_mobile',
+    email: 'consignee_email'
+  } : {
+    name: 'consigner_name',
+    province: 'consigner_province',
+    city: 'consigner_city',
+    district: 'consigner_district',
+    addr: 'consigner_addr',
+    contact: 'consigner_contact',
+    mobile: 'consigner_mobile',
+    email: 'consigner_email'
+  };
+}
+
+function getFieldDefaults(state, type) {
+  const defaults = {};
+  return getRenderFields(type).forEach(fd => {
+    defaults[fd] = state.shipment.formData[fd];
+  });
+}
+
 @connect(
   (state, props) => ({
+    fieldDefaults: getFieldDefaults(state, props.type),
     consignLocations: props.type === 'consignee' ?
       state.shipment.formRequire.consigneeLocations :
       state.shipment.formRequire.consignerLocations
@@ -29,7 +59,8 @@ export default class ConsignInfo extends React.Component {
     labelColSpan: PropTypes.number.isRequired,
     setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
-    formhoc: PropTypes.object.isRequired
+    formhoc: PropTypes.object.isRequired,
+    fieldDefaults: PropTypes.object.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -105,25 +136,7 @@ export default class ConsignInfo extends React.Component {
     portal: 'departurePort',
     addr: 'pickupAddr'
   }
-  renderFields = this.props.type === 'consignee' ? {
-    name: 'consignee_name',
-    province: 'consignee_province',
-    city: 'consignee_city',
-    district: 'consignee_district',
-    addr: 'consignee_addr',
-    contact: 'consignee_contact',
-    mobile: 'consignee_mobile',
-    email: 'consignee_email'
-  } : {
-    name: 'consigner_name',
-    province: 'consigner_province',
-    city: 'consigner_city',
-    district: 'consigner_district',
-    addr: 'consigner_addr',
-    contact: 'consigner_contact',
-    mobile: 'consigner_mobile',
-    email: 'consigner_email'
-  }
+  renderFields = getRenderFields(this.props.type)
   renderRules = this.props.type === 'consignee' ? {
     name: {
     },
@@ -149,15 +162,19 @@ export default class ConsignInfo extends React.Component {
     },
   }
   render() {
-    const { outerColSpan, labelColSpan, formhoc, consignLocations } = this.props;
+    const {
+      outerColSpan, labelColSpan, formhoc, consignLocations,
+      fieldDefaults,
+    } = this.props;
     const locOptions = consignLocations.map(cl => ({
       name: cl.name,
       key: `${cl.node_id}${cl.name}`,
     }));
+    const { province, city, district, name, addr, contact, mobile, email } = this.renderFields;
     const region = {
-      province: formhoc.getFieldValue(this.renderFields.province),
-      city: formhoc.getFieldValue(this.renderFields.city),
-      district: formhoc.getFieldValue(this.renderFields.district),
+      province: formhoc.getFieldValue(province) || fieldDefaults[province],
+      city: formhoc.getFieldValue(city) || fieldDefaults[city],
+      district: formhoc.getFieldValue(district) || fieldDefaults[district],
     };
     return (
       <Row>
@@ -170,6 +187,7 @@ export default class ConsignInfo extends React.Component {
             optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
             allowClear onChange={this.handleAutoInputChange}
+            initialValue={fieldDefaults[name]}
           />
           <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 4}}
             wrapperCol={{span: 20}} { ...this.renderRules.portal }
@@ -178,17 +196,21 @@ export default class ConsignInfo extends React.Component {
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
             field={this.renderFields.addr} colSpan={4} { ...this.renderRules.addr }
+            fieldProps={{ initialValue: fieldDefaults[addr] }}
           />
         </Col>
         <Col span={`${24 - outerColSpan}`} className="subform-body">
           <InputItem formhoc={formhoc} labelName={this.msg('contact')}
             field={this.renderFields.contact} colSpan={labelColSpan}
+            fieldProps={{ initialValue: fieldDefaults[contact] }}
           />
           <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
             field={this.renderFields.mobile} colSpan={labelColSpan}
+            fieldProps={{ initialValue: fieldDefaults[mobile] }}
           />
           <InputItem formhoc={formhoc} labelName={this.msg('email')}
             field={this.renderFields.email} colSpan={labelColSpan}
+            fieldProps={{ initialValue: fieldDefaults[email] }}
           />
         </Col>
       </Row>
