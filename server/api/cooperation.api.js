@@ -236,7 +236,7 @@ function *rejectInvitation() {
 
 function *acceptInvitation() {
   const body = yield cobody(this);
-  const { id, partnerId, partnerships } = body;
+  const { id, partnerId, reversePartnerships } = body;
   try {
     const status = INVITATION_STATUS.ACCEPTED
     // 先更新原有的partner,partnership,invitation
@@ -249,8 +249,7 @@ function *acceptInvitation() {
     const newPartner = yield Partner.create({name: originTenant.name, partner_code: originTenant.code, tenant_type: PARTNER_TENANT_TYPE[originTenant.level],
     partner_tenant_id: originPartner.tenant_id, tenant_id: originPartner.partner_tenant_id, established: 1, invited: 1});
     // 建立关系的时候,如果邀请是供应商或者物流提供商,新的关系就是客户,否则根据前端传入的partnerships建立新的关系
-    const newPartnership = partnerships ? partnerships : ['CUS'];
-    yield Partnership.bulkCreate(newPartnership.map(ps => ({partner_id: newPartner.id, tenant_id: newPartner.tenant_id,
+    yield Partnership.bulkCreate(reversePartnerships.map(ps => ({partner_id: newPartner.id, tenant_id: newPartner.tenant_id,
     partner_tenant_id: newPartner.partner_tenant_id, partner_name: newPartner.name, partner_code: newPartner.partner_code, type_code: ps, status: 1})));
     return Result.ok(this);
   } catch(e) {

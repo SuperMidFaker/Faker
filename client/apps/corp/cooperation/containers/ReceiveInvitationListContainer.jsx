@@ -6,6 +6,7 @@ import { addUniqueKeys } from 'client/util/dataTransform';
 import { mapPartnerships } from '../util/dataMapping';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'common/reducers/invitation';
+import receiveModal from '../components/ReceiveModal';
 
 const rowSelection = {
   onChange() {}
@@ -79,7 +80,7 @@ export default class ReceiveInvitationList extends Component {
         if (record.status === 0) {
           return (
             <span>
-              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id)}>接受</a>
+              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}>接受</a>
               <span className="ant-divider"></span>
               <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}>拒绝</a>
             </span>
@@ -90,8 +91,16 @@ export default class ReceiveInvitationList extends Component {
       }
     }
   ]
-  handleAcceptBtnClick = (id, partnerId) => {
-    this.props.acceptInvitation(id, partnerId);
+  handleAcceptBtnClick = (id, partnerId, partnerships) => {
+    if (partnerships[0] === 'CUS') {
+      receiveModal({
+        onOk: (reversePartnerships) => {
+          this.props.acceptInvitation(id, partnerId, reversePartnerships);
+        }
+      });
+    } else {
+      this.props.acceptInvitation(id, partnerId, ['CUS']);
+    }
   }
   handleRejectBtnClick = (id, partnerId) => {
     this.props.rejectInvitation(id, partnerId);
