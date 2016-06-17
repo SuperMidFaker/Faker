@@ -114,7 +114,7 @@ export default class TenantForm extends React.Component {
                 </Col>
                 <Col span="12">
                   {this.renderTextInput(
-                    '邮箱', '请填写电子邮箱地址', 'email', true,
+                    '邮箱', '请填写电子邮箱地址', 'email', false,
                     [{type: 'email', message: '电子邮箱地址填写错误'}]
                   )}
                 </Col>
