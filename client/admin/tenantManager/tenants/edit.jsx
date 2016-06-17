@@ -20,7 +20,7 @@ function fetchData({ dispatch, cookie, params }) {
   dispatch(setNavTitle({
     depth: 2,
     text: '企业信息',
-    moduleName: 'corp',
+    moduleName: 'tenants',
     withModuleLayout: false,
     goBackFn: ''
   }));

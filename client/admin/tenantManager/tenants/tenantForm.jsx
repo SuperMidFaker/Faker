@@ -108,7 +108,7 @@ export default class TenantForm extends React.Component {
                   {this.renderTextInput('电话', '请填写电话', 'phone', true, [{
                     validator: (rule, value, callback) => validatePhone(
                       value, callback,
-                      () => { return '电话填写错误';}
+                      () => { return '请填写电话';}
                     )
                   }])}
                 </Col>
