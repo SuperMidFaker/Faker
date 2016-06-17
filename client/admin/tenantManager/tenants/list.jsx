@@ -208,7 +208,7 @@ export default class List extends React.Component {
             </Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">
