@@ -207,7 +207,7 @@ export default class ShipmentDraftEdit extends React.Component {
                   <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} field="lsp_name" disabled />
                   <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-                  <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
+                  <InputItem type="textarea" autosize formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
                 </div>
                 <div className="subform-heading">
                   <div className="subform-title">{this.msg('freightCharge')}</div>
