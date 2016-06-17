@@ -3,7 +3,8 @@ import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
-import { Partner, Partnership, Invitation, Tenant } from '../models/sequelize';
+import { Partner, Partnership, Invitation } from '../models/cooperation.db';
+import { Tenant } from '../models/tenant.db';
 import transformUnderscoreToCamel from '../util/transformUnderscoreToCamel';
 
 function *getPartner() {

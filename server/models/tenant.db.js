@@ -1,3 +1,5 @@
+import { STRING, INTEGER, DATE, TEXT, NOW } from 'sequelize';
+import sequelize from './sequelize';
 import mysql from '../util/mysql';
 function packColumnArgs(item) {
   const columns = [
@@ -161,3 +163,37 @@ export default {
     return mysql.query(sql);
   }
 };
+
+export const Tenant = sequelize.define('sso_tenants', {
+  tenant_id: {
+    type: INTEGER,
+    primaryKey: true
+  },
+  code: STRING,
+  sub_code: STRING,
+  aspect: INTEGER,
+  name: STRING,
+  telephone: STRING,
+  phone: STRING,
+  subdomain: STRING,
+  foundation: DATE,
+  country: STRING,
+  province: STRING,
+  city: STRING,
+  district: STRING,
+  address: STRING,
+  logo: STRING,
+  short_name: STRING,
+  category_id: INTEGER,
+  website: STRING,
+  remark: STRING,
+  contact: STRING,
+  level: STRING,
+  email: STRING,
+  branch_count: INTEGER,
+  user_count: INTEGER,
+  parent_tenant_id: INTEGER,
+  delegate_prefix: STRING,
+  status: STRING,
+  created_date: DATE
+});
