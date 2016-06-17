@@ -105,8 +105,8 @@ function *addPartner() {
       });
     }
     // 返回给客户端的新增partner
-    const newPartner = {name: partnerName, partnerCode, partnerships: partnerships.map(partnership => ({code: partnership})),
-      status: 1, partnerTenantId: partner.partner_tenant_id, tenantType: partner.tenant_type, key: partner.id};
+    const newPartner = {name: partnerName, partnerCode, partnerships, status: 1, partnerTenantId: partner.partner_tenant_id, 
+      tenantType: partner.tenant_type, key: partner.id};
     return Result.ok(this, { newPartner });
   } catch(e) {
     return Result.internalServerError(this, e.message);
