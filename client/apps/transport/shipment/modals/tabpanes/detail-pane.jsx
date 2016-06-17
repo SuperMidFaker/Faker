@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Row, Col, Table } from 'ant-ui';
+import { Row, Col, Table, Card } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -89,114 +89,107 @@ export default class PreviewPanel extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Row className="pane-section">
-        <Col span="12">
-          <div className="subform-heading">
-            <h3 className="subform-title">{this.msg('consignerInfo')}</h3>
-          </div>
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
-            field={ shipmt.consigner_name } fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('departurePort')}
-            field={ this.renderConsignPort(
-              shipmt.consigner_province, shipmt.consigner_city,
-              shipmt.consigner_district
-            )} fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('pickupAddr')}
-            field={ shipmt.consigner_addr } fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
-            field={ shipmt.consigner_contact } fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
-            field={ shipmt.consigner_mobile } fieldCol={{ span: 18 }}
-          />
-        </Col>
-        <Col span="12">
-          <div className="subform-heading">
-            <h3 className="subform-title">{this.msg('consigneeInfo')}</h3>
-          </div>
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consignee')}
-            field={ shipmt.consignee_name } fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('arrivalPort')}
-            field={ this.renderConsignPort(
-              shipmt.consignee_province, shipmt.consignee_city,
-              shipmt.consignee_district
-            )} fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('deliveryAddr')}
-            field={ shipmt.consignee_addr } fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
-            field={ shipmt.consignee_contact } fieldCol={{ span: 18 }}
-          />
-          <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
-            field={ shipmt.consignee_mobile } fieldCol={{ span: 18 }}
-          />
-        </Col>
-        </Row>
-        <Row className="pane-section">
-          <div className="subform-heading">
-            <h3 className="subform-title">{this.msg('scheduleInfo')}</h3>
-          </div>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupDate')}
-              field={ moment(shipmt.pickup_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
-            />
+          <Col span="12" style={{paddingRight: 8}}>
+            <Card bodyStyle={{ padding: 16 }}>
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
+                field={ shipmt.consigner_name } fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('departurePort')}
+                field={ this.renderConsignPort(
+                  shipmt.consigner_province, shipmt.consigner_city,
+                  shipmt.consigner_district
+                )} fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('pickupAddr')}
+                field={ shipmt.consigner_addr } fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
+                field={ shipmt.consigner_contact } fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
+                field={ shipmt.consigner_mobile } fieldCol={{ span: 18 }}
+              />
+            </Card>
           </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('shipmtTransit')}
-              field={ `${shipmt.transit_time || 0}${this.msg('day')}` } fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryDate')}
-              field={ moment(shipmt.deliver_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
-            />
+          <Col span="12" style={{paddingLeft: 8}}>
+            <Card bodyStyle={{ padding: 16 }}>
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consignee')}
+                field={ shipmt.consignee_name } fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('arrivalPort')}
+                field={ this.renderConsignPort(
+                  shipmt.consignee_province, shipmt.consignee_city,
+                  shipmt.consignee_district
+                )} fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('deliveryAddr')}
+                field={ shipmt.consignee_addr } fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
+                field={ shipmt.consignee_contact } fieldCol={{ span: 18 }}
+              />
+              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
+                field={ shipmt.consignee_mobile } fieldCol={{ span: 18 }}
+              />
+            </Card>
           </Col>
         </Row>
         <Row className="pane-section">
-          <div className="subform-heading">
-            <h3 className="subform-title">{this.msg('transitModeInfo')}</h3>
-          </div>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
-              field={ shipmt.transport_mode } fieldCol={{ span: 16 }}
-            />
-          </Col>
-          { shipmt.transport_mode_code === 'FTL' &&
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
-              field={ shipmt.vehicle_type } fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
-          { shipmt.transport_mode_code === 'FTL' &&
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
-              field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
-          { shipmt.transport_mode_code === 'CTN' &&
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
-              field={shipmt.container_no} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
-          <Col span="24">
-            <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
-              field={ shipmt.remark } fieldCol={{ span: 21 }}
-            />
-          </Col>
+          <Card bodyStyle={{ padding: 16 }}>
+            <Row>
+              <Col span="8">
+                <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupDate')}
+                  field={ moment(shipmt.pickup_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
+                />
+              </Col>
+              <Col span="8">
+                <PaneFormItem labelCol={{ span: 8 }} label={this.msg('shipmtTransit')}
+                  field={ `${shipmt.transit_time || 0}${this.msg('day')}` } fieldCol={{ span: 16 }}
+                />
+              </Col>
+              <Col span="8">
+                <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryDate')}
+                  field={ moment(shipmt.deliver_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
+                />
+              </Col>
+            </Row>
+            <Row>
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
+                field={ shipmt.transport_mode } fieldCol={{ span: 16 }}
+              />
+            </Col>
+            { shipmt.transport_mode_code === 'FTL' &&
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
+                field={ shipmt.vehicle_type } fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            { shipmt.transport_mode_code === 'FTL' &&
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
+                field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            { shipmt.transport_mode_code === 'CTN' &&
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
+                field={shipmt.container_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            <Col span="24">
+              <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
+                field={ shipmt.remark } fieldCol={{ span: 21 }}
+              />
+            </Col>
+            </Row>
+          </Card>
         </Row>
         <Row className="pane-section">
-          <div className="subform-heading">
-            <h3 className="subform-title">{this.msg('goodsInfo')}</h3>
-          </div>
-          <Table size="middle" bordered columns={this.columns} pagination={false}
+          <Table size="small" bordered columns={this.columns} pagination={false}
             dataSource={shipmt.goodslist}
           />
         </Row>

@@ -54,15 +54,27 @@ export const Partnership = sequelize.define('sso_partnerships', {
 });
 
 export const Invitation = sequelize.define('sso_partner_invitations', {
-  partner_id: INTEGER,
+  partner_id:{
+    type: INTEGER,
+    references: {
+      model: Partnership,
+      key: 'partner_id'
+    }
+  },
   inviter_tenant_id: INTEGER,
   invitee_tenant_id: INTEGER,
   invitee_code: STRING,
   invitee_name: STRING,
   invitation_code: STRING,
-  created_date: DATE,
+  created_date: {
+    type: DATE,
+    defaultValue: NOW
+  },
   accept_date: DATE,
-  status: INTEGER
+  status: {
+    type: INTEGER,
+    defaultValue: 0
+  }
 });
 
 export const Tenant = sequelize.define('sso_tenants', {
@@ -99,5 +111,5 @@ export const Tenant = sequelize.define('sso_tenants', {
   created_date: DATE
 });
 
-Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id'});
-Partnership.belongsTo(Partner, {foreignKey: 'partner_id'});
+Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id', constraint: false});
+Partnership.belongsTo(Partner, {foreignKey: 'partner_id', constraint: false});

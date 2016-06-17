@@ -189,7 +189,7 @@ export default class PreviewPanel extends React.Component {
             </Steps>
           </TabPane>
           <TabPane tab={this.msg('trackingPoistionTitle')} key="2">
-            <Table rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
+            <Table size="middle" rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
               pagination={this.pagination}
             />
           </TabPane>
