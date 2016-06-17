@@ -9,6 +9,7 @@ export default new Sequelize(mysql.database, mysql.user, mysql.password, {
     min: 0,
     idle: 30000,
   },
+  timezone: '+08:00',
   define: {
     timestamps: false,
     freezeTabName: true,
