@@ -1,4 +1,26 @@
 import mysql from '../util/mysql';
+import sequelize from './sequelizeORM';
+import { STRING, INTEGER, BOOLEAN } from 'sequelize';
+
+export const TmsParamPackage = sequelize.define('tms_param_packages', {
+  tenant_id: INTEGER,
+  package_code: STRING,
+  package_name: STRING,
+  enabled: {
+    type: BOOLEAN,
+    defaultValue: true,
+  },
+});
+
+export const TmsParamTransMode = sequelize.define('tms_param_trans_modes', {
+  tenant_id: INTEGER,
+  mode_code: STRING,
+  mode_name: STRING,
+  enabled: {
+    type: BOOLEAN,
+    defaultValue: true,
+  },
+});
 
 export default {
   createLog(name, remark, trans) {
@@ -50,5 +72,40 @@ export default {
       on PR.point_id = P.id where PR.shipmt_no = ? order by P.location_time desc limit 1`;
     const args = [ shipmtNo ];
     return mysql.query(sql, args);
+  },
+  presetTmsPackages(tenantId) {
+    const packages = [
+      [ 'A', '散装' ],
+      [ 'B', '木箱' ],
+      [ 'C', '托盘' ],
+      [ 'D', '不配货' ],
+    ];
+    const promises = [];
+    packages.forEach(pck => {
+      promises.push(TmsParamPackage.create({
+        tenant_id: tenantId,
+        package_code: pck[0],
+        package_name: pck[1],
+      }));
+    });
+    return Promise.all(promises);
+  },
+  presetTmsModes(tenantId) {
+    const modes = [
+      [ 'FTL', '整车' ],
+      [ 'LTL', '零担' ],
+      [ 'AIR', '空运' ],
+      [ 'EXP', '快递' ],
+      [ 'CTN', '集装箱' ],
+    ];
+    const promises = [];
+    modes.forEach(md => {
+      promises.push(TmsParamTransMode.create({
+        tenant_id: tenantId,
+        mode_code: md[0],
+        mode_name: md[1],
+      }));
+    });
+    return Promise.all(promises);
   },
 };

@@ -35,11 +35,16 @@ if (argv.api) {
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic'))
     .development(__DEV__)
     .server(rootDir, () => {
-      if (argv.admin) {
-        require('./admin');
-      } else {
-        require('./web');
-      }
-      console.timeEnd('starting web server');
+      const sequelize = require('./models/sequelizeORM');
+      sequelize.authenticate().then(() => {
+        if (argv.admin) {
+          require('./admin');
+        } else {
+          require('./web');
+        }
+        console.timeEnd('starting web server');
+      }).catch(err => {
+        console.log('connect to mysql database failed:', err);
+      });
      });
 }
