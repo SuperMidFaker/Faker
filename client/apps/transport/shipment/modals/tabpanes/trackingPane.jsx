@@ -2,13 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Steps, Table } from 'ant-ui';
+import { Steps, Table, Tabs } from 'ant-ui';
 import { SHIPMENT_TRACK_STATUS, TRACKING_POINT_FROM_TYPE } from 'common/constants';
 import { renderLoc } from '../../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const Step = Steps.Step;
+const TabPane = Tabs.TabPane;
 
 const timeFormat = 'YYYY-MM-DD HH:mm';
 
@@ -176,23 +177,23 @@ export default class PreviewPanel extends React.Component {
     });
     return (
       <div>
-        <Col offset={1} span={7}>
-          <h3>{this.msg('trackingStepTitle')}</h3>
-          <Steps current={currentStep} direction="vertical">
-          {
-            trackingSteps.map(
-              (ts, i) =>
-              <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
-            )
-          }
-          </Steps>
-        </Col>
-        <Col span={15}>
-          <h3>{this.msg('trackingPoistionTitle')}</h3>
-          <Table rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
-            pagination={this.pagination}
-          />
-        </Col>
+        <Tabs tabPosition="left">
+          <TabPane tab={this.msg('trackingStepTitle')} key="1">
+            <Steps current={currentStep} direction="vertical">
+            {
+              trackingSteps.map(
+                (ts, i) =>
+                <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
+              )
+            }
+            </Steps>
+          </TabPane>
+          <TabPane tab={this.msg('trackingPoistionTitle')} key="2">
+            <Table size="middle" rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
+              pagination={this.pagination}
+            />
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

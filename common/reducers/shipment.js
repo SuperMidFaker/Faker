@@ -39,6 +39,7 @@ const initialState = {
   },
   previewer: {
     visible: false,
+    tabKey: null,
     shipmt: {
       goodslist: [],
     },
@@ -104,6 +105,7 @@ export default function reducer(state = initialState, action) {
         tracking: action.result.data.tracking,
         charges: action.result.data.charges,
         visible: true,
+        tabKey: action.tabKey,
       }};
     }
     case actionTypes.HIDE_PREVIWER: {
@@ -207,7 +209,7 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function loadShipmtDetail(shipmtNo, tenantId, sourceType) {
+export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
   return {
     [CLIENT_API]: {
       types: [
@@ -218,6 +220,7 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType) {
       endpoint: 'v1/transport/shipment/detail',
       method: 'get',
       params: { shipmtNo, tenantId, sourceType },
+      tabKey,
     }
   };
 }

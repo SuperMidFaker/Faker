@@ -213,9 +213,17 @@ export default defineMessages({
     id: 'transport.tracking.modal.vehicle.plate',
     defaultMessage: '车牌号'
   },
+  unknownPlate: {
+    id: 'transport.tracking.modal.vehicle.unknown.plate',
+    defaultMessage: '未知车牌号'
+  },
   driverName: {
     id: 'transport.tracking.modal.driver.name',
     defaultMessage: '司机姓名'
+  },
+  unknownDriver: {
+    id: 'transport.tracking.modal.unknown.driver',
+    defaultMessage: '未知司机'
   },
   taskRemark: {
     id: 'transport.tracking.modal.task.remark',
@@ -236,6 +244,14 @@ export default defineMessages({
   chooseActualTime: {
     id: 'transport.tracking.modal.choose.actual.time',
     defaultMessage: '选择实际时间'
+  },
+  pickupTimeMust: {
+    id: 'transport.tracking.modal.pickup.time.must',
+    defaultMessage: '提货时间必填'
+  },
+  deliverTimeMust: {
+    id: 'transport.tracking.modal.deliver.time.must',
+    defaultMessage: '交货时间必填'
   },
   podModalTitle: {
     id: 'transport.tracking.modal.pod.title',

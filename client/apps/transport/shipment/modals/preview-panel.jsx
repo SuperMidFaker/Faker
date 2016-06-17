@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag/* , message */ } from 'ant-ui';
+import { Button, Icon, Tabs, Tag } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -36,6 +36,7 @@ function getTrackStatusMsg(status, eff) {
 @connect(
   state => ({
     visible: state.shipment.previewer.visible,
+    tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     status: state.shipment.previewer.shipmt.status,
     effective: state.shipment.previewer.shipmt.effective,
@@ -46,12 +47,27 @@ export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+    tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
     status: PropTypes.number,
     effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabKey: props.tabKey || 'detail',
+    };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.tabKey !== this.state.tabKey) {
+      this.setState({ tabKey: nextProps.tabKey || 'detail' });
+    }
+  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  handleTabChange = (tabKey) => {
+    this.setState({ tabKey });
+  }
   handleClose = () => {
     this.props.hidePreviewer();
   }
@@ -70,7 +86,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Tabs defaultActiveKey="detail">
+            <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
               </TabPane>
