@@ -166,18 +166,18 @@ export default class ConsignInfo extends React.Component {
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} colSpan={3} { ...this.renderRules.name }
+            field={this.renderFields.name} colSpan={4} { ...this.renderRules.name }
             optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
             allowClear onChange={this.handleAutoInputChange}
           />
-          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 3}}
-            wrapperCol={{span: 21}} { ...this.renderRules.portal }
+          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 4}}
+            wrapperCol={{span: 20}} { ...this.renderRules.portal }
           >
             <RegionCascade region={region} setFormValue={this.handleRegionValue} />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} colSpan={3} { ...this.renderRules.addr }
+            field={this.renderFields.addr} colSpan={4} { ...this.renderRules.addr }
           />
         </Col>
         <Col span={`${24 - outerColSpan}`} className="subform-body">
