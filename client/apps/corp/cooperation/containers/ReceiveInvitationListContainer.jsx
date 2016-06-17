@@ -79,9 +79,9 @@ export default class ReceiveInvitationList extends Component {
         if (record.status === 0) {
           return (
             <span>
-              <a onClick={() => this.handleAcceptBtnClick(record.id)}>接受</a>
+              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id)}>接受</a>
               <span className="ant-divider"></span>
-              <a onClick={() => this.handleRejectBtnClick(record.id)}>拒绝</a>
+              <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}>拒绝</a>
             </span>
           );
         } else {
@@ -90,11 +90,11 @@ export default class ReceiveInvitationList extends Component {
       }
     }
   ]
-  handleAcceptBtnClick = (id) => {
-    this.props.acceptInvitation(id);
+  handleAcceptBtnClick = (id, partnerId) => {
+    this.props.acceptInvitation(id, partnerId);
   }
-  handleRejectBtnClick = (id) => {
-    this.props.rejectInvitation(id);
+  handleRejectBtnClick = (id, partnerId) => {
+    this.props.rejectInvitation(id, partnerId);
   }
   render() {
     const { receiveInvitations } = this.props;

@@ -146,7 +146,6 @@ export default {
   },
   updateInvitationStatus(status, acceptDate, key, trans) {
     const sql = 'update sso_partner_invitations set status = ?, accept_date = NOW() where id = ?';
-    console.log(sql);
     const args = [status, key];
     return mysql.update(sql, args, trans);
   },

@@ -141,7 +141,7 @@ export function loadReceiveInvitations(tenantId) {
   };
 }
 
-export function acceptInvitation(id) {
+export function acceptInvitation(id, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -153,12 +153,12 @@ export function acceptInvitation(id) {
       method: 'post',
       id,
       status: 1,
-      data: { id }
+      data: { id, partnerId }
     }
   };
 }
 
-export function rejectInvitation(id) {
+export function rejectInvitation(id, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -170,7 +170,7 @@ export function rejectInvitation(id) {
       method: 'post',
       id,
       status: 2,
-      data: { id }
+      data: { id, partnerId }
     }
   };
 }
