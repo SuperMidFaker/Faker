@@ -32,19 +32,22 @@ if (argv.api) {
   /* eslint-enable no-undef */
   global.__PRODUCTIONS_ROOT_GROUP__ = config.get('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__');
   global.__PRODUCTIONS_DOMAIN_GROUP__ = config.get('__PRODUCTIONS_DOMAIN_GROUP__');
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic'))
+  const sequelize = require('./models/sequelize');
+  sequelize.authenticate().then(() => {
+    const isomorphic = argv.admin ?
+      require('../webpack/adminIsomorphic')
+      : require('../webpack/isomorphic');
+    global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
     .development(__DEV__)
     .server(rootDir, () => {
-      const sequelize = require('./models/sequelize');
-      sequelize.authenticate().then(() => {
-        if (argv.admin) {
-          require('./admin');
-        } else {
-          require('./web');
-        }
-        console.timeEnd('starting web server');
-      }).catch(err => {
-        console.log('connect to mysql database failed:', err);
-      });
-     });
+      if (argv.admin) {
+        require('./admin');
+      } else {
+        require('./web');
+      }
+      console.timeEnd('starting web server');
+    });
+  }).catch(err => {
+    console.log('connect to mysql database failed:', err);
+  });
 }

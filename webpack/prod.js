@@ -1,7 +1,9 @@
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
 const wpConfig = require('./wpbase');
 const config = require('../config');
+const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./isomorphic'));
 
 wpConfig.entry.app = config.get('client_entry');
 
@@ -39,5 +41,12 @@ wpConfig.module.loaders.push({
   test: /\.less$/,
   loader: ExtractTextPlugin.extract('style', 'css?&sourceMap!postcss!less')
 });
+
+wpConfig.plugins.push(isomorphicPlugin);
+
+wpConfig.module.loaders.push(
+  // any image below or equal to 10K will be converted to inline base64 instead
+  { test: isomorphicPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }
+);
 
 module.exports = wpConfig;

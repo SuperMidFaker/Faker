@@ -1,6 +1,8 @@
 const path = require('path');
+const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
 const wpConfig = require('./dev');
 const config = require('../config');
+const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./adminIsomorphic'));
 
 delete wpConfig.entry.app;
 
