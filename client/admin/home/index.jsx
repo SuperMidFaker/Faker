@@ -37,8 +37,7 @@ export default class Home extends React.Component {
         <div className="am-content">
           <div className="home-header home-header-bg">
             <div className="tenant-info">
-              <div className="tenant-logo " style={{backgroundImage:`url("${logo || '/assets/img/welogix-badge.png'}")`}} />
-              <h2 className="tenant-name">{name}</h2>
+              <h2 className="tenant-name">微骆SaaS云平台管理系统</h2>
             </div>
           </div>
           <div className="home-body">

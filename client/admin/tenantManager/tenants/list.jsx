@@ -203,15 +203,10 @@ export default class List extends React.Component {
       }
     }];
     return (
-        <div className="page-body fixed">
+      <div className="main-content">
+        <div className="page-body">
           <div className="panel-header">
-            <div className="pull-right action-btns">
-              <span>数量{' '}</span>
-              <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
-              <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
-              <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
-            </div>
-            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
+            <Button type="primary"
                 onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
                 <Icon type="plus-circle-o" />
                 新建
@@ -225,6 +220,7 @@ export default class List extends React.Component {
             清除所选
             </Button>
           </div>
-        </div>);
+        </div>
+      </div>);
   }
 }
