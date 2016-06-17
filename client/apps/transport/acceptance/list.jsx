@@ -407,7 +407,7 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2560, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2600, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

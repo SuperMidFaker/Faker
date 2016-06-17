@@ -180,13 +180,11 @@ export default class BaseList extends Component {
     );
   }
   render() {
-    console.log(this.type, this.props.partnerlist);
     const { type } = this;
     const partnerTypeName = partnerTypes[type];
     const columns = this.updateColumns(this.defaultColumns);
     const { partnerlist = [] } = this.props;
     const dataSource = this.dataSourceFromPartnerlist(partnerlist);
-    console.log(this.type, 'dataSource', dataSource);
     const header = this.setHeader();
     return (
       <div className="main-content">

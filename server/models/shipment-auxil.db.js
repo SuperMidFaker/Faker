@@ -1,5 +1,5 @@
 import mysql from '../util/mysql';
-import sequelize from './sequelizeORM';
+import sequelize from './sequelize';
 import { STRING, INTEGER, BOOLEAN } from 'sequelize';
 
 export const TmsParamPackage = sequelize.define('tms_param_packages', {

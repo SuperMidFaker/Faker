@@ -218,18 +218,18 @@ const VEHICLE_TYPES = [
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  {value:0, text: '2.0'},
-  {value:1, text: '4.2'},
-  {value:2, text: '5.2'},
-  {value:3, text: '6.8'},
-  {value:4, text: '9.6'},
-  {value:5, text: '13'},
-  {value:6, text: '17.5'},
+  {value:0, text: '2米'},
+  {value:1, text: '4.2米'},
+  {value:2, text: '5.2米'},
+  {value:3, text: '6.8米'},
+  {value:4, text: '9.6米'},
+  {value:5, text: '13米'},
+  {value:6, text: '17.5米'},
 ];
 
 const VPROPROTY_TYPES = {
-  selfVehicle: {value: 0, text: '司机自有车辆'},
-  publicVehicle: {value: 1, text: '公有车辆'}
+  selfVehicle: {value: 0, text: '社会协作车辆'},
+  publicVehicle: {value: 1, text: '公司自有车辆'}
 };
 
 const DRIVER_STATUS = {

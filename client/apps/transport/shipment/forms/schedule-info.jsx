@@ -49,7 +49,7 @@ export default class ScheduleInfo extends React.Component {
   render() {
     const { formhoc: { getFieldProps } } = this.props;
     const outerColSpan = 8;
-    const labelColSpan = 6;
+    const labelColSpan = 8;
     return (
       <Row>
         <div className="subform-heading">
