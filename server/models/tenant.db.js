@@ -161,7 +161,80 @@ export default {
       Limit 1
     `;
     return mysql.query(sql);
-  }
+  },
+  getTenants(parentTenantId, current, pageSize) {
+    const start = (current - 1) * pageSize;
+    const sql = `select st.tenant_id as \`key\`, st.sub_code as subCode, st.name, st.phone, st.email,
+      st.contact, st.status, stu.login_id from sso_tenants st
+      inner join sso_tenant_users stu on stu.tenant_id = st.tenant_id
+      where st.parent_tenant_id = 0 and st.level = 1 and stu.user_type='owner'`;
+    return mysql.query(sql);
+  },
+  getTenant(tenantId) {
+    const sql = `select t.tenant_id, t.code, t.name, t.aspect, t.phone, t.subdomain, t.logo, t.contact, t.email from sso_tenants t where tenant_id = ${tenantId}`;
+    return mysql.query(sql);
+  },
+  getTenantAppListByTenantId(tenantId) {
+    const sql = `select app_id as value, app_name as label from sso_tenant_apps t where tenant_id = ?`;
+    return mysql.query(sql, [tenantId]);
+  },
+  bindSubTenant(masterTenantId, masterCode) {
+    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and sub_code is not null and sub_code != ''`, [masterTenantId, masterCode]);
+  },
+  getTenantApps(){
+    const appSql = `select entity_id as value, entity_name as label, entity_desc as app_desc,
+    'basic_suite' as package from meta_apps`;
+    return mysql.query(appSql);
+  },
+  insertTenantApps(tenantId, tenantAppList, apps){
+    let sql = '';
+    tenantAppList.forEach(item => {
+      for(let i = 0; i<apps.length; i++) {
+        if(apps[i].value == item) {
+          sql += `insert into sso_tenant_apps (tenant_id, app_id, app_name, app_desc, package, date_start)
+          values ( '${tenantId}', '${apps[i].app_id}', '${apps[i].app_name}', '${apps[i].app_desc}', '${apps[i].package}', now() );`;
+        }
+      }
+    });
+    return mysql.insert(sql);
+  },
+  insertTenantLogin(code, email, phone, salt, password, unid){
+    const sql = `insert into sso_login (username, email, phone, salt, password, user_type, created_date, unid)
+    values ( ?, ?, ?, ?, ?, 'admin', NOW(), ?)`;
+    const args = [`admin@${code}`, email, phone, salt, password, unid];
+    return mysql.insert(sql, args);
+  },
+  insertTenantUser(tenant_id, login_id, contact){
+    const sql = `insert into sso_tenant_users (tenant_id, login_id, name, user_type, created_date)
+      values ( ?, ?, ?, 'owner', NOW())`;
+    const args = [tenant_id, login_id, contact];
+    return mysql.insert(sql, args);
+  },
+  insertTenant( code, name, aspect, phone, subdomain, logo, contact, email) {
+    const sql = `insert into sso_tenants (code, name, aspect, phone, subdomain, logo, contact, email, level, status, created_date)
+    values ( ?, ?, ?, ?, ?, ?, ?, ?, 1, 'normal', NOW())`;
+    const args = [ code, name, aspect, phone, subdomain, logo, contact, email];
+    return mysql.insert(sql, args);
+  },
+  updateTenantByTenantId(tenantId, code, name, aspect, phone, subdomain, logo, contact, email) {
+    const sql = `update sso_tenants set code = ?, name = ?, aspect = ?, phone = ?,
+      subdomain = ?, logo = ?, contact = ?, email = ?
+      where tenant_id = ?`;
+    const args = [code, name, aspect, phone, subdomain, logo, contact, email, tenantId];
+    return mysql.update(sql, args);
+  },
+  deleteTenantApps(tenantId){
+    const delsql = `delete from sso_tenant_apps where tenant_id = ?`;
+    return mysql['delete'](delsql, [tenantId]);
+  },
+  deleteTenantByTenantId(tenantId, login_id) {
+    const sql = `delete from sso_login where id = ?;
+    delete from sso_tenant_apps where tenant_id = ?;
+    delete from sso_tenant_users where tenant_id = ?;
+    delete from sso_tenants where tenant_id = ?`;
+    const args = [ login_id, tenantId, tenantId, tenantId];
+    return mysql['delete'](sql, args);
+  },
 };
 
 export const Tenant = sequelize.define('sso_tenants', {

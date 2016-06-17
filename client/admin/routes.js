@@ -10,6 +10,7 @@ import MyProfile from 'client/apps/account/profile';
 import Password from 'client/apps/account/password';
 import PackTenantMgr from './tenantManager/pack';
 import TenantMgrDashboard from './tenantManager/dashboard';
+import * as Tenants from './tenantManager/tenants';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { TENANT_LEVEL } from 'common/constants';
@@ -51,6 +52,11 @@ export default(store, cookie) => {
         </Route>
         <Route path="manager" component={PackTenantMgr}>
           <IndexRoute component={TenantMgrDashboard} />
+          <Route path="tenants">
+            <IndexRoute component={Tenants.List} />
+            <Route path="create" component={Tenants.Create} />
+            <Route path="edit/:id" component={Tenants.Edit} />
+          </Route>
         </Route>
       </Route>
     </Route>

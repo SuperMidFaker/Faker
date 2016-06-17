@@ -3,9 +3,7 @@ require('babel/register');
 const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
-const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
 const config = require('../config');
-const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./isomorphic'));
 const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 
 const wpConfig = {
@@ -37,7 +35,6 @@ const wpConfig = {
       __DEVTOOLS__: config.get('__DEVTOOLS__'),
       __DEV__: config.get('__DEV__')
     }),
-    config.get('__DEV__') ? isomorphicPlugin.development() : isomorphicPlugin
   ],
   module: {
     // eslint loader
@@ -82,9 +79,8 @@ const wpConfig = {
     { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
     { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
     { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-    { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
-    // any image below or equal to 10K will be converted to inline base64 instead
-    { test: isomorphicPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }]
+    { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' }
+    ]
   },
   postcss: function postcss() {
     return [autoprefixer];

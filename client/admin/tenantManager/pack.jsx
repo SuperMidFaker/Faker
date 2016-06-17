@@ -39,7 +39,7 @@ function getLinksByAspect() {
 export default class PackTenantMgr extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
   render() {
     const linkMenus = getLinksByAspect();

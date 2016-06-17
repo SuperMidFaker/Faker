@@ -2,7 +2,7 @@
 node_modules
 log/*
 public/dist
-public/assets.json
+public/assets*.json
 public/assets/langs/zh.json
 .DS_Store
 test.js

@@ -1,12 +1,12 @@
+const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
 const wpConfig = require('./wpbase');
 const config = require('../config');
-const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./isomorphic'));
+const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./adminIsomorphic'));
 
-wpConfig.entry.app = config.get('client_entry');
-
+wpConfig.entry.admin = path.resolve(__dirname, '..', 'client/admin/aboot.js');
 wpConfig.devtool = 'cheap-source-map';
 
 // https://github.com/webpack/webpack/issues/1315 make hash not change

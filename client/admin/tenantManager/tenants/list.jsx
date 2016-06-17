@@ -1,0 +1,226 @@
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
+import {
+  loadTenants, delTenant, switchStatus, INITIAL_LIST_PAGE_SIZE
+} from 'common/reducers/tenants';
+import { Table, Button, Icon, message, Popconfirm } from 'ant-ui';
+import NavLink from '../../../components/nav-link';
+import { resolveCurrentPageNumber } from 'client/util/react-ant';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
+import { ACCOUNT_STATUS, MAX_STANDARD_TENANT }
+  from 'common/constants';
+
+function fetchData({ state, dispatch, cookie }) {
+  return dispatch(loadTenants(cookie, {
+    tenantId: state.account.tenantId,
+    pageSize: state.tenants.corplist.pageSize,
+    currentPage: state.tenants.corplist.current,
+    searchText: state.tenants.corplist.searchText,
+  }));
+}
+
+@connectFetch()(fetchData)
+@injectIntl
+@connect(
+  state => ({
+    corplist: state.tenants.corplist,
+    loading: state.tenants.loading,
+    tenantId: state.account.tenantId
+  }),
+  {
+    loadTenants, delTenant, switchStatus
+  }
+)
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
+  dispatch(setNavTitle({
+    depth: 2,
+    text: '租户管理',
+    moduleName: 'tenants',
+    withModuleLayout: false,
+    goBackFn: ''
+  }));
+})
+export default class List extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    corplist: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    switchStatus: PropTypes.func.isRequired,
+    delTenant: PropTypes.func.isRequired,
+    loadTenants: PropTypes.func.isRequired
+  }
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+  state = {
+    selectedRowKeys: []
+  };
+  handleSelectionClear = () => {
+    this.setState({selectedRowKeys: []});
+  }
+  handleNavigationTo(to, query) {
+    this.context.router.push({ pathname: to, query });
+  }
+  handleTenantDel(id, loginId) {
+    const { corplist: {tenantId, totalCount, current, pageSize } } = this.props;
+    this.props.delTenant(id, loginId).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.loadTenants(null, {
+          tenantId,
+          pageSize,
+          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+        });
+      }
+    });
+  }
+  handleStatusSwitch(tenant, index) {
+    this.props.switchStatus(index, tenant.key, tenant.status === ACCOUNT_STATUS.normal.name
+      ? ACCOUNT_STATUS.blocked.name : ACCOUNT_STATUS.normal.name).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
+  }
+  renderColumnText(status, text) {
+    let style = {};
+    if (status === ACCOUNT_STATUS.blocked.name) {
+      style = {color: '#CCC'};
+    }
+    return <span style={style}>{text}</span>;
+  }
+  render() {
+    const { corplist, loading } = this.props;
+    const dataSource = new Table.DataSource({
+      fetcher: (params) => this.props.loadTenants(null, params),
+      resolve: (result) => result.data,
+      getPagination: (result, currentResolve) => ({
+        total: result.totalCount,
+        current: currentResolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`],
+        pageSize: result.pageSize
+      }),
+      getParams: (pagination, filters, sorter) => {
+        const params = {
+          tenantId: this.props.tenantId,
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current,
+          sortField: sorter.field,
+          sortOrder: sorter.order
+        };
+        for (const key in filters) {
+          if (filters[key]) {
+            params[key] = filters[key];
+          }
+        }
+        return params;
+      },
+      remotes: corplist
+    });
+    // 通过 rowSelection 对象表明需要行选择
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({selectedRowKeys});
+      }
+    };
+    const columns = [{
+      title: '公司名称',
+      dataIndex: 'name',
+      width: 150,
+      render: (o, record) => this.renderColumnText(record.status, record.name)
+    }, {
+      title: '子租户代码',
+      dataIndex: 'subCode',
+      width: 100,
+      render: (o, record) => this.renderColumnText(record.status, record.subCode)
+    }, {
+      title: '联系人',
+      dataIndex: 'contact',
+      width: 100,
+      render: (o, record) => this.renderColumnText(record.status, record.contact)
+    }, {
+      title: '手机号',
+      dataIndex: 'phone',
+      width: 100,
+      render: (o, record) => this.renderColumnText(record.status, record.phone)
+    }, {
+      title: '邮箱',
+      dataIndex: 'email',
+      width: 100,
+      render: (o, record) => this.renderColumnText(record.status, record.email)
+    }, {
+      title: '状态',
+      width: 100,
+      render: (o, record) => {
+        let style = {color: '#51C23A'};
+        if (record.status === ACCOUNT_STATUS.blocked.name) {
+          style = {color: '#CCC'};
+        }
+        return <span style={style}>停用</span>;
+      }
+    }, {
+      title: '操作',
+      width: 150,
+      render: (text, record, index) => {
+        if (record.status === ACCOUNT_STATUS.normal.name) {
+          return (
+            <span>
+              <NavLink to={`/manager/tenants/edit/${record.key}`}>
+              修改
+              </NavLink>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              停用
+              </a>
+            </span>);
+        } else if (record.status === ACCOUNT_STATUS.blocked.name) {
+          return (
+            <span>
+              <Popconfirm placement="top" title={`确认删除 ${record.name}`} onConfirm={() => this.handleTenantDel(record.key, record.login_id) } onCancel={() => {} } onVisibleChange={() => {}}>
+              <a role="button" href="#">
+              删除
+              </a>
+              </Popconfirm>
+              <span className="ant-divider"></span>
+              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              启用
+              </a>
+            </span>);
+        } else {
+          return <span />;
+        }
+      }
+    }];
+    return (
+      <div className="main-content">
+        <div className="page-body">
+          <div className="panel-header">
+            <Button type="primary"
+                onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
+                <Icon type="plus-circle-o" />
+                新建
+            </Button>
+          </div>
+          <div className="panel-body body-responsive">
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
+          </div>
+          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">
+            清除所选
+            </Button>
+          </div>
+        </div>
+      </div>);
+  }
+}

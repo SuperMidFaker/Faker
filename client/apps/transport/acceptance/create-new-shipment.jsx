@@ -225,7 +225,7 @@ export default class ShipmentCreate extends React.Component {
                   <Col span="16" className="subform-body">
                     <Tooltip placement="top" title="请先选择客户">
                       <a href="#">
-                        <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={3} field="client"
+                        <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4} field="client"
                         required optionData={clientOpts} filterFields={[ 'code' ]}
                         optionField="name" optionKey="key" optionValue="value"
                         rules={[{
@@ -236,14 +236,14 @@ export default class ShipmentCreate extends React.Component {
                     </Tooltip>
                   </Col>
                   <Col span="8" className="subform-body">
-                    <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={6} field="ref_external_no"/>
+                    <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8} field="ref_external_no"/>
                   </Col>
                 </Row>
-                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
-                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
+                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
-                <GoodsInfo intl={intl} labelColSpan={6} formhoc={formhoc}/>
+                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>
               </Col>
               <Col span="8" className="right-side-col">
                 <div className="subform-heading">
@@ -257,14 +257,14 @@ export default class ShipmentCreate extends React.Component {
                   />
                   <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
                   <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-                  <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
+                  <InputItem type="textarea" autosize formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
                   </div>
                   <div className="subform-heading">
                       <div className="subform-title">{this.msg('freightCharge')}</div>
                   </div>
                 <div className="subform-body">
                   <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                    <InputNumber style={{ width: '100%' }} min={0} step={0.1}
+                    <InputNumber style={{ width: '100%' }} min={0} step={1}
                     { ...formhoc.getFieldProps('freight_charge') }
                     />
                   </FormItem>

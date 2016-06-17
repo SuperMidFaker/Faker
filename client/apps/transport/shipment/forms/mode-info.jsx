@@ -38,7 +38,7 @@ export default class ModeInfo extends React.Component {
     if (modeCode === 'FTL') {
       // 整车,修改车型,车长
       outerColSpan = 8;
-      labelColSpan = 6;
+      labelColSpan = 8;
       modeEditCols.push(
         <Col key="vehicle_type" span={`${outerColSpan}`} className="subform-body">
           <FormItem label={this.msg('vehicleType')} labelCol={{span: labelColSpan}}
@@ -65,21 +65,26 @@ export default class ModeInfo extends React.Component {
       );
     } else if (modeCode === 'CTN') {
       // 集装箱,修改箱号
-      outerColSpan = 12;
-      labelColSpan = 4;
+      outerColSpan = 8;
+      labelColSpan = 8;
       modeEditCols.push(
         <Col key="container_no" span={`${outerColSpan}`} className="subform-body">
           <InputItem labelName={this.msg('containerNo')} field="container_no"
           colSpan={labelColSpan} formhoc={this.props.formhoc} hasFeedback={false}
           />
-        </Col>
+        </Col>,
+        <Col span={`${outerColSpan}`} className="subform-body" />
+      );
+    } else {
+      outerColSpan = 8;
+      labelColSpan = 8;
+      modeEditCols.push(
+        <Col span={`${outerColSpan}`} className="subform-body" />,
+        <Col span={`${outerColSpan}`} className="subform-body" />
       );
     }
     return (
       <Row>
-        <div className="subform-heading">
-          <div className="subform-title">{this.msg('transitModeInfo')}</div>
-        </div>
         <Col span={`${outerColSpan}`} className="subform-body">
           <FormItem label={this.msg('transitModeInfo')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}} required

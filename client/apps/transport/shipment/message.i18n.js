@@ -59,7 +59,7 @@ export default defineMessages({
   },
   scheduleInfo: {
     id: 'transport.shipment.schedule.info',
-    defaultMessage: '时间计划'
+    defaultMessage: '时间与模式'
   },
   pickupDate: {
     id: 'transport.shipment.pickup.date',
