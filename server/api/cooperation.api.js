@@ -1,37 +1,11 @@
 import cobody from 'co-body';
-import coopDao from '../models/cooperation.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
   from 'common/constants';
-import { Partner, Partnership, Invitation, Tenant } from '../models/sequelize';
+import { Partner, Partnership, Invitation } from '../models/cooperation.db';
+import { Tenant } from '../models/tenant.db';
 import transformUnderscoreToCamel from '../util/transformUnderscoreToCamel';
-
-const partnershipTypeNames = Object.keys(PARTNERSHIP_TYPE_INFO).map(pstkey => PARTNERSHIP_TYPE_INFO[pstkey]);
-
-function getTenantTypeDesc(level) {
-  return level === TENANT_LEVEL.ENTERPRISE ? PARTNER_TENANT_TYPE[0] : PARTNER_TENANT_TYPE[1];
-}
-
-function separatePartnerCode(codeStr) {
-  const codes = codeStr.split('/');
-  return codes.length === 2 ? codes[1] : codes[0];
-}
-function getPartnerCode(code, subCode) {
-  return subCode ? `${code}/${subCode}` : code;
-}
-
-function transformInvitations(rawInvites) {
-  return rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
-    const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
-    if (foundIndex !== -1) {
-      total[foundIndex].partnerships.push(invitee.partnerships[0]);
-    } else {
-      total.push(invitee);
-    }
-    return total;
-  }, []);
-}
 
 function *getPartner() {
   const tenantId = this.request.query.tenantId;
@@ -151,26 +125,6 @@ function *changePartnerAndPartnershipStatus() {
   }
 }
 
-function *cancelInvite() {
-  const { id, partnerId } = yield cobody(this);
-  let trans;
-  try {
-    const invitations = yield coopDao.getInvitationInfo(id);
-    if (invitations.length !== 1) {
-      throw new Error('invitation not found');
-    }
-    const status = INVITATION_STATUS.CANCELED;
-    trans = yield mysql.beginTransaction();
-    yield coopDao.updateInvitationStatus(status, null, id, trans);
-    yield coopDao.updatePartnerInvited(partnerId, 0, trans);
-    yield mysql.commit(trans);
-    return Result.ok(this);
-  } catch (e) {
-    yield mysql.rollback(trans);
-    return Result.internalServerError(this, e.message);
-  }
-}
-
 function *editProviderTypes() {
   const body = yield cobody(this);
   const { partnerId, tenantId, partnerships } = body;
@@ -239,8 +193,7 @@ function *inviteOnlinePartner() {
 function *getSendInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
-    const rawInvitations = yield coopDao.getSendInvitationsByTenantId(tenantId);
-    const sendInvitations = transformInvitations(rawInvitations);
+    const sendInvitations = yield Invitation.getSendInvitationsByTenantId(tenantId);
     return Result.ok(this, {sendInvitations});
   } catch(e) {
     return Result.internalServerError(this, e.message);
@@ -250,43 +203,57 @@ function *getSendInvitations() {
 function *getReceiveInvitations() {
   const tenantId = this.request.query.tenantId;
   try {
-    const rawInvitations = yield coopDao.getReceiveInvitationsByTenantId(tenantId);
-    const receiveInvitations = transformInvitations(rawInvitations);
+    const receiveInvitations = yield Invitation.getReceiveInvitationsByTenantId(tenantId);
     return Result.ok(this, {receiveInvitations});
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
 
+function *cancelInvite() {
+  const { id, partnerId } = yield cobody(this);
+  try {
+    const status = INVITATION_STATUS.CANCELED;
+    yield Invitation.update({status}, {where: {id}});
+    yield Partner.update({invited: 0}, {where: {id: partnerId}});
+    return Result.ok(this);
+  } catch(e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 function *rejectInvitation() {
   const body = yield cobody(this);
-  const { status, id } = body;
-  let trans;
+  const { partnerId, id } = body;
   try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.updateInvitationStatus(2, null, id, trans);
-    yield mysql.commit(trans);
+    const status = INVITATION_STATUS.REJECTED;
+    yield Invitation.update({status: 2}, {where: {id}});
+    yield Partner.update({invited: 0}, {where: {id: partnerId}});
     return Result.ok(this);
-  } catch (e) {
-    yield mysql.rollback(trans);
+  } catch(e) {
     return Result.internalServerError(this, e.message);
   }
 }
 
 function *acceptInvitation() {
   const body = yield cobody(this);
-  const { id } = body;
-  let trans;
+  const { id, partnerId, reversePartnerships } = body;
   try {
-    // 接受时,需要同时更新invitation表中的status和partnerships中的establish
-    trans = yield mysql.beginTransaction();
-    const invitationInfo = yield coopDao.getInvitationInfo(id);
-    yield coopDao.establishPartner(invitationInfo.inviterId, invitationInfo.inviteeId, trans);
-    yield coopDao.updateInvitationStatus(1, null, id, trans);
-    yield mysql.commit(trans);
+    const status = INVITATION_STATUS.ACCEPTED
+    // 先更新原有的partner,partnership,invitation
+    yield Invitation.update({status: 1}, {where: {id}});
+    yield Partner.update({established: 1, invited: 1}, {where: {id: partnerId}});
+    yield Partnership.update({status: 1}, {where: {partner_id: partnerId}});
+    // 再插入新的partner和partnership
+    const originPartner = yield Partner.findById(partnerId);
+    const originTenant = yield Tenant.findById(originPartner.get('tenant_id'));
+    const newPartner = yield Partner.create({name: originTenant.name, partner_code: originTenant.code, tenant_type: PARTNER_TENANT_TYPE[originTenant.level],
+    partner_tenant_id: originPartner.tenant_id, tenant_id: originPartner.partner_tenant_id, established: 1, invited: 1});
+    // 建立关系的时候,如果邀请是供应商或者物流提供商,新的关系就是客户,否则根据前端传入的partnerships建立新的关系
+    yield Partnership.bulkCreate(reversePartnerships.map(ps => ({partner_id: newPartner.id, tenant_id: newPartner.tenant_id,
+    partner_tenant_id: newPartner.partner_tenant_id, partner_name: newPartner.name, partner_code: newPartner.partner_code, type_code: ps, status: 1})));
     return Result.ok(this);
-  } catch (e) {
-    yield mysql.rollback(trans);
+  } catch(e) {
     return Result.internalServerError(this, e.message);
   }
 }

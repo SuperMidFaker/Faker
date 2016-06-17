@@ -35,7 +35,7 @@ if (argv.api) {
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic'))
     .development(__DEV__)
     .server(rootDir, () => {
-      const sequelize = require('./models/sequelizeORM');
+      const sequelize = require('./models/sequelize');
       sequelize.authenticate().then(() => {
         if (argv.admin) {
           require('./admin');
