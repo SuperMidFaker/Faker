@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import AmNavBar from 'client/components/am-navbar';
 import ModuleLayout from 'client/components/module-layout';
 import { setNavTitle } from 'common/reducers/navbar';
-import 'client/apps/home/home.less';
+import './home.less';
 
 const mods = [{
   cls: 'manager',
   url: '/manager',
-  text: '租户管理'
+  text: '运营管理'
 }];
 
 @connect(
