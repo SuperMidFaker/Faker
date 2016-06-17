@@ -137,31 +137,26 @@ export default class List extends React.Component {
     const columns = [{
       title: '公司名称',
       dataIndex: 'name',
-      width: 150,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
-      title: '子租户代码',
+      title: '租户代码',
       dataIndex: 'subCode',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.subCode)
     }, {
       title: '联系人',
       dataIndex: 'contact',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.contact)
     }, {
       title: '手机号',
       dataIndex: 'phone',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: '邮箱',
       dataIndex: 'email',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '状态',
-      width: 100,
+      width: 50,
       render: (o, record) => {
         let style = {color: '#51C23A'};
         if (record.status === ACCOUNT_STATUS.blocked.name) {
@@ -171,7 +166,7 @@ export default class List extends React.Component {
       }
     }, {
       title: '操作',
-      width: 150,
+      width: 100,
       render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
