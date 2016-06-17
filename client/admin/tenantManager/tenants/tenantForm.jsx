@@ -19,8 +19,8 @@ function fetchData({dispatch}) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    formData: state.corps.formData,
-    tenantAppList: state.corps.tenantAppList
+    formData: state.tenants.formData,
+    tenantAppList: state.tenants.tenantAppList
   }),
   { uploadImg, setFormValue, submitTenant, checkCorpDomain })
 @Form.formify({

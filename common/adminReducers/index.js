@@ -3,6 +3,7 @@ import auth from '../reducers/auth';
 import account from '../reducers/account';
 import navbar from '../reducers/navbar';
 import intl from '../reducers/intl';
+import tenants from '../reducers/tenants';
 import corpDomain from '../reducers/corp-domain';
 
 export default combineReducers({
@@ -10,5 +11,6 @@ export default combineReducers({
   auth,
   account,
   navbar,
-  corpDomain
+  corpDomain,
+  tenants,
 });

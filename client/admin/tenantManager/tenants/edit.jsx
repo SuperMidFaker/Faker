@@ -7,7 +7,7 @@ import './tenant.less';
 import TenantForm from './tenantForm';
 
 
-function fetchData({dispatch, cookie, params}) {
+function fetchData({ dispatch, cookie, params }) {
   const corpId = params.id;
   return [dispatch(loadTenantForm(cookie, corpId))];
 }

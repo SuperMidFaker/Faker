@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import {
-  loadTenants, delTenant, switchStatus, switchTenantApp, INITIAL_LIST_PAGE_SIZE
+  loadTenants, delTenant, switchStatus, INITIAL_LIST_PAGE_SIZE
 } from 'common/reducers/tenants';
 import { Table, Button, Icon, message, Popconfirm } from 'ant-ui';
 import NavLink from '../../../components/nav-link';
@@ -16,9 +16,9 @@ import { ACCOUNT_STATUS, MAX_STANDARD_TENANT }
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadTenants(cookie, {
     tenantId: state.account.tenantId,
-    pageSize: state.corps.corplist.pageSize,
-    currentPage: state.corps.corplist.current,
-    searchText: state.corps.corplist.searchText
+    pageSize: state.tenants.corplist.pageSize,
+    currentPage: state.tenants.corplist.current,
+    searchText: state.tenants.corplist.searchText,
   }));
 }
 
@@ -26,13 +26,12 @@ function fetchData({ state, dispatch, cookie }) {
 @injectIntl
 @connect(
   state => ({
-    corplist: state.corps.corplist,
-    loading: state.corps.loading,
-    appEditor: state.corps.appEditor,
+    corplist: state.tenants.corplist,
+    loading: state.tenants.loading,
     tenantId: state.account.tenantId
   }),
   {
-    loadTenants, delTenant, switchStatus, switchTenantApp
+    loadTenants, delTenant, switchStatus
   }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -52,10 +51,8 @@ export default class List extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
-    appEditor: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    switchTenantApp: PropTypes.func.isRequired,
     delTenant: PropTypes.func.isRequired,
     loadTenants: PropTypes.func.isRequired
   }
@@ -179,7 +176,7 @@ export default class List extends React.Component {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
             <span>
-              <NavLink to={`/corp/tenants/edit/${record.key}`}>
+              <NavLink to={`/manager/tenants/edit/${record.key}`}>
               修改
               </NavLink>
               <span className="ant-divider"></span>
@@ -215,7 +212,7 @@ export default class List extends React.Component {
               <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
             </div>
             <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
-                onClick={() => this.handleNavigationTo('/corp/tenants/create')}>
+                onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
                 <Icon type="plus-circle-o" />
                 新建
             </Button>

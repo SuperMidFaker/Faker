@@ -1,9 +1,8 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
-import { CHINA_CODE, TENANT_ROLE } from '../constants';
+import { CHINA_CODE } from '../constants';
 import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValueC } from
 './form-common';
-import { PERSONNEL_EDIT_SUCCEED } from './personnel';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'OPEN_TENANT_APPS_EDITOR', 'CLOSE_TENANT_APPS_EDITOR',
   'IMG_UPLOAD', 'IMG_UPLOAD_SUCCEED', 'IMG_UPLOAD_FAIL',
@@ -14,7 +13,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'TENANTS_LOAD', 'TENANTS_LOAD_SUCCEED', 'TENANTS_LOAD_FAIL',
   'TENANT_FORM_LOAD', 'TENANT_FORM_LOAD_SUCCEED', 'TENANT_FORM_LOAD_FAIL',
   'TENANT_NEW', 'TENANT_NEW_SUCCEED', 'TENANT_NEW_FAIL',
-  'TENANT_DELETE', 'TENANT_DELETE_SUCCEED', 'TENANT_DELETE_FAIL'
+  'TENANT_DELETE', 'TENANT_DELETE_SUCCEED', 'TENANT_DELETE_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -25,9 +24,6 @@ const initialState = {
   submitting: false,
   selectedIndex: -1,
   formData: {
-    poid: '',
-    coid: '',
-    country: CHINA_CODE,
     name: '',
     code: '',
     subdomain: '',
@@ -37,7 +33,13 @@ const initialState = {
     email: '',
     logo: ''
   },
-  tenantAppList: []
+  tenantAppList: [],
+  corplist: {
+    totalCount: 0,
+    pageSize: INITIAL_LIST_PAGE_SIZE,
+    current: 1,
+    data: [],
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -48,14 +50,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: form };
     }
     // organization
-    case PERSONNEL_EDIT_SUCCEED:
-      if (action.data.personnel.role === TENANT_ROLE.owner.name) {
-        // 修改租户拥有者需重新加载租户列表
-        return { ...state, loaded: false, formData: initialState.formData };
-      } else {
-        return state;
-      }
-      break;
     case actionTypes.TENANTS_LOAD: {
       return { ...state, loading: true };
     }
@@ -159,18 +153,6 @@ export function switchStatus(index, tenantId, status) {
       method: 'put',
       index,
       data: { status, tenantId }
-    }
-  };
-}
-
-export function switchTenantApp(tenantId, checked, app, index) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.SWITCH_APP, actionTypes.SWITCH_APP_SUCCEED, actionTypes.SWITCH_APP_FAIL],
-      endpoint: 'v1/user/corp/app',
-      method: 'post',
-      index,
-      data: { tenantId, checked, app }
     }
   };
 }
