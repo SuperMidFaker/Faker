@@ -11,6 +11,7 @@ import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
 import InputItem from '../shipment/forms/input-item';
 import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
+import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ScheduleInfo from '../shipment/forms/schedule-info';
@@ -224,23 +225,24 @@ export default class ShipmentCreate extends React.Component {
                   </div>
                   <Col span="16" className="subform-body">
                     <Tooltip placement="top" title="请先选择客户">
-                      <a href="#">
-                        <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4} field="client"
+                      <div>
+                        <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={3} field="client"
                         required optionData={clientOpts} filterFields={[ 'code' ]}
                         optionField="name" optionKey="key" optionValue="value"
                         rules={[{
                           required: true, message: this.msg('clientNameMust')
                         }]}
                         />
-                      </a>
+                      </div>
                     </Tooltip>
                   </Col>
                   <Col span="8" className="subform-body">
                     <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8} field="ref_external_no"/>
                   </Col>
                 </Row>
-                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
-                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
+                <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
+                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
+                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={6} formhoc={formhoc} />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
                 <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>

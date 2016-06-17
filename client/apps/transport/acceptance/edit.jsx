@@ -188,7 +188,7 @@ export default class ShipmentEdit extends React.Component {
           </div>
           <div className="bottom-fixed-row">
             <Button size="large" htmlType="submit" type="primary" loading={submitting} onClick={this.handleEdit}>
-              {this.msg('save')}
+            {this.msg('save')}
             </Button>
           </div>
         </Form>

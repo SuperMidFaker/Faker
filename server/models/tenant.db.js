@@ -217,8 +217,7 @@ export default {
   },
   updateTenantByTenantId(tenantId, code, name, aspect, phone, subdomain, logo, contact, email) {
     const sql = `update sso_tenants set code = ?, name = ?, aspect = ?, phone = ?,
-      subdomain = ?, logo = ?, contact = ?, email = ?
-      where tenant_id = ?`;
+      subdomain = ?, logo = ?, contact = ?, email = ? where tenant_id = ?`;
     const args = [code, name, aspect, phone, subdomain, logo, contact, email, tenantId];
     return mysql.update(sql, args);
   },
