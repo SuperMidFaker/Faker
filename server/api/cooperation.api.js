@@ -105,7 +105,7 @@ function *addPartner() {
       });
     }
     // 返回给客户端的新增partner
-    const newPartner = {name: partnerName, partnerCode, types: partnerships.map(partnership => ({code: partnership})),
+    const newPartner = {name: partnerName, partnerCode, partnerships: partnerships.map(partnership => ({code: partnership})),
       status: 1, partnerTenantId: partner.partner_tenant_id, tenantType: partner.tenant_type, key: partner.id};
     return Result.ok(this, { newPartner });
   } catch(e) {
@@ -211,17 +211,13 @@ function *getToInvites() {
 function *inviteOfflinePartner() {
   const body = yield cobody(this);
   const { tenantId, inviteeInfo, concactInfo } = body;
-  let trans;
   try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.insertInvitation(inviteeInfo.partnerId, tenantId, -1,
-                                   inviteeInfo.code, inviteeInfo.name, 0, null, trans);
-    yield coopDao.updatePartnerInvited(inviteeInfo.partnerId, 1, trans);
+    yield Invitation.create({partner_id: inviteeInfo.partnerId, inviter_tenant_id: tenantId, invitee_tenant_id: inviteeInfo.tenantId, 
+      invitee_name: inviteeInfo.name, invitee_code: inviteeInfo.code});
+    yield Partner.update({invited: 1}, {where: {id: inviteeInfo.partnerId}});
     // TODO: 发送短信或者邮件给线下用户
-    yield mysql.commit(trans);
     return Result.ok(this);
   } catch(e) {
-    yield mysql.rollback(trans);
     return Result.internalServerError(this, e.message);
   }
 }
@@ -229,13 +225,10 @@ function *inviteOfflinePartner() {
 function *inviteOnlinePartner() {
   const body = yield cobody(this);
   const { tenantId, inviteeInfo } = body;
-  let trans;
   try {
-    trans = yield mysql.beginTransaction();
-    yield coopDao.insertInvitation(inviteeInfo.partnerId, tenantId, inviteeInfo.tenantId,
-                                   inviteeInfo.code, inviteeInfo.name, 0, null, trans);
-    yield coopDao.updatePartnerInvited(inviteeInfo.partnerId, 1, trans);
-    yield mysql.commit(trans);
+    yield Invitation.create({partner_id: inviteeInfo.partnerId, inviter_tenant_id: tenantId, invitee_tenant_id: inviteeInfo.tenantId,
+      invitee_name: inviteeInfo.name, invitee_code: inviteeInfo.code});
+    yield Partner.update({invited: 1}, {where: {id: inviteeInfo.partnerId}});
     return Result.ok(this);
   } catch(e) {
     yield mysql.rollback(trans);
