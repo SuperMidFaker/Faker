@@ -26,7 +26,7 @@ export default class CarForm extends Component {
     const regionValues = region || [];
     return (
       <ContentWrapper>
-        <Form horizontal onSubmit={onSubmitBtnClick}>
+        <Form horizontal onSubmit={onSubmitBtnClick} className="form-edit-content offset-right-col">
           <FormItem label="名称:" required {...formItemLayout}>
             <Input {...getFieldProps('name')} required/>
           </FormItem>

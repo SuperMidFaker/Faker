@@ -28,7 +28,7 @@ export default class CarForm extends Component {
 
     return (
       <ContentWrapper>
-        <Form horizontal onSubmit={onSubmitBtnClicked}>
+        <Form horizontal onSubmit={onSubmitBtnClicked} className="form-edit-content offset-right-col">
           <FormItem label="车牌号:"
                     required
                     validateStatus={vehicleValidate ? '' : 'error'}
@@ -40,29 +40,29 @@ export default class CarForm extends Component {
             <Input {...getFieldProps('trailer_number')}/>
           </FormItem>
           <FormItem label="车型:" required {...formItemLayout}>
-            <Select {...getFieldProps('type', {initialValue: 0})} required>
+            <Select {...getFieldProps('type')} required>
             {
               VEHICLE_TYPES.map(vt => <Option value={vt.value} key={vt.value}>{vt.text}</Option>)
             }
             </Select>
           </FormItem>
-          <FormItem label="车长" required {...formItemLayout}>
-            <Select {...getFieldProps('length', {initialValue: 0})} required>
+          <FormItem label="车长:" required {...formItemLayout}>
+            <Select {...getFieldProps('length')} required>
             {
               VEHICLE_LENGTH_TYPES.map(vlt => <Option value={vlt.value} key={vlt.value}>{vlt.text}</Option>)
             }
             </Select>
           </FormItem>
-          <FormItem label="额定载重(顿):" required {...formItemLayout}>
-            <Input type="number" {...getFieldProps('load_weight')} required/>
+          <FormItem label="额定载重:" required {...formItemLayout}>
+            <Input type="number" {...getFieldProps('load_weight')} addonAfter="吨" required/>
           </FormItem>
-          <FormItem label="额定体积(立方米):" {...formItemLayout}>
-            <Input type="number" {...getFieldProps('load_volume')} />
+          <FormItem label="额定体积:" {...formItemLayout}>
+            <Input type="number" {...getFieldProps('load_volume')} addonAfter="立方米" />
           </FormItem>
-          <FormItem label="车辆所有权" {...formItemLayout} required>
-            <Select {...getFieldProps('vproperty', {initialValue: 0})} required>
-              <Option value={0}>司机自有车辆</Option>
-              <Option value={1}>公司车辆</Option>
+          <FormItem label="车辆所有权:" {...formItemLayout} required>
+            <Select {...getFieldProps('vproperty')} required>
+              <Option value={0}>社会协作车辆</Option>
+              <Option value={1}>公司自有车辆</Option>
             </Select>
           </FormItem>
           <FormItem label="指派司机:" {...formItemLayout}>
