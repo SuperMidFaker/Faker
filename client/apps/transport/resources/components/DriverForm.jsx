@@ -23,7 +23,7 @@ export default class DriverForm extends Component {
 
     return (
       <ContentWrapper>
-        <Form horizontal onSubmit={onSubmitBtnClicked}>
+        <Form horizontal onSubmit={onSubmitBtnClicked} className="form-edit-content offset-right-col">
           <FormItem {...formItemLayout} label="姓名" required>
             <Input {...getFieldProps('name')} required/>
           </FormItem>
