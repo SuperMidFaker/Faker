@@ -68,7 +68,8 @@
     "serialize-javascript": "^1.2.0",
     "superagent": "^1.8.3",
     "warning": "^2.1.0",
-    "webpack-isomorphic-tools": "^2.3.0"
+    "webpack-isomorphic-tools": "^2.3.0",
+    "oneapm": "^1.2.20"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
