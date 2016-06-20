@@ -81,7 +81,7 @@ export default class ClientInfo extends React.Component {
         }
         </Col>
         <Col span={24 - outerColSpan} className="subform-body">
-          <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={6}
+          <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8}
           field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
           />
         </Col>
