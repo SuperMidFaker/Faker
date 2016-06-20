@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Table, Radio, Button } from 'ant-ui';
 
 const RadioGroup = Radio.Group;
@@ -9,6 +9,9 @@ const rowSelection = {
 };
 
 export default class AcceptanceList extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
   columns = [
     {
       title: '报关委托号',
@@ -48,6 +51,9 @@ export default class AcceptanceList extends Component {
       title: '操作'
     }
   ]
+  handleCreateBtnClick = () => {
+    this.context.router.push('/import/accept/create');
+  }
   render() {
     const dataSource = [{id: 1, key: 1}];
     return (
@@ -63,7 +69,7 @@ export default class AcceptanceList extends Component {
           </RadioGroup>
         </div>
         <div className="page-body" style={{padding: 16}}>
-          <Button size="large" type="primary" style={{marginBottom: 8}}>新建</Button>
+          <Button size="large" type="primary" style={{marginBottom: 8}} onClick={this.handleCreateBtnClick}>新建</Button>
           <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection}/>
         </div>
       </div>
