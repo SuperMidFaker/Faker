@@ -104,6 +104,7 @@ export default(store, cookie) => {
             <IndexRedirect to="/import/accept"/>
             <Route path="accept">
               <IndexRoute component={Import.AcceptanceList}/>
+              <Route path="create" component={Import.AcceptanceForm}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
