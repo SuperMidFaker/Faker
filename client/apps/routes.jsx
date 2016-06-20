@@ -17,12 +17,6 @@ import * as Cooperation from './corp/cooperation';
 import MyProfile from './account/profile';
 import Password from './account/password';
 import Module from './module';
-import ImportM from './import/module-import';
-import ImportDashboard from './import/dashboard';
-import * as ImportDelegate from './import/delegate';
-import * as ImportTask from './import/task';
-import * as ImportAccept from './import/accept';
-import * as ImportTracking from './import/tracking';
 import ExportM from './export/module-export';
 import ExportBoard from './export/dashboard';
 import * as ExportDelegate from './export/delegate';
@@ -40,6 +34,7 @@ import Warehouse from './inventory/warehouse';
 import Notice from './inventory/notice';
 import {loadAccount} from 'common/reducers/account';
 import {isLoaded} from 'client/common/redux-actions';
+import * as Import from './cms/import/index';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -105,25 +100,10 @@ export default(store, cookie) => {
           </Route>
         </Route>
         <Route component={Module}>
-          <Route path="import" component={ImportM}>
-            <IndexRoute component={ImportDashboard}/>
-            <Route path="delegate">
-              <IndexRoute component={ImportDelegate.List}/>
-              <Route path="new" component={ImportDelegate.Edit}/>
-              <Route path="edit/:id" component={ImportDelegate.Edit}/>
-              <Route path="send/:status" component={ImportDelegate.Send}/>
-            </Route>
-            <Route path="task">
-              <IndexRoute component={ImportTask.List}/>
-              <Route path="inputbill/:id" component={ImportTask.InputBill}/>
-            </Route>
+          <Route path="import" component={Import.Sidebar}>
+            <IndexRedirect to="/import/accept"/>
             <Route path="accept">
-              <IndexRoute component={ImportAccept.List}/>
-              <Route path="new" component={ImportAccept.Edit}/>
-              <Route path="edit/:id" component={ImportAccept.Edit}/>
-            </Route>
-            <Route path="tracking">
-              <IndexRoute component={ImportTracking.List}/>
+              <IndexRoute component={Import.AcceptanceList}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
@@ -177,8 +157,8 @@ export default(store, cookie) => {
             </Route>
             <Route path="resources">
               <IndexRoute component={TMSResources.MainContainer} />
-              <Route path="add_car" component={TMSResources.CarFormContainer} />
-              <Route path="edit_car/:car_id" component={TMSResources.CarFormContainer} />
+              <Route path="add_car" component={TMSResources.VehicleFormContainer} />
+              <Route path="edit_car/:car_id" component={TMSResources.VehicleFormContainer} />
               <Route path="add_driver" component={TMSResources.DriverFormContainer} />
               <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
               <Route path="add_node" component={TMSResources.NodeFormContainer} />

@@ -101,7 +101,7 @@ export default function reducer(state = initialState, action) {
 /**
  * 车辆相关的action creator
  */
-export function addCar(carInfo) {
+export function addVehicle(carInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -109,14 +109,14 @@ export function addCar(carInfo) {
         actionTypes.ADD_CAR_SUCCEED,
         actionTypes.ADD_CAR_FAIL
       ],
-      endpoint: 'v1/transport/resources/add_car',
+      endpoint: 'v1/transport/resources/add_vehicle',
       method: 'post',
       data: { carInfo }
     }
   };
 }
 
-export function editCar({carId, carInfo}) {
+export function editVehicle({carId, carInfo}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -124,14 +124,14 @@ export function editCar({carId, carInfo}) {
         actionTypes.EDIT_CAR_SUCCEED,
         actionTypes.EDIT_CAR_FAIL
       ],
-      endpoint: 'v1/transport/resources/edit_car',
+      endpoint: 'v1/transport/resources/edit_vehicle',
       method: 'post',
       data: { carInfo, carId }
     }
   };
 }
 
-export function loadCarList(tenantId) {
+export function loadVehicleList(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -139,7 +139,7 @@ export function loadCarList(tenantId) {
         actionTypes.LOAD_CARLIST_SUCCEED,
         actionTypes.LOAD_CARLIST_FAIL
       ],
-      endpoint: 'v1/transport/resources/car_list',
+      endpoint: 'v1/transport/resources/vehicle_list',
       method: 'get',
       params: { tenantId }
     }

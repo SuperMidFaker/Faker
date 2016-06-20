@@ -25,14 +25,14 @@ export default class VehicleForm extends Component {
     const driversOptions = drivers ? drivers.map(driver =>
       <Option value={driver.driver_id} key={driver.driver_id}>{driver.name}</Option>
     ) : '';
-
+    const numberValidate = mode === 'edit' || vehicleValidate;
     return (
       <ContentWrapper>
         <Form horizontal onSubmit={onSubmitBtnClicked} className="form-edit-content offset-right-col">
           <FormItem label="车牌号:"
                     required
-                    validateStatus={vehicleValidate ? '' : 'error'}
-                    help={vehicleValidate ? '' : '该车辆已存在'}
+                    validateStatus={numberValidate ? '' : 'error'}
+                    help={numberValidate ? '' : '该车辆已存在'}
             {...formItemLayout}>
             <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'} onBlur={(e) => onVehicleNumberBlur(e)}/>
           </FormItem>
