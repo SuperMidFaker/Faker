@@ -84,9 +84,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_FORM_SUCCEED: {
       const formData = action.result.data.formData;
-      const { customer_name } = formData;
       return { ...state, formData: { ...state.formData, ...formData,
-        client: customer_name, pickup_est_date: transformJsonDate(formData.pickup_est_date),
+        pickup_est_date: transformJsonDate(formData.pickup_est_date),
         deliver_est_date: transformJsonDate(formData.deliver_est_date),
       }};
     }

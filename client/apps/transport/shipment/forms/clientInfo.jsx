@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Tooltip, } from 'ant-ui';
+import { Row, Col, Tooltip } from 'ant-ui';
 import InputItem from './input-item';
 import AutoCompSelectItem from './autocomp-select-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -25,26 +25,32 @@ export default class ClientInfo extends React.Component {
     customer_name: PropTypes.string,
     ref_external_no: PropTypes.string,
     outerColSpan: PropTypes.number.isRequired,
+    mode: PropTypes.string,
     setConsignFields: PropTypes.func.isRequired,
   }
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  handleClientChange = (value) => {
-    const clientFieldId = parseInt(value, 10);
+  findClientValue = (evalue) => {
+    const clientFieldId = evalue;
+    // console.log(typeof clientFieldId, evalue);
+    if (isNaN(clientFieldId) && typeof clientFieldId !== 'number') {
+      // 手工输入名称直接返回
+      return evalue;
+    }
     const selclients = this.props.clients.filter(
         cl => cl.partner_id === clientFieldId
     );
     this.props.setConsignFields({
       customer_tenant_id: selclients.length > 0 ? selclients[0].tid : -1,
       customer_partner_id: selclients.length > 0 ? clientFieldId : -1,
-      customer_name: selclients.length > 0 ? selclients[0].name : value,
     });
+    return selclients.length > 0 ? selclients[0].name : evalue;
   }
   render() {
-    const { formhoc, outerColSpan, clients, customer_name: name, ref_external_no } = this.props;
+    const { formhoc, mode, outerColSpan, clients, customer_name: name, ref_external_no } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.partner_id}/${cl.tid}`,
-      value: `${cl.partner_id}`,
+      value: cl.partner_id,
       code: cl.partner_code,
       name: cl.name,
     }));
@@ -54,6 +60,11 @@ export default class ClientInfo extends React.Component {
           <div className="subform-title">{this.msg('customerInfo')}</div>
         </div>
         <Col span={outerColSpan} className="subform-body">
+        {
+          mode === 'edit' ?
+          <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+          field="customer_name" disabled fieldProps={{ initialValue: name }}
+          /> :
           <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
             <div>
               <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
@@ -63,10 +74,11 @@ export default class ClientInfo extends React.Component {
               rules={[{
                 required: true, message: this.msg('clientNameMust')
               }]}
-              initialValue={name} onChange={this.handleClientChange}
+              initialValue={name} getValueFromEvent={this.findClientValue}
               />
             </div>
           </Tooltip>
+        }
         </Col>
         <Col span={24 - outerColSpan} className="subform-body">
           <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={6}

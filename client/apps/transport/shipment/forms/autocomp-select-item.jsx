@@ -8,7 +8,7 @@ export default function AutoCompletionSelectItem(props) {
     labelName, field, colSpan, placeholder, required, rules,
     formhoc: { getFieldError, getFieldProps }, optionData,
     optionField, optionKey, optionValue, filterFields = [],
-    allowClear, onSelect, onChange, initialValue,
+    allowClear, onSelect, onChange, initialValue, getValueFromEvent,
   } = props;
   const getComboFilter = (input, option) => {
     const optFields = [ ...filterFields, optionField ]; // fallback to optionField
@@ -31,7 +31,7 @@ export default function AutoCompletionSelectItem(props) {
       wrapperCol={{span: 24 - colSpan}} help={getFieldError(field)}
     >
       <Select combobox filterOption={getComboFilter} placeholder={placeholder}
-        {...getFieldProps(field, { onChange, rules, initialValue })}
+        {...getFieldProps(field, { onChange, rules, initialValue, getValueFromEvent })}
         onSelect={handleComboSelect} allowClear={allowClear}
       >
         {
@@ -62,4 +62,6 @@ AutoCompletionSelectItem.propTypes = {
     optionValue: PropTypes.string,
     optionKey: PropTypes.string,
     filterFields: PropTypes.array, // 优先筛选判断的字段名称列表
+    initialValue: PropTypes.string,
+    getValueFromEvent: PropTypes.func,
 };

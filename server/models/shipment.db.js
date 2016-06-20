@@ -175,8 +175,8 @@ export default {
       total_weight, total_volume, remark, effective,
       tenant_id, creater_login_id, created_date) values (?, NOW())`;
     const args = [
-      shipmtNo, spTenantId, null, spName, shipmt.client_id,
-      shipmt.client_partner_id, shipmt.client
+      shipmtNo, spTenantId, null, spName, shipmt.customer_tenant_id,
+      shipmt.customer_partner_id, shipmt.customer_name
     ];
     packShipmentArgsByLSP(shipmt, args);
     args.push(effective, spTenantId, spLoginId);

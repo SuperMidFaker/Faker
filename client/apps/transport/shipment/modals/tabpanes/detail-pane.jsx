@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Row, Col, Table, Card } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
+import { renderConsignLoc } from '../../../common/consignLocation';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 import './pane.less';
@@ -95,10 +96,7 @@ export default class PreviewPanel extends React.Component {
                 field={ shipmt.consigner_name } fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('departurePort')}
-                field={ this.renderConsignPort(
-                  shipmt.consigner_province, shipmt.consigner_city,
-                  shipmt.consigner_district
-                )} fieldCol={{ span: 18 }}
+                field={ renderConsignLoc(shipmt, 'consigner')} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('pickupAddr')}
                 field={ shipmt.consigner_addr } fieldCol={{ span: 18 }}
@@ -117,10 +115,7 @@ export default class PreviewPanel extends React.Component {
                 field={ shipmt.consignee_name } fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('arrivalPort')}
-                field={ this.renderConsignPort(
-                  shipmt.consignee_province, shipmt.consignee_city,
-                  shipmt.consignee_district
-                )} fieldCol={{ span: 18 }}
+                field={ renderConsignLoc(shipmt, 'consignee')} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('deliveryAddr')}
                 field={ shipmt.consignee_addr } fieldCol={{ span: 18 }}

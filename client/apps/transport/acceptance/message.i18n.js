@@ -101,50 +101,6 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.new.title',
     defaultMessage: '新建运单'
   },
-  correlativeInfo: {
-    id: 'transport.acceptance.shipment.correlative',
-    defaultMessage: '关联信息'
-  },
-  customerInfo: {
-    id: 'transport.acceptance.customerInfo',
-    defaultMessage: '客户信息'
-  },
-  client: {
-    id: 'transport.acceptance.client',
-    defaultMessage: '客户名称'
-  },
-  clientNameMust: {
-    id: 'transport.acceptance.client.name.must',
-    defaultMessage: '客户名称必填'
-  },
-  lsp: {
-    id: 'transport.acceptance.lsp',
-    defaultMessage: '物流服务商'
-  },
-  lspNameMust: {
-    id: 'transport.acceptance.lsp.name.must',
-    defaultMessage: '物流服务商名称必填'
-  },
-  refExternalNo: {
-    id: 'transport.acceptance.ref.external',
-    defaultMessage: '客户单号'
-  },
-  refWaybillNo: {
-    id: 'transport.acceptance.ref.waybill',
-    defaultMessage: '关联提运单号'
-  },
-  refEntryNo: {
-    id: 'transport.acceptance.ref.entryno',
-    defaultMessage: '关联报关单号'
-  },
-  remark: {
-    id: 'transport.acceptance.shipment.remark',
-    defaultMessage: '备注'
-  },
-  freightCharge: {
-    id: 'transport.acceptance.freight.charge',
-    defaultMessage: '运费'
-  },
   saveAndAccept: {
     id: 'transport.acceptance.save.accept',
     defaultMessage: '一键接单'

@@ -8,7 +8,7 @@ import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import {
   PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
-  SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT,
+  SHIPMENT_TRACK_STATUS,
   VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES, CONTAINER_PACKAGE_TYPE,
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
@@ -150,7 +150,8 @@ function *shipmtSavePendingP() {
     const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.effected, trans);
     const result = yield shipmentDispDao.createAndAcceptByLSP(
-      shipmtNo, shipmt.client_id, shipmt.client, shipmt.client_partner_id,
+      shipmtNo, shipmt.customer_tenant_id, shipmt.customer_name,
+      shipmt.customer_partner_id,
       SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
       sp.login_name, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.unaccepted, shipmt.freight_charge, new Date(), trans
@@ -176,7 +177,8 @@ function *shipmtSaveAcceptP() {
     const shipmtNo = yield shipmentDao.genShipmtNoAsync(sp.tid);
     yield* createShipment(shipmtNo, shipmt, sp, SHIPMENT_EFFECTIVES.effected, trans);
     const result = yield shipmentDispDao.createAndAcceptByLSP(
-      shipmtNo, shipmt.client_id, shipmt.client, shipmt.client_partner_id,
+      shipmtNo, shipmt.customer_tenant_id, shipmt.customer_name,
+      shipmt.customer_partner_id,
       SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
       sp.login_name, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipmt.freight_charge, new Date(), trans
@@ -443,7 +445,7 @@ function *shipmtDetailG() {
       }
     }
     shipmt.goodslist = goodslist;
-    let downstream_disp_status;
+    let downstreamDispStatus;
     let tracking = {};
     // 上游dispatch为shipmtSpDisps[0]
     // 下游dispatch为shipmtSrDisps[0]
@@ -451,7 +453,7 @@ function *shipmtDetailG() {
       const upstream = shipmtSpDisps.length === 1;
       // 下游dispatch若为司机,则不需要显示
       const downstream = shipmtSrDisps[0].sp_tenant_id !== 0;
-      downstream_disp_status = shipmtSrDisps[0].disp_status;
+      downstreamDispStatus = shipmtSrDisps[0].disp_status;
       tracking = {
         created_date: shipmt.created_date,
         upstream_name:
@@ -474,7 +476,7 @@ function *shipmtDetailG() {
     } else if (sourceType === 'sp' && shipmtSpDisps.length === 1) {
       // 下游dispatch若为司机,则不需要显示
       const downstream = shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id !== 0;
-      downstream_disp_status = downstream ? shipmtSrDisps[0].disp_status : -1;
+      downstreamDispStatus = downstream ? shipmtSrDisps[0].disp_status : -1;
       tracking = {
         created_date: shipmt.created_date,
         upstream_name: shipmtSpDisps[0].sp_name,
@@ -495,7 +497,7 @@ function *shipmtDetailG() {
     tracking.creator = shipmtCreator;
     tracking.points = points;
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
-      && downstream_disp_status > 0 ?
+      && downstreamDispStatus > 0 ?
       tracking.downstream_status : tracking.upstream_status;
     return Result.ok(this, {
       shipmt,

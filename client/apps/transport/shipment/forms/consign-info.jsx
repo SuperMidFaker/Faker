@@ -36,9 +36,11 @@ function getRenderFields(type) {
 
 function getFieldDefaults(state, type) {
   const defaults = {};
-  return getRenderFields(type).forEach(fd => {
-    defaults[fd] = state.shipment.formData[fd];
+  const fields = getRenderFields(type);
+  Object.keys(fields).forEach(fd => {
+    defaults[fields[fd]] = state.shipment.formData[fields[fd]];
   });
+  return defaults;
 }
 
 @connect(
@@ -77,24 +79,14 @@ export default class ConsignInfo extends React.Component {
     });
     if (selectConsignLoc) {
       const consignKey = `${this.props.type}_id`;
-      this.props.setFormValue(consignKey, selectConsignLoc.node_id);
-      /*
       this.props.setConsignFields({
         [consignKey]: selectConsignLoc.node_id,
-        [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,
-        [this.renderFields.contact]: selectConsignLoc.contact,
-        [this.renderFields.mobile]: selectConsignLoc.mobile,
-        [this.renderFields.email]: selectConsignLoc.email
       });
-     */
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
-        [this.renderFields.province]: selectConsignLoc.province,
-        [this.renderFields.city]: selectConsignLoc.city,
-        [this.renderFields.district]: selectConsignLoc.district,
         [this.renderFields.contact]: selectConsignLoc.contact,
         [this.renderFields.mobile]: selectConsignLoc.mobile,
         [this.renderFields.email]: selectConsignLoc.email
@@ -104,15 +96,17 @@ export default class ConsignInfo extends React.Component {
   handleAutoInputChange = (val) => {
     if (val === undefined || val === '') {
       const consignKey = `${this.props.type}_id`;
-      this.props.setFormValue(consignKey, undefined);
+      this.props.setConsignFields({
+        [consignKey]: undefined,
+        [this.renderFields.province]: '',
+        [this.renderFields.city]: '',
+        [this.renderFields.district]: '',
+      });
       this.props.formhoc.setFieldsValue({
-        [this.renderFields.addr]: undefined,
-        [this.renderFields.province]: undefined,
-        [this.renderFields.city]: undefined,
-        [this.renderFields.district]: undefined,
-        [this.renderFields.contact]: undefined,
-        [this.renderFields.mobile]: undefined,
-        [this.renderFields.email]: undefined,
+        [this.renderFields.addr]: '',
+        [this.renderFields.contact]: '',
+        [this.renderFields.mobile]: '',
+        [this.renderFields.email]: '',
       });
     }
   }
@@ -172,9 +166,9 @@ export default class ConsignInfo extends React.Component {
     }));
     const { province, city, district, name, addr, contact, mobile, email } = this.renderFields;
     const region = {
-      province: formhoc.getFieldValue(province) || fieldDefaults[province],
-      city: formhoc.getFieldValue(city) || fieldDefaults[city],
-      district: formhoc.getFieldValue(district) || fieldDefaults[district],
+      province: fieldDefaults[province],
+      city: fieldDefaults[city],
+      district: fieldDefaults[district],
     };
     return (
       <Row>

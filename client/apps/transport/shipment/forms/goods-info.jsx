@@ -83,7 +83,7 @@ ColumnSelect.propTypes = {
     fieldDefaults: {
       goods_type: state.shipment.formData.goods_type,
       total_count: state.shipment.formData.total_count,
-      package: state.shipment.formData.package,
+      packageform: state.shipment.formData.package,
       total_weight: state.shipment.formData.total_weight,
       insure_value: state.shipment.formData.insure_value,
       total_volume: state.shipment.formData.total_volume,
@@ -203,7 +203,7 @@ export default class GoodsInfo extends React.Component {
     const {
       labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldProps, getFieldValue },
       packagings, containerPackagings,
-      fieldDefaults: { goods_type, total_count, package, total_weight, insure_value, total_volume },
+      fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
     } = this.props;
     const apackagings = getFieldValue('transport_mode_code') === 'CTN' ? containerPackagings
       : packagings.map(pk => ({
@@ -359,7 +359,7 @@ export default class GoodsInfo extends React.Component {
                 rules: [{
                   required: true, type: 'number', message: this.msg('goodsTypeMust')
                 }],
-                { initialValue: goods_type }
+                initialValue: goods_type
               })}
               >
               {goodsTypes.map(
@@ -368,7 +368,7 @@ export default class GoodsInfo extends React.Component {
               </Select>
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
-              field="total_count" colSpan={labelColSpan} hasFeedback={false}
+              field="total_count" colSpan={labelColSpan}
               fieldProps={{ initialValue: total_count }}
             />
           </Col>
@@ -376,13 +376,13 @@ export default class GoodsInfo extends React.Component {
             <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
               wrapperCol={{span: 24 - labelColSpan}}
             >
-              <Select {...getFieldProps('package', { initialValue: package })}>
+              <Select {...getFieldProps('package', { initialValue: packageform })}>
               {apackagings.map(
                 pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
               )}
               </Select>
             </FormItem>
-            <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')} hasFeedback={false}
+            <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
               field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
               fieldProps={{ initialValue: total_weight }}
             />
@@ -392,7 +392,7 @@ export default class GoodsInfo extends React.Component {
               field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
               fieldProps={{ initialValue: insure_value }}
             />
-            <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')} hasFeedback={false}
+            <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
               field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
               fieldProps={{ initialValue: total_volume }}
             />

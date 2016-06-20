@@ -309,10 +309,6 @@ export default defineMessages({
     id: 'transport.shipment.tab.charge',
     defaultMessage: '运费'
   },
-  remark: {
-    id: 'transport.shipment.pane.remark',
-    defaultMessage: '备注'
-  },
   trackingPoistionTitle: {
     id: 'transport.shipment.pane.tracking.position.title',
     defaultMessage: '位置'
@@ -337,8 +333,36 @@ export default defineMessages({
     id: 'transport.shipment.pane.pos.mode.gps',
     defaultMessage: 'GPS'
   },
-  poistionTime: {
+  positionTime: {
     id: 'transport.shipment.pane.position.time',
     defaultMessage: '上报时间'
+  },
+  correlativeInfo: {
+    id: 'transport.acceptance.shipment.correlative',
+    defaultMessage: '关联信息'
+  },
+  lsp: {
+    id: 'transport.acceptance.lsp',
+    defaultMessage: '物流服务商'
+  },
+  lspNameMust: {
+    id: 'transport.acceptance.lsp.name.must',
+    defaultMessage: '物流服务商名称必填'
+  },
+  refWaybillNo: {
+    id: 'transport.acceptance.ref.waybill',
+    defaultMessage: '关联提运单号'
+  },
+  refEntryNo: {
+    id: 'transport.acceptance.ref.entryno',
+    defaultMessage: '关联报关单号'
+  },
+  remark: {
+    id: 'transport.acceptance.shipment.remark',
+    defaultMessage: '备注'
+  },
+  freightCharge: {
+    id: 'transport.acceptance.freight.charge',
+    defaultMessage: '运费'
   },
 });

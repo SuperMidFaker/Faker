@@ -4,6 +4,7 @@ import { intlShape } from 'react-intl';
 import { Row, Col, Form, Select } from 'ant-ui';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
+import { setConsignFields } from 'common/reducers/shipment';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -13,8 +14,16 @@ const Option = Select.Option;
   state => ({
     transitModes: state.shipment.formRequire.transitModes,
     vehicleTypes: state.shipment.formRequire.vehicleTypes,
-    vehicleLengths: state.shipment.formRequire.vehicleLengths
-  })
+    vehicleLengths: state.shipment.formRequire.vehicleLengths,
+    fieldDefaults: {
+      vehicle_type: state.shipment.formData.vehicle_type,
+      vehicle_length: state.shipment.formData.vehicle_length,
+      container_no: state.shipment.formData.container_no,
+      transport_mode_code: state.shipment.formData.transport_mode_code,
+      package: state.shipment.formData.package,
+    },
+  }),
+  { setConsignFields }
 )
 export default class ModeInfo extends React.Component {
   static propTypes = {
@@ -22,18 +31,34 @@ export default class ModeInfo extends React.Component {
     transitModes: PropTypes.array.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
-    formhoc: PropTypes.object.isRequired
+    fieldDefaults: PropTypes.object.isRequired,
+    formhoc: PropTypes.object.isRequired,
+    setConsignFields: PropTypes.func.isRequired,
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
+  handleModeChange = (code) => {
+    const modes = this.props.transitModes.filter(tm => tm.mode_code === code);
+    let pack = this.props.fieldDefaults.package;
+    if (code === 'CTN') {
+      // 集装箱去除原来包装方式
+      pack = '';
+    }
+    this.props.setConsignFields({
+      transport_mode_code: code,
+      transport_mode: modes.length > 0 ? modes[0].mode_name : '',
+      package: pack,
+    });
+  }
   render() {
     const {
       transitModes, vehicleTypes, vehicleLengths,
-      formhoc: { getFieldProps, getFieldValue }
+      formhoc: { getFieldProps },
+      fieldDefaults: { vehicle_type, vehicle_length, container_no, transport_mode_code: tmc }
     } = this.props;
     let outerColSpan = 24;
     let labelColSpan = 2;
-    const modeCode = getFieldValue('transport_mode_code');
+    const modeCode = tmc;
     const modeEditCols = [];
     if (modeCode === 'FTL') {
       // 整车,修改车型,车长
@@ -44,7 +69,7 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleType')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
-            <Select {...getFieldProps('vehicle_type')}>
+            <Select {...getFieldProps('vehicle_type', { initialValue: vehicle_type })}>
             {vehicleTypes.map(
               vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
             )}
@@ -55,7 +80,7 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleLength')} labelCol={{span: labelColSpan}}
             wrapperCol={{span: 24 - labelColSpan}}
           >
-            <Select {...getFieldProps('vehicle_length')}>
+            <Select {...getFieldProps('vehicle_length', { initialValue: vehicle_length })}>
             {vehicleLengths.map(
               vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
             )}
@@ -70,7 +95,8 @@ export default class ModeInfo extends React.Component {
       modeEditCols.push(
         <Col key="container_no" span={`${outerColSpan}`} className="subform-body">
           <InputItem labelName={this.msg('containerNo')} field="container_no"
-          colSpan={labelColSpan} formhoc={this.props.formhoc} hasFeedback={false}
+          colSpan={labelColSpan} formhoc={this.props.formhoc}
+          fieldProps={{ initialValue: container_no }}
           />
         </Col>,
         <Col span={`${outerColSpan}`} className="subform-body" />
@@ -94,7 +120,8 @@ export default class ModeInfo extends React.Component {
                 rules: [{
                   required: true, message: this.msg('transitModeMust')
                 }],
-                onChange: this.handleCodeChange,
+                initialValue: tmc,
+                onChange: this.handleModeChange,
               }
             )}
             >

@@ -1,22 +1,22 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, InputNumber, message, Row } from 'ant-ui';
+import { Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { setFormValue, setConsignFields, loadForm, loadFormRequire }
+import { loadForm, loadFormRequire }
   from 'common/reducers/shipment';
 import { loadTable, saveEdit } from 'common/reducers/transport-acceptance';
-import InputItem from '../shipment/forms/input-item';
+import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
+import CorrelInfo from '../shipment/forms/correlInfo';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
-const FormItem = Form.Item;
 
 function fetchData({ state, dispatch, params, cookie }) {
   const promises = [];
@@ -38,9 +38,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    tenantName: state.corpDomain.name,
     formData: state.shipment.formData,
-    transitModes: state.shipment.formRequire.transitModes,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
     sortField: state.transportAcceptance.table.sortField,
@@ -48,7 +46,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, loadTable, saveEdit })
+  { loadTable, saveEdit })
 @connectNav((props, dispatch, router) => {
   if (!props.formData.shipmt_no) {
     return;
@@ -61,24 +59,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     goBackFn: () => router.goBack()
   }));
 })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
-  onFieldsChange(props, fields) {
-    Object.keys(fields).forEach(name => {
-      if (name === 'transport_mode_code') {
-        const code = fields[name].value;
-        const modes = props.transitModes.filter(tm => tm.mode_code === code);
-        props.setConsignFields({
-          transport_mode_code: code,
-          transport_mode: modes.length > 0 ? modes[0].mode_name : '',
-        });
-      } else {
-        props.setFormValue(name, fields[name].value);
-      }
-    });
-  },
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class ShipmentEdit extends React.Component {
@@ -86,23 +67,19 @@ export default class ShipmentEdit extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    tenantName: PropTypes.string.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
-    transitModes: PropTypes.array.isRequired,
     filters: PropTypes.array.isRequired,
     sortField: PropTypes.string.isRequired,
     sortOrder: PropTypes.string.isRequired,
     pageSize: PropTypes.number.isRequired,
     current: PropTypes.number.isRequired,
     submitting: PropTypes.bool.isRequired,
-    setFormValue: PropTypes.func.isRequired,
-    setConsignFields: PropTypes.func.isRequired,
     saveEdit: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleEdit = (ev) => {
@@ -111,8 +88,9 @@ export default class ShipmentEdit extends React.Component {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
-        const {formData, tenantId, loginId} = this.props;
-        this.props.saveEdit(formData, tenantId, loginId)
+        const { formData, tenantId, loginId } = this.props;
+        const form = { ...formData, ...this.props.formhoc.getFieldsValue() };
+        this.props.saveEdit(form, tenantId, loginId)
         .then(result => {
           if (result.error) {
             message.error(result.error.message);
@@ -136,7 +114,7 @@ export default class ShipmentEdit extends React.Component {
     this.context.router.goBack();
   }
   render() {
-    const { intl, submitting, tenantName, formhoc } = this.props;
+    const { intl, submitting, formhoc } = this.props;
     return (
       <div className="main-content">
         <Form form={formhoc} horizontal>
@@ -144,46 +122,14 @@ export default class ShipmentEdit extends React.Component {
             <div className="panel-header"></div>
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
-                <Row>
-                  <div className="subform-heading">
-                    <div className="subform-title">{this.msg('customerInfo')}</div>
-                  </div>
-                  <Col span="16" className="subform-body">
-                    <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4} field="client" disabled/>
-                  </Col>
-                  <Col span="8" className="subform-body">
-                    <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8} field="ref_external_no"/>
-                  </Col>
-                </Row>
+                <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} mode="edit" />
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
                 <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>
               </Col>
-              <Col span="8" className="right-side-col">
-                <div className="subform-heading">
-                  <div className="subform-title">关联信息</div>
-                </div>
-                <div className="subform-body">
-                  <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
-                    fieldProps={{ initialValue: tenantName }} disabled
-                  />
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-                  <InputItem type="textarea" autosize formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
-                </div>
-                <div className="subform-heading">
-                  <div className="subform-title">{this.msg('freightCharge')}</div>
-                </div>
-                <div className="subform-body">
-                  <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                    <InputNumber style={{ width: '100%' }} min={0} step={0.1}
-                    { ...formhoc.getFieldProps('freight_charge') }
-                    />
-                  </FormItem>
-                </div>
-              </Col>
+              <CorrelInfo formhoc={formhoc} intl={intl} />
             </div>
           </div>
           <div className="bottom-fixed-row">

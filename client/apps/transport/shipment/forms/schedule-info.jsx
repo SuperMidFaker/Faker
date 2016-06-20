@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, InputNumber, DatePicker } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
@@ -7,10 +8,20 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+@connect(
+  state => ({
+    fieldDefaults: {
+      transit_time: state.shipment.formData.transit_time,
+      pickup_est_date: state.shipment.formData.pickup_est_date,
+      deliver_est_date: state.shipment.formData.deliver_est_date,
+    }
+  })
+)
 export default class ScheduleInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    formhoc: PropTypes.object.isRequired
+    formhoc: PropTypes.object.isRequired,
+    fieldDefaults: PropTypes.object.isRequired,
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -47,7 +58,9 @@ export default class ScheduleInfo extends React.Component {
     });
   }
   render() {
-    const { formhoc: { getFieldProps } } = this.props;
+    const { formhoc: { getFieldProps }, fieldDefaults: {
+      pickup_est_date, transit_time, deliver_est_date,
+    }} = this.props;
     const outerColSpan = 8;
     const labelColSpan = 8;
     return (
@@ -64,7 +77,8 @@ export default class ScheduleInfo extends React.Component {
                 onChange: this.handlePickupChange,
                 rules: [{
                   required: true, message: this.msg('deliveryDateMust'), type: 'date'
-                }]
+                }],
+                initialValue: pickup_est_date,
               }
             )}
             />
@@ -79,7 +93,8 @@ export default class ScheduleInfo extends React.Component {
                 onChange: this.handleTransitChange,
                 rules: [{
                   required: true, message: this.msg('tranistTimeMust'), type: 'number'
-                }]
+                }],
+                initialValue: transit_time,
               })
             }
             />
@@ -94,7 +109,8 @@ export default class ScheduleInfo extends React.Component {
                 onChange: this.handleDeliveryChange,
                 rules: [{
                   required: true, message: this.msg('deliveryDateMust'), type: 'date'
-                }]
+                }],
+                initialValue: deliver_est_date,
               }
             )}
             />

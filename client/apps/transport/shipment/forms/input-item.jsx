@@ -5,7 +5,7 @@ const FormItem = Form.Item;
 export default function InputItem(props) {
   const {
     labelName, field, colSpan, placeholder, required, rules, fieldProps,
-    addonBefore, addonAfter, disabled = false, hasFeedback = true,
+    addonBefore, addonAfter, disabled = false, hasFeedback = false,
     type = 'text', formhoc: { getFieldProps }
   } = props;
   const hocFieldProps = getFieldProps(field, {rules, ...fieldProps});

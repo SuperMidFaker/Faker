@@ -68,7 +68,7 @@ export default class PreviewPanel extends React.Component {
       }
     },
   }, {
-    title: this.msg('poistionTime'),
+    title: this.msg('positionTime'),
     dataIndex: 'location_time',
     render: (o, record) => {
       return moment(record.location_time).format('MM-DD HH:mm');

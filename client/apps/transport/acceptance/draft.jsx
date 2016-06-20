@@ -1,23 +1,21 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, InputNumber, message, Row } from 'ant-ui';
+import { Col, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { setFormValue, setConsignFields, loadDraftForm, loadFormRequire }
-  from 'common/reducers/shipment';
+import { loadDraftForm, loadFormRequire } from 'common/reducers/shipment';
 import { acceptDraft, loadTable, saveEdit } from 'common/reducers/transport-acceptance';
-import InputItem from '../shipment/forms/input-item';
-import AutoCompSelectItem from '../shipment/forms/autocomp-select-item';
+import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
+import CorrelInfo from '../shipment/forms/correlInfo';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
-const FormItem = Form.Item;
 
 function fetchData({ state, dispatch, params, cookie }) {
   const promises = [];
@@ -37,8 +35,6 @@ function fetchData({ state, dispatch, params, cookie }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    transitModes: state.shipment.formRequire.transitModes,
-    clients: state.shipment.formRequire.clients,
     formData: state.shipment.formData,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
@@ -47,7 +43,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { setFormValue, setConsignFields, acceptDraft, loadTable, saveEdit })
+  { acceptDraft, loadTable, saveEdit })
 @connectNav((props, dispatch, router) => {
   if (!props.formData.shipmt_no) {
     return;
@@ -60,34 +56,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     goBackFn: () => router.goBack()
   }));
 })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
-  onFieldsChange(props, fields) {
-    Object.keys(fields).forEach(name => {
-      if (name === 'customer_name') {
-        const clientFieldId = parseInt(fields[name].value, 10);
-        const selclients = props.clients.filter(
-            cl => cl.partner_id === clientFieldId
-        );
-        props.setConsignFields({
-          customer_tenant_id: selclients.length > 0 ? selclients[0].tid : -1,
-          customer_partner_id: selclients.length > 0 ? clientFieldId : -1,
-          customer_name: selclients.length > 0 ? selclients[0].name : fields[name].value,
-        });
-      } else if (name === 'transport_mode_code') {
-        const code = fields[name].value;
-        const modes = props.transitModes.filter(tm => tm.mode_code === code);
-        props.setConsignFields({
-          transport_mode_code: code,
-          transport_mode: modes.length > 0 ? modes[0].mode_name : '',
-        });
-      } else {
-        props.setFormValue(name, fields[name].value);
-      }
-    });
-  },
+@Form.create({
   formPropName: 'formhoc'
 })
 export default class ShipmentDraftEdit extends React.Component {
@@ -96,12 +65,8 @@ export default class ShipmentDraftEdit extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    transitModes: PropTypes.array.isRequired,
-    clients: PropTypes.array.isRequired,
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
-    setFormValue: PropTypes.func.isRequired,
-    setConsignFields: PropTypes.func.isRequired,
     filters: PropTypes.array.isRequired,
     sortField: PropTypes.string.isRequired,
     sortOrder: PropTypes.string.isRequired,
@@ -113,7 +78,7 @@ export default class ShipmentDraftEdit extends React.Component {
     loadTable: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleDraftAccept = (ev) => {
@@ -122,8 +87,12 @@ export default class ShipmentDraftEdit extends React.Component {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
-        const { formData, loginId, loginName, tenantId } = this.props;
-        this.props.acceptDraft(formData, loginId, loginName, tenantId)
+        const { loginId, loginName, tenantId } = this.props;
+        const form = {
+          ...this.props.formData,
+          ...this.props.formhoc.getFieldsValue(),
+        };
+        this.props.acceptDraft(form, loginId, loginName, tenantId)
         .then(result => {
           if (result.error) {
             message.error(result.error.message);
@@ -145,7 +114,11 @@ export default class ShipmentDraftEdit extends React.Component {
   }
   handleDraftSave = (ev) => {
     ev.preventDefault();
-    this.props.saveEdit(this.props.formData, this.props.tenantId, this.props.loginId)
+    const form = {
+      ...this.props.formData,
+      ...this.props.formhoc.getFieldsValue(),
+    };
+    this.props.saveEdit(form, this.props.tenantId, this.props.loginId)
       .then(result => {
         if (result.error) {
           message.error(result.error.message);
@@ -163,63 +136,22 @@ export default class ShipmentDraftEdit extends React.Component {
       });
   }
   render() {
-    const { intl, clients, submitting, formhoc } = this.props;
-    const clientOpts = clients.map(cl => ({
-      key: `${cl.partner_id}/${cl.tid}`,
-      value: `${cl.partner_id}`,
-      code: cl.partner_code,
-      name: cl.name,
-    }));
+    const { intl, submitting, formhoc } = this.props;
     return (
       <div className="main-content">
         <Form form={formhoc} horizontal>
           <div className="page-body">
-            <div className="panel-header"></div>
+            <div className="panel-header" />
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
-                <Row>
-                  <div className="subform-heading">
-                    <div className="subform-title">{this.msg('customerInfo')}</div>
-                  </div>
-                  <Col span="16" className="subform-body">
-                    <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4} field="customer_name"
-                    required optionData={clientOpts} filterFields={[ 'code' ]}
-                    optionField="name" optionKey="key" optionValue="value"
-                    rules={[{
-                      required: true, message: this.msg('clientNameMust')
-                    }]} />
-                  </Col>
-                  <Col span="8" className="subform-body">
-                    <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8} field="ref_external_no"/>
-                  </Col>
-                </Row>
+                <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
                 <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>
               </Col>
-              <Col span="8" className="right-side-col">
-                <div className="subform-heading">
-                  <div className="subform-title">{this.msg('correlativeInfo')}</div>
-                </div>
-                <div className="subform-body">
-                  <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0} field="lsp_name" disabled />
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')} colSpan={0} field="ref_waybill_no"/>
-                  <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')} colSpan={0} field="ref_entry_no"/>
-                  <InputItem type="textarea" autosize formhoc={formhoc} placeholder={this.msg('remark')} colSpan={0} field="remark"/>
-                </div>
-                <div className="subform-heading">
-                  <div className="subform-title">{this.msg('freightCharge')}</div>
-                </div>
-                <div className="subform-body">
-                  <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-                    <InputNumber style={{ width: '100%' }} min={0} step={0.1}
-                    { ...formhoc.getFieldProps('freight_charge') }
-                    />
-                  </FormItem>
-                </div>
-              </Col>
+              <CorrelInfo formhoc={formhoc} intl={intl} />
             </div>
           </div>
           <div className="bottom-fixed-row">
