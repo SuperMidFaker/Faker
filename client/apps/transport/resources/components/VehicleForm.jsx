@@ -11,7 +11,7 @@ const formItemLayout = {
   wrapperCol: {span: 14}
 };
 
-export default class CarForm extends Component {
+export default class VehicleForm extends Component {
   componentDidMount() {
     const { car, form, mode } = this.props;
     const setFieldsValue = form.setFieldsValue;
@@ -82,7 +82,7 @@ export default class CarForm extends Component {
   }
 }
 
-CarForm.propTypes = {
+VehicleForm.propTypes = {
   mode: PropTypes.string.isRequired,              // mode='add' 表示新增车辆, mode='edit'表示编辑某个车辆信息
   onSubmitBtnClicked: PropTypes.func.isRequired,  // 创建按钮点击时执行的回调函数
   form: PropTypes.object.isRequired,              // 对应于antd中的form对象

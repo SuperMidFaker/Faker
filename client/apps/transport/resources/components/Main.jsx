@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Menu, Spin } from 'ant-ui';
-import CarListContainer from '../containers/CarListContainer';
+import VehicleListContainer from '../containers/VehicleListContainer';
 import DriverListContainer from '../containers/DriverListContainer';
 import NodeListContainer from '../containers/NodeListContainer';
 
@@ -18,7 +18,7 @@ const styles = {
 export default function Main(props) {
   const { selectedKeys, onClick, loading } = props;
   const [selectedKey] = selectedKeys;
-  const content = [<CarListContainer />, <DriverListContainer />, <NodeListContainer />]
+  const content = [<VehicleListContainer />, <DriverListContainer />, <NodeListContainer />]
      .map((container, index) => <div style={ parseInt(selectedKey, 10) === index ? styles.show : styles.hidden } key={index}>{container}</div>);
   return (
     <div>

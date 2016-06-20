@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
-import CarForm from '../components/CarForm.jsx';
+import VehicleForm from '../components/VehicleForm.jsx';
 import { addCar, editCar, validateVehicle } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -61,7 +61,7 @@ export default class CarFormContainer extends Component {
       const carId = parseInt(params.car_id, 10);
       const editCarInfo = cars.find(car => car.vehicle_id === carId);
       return (
-        <CarForm mode="edit"
+        <VehicleForm mode="edit"
                  form={form}
                  car={editCarInfo}
                  drivers={drivers}
@@ -69,7 +69,7 @@ export default class CarFormContainer extends Component {
       );
     } else {
       return (
-        <CarForm mode="add"
+        <VehicleForm mode="add"
                  form={form}
                  drivers={drivers}
                  vehicleValidate={vehicleValidate}
