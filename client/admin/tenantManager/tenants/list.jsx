@@ -158,11 +158,13 @@ export default class List extends React.Component {
       title: '状态',
       width: 50,
       render: (o, record) => {
-        let style = {color: '#51C23A'};
+        let style = { color: '#51C23A' };
+        let text = '正常';
         if (record.status === ACCOUNT_STATUS.blocked.name) {
-          style = {color: '#CCC'};
+          style = { color: '#CCC' };
+          text = '停用';
         }
-        return <span style={style}>停用</span>;
+        return <span style={style}>{text}</span>;
       }
     }, {
       title: '操作',
