@@ -178,24 +178,23 @@ export default {
     const sql = `select app_id as value, app_name as label from sso_tenant_apps t where tenant_id = ?`;
     return mysql.query(sql, [tenantId]);
   },
-  bindSubTenant(masterTenantId, masterCode) {
-    return mysql.update(`update sso_tenants set parent_tenant_id = ? where code = ? and parent_tenant_id = 0 and sub_code is not null and sub_code != ''`, [masterTenantId, masterCode]);
-  },
   getTenantApps(){
     const appSql = `select entity_id as value, entity_name as label, entity_desc as app_desc,
     'basic_suite' as package from meta_apps`;
     return mysql.query(appSql);
   },
   insertTenantApps(tenantId, tenantAppList, apps){
+    console.log(tenantAppList)
     let sql = '';
     tenantAppList.forEach(item => {
       for(let i = 0; i<apps.length; i++) {
         if(apps[i].value == item) {
           sql += `insert into sso_tenant_apps (tenant_id, app_id, app_name, app_desc, package, date_start)
-          values ( '${tenantId}', '${apps[i].app_id}', '${apps[i].app_name}', '${apps[i].app_desc}', '${apps[i].package}', now() );`;
+          values ( '${tenantId}', '${apps[i].value}', '${apps[i].label}', '${apps[i].app_desc}', '${apps[i].package}', now() );`;
         }
       }
     });
+    console.log(sql)
     return mysql.insert(sql);
   },
   insertTenantLogin(code, email, phone, salt, password, unid){

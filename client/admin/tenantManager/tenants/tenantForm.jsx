@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Form, Input, Row, Col, message, Checkbox } from 'ant-ui';
+import { Icon, Button, Form, Input, Row, Col, message, Checkbox, Radio } from 'ant-ui';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { setFormValue, uploadImg, submitTenant, getTenantAppList } from
+import { setFormValue, uploadImg, submitTenant, clearForm, loadTenantForm, getTenantAppList } from
   'common/reducers/tenants';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
 const Dropzone = require('react-dropzone');
@@ -12,8 +14,13 @@ import './tenant.less';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 
-function fetchData({dispatch}) {
-  return dispatch(getTenantAppList());
+function fetchData({ dispatch, cookie, params }) {
+  if (params.id) {
+    const tenantId = params.id;
+    return Promise.all([dispatch(getTenantAppList()), dispatch(loadTenantForm(cookie, tenantId))]);
+  } else {
+    return Promise.all([dispatch(getTenantAppList()), dispatch(clearForm())]);
+  }
 }
 
 @connectFetch()(fetchData)
@@ -54,6 +61,7 @@ export default class TenantForm extends React.Component {
             message.error(result.error.message, 10);
           } else {
             message.info('保存成功', 5);
+            this.handleNavigationTo('/manager/tenants');
           }
         });
       } else {
@@ -62,7 +70,10 @@ export default class TenantForm extends React.Component {
       }
     });
   }
-  handleCancel() {
+  handleNavigationTo(to, query) {
+    this.props.router.push({ pathname: to, query });
+  }
+  handleCancel = () => {
     this.props.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
@@ -75,8 +86,9 @@ export default class TenantForm extends React.Component {
     );
   }
   render() {
-    const { formData: { tenantAppValueList, logo: logoPng }, formhoc: { getFieldProps, getFieldError }, tenantAppList }
+    const { formData: { logo: logoPng }, formhoc: { getFieldProps, getFieldError }, tenantAppList }
       = this.props;
+    const tenantAppValueList = this.props.formData.tenantAppValueList || [];
     return (
       <div className="main-content">
         <div className="tenant-form page-body">
@@ -91,7 +103,7 @@ export default class TenantForm extends React.Component {
                 </Col>
                 <Col span="12">
                   <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <Input type="text" {...getFieldProps('code')} />
+                    <Input type="text" {...getFieldProps('code')} placeholder="请填写企业代码"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -105,16 +117,16 @@ export default class TenantForm extends React.Component {
                       whitespace: true
                     }], {transform: (value) => (value.trim())}
                   )}
-                  {this.renderTextInput('电话', '请填写电话', 'phone', true, [{
+                  {this.renderTextInput('电话', '请填写联系人电话', 'phone', true, [{
                     validator: (rule, value, callback) => validatePhone(
                       value, callback,
-                      () => { return '电话填写错误';}
+                      () => { return '请填写联系人电话';}
                     )
                   }])}
                 </Col>
                 <Col span="12">
                   {this.renderTextInput(
-                    '邮箱', '请填写电子邮箱地址', 'email', false,
+                    '邮箱', '请填写联系人电子邮箱地址', 'email', true,
                     [{type: 'email', message: '电子邮箱地址填写错误'}]
                   )}
                 </Col>
@@ -153,8 +165,11 @@ export default class TenantForm extends React.Component {
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="企业视角" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <Checkbox checked={this.props.formData.aspect} {...getFieldProps('aspect')} />
+                  <FormItem label="租户视角" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
+                    <RadioGroup onChange={ () => {} } {...getFieldProps('aspect', {initialValue: 0})} >
+                      <RadioButton value={0}>进出口企业</RadioButton>
+                      <RadioButton value={1}>物流服务商</RadioButton>
+                    </RadioGroup>
                   </FormItem>
                 </Col>
               </Row>
@@ -163,7 +178,7 @@ export default class TenantForm extends React.Component {
                   <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}}
                     help={getFieldError('subdomain')}
                   >
-                    <Input type="text" addonAfter=".welogix.cn" {...getFieldProps('subdomain')} />
+                    <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain')} />
                   </FormItem>
                 </Col>
               </Row>
@@ -173,6 +188,11 @@ export default class TenantForm extends React.Component {
                     onClick={this.handleSubmit}
                   >
                   保存
+                  </Button>
+                  <Button type="ghost" size="large" htmlType="submit" className="cancel"
+                    onClick={this.handleCancel}
+                  >
+                  取消
                   </Button>
                 </Col>
               </Row>
