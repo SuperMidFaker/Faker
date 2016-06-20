@@ -1,7 +1,4 @@
-// https://github.com/visionmedia/superagent/issues/205
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-const config = require('../config');
-if (config.get('__PROD__')) {
+if (process.env.NODE_ENV === 'production') {
   require('oneapm');
 }
 
@@ -22,6 +19,9 @@ if (!isNaN(argv.port)) {
 if (argv.api) {
   require('./openapi');
 } else {
+  // https://github.com/visionmedia/superagent/issues/205
+  // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+  const config = require('../config');
   const rootDir = config.get('project_root');
   const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 
