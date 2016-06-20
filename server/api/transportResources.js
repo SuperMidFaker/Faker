@@ -38,7 +38,7 @@ function *editDriver() {
   }
 }
 
-function *addCar() {
+function *addVehicle() {
   try {
     const body = yield cobody(this);
     const { carInfo } = body;
@@ -49,7 +49,7 @@ function *addCar() {
   }
 }
 
-function *getCarList() {
+function *getVehicleList() {
   try {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getCarList(tenantId);
@@ -59,7 +59,7 @@ function *getCarList() {
   }
 }
 
-function *editCar() {
+function *editVehicle() {
   try {
     const body = yield cobody(this);
     const { carInfo, carId } = body;
@@ -128,9 +128,9 @@ export default [
   ['post', '/v1/transport/resources/add_driver', addDriver],
   ['get', '/v1/transport/resources/driver_list', getDriverList],
   ['post', '/v1/transport/resources/edit_driver', editDriver],
-  ['post', '/v1/transport/resources/add_car', addCar],
-  ['get', '/v1/transport/resources/car_list', getCarList],
-  ['post', '/v1/transport/resources/edit_car', editCar],
+  ['post', '/v1/transport/resources/add_vehicle', addVehicle],
+  ['get', '/v1/transport/resources/vehicle_list', getVehicleList],
+  ['post', '/v1/transport/resources/edit_vehicle', editVehicle],
   ['get', '/v1/transport/resources/validate_vehicle', validateVehicle],
   ['get', '/v1/transport/resources/node_list', getNodeList],
   ['post', '/v1/transport/resources/add_node', addNode],

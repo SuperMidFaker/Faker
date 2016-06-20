@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { connect } from 'react-redux';
 import VehicleForm from '../components/VehicleForm.jsx';
-import { addCar, editCar, validateVehicle } from 'common/reducers/transportResources';
+import { addVehicle, editVehicle, validateVehicle } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 
@@ -20,16 +20,16 @@ import { setNavTitle } from 'common/reducers/navbar';
   cars: state.transportResources.cars,
   vehicleValidate: state.transportResources.vehicleValidate,
   tenantId: state.account.tenantId
-}), { addCar, editCar, validateVehicle })
+}), { addVehicle, editVehicle, validateVehicle })
 @Form.create()
 export default class CarFormContainer extends Component {
   static propTypes = {
-    cars: PropTypes.array.isRequired,      // 服务器返回的车辆数组
-    drivers: PropTypes.array.isRequired,   // 服务器返回的司机数组
-    params: PropTypes.object.isRequired,   // :car_id参数
-    form: PropTypes.object.isRequired,     // @Form.create的对象
-    addCar: PropTypes.func.isRequired,     // 增加车辆的actionCreator
-    editCar: PropTypes.func.isRequired,    // 修改车辆信息的actionCreator
+    cars: PropTypes.array.isRequired,           // 服务器返回的车辆数组
+    drivers: PropTypes.array.isRequired,        // 服务器返回的司机数组
+    params: PropTypes.object.isRequired,        // :car_id参数
+    form: PropTypes.object.isRequired,          // @Form.create的对象
+    addVehicle: PropTypes.func.isRequired,      // 增加车辆的actionCreator
+    editVehicle: PropTypes.func.isRequired,     // 修改车辆信息的actionCreator
     tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
@@ -39,7 +39,7 @@ export default class CarFormContainer extends Component {
     e.preventDefault();
     const { form, tenantId } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addCar({...newCarInfo, tenant_id: tenantId});
+    this.props.addVehicle({...newCarInfo, tenant_id: tenantId});
     this.context.router.goBack();
   }
   handleCarEdit = (e) => {
@@ -47,7 +47,7 @@ export default class CarFormContainer extends Component {
     const { form, params } = this.props;
     const editCarInfo = form.getFieldsValue();
     const carId = parseInt(params.car_id, 10);
-    this.props.editCar({carId, carInfo: editCarInfo});
+    this.props.editVehicle({carId, carInfo: editCarInfo});
     this.context.router.goBack();
   }
   handleVehicleNumberBlur = (e) => {

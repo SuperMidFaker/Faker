@@ -2,22 +2,22 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import VehicleList from '../components/VehicleList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
-import { loadCarList, editCar } from 'common/reducers/transportResources';
+import { loadVehicleList, editVehicle } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
 function fetchData({dispatch, state}) {
-  return dispatch(loadCarList(state.account.tenantId));
+  return dispatch(loadVehicleList(state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
 @connect(state => ({
   cars: state.transportResources.cars,
-}), { editCar })
+}), { editVehicle })
 export default class VehicleListContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,                 // 服务器返回的车辆数组
     loading: PropTypes.bool.isRequired,               // 加载状态
-    editCar: PropTypes.func.isRequired,               // 停用和启用车辆的action creator
+    editVehicle: PropTypes.func.isRequired,           // 停用和启用车辆的action creator
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
@@ -26,10 +26,10 @@ export default class VehicleListContainer extends Component {
     this.context.router.push('/transport/resources/add_car');
   }
   handleStopCarBtnClick = (carId) => {
-    this.props.editCar({carId, carInfo: {status: -1}});
+    this.props.editVehicle({carId, carInfo: {status: -1}});
   }
   handleResumeCarBtnClick = (carId) => {
-    this.props.editCar({carId, carInfo: {status: 0}});
+    this.props.editVehicle({carId, carInfo: {status: 0}});
   }
   render() {
     const { cars } = this.props;
