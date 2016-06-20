@@ -166,7 +166,7 @@ export default class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="租户视角" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <RadioGroup onChange={ () => {} } {...getFieldProps('aspect')}>
+                    <RadioGroup onChange={ () => {} } {...getFieldProps('aspect', {initialValue: 0})} >
                       <RadioButton value={0}>进出口企业</RadioButton>
                       <RadioButton value={1}>物流服务商</RadioButton>
                     </RadioGroup>
