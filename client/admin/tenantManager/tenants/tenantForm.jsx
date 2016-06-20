@@ -101,6 +101,8 @@ export default class TenantForm extends React.Component {
                     [{required: true, message: '请填写公司名称'}]
                   )}
                 </Col>
+              </Row>
+              <Row>
                 <Col span="12">
                   <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
                     <Input type="text" {...getFieldProps('code')} placeholder="请填写企业代码"/>
@@ -124,22 +126,24 @@ export default class TenantForm extends React.Component {
                     )
                   }])}
                 </Col>
+              </Row>
+              <Row>
                 <Col span="12">
                   {this.renderTextInput(
-                    '邮箱', '请填写联系人电子邮箱地址', 'email', true,
+                    '邮箱', '请填写联系人电子邮箱地址', 'email', false,
                     [{type: 'email', message: '电子邮箱地址填写错误'}]
                   )}
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>
+                  <FormItem label="LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}} className="imgZone">
                       <img src={logoPng || '/assets/img/wetms.png'} style={{
                         height: 120, width: 120, margin: 10,
                         border: '1px solid #e0e0e0', borderRadius: 60
                       }}
                       {...getFieldProps('logo')} />
-                      <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } style={{}}>
+                      <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } className="dropzone">
                         <div className="ant-upload ant-upload-drag" title="请拖拽或选择文"
                           style={{height: 140, marginTop: 20}}
                         >
