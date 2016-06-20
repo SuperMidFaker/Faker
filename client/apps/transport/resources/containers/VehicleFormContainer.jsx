@@ -22,7 +22,7 @@ import { setNavTitle } from 'common/reducers/navbar';
   tenantId: state.account.tenantId
 }), { addVehicle, editVehicle, validateVehicle })
 @Form.create()
-export default class CarFormContainer extends Component {
+export default class VehicleFormContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,           // 服务器返回的车辆数组
     drivers: PropTypes.array.isRequired,        // 服务器返回的司机数组
