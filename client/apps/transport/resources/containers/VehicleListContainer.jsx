@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import CarList from '../components/CarList.jsx';
+import VehicleList from '../components/VehicleList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadCarList, editCar } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -13,7 +13,7 @@ function fetchData({dispatch, state}) {
 @connect(state => ({
   cars: state.transportResources.cars,
 }), { editCar })
-export default class CarListContainer extends Component {
+export default class VehicleListContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,                 // 服务器返回的车辆数组
     loading: PropTypes.bool.isRequired,               // 加载状态
@@ -35,10 +35,10 @@ export default class CarListContainer extends Component {
     const { cars } = this.props;
     const dataSource = cars.map(transformRawCarDataToDisplayData);
     return (
-      <CarList dataSource={dataSource}
-               onStopCarBtnClick={this.handleStopCarBtnClick}
-               onResumeCarBtnClick={this.handleResumeCarBtnClick}
-               onAddCarBtnClick={this.handleAddCarBtnClick}/>
+      <VehicleList dataSource={dataSource}
+                   onStopCarBtnClick={this.handleStopCarBtnClick}
+                   onResumeCarBtnClick={this.handleResumeCarBtnClick}
+                   onAddCarBtnClick={this.handleAddCarBtnClick}/>
     );
   }
 }

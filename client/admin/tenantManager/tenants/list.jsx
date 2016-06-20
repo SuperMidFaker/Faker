@@ -137,31 +137,26 @@ export default class List extends React.Component {
     const columns = [{
       title: '公司名称',
       dataIndex: 'name',
-      width: 150,
       render: (o, record) => this.renderColumnText(record.status, record.name)
     }, {
-      title: '子租户代码',
+      title: '租户代码',
       dataIndex: 'subCode',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.subCode)
     }, {
       title: '联系人',
       dataIndex: 'contact',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.contact)
     }, {
       title: '手机号',
       dataIndex: 'phone',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.phone)
     }, {
       title: '邮箱',
       dataIndex: 'email',
-      width: 100,
       render: (o, record) => this.renderColumnText(record.status, record.email)
     }, {
       title: '状态',
-      width: 100,
+      width: 50,
       render: (o, record) => {
         let style = { color: '#51C23A' };
         let text = '正常';
@@ -173,7 +168,7 @@ export default class List extends React.Component {
       }
     }, {
       title: '操作',
-      width: 150,
+      width: 100,
       render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
@@ -205,28 +200,24 @@ export default class List extends React.Component {
       }
     }];
     return (
-        <div className="page-body fixed">
+      <div className="main-content">
+        <div className="page-body">
           <div className="panel-header">
-            <div className="pull-right action-btns">
-              <span>数量{' '}</span>
-              <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
-              <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
-              <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
-            </div>
-            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
+            <Button type="primary"
                 onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
                 <Icon type="plus-circle-o" />
                 新建
             </Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button size="large" onClick={ this.handleSelectionClear } className="pull-right">
             清除所选
             </Button>
           </div>
-        </div>);
+        </div>
+      </div>);
   }
 }

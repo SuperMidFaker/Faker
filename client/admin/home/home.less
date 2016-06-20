@@ -1,0 +1,98 @@
+.home {
+  &-header {
+    width: 100%;
+    border-bottom: 1px solid #d9d9d9;
+    >img {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 180px;
+      width: 100%;
+    }
+    .setting-btn-wrap {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      z-index: 3;
+    }
+    .tenant {
+      &-info {
+        position: relative;
+        height: 120px;
+        padding: 30px 0;
+      }
+      &-logo {
+        position: relative;
+        margin: 0 auto;
+        width: 64px;
+        height: 64px;
+        border: 2px solid #fff;
+        font-size: 14px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: transparent;
+        -webkit-border-radius: 64px;
+        -moz-border-radius: 64px;
+        border-radius: 64px;
+      }
+      &-name {
+        position: relative;
+        margin: 10px 0 5px;
+        color: #fff;
+        font-size: 24px;
+        text-align: center;
+        text-shadow: 1px 1px 4px rgba(160, 160, 160, 1);
+      }
+      &-nav {
+        position: relative;
+        top: 0;
+        margin: 0 auto;
+        border-bottom: none;
+        z-index: 50;
+        background: #fff;
+        .ant-menu {
+          width: 420px;
+          margin: 0 auto;
+          font-size: 16px;
+        }
+        .ant-menu-horizontal {
+          border-bottom: none;
+          > .ant-menu-item {
+            padding: 0 28px;
+            margin-right: 14px;
+          }
+        }
+        .zmdi {
+          width: 14px;
+          margin-right: 4px;
+        }
+      }
+    }
+    &-bg {
+      background-color: #031034;
+      background-image: url(https://welogix-cdn.b0.upaiyun.com/assets/img/admin-bg.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center top;
+    }
+  }
+  &-body {
+    min-height: 450px;
+    /*
+    background-image: radial-gradient(10% 0, farthest-side ellipse, rgba(119,157,207,0.8) 30%, rgba(174,180,186,0.8) 76%, rgba(199,175,156,0.8));
+    background-image: -webkit-radial-gradient(10% 0, farthest-side ellipse, rgba(119,157,207,0.8) 30%, rgba(174,180,186,0.8) 76%, rgba(199,175,156,0.8));
+    background-image: -moz-radial-gradient(10% 0, farthest-side ellipse, rgba(119,157,207,0.8) 30%, rgba(174,180,186,0.8) 76%, rgba(199,175,156,0.8));
+    */
+    &-wrapper {
+      width: 1000px;
+      margin: 0 auto;
+      padding: 40px;
+      @media (max-width:767px) {
+        width: auto;
+        padding: 10px;
+      }
+    }
+  }
+}
+

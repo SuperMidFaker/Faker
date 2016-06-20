@@ -16,7 +16,7 @@ function renderAsHtml(pageCss, pageJs, content) {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WeLogix</title>
+  <title>微骆SaaS云平台管理系统</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico"/>

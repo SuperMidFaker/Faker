@@ -8,7 +8,7 @@ const rowSelection = {
   }
 };
 
-export default function CarList(props) {
+export default function VehicleList(props) {
   const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick } = props;
 
   function editAndStopCarOperations(record) {
@@ -103,7 +103,7 @@ export default function CarList(props) {
   );
 }
 
-CarList.propTypes = {
+VehicleList.propTypes = {
   dataSource: PropTypes.array,
   onAddCarBtnClick: PropTypes.func.isRequired,    // 点击新建车辆时触发的回调函数
   onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数

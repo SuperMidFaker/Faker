@@ -83,7 +83,7 @@ export default class BaseList extends Component {
       key: 'created_date',
       render(_, record) {
         return (
-          <span>{moment(record.created_date).format('YYYY/MM/DD HH:MM')}</span>
+          <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
         );
       }
     },

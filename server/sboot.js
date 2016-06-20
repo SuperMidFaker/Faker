@@ -1,3 +1,5 @@
+require('oneapm');
+
 const argv = require('./util/minimist')(process.argv.slice(2));
 
 const path = require('path');
