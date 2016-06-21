@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Row, Col, Button, Card, Select } from 'ant-ui';
-import WLUpload from './components/WLUpload';
+import WLUploadGroup from './components/WLUploadGroup';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -71,20 +71,7 @@ export default class AcceptanceForm extends Component {
                 </Col>
               </Card>
             </Row>
-            <Row gutter={16} style={{marginTop: 16, marginBottom: 16}}>
-              <Col sm={6}>
-                <WLUpload title="发票"/>
-              </Col>
-              <Col sm={6}>
-                <Card title="合同"/>
-              </Col>
-              <Col sm={6}>
-                <Card title="箱单"/>
-              </Col>
-              <Col sm={6}>
-                <Card title="其他"/>
-              </Col>
-            </Row>
+            <WLUploadGroup/>
             <Row>
               <Button size="large" type="primary" style={{marginRight: 20}}>保存</Button>
               <Button size="large">一键接单</Button>
