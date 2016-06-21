@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import { Form, Input, Row, Col, Button, Card, Select } from 'ant-ui';
+import WLUpload from './components/WLUpload';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 const formItemLayout = {
   labelCol: {span: 10},
   wrapperCol: {span: 14}
 };
+
+const clientData = [
+  {code: '123', name: 'zank'},
+  {code: 'yww', name: '叶伟伟'}
+];
 
 export default class AcceptanceForm extends Component {
   render() {
@@ -17,7 +24,9 @@ export default class AcceptanceForm extends Component {
               <Card>
                 <Col sm={8}>
                   <FormItem label="客户:" {...formItemLayout} required>
-                    <Select/>
+                    <Select combobox>
+                      {clientData.map(data => <Option key={data.code} value={data.name} datalink={data}>{data.name}</Option>)}
+                    </Select>
                   </FormItem>
                   <FormItem label="发票号:" {...formItemLayout}>
                     <Input/>
@@ -64,7 +73,7 @@ export default class AcceptanceForm extends Component {
             </Row>
             <Row gutter={16} style={{marginTop: 16, marginBottom: 16}}>
               <Col sm={6}>
-                <Card title="发票"/>
+                <WLUpload title="发票"/>
               </Col>
               <Col sm={6}>
                 <Card title="合同"/>
