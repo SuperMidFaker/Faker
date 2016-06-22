@@ -12,9 +12,9 @@ const clientData = [
   {code: '123', name: 'zank'},
   {code: 'yww', name: '叶伟伟'}
 ];
-const tradeModes = ['贸易1', '贸易2', '贸易3'];
-const transModes = ['运输1', '运输2', '运输3'];
-const declareWayModes = ['报关1', '报关2', '报关3'];
+const tradeModes = ['1', '2', '3'];
+const transModes = ['1', '2', '3'];
+const declareWayModes = ['1', '2', '3'];
 
 function generateOptions(arr) {
   return arr.map(item => <Option key={item} value={item}>{item}</Option>);
@@ -76,7 +76,7 @@ export default class WLAccepForm extends Component {
                 <Input {...getFieldProps('voyage_no')}/>
               </FormItem>
               <FormItem label="贸易方式:" {...formItemLayout}>
-                <Select {...getFieldProps('trade_no')}>
+                <Select {...getFieldProps('trade_mode')}>
                   {generateOptions(tradeModes)}
                 </Select>
               </FormItem>

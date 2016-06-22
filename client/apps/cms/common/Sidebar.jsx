@@ -15,16 +15,19 @@ export default function(type) {
         single: true,
         key: 'import-0',
         path: `/${type}/accept`,
+        icon: 'zmdi zmdi-inbox',
         text: '受理'
       }, {
         single: true,
         key: 'import-1',
         path: `/${type}/declare`,
+        icon: 'zmdi zmdi-file-text',
         text: '制单'
       }, {
         single: true,
         key: 'import-3',
         path: `/${type}/manage`,
+        icon: 'zmdi zmdi-storage',
         text: '管理'
       }];
       return (
