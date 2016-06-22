@@ -1,6 +1,6 @@
 import moment from 'moment';
 import sequelize from './sequelize';
-import { STRING, INTEGER, DATE, NOW } from 'sequelize';
+import { STRING, INTEGER, FLOAT, DATE, NOW } from 'sequelize';
 
 function fillZero(num) {
   let str = '';
@@ -23,9 +23,9 @@ export const Delegation = sequelize.define('cms_delegations', {
   bl_wb_no: STRING,
   pieces: STRING,
   weight: FLOAT,
-  trans_node: STRING,
+  trans_mode: STRING,
   voyage_no: STRING,
-  devl_way_code: STRING,
+  decl_way_code: STRING,
   ems_no: STRING,
   trade_mode: STRING,
   remark: STRING,
@@ -43,9 +43,8 @@ export const Delegation = sequelize.define('cms_delegations', {
   }
 }, {
   classMethods: {
-    generateDelgNo(code, delgType, lastDelgNo) {
+    generateDelgNo(code, delgType, serialNo) {
       let result = '';
-      const serialNo = lastDelgNo.slice(-5);
       result += code;
       result += 'C';
       result += delgType === 0 ? 'I' : 'E';

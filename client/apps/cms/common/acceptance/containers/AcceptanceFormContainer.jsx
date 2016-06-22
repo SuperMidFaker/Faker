@@ -13,24 +13,31 @@ const mockFormData = {
   bl_wb_no: '提运单号',
   pieces: 5,
   weight: 10,
-  trans_mode: '运输1',
+  trans_mode: '1',
   voyage_no: '航名航次号',
-  decl_way_code: '报关1',
+  decl_way_code: '1',
   ems_no: '备案号',
-  trade_no: '贸易1',
+  trade_mode: '1',
   internal_no: 'dafadfad'
 };
 
-@connect(() => ({}), { createDelegation })
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  username: state.account.username
+}), { createDelegation })
 export default class AcceptanceFormContainer extends Component {
   handleMockDataBtnClick = () => {
     const form = this.refs.accepForm;
     form.setFieldsValue(mockFormData);
   }
   handleSaveBtnClick = () => {
+    const { tenantId, loginId } = this.props;
     const form = this.refs.accepForm;
     const delegationInfo = form.getFieldsValue();
-    this.props.createDelegation(delegationInfo);
+    delete delegationInfo.client_name;
+    const tenantInfo = {customer_tenant_id: 27, ccb_tenant_id: tenantId, tenant_id: tenantId, creater_login_id: loginId};
+    this.props.createDelegation({delegationInfo, tenantInfo, delg_type: 0});
   }
   render() {
     return (

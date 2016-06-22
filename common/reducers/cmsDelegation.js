@@ -8,10 +8,13 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
 const initialState = {};
 
 export default function reducer(state = initialState, action) {
-  
+  switch (action.type) {
+    default:
+      return state;
+  }
 }
 
-export function createDelagation(delegationInfo) {
+export function createDelegation({delegationInfo, tenantInfo, delg_type}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -21,7 +24,7 @@ export function createDelagation(delegationInfo) {
       ],
       endpoint: 'v1/cms/delegation/create',
       method: 'post',
-      data: { delegationInfo }
+      data: { delegationInfo, tenantInfo, delg_type }
     }
   };
 }
