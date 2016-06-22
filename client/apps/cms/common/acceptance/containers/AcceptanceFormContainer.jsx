@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Row, Button } from 'ant-ui';
-import WLAccepForm from './components/WLAccepForm';
-import WLUploadGroup from './components/WLUploadGroup';
+import { connect } from 'react-redux';
+import WLAccepForm from '../components/WLAccepForm';
+import WLUploadGroup from '../components/WLUploadGroup';
+import { createDelegation } from 'common/reducers/cmsDelegation';
 
 const mockFormData = {
   client_name: 'zank',
@@ -19,13 +21,16 @@ const mockFormData = {
   internal_no: 'dafadfad'
 };
 
-export default class AcceptanceForm extends Component {
+@connect(() => ({}), { createDelegation })
+export default class AcceptanceFormContainer extends Component {
   handleMockDataBtnClick = () => {
     const form = this.refs.accepForm;
     form.setFieldsValue(mockFormData);
   }
   handleSaveBtnClick = () => {
     const form = this.refs.accepForm;
+    const delegationInfo = form.getFieldsValue();
+    this.props.createDelegation(delegationInfo);
   }
   render() {
     return (
