@@ -32,11 +32,11 @@ export default class AcceptanceFormContainer extends Component {
     form.setFieldsValue(mockFormData);
   }
   handleSaveBtnClick = () => {
-    const { tenantId, loginId } = this.props;
+    const { tenantId, loginId, username } = this.props;
     const form = this.refs.accepForm;
     const delegationInfo = form.getFieldsValue();
     delete delegationInfo.client_name;
-    const tenantInfo = {customer_tenant_id: 27, ccb_tenant_id: tenantId, tenant_id: tenantId, creater_login_id: loginId};
+    const tenantInfo = {customer_tenant_id: 27, ccb_tenant_id: tenantId, tenant_id: tenantId, creater_login_id: loginId, creater_login_name: username};
     this.props.createDelegation({delegationInfo, tenantInfo, delg_type: 0});
   }
   render() {

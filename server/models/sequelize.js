@@ -11,6 +11,6 @@ export default new Sequelize(mysql.database, mysql.user, mysql.password, {
   },
   define: {
     timestamps: false,
-    freezeTabName: true,
+    freezeTableName: true,
   },
 });
