@@ -3,7 +3,8 @@ import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from './rowUpater';
-export default function makeColumn(type, handlers, msg) {
+import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
+export default function makeColumn(type, aspect, ietype, handlers, msg) {
   const columns = [{
     title: msg('delgNo'),
     dataIndex: 'delg_no',
@@ -18,100 +19,141 @@ export default function makeColumn(type, handlers, msg) {
       );
     }
   }];
-  if (type === 'undeclared') {
-    columns.push(
-  {
-    title: this.msg('delgClient'),
-    dataIndex: 'sr_name',
+  if (type !== 'undeclared') {
+    columns.push({
+      title: msg('billNo'),
+      dataIndex: 'bill_no',
+      width: 170,
+      render: (o) => <TrimSpan text={o} />,
+    }, {
+      title: msg('compEntryId'),
+      dataIndex: 'comp_entry_id',
+      width: 170,
+      render: (o) => <TrimSpan text={o} />,
+    });
+    if (type === 'declared') {
+      columns.push({
+        title: msg('entryId'),
+        dataIndex: 'entry_id',
+        width: 160,
+        render: (o) => <TrimSpan text={o} />,
+      });
+    }
+  }
+  columns.push({
+    title: msg('delgClient'),
+    dataIndex: 'customer_name',
     width: 240,
     render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: this.msg('shipMode'),
-    dataIndex: 'transport_mode',
-    width: 80
-  }, {
-    title: this.msg('shipPickupDate'),
-    dataIndex: 'pickup_est_date',
-    width: 90,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
-  }, {
-    title: this.msg('shipDeliveryDate'),
-    dataIndex: 'deliver_est_date',
-    width: 90,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
-  }, {
-    title: this.msg('shipConsignor'),
-    dataIndex: 'consigner_name',
-    width: 200,
-    render: (o) => <TrimSpan text={o} />,
-  }, {
-    title: this.msg('consignorPlace'),
-    width: 200,
-  }, {
-    title: this.msg('consignorAddr'),
-    dataIndex: 'consigner_addr',
-    width: 220,
-    render: (o) => <TrimSpan text={o} />,
-  }, {
-    title: this.msg('shipConsignee'),
-    dataIndex: 'consignee_name',
-    width: 200,
-    render: (o) => <TrimSpan text={o} />,
-  }, {
-    title: this.msg('consigneePlace'),
-    width: 200,
-  }, {
-    title: this.msg('consigneeAddr'),
-    dataIndex: 'consignee_addr',
-    width: 220,
-    render: (o) => <TrimSpan text={o} />,
-  }, {
-    title: this.msg('packageNum'),
-    dataIndex: 'total_count',
-    width: 80
-  }, {
-    title: this.msg('shipWeight'),
-    dataIndex: 'total_weight',
-    width: 80
-  }, {
-    title: this.msg('shipVolume'),
-    dataIndex: 'total_volume',
-    width: 80
-  }, {
-    title: this.msg('shipSource'),
-    dataIndex: 'source',
-    width: 50,
-    render: (o, record) => {
-        return <span>{record.source}</span>;
-    }
-  }, {
-    title: this.msg('shipCreateDate'),
-    dataIndex: 'created_date',
+    title: msg('delgTime'),
+    dataIndex: 'delg_time',
     width: 100,
-    sorter: true,
-    render: (text, record) => moment(record.created_date).format('MM-DD HH:mm')
+    render: (o, record) => moment(record.delg_time).format('YYYY.MM.DD')
   }, {
-    title: this.msg('shipAcceptTime'),
+    title: msg('acptTime'),
     dataIndex: 'acpt_time',
     width: 100,
-    sorter: true,
-    render: (text, record) => record.acpt_time ?
-     moment(record.acpt_time).format('MM-DD HH:mm') : ' '
-  },
-       {
-        title: msg('opColumn'),
-        width: 110,
-        fixed: 'right',
-        render: (o, record) => {
-          return (
-            <span>
-              <NavLink to={`/transport/acceptance/shipment/draft/${record.shipmt_no}`}>
-                制单单
-              </NavLink>
-            </span>
-          );
-        }
+    render: (o, record) => moment(record.acpt_time).format('YYYY.MM.DD')
+  }, {
+    title: msg('contractNo'),
+    dataIndex: 'contract_no',
+    width: 200,
+    render: (o) => <TrimSpan text={o} />,
+  }, {
+    title: msg('deliveryNo'),
+    dataIndex: 'bl_wb_no',
+    width: 200,
+    render: (o) => <TrimSpan text={o} />,
+  }, {
+    title: msg('invoiceNo'),
+    dataIndex: 'invoice_no',
+    width: 200,
+    render: (o) => <TrimSpan text={o} />,
+  }, {
+    title: msg('voyageNo'),
+    width: 200,
+    dataIndex: 'voyage_no',
+    render: (o) => <TrimSpan text={o} />,
+  }, {
+    title: msg('delgInternalNo'),
+    width: 200,
+    dataIndex: '',
+    render: (o, record) =>
+      <TrimSpan text={
+        aspect === TENANT_ASPECT.BO ?
+          record.ref_delg_external_no : record.ref_recv_external_no
+      } />,
+  }, {
+    title: msg('packageNum'),
+    dataIndex: 'pieces',
+    width: 90
+  }, {
+    title: msg('delgWeight'),
+    dataIndex: 'weight',
+    width: 100
+  }, {
+    title: msg('delgSource'),
+    dataIndex: 'source',
+    width: 80,
+    render: (o, record) => {
+      return (
+        <span>{
+          record.source === DELG_SOURCE.consign ? msg('consginSource')
+          : msg('subcontractSource')
+        }</span>
+      );
+    }
+  });
+  if (type === 'undeclared') {
+    columns.push({
+      title: msg('opColumn'),
+      width: 120,
+      fixed: 'right',
+      render: (o, record) => {
+        return (
+          <span>
+            <a role="button" onClick={handlers.onDelgDownload}>{msg('downloadCert')}</a>
+            <span className="ant-divider" />
+            <NavLink to={`/${ietype}/declare/make/${record.delg_no}`}>
+            {msg('declareMake')}
+            </NavLink>
+          </span>
+        );
       }
-    );
+    });
+  } else if (type === 'declaring') {
+    columns.push({
+      title: msg('opColumn'),
+      width: 150,
+      fixed: 'right',
+      render: (o, record) => {
+        return (
+          <span>
+            <NavLink to={`/${ietype}/declare/make/${record.delg_no}`}>
+            {msg('declareMake')}
+            </NavLink>
+            <span className="ant-divider" />
+            <a role="button" onClick={handlers.onWriteEntryId}>{msg('writeEntryId')}</a>
+          </span>
+        );
+      }
+    });
+  } else {
+    columns.push({
+      title: msg('opColumn'),
+      width: 80,
+      fixed: 'right',
+      render: (o, record) => {
+        return (
+          <span>
+            <NavLink to={`/${ietype}/declare/${record.delg_no}`}>
+            {msg('declareView')}
+            </NavLink>
+          </span>
+        );
+      }
+    });
   }
+  return columns;
 }

@@ -19,7 +19,7 @@ export default function(type) {
       }, {
         single: true,
         key: 'import-1',
-        path: `/${type}/make`,
+        path: `/${type}/declare`,
         text: '制单'
       }, {
         single: true,

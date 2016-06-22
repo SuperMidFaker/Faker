@@ -7,6 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadDelgList } from 'common/reducers/cmsDeclare';
 import { setNavTitle } from 'common/reducers/navbar';
+import makeColumn from './columnsDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -31,6 +32,7 @@ function fetchData({ state, dispatch, cookie, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    aspect: state.account.aspect,
     delgList: state.cmsDelcare.delgList,
     listFilter: state.cmsDelcare.listFilter,
   }),
@@ -41,16 +43,18 @@ function fetchData({ state, dispatch, cookie, params }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'cmsDelcare'),
-    moduleName: props.ietype === 1 ? 'export' : 'import',
+    text: formatContainerMsg(props.intl, 'cmsDeclare'),
+    moduleName: props.ietype,
     withModuleLayout: false,
     goBackFn: null,
   }));
 })
 export default class DeclareList extends React.Component {
   static propTypes = {
-    ietype: PropTypes.number,
+    ietype: PropTypes.string.isRequired,
+    params: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
+    aspect: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     listFilter: PropTypes.object.isRequired,
     delgList: PropTypes.object.isRequired,
@@ -99,12 +103,6 @@ export default class DeclareList extends React.Component {
   })
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  rowSelection = {
-    selectedRowKeys: this.state.selectedRowKeys,
-    onChange: selectedRowKeys => {
-      this.setState({ selectedRowKeys });
-    },
-  }
   handleTableLoad = (filter, current) => {
     this.props.loadDelgList(null, {
       tenantId: this.props.tenantId,
@@ -126,12 +124,20 @@ export default class DeclareList extends React.Component {
   }
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
-    this.context.router.push({ pathname: `/import/declare/list/${targetVal}` });
+    this.context.router.push({ pathname:
+      `/${this.props.ietype}/declare/list/${targetVal}`
+    });
   }
   render() {
-    const { delgList, intl, params } = this.props;
+    const { aspect, delgList, intl, params, ietype } = this.props;
     this.dataSource.remotes = delgList;
-    const columns = [];
+    const columns = makeColumn(params.status, aspect, ietype, {}, this.msg);
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: selectedRowKeys => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <div className="main-content">
         <div className="page-header">
@@ -139,7 +145,7 @@ export default class DeclareList extends React.Component {
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <RadioGroup onChange={this.handleShipmentFilter} value={params.status}>
-            <RadioButton value="undeclare">{this.msg('undeclaredDelg')}</RadioButton>
+            <RadioButton value="undeclared">{this.msg('undeclaredDelg')}</RadioButton>
             <RadioButton value="declaring">{this.msg('declaringDelg')}</RadioButton>
             <RadioButton value="declared">{this.msg('declaredDelg')}</RadioButton>
           </RadioGroup>
@@ -147,8 +153,8 @@ export default class DeclareList extends React.Component {
         <div className="page-body">
           <div className="panel-header"></div>
           <div className="panel-body">
-            <Table rowSelection={this.rowSelection} columns={columns} loading={delgList.loading}
-              dataSource={this.dataSource} scroll={{ x: 2600, y: 460 }}
+            <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
+              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

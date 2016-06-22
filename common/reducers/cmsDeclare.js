@@ -19,6 +19,8 @@ const initialState = {
     sortField: '',
     sortOrder: '',
   },
+  makingDelg: {
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -26,9 +28,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG:
       return { ...state, delgList: { ...state.delgList, loading: true }};
     case actionTypes.LOAD_DELG_SUCCEED:
-      return { ...state, delgList: {
-        ...state.delgList, loaded: true, listFilter: JSON.parse(action.params.filter),
-        loading: false, ...action.result.data
+      return { ...state,
+        listFilter: JSON.parse(action.params.filter),
+        delgList: {
+        ...state.delgList, loaded: true,
+        loading: false, ...action.result.data,
       }};
     case actionTypes.LOAD_DELG_FAIL:
       return { ...state, delgList: { ...state.delgList, loading: false }};
@@ -45,7 +49,7 @@ export function loadDelgList(cookie, params) {
         actionTypes.LOAD_DELG_SUCCEED,
         actionTypes.LOAD_DELG_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/declaration',
+      endpoint: 'v1/cms/delegation/declares',
       method: 'get',
       params,
       cookie,

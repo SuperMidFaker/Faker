@@ -1,81 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  delgNo: {
-    id: 'cms.declare.delg.no',
-    defaultMessage: '报关委托号'
-  },
-  delgClient: {
-    id: 'cms.declare.delg.client',
-    defaultMessage: '委托客户'
-  },
-  shipPickupDate: {
-    id: 'transport.acceptance.pickup.date',
-    defaultMessage: '提货日期'
-  },
-  shipTransitTime: {
-    id: 'transport.acceptance.ship.transit.time',
-    defaultMessage: '运输时效'
-  },
-  transitTimeToday: {
-    id: 'transport.acceptance.transit.time.today',
-    defaultMessage: '当日'
-  },
-  shipDeliveryDate: {
-    id: 'transport.acceptance.delivery.date',
-    defaultMessage: '送货日期'
-  },
-  shipConsignor: {
-    id: 'transport.acceptance.ship.consignor',
-    defaultMessage: '发货方'
-  },
-  consignorPlace: {
-    id: 'transport.acceptance.consignor.place',
-    defaultMessage: '始发地'
-  },
-  consignorAddr: {
-    id: 'transport.acceptance.consignor.addr',
-    defaultMessage: '发货地址'
-  },
-  shipConsignee: {
-    id: 'transport.acceptance.ship.consignee',
-    defaultMessage: '收货方'
-  },
-  consigneePlace: {
-    id: 'transport.acceptance.consignee.place',
-    defaultMessage: '目的地'
-  },
-  consigneeAddr: {
-    id: 'transport.acceptance.consignee.addr',
-    defaultMessage: '收货地址'
-  },
-  shipMode: {
-    id: 'transport.acceptance.shipment.mode',
-    defaultMessage: '运输方式'
-  },
-  packageNum: {
-    id: 'transport.acceptance.shipment.packageNum',
-    defaultMessage: '件数'
-  },
-  shipWeight: {
-    id: 'transport.acceptance.shipment.weight',
-    defaultMessage: '重量'
-  },
-  shipVolume: {
-    id: 'transport.acceptance.shipment.volume',
-    defaultMessage: '体积'
-  },
-  shipSource: {
-    id: 'transport.acceptance.shipment.source',
-    defaultMessage: '来源'
-  },
-  shipCreateDate: {
-    id: 'transport.acceptance.shipment.create.date',
-    defaultMessage: '创建时间'
-  },
-  shipAcceptTime: {
-    id: 'transport.acceptance.shipment.accept.time',
-    defaultMessage: '接单时间'
+  cmsDelegation: {
+    id: 'cms.delegation',
+    defaultMessage: '委托',
   },
   searchPlaceholder: {
     id: 'cms.declare.search.placeholder',
@@ -90,63 +18,111 @@ export default defineMessages({
     defaultMessage: '制单中'
   },
   declaredDelg: {
-    id: 'cms.delegation.undeclared',
+    id: 'cms.delegation.declared',
     defaultMessage: '制单完成'
   },
-  newTitle: {
-    id: 'transport.acceptance.shipment.new.title',
-    defaultMessage: '新建运单'
+  delgNo: {
+    id: 'cms.declare.delg.no',
+    defaultMessage: '报关委托号'
   },
-  saveAndAccept: {
-    id: 'transport.acceptance.save.accept',
-    defaultMessage: '一键接单'
+  delgClient: {
+    id: 'cms.declare.delg.client',
+    defaultMessage: '委托客户'
   },
-  saveAndAcceptConfirm: {
-    id: 'transport.acceptance.save.accept.confirm',
-    defaultMessage: '接单后不能再修改，确定？'
+  delgTime: {
+    id: 'cms.declare.delg.time',
+    defaultMessage: '委托日期'
   },
-  saveAsDraft: {
-    id: 'transport.acceptance.save.draft',
-    defaultMessage: '暂存为草稿'
+  acptTime: {
+    id: 'cms.declare.delg.acpttime',
+    defaultMessage: '接单日期'
   },
-  formError: {
-    id: 'transport.acceptance.form.error',
-    defaultMessage: '运单信息不完整'
+  contractNo: {
+    id: 'cms.declare.delg.contract.no',
+    defaultMessage: '合同号'
   },
-  shipmtOpSuccess: {
-    id: 'transport.acceptance.op.success',
-    defaultMessage: '运单操作成功'
+  deliveryNo: {
+    id: 'cms.declare.delg.delivery.no',
+    defaultMessage: '提运单号'
   },
-  day: {
-    id: 'transport.acceptance.day',
-    defaultMessage: '天'
+  invoiceNo: {
+    id: 'cms.declare.delg.invoice.no',
+    defaultMessage: '发票号'
+  },
+  voyageNo: {
+    id: 'cms.declare.delg.voyage.no',
+    defaultMessage: '航名航次'
+  },
+  delgInternalNo: {
+    id: 'cms.declare.delg.internal.no',
+    defaultMessage: '企业内部编号'
+  },
+  packageNum: {
+    id: 'cms.declare.delg.packageNum',
+    defaultMessage: '件数'
+  },
+  delgWeight: {
+    id: 'cms.declare.delg.weight',
+    defaultMessage: '重量'
+  },
+  delgSource: {
+    id: 'cms.declare.delg.source',
+    defaultMessage: '来源'
+  },
+  billNo: {
+    id: 'cms.declare.delg.billNo',
+    defaultMessage: '清单编号'
+  },
+  compEntryId: {
+    id: 'cms.declare.delg.comp.entryId',
+    defaultMessage: '企业报关单编号'
+  },
+  entryId:{
+    id: 'cms.declare.delg.entryId',
+    defaultMessage: '报关单号'
   },
   consginSource: {
-    id: 'transport.acceptance.consign.source',
+    id: 'cms.declare.consign.source',
     defaultMessage: '委托'
   },
   subcontractSource: {
-    id: 'transport.acceptance.subcontract.source',
+    id: 'cms.declare.subcontract.source',
     defaultMessage: '分包'
   },
-  shipmtAccept: {
-    id: 'transport.acceptance.shipmt.accept',
-    defaultMessage: '接单'
+  opColumn: {
+    id: 'cms.declare.delg.opColumn',
+    defaultMessage: '操作'
   },
-  shipmtRevoke: {
-    id: 'transport.acceptance.shipmt.revoke',
-    defaultMessage: '作废'
+  downloadCert: {
+    id: 'cms.declare.delg.downloadCert',
+    defaultMessage: '下载单据'
   },
-  shipmtReject: {
-    id: 'transport.acceptance.shipmt.reject',
-    defaultMessage: '退回'
+  declareMake: {
+    id: 'cms.declare.make',
+    defaultMessage: '制单'
   },
-  save: {
-    id: 'transport.acceptance.shipmt.save',
-    defaultMessage: '保存'
+  declareView: {
+    id: 'cms.declare.view',
+    defaultMessage: '查看'
   },
-  cancel: {
-    id: 'transport.acceptance.shipmt.cancel',
-    defaultMessage: '取消'
-  }
+  writeEntryId: {
+    id: 'cms.declare.write.entryId',
+    defaultMessage: '填写报关单号'
+  },
+  declareBill: {
+    id: 'cms.declare.bill',
+    defaultMessage: '报关清单'
+  },
+  newDeclaration: {
+    id: 'cms.declare.new.declaration',
+    defaultMessage: '制作报关单'
+  },
+  generateEntry: {
+    id: 'cms.declare.generate.entry',
+    defaultMessage: '清单生成'
+  },
+  addEntry: {
+    id: 'cms.declare.add.entry',
+    defaultMessage: '添加'
+  },
 });

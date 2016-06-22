@@ -35,6 +35,7 @@ import Notice from './inventory/notice';
 import {loadAccount} from 'common/reducers/account';
 import {isLoaded} from 'client/common/redux-actions';
 import * as Import from './cms/import/index';
+import * as ImportDeclare from './cms/import/declare';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -108,7 +109,8 @@ export default(store, cookie) => {
             </Route>
             <Route path="declare">
               <IndexRedirect to="/import/declare/list/undeclared" />
-              <Route path="list/:status" componet={ImportDeclare.List} />
+              <Route path="list/:status" component={ImportDeclare.List} />
+              <Route path="make/:delgNo" component={ImportDeclare.Make} />
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
