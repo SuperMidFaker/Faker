@@ -273,6 +273,13 @@ const PERSONNEL = 'personnel';
 const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
 
+const RELATION_TYPES = [
+  {key: 'forwarder', value: '收发货人'},
+  {key: 'owner', value: '消费使用单位'},
+  {key: 'trade', value: '申报单位'},
+  {key: 'producer', value: '生产消费单位'}
+];
+
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -306,4 +313,5 @@ export {
   GOODS_TYPES,
   CONTAINER_PACKAGE_TYPE,
   DELG_SOURCE,
+  RELATION_TYPES,
 };

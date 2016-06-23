@@ -111,6 +111,11 @@ export default(store, cookie) => {
               <IndexRedirect to="/import/declare/list/undeclared" />
               <Route path="list/:status" component={ImportDeclare.List} />
               <Route path="make/:delgNo" component={ImportDeclare.Make} />
+            <Route path="manage" component={Import.ManageMenu}>
+              <IndexRedirect to="/import/manage/compRelation" />
+              <Route path="compRelation" component={Import.Manage}/>
+              <Route path="create" component={Import.CreateCompRelation}/>
+              <Route path="edit/:id" component={Import.EditCompRelation}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
