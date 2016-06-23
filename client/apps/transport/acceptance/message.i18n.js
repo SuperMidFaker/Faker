@@ -9,6 +9,10 @@ export default defineMessages({
     id: 'transport.acceptance.ship.requirement',
     defaultMessage: '托运客户'
   },
+  refCustomerNo: {
+    id: 'transport.acceptance.ref.customer.no',
+    defaultMessage: '客户单号'
+  },
   shipPickupDate: {
     id: 'transport.acceptance.pickup.date',
     defaultMessage: '提货日期'

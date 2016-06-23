@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
-import { Col } from 'ant-ui';
+import { Col, Form, Input, Select } from 'ant-ui';
 import FormInput from './formInput';
 import FormSelect from './formSelect';
-import FormDatePicker from './formDatepicker';
+import FormDatePicker from './formDatePicker';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
+
+const FormItem = Form.Item;
+const InputGroup = Input.Group;
 
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
@@ -56,6 +59,35 @@ PortDate.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+export function RelationAutoPicker(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { label, codeField, nameField, formData, disabled, getFieldProps, codeRules, nameRules } = props;
+  return (
+    <Col span="12">
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 24 }} label={label}>
+        <InputGroup>
+          <Col span="12">
+            <Select combobox showArrow={false} filterOption={false} onChange={this.handleChange}
+              placeholder={msg('relationCodeSearch')} {
+                ...getFieldProps(codeField, {
+                  rules: codeRules,
+                  initialValue: formData && formData[codeField],
+                })
+              } disabled={disabled}
+            />
+          </Col>
+          <Col span="12">
+            <Input placeholder={msg('relationName')} disabled={disabled}
+            {...getFieldProps(nameField, {
+              rules: nameRules,
+              initialValue: formData && formData[nameField],
+            })} disabled={disabled} />
+          </Col>
+        </InputGroup>
+      </FormItem>
+    </Col>
+  );
+}
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;

@@ -116,8 +116,8 @@ export default {
     const args = [tenantId, shipmtType];
     let shipmtNoWhere = '';
     if (shipmtNo) {
-      shipmtNoWhere = 'and shipmt_no like ?';
-      args.push(shipmtNoWhere);
+      shipmtNoWhere = 'and (shipmt_no like ? or ref_external_no like ?)';
+      args.push(`%${shipmtNo}%`, `%${shipmtNo}%`);
     }
     const sql = `select count(shipmt_no) as count from tms_shipments
       where tenant_id = ? and effective = ? ${shipmtNoWhere}`;
@@ -130,12 +130,12 @@ export default {
     const args = [tenantId, shipmtType];
     let shipmtNoWhere = '';
     if (shipmtNo) {
-      shipmtNoWhere = 'and shipmt_no like ?';
-      args.push(shipmtNoWhere);
+      shipmtNoWhere = 'and (shipmt_no like ? or ref_external_no like ?)';
+      args.push(`%${shipmtNo}%`, `%${shipmtNo}%`);
     }
     const sql = `select shipmt_no as \`key\`, shipmt_no, customer_name as sr_name, consigner_name,
       consigner_province, consigner_city, consigner_district, consigner_addr, consignee_name,
-      consignee_province, effective, consignee_city, consignee_district, consignee_addr,
+      consignee_province, effective, consignee_city, consignee_district, consignee_addr, ref_external_no,
       pickup_est_date, transit_time, deliver_est_date, transport_mode, total_count, total_weight,
       total_volume, created_date from tms_shipments where tenant_id = ? and effective = ?
       ${shipmtNoWhere} order by ${sortField} ${sortOrder} limit ?, ?`;
