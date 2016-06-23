@@ -3,9 +3,12 @@ import sequelize from './sequelize';
 import mysql from '../util/mysql';
 
 export const CompRelation = sequelize.define('cms_comp_relation', {
-  comp_code: {
+  id: {
     type: INTEGER,
     primaryKey: true
+  },
+  comp_code: {
+    type: STRING
   },
   comp_name: STRING,
   i_e_type: STRING,

@@ -28,7 +28,7 @@ import importtracking from './importtracking';
 import exporttracking from './exporttracking';
 import transportDispatch from './transportDispatch';
 import transportResources from './transportResources';
-import cms from './cms';
+import cmsCompRelation from './cmsCompRelation';
 import cmsDelegation from './cmsDelegation';
 
 export default combineReducers({
@@ -61,6 +61,6 @@ export default combineReducers({
   exporttracking,
   transportDispatch,
   transportResources,
-  cms,
+  cmsCompRelation,
   cmsDelegation
 });

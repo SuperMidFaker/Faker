@@ -107,7 +107,7 @@ export default(store, cookie) => {
               <Route path="create" component={Import.AcceptanceForm}/>
             </Route>
             <Route path="manage" component={Import.ManageMenu}>
-              <IndexRedirect to="/import/manage/compRelation" />
+              <IndexRoute component={Import.Manage}/>
               <Route path="compRelation" component={Import.Manage}/>
               <Route path="create" component={Import.CreateCompRelation}/>
               <Route path="edit/:id" component={Import.EditCompRelation}/>

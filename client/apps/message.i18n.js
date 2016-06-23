@@ -37,6 +37,18 @@ const messages = defineMessages({
     id: 'container.table.enableOp',
     defaultMessage: '启用'
   },
+  fixOp: {
+    id: 'container.table.fixOp',
+    defaultMessage: '修改'
+  },
+  save: {
+    id: 'container.table.save',
+    defaultMessage: '保存'
+  },
+  cancel: {
+    id: 'container.table.cancel',
+    defaultMessage: '取消'
+  },
   clearSelection: {
     id: 'container.table.clearSelection',
     defaultMessage: '清除选择'

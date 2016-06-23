@@ -1,61 +1,50 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { setNavTitle } from 'common/reducers/navbar';
+import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button, message } from 'ant-ui';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from '../../../../components/nav-link';
-import { loadCompRelations, switchStatus } from 'common/reducers/cms';
-import { ACCOUNT_STATUS, RELATION_TYPES } from 'common/constants';
+import { loadCompRelations, switchStatus } from 'common/reducers/cmsCompRelation';
+import { ACCOUNT_STATUS, RELATION_TYPES, I_E_TYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
+import containerMessages from 'client/apps/message.i18n';
+const formatMsg = format(messages);
+const formatContainerMsg = format(containerMessages);
 
 const rowSelection = {
   onSelect() {}
 };
 function fetchData({ state, dispatch, cookie }) {
-  if (!state.cms.loaded) {
+  if (!state.cmsCompRelation.loaded) {
     return dispatch(loadCompRelations(cookie, {
       tenantId: state.account.tenantId,
-      pageSize: state.cms.list.pageSize,
-      currentPage: state.cms.list.currentPage,
-      searchText: state.cms.list.searchText,
+      pageSize: state.cmsCompRelation.list.pageSize,
+      currentPage: state.cmsCompRelation.list.currentPage,
+      searchText: state.cmsCompRelation.list.searchText,
     }));
   }
 }
-function goBack(router) {
-  router.goBack();
-}
-
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: '关联单位',
-    moduleName: 'cms',
-    withModuleLayout: false,
-    goBackFn: () => goBack(router),
-  }));
-})
-
+@injectIntl
 @connectFetch()(fetchData)
 
 @connect(
   state => ({
     code: state.account.code,
-    loading: state.cms.loading,
-    list: state.cms.list
+    loading: state.cmsCompRelation.loading,
+    list: state.cmsCompRelation.list
   }),
   { loadCompRelations, switchStatus })
 export default class Manage extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     loadCompRelations: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
   handleStatusSwitch(record, index) {
-    this.props.switchStatus(index, record.comp_code, record.status === ACCOUNT_STATUS.normal.id
+    this.props.switchStatus(index, record.id, record.status === ACCOUNT_STATUS.normal.id
       ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -73,59 +62,69 @@ export default class Manage extends Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { list } = this.props;
+    const { list, intl } = this.props;
+    const msg = (descriptor) => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
-        title: '社会信用代码',
+        title: msg('comp_code'),
         dataIndex: 'comp_code',
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
-        title: '企业名称',
+        title: msg('comp_name'),
         dataIndex: 'comp_name',
         render: (text, record) => this.renderColumnText(record.status, text)
       }, {
-        title: '关联单位类型',
+        title: msg('relation_type'),
         dataIndex: 'relation_type',
         render: (text, record) => {
           for (let i = 0; i < RELATION_TYPES.length; i ++) {
-            if (RELATION_TYPES[i].key == text) {
+            if (RELATION_TYPES[i].key === text) {
               return this.renderColumnText(record.status, RELATION_TYPES[i].value);
             }
           }
         }
       }, {
-        title: '状态',
+        title: msg('i_e_type'),
+        dataIndex: 'i_e_type',
+        render: (text, record) => {
+          for (let i = 0; i < I_E_TYPES.length; i ++) {
+            if (I_E_TYPES[i].key === text) {
+              return this.renderColumnText(record.status, I_E_TYPES[i].value);
+            }
+          }
+        }
+      }, {
+        title: formatContainerMsg(intl, 'statusColumn'),
         width: 50,
         render: (o, record) => {
           let style = { color: '#51C23A' };
-          let text = '正常';
+          let text = formatContainerMsg(intl, 'accountNormal');
           if (record.status === ACCOUNT_STATUS.blocked.id) {
             style = { color: '#CCC' };
-            text = '停用';
+            text = formatContainerMsg(intl, 'accountDisabled');
           }
           return <span style={style}>{text}</span>;
         }
       }, {
-        title: '操作',
-        dataIndex: 'status',
+        title: formatContainerMsg(intl, 'opColumn'),
         width: 150,
         render: (text, record, index) => {
           if (record.status === ACCOUNT_STATUS.normal.id) {
             return (
               <span>
-                <NavLink to={`/import/manage/edit/${record.comp_code}`}>
-                修改
+                <NavLink to={`/import/manage/edit/${record.id}`}>
+                {formatContainerMsg(intl, 'fixOp')}
                 </NavLink>
                 <span className="ant-divider"></span>
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                停用
+                {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>);
           } else if (record.status === ACCOUNT_STATUS.blocked.id) {
             return (
               <span>
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                启用
+                {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </span>);
           } else {
@@ -162,7 +161,9 @@ export default class Manage extends Component {
     return (
       <div className="main-content">
         <div className="page-body" style={{padding: 16}}>
-          <Button size="large" type="primary" style={{marginBottom: 8}} onClick={() => this.handleNavigationTo('/import/manage/create')}>新建</Button>
+          <Button size="large" type="primary" style={{marginBottom: 8}} onClick={() => this.handleNavigationTo('/import/manage/create')}>
+          {msg('new')}
+          </Button>
           <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
         </div>
       </div>

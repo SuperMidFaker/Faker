@@ -8,7 +8,7 @@ import {
   appendFormAcitonTypes,
   formReducer
 } from './form-common';
-const initialState = {
+export const initialState = {
   loaded: false, // used by isLoad action
   loading: false,
   list: {
@@ -19,8 +19,10 @@ const initialState = {
     data: [],
   },
   formData:{
+    id: -1,
     comp_code: '',
     comp_name: '',
+    i_e_type: '',
     relation_type: '',
     status: 0
   }
@@ -38,6 +40,7 @@ appendFormAcitonTypes(domain, actionTypes);
 
 export default function reducer(state = initialState, action) {
   let list;
+  let loaded = false;
   switch (action.type) {
     case actionTypes.COMPRELATIONS_LOAD_SUCCEED:
       list = action.result.data;
@@ -49,11 +52,13 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.COMPRELATION_SUBMIT_LOAD_SUCCEED:
       list = {...state.list};
-      if (action.result.data.count == 0) {
+      if (action.result.data.id === initialState.formData.id) {
+        action.data.id = action.result.data.insertId;
         list.rows.unshift(action.data);
+        loaded = true;
       }
       return {...state,
-        loaded: false,
+        loaded: loaded,
         loading: false,
         needUpdate: true,
         list
@@ -123,7 +128,7 @@ export function loadCompRelation(cookie, params) {
   };
 }
 
-export function switchStatus(index, comp_code, status) {
+export function switchStatus(index, id, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -136,7 +141,7 @@ export function switchStatus(index, comp_code, status) {
       index,
       data: {
         set: {status},
-        where: {comp_code}
+        where: {id}
       }
     }
   };
