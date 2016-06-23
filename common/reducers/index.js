@@ -61,9 +61,6 @@ export default combineReducers({
   exporttracking,
   transportDispatch,
   transportResources,
-<<<<<<< HEAD
   cms,
-=======
   cmsDelegation
->>>>>>> b9e0f14a3d3c36d32c85e4b00f79a2bbbe1eaf2d
 });
