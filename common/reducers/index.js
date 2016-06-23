@@ -65,5 +65,4 @@ export default combineReducers({
   cmsDelcare,
   cmsDelegation,
   cms,
-  cmsDelegation
 });
