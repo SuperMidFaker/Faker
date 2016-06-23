@@ -173,4 +173,40 @@ export default defineMessages({
     id: 'cms.declare.form.ladingWayBill',
     defaultMessage: '提运单号'
   },
+  relationCodeSearch: {
+    id: 'cms.declare.form.relation.code.search',
+    defaultMessage: '代码搜索'
+  },
+  relationName: {
+    id: 'cms.declare.form.relation.name',
+    defaultMessage: '名称'
+  },
+  forwardName: {
+    id: 'cms.declare.form.forward.name',
+    defaultMessage: '收发货人'
+  },
+  ownerConsumeName: {
+    id: 'cms.declare.form.owner.consume.name',
+    defaultMessage: '消费使用单位'
+  },
+  ownerProduceName: {
+    id: 'cms.declare.form.owner.produce.name',
+    defaultMessage: '生产消费单位'
+  },
+  agentName: {
+    id: 'cms.declare.form.agent.name',
+    defaultMessage: '申报单位'
+  },
+  tradeMode: {
+    id: 'cms.declare.form.trade.name',
+    defaultMessage: '监管方式'
+  },
+  rmModeName: {
+    id: 'cms.declare.form.rm.mode.name',
+    defaultMessage: '征免性质'
+  },
+  emsNo: {
+    id: 'cms.declare.form.ems.no',
+    defaultMessage: '备案号'
+  },
 });

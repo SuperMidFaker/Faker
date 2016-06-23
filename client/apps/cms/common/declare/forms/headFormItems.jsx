@@ -10,6 +10,7 @@ const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
+const Option = Select.Option;
 
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
@@ -59,22 +60,39 @@ PortDate.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-export function RelationAutoPicker(props) {
+export function RelationAutoCompSelect(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { label, codeField, nameField, formData, disabled, getFieldProps, codeRules, nameRules } = props;
+  const {
+    label, codeField, nameField, formData, disabled, options,
+    getFieldProps, codeRules, nameRules, onSearch, onSelect,
+  } = props;
+  function handleSearch(value) {
+    if (onSearch) {
+      onSearch(codeField, value);
+    }
+  }
+  function handleSelect(value) {
+    if (onSelect) {
+      onSelect(value);
+    }
+  }
   return (
     <Col span="12">
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 24 }} label={label}>
+      <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label}>
         <InputGroup>
           <Col span="12">
-            <Select combobox showArrow={false} filterOption={false} onChange={this.handleChange}
+            <Select combobox showArrow={false} filterOption={false} disabled={disabled}
+              defaultActiveFirstOption={false}
               placeholder={msg('relationCodeSearch')} {
                 ...getFieldProps(codeField, {
                   rules: codeRules,
                   initialValue: formData && formData[codeField],
                 })
-              } disabled={disabled}
-            />
+              } onSearch={handleSearch} onSelect={handleSelect}>
+              {
+                options.map(opt => <Option key={opt.value}>{opt.value}</Option>)
+              }
+            </Select>
           </Col>
           <Col span="12">
             <Input placeholder={msg('relationName')} disabled={disabled}
@@ -88,12 +106,26 @@ export function RelationAutoPicker(props) {
     </Col>
   );
 }
+
+RelationAutoCompSelect.propTypes = {
+  label: PropTypes.string.isRequired,
+  codeField: PropTypes.string.isRequired,
+  nameField: PropTypes.string.isRequired,
+  formData: PropTypes.object,
+  disabled: PropTypes.bool,
+  getFieldProps: PropTypes.func.isRequired,
+  codeRules: PropTypes.array,
+  nameRules: PropTypes.array,
+  onSearch: PropTypes.func,
+  onSelect: PropTypes.func,
+};
+
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
   const modeProps = {
     outercol: 8,
-    col: 4,
+    col: 6,
     field: 'trans_mode',
     options: formRequire.transModes,
     label: msg('transMode'),
@@ -103,7 +135,7 @@ export function Transport(props) {
   };
   const modeNameProps = {
     outercol: 8,
-    col: 4,
+    col: 6,
     field: 'trans_mode_name',
     label: msg('transModeName'),
     disabled,
@@ -112,7 +144,7 @@ export function Transport(props) {
   };
   const blwbProps = {
     outercol: 8,
-    col: 4,
+    col: 6,
     field: 'bl_wb_no',
     label: msg('ladingWayBill'),
     disabled,
@@ -134,3 +166,71 @@ Transport.propTypes = {
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
 };
+
+export function TradeRemission(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldProps, disabled, formData, formRequire } = props;
+  const tradeModeProps = {
+    outercol: 8,
+    col: 6,
+    field: 'trade_mode',
+    options: formRequire.tradeModes,
+    label: msg('tradeMode'),
+    disabled,
+    formData,
+    getFieldProps,
+  };
+  const remissionProps = {
+    outercol: 8,
+    col: 6,
+    field: 'rm_modes',
+    options: formRequire.remissionModes,
+    label: msg('rmModeName'),
+    disabled,
+    formData,
+    getFieldProps,
+  };
+  const emsNoProps = {
+    outercol: 8,
+    col: 6,
+    field: 'ems_no',
+    label: msg('emsNo'),
+    disabled,
+    formData,
+    getFieldProps,
+  };
+  return (
+    <Col span="12">
+      <FormSelect { ...tradeModeProps } />
+      <FormSelect { ...remissionProps} />
+      <FormInput { ...emsNoProps} />
+    </Col>
+  );
+}
+TradeRemission.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  getFieldProps: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+};
+
+export function CountryAttr(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldProps, disabled, formData, formRequire, ietype } = props;
+  const tradeCountryProps = {
+    outercol: 12,
+    col: 6,
+    field: 'trade_country',
+    options: formRequire.tradeCountries,
+    label: msg('tradeCountry'),
+    disabled,
+    formData,
+    getFieldProps,
+  };
+  return (
+    <Col span="12">
+      <FormSelect { ...tradeCountryProps } />
+    </Col>
+  );
+}

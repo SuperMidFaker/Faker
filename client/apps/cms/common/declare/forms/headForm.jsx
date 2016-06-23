@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Form } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
-import { PortDate } from './headFormItems';
+import { RelationAutoCompSelect, PortDate, Transport, TradeRemission, CountryAttr } from './headFormItems';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -29,10 +29,23 @@ export default class HeadForm extends React.Component {
     return (
       <Form form={form}>
         <FormInput field="pre_entry_id" outercol={12} col={4}
-        label={this.msg('preEntryId')} {...formProps} />
-        <FormInput field="entry_id" outercol={12} col={4}
-        label={this.msg('formEntryId')} {...formProps}/>
+          label={this.msg('preEntryId')} {...formProps} />
+        <FormInput field="entry_id" outercol={12} col={2}
+          label={this.msg('formEntryId')} {...formProps} />
+        <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
+          codeField="forwarder_code" nameField="forwareder_name"
+          {...formProps} options={[]}/>
         <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}/>
+        <RelationAutoCompSelect label={
+          ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
+        } codeField="owner_code" nameField="owner_name" intl={intl}
+          {...formProps} options={[]}/>
+        <Transport {...formProps} intl={intl} formRequire={formRequire}/>
+        <RelationAutoCompSelect label={this.msg('agentName')}
+          codeField="agent_code" nameField="agent_name" intl={intl}
+          {...formProps} options={[]}/>
+        <TradeRemission {...formProps} intl={intl} formRequire={formRequire}/>
+        <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
       </Form>
     );
   }
