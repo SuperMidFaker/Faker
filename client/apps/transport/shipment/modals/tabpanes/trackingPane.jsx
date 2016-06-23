@@ -52,8 +52,17 @@ export default class PreviewPanel extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('trackingPoistion'),
+    width: 150,
     render: (o, record) => {
-      return renderLoc(record, 'province', 'city', 'district');
+      const position = [];
+      const provcity = renderLoc(record, 'province', 'city', 'district');
+      if (provcity) {
+        position.push(provcity);
+      }
+      if (record.address) {
+        position.push(record.address);
+      }
+      return position.join('-');
     },
   }, {
     title: this.msg('poistionMode'),

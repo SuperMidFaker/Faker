@@ -168,6 +168,11 @@ const SHIPMENT_SOURCE = {
   subcontracted: 2,   // 分包
 };
 
+const DELG_SOURCE = {
+  consigned: 1,       // 委托
+  subcontracted: 2,   // 分包
+};
+
 const SHIPMENT_TRACK_STATUS = {
   unaccepted: 1,
   undispatched: 2,
@@ -313,6 +318,7 @@ export {
   DRIVER_STATUS,
   GOODS_TYPES,
   CONTAINER_PACKAGE_TYPE,
+  DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
 };

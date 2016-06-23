@@ -101,22 +101,6 @@ const messages = defineMessages({
     id: 'container.partner.type.offline',
     defaultMessage: '线下'
   },
-  transportShipment: {
-    id: 'container.transport.shipment',
-    defaultMessage: '运单'
-  },
-  transportAcceptance: {
-    id: 'container.transport.acceptance',
-    defaultMessage: '受理'
-  },
-  transportDispatch: {
-    id: 'container.transport.dispatch',
-    defaultMessage: '调度'
-  },
-  transportTracking: {
-    id: 'container.transport.tracking',
-    defaultMessage: '跟踪'
-  },
   corpInfo: {
     id: 'container.corpInfo',
     defaultMessage: '企业信息'
@@ -156,6 +140,26 @@ const messages = defineMessages({
   servicePayment: {
     id: 'container.servicePayment',
     defaultMessage: '付款记录'
+  },
+  transportShipment: {
+    id: 'container.transport.shipment',
+    defaultMessage: '运单'
+  },
+  transportAcceptance: {
+    id: 'container.transport.acceptance',
+    defaultMessage: '受理'
+  },
+  transportDispatch: {
+    id: 'container.transport.dispatch',
+    defaultMessage: '调度'
+  },
+  transportTracking: {
+    id: 'container.transport.tracking',
+    defaultMessage: '跟踪'
+  },
+  cmsDeclare: {
+    id: 'container.cms.declare',
+    defaultMessage: '制单'
   },
 });
 

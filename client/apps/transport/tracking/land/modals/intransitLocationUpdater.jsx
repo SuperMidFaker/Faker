@@ -92,7 +92,7 @@ export default class LocationUpdater extends React.Component {
             />
           </FormItem>
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportPosition')}
-            wrapperCol={{ span: 18 }} required
+            wrapperCol={{ span: 18 }}
           >
             <RegionCascade intl={intl} setFormValue={this.setRegionValue} />
           </FormItem>

@@ -20,7 +20,7 @@ export default function(type) {
       }, {
         single: true,
         key: 'import-1',
-        path: `/${type}/make`,
+        path: `/${type}/declare`,
         icon: 'zmdi zmdi-file-text',
         text: '制单'
       }, {
