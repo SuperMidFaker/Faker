@@ -280,6 +280,12 @@ const RELATION_TYPES = [
   {key: 'producer', value: '生产消费单位'}
 ];
 
+const I_E_TYPES = [
+  {key: 'I', value: '进口'},
+  {key: 'E', value: '出口'},
+  {key: 'A', value: '进出口'}
+];
+
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -314,4 +320,5 @@ export {
   CONTAINER_PACKAGE_TYPE,
   DELG_SOURCE,
   RELATION_TYPES,
+  I_E_TYPES,
 };

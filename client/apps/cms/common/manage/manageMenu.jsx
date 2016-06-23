@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { Menu } from 'ant-ui';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
+const formatMsg = format(messages);
 
 const MenuItem = Menu.Item;
 @injectIntl
@@ -35,7 +38,7 @@ export default class ManageMenu extends Component {
           <Menu mode="horizontal" selectedKeys={this.state.currentKey}
           onClick={this.handleMenuChange}
           >
-            <MenuItem key="compRelation">关联单位</MenuItem>
+            <MenuItem key="compRelation">{formatMsg(this.props.intl, 'relation')}</MenuItem>
           </Menu>
           {this.props.children}
         </div>

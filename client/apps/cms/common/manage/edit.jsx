@@ -1,27 +1,34 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { setNavTitle } from 'common/reducers/navbar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import CompRelationForm from './compRelationForm';
-import { loadCompRelation } from 'common/reducers/cms';
+import { loadCompRelation } from 'common/reducers/cmsCompRelation';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
+import containerMessages from 'client/apps/message.i18n';
+const formatMsg = format(messages);
+const formatContainerMsg = format(containerMessages);
 
 function fetchData({ dispatch, cookie, params }) {
-  return dispatch(loadCompRelation(cookie, {comp_code: params.id}));
+  return dispatch(loadCompRelation(cookie, params));
 }
 
 function goBack(router) {
   router.goBack();
 }
 
+@injectIntl
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: '修改关联单位',
-    moduleName: 'cms',
+    text: formatContainerMsg(props.intl, 'fixOp') + formatMsg(props.intl, 'relation'),
+    moduleName: 'cmsCompRelation_edit',
     withModuleLayout: false,
     goBackFn: () => goBack(router),
   }));
@@ -30,12 +37,13 @@ function goBack(router) {
 @connect(
   state => ({
     code: state.account.code,
-    loading: state.cms.loading,
-    formData: state.cms.formData
+    loading: state.cmsCompRelation.loading,
+    formData: state.cmsCompRelation.formData
   }),
   { loadCompRelation })
 export default class EditCompRelation extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     loadCompRelation: PropTypes.func.isRequired
   }
   static contextTypes = {

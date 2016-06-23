@@ -33,7 +33,9 @@ function* compRelation() {
     const query = this.request.query;
     const result = yield CompRelation.findOne({
       raw: true,
-      where:query
+      where:{
+        id: query.id
+      }
     });
     return Result.ok(this, result);
   } catch (e) {
@@ -44,19 +46,20 @@ function* compRelation() {
 function* insertCompRelation() {
   try {
     const body = yield cobody(this);
-    const { comp_code } = body;
-    const count = yield CompRelation.count({ where: {comp_code} });
-    if(count == 0) {
-      yield CompRelation.create(body);
+    const { id } = body;
+    console.log(body);
+    if(id == -1) {
+      delete body.id;
+      const result = yield CompRelation.create(body);
+      return Result.ok(this, {insertId: result['null'], id});
     }
     else {
       const set = {...body};
-      
-      delete set.comp_code;
-      yield CompRelation.update(set,{where:{ comp_code }});
+      delete set.id;
+      const result = yield CompRelation.update(set,{where:{ id }});
+      return Result.ok(this, {result, id});
     }
-    
-    return Result.ok(this,{count});
+
   } catch (e) {
     console.log(e);
     return Result.internalServerError(this, e.message);

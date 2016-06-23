@@ -1,24 +1,42 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Button, Input, Form, Row, Col, Select, message } from 'ant-ui';
-import { submitCompRelation } from 'common/reducers/cms';
-import { ACCOUNT_STATUS, RELATION_TYPES } from 'common/constants';
+import { submitCompRelation } from 'common/reducers/cmsCompRelation';
+import { ACCOUNT_STATUS, RELATION_TYPES, I_E_TYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
+import containerMessages from 'client/apps/message.i18n';
+const formatMsg = format(messages);
+const formatContainerMsg = format(containerMessages);
+
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+@injectIntl
 @connect(
-  () => ({
-  }),
+  (state) => {
+    return {
+    tenant_id: state.account.tenantId
+  };
+  },
   { submitCompRelation })
 
 class CompRelationForm extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
-  handleSubmit = (e) => {
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  handleSubmit = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const formData = {...this.props.form.getFieldsValue()};
         formData.status = ACCOUNT_STATUS.normal.id;
+        formData.id = this.props.formData.id;
+        formData.tenant_id = this.props.tenant_id;
         this.props.submitCompRelation(formData).then(result => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -49,18 +67,19 @@ class CompRelationForm extends Component {
     );
   }
   render() {
-    const { form: { getFieldProps }, formData } = this.props;
+    const { form: { getFieldProps }, formData, intl } = this.props;
     return (
       <div className="main-content">
         <Form horizontal>
           <Row>
             <Col lg={12} >
               {this.renderTextInput(
-                '社会信用代码', '请填写社会信用代码', 'comp_code', true, [{
+                this.msg('comp_code'), this.msg('comp_code_placeholder'), 'comp_code', true, [{
                   required: true,
-                  message: '联系人姓名填写有误',
+                  message: this.msg('comp_code_placeholder'),
                   type: 'string',
-                  length:18,
+                  min: 18,
+                  max: 18,
                   whitespace: false
                 }], {transform: (value) => (value.trim()), initialValue: formData.comp_code}
               )}
@@ -69,9 +88,9 @@ class CompRelationForm extends Component {
           <Row>
             <Col lg={12} >
               {this.renderTextInput(
-                '企业名称', '请填写企业名称', 'comp_name', true, [{
+                this.msg('comp_name'), this.msg('comp_name_placeholder'), 'comp_name', true, [{
                   required: true,
-                  message: '企业名称填写有误',
+                  message: this.msg('comp_name_placeholder'),
                   type: 'string',
                   whitespace: true
                 }], {transform: (value) => (value.trim()), initialValue: formData.comp_name}
@@ -80,12 +99,12 @@ class CompRelationForm extends Component {
           </Row>
           <Row>
             <Col lg={12} >
-              <FormItem label="关联单位类型" labelCol={{span: 6}} wrapperCol={{span: 16}} required="required">
-                <Select key="relation_type" placeholder="请选择关联单位类型"
+              <FormItem label={this.msg('relation_type')} labelCol={{span: 6}} wrapperCol={{span: 16}} required="required">
+                <Select key="relation_type" placeholder={this.msg('relation_type_placeholder')} defaultValue={formData.relation_type}
                 {...getFieldProps('relation_type', { initialValue: formData.relation_type,
                 rules: [{
                   required: true,
-                  message: '关联单位类型填写有误',
+                  message: this.msg('relation_type_placeholder'),
                   type: 'string',
                   whitespace: true
                 }]
@@ -99,18 +118,39 @@ class CompRelationForm extends Component {
               </FormItem>
             </Col>
           </Row>
+          <Row>
+            <Col lg={12} >
+              <FormItem label={this.msg('i_e_type')} labelCol={{span: 6}} wrapperCol={{span: 16}} required="required">
+                <Select key="i_e_type" placeholder={this.msg('i_e_type_placeholder')} defaultValue={formData.i_e_type}
+                {...getFieldProps('i_e_type', { initialValue: formData.i_e_type,
+                rules: [{
+                  required: true,
+                  message: this.msg('i_e_type_placeholder'),
+                  type: 'string',
+                  whitespace: true
+                }]
+              })}>
+                {
+                  I_E_TYPES.map((item) => {
+                    return (<Option value={item.key}>{item.value}</Option>);
+                  })
+                }
+                </Select>
+              </FormItem>
+            </Col>
+          </Row>
           <Row style={{marginTop:50}}>
             <Col span="21" offset="3">
               <FormItem wrapperCol={{ span: 16 }}>
                 <Button type="primary" size="large" htmlType="submit"
                  onClick={this.handleSubmit}
                 >
-                保存
+                {formatContainerMsg(intl, 'save')}
                 </Button>
                 <Button type="ghost" size="large" className="cancel" style={{ marginLeft:50 }}
                   onClick={this.handleCancel}
                 >
-                取消
+                {formatContainerMsg(intl, 'cancel')}
                 </Button>
                </FormItem>
             </Col>
