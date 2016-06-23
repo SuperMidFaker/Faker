@@ -125,4 +125,52 @@ export default defineMessages({
     id: 'cms.declare.add.entry',
     defaultMessage: '添加'
   },
+  billHeader: {
+    id: 'cms.declare.form.bill.header',
+    defaultMessage: '清单表头'
+  },
+  billList: {
+    id: 'cms.declare.form.bill.list',
+    defaultMessage: '清单表体'
+  },
+  preEntryId: {
+    id: 'cms.declare.form.pre.entry.id',
+    defaultMessage: '预录入编号'
+  },
+  formEntryId: {
+    id: 'cms.declare.form.entry.id',
+    defaultMessage: '海关编号'
+  },
+  iport: {
+    id: 'cms.declare.form.iport',
+    defaultMessage: '进口口岸'
+  },
+  eport: {
+    id: 'cms.declare.form.eport',
+    defaultMessage: '出口口岸'
+  },
+  idate: {
+    id: 'cms.declare.form.idate',
+    defaultMessage: '进口日期'
+  },
+  edate: {
+    id: 'cms.declare.form.edate',
+    defaultMessage: '出口日期'
+  },
+  ddate: {
+    id: 'cms.declare.form.ddate',
+    defaultMessage: '申报日期'
+  },
+  transMode: {
+    id: 'cms.declare.form.transMode',
+    defaultMessage: '运输方式'
+  },
+  transModeName: {
+    id: 'cms.declare.form.transModeName',
+    defaultMessage: '运输名称'
+  },
+  ladingWayBill: {
+    id: 'cms.declare.form.ladingWayBill',
+    defaultMessage: '提运单号'
+  },
 });

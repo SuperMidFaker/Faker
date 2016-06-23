@@ -1,0 +1,39 @@
+import React, { PropTypes } from 'react';
+import { Col, Form, Select } from 'ant-ui';
+const FormItem = Form.Item;
+const Option = Select.Option;
+
+export default function FormInput(props) {
+  const {
+    outercol, label, col, field, required, disabled,
+    getFieldProps, rules, fieldProps, formData, options = [],
+  } = props;
+  return (
+    <Col span={outercol}>
+      <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
+        required={required}>
+        <Select disabled={disabled}
+          {...getFieldProps(field, { rules, initialValue: formData && formData[field],
+          ...fieldProps })}>
+          {
+            options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
+          }
+        </Select>
+      </FormItem>
+    </Col>
+  );
+}
+
+FormInput.propTypes = {
+  outercol: PropTypes.number.isRequired,
+  label: PropTypes.string,
+  col: PropTypes.number.isRequired,
+  field: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  rules: PropTypes.array,
+  fieldProps: PropTypes.object,
+  getFieldProps: PropTypes.func.isRequired,
+  formData: PropTypes.object,
+  options: PropTypes.array,
+};
