@@ -170,7 +170,7 @@ export default class MessageList extends React.Component {
               </div>
               <div className="panel-body" style={{padding:20}}>
                 <div>
-                  <RadioGroup defaultValue={MESSAGE_STATUS.notRead.key} size="large" onChange={this.onStatusChange}>
+                  <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.onStatusChange}>
                     <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
                     <RadioButton value={MESSAGE_STATUS.read.key}>{MESSAGE_STATUS.read.value}</RadioButton>
                   </RadioGroup>
