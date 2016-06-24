@@ -286,6 +286,21 @@ const I_E_TYPES = [
   {key: 'A', value: '进出口'}
 ];
 
+const MESSAGE_STATUS = {
+  notRead: {
+    key: 0,
+    value: '未读'
+  },
+  read: {
+    key: 1,
+    value: '已读'
+  },
+  delete3: {
+    key: 3,
+    value: '已删除'
+  },
+};
+
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -321,4 +336,5 @@ export {
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
+  MESSAGE_STATUS,
 };

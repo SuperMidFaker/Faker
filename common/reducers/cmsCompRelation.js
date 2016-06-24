@@ -58,7 +58,7 @@ export default function reducer(state = initialState, action) {
         loaded = true;
       }
       return {...state,
-        loaded: loaded,
+        loaded,
         loading: false,
         needUpdate: true,
         list
@@ -77,7 +77,7 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         loading: false,
         needUpdate: false,
-        list: list
+        list
       };
     default:
       return formReducer(actionTypes, state, action, {}, 'idlist') || state;

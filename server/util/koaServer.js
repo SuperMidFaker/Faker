@@ -6,6 +6,8 @@ import { isArray } from 'util';
 
 import { koaJwtOptions } from './jwt-kit';
 import Result, { patch } from './responseResult';
+import io from 'socket.io';
+const SOCKET_IO = require('../socket.io');
 /**
  * create koa server with options
  * @param  {Object} options {
@@ -69,8 +71,11 @@ export default function create(options) {
   if (opts.middlewares && isArray(opts.middlewares)) {
     opts.middlewares.forEach(m => app.use(m));
   }
+  const server = require('http').createServer(app.callback());
+  SOCKET_IO.initialize(io(server));
   if (opts.port) {
-    app.listen(opts.port);
+    // app.listen(opts.port);
+    server.listen(opts.port);
   }
 
   return app;

@@ -47,7 +47,6 @@ function* insertCompRelation() {
   try {
     const body = yield cobody(this);
     const { id } = body;
-    console.log(body);
     if(id == -1) {
       delete body.id;
       const result = yield CompRelation.create(body);

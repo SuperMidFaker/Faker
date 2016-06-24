@@ -14,7 +14,9 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'ORGAN_EDIT', 'ORGAN_EDIT_SUCCEED', 'ORGAN_EDIT_FAIL',
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
-  'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL'
+  'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
+  'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
+  'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -46,6 +48,14 @@ const initialState = {
     pageSize: INITIAL_LIST_PAGE_SIZE,
     current: 1,
     data: [] // structure see getOrganizations
+  },
+  messages:{
+    loginId: 0,
+    totalCount: 0,
+    pageSize: 20,
+    currentPage: 1,
+    status: 0,
+    data: []
   }
 };
 export default function reducer(state = initialState, action) {
@@ -134,6 +144,13 @@ export default function reducer(state = initialState, action) {
       const corplist = { ...state.corplist };
       corplist.totalCount--;
       return { ...state, corplist };
+    }
+    case actionTypes.LOADCORPMESSAGES_SUCCEED: {
+      const messages = action.result.data;
+      return { ...state, messages };
+    }
+    case actionTypes.MARK_MESSAGE_SUCCEED: {
+      return state;
     }
     default:
       return formReducer(actionTypes, state, action, { key: null, country: CHINA_CODE }, 'corplist')
@@ -278,5 +295,28 @@ export function openTenantAppsEditor(record, index) {
 export function closeTenantAppsEditor() {
   return {
     type: actionTypes.CLOSE_TENANT_APPS_EDITOR
+  };
+}
+
+export function loadMessages(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.LOADCORPMESSAGES, actionTypes.LOADCORPMESSAGES_SUCCEED, actionTypes.LOADCORPMESSAGES_FAIL],
+      endpoint: 'v1/user/corp/messages',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}
+
+export function markMessages(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],
+      endpoint: 'v1/user/corp/message/status',
+      method: 'post',
+      data: params
+    }
   };
 }
