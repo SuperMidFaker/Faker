@@ -4,8 +4,8 @@ import { STRING, INTEGER, FLOAT, DATE, NOW } from 'sequelize';
 
 function fillZero(num) {
   let str = '';
-  let zeroCount = 5 - num.toString().length;
-  for (let i = 0; i<zeroCount; i++) {
+  const zeroCount = 5 - num.toString().length;
+  for (let i = 0; i < zeroCount; i++) {
     str += '0';
   }
   str += num;
@@ -87,3 +87,5 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
   entry_id: STRING,
   comp_entry_id: STRING
 });
+
+Delegation.hasMany(Dispatch, { foreignKey: 'delg_no', constraints: false });

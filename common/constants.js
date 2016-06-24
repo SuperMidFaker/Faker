@@ -286,6 +286,12 @@ const I_E_TYPES = [
   {key: 'A', value: '进出口'}
 ];
 
+const CMS_BILL_STATUS = {
+  undeclared: 0,
+  declaring: 1,
+  declared: 2,
+};
+
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -321,4 +327,5 @@ export {
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
+  CMS_BILL_STATUS,
 };

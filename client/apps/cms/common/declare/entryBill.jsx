@@ -16,7 +16,7 @@ const TabPane = Tabs.TabPane;
 const MenuItem = Menu.Item;
 const DropdownButton = Dropdown.Button;
 
-function fetchData(/* { state, dispatch } */) {
+function fetchData({ state, dispatch, params }) {
 }
 
 @connectFetch()(fetchData)
@@ -25,16 +25,15 @@ function fetchData(/* { state, dispatch } */) {
   state => ({
     tenantId: state.account.tenantId,
     aspect: state.account.aspect,
-    delg: state.cmsDelcare.makingDelg,
-  }),
-  { loadDelgList })
+  })
+)
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: `${formatMsg(props.intl, 'cmsDelegation')}${props.delg.delg_no}`,
+    text: `${formatMsg(props.intl, 'cmsDelegation')}${props.params.delgNo}`,
     moduleName: props.ietype,
     withModuleLayout: false,
     goBackFn: null,

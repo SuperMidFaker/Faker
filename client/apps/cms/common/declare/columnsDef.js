@@ -78,7 +78,6 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
   }, {
     title: msg('delgInternalNo'),
     width: 200,
-    dataIndex: '',
     render: (o, record) =>
       <TrimSpan text={
         aspect === TENANT_ASPECT.BO ?

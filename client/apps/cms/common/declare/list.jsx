@@ -66,6 +66,17 @@ export default class DeclareList extends React.Component {
   state = {
     selectedRowKeys: []
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.status !== this.props.params.status) {
+      const filter = { ...nextProps.listFilter, declareType: nextProps.params.status };
+      return nextProps.loadDelgList(null, {
+        tenantId: nextProps.tenantId,
+        filter: JSON.stringify(filter),
+        pageSize: nextProps.delgList.pageSize,
+        current: 1,
+      });
+    }
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgList(null, params),
     resolve: result => result.data,
