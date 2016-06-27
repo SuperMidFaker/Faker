@@ -10,7 +10,7 @@ import WxProfile from './weixin/profile';
 import PackAccount from './account/pack-account';
 import Corp from './corp/pack-corp';
 import CorpInfo from './corp/info';
-import CorpMessageList from './corp/messageList';
+import MessageList from './account/messageList';
 import PackOrganization from './corp/pack-organization';
 import * as Organization from './corp/organization';
 import * as Personnel from './corp/personnel';
@@ -82,6 +82,7 @@ export default(store, cookie) => {
         <Route path="account" component={PackAccount}>
           <Route path="profile" component={MyProfile}/>
           <Route path="password" component={Password}/>
+          <Route path="messageList" component={MessageList}/>
         </Route>
         <Route path="corp" component={Corp}>
           <Route path="info" component={CorpInfo}/>
@@ -101,7 +102,6 @@ export default(store, cookie) => {
             <Route path="invitations/out" component={Cooperation.Sent}/>
           </Route>
         </Route>
-        <Route path="corp/messageList" component={CorpMessageList}/>
         <Route component={Module}>
           <Route path="import" component={Import.Sidebar}>
             <IndexRedirect to="/import/accept"/>

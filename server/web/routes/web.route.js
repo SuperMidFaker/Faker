@@ -29,5 +29,6 @@ export default [
    ['get', '/export*', renderWebPage],
    ['get', '/account/password', renderWebPage],
    ['get', '/account/profile', renderWebPage],
+   ['get', '/account/messageList', renderWebPage],
    ['get', '/account/logout', logoutUser]
 ];

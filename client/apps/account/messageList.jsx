@@ -5,10 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import AmNavBar from 'client/components/am-navbar';
 import { MESSAGE_STATUS } from 'common/constants';
-import MessagePrompt from 'client/apps/corp/messagePrompt';
 import { loadMessages, markMessages } from 'common/reducers/corps';
+import './acc.less';
 const formatMsg = format(messages);
 
 const RadioButton = Radio.Button;
@@ -158,27 +157,19 @@ export default class MessageList extends React.Component {
       remotes: this.props.messages
     });
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <MessagePrompt/>
-        <div className="am-content">
-          <div className="main-content">
-            <div className="acc-panel" style={{width:'92%', padding:'auto 20'}}>
-              <div className="panel-heading">
-                <h3>{msg('messageCenter')}</h3>
-              </div>
-              <div className="panel-body" style={{padding:20}}>
-                <div>
-                  <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.onStatusChange}>
-                    <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
-                    <RadioButton value={MESSAGE_STATUS.read.key}>{MESSAGE_STATUS.read.value}</RadioButton>
-                  </RadioGroup>
-                  {this.renderMyButton()}
-                </div>
-                <Table columns={columns} dataSource={dataSource} style={{marginTop:20}}/>
-              </div>
-            </div>
+      <div className="acc-panel">
+        <div className="panel-heading">
+          <h3>{msg('messageCenter')}</h3>
+        </div>
+        <div className="panel-body" style={{padding:20}}>
+          <div>
+            <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.onStatusChange}>
+              <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
+              <RadioButton value={MESSAGE_STATUS.read.key}>{MESSAGE_STATUS.read.value}</RadioButton>
+            </RadioGroup>
+            {this.renderMyButton()}
           </div>
+          <Table columns={columns} dataSource={dataSource} style={{marginTop:20}}/>
         </div>
       </div>
     );
