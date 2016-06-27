@@ -342,9 +342,6 @@ export {
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
-<<<<<<< HEAD
   CMS_BILL_STATUS,
-=======
   MESSAGE_STATUS,
->>>>>>> a27446ad012dc9a91cd465b857406a6b81b3ac2e
 };
