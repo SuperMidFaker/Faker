@@ -818,7 +818,7 @@ export default class DispatchList extends React.Component {
   }
 
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

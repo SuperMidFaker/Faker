@@ -20,7 +20,10 @@ export function PortDate(props) {
     col: 8,
     field: 'i_e_port',
     rules: [{ required: true }],
-    options: formRequire.ports,
+    options: formRequire.ports.map(port => ({
+      value: port.port_code,
+      text: port.port_c_cod,
+    })),
     label: ietype === 'import' ? msg('iport') : msg('eport'),
     disabled,
     formData,
@@ -92,7 +95,7 @@ export function RelationAutoCompSelect(props) {
                 })
               } onSearch={handleSearch} onSelect={handleSelect}>
               {
-                options.map(opt => <Option key={opt.value}>{opt.value}</Option>)
+                options.map(opt => <Option key={opt.code}>{opt.code}</Option>)
               }
             </Select>
           </Col>
@@ -129,7 +132,10 @@ export function Transport(props) {
     outercol: 8,
     col: 8,
     field: 'trans_mode',
-    options: formRequire.transModes,
+    options: formRequire.transModes.map(tm => ({
+      value: tm.trans_code,
+      text: tm.trans_spec,
+    })),
     label: msg('transMode'),
     disabled,
     formData,
@@ -176,7 +182,10 @@ export function TradeRemission(props) {
     outercol: 8,
     col: 8,
     field: 'trade_mode',
-    options: formRequire.tradeModes,
+    options: formRequire.tradeModes.map(tm => ({
+      value: tm.trade_mode,
+      text: tm.trade_spec,
+    })),
     label: msg('tradeMode'),
     rules: [{ required: true }],
     disabled,
@@ -187,7 +196,10 @@ export function TradeRemission(props) {
     outercol: 8,
     col: 8,
     field: 'rm_modes',
-    options: formRequire.remissionModes,
+    options: formRequire.remissionModes.map(rm => ({
+      value: rm.rm_mode,
+      text: rm.rm_spec,
+    })),
     label: msg('rmModeName'),
     disabled,
     formData,
@@ -225,7 +237,10 @@ export function CountryAttr(props) {
     outercol: 12,
     col: 6,
     field: 'trade_country',
-    options: formRequire.tradeCountries,
+    options: formRequire.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
     label: msg('tradeCountry'),
     rules: [{ required: true, }],
     disabled,
@@ -236,7 +251,10 @@ export function CountryAttr(props) {
     outercol: 12,
     col: 6,
     field: 'depart_country',
-    options: formRequire.tradeCountries,
+    options: formRequire.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
     label: ietype === 'import' ? msg('departCountry') : msg('destinateCountry'),
     rules: [{ required: true, }],
     disabled,
@@ -256,7 +274,10 @@ export function CountryAttr(props) {
     outercol: 12,
     col: 6,
     field: 'trx_mode',
-    options: formRequire.trxModes,
+    options: formRequire.trxModes.map(tm => ({
+      value: tm.trx_mode,
+      text: tm.trx_spec,
+    })),
     label: msg('trxMode'),
     disabled,
     formData,
@@ -328,7 +349,10 @@ export function DestInvoice(props) {
     outercol: 8,
     col: 8,
     field: 'destinate_port',
-    options: formRequire.ports,
+    options: formRequire.ports.map(port => ({
+      value: port.port_code,
+      text: port.port_c_cod,
+    })),
     label: ietype === 'import' ? msg('iDestinatePort') : msg('eDestinatePort'),
     rules: [{ required: true }],
     disabled,
@@ -339,7 +363,10 @@ export function DestInvoice(props) {
     outercol: 8,
     col: 8,
     field: 'district_code',
-    options: formRequire.districts,
+    options: formRequire.districts.map(dist => ({
+      value: dist.district_code,
+      text: dist.district_name,
+    })),
     label: ietype === 'import' ? msg('iDistrict') : msg('eDistrict'),
     rules: [{ required: true }],
     disabled,
@@ -384,7 +411,10 @@ function FeeFormItem(props) {
   };
   const currencyProps = {
     field: currencyField,
-    options: formRequire.currency,
+    options: formRequire.currencies.map(curr => ({
+      value: curr.curr_code,
+      text: curr.curr_name,
+    })),
     disabled,
     formData,
     getFieldProps,
@@ -392,10 +422,10 @@ function FeeFormItem(props) {
   return (
     <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label}>
       <InputGroup>
-        <Col span="16">
+        <Col span="12">
           <FormInput {...feeProps} />
         </Col>
-        <Col span="8">
+        <Col span="12">
           <FormSelect {...currencyProps} />
         </Col>
       </InputGroup>
@@ -449,7 +479,7 @@ export function PackWeight(props) {
     col: 6,
     label: msg('packType'),
     field: 'pack_type',
-    options: formRequire.packs,
+    options: formRequire.packs, // todo params_pack table
     disabled,
     formData,
     getFieldProps,

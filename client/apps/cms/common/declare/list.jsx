@@ -18,11 +18,11 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, cookie, params }) {
-  const filter = { ...state.cmsDelcare.listFilter, declareType: params.status };
+  const filter = { ...state.cmsDeclare.listFilter, declareType: params.status };
   return dispatch(loadDelgList(cookie, {
     tenantId: state.account.tenantId,
     filter: JSON.stringify(filter),
-    pageSize: state.cmsDelcare.delgList.pageSize,
+    pageSize: state.cmsDeclare.delgList.pageSize,
     current: 1,
   }));
 }
@@ -33,8 +33,8 @@ function fetchData({ state, dispatch, cookie, params }) {
   state => ({
     tenantId: state.account.tenantId,
     aspect: state.account.aspect,
-    delgList: state.cmsDelcare.delgList,
-    listFilter: state.cmsDelcare.listFilter,
+    delgList: state.cmsDeclare.delgList,
+    listFilter: state.cmsDeclare.listFilter,
   }),
   { loadDelgList })
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -140,7 +140,7 @@ export default class DeclareList extends React.Component {
     });
   }
   render() {
-    const { aspect, delgList, intl, params, ietype } = this.props;
+    const { aspect, delgList, params, ietype } = this.props;
     this.dataSource.remotes = delgList;
     const columns = makeColumn(params.status, aspect, ietype, {}, this.msg);
     const rowSelection = {

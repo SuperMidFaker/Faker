@@ -4,7 +4,7 @@ import { Tabs, Dropdown, Menu } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgList } from 'common/reducers/cmsDeclare';
+import { loadBills, loadEntries, loadCmsParams } from 'common/reducers/cmsDeclare';
 import { setNavTitle } from 'common/reducers/navbar';
 import BillForm from './forms/billForm';
 import { format } from 'client/common/i18n/helpers';
@@ -16,7 +16,12 @@ const TabPane = Tabs.TabPane;
 const MenuItem = Menu.Item;
 const DropdownButton = Dropdown.Button;
 
-function fetchData({ state, dispatch, params }) {
+function fetchData({ dispatch, params, cookie }) {
+  const promises = [];
+  promises.push(dispatch(loadBills(cookie, params.delgNo)));
+  promises.push(dispatch(loadEntries(cookie, params.delgNo)));
+  promises.push(dispatch(loadCmsParams(cookie)));
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)
