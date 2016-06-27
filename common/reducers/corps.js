@@ -302,7 +302,7 @@ export function loadMessages(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.LOADCORPMESSAGES, actionTypes.LOADCORPMESSAGES_SUCCEED, actionTypes.LOADCORPMESSAGES_FAIL],
-      endpoint: 'v1/user/corp/messages',
+      endpoint: 'v1/user/account/messages',
       method: 'get',
       params,
       cookie
@@ -314,7 +314,7 @@ export function markMessages(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],
-      endpoint: 'v1/user/corp/message/status',
+      endpoint: 'v1/user/account/message/status',
       method: 'post',
       data: params
     }

@@ -44,9 +44,9 @@ export default [
    ['put', '/v1/user/password', changePassword],
    ['put', '/v1/user/profile', updateUserProfile],
    ['get', '/v1/admin/notexist', getUserAccount],
-   ['get', '/v1/user/corp/messages', getMessages],
-   ['post', '/v1/user/corp/message/status', updateMessageStatus],
-   ['put', '/v1/user/corp/message', sendPromptMessage]
+   ['get', '/v1/user/account/messages', getMessages],
+   ['post', '/v1/user/account/message/status', updateMessageStatus],
+   ['put', '/v1/user/account/message', sendPromptMessage]
 ];
 
 function *loginUserP() {
