@@ -57,6 +57,7 @@
     "koa-static": "^2.0.0",
     "moment": "^2.13.0",
     "mysql": "^2.11.1",
+    "oneapm": "^1.2.20",
     "react": "^0.14.8",
     "react-dom": "^0.14.8",
     "react-dropzone": "^3.5.1",
@@ -66,10 +67,10 @@
     "redux": "^3.5.2",
     "sequelize": "^3.23.3",
     "serialize-javascript": "^1.3.0",
+    "socket.io": "^1.4.8",
     "superagent": "^1.8.3",
     "warning": "^2.1.0",
-    "webpack-isomorphic-tools": "^2.3.2",
-    "oneapm": "^1.2.20"
+    "webpack-isomorphic-tools": "^2.3.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

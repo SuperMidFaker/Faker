@@ -27,9 +27,15 @@ export default class AmNavBar extends React.Component {
     curLocale: PropTypes.oneOf(['en', 'zh']),
     navTitle: PropTypes.object.isRequired
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
   handleClick = (ev) => {
     this.setState({ currentLang: ev.key });
     this.props.loadTranslation(null, ev.key);
+  }
+  handleNavigationTo(to, query) {
+    this.context.router.push({ pathname: to, query });
   }
   render() {
     const MenuItem = Menu.Item;
@@ -102,7 +108,7 @@ export default class AmNavBar extends React.Component {
                 </li>
               </Popover>
               <li className="dropdown hidden-xs">
-                <a className="dropdown-toggle" aria-expanded="false" role="button">
+                <a className="dropdown-toggle" aria-expanded="false" role="button" onClick={() => this.handleNavigationTo('/corp/messageList')}>
                   <span className="icon s7-comment"></span>
                 </a>
               </li>

@@ -43,6 +43,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <div id="mount" class="full-container">${content}</div>
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js" type="text/javascript"></script>
+  <script src="/socket.io/socket.io.js" type="text/javascript"></script>
   ${pageJs}
 </body>
 </html>`;

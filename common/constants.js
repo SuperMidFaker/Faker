@@ -292,6 +292,21 @@ const CMS_BILL_STATUS = {
   declared: 2,
 };
 
+const MESSAGE_STATUS = {
+  notRead: {
+    key: 0,
+    value: '未读'
+  },
+  read: {
+    key: 1,
+    value: '已读'
+  },
+  delete3: {
+    key: 3,
+    value: '已删除'
+  },
+};
+
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -327,5 +342,9 @@ export {
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
+<<<<<<< HEAD
   CMS_BILL_STATUS,
+=======
+  MESSAGE_STATUS,
+>>>>>>> a27446ad012dc9a91cd465b857406a6b81b3ac2e
 };

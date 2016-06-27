@@ -92,6 +92,42 @@ const messages = defineMessages({
   brandInfo: {
     id: 'corp.info.brand',
     defaultMessage: '品牌设置'
+  },
+  messageCenter: {
+    id: 'corp.messageList.messageCenter',
+    defaultMessage: '消息中心'
+  },
+  notRead: {
+    id: 'corp.messageList.notRead',
+    defaultMessage: '未读'
+  },
+  read: {
+    id: 'corp.messageList.read',
+    defaultMessage: '已读'
+  },
+  clearAll: {
+    id: 'corp.messageList.clearAll',
+    defaultMessage: '全部清空'
+  },
+  markAll: {
+    id: 'corp.messageList.markAll',
+    defaultMessage: '全部标记已读'
+  },
+  content: {
+    id: 'corp.messageList.content',
+    defaultMessage: '消息内容'
+  },
+  from_name: {
+    id: 'corp.messageList.from_name',
+    defaultMessage: '来源'
+  },
+  time: {
+    id: 'corp.messageList.time',
+    defaultMessage: '时间'
+  },
+  detail: {
+    id: 'corp.messageList.detail',
+    defaultMessage: '详情'
   }
 });
 

@@ -14,6 +14,8 @@ import {
 } from 'common/constants';
 import {__DEFAULT_PASSWORD__, SMS_TYPE, ADMIN } from '../util/constants';
 import { genJwtCookie } from '../util/jwt-kit';
+import { messages } from '../models/messages.db';
+import { sendMessage } from '../socket.io';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
@@ -41,7 +43,9 @@ export default [
    ['put', '/v1/user/personnel/status', switchPersonnelStatus],
    ['put', '/v1/user/password', changePassword],
    ['put', '/v1/user/profile', updateUserProfile],
-   ['get', '/v1/admin/notexist', getUserAccount]
+   ['get', '/v1/admin/notexist', getUserAccount],
+   ['get', '/v1/user/corp/messages', getMessages],
+   ['post', '/v1/user/corp/message/status', updateMessageStatus]
 ];
 
 function *loginUserP() {
@@ -577,6 +581,70 @@ function *updateUserProfile() {
     Result.ok(this);
   } catch (e) {
     yield mysql.rollback(trans);
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *getMessages() {
+  try {
+    const query = this.request.query;
+    const status = parseInt(query.status, 10);;
+    const loginId = parseInt(query.loginId, 10);;
+
+    let pageSize = parseInt(query.pageSize, 10);
+    let currentPage = parseInt(query.currentPage, 10);
+    const result = yield messages.findAll({
+      raw: true,
+      where:{
+        login_id: loginId,
+        status: status
+      },
+      offset: (currentPage-1) * pageSize,
+      limit: pageSize,
+      order: [
+        ['time', 'DESC']
+      ]
+    });
+    const totalCount = yield messages.count({
+      where:{
+        login_id: loginId,
+        status: status
+      }
+    });
+    Result.ok(this, {data: result, pageSize, currentPage: currentPage, totalCount, status});
+  } catch (e) {
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *updateMessageStatus() {
+  try {
+    const body = yield cobody(this);
+    console.log(body)
+    const {loginId, status} = body;
+    let result;
+    if (status === 1) {
+      result = yield messages.update({
+          status: 1
+        },
+        {where:{
+          status: 0,
+          login_id: loginId
+        } 
+      });
+    }
+    else if (status === 2) {
+      result = yield messages.update({
+          status: 2
+        },
+        {where:{
+          status: 1,
+          login_id: loginId
+        } 
+      });
+    }
+    Result.ok(this,result);
+  } catch (e) {
     Result.internalServerError(this, e.message);
   }
 }

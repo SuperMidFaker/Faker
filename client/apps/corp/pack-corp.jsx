@@ -6,6 +6,7 @@ import AmLeftSidebar from 'client/components/am-ant-leftbar';
 import { BRANCH } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
+import MessagePrompt from 'client/apps/corp/messagePrompt';
 const formatMsg = format(messages);
 
 @injectIntl
@@ -67,6 +68,7 @@ export default class CorpPack extends React.Component {
     return (
       <div className="am-wrapper am-fixed-sidebar">
         <AmNavBar />
+        <MessagePrompt />
         <div className="am-content">
           <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
           {this.props.children}

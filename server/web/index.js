@@ -2,7 +2,6 @@ import authWeixin from '../middlewares/weixin-auth';
 import loadRoute from '../middlewares/route-loader';
 import { koaJwtOptions } from '../util/jwt-kit';
 import create from '../util/koaServer';
-
 /* eslint-disable no-undef */
 create({
   public: true,
