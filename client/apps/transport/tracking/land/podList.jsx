@@ -213,9 +213,7 @@ export default class LandStatusList extends React.Component {
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
-            {formatContainerMsg(intl, 'clearSelection')}
-            </Button>
+            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
         <PreviewPanel />

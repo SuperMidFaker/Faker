@@ -81,8 +81,8 @@ function getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, aliasS, aliasSD, 
   }
   let shno = '';
   if (shipmtNo) {
-    shno = `and ${aliasS}.shipmt_no like ?`;
-    args.push(`%${shipmtNo}%`);
+    shno = `and (${aliasS}.shipmt_no like ? or ref_external_no like ?)`;
+    args.push(`%${shipmtNo}%`, `%${shipmtNo}%`);
   }
   return `${disp} ${shno}`;
 }
@@ -186,14 +186,14 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
  *
  */
 function generateUpdateClauseWithInfo(updateInfo, columns) {
-  if(Array.isArray(updateInfo)) {
+  if (Array.isArray(updateInfo)) {
     return columns.filter(key => updateInfo.some(
       info => info[key] !== null
     )).map(key => {
       return `${key} = CASE id\n` + updateInfo.map(info => `WHEN ${info.id} THEN '${info[key]}'\n`)
       .join('');
     }).join('END,\n') + 'END\n';
-  }else {
+  } else {
     return columns.filter(key => updateInfo[key] !== null).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
   }
 }
@@ -208,16 +208,17 @@ function generateUpdateClauseWithInfo(updateInfo, columns) {
  *
  */
 function generateDeleteClauseWithIds(ids) {
-  if(ids.length == 1) {
-    return `id = ${ids[0]}`
-  }else {
+  if (ids.length === 1) {
+    return `id = ${ids[0]}`;
+  } else {
     return ids.map(id => `id = ${id}`).join(' OR ');
   }
 }
 
 function genGroupBy(filter) {
   let strGroup;
-  let {type, consignerStep, consigneeStep} = filter;
+  const { type } = filter;
+  let { consignerStep, consigneeStep } = filter;
   if (type === 'consigner') {
     consigneeStep = -1;
   } else if (type === 'consignee') {
@@ -292,7 +293,7 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
-      SD.source as source, S.created_date as created_date, acpt_time,
+      SD.source as source, S.created_date as created_date, acpt_time, ref_external_no,
       effective from tms_shipments as S inner join tms_shipment_dispatch as SD
       on S.shipmt_no = SD.shipmt_no where SD.sp_tenant_id = ? and disp_status = ?
       ${clause} order by ${sorterFd} ${sortOrder} limit ?, ?`;
@@ -430,7 +431,8 @@ export default {
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id, parent_id from tms_shipment_dispatch as SD
       inner join tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
-      ${whereCond} order by disp_time desc`;
+      ${whereCond} order by disp_time desc limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
   getTrackingPodCount(tenantId, filters) {
@@ -453,7 +455,8 @@ export default {
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
-      and disp_status = 1 ${whereCond}`;
+      and disp_status = 1 ${whereCond} limit ?, ?`;
+    args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
   updateDispInfo(dispId, dispFieldValues, trans) {
@@ -527,7 +530,7 @@ export default {
 
   removeGoodsWithIds(ids) {
     const removeClause = generateDeleteClauseWithIds(ids);
-    const sql = `DELETE FROM tms_shipment_manifest WHERE ${removeClause}`
+    const sql = `DELETE FROM tms_shipment_manifest WHERE ${removeClause}`;
     return mysql.delete(sql);
   },
   getShipmtsGrouped(tenantId, filter) {

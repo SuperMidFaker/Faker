@@ -148,6 +148,11 @@ export default class AcceptList extends React.Component {
     width: 240,
     render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: this.msg('refCustomerNo'),
+    dataIndex: 'ref_external_no',
+    width: 190,
+    render: (o) => <TrimSpan text={o} />,
+  }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
     width: 80
@@ -228,7 +233,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
-    width: 100,
+    width: 110,
     sorter: true,
     render: (text, record) => record.acpt_time ?
      moment(record.acpt_time).format('MM-DD HH:mm') : ' '
@@ -407,13 +412,11 @@ export default class AcceptList extends React.Component {
           </div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2600, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2800, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
-            {formatContainerMsg(intl, 'clearSelection')}
-            </Button>
+            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
         <AccepterModal reload={this.handleTableLoad} />
