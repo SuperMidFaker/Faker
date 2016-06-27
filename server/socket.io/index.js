@@ -1,36 +1,34 @@
-import { messageRecords } from '../models/messages.db';
-let corp_io;
+import { messages } from '../models/messages.db';
 
-function initialize(io) {
-	corp_io = io.of('/corp');
-	corp_io.on('connection', (socket) => {
-		socket.on('room', (data) => {
-			socket.join(String(data.tenantId));
+class SocketIO {
+	static initialize(io) {
+		if (!this.instance) {
+			this.instance = io;
+		}
+		this.instance.on('connection', (socket) => {
+			socket.on('room', (data) => {
+				socket.join(String(data.tenantId));
+			});
 		});
-	});
+	}
+	static Instance() {
+		return this.instance;
+	}
+	/*
+		from:
+			from.tenant_id,
+			from.login_id,
+			from.name,
+		to:
+			to.tenant_id,
+			to.login_ids:[]
+		msg:
+			msg.content: '',
+			msg.logo: '',
+			msg.url: ''
+		
+	*/
 }
-
-/*
-	from:
-	{
-		tenant_id,
-		login_id,
-		name,
-	}
-	to:
-	{
-		tenant_id,
-		login_ids:[]
-	}
-	msg:
-	{
-		content: '',
-		logo: '',
-		url: ''
-	}
-	
-*/
-
 function sendMessage(from, to, msg) {
 	if (!from) {
 		throw new Error('params [from] was lost!');
@@ -53,15 +51,12 @@ function sendMessage(from, to, msg) {
     logo: msg.logo,
     url: msg.url,
 	}
-	corp_io.to(String(to.tenant_id)).emit('message',data);
+	SocketIO.Instance().of('/').to(String(to.tenant_id)).emit('message',data);
 	for (let i = 0; i < to.login_ids.length; i++) {
 		recordMessage({...data, login_id: to.login_ids[i], status: 0, time: new Date()});
 	}
 }
-
 function recordMessage(data) {
-	messageRecords.create(data)
+	messages.create(data)
 }
-
-module.exports.initialize = initialize;
-module.exports.sendMessage = sendMessage;
+export { SocketIO, sendMessage};

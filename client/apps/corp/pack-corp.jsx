@@ -68,7 +68,7 @@ export default class CorpPack extends React.Component {
     return (
       <div className="am-wrapper am-fixed-sidebar">
         <AmNavBar />
-        <MessagePrompt />
+        <MessagePrompt/>
         <div className="am-content">
           <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
           {this.props.children}

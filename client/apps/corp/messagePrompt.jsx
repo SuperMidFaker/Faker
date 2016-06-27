@@ -4,6 +4,7 @@ import { Button, notification } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import io from 'socket.io/node_modules/socket.io-client';
 
 const formatMsg = format(messages);
 
@@ -22,7 +23,7 @@ export default class MessagePrompt extends React.Component {
     router: PropTypes.object.isRequired
   }
   componentDidMount() {
-    const socket = io.connect(window.location.host + '/corp');
+    const socket = io.connect();
     socket.on('connect', () => {
       const {tenantId, loginId} = this.props;
       socket.emit('room', {tenantId, loginId});
@@ -70,6 +71,6 @@ export default class MessagePrompt extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   render() {
-    return <div></div>;
+    return null;
   }
 }

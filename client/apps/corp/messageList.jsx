@@ -89,7 +89,6 @@ export default class MessageList extends React.Component {
     const dayC = diffValue / (24 * 60 * 60 * 1000);
     const hourC = diffValue / (60 * 60 * 1000);
     const minC = diffValue / (60 * 1000);
-    const secC = diffValue / 1000;
     let result = '';
     if (monthC >= 1) {
       result = parseInt(monthC, 10) + ' 月前';
@@ -161,7 +160,7 @@ export default class MessageList extends React.Component {
     return (
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />
-        <MessagePrompt />
+        <MessagePrompt/>
         <div className="am-content">
           <div className="main-content">
             <div className="acc-panel" style={{width:'92%', padding:'auto 20'}}>
