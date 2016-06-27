@@ -15,6 +15,7 @@ import {
 import {__DEFAULT_PASSWORD__, SMS_TYPE, ADMIN } from '../util/constants';
 import { genJwtCookie } from '../util/jwt-kit';
 import { messages } from '../models/messages.db';
+import { sendMessage } from '../socket.io';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
