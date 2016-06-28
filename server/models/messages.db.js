@@ -13,8 +13,9 @@ export const messages = sequelize.define('sso_messages', {
   from_login_id: INTEGER,
   from_name: STRING,
   content: STRING,
+  url: STRING,
   status: INTEGER,
-  readTime: DATE,
+  read_time: DATE,
   time: DATE
 }, {
     freezeTableName: true

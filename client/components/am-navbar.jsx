@@ -9,6 +9,7 @@ import { loadTranslation } from '../../common/reducers/intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
+import MessagePrompt from './messagePrompt';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 
@@ -108,7 +109,7 @@ export default class AmNavBar extends React.Component {
                 </li>
               </Popover>
               <li className="dropdown hidden-xs">
-                <a className="dropdown-toggle" aria-expanded="false" role="button" onClick={() => this.handleNavigationTo('/corp/messageList')}>
+                <a className="dropdown-toggle" aria-expanded="false" role="button" onClick={() => this.handleNavigationTo('/account/messageList')}>
                   <span className="icon s7-comment"></span>
                 </a>
               </li>
@@ -131,6 +132,7 @@ export default class AmNavBar extends React.Component {
             </ul>
           </div>
         </div>
+        <MessagePrompt/>
       </nav>);
   }
 }

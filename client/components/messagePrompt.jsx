@@ -4,6 +4,7 @@ import { Button, notification } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import io from 'socket.io/node_modules/socket.io-client';
 
 const formatMsg = format(messages);
 
@@ -13,7 +14,8 @@ const formatMsg = format(messages);
     return {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId
-}})
+  };
+})
 export default class MessagePrompt extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -22,26 +24,28 @@ export default class MessagePrompt extends React.Component {
     router: PropTypes.object.isRequired
   }
   componentDidMount() {
-    const socket = io.connect(window.location.host + '/corp');
+    const socket = io.connect();
     socket.on('connect', () => {
       const {tenantId, loginId} = this.props;
       socket.emit('room', {tenantId, loginId});
     });
     socket.on('message', (data) => {
-      this.notif(data.from_name, {
+      this.notif(data.title, {
         body: data.content,
         icon: data.logo,
         url: data.url
       });
     });
-  }
-  notif(title, data) {
-    if (Notification) {
+    if (Notification && Notification.permission != 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
             Notification.permission = status;
         }
       });
+    }
+  }
+  notif(title, data) {
+    if (Notification && Notification.permission === 'granted') {
       const n = new Notification(title, data);
       n.onclick = () => {
         this.handleNavigationTo(data.url);
@@ -70,6 +74,6 @@ export default class MessagePrompt extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   render() {
-    return <div></div>;
+    return null;
   }
 }

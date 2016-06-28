@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { Table, Button, Radio } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import AmNavBar from 'client/components/am-navbar';
 import { MESSAGE_STATUS } from 'common/constants';
-import MessagePrompt from 'client/apps/corp/messagePrompt';
-import { loadMessages, markMessages } from 'common/reducers/corps';
+import { loadMessages, markMessages, markMessage } from 'common/reducers/corps';
+import './acc.less';
 const formatMsg = format(messages);
 
 const RadioButton = Radio.Button;
@@ -31,26 +32,33 @@ function fetchData({state, dispatch, cookie}) {
     messages: state.corps.messages,
     loginId: state.account.loginId
   }),
-  { loadMessages, markMessages }
+  { loadMessages, markMessages, markMessage }
 )
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
+  dispatch(setNavTitle({
+    depth: 1
+  }));
+})
+
 export default class MessageList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loadMessages: PropTypes.func.isRequired,
-    markMessages: PropTypes.func.isRequired
+    markMessages: PropTypes.func.isRequired,
+    markMessage: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
-  handleNavigationTo = (to, query) => {
-    this.context.router.push({ pathname: to, query });
-  }
-  renderColumnText(status, text) {
+  renderColumnText(status, text, record) {
     let style = {};
     if (status === MESSAGE_STATUS.read.key) {
       style = {color: '#CCC'};
     }
-    return <span style={style}>{text}</span>;
+    return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
   }
   onStatusChange = (e) => {
     this.props.messages.status = e.target.value;
@@ -64,12 +72,19 @@ export default class MessageList extends React.Component {
     this.props.markMessages({loginId: this.props.loginId, status: 2});
     this.handleLoadMessages(1);
   }
+  readMessage = (record) => {
+    this.props.markMessage({
+      id: record.id,
+      status: 1,
+    });
+    this.handleNavigationTo(record.url);
+  }
   handleLoadMessages = (status) => {
     this.props.loadMessages(null, {
       loginId: this.props.loginId,
       pageSize: this.props.messages.pageSize,
       currentPage: this.props.messages.currentPage,
-      status: status
+      status
     });
   }
   renderMyButton() {
@@ -89,22 +104,24 @@ export default class MessageList extends React.Component {
     const dayC = diffValue / (24 * 60 * 60 * 1000);
     const hourC = diffValue / (60 * 60 * 1000);
     const minC = diffValue / (60 * 1000);
-    const secC = diffValue / 1000;
     let result = '';
     if (monthC >= 1) {
-      result = parseInt(monthC, 10) + ' 月前';
+      result = `${monthC.toFixed(0)} 月前`;
     } else if (weekC >= 1) {
-      result = parseInt(weekC, 10) + ' 周前';
+      result = `${weekC.toFixed(0)} 周前`;
     } else if (dayC >= 1) {
-      result = parseInt(dayC, 10) + ' 天前';
+      result = `${dayC.toFixed(0)} 天前`;
     } else if (hourC >= 1) {
-      result = parseInt(hourC, 10) + ' 小时前';
-    } else if (minC> 1) {
-      result = parseInt(minC, 10) + ' 分钟前';
+      result = `${hourC.toFixed(0)} 小时前`;
+    } else if (minC > 1) {
+      result = `${minC.toFixed(0)} 分钟前`;
     } else {
       result = '刚刚';
     }
     return result;
+  }
+  handleNavigationTo = (to, query) => {
+    this.context.router.push({ pathname: to, query });
   }
   render() {
     const { intl } = this.props;
@@ -114,12 +131,12 @@ export default class MessageList extends React.Component {
         title: msg('content'),
         dataIndex: 'content',
         width: '70%',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text, record)
       }, {
         title: msg('from_name'),
         dataIndex: 'from_name',
         width: '14%',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text, record)
       }, {
         title: msg('time'),
         dataIndex: 'time',
@@ -159,27 +176,19 @@ export default class MessageList extends React.Component {
       remotes: this.props.messages
     });
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <MessagePrompt />
-        <div className="am-content">
-          <div className="main-content">
-            <div className="acc-panel" style={{width:'92%', padding:'auto 20'}}>
-              <div className="panel-heading">
-                <h3>{msg('messageCenter')}</h3>
-              </div>
-              <div className="panel-body" style={{padding:20}}>
-                <div>
-                  <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.onStatusChange}>
-                    <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
-                    <RadioButton value={MESSAGE_STATUS.read.key}>{MESSAGE_STATUS.read.value}</RadioButton>
-                  </RadioGroup>
-                  {this.renderMyButton()}
-                </div>
-                <Table columns={columns} dataSource={dataSource} style={{marginTop:20}}/>
-              </div>
-            </div>
+      <div className="acc-panel">
+        <div className="panel-heading">
+          <h3>{msg('messageCenter')}</h3>
+        </div>
+        <div className="panel-body" style={{padding:20}}>
+          <div>
+            <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.onStatusChange}>
+              <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
+              <RadioButton value={MESSAGE_STATUS.read.key}>{MESSAGE_STATUS.read.value}</RadioButton>
+            </RadioGroup>
+            {this.renderMyButton()}
           </div>
+          <Table columns={columns} dataSource={dataSource} style={{marginTop:20}}/>
         </div>
       </div>
     );

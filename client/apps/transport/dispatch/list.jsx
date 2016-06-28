@@ -55,6 +55,8 @@ function fetch({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    avatar: state.account.profile.avatar,
     shipmentlist: state.transportDispatch.shipmentlist,
     filters: state.transportDispatch.filters,
     loading: state.transportDispatch.loading,
@@ -541,7 +543,12 @@ export default class DispatchList extends React.Component {
     const list = [];
     shipmentlist.data.forEach(s => {
       if (selectedRowKeys.indexOf(s.key) > -1) {
-        list.push({dispId: s.key, shipmtNo: s.shipmt_no, parentId: s.parent_id});
+        list.push({dispId: s.key,
+          shipmtNo: s.shipmt_no,
+          parentId: s.parent_id,
+          sp_tenant_id: s.sp_tenant_id,
+          sr_name: shipmt.sr_name,
+        });
       }
     });
 
@@ -553,9 +560,11 @@ export default class DispatchList extends React.Component {
         if (count === 0) {
           return;
         }
-        const { tenantId } = this.props;
+        const { tenantId, loginId, avatar } = this.props;
         this.props.doSend(null, {
           tenantId,
+          loginId,
+          avatar,
           list: JSON.stringify(list)
         }).then(result => {
           if (result.error) {
@@ -578,11 +587,15 @@ export default class DispatchList extends React.Component {
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
-        const { tenantId } = this.props;
+        const { tenantId, loginId, avatar } = this.props;
         this.props.doSend(null, {
           tenantId,
+          loginId,
+          avatar,
           list: JSON.stringify([{dispId: shipmt.key,
           shipmtNo: shipmt.shipmt_no,
+          sp_tenant_id: shipmt.sp_tenant_id,
+          sr_name: shipmt.sr_name,
           parentId: shipmt.parent_id}])
         }).then(result => {
           if (result.error) {

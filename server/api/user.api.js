@@ -15,7 +15,7 @@ import {
 import {__DEFAULT_PASSWORD__, SMS_TYPE, ADMIN } from '../util/constants';
 import { genJwtCookie } from '../util/jwt-kit';
 import { messages } from '../models/messages.db';
-import { sendMessage } from '../socket.io';
+import { sendMessage }from '../socket.io';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
@@ -44,8 +44,10 @@ export default [
    ['put', '/v1/user/password', changePassword],
    ['put', '/v1/user/profile', updateUserProfile],
    ['get', '/v1/admin/notexist', getUserAccount],
-   ['get', '/v1/user/corp/messages', getMessages],
-   ['post', '/v1/user/corp/message/status', updateMessageStatus]
+   ['get', '/v1/user/account/messages', getMessages],
+   ['post', '/v1/user/account/messages/status', updateMessagesStatus],
+   ['post', '/v1/user/account/message/status', updateMessageStatus],
+   ['put', '/v1/user/account/message', sendPromptMessage]
 ];
 
 function *loginUserP() {
@@ -617,15 +619,15 @@ function *getMessages() {
   }
 }
 
-function *updateMessageStatus() {
+function *updateMessagesStatus() {
   try {
     const body = yield cobody(this);
-    console.log(body)
     const {loginId, status} = body;
     let result;
     if (status === 1) {
       result = yield messages.update({
-          status: 1
+          status: 1,
+          read_time: new Date()
         },
         {where:{
           status: 0,
@@ -644,6 +646,35 @@ function *updateMessageStatus() {
       });
     }
     Result.ok(this,result);
+  } catch (e) {
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *updateMessageStatus() {
+  try {
+    const body = yield cobody(this);
+    const {id, status} = body;
+    let result = yield messages.update({
+        status: status,
+        read_time: new Date()
+      },
+      {where:{
+        id: id
+      } 
+    });
+    Result.ok(this,result);
+  } catch (e) {
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *sendPromptMessage() {
+  try {
+    const body = yield cobody(this);
+    const {from, to, msg} = body;
+    sendPromptMessage(from,to,msg);
+    Result.ok(this);
   } catch (e) {
     Result.internalServerError(this, e.message);
   }

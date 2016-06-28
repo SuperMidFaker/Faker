@@ -1,45 +1,40 @@
-import { messageRecords } from '../models/messages.db';
-let corp_io;
+import { messages } from '../models/messages.db';
+import { TenantUser } from '../models/tenant-user.db';
 
-function initialize(io) {
-	corp_io = io.of('/corp');
-	corp_io.on('connection', (socket) => {
-		socket.on('room', (data) => {
-			socket.join(String(data.tenantId));
+class SocketIO {
+	static initialize(io) {
+		if (!this.instance) {
+			this.instance = io;
+		}
+		this.instance.on('connection', (socket) => {
+			socket.on('room', (data) => {
+				socket.join(String(data.tenantId));
+			});
 		});
-	});
+	}
+	static Instance() {
+		return this.instance;
+	}
 }
-
 /*
-	from:
-	{
-		tenant_id,
-		login_id,
-		name,
-	}
-	to:
-	{
-		tenant_id,
-		login_ids:[]
-	}
-	msg:
-	{
-		content: '',
-		logo: '',
-		url: ''
-	}
-	
-*/
-
-function sendMessage(from, to, msg) {
+		from:
+			from.tenant_id,
+			from.login_id,
+			from.name,
+		to:
+			to.tenant_id,
+		msg:
+			msg.content: '',
+			msg.logo: '',
+			msg.url: ''
+		
+	*/
+function * sendMessage(from, to, msg) {
 	if (!from) {
 		throw new Error('params [from] was lost!');
 	}
 	if (!to) {
 		throw new Error('params [to] was lost!');
-	}
-	if (!to.login_ids) {
-		throw new Error('params [to] was incorrect! need [to.login_ids]');
 	}
 	if(!msg) {
 		throw new Error('params [msg] was lost!');
@@ -49,19 +44,45 @@ function sendMessage(from, to, msg) {
 		from_tenant_id: from.tenant_id,
 		from_login_id: from.login_id,
 		from_name: from.name,
+		title: msg.title,
     content: msg.content,
     logo: msg.logo,
     url: msg.url,
 	}
-	corp_io.to(String(to.tenant_id)).emit('message',data);
-	for (let i = 0; i < to.login_ids.length; i++) {
-		recordMessage({...data, login_id: to.login_ids[i], status: 0, time: new Date()});
+	SocketIO.Instance().of('/').to(String(to.tenant_id)).emit('message',data);
+	const result = yield TenantUser.findAll({
+    raw: true,
+    where:{
+      $and: [
+	      {
+	      	$or: [
+	      		{
+	      			parent_tenant_id: to.tenant_id,
+	      		},
+	      		{
+	      			parent_tenant_id: 0,
+	      		}
+	      	]
+	      },
+	      {
+	      	$or: [
+	      		{
+	      			user_type: 'manager',
+	      		},
+	      		{
+	      			user_type: 'owner',
+	      		}
+	      	]
+	      }
+      ]
+    }
+  });
+  const promises = [];
+	for (let i = 0; i < result.length; i++) {
+		const rec = {...data, login_id: result[i].login_id, status: 0, time: new Date()};
+		promises.push(messages.create(rec));
+		
 	}
+	return yield promises;
 }
-
-function recordMessage(data) {
-	messageRecords.create(data)
-}
-
-module.exports.initialize = initialize;
-module.exports.sendMessage = sendMessage;
+export { SocketIO, sendMessage};

@@ -147,6 +147,10 @@ const messages = defineMessages({
   appEditorSetCol: {
     id: 'component.appEditor.setCol',
     defaultMessage: '开通状态'
+  },
+  detail: {
+    id: 'corp.messageList.detail',
+    defaultMessage: '详情'
   }
 });
 
