@@ -14,7 +14,8 @@ const formatMsg = format(messages);
     return {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId
-}})
+  };
+})
 export default class MessagePrompt extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

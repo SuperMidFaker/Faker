@@ -1,4 +1,5 @@
 import { messages } from '../models/messages.db';
+import { TenantUser } from '../models/tenant-user.db';
 
 class SocketIO {
 	static initialize(io) {
@@ -14,30 +15,26 @@ class SocketIO {
 	static Instance() {
 		return this.instance;
 	}
-	/*
+}
+/*
 		from:
 			from.tenant_id,
 			from.login_id,
 			from.name,
 		to:
 			to.tenant_id,
-			to.login_ids:[]
 		msg:
 			msg.content: '',
 			msg.logo: '',
 			msg.url: ''
 		
 	*/
-}
-function sendMessage(from, to, msg) {
+function * sendMessage(from, to, msg) {
 	if (!from) {
 		throw new Error('params [from] was lost!');
 	}
 	if (!to) {
 		throw new Error('params [to] was lost!');
-	}
-	if (!to.login_ids) {
-		throw new Error('params [to] was incorrect! need [to.login_ids]');
 	}
 	if(!msg) {
 		throw new Error('params [msg] was lost!');
@@ -52,11 +49,39 @@ function sendMessage(from, to, msg) {
     url: msg.url,
 	}
 	SocketIO.Instance().of('/').to(String(to.tenant_id)).emit('message',data);
-	for (let i = 0; i < to.login_ids.length; i++) {
-		recordMessage({...data, login_id: to.login_ids[i], status: 0, time: new Date()});
+	const result = yield TenantUser.findAll({
+    raw: true,
+    where:{
+      $and: [
+	      {
+	      	$or: [
+	      		{
+	      			parent_tenant_id: to.tenant_id,
+	      		},
+	      		{
+	      			parent_tenant_id: 0,
+	      		}
+	      	]
+	      },
+	      {
+	      	$or: [
+	      		{
+	      			user_type: 'manager',
+	      		},
+	      		{
+	      			user_type: 'owner',
+	      		}
+	      	]
+	      }
+      ]
+    }
+  });
+  const promises = [];
+	for (let i = 0; i < result.length; i++) {
+		const rec = {...data, login_id: result[i].login_id, status: 0, time: new Date()};
+		promises.push(messages.create(rec));
+		
 	}
-}
-function recordMessage(data) {
-	messages.create(data)
+	return yield promises;
 }
 export { SocketIO, sendMessage};

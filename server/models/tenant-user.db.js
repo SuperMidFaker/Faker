@@ -1,3 +1,5 @@
+import { STRING, INTEGER, DATE, TEXT, NOW } from 'sequelize';
+import sequelize from './sequelize';
 import mysql from '../util/mysql';
 function putInComposition(f, args) {
   let sql = '';
@@ -153,3 +155,20 @@ export default {
     return mysql.update(sql, args, trans);
   }
 }
+
+export const TenantUser = sequelize.define('sso_tenant_users', {
+  user_id: {
+    type: INTEGER,
+    primaryKey: true
+  },
+  tenant_id: INTEGER,
+  parent_tenant_id: INTEGER,
+  login_id: INTEGER,
+  name: STRING,
+  department: STRING,
+  position: STRING,
+  user_type: STRING,
+  creater_login_id: INTEGER,
+  status: INTEGER,
+  created_date: DATE,
+});

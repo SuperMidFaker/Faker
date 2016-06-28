@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
   'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
+  'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
   'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL'
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
@@ -150,6 +151,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, messages };
     }
     case actionTypes.MARK_MESSAGE_SUCCEED: {
+      return state;
+    }case actionTypes.MARK_MESSAGES_SUCCEED: {
       return state;
     }
     default:
@@ -311,6 +314,17 @@ export function loadMessages(cookie, params) {
 }
 
 export function markMessages(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.MARK_MESSAGES, actionTypes.MARK_MESSAGES_SUCCEED, actionTypes.MARK_MESSAGES_FAIL],
+      endpoint: 'v1/user/account/messages/status',
+      method: 'post',
+      data: params
+    }
+  };
+}
+
+export function markMessage(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],

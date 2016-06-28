@@ -6,7 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { MESSAGE_STATUS } from 'common/constants';
-import { loadMessages, markMessages } from 'common/reducers/corps';
+import { loadMessages, markMessages, markMessage } from 'common/reducers/corps';
 import './acc.less';
 const formatMsg = format(messages);
 
@@ -30,13 +30,14 @@ function fetchData({state, dispatch, cookie}) {
     messages: state.corps.messages,
     loginId: state.account.loginId
   }),
-  { loadMessages, markMessages }
+  { loadMessages, markMessages, markMessage }
 )
 export default class MessageList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loadMessages: PropTypes.func.isRequired,
-    markMessages: PropTypes.func.isRequired
+    markMessages: PropTypes.func.isRequired,
+    markMessage: PropTypes.func.isRequired
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
@@ -44,12 +45,21 @@ export default class MessageList extends React.Component {
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
   }
-  renderColumnText(status, text) {
+  readMessage = (record) => {
+    this.props.markMessage({
+      id: record.id,
+      status: 1,
+    });
+    this.handleNavigationTo(record.url);
+  }
+  renderColumnText(status, text, record) {
     let style = {};
     if (status === MESSAGE_STATUS.read.key) {
       style = {color: '#CCC'};
+      return <span style={style}>{text}</span>;
+    } else {
+      return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
     }
-    return <span style={style}>{text}</span>;
   }
   onStatusChange = (e) => {
     this.props.messages.status = e.target.value;
@@ -112,12 +122,12 @@ export default class MessageList extends React.Component {
         title: msg('content'),
         dataIndex: 'content',
         width: '70%',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text, record)
       }, {
         title: msg('from_name'),
         dataIndex: 'from_name',
         width: '14%',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text, record)
       }, {
         title: msg('time'),
         dataIndex: 'time',

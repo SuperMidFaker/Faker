@@ -45,6 +45,7 @@ export default [
    ['put', '/v1/user/profile', updateUserProfile],
    ['get', '/v1/admin/notexist', getUserAccount],
    ['get', '/v1/user/account/messages', getMessages],
+   ['post', '/v1/user/account/messages/status', updateMessagesStatus],
    ['post', '/v1/user/account/message/status', updateMessageStatus],
    ['put', '/v1/user/account/message', sendPromptMessage]
 ];
@@ -618,14 +619,15 @@ function *getMessages() {
   }
 }
 
-function *updateMessageStatus() {
+function *updateMessagesStatus() {
   try {
     const body = yield cobody(this);
     const {loginId, status} = body;
     let result;
     if (status === 1) {
       result = yield messages.update({
-          status: 1
+          status: 1,
+          read_time: new Date()
         },
         {where:{
           status: 0,
@@ -643,6 +645,24 @@ function *updateMessageStatus() {
         } 
       });
     }
+    Result.ok(this,result);
+  } catch (e) {
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *updateMessageStatus() {
+  try {
+    const body = yield cobody(this);
+    const {id, status} = body;
+    let result = yield messages.update({
+        status: status,
+        read_time: new Date()
+      },
+      {where:{
+        id: id
+      } 
+    });
     Result.ok(this,result);
   } catch (e) {
     Result.internalServerError(this, e.message);
