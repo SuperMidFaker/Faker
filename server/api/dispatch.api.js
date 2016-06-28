@@ -21,10 +21,12 @@ import {
   SHIPMENT_TRACK_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
   VEHICLE_TYPES,
-  VEHICLE_LENGTH_TYPES
+  VEHICLE_LENGTH_TYPES,
+  WELOGIX_LOGO_URL,
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS } from '../util/constants';
 import parse from 'co-body';
+import { sendMessage }from '../socket.io';
 /**
  * filters => {
  *   status: waiting(待分配)/dispatching(待发送)/dispatched(已发送)
@@ -214,11 +216,11 @@ function *doDispatch() {
  * 分配承运商后确认分配
  */
 function *doSend() {
-  const { tenantId, list } = yield parse(this.req);
+  const { tenantId, loginId, list } = yield parse(this.req);
   const alist = JSON.parse(list);
   const arr = [];
   alist.forEach(t => {
-    const { dispId, shipmtNo, parentId } = t;
+    const { dispId, shipmtNo, parentId, sp_tenant_id, sr_name, avatar } = t;
     // 更新之前dispatch记录的状态和时间
     const upParentStatus = {
       status: SHIPMENT_TRACK_STATUS.undelivered,
@@ -241,7 +243,20 @@ function *doSend() {
       }
     };
 
-    arr.push(shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus));
+    const s = sendMessage({
+      tenant_id: tenantId,
+      login_id: loginId,
+      name:'新运单通知',
+    },{
+      namespace: '/',
+      tenant_id: sp_tenant_id,
+    },{
+      content: sr_name + '下单了，快去看看吧！订单号：' + shipmtNo,
+      logo: avatar || WELOGIX_LOGO_URL,
+      url: '/transport/acceptance'
+    });
+
+    arr.push(shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus), s);
   });
 
   yield arr;

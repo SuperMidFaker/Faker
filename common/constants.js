@@ -301,6 +301,7 @@ const MESSAGE_STATUS = {
   },
 };
 
+const WELOGIX_LOGO_URL = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/welogix-badge.png';
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -337,4 +338,5 @@ export {
   RELATION_TYPES,
   I_E_TYPES,
   MESSAGE_STATUS,
+  WELOGIX_LOGO_URL,
 };
