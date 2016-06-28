@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import RowUpdater from './rowUpater';
+import RowUpdater from './rowUpdater';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 export default function makeColumn(type, aspect, ietype, handlers, msg) {
   const columns = [{

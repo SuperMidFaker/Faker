@@ -17,6 +17,10 @@ const formatContainerMsg = format(containerMessages);
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+function getRowKey(row) {
+  return row.delg_no;
+}
+
 function fetchData({ state, dispatch, cookie, params }) {
   const filter = { ...state.cmsDeclare.listFilter, declareType: params.status };
   return dispatch(loadDelgList(cookie, {
@@ -165,7 +169,7 @@ export default class DeclareList extends React.Component {
           <div className="panel-header"></div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
-              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }} rowKey={getRowKey}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

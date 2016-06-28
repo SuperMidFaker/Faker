@@ -72,6 +72,20 @@ export const BillHeadDao = sequelize.define('cms_delegation_bill_head', {
     type: DATE,
     defaultValue: NOW,
   },
+}, {
+  classMethods: {
+    genBillNo(serialNo, ietype) {
+      const code = ietype === 'import' ? 'IL' : 'EL';
+      const year = String(new Date().getFullYear()).slice(-2);
+      const serial = String(parseInt(serialNo, 10) + 1);
+      const buf = new Buffer(10);
+      buf.fill('0');
+      buf.write(code);
+      buf.write(year, 2);
+      buf.write(serial, 10 - serial.length);
+      return buf.toString();
+    }
+  }
 });
 
 export const BillBodyDao = sequelize.define('cms_delegation_bill_list', {

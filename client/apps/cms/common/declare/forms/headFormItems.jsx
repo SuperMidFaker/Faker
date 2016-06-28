@@ -78,16 +78,16 @@ export function RelationAutoCompSelect(props) {
   }
   function handleSelect(value) {
     if (onSelect) {
-      onSelect(value);
+      onSelect(codeField, nameField, value);
     }
   }
   return (
     <Col span="12">
       <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
-        <InputGroup>
+        <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
             <Select combobox showArrow={false} filterOption={false} disabled={disabled}
-              defaultActiveFirstOption={false}
+              defaultActiveFirstOption={false} allowClear
               placeholder={msg('relationCodeSearch')} {
                 ...getFieldProps(codeField, {
                   rules: codeRules,
@@ -348,7 +348,7 @@ export function DestInvoice(props) {
   const destPortProps = {
     outercol: 8,
     col: 8,
-    field: 'destinate_port',
+    field: 'dest_port',
     options: formRequire.ports.map(port => ({
       value: port.port_code,
       text: port.port_c_cod,
@@ -489,7 +489,7 @@ export function PackWeight(props) {
     col: 10,
     field: 'gross_wt',
     label: msg('grosswt'),
-    required: [{ required: true }],
+    rules: [{ required: true }],
     disabled,
     formData,
     getFieldProps,
@@ -499,7 +499,7 @@ export function PackWeight(props) {
     col: 10,
     field: 'net_wt',
     label: msg('netwt'),
-    required: [{ required: true }],
+    rules: [{ required: true }],
     disabled,
     formData,
     getFieldProps,

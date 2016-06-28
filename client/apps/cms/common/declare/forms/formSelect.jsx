@@ -25,9 +25,9 @@ export default function FormInput(props) {
 }
 
 FormInput.propTypes = {
-  outercol: PropTypes.number.isRequired,
+  outercol: PropTypes.number,
   label: PropTypes.string,
-  col: PropTypes.number.isRequired,
+  col: PropTypes.number,
   field: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,

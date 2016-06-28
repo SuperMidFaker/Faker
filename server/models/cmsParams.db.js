@@ -54,3 +54,10 @@ export const CmsParamCurrency = sequelize.define('cms_param_currency', {
   curr_symb: STRING,
   curr_name: STRING,
 });
+
+export const CmsParamUnit = sequelize.define('cms_param_unit', {
+  conv_cod: STRING,
+  conv_ratio: STRING,
+  unit_code: STRING,
+  unit_name: STRING,
+});

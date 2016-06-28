@@ -7,6 +7,8 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_ENTRIES', 'LOAD_ENTRIES_SUCCEED', 'LOAD_ENTRIES_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'LOAD_COMPREL', 'LOAD_COMPREL_SUCCEED', 'LOAD_COMPREL_FAIL',
+  'ADD_NEW_BILL_BODY', 'DEL_BILL_BODY', 'EDIT_BILL_BODY',
+  'SAVE_BILL', 'SAVE_BILL_SUCCEED', 'SAVE_BILL_FAIL',
 ]);
 
 const initialState = {
@@ -28,8 +30,14 @@ const initialState = {
   },
   billBody: [
   ],
+  billBodyCreated: [],
+  billBodyDeleted: [],
+  billBodyEdited: [],
   entries: [
   ],
+  entryBodyCreated: [],
+  entryBodyDeleted: [],
+  entryBodyEdited: [],
   params: {
     customs: [],
     tradeModes: [],
@@ -62,6 +70,27 @@ export default function reducer(state = initialState, action) {
       return { ...state, entries: action.result.data };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
+    case actionTypes.ADD_NEW_BILL_BODY: {
+      const created = [ ...state.billBodyCreated ];
+      let found = false;
+      for (let i = 0; i < created.length; i++) {
+        // 已经添加对象的修改
+        if (created[i].list_g_no === action.data.list_g_no) {
+          created[i] = { ...action.data };
+          created[i].id = undefined;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        created.push(action.data);
+      }
+      return { ...state, billBodyCreated: created };
+    }
+    case actionTypes.DEL_BILL_BODY:
+      return { ...state, billBodyDeleted: [ ...state.billBodyDeleted, action.data ]};
+    case actionTypes.EDIT_BILL_BODY:
+      return { ...state, billBodyEdited: [ ...state.billBodyEdited, action.data ]};
     default:
       return state;
   }
@@ -141,6 +170,42 @@ export function loadCompRelation(type, ietype, tenantId, code) {
       endpoint: 'v1/cms/declare/comprelation',
       method: 'get',
       params: { type, ietype, code, tenantId },
+    },
+  };
+}
+
+export function addNewBillBody(newBody) {
+  return {
+    type: actionTypes.ADD_NEW_BILL_BODY,
+    data: newBody,
+  };
+}
+
+export function delBillBody(bodyId) {
+  return {
+    type: actionTypes.DEL_BILL_BODY,
+    data: bodyId,
+  };
+}
+
+export function editBillBody(body) {
+  return {
+    type: actionTypes.EDIT_BILL_BODY,
+    data: body,
+  };
+}
+
+export function saveBill(head, newBodys, editBodys, delBodys, ietype, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_BILL,
+        actionTypes.SAVE_BILL_SUCCEED,
+        actionTypes.SAVE_BILL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/bill',
+      method: 'post',
+      data: { head, newBodys, editBodys, delBodys, ietype, loginId },
     },
   };
 }

@@ -12,7 +12,8 @@ export default function FormInput(props) {
       <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
         hasFeedback={hasFeedback} required={required}>
         <Input type={type} disabled={disabled} placeholder={placeholder}
-          {...getFieldProps(field, { rules, initialValue: formData && formData[field],
+          {...getFieldProps(field, { rules, initialValue:
+            formData && formData[field] && String(formData[field]),
           ...fieldProps })}
         />
       </FormItem>
@@ -21,9 +22,9 @@ export default function FormInput(props) {
 }
 
 FormInput.propTypes = {
-  outercol: PropTypes.number.isRequired,
+  outercol: PropTypes.number,
   label: PropTypes.string,
-  col: PropTypes.number.isRequired,
+  col: PropTypes.number,
   field: PropTypes.string,
   type: PropTypes.string,
   placeholder: PropTypes.string,

@@ -1,10 +1,10 @@
-// import cobody from 'co-body';
+ import cobody from 'co-body';
 import { Delegation, Dispatch } from '../models/cmsDelegation.db';
 import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../models/cmsbillEntry.db';
 import {
   CmsParamCustomsDao, CmsParamTradeDao, CmsParamTransModeDao,
   CmsParamTrxDao, CmsParamCountry, CmsParamRemission, CmsParamPorts,
-  CmsParamDistricts, CmsParamCurrency,
+  CmsParamDistricts, CmsParamCurrency, CmsParamUnit,
 } from '../models/cmsParams.db';
 import { CmsCompRelationDao } from '../models/cmsComp.db';
 import { CMS_BILL_STATUS } from 'common/constants';
@@ -84,10 +84,12 @@ function *getDelgBills() {
       },
     }),
   ];
-  let bodys;
-  let head;
-  if (bhead) {
-    head = bhead;
+  if (!delg) {
+    return Result.internalServerError(this);
+  }
+  let bodys = [];
+  let head = bhead;
+  if (head) {
     bodys = yield BillBodyDao.findAll({
       raw: true,
       where: {
@@ -99,6 +101,7 @@ function *getDelgBills() {
       invoice_no: delg.invoice_no,
       contract_no: delg.contract_no,
       bl_wb_no: delg.bl_wb_no,
+      delg_no: delg.delg_no,
     };
   }
   return Result.ok(this, {
@@ -149,14 +152,15 @@ function *getDelgParams() {
     CmsParamPorts.findAll({ raw: true }),
     CmsParamDistricts.findAll({ raw: true }),
     CmsParamCurrency.findAll({ raw: true }),
+    CmsParamUnit.findAll({ raw: true }),
   ];
   const [
     customs, tradeModes, transModes, trxModes, tradeCountries, remissionModes,
-    ports, districts, currencies,
+    ports, districts, currencies, units,
   ] = yield dbOps;
   return Result.ok(this, {
     customs, tradeModes, transModes, trxModes, tradeCountries, remissionModes,
-    ports, districts, currencies, packs: [],
+    ports, districts, currencies, packs: [], units,
   });
 }
 
@@ -182,10 +186,47 @@ function *getCompRelations() {
   return Result.ok(this, relations);
 }
 
+function *upsertDelgBill() {
+  const { head, newBodys, editBodys, delBodys, ietype, loginId } = yield cobody(this);
+  let billNo = head.bill_no;
+  if (!billNo) {
+    const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
+    if (lastBill) {
+      billNo = BillHeadDao.genBillNo(lastBill.bill_no.slice(-6), ietype);
+    } else {
+      billNo = BillHeadDao.genBillNo(0, ietype);
+    }
+  }
+  const dbOps = [ BillHeadDao.upsert({ ...head, bill_no: billNo, creater_login_id: loginId }) ];
+  dbOps.concat(
+    newBodys.map(nb => BillBodyDao.create({ ...nb, bill_no: billNo, creater_login_id: loginId }))
+  );
+  dbOps.concat(
+    editBodys.map(eb => BillBodyDao.update(eb, { where: { id: eb.id } }))
+  );
+  if (delBodys.length > 0) {
+    dbOps.concat(
+      BillBodyDao.destroy({
+        where: {
+          id: delBodys,
+        },
+      })
+    );
+  }
+  if (!head.bill_no) {
+    dbOps.push(
+      Dispatch.update({ bill_status: 1, bill_no: billNo }, { where: { delg_no: head.delg_no }})
+    );
+  }
+  yield dbOps;
+  return Result.ok(this);
+}
+
 export default [
   [ 'get', '/v1/cms/delegation/declares', getDelgDeclares ],
   [ 'get', '/v1/cms/declare/bills', getDelgBills ],
   [ 'get', '/v1/cms/declare/entries', getDelgEntries ],
   [ 'get', '/v1/cms/declare/params', getDelgParams ],
   [ 'get', '/v1/cms/declare/comprelation', getCompRelations ],
+  [ 'post', '/v1/cms/declare/bill', upsertDelgBill ],
 ];
