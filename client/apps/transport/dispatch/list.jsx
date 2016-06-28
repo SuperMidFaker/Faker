@@ -543,11 +543,12 @@ export default class DispatchList extends React.Component {
     const list = [];
     shipmentlist.data.forEach(s => {
       if (selectedRowKeys.indexOf(s.key) > -1) {
-        list.push({dispId: s.key,
+        list.push({
+          dispId: s.key,
           shipmtNo: s.shipmt_no,
           parentId: s.parent_id,
           sp_tenant_id: s.sp_tenant_id,
-          sr_name: shipmt.sr_name,
+          sr_name: s.sr_name,
         });
       }
     });
