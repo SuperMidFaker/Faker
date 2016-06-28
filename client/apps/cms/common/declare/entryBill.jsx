@@ -4,7 +4,7 @@ import { Tabs, Dropdown, Menu } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadBills, loadEntries, loadCmsParams } from 'common/reducers/cmsDeclare';
+import { loadBills, loadEntries, loadCmsParams, addEntry } from 'common/reducers/cmsDeclare';
 import { setNavTitle } from 'common/reducers/navbar';
 import BillForm from './forms/billForm';
 import { format } from 'client/common/i18n/helpers';
@@ -26,12 +26,6 @@ function fetchData({ dispatch, params, cookie }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    aspect: state.account.aspect,
-  })
-)
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -44,6 +38,13 @@ function fetchData({ dispatch, params, cookie }) {
     goBackFn: null,
   }));
 })
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    aspect: state.account.aspect,
+  }),
+  { addEntry }
+)
 export default class EntryBillForm extends React.Component {
   static propTypes = {
     ietype: PropTypes.string.isRequired,
@@ -51,6 +52,7 @@ export default class EntryBillForm extends React.Component {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,
     readonly: PropTypes.bool,
+    addEntry: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -61,9 +63,9 @@ export default class EntryBillForm extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
 
   PopMenu = (
-    <Menu>
-      <MenuItem>{this.msg('generateEntry')}</MenuItem>
-      <MenuItem>{this.msg('addEntry')}</MenuItem>
+    <Menu onClick={this.handleEntryMenuClick}>
+      <MenuItem key="generate">{this.msg('generateEntry')}</MenuItem>
+      <MenuItem key="add">{this.msg('addEntry')}</MenuItem>
     </Menu>
   )
   TabButton = (
@@ -71,6 +73,11 @@ export default class EntryBillForm extends React.Component {
     {this.msg('newDeclaration')}
     </DropdownButton>
   )
+  handleEntryMenuClick = (ev) => {
+    if (ev.key === 'add') {
+      this.props.addEntry();
+    }
+  }
   render() {
     const { readonly, ietype } = this.props;
     return (

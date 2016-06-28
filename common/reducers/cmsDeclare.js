@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_COMPREL', 'LOAD_COMPREL_SUCCEED', 'LOAD_COMPREL_FAIL',
   'ADD_NEW_BILL_BODY', 'DEL_BILL_BODY', 'EDIT_BILL_BODY',
   'SAVE_BILL', 'SAVE_BILL_SUCCEED', 'SAVE_BILL_FAIL',
+  'ADD_ENTRY'
 ]);
 
 const initialState = {
@@ -91,6 +92,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, billBodyDeleted: [ ...state.billBodyDeleted, action.data ]};
     case actionTypes.EDIT_BILL_BODY:
       return { ...state, billBodyEdited: [ ...state.billBodyEdited, action.data ]};
+    case actionTypes.ADD_ENTRY:
+      return { ...state, entries: [ ...state.entries, state.entries[0] || state.billHead ]};
     default:
       return state;
   }
@@ -207,5 +210,11 @@ export function saveBill(head, newBodys, editBodys, delBodys, ietype, loginId) {
       method: 'post',
       data: { head, newBodys, editBodys, delBodys, ietype, loginId },
     },
+  };
+}
+
+export function addEntry() {
+  return {
+    type: actionTypes.ADD_ENTRY,
   };
 }
