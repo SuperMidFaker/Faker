@@ -410,6 +410,12 @@ export default {
       from tms_shipment_dispatch where shipmt_no = ? ${tenantClause}`;
     return mysql.query(sql, args);
   },
+  getShipmtDispWithNo(id) {
+    const args = [id];
+    const sql = `select shipmt_no, status, sr_name, sr_tenant_id, sr_login_id, sp_name, sp_tenant_id
+      from tms_shipment_dispatch where id = ?`;
+    return mysql.query(sql, args);
+  },
   getTrackingCount(tenantId, filters) {
     const args = [ tenantId ];
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);

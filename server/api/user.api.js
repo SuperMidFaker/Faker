@@ -673,7 +673,7 @@ function *sendPromptMessage() {
   try {
     const body = yield cobody(this);
     const {from, to, msg} = body;
-    sendPromptMessage(from,to,msg);
+    sendMessage(from,to,msg);
     Result.ok(this);
   } catch (e) {
     Result.internalServerError(this, e.message);

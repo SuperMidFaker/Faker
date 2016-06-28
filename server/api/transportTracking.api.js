@@ -1,10 +1,11 @@
 import cobody from 'co-body';
 import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, WELOGIX_LOGO_URL, } from 'common/constants';
 import { SHIPMENT_POD_TYPE } from '../util/constants';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
+import { sendMessage }from '../socket.io';
 
 function *trackingShipmtListG() {
   const tenantId = parseInt(this.request.query.tenantId, 10);
@@ -52,7 +53,7 @@ function *trackingPickDeliverDateP() {
   let trans;
   try {
     const body = yield cobody(this);
-    const { dispId, shipmtNo, type, actDate } = body;
+    const { dispId, shipmtNo, type, actDate, loginId } = body;
     let fields;
     if (type === 'pickup') {
       fields = {
@@ -71,6 +72,22 @@ function *trackingPickDeliverDateP() {
       shipmtNo, fields, trans
     );
     yield mysql.commit(trans);
+    const disps = yield shipmentDispDao.getShipmtDispWithNo(dispId);
+    const disp = disps[0];
+    yield sendMessage({
+      tenant_id: disp.sp_tenant_id,
+      login_id: loginId,
+      name: disp.sp_name,
+    },{
+      namespace: '/',
+      tenant_id: disp.sr_tenant_id,
+    },{
+      title: '新运单通知',
+      content: `${disp.sp_name} 下单了，快去看看吧！订单号：${disp.shipmt_no}`,
+      logo: WELOGIX_LOGO_URL,
+      url: '/transport/acceptance'
+    });
+
     return Result.ok(this);
   } catch (e) {
     if (trans) {

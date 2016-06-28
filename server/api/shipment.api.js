@@ -10,8 +10,10 @@ import {
   PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_TRACK_STATUS,
   VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES, CONTAINER_PACKAGE_TYPE,
+  WELOGIX_LOGO_URL,
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
+import { sendMessage }from '../socket.io';
 
 const vehicleTypes = VEHICLE_TYPES;
 
@@ -218,6 +220,21 @@ function *shipmtAcceptP() {
       shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.effected, trans)
     ];
     yield mysql.commit(trans);
+    const disps = yield shipmentDispDao.getShipmtDispWithNo(body.shipmtDispId);
+    const disp = disps[0];
+    yield sendMessage({
+      tenant_id: disp.sp_tenant_id,
+      login_id: body.acptId,
+      name: disp.sp_name,
+    },{
+      namespace: '/',
+      tenant_id: disp.sr_tenant_id,
+    },{
+      title: '新运单通知',
+      content: `${disp.sp_name} 下单了，快去看看吧！订单号：${disp.shipmt_no}`,
+      logo: WELOGIX_LOGO_URL,
+      url: '/transport/acceptance'
+    });
     return Result.ok(this);
   } catch (e) {
     if (trans) {
