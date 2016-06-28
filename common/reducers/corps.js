@@ -152,7 +152,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.MARK_MESSAGE_SUCCEED: {
       return state;
-    }case actionTypes.MARK_MESSAGES_SUCCEED: {
+    }
+    case actionTypes.MARK_MESSAGES_SUCCEED: {
       return state;
     }
     default:

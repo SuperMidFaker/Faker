@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { Table, Button, Radio } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -32,6 +34,15 @@ function fetchData({state, dispatch, cookie}) {
   }),
   { loadMessages, markMessages, markMessage }
 )
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
+  dispatch(setNavTitle({
+    depth: 1
+  }));
+})
+
 export default class MessageList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -41,16 +52,6 @@ export default class MessageList extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
-  }
-  handleNavigationTo = (to, query) => {
-    this.context.router.push({ pathname: to, query });
-  }
-  readMessage = (record) => {
-    this.props.markMessage({
-      id: record.id,
-      status: 1,
-    });
-    this.handleNavigationTo(record.url);
   }
   renderColumnText(status, text, record) {
     let style = {};
@@ -73,12 +74,19 @@ export default class MessageList extends React.Component {
     this.props.markMessages({loginId: this.props.loginId, status: 2});
     this.handleLoadMessages(1);
   }
+  readMessage = (record) => {
+    this.props.markMessage({
+      id: record.id,
+      status: 1,
+    });
+    this.handleNavigationTo(record.url);
+  }
   handleLoadMessages = (status) => {
     this.props.loadMessages(null, {
       loginId: this.props.loginId,
       pageSize: this.props.messages.pageSize,
       currentPage: this.props.messages.currentPage,
-      status: status
+      status
     });
   }
   renderMyButton() {
@@ -100,19 +108,22 @@ export default class MessageList extends React.Component {
     const minC = diffValue / (60 * 1000);
     let result = '';
     if (monthC >= 1) {
-      result = parseInt(monthC, 10) + ' 月前';
+      result = `${monthC} 月前`;
     } else if (weekC >= 1) {
-      result = parseInt(weekC, 10) + ' 周前';
+      result = `${weekC} 周前`;
     } else if (dayC >= 1) {
-      result = parseInt(dayC, 10) + ' 天前';
+      result = `${dayC} 天前`;
     } else if (hourC >= 1) {
-      result = parseInt(hourC, 10) + ' 小时前';
-    } else if (minC> 1) {
-      result = parseInt(minC, 10) + ' 分钟前';
+      result = `${hourC} 小时前`;
+    } else if (minC > 1) {
+      result = `${minC} 分钟前`;
     } else {
       result = '刚刚';
     }
     return result;
+  }
+  handleNavigationTo = (to, query) => {
+    this.context.router.push({ pathname: to, query });
   }
   render() {
     const { intl } = this.props;
