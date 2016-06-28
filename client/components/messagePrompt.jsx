@@ -30,20 +30,22 @@ export default class MessagePrompt extends React.Component {
       socket.emit('room', {tenantId, loginId});
     });
     socket.on('message', (data) => {
-      this.notif(data.from_name, {
+      this.notif(data.title, {
         body: data.content,
         icon: data.logo,
         url: data.url
       });
     });
-  }
-  notif(title, data) {
-    if (Notification) {
+    if (Notification && Notification.permission != 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
             Notification.permission = status;
         }
       });
+    }
+  }
+  notif(title, data) {
+    if (Notification && Notification.permission === 'granted') {
       const n = new Notification(title, data);
       n.onclick = () => {
         this.handleNavigationTo(data.url);

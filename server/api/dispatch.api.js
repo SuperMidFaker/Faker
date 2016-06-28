@@ -246,11 +246,12 @@ function *doSend() {
     const s = sendMessage({
       tenant_id: tenantId,
       login_id: loginId,
-      name:'新运单通知',
+      name: sr_name,
     },{
       namespace: '/',
       tenant_id: sp_tenant_id,
     },{
+      title: '新运单通知',
       content: sr_name + '下单了，快去看看吧！订单号：' + shipmtNo,
       logo: avatar || WELOGIX_LOGO_URL,
       url: '/transport/acceptance'

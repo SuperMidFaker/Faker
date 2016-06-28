@@ -44,6 +44,7 @@ function * sendMessage(from, to, msg) {
 		from_tenant_id: from.tenant_id,
 		from_login_id: from.login_id,
 		from_name: from.name,
+		title: msg.title,
     content: msg.content,
     logo: msg.logo,
     url: msg.url,

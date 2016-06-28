@@ -57,10 +57,8 @@ export default class MessageList extends React.Component {
     let style = {};
     if (status === MESSAGE_STATUS.read.key) {
       style = {color: '#CCC'};
-      return <span style={style}>{text}</span>;
-    } else {
-      return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
     }
+    return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
   }
   onStatusChange = (e) => {
     this.props.messages.status = e.target.value;
@@ -108,15 +106,15 @@ export default class MessageList extends React.Component {
     const minC = diffValue / (60 * 1000);
     let result = '';
     if (monthC >= 1) {
-      result = `${monthC} 月前`;
+      result = `${monthC.toFixed(0)} 月前`;
     } else if (weekC >= 1) {
-      result = `${weekC} 周前`;
+      result = `${weekC.toFixed(0)} 周前`;
     } else if (dayC >= 1) {
-      result = `${dayC} 天前`;
+      result = `${dayC.toFixed(0)} 天前`;
     } else if (hourC >= 1) {
-      result = `${hourC} 小时前`;
+      result = `${hourC.toFixed(0)} 小时前`;
     } else if (minC > 1) {
-      result = `${minC} 分钟前`;
+      result = `${minC.toFixed(0)} 分钟前`;
     } else {
       result = '刚刚';
     }
