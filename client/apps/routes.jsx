@@ -82,7 +82,7 @@ export default(store, cookie) => {
         <Route path="account" component={PackAccount}>
           <Route path="profile" component={MyProfile}/>
           <Route path="password" component={Password}/>
-          <Route path="messageList" component={MessageList}/>
+          <Route path="messages" component={MessageList}/>
         </Route>
         <Route path="corp" component={Corp}>
           <Route path="info" component={CorpInfo}/>
