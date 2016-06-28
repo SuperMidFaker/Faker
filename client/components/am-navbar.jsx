@@ -104,13 +104,13 @@ export default class AmNavBar extends React.Component {
               }>
                 <li className="dropdown">
                   <a className="dropdown-toggle" role="button" aria-expanded="false">
-                    <i className="zmdi zmdi-globe-alt"></i>
+                    <span className="icon s7-global"></span>
                   </a>
                 </li>
               </Popover>
               <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" aria-expanded="false" role="button" onClick={() => this.handleNavigationTo('/account/messages')}>
-                  <i className="zmdi zmdi-notifications-none"></i>
+                  <span className="icon s7-bell"></span>
                 </a>
               </li>
               <Popover placement="bottomLeft" trigger="hover" content={
@@ -125,7 +125,7 @@ export default class AmNavBar extends React.Component {
               }>
               <li className="dropdown hidden-xs">
                 <a className="dropdown-toggle" role="button" aria-expanded="false">
-                  <i className="zmdi zmdi-help-outline"></i>
+                  <span className="icon s7-help1"></span>
                 </a>
               </li>
               </Popover>
