@@ -53,8 +53,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.COMPRELATION_SUBMIT_LOAD_SUCCEED:
       list = {...state.list};
       if (action.result.data.id === initialState.formData.id) {
-        action.data.id = action.result.data.insertId;
-        list.rows.unshift(action.data);
+        list.rows.unshift({ ...action.data, id: action.result.data.insertId });
         loaded = true;
       }
       return {...state,

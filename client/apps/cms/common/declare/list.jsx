@@ -144,9 +144,10 @@ export default class DeclareList extends React.Component {
     });
   }
   render() {
-    const { aspect, delgList, params, ietype } = this.props;
+    const { aspect, delgList, listFilter, ietype } = this.props;
     this.dataSource.remotes = delgList;
-    const columns = makeColumn(params.status, aspect, ietype, {}, this.msg);
+    const status = listFilter.declareType;
+    const columns = makeColumn(status, aspect, ietype, {}, this.msg);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
@@ -159,7 +160,7 @@ export default class DeclareList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={params.status}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={status}>
             <RadioButton value="undeclared">{this.msg('undeclaredDelg')}</RadioButton>
             <RadioButton value="declaring">{this.msg('declaringDelg')}</RadioButton>
             <RadioButton value="declared">{this.msg('declaredDelg')}</RadioButton>

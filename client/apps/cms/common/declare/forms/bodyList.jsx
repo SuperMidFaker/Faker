@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Input, Select } from 'ant-ui';
+import { Table, Input, Select, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from '../rowUpdater';
 import { format } from 'client/common/i18n/helpers';
@@ -75,15 +75,18 @@ ColumnSelect.proptypes = {
       value: cr.curr_code,
       text: cr.curr_name,
     })),
+    loginId: state.account.loginId,
   })
 )
 export default class BodyTable extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    data: PropTypes.array.isRequired,
     ietype: PropTypes.oneOf([ 'import', 'export' ]),
     type: PropTypes.oneOf([ 'bill', 'entry' ]),
     readonly: PropTypes.bool,
+    data: PropTypes.array.isRequired,
+    headNo: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]),
+    loginId: PropTypes.number.isRequired,
     units: PropTypes.array,
     countries: PropTypes.array,
     currencies: PropTypes.array,
@@ -93,27 +96,27 @@ export default class BodyTable extends React.Component {
   }
   constructor(props) {
     super(props);
-    const bodys = props.data;
+    const bodies = props.data;
     if (!props.readonly) {
-      bodys.push({ id: '__ops'});
+      bodies.push({ id: '__ops' });
     }
     this.state = {
       editIndex: -1,
       editBody: {},
-      bodys,
+      bodies,
     };
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data && !nextProps.readonly) {
-      const bodys = [...nextProps.data];
-      bodys.push({ id: '__ops' });
-      this.setState({ bodys });
+      const bodies = [...nextProps.data];
+      bodies.push({ id: '__ops' });
+      this.setState({ bodies });
     }
   }
   getColumns() {
     const { ietype, type, readonly, units, countries, currencies } = this.props;
-    const { editIndex, bodys, editBody } = this.state;
-    const totalCount = bodys.length;
+    const { editIndex, bodies, editBody } = this.state;
+    const totalCount = bodies.length;
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'list_g_no',
@@ -122,7 +125,7 @@ export default class BodyTable extends React.Component {
     if (type === 'bill') {
       columns.push({
         title: this.msg('copGNo'),
-        width: 100,
+        width: 40,
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody} />,
@@ -130,7 +133,7 @@ export default class BodyTable extends React.Component {
     }
     columns.push({
       title: this.msg('emGNo'),
-      width: 100,
+      width: 60,
       render: (o, record, index) =>
         <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody} />,
@@ -169,6 +172,12 @@ export default class BodyTable extends React.Component {
       width: 80,
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody} />,
+    }, {
+      title: this.msg('element'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="element" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody} />,
     }, {
       title: this.msg('quantity'),
@@ -255,45 +264,66 @@ export default class BodyTable extends React.Component {
     this.setState({
       editBody: { ...this.state.editBody, [field]: value },
     });
+    // todo onsearch 项号 ems_no
   }
   handleEdit = (row, index) => {
-    this.setState({
-      editIndex: index,
-      editBody: row,
-    });
+    if (this.props.headNo) {
+      this.setState({
+        editIndex: index,
+        editBody: row,
+      });
+    } else {
+      message.error(this.msg('headUncreated'));
+    }
   }
   handleSave = (row, index) => {
     const { editBody } = this.state;
-    const bodys = [ ...this.state.bodys ];
+    // todo validate
     if (!editBody.id) {
-      bodys.splice(index, 0, { id: `__bill_body${index}`, list_g_no: index + 1, ...editBody });
-      this.props.onAdd({ ...editBody, list_g_no: index + 1 });
-      this.setState({
-        editIndex: -1,
-        bodys,
+      const body = { ...editBody, list_g_no: index + 1 };
+      const { headNo, loginId } = this.props;
+      this.props.onAdd({ body, headNo, loginId }).then(result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          body.id = result.data.id;
+          const bodies = [ ...this.state.bodies ];
+          bodies.splice(index, 0, body);
+          this.setState({
+            editIndex: -1,
+            editBody: {},
+            bodies,
+          });
+        }
       });
     } else {
-      bodys[index] = editBody;
-      this.setState({
-        editIndex: -1,
-        bodys,
+      this.props.onEdit(editBody).then(result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          const bodies = [ ...this.state.bodies ];
+          bodies[index] = editBody;
+          this.setState({
+            editIndex: -1,
+            editBody: {},
+            bodies,
+          });
+        }
       });
-      if (this.props.data.filter(dat => dat.id === editBody.id).length === 1) {
-        this.props.onEdit(editBody);
-      } else {
-        this.props.onAdd(editBody);
-      }
     }
   }
   handleDel = (row, index) => {
-    const bodys = [...this.state.bodys];
-    bodys.splice(index, 1);
-    this.setState({
-      bodys,
+    this.props.onDel(row.id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        const bodies = [...this.state.bodies];
+        bodies.splice(index, 1);
+        this.setState({
+          bodies,
+        });
+      }
     });
-    if (this.props.data.filter(dat => dat.id === this.state.editBody.id).length === 1) {
-      this.props.onDel(row.id);
-    }
   }
   handleCancel = () => {
     this.setState({
@@ -303,6 +333,6 @@ export default class BodyTable extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodys} />;
+    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies} />;
   }
 }

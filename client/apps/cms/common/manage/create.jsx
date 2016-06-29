@@ -19,7 +19,7 @@ function goBack(router) {
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: formatMsg(props.intl, 'new') + formatMsg(props.intl, 'relation'),
+    text: `${formatMsg(props.intl, 'new')}${formatMsg(props.intl, 'relation')}`,
     moduleName: 'cmsCompRelation_create',
     withModuleLayout: false,
     goBackFn: () => goBack(router),

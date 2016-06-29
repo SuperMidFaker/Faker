@@ -87,10 +87,10 @@ function *getDelgBills() {
   if (!delg) {
     return Result.internalServerError(this);
   }
-  let bodys = [];
+  let bodies = [];
   let head = bhead;
   if (head) {
-    bodys = yield BillBodyDao.findAll({
+    bodies = yield BillBodyDao.findAll({
       raw: true,
       where: {
         bill_no: head.bill_no,
@@ -106,7 +106,7 @@ function *getDelgBills() {
   }
   return Result.ok(this, {
     head,
-    bodys,
+    bodies,
   });
 }
 
@@ -129,13 +129,13 @@ function *getDelgEntries() {
       },
     }));
   }
-  const dbBodys = yield dbOps;
+  const dbBodies = yield dbOps;
   for (let i = 0; i < heads.length; i++) {
     const head = heads[i];
-    const bodys = dbBodys[i];
+    const bodies = dbBodies[i];
     entries.push({
       head,
-      bodys,
+      bodies,
     });
   }
   return Result.ok(this, entries);
@@ -186,8 +186,8 @@ function *getCompRelations() {
   return Result.ok(this, relations);
 }
 
-function *upsertDelgBill() {
-  const { head, newBodys, editBodys, delBodys, ietype, loginId } = yield cobody(this);
+function *upsertDelgBillHead() {
+  const { head, ietype, loginId } = yield cobody(this);
   let billNo = head.bill_no;
   if (!billNo) {
     const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
@@ -198,27 +198,70 @@ function *upsertDelgBill() {
     }
   }
   const dbOps = [ BillHeadDao.upsert({ ...head, bill_no: billNo, creater_login_id: loginId }) ];
-  dbOps.concat(
-    newBodys.map(nb => BillBodyDao.create({ ...nb, bill_no: billNo, creater_login_id: loginId }))
-  );
-  dbOps.concat(
-    editBodys.map(eb => BillBodyDao.update(eb, { where: { id: eb.id } }))
-  );
-  if (delBodys.length > 0) {
-    dbOps.concat(
-      BillBodyDao.destroy({
-        where: {
-          id: delBodys,
-        },
-      })
-    );
-  }
   if (!head.bill_no) {
     dbOps.push(
-      Dispatch.update({ bill_status: 1, bill_no: billNo }, { where: { delg_no: head.delg_no }})
+      Dispatch.update({ bill_status: 1}, { where: { delg_no: head.delg_no }})
     );
   }
   yield dbOps;
+  return Result.ok(this, { billNo });
+}
+
+function *addBillBody() {
+  const { newBody, billNo, loginId } = yield cobody(this);
+  const body = yield BillBodyDao.create({ ...newBody, bill_no: billNo, creater_login_id: loginId });
+  return Result.ok(this, { id: body.id });
+}
+
+function *delBillBody() {
+  const { bodyId } = yield cobody(this);
+  yield BillBodyDao.destroy({
+    where: {
+      id: bodyId,
+    },
+  });
+  return Result.ok(this);
+}
+
+function *editBillBody() {
+  const body = yield cobody(this);
+  yield BillBodyDao.update(body, { where: { id: body.id } });
+  return Result.ok(this);
+}
+
+function *upsertEntryHead() {
+  const { head, totalCount, loginId } = yield cobody(this);
+  head.comp_entry_id = `${head.bill_no}-${totalCount + 1}`;
+  head.creater_login_id = loginId;
+  let id = head.id;
+  if (id) {
+    yield EntryHeadDao.update(head);
+  } else {
+    const row = yield EntryHeadDao.create(head);
+    id = row.id;
+  }
+  return Result.ok(this, { id });
+}
+
+function *addEntryBody() {
+  const { newBody, headId, loginId } = yield cobody(this);
+  const body = yield EntryBodyDao.create({ ...newBody, head_id: headId, creater_login_id: loginId });
+  return Result.ok(this, { id: body.id });
+}
+
+function *delEntryBody() {
+  const { bodyId } = yield cobody(this);
+  yield EntryBodyDao.destroy({
+    where: {
+      id: bodyId,
+    },
+  });
+  return Result.ok(this);
+}
+
+function *editEntryBody() {
+  const body = yield cobody(this);
+  yield EntryBodyDao.update(body, { where: { id: body.id } });
   return Result.ok(this);
 }
 
@@ -228,5 +271,12 @@ export default [
   [ 'get', '/v1/cms/declare/entries', getDelgEntries ],
   [ 'get', '/v1/cms/declare/params', getDelgParams ],
   [ 'get', '/v1/cms/declare/comprelation', getCompRelations ],
-  [ 'post', '/v1/cms/declare/bill', upsertDelgBill ],
+  [ 'post', '/v1/cms/declare/billhead', upsertDelgBillHead ],
+  [ 'post', '/v1/cms/declare/billbody/add', addBillBody ],
+  [ 'post', '/v1/cms/declare/billbody/del', delBillBody ],
+  [ 'post', '/v1/cms/declare/billbody/edit', editBillBody ],
+  [ 'post', '/v1/cms/declare/entryhead', upsertEntryHead ],
+  [ 'post', '/v1/cms/declare/entrybody/add', addEntryBody ],
+  [ 'post', '/v1/cms/declare/entrybody/del', delEntryBody ],
+  [ 'post', '/v1/cms/declare/entrybody/edit', editEntryBody ],
 ];

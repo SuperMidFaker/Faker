@@ -8,8 +8,16 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'LOAD_COMPREL', 'LOAD_COMPREL_SUCCEED', 'LOAD_COMPREL_FAIL',
   'ADD_NEW_BILL_BODY', 'DEL_BILL_BODY', 'EDIT_BILL_BODY',
-  'SAVE_BILL', 'SAVE_BILL_SUCCEED', 'SAVE_BILL_FAIL',
-  'ADD_ENTRY'
+  'ADD_BILLBODY', 'ADD_BILLBODY_SUCCEED', 'ADD_BILLBODY_FAIL',
+  'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
+  'EDIT_BILLBODY', 'EDIT_BILLBODY_SUCCEED', 'EDIT_BILLBODY_FAIL',
+  'SAVE_BILLHEAD', 'SAVE_BILLHEAD_SUCCEED', 'SAVE_BILLHEAD_FAIL',
+  'ADD_ENTRY',
+  'ADD_NEW_ENTRY_BODY', 'DEL_ENTRY_BODY', 'EDIT_ENTRY_BODY',
+  'SAVE_ENTRYHEAD', 'SAVE_ENTRYHEAD_SUCCEED', 'SAVE_ENTRYHEAD_FAIL',
+  'ADD_ENTRYBODY', 'ADD_ENTYBODY_SUCCEED', 'ADD_ENTRYBODY_FAIL',
+  'DEL_ENTRYBODY', 'DEL_ENTRYBODY_SUCCEED', 'DEL_ENTRYBODY_FAIL',
+  'EDIT_ENTRYBODY', 'EDIT_ENTRYBODY_SUCCEED', 'EDIT_ENTRYBODY_FAIL',
 ]);
 
 const initialState = {
@@ -31,14 +39,8 @@ const initialState = {
   },
   billBody: [
   ],
-  billBodyCreated: [],
-  billBodyDeleted: [],
-  billBodyEdited: [],
   entries: [
   ],
-  entryBodyCreated: [],
-  entryBodyDeleted: [],
-  entryBodyEdited: [],
   params: {
     customs: [],
     tradeModes: [],
@@ -66,34 +68,38 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELGLIST_FAIL:
       return { ...state, delgList: { ...state.delgList, loading: false }};
     case actionTypes.LOAD_BILLS_SUCCEED:
-      return { ...state, billHead: action.result.data.head, billBody: action.result.data.bodys };
+      return { ...state, billHead: action.result.data.head, billBody: action.result.data.bodies };
     case actionTypes.LOAD_ENTRIES_SUCCEED:
       return { ...state, entries: action.result.data };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
-    case actionTypes.ADD_NEW_BILL_BODY: {
-      const created = [ ...state.billBodyCreated ];
-      let found = false;
-      for (let i = 0; i < created.length; i++) {
-        // 已经添加对象的修改
-        if (created[i].list_g_no === action.data.list_g_no) {
-          created[i] = { ...action.data };
-          created[i].id = undefined;
-          found = true;
-          break;
+    case actionTypes.SAVE_BILLHEAD_SUCCEED:
+      return { ...state, billHead: { ...state.billHead, bill_no: action.result.data.billNo }};
+    case actionTypes.ADD_ENTRY: {
+      const copyHead = (head) => {
+        const excludes = [
+          'id', 'creater_login_id', 'created_date', 'entry_id', 'pre_entry_id',
+          'fee_rate', 'insur_rate', 'other_rate', 'pack_count', 'gross_wt', 'net_wt',
+        ];
+        const headcopy = {};
+        for (const key in head) {
+          if (Object.hasOwnProperty(head, key) && excludes.indexOf(key) < 0) {
+            headcopy[key] = head[key];
+          }
         }
-      }
-      if (!found) {
-        created.push(action.data);
-      }
-      return { ...state, billBodyCreated: created };
+        return headcopy;
+      };
+      const prevHead = state.entries.length > 0 ? state.entries[0].head : state.billHead;
+      const head = copyHead(prevHead);
+      /*
+      const {
+        id, creater_login_id, created_date, entry_id, pre_entry_id,
+        fee_rate, insur_rate, other_rate, pack_count,
+        gross_wt, net_wt, ...head,
+      } = prevHead;
+     */
+      return { ...state, entries: [ ...state.entries, { head, bodies: [] } ]};
     }
-    case actionTypes.DEL_BILL_BODY:
-      return { ...state, billBodyDeleted: [ ...state.billBodyDeleted, action.data ]};
-    case actionTypes.EDIT_BILL_BODY:
-      return { ...state, billBodyEdited: [ ...state.billBodyEdited, action.data ]};
-    case actionTypes.ADD_ENTRY:
-      return { ...state, entries: [ ...state.entries, state.entries[0] || state.billHead ]};
     default:
       return state;
   }
@@ -177,38 +183,62 @@ export function loadCompRelation(type, ietype, tenantId, code) {
   };
 }
 
-export function addNewBillBody(newBody) {
+export function addNewBillBody({ body, headNo, loginId }) {
   return {
-    type: actionTypes.ADD_NEW_BILL_BODY,
-    data: newBody,
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_BILLBODY,
+        actionTypes.ADD_BILLBODY_SUCCEED,
+        actionTypes.ADD_BILLBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/billbody/add',
+      method: 'post',
+      data: { newBody: body, billNo: headNo, loginId },
+    },
   };
 }
 
 export function delBillBody(bodyId) {
   return {
-    type: actionTypes.DEL_BILL_BODY,
-    data: bodyId,
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_BILLBODY,
+        actionTypes.DEL_BILLBODY_SUCCEED,
+        actionTypes.DEL_BILLBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/billbody/del',
+      method: 'post',
+      data: { bodyId },
+    },
   };
 }
 
 export function editBillBody(body) {
   return {
-    type: actionTypes.EDIT_BILL_BODY,
-    data: body,
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_BILLBODY,
+        actionTypes.EDIT_BILLBODY_SUCCEED,
+        actionTypes.EDIT_BILLBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/billbody/edit',
+      method: 'post',
+      data: body,
+    },
   };
 }
 
-export function saveBill(head, newBodys, editBodys, delBodys, ietype, loginId) {
+export function saveBillHead({ head, ietype, loginId }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_BILL,
-        actionTypes.SAVE_BILL_SUCCEED,
-        actionTypes.SAVE_BILL_FAIL,
+        actionTypes.SAVE_BILLHEAD,
+        actionTypes.SAVE_BILLHEAD_SUCCEED,
+        actionTypes.SAVE_BILLHEAD_FAIL,
       ],
-      endpoint: 'v1/cms/declare/bill',
+      endpoint: 'v1/cms/declare/billhead',
       method: 'post',
-      data: { head, newBodys, editBodys, delBodys, ietype, loginId },
+      data: { head, ietype, loginId },
     },
   };
 }
@@ -216,5 +246,65 @@ export function saveBill(head, newBodys, editBodys, delBodys, ietype, loginId) {
 export function addEntry() {
   return {
     type: actionTypes.ADD_ENTRY,
+  };
+}
+
+export function addNewEntryBody({ body, headNo, loginId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_ENTRYBODY,
+        actionTypes.ADD_ENTYBODY_SUCCEED,
+        actionTypes.ADD_ENTRYBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entrybody/add',
+      method: 'post',
+      data: { newBody: body, headId: headNo, loginId },
+    },
+  };
+}
+
+export function delEntryBody(bodyId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_ENTRYBODY,
+        actionTypes.DEL_ENTRYBODY_SUCCEED,
+        actionTypes.DEL_ENTRYBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entrybody/del',
+      method: 'post',
+      data: { bodyId },
+    },
+  };
+}
+
+export function editEntryBody(body) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_ENTRYBODY,
+        actionTypes.EDIT_ENTRYBODY_SUCCEED,
+        actionTypes.EDIT_ENTRYBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entrybody/edit',
+      method: 'post',
+      data: body,
+    },
+  };
+}
+
+export function saveEntryHead(head, totalCount, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_ENTRYHEAD,
+        actionTypes.SAVE_ENTRYHEAD_SUCCEED,
+        actionTypes.SAVE_ENTRYHEAD_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entryhead',
+      method: 'post',
+      data: { head, totalCount, loginId },
+    },
   };
 }

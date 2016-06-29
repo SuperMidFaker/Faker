@@ -317,6 +317,10 @@ export default defineMessages({
     id: 'cms.declare.table.gmodel',
     defaultMessage: '规格型号'
   },
+  element: {
+    id: 'cms.declare.table.element',
+    defaultMessage: '要素'
+  },
   quantity: {
     id: 'cms.declare.table.quantity',
     defaultMessage: '数量'
@@ -364,5 +368,21 @@ export default defineMessages({
   append: {
     id: 'cms.declare.table.append',
     defaultMessage: '添加'
+  },
+  headUncreated: {
+    id: 'cms.declare.body.headUncreated',
+    defaultMessage: '表头未保存'
+  },
+  declareEntry: {
+    id: 'cms.declare.entry',
+    defaultMessage: '报关单',
+  },
+  entryHeader: {
+    id: 'cms.declare.entry.header',
+    defaultMessage: '报关单表头',
+  },
+  entryList: {
+    id: 'cms.declare.entry.list',
+    defaultMessage: '报关单表体',
   },
 });
