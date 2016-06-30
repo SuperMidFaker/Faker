@@ -36,7 +36,7 @@ export default class MessagePrompt extends React.Component {
         url: data.url
       });
     });
-    if (Notification && Notification.permission != 'granted') {
+    if (Notification && Notification.permission !== 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
             Notification.permission = status;

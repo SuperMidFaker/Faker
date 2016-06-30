@@ -1,5 +1,9 @@
 import { messages } from '../models/messages.db';
 import { TenantUser } from '../models/tenant-user.db';
+import { WeixinUser } from '../models/weixin.db';
+import { WELOGIX_LOGO_URL } from 'common/constants';
+import * as Wexin from '../util/weixin-template-message';
+import moment from 'moment';
 
 class SocketIO {
 	static initialize(io) {
@@ -16,19 +20,7 @@ class SocketIO {
 		return this.instance;
 	}
 }
-/*
-		from:
-			from.tenant_id,
-			from.login_id,
-			from.name,
-		to:
-			to.tenant_id,
-		msg:
-			msg.content: '',
-			msg.logo: '',
-			msg.url: ''
-		
-	*/
+
 function * sendMessage(from, to, msg) {
 	if (!from) {
 		throw new Error('params [from] was lost!');
@@ -39,50 +31,116 @@ function * sendMessage(from, to, msg) {
 	if(!msg) {
 		throw new Error('params [msg] was lost!');
 	}
-	let data = {
-		tenant_id: to.tenant_id,
-		from_tenant_id: from.tenant_id,
-		from_login_id: from.login_id,
-		from_name: from.name,
-		title: msg.title,
-    content: msg.content,
-    logo: msg.logo,
-    url: msg.url,
-	}
-	SocketIO.Instance().of('/').to(String(to.tenant_id)).emit('message',data);
-	const result = yield TenantUser.findAll({
-    raw: true,
-    where:{
-      $and: [
-	      {
-	      	$or: [
-	      		{
-	      			parent_tenant_id: to.tenant_id,
-	      		},
-	      		{
-	      			parent_tenant_id: 0,
-	      		}
-	      	]
-	      },
-	      {
-	      	$or: [
-	      		{
-	      			user_type: 'manager',
-	      		},
-	      		{
-	      			user_type: 'owner',
-	      		}
-	      	]
+	if (to.tenant_id && to.tenant_id !== -1)
+	{
+		let data = {
+			tenant_id: to.tenant_id,
+			from_tenant_id: from.tenant_id,
+			from_login_id: from.login_id,
+			from_name: from.name,
+			title: msg.title,
+	    content: msg.content,
+	    logo: msg.logo,
+	    url: msg.url,
+		}
+		SocketIO.Instance().of('/').to(String(to.tenant_id)).emit('message',data);
+		const result = yield TenantUser.findAll({
+	    raw: true,
+	    where:{
+	      $and: [
+		      {
+		      	$or: [
+		      		{
+		      			parent_tenant_id: to.tenant_id,
+		      		},
+		      		{
+		      			parent_tenant_id: 0,
+		      		}
+		      	]
+		      },
+		      {
+		      	$or: [
+		      		{
+		      			user_type: 'manager',
+		      		},
+		      		{
+		      			user_type: 'owner',
+		      		}
+		      	]
+		      }
+	      ]
+	    }
+	  });
+	  const promises = [];
+	  const loginIds = [];
+		result.forEach((item) => {
+			const rec = {...data, login_id: item.login_id, status: 0, time: new Date()};
+			promises.push(messages.create(rec));
+			loginIds.push(item.login_id);
+		});
+		const wus = yield WeixinUser.findAll({
+	    raw: true,
+	    where:{
+	      login_id: {
+	      	$in: loginIds
 	      }
-      ]
-    }
-  });
-  const promises = [];
-	for (let i = 0; i < result.length; i++) {
-		const rec = {...data, login_id: result[i].login_id, status: 0, time: new Date()};
-		promises.push(messages.create(rec));
+	    },
+	    attributes: ['login_id', 'openid']
+	  });
+	  wus.forEach((item) => {
+	  	const ship = {
+	  		...item,
+	  		...msg,
+	  		first: msg.title,
+	  		remark: msg.remark||msg.content,
+	  	};
+			promises.push(Wexin.sendNewShipMessage(ship));
+		});
 		
+		return yield promises;
 	}
-	return yield promises;
 }
-export { SocketIO, sendMessage};
+
+function msg(status) {
+	switch(status)
+	{
+		case 1:
+		return '待接单';
+		case 2:
+		return '待分配';
+		case 3:
+		return '已分配';
+		case 4:
+		return '待交货';
+		case 5:
+		return '待回单';
+		case 6:
+		return '回单已提交';
+		case 7:
+		return '回单已接受';
+		default:
+		return '';
+	}
+}
+
+function sendNewShipMessage(ship) {
+	return sendMessage({
+      tenant_id: ship.tenant_id,
+      login_id: ship.login_id,
+      name: ship.name,
+    },{
+      namespace: '/',
+      tenant_id: ship.to_tenant_id,
+    },{
+    	...ship,
+      title: '新运单通知',
+      content: `${ship.name} 下单了，快去看看吧！运单号：${ship.shipmt_no}`,
+      remark: `${ship.name} 下单了，快去看看吧！`,
+      logo: ship.logo || WELOGIX_LOGO_URL,
+      url: 'https://wx.welogix.cn/weixin/transport/dispatch/detail',
+      time: moment(new Date()).format('YYYY-MM-DD HH:mm'),
+      shipmt_no: ship.shipmt_no,
+      status: msg(ship.status),
+    });
+}
+export { SocketIO, sendMessage, sendNewShipMessage};

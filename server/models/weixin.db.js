@@ -1,4 +1,6 @@
 import mysql from '../util/mysql';
+import { STRING, INTEGER, DATE, TEXT, NOW } from 'sequelize';
+import sequelize from './sequelize';
 
 export default {
   upsertAuth(openid, unionid, accToken, expiresIn, refreshToken, createdAt) {
@@ -33,3 +35,18 @@ export default {
     return mysql.update(sql, args);
   }
 }
+
+export const WeixinUser = sequelize.define('sso_weixin_auth', {
+  openid: {
+    type: STRING,
+    primaryKey: true
+  },
+  access_token: STRING,
+  expires_in: INTEGER,
+  refresh_token: STRING,
+  login_id: INTEGER,
+  unionid: STRING,
+  created_date: DATE
+}, {
+    freezeTableName: true
+});

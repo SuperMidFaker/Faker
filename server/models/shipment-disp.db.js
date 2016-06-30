@@ -310,7 +310,7 @@ export default {
     const obj = {
       fields: `SD.id as \`key\`, S.shipmt_no, sr_name,
       pickup_est_date, transit_time, deliver_est_date, customer_tenant_id, lsp_tenant_id, consigner_name,
-      consigner_province, consigner_city, consigner_district, consigner_addr,
+      consigner_province, consigner_city, consigner_district, consigner_addr, status,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
@@ -412,8 +412,10 @@ export default {
   },
   getShipmtDispWithNo(id) {
     const args = [id];
-    const sql = `select shipmt_no, status, sr_name, sr_tenant_id, sr_login_id, sp_name, sp_tenant_id
-      from tms_shipment_dispatch where id = ?`;
+    const sql = `select sd.shipmt_no, sd.status, sd.sr_name, sd.sr_tenant_id, sd.sr_login_id, sd.sp_name, sd.sp_tenant_id,
+    s.consigner_city, s.consignee_city
+    from tms_shipment_dispatch sd
+    inner join tms_shipments s on s.shipmt_no=sd.shipmt_no where id = ?`;
     return mysql.query(sql, args);
   },
   getTrackingCount(tenantId, filters) {
