@@ -1,19 +1,19 @@
 import React, { PropTypes } from 'react';
 
 export default function RowUpdater(props) {
-  const { label, onHit, onHover, row } = props;
+  const { label, onHit, onHover, row, index, ...extra } = props;
   function handleClick() {
     if (onHit) {
-      onHit(row);
+      onHit(row, index);
     }
   }
   function handleHover() {
     if (onHover) {
-      onHover(row);
+      onHover(row, index);
     }
   }
   return (
-    <a onClick={handleClick} onMouseEnter={handleHover} {...props.extra}>
+    <a onClick={handleClick} onMouseEnter={handleHover} {...extra}>
     {label}
     </a>
   );
@@ -24,5 +24,6 @@ RowUpdater.propTypes = {
   onHit: PropTypes.func,
   onHover: PropTypes.func,
   row: PropTypes.object,
+  index: PropTypes.number,
   extra: PropTypes.object,
 };

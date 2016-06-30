@@ -17,12 +17,16 @@ const formatContainerMsg = format(containerMessages);
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+function getRowKey(row) {
+  return row.comp_entry_id || row.delg_no;
+}
+
 function fetchData({ state, dispatch, cookie, params }) {
-  const filter = { ...state.cmsDelcare.listFilter, declareType: params.status };
+  const filter = { ...state.cmsDeclare.listFilter, declareType: params.status };
   return dispatch(loadDelgList(cookie, {
     tenantId: state.account.tenantId,
     filter: JSON.stringify(filter),
-    pageSize: state.cmsDelcare.delgList.pageSize,
+    pageSize: state.cmsDeclare.delgList.pageSize,
     current: 1,
   }));
 }
@@ -33,8 +37,8 @@ function fetchData({ state, dispatch, cookie, params }) {
   state => ({
     tenantId: state.account.tenantId,
     aspect: state.account.aspect,
-    delgList: state.cmsDelcare.delgList,
-    listFilter: state.cmsDelcare.listFilter,
+    delgList: state.cmsDeclare.delgList,
+    listFilter: state.cmsDeclare.listFilter,
   }),
   { loadDelgList })
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -65,6 +69,17 @@ export default class DeclareList extends React.Component {
   }
   state = {
     selectedRowKeys: []
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.status !== this.props.params.status) {
+      const filter = { ...nextProps.listFilter, declareType: nextProps.params.status };
+      return nextProps.loadDelgList(null, {
+        tenantId: nextProps.tenantId,
+        filter: JSON.stringify(filter),
+        pageSize: nextProps.delgList.pageSize,
+        current: 1,
+      });
+    }
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgList(null, params),
@@ -129,9 +144,10 @@ export default class DeclareList extends React.Component {
     });
   }
   render() {
-    const { aspect, delgList, intl, params, ietype } = this.props;
+    const { aspect, delgList, listFilter, ietype } = this.props;
     this.dataSource.remotes = delgList;
-    const columns = makeColumn(params.status, aspect, ietype, {}, this.msg);
+    const status = listFilter.declareType;
+    const columns = makeColumn(status, aspect, ietype, {}, this.msg);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
@@ -144,7 +160,7 @@ export default class DeclareList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={params.status}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={status}>
             <RadioButton value="undeclared">{this.msg('undeclaredDelg')}</RadioButton>
             <RadioButton value="declaring">{this.msg('declaringDelg')}</RadioButton>
             <RadioButton value="declared">{this.msg('declaredDelg')}</RadioButton>
@@ -154,7 +170,7 @@ export default class DeclareList extends React.Component {
           <div className="panel-header"></div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
-              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }} rowKey={getRowKey}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

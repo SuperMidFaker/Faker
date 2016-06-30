@@ -1,8 +1,7 @@
 import React from 'react';
-import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import RowUpdater from './rowUpater';
+import RowUpdater from './rowUpdater';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 export default function makeColumn(type, aspect, ietype, handlers, msg) {
   const columns = [{
@@ -46,16 +45,6 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
     width: 240,
     render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: msg('delgTime'),
-    dataIndex: 'delg_time',
-    width: 100,
-    render: (o, record) => moment(record.delg_time).format('YYYY.MM.DD')
-  }, {
-    title: msg('acptTime'),
-    dataIndex: 'acpt_time',
-    width: 100,
-    render: (o, record) => moment(record.acpt_time).format('YYYY.MM.DD')
-  }, {
     title: msg('contractNo'),
     dataIndex: 'contract_no',
     width: 200,
@@ -78,7 +67,6 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
   }, {
     title: msg('delgInternalNo'),
     width: 200,
-    dataIndex: '',
     render: (o, record) =>
       <TrimSpan text={
         aspect === TENANT_ASPECT.BO ?

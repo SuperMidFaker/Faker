@@ -173,4 +173,216 @@ export default defineMessages({
     id: 'cms.declare.form.ladingWayBill',
     defaultMessage: '提运单号'
   },
+  relationCodeSearch: {
+    id: 'cms.declare.form.relation.code.search',
+    defaultMessage: '代码搜索'
+  },
+  relationName: {
+    id: 'cms.declare.form.relation.name',
+    defaultMessage: '名称'
+  },
+  forwardName: {
+    id: 'cms.declare.form.forward.name',
+    defaultMessage: '收发货人'
+  },
+  ownerConsumeName: {
+    id: 'cms.declare.form.owner.consume.name',
+    defaultMessage: '消费使用单位'
+  },
+  ownerProduceName: {
+    id: 'cms.declare.form.owner.produce.name',
+    defaultMessage: '生产消费单位'
+  },
+  agentName: {
+    id: 'cms.declare.form.agent.name',
+    defaultMessage: '申报单位'
+  },
+  tradeMode: {
+    id: 'cms.declare.form.trade.name',
+    defaultMessage: '监管方式'
+  },
+  rmModeName: {
+    id: 'cms.declare.form.rm.mode.name',
+    defaultMessage: '征免性质'
+  },
+  emsNo: {
+    id: 'cms.declare.form.ems.no',
+    defaultMessage: '备案号'
+  },
+  tradeCountry: {
+    id: 'cms.declare.form.trade.country',
+    defaultMessage: '贸易国'
+  },
+  departCountry: {
+    id: 'cms.declare.form.depart.country',
+    defaultMessage: '启运国'
+  },
+  destinateCountry: {
+    id: 'cms.declare.form.destinate.country',
+    defaultMessage: '抵运国'
+  },
+  licenseNo: {
+    id: 'cms.declare.form.license.no',
+    defaultMessage: '许可证号'
+  },
+  trxMode: {
+    id: 'cms.declare.form.trx.mode',
+    defaultMessage: '成交方式'
+  },
+  packCount: {
+    id: 'cms.declare.form.pack.count',
+    defaultMessage: '件数'
+  },
+  containerNo: {
+    id: 'cms.declare.form.container.no',
+    defaultMessage: '集装箱号'
+  },
+  usage: {
+    id: 'cms.declare.form.usage',
+    defaultMessage: '用途'
+  },
+  iDestinatePort: {
+    id: 'cms.declare.form.idest.port',
+    defaultMessage: '装货港'
+  },
+  eDestinatePort: {
+    id: 'cms.declare.form.edest.port',
+    defaultMessage: '指运港'
+  },
+  iDistrict: {
+    id: 'cms.declare.form.idistrict',
+    defaultMessage: '境内目的地'
+  },
+  eDistrict: {
+    id: 'cms.declare.form.edistrict',
+    defaultMessage: '境内货源地'
+  },
+  freightCharge: {
+    id: 'cms.declare.form.freightCharge',
+    defaultMessage: '运费'
+  },
+  insurance: {
+    id: 'cms.declare.form.insurance',
+    defaultMessage: '保费'
+  },
+  sundry: {
+    id: 'cms.declare.form.sundry',
+    defaultMessage: '杂费'
+  },
+  packType: {
+    id: 'cms.declare.form.pack.type',
+    defaultMessage: '包装'
+  },
+  grosswt: {
+    id: 'cms.declare.form.gross.wt',
+    defaultMessage: '毛重(公斤)'
+  },
+  netwt: {
+    id: 'cms.declare.form.net.wt',
+    defaultMessage: '净重(公斤)'
+  },
+  certMark: {
+    id: 'cms.declare.form.cert.mark',
+    defaultMessage: '随附单证'
+  },
+  markNotes: {
+    id: 'cms.declare.form.mark.notes',
+    defaultMessage: '唛码备注'
+  },
+  seqNumber: {
+    id: 'cms.declare.table.seq.number',
+    defaultMessage: '序号'
+  },
+  copGNo: {
+    id: 'cms.declare.table.cop.gno',
+    defaultMessage: '料号'
+  },
+  emGNo: {
+    id: 'cms.declare.table.em.gno',
+    defaultMessage: '项号'
+  },
+  codeT: {
+    id: 'cms.declare.table.codet',
+    defaultMessage: '商品编码'
+  },
+  codeS: {
+    id: 'cms.declare.table.codes',
+    defaultMessage: '附加码'
+  },
+  gName: {
+    id: 'cms.declare.table.gname',
+    defaultMessage: '商品名称'
+  },
+  gModel: {
+    id: 'cms.declare.table.gmodel',
+    defaultMessage: '规格型号'
+  },
+  element: {
+    id: 'cms.declare.table.element',
+    defaultMessage: '要素'
+  },
+  quantity: {
+    id: 'cms.declare.table.quantity',
+    defaultMessage: '数量'
+  },
+  unit: {
+    id: 'cms.declare.table.unit',
+    defaultMessage: '单位'
+  },
+  icountry: {
+    id: 'cms.declare.table.icountry',
+    defaultMessage: '原产国'
+  },
+  ecountry: {
+    id: 'cms.declare.table.ecountry',
+    defaultMessage: '最终目的国'
+  },
+  decPrice: {
+    id: 'cms.declare.table.dec.price',
+    defaultMessage: '单价'
+  },
+  decTotal: {
+    id: 'cms.declare.table.dec.total',
+    defaultMessage: '总价'
+  },
+  currency: {
+    id: 'cms.declare.table.currency',
+    defaultMessage: '币制'
+  },
+  save: {
+    id: 'cms.declare.table.save',
+    defaultMessage: '保存'
+  },
+  cancel: {
+    id: 'cms.declare.table.cancel',
+    defaultMessage: '取消'
+  },
+  edit: {
+    id: 'cms.declare.table.edit',
+    defaultMessage: '编辑'
+  },
+  delete: {
+    id: 'cms.declare.table.delete',
+    defaultMessage: '删除'
+  },
+  append: {
+    id: 'cms.declare.table.append',
+    defaultMessage: '添加'
+  },
+  headUncreated: {
+    id: 'cms.declare.body.headUncreated',
+    defaultMessage: '表头未保存'
+  },
+  declareEntry: {
+    id: 'cms.declare.entry',
+    defaultMessage: '报关单',
+  },
+  entryHeader: {
+    id: 'cms.declare.entry.header',
+    defaultMessage: '报关单表头',
+  },
+  entryList: {
+    id: 'cms.declare.entry.list',
+    defaultMessage: '报关单表体',
+  },
 });

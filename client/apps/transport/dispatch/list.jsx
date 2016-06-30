@@ -543,7 +543,8 @@ export default class DispatchList extends React.Component {
     const list = [];
     shipmentlist.data.forEach(s => {
       if (selectedRowKeys.indexOf(s.key) > -1) {
-        list.push({dispId: s.key,
+        list.push({
+          dispId: s.key,
           shipmtNo: s.shipmt_no,
           parentId: s.parent_id,
           sp_tenant_id: s.sp_tenant_id,
@@ -837,7 +838,7 @@ export default class DispatchList extends React.Component {
   }
 
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

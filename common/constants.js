@@ -125,25 +125,25 @@ const CONDITION_STATE = [{
   value: '0'
 }];
 const WRAP_TYPE = [{
-  text: '1|木箱',
+  text: '木箱',
   value: '1'
 }, {
-  text: '2|纸箱',
+  text: '纸箱',
   value: '2'
 }, {
-  text: '3|桶装',
+  text: '桶装',
   value: '3'
 }, {
-  text: '4|散装',
+  text: '散装',
   value: '4'
 }, {
-  text: '5|托盘',
+  text: '托盘',
   value: '5'
 }, {
-  text: '6|包',
+  text: '包',
   value: '6'
 }, {
-  text: '7|其它',
+  text: '其它',
   value: '7'
 }];
 const FEE_TYPE = [{
@@ -286,6 +286,12 @@ const I_E_TYPES = [
   {key: 'A', value: '进出口'}
 ];
 
+const CMS_BILL_STATUS = {
+  undeclared: 0,
+  declaring: 1,
+  declared: 2,
+};
+
 const MESSAGE_STATUS = {
   notRead: {
     key: 0,
@@ -337,6 +343,7 @@ export {
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
+  CMS_BILL_STATUS,
   MESSAGE_STATUS,
   WELOGIX_LOGO_URL,
 };

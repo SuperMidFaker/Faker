@@ -1,4 +1,4 @@
-import { STRING, INTEGER, DATE, TEXT, NOW } from 'sequelize';
+import { STRING, INTEGER, DATE, NOW } from 'sequelize';
 import sequelize from './sequelize';
 import mysql from '../util/mysql';
 
@@ -150,5 +150,5 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
   },
 });
 
-Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id', constraint: false});
-Partnership.belongsTo(Partner, {foreignKey: 'partner_id', constraint: false});
+Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id', constraints: false});
+Partnership.belongsTo(Partner, {foreignKey: 'partner_id', constraints: false});

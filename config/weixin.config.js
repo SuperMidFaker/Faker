@@ -16,7 +16,7 @@ config.set('CGI_TEMPLATE_MESSAGE_URL', 'https://api.weixin.qq.com/cgi-bin/messag
 config.set('ACCESS_TOKEN', '');
 config.set('JSAPI_TICKET', '');
 
-if (env === 'development'||'production') {
+if (env === 'production') {
 	getAccessToken();
 	setInterval(getAccessToken, 7200*1000);
 }

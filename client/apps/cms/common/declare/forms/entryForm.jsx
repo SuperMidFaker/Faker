@@ -4,7 +4,7 @@ import { Collapse, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
-import { addNewBillBody, delBillBody, editBillBody, saveBillHead } from 'common/reducers/cmsDeclare';
+import { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import globalMessage from 'client/common/root.i18n';
@@ -12,7 +12,7 @@ const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);
 
 function BillHead(props) {
-  return <HeadForm {...props} type="bill" />;
+  return <HeadForm {...props} type="entry" />;
 }
 BillHead.propTypes = {
   ietype: PropTypes.string.isRequired,
@@ -22,7 +22,7 @@ BillHead.propTypes = {
 };
 
 function BillBody(props) {
-  return <BodyTable {...props} type="bill" />;
+  return <BodyTable {...props} type="entry" />;
 }
 BillBody.propTypes = {
   ietype: PropTypes.string.isRequired,
@@ -38,39 +38,44 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    billHead: state.cmsDeclare.billHead,
-    billBody: state.cmsDeclare.billBody,
     loginId: state.account.loginId,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead }
+  { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead }
 )
 @Form.create()
-export default class BillForm extends React.Component {
+export default class EntryForm extends React.Component {
   static propTypes = {
     ietype: PropTypes.string.isRequired,
     intl: intlShape.isRequired,
     readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
-    billHead: PropTypes.object.isRequired,
+    entry: PropTypes.object.isRequired,
+    totalCount: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    addNewBillBody: PropTypes.func.isRequired,
-    delBillBody: PropTypes.func.isRequired,
-    editBillBody: PropTypes.func.isRequired,
-    saveBillHead: PropTypes.func.isRequired,
+    addNewEntryBody: PropTypes.func.isRequired,
+    delEntryBody: PropTypes.func.isRequired,
+    editEntryBody: PropTypes.func.isRequired,
+    saveEntryHead: PropTypes.func.isRequired,
+  }
+  state = {
+    head_id: undefined,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleBillSave = (ev) => {
+  handleEntryHeadSave = (ev) => {
     ev.preventDefault();
     this.props.form.validateFieldsAndScroll(errors => {
       if (!errors) {
-        const { billHead, ietype, loginId } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId }).then(
+        const { entry, totalCount, loginId } = this.props;
+        const head = { ...entry.head, ...this.props.form.getFieldsValue(), id: this.state.head_id };
+        this.props.saveEntryHead({ head, totalCount, loginId }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
             } else {
               message.info('更新成功');
+              if (result.data.id !== head.id) {
+                this.setState({ head_id: result.data.id });
+              }
             }
           }
         );
@@ -78,24 +83,22 @@ export default class BillForm extends React.Component {
     });
   }
   render() {
-    const {
-      ietype, readonly, form, billHead, billBody,
-      ...actions,
-    } = this.props;
+    const { ietype, readonly, form, entry, ...actions } = this.props;
+    const head = entry.head;
     return (<div>
-      <Button type="primary" onClick={this.handleBillSave}
+      <Button type="primary" onClick={this.handleEntryHeadSave}
         style={{ marginLeft: '10px', marginBottom: '10px'}}>
         {formatGlobalMsg(this.props.intl, 'save')}
       </Button>
-      <Collapse accordion defaultActiveKey="bill-head">
-        <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
-          <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead}
+      <Collapse accordion defaultActiveKey="entry-head">
+        <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
+          <BillHead ietype={ietype} readonly={readonly} form={form} formData={head}
           />
         </Panel>
-        <Panel header={this.msg('billList')} key="bill-list">
-          <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_no}
-            onAdd={actions.addNewBillBody} onDel={actions.delBillBody}
-            onEdit={actions.editBillBody} />
+        <Panel header={this.msg('entryList')} key="entry-list">
+          <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
+            onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
+            onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id } />
         </Panel>
       </Collapse>
     </div>);

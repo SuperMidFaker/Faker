@@ -94,8 +94,8 @@ export default class MessageList extends React.Component {
       return (<Button style={{float:'right'}} onClick={this.clearAllMessages}>{formatMsg(this.props.intl, 'clearAll')}</Button>);
     }
   }
-  getDateDiff(ref_date) {
-    const time = new Date(ref_date).getTime();
+  getDateDiff(refDate) {
+    const time = new Date(refDate).getTime();
     const date = new Date();
     const curTime = date.getTime();
     const diffValue = curTime - time;
