@@ -1,3 +1,4 @@
+import { WRAP_TYPE as PackTypes } from 'common/constants';
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
@@ -52,6 +53,7 @@ const initialState = {
     ports: [],
     districts: [],
     currencies: [],
+    packs: PackTypes,
     units: [],
   },
 };

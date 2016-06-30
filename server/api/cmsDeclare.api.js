@@ -41,7 +41,7 @@ function *getDelgDeclares() {
   const result = yield Delegation.findAndCountAll({
     attributes: [
       'delg_no', 'customer_name', 'contract_no', 'invoice_no',
-      'bl_wb_no', 'voyage_no', 'pieces', 'weight'
+      'bl_wb_no', 'voyage_no', 'pieces', 'weight',
     ],
     offset: (current - 1) * pageSize,
     limit: pageSize,
@@ -49,14 +49,20 @@ function *getDelgDeclares() {
     include: [{
       model: Dispatch,
       attributes: [
-        'ref_delg_external_no', 'ref_recv_external_no',
-        'delg_time', 'acpt_time', 'decl_time', 'clean_time',
-        'bill_no', 'entry_id', 'comp_entry_id', 'source',
+        'ref_delg_external_no', 'ref_recv_external_no', 'source',
       ],
       where: {
         recv_tenant_id: tenantId,
         bill_status: billStatus,
-      }
+      },
+      required: false,
+    }, {
+      model: BillHeadDao,
+      attributes: [ 'bill_no' ],
+      include: [{
+        model: EntryHeadDao,
+        attributes: [ 'entry_id', 'comp_entry_id' ],
+      }],
     }],
     where: delgWhere,
   });
@@ -187,82 +193,114 @@ function *getCompRelations() {
 }
 
 function *upsertDelgBillHead() {
-  const { head, ietype, loginId } = yield cobody(this);
-  let billNo = head.bill_no;
-  if (!billNo) {
-    const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
-    if (lastBill) {
-      billNo = BillHeadDao.genBillNo(lastBill.bill_no.slice(-6), ietype);
-    } else {
-      billNo = BillHeadDao.genBillNo(0, ietype);
+  try {
+    const { head, ietype, loginId } = yield cobody(this);
+    let billNo = head.bill_no;
+    if (!billNo) {
+      const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
+      if (lastBill) {
+        billNo = BillHeadDao.genBillNo(lastBill.bill_no.slice(-6), ietype);
+      } else {
+        billNo = BillHeadDao.genBillNo(0, ietype);
+      }
     }
+    const dbOps = [ BillHeadDao.upsert({ ...head, bill_no: billNo, creater_login_id: loginId }) ];
+    if (!head.bill_no) {
+      dbOps.push(
+        Dispatch.update({ bill_status: 1}, { where: { delg_no: head.delg_no }})
+      );
+    }
+    yield dbOps;
+    return Result.ok(this, { billNo });
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
   }
-  const dbOps = [ BillHeadDao.upsert({ ...head, bill_no: billNo, creater_login_id: loginId }) ];
-  if (!head.bill_no) {
-    dbOps.push(
-      Dispatch.update({ bill_status: 1}, { where: { delg_no: head.delg_no }})
-    );
-  }
-  yield dbOps;
-  return Result.ok(this, { billNo });
 }
 
 function *addBillBody() {
-  const { newBody, billNo, loginId } = yield cobody(this);
-  const body = yield BillBodyDao.create({ ...newBody, bill_no: billNo, creater_login_id: loginId });
-  return Result.ok(this, { id: body.id });
+  try {
+    const { newBody, billNo, loginId } = yield cobody(this);
+    const body = yield BillBodyDao.create({ ...newBody, bill_no: billNo, creater_login_id: loginId });
+    return Result.ok(this, { id: body.id });
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 function *delBillBody() {
-  const { bodyId } = yield cobody(this);
-  yield BillBodyDao.destroy({
-    where: {
-      id: bodyId,
-    },
-  });
-  return Result.ok(this);
+  try {
+    const { bodyId } = yield cobody(this);
+    yield BillBodyDao.destroy({
+      where: {
+        id: bodyId,
+      },
+    });
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 function *editBillBody() {
-  const body = yield cobody(this);
-  yield BillBodyDao.update(body, { where: { id: body.id } });
-  return Result.ok(this);
+  try {
+    const body = yield cobody(this);
+    yield BillBodyDao.update(body, { where: { id: body.id } });
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 function *upsertEntryHead() {
-  const { head, totalCount, loginId } = yield cobody(this);
-  head.comp_entry_id = `${head.bill_no}-${totalCount}`;
-  head.creater_login_id = loginId;
-  let id = head.id;
-  if (id) {
-    yield EntryHeadDao.update(head);
-  } else {
-    const row = yield EntryHeadDao.create(head);
-    id = row.id;
+  try {
+    const { head, totalCount, loginId } = yield cobody(this);
+    head.comp_entry_id = `${head.bill_no}-${totalCount}`;
+    head.creater_login_id = loginId;
+    let id = head.id;
+    if (id) {
+      yield EntryHeadDao.update(head);
+    } else {
+      const row = yield EntryHeadDao.create(head);
+      id = row.id;
+    }
+    return Result.ok(this, { id });
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
   }
-  return Result.ok(this, { id });
 }
 
 function *addEntryBody() {
-  const { newBody, headId, loginId } = yield cobody(this);
-  const body = yield EntryBodyDao.create({ ...newBody, head_id: headId, creater_login_id: loginId });
-  return Result.ok(this, { id: body.id });
+  try {
+    const { newBody, headId, loginId } = yield cobody(this);
+    const body = yield EntryBodyDao.create({ ...newBody, head_id: headId, creater_login_id: loginId });
+    return Result.ok(this, { id: body.id });
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 function *delEntryBody() {
-  const { bodyId } = yield cobody(this);
-  yield EntryBodyDao.destroy({
-    where: {
-      id: bodyId,
-    },
-  });
-  return Result.ok(this);
+  try {
+    const { bodyId } = yield cobody(this);
+    yield EntryBodyDao.destroy({
+      where: {
+        id: bodyId,
+      },
+    });
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 function *editEntryBody() {
-  const body = yield cobody(this);
-  yield EntryBodyDao.update(body, { where: { id: body.id } });
-  return Result.ok(this);
+  try {
+    const body = yield cobody(this);
+    yield EntryBodyDao.update(body, { where: { id: body.id } });
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 export default [

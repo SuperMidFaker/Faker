@@ -479,7 +479,7 @@ export function PackWeight(props) {
     col: 6,
     label: msg('packType'),
     field: 'pack_type',
-    options: formRequire.packs, // todo params_pack table
+    options: formRequire.packs,
     disabled,
     formData,
     getFieldProps,

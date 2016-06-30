@@ -69,6 +69,8 @@ export default class BillForm extends React.Component {
           result => {
             if (result.error) {
               message.error(result.error.message);
+            } else {
+              message.info('更新成功');
             }
           }
         );

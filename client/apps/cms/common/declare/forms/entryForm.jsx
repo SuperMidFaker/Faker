@@ -71,8 +71,11 @@ export default class EntryForm extends React.Component {
           result => {
             if (result.error) {
               message.error(result.error.message);
-            } else if (result.data.id !== head.id) {
-              this.setState({ head_id: result.data.id });
+            } else {
+              message.info('更新成功');
+              if (result.data.id !== head.id) {
+                this.setState({ head_id: result.data.id });
+              }
             }
           }
         );

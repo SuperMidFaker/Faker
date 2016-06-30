@@ -51,7 +51,9 @@ export const Delegation = sequelize.define('cms_delegations', {
       result += moment().format('YYMMDD');
       result += fillZero(parseInt(serialNo, 10) + 1);
       return result;
-    }
+    },
+    getDelgBillEntryCount() {
+    },
   }
 });
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from './rowUpdater';
@@ -45,16 +44,6 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
     dataIndex: 'customer_name',
     width: 240,
     render: (o) => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: msg('delgTime'),
-    dataIndex: 'delg_time',
-    width: 100,
-    render: (o, record) => moment(record.delg_time).format('YYYY.MM.DD')
-  }, {
-    title: msg('acptTime'),
-    dataIndex: 'acpt_time',
-    width: 100,
-    render: (o, record) => moment(record.acpt_time).format('YYYY.MM.DD')
   }, {
     title: msg('contractNo'),
     dataIndex: 'contract_no',

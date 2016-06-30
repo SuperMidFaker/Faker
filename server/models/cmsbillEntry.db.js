@@ -1,5 +1,6 @@
 import sequelize from './sequelize';
 import { STRING, INTEGER, DATE, NOW, DECIMAL as decimal } from 'sequelize';
+import { Delegation } from './cmsDelegation.db';
 
 export const BillHeadDao = sequelize.define('cms_delegation_bill_head', {
   bill_no: STRING,
@@ -236,3 +237,7 @@ export const EntryBodyDao = sequelize.define('cms_delegation_entry_list', {
     defaultValue: NOW,
   },
 });
+
+Delegation.hasMany(BillHeadDao, { foreignKey: 'delg_no', constraints: false });
+BillHeadDao.hasMany(EntryHeadDao, { foreignKey: 'bill_no', constraints: false });
+ EntryHeadDao.belongsTo(BillHeadDao, { targetKey: 'bill_no', constraints: false });
