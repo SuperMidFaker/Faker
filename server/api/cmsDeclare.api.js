@@ -231,7 +231,7 @@ function *editBillBody() {
 
 function *upsertEntryHead() {
   const { head, totalCount, loginId } = yield cobody(this);
-  head.comp_entry_id = `${head.bill_no}-${totalCount + 1}`;
+  head.comp_entry_id = `${head.bill_no}-${totalCount}`;
   head.creater_login_id = loginId;
   let id = head.id;
   if (id) {

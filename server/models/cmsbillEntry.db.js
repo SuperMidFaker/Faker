@@ -205,7 +205,6 @@ export const EntryHeadDao = sequelize.define('cms_delegation_entry_head', {
 
 export const EntryBodyDao = sequelize.define('cms_delegation_entry_list', {
   head_id: INTEGER,
-  ems_no: STRING,
   list_g_no: INTEGER,
   em_g_no: INTEGER,
   cop_g_no: STRING,

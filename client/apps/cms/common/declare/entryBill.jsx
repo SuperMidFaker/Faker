@@ -4,7 +4,7 @@ import { Tabs, Dropdown, Menu } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadBills, loadEntries, loadCmsParams, addEntry } from 'common/reducers/cmsDeclare';
+import { loadBills, loadEntries, loadCmsParams, addEntry, setTabKey } from 'common/reducers/cmsDeclare';
 import { setNavTitle } from 'common/reducers/navbar';
 import BillForm from './forms/billForm';
 import EntryForm from './forms/entryForm';
@@ -32,8 +32,9 @@ function fetchData({ dispatch, params, cookie }) {
     tenantId: state.account.tenantId,
     aspect: state.account.aspect,
     entries: state.cmsDeclare.entries,
+    activeKey: state.cmsDeclare.activeTabKey,
   }),
-  { addEntry }
+  { addEntry, setTabKey }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -55,7 +56,9 @@ export default class EntryBillForm extends React.Component {
     aspect: PropTypes.number.isRequired,
     readonly: PropTypes.bool,
     entries: PropTypes.array.isRequired,
+    activeKey: PropTypes.string.isRequired,
     addEntry: PropTypes.func.isRequired,
+    setTabKey: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -73,7 +76,7 @@ export default class EntryBillForm extends React.Component {
     }
   }
   handleTabChange = (activeKey) => {
-    this.setState({ activeKey });
+    this.props.setTabKey(activeKey);
   }
   renderTabButton() {
     const PopMenu = (
@@ -89,8 +92,7 @@ export default class EntryBillForm extends React.Component {
     );
   }
   render() {
-    const { readonly, ietype, entries } = this.props;
-    const activeKey = this.state.activeKey || (entries.length > 0 ? `entry${entries.length - 1}` : 'bill');
+    const { readonly, ietype, entries, activeKey } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
@@ -102,8 +104,8 @@ export default class EntryBillForm extends React.Component {
             </TabPane>
             {
               entries.map((entry, idx) => (
-                <TabPane tab={`${this.msg('declareEntry')}-${idx}`} key={`entry${idx}`}>
-                  <EntryForm readonly={readonly} ietype={ietype} entry={entry} index={idx} />
+                <TabPane tab={`${this.msg('declareEntry')}-${idx + 1}`} key={`entry${idx}`}>
+                  <EntryForm readonly={readonly} ietype={ietype} entry={entry} totalCount={entries.length} />
                 </TabPane>
               ))
             }

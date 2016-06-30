@@ -12,7 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
   'EDIT_BILLBODY', 'EDIT_BILLBODY_SUCCEED', 'EDIT_BILLBODY_FAIL',
   'SAVE_BILLHEAD', 'SAVE_BILLHEAD_SUCCEED', 'SAVE_BILLHEAD_FAIL',
-  'ADD_ENTRY',
+  'ADD_ENTRY', 'SET_TABKEY',
   'ADD_NEW_ENTRY_BODY', 'DEL_ENTRY_BODY', 'EDIT_ENTRY_BODY',
   'SAVE_ENTRYHEAD', 'SAVE_ENTRYHEAD_SUCCEED', 'SAVE_ENTRYHEAD_FAIL',
   'ADD_ENTRYBODY', 'ADD_ENTYBODY_SUCCEED', 'ADD_ENTRYBODY_FAIL',
@@ -35,6 +35,7 @@ const initialState = {
     sortField: '',
     sortOrder: '',
   },
+  activeTabKey: 'bill',
   billHead: {
   },
   billBody: [
@@ -51,6 +52,7 @@ const initialState = {
     ports: [],
     districts: [],
     currencies: [],
+    units: [],
   },
 };
 
@@ -83,7 +85,7 @@ export default function reducer(state = initialState, action) {
         ];
         const headcopy = {};
         for (const key in head) {
-          if (Object.hasOwnProperty(head, key) && excludes.indexOf(key) < 0) {
+          if (Object.hasOwnProperty.call(head, key) && excludes.indexOf(key) < 0) {
             headcopy[key] = head[key];
           }
         }
@@ -91,15 +93,10 @@ export default function reducer(state = initialState, action) {
       };
       const prevHead = state.entries.length > 0 ? state.entries[0].head : state.billHead;
       const head = copyHead(prevHead);
-      /*
-      const {
-        id, creater_login_id, created_date, entry_id, pre_entry_id,
-        fee_rate, insur_rate, other_rate, pack_count,
-        gross_wt, net_wt, ...head,
-      } = prevHead;
-     */
-      return { ...state, entries: [ ...state.entries, { head, bodies: [] } ]};
+      return { ...state, entries: [ ...state.entries, { head, bodies: [] } ], activeTabKey: `entry${state.entries.length}` };
     }
+    case actionTypes.SET_TABKEY:
+      return { ...state, activeTabKey: action.data };
     default:
       return state;
   }
@@ -294,7 +291,7 @@ export function editEntryBody(body) {
   };
 }
 
-export function saveEntryHead(head, totalCount, loginId) {
+export function saveEntryHead({ head, totalCount, loginId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -306,5 +303,12 @@ export function saveEntryHead(head, totalCount, loginId) {
       method: 'post',
       data: { head, totalCount, loginId },
     },
+  };
+}
+
+export function setTabKey(activeKey) {
+  return {
+    type: actionTypes.SET_TABKEY,
+    data: activeKey,
   };
 }
