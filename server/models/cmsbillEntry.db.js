@@ -240,4 +240,3 @@ export const EntryBodyDao = sequelize.define('cms_delegation_entry_list', {
 
 Delegation.hasMany(BillHeadDao, { foreignKey: 'delg_no', constraints: false });
 BillHeadDao.hasMany(EntryHeadDao, { foreignKey: 'bill_no', constraints: false });
- EntryHeadDao.belongsTo(BillHeadDao, { targetKey: 'bill_no', constraints: false });

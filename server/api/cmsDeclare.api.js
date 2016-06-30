@@ -1,4 +1,4 @@
- import cobody from 'co-body';
+import cobody from 'co-body';
 import { Delegation, Dispatch } from '../models/cmsDelegation.db';
 import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../models/cmsbillEntry.db';
 import {
@@ -22,55 +22,25 @@ function *getDelgDeclares() {
   } else if (filter.declareType === 'declared') {
     billStatus = CMS_BILL_STATUS.declared;
   }
-  const delgWhere = {};
+  const delgWhere = [];
   if (filter.name) {
-    delgWhere.$or = [{
-       delg_no: {
-         $like: `%${filter.name}%`,
-       },
-     }, {
-       invoice_no: {
-         $like: `%${filter.name}%`,
-       },
-     }, {
-       bl_wb_no: {
-         $like: `%${filter.name}%`,
-       },
-     }];
+    delgWhere.push(`
+      delg_no LIKE '%${filter.name}%' OR invoice_no LIKE '%${filter.name}%' OR bl_wb_no LIKE '%${filter.name}%'
+    `);
   }
-  const result = yield Delegation.findAndCountAll({
-    attributes: [
-      'delg_no', 'customer_name', 'contract_no', 'invoice_no',
-      'bl_wb_no', 'voyage_no', 'pieces', 'weight',
-    ],
-    offset: (current - 1) * pageSize,
-    limit: pageSize,
-    raw: true,
-    include: [{
-      model: Dispatch,
-      attributes: [
-        'ref_delg_external_no', 'ref_recv_external_no', 'source',
-      ],
-      where: {
-        recv_tenant_id: tenantId,
-        bill_status: billStatus,
-      },
-      required: false,
-    }, {
-      model: BillHeadDao,
-      attributes: [ 'bill_no' ],
-      include: [{
-        model: EntryHeadDao,
-        attributes: [ 'entry_id', 'comp_entry_id' ],
-      }],
-    }],
-    where: delgWhere,
-  });
+  let whereClause = '';
+  if (delgWhere.length > 0) {
+    whereClause = `where ${delgWhere.join('')}`;
+  }
+  const counts = yield Delegation.getDelgBillEntryCount(billStatus, tenantId, whereClause);
+  const offset = (current - 1) * pageSize;
+  const limit = pageSize;
+  const rows = yield Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit);
   return Result.ok(this, {
-    totalCount: result.count,
+    totalCount: counts[0],
     pageSize,
     current,
-    data: result.rows,
+    data: rows,
   });
 }
 
@@ -166,7 +136,7 @@ function *getDelgParams() {
   ] = yield dbOps;
   return Result.ok(this, {
     customs, tradeModes, transModes, trxModes, tradeCountries, remissionModes,
-    ports, districts, currencies, packs: [], units,
+    ports, districts, currencies, units,
   });
 }
 

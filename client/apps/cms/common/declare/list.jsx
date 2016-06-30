@@ -18,7 +18,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function getRowKey(row) {
-  return row.delg_no;
+  return row.comp_entry_id || row.delg_no;
 }
 
 function fetchData({ state, dispatch, cookie, params }) {

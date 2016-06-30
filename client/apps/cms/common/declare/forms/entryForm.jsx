@@ -84,7 +84,7 @@ export default class EntryForm extends React.Component {
   }
   render() {
     const { ietype, readonly, form, entry, ...actions } = this.props;
-    const head = { ...entry.head, id: this.state.head_id };
+    const head = entry.head;
     return (<div>
       <Button type="primary" onClick={this.handleEntryHeadSave}
         style={{ marginLeft: '10px', marginBottom: '10px'}}>
@@ -98,7 +98,7 @@ export default class EntryForm extends React.Component {
         <Panel header={this.msg('entryList')} key="entry-list">
           <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
             onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-            onEdit={actions.editEntryBody} headNo={head.id} />
+            onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id } />
         </Panel>
       </Collapse>
     </div>);

@@ -76,7 +76,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ENTRIES_SUCCEED:
       return { ...state, entries: action.result.data };
     case actionTypes.LOAD_PARAMS_SUCCEED:
-      return { ...state, params: action.result.data };
+      return { ...state, params: { ...state.params, ...action.result.data }};
     case actionTypes.SAVE_BILLHEAD_SUCCEED:
       return { ...state, billHead: { ...state.billHead, bill_no: action.result.data.billNo }};
     case actionTypes.ADD_ENTRY: {

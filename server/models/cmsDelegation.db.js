@@ -52,7 +52,28 @@ export const Delegation = sequelize.define('cms_delegations', {
       result += fillZero(parseInt(serialNo, 10) + 1);
       return result;
     },
-    getDelgBillEntryCount() {
+    getDelgBillEntryCount(billStatus, tenantId, delgWhere) {
+      return sequelize.query(`select count(D.delg_no) as count from
+        (select * from cms_delegations ${delgWhere}) as D inner join
+        cms_delegation_dispatch DD on D.delg_no = DD.delg_no and DD.recv_tenant_id = ?
+        and DD.bill_status = ? left outer join cms_delegation_bill_head BH
+        on D.delg_no = BH.delg_no left outer join cms_delegation_entry_head EH
+        on BH.bill_no = EH.bill_no`, {
+          replacements: [ tenantId, billStatus ], type: sequelize.QueryTypes.SELECT
+        });
+    },
+    getPagedDelgBillEntry(billStatus, tenantId, delgWhere, offset, limit) {
+      return sequelize.query(`select
+        D.delg_no, customer_name, D.contract_no, D.invoice_no, D.bl_wb_no, D.voyage_no, pieces,
+        weight, ref_delg_external_no, ref_recv_external_no, source, BH.bill_no,
+        EH.entry_id, EH.comp_entry_id from
+        (select * from cms_delegations ${delgWhere}) D inner join
+        cms_delegation_dispatch DD on D.delg_no = DD.delg_no and DD.recv_tenant_id = ?
+        and DD.bill_status = ? left outer join cms_delegation_bill_head BH
+        on D.delg_no = BH.delg_no left outer join cms_delegation_entry_head EH
+        on BH.bill_no = EH.bill_no limit ?, ?`, {
+          replacements: [ tenantId, billStatus, offset, limit ], type: sequelize.QueryTypes.SELECT
+      });
     },
   }
 });
