@@ -9,7 +9,7 @@ config.set('MP_OAUTH2_URL', 'https://open.weixin.qq.com/connect/oauth2/authorize
 config.set('ACCESS_TOKEN_URL', 'https://api.weixin.qq.com/sns/oauth2/access_token');
 config.set('REFRESH_TOKEN_URL', 'https://api.weixin.qq.com/sns/oauth2/refresh_token');
 config.set('SNS_USER_URL', 'https://api.weixin.qq.com/sns/userinfo');
-config.set('WX_DOMAIN', 'http://wx.welogix.cn');
+config.set('WX_DOMAIN', 'https://wx.welogix.cn');
 config.set('CGI_TICKET_URL', 'https://api.weixin.qq.com/cgi-bin/ticket/getticket');
 config.set('CGI_TOKEN_URL', 'https://api.weixin.qq.com/cgi-bin/token');
 config.set('CGI_TEMPLATE_MESSAGE_URL', 'https://api.weixin.qq.com/cgi-bin/message/template/send');
