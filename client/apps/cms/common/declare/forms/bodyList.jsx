@@ -333,6 +333,6 @@ export default class BodyTable extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies} />;
+    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies} size="middle" />;
   }
 }

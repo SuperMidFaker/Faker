@@ -119,11 +119,11 @@ export default defineMessages({
   },
   generateEntry: {
     id: 'cms.declare.generate.entry',
-    defaultMessage: '清单生成'
+    defaultMessage: '由清单归并生成'
   },
   addEntry: {
     id: 'cms.declare.add.entry',
-    defaultMessage: '添加'
+    defaultMessage: '直接添加报关单'
   },
   billHeader: {
     id: 'cms.declare.form.bill.header',

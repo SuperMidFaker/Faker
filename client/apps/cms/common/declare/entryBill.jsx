@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Dropdown, Menu } from 'ant-ui';
+import { Tabs, Dropdown, Menu, Icon } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -86,8 +86,8 @@ export default class EntryBillForm extends React.Component {
       </Menu>
     );
     return (
-      <DropdownButton type="primary" overlay={PopMenu}>
-      {this.msg('newDeclaration')}
+      <DropdownButton overlay={PopMenu}>
+        <Icon type="plus-square" />{this.msg('newDeclaration')}
       </DropdownButton>
     );
   }
@@ -99,12 +99,12 @@ export default class EntryBillForm extends React.Component {
           <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={activeKey}
             onChange={this.handleTabChange}
           >
-            <TabPane tab={this.msg('declareBill')} key="bill">
+            <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
               <BillForm readonly={readonly} ietype={ietype} />
             </TabPane>
             {
               entries.map((entry, idx) => (
-                <TabPane tab={`${this.msg('declareEntry')}-${idx + 1}`} key={`entry${idx}`}>
+                <TabPane tab={<span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>} key={`entry${idx}`}>
                   <EntryForm readonly={readonly} ietype={ietype} entry={entry} totalCount={entries.length} />
                 </TabPane>
               ))
