@@ -241,7 +241,7 @@ export default class CorpInfo extends React.Component {
     const msg = (descriptor) => formatMsg(intl, descriptor);
     return (
       <div className="panel-body body-responsive">
-        <Form horizontal>
+        <Form horizontal className="form-edit-content">
           <Row>
             <Col span="12">
               <FormItem label="LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>

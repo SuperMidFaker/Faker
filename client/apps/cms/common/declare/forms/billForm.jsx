@@ -83,21 +83,24 @@ export default class BillForm extends React.Component {
       ...actions,
     } = this.props;
     return (<div>
-      <Button type="primary" onClick={this.handleBillSave}
-        style={{ marginLeft: '10px', marginBottom: '10px'}}>
-        {formatGlobalMsg(this.props.intl, 'save')}
-      </Button>
-      <Collapse accordion defaultActiveKey="bill-head">
-        <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
-          <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead}
-          />
-        </Panel>
-        <Panel header={this.msg('billList')} key="bill-list">
-          <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_no}
-            onAdd={actions.addNewBillBody} onDel={actions.delBillBody}
-            onEdit={actions.editBillBody} />
-        </Panel>
-      </Collapse>
+      <div className="panel-header">
+        <Button type="primary" onClick={this.handleBillSave}>
+          {formatGlobalMsg(this.props.intl, 'save')}
+        </Button>
+      </div>
+      <div className="panel-body padding">
+        <Collapse accordion defaultActiveKey="bill-head">
+          <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
+            <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead}
+            />
+          </Panel>
+          <Panel header={this.msg('billList')} key="bill-list">
+            <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_no}
+              onAdd={actions.addNewBillBody} onDel={actions.delBillBody}
+              onEdit={actions.editBillBody} />
+          </Panel>
+        </Collapse>
+      </div>
     </div>);
   }
 }
