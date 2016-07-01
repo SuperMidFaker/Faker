@@ -54,13 +54,11 @@ function * sendMessage(from, to, msg) {
 		      			tenant_id: to.tenant_id,
 		      		}
 		      	]
-		      },
-		      {
+		      }, {
 		      	$or: [
 		      		{
 		      			user_type: 'manager',
-		      		},
-		      		{
+		      		}, {
 		      			user_type: 'owner',
 		      		}
 		      	]
@@ -132,13 +130,9 @@ function sendNewShipMessage(ship) {
       tenant_id: ship.to_tenant_id,
     },{
     	...ship,
-      title: '新运单通知',
-      content: `${ship.name} 下单了，快去看看吧！运单号：${ship.shipmt_no}`,
-      remark: `${ship.name} 下单了，快去看看吧！`,
       logo: ship.logo || WELOGIX_LOGO_URL,
-      url: 'https://wx.welogix.cn/weixin/transport/dispatch/detail',
+      url: '/transport/dispatch/detail',
       time: moment(new Date()).format('YYYY-MM-DD HH:mm'),
-      shipmt_no: ship.shipmt_no,
       status: msg(ship.status),
     });
 }
