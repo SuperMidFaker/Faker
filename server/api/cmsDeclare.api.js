@@ -7,6 +7,7 @@ import {
   CmsParamDistricts, CmsParamCurrency, CmsParamUnit,
 } from '../models/cmsParams.db';
 import { CmsCompRelationDao } from '../models/cmsComp.db';
+import mergeSplit from './_utils/billMergeSplit';
 import { CMS_BILL_STATUS } from 'common/constants';
 import Result from '../util/responseResult';
 
@@ -273,6 +274,65 @@ function *editEntryBody() {
   }
 }
 
+function *mergeSplitBill() {
+  try {
+    const { billNo, mergeOpt, splitOpt, sortOpt } = yield cobody(this);
+    const [ billHead, billList, lastEntryHead ] = yield [
+      BillHeadDao.findOne({
+        where: {
+          bill_no: billNo,
+        },
+      }),
+      BillBodyDao.findAll({
+        where: {
+          bill_no: billNo,
+        },
+      }),
+      EntryHeadDao.findOne({
+        where: {
+          bill_no: billNo,
+        },
+        order: [ 'comp_entry_id', 'desc' ],
+      }),
+    ];
+    let maxEntryNum = 0;
+    if (lastEntryHead) {
+      const compEntryNum = parseInt(lastEntryHead.comp_entry_id.slice(-6), 10);
+      maxEntryNum = compEntryNum + 1;
+    }
+    const entries = mergeSplit(
+      billHead, maxEntryNum, billList, { ...splitOpt, perCount: 20 },
+      mergeOpt, sortOpt
+    );
+    const headDbs = [];
+    entries.forEach(entry => {
+      headDbs.push(EntryHeadDao.create(entry.head));
+    });
+    const headResults = yield headDbs;
+    const bodyDbs = [];
+    entries.forEach((entry, index) => {
+      entry.bodies.forEach(body => {
+        bodyDbs.push(EntryBodyDao.create({ ...body, head_id: headResults[index].id }));
+      });
+    });
+    const bodyResults = yield bodyDbs;
+    const entryResults = [];
+    let bidx = 0;
+    entries.forEach((entry, hidx) => {
+      const head = { ...entry.head, id: headResults[hidx] };
+      const bodies = [];
+      entry.bodies.forEach(bd => {
+        bodies.push({ ...bd, head_id: headResults[hidx], id: bodyResults[bidx].id });
+        bidx++;
+      });
+      entryResults.push({ head, bodies });
+    });
+    return Result.ok(this, entryResults);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cms/delegation/declares', getDelgDeclares ],
   [ 'get', '/v1/cms/declare/bills', getDelgBills ],
@@ -287,4 +347,5 @@ export default [
   [ 'post', '/v1/cms/declare/entrybody/add', addEntryBody ],
   [ 'post', '/v1/cms/declare/entrybody/del', delEntryBody ],
   [ 'post', '/v1/cms/declare/entrybody/edit', editEntryBody ],
+  [ 'post', '/v1/cms/declare/bill/mergesplit', mergeSplitBill ],
 ];
