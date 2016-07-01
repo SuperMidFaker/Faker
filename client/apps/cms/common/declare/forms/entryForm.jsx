@@ -86,21 +86,24 @@ export default class EntryForm extends React.Component {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
     return (<div>
-      <Button type="primary" onClick={this.handleEntryHeadSave}
-        style={{ marginLeft: '10px', marginBottom: '10px'}}>
-        {formatGlobalMsg(this.props.intl, 'save')}
-      </Button>
-      <Collapse accordion defaultActiveKey="entry-head">
-        <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
-          <BillHead ietype={ietype} readonly={readonly} form={form} formData={head}
-          />
-        </Panel>
-        <Panel header={this.msg('entryList')} key="entry-list">
-          <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
-            onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-            onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id } />
-        </Panel>
-      </Collapse>
+      <div className="panel-header">
+        <Button type="primary" onClick={this.handleEntryHeadSave}>
+          {formatGlobalMsg(this.props.intl, 'save')}
+        </Button>
+        </div>
+      <div className="panel-body padding">
+        <Collapse accordion defaultActiveKey="entry-head">
+          <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
+            <BillHead ietype={ietype} readonly={readonly} form={form} formData={head}
+            />
+          </Panel>
+          <Panel header={this.msg('entryList')} key="entry-list">
+            <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
+              onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
+              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id } />
+          </Panel>
+        </Collapse>
+      </div>
     </div>);
   }
 }
