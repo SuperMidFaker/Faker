@@ -51,10 +51,7 @@ function * sendMessage(from, to, msg) {
 		      {
 		      	$or: [
 		      		{
-		      			parent_tenant_id: to.tenant_id,
-		      		},
-		      		{
-		      			parent_tenant_id: 0,
+		      			tenant_id: to.tenant_id,
 		      		}
 		      	]
 		      },
@@ -73,6 +70,7 @@ function * sendMessage(from, to, msg) {
 	  });
 	  const promises = [];
 	  const loginIds = [];
+	  console.log(result)
 		result.forEach((item) => {
 			const rec = {...data, login_id: item.login_id, status: 0, time: new Date()};
 			promises.push(messages.create(rec));
@@ -87,6 +85,7 @@ function * sendMessage(from, to, msg) {
 	    },
 	    attributes: ['login_id', 'openid']
 	  });
+	  console.log(wus)
 	  wus.forEach((item) => {
 	  	const ship = {
 	  		...item,
