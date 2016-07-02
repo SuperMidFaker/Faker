@@ -235,7 +235,7 @@ export function CountryAttr(props) {
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
   const tradeCountryProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'trade_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
@@ -249,7 +249,7 @@ export function CountryAttr(props) {
   };
   const departCountryProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'depart_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
@@ -263,7 +263,7 @@ export function CountryAttr(props) {
   };
   const licenseNoProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'license_no',
     label: msg('licenseNo'),
     disabled,
@@ -272,7 +272,7 @@ export function CountryAttr(props) {
   };
   const trxModeProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'trx_mode',
     options: formRequire.trxModes.map(tm => ({
       value: tm.trx_mode,
@@ -285,7 +285,7 @@ export function CountryAttr(props) {
   };
   const contractNoProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'contract_no',
     label: msg('contractNo'),
     disabled,
@@ -294,7 +294,7 @@ export function CountryAttr(props) {
   };
   const packCountProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'pack_count',
     label: msg('packCount'),
     disabled,
@@ -303,7 +303,7 @@ export function CountryAttr(props) {
   };
   const containerNoProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'container_no',
     label: msg('containerNo'),
     disabled,
@@ -312,7 +312,7 @@ export function CountryAttr(props) {
   };
   const usageProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'usage',
     label: msg('usage'),
     disabled,
