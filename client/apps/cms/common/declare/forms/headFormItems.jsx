@@ -346,7 +346,7 @@ export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, type, ietype } = props;
   const destPortProps = {
-    outercol: 8,
+    outercol: 12,
     col: 8,
     field: 'dest_port',
     options: formRequire.ports.map(port => ({
@@ -360,7 +360,7 @@ export function DestInvoice(props) {
     getFieldProps,
   };
   const districtProps = {
-    outercol: 8,
+    outercol: 12,
     col: 8,
     field: 'district_code',
     options: formRequire.districts.map(dist => ({
