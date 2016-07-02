@@ -88,7 +88,7 @@ export function RelationAutoCompSelect(props) {
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
         <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
-            <Select combobox showArrow={false} filterOption={false} disabled={disabled}
+            <Select size="large" showSearch combobox showArrow={false} filterOption={false} disabled={disabled}
               defaultActiveFirstOption={false} allowClear
               placeholder={msg('relationCodeSearch')} {
                 ...getFieldProps(codeField, {

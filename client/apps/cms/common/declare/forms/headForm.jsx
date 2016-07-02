@@ -84,8 +84,10 @@ export default class HeadForm extends React.Component {
       <Form horizontal form={form} className="form-compact">
         <FormInput field="pre_entry_id" outercol={9} col={6}
           label={this.msg('preEntryId')} {...formProps} />
-        <FormInput field="entry_id" outercol={15} col={4}
-          label={this.msg('formEntryId')} {...formProps} />
+        <Col span="15">
+            <FormInput field="entry_id" outercol={16} col={4}
+              label={this.msg('formEntryId')} {...formProps} />
+        </Col>
         <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
           codeField="forwarder_code" nameField="forwarder_name"
           codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
@@ -112,9 +114,11 @@ export default class HeadForm extends React.Component {
         />
         <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
         <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
-        <FormInput field="cert_mark" outercol={12} col={4}
-          label={this.msg('certMark')} {...formProps} />
-        <FormInput field="note" outercol={24} col={2} type="textarea"
+        <Col span="15">
+          <FormInput field="cert_mark" outercol={16} col={4}
+            label={this.msg('certMark')} {...formProps} />
+        </Col>
+        <FormInput field="note" outercol={9} col={4} type="textarea"
           label={this.msg('markNotes')} {...formProps} />
       </Form>
     );
