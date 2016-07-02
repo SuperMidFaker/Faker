@@ -12,7 +12,7 @@ export default function FormInput(props) {
     <Col span={outercol}>
       <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
         required={required}>
-        <Select disabled={disabled}
+        <Select disabled={disabled} showSearch
           {...getFieldProps(field, { rules, initialValue: formData && formData[field],
           ...fieldProps })}>
           {
