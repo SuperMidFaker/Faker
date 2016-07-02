@@ -11,13 +11,11 @@ export default function FormInput(props) {
     <Col span={outercol}>
       <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
         hasFeedback={hasFeedback} required={required}>
-        <Col span="24">
           <Input type={type} disabled={disabled} placeholder={placeholder}
             {...getFieldProps(field, { rules, initialValue:
               formData && formData[field] && String(formData[field]),
             ...fieldProps })}
           />
-        </Col>
       </FormItem>
     </Col>
   );
