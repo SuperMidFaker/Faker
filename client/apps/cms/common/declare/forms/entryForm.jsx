@@ -90,6 +90,7 @@ export default class EntryForm extends React.Component {
         <Button type="primary" onClick={this.handleEntryHeadSave} icon="save" size="small">
           {formatGlobalMsg(this.props.intl, 'save')}
         </Button>
+        <Button type="ghost" icon="delete" size="small" />
       </div>
       <div className="panel-body padding">
         <Collapse accordion defaultActiveKey="entry-head">
