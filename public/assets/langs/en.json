@@ -6,7 +6,7 @@
   "component.module.inventory": "Inventory",
   "component.module.tracking": "Tracking",
   "component.module.cost": "Cost Analytics",
-  "component.module.performance": "KPI",
+  "component.module.integration": "Integration",
   "component.user.setting": "User Setting",
   "component.user.pwdsetting": "Change Password",
   "component.user.logout": "Logout",

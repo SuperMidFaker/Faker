@@ -63,7 +63,7 @@ export default class TrackingLandWrapper extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <RadioGroup onChange={this.handleStatusNav} value={radioValue}>
+          <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
@@ -72,13 +72,13 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
           <span style={{marginLeft: '10px'}} />
-          <RadioGroup onChange={this.handlePodNav} value={radioValue}>
+          <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
             <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
             <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
           <span style={{marginLeft: '10px'}} />
-          <RadioGroup onChange={this.handleExcpNav} value={radioValue}>
+          <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="warning">{this.msg('exceptionWarn')}</RadioButton>
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
             <RadioButton value="loss">{this.msg('exceptionLoss')}</RadioButton>
