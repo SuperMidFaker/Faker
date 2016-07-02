@@ -432,7 +432,7 @@ function FeeFormItem(props) {
         <Col span="12">
           <FormInput {...feeProps} />
         </Col>
-        <Col span="12">
+        <Col span="12" style={{paddingRight: 0}}>
           <FormSelect {...currencyProps} />
         </Col>
       </InputGroup>
