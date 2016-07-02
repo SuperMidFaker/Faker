@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, message } from 'ant-ui';
+import { Form, message, Col } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
