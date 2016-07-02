@@ -12,6 +12,7 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
 
+//进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
@@ -49,7 +50,7 @@ export function PortDate(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="14">
       <FormSelect {...portProps} />
       <FormDatePicker { ...ieDateProps } />
       <FormDatePicker { ...dDateProps } />
@@ -65,6 +66,7 @@ PortDate.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//关联单位
 export function RelationAutoCompSelect(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const {
@@ -82,7 +84,7 @@ export function RelationAutoCompSelect(props) {
     }
   }
   return (
-    <Col span="12">
+    <Col span="10">
       <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
         <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
@@ -125,6 +127,7 @@ RelationAutoCompSelect.propTypes = {
   onSelect: PropTypes.func,
 };
 
+//运输方式、运输名称、提运单号
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
@@ -160,7 +163,7 @@ export function Transport(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="14">
       <FormSelect { ...modeProps } />
       <FormInput { ...modeNameProps} />
       <FormInput { ...blwbProps} />
@@ -175,6 +178,7 @@ Transport.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//监管方式、征免性质、备案号
 export function TradeRemission(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
@@ -215,7 +219,7 @@ export function TradeRemission(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="14">
       <FormSelect { ...tradeModeProps } />
       <FormSelect { ...remissionProps} />
       <FormInput { ...emsNoProps} />
@@ -230,6 +234,7 @@ TradeRemission.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
@@ -320,7 +325,7 @@ export function CountryAttr(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="10">
       <FormSelect { ...tradeCountryProps } />
       <FormSelect { ...departCountryProps } />
       <FormInput { ...licenseNoProps } />
@@ -342,11 +347,12 @@ CountryAttr.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//装货港、境内目的地、发票号
 export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, type, ietype } = props;
   const destPortProps = {
-    outercol: 12,
+    outercol: 8,
     col: 8,
     field: 'dest_port',
     options: formRequire.ports.map(port => ({
@@ -360,7 +366,7 @@ export function DestInvoice(props) {
     getFieldProps,
   };
   const districtProps = {
-    outercol: 12,
+    outercol: 8,
     col: 8,
     field: 'district_code',
     options: formRequire.districts.map(dist => ({
@@ -383,7 +389,7 @@ export function DestInvoice(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="14">
       <FormSelect { ...destPortProps } />
       <FormSelect { ...districtProps } />
       { type === 'bill' && <FormInput { ...invoiceNoProps} /> }
@@ -401,6 +407,7 @@ DestInvoice.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//费用
 function FeeFormItem(props) {
   const { feeField, currencyField, label, disabled, formData, getFieldProps, formRequire } = props;
   const feeProps = {
@@ -446,7 +453,7 @@ FeeFormItem.propTypes = {
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   return (
-    <Col span="12">
+    <Col span="14">
       <Col span="8">
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr" />
@@ -471,6 +478,7 @@ Fee.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldProps, formRequire } = props;
@@ -505,7 +513,7 @@ export function PackWeight(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="14">
       <FormSelect {...packProps} />
       <FormInput {...grosswtProps} />
       <FormInput {...netwtProps} />
