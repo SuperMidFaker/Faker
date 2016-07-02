@@ -85,7 +85,7 @@ export function RelationAutoCompSelect(props) {
   }
   return (
     <Col span="10">
-      <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
         <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
             <Select combobox showArrow={false} filterOption={false} disabled={disabled}
@@ -427,7 +427,7 @@ function FeeFormItem(props) {
     getFieldProps,
   };
   return (
-    <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label}>
+    <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <InputGroup>
         <Col span="12">
           <FormInput {...feeProps} />
@@ -484,7 +484,7 @@ export function PackWeight(props) {
   const { disabled, formData, getFieldProps, formRequire } = props;
   const packProps = {
     outercol: 8,
-    col: 6,
+    col: 8,
     label: msg('packType'),
     field: 'pack_type',
     options: formRequire.packs,
@@ -494,7 +494,7 @@ export function PackWeight(props) {
   };
   const grosswtProps = {
     outercol: 8,
-    col: 10,
+    col: 8,
     field: 'gross_wt',
     label: msg('grosswt'),
     rules: [{ required: true }],
@@ -504,7 +504,7 @@ export function PackWeight(props) {
   };
   const netwtProps = {
     outercol: 8,
-    col: 10,
+    col: 8,
     field: 'net_wt',
     label: msg('netwt'),
     rules: [{ required: true }],
