@@ -51,19 +51,14 @@ function * sendMessage(from, to, msg) {
 		      {
 		      	$or: [
 		      		{
-		      			parent_tenant_id: to.tenant_id,
-		      		},
-		      		{
-		      			parent_tenant_id: 0,
+		      			tenant_id: to.tenant_id,
 		      		}
 		      	]
-		      },
-		      {
+		      }, {
 		      	$or: [
 		      		{
 		      			user_type: 'manager',
-		      		},
-		      		{
+		      		}, {
 		      			user_type: 'owner',
 		      		}
 		      	]
@@ -73,6 +68,7 @@ function * sendMessage(from, to, msg) {
 	  });
 	  const promises = [];
 	  const loginIds = [];
+	  console.log(result)
 		result.forEach((item) => {
 			const rec = {...data, login_id: item.login_id, status: 0, time: new Date()};
 			promises.push(messages.create(rec));
@@ -87,6 +83,7 @@ function * sendMessage(from, to, msg) {
 	    },
 	    attributes: ['login_id', 'openid']
 	  });
+	  console.log(wus)
 	  wus.forEach((item) => {
 	  	const ship = {
 	  		...item,
@@ -133,13 +130,9 @@ function sendNewShipMessage(ship) {
       tenant_id: ship.to_tenant_id,
     },{
     	...ship,
-      title: '新运单通知',
-      content: `${ship.name} 下单了，快去看看吧！运单号：${ship.shipmt_no}`,
-      remark: `${ship.name} 下单了，快去看看吧！`,
       logo: ship.logo || WELOGIX_LOGO_URL,
-      url: 'https://wx.welogix.cn/weixin/transport/dispatch/detail',
+      url: '/transport/dispatch/detail',
       time: moment(new Date()).format('YYYY-MM-DD HH:mm'),
-      shipmt_no: ship.shipmt_no,
       status: msg(ship.status),
     });
 }

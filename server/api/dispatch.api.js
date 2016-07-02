@@ -250,6 +250,9 @@ function *doSend() {
       status,
       consigner_city,
       consignee_city,
+      title: '新运单通知',
+      remark: `${sr_name} 下单了，快去看看吧！`,
+      content: `${sr_name} 下单了，快去看看吧！运单号：${shipmtNo}`
     });
     arr.push(shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus), s);
   });

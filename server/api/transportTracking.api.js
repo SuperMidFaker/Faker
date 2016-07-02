@@ -55,12 +55,15 @@ function *trackingPickDeliverDateP() {
     const body = yield cobody(this);
     const { dispId, shipmtNo, type, actDate, loginId } = body;
     let fields;
+    let operationType = '';
     if (type === 'pickup') {
+      operationType = '提货';
       fields = {
         pickup_act_date: new Date(actDate),
         status: SHIPMENT_TRACK_STATUS.intransit,
       };
     } else {
+      operationType = '交货';
       fields = {
         deliver_act_date: new Date(actDate),
         status: SHIPMENT_TRACK_STATUS.delivered,
@@ -83,6 +86,9 @@ function *trackingPickDeliverDateP() {
       status: disp.status,
       consigner_city: disp.consigner_city,
       consignee_city: disp.consignee_city,
+      title: `${operationType}通知`,
+      remark: `${disp.sp_name} ${operationType}了，快去看看吧！`,
+      content: `${disp.sp_name} ${operationType}了，快去看看吧！运单号：${shipmtNo}`
     });
     return Result.ok(this);
   } catch (e) {

@@ -24,7 +24,7 @@ export default class MessagePrompt extends React.Component {
     router: PropTypes.object.isRequired
   }
   componentDidMount() {
-    const socket = io.connect();
+    const socket = io.connect(window.location.origin);
     socket.on('connect', () => {
       const {tenantId, loginId} = this.props;
       socket.emit('room', {tenantId, loginId});
