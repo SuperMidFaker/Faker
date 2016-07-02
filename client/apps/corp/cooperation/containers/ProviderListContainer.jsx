@@ -72,7 +72,7 @@ export default class ProviderListContainer extends BaseList {
   setHeader() {
     const { providerType = 'ALL' } = this.props;
     return (
-      <RadioGroup onChange={this.handleRadioChange} defaultValue={providerType}>
+      <RadioGroup onChange={this.handleRadioChange} defaultValue={providerType} size="large">
         <RadioButton value="ALL">所有</RadioButton>
         <RadioButton value="FWD">货代</RadioButton>
         <RadioButton value="CCB">报关</RadioButton>

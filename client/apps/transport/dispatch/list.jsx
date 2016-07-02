@@ -451,15 +451,13 @@ export default class DispatchList extends React.Component {
     } else {
       if (status === 'waiting') {
         panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange}/>),
-        (<span className="ant-divider" style={{width: '0px'}}/>),
         (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>));
       } else if (status === 'dispatched') {
         panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
           <Option value="0">最近七天</Option>
           <Option value="1">最近一月</Option>
         </Select>),
-        (<span className="ant-divider" style={{width: '0px'}}/>),
-        (<Button onClick={this.handleExportDispShipmts}><span>{this.msg('btnTextExport')}</span><Icon type="arrow-down" /></Button>));
+        (<Button onClick={this.handleExportDispShipmts} icon="export"><span>{this.msg('btnTextExport')}</span></Button>));
       }
     }
 
@@ -891,7 +889,7 @@ export default class DispatchList extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <RadioGroup onChange={this.handleStatusChange} value={status}>
+          <RadioGroup onChange={this.handleStatusChange} value={status} size="large">
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>

@@ -49,20 +49,6 @@ export default class CorpPack extends React.Component {
       path: '/corp/partners',
       icon: 'zmdi zmdi-share',
       text: formatMsg(intl, 'partnership')
-    }, {
-      single: false,
-      key: 'corpsetting-5',
-      icon: 'zmdi zmdi-star-circle',
-      text: formatMsg(intl, 'serviceCenter'),
-      sublinks: [{
-        key: 'service-1',
-        path: '/corp/service/buy',
-        text: formatMsg(intl, 'servicePurchase')
-      }, {
-        key: 'service-2',
-        path: '/corp/service/payment',
-        text: formatMsg(intl, 'servicePayment')
-      }]
     }];
     return (
       <div className="am-wrapper am-fixed-sidebar">

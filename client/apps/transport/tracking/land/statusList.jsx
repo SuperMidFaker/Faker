@@ -253,7 +253,7 @@ export default class LandStatusList extends React.Component {
       <div>
         <div className="page-body">
           <div className="panel-header">
-            <NavLink to="/transport/acceptance/shipment/new">
+            <NavLink to="">
               <Button icon="export" type="primary">
                 <span>{formatGlobalMsg(intl, 'export')}</span>
               </Button>
