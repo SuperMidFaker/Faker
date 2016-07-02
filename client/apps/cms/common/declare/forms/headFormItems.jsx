@@ -50,7 +50,7 @@ export function PortDate(props) {
     getFieldProps,
   };
   return (
-    <Col span="14">
+    <Col span="15">
       <FormSelect {...portProps} />
       <FormDatePicker { ...ieDateProps } />
       <FormDatePicker { ...dDateProps } />
@@ -84,7 +84,7 @@ export function RelationAutoCompSelect(props) {
     }
   }
   return (
-    <Col span="10">
+    <Col span="9">
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
         <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
@@ -101,7 +101,7 @@ export function RelationAutoCompSelect(props) {
               }
             </Select>
           </Col>
-          <Col span="12">
+          <Col span="12" style={{paddingRight: 0}}>
             <Input placeholder={msg('relationName')} disabled={disabled}
             {...getFieldProps(nameField, {
               rules: nameRules,
@@ -163,7 +163,7 @@ export function Transport(props) {
     getFieldProps,
   };
   return (
-    <Col span="14">
+    <Col span="15">
       <FormSelect { ...modeProps } />
       <FormInput { ...modeNameProps} />
       <FormInput { ...blwbProps} />
@@ -219,7 +219,7 @@ export function TradeRemission(props) {
     getFieldProps,
   };
   return (
-    <Col span="14">
+    <Col span="15">
       <FormSelect { ...tradeModeProps } />
       <FormSelect { ...remissionProps} />
       <FormInput { ...emsNoProps} />
@@ -325,7 +325,7 @@ export function CountryAttr(props) {
     getFieldProps,
   };
   return (
-    <Col span="10">
+    <Col span="9">
       <FormSelect { ...tradeCountryProps } />
       <FormSelect { ...departCountryProps } />
       <FormInput { ...licenseNoProps } />
@@ -389,7 +389,7 @@ export function DestInvoice(props) {
     getFieldProps,
   };
   return (
-    <Col span="14">
+    <Col span="15">
       <FormSelect { ...destPortProps } />
       <FormSelect { ...districtProps } />
       { type === 'bill' && <FormInput { ...invoiceNoProps} /> }
@@ -453,7 +453,7 @@ FeeFormItem.propTypes = {
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   return (
-    <Col span="14">
+    <Col span="15">
       <Col span="8">
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr" />
@@ -513,7 +513,7 @@ export function PackWeight(props) {
     getFieldProps,
   };
   return (
-    <Col span="14">
+    <Col span="15">
       <FormSelect {...packProps} />
       <FormInput {...grosswtProps} />
       <FormInput {...netwtProps} />

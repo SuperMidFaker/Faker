@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Button, message } from 'ant-ui';
+import { Collapse, Form, Button, message, Icon } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -85,7 +85,7 @@ export default class BillForm extends React.Component {
     return (<div>
       <div className="panel-header">
         <Button type="primary" onClick={this.handleBillSave}>
-          {formatGlobalMsg(this.props.intl, 'save')}
+          <Icon type="save" />{formatGlobalMsg(this.props.intl, 'save')}
         </Button>
       </div>
       <div className="panel-body padding">
