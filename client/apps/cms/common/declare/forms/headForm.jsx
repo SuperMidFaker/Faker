@@ -118,8 +118,10 @@ export default class HeadForm extends React.Component {
           <FormInput field="cert_mark" outercol={16} col={4}
             label={this.msg('certMark')} {...formProps} />
         </Col>
-        <FormInput field="note" outercol={9} col={4} type="textarea"
-          label={this.msg('markNotes')} {...formProps} />
+        <Col span="24">
+          <FormInput field="note" outercol={9} col={4} type="textarea"
+            label={this.msg('markNotes')} {...formProps} />
+        </Col>
       </Form>
     );
   }
