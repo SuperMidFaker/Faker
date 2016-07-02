@@ -87,10 +87,10 @@ export default class EntryForm extends React.Component {
     const head = entry.head;
     return (<div>
       <div className="panel-header">
-        <Button type="primary" onClick={this.handleEntryHeadSave}>
+        <Button type="primary" onClick={this.handleEntryHeadSave} icon="save" size="small">
           {formatGlobalMsg(this.props.intl, 'save')}
         </Button>
-        </div>
+      </div>
       <div className="panel-body padding">
         <Collapse accordion defaultActiveKey="entry-head">
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
