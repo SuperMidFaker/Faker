@@ -390,7 +390,11 @@ export default class AcceptList extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+            <NavLink to="/transport/acceptance/shipment/new">
+              <Button type="primary">
+                <Icon type="plus-circle-o" /><span>{formatGlobalMsg(intl, 'createNew')}</span>
+              </Button>
+            </NavLink>
           </div>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
@@ -401,15 +405,10 @@ export default class AcceptList extends React.Component {
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
+          <span style={{marginLeft: '10px'}} />
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body">
-          <div className="panel-header">
-            <NavLink to="/transport/acceptance/shipment/new">
-              <Button type="primary">
-                <Icon type="plus-circle-o" /><span>{formatGlobalMsg(intl, 'createNew')}</span>
-              </Button>
-            </NavLink>
-          </div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2800, y: 460 }}
