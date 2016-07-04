@@ -385,4 +385,60 @@ export default defineMessages({
     id: 'cms.declare.entry.list',
     defaultMessage: '报关单表体',
   },
+  mergePrinciple: {
+    id: 'cms.declare.modal.merge.principle',
+    defaultMessage: '归并原则',
+  },
+  splitPrinciple: {
+    id: 'cms.declare.modal.split.principle',
+    defaultMessage: '拆分原则',
+  },
+  sortPrinciple: {
+    id: 'cms.declare.modal.sort.principle',
+    defaultMessage: '排序原则',
+  },
+  conditionalMerge: {
+    id: 'cms.declare.modal.conditional.merge',
+    defaultMessage: '条件归并:',
+  },
+  productName: {
+    id: 'cms.declare.modal.product.name',
+    defaultMessage: '中文品名',
+  },
+  productCode: {
+    id: 'cms.declare.modal.product.code',
+    defaultMessage: '商品货号',
+  },
+  nonMerge: {
+    id: 'cms.declare.modal.non.merge',
+    defaultMessage: '不归并:',
+  },
+  specialHscodeDeclare: {
+    id: 'cms.declare.modal.split.special.hscode',
+    defaultMessage: '特殊商品编码独立报关',
+  },
+  customControlDeclare: {
+    id: 'cms.declare.modal.split.custom.declare',
+    defaultMessage: '海关监管项独立报关',
+  },
+  customOnTop: {
+    id: 'cms.declare.modal.sort.custom.ontop',
+    defaultMessage: '海关监管项置顶',
+  },
+  totalPriceOnTop: {
+    id: 'cms.declare.modal.sort.totalprice.ontop',
+    defaultMessage: '最大金额项优先',
+  },
+  hsCodeAscSort: {
+    id: 'cms.declare.modal.sort.hscode.asc',
+    defaultMessage: '商品编码升序',
+  },
+  priceDescSort: {
+    id: 'cms.declare.modal.sort.price.desc',
+    defaultMessage: '申报金额降序',
+  },
+  entryNoFillModalTitle: {
+    id: 'cms.declare.modal.entrynofill.title',
+    defaultMessage: '填写报关单号'
+  },
 });

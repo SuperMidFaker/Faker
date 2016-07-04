@@ -4,10 +4,12 @@ import { Tabs, Dropdown, Menu, Icon } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadBills, loadEntries, loadCmsParams, addEntry, setTabKey } from 'common/reducers/cmsDeclare';
+import { loadBills, loadEntries, loadCmsParams, addEntry,
+  setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
 import { setNavTitle } from 'common/reducers/navbar';
 import BillForm from './forms/billForm';
 import EntryForm from './forms/entryForm';
+import MergeSplitModal from './modals/mergeSplit';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import './entryBill.less';
@@ -34,7 +36,7 @@ function fetchData({ dispatch, params, cookie }) {
     entries: state.cmsDeclare.entries,
     activeKey: state.cmsDeclare.activeTabKey,
   }),
-  { addEntry, setTabKey }
+  { addEntry, setTabKey, openMergeSplitModal }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -73,6 +75,8 @@ export default class EntryBillForm extends React.Component {
   handleEntryMenuClick = (ev) => {
     if (ev.key === 'add') {
       this.props.addEntry();
+    } else if (ev.key === 'generate') {
+      this.props.openMergeSplitModal();
     }
   }
   handleTabChange = (activeKey) => {
@@ -111,6 +115,7 @@ export default class EntryBillForm extends React.Component {
             }
           </Tabs>
         </div>
+        <MergeSplitModal />
       </div>
     );
   }

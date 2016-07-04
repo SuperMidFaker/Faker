@@ -13,12 +13,15 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
   'EDIT_BILLBODY', 'EDIT_BILLBODY_SUCCEED', 'EDIT_BILLBODY_FAIL',
   'SAVE_BILLHEAD', 'SAVE_BILLHEAD_SUCCEED', 'SAVE_BILLHEAD_FAIL',
-  'ADD_ENTRY', 'SET_TABKEY',
+  'ADD_ENTRY', 'SET_TABKEY', 'CLOSE_MS_MODAL', 'OPEN_MS_MODAL',
   'ADD_NEW_ENTRY_BODY', 'DEL_ENTRY_BODY', 'EDIT_ENTRY_BODY',
   'SAVE_ENTRYHEAD', 'SAVE_ENTRYHEAD_SUCCEED', 'SAVE_ENTRYHEAD_FAIL',
   'ADD_ENTRYBODY', 'ADD_ENTYBODY_SUCCEED', 'ADD_ENTRYBODY_FAIL',
   'DEL_ENTRYBODY', 'DEL_ENTRYBODY_SUCCEED', 'DEL_ENTRYBODY_FAIL',
   'EDIT_ENTRYBODY', 'EDIT_ENTRYBODY_SUCCEED', 'EDIT_ENTRYBODY_FAIL',
+  'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
+  'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
+  'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
 ]);
 
 const initialState = {
@@ -56,6 +59,12 @@ const initialState = {
     packs: PackTypes,
     units: [],
   },
+  visibleMSModal: false,
+  visibleEfModal: false,
+  efModal: {
+    entryHeadId: -1,
+    delgNo: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -78,7 +87,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: { ...state.params, ...action.result.data }};
     case actionTypes.SAVE_BILLHEAD_SUCCEED:
-      return { ...state, billHead: { ...state.billHead, bill_no: action.result.data.billNo }};
+      return { ...state, billHead: action.result.data };
     case actionTypes.ADD_ENTRY: {
       const copyHead = (head) => {
         const excludes = [
@@ -95,10 +104,23 @@ export default function reducer(state = initialState, action) {
       };
       const prevHead = state.entries.length > 0 ? state.entries[0].head : state.billHead;
       const head = copyHead(prevHead);
-      return { ...state, entries: [ ...state.entries, { head, bodies: [] } ], activeTabKey: `entry${state.entries.length}` };
+      return {
+        ...state, entries: [ ...state.entries, { head, bodies: [] } ],
+        activeTabKey: `entry${state.entries.length}`
+      };
     }
     case actionTypes.SET_TABKEY:
       return { ...state, activeTabKey: action.data };
+    case actionTypes.OPEN_MS_MODAL:
+      return { ...state, visibleMSModal: true, };
+    case actionTypes.CLOSE_MS_MODAL:
+      return { ...state, visibleMSModal: false, };
+    case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
+      return { ...state, entries: action.result.data };
+    case actionTypes.OPEN_EF_MODAL:
+      return { ...state, visibleEfModal: true, efModal: action.data };
+    case actionTypes.CLOSE_EF_MODAL:
+      return { ...state, visibleEfModal: false, efModal: initialState.efModal };
     default:
       return state;
   }
@@ -312,5 +334,60 @@ export function setTabKey(activeKey) {
   return {
     type: actionTypes.SET_TABKEY,
     data: activeKey,
+  };
+}
+
+export function openMergeSplitModal() {
+  return {
+    type: actionTypes.OPEN_MS_MODAL,
+  };
+}
+
+export function closeMergeSplitModal() {
+  return {
+    type: actionTypes.CLOSE_MS_MODAL,
+  };
+}
+
+export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SUBMIT_MERGESPLIT,
+        actionTypes.SUBMIT_MERGESPLIT_SUCCEED,
+        actionTypes.SUBMIT_MERGESPLIT_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/bill/mergesplit',
+      method: 'post',
+      data: { billNo, mergeOpt, splitOpt, sortOpt },
+    },
+  };
+}
+
+export function openEfModal({ entryHeadId, delgNo }) {
+  return {
+    type: actionTypes.OPEN_EF_MODAL,
+    data: { entryHeadId, delgNo },
+  };
+}
+
+export function closeEfModal() {
+  return {
+    type: actionTypes.CLOSE_EF_MODAL,
+  };
+}
+
+export function fillEntryNo({ entryNo, entryHeadId, delgNo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILL_ENTRYNO,
+        actionTypes.FILL_ENTRYNO_SUCCEED,
+        actionTypes.FILL_ENTRYNO_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entry/fillno',
+      method: 'post',
+      data: { entryNo, entryHeadId, delgNo },
+    },
   };
 }

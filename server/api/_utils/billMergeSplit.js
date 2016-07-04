@@ -57,45 +57,40 @@ function mergeSortBodies(billList, mergeOpt, sortOpt) {
     }
     merged = dg.merge(billList, groupedKeys);
   }
-  // todo http://stackoverflow.com/a/6913821
-  const fieldOrders = [];
+  // http://stackoverflow.com/a/6913821
+  const fieldOrderCmps = [];
+  const defaultCmp = (lhs, rhs) => {
+    if (lhs === rhs) {
+      return 0;
+    }
+    return lhs < rhs ? 1 : -1;
+  };
   if (sortOpt.customControl) {
-    fieldOrders.push({
-      fieldFn: obj => obj.custom_control,
-      order: 'desc',
-    });
+    fieldOrderCmps.push(
+      (lhs, rhs) => defaultCmp(lhs.custom_control, rhs.custom_control)
+    );
   }
   if (sortOpt.decTotal) {
-    fieldOrders.push({
-      fieldFn: obj => obj.dec_total,
-      order: 'desc',
-    });
+    fieldOrderCmps.push(
+      (lhs, rhs) => defaultCmp(lhs.dec_total, rhs.dec_total)
+    );
   }
   if (sortOpt.decPriceDesc) {
-    fieldOrders.push({
-      fieldFn: obj => obj.dec_price,
-      order: 'desc',
-    });
+    fieldOrderCmps.push(
+      (lhs, rhs) => defaultCmp(lhs.dec_price, rhs.dec_price)
+    );
   }
   if (sortOpt.hsCodeAsc) {
-    fieldOrders.push({
-      fieldFn: obj => `${obj.code_t}${obj.code_s}`,
-      order: 'asc',
-    });
+    fieldOrderCmps.push(
+      (lhs, rhs) => -1 * defaultCmp(`${lhs.code_t}${lhs.code_s}`, `${rhs.code_t}${rhs.code_s}`)
+    );
   }
-  if (fieldOrders.length > 0) {
+  if (fieldOrderCmps.length > 0) {
     merged = merged.sort((lhs, rhs) => {
       let cmped = 0;
-      for (let i = 0; i < fieldOrders.length; i++) {
-        const fo = fieldOrders[i];
-        if (fo.fieldFn(lhs) === fo.fieldFn(rhs)) {
-          continue;
-        }
-        if (fo.order === 'asc') {
-          cmped = fo.fieldFn(lhs) < fo.fieldFn(rhs) ? -1 : 1;
-        } else {
-          cmped = fo.fieldFn(lhs) < fo.fieldFn(rhs) ? 1 : -1;
-        }
+      for (let i = 0; i < fieldOrderCmps.length; i++) {
+        const fo = fieldOrderCmps[i];
+        cmped = fo(lhs, rhs);
         if (cmped !== 0) {
           break;
         }
@@ -170,9 +165,15 @@ export default function mergeSplit(billHead, entryNumSoFar, billList, splitOpt, 
     customControlBillList = billList.filter(bl => bl.custom_control > 0);
     normalBillList = normalBillList.filter(bl => bl.custom_control === 0);
   }
-  specailHsCodeBillList = mergeSortBodies(specailHsCodeBillList, mergeOpt, sortOpt);
-  customControlBillList = mergeSortBodies(customControlBillList, mergeOpt, sortOpt);
-  normalBillList = mergeSortBodies(normalBillList, mergeOpt, sortOpt);
+  if (specailHsCodeBillList.length > 0) {
+    specailHsCodeBillList = mergeSortBodies(specailHsCodeBillList, mergeOpt, sortOpt);
+  }
+  if (customControlBillList.length > 0) {
+    customControlBillList = mergeSortBodies(customControlBillList, mergeOpt, sortOpt);
+  }
+  if (normalBillList.length > 0) {
+    normalBillList = mergeSortBodies(normalBillList, mergeOpt, sortOpt);
+  }
 
   let entries = splitPerCountToEntries(specailHsCodeBillList, billHead,
     entryNumSoFar, splitOpt.perCount, billTotal);

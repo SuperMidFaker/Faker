@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
 
-//进出口口岸、进出口日期、申报日期
+// 进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
@@ -66,7 +66,7 @@ PortDate.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-//关联单位
+// 关联单位
 export function RelationAutoCompSelect(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const {
@@ -127,7 +127,7 @@ RelationAutoCompSelect.propTypes = {
   onSelect: PropTypes.func,
 };
 
-//运输方式、运输名称、提运单号
+// 运输方式、运输名称、提运单号
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
@@ -178,7 +178,7 @@ Transport.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-//监管方式、征免性质、备案号
+// 监管方式、征免性质、备案号
 export function TradeRemission(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
@@ -234,7 +234,7 @@ TradeRemission.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-//贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
+// 贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
@@ -347,7 +347,7 @@ CountryAttr.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-//装货港、境内目的地、发票号
+// 装货港、境内目的地、发票号
 export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, type, ietype } = props;
@@ -407,7 +407,7 @@ DestInvoice.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-//费用
+// 费用
 function FeeFormItem(props) {
   const { feeField, currencyField, label, disabled, formData, getFieldProps, formRequire } = props;
   const feeProps = {
@@ -478,7 +478,7 @@ Fee.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-//包装、毛重、净重
+// 包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldProps, formRequire } = props;

@@ -5,7 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgList } from 'common/reducers/cmsDeclare';
+import { loadDelgList, openEfModal } from 'common/reducers/cmsDeclare';
+import EntryNoFillModal from './modals/entryNoFill';
 import { setNavTitle } from 'common/reducers/navbar';
 import makeColumn from './columnsDef';
 import { format } from 'client/common/i18n/helpers';
@@ -40,7 +41,7 @@ function fetchData({ state, dispatch, cookie, params }) {
     delgList: state.cmsDeclare.delgList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadDelgList })
+  { loadDelgList, openEfModal })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -63,6 +64,7 @@ export default class DeclareList extends React.Component {
     listFilter: PropTypes.object.isRequired,
     delgList: PropTypes.object.isRequired,
     loadDelgList: PropTypes.func.isRequired,
+    openEfModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -143,11 +145,19 @@ export default class DeclareList extends React.Component {
       `/${this.props.ietype}/declare/list/${targetVal}`
     });
   }
+  handleEntryNoFill = (row) => {
+    this.props.openEfModal({
+      entryHeadId: row.entry_head_id,
+      delgNo: row.delg_no,
+    });
+  }
   render() {
     const { aspect, delgList, listFilter, ietype } = this.props;
     this.dataSource.remotes = delgList;
     const status = listFilter.declareType;
-    const columns = makeColumn(status, aspect, ietype, {}, this.msg);
+    const columns = makeColumn(status, aspect, ietype, {
+      onWriteEntryId: this.handleEntryNoFill,
+    }, this.msg);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
@@ -177,6 +187,7 @@ export default class DeclareList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
+        <EntryNoFillModal reload={this.handleTableLoad} />
       </div>
     );
   }
