@@ -189,13 +189,13 @@ export default class BaseList extends Component {
     return (
       <div className="main-content">
         <div className="page-header">
+          <div className="tools">
+            <Button type="primary" size="large" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
+          </div>
           {header}
         </div>
         <div className="page-body">
-          <div className="panel-header">
-            <Button type="primary" onClick={() => this.handleAddBtnClick()}><Icon type="plus-circle-o"/>新增{partnerTypeName}</Button>
-          </div>
-          <div className="panel-body padding">
+          <div className="panel-body">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
           </div>
         </div>
