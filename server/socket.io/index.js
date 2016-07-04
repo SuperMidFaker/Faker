@@ -1,5 +1,6 @@
 import { messages } from '../models/messages.db';
 import { TenantUser } from '../models/tenant-user.db';
+import { Tenant } from '../models/tenant.db';
 import { WeixinUser } from '../models/weixin.db';
 import { WELOGIX_LOGO_URL } from 'common/constants';
 import * as Wexin from '../util/weixin-template-message';
@@ -68,12 +69,18 @@ function * sendMessage(from, to, msg) {
 	  });
 	  const promises = [];
 	  const loginIds = [];
-	  console.log(result)
 		result.forEach((item) => {
 			const rec = {...data, login_id: item.login_id, status: 0, time: new Date()};
 			promises.push(messages.create(rec));
 			loginIds.push(item.login_id);
 		});
+		const tenant = Tenant.findOne({
+	    raw: true,
+	    where:{
+	      tenant_id: to.tenant_id
+	    },
+	    attributes: ['tenant_id', 'subdomain']
+	  });
 		const wus = yield WeixinUser.findAll({
 	    raw: true,
 	    where:{
@@ -83,13 +90,14 @@ function * sendMessage(from, to, msg) {
 	    },
 	    attributes: ['login_id', 'openid']
 	  });
-	  console.log(wus)
 	  wus.forEach((item) => {
 	  	const ship = {
 	  		...item,
 	  		...msg,
+	  		...tenant,
 	  		first: msg.title,
 	  		remark: msg.remark||msg.content,
+	  		url: `{msg.url}?subdomain=${tenant.subdomain}`
 	  	};
 			promises.push(Wexin.sendNewShipMessage(ship));
 		});
@@ -125,13 +133,13 @@ function sendNewShipMessage(ship) {
       tenant_id: ship.tenant_id,
       login_id: ship.login_id,
       name: ship.name,
-    },{
+    }, {
       namespace: '/',
       tenant_id: ship.to_tenant_id,
-    },{
+    }, {
     	...ship,
       logo: ship.logo || WELOGIX_LOGO_URL,
-      url: '/transport/dispatch/detail',
+      url: '/transport/dispatch',
       time: moment(new Date()).format('YYYY-MM-DD HH:mm'),
       status: msg(ship.status),
     });

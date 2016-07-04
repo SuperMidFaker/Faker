@@ -7,7 +7,7 @@ import messages from './message.i18n';
 import io from 'socket.io/node_modules/socket.io-client';
 
 const formatMsg = format(messages);
-
+let socket = null;
 @injectIntl
 @connect(
   state => {
@@ -24,22 +24,24 @@ export default class MessagePrompt extends React.Component {
     router: PropTypes.object.isRequired
   }
   componentDidMount() {
-    const socket = io.connect(window.location.origin);
-    socket.on('connect', () => {
-      const {tenantId, loginId} = this.props;
-      socket.emit('room', {tenantId, loginId});
-    });
-    socket.on('message', (data) => {
-      this.notif(data.title, {
-        body: data.content,
-        icon: data.logo,
-        url: data.url
+    if (socket === null) {
+      socket = io.connect();
+      socket.on('connect', () => {
+        const {tenantId, loginId} = this.props;
+        socket.emit('room', {tenantId, loginId});
       });
-    });
+      socket.on('message', (data) => {
+        this.notif(data.title, {
+          body: data.content,
+          icon: data.logo,
+          url: data.url
+        });
+      });
+    }
     if (Notification && Notification.permission !== 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
-            Notification.permission = status;
+          Notification.permission = status;
         }
       });
     }

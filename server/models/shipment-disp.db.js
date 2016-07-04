@@ -412,7 +412,7 @@ export default {
   },
   getShipmtDispWithNo(id) {
     const args = [id];
-    const sql = `select sd.id, sd.shipmt_no, sd.status, sd.sr_name, sd.sr_tenant_id, sd.sr_login_id, sd.sp_name, sd.sp_tenant_id,
+    const sql = `select sd.id, sd.parent_id, sd.shipmt_no, sd.status, sd.sr_name, sd.sr_tenant_id, sd.sr_login_id, sd.sp_name, sd.sp_tenant_id,
     s.consigner_city, s.consignee_city
     from tms_shipment_dispatch sd
     inner join tms_shipments s on s.shipmt_no=sd.shipmt_no where sd.id = ?`;

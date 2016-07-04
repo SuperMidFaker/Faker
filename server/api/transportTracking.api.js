@@ -75,21 +75,29 @@ function *trackingPickDeliverDateP() {
       shipmtNo, fields, trans
     );
     yield mysql.commit(trans);
-    const disps = yield shipmentDispDao.getShipmtDispWithNo(dispId);
-    const disp = disps[0];
-    yield sendNewShipMessage({
-      tenant_id: disp.sp_tenant_id,
-      login_id: loginId,
-      name: disp.sp_name,
-      to_tenant_id: disp.sr_tenant_id,
-      shipmt_no: disp.shipmt_no,
-      status: disp.status,
-      consigner_city: disp.consigner_city,
-      consignee_city: disp.consignee_city,
-      title: `${operationType}通知`,
-      remark: `${disp.sp_name} ${operationType}了，快去看看吧！`,
-      content: `${disp.sp_name} ${operationType}了，快去看看吧！运单号：${shipmtNo}`
-    });
+    let id = dispId;
+    while(id !== null)
+    {
+      const disps = yield shipmentDispDao.getShipmtDispWithNo(id);
+      const disp = disps[0];
+      if (disp.sp_tenant_id !== 0 && disp.sr_tenant_id !== -1) {
+        yield sendNewShipMessage({
+          tenant_id: disp.sp_tenant_id,
+          login_id: loginId,
+          name: disp.sp_name,
+          to_tenant_id: disp.sr_tenant_id,
+          shipmt_no: disp.shipmt_no,
+          status: disp.status,
+          consigner_city: disp.consigner_city,
+          consignee_city: disp.consignee_city,
+          title: `${operationType}通知`,
+          remark: `${disp.sp_name} ${operationType}了，快去看看吧！`,
+          content: `${disp.sp_name} ${operationType}了，快去看看吧！运单号：${shipmtNo}`
+        });
+      }
+      id = disp.parent_id;
+    }
+    
     return Result.ok(this);
   } catch (e) {
     if (trans) {

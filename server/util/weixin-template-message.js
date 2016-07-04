@@ -11,7 +11,7 @@ export function sendNewShipMessage(data){
   const data2post = {
     touser: data.openid,
     template_id: "JXWVBqh7JNxMTKCmF1kwrmd7z0epATApDIbaMOdHB8g",
-    url: `https://wx.welogix.cn/weixin${data.url}`,
+    url: `${weixinConfig.get('WX_DOMAIN')}/weixin${data.url}`,
     data:{
       first: {
         value: data.first||'',
