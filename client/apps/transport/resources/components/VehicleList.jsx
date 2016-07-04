@@ -93,7 +93,7 @@ export default function VehicleList(props) {
     <div className="main-content">
       <div className="page-header">
         <div className="tools">
-          <Button type="primary" onClick={onAddCarBtnClick}><Icon type="plus-circle-o" />新增车辆</Button>
+          <Button size="large" type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
         </div>
       </div>        
       <div className="page-body">

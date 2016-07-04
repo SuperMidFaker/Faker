@@ -87,7 +87,7 @@ export default function NodeList(props) {
     <div className="main-content">
       <div className="page-header">
         <div className="tools">
-          <Button type="primary" onClick={onAddNoteBtnClick}><Icon type="plus-circle-o" />新增{nodeTypes[nodeType]}</Button>
+          <Button size="large" type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
         </div>
         <RadioGroup defaultValue={nodeType} size="large" onChange={(e) => onRadioButtonChange(e.target.value)}>
           <RadioButton value={0}>发货地</RadioButton>
