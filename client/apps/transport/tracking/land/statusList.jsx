@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Table, Button, Tooltip, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import {
@@ -252,17 +251,9 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
-          <div className="panel-header">
-            <NavLink to="">
-              <Button icon="export" type="primary">
-                <span>{formatGlobalMsg(intl, 'export')}</span>
-              </Button>
-            </NavLink>
-          </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
-            />
+              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}/>
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />

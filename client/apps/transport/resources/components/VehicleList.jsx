@@ -91,11 +91,13 @@ export default function VehicleList(props) {
   ];
   return (
     <div className="main-content">
-      <div className="page-body">
-        <div className="panel-header">
-          <Button type="primary" onClick={onAddCarBtnClick}><Icon type="plus-circle-o" />新增车辆</Button>
+      <div className="page-header">
+        <div className="tools">
+          <Button size="large" type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
         </div>
-        <div className="panel-body padding">
+      </div>        
+      <div className="page-body">
+        <div className="panel-body">
           <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>
         </div>
       </div>
