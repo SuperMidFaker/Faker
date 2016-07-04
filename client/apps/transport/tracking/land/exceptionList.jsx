@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Table, Button, Icon, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadExcpShipments } from 'common/reducers/trackingLandException';

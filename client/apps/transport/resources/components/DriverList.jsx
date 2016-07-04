@@ -78,7 +78,7 @@ function DriverList(props) {
     <div className="main-content">
       <div className="page-header">
         <div className="tools">
-          <Button type="primary" onClick={onAddDriverBtnClicked}><Icon type="plus-circle-o" />新增司机</Button>
+          <Button size="large" type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
         </div>
       </div>  
       <div className="page-body">

@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadPodTable, loadPod, showAuditModal, resubmitPod } from
