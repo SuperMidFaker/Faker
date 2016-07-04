@@ -894,12 +894,11 @@ export default class DispatchList extends React.Component {
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
+          <span style={{marginLeft: '10px'}} />
+          {this.state.panelHeader}
         </div>
         <div className="page-body">
-          <div className="panel-header">
-            {this.state.panelHeader}
-          </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body">
             <div className="dispatch-table">
               {tb}
             </div>
