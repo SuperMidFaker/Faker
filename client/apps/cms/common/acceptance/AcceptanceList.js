@@ -59,13 +59,15 @@ export default class AcceptanceList extends Component {
     return (
       <div className="main-content">
         <div className="page-header">
+          <div className="tools">
+            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus-circle-o">新建报关委托</Button>
+          </div>
           <RadioGroup defaultValue={0} size="large">
             <RadioButton value={0}>待接单</RadioButton>
             <RadioButton value={1}>已接单</RadioButton>
           </RadioGroup>
         </div>
-        <div className="page-body" style={{padding: 16}}>
-          <Button type="primary" style={{marginBottom: 8}} onClick={this.handleCreateBtnClick}>新建</Button>
+        <div className="page-body">
           <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection}/>
         </div>
       </div>

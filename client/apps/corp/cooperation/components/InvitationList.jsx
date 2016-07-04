@@ -30,8 +30,7 @@ export default function InvitationList(props) {
         </RadioGroup>
       </div>
       <div className="page-body">
-        <div className="panel-header"></div>
-        <div className="panel-body padding">
+        <div className="panel-body">
           {content}
         </div>
       </div>
