@@ -113,6 +113,7 @@ export default(store, cookie) => {
               <IndexRedirect to="/import/declare/list/undeclared" />
               <Route path="list/:status" component={ImportDeclare.List} />
               <Route path="make/:delgNo" component={ImportDeclare.Make} />
+              <Route path="view/:delgNo" component={ImportDeclare.View} />
             </Route>
             <Route path="manage" component={Import.ManageMenu}>
               <IndexRoute component={Import.Manage}/>

@@ -84,9 +84,11 @@ export default class BillForm extends React.Component {
     } = this.props;
     return (<div>
       <div className="panel-header">
-        <Button type="primary" onClick={this.handleBillSave} icon="save" size="small">
-          {formatGlobalMsg(this.props.intl, 'save')}
-        </Button>
+        { !readonly &&
+          <Button type="primary" onClick={this.handleBillSave} icon="save" size="small">
+            {formatGlobalMsg(this.props.intl, 'save')}
+          </Button>
+        }
       </div>
       <div className="panel-body padding">
         <Collapse accordion defaultActiveKey="bill-head">
