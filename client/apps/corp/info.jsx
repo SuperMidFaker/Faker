@@ -144,7 +144,7 @@ export default class CorpInfo extends React.Component {
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
       <div className="panel-body body-responsive">
-        <Form horizontal form={this.props.formhoc}>
+        <Form horizontal form={this.props.formhoc} className="form-edit-content">
           <Row>
             <Col span="12">
               {this.renderTextInput(

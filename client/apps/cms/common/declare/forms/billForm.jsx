@@ -84,7 +84,7 @@ export default class BillForm extends React.Component {
     } = this.props;
     return (<div>
       <div className="panel-header">
-        <Button type="primary" onClick={this.handleBillSave}>
+        <Button type="primary" onClick={this.handleBillSave} icon="save" size="small">
           {formatGlobalMsg(this.props.intl, 'save')}
         </Button>
       </div>

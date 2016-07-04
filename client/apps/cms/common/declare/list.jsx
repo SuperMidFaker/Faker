@@ -160,7 +160,7 @@ export default class DeclareList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={status}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={status} size="large">
             <RadioButton value="undeclared">{this.msg('undeclaredDelg')}</RadioButton>
             <RadioButton value="declaring">{this.msg('declaringDelg')}</RadioButton>
             <RadioButton value="declared">{this.msg('declaredDelg')}</RadioButton>

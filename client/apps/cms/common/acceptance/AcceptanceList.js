@@ -59,7 +59,7 @@ export default class AcceptanceList extends Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <RadioGroup defaultValue={0} style={{marginRight: 16}}>
+          <RadioGroup defaultValue={0} size="large">
             <RadioButton value={0}>待接单</RadioButton>
             <RadioButton value={1}>已接单</RadioButton>
           </RadioGroup>

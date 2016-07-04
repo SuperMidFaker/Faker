@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, message } from 'ant-ui';
+import { Form, message, Col } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
@@ -81,11 +81,13 @@ export default class HeadForm extends React.Component {
       formData,
     };
     return (
-      <Form horizontal form={form}>
-        <FormInput field="pre_entry_id" outercol={12} col={4}
+      <Form horizontal form={form} className="form-compact">
+        <FormInput field="pre_entry_id" outercol={9} col={6}
           label={this.msg('preEntryId')} {...formProps} />
-        <FormInput field="entry_id" outercol={12} col={4}
-          label={this.msg('formEntryId')} {...formProps} />
+        <Col span="15">
+            <FormInput field="entry_id" outercol={16} col={4}
+              label={this.msg('formEntryId')} {...formProps} />
+        </Col>
         <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
           codeField="forwarder_code" nameField="forwarder_name"
           codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
@@ -112,10 +114,14 @@ export default class HeadForm extends React.Component {
         />
         <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
         <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
-        <FormInput field="cert_mark" outercol={12} col={4}
-          label={this.msg('certMark')} {...formProps} />
-        <FormInput field="note" outercol={24} col={2} type="textarea"
-          label={this.msg('markNotes')} {...formProps} />
+        <Col span="15">
+          <FormInput field="cert_mark" outercol={16} col={4}
+            label={this.msg('certMark')} {...formProps} />
+        </Col>
+        <Col span="24">
+          <FormInput field="note" outercol={9} col={4} type="textarea"
+            label={this.msg('markNotes')} {...formProps} />
+        </Col>
       </Form>
     );
   }

@@ -12,6 +12,7 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
 
+//进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
@@ -49,7 +50,7 @@ export function PortDate(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="15">
       <FormSelect {...portProps} />
       <FormDatePicker { ...ieDateProps } />
       <FormDatePicker { ...dDateProps } />
@@ -65,6 +66,7 @@ PortDate.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//关联单位
 export function RelationAutoCompSelect(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const {
@@ -82,11 +84,11 @@ export function RelationAutoCompSelect(props) {
     }
   }
   return (
-    <Col span="12">
-      <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
+    <Col span="9">
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
         <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
-            <Select combobox showArrow={false} filterOption={false} disabled={disabled}
+            <Select size="large" showSearch combobox showArrow={false} filterOption={false} disabled={disabled}
               defaultActiveFirstOption={false} allowClear
               placeholder={msg('relationCodeSearch')} {
                 ...getFieldProps(codeField, {
@@ -99,7 +101,7 @@ export function RelationAutoCompSelect(props) {
               }
             </Select>
           </Col>
-          <Col span="12">
+          <Col span="12" style={{paddingRight: 0}}>
             <Input placeholder={msg('relationName')} disabled={disabled}
             {...getFieldProps(nameField, {
               rules: nameRules,
@@ -125,6 +127,7 @@ RelationAutoCompSelect.propTypes = {
   onSelect: PropTypes.func,
 };
 
+//运输方式、运输名称、提运单号
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
@@ -160,7 +163,7 @@ export function Transport(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="15">
       <FormSelect { ...modeProps } />
       <FormInput { ...modeNameProps} />
       <FormInput { ...blwbProps} />
@@ -175,6 +178,7 @@ Transport.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//监管方式、征免性质、备案号
 export function TradeRemission(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire } = props;
@@ -215,7 +219,7 @@ export function TradeRemission(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="15">
       <FormSelect { ...tradeModeProps } />
       <FormSelect { ...remissionProps} />
       <FormInput { ...emsNoProps} />
@@ -230,12 +234,13 @@ TradeRemission.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
   const tradeCountryProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'trade_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
@@ -249,7 +254,7 @@ export function CountryAttr(props) {
   };
   const departCountryProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'depart_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
@@ -263,7 +268,7 @@ export function CountryAttr(props) {
   };
   const licenseNoProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'license_no',
     label: msg('licenseNo'),
     disabled,
@@ -272,7 +277,7 @@ export function CountryAttr(props) {
   };
   const trxModeProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'trx_mode',
     options: formRequire.trxModes.map(tm => ({
       value: tm.trx_mode,
@@ -285,7 +290,7 @@ export function CountryAttr(props) {
   };
   const contractNoProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'contract_no',
     label: msg('contractNo'),
     disabled,
@@ -294,7 +299,7 @@ export function CountryAttr(props) {
   };
   const packCountProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'pack_count',
     label: msg('packCount'),
     disabled,
@@ -303,7 +308,7 @@ export function CountryAttr(props) {
   };
   const containerNoProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'container_no',
     label: msg('containerNo'),
     disabled,
@@ -312,7 +317,7 @@ export function CountryAttr(props) {
   };
   const usageProps = {
     outercol: 12,
-    col: 6,
+    col: 8,
     field: 'usage',
     label: msg('usage'),
     disabled,
@@ -320,7 +325,7 @@ export function CountryAttr(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="9">
       <FormSelect { ...tradeCountryProps } />
       <FormSelect { ...departCountryProps } />
       <FormInput { ...licenseNoProps } />
@@ -342,6 +347,7 @@ CountryAttr.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//装货港、境内目的地、发票号
 export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, type, ietype } = props;
@@ -383,7 +389,7 @@ export function DestInvoice(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="15">
       <FormSelect { ...destPortProps } />
       <FormSelect { ...districtProps } />
       { type === 'bill' && <FormInput { ...invoiceNoProps} /> }
@@ -401,6 +407,7 @@ DestInvoice.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//费用
 function FeeFormItem(props) {
   const { feeField, currencyField, label, disabled, formData, getFieldProps, formRequire } = props;
   const feeProps = {
@@ -420,12 +427,12 @@ function FeeFormItem(props) {
     getFieldProps,
   };
   return (
-    <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label}>
+    <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <InputGroup>
         <Col span="12">
           <FormInput {...feeProps} />
         </Col>
-        <Col span="12">
+        <Col span="12" style={{paddingRight: 0}}>
           <FormSelect {...currencyProps} />
         </Col>
       </InputGroup>
@@ -446,7 +453,7 @@ FeeFormItem.propTypes = {
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   return (
-    <Col span="12">
+    <Col span="15">
       <Col span="8">
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr" />
@@ -471,12 +478,13 @@ Fee.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+//包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldProps, formRequire } = props;
   const packProps = {
     outercol: 8,
-    col: 6,
+    col: 8,
     label: msg('packType'),
     field: 'pack_type',
     options: formRequire.packs,
@@ -486,7 +494,7 @@ export function PackWeight(props) {
   };
   const grosswtProps = {
     outercol: 8,
-    col: 10,
+    col: 8,
     field: 'gross_wt',
     label: msg('grosswt'),
     rules: [{ required: true }],
@@ -496,7 +504,7 @@ export function PackWeight(props) {
   };
   const netwtProps = {
     outercol: 8,
-    col: 10,
+    col: 8,
     field: 'net_wt',
     label: msg('netwt'),
     rules: [{ required: true }],
@@ -505,7 +513,7 @@ export function PackWeight(props) {
     getFieldProps,
   };
   return (
-    <Col span="12">
+    <Col span="15">
       <FormSelect {...packProps} />
       <FormInput {...grosswtProps} />
       <FormInput {...netwtProps} />

@@ -58,11 +58,11 @@ img {
 .zmdi-forwarding:before {
   content: '\f11a';
 }
-.zmdi-cost:before {
-  content: '\f19a';
-}
-.zmdi-performance:before {
+.zmdi-datacenter:before {
   content: '\f131';
+}
+.zmdi-integration:before {
+  content: '\f293';
 }
 .zmdi-corp:before {
   content: '\f132';
@@ -254,10 +254,10 @@ img {
       &.module-forwarding {
         background-color:#5E30B5;
       }
-      &.module-cost {
+      &.module-datacenter {
         background-color:#E9259E;
       }
-      &.module-performance {
+      &.module-integration {
         background-color:#E01515;
       }
     }
@@ -489,10 +489,10 @@ img {
     &.module-forwarding {
       background-color:#5E30B5;
     }
-    &.module-cost {
+    &.module-datacenter {
       background-color:#E9259E;
     }
-    &.module-performance {
+    &.module-integration {
       background-color:#E01515;
     }
   }
@@ -814,6 +814,9 @@ img {
   position: relative;
   margin-bottom: 8px;
   padding: 16px 16px 0;
+  .ant-select, button {
+    margin-right: 8px;
+  }
   span {
     vertical-align: middle;
   }
@@ -908,7 +911,11 @@ img {
     }
   }
 }
-
+.form-compact {
+  .ant-form-item-with-help {
+    margin-bottom: 0;
+  }
+}
 .subform {
   background-color: #fff;
   box-shadow: none;

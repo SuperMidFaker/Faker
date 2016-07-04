@@ -59,15 +59,15 @@ const DEFAULT_MODULES = {
     url: '/tracking',
     text: 'moduleTracking'
   },
-  cost: {
-    cls: 'cost',
-    url: '/cost',
-    text: 'moduleCost'
+  datacenter: {
+    cls: 'datacenter',
+    url: '/datacenter',
+    text: 'moduleDatacenter'
   },
-  performance: {
-    cls: 'performance',
-    url: '/performance',
-    text: 'modulePerformance'
+  integration: {
+    cls: 'integration',
+    url: '/integration',
+    text: 'moduleIntegration'
   }
 };
 const APP_ENTITY_META_INFO = {

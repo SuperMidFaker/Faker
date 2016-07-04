@@ -25,13 +25,13 @@ const messages = defineMessages({
     id: 'component.module.tracking',
     defaultMessage: '全程追踪'
   },
-  moduleCost: {
-    id: 'component.module.cost',
-    defaultMessage: '成本分析'
+  moduleDatacenter: {
+    id: 'component.module.datacenter',
+    defaultMessage: '数据中心'
   },
-  modulePerformance: {
-    id: 'component.module.performance',
-    defaultMessage: '绩效评估'
+  moduleIntegration: {
+    id: 'component.module.integration',
+    defaultMessage: '整合中心'
   },
   userSetting: {
     id: 'component.user.setting',

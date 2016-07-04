@@ -392,12 +392,12 @@ export default class AcceptList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
           <span style={{marginLeft: '10px'}} />
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
