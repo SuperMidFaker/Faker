@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio } from 'ant-ui';
+import { Radio, Button } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
