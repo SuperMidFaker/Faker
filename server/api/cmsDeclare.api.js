@@ -312,6 +312,19 @@ function *editEntryBody() {
   }
 }
 
+function *delEntry() {
+  try {
+    const { headId } = yield cobody(this);
+    yield [
+      EntryHeadDao.destroy({ where: { id: headId } }),
+      EntryBodyDao.destroy({ where: { head_id: headId } }),
+    ];
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 function *mergeSplitBill() {
   try {
     const { billNo, mergeOpt, splitOpt, sortOpt } = yield cobody(this);
@@ -401,6 +414,7 @@ export default [
   [ 'post', '/v1/cms/declare/entrybody/add', addEntryBody ],
   [ 'post', '/v1/cms/declare/entrybody/del', delEntryBody ],
   [ 'post', '/v1/cms/declare/entrybody/edit', editEntryBody ],
+  [ 'post', '/v1/cms/declare/entry/del', delEntry ],
   [ 'post', '/v1/cms/declare/bill/mergesplit', mergeSplitBill ],
   [ 'post', '/v1/cms/declare/entry/fillno', fillEntryNo ],
 ];

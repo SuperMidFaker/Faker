@@ -109,7 +109,7 @@ export default class EntryBillForm extends React.Component {
             {
               entries.map((entry, idx) => (
                 <TabPane tab={<span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>} key={`entry${idx}`}>
-                  <EntryForm readonly={readonly} ietype={ietype} entry={entry} totalCount={entries.length} />
+                  <EntryForm readonly={readonly} ietype={ietype} entry={entry} totalCount={entries.length} index={idx} />
                 </TabPane>
               ))
             }

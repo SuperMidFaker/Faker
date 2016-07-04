@@ -4,7 +4,8 @@ import { Collapse, Form, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
-import { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead } from 'common/reducers/cmsDeclare';
+import { addNewEntryBody, delEntryBody, editEntryBody,
+  saveEntryHead, delEntry } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import globalMessage from 'client/common/root.i18n';
@@ -40,7 +41,7 @@ const Panel = Collapse.Panel;
   state => ({
     loginId: state.account.loginId,
   }),
-  { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead }
+  { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead, delEntry }
 )
 @Form.create()
 export default class EntryForm extends React.Component {
@@ -51,11 +52,13 @@ export default class EntryForm extends React.Component {
     form: PropTypes.object.isRequired,
     entry: PropTypes.object.isRequired,
     totalCount: PropTypes.number.isRequired,
+    index: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     addNewEntryBody: PropTypes.func.isRequired,
     delEntryBody: PropTypes.func.isRequired,
     editEntryBody: PropTypes.func.isRequired,
     saveEntryHead: PropTypes.func.isRequired,
+    delEntry: PropTypes.func.isRequired,
   }
   state = {
     head_id: undefined,
@@ -82,6 +85,16 @@ export default class EntryForm extends React.Component {
       }
     });
   }
+  handleEntryDel = () => {
+    const headId = this.props.entry.head.id || this.state.head_id;
+    if (headId) {
+      this.props.delEntry(headId, this.props.index).then(result => {
+        if (result.error) {
+          message.error(result.error.message);
+        }
+      });
+    }
+  }
   render() {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
@@ -93,7 +106,7 @@ export default class EntryForm extends React.Component {
           </Button>
         }
         { !readonly &&
-          <Button type="ghost" icon="delete" size="small" />
+          <Button type="ghost" icon="delete" size="small" onClick={this.handleEntryDel}/>
         }
       </div>
       <div className="panel-body padding">

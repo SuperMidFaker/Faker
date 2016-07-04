@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'ADD_ENTRY', 'SET_TABKEY', 'CLOSE_MS_MODAL', 'OPEN_MS_MODAL',
   'ADD_NEW_ENTRY_BODY', 'DEL_ENTRY_BODY', 'EDIT_ENTRY_BODY',
   'SAVE_ENTRYHEAD', 'SAVE_ENTRYHEAD_SUCCEED', 'SAVE_ENTRYHEAD_FAIL',
+  'DEL_ENTRY', 'DEL_ENTRY_SUCCEED', 'DEL_ENTRY_FAIL',
   'ADD_ENTRYBODY', 'ADD_ENTYBODY_SUCCEED', 'ADD_ENTRYBODY_FAIL',
   'DEL_ENTRYBODY', 'DEL_ENTRYBODY_SUCCEED', 'DEL_ENTRYBODY_FAIL',
   'EDIT_ENTRYBODY', 'EDIT_ENTRYBODY_SUCCEED', 'EDIT_ENTRYBODY_FAIL',
@@ -108,6 +109,11 @@ export default function reducer(state = initialState, action) {
         ...state, entries: [ ...state.entries, { head, bodies: [] } ],
         activeTabKey: `entry${state.entries.length}`
       };
+    }
+    case actionTypes.DEL_ENTRY_SUCCEED: {
+      const entries = [ ...state.entries ];
+      entries.splice(action.index, 1);
+      return { ...state, entries };
     }
     case actionTypes.SET_TABKEY:
       return { ...state, activeTabKey: action.data };
@@ -326,6 +332,22 @@ export function saveEntryHead({ head, totalCount, loginId }) {
       endpoint: 'v1/cms/declare/entryhead',
       method: 'post',
       data: { head, totalCount, loginId },
+    },
+  };
+}
+
+export function delEntry(headId, index) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_ENTRY,
+        actionTypes.DEL_ENTRY_SUCCEED,
+        actionTypes.DEL_ENTRY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entry/del',
+      method: 'post',
+      data: { headId },
+      index
     },
   };
 }
