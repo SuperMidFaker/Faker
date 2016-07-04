@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio, Button } from 'ant-ui';
+import { Radio } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 
@@ -64,13 +63,6 @@ export default class TrackingLandWrapper extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <div className="tools">
-            <NavLink to="">
-              <Button icon="export" type="primary" size="large">
-                {formatGlobalMsg(intl, 'export')}
-              </Button>
-            </NavLink>
-          </div>
           <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
@@ -79,13 +71,13 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="intransit">{this.msg('intransitShipmt')}</RadioButton>
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '10px'}} />
+          <span style={{marginLeft: '8px'}} />
           <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
             <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
             <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '10px'}} />
+          <span style={{marginLeft: '8px'}} />
           <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="warning">{this.msg('exceptionWarn')}</RadioButton>
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
