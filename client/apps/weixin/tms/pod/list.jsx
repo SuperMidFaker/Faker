@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loadPodTable, loadUploadedPodTable, toUploadPod } from 'common/reducers/weixin';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import moment from 'moment';
 
 import WeUI from 'react-weui';
 import '../../weui.less';
@@ -65,13 +66,13 @@ export default class List extends React.Component {
                       {item.shipmt_no}
                     </CellBody>
                     <CellFooter>
-                      {item.deliver_act_date}
+                      {moment(item.deliver_act_date).format('YYYY-MM-DD HH:mm')}
                     </CellFooter>
                   </Cell>
                 );
             })}
             </Cells>
-          <CellsTitle>最近已上传回单</CellsTitle>
+          <CellsTitle>已提交回单</CellsTitle>
           <Cells>
             {uploadedShipmentlist.data.map(item => {
               return (

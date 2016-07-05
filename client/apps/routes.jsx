@@ -38,6 +38,7 @@ import {isLoaded} from 'client/common/redux-actions';
 import * as Import from './cms/import/index';
 import * as ImportDeclare from './cms/import/declare';
 import * as WeiXinPod from './weixin/tms/pod';
+import WxLoadAccount from './weixin/loadAccount';
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
@@ -70,7 +71,7 @@ export default(store, cookie) => {
       <Route path="weixin">
         <Route path="bind" component={WeixinBinder}/>
         <Route path="account" component={WxProfile}/>
-        <Route path="tms">
+        <Route path="tms" component={WxLoadAccount}>
           <Route path="pod">
             <IndexRoute component={WeiXinPod.List}/>
             <Route path="upload" component={WeiXinPod.UploadPod}/>

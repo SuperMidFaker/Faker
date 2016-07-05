@@ -30,7 +30,7 @@ export default class UploadPod extends React.Component {
   }
   state = {
     signStatus: '',
-    remark: '0.0',
+    remark: '',
     photoList: [],
   }
   componentDidMount() {

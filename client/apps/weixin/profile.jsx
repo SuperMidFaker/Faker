@@ -8,11 +8,8 @@ import './weui.less';
 
 const {Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input} = WeUI;
 
-
-function fetchData({ state, dispatch, cookie }) {
-  if (!state.weixin.profile.loaded) {
-    return dispatch(loadWelogixProfile(cookie));
-  }
+function fetchData({ dispatch, cookie }) {
+  return dispatch(loadWelogixProfile(cookie));
 }
 
 @connectFetch()(fetchData)
