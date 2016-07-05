@@ -20,7 +20,8 @@ const initialState = {
     data: [],
     pageSize: 20,
     current: 1,
-  }
+  },
+  shipmentDispatchDetail:{}
 };
 
 const actions = [
@@ -29,7 +30,8 @@ const actions = [
   'WX_PROFILE_LOAD', 'WX_PROFILE_LOAD_SUCCEED', 'WX_PROFILE_LOAD_FAIL',
   'UPLOAD_POD',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_SUCCEED', 'LOAD_PODSHIPMT_FAIL',
-  'LOAD_UPLOADED_PODSHIPMT', 'LOAD_UPLOADED_PODSHIPMT_SUCCEED', 'LOAD_UPLOADED_PODSHIPMT_FAIL'
+  'LOAD_UPLOADED_PODSHIPMT', 'LOAD_UPLOADED_PODSHIPMT_SUCCEED', 'LOAD_UPLOADED_PODSHIPMT_FAIL',
+  'LOAD_SHIPMENTDISPATCH', 'LOAD_SHIPMENTDISPATCH_SUCCEED', 'LOAD_SHIPMENTDISPATCH_FAIL'
 ];
 const domain = '@@welogix/weixin/';
 const actionTypes = createActionTypes(domain, actions);
@@ -54,6 +56,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, shipmentlist: action.result.data };
     case actionTypes.LOAD_UPLOADED_PODSHIPMT_SUCCEED:
       return { ...state, uploadedShipmentlist: action.result.data };
+    case actionTypes.LOAD_SHIPMENTDISPATCH_SUCCEED:
+      return { ...state, shipmentDispatchDetail: action.result.data };
     default:
       return state;
   }
@@ -127,6 +131,22 @@ export function loadUploadedPodTable(cookie, params) {
         actionTypes.LOAD_UPLOADED_PODSHIPMT_FAIL,
       ],
       endpoint: 'v1/transport/tracking/pod/shipmts',
+      method: 'get',
+      params,
+      cookie
+    }
+  };
+}
+
+export function getShipmentDispatch(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHIPMENTDISPATCH,
+        actionTypes.LOAD_SHIPMENTDISPATCH_SUCCEED,
+        actionTypes.LOAD_SHIPMENTDISPATCH_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/detail',
       method: 'get',
       params,
       cookie

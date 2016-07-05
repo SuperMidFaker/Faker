@@ -5,6 +5,7 @@ import { genJwtCookie } from '../util/jwt-kit';
 
 export default () => {
   return function *weixinMPAuthMw(next) {
+    return yield next;
     const ua = this.request.get('user-agent');
     const isWeixin = ua.match(/MicroMessenger/i) === 'micromessenger';
     if (!isWeixin && !weixinOAuth.isWxAccessUrl(this.request.url)) {

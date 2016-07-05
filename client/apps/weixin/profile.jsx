@@ -8,8 +8,10 @@ import './weui.less';
 
 const {Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input} = WeUI;
 
-function fetchData({ dispatch, cookie }) {
-  return dispatch(loadWelogixProfile(cookie));
+function fetchData({ state, dispatch, cookie }) {
+  if (!state.weixin.profile.loaded) {
+    return dispatch(loadWelogixProfile(cookie));
+  }
 }
 
 @connectFetch()(fetchData)
@@ -40,7 +42,6 @@ export default class WxProfile extends React.Component {
       }
     });
   }
-
   render() {
     const { name, phone, email, position } = this.props.profile;
     return (

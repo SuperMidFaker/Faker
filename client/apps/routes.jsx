@@ -39,6 +39,7 @@ import * as Import from './cms/import/index';
 import * as ImportDeclare from './cms/import/declare';
 import * as WeiXinPod from './weixin/tms/pod';
 import WxLoadAccount from './weixin/loadAccount';
+import WxTmsDetail from './weixin/tms/detail';
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
@@ -77,6 +78,7 @@ export default(store, cookie) => {
             <Route path="upload" component={WeiXinPod.UploadPod}/>
             <Route path="uploadSucceed" component={WeiXinPod.UploadSucceed}/>
           </Route>
+          <Route path="detail/:shipmtNo/:sourceType" component={WxTmsDetail}/>
         </Route>
       </Route>
       <Route component={SSO}>
