@@ -50,7 +50,7 @@ export default class Detail extends React.Component {
         weight: item1.weight + item2.weight,
         volume: item1.volume + item2.volume
       };
-    });
+    }, {amount: 0, weight: 0, volume: 0});
     return (
       <div className="panel-body">
         <CellsTitle>运单信息</CellsTitle>
@@ -81,9 +81,9 @@ export default class Detail extends React.Component {
         </Cells>
         <CellsTitle>货物信息</CellsTitle>
         <Cells access>
-          {this.renderFormCell('总数量', `${total.amount || 0} 件`)}
-          {this.renderFormCell('总重量', `${total.weight || 0} 吨`)}
-          {this.renderFormCell('总体积', `${total.volume || 0} 立方米`)}
+          {this.renderFormCell('总数量', `${total.amount} 件`)}
+          {this.renderFormCell('总重量', `${total.weight} 吨`)}
+          {this.renderFormCell('总体积', `${total.volume} 立方米`)}
         </Cells>
       </div>
     );
