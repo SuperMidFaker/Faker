@@ -142,7 +142,7 @@ export default class MessageList extends React.Component {
         dataIndex: 'time',
         width: '14%',
         render: (text, record) => {
-          return this.renderColumnText(record.status, this.getDateDiff(text));
+          return this.renderColumnText(record.status, this.getDateDiff(text), record);
         }
       }
     ];
