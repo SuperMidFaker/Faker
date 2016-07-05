@@ -13,6 +13,7 @@ export default function connectNav(navCallback) {
         store: PropTypes.object.isRequired
       }
       componentDidMount() {
+        // todo change to object parameter
         navCallback(
           this.props, this.context.store.dispatch,
           this.context.router, 'componentDidMount'

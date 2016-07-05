@@ -53,47 +53,6 @@ export default class MessageList extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
-  renderColumnText(status, text, record) {
-    let style = {};
-    if (status === MESSAGE_STATUS.read.key) {
-      style = {color: '#CCC'};
-    }
-    return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
-  }
-  onStatusChange = (e) => {
-    this.props.messages.status = e.target.value;
-    this.handleLoadMessages(this.props.messages.status);
-  }
-  haveReadAllMessages = () => {
-    this.props.markMessages({loginId: this.props.loginId, status: 1});
-    this.handleLoadMessages(0);
-  }
-  clearAllMessages = () => {
-    this.props.markMessages({loginId: this.props.loginId, status: 2});
-    this.handleLoadMessages(1);
-  }
-  readMessage = (record) => {
-    this.props.markMessage({
-      id: record.id,
-      status: 1,
-    });
-    this.handleNavigationTo(record.url);
-  }
-  handleLoadMessages = (status) => {
-    this.props.loadMessages(null, {
-      loginId: this.props.loginId,
-      pageSize: this.props.messages.pageSize,
-      currentPage: this.props.messages.currentPage,
-      status
-    });
-  }
-  renderMyButton() {
-    if (this.props.messages.status === MESSAGE_STATUS.notRead.key) {
-      return (<Button style={{float:'right'}} onClick={this.haveReadAllMessages}>{formatMsg(this.props.intl, 'markAll')}</Button>);
-    } else {
-      return (<Button style={{float:'right'}} onClick={this.clearAllMessages}>{formatMsg(this.props.intl, 'clearAll')}</Button>);
-    }
-  }
   getDateDiff(refDate) {
     const time = new Date(refDate).getTime();
     const date = new Date();
@@ -120,8 +79,49 @@ export default class MessageList extends React.Component {
     }
     return result;
   }
+  handleStatusChange = (e) => {
+    this.props.messages.status = e.target.value;
+    this.handleLoadMessages(this.props.messages.status);
+  }
+  haveReadAllMessages = () => {
+    this.props.markMessages({loginId: this.props.loginId, status: 1});
+    this.handleLoadMessages(0);
+  }
+  clearAllMessages = () => {
+    this.props.markMessages({loginId: this.props.loginId, status: 2});
+    this.handleLoadMessages(1);
+  }
+  readMessage = (record) => {
+    this.props.markMessage({
+      id: record.id,
+      status: 1,
+    });
+    this.handleNavigationTo(record.url);
+  }
+  handleLoadMessages = (status) => {
+    this.props.loadMessages(null, {
+      loginId: this.props.loginId,
+      pageSize: this.props.messages.pageSize,
+      currentPage: this.props.messages.currentPage,
+      status
+    });
+  }
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
+  }
+  renderColumnText(status, text, record) {
+    let style = {};
+    if (status === MESSAGE_STATUS.read.key) {
+      style = {color: '#CCC'};
+    }
+    return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
+  }
+  renderMyButton() {
+    if (this.props.messages.status === MESSAGE_STATUS.notRead.key) {
+      return (<Button style={{float:'right'}} onClick={this.haveReadAllMessages}>{formatMsg(this.props.intl, 'markAll')}</Button>);
+    } else {
+      return (<Button style={{float:'right'}} onClick={this.clearAllMessages}>{formatMsg(this.props.intl, 'clearAll')}</Button>);
+    }
   }
   render() {
     const { intl } = this.props;
@@ -142,7 +142,7 @@ export default class MessageList extends React.Component {
         dataIndex: 'time',
         width: '14%',
         render: (text, record) => {
-          return this.renderColumnText(record.status, this.getDateDiff(text));
+          return this.renderColumnText(record.status, this.getDateDiff(text), record);
         }
       }
     ];
@@ -182,7 +182,7 @@ export default class MessageList extends React.Component {
         </div>
         <div className="panel-body" style={{padding:20}}>
           <div>
-            <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.onStatusChange}>
+            <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.handleStatusChange}>
               <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
               <RadioButton value={MESSAGE_STATUS.read.key}>{MESSAGE_STATUS.read.value}</RadioButton>
             </RadioGroup>

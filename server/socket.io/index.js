@@ -74,13 +74,7 @@ function * sendMessage(from, to, msg) {
 			promises.push(messages.create(rec));
 			loginIds.push(item.login_id);
 		});
-		const tenant = Tenant.findOne({
-	    raw: true,
-	    where:{
-	      tenant_id: to.tenant_id
-	    },
-	    attributes: ['tenant_id', 'subdomain']
-	  });
+		
 		const wus = yield WeixinUser.findAll({
 	    raw: true,
 	    where:{
@@ -94,10 +88,9 @@ function * sendMessage(from, to, msg) {
 	  	const ship = {
 	  		...item,
 	  		...msg,
-	  		...tenant,
 	  		first: msg.title,
 	  		remark: msg.remark||msg.content,
-	  		url: `{msg.url}?subdomain=${tenant.subdomain}`
+	  		url: `${msg.wxUrl}${msg.shipmt_no}/sp`
 	  	};
 			promises.push(Wexin.sendNewShipMessage(ship));
 		});
@@ -140,6 +133,7 @@ function sendNewShipMessage(ship) {
     	...ship,
       logo: ship.logo || WELOGIX_LOGO_URL,
       url: '/transport/dispatch',
+      wxUrl: '/weixin/tms/detail/',
       time: moment(new Date()).format('YYYY-MM-DD HH:mm'),
       status: msg(ship.status),
     });

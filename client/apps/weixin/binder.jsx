@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loginBind } from 'common/reducers/weixin';
+import WeUI from 'react-weui';
+import './weui.less';
+
+const {Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input} = WeUI;
 
 @connect(
   state => ({
@@ -41,36 +45,32 @@ export default class Binder extends React.Component {
     const { username, password } = this.state;
     return (
       <div className="panel-body">
-        <form onSubmit={this.handleSubmit} className="form-horizontal">
-          { this.props.errorMsg }
-          <div className="login-form">
-            <div className="form-group">
-              <div className="input-group">
-                <span className="input-group-addon">
-                  <i className="icon s7-user" />
-                </span>
-                <input type="text" placeholder="手机号" autoComplete="off" className="form-control"
-                  value={username} onChange={(ev) => this.handleTextChange(ev, 'username')}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="input-group">
-                <span className="input-group-addon">
-                  <i className="icon s7-lock" />
-                </span>
-                <input type="password" placeholder="密码" className="form-control" value={password}
-                  onChange={(ev) => this.handleTextChange(ev, 'password')}
-                />
-              </div>
-            </div>
-            <div className="form-group login-submit">
-              <button data-dismiss="modal" type="submit" className="btn btn-primary btn-lg">
-              登录绑定
-              </button>
-            </div>
-          </div>
-        </form>
+        { this.props.errorMsg }
+        <Form>
+          <FormCell>
+            <CellHeader>
+              <Label>手机号</Label>
+            </CellHeader>
+            <CellBody>
+              <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={(ev) => this.handleTextChange(ev, 'username')}/>
+            </CellBody>
+          </FormCell>
+          <FormCell vcode>
+            <CellHeader>
+              <Label>密码</Label>
+            </CellHeader>
+            <CellBody>
+              <Input type="password" placeholder="请输入密码" defaultValue={password}
+                onChange={(ev) => this.handleTextChange(ev, 'password')}/>
+            </CellBody>
+            <CellFooter>
+              <img />
+            </CellFooter>
+          </FormCell>
+        </Form>
+        <Button className="button" style={{marginTop:'30px', width:'90%'}} onClick={this.handleSubmit}>
+          登录绑定
+        </Button>
       </div>
     );
   }
