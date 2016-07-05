@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Table, Icon } from 'ant-ui';
+import { Button, Table } from 'ant-ui';
 import { Link } from 'react-router';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
@@ -95,7 +95,7 @@ export default function VehicleList(props) {
         <div className="tools">
           <Button size="large" type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
         </div>
-      </div>        
+      </div>
       <div className="page-body">
         <div className="panel-body">
           <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>

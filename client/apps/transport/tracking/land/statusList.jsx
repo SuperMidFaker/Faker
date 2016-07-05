@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Table, Button, Tooltip, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import {
@@ -19,9 +18,7 @@ import PreviewPanel from '../../shipment/modals/preview-panel';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/common/root.i18n';
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
   const newfilters = state.trackingLandStatus.filters.map(flt => {
@@ -241,7 +238,7 @@ export default class LandStatusList extends React.Component {
   }
 
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

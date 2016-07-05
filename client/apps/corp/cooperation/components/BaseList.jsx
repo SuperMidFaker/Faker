@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Icon, Button, message, Popconfirm } from 'ant-ui';
+import { Table, Button, message, Popconfirm } from 'ant-ui';
 import moment from 'moment';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
 import partnerModal from './partnerModal';

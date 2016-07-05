@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Select, Icon, message } from 'ant-ui';
+import { Table, Button, Select, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
-'common/reducers/personnel';
+ 'common/reducers/personnel';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
