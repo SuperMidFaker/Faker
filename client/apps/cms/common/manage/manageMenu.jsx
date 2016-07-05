@@ -10,6 +10,7 @@ const MenuItem = Menu.Item;
 export default class ManageMenu extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    type: PropTypes.oneOf([ 'import', 'export' ]),
     location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
   }
@@ -28,7 +29,7 @@ export default class ManageMenu extends Component {
   handleMenuChange = (ev) => {
     const key = ev.key;
     if (key === 'compRelation') {
-      this.context.router.push('/import/manage/compRelation');
+      this.context.router.push(`/${this.props.type}/manage/compRelation`);
     }
     this.setState({ currentKey: [key] });
   }

@@ -39,10 +39,9 @@ export default class WLUpload extends Component {
     const { title } = this.props;
     return (
       <Card title={title}>
-        <Upload listType="text"
-                fileList={this.state.fileList}
-                onRemove={this.handleRemove}
-                onChange={this.handleChange}>
+        <Upload listType="text" fileList={this.state.fileList}
+          onRemove={this.handleRemove} onChange={this.handleChange}
+        >
           <Button type="ghost">
             <Icon type="upload" /> 点击上传
           </Button>

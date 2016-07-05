@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Row, Button } from 'ant-ui';
 import { connect } from 'react-redux';
-import WLAccepForm from '../components/WLAccepForm';
-import WLUploadGroup from '../components/WLUploadGroup';
+import WLAccepForm from './components/WLAccepForm';
+import WLUploadGroup from './components/WLUploadGroup';
 import { createDelegation } from 'common/reducers/cmsDelegation';
 
 const mockFormData = {

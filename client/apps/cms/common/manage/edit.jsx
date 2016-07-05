@@ -20,7 +20,15 @@ function goBack(router) {
   router.goBack();
 }
 
+@connectFetch()(fetchData)
 @injectIntl
+@connect(
+  state => ({
+    code: state.account.code,
+    loading: state.cmsCompRelation.loading,
+    formData: state.cmsCompRelation.formData
+  }),
+  { loadCompRelation })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
@@ -33,17 +41,10 @@ function goBack(router) {
     goBackFn: () => goBack(router),
   }));
 })
-@connectFetch()(fetchData)
-@connect(
-  state => ({
-    code: state.account.code,
-    loading: state.cmsCompRelation.loading,
-    formData: state.cmsCompRelation.formData
-  }),
-  { loadCompRelation })
 export default class EditCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    type: PropTypes.oneOf([ 'import', 'export' ]),
     loadCompRelation: PropTypes.func.isRequired
   }
   static contextTypes = {

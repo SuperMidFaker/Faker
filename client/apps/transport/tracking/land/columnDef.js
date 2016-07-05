@@ -111,6 +111,7 @@ export default function makeColumns(type, handlers, msg) {
       if (record.sp_name) {
         const spSpan = <TrimSpan text={record.sp_name} />;
         if (record.sp_tenant_id > 0) {
+          // todo pure css circle
           return (
             <span>
               <i className="zmdi zmdi-circle mdc-text-green" />
