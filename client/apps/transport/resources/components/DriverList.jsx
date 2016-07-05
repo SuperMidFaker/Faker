@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Icon } from 'ant-ui';
+import { Table, Button } from 'ant-ui';
 import { Link } from 'react-router';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
@@ -80,7 +80,7 @@ function DriverList(props) {
         <div className="tools">
           <Button size="large" type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
         </div>
-      </div>  
+      </div>
       <div className="page-body">
         <div className="panel-body">
           <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection}/>

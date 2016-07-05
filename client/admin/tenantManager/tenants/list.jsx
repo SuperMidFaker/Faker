@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import {
   loadTenants, delTenant, switchStatus, INITIAL_LIST_PAGE_SIZE
 } from 'common/reducers/tenants';
-import { Table, Button, Icon, message, Popconfirm } from 'ant-ui';
+import { Table, Button, message, Popconfirm } from 'ant-ui';
 import NavLink from '../../../components/nav-link';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -201,15 +201,15 @@ export default class List extends React.Component {
     }];
     return (
       <div className="main-content">
-        <div className="page-body">
-          <div className="panel-header">
-            <Button type="primary"
-                onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
-                <Icon type="plus-circle-o" />
-                新建
+        <div className="page-header">
+          <div className="tools">
+            <Button type="primary" size="large" icon="plus-circle-o" onClick={() => this.handleNavigationTo('/manager/tenants/create')}> 
+                新建租户
             </Button>
           </div>
-          <div className="panel-body body-responsive">
+        </div>
+        <div className="page-body">
+          <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
