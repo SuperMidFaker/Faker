@@ -7,7 +7,7 @@
     "clean": "rm -rf public/dist",
     "debug": "node --debug .",
     "lint": "eslint --ext .js --ext .jsx client server universal webpack",
-    "hot": "node scripts/translation/buildcmd.js && webpack-dev-server --config webpack/dev.js",
+    "hot": "webpack-dev-server --config webpack/dev.js",
     "admin-hot": "webpack-dev-server --config webpack/adminDev.js",
     "admin-dev": "nodemon server/sboot.js -- --admin=true --port=3026",
     "dev": "nodemon --watch server",
