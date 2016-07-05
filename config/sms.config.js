@@ -12,7 +12,7 @@ const SmsConfig = {
 		authToken:"7b9cc308e53a41e0b037abeeabf62ee8",
 		subAccountSid:"ff8080813e445bb6013e779fd9ec0122",
 		subToken:"06b62b8ab96a41fab6534d9f4350f8d5",
-		appid:"ff8080813f5039eb013f5576757c02ba"
+		appid:"8aaf070855b647ab0155bb8c6fd2092b"
 	}
 }
 export default SmsConfig;
