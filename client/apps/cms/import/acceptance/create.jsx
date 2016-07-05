@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import Form from '../../common/acceptance/form';
+import Create from '../../common/acceptance/create';
 
 export default class ImportAcceptanceCreate extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <Form type="import" { ...this.props } />;
+    return <Create type="import" { ...this.props } />;
   }
 }

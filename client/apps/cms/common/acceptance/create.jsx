@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Row, Button } from 'ant-ui';
+import React, { Component, PropTypes } from 'react';
+import { Form, Row, Col, Button } from 'ant-ui';
 import { connect } from 'react-redux';
-import WLAccepForm from './components/WLAccepForm';
-import WLUploadGroup from './components/WLUploadGroup';
+import BasicForm from '../delegation/basicForm';
+import UploadGroup from '../delegation/attachmentUpload';
 import { createDelegation } from 'common/reducers/cmsDelegation';
 
 const mockFormData = {
@@ -21,35 +21,50 @@ const mockFormData = {
   internal_no: 'dafadfad'
 };
 
-@connect(state => ({
-  tenantId: state.account.tenantId,
-  loginId: state.account.loginId,
-  username: state.account.username
-}), { createDelegation })
-export default class AcceptanceFormContainer extends Component {
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    username: state.account.username
+  }),
+  { createDelegation }
+)
+@Form.create()
+export default class AcceptanceCreate extends Component {
+  static propTypes = {
+    form: PropTypes.object.isRequired,
+    type: PropTypes.oneOf([ 'import', 'export' ]),
+  }
   handleMockDataBtnClick = () => {
-    const form = this.refs.accepForm;
-    form.setFieldsValue(mockFormData);
+    this.props.form.setFieldsValue(mockFormData);
   }
   handleSaveBtnClick = () => {
     const { tenantId, loginId, username } = this.props;
-    const form = this.refs.accepForm;
-    const delegationInfo = form.getFieldsValue();
+    const delegationInfo = this.props.form.getFieldsValue();
     delete delegationInfo.client_name;
     const tenantInfo = {customer_tenant_id: 27, ccb_tenant_id: tenantId, tenant_id: tenantId, creater_login_id: loginId, creater_login_name: username};
     this.props.createDelegation({delegationInfo, tenantInfo, delg_type: 0});
   }
   render() {
+    const { form } = this.props;
     return (
       <div className="main-content">
         <div className="page-body" style={{padding: 16}}>
-          <WLAccepForm ref="accepForm"/>
-          <WLUploadGroup ref="uploadGroup"/>
+          <Form horizontal>
+          <Row>
+            <Col sm={16}>
+              <BasicForm form={form} />
+            </Col>
+            <Col sm={8}>
+              <UploadGroup />
+            </Col>
+          </Row>
           <Row>
             <Button size="large" type="primary" style={{marginRight: 20}} onClick={this.handleSaveBtnClick}>保存</Button>
             <Button size="large">一键接单</Button>
             <Button size="large" onClick={this.handleMockDataBtnClick} style={{marginLeft: 20}}>生成测试数据</Button>
           </Row>
+          </Form>
         </div>
       </div>
     );

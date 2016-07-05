@@ -5,7 +5,13 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'CREATE_DELEGATION', 'CREATE_DELEGATION_SUCCEED', 'CREATE_DELEGATION_FAIL'
 ]);
 
-const initialState = {};
+const initialState = {
+  formRequire: {
+    tradeModes: [],
+    transModes: [],
+    declareWayModes: [],
+  },
+};
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
