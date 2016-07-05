@@ -49,44 +49,44 @@ export default class WxProfile extends React.Component {
         { this.state.error }
         <Form>
           <FormCell>
-              <CellHeader>
-                  <Label>姓名</Label>
-              </CellHeader>
-              <CellBody>
-                  <Input type="text" defaultValue={name} disabled />
-              </CellBody>
+            <CellHeader>
+              <Label>姓名</Label>
+            </CellHeader>
+            <CellBody>
+              <Input type="text" defaultValue={name} disabled />
+            </CellBody>
           </FormCell>
-          <FormCell vcode={true}>
-              <CellHeader>
-                  <Label>手机号</Label>
-              </CellHeader>
-              <CellBody>
-                  <Input type="tel" defaultValue={phone} disabled />
-              </CellBody>
-              <CellFooter>
-                  <img />
-              </CellFooter>
-          </FormCell>
-          <FormCell>
-              <CellHeader>
-                  <Label>邮箱</Label>
-              </CellHeader>
-              <CellBody>
-                  <Input type="email" defaultValue={email} disabled />
-              </CellBody>
+          <FormCell vcode>
+            <CellHeader>
+              <Label>手机号</Label>
+            </CellHeader>
+            <CellBody>
+              <Input type="tel" defaultValue={phone} disabled />
+            </CellBody>
+            <CellFooter>
+              <img />
+            </CellFooter>
           </FormCell>
           <FormCell>
-              <CellHeader>
-                  <Label>职位</Label>
-              </CellHeader>
-              <CellBody>
-                  <Input type="text" defaultValue={position} disabled />
-              </CellBody>
+            <CellHeader>
+              <Label>邮箱</Label>
+            </CellHeader>
+            <CellBody>
+              <Input type="email" defaultValue={email} disabled />
+            </CellBody>
+          </FormCell>
+          <FormCell>
+            <CellHeader>
+              <Label>职位</Label>
+            </CellHeader>
+            <CellBody>
+              <Input type="text" defaultValue={position} disabled />
+            </CellBody>
           </FormCell>
         </Form>
         <Button style={{position: 'fixed', bottom: '5%', left: '5%', width: '90%', backgroundColor: 'rgba(255, 102, 0, 1)'}}
-        onClick={this.handleSubmit}>
-              解除绑定
+          onClick={this.handleSubmit}>
+           解除绑定
         </Button>
       </div>
     );

@@ -99,14 +99,14 @@ export default class ModeInfo extends React.Component {
           fieldProps={{ initialValue: container_no }}
           />
         </Col>,
-        <Col span={`${outerColSpan}`} className="subform-body" />
+        <Col key="subform-padding" span={`${outerColSpan}`} className="subform-body" />
       );
     } else {
       outerColSpan = 8;
       labelColSpan = 8;
       modeEditCols.push(
-        <Col span={`${outerColSpan}`} className="subform-body" />,
-        <Col span={`${outerColSpan}`} className="subform-body" />
+        <Col key="body1" span={`${outerColSpan}`} className="subform-body" />,
+        <Col key="body2" span={`${outerColSpan}`} className="subform-body" />
       );
     }
     return (
