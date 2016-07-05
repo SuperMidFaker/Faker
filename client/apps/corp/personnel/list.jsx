@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Select, Icon, message } from 'ant-ui';
+import { Table, Button, Select, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
-'common/reducers/personnel';
+ 'common/reducers/personnel';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -317,8 +317,9 @@ export default class PersonnelSetting extends React.Component {
       <div className="main-content">
         <div className="page-header fixed">
           <div className="tools">
-            <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-            <a className="hidden-xs" role="button">{formatContainerMsg(intl, 'advancedSearch')}</a>
+            <Button type="primary" size="large" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
+              {msg('newUser')}
+            </Button>
           </div>
           <span>{msg('affiliatedOrganizations')}</span>
           <Select style={{width: 200}} size="large" value={`${tenant.id}`}
@@ -327,13 +328,10 @@ export default class PersonnelSetting extends React.Component {
               branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
             }
           </Select>
+          <span style={{marginLeft: '8px'}} />
+          <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body fixed">
-          <div className="panel-header">
-            <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')}>
-              <Icon type="plus-circle-o" />{msg('newUser')}
-            </Button>
-          </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
           </div>

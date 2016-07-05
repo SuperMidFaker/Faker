@@ -122,7 +122,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
             {msg('declareMake')}
             </NavLink>
             <span className="ant-divider" />
-            <a role="button" onClick={handlers.onWriteEntryId}>{msg('writeEntryId')}</a>
+            <a role="button" onClick={() => handlers.onWriteEntryId(record)}>{msg('writeEntryId')}</a>
           </span>
         );
       }
@@ -135,7 +135,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       render: (o, record) => {
         return (
           <span>
-            <NavLink to={`/${ietype}/declare/${record.delg_no}`}>
+            <NavLink to={`/${ietype}/declare/view/${record.delg_no}`}>
             {msg('declareView')}
             </NavLink>
           </span>

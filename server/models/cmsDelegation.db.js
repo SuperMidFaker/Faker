@@ -66,7 +66,7 @@ export const Delegation = sequelize.define('cms_delegations', {
       return sequelize.query(`select
         D.delg_no, customer_name, D.contract_no, D.invoice_no, D.bl_wb_no, D.voyage_no, pieces,
         weight, ref_delg_external_no, ref_recv_external_no, source, BH.bill_no,
-        EH.entry_id, EH.comp_entry_id from
+        EH.id as entry_head_id, EH.entry_id, EH.comp_entry_id from
         (select * from cms_delegations ${delgWhere}) D inner join
         cms_delegation_dispatch DD on D.delg_no = DD.delg_no and DD.recv_tenant_id = ?
         and DD.bill_status = ? left outer join cms_delegation_bill_head BH

@@ -71,13 +71,13 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="intransit">{this.msg('intransitShipmt')}</RadioButton>
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '10px'}} />
+          <span style={{marginLeft: '8px'}} />
           <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
             <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
             <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '10px'}} />
+          <span style={{marginLeft: '8px'}} />
           <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="warning">{this.msg('exceptionWarn')}</RadioButton>
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>

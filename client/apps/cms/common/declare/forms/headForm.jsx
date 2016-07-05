@@ -82,12 +82,16 @@ export default class HeadForm extends React.Component {
     };
     return (
       <Form horizontal form={form} className="form-compact">
-        <FormInput field="pre_entry_id" outercol={9} col={6}
-          label={this.msg('preEntryId')} {...formProps} />
-        <Col span="15">
-            <FormInput field="entry_id" outercol={16} col={4}
-              label={this.msg('formEntryId')} {...formProps} />
-        </Col>
+        { type === 'entry' &&
+          <FormInput field="pre_entry_id" outercol={9} col={6}
+            label={this.msg('preEntryId')} {...formProps} />
+        }
+        { type === 'entry' &&
+          <Col span="15">
+              <FormInput field="entry_id" outercol={16} col={4}
+                label={this.msg('formEntryId')} {...formProps} />
+          </Col>
+        }
         <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
           codeField="forwarder_code" nameField="forwarder_name"
           codeRules={[ { required: true } ]} nameRules={[ { required: true }]}

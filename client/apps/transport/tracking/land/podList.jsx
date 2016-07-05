@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadPodTable, loadPod, showAuditModal, resubmitPod } from
@@ -12,9 +11,7 @@ import PreviewPanel from '../../shipment/modals/preview-panel';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/common/root.i18n';
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 
 function fetchData({ state, dispatch, params, cookie }) {
   const newfilters = state.trackingLandPod.filters.map(flt => {
@@ -187,7 +184,7 @@ export default class LandStatusList extends React.Component {
   }
 
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -198,13 +195,6 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
-          <div className="panel-header">
-            <NavLink to="/transport/acceptance/shipment/new">
-              <Button icon="export" type="primary">
-                <span>{formatGlobalMsg(intl, 'export')}</span>
-              </Button>
-            </NavLink>
-          </div>
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}

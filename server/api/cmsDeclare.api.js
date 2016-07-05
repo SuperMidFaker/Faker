@@ -4,9 +4,10 @@ import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../models/
 import {
   CmsParamCustomsDao, CmsParamTradeDao, CmsParamTransModeDao,
   CmsParamTrxDao, CmsParamCountry, CmsParamRemission, CmsParamPorts,
-  CmsParamDistricts, CmsParamCurrency, CmsParamUnit,
+  CmsParamDistricts, CmsParamCurrency, CmsParamUnit, CmsParamHsCode,
 } from '../models/cmsParams.db';
 import { CmsCompRelationDao } from '../models/cmsComp.db';
+import mergeSplit from './_utils/billMergeSplit';
 import { CMS_BILL_STATUS } from 'common/constants';
 import Result from '../util/responseResult';
 
@@ -166,6 +167,7 @@ function *upsertDelgBillHead() {
   try {
     const { head, ietype, loginId } = yield cobody(this);
     let billNo = head.bill_no;
+    const dbOps = [];
     if (!billNo) {
       const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
       if (lastBill) {
@@ -173,15 +175,17 @@ function *upsertDelgBillHead() {
       } else {
         billNo = BillHeadDao.genBillNo(0, ietype);
       }
-    }
-    const dbOps = [ BillHeadDao.upsert({ ...head, bill_no: billNo, creater_login_id: loginId }) ];
-    if (!head.bill_no) {
       dbOps.push(
+        BillHeadDao.create({ ...head, bill_no: billNo, creater_login_id: loginId }),
         Dispatch.update({ bill_status: 1}, { where: { delg_no: head.delg_no }})
+      );
+    } else {
+      dbOps.push(
+        BillHeadDao.update(head, { where: { bill_no: billNo }})
       );
     }
     yield dbOps;
-    return Result.ok(this, { billNo });
+    return Result.ok(this, { bill_no: billNo, ...head });
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
@@ -190,7 +194,26 @@ function *upsertDelgBillHead() {
 function *addBillBody() {
   try {
     const { newBody, billNo, loginId } = yield cobody(this);
-    const body = yield BillBodyDao.create({ ...newBody, bill_no: billNo, creater_login_id: loginId });
+    const hscode = yield CmsParamHsCode.findOne({
+      raw: true,
+      where: {
+        hscode: `${newBody.code_t}${newBody.code_s}`,
+      },
+    });
+    let specialHscode = 0;
+    let customControl = 0;
+    if (hscode) {
+      if (hscode.special_mark === 1) {
+        specialHscode = 1;
+      }
+      if (hscode.customs) {
+        customControl = 1;
+      }
+    }
+    const body = yield BillBodyDao.create({
+      ...newBody, bill_no: billNo, creater_login_id: loginId,
+      special_hscode: specialHscode, custom_control: customControl,
+    });
     return Result.ok(this, { id: body.id });
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -214,6 +237,22 @@ function *delBillBody() {
 function *editBillBody() {
   try {
     const body = yield cobody(this);
+    const hscode = yield CmsParamHsCode.findOne({
+      raw: true,
+      where: {
+        hscode: `${body.code_t}${body.code_s}`,
+      },
+    });
+    body.special_hscode = 0;
+    body.custom_control = 0;
+    if (hscode) {
+      if (hscode.special_mark === 1) {
+        body.special_hscode = 1;
+      }
+      if (hscode.customs) {
+        body.custom_control = 1;
+      }
+    }
     yield BillBodyDao.update(body, { where: { id: body.id } });
     return Result.ok(this);
   } catch (e) {
@@ -273,6 +312,94 @@ function *editEntryBody() {
   }
 }
 
+function *delEntry() {
+  try {
+    const { headId } = yield cobody(this);
+    yield [
+      EntryHeadDao.destroy({ where: { id: headId } }),
+      EntryBodyDao.destroy({ where: { head_id: headId } }),
+    ];
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *mergeSplitBill() {
+  try {
+    const { billNo, mergeOpt, splitOpt, sortOpt } = yield cobody(this);
+    const [ billHead, billList, lastEntryHead ] = yield [
+      BillHeadDao.findOne({
+        raw: true,
+        where: {
+          bill_no: billNo,
+        },
+      }),
+      BillBodyDao.findAll({
+        raw: true,
+        where: {
+          bill_no: billNo,
+        },
+      }),
+      EntryHeadDao.findOne({
+        raw: true,
+        where: {
+          bill_no: billNo,
+        },
+        order: 'comp_entry_id desc',
+      }),
+    ];
+    let maxEntryNum = 0;
+    if (lastEntryHead) {
+      maxEntryNum = parseInt(lastEntryHead.comp_entry_id.slice(-6), 10);
+    }
+    const entries = mergeSplit(
+      billHead, maxEntryNum, billList, { ...splitOpt, perCount: 20 },
+      mergeOpt, sortOpt
+    );
+    const headDbs = [];
+    entries.forEach(entry => {
+      headDbs.push(EntryHeadDao.create(entry.head));
+    });
+    const headResults = yield headDbs;
+    const bodyDbs = [];
+    entries.forEach((entry, index) => {
+      entry.bodies.forEach(body => {
+        bodyDbs.push(EntryBodyDao.create({ ...body, head_id: headResults[index].id }));
+      });
+    });
+    const bodyResults = yield bodyDbs;
+    const entryResults = [];
+    let bidx = 0;
+    entries.forEach((entry, hidx) => {
+      const head = { ...entry.head, id: headResults[hidx].id };
+      const bodies = [];
+      entry.bodies.forEach(bd => {
+        bodies.push({ ...bd, head_id: headResults[hidx].id, id: bodyResults[bidx].id });
+        bidx++;
+      });
+      entryResults.push({ head, bodies });
+    });
+    return Result.ok(this, entryResults);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *fillEntryNo() {
+  try {
+    const { delgNo, entryNo, entryHeadId } = yield cobody(this);
+    yield EntryHeadDao.update({ entry_id: entryNo }, { where: { id: entryHeadId }});
+    const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: { entry_id: null }});
+    if (unfilledEntryHeadCount === 0) {
+      yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo }});
+    }
+    return Result.ok(this, { needReload: unfilledEntryHeadCount === 0 });
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cms/delegation/declares', getDelgDeclares ],
   [ 'get', '/v1/cms/declare/bills', getDelgBills ],
@@ -287,4 +414,7 @@ export default [
   [ 'post', '/v1/cms/declare/entrybody/add', addEntryBody ],
   [ 'post', '/v1/cms/declare/entrybody/del', delEntryBody ],
   [ 'post', '/v1/cms/declare/entrybody/edit', editEntryBody ],
+  [ 'post', '/v1/cms/declare/entry/del', delEntry ],
+  [ 'post', '/v1/cms/declare/bill/mergesplit', mergeSplitBill ],
+  [ 'post', '/v1/cms/declare/entry/fillno', fillEntryNo ],
 ];

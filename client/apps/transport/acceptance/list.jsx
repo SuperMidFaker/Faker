@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message, Popconfirm } from 'ant-ui';
+import { Table, Button, Radio, message, Popconfirm } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -390,26 +390,25 @@ export default class AcceptList extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+            <NavLink to="/transport/acceptance/shipment/new">
+              <Button type="primary" size="large" icon="plus-circle-o">
+                {formatGlobalMsg(intl, 'createNew')}
+              </Button>
+            </NavLink>
           </div>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '10px'}} />
+          <span style={{marginLeft: '8px'}} />
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
+          <span style={{marginLeft: '8px'}} />
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body">
-          <div className="panel-header">
-            <NavLink to="/transport/acceptance/shipment/new">
-              <Button type="primary">
-                <Icon type="plus-circle-o" /><span>{formatGlobalMsg(intl, 'createNew')}</span>
-              </Button>
-            </NavLink>
-          </div>
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2800, y: 460 }}

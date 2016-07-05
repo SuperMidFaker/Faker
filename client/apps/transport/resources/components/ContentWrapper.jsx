@@ -5,7 +5,7 @@ export default function ContentWrapper(props) {
     <div className="main-content">
       <div className="page-body">
         <div className="panel-header"></div>
-        <div className="panel-body padding">
+        <div className="panel-body">
           {props.children}
         </div>
       </div>
