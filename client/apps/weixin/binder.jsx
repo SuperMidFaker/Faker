@@ -49,27 +49,27 @@ export default class Binder extends React.Component {
         <Form>
           <FormCell>
             <CellHeader>
-                <Label>手机号</Label>
+              <Label>手机号</Label>
             </CellHeader>
             <CellBody>
-                <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={(ev) => this.handleTextChange(ev, 'username')}/>
+              <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={(ev) => this.handleTextChange(ev, 'username')}/>
             </CellBody>
           </FormCell>
-          <FormCell vcode={true}>
+          <FormCell vcode>
             <CellHeader>
-                <Label>密码</Label>
+              <Label>密码</Label>
             </CellHeader>
             <CellBody>
-                <Input type="password" placeholder="请输入密码" defaultValue={password}
+              <Input type="password" placeholder="请输入密码" defaultValue={password}
                 onChange={(ev) => this.handleTextChange(ev, 'password')}/>
             </CellBody>
             <CellFooter>
-                <img />
+              <img />
             </CellFooter>
           </FormCell>
         </Form>
         <Button className="button" style={{marginTop:'30px', width:'90%'}} onClick={this.handleSubmit}>
-              登录绑定
+          登录绑定
         </Button>
       </div>
     );

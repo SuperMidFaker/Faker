@@ -61,9 +61,10 @@ export default function reducer(state = initialState, action) {
     case LOAD_TRANSHIPMT_SUCCEED:
       return { ...state, previewer: { ...state.previewer, visible: false }};
     case actionTypes.LOAD_FORMREQUIRE:
-      return { ...state, formData: initialState.formData };
+      // force formData change to rerender after formrequire load
+      return { ...state, formData: { goodslist: [] } };
     case actionTypes.LOAD_FORMREQUIRE_SUCCEED:
-      return { ...state, formRequire: {...action.result.data} };
+      return { ...state, formRequire: action.result.data, formData: { ...initialState.formData, ...state.formData }};
     case actionTypes.SET_CONSIGN_FIELDS:
       return { ...state, formData: { ...state.formData, ...action.data }};
     case actionTypes.SAVE_LOCAL_GOODS:

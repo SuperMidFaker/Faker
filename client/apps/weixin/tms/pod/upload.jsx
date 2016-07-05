@@ -1,3 +1,4 @@
+/* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Upload, Icon, message } from 'ant-ui';
