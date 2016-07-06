@@ -197,7 +197,7 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2380, y: 460 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
