@@ -15,15 +15,15 @@ export default defineMessages({
   },
   shipmtNextUpdate: {
     id: 'transport.tracking.shipmt.next.update',
-    defaultMessage: '下一节点更新'
+    defaultMessage: '节点操作'
   },
   carrierUpdate: {
     id: 'transport.tracking.carrier.update',
-    defaultMessage: '承运商更新'
+    defaultMessage: '由承运商更新'
   },
   driverUpdate: {
     id: 'transport.tracking.driver.update',
-    defaultMessage: '司机更新'
+    defaultMessage: '由司机更新'
   },
   updateVehicleDriver: {
     id: 'transport.tracking.update.drivervehicle',
@@ -291,7 +291,7 @@ export default defineMessages({
   },
   auditPod: {
     id: 'transport.tracking.table.pod.audit',
-    defaultMessage: '审核'
+    defaultMessage: '审核回单'
   },
   rejectByUs: {
     id: 'transport.tracking.table.pod.rejectby.us',

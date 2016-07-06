@@ -13,7 +13,7 @@ function goBack(router) {
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: `新增租户`,
+    text: `新建租户`,
     moduleName: 'tenants',
     withModuleLayout: false,
     goBackFn: () => goBack(router),
