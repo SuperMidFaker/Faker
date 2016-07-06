@@ -46,7 +46,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
-    width: 80,
+    width: 100,
     render: (o, record) => record.deliver_act_date ?
       (<span className="mdc-text-green">
       {moment(record.deliver_act_date).format('YYYY.MM.DD')}
@@ -55,20 +55,20 @@ export default function makeColumns(type, handlers, msg) {
   }, {
       title: msg('shipmtStatus'),
       dataIndex: 'status',
-      width: 100,
+      width: 120,
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          return `1 ${msg('pendingShipmt')}`;
+          return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-          return `2 ${msg('acceptedShipmt')}`;
+          return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-          return `3 ${msg('dispatchedShipmt')}`;
+          return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          return `4 ${msg('intransitShipmt')}`;
+          return <Tag color="blue">{`4 ${msg('intransitShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          return `5 ${msg('deliveredShipmt')}`;
+          return <Tag color="green">{`5 ${msg('deliveredShipmt')}`}</Tag>;
         } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-          return `6 ${msg('proofOfDelivery')}`;
+          return <Tag color="green">{`6 ${msg('proofOfDelivery')}`}</Tag>;
         } else {
           return <span />;
         }

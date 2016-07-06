@@ -151,7 +151,7 @@ export default defineMessages({
   },
   proofOfDelivery: {
     id: 'transport.tracking.proof.delivery',
-    defaultMessage: '回单要求'
+    defaultMessage: '回单'
   },
   uploadedPOD: {
     id: 'transport.tracking.uploaded.pod',
@@ -291,7 +291,7 @@ export default defineMessages({
   },
   auditPod: {
     id: 'transport.tracking.table.pod.audit',
-    defaultMessage: '审核'
+    defaultMessage: '审核回单'
   },
   rejectByUs: {
     id: 'transport.tracking.table.pod.rejectby.us',
