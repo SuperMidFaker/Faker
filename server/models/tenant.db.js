@@ -162,10 +162,17 @@ export default {
     `;
     return mysql.query(sql);
   },
-  getTenants(parentTenantId, current, pageSize) {
-    const start = (current - 1) * pageSize;
+  getTenants(current, pageSize) {
+    const start = current * pageSize;
+    const args = [start, pageSize];
     const sql = `select st.tenant_id as \`key\`, st.sub_code as subCode, st.name, st.phone, st.email,
       st.contact, st.status, stu.login_id from sso_tenants st
+      inner join sso_tenant_users stu on stu.tenant_id = st.tenant_id
+      where st.parent_tenant_id = 0 and st.level = 1 and stu.user_type='owner' limit ?, ?`;
+    return mysql.query(sql, args);
+  },
+  countTenants() {
+    const sql = `select count(*) as totalCount from sso_tenants st
       inner join sso_tenant_users stu on stu.tenant_id = st.tenant_id
       where st.parent_tenant_id = 0 and st.level = 1 and stu.user_type='owner'`;
     return mysql.query(sql);

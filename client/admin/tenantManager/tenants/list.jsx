@@ -10,15 +10,13 @@ import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { ACCOUNT_STATUS, MAX_STANDARD_TENANT }
+import { ACCOUNT_STATUS }
   from 'common/constants';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadTenants(cookie, {
-    tenantId: state.account.tenantId,
     pageSize: state.tenants.corplist.pageSize,
     currentPage: state.tenants.corplist.current,
-    searchText: state.tenants.corplist.searchText,
   }));
 }
 
@@ -28,7 +26,6 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     corplist: state.tenants.corplist,
     loading: state.tenants.loading,
-    tenantId: state.account.tenantId
   }),
   {
     loadTenants, delTenant, switchStatus
@@ -49,7 +46,6 @@ function fetchData({ state, dispatch, cookie }) {
 export default class List extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     corplist: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     switchStatus: PropTypes.func.isRequired,
@@ -69,13 +65,12 @@ export default class List extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   handleTenantDel(id, loginId) {
-    const { corplist: {tenantId, totalCount, current, pageSize } } = this.props;
+    const { corplist: { totalCount, current, pageSize } } = this.props;
     this.props.delTenant(id, loginId).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         this.props.loadTenants(null, {
-          tenantId,
           pageSize,
           currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
         });
@@ -100,19 +95,19 @@ export default class List extends React.Component {
   render() {
     const { corplist, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadTenants(null, params),
-      resolve: (result) => result.data,
+      fetcher: (params) => {return this.props.loadTenants(null, params);},
+      resolve: (result) => {return result.data;},
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`],
+        pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`,
+        `${INITIAL_LIST_PAGE_SIZE * 3}`, `${INITIAL_LIST_PAGE_SIZE * 4}`],
         pageSize: result.pageSize
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,

@@ -54,8 +54,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     }
     case actionTypes.TENANTS_LOAD_SUCCEED: {
-      const corplist = { ...state.corplist };
-      corplist.data = action.result.data;
+      const corplist = action.result.data;
       return {...state, loading: false, loaded: true, corplist};
     }
     case actionTypes.TENANT_FORM_LOAD_SUCCEED: {

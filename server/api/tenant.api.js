@@ -2,6 +2,7 @@ import cobody from 'co-body';
 import Result from '../util/responseResult';
 import mysql from '../util/mysql';
 import tenantDao from '../models/tenant.db';
+import Tenant from '../models/tenant.db';
 import shipmentAuxDao, { TmsParamTransMode, TmsParamPackage } from '../models/shipment-auxil.db';
 import bCryptUtil from '../util/BCryptUtil';
 import { __DEFAULT_PASSWORD__ } from '../util/constants';
@@ -30,12 +31,17 @@ function *getTenantAppList() {
 }
 
 function *getTenants(){
-  const parent_tenant_id = this.request.query.tenantId;
-  const pageSize = this.request.query.pageSize;
-  const currentPage = this.request.query.currentPage;
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const currentPage = parseInt(this.request.query.currentPage, 10);
   try {
-    const tenants = yield tenantDao.getTenants(parent_tenant_id, currentPage, pageSize);
-    Result.ok(this,tenants);
+    const tenants = yield tenantDao.getTenants(currentPage-1, pageSize);
+    const count = yield tenantDao.countTenants();
+    Result.ok(this,{
+      data: tenants,
+      totalCount: count[0].totalCount,
+      pageSize: pageSize,
+      current: currentPage,
+    });
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
