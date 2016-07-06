@@ -18,8 +18,8 @@ export default function makeColumns(type, handlers, msg) {
     },
   }, {
     title: msg('departurePlace'),
-    width: 100,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />
+    width: 150,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={9} />
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
@@ -36,8 +36,8 @@ export default function makeColumns(type, handlers, msg) {
       ) : <span />
   }, {
     title: msg('arrivalPlace'),
-    width: 100,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />
+    width: 150,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={9} />
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
