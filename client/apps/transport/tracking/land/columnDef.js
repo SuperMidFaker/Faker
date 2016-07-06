@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Icon } from 'ant-ui';
+import { Icon, Tag } from 'ant-ui';
 import RowUpdater from './rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
@@ -16,12 +16,45 @@ export default function makeColumns(type, handlers, msg) {
     render: (o, record) => {
       return <RowUpdater label={o} onAnchored={handlers.onShipmtPreview} row={record} />;
     },
-  }];
-  if (type !== 'pod') {
-    columns.push({
+  }, {
+    title: msg('departurePlace'),
+    width: 100,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />
+  }, {
+    title: msg('shipmtEstPickupDate'),
+    dataIndex: 'pickup_est_date',
+    width: 80,
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+  }, {
+    title: msg('shipmtActPickupDate'),
+    dataIndex: 'pickup_act_date',
+    width: 80,
+    render: (o, record) => record.pickup_act_date ?
+      (<span className="mdc-text-green">
+      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
+      </span>
+      ) : <span />
+  }, {
+    title: msg('arrivalPlace'),
+    width: 100,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />
+  }, {
+    title: msg('shipmtEstDeliveryDate'),
+    dataIndex: 'deliver_est_date',
+    width: 80,
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
+  }, {
+    title: msg('shipmtActDeliveryDate'),
+    dataIndex: 'deliver_act_date',
+    width: 80,
+    render: (o, record) => record.deliver_act_date ?
+      (<span className="mdc-text-green">
+      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
+      </span>
+      ) : <span />
+  }, {
       title: msg('shipmtStatus'),
       dataIndex: 'status',
-      fixed: 'left',
       width: 100,
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -64,11 +97,86 @@ export default function makeColumns(type, handlers, msg) {
           ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
         }
       },
+    }, {
+      title: msg('shipmtException'),
+      width: 80,
+      dataIndex: 'excp_level',
+    }];
+
+  columns.push({
+    title: msg('shipmtCarrier'),
+    dataIndex: 'sp_name',
+    width: 200,
+    render: (o, record) => {
+      if (record.sp_name) {
+        const spSpan = <TrimSpan text={record.sp_name} />;
+        if (record.sp_tenant_id > 0) {
+          return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-green" />
+              {spSpan}
+            </span>
+          );
+        } else if (record.sp_tenant_id === -1) {
+          return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-grey" />
+              {spSpan}
+            </span>
+          );
+        } else {
+          return spSpan;
+        }
+      } else {
+        return msg('ownFleet');
+      }
+    }
+  }, {
+    title: msg('shipmtVehicle'),
+    dataIndex: 'task_vehicle',
+    width: 120
+  }, {
+    title: msg('packageNum'),
+    dataIndex: 'total_count',
+    width: 80
+  }, {
+    title: msg('shipWeight'),
+    dataIndex: 'total_weight',
+    width: 80
+  }, {
+    title: msg('shipVolume'),
+    dataIndex: 'total_volume',
+    width: 80
+  }, {
+    title: msg('shipmtCustomer'),
+    dataIndex: 'customer_name',
+    width: 220,
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: msg('shipmtMode'),
+    dataIndex: 'transport_mode',
+    width: 80
+  }, {
+      title: msg('proofOfDelivery'),
+      dataIndex: 'pod_type',
+      width: 80,
+      render: (text, record) => {
+        if (record.pod_type === 'none') {
+          return <Icon type="tags-o" />;
+        } else if (record.pod_type === 'dreceipt') {
+          return <Icon type="tags" />;
+        } else {
+          return <Icon type="qrcode" />;
+        }
+      }
     });
+    
+  if (type !== 'pod') {
     if (type === 'status') {
       columns.push({
         title: msg('shipmtNextUpdate'),
         width: 140,
+        fixed: 'right',
         render: (o, record) => {
           if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
             return msg('carrierUpdate');
@@ -145,16 +253,11 @@ export default function makeColumns(type, handlers, msg) {
         },
       });
     }
-    columns.push({
-      title: msg('shipmtException'),
-      width: 80,
-      dataIndex: 'excp_level',
-    });
   } else {
     columns.push({
-      title: msg('proofOfDelivery'),
-      fixed: 'left',
+      title: msg('shipmtNextUpdate'),
       width: 140,
+      fixed: 'right',
       render: (o, record) => {
         if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
           return (
@@ -199,118 +302,6 @@ export default function makeColumns(type, handlers, msg) {
           );
         }
       },
-    });
-  }
-  columns.push({
-    title: msg('shipmtCarrier'),
-    dataIndex: 'sp_name',
-    width: 200,
-    render: (o, record) => {
-      if (record.sp_name) {
-        const spSpan = <TrimSpan text={record.sp_name} />;
-        if (record.sp_tenant_id > 0) {
-          return (
-            <span>
-              <i className="zmdi zmdi-circle mdc-text-green" />
-              {spSpan}
-            </span>
-          );
-        } else if (record.sp_tenant_id === -1) {
-          return (
-            <span>
-              <i className="zmdi zmdi-circle mdc-text-grey" />
-              {spSpan}
-            </span>
-          );
-        } else {
-          return spSpan;
-        }
-      } else {
-        return msg('ownFleet');
-      }
-    }
-  }, {
-    title: msg('shipmtVehicle'),
-    dataIndex: 'task_vehicle',
-    width: 120
-  }, {
-    title: msg('shipmtEstPickupDate'),
-    dataIndex: 'pickup_est_date',
-    width: 100,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
-  }, {
-    title: msg('shipmtActPickupDate'),
-    dataIndex: 'pickup_act_date',
-    width: 100,
-    render: (o, record) => record.pickup_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
-  }, {
-    title: msg('shipmtEstDeliveryDate'),
-    dataIndex: 'deliver_est_date',
-    width: 100,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
-  }, {
-    title: msg('shipmtActDeliveryDate'),
-    dataIndex: 'deliver_act_date',
-    width: 100,
-    render: (o, record) => record.deliver_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
-  }, {
-    title: msg('packageNum'),
-    dataIndex: 'total_count',
-    width: 80
-  }, {
-    title: msg('shipWeight'),
-    dataIndex: 'total_weight',
-    width: 80
-  }, {
-    title: msg('shipVolume'),
-    dataIndex: 'total_volume',
-    width: 80
-  }, {
-    title: msg('shipmtCustomer'),
-    dataIndex: 'customer_name',
-    width: 220,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: msg('departurePlace'),
-    width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />
-  }, {
-    title: msg('arrivalPlace'),
-    width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />
-  }, {
-    title: msg('shipmtMode'),
-    dataIndex: 'transport_mode',
-    width: 80
-  });
-  if (type !== 'pod') {
-    columns.push({
-      title: msg('proofOfDelivery'),
-      dataIndex: 'pod_type',
-      width: 80,
-      render: (text, record) => {
-        if (record.pod_type === 'none') {
-          return <Icon type="tags-o" />;
-        } else if (record.pod_type === 'dreceipt') {
-          return <Icon type="tags" />;
-        } else {
-          return <Icon type="qrcode" />;
-        }
-      }
-    });
-  } else {
-    columns.push({
-      title: msg('shipmtException'),
-      width: 80,
-      dataIndex: 'excp_level',
     });
   }
   return columns;
