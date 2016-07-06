@@ -5,7 +5,7 @@
  *
  */
 import React, { PropTypes, Component } from 'react';
-import { Upload, Card, Icon, Button } from 'ant-ui';
+import { Upload, Card, Icon, Button, message } from 'ant-ui';
 
 export default class AttchmentUpload extends Component {
   static propTypes = {
@@ -18,13 +18,17 @@ export default class AttchmentUpload extends Component {
     if (info.file.status === 'uploading') {
       return;
     }
+    if (info.file.response.status !== 200) {
+      message.error(info.file.response.msg);
+      return;
+    }
     const { onFileListUpdate } = this.props;
     const file = info.file;
     const prevFileList = this.state.attachments;
-    const nextFileList = [...prevFileList,
-      { uid: file.uid, name: file.name, status: 'success',
-        originFileObj: file.originFileObj
-      }];
+    const nextFileList = [ ...prevFileList, {
+      uid: file.uid, name: file.name,
+      url: file.response.data,
+    }];
     this.setState({
       attachments: nextFileList,
     });
@@ -34,8 +38,8 @@ export default class AttchmentUpload extends Component {
   }
   handleRemove = (file) => {
     const { onFileListUpdate } = this.props;
-    const nextFileList = this.state.fileList.filter(f => f.name !== file.name);
-    this.setState({fileList: nextFileList});
+    const nextFileList = this.state.attachments.filter(f => f.name !== file.name);
+    this.setState({ attachments: nextFileList });
     if (onFileListUpdate) {
       onFileListUpdate(nextFileList);
     }
@@ -45,6 +49,7 @@ export default class AttchmentUpload extends Component {
         <Card title="附件">
           <Upload listType="text" fileList={this.state.attachments}
             onRemove={this.handleRemove} onChange={this.handleChange}
+            action="/v1/upload/img/"
           >
             <Button type="ghost">
               <Icon type="upload" /> 点击上传

@@ -1,37 +1,97 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col } from 'ant-ui';
+import { searchClient, setClientForm, searchParams } from 'common/reducers/cmsDelegation';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-  labelCol: {span: 10},
-  wrapperCol: {span: 14}
+  labelCol: {span: 6},
+  wrapperCol: {span: 18}
 };
 
-const clientData = [
-  {code: '123', name: 'zank'},
-  {code: 'yww', name: '叶伟伟'}
-];
-const tradeModes = ['1', '2', '3'];
-const transModes = ['1', '2', '3'];
-const declareWayModes = ['1', '2', '3'];
-
-function generateOptions(arr) {
-  return arr.map(item => <Option key={item} value={item}>{item}</Option>);
+function SearchSelect(props) {
+  const { options, field, getFieldProps, onSearch } = props;
+  function handleSearch(searched) {
+    if (onSearch) {
+      onSearch(field, searched);
+    }
+  }
+  return (
+    <Select filterOption={false} showSearch onSearch={handleSearch} {...getFieldProps(field)}>
+    {options.map(opt => <Option key={opt.value} value={opt.value}>{opt.text}</Option>)}
+    </Select>
+  );
 }
 
+SearchSelect.propTypes = {
+  options: PropTypes.array.isRequired,
+  field: PropTypes.string.isRequired,
+  getFieldProps: PropTypes.func.isRequired,
+  onSearch: PropTypes.func,
+};
+
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    clients: state.cmsDelegation.formRequire.clients,
+    tradeModes: state.cmsDelegation.formRequire.tradeModes,
+    transModes: state.cmsDelegation.formRequire.transModes,
+    declareWayModes: state.cmsDelegation.formRequire.declareWayModes,
+  }),
+  { searchClient, setClientForm, searchParams }
+)
 export default class BasicForm extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
+    ieType: PropTypes.oneOf([ 'import', 'export' ]),
+    tenantId: PropTypes.number.isRequired,
+    clients: PropTypes.array.isRequired,
+    tradeModes: PropTypes.array.isRequired,
+    transModes: PropTypes.array.isRequired,
+    declareWayModes: PropTypes.array.isRequired,
+    searchClient: PropTypes.func.isRequired,
+    setClientForm: PropTypes.func.isRequired,
+    searchParams: PropTypes.func.isRequired,
+  }
+  handleClientSearch = (searched) => {
+    this.props.searchClient(this.props.tenantId, searched);
+  }
+  handleClientChange = (value) => {
+    if (typeof value === 'string') {
+      return value;
+    }
+    const selPartnerId = Number(value);
+    const clients = this.props.clients.filter(cl => cl.partner_id === selPartnerId);
+    if (clients.length === 1) {
+      const client = clients[0];
+      this.props.setClientForm({ customer_tenant_id: client.tid, customer_partner_id: selPartnerId });
+      return client.name;
+    }
+    return value;
+  }
+  handleParamSelect = (field, searched) => {
+    this.props.searchParams(field, searched, this.props.tenantId, this.props.ieType);
   }
   render() {
-    const { getFieldProps } = this.props.form;
+    const { form: { getFieldProps }, clients, tradeModes, transModes, declareWayModes } = this.props;
     return (
       <Card title="基础信息">
         <Col sm={12}>
-          <FormItem label="客户" {...formItemLayout} required>
-            <Select combobox {...getFieldProps('client_name')}>
-              {clientData.map(data => <Option key={data.code} value={data.name} datalink={data}>{data.name}</Option>)}
+          <FormItem label="客户" {...formItemLayout}>
+            <Select showSearch combobox showArrow={false} filterOption={false}
+              defaultActiveFirstOption={false}
+              onSearch={this.handleClientSearch}
+              {...getFieldProps('customer_name', { rules: [{
+                  required: true, message: '客户名称必填',
+                }],
+                getValueFromEvent: this.handleClientChange,
+              })}
+            >
+            {
+              clients.map(data => (<Option key={data.partner_id}
+                value={data.partner_id}>{data.name}</Option>)
+            )}
             </Select>
           </FormItem>
           <FormItem label="发票号" {...formItemLayout}>
@@ -55,25 +115,25 @@ export default class BasicForm extends Component {
         </Col>
         <Col sm={12}>
           <FormItem label="报关类型" {...formItemLayout}>
-            <Select {...getFieldProps('decl_way_code')}>
-              {generateOptions(declareWayModes)}
-            </Select>
+            <SearchSelect field="decl_way_code" options={declareWayModes}
+              onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+            />
           </FormItem>
           <FormItem label="合同号" {...formItemLayout}>
             <Input {...getFieldProps('contract_no')}/>
           </FormItem>
           <FormItem label="运输方式" {...formItemLayout}>
-            <Select {...getFieldProps('trans_mode')}>
-              {generateOptions(transModes)}
-            </Select>
+            <SearchSelect field="trans_mode" options={transModes}
+              onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+            />
           </FormItem>
           <FormItem label="订单号" {...formItemLayout}>
             <Input {...getFieldProps('order_no')}/>
           </FormItem>
           <FormItem label="贸易方式" {...formItemLayout}>
-            <Select {...getFieldProps('trade_mode')}>
-              {generateOptions(tradeModes)}
-            </Select>
+            <SearchSelect field="trade_mode" options={tradeModes}
+              onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+            />
           </FormItem>
           <FormItem label="重量" {...formItemLayout}>
             <Input {...getFieldProps('weight')}/>

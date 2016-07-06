@@ -56,7 +56,7 @@ export const Delegation = sequelize.define('cms_delegations', {
       return sequelize.query(`select count(D.delg_no) as count from
         (select * from cms_delegations ${delgWhere}) as D inner join
         cms_delegation_dispatch DD on D.delg_no = DD.delg_no and DD.recv_tenant_id = ?
-        and DD.bill_status = ? left outer join cms_delegation_bill_head BH
+        and DD.bill_status = ? and DD.status > 1 left outer join cms_delegation_bill_head BH
         on D.delg_no = BH.delg_no left outer join cms_delegation_entry_head EH
         on BH.bill_no = EH.bill_no`, {
           replacements: [ tenantId, billStatus ], type: sequelize.QueryTypes.SELECT
@@ -69,7 +69,7 @@ export const Delegation = sequelize.define('cms_delegations', {
         EH.id as entry_head_id, EH.entry_id, EH.comp_entry_id from
         (select * from cms_delegations ${delgWhere}) D inner join
         cms_delegation_dispatch DD on D.delg_no = DD.delg_no and DD.recv_tenant_id = ?
-        and DD.bill_status = ? left outer join cms_delegation_bill_head BH
+        and DD.bill_status = ? and DD.status > 1 left outer join cms_delegation_bill_head BH
         on D.delg_no = BH.delg_no left outer join cms_delegation_entry_head EH
         on BH.bill_no = EH.bill_no limit ?, ?`, {
           replacements: [ tenantId, billStatus, offset, limit ], type: sequelize.QueryTypes.SELECT
@@ -97,8 +97,8 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
     type: DATE,
     defaultValue: NOW
   },
-  acpt_tiem: DATE,
-  decl_tiem: DATE,
+  acpt_time: DATE,
+  decl_time: DATE,
   clea_time: DATE,
   send_auditor: STRING,
   send_audit_date: DATE,
@@ -106,9 +106,19 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
     type: INTEGER,
     defaultValue: 0
   },
-  bill_no: STRING,
-  entry_id: STRING,
-  comp_entry_id: STRING
+  status: INTEGER,
+  source: INTEGER,
 });
 
 Delegation.hasMany(Dispatch, { foreignKey: 'delg_no', constraints: false });
+
+export const DelegationFileDao = sequelize.define('cms_delegation_files', {
+  delg_no: STRING,
+  doc_name: STRING,
+  url: STRING,
+  creater_login_id: INTEGER,
+  created_date: {
+    type: DATE,
+    defaultValue: NOW,
+  },
+});

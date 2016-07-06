@@ -11,6 +11,7 @@ const initialState = {
   categoryId: 0,
   modules: 0,
   type: '', // user type ADMIN PERSONNEL ENTERP BRANCH
+  tenantName: '',
   profile: {
     // name(same as outter username), username(loginName without @), phone, email, role
   }

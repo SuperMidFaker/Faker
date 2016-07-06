@@ -1,36 +1,146 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/transport/resources/', [
-  'CREATE_DELEGATION', 'CREATE_DELEGATION_SUCCEED', 'CREATE_DELEGATION_FAIL'
+const actionTypes = createActionTypes('@@welogix/transport/cmsDelegation/', [
+  'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
+  'ACPT_DELG', 'ACPT_DELG_SUCCEED', 'ACPT_DELG_FAIL',
+  'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
+  'SEARCH_CLIENT', 'SEARCH_CLIENT_SUCCEED', 'SEARCH_CLIENT_FAIL',
+  'SET_CLIENT_FORM',
+  'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
 ]);
 
 const initialState = {
+  delegationlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  listFilter: {
+    sortField: '',
+    sortOrder: '',
+    status: 'unaccepted',
+  },
   formRequire: {
+    clients: [],
     tradeModes: [],
     transModes: [],
     declareWayModes: [],
+  },
+  formData: {
+    customer_tenant_id: -1,
+    customer_partner_id: -1,
   },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_ACCEPT:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: true }};
+    case actionTypes.LOAD_ACCEPT_SUCCEED:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false,
+        ...action.result.data }, listFilter: JSON.parse(action.params.filter)};
+    case actionTypes.LOAD_ACCEPT_FAIL:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false }};
+    case actionTypes.SEARCH_CLIENT_SUCCEED:
+      return { ...state, formRequire: { ...state.formRequire, clients: action.result.data },
+        formData: { ...state.formData, ...initialState.formData },
+      };
+    case actionTypes.SEARCH_PARAM_SUCCEED:
+      return { ...state, formRequire: { ...state.formRequire, ...action.result.data }};
+    case actionTypes.SET_CLIENT_FORM:
+      return { ...state, formData: { ...state.formData, ...action.data }};
     default:
       return state;
   }
 }
 
-export function createDelegation({delegationInfo, tenantInfo, delg_type}) {
+export function loadAcceptanceTable(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.CREATE_DELEGATION,
-        actionTypes.CREATE_DELEGATION_SUCCEED,
-        actionTypes.CREATE_DELEGATION_FAIL
+        actionTypes.LOAD_ACCEPT,
+        actionTypes.LOAD_ACCEPT_SUCCEED,
+        actionTypes.LOAD_ACCEPT_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/create',
+      endpoint: 'v1/cms/acceptance/delegations',
+      method: 'get',
+      params,
+      cookie,
+    }
+  };
+}
+
+export function acceptDelg(loginId, loginName, dispId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACPT_DELG,
+        actionTypes.ACPT_DELG_SUCCEED,
+        actionTypes.ACPT_DELG_FAIL,
+      ],
       method: 'post',
-      data: { delegationInfo, tenantInfo, delg_type }
+      endpoint: 'v1/cms/delegation/accept',
+      data: { loginId, loginName, dispId },
+    }
+  };
+}
+
+export function createDelegationByCCB({
+  delegation, tenantId, loginId, username,
+  ietype, source, tenantName, attachments,
+}) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_DELGCCB,
+        actionTypes.CREATE_DELGCCB_SUCCEED,
+        actionTypes.CREATE_DELGCCB_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/ccb',
+      method: 'post',
+      data: {
+        delegation, tenantId, loginId, username,
+        ietype, source, tenantName, attachments,
+      },
+    }
+  };
+}
+
+export function searchClient(tenantId, searched) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_CLIENT,
+        actionTypes.SEARCH_CLIENT_SUCCEED,
+        actionTypes.SEARCH_CLIENT_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/clients',
+      method: 'get',
+      params: { tenantId, searched },
+    }
+  };
+}
+
+export function setClientForm({ customer_tenant_id, customer_partner_id }) {
+  return {
+    type: actionTypes.SET_CLIENT_FORM,
+    data: { customer_tenant_id, customer_partner_id },
+  };
+}
+
+export function searchParams(field, searched, tenantId, ieType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_PARAM,
+        actionTypes.SEARCH_PARAM_SUCCEED,
+        actionTypes.SEARCH_PARAM_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/params',
+      method: 'get',
+      params: { tenantId, searched, field, ieType },
     }
   };
 }
