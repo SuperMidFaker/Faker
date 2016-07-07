@@ -555,7 +555,7 @@ export default class DispatchList extends React.Component {
     });
 
     Modal.confirm({
-      title: "确认批量发送运单",
+      title: `确认批量发送运单`,
       content: `将已选定的${count}个运单发送给承运商？`,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
@@ -586,7 +586,7 @@ export default class DispatchList extends React.Component {
       msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.task_vehicle}】？`;
     }
     Modal.confirm({
-      title: "确认发送运单",
+      title: `确认发送运单`,
       content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
