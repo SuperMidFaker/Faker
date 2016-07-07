@@ -56,7 +56,7 @@ export default class DispatchDock extends Component {
     this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
     this.onCloseWrapper = (reload) => {
-      this.setState({quotation: 0, podType: 'dreceipt'});
+      this.setState({quotation: 0, podType: 'ePOD'});
       this.onClose(reload);
     };
     this.consigneeCols = [{
@@ -157,7 +157,7 @@ export default class DispatchDock extends Component {
 
   state = {
     quotation: 0,
-    podType: 'dreceipt', // none, qrcode, dreceipt
+    podType: 'ePOD', // none, qrPOD, ePOD
     carrierSearch: '',
     plateSearch: '',
   }

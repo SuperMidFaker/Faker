@@ -154,7 +154,7 @@ function *shipmtSavePendingP() {
       shipmtNo, shipmt.customer_tenant_id, shipmt.customer_name,
       shipmt.customer_partner_id,
       SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
-      sp.login_name, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
+      sp.login_name, 'ePOD', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.unaccepted, shipmt.freight_charge, new Date(), trans
     );
     yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
@@ -181,7 +181,7 @@ function *shipmtSaveAcceptP() {
       shipmtNo, shipmt.customer_tenant_id, shipmt.customer_name,
       shipmt.customer_partner_id,
       SHIPMENT_SOURCE.consigned, sp.tid, sp.name, null, sp.login_id,
-      sp.login_name, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
+      sp.login_name, 'ePOD', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipmt.freight_charge, new Date(), trans
     );
     yield shipmentDao.updateDispId(shipmtNo, result.insertId, trans);
@@ -307,7 +307,7 @@ function *shipmtDraftSaveAcceptP() {
       shipmt_no, shipment.customer_tenant_id, shipment.customer_name,
       shipment.customer_partner_id, SHIPMENT_SOURCE.consigned,
       shipment.lsp_tenant_id, shipment.lsp_name, shipment.lsp_partner_id,
-      loginId, loginName, 'dreceipt', SHIPMENT_DISPATCH_STATUS.confirmed,
+      loginId, loginName, 'ePOD', SHIPMENT_DISPATCH_STATUS.confirmed,
       SHIPMENT_TRACK_STATUS.undispatched, shipment.freight_charge,
       new Date(), trans
     );
