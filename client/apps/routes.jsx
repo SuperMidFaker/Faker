@@ -118,6 +118,7 @@ export default(store, cookie) => {
             <Route path="accept">
               <IndexRoute component={ImportAcceptance.List}/>
               <Route path="create" component={ImportAcceptance.Create}/>
+              <Route path="edit/:delgNo" component={ImportAcceptance.Edit}/>
             </Route>
             <Route path="declare">
               <IndexRedirect to="/import/declare/list/undeclared" />

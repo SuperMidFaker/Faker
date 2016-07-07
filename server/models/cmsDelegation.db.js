@@ -18,6 +18,7 @@ export const Delegation = sequelize.define('cms_delegations', {
     primaryKey: true
   },
   delg_type: INTEGER,
+  order_no: STRING,
   invoice_no: STRING,
   contract_no: STRING,
   bl_wb_no: STRING,

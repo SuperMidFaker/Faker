@@ -36,6 +36,7 @@ function *getAcceptDelegations() {
       where: { ...dispWhere, recv_tenant_id: tenantId },
     }],
   });
+  // todo clean the model.attribute with model name
   delgs.rows = delgs.rows.map(row => {
     return { ...row, ref_delg_external_no: row['cms_delegation_dispatches.ref_delg_external_no'],
       ref_recv_external_no: row['cms_delegation_dispatches.ref_recv_external_no'],
@@ -59,6 +60,7 @@ function *createDelegationByCCB() {
     const {
       delegation, tenantId, loginId, username,
       ietype, source, tenantName, attachments,
+      accepted,
     } = body;
     // 生成委托运单号delg_no
     const [ tenants, lastDelegation ] = yield [
@@ -89,7 +91,8 @@ function *createDelegationByCCB() {
         send_login_name: username, send_tenant_id: delegation.customer_tenant_id,
         send_partner_id: delegation.customer_partner_id, send_name: delegation.customer_name,
         delg_time: new Date(), recv_tenant_id: tenantId, recv_name: tenantName, source,
-        status: DELG_STATUS.unaccepted,
+        status: accepted ? DELG_STATUS.undeclared : DELG_STATUS.unaccepted,
+        acpt_time: accepted ? new Date() : undefined,
       }),
     ];
     attachments.forEach(att => {
@@ -165,10 +168,118 @@ function *acceptDelg() {
   }
 }
 
+function *getDelegation() {
+  const { delgNo } = this.request.query;
+  try {
+    const [ delegation, files ] = yield [
+      Delegation.findOne({
+        raw: true,
+        attributes: [
+          `delg_no`, 'order_no', `invoice_no`, `contract_no`, `bl_wb_no`, `pieces`,
+          `weight`, `trans_mode`, `voyage_no`, `trade_mode`, `decl_way_code`,
+          `ems_no`, `customer_tenant_id`, `customer_partner_id`, `customer_name`,
+        ],
+        where: {
+            delg_no: delgNo,
+          },
+          include: [{
+            model: Dispatch,
+            attributes: [ 'ref_delg_external_no', 'ref_recv_external_no' ],
+          }],
+      }),
+      DelegationFileDao.findAll({
+        raw: true,
+        attributes: [[ 'id', 'uid' ], [ 'doc_name', 'name' ], 'url' ],
+        where: {
+          delg_no: delgNo,
+        },
+      }),
+    ];
+    delegation.ref_delg_external_no =
+      delegation['cms_delegation_dispatches.ref_delg_external_no'];
+    delegation.ref_recv_external_no =
+      delegation['cms_delegation_dispatches.ref_recv_external_no'];
+    delegation['cms_delegation_dispatches.ref_delg_external_no'] = undefined;
+    const [ transModes, tradeModes, declareWayModes ] = yield [
+      CmsParamTransModeDao.findAll({
+        raw: true,
+        attributes: [ [ 'trans_code', 'value' ], ['trans_spec', 'text'] ],
+        where: { trans_code: delegation.trans_mode },
+      }),
+      CmsParamTradeDao.findAll({
+        raw: true,
+        attributes: [ [ 'trade_mode', 'value' ], ['trade_abbr', 'text'] ],
+        where: { trade_mode: delegation.trade_mode },
+      }),
+      CmsCompDeclareWayDao.findAll({
+        raw: true,
+        attributes: [ [ 'decl_way_code', 'value' ], [ 'decl_way_name', 'text' ] ],
+        where: { decl_way_code: delegation.decl_way_code },
+      }),
+    ];
+    return Result.ok(this, {
+      delegation, files, formRequire: {
+        transModes, tradeModes, declareWayModes,
+      },
+    });
+  } catch (e) {
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *editDelgByCCB() {
+  try {
+    const { delegation, addedFiles, removedFiles, accepted, loginId } = yield cobody(this);
+    const dbOps = [
+      Delegation.update(delegation, { where: { delg_no: delegation.delg_no }}),
+      Dispatch.update({
+        status: accepted ? DELG_STATUS.undeclared : DELG_STATUS.unaccepted,
+        acpt_time: accepted ? new Date() : undefined,
+        ref_recv_external_no: delegation.internal_no,
+      }, { where: { delg_no: delegation.delg_no }}),
+    ];
+    addedFiles.forEach(af => dbOps.push(
+      DelegationFileDao.create({
+        delg_no: delegation.delg_no,
+        doc_name: af.name,
+        url: af.url,
+        creater_login_id: loginId,
+      })
+    ));
+    removedFiles.forEach(rf => dbOps.push(
+      DelegationFileDao.destroy({
+        where: { id: rf.uid },
+      })
+    ));
+    yield dbOps;
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *delDelg() {
+  try {
+    const { delgNo } = yield cobody(this);
+    yield [
+      Delegation.destroy({ where: { delg_no: delgNo }}),
+      Dispatch.destroy({ where: { delg_no: delgNo }}),
+      DelegationFileDao.destroy({ where: { delg_no: delgNo }}),
+    ];
+    return Result.ok(this);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/cms/acceptance/delegations', getAcceptDelegations ],
-  [ 'post', '/v1/cms/delegation/ccb', createDelegationByCCB ],
+  [ 'post', '/v1/cms/ccb/delegation', createDelegationByCCB ],
   [ 'get', '/v1/cms/delegation/clients', findDelgClients ],
   [ 'get', '/v1/cms/delegation/params', findDelgParams ],
   [ 'post', '/v1/cms/delegation/accept', acceptDelg ],
+  [ 'get', '/v1/cms/ccb/delegation', getDelegation ],
+  [ 'post', '/v1/cms/ccb/delegation/edit', editDelgByCCB ],
+  [ 'post', '/v1/cms/delegation/accept', acceptDelg ],
+  [ 'post', '/v1/cms/delegation/del', delDelg ],
 ];

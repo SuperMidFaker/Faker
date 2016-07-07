@@ -2,23 +2,40 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col } from 'ant-ui';
 import { searchClient, setClientForm, searchParams } from 'common/reducers/cmsDelegation';
+import { TENANT_ASPECT } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 18}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
+function getFieldInits(aspect, formData) {
+  const init = {};
+  if (formData) {
+    [
+      `invoice_no`, `contract_no`, `bl_wb_no`, `pieces`, `weight`, `trans_mode`,
+      `voyage_no`, `trade_mode`, `decl_way_code`, `ems_no`, `customer_name`,
+      'order_no',
+    ].forEach(fd => init[fd] = formData[fd]);
+    init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no
+      : formData.ref_recv_external_no;
+  }
+  return init;
+}
+
 function SearchSelect(props) {
-  const { options, field, getFieldProps, onSearch } = props;
+  const { options, field, initialValue, getFieldProps, onSearch } = props;
   function handleSearch(searched) {
     if (onSearch) {
       onSearch(field, searched);
     }
   }
   return (
-    <Select filterOption={false} showSearch onSearch={handleSearch} {...getFieldProps(field)}>
+    <Select filterOption={false} showSearch onSearch={handleSearch} {
+      ...getFieldProps(field, { initialValue })}
+    >
     {options.map(opt => <Option key={opt.value} value={opt.value}>{opt.text}</Option>)}
     </Select>
   );
@@ -38,6 +55,7 @@ SearchSelect.propTypes = {
     tradeModes: state.cmsDelegation.formRequire.tradeModes,
     transModes: state.cmsDelegation.formRequire.transModes,
     declareWayModes: state.cmsDelegation.formRequire.declareWayModes,
+    fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
   }),
   { searchClient, setClientForm, searchParams }
 )
@@ -46,6 +64,7 @@ export default class BasicForm extends Component {
     form: PropTypes.object.isRequired,
     ieType: PropTypes.oneOf([ 'import', 'export' ]),
     tenantId: PropTypes.number.isRequired,
+    fieldInits: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
     tradeModes: PropTypes.array.isRequired,
     transModes: PropTypes.array.isRequired,
@@ -74,7 +93,7 @@ export default class BasicForm extends Component {
     this.props.searchParams(field, searched, this.props.tenantId, this.props.ieType);
   }
   render() {
-    const { form: { getFieldProps }, clients, tradeModes, transModes, declareWayModes } = this.props;
+    const { form: { getFieldProps }, fieldInits, clients, tradeModes, transModes, declareWayModes } = this.props;
     return (
       <Card title="基础信息">
         <Col sm={12}>
@@ -86,6 +105,7 @@ export default class BasicForm extends Component {
                   required: true, message: '客户名称必填',
                 }],
                 getValueFromEvent: this.handleClientChange,
+                initialValue: fieldInits.customer_name,
               })}
             >
             {
@@ -95,48 +115,69 @@ export default class BasicForm extends Component {
             </Select>
           </FormItem>
           <FormItem label="发票号" {...formItemLayout}>
-            <Input {...getFieldProps('invoice_no')}/>
+            <Input {...getFieldProps('invoice_no', {
+              initialValue: fieldInits.invoice_no,
+            })}/>
           </FormItem>
           <FormItem label="提运单号" {...formItemLayout}>
-            <Input {...getFieldProps('bl_wb_no')}/>
+            <Input {...getFieldProps('bl_wb_no', {
+              initialValue: fieldInits.bl_wb_no,
+            })}/>
           </FormItem>
           <FormItem label="备案号" {...formItemLayout}>
-            <Input {...getFieldProps('ems_no')}/>
+            <Input {...getFieldProps('ems_no', {
+              initialValue: fieldInits.ems_no,
+            })}/>
           </FormItem>
           <FormItem label="航名航次" {...formItemLayout}>
-            <Input {...getFieldProps('voyage_no')}/>
+            <Input {...getFieldProps('voyage_no', {
+              initialValue: fieldInits.voyage_no,
+            })}/>
           </FormItem>
           <FormItem label="件数" {...formItemLayout}>
-            <Input {...getFieldProps('pieces')}/>
+            <Input {...getFieldProps('pieces', {
+              initialValue: fieldInits.pieces,
+            })}/>
           </FormItem>
           <FormItem label="内部编号" {...formItemLayout}>
-            <Input {...getFieldProps('internal_no')}/>
+            <Input {...getFieldProps('internal_no', {
+              initialValue: fieldInits.internal_no,
+            })}/>
           </FormItem>
         </Col>
         <Col sm={12}>
           <FormItem label="报关类型" {...formItemLayout}>
             <SearchSelect field="decl_way_code" options={declareWayModes}
               onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+              initialValue={fieldInits.decl_way_code}
             />
           </FormItem>
           <FormItem label="合同号" {...formItemLayout}>
-            <Input {...getFieldProps('contract_no')}/>
+            <Input {...getFieldProps('contract_no', {
+              initialValue: fieldInits.contract_no,
+            })}/>
           </FormItem>
           <FormItem label="运输方式" {...formItemLayout}>
             <SearchSelect field="trans_mode" options={transModes}
               onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+              initialValue={fieldInits.trans_mode}
             />
           </FormItem>
           <FormItem label="订单号" {...formItemLayout}>
-            <Input {...getFieldProps('order_no')}/>
+            <Input {...getFieldProps('order_no', {
+              initialValue: fieldInits.order_no,
+            })}/>
           </FormItem>
           <FormItem label="贸易方式" {...formItemLayout}>
             <SearchSelect field="trade_mode" options={tradeModes}
               onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+              initialValue={fieldInits.trade_mode}
             />
           </FormItem>
           <FormItem label="重量" {...formItemLayout}>
-            <Input {...getFieldProps('weight')}/>
+            <Input {...getFieldProps('weight', {
+              initialValue: fieldInits.weight,
+            })}/>
           </FormItem>
         </Col>
       </Card>

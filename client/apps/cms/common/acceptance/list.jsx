@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Radio, Button, message } from 'ant-ui';
+import { Table, Radio, Button, Popconfirm, message } from 'ant-ui';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { loadAcceptanceTable, acceptDelg } from 'common/reducers/cmsDelegation';
+import { loadAcceptanceTable, acceptDelg, delDelg } from 'common/reducers/cmsDelegation';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -31,7 +31,7 @@ function fetchData({ state, dispatch, cookie }) {
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
   }),
-  { loadAcceptanceTable, acceptDelg }
+  { loadAcceptanceTable, acceptDelg, delDelg }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -56,6 +56,7 @@ export default class AcceptanceList extends Component {
     listFilter: PropTypes.object.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
+    delDelg: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired
@@ -125,6 +126,9 @@ export default class AcceptanceList extends Component {
     this.context.router.push(`/${this.props.type}/accept/create`);
   }
   handleRadioChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
     const filter = JSON.stringify({ ...this.props.listFilter, status: ev.target.value });
     const { tenantId, delegationlist } = this.props;
     this.props.loadAcceptanceTable(null, {
@@ -152,6 +156,21 @@ export default class AcceptanceList extends Component {
       }
     );
   }
+  handleDelgDel = (delgNo) => {
+    const { tenantId, listFilter, delegationlist: { pageSize, current }} = this.props;
+    this.props.delDelg(delgNo).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadAcceptanceTable(null, {
+          tenantId,
+          filter: JSON.stringify(listFilter),
+          pageSize,
+          currentPage: current,
+        });
+      }
+    });
+  }
   render() {
     const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
@@ -172,9 +191,13 @@ export default class AcceptanceList extends Component {
               接单
               </a>
               <span className="ant-divider" />
-              <NavLink to={`/${this.props.type}/acceptance/edit/${record.delg_no}`}>
+              <NavLink to={`/${this.props.type}/accept/edit/${record.delg_no}`}>
               修改
               </NavLink>
+              <span className="ant-divider" />
+              <Popconfirm title="确定删除?" onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                <a role="button">删除</a>
+              </Popconfirm>
             </span>
           );
         },

@@ -5,9 +5,12 @@ const actionTypes = createActionTypes('@@welogix/transport/cmsDelegation/', [
   'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
   'ACPT_DELG', 'ACPT_DELG_SUCCEED', 'ACPT_DELG_FAIL',
   'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
+  'LOAD_DELG', 'LOAD_DELG_SUCCEED', 'LOAD_DELG_FAIL',
+  'EDIT_DELGCCB', 'EDIT_DELGCCB_SUCCEED', 'EDIT_DELGCCB_FAIL',
   'SEARCH_CLIENT', 'SEARCH_CLIENT_SUCCEED', 'SEARCH_CLIENT_FAIL',
-  'SET_CLIENT_FORM',
+  'SET_CLIENT_FORM', 'NEW_FORM',
   'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
+  'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
 ]);
 
 const initialState = {
@@ -31,7 +34,9 @@ const initialState = {
   formData: {
     customer_tenant_id: -1,
     customer_partner_id: -1,
+    create_time: null,
   },
+  delgFiles: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -43,6 +48,13 @@ export default function reducer(state = initialState, action) {
         ...action.result.data }, listFilter: JSON.parse(action.params.filter)};
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }};
+    case actionTypes.LOAD_DELG:
+      return { ...state, formData: initialState.formData, delgFiles: [] };
+    case actionTypes.LOAD_DELG_SUCCEED:
+      return { ...state, formData: action.result.data.delegation,
+        delgFiles: action.result.data.files,
+        formRequire: { ...state.formRequire, ...action.result.data.formRequire },
+      };
     case actionTypes.SEARCH_CLIENT_SUCCEED:
       return { ...state, formRequire: { ...state.formRequire, clients: action.result.data },
         formData: { ...state.formData, ...initialState.formData },
@@ -51,6 +63,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, formRequire: { ...state.formRequire, ...action.result.data }};
     case actionTypes.SET_CLIENT_FORM:
       return { ...state, formData: { ...state.formData, ...action.data }};
+    case actionTypes.NEW_FORM:
+      return { ...state, formData: { ...initialState.formData, create_time: new Date() }};
     default:
       return state;
   }
@@ -90,6 +104,7 @@ export function acceptDelg(loginId, loginName, dispId) {
 export function createDelegationByCCB({
   delegation, tenantId, loginId, username,
   ietype, source, tenantName, attachments,
+  accepted,
 }) {
   return {
     [CLIENT_API]: {
@@ -98,11 +113,47 @@ export function createDelegationByCCB({
         actionTypes.CREATE_DELGCCB_SUCCEED,
         actionTypes.CREATE_DELGCCB_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/ccb',
+      endpoint: 'v1/cms/ccb/delegation',
       method: 'post',
       data: {
         delegation, tenantId, loginId, username,
         ietype, source, tenantName, attachments,
+        accepted,
+      },
+    }
+  };
+}
+
+export function loadDelg(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELG,
+        actionTypes.LOAD_DELG_SUCCEED,
+        actionTypes.LOAD_DELG_FAIL,
+      ],
+      endpoint: 'v1/cms/ccb/delegation',
+      method: 'get',
+      cookie,
+      params,
+    }
+  };
+}
+
+export function editDelegationByCCB({
+  delegation, addedFiles, removedFiles, accepted,
+}) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_DELGCCB,
+        actionTypes.EDIT_DELGCCB_SUCCEED,
+        actionTypes.EDIT_DELGCCB_FAIL,
+      ],
+      endpoint: 'v1/cms/ccb/delegation/edit',
+      method: 'post',
+      data: {
+        delegation, addedFiles, removedFiles, accepted,
       },
     }
   };
@@ -142,5 +193,26 @@ export function searchParams(field, searched, tenantId, ieType) {
       method: 'get',
       params: { tenantId, searched, field, ieType },
     }
+  };
+}
+
+export function delDelg(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_DELG,
+        actionTypes.DEL_DELG_SUCCEED,
+        actionTypes.DEL_DELG_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/del',
+      method: 'post',
+      data: { delgNo },
+    }
+  };
+}
+
+export function loadNewForm() {
+  return {
+    type: actionTypes.NEW_FORM,
   };
 }

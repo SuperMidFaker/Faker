@@ -38,7 +38,7 @@ function *getDelgDeclares() {
   const limit = pageSize;
   const rows = yield Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit);
   return Result.ok(this, {
-    totalCount: counts[0],
+    totalCount: counts[0].count,
     pageSize,
     current,
     data: rows,
