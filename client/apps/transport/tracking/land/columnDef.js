@@ -7,6 +7,27 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
 
+function renderActDate(recordActDate, recordEstDate) {
+  if (recordActDate) {
+    const actDate = new Date(recordActDate);
+    actDate.setHours(0, 0, 0, 0);
+    const estDate = new Date(recordEstDate);
+    estDate.setHours(0, 0, 0, 0);
+    if (actDate.getTime() !== estDate.getTime()) {
+      return (
+        <span className="mdc-text-red">
+        {moment(recordActDate).format('YYYY.MM.DD')}
+        </span>);
+    } else {
+      return (
+        <span className="mdc-text-green">
+        {moment(recordActDate).format('YYYY.MM.DD')}
+        </span>);
+    }
+  } else {
+    return <span />;
+  }
+}
 export default function makeColumns(type, handlers, msg) {
   const columns = [{
     title: msg('shipNo'),
@@ -23,17 +44,13 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
-    width: 80,
-    render: (o, record) => record.pickup_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
+    width: 90,
+    render: (o, record) => renderActDate(record.pickup_act_date, record.pickup_est_date),
   }, {
     title: msg('arrivalPlace'),
     width: 150,
@@ -41,17 +58,13 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => record.deliver_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
+    render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
   }, {
       title: msg('shipmtStatus'),
       dataIndex: 'status',
@@ -158,20 +171,20 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'transport_mode',
     width: 80
   }, {
-      title: msg('proofOfDelivery'),
-      dataIndex: 'pod_type',
-      width: 80,
-      render: (text, record) => {
-        if (record.pod_type === 'none') {
-          return <Icon type="tags-o" />;
-        } else if (record.pod_type === 'ePOD') {
-          return <Icon type="tags" />;
-        } else {
-          return <Icon type="qrcode" />;
-        }
+    title: msg('proofOfDelivery'),
+    dataIndex: 'pod_type',
+    width: 80,
+    render: (text, record) => {
+      if (record.pod_type === 'none') {
+        return <Icon type="tags-o" />;
+      } else if (record.pod_type === 'ePOD') {
+        return <Icon type="tags" />;
+      } else {
+        return <Icon type="qrcode" />;
       }
-    });
-    
+    }
+  });
+
   if (type !== 'pod') {
     if (type === 'status') {
       columns.push({
