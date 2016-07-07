@@ -19,7 +19,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('departurePlace'),
     width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={9} />
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
@@ -37,7 +37,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('arrivalPlace'),
     width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={9} />
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -164,7 +164,7 @@ export default function makeColumns(type, handlers, msg) {
       render: (text, record) => {
         if (record.pod_type === 'none') {
           return <Icon type="tags-o" />;
-        } else if (record.pod_type === 'dreceipt') {
+        } else if (record.pod_type === 'ePOD') {
           return <Icon type="tags" />;
         } else {
           return <Icon type="qrcode" />;
@@ -293,7 +293,7 @@ export default function makeColumns(type, handlers, msg) {
             </div>
           );
         } else {
-          const tagIcon = record.pod_type === 'qrcode' ? <Icon type="qrcode" /> :
+          const tagIcon = record.pod_type === 'qrPOD' ? <Icon type="qrcode" /> :
             <Icon type="tags" />;
           return (
             <span>

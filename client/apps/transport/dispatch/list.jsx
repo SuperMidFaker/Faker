@@ -287,9 +287,9 @@ export default class DispatchList extends React.Component {
         width: 100,
         render: (text) => {
           switch (text) {
-            case 'qrcode':
+            case 'qrPOD':
               return '扫描签收回单';
-            case 'dreceipt':
+            case 'ePOD':
               return '需要电子回单';
             default:
               return '不要电子回单';
