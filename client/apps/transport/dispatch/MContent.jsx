@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Radio, Icon } from 'ant-ui';
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 export default class MContent extends Component {
   static propTypes = {
@@ -29,10 +30,11 @@ export default class MContent extends Component {
     return (
       <div className="dispatch-confirm">
         <div style={{ marginBottom: 10 }}>{this.msg}</div>
+        
         <RadioGroup onChange={(e) => this.handlePodTypeChange(e)} value={this.state.podType}>
-          <Radio key="a" value={'ePOD'}><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera" />需要电子回单</Radio>
-          <Radio key="b" value={'none'}><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="camera-o" />不要电子回单</Radio>
-          <Radio key="c" value={'qrPOD'}><Icon style={{fontSize: 18, top: -3, marginLeft: 5, marginRight: 3}} type="qrcode" />扫描签收回单</Radio>
+          <RadioButton key="a" value={'ePOD'}><Icon  type="scan" /> 拍摄上传</RadioButton>
+          <RadioButton key="c" value={'qrPOD'}><Icon  type="qrcode" /> 扫码签收</RadioButton>
+          <RadioButton key="b" value={'none'}><Icon  type="file-excel" /> 无须上传</RadioButton>
         </RadioGroup>
       </div>
     );

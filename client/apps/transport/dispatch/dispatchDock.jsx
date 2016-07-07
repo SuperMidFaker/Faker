@@ -328,11 +328,12 @@ export default class DispatchDock extends Component {
   }
   showConfirm(type, target) {
     const [ shipmt ] = this.props.shipmts;
-    let msg = `将运单编号【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运商`;
+    let msg = `即将【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运，请选择对回单的要求：`;
     if (type === 'vehicle') {
-      msg = `将运单编号【${shipmt.shipmt_no}】分配给【${target.plate_number}】`;
+      msg = `将【${shipmt.shipmt_no}】分配给【${target.plate_number}】承运，请选择对回单的要求：`;
     }
     Modal.confirm({
+      title: '确认回单要求',
       content: (<MContent msg={msg} onChange={this.handlePodTypeChange} />),
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
