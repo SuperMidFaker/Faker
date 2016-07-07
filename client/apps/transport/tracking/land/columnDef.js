@@ -13,7 +13,7 @@ function renderActDate(recordActDate, recordEstDate) {
     actDate.setHours(0, 0, 0, 0);
     const estDate = new Date(recordEstDate);
     estDate.setHours(0, 0, 0, 0);
-    if (actDate.getTime() !== estDate.getTime()) {
+    if (actDate.getTime() > estDate.getTime()) {
       return (
         <span className="mdc-text-red">
         {moment(recordActDate).format('YYYY.MM.DD')}
