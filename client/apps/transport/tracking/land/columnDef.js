@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Icon, Tag } from 'ant-ui';
+import { Icon, Tag, Tooltip } from 'ant-ui';
 import RowUpdater from './rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
@@ -162,12 +162,12 @@ export default function makeColumns(type, handlers, msg) {
       dataIndex: 'pod_type',
       width: 80,
       render: (text, record) => {
-        if (record.pod_type === 'none') {
-          return <Icon type="tags-o" />;
+        if (record.pod_type === 'qrPOD') {
+          return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
         } else if (record.pod_type === 'ePOD') {
-          return <Icon type="tags" />;
+          return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
         } else {
-          return <Icon type="qrcode" />;
+          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
         }
       }
     });
@@ -263,7 +263,6 @@ export default function makeColumns(type, handlers, msg) {
         if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
           return (
             <div>
-            <Icon type="tags" />
             <RowUpdater label={msg('auditPod')}
             onAnchored={handlers.onShowAuditModal} row={record}
             />
@@ -271,35 +270,21 @@ export default function makeColumns(type, handlers, msg) {
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
           return (
-            <span>
-            <i className="mdc-text-red anticon anticon-tags" />
-            {msg('rejectByUs')}
-            </span>
+            <span><Icon type="frown" /> {msg('rejectByUs')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           return (
-            <span>
-            <Icon type="tags" />
-            {msg('submitToUpper')}
-            </span>
+            <span><Icon type="meh" /> {msg('submitToUpper')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           return (
-            <div>
-            <i className="mdc-text-red anticon anticon-tags" />
-            <RowUpdater label={msg('resubmitPod')}
-            onAnchored={handlers.onResubmit} row={record}
-            />
+            <div><Icon type="frown" /> <RowUpdater label={msg('resubmitPod')}
+            onAnchored={handlers.onResubmit} row={record} />
             </div>
           );
         } else {
-          const tagIcon = record.pod_type === 'qrPOD' ? <Icon type="qrcode" /> :
-            <Icon type="tags" />;
           return (
-            <span>
-            {tagIcon}
-            {msg('acceptByUpper')}
-            </span>
+            <span><Icon type="smile" /> {msg('acceptByUpper')}</span>
           );
         }
       },

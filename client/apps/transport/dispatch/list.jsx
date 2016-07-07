@@ -555,7 +555,8 @@ export default class DispatchList extends React.Component {
     });
 
     Modal.confirm({
-      content: `确定发送${count}个运单？`,
+      title: "确认批量发送运单",
+      content: `将已选定的${count}个运单发送给承运商？`,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
@@ -580,11 +581,12 @@ export default class DispatchList extends React.Component {
   }
 
   handleShipmtSend(shipmt) {
-    let msg = `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.sp_name}】承运商？`;
+    let msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.sp_name}】？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
-      msg = `确定发送运单编号为【${shipmt.shipmt_no}】的运单给【${shipmt.task_vehicle}】车辆？`;
+      msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.task_vehicle}】？`;
     }
     Modal.confirm({
+      title: "确认发送运单",
       content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
