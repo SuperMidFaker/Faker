@@ -4,7 +4,7 @@ import { Delegation, Dispatch, DelegationFileDao } from '../models/cmsDelegation
 import tenantDao from '../models/tenant.db';
 import coopDao from '../models/cooperation.db';
 import { CmsCompDeclareWayDao, CmsParamTransModeDao, CmsParamTradeDao }
- from '../models/cmsParams.db';
+  from '../models/cmsParams.db';
 import { PARTNERSHIP_TYPE_INFO, DELG_STATUS } from 'common/constants';
 
 function *getAcceptDelegations() {

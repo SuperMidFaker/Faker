@@ -21,7 +21,6 @@ function fetchData({ state, dispatch, cookie, params }) {
   state => ({
     shipmentDispatchDetail: state.weixin.shipmentDispatchDetail
   }),
-  { }
 )
 export default class Detail extends React.Component {
   static propTypes = {
