@@ -97,3 +97,10 @@ export const CmsParamHsCode = sequelize.define('cms_param_hscode', {
   import_customs  : STRING,
   special_mark: INTEGER, // 特殊商品编码1代表特殊商品编码
 });
+
+export const CmsCompDeclareWayDao = sequelize.define('cms_comp_declare_way', {
+  i_e_type: INTEGER, // 进出类别 0 进口 1 出口
+  decl_way_code: STRING, // 报关类型编码,标识列
+  decl_way_name: STRING, // 报关类型名称
+  tenant_id: INTEGER, // 所属公司(租户)id
+});

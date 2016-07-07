@@ -1,7 +1,7 @@
 import cobody from 'co-body';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import { TENANT_LEVEL, INVITATION_STATUS, PARTNERSHIP_TYPE_INFO, PARTNER_TENANT_TYPE, PARTNERSHIP }
+import { INVITATION_STATUS, PARTNER_TENANT_TYPE }
   from 'common/constants';
 import { Partner, Partnership, Invitation } from '../models/cooperation.db';
 import { Tenant } from '../models/tenant.db';
@@ -21,7 +21,7 @@ function *getPartner() {
     });
     const partnerlist = partners.map(partner => transformUnderscoreToCamel(partner.transformPartnerships().get(), ['created_date']));
     return Result.ok(this, { partnerlist });
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -31,7 +31,7 @@ function *addPartner() {
   const { tenantId, partnerInfo: { partnerName, partnerCode }, partnerships } = body;
   try {
     const partnerTenant = yield Tenant.findOne({
-      where: { name: partnerName,  $or: [{code: partnerCode}, {sub_code: partnerCode}]}
+      where: { name: partnerName, $or: [{code: partnerCode}, {sub_code: partnerCode}]}
     });
     let partner;
     // 添加partner
@@ -67,8 +67,8 @@ function *addPartner() {
       }
     }
     // 添加partnerships
-    for(let typeCode of partnerships) {
-      const partnership = yield Partnership.create({
+    for (const typeCode of partnerships) {
+      yield Partnership.create({
         partner_id: partner.id,
         tenant_id: tenantId,
         partner_tenant_id: partner.partner_tenant_id,
@@ -79,10 +79,10 @@ function *addPartner() {
       });
     }
     // 返回给客户端的新增partner
-    const newPartner = {name: partnerName, partnerCode, partnerships, status: 1, partnerTenantId: partner.partner_tenant_id, 
+    const newPartner = {name: partnerName, partnerCode, partnerships, status: 1, partnerTenantId: partner.partner_tenant_id,
       tenantType: partner.tenant_type, key: partner.id};
     return Result.ok(this, { newPartner });
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -95,7 +95,7 @@ function *deletePartner() {
     yield Partnership.destroy({where: {partner_id: id}});
     yield Invitation.destroy({where: {partner_id: id}});
     return Result.ok(this);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -127,7 +127,7 @@ function *changePartnerAndPartnershipStatus() {
 
 function *editProviderTypes() {
   const body = yield cobody(this);
-  const { partnerId, tenantId, partnerships } = body;
+  const { partnerId, partnerships } = body;
   let trans;
   try {
     const partnership = yield Partnership.findOne({where: {partner_id: partnerId}, attributes: {exclude: ['id', 'type_code']}});
@@ -164,9 +164,9 @@ function *getToInvites() {
 
 function *inviteOfflinePartner() {
   const body = yield cobody(this);
-  const { tenantId, inviteeInfo, concactInfo } = body;
+  const { tenantId, inviteeInfo } = body;
   try {
-    yield Invitation.create({partner_id: inviteeInfo.partnerId, inviter_tenant_id: tenantId, invitee_tenant_id: inviteeInfo.tenantId, 
+    yield Invitation.create({partner_id: inviteeInfo.partnerId, inviter_tenant_id: tenantId, invitee_tenant_id: inviteeInfo.tenantId,
       invitee_name: inviteeInfo.name, invitee_code: inviteeInfo.code});
     yield Partner.update({invited: 1}, {where: {id: inviteeInfo.partnerId}});
     // TODO: 发送短信或者邮件给线下用户
@@ -184,8 +184,7 @@ function *inviteOnlinePartner() {
       invitee_name: inviteeInfo.name, invitee_code: inviteeInfo.code});
     yield Partner.update({invited: 1}, {where: {id: inviteeInfo.partnerId}});
     return Result.ok(this);
-  } catch(e) {
-    yield mysql.rollback(trans);
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -226,8 +225,7 @@ function *rejectInvitation() {
   const body = yield cobody(this);
   const { partnerId, id } = body;
   try {
-    const status = INVITATION_STATUS.REJECTED;
-    yield Invitation.update({status: 2}, {where: {id}});
+    yield Invitation.update({status: INVITATION_STATUS.REJECTED}, {where: {id}});
     yield Partner.update({invited: 0}, {where: {id: partnerId}});
     return Result.ok(this);
   } catch(e) {
@@ -239,9 +237,8 @@ function *acceptInvitation() {
   const body = yield cobody(this);
   const { id, partnerId, reversePartnerships } = body;
   try {
-    const status = INVITATION_STATUS.ACCEPTED
     // 先更新原有的partner,partnership,invitation
-    yield Invitation.update({status: 1}, {where: {id}});
+    yield Invitation.update({status: INVITATION_STATUS.ACCEPTED }, {where: {id}});
     yield Partner.update({established: 1, invited: 1}, {where: {id: partnerId}});
     yield Partnership.update({status: 1}, {where: {partner_id: partnerId}});
     // 再插入新的partner和partnership
@@ -273,4 +270,4 @@ export default [
   [ 'post', '/v1/cooperation/invitation/invite_online_partner', inviteOnlinePartner ],
   [ 'post', '/v1/cooperation/invitation/reject_invitation', rejectInvitation ],
   [ 'post', '/v1/cooperation/invitation/accept_invitation', acceptInvitation ]
-]
+];

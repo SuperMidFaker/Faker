@@ -87,7 +87,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
     render: (o, record) => {
       return (
         <span>{
-          record.source === DELG_SOURCE.consign ? msg('consginSource')
+          record.source === DELG_SOURCE.consigned ? msg('consginSource')
           : msg('subcontractSource')
         }</span>
       );

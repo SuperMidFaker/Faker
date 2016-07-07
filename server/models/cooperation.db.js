@@ -8,6 +8,10 @@ function genPartnershipClause(filter, args) {
     clause = `${clause} and partner_name like ?`;
     args.push(`%${filter.partner_name}%`);
   }
+  if (filter.partner_code) {
+    clause = `${clause} and partner_code like ?`;
+    args.push(`%${filter.partner_code}%`);
+  }
   return clause;
 }
 export default {
@@ -26,10 +30,16 @@ export default {
     });
     return mysql.insert(sql, [args], trans);
   },
-  getPartnerByTypeCode(tenantId, typeCode) {
-    const sql = `select partner_tenant_id as tid, partner_name as name, partner_id,
-      partner_code from sso_partnerships where tenant_id = ? and type_code = ?`;
+  getPartnerByTypeCode(tenantId, typeCode, searched) {
     const args = [ tenantId, typeCode ];
+    let searchClause = '';
+    if (searched) {
+      searchClause = 'and (partner_name like ? or partner_code like ?)';
+      args.push(`%${searched}%`, `%${searched}%`);
+    }
+    const sql = `select partner_tenant_id as tid, partner_name as name,
+      partner_id, partner_code from sso_partnerships where tenant_id = ?
+      and type_code = ? ${searchClause}`;
     return mysql.query(sql, args);
   },
   getAllPartnerByTypeCode(tenantId, typeCode, filter, offset, size) {
@@ -114,7 +124,9 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
   classMethods: {
     getSendInvitationsByTenantId(tenantId) {
       const sql = `
-        SELECT PI.id, PI.partner_id AS partnerId, PI.invitee_name AS name, PI.invitee_code AS code, PI.status, PI.created_date, PS.type_code AS partnerships FROM sso_partner_invitations AS PI
+        SELECT PI.id, PI.partner_id AS partnerId, PI.invitee_name AS name,
+        PI.invitee_code AS code, PI.status, PI.created_date, PS.type_code AS partnerships
+        FROM sso_partner_invitations AS PI
         INNER JOIN sso_partnerships AS PS ON PI.partner_id = PS.partner_id
         WHERE inviter_tenant_id = ${tenantId} ORDER BY status, created_date DESC;
       `;
@@ -124,9 +136,10 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
     },
     getReceiveInvitationsByTenantId(tenantId) {
       const sql = `
-      SELECT P.type_code AS partnerships, PPI.id, PPI.partner_id, PPI.name, PPI.code, PPI.status, PPI.created_date
-      FROM sso_partnerships AS P INNER JOIN
-        (SELECT PI.id, PI.partner_id, T.name, T.code AS code, PI.status, PI.invitee_tenant_id, PI.inviter_tenant_id, PI.created_date
+      SELECT P.type_code AS partnerships, PPI.id, PPI.partner_id, PPI.name, PPI.code,
+      PPI.status, PPI.created_date FROM sso_partnerships AS P INNER JOIN
+        (SELECT PI.id, PI.partner_id, T.name, T.code AS code, PI.status,
+          PI.invitee_tenant_id, PI.inviter_tenant_id, PI.created_date
           FROM sso_partner_invitations AS PI
           INNER JOIN sso_tenants AS T ON T.tenant_id = PI.inviter_tenant_id
           WHERE invitee_tenant_id = ${tenantId}) AS PPI
@@ -150,5 +163,5 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
   },
 });
 
-Partner.hasMany(Partnership, {as: 'partnerships', foreignKey: 'partner_id', constraints: false});
-Partnership.belongsTo(Partner, {foreignKey: 'partner_id', constraints: false});
+Partner.hasMany(Partnership, { as: 'partnerships', foreignKey: 'partner_id', constraints: false });
+Partnership.belongsTo(Partner, { foreignKey: 'partner_id', constraints: false });

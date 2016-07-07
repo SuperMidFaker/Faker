@@ -106,14 +106,6 @@ const PARTNERSHIP_TYPE_INFO = {
   transportation: 'TRS',
   warehouse: 'WHS'
 };
-const PARTNERSHIP = {
-  CUS: 0,
-  CCB: 1,
-  FWD: 2,
-  TRS: 3,
-  WHS: 4,
-  SUP: 5
-};
 
 const PARTNER_TENANT_TYPE = ['TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_EXT', 'TENANT_OFFLINE'];
 
@@ -171,6 +163,14 @@ const SHIPMENT_SOURCE = {
 const DELG_SOURCE = {
   consigned: 1,       // 委托
   subcontracted: 2,   // 分包
+};
+
+const DELG_STATUS = {
+  undelg: 0,
+  unaccepted: 1,
+  undeclared: 2,
+  declared: 3,
+  finished: 4,
 };
 
 const SHIPMENT_TRACK_STATUS = {
@@ -332,7 +332,6 @@ export {
   SHIPMENT_POD_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
   TRACKING_POINT_FROM_TYPE,
-  PARTNERSHIP,
   VEHICLE_STATUS,
   VEHICLE_TYPES,
   VEHICLE_LENGTH_TYPES,
@@ -346,4 +345,5 @@ export {
   CMS_BILL_STATUS,
   MESSAGE_STATUS,
   WELOGIX_LOGO_URL,
+  DELG_STATUS,
 };

@@ -31,7 +31,7 @@ export default class ScheduleInfo extends React.Component {
       pickupDt.getTime() + transitTime * ONE_DAY_MS
     );
     this.props.formhoc.setFieldsValue({
-      'deliver_est_date': deliverDate,
+      deliver_est_date: deliverDate,
     });
   }
   handleTransitChange = value => {
