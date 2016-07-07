@@ -457,6 +457,7 @@ export default {
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
       parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
+      consigner_district, consignee_district,
       pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
