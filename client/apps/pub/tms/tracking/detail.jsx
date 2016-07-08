@@ -1,3 +1,4 @@
+/* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Steps, Card, Collapse, Timeline } from 'ant-ui';
@@ -14,7 +15,6 @@ function fetchData({ dispatch, params }) {
 }
 
 @connectFetch()(fetchData)
-
 @connect(
   state => ({
     shipmtDetail: state.shipment.shipmtDetail

@@ -116,8 +116,22 @@ export default function reducer(state = initialState, action) {
       retParams.ports = newPorts;
       return { ...state, params: action.result.data };
     }
-    case actionTypes.LOAD_SEARCHPARAM_SUCCEED:
-      return { ...state, params: { ...state.params, ...action.result.data }};
+    case actionTypes.LOAD_SEARCHPARAM_SUCCEED: {
+      const retParam = action.result.data;
+      if (retParam.ports) {
+        // 合并查找到ports数据至原params中
+        const retPorts = retParam.ports;
+        const newPorts = [ ...retPorts ];
+        const originPorts = state.params.ports;
+        originPorts.forEach(op => {
+          if (retPorts.filter(rp => rp.port_code === op.port_code).length === 0) {
+            newPorts.push(op);
+          }
+        });
+        retParam.ports = newPorts;
+      }
+      return { ...state, params: { ...state.params, ...retParam }};
+    }
     case actionTypes.SAVE_BILLHEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.ADD_ENTRY: {

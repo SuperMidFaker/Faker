@@ -327,7 +327,7 @@ export default class AcceptList extends React.Component {
     let columns = this.columns;
     if (radioValue === 'unaccepted') {
       columns = [ ...columns, {
-        title: formatContainerMsg(this.props.intl, 'opColumn'),
+        title: formatContainerMsg(intl, 'opColumn'),
         fixed: 'right',
         width: 150,
         render: (o, record) => {
@@ -341,7 +341,7 @@ export default class AcceptList extends React.Component {
                 </a>
                 <span className="ant-divider" />
                 <NavLink to={`/transport/acceptance/shipment/edit/${record.shipmt_no}`}>
-                {formatGlobalMsg(this.props.intl, 'modify')}
+                {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
                 <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
@@ -366,19 +366,19 @@ export default class AcceptList extends React.Component {
       }];
     } else if (radioValue === 'draft') {
       columns = [ ...columns, {
-        title: formatContainerMsg(this.props.intl, 'opColumn'),
+        title: formatContainerMsg(intl, 'opColumn'),
         width: 110,
         fixed: 'right',
         render: (o, record) => {
           return (
             <span>
               <NavLink to={`/transport/acceptance/shipment/draft/${record.shipmt_no}`}>
-              {formatGlobalMsg(this.props.intl, 'modify')}
+              {formatGlobalMsg(intl, 'modify')}
               </NavLink>
               <span className="ant-divider" />
               <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={() => this.handleShipmtDraftDel(record.shipmt_no)}>
                 <a role="button">
-                {formatGlobalMsg(this.props.intl, 'delete')}
+                {formatGlobalMsg(intl, 'delete')}
                 </a>
               </Popconfirm>
             </span>

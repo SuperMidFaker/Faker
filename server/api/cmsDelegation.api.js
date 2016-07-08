@@ -211,7 +211,7 @@ function *getDelegation() {
       }),
       getDelgRequireObjs(tenantId, ieType),
     ];
-    if (tradeModes.filter(tm => tm.value === delegation.trade_mode).length === 0) {
+    if (delegation.trade_mode && tradeModes.filter(tm => tm.value === delegation.trade_mode).length === 0) {
       const tradeMode = yield CmsParamTradeDao.findOne({
         raw: true,
         attributes: [[ 'trade_mode', 'value' ], [ 'trade_abbr', 'text' ]],
