@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
   'LOAD_DRAFTFORM', 'LOAD_DRAFTFORM_SUCCEED', 'LOAD_DRAFTFORM_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
+  'LOAD_PUB_DETAIL', 'LOAD_PUB_DETAIL_SUCCEED', 'LOAD_PUB_DETAIL_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -47,6 +48,12 @@ const initialState = {
     },
     charges: {
     },
+  },
+  shipmtDetail: {
+    shipmt: {},
+    tracking: {
+      points: []
+    }
   }
 };
 
@@ -110,6 +117,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false }};
+    }
+    case actionTypes.LOAD_PUB_DETAIL_SUCCEED: {
+      return { ...state, shipmtDetail: action.result.data};
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -228,5 +238,20 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
 export function hidePreviewer() {
   return {
     type: actionTypes.HIDE_PREVIWER,
+  };
+}
+
+export function loadPubShipmtDetail(shipmtNo, key) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PUB_DETAIL,
+        actionTypes.LOAD_PUB_DETAIL_SUCCEED,
+        actionTypes.LOAD_PUB_DETAIL_FAIL,
+      ],
+      endpoint: 'public/v1/transport/shipment/detail',
+      method: 'get',
+      params: { shipmtNo, key },
+    }
   };
 }

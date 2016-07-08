@@ -198,7 +198,7 @@ export default class List extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <Button type="primary" size="large" icon="plus-circle-o" onClick={() => this.handleNavigationTo('/manager/tenants/create')}> 
+            <Button type="primary" size="large" icon="plus-circle-o" onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
                 新建租户
             </Button>
           </div>

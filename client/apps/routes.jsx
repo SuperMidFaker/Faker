@@ -40,6 +40,7 @@ import * as ImportDeclare from './cms/import/declare';
 import * as WeiXinPod from './weixin/tms/pod';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
+import * as PublicTMS from './pub/tms';
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
@@ -69,6 +70,9 @@ export default(store, cookie) => {
   };
   return (
     <Route path="/" component={Root}>
+      <Route path="pub">
+        <Route path="tms/tracking/detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail}/>
+      </Route>
       <Route path="weixin">
         <Route path="bind" component={WeixinBinder}/>
         <Route path="account" component={WxProfile}/>
