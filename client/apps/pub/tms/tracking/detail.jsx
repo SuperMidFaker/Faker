@@ -241,14 +241,14 @@ export default class TrackingDetail extends React.Component {
                 <div className="second">
                   <Collapse defaultActiveKey={['1', '2', '3']}>
                     <Panel header="发货方" key="1">
-                      <p><strong>{shipmt.consigner_name}</strong></p>
-                      <p>{`${shipmt.consigner_province} ${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr}`}</p>
-                      <p>{`${shipmt.consigner_contact} ${shipmt.consigner_mobile}`}</p>
+                      <p><strong>{shipmt.consigner_name || ''}</strong></p>
+                      <p>{`${shipmt.consigner_province || ''} ${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
+                      <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
                     </Panel>
                     <Panel header="收货方" key="2">
                       <p><strong>{shipmt.consignee_name}</strong></p>
-                      <p>{`${shipmt.consignee_province} ${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr}`}</p>
-                      <p>{`${shipmt.consignee_contact} ${shipmt.consignee_mobile}`}</p>
+                      <p>{`${shipmt.consignee_province || ''} ${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
+                      <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
                     </Panel>
                     <Panel header="运输货物" key="3">
                       <p>运输方式：<span style={{marginLeft: 30}}>{shipmt.transport_mode}</span></p>

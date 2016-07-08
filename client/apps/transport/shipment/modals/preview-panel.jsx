@@ -89,7 +89,7 @@ export default class PreviewPanel extends React.Component {
       trackingDetailModalVisible: true,
       publickUrlPath,
       publickUrl,
-      publicQRcodeUrl: `https://qr.topscan.com/api.php?bg=ffffff&fg=000000&el=h&w=700&m=20&text=${publickUrl}`
+      publicQRcodeUrl: `http://qr.topscan.com/api.php?bg=ffffff&fg=000000&el=h&w=700&m=20&text=${publickUrl}`
     });
     document.addEventListener('copy', (e) => {
       e.clipboardData.setData('text/plain', this.state.publickUrl);
