@@ -84,12 +84,12 @@ export default class PreviewPanel extends React.Component {
   showTrackingDetailModal = () => {
     const { shipmtNo, shipmt } = this.props;
     const publickUrlPath = `/pub/tms/tracking/detail/${shipmtNo}/${shipmt.publicUrlKey}`;
-    const publickUrl = `http://wx.welogix.cn${publickUrlPath}`;
+    const publickUrl = `https://wx.welogix.cn${publickUrlPath}`;
     this.setState({
       trackingDetailModalVisible: true,
       publickUrlPath,
       publickUrl,
-      publicQRcodeUrl: `http://qr.topscan.com/api.php?bg=ffffff&fg=000000&el=h&w=700&m=20&text=${publickUrl}`
+      publicQRcodeUrl: `https://qr.topscan.com/api.php?bg=ffffff&fg=000000&el=h&w=700&m=20&text=${publickUrl}`
     });
     document.addEventListener('copy', (e) => {
       e.clipboardData.setData('text/plain', this.state.publickUrl);
