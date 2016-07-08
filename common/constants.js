@@ -231,13 +231,15 @@ const VEHICLE_TYPES = [
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  {value:0, text: '2米'},
-  {value:1, text: '4.2米'},
-  {value:2, text: '5.2米'},
-  {value:3, text: '6.8米'},
-  {value:4, text: '9.6米'},
-  {value:5, text: '13米'},
-  {value:6, text: '17.5米'},
+  {value:2, text: '2米'},
+  {value:4, text: '4.2米'},
+  {value:5, text: '5.2米'},
+  {value:6, text: '6.8米'},
+  {value:7, text: '7.5米'},
+  {value:8, text: '8.5米'},
+  {value:9, text: '9.6米'},
+  {value:13, text: '13米'},
+  {value:17, text: '17.5米'},
 ];
 
 const VPROPROTY_TYPES = {
