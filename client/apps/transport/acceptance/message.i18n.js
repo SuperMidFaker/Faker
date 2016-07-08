@@ -101,8 +101,8 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.archived',
     defaultMessage: '存档'
   },
-  newTitle: {
-    id: 'transport.acceptance.shipment.new.title',
+  shipmtCreate: {
+    id: 'transport.acceptance.shipment.create',
     defaultMessage: '新建运单'
   },
   saveAndAccept: {
