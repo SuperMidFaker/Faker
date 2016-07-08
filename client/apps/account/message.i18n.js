@@ -81,6 +81,10 @@ const messages = defineMessages({
     id: 'corp.messageList.time',
     defaultMessage: '时间'
   },
+  goBack: {
+    id: 'corp.messageList.goBack',
+    defaultMessage: '返回'
+  },
 });
 
 export default messages;
