@@ -40,18 +40,14 @@ export default class Home extends React.Component {
       <Menu.Item key="apps">
         <i className="zmdi zmdi-apps"></i>
         {formatMsg(intl, 'applications')}
-      </Menu.Item>,
-      <Menu.Item key="activities">
-        <i className="zmdi zmdi-view-day"></i>
-        {formatMsg(intl, 'trends')}
       </Menu.Item>
     ];
     if (accountType !== PERSONNEL) {
       tenantMenus.push(
-        <Menu.Item key="setting">
+        <Menu.Item key="corp">
           <NavLink to="/corp/info">
-            <i className="zmdi zmdi-settings"></i>
-            {formatMsg(intl, 'setting')}
+            <i className="zmdi zmdi-city-alt"></i>
+            {formatMsg(intl, 'corp')}
           </NavLink>
         </Menu.Item>
       );
