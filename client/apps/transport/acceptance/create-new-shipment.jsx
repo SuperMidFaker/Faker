@@ -47,7 +47,7 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: formatMsg(props.intl, 'newTitle'),
+    text: formatMsg(props.intl, 'shipmtCreate'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: () => router.goBack()

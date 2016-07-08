@@ -74,7 +74,7 @@ export default class VehicleForm extends Component {
             <Input type="textarea" {...getFieldProps('remark')}/>
           </FormItem>
           <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-            <Button type="primary" htmlType="submit" disabled={!vehicleValidate}>{mode === 'add' ? '创建' : '修改'}</Button>
+            <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>
           </FormItem>
         </Form>
       </ContentWrapper>
