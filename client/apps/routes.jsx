@@ -153,11 +153,6 @@ export default(store, cookie) => {
               <IndexRoute component={ExportTracking.List}/>
             </Route>
           </Route>
-          <Route path="inventory" component={Inventory}>
-            <IndexRoute component={Warehouse}/>
-            <Route path="warehouse" component={Warehouse}/>
-            <Route path="notice" component={Notice}/>
-          </Route>
           <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard}/>
             <Route path="acceptance">

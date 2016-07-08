@@ -32,42 +32,50 @@ const DEFAULT_MODULES = {
   import: {
     cls: 'import',
     url: '/import',
-    text: 'moduleImport'
+    text: 'moduleImport',
+    status: 'enabled'
   },
   export: {
     cls: 'export',
     url: '/export',
-    text: 'moduleExport'
+    text: 'moduleExport',
+    status: 'enabled'
   },
   tms: {
     cls: 'transport',
     url: '/transport',
-    text: 'moduleTransport'
+    text: 'moduleTransport',
+    status: 'enabled'
   },
   forwarding: {
     cls: 'forwarding',
     url: '/forwarding',
-    text: 'moduleForwarding'
+    text: 'moduleForwarding',
+    status: 'disabled'
   },
   wms: {
     cls: 'inventory',
     url: '/inventory',
-    text: 'moduleInventory'
+    text: 'moduleInventory',
+    status: 'disabled'
   },
   tracking: {
     cls: 'tracking',
     url: '/tracking',
-    text: 'moduleTracking'
+    text: 'moduleTracking',
+    status: 'disabled'
   },
   datacenter: {
     cls: 'datacenter',
     url: '/datacenter',
-    text: 'moduleDatacenter'
+    text: 'moduleDatacenter',
+    status: 'disabled'
   },
   integration: {
     cls: 'integration',
     url: '/integration',
-    text: 'moduleIntegration'
+    text: 'moduleIntegration',
+    status: 'disabled'
   }
 };
 const APP_ENTITY_META_INFO = {

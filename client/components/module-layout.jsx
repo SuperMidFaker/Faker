@@ -29,7 +29,7 @@ export default class ModuleLayout extends React.Component {
             <Col span="6" key={`mod-${idx}`}>
               <NavLink to={mod.url}>
                 <div className={containerCls}>
-                  <div className={`module-icon-bg ${mod.cls}`}>
+                  <div className={`module-icon-bg ${mod.cls} ${mod.status}`}>
                     <div className="module-icon">
                       <i className={`zmdi zmdi-${mod.cls}`}></i>
                     </div>
