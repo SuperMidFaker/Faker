@@ -5,7 +5,7 @@ import { Table, Button, message } from 'ant-ui';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import NavLink from '../../../../components/nav-link';
 import { loadCompRelations, switchStatus } from 'common/reducers/cmsCompRelation';
-import { ACCOUNT_STATUS, RELATION_TYPES, I_E_TYPES } from 'common/constants';
+import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -45,8 +45,7 @@ export default class Manage extends Component {
     router: PropTypes.object.isRequired
   }
   handleStatusSwitch(record, index) {
-    this.props.switchStatus(index, record.id, record.status === ACCOUNT_STATUS.normal.id
-      ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
+    this.props.switchStatus(index, record.id, record.status === 1 ? 0 : 1).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
@@ -57,7 +56,7 @@ export default class Manage extends Component {
   }
   renderColumnText(status, text) {
     let style = {};
-    if (status === ACCOUNT_STATUS.blocked.id) {
+    if (status === 0) {
       style = {color: '#CCC'};
     }
     return <span style={style}>{text}</span>;
@@ -100,7 +99,7 @@ export default class Manage extends Component {
         render: (o, record) => {
           let style = { color: '#51C23A' };
           let text = formatContainerMsg(intl, 'accountNormal');
-          if (record.status === ACCOUNT_STATUS.blocked.id) {
+          if (record.status === 0) {
             style = { color: '#CCC' };
             text = formatContainerMsg(intl, 'accountDisabled');
           }
@@ -110,7 +109,7 @@ export default class Manage extends Component {
         title: formatContainerMsg(intl, 'opColumn'),
         width: 150,
         render: (text, record, index) => {
-          if (record.status === ACCOUNT_STATUS.normal.id) {
+          if (record.status === 1) {
             return (
               <span>
                 <NavLink to={`/${type}/manage/edit/${record.id}`}>
@@ -121,7 +120,7 @@ export default class Manage extends Component {
                 {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>);
-          } else if (record.status === ACCOUNT_STATUS.blocked.id) {
+          } else if (record.status === 0) {
             return (
               <span>
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>

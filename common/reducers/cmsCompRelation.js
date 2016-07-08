@@ -24,7 +24,7 @@ export const initialState = {
     comp_name: '',
     i_e_type: '',
     relation_type: '',
-    status: 0
+    status: 1
   }
 };
 // 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序

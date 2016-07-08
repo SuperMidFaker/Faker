@@ -6,6 +6,7 @@ import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
+import crypto from 'crypto';
 import {
   PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_TRACK_STATUS,
@@ -525,6 +526,67 @@ function *shipmtDetailG() {
   }
 }
 
+function *shipmtPublicDetail() {
+  const shipmtNo = this.request.query.shipmtNo;
+  const key = this.request.query.key;
+  try {
+    const [ goodslist, shipmts, draftShipmts, shipmtDisp, points ] = yield [
+      shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
+      shipmentDao.getShipmtInfo(shipmtNo),
+      shipmentDao.getDraftShipmt(shipmtNo),
+      shipmentDispDao.getShipmtDispWithShipmtNo(shipmtNo),
+      shipmentAuxDao.getShipmentPoints(shipmtNo),
+    ];
+    let shipmt = {};
+    let shipmtCreator;
+    if (shipmts.length === 1 && draftShipmts.length === 1) {
+      shipmt = {
+        ...shipmts[0],
+        ...draftShipmts[0],
+        ...shipmtDisp[0],
+      };
+      if (shipmt.vehicle_type) {
+        const vt = vehicleTypes[shipmt.vehicle_type];
+        if (vt) {
+          shipmt.vehicle_type = vt.text;
+        }
+      }
+      if (shipmt.vehicle_length) {
+        const vl = vehicleLengths[shipmt.vehicle_length];
+        if (vl) {
+          shipmt.vehicle_length = vl.text;
+        }
+      }
+      if (shipmt.tenant_id === shipmt.customer_tenant_id) {
+        shipmtCreator = shipmt.customer_name;
+      } else if (shipmt.tenant_id === shipmt.lsp_tenant_id) {
+        shipmtCreator = shipmt.lsp_name;
+      }
+    }
+    shipmt.goodslist = goodslist;
+    let tracking = {
+      created_date: shipmt.created_date,
+    };
+    tracking.creator = shipmtCreator;
+    tracking.points = points;
+    const dateStr = shipmt.created_date.getTime().toString();
+    const md5 = crypto.createHash('md5');
+    md5.update(shipmtNo + dateStr);
+    const KEY = md5.digest('hex');
+    if (key === KEY) {
+      return Result.ok(this, {
+        shipmt,
+        tracking,
+      });
+    } else {
+      return Result.paramError(this);
+    }
+    
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
@@ -541,4 +603,5 @@ export default [
   [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
+  [ 'get', '/public/v1/transport/shipment/detail', shipmtPublicDetail ],
 ];

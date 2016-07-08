@@ -394,6 +394,12 @@ export default {
     const args = [shipmtNo];
     return mysql.query(sql, args);
   },
+  getShipmtDispWithShipmtNo(shipmtNo) {
+    const args = [shipmtNo];
+    const sql = `select sd.status, sd.pickup_act_date, sd.deliver_act_date
+    from tms_shipment_dispatch sd where sd.shipmt_no = ? and parent_id is NULL`;
+    return mysql.query(sql, args);
+  },
   getShipmtDispInfo(shipmtNo, tenantId, sourceType) {
     const args = [shipmtNo];
     let tenantClause = '';

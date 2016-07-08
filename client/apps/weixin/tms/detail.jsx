@@ -81,7 +81,7 @@ export default class Detail extends React.Component {
         <CellsTitle>货物信息</CellsTitle>
         <Cells access>
           {this.renderFormCell('总数量', `${total.amount} 件`)}
-          {this.renderFormCell('总重量', `${total.weight} 吨`)}
+          {this.renderFormCell('总重量', `${total.weight} 公斤`)}
           {this.renderFormCell('总体积', `${total.volume} 立方米`)}
         </Cells>
       </div>
