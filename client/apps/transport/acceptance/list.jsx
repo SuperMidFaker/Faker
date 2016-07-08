@@ -392,7 +392,7 @@ export default class AcceptList extends React.Component {
           <div className="tools">
             <NavLink to="/transport/acceptance/shipment/new">
               <Button type="primary" size="large" icon="plus-circle-o">
-                {formatGlobalMsg(intl, 'createNew')}
+                {this.msg('shipmtCreate')}
               </Button>
             </NavLink>
           </div>
