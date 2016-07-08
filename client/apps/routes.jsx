@@ -132,6 +132,7 @@ export default(store, cookie) => {
             </Route>
             <Route path="manage" component={ImportManage.Menu}>
               <IndexRoute component={ImportManage.List}/>
+              <Route path="compRelation" component={ImportManage.List}/>
               <Route path="create" component={ImportManage.Create}/>
               <Route path="edit/:id" component={ImportManage.Edit}/>
             </Route>
