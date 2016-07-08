@@ -55,31 +55,8 @@ export default class TrackingDetail extends React.Component {
     // map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom();
     map.addControl(new BMap.NavigationControl());  // 添加默认缩放平移控件
-    const top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例
-    map.addControl(top_left_control);
-    addressToPoint(originPointAddr, (point) => {
-      const originPoint = {
-        latitude: point.lat,
-        longitude: point.lng,
-        label: `${moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm')} ${originPointAddr}`
-      };
-      addressToPoint(destPointAddr, (point2) => {
-        const destPoint = {
-          latitude: point2.lat,
-          longitude: point2.lng,
-          label: `${moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm')} ${destPointAddr}`
-        };
-        if (shipmt.status < 4) {
-          current = -1;
-        } else if (shipmt.status === 4) {
-          current = points.length - 1;
-        } else if (shipmt.status > 4) {
-          current = points.length;
-        }
-        draw(originPoint, points, destPoint, current);
-      }, shipmt.consignee_city);
-    }, shipmt.consigner_city);
-
+    const topLeftControl = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例
+    map.addControl(topLeftControl);
     function addressToPoint(addr, cb, city) {
       // 创建地址解析器实例
       const myGeo = new BMap.Geocoder();
@@ -102,6 +79,23 @@ export default class TrackingDetail extends React.Component {
         checkPoint(arr[index + 1], index + 1, arr, cb);
       }
     }
+    // 创建标注
+    function addMarker(pt, label, index, cur, iconurl) {
+      let marker;
+      const iconSize = [25, 82];
+      const point = {
+        lat: pt.latitude,
+        lng: pt.longitude
+      };
+      const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
+      marker = new BMap.Marker(point, {icon});
+      map.addOverlay(marker);
+      if (index === cur) {
+        marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+      }
+      const lab = new BMap.Label(label, {offset: new BMap.Size(30, -10)});
+      marker.setLabel(lab);
+    }
     function draw(originPoint, pts, destPoint, cur) {
       const originBDPoint = new BMap.Point(originPoint.longitude, originPoint.latitude);
       const destBDPoint = new BMap.Point(destPoint.longitude, destPoint.latitude);
@@ -123,23 +117,28 @@ export default class TrackingDetail extends React.Component {
         map.setViewport(viewPoints);
       });
     }
-    // 创建标注
-    function addMarker(pt, label, index, cur, iconurl) {
-      let marker;
-      const iconSize = [25, 82];
-      const point = {
-        lat: pt.latitude,
-        lng: pt.longitude
+    addressToPoint(originPointAddr, (point) => {
+      const originPoint = {
+        latitude: point.lat,
+        longitude: point.lng,
+        label: `${moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm')} ${originPointAddr}`
       };
-      const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
-      marker = new BMap.Marker(point, {icon});
-      map.addOverlay(marker);
-      if (index === cur) {
-        marker.setAnimation(BMAP_ANIMATION_BOUNCE);
-      }
-      const lab = new BMap.Label(label, {offset: new BMap.Size(30, -10)});
-      marker.setLabel(lab);
-    }
+      addressToPoint(destPointAddr, (point2) => {
+        const destPoint = {
+          latitude: point2.lat,
+          longitude: point2.lng,
+          label: `${moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm')} ${destPointAddr}`
+        };
+        if (shipmt.status < 4) {
+          current = -1;
+        } else if (shipmt.status === 4) {
+          current = points.length - 1;
+        } else if (shipmt.status > 4) {
+          current = points.length;
+        }
+        draw(originPoint, points, destPoint, current);
+      }, shipmt.consignee_city);
+    }, shipmt.consigner_city);
   }
   resize() {
     if ($(window).width() <= 950) {

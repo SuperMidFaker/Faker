@@ -1,4 +1,5 @@
 import weixinConfig from '../../config/weixin.config';
+import { renderConsignLoc } from '../../client/apps/transport/common/consignLocation';
 import superagent from 'superagent';
 
 function sendTemplateMessage(data) {
@@ -30,11 +31,11 @@ export function sendNewShipMessage(data){
         color: "#000"
       },
       keyword4: {
-        value: data.consigner_city,
+        value: `${renderConsignLoc(data, 'consigner')}`,
         color: "#000"
       },
       keyword5: {
-        value: data.consignee_city,
+        value: `${renderConsignLoc(data, 'consignee')}`,
         color: "#000"
       },
       remark:{
