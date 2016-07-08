@@ -223,14 +223,11 @@ function *shipmtAcceptP() {
     const disps = yield shipmentDispDao.getShipmtDispWithNo(body.shipmtDispId);
     const disp = disps[0];
     yield sendNewShipMessage({
+      ...disp,
       tenant_id: disp.sp_tenant_id,
       login_id: body.acptId,
       name: disp.sp_name,
       to_tenant_id: disp.sr_tenant_id,
-      shipmt_no: disp.shipmt_no,
-      status: disp.status,
-      consigner_city: disp.consigner_city,
-      consignee_city: disp.consignee_city,
       title: '接单通知',
       remark: `${disp.sp_name} 接单了，快去看看吧！`,
       content: `${disp.sp_name} 接单了，快去看看吧！运单号：${disp.shipmt_no}`

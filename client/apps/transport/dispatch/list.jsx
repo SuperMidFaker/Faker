@@ -548,8 +548,12 @@ export default class DispatchList extends React.Component {
           sp_tenant_id: s.sp_tenant_id,
           sr_name: s.sr_name,
           status: s.status,
+          consigner_province: s.consigner_province,
           consigner_city: s.consigner_city,
+          consigner_district: s.consigner_district,
+          consignee_province: s.consignee_province,
           consignee_city: s.consignee_city,
+          consignee_district: s.consignee_district,
         });
       }
     });
@@ -601,8 +605,12 @@ export default class DispatchList extends React.Component {
           sp_tenant_id: shipmt.sp_tenant_id,
           sr_name: shipmt.sr_name,
           status: shipmt.status,
+          consigner_province: shipmt.consigner_province,
           consigner_city: shipmt.consigner_city,
+          consigner_district: shipmt.consigner_district,
+          consignee_province: shipmt.consignee_province,
           consignee_city: shipmt.consignee_city,
+          consignee_district: shipmt.consignee_district,
           parentId: shipmt.parent_id}])
         }).then(result => {
           if (result.error) {

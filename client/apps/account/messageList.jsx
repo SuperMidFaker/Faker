@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { Table, Button, Radio } from 'ant-ui';
+import { Table, Button, Radio, Icon } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
@@ -178,7 +178,8 @@ export default class MessageList extends React.Component {
     return (
       <div className="acc-panel">
         <div className="panel-heading">
-          <h3>{msg('messageCenter')}</h3>
+          <h3 style={{display: 'inline-block'}}>{msg('messageCenter')}</h3>
+          <Button type="primary" onClick={() => {this.context.router.goBack();}} style={{float: 'right'}}><Icon type="left" />{msg('goBack')}</Button>
         </div>
         <div className="panel-body" style={{padding:20}}>
           <div>

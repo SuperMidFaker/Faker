@@ -219,7 +219,7 @@ function *doSend() {
   const alist = JSON.parse(list);
   const arr = [];
   alist.forEach(t => {
-    const { dispId, shipmtNo, parentId, sp_tenant_id, sr_name, status, consigner_city, consignee_city } = t;
+    const { dispId, shipmtNo, parentId, sp_tenant_id, sr_name } = t;
     // 更新之前dispatch记录的状态和时间
     const upParentStatus = {
       status: SHIPMENT_TRACK_STATUS.undelivered,
@@ -242,14 +242,12 @@ function *doSend() {
       }
     };
     const s = sendNewShipMessage({
+      ...t,
       tenant_id: tenantId,
       login_id: loginId,
       name: sr_name,
       to_tenant_id: sp_tenant_id,
       shipmt_no: shipmtNo,
-      status,
-      consigner_city,
-      consignee_city,
       title: '新运单通知',
       remark: `${sr_name} 下单了，快去看看吧！`,
       content: `${sr_name} 下单了，快去看看吧！运单号：${shipmtNo}`
