@@ -8,7 +8,7 @@ import {
 } from '../models/cmsParams.db';
 import { CmsCompRelationDao } from '../models/cmsComp.db';
 import mergeSplit from './_utils/billMergeSplit';
-import { CMS_BILL_STATUS } from 'common/constants';
+import { CMS_BILL_STATUS, RELATION_TYPES } from 'common/constants';
 import Result from '../util/responseResult';
 
 function *getDelgDeclares() {
@@ -64,14 +64,30 @@ function *getDelgBills() {
   if (!delg) {
     return Result.internalServerError(this);
   }
-  let bodies = [];
   let head = bhead;
   if (head) {
-    bodies = yield BillBodyDao.findAll({
-      raw: true,
-      where: {
-        bill_no: head.bill_no,
-      },
+    const [ bodies, iePort, destPort ] = yield [
+      BillBodyDao.findAll({
+        raw: true,
+        where: {
+          bill_no: head.bill_no,
+        },
+      }),
+      CmsParamPorts.findOne({
+        raw: true,
+        where: {
+          port_code: head.i_e_port,
+        },
+      }),
+      CmsParamPorts.findOne({
+        raw: true,
+        where: {
+          port_code: head.dest_port,
+        },
+      }),
+    ];
+    return Result.ok(this, {
+      head, bodies, iePort, destPort,
     });
   } else {
     head = {
@@ -80,11 +96,11 @@ function *getDelgBills() {
       bl_wb_no: delg.bl_wb_no,
       delg_no: delg.delg_no,
     };
+    return Result.ok(this, {
+      head,
+      bodies: [],
+    });
   }
-  return Result.ok(this, {
-    head,
-    bodies,
-  });
 }
 
 function *getDelgEntries() {
@@ -119,6 +135,7 @@ function *getDelgEntries() {
 }
 
 function *getDelgParams() {
+  const { ieType, tenantId } = this.request.query;
   const dbOps = [
     CmsParamCustomsDao.findAll({ raw: true }),
     CmsParamTradeDao.findAll({ raw: true }),
@@ -126,41 +143,76 @@ function *getDelgParams() {
     CmsParamTrxDao.findAll({ raw: true }),
     CmsParamCountry.findAll({ raw: true }),
     CmsParamRemission.findAll({ raw: true }),
-    CmsParamPorts.findAll({ raw: true }),
+    CmsParamPorts.findAll({ raw: true, limit: 10 }),
     CmsParamDistricts.findAll({ raw: true }),
     CmsParamCurrency.findAll({ raw: true }),
     CmsParamUnit.findAll({ raw: true }),
+    CmsCompRelationDao.findAll({
+      raw: true,
+      attributes: ['relation_type', [ 'comp_code', 'code' ], [ 'comp_name', 'name' ]],
+      where: {
+        $or: [{
+          i_e_type: ieType === 'import' ? 'I' : 'E',
+        }, {
+          i_e_type: 'A',
+        }],
+        tenant_id: parseInt(tenantId, 10),
+        status: 1,
+      },
+    }),
   ];
   const [
     customs, tradeModes, transModes, trxModes, tradeCountries, remissionModes,
-    ports, districts, currencies, units,
+    ports, districts, currencies, units, compRelations,
   ] = yield dbOps;
+  const forwarders = compRelations.filter(cr => cr.relation_type === RELATION_TYPES[0].key).map(cr => ({
+    code: cr.code,
+    name: cr.name,
+  }));
+  const owners = compRelations.filter(cr => cr.relation_type === RELATION_TYPES[1].key).map(cr => ({
+    code: cr.code,
+    name: cr.name,
+  }));
+  const agents = compRelations.filter(cr => cr.relation_type === RELATION_TYPES[2].key).map(cr => ({
+    code: cr.code,
+    name: cr.name,
+  }));
   return Result.ok(this, {
     customs, tradeModes, transModes, trxModes, tradeCountries, remissionModes,
-    ports, districts, currencies, units,
+    ports, districts, currencies, units, forwarders, owners, agents,
   });
 }
 
-function *getCompRelations() {
-  const { type, ietype, code, tenantId } = this.request.query;
-  const relations = yield CmsCompRelationDao.findAll({
-    raw: true,
-    attributes: [[ 'comp_code', 'code' ], [ 'comp_name', 'name' ]],
-    where: {
-      $or: [{
-        i_e_type: ietype === 'import' ? 'I' : 'E',
-      }, {
-        i_e_type: 'A',
-      }],
-      relation_type: type,
-      tenant_id: parseInt(tenantId, 10),
-      comp_code: {
-        $like: `%${code}%`,
-      },
-      status: 1,
-    }
-  });
-  return Result.ok(this, relations);
+function *getSearchedParams() {
+  const { paramType, search, extra } = this.request.query;
+  if (paramType === 'port') {
+    const ports = yield CmsParamPorts.findAll({
+      raw: true, limit: 10,
+      where: { port_code: { $like: `%${search}%` }}
+    });
+    return Result.ok(this, { ports });
+  } else if (paramType === 'comprelation') {
+    const { type, ietype, tenantId } = JSON.parse(extra);
+    const relations = yield CmsCompRelationDao.findAll({
+      raw: true,
+      attributes: [[ 'comp_code', 'code' ], [ 'comp_name', 'name' ]],
+      where: {
+        $or: [{
+          i_e_type: ietype === 'import' ? 'I' : 'E',
+        }, {
+          i_e_type: 'A',
+        }],
+        relation_type: type,
+        tenant_id: parseInt(tenantId, 10),
+        comp_code: {
+          $like: `%${search}%`,
+        },
+        status: 1,
+      }
+    });
+    return Result.ok(this, relations);
+  }
+  return Result.ok(this);
 }
 
 function *upsertDelgBillHead() {
@@ -267,7 +319,7 @@ function *upsertEntryHead() {
     head.creater_login_id = loginId;
     let id = head.id;
     if (id) {
-      yield EntryHeadDao.update(head);
+      yield EntryHeadDao.update(head, { where: { id }});
     } else {
       const row = yield EntryHeadDao.create(head);
       id = row.id;
@@ -331,12 +383,14 @@ function *mergeSplitBill() {
     const [ billHead, billList, lastEntryHead ] = yield [
       BillHeadDao.findOne({
         raw: true,
+        attributes: { exclude: [ 'id' ] },
         where: {
           bill_no: billNo,
         },
       }),
       BillBodyDao.findAll({
         raw: true,
+        attributes: { exclude: [ 'id' ] },
         where: {
           bill_no: billNo,
         },
@@ -390,7 +444,7 @@ function *fillEntryNo() {
   try {
     const { delgNo, entryNo, entryHeadId } = yield cobody(this);
     yield EntryHeadDao.update({ entry_id: entryNo }, { where: { id: entryHeadId }});
-    const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: { entry_id: null }});
+    const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: { entry_id: null, delg_no: delgNo }});
     if (unfilledEntryHeadCount === 0) {
       yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo }});
     }
@@ -405,7 +459,7 @@ export default [
   [ 'get', '/v1/cms/declare/bills', getDelgBills ],
   [ 'get', '/v1/cms/declare/entries', getDelgEntries ],
   [ 'get', '/v1/cms/declare/params', getDelgParams ],
-  [ 'get', '/v1/cms/declare/comprelation', getCompRelations ],
+  [ 'get', '/v1/cms/declare/paramfilters', getSearchedParams ],
   [ 'post', '/v1/cms/declare/billhead', upsertDelgBillHead ],
   [ 'post', '/v1/cms/declare/billbody/add', addBillBody ],
   [ 'post', '/v1/cms/declare/billbody/del', delBillBody ],

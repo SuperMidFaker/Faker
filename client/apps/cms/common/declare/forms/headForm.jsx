@@ -1,23 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, message, Col } from 'ant-ui';
+import { Form, Col } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
   RelationAutoCompSelect, PortDate, Transport,
   TradeRemission, CountryAttr, DestInvoice, Fee, PackWeight,
 } from './headFormItems';
-import { loadCompRelation } from 'common/reducers/cmsDeclare';
-import { RELATION_TYPES } from 'common/constants';
+import { loadSearchedParam } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 
-const CODE_AS_RELATION_TYPE = {
-  'forwarder_code': RELATION_TYPES[0].key,
-  'owner_code': RELATION_TYPES[1].key,
-  'agent_code': RELATION_TYPES[2].key,
-};
 const CODE_AS_STATE = {
   'forwarder_code': 'forwarders',
   'owner_code': 'owners',
@@ -32,7 +26,7 @@ const CODE_AS_STATE = {
     billBody: state.cmsDeclare.billBody,
     formRequire: state.cmsDeclare.params,
   }),
-  { loadCompRelation }
+  { loadSearchedParam }
 )
 export default class HeadForm extends React.Component {
   static propTypes = {
@@ -44,26 +38,11 @@ export default class HeadForm extends React.Component {
     type: PropTypes.oneOf([ 'bill', 'entry' ]),
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
-    loadCompRelation: PropTypes.func.isRequired,
-  }
-  state = {
-    forwarders: [],
-    owners: [],
-    agents: [],
+    loadSearchedParam: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleRelationSearch = (codeField, value) => {
-    const type = CODE_AS_RELATION_TYPE[codeField];
-    this.props.loadCompRelation(type, this.props.ietype, this.props.tenantId, value).then(result => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.setState({ [CODE_AS_STATE[codeField]]: result.data });
-      }
-    });
-  }
   handleRelationSel = (codeField, nameField, value) => {
-    const rels = this.state[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
+    const rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
     if (rels.length === 1) {
       this.props.form.setFieldsValue({
         [codeField]: rels[0].code,
@@ -72,9 +51,11 @@ export default class HeadForm extends React.Component {
       this.setState({ [CODE_AS_STATE[codeField]]: [] });
     }
   }
+  handlePortSearch = (field, search) => {
+    this.props.loadSearchedParam({ paramType: 'port', search });
+  }
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
-    const { forwarders, owners, agents } = this.state;
     const formProps = {
       getFieldProps: form.getFieldProps,
       disabled: readonly,
@@ -88,33 +69,35 @@ export default class HeadForm extends React.Component {
         }
         { type === 'entry' &&
           <Col span="15">
-              <FormInput field="entry_id" outercol={16} col={4}
-                label={this.msg('formEntryId')} {...formProps} />
+            <FormInput field="entry_id" outercol={16} col={4}
+              label={this.msg('formEntryId')} {...formProps} />
           </Col>
         }
         <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
           codeField="forwarder_code" nameField="forwarder_name"
           codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
-          onSearch={this.handleRelationSearch} onSelect={this.handleRelationSel}
-          {...formProps} options={forwarders}/>
-        <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}/>
+          onSelect={this.handleRelationSel}
+          {...formProps} options={formRequire.forwarders}/>
+        <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
+          onSearch={this.handlePortSearch}
+        />
         <RelationAutoCompSelect label={
           ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
           } codeField="owner_code" nameField="owner_name" intl={intl}
           codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
-          onSearch={this.handleRelationSearch} onSelect={this.handleRelationSel}
-          {...formProps} options={owners}/>
+          onSelect={this.handleRelationSel}
+          {...formProps} options={formRequire.owners}/>
         <Transport {...formProps} intl={intl} formRequire={formRequire}/>
         <RelationAutoCompSelect label={this.msg('agentName')}
           codeField="agent_code" nameField="agent_name" intl={intl}
           codeRules={[ {required: true} ]} nameRules={[ { required: true } ]}
-          onSearch={this.handleRelationSearch} onSelect={this.handleRelationSel}
-          {...formProps} options={agents}/>
+          onSelect={this.handleRelationSel}
+          {...formProps} options={formRequire.agents}/>
         <TradeRemission {...formProps} intl={intl} formRequire={formRequire}/>
         <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
 
         <DestInvoice {...formProps} intl={intl} formRequire={formRequire}
-          ietype={ietype} type={type}
+          ietype={ietype} type={type} onSearch={this.handlePortSearch}
         />
         <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
         <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>

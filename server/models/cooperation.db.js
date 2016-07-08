@@ -30,16 +30,11 @@ export default {
     });
     return mysql.insert(sql, [args], trans);
   },
-  getPartnerByTypeCode(tenantId, typeCode, searched) {
+  getPartnerByTypeCode(tenantId, typeCode) {
     const args = [ tenantId, typeCode ];
-    let searchClause = '';
-    if (searched) {
-      searchClause = 'and (partner_name like ? or partner_code like ?)';
-      args.push(`%${searched}%`, `%${searched}%`);
-    }
     const sql = `select partner_tenant_id as tid, partner_name as name,
       partner_id, partner_code from sso_partnerships where tenant_id = ?
-      and type_code = ? ${searchClause}`;
+      and type_code = ?`;
     return mysql.query(sql, args);
   },
   getAllPartnerByTypeCode(tenantId, typeCode, filter, offset, size) {

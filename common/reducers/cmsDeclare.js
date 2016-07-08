@@ -7,7 +7,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_BILLS', 'LOAD_BILLS_SUCCEED', 'LOAD_BILLS_FAIL',
   'LOAD_ENTRIES', 'LOAD_ENTRIES_SUCCEED', 'LOAD_ENTRIES_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
-  'LOAD_COMPREL', 'LOAD_COMPREL_SUCCEED', 'LOAD_COMPREL_FAIL',
+  'LOAD_SEARCHPARAM', 'LOAD_SEARCHPARAM_SUCCEED', 'LOAD_SEARCHPARAM_FAIL',
   'ADD_NEW_BILL_BODY', 'DEL_BILL_BODY', 'EDIT_BILL_BODY',
   'ADD_BILLBODY', 'ADD_BILLBODY_SUCCEED', 'ADD_BILLBODY_FAIL',
   'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
@@ -48,6 +48,9 @@ const initialState = {
   entries: [
   ],
   params: {
+    forwarders: [],
+    owners: [],
+    agents: [],
     customs: [],
     tradeModes: [],
     transModes: [],
@@ -81,11 +84,39 @@ export default function reducer(state = initialState, action) {
       }};
     case actionTypes.LOAD_DELGLIST_FAIL:
       return { ...state, delgList: { ...state.delgList, loading: false }};
-    case actionTypes.LOAD_BILLS_SUCCEED:
-      return { ...state, billHead: action.result.data.head, billBody: action.result.data.bodies };
+    case actionTypes.LOAD_BILLS_SUCCEED: {
+      const ports = [ ...state.params.ports ];
+      const iePort = action.result.data.iePort;
+      const destPort = action.result.data.destPort;
+      if (iePort &&
+        ports.filter(prt => prt.port_code === iePort.port_code).length === 0) {
+        ports.push(iePort);
+      }
+      if (destPort &&
+        ports.filter(prt => prt.port_code === destPort.port_code).length === 0) {
+        ports.push(destPort);
+      }
+      return {
+        ...state, billHead: action.result.data.head,
+        billBody: action.result.data.bodies, params: { ...state.params, ports },
+      };
+    }
     case actionTypes.LOAD_ENTRIES_SUCCEED:
       return { ...state, entries: action.result.data };
-    case actionTypes.LOAD_PARAMS_SUCCEED:
+    case actionTypes.LOAD_PARAMS_SUCCEED: {
+      const retParams = action.result.data;
+      const retPorts = retParams.ports;
+      const newPorts = [ ...retPorts ];
+      const originPorts = state.params.ports;
+      originPorts.forEach(op => {
+        if (retPorts.filter(rp => rp.port_code === op.port_code).length === 0) {
+          newPorts.push(op);
+        }
+      });
+      retParams.ports = newPorts;
+      return { ...state, params: action.result.data };
+    }
+    case actionTypes.LOAD_SEARCHPARAM_SUCCEED:
       return { ...state, params: { ...state.params, ...action.result.data }};
     case actionTypes.SAVE_BILLHEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
@@ -180,7 +211,7 @@ export function loadEntries(cookie, delgNo) {
   };
 }
 
-export function loadCmsParams(cookie) {
+export function loadCmsParams(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -191,21 +222,22 @@ export function loadCmsParams(cookie) {
       endpoint: 'v1/cms/declare/params',
       method: 'get',
       cookie,
+      params,
     },
   };
 }
 
-export function loadCompRelation(type, ietype, tenantId, code) {
+export function loadSearchedParam({ paramType, search }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_COMPREL,
-        actionTypes.LOAD_COMPREL_SUCCEED,
-        actionTypes.LOAD_COMPREL_FAIL,
+        actionTypes.LOAD_SEARCHPARAM,
+        actionTypes.LOAD_SEARCHPARAM_SUCCEED,
+        actionTypes.LOAD_SEARCHPARAM_FAIL,
       ],
-      endpoint: 'v1/cms/declare/comprelation',
+      endpoint: 'v1/cms/declare/paramfilters',
       method: 'get',
-      params: { type, ietype, code, tenantId },
+      params: { paramType, search },
     },
   };
 }

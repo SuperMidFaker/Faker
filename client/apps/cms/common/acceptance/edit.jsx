@@ -1,20 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Col, Button, Popconfirm, message } from 'ant-ui';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
 import UploadGroup from '../delegation/attachmentUpload';
-import { loadDelg, editDelegationByCCB } from 'common/reducers/cmsDelegation';
+import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
 
-function fetchData({ cookie, params, dispatch }) {
-  return dispatch(loadDelg(cookie, {
-    delgNo: params.delgNo,
-  }));
-}
-
-@connectFetch()(fetchData)
 @connect(
   state => ({
     loginId: state.account.loginId,

@@ -2,10 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Dropdown, Menu, Icon } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadBills, loadEntries, loadCmsParams, addEntry,
-  setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
+import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
 import { setNavTitle } from 'common/reducers/navbar';
 import BillForm from './forms/billForm';
 import EntryForm from './forms/entryForm';
@@ -19,15 +17,6 @@ const TabPane = Tabs.TabPane;
 const MenuItem = Menu.Item;
 const DropdownButton = Dropdown.Button;
 
-function fetchData({ dispatch, params, cookie }) {
-  const promises = [];
-  promises.push(dispatch(loadBills(cookie, params.delgNo)));
-  promises.push(dispatch(loadEntries(cookie, params.delgNo)));
-  promises.push(dispatch(loadCmsParams(cookie)));
-  return Promise.all(promises);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
