@@ -320,6 +320,12 @@ function *upsertEntryHead() {
     let id = head.id;
     if (id) {
       yield EntryHeadDao.update(head, { where: { id }});
+      const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: {
+        entry_id: null, delg_no: head.delg_no,
+      }});
+      if (unfilledEntryHeadCount === 0) {
+        yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: head.delg_no }});
+      }
     } else {
       const row = yield EntryHeadDao.create(head);
       id = row.id;
