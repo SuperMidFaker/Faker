@@ -32,42 +32,50 @@ const DEFAULT_MODULES = {
   import: {
     cls: 'import',
     url: '/import',
-    text: 'moduleImport'
+    text: 'moduleImport',
+    status: 'enabled'
   },
   export: {
     cls: 'export',
     url: '/export',
-    text: 'moduleExport'
+    text: 'moduleExport',
+    status: 'enabled'
   },
   tms: {
     cls: 'transport',
     url: '/transport',
-    text: 'moduleTransport'
+    text: 'moduleTransport',
+    status: 'enabled'
   },
   forwarding: {
     cls: 'forwarding',
     url: '/forwarding',
-    text: 'moduleForwarding'
+    text: 'moduleForwarding',
+    status: 'disabled'
   },
   wms: {
     cls: 'inventory',
     url: '/inventory',
-    text: 'moduleInventory'
+    text: 'moduleInventory',
+    status: 'disabled'
   },
   tracking: {
     cls: 'tracking',
     url: '/tracking',
-    text: 'moduleTracking'
+    text: 'moduleTracking',
+    status: 'disabled'
   },
   datacenter: {
     cls: 'datacenter',
     url: '/datacenter',
-    text: 'moduleDatacenter'
+    text: 'moduleDatacenter',
+    status: 'disabled'
   },
   integration: {
     cls: 'integration',
     url: '/integration',
-    text: 'moduleIntegration'
+    text: 'moduleIntegration',
+    status: 'disabled'
   }
 };
 const APP_ENTITY_META_INFO = {
@@ -105,14 +113,6 @@ const PARTNERSHIP_TYPE_INFO = {
   freightForwarder: 'FWD',
   transportation: 'TRS',
   warehouse: 'WHS'
-};
-const PARTNERSHIP = {
-  CUS: 0,
-  CCB: 1,
-  FWD: 2,
-  TRS: 3,
-  WHS: 4,
-  SUP: 5
 };
 
 const PARTNER_TENANT_TYPE = ['TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_EXT', 'TENANT_OFFLINE'];
@@ -171,6 +171,14 @@ const SHIPMENT_SOURCE = {
 const DELG_SOURCE = {
   consigned: 1,       // 委托
   subcontracted: 2,   // 分包
+};
+
+const DELG_STATUS = {
+  undelg: 0,
+  unaccepted: 1,
+  undeclared: 2,
+  declared: 3,
+  finished: 4,
 };
 
 const SHIPMENT_TRACK_STATUS = {
@@ -332,7 +340,6 @@ export {
   SHIPMENT_POD_STATUS,
   SHIPMENT_VEHICLE_CONNECT,
   TRACKING_POINT_FROM_TYPE,
-  PARTNERSHIP,
   VEHICLE_STATUS,
   VEHICLE_TYPES,
   VEHICLE_LENGTH_TYPES,
@@ -346,4 +353,5 @@ export {
   CMS_BILL_STATUS,
   MESSAGE_STATUS,
   WELOGIX_LOGO_URL,
+  DELG_STATUS,
 };

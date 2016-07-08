@@ -2,10 +2,6 @@ import cobusboy from 'co-busboy';
 import Result from '../util/responseResult';
 import fileUtil from '../util/fileUtil';
 
-export default [
-   ['post', '/v1/upload/img/', uploadImgs]
-];
-
 function saveBuffer(stream) {
   const chunks = [];
   stream.on('data', (data) => {
@@ -29,6 +25,10 @@ function *uploadImgs() {
     Result.ok(this, fileUtil.getFileUrl(fpath));
   } catch (e) {
     console.log(e);
-    Result.internalServerError(this, 'upload exception');
+    Result.internalServerError(this, e.message);
   }
 }
+
+export default [
+   ['post', '/v1/upload/img/', uploadImgs]
+];

@@ -25,9 +25,9 @@ function fetchData({ state, dispatch, cookie }) {
     }));
   }
 }
+
 @injectIntl
 @connectFetch()(fetchData)
-
 @connect(
   state => ({
     code: state.account.code,
@@ -38,6 +38,7 @@ function fetchData({ state, dispatch, cookie }) {
 export default class Manage extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    type: PropTypes.oneOf([ 'import', 'export' ]),
     loadCompRelations: PropTypes.func.isRequired
   }
   static contextTypes = {
@@ -61,7 +62,7 @@ export default class Manage extends Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { list, intl } = this.props;
+    const { list, intl, type } = this.props;
     const msg = (descriptor) => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
@@ -111,7 +112,7 @@ export default class Manage extends Component {
           if (record.status === 1) {
             return (
               <span>
-                <NavLink to={`/import/manage/edit/${record.id}`}>
+                <NavLink to={`/${type}/manage/edit/${record.id}`}>
                 {formatContainerMsg(intl, 'fixOp')}
                 </NavLink>
                 <span className="ant-divider"></span>
@@ -160,7 +161,7 @@ export default class Manage extends Component {
     return (
       <div className="main-content">
         <div className="page-body" style={{padding: 16}}>
-          <Button size="large" type="primary" style={{marginBottom: 8}} onClick={() => this.handleNavigationTo('/import/manage/create')}>
+          <Button size="large" type="primary" style={{marginBottom: 8}} onClick={() => this.handleNavigationTo(`/${type}/manage/create`)}>
           {msg('new')}
           </Button>
           <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>

@@ -273,7 +273,7 @@ export default class LandStatusList extends React.Component {
     render: (text, record) => {
       if (record.pod_type === 'none') {
         return <Icon type="tags-o" />;
-      } else if (record.pod_type === 'dreceipt') {
+      } else if (record.pod_type === 'ePOD') {
         return <Icon type="tags" />;
       } else {
         return <Icon type="qrcode" />;

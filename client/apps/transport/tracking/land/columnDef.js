@@ -1,12 +1,33 @@
 import React from 'react';
 import moment from 'moment';
-import { Icon, Tag } from 'ant-ui';
+import { Icon, Tag, Tooltip } from 'ant-ui';
 import RowUpdater from './rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
 
+function renderActDate(recordActDate, recordEstDate) {
+  if (recordActDate) {
+    const actDate = new Date(recordActDate);
+    actDate.setHours(0, 0, 0, 0);
+    const estDate = new Date(recordEstDate);
+    estDate.setHours(0, 0, 0, 0);
+    if (actDate.getTime() > estDate.getTime()) {
+      return (
+        <span className="mdc-text-red">
+        {moment(recordActDate).format('YYYY.MM.DD')}
+        </span>);
+    } else {
+      return (
+        <span className="mdc-text-green">
+        {moment(recordActDate).format('YYYY.MM.DD')}
+        </span>);
+    }
+  } else {
+    return <span />;
+  }
+}
 export default function makeColumns(type, handlers, msg) {
   const columns = [{
     title: msg('shipNo'),
@@ -19,39 +40,31 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('departurePlace'),
     width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={9} />
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
   }, {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
-    width: 80,
-    render: (o, record) => record.pickup_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.pickup_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
+    width: 90,
+    render: (o, record) => renderActDate(record.pickup_act_date, record.pickup_est_date),
   }, {
     title: msg('arrivalPlace'),
     width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={9} />
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    width: 80,
+    width: 90,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => record.deliver_act_date ?
-      (<span className="mdc-text-green">
-      {moment(record.deliver_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
+    render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
   }, {
       title: msg('shipmtStatus'),
       dataIndex: 'status',
@@ -111,6 +124,7 @@ export default function makeColumns(type, handlers, msg) {
       if (record.sp_name) {
         const spSpan = <TrimSpan text={record.sp_name} />;
         if (record.sp_tenant_id > 0) {
+          // todo pure css circle
           return (
             <span>
               <i className="zmdi zmdi-circle mdc-text-green" />
@@ -161,16 +175,16 @@ export default function makeColumns(type, handlers, msg) {
       dataIndex: 'pod_type',
       width: 80,
       render: (text, record) => {
-        if (record.pod_type === 'none') {
-          return <Icon type="tags-o" />;
-        } else if (record.pod_type === 'dreceipt') {
-          return <Icon type="tags" />;
+        if (record.pod_type === 'qrPOD') {
+          return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
+        } else if (record.pod_type === 'ePOD') {
+          return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
         } else {
-          return <Icon type="qrcode" />;
+          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
         }
-      }
-    });
-    
+    }
+  });
+
   if (type !== 'pod') {
     if (type === 'status') {
       columns.push({
@@ -262,7 +276,6 @@ export default function makeColumns(type, handlers, msg) {
         if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
           return (
             <div>
-            <Icon type="tags" />
             <RowUpdater label={msg('auditPod')}
             onAnchored={handlers.onShowAuditModal} row={record}
             />
@@ -270,35 +283,21 @@ export default function makeColumns(type, handlers, msg) {
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
           return (
-            <span>
-            <i className="mdc-text-red anticon anticon-tags" />
-            {msg('rejectByUs')}
-            </span>
+            <span><Icon type="frown" /> {msg('rejectByUs')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           return (
-            <span>
-            <Icon type="tags" />
-            {msg('submitToUpper')}
-            </span>
+            <span><Icon type="meh" /> {msg('submitToUpper')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           return (
-            <div>
-            <i className="mdc-text-red anticon anticon-tags" />
-            <RowUpdater label={msg('resubmitPod')}
-            onAnchored={handlers.onResubmit} row={record}
-            />
+            <div><Icon type="frown" /> <RowUpdater label={msg('resubmitPod')}
+            onAnchored={handlers.onResubmit} row={record} />
             </div>
           );
         } else {
-          const tagIcon = record.pod_type === 'qrcode' ? <Icon type="qrcode" /> :
-            <Icon type="tags" />;
           return (
-            <span>
-            {tagIcon}
-            {msg('acceptByUpper')}
-            </span>
+            <span><Icon type="smile" /> {msg('acceptByUpper')}</span>
           );
         }
       },

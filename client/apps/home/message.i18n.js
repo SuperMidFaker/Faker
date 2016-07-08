@@ -5,13 +5,13 @@ const messages = defineMessages({
     id: 'container.applications',
     defaultMessage: '应用'
   },
-  trends: {
-    id: 'container.trends',
+  activities: {
+    id: 'container.activities',
     defaultMessage: '动态'
   },
-  setting: {
-    id: 'container.setting',
-    defaultMessage: '设置'
+  corp: {
+    id: 'container.corp',
+    defaultMessage: '企业'
   }
 });
 

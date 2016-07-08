@@ -35,8 +35,10 @@ import Warehouse from './inventory/warehouse';
 import Notice from './inventory/notice';
 import {loadAccount} from 'common/reducers/account';
 import {isLoaded} from 'client/common/redux-actions';
-import * as Import from './cms/import/index';
+import ImportWrapper from './cms/import/wrapper';
+import * as ImportAcceptance from './cms/import/acceptance';
 import * as ImportDeclare from './cms/import/declare';
+import * as ImportManage from './cms/import/manage';
 import * as WeiXinPod from './weixin/tms/pod';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
@@ -115,11 +117,12 @@ export default(store, cookie) => {
           </Route>
         </Route>
         <Route component={Module}>
-          <Route path="import" component={Import.Sidebar}>
+          <Route path="import" component={ImportWrapper}>
             <IndexRedirect to="/import/accept"/>
             <Route path="accept">
-              <IndexRoute component={Import.AcceptanceList}/>
-              <Route path="create" component={Import.AcceptanceForm}/>
+              <IndexRoute component={ImportAcceptance.List}/>
+              <Route path="create" component={ImportAcceptance.Create}/>
+              <Route path="edit/:delgNo" component={ImportAcceptance.Edit}/>
             </Route>
             <Route path="declare">
               <IndexRedirect to="/import/declare/list/undeclared" />
@@ -127,11 +130,10 @@ export default(store, cookie) => {
               <Route path="make/:delgNo" component={ImportDeclare.Make} />
               <Route path="view/:delgNo" component={ImportDeclare.View} />
             </Route>
-            <Route path="manage" component={Import.ManageMenu}>
-              <IndexRoute component={Import.Manage}/>
-              <Route path="compRelation" component={Import.Manage}/>
-              <Route path="create" component={Import.CreateCompRelation}/>
-              <Route path="edit/:id" component={Import.EditCompRelation}/>
+            <Route path="manage" component={ImportManage.Menu}>
+              <IndexRoute component={ImportManage.List}/>
+              <Route path="create" component={ImportManage.Create}/>
+              <Route path="edit/:id" component={ImportManage.Edit}/>
             </Route>
           </Route>
           <Route path="export" component={ExportM}>
@@ -154,11 +156,6 @@ export default(store, cookie) => {
             <Route path="tracking">
               <IndexRoute component={ExportTracking.List}/>
             </Route>
-          </Route>
-          <Route path="inventory" component={Inventory}>
-            <IndexRoute component={Warehouse}/>
-            <Route path="warehouse" component={Warehouse}/>
-            <Route path="notice" component={Notice}/>
           </Route>
           <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard}/>

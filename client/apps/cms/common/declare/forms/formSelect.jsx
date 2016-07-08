@@ -3,7 +3,7 @@ import { Col, Form, Select } from 'ant-ui';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-export default function FormInput(props) {
+export default function FormSelect(props) {
   const {
     outercol, label, col, field, required, disabled,
     getFieldProps, rules, fieldProps, formData, options = [],
@@ -24,7 +24,7 @@ export default function FormInput(props) {
   );
 }
 
-FormInput.propTypes = {
+FormSelect.propTypes = {
   outercol: PropTypes.number,
   label: PropTypes.string,
   col: PropTypes.number,

@@ -440,7 +440,7 @@ export default {
       consigner_province, consigner_city, consignee_province, consignee_city,
       pickup_est_date, deliver_est_date, transit_time, transport_mode, total_count,
       total_weight, total_volume, sp_tenant_id, sp_partner_id, sp_name,
-      disp_time, acpt_time, parent_no,
+      disp_time, acpt_time, parent_no, consignee_district, consigner_district,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id, parent_id from tms_shipment_dispatch as SD
@@ -463,13 +463,14 @@ export default {
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
       parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
+      consigner_district, consignee_district,
       pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
       disp_status, status, id as disp_id from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ? and effective = 1
-      and disp_status = 1 ${whereCond} limit ?, ?`;
+      and disp_status = 1 ${whereCond} order by pod_recv_date desc limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
   },
