@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Input, Form, Row, Col, Select, message } from 'ant-ui';
 import { submitCompRelation } from 'common/reducers/cmsCompRelation';
-import { ACCOUNT_STATUS, RELATION_TYPES, I_E_TYPES } from 'common/constants';
+import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -34,7 +34,7 @@ class CompRelationForm extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const formData = {...this.props.form.getFieldsValue()};
-        formData.status = ACCOUNT_STATUS.normal.id;
+        formData.status = 1;
         formData.id = this.props.formData.id;
         formData.tenant_id = this.props.tenant_id;
         this.props.submitCompRelation(formData).then(result => {

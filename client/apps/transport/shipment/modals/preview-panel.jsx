@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag } from 'ant-ui';
+import { Button, Icon, Tabs, Tag, Modal, Input, message } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -12,6 +12,7 @@ import messages from '../message.i18n';
 import './preview-panel.less';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
+const InputGroup = Input.Group;
 
 function getTrackStatusMsg(status, eff) {
   let msg = 'trackDraft';
@@ -40,6 +41,7 @@ function getTrackStatusMsg(status, eff) {
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     status: state.shipment.previewer.shipmt.status,
     effective: state.shipment.previewer.shipmt.effective,
+    shipmt: state.shipment.previewer.shipmt,
   }),
   { hidePreviewer }
 )
@@ -52,11 +54,19 @@ export default class PreviewPanel extends React.Component {
     status: PropTypes.number,
     effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
+    shipmt: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired
   }
   constructor(props) {
     super(props);
     this.state = {
       tabKey: props.tabKey || 'detail',
+      trackingDetailModalVisible: false,
+      publickUrlPath: '',
+      publicQRcodeUrl: '',
+      publickUrl: '',
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -71,6 +81,36 @@ export default class PreviewPanel extends React.Component {
   handleClose = () => {
     this.props.hidePreviewer();
   }
+  showTrackingDetailModal = () => {
+    const { shipmtNo, shipmt } = this.props;
+    const publickUrlPath = `/pub/tms/tracking/detail/${shipmtNo}/${shipmt.publicUrlKey}`;
+    this.setState({
+      trackingDetailModalVisible: true,
+      publickUrlPath,
+      publickUrl: `https://wx.welogix.cn${publickUrlPath}`,
+      publicQRcodeUrl: `http://qr.topscan.com/api.php?bg=ffffff&fg=000000&el=h&w=700&m=20&text=https://wx.welogix.cn${publickUrlPath}`
+    });
+    document.addEventListener('copy', (e) => {
+      e.clipboardData.setData('text/plain', this.state.publickUrl);
+      e.preventDefault();
+    });
+  }
+  handleTrackingDetailOk = () => {
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.setState({ loading: false, trackingDetailModalVisible: false });
+    }, 3000);
+  }
+  handleTrackingDetailCancel = () => {
+    this.setState({ trackingDetailModalVisible: false, publicQRcodeUrl: '' });
+  }
+  handleNavigationTo = (to, query) => {
+    this.context.router.push({ pathname: to, query });
+  }
+  handleCopyClick() {
+    document.execCommand('copy');
+    message.info('复制成功', 3);
+  }
   render() {
     const { visible, shipmtNo, status, effective } = this.props;
     return (
@@ -80,6 +120,9 @@ export default class PreviewPanel extends React.Component {
             <span className="title">{shipmtNo}</span>
             <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
             <div className="pull-right">
+              <Button type="primary" shape="circle-outline" style={{marginRight: '10px'}} onClick={this.showTrackingDetailModal}>
+                <Icon type="share-alt" />
+              </Button>
               <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
                 <Icon type="cross" />
               </Button>
@@ -98,6 +141,29 @@ export default class PreviewPanel extends React.Component {
               </TabPane>
             </Tabs>
           </div>
+        </div>
+        <div>
+          <Modal ref="modal" style={{width: '680px'}}
+            visible={this.state.trackingDetailModalVisible}
+            title={`${shipmtNo} 分享详情`} onOk={this.handleTrackingDetailOk} onCancel={this.handleTrackingDetailCancel}
+            footer={[
+              <Button key="back" type="ghost" size="large" onClick={this.handleTrackingDetailCancel}>关 闭</Button>
+            ]}
+          >
+            <div style={{width: '250px', height: '250px', margin: '0 auto'}}>
+              <img style={{width: '100%', height: '100%'}} src={this.state.publicQRcodeUrl} alt="二维码加载中..."/>
+            </div>
+            <br/>
+            <div style={{width: '90%', margin: '0 auto'}}>
+              <InputGroup className="ant-search-input ant-search-input-focus">
+                <Input placeholder="" value={this.state.publickUrl}/>
+                <div className="ant-input-group-wrap">
+                  <Button className="ant-search-btn ant-search-btn-noempty" onClick={() => this.handleCopyClick()}><Icon type="copy" />复制</Button>
+                </div>
+              </InputGroup>
+              <p><a href={this.state.publickUrlPath} target="_blank">访问</a></p>
+            </div>
+          </Modal>
         </div>
       </div>
     );

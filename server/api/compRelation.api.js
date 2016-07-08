@@ -13,16 +13,19 @@ export default [
 function* compRelations() {
   try {
     const query = this.request.query;
-    let pageSize = parseInt(this.request.query.pageSize, 10);
-    let currentPage = parseInt(this.request.query.currentPage, 10);
+    const tenantId = query.tenantId;
+    const pageSize = parseInt(query.pageSize, 10);
+    const currentPage = parseInt(query.currentPage, 10);
     const result = yield CompRelation.findAll({
       raw: true,
-      where:{},
+      where:{
+        tenant_id: tenantId
+      },
       offset: (currentPage-1) * pageSize,
       limit: pageSize
     });
     const totalCount = yield CompRelation.count();
-    return Result.ok(this, {rows: result, pageSize, currentPage: currentPage, totalCount});
+    return Result.ok(this, {rows: result, pageSize, currentPage, totalCount});
   } catch (e) {
     console.log(e);
     return Result.internalServerError(this, e.message);

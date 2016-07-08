@@ -30,6 +30,7 @@ function fetchData({ state, dispatch, cookie }) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     code: state.account.code,
     loading: state.cmsCompRelation.loading,
     list: state.cmsCompRelation.list
@@ -37,6 +38,7 @@ function fetchData({ state, dispatch, cookie }) {
   { loadCompRelations, switchStatus })
 export default class Manage extends Component {
   static propTypes = {
+    tenantId: PropTypes.number.isRequired,
     intl: intlShape.isRequired,
     type: PropTypes.oneOf([ 'import', 'export' ]),
     loadCompRelations: PropTypes.func.isRequired
@@ -62,7 +64,7 @@ export default class Manage extends Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { list, intl, type } = this.props;
+    const { list, intl, type, tenantId } = this.props;
     const msg = (descriptor) => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
@@ -138,6 +140,7 @@ export default class Manage extends Component {
       resolve: (result) => {return result.rows;},
       getPagination: (result, resolve) => {
         const pagination = {
+          tenantId,
           total: result.totalCount,
           // 删除完一页时返回上一页
           current: resolve(result.totalCount, result.currentPage, result.pageSize),
@@ -149,6 +152,7 @@ export default class Manage extends Component {
       },
       getParams: (pagination, filters, sorter) => {
         const params = {
+          tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,

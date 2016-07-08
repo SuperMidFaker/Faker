@@ -419,6 +419,13 @@ function *shipmtRejectP() {
   }
 }
 
+function makePublicUrlKey(shipmtNo, shipmt) {
+  const dateStr = shipmt.created_date.getTime().toString();
+  const md5 = crypto.createHash('md5');
+  md5.update(shipmtNo + dateStr);
+  return md5.digest('hex');
+}
+
 function *shipmtDetailG() {
   const shipmtNo = this.request.query.shipmtNo;
   const tenantId = this.request.query.tenantId;
@@ -513,6 +520,7 @@ function *shipmtDetailG() {
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstreamDispStatus > 0 ?
       tracking.downstream_status : tracking.upstream_status;
+      shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt);
     return Result.ok(this, {
       shipmt,
       tracking,
@@ -566,10 +574,7 @@ function *shipmtPublicDetail() {
     };
     tracking.creator = shipmtCreator;
     tracking.points = points;
-    const dateStr = shipmt.created_date.getTime().toString();
-    const md5 = crypto.createHash('md5');
-    md5.update(shipmtNo + dateStr);
-    const KEY = md5.digest('hex');
+    const KEY = makePublicUrlKey(shipmtNo, shipmt);
     if (key === KEY) {
       return Result.ok(this, {
         shipmt,

@@ -42,11 +42,11 @@ export default class TrackingDetail extends React.Component {
     tracking.points.forEach((item) => {
       points.push({
         ...item,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${item.province} ${renderLoc(item, 'province', 'city', 'district')}`
+        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${item.province} ${renderLoc(item, 'province', 'city', 'district')}${item.address}`
       });
     });
-    const originPointAddr = `${shipmt.consigner_province}${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr}`;
-    const destPointAddr = `${shipmt.consignee_province}${renderConsignLoc(shipmt, 'consignee')}${shipmt.consignee_addr}`;
+    const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr}`;
+    const destPointAddr = `${renderConsignLoc(shipmt, 'consignee')}${shipmt.consignee_addr}`;
     const bdPoints = [];
     const viewPoints = [];
     // 百度地图API功能
@@ -70,7 +70,7 @@ export default class TrackingDetail extends React.Component {
         return cb(arr);
       }
       if (item.latitude === 0 && item.longitude === 0) {
-        addressToPoint(`${item.province}${renderLoc(item, 'province', 'city', 'district')}`, (point) => {
+        addressToPoint(`${item.province}${renderLoc(item, 'province', 'city', 'district')}${item.address}`, (point) => {
           arr[index].latitude = point.lat;
           arr[index].longitude = point.lng;
           checkPoint(arr[index + 1], index + 1, arr, cb);
@@ -157,7 +157,29 @@ export default class TrackingDetail extends React.Component {
         description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
       });
     });
-    const latestPoint = tracking.points[tracking.points.length - 1];
+    let latestPoint = {
+      id: 15,
+      from: 0,
+      driver_id: 0,
+      vehicle_id: '',
+      province: '',
+      city: '',
+      district: '',
+      street: '',
+      address: '',
+      longitude: 0,
+      latitude: 0,
+      speed: 0,
+      accuracy: 0,
+      direction: 0,
+      sat: 0,
+      altitude: 0,
+      location_time: null,
+      created_date: null
+    };
+    if (tracking.points.length > 0) {
+      latestPoint = tracking.points[tracking.points.length - 1];
+    }
     let statusDes = [];
     let statusPos = 0;
     if (shipmt.status < 4) {
