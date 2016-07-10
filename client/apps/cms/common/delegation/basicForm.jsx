@@ -28,7 +28,7 @@ function getFieldInits(aspect, formData) {
 function LocalSearchSelect(props) {
   const { options, field, initialValue, getFieldProps, placeholder, searchKeyFn } = props;
   return (
-    <Select combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
+    <Select size="large" combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
       placeholder={placeholder} optionFilterProp={ searchKeyFn ? 'search' : undefined}
     >
     {options.map(opt => (<Option key={opt.value} value={opt.value}
@@ -54,7 +54,7 @@ function RemoteSearchSelect(props) {
     }
   }
   return (
-    <Select filterOption={false} showSearch onSearch={handleSearch} {
+    <Select size="large" filterOption={false} showSearch onSearch={handleSearch} {
       ...getFieldProps(field, { initialValue })} defaultActiveFirstOption
       placeholder={placeholder}
     >
@@ -124,7 +124,7 @@ export default class BasicForm extends Component {
       <Card title="基础信息">
         <Col sm={12}>
           <FormItem label="客户" {...formItemLayout}>
-            <Select combobox showArrow={false} optionFilterProp="search"
+            <Select size="large" combobox showArrow={false} optionFilterProp="search"
               placeholder="输入客户代码或名称"
               {...getFieldProps('customer_name', { rules: [{
                   required: true, message: '客户名称必填',
