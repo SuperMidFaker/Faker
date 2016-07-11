@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Radio, Button, Popconfirm, message } from 'ant-ui';
+import { Radio, Button, Popconfirm, message } from 'ant-ui';
+import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
