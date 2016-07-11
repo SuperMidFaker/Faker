@@ -218,7 +218,7 @@ export default class BodyTable extends React.Component {
         <ColumnSelect field="curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody} />,
     }, {
-      title: this.msg('rmModeName'),
+      title: this.msg('exemptionWay'),
       width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="rm_mode" inEdit={index === editIndex} record={record}
