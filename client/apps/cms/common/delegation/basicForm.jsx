@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col } from 'ant-ui';
-import { searchClient, setClientForm, searchParams } from 'common/reducers/cmsDelegation';
+import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
 import { TENANT_ASPECT } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -25,56 +25,82 @@ function getFieldInits(aspect, formData) {
   return init;
 }
 
-function SearchSelect(props) {
-  const { options, field, initialValue, getFieldProps, onSearch } = props;
+function LocalSearchSelect(props) {
+  const { options, field, initialValue, getFieldProps, placeholder, searchKeyFn } = props;
+  return (
+    <Select size="large" combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
+      placeholder={placeholder} optionFilterProp={ searchKeyFn ? 'search' : undefined}
+    >
+    {options.map(opt => (<Option key={opt.value} value={opt.value}
+      search={searchKeyFn ? searchKeyFn(opt) : undefined}>{opt.text}</Option>))}
+    </Select>
+  );
+}
+
+LocalSearchSelect.propTypes = {
+  options: PropTypes.array.isRequired,
+  field: PropTypes.string.isRequired,
+  getFieldProps: PropTypes.func.isRequired,
+  searchKeyFn: PropTypes.func,
+  initialValue: PropTypes.string,
+  placeholder: PropTypes.string,
+};
+
+function RemoteSearchSelect(props) {
+  const { options, field, initialValue, getFieldProps, onSearch, placeholder } = props;
   function handleSearch(searched) {
     if (onSearch) {
       onSearch(field, searched);
     }
   }
   return (
-    <Select filterOption={false} showSearch onSearch={handleSearch} {
-      ...getFieldProps(field, { initialValue })}
+    <Select size="large" filterOption={false} showSearch onSearch={handleSearch} {
+      ...getFieldProps(field, { initialValue })} defaultActiveFirstOption
+      placeholder={placeholder}
     >
     {options.map(opt => <Option key={opt.value} value={opt.value}>{opt.text}</Option>)}
     </Select>
   );
 }
 
-SearchSelect.propTypes = {
+RemoteSearchSelect.propTypes = {
   options: PropTypes.array.isRequired,
   field: PropTypes.string.isRequired,
   getFieldProps: PropTypes.func.isRequired,
   onSearch: PropTypes.func,
+  initialValue: PropTypes.string,
+  placeholder: PropTypes.string,
 };
 
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     clients: state.cmsDelegation.formRequire.clients,
-    tradeModes: state.cmsDelegation.formRequire.tradeModes,
-    transModes: state.cmsDelegation.formRequire.transModes,
-    declareWayModes: state.cmsDelegation.formRequire.declareWayModes,
+    tradeModes: state.cmsDelegation.formRequire.tradeModes.map(tm => ({
+      value: tm.value,
+      text: `${tm.value} | ${tm.text}`,
+    })),
+    transModes: state.cmsDelegation.formRequire.transModes.map(tm => ({
+      value: tm.value,
+      text: `${tm.value} | ${tm.text}`,
+    })),
+    declareWayModes: state.cmsDelegation.formRequire.declareWayModes.map(dwm => ({
+      value: dwm.value,
+      text: `${dwm.value} | ${dwm.text}`,
+    })),
     fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
   }),
-  { searchClient, setClientForm, searchParams }
+  { setClientForm, searchParams }
 )
 export default class BasicForm extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
-    ieType: PropTypes.oneOf([ 'import', 'export' ]),
-    tenantId: PropTypes.number.isRequired,
     fieldInits: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
     tradeModes: PropTypes.array.isRequired,
     transModes: PropTypes.array.isRequired,
     declareWayModes: PropTypes.array.isRequired,
-    searchClient: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
     searchParams: PropTypes.func.isRequired,
-  }
-  handleClientSearch = (searched) => {
-    this.props.searchClient(this.props.tenantId, searched);
   }
   handleClientChange = (value) => {
     if (typeof value === 'string') {
@@ -89,8 +115,8 @@ export default class BasicForm extends Component {
     }
     return value;
   }
-  handleParamSelect = (field, searched) => {
-    this.props.searchParams(field, searched, this.props.tenantId, this.props.ieType);
+  handleTradeModeSearch = (field, searched) => {
+    this.props.searchParams(field, searched);
   }
   render() {
     const { form: { getFieldProps }, fieldInits, clients, tradeModes, transModes, declareWayModes } = this.props;
@@ -98,9 +124,8 @@ export default class BasicForm extends Component {
       <Card title="基础信息">
         <Col sm={12}>
           <FormItem label="客户" {...formItemLayout}>
-            <Select showSearch combobox showArrow={false} filterOption={false}
-              defaultActiveFirstOption={false}
-              onSearch={this.handleClientSearch}
+            <Select size="large" combobox showArrow={false} optionFilterProp="search"
+              placeholder="输入客户代码或名称"
               {...getFieldProps('customer_name', { rules: [{
                   required: true, message: '客户名称必填',
                 }],
@@ -109,8 +134,8 @@ export default class BasicForm extends Component {
               })}
             >
             {
-              clients.map(data => (<Option key={data.partner_id}
-                value={data.partner_id}>{data.name}</Option>)
+              clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
             )}
             </Select>
           </FormItem>
@@ -147,8 +172,8 @@ export default class BasicForm extends Component {
         </Col>
         <Col sm={12}>
           <FormItem label="报关类型" {...formItemLayout}>
-            <SearchSelect field="decl_way_code" options={declareWayModes}
-              onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+            <LocalSearchSelect field="decl_way_code" options={declareWayModes}
+              getFieldProps={getFieldProps}
               initialValue={fieldInits.decl_way_code}
             />
           </FormItem>
@@ -158,8 +183,8 @@ export default class BasicForm extends Component {
             })}/>
           </FormItem>
           <FormItem label="运输方式" {...formItemLayout}>
-            <SearchSelect field="trans_mode" options={transModes}
-              onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
+            <LocalSearchSelect field="trans_mode" options={transModes}
+              getFieldProps={getFieldProps}
               initialValue={fieldInits.trans_mode}
             />
           </FormItem>
@@ -169,9 +194,9 @@ export default class BasicForm extends Component {
             })}/>
           </FormItem>
           <FormItem label="贸易方式" {...formItemLayout}>
-            <SearchSelect field="trade_mode" options={tradeModes}
-              onSearch={this.handleParamSelect} getFieldProps={getFieldProps}
-              initialValue={fieldInits.trade_mode}
+            <RemoteSearchSelect field="trade_mode" options={tradeModes}
+              onSearch={this.handleTradeModeSearch} getFieldProps={getFieldProps}
+              initialValue={fieldInits.trade_mode} placeholder="输入代码查询"
             />
           </FormItem>
           <FormItem label="重量" {...formItemLayout}>

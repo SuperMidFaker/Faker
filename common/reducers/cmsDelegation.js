@@ -7,10 +7,10 @@ const actionTypes = createActionTypes('@@welogix/transport/cmsDelegation/', [
   'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
   'LOAD_DELG', 'LOAD_DELG_SUCCEED', 'LOAD_DELG_FAIL',
   'EDIT_DELGCCB', 'EDIT_DELGCCB_SUCCEED', 'EDIT_DELGCCB_FAIL',
-  'SEARCH_CLIENT', 'SEARCH_CLIENT_SUCCEED', 'SEARCH_CLIENT_FAIL',
   'SET_CLIENT_FORM', 'NEW_FORM',
   'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
   'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
+  'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
 ]);
 
 const initialState = {
@@ -37,6 +37,7 @@ const initialState = {
     create_time: null,
   },
   delgFiles: [],
+  submitting: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -52,12 +53,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
       return { ...state, formData: action.result.data.delegation,
-        delgFiles: action.result.data.files,
-        formRequire: { ...state.formRequire, ...action.result.data.formRequire },
-      };
-    case actionTypes.SEARCH_CLIENT_SUCCEED:
-      return { ...state, formRequire: { ...state.formRequire, clients: action.result.data },
-        formData: { ...state.formData, ...initialState.formData },
+        delgFiles: action.result.data.files, formRequire: action.result.data.formRequire,
       };
     case actionTypes.SEARCH_PARAM_SUCCEED:
       return { ...state, formRequire: { ...state.formRequire, ...action.result.data }};
@@ -65,6 +61,16 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: { ...state.formData, ...action.data }};
     case actionTypes.NEW_FORM:
       return { ...state, formData: { ...initialState.formData, create_time: new Date() }};
+    case actionTypes.LOAD_REQUIRE_SUCCEED:
+      return { ...state, formRequire: action.result.data };
+    case actionTypes.CREATE_DELGCCB:
+    case actionTypes.EDIT_DELGCCB:
+      return { ...state, submitting: true };
+    case actionTypes.EDIT_DELGCCB_SUCCEED:
+    case actionTypes.CREATE_DELGCCB_SUCCEED:
+    case actionTypes.EDIT_DELGCCB_FAIL:
+    case actionTypes.CREATE_DELGCCB_FAIL:
+      return { ...state, submitting: false };
     default:
       return state;
   }
@@ -159,21 +165,6 @@ export function editDelegationByCCB({
   };
 }
 
-export function searchClient(tenantId, searched) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SEARCH_CLIENT,
-        actionTypes.SEARCH_CLIENT_SUCCEED,
-        actionTypes.SEARCH_CLIENT_FAIL,
-      ],
-      endpoint: 'v1/cms/delegation/clients',
-      method: 'get',
-      params: { tenantId, searched },
-    }
-  };
-}
-
 export function setClientForm({ customer_tenant_id, customer_partner_id }) {
   return {
     type: actionTypes.SET_CLIENT_FORM,
@@ -214,5 +205,21 @@ export function delDelg(delgNo) {
 export function loadNewForm() {
   return {
     type: actionTypes.NEW_FORM,
+  };
+}
+
+export function loadFormRequire(cookie, tenantId, ieType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REQUIRE,
+        actionTypes.LOAD_REQUIRE_SUCCEED,
+        actionTypes.LOAD_REQUIRE_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/form/requires',
+      method: 'get',
+      params: { tenantId, ieType },
+      cookie,
+    },
   };
 }

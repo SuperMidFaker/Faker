@@ -1,19 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Col, Button, Popconfirm, message } from 'ant-ui';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
 import UploadGroup from '../delegation/attachmentUpload';
-import { createDelegationByCCB, loadNewForm } from 'common/reducers/cmsDelegation';
+import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
 
-function fetchData({ dispatch }) {
-  return dispatch(loadNewForm());
-}
-
-@connectFetch()(fetchData)
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -21,6 +15,7 @@ function fetchData({ dispatch }) {
     username: state.account.username,
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
+    submitting: state.cmsDelegation.submitting,
   }),
   { createDelegationByCCB }
 )
@@ -43,6 +38,7 @@ export default class AcceptanceCreate extends Component {
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     createDelegationByCCB: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -83,7 +79,7 @@ export default class AcceptanceCreate extends Component {
     });
   }
   render() {
-    const { form, type } = this.props;
+    const { form, type, submitting } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
@@ -98,9 +94,12 @@ export default class AcceptanceCreate extends Component {
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{marginRight: 20}}
-                onClick={this.handleSaveBtnClick}>保存</Button>
+                loading={submitting} onClick={this.handleSaveBtnClick}
+              >
+              保存
+              </Button>
               <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large">一键接单</Button>
+                <Button size="large" loading={submitting}>一键接单</Button>
               </Popconfirm>
             </div>
           </Form>

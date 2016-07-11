@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
 import { Col, Form, Input, Select } from 'ant-ui';
 import FormInput from './formInput';
-import FormSelect from './formSelect';
+import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -16,26 +16,27 @@ const Option = Select.Option;
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldProps, disabled, formData, formRequire, ietype } = props;
-  const portProps = {
+  const customsProps = {
     outercol: 8,
     col: 8,
     field: 'i_e_port',
-    rules: [{ required: true }],
-    options: formRequire.ports.map(port => ({
-      value: port.port_code,
-      text: port.port_c_cod,
+    rules: [{ required: false }],
+    options: formRequire.customs.map(cus => ({
+      value: cus.customs_code,
+      text: `${cus.customs_code} | ${cus.customs_name}`,
     })),
     label: ietype === 'import' ? msg('iport') : msg('eport'),
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const ieDateProps = {
     outercol: 8,
     col: 8,
     field: 'i_e_date',
     label: ietype === 'import' ? msg('idate') : msg('edate'),
-    rules: [{ required: true, type: 'date' }],
+    rules: [{ required: false, type: 'date' }],
     disabled,
     formData,
     getFieldProps,
@@ -51,7 +52,7 @@ export function PortDate(props) {
   };
   return (
     <Col span="15">
-      <FormSelect {...portProps} />
+      <FormLocalSearchSelect {...customsProps} />
       <FormDatePicker { ...ieDateProps } />
       <FormDatePicker { ...dDateProps } />
     </Col>
@@ -64,6 +65,7 @@ PortDate.propTypes = {
   getFieldProps: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
+  onSearch: PropTypes.func.isRequired,
 };
 
 // 关联单位
@@ -71,13 +73,8 @@ export function RelationAutoCompSelect(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const {
     label, codeField, nameField, formData, disabled, options,
-    getFieldProps, codeRules, nameRules, onSearch, onSelect,
+    getFieldProps, codeRules, nameRules, onSelect,
   } = props;
-  function handleSearch(value) {
-    if (onSearch) {
-      onSearch(codeField, value);
-    }
-  }
   function handleSelect(value) {
     if (onSelect) {
       onSelect(codeField, nameField, value);
@@ -88,16 +85,16 @@ export function RelationAutoCompSelect(props) {
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
         <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
-            <Select size="large" showSearch combobox showArrow={false} filterOption={false} disabled={disabled}
-              defaultActiveFirstOption={false} allowClear
+            <Select size="large" combobox showArrow={false} disabled={disabled}
+              defaultActiveFirstOption={false} allowClear optionFilterProp="search"
               placeholder={msg('relationCodeSearch')} {
                 ...getFieldProps(codeField, {
                   rules: codeRules,
                   initialValue: formData && formData[codeField],
                 })
-              } onSearch={handleSearch} onSelect={handleSelect}>
+              } onSelect={handleSelect}>
               {
-                options.map(opt => <Option key={opt.code}>{opt.code}</Option>)
+                options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
               }
             </Select>
           </Col>
@@ -123,7 +120,6 @@ RelationAutoCompSelect.propTypes = {
   getFieldProps: PropTypes.func.isRequired,
   codeRules: PropTypes.array,
   nameRules: PropTypes.array,
-  onSearch: PropTypes.func,
   onSelect: PropTypes.func,
 };
 
@@ -137,7 +133,7 @@ export function Transport(props) {
     field: 'trans_mode',
     options: formRequire.transModes.map(tm => ({
       value: tm.trans_code,
-      text: tm.trans_spec,
+      text: `${tm.trans_code} | ${tm.trans_spec}`,
     })),
     label: msg('transMode'),
     disabled,
@@ -164,7 +160,7 @@ export function Transport(props) {
   };
   return (
     <Col span="15">
-      <FormSelect { ...modeProps } />
+      <FormLocalSearchSelect { ...modeProps } />
       <FormInput { ...modeNameProps} />
       <FormInput { ...blwbProps} />
     </Col>
@@ -188,13 +184,14 @@ export function TradeRemission(props) {
     field: 'trade_mode',
     options: formRequire.tradeModes.map(tm => ({
       value: tm.trade_mode,
-      text: tm.trade_spec,
+      text: `${tm.trade_mode} | ${tm.trade_abbr}`,
     })),
     label: msg('tradeMode'),
     rules: [{ required: true }],
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const remissionProps = {
     outercol: 8,
@@ -202,12 +199,13 @@ export function TradeRemission(props) {
     field: 'rm_modes',
     options: formRequire.remissionModes.map(rm => ({
       value: rm.rm_mode,
-      text: rm.rm_spec,
+      text: `${rm.rm_mode} | ${rm.rm_spec}`,
     })),
     label: msg('rmModeName'),
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const emsNoProps = {
     outercol: 8,
@@ -220,8 +218,8 @@ export function TradeRemission(props) {
   };
   return (
     <Col span="15">
-      <FormSelect { ...tradeModeProps } />
-      <FormSelect { ...remissionProps} />
+      <FormLocalSearchSelect { ...tradeModeProps } />
+      <FormLocalSearchSelect { ...remissionProps} />
       <FormInput { ...emsNoProps} />
     </Col>
   );
@@ -244,13 +242,14 @@ export function CountryAttr(props) {
     field: 'trade_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
-      text: tc.cntry_name_cn,
+      text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
     })),
     label: msg('tradeCountry'),
-    rules: [{ required: true, }],
+    rules: [{ required: false, }],
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const departCountryProps = {
     outercol: 12,
@@ -258,13 +257,14 @@ export function CountryAttr(props) {
     field: 'depart_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
-      text: tc.cntry_name_cn,
+      text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
     })),
     label: ietype === 'import' ? msg('departCountry') : msg('destinateCountry'),
-    rules: [{ required: true, }],
+    rules: [{ required: false, }],
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const licenseNoProps = {
     outercol: 12,
@@ -287,6 +287,7 @@ export function CountryAttr(props) {
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const contractNoProps = {
     outercol: 12,
@@ -326,10 +327,10 @@ export function CountryAttr(props) {
   };
   return (
     <Col span="9">
-      <FormSelect { ...tradeCountryProps } />
-      <FormSelect { ...departCountryProps } />
+      <FormLocalSearchSelect { ...tradeCountryProps } />
+      <FormLocalSearchSelect { ...departCountryProps } />
       <FormInput { ...licenseNoProps } />
-      <FormSelect { ...trxModeProps } />
+      <FormLocalSearchSelect { ...trxModeProps } />
       <FormInput { ...contractNoProps } />
       <FormInput { ...packCountProps } />
       <FormInput { ...containerNoProps } />
@@ -350,20 +351,21 @@ CountryAttr.propTypes = {
 // 装货港、境内目的地、发票号
 export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldProps, disabled, formData, formRequire, type, ietype } = props;
+  const { getFieldProps, disabled, formData, formRequire, type, ietype, onSearch } = props;
   const destPortProps = {
     outercol: 8,
     col: 8,
     field: 'dest_port',
     options: formRequire.ports.map(port => ({
       value: port.port_code,
-      text: port.port_c_cod,
+      text: `${port.port_code} | ${port.port_c_cod}`,
     })),
     label: ietype === 'import' ? msg('iDestinatePort') : msg('eDestinatePort'),
-    rules: [{ required: true }],
+    rules: [{ required: false }],
     disabled,
     formData,
     getFieldProps,
+    onSearch,
   };
   const districtProps = {
     outercol: 8,
@@ -371,13 +373,14 @@ export function DestInvoice(props) {
     field: 'district_code',
     options: formRequire.districts.map(dist => ({
       value: dist.district_code,
-      text: dist.district_name,
+      text: `${dist.district_code} | ${dist.district_name}`,
     })),
     label: ietype === 'import' ? msg('iDistrict') : msg('eDistrict'),
-    rules: [{ required: true }],
+    rules: [{ required: false }],
     disabled,
     formData,
     getFieldProps,
+    searchKeyFn: (opt) => opt.value,
   };
   const invoiceNoProps = {
     outercol: 8,
@@ -390,8 +393,8 @@ export function DestInvoice(props) {
   };
   return (
     <Col span="15">
-      <FormSelect { ...destPortProps } />
-      <FormSelect { ...districtProps } />
+      <FormRemoteSearchSelect { ...destPortProps } />
+      <FormLocalSearchSelect { ...districtProps } />
       { type === 'bill' && <FormInput { ...invoiceNoProps} /> }
     </Col>
   );
@@ -405,6 +408,7 @@ DestInvoice.propTypes = {
   getFieldProps: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
+  onSearch: PropTypes.func.isRequired,
 };
 
 // 费用
@@ -433,7 +437,7 @@ function FeeFormItem(props) {
           <FormInput {...feeProps} />
         </Col>
         <Col span="12" style={{paddingRight: 0}}>
-          <FormSelect {...currencyProps} />
+          <FormLocalSearchSelect {...currencyProps} />
         </Col>
       </InputGroup>
     </FormItem>
@@ -514,7 +518,7 @@ export function PackWeight(props) {
   };
   return (
     <Col span="15">
-      <FormSelect {...packProps} />
+      <FormLocalSearchSelect {...packProps} />
       <FormInput {...grosswtProps} />
       <FormInput {...netwtProps} />
     </Col>

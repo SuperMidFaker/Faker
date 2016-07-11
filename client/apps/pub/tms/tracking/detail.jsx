@@ -1,3 +1,4 @@
+/* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Steps, Card, Collapse, Timeline } from 'ant-ui';
@@ -14,7 +15,6 @@ function fetchData({ dispatch, params }) {
 }
 
 @connectFetch()(fetchData)
-
 @connect(
   state => ({
     shipmtDetail: state.shipment.shipmtDetail
@@ -262,7 +262,7 @@ export default class TrackingDetail extends React.Component {
           <div className="content">
             <div className="left">
               <div className="main-content">
-                <div className="page-body" style={{ width: '100%' }}>
+                <div style={{ width: '100%' }}>
                   <Card title="运输进度" extra={<a href="#"></a>} style={{ width: '100%' }}>
                     <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
                   </Card>

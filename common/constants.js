@@ -156,6 +156,36 @@ const FEE_TYPE = [{
   text: '3|总价',
   value: '3'
 }];
+
+export const DELG_EXEMPTIONWAY = [{
+  value: '1',
+  text: '照章征税',
+}, {
+  value: '2',
+  text: '折半征税',
+}, {
+  value: '3',
+  text: '全免',
+}, {
+  value: '4',
+  text: '特案',
+}, {
+  value: '5',
+  text: '随征免性质',
+}, {
+  value: '6',
+  text: '保证金',
+}, {
+  value: '7',
+  text: '保函',
+}, {
+  value: '8',
+  text: '折半补税',
+}, {
+  value: '9',
+  text: '全额退税',
+}];
+
 const SHIPMENT_EFFECTIVES = {
   cancelled: -1,
   draft: 0,

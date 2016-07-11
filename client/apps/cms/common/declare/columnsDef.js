@@ -4,10 +4,11 @@ import NavLink from 'client/components/nav-link';
 import RowUpdater from './rowUpdater';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 export default function makeColumn(type, aspect, ietype, handlers, msg) {
+  let totalWidth = 180;
   const columns = [{
     title: msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 150,
+    width: 180,
     fixed: 'left',
     render: (o, record) => {
       return (
@@ -30,6 +31,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       width: 170,
       render: (o) => <TrimSpan text={o} />,
     });
+    totalWidth += 340;
     if (type === 'declared') {
       columns.push({
         title: msg('entryId'),
@@ -37,6 +39,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         width: 160,
         render: (o) => <TrimSpan text={o} />,
       });
+      totalWidth += 160;
     }
   }
   columns.push({
@@ -93,6 +96,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       );
     }
   });
+  totalWidth += 240 + 200 * 5 + 90 + 100 + 80;
   if (type === 'undeclared') {
     columns.push({
       title: msg('opColumn'),
@@ -110,6 +114,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         );
       }
     });
+    totalWidth += 120;
   } else if (type === 'declaring') {
     columns.push({
       title: msg('opColumn'),
@@ -127,6 +132,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         );
       }
     });
+    totalWidth += 150;
   } else {
     columns.push({
       title: msg('opColumn'),
@@ -142,6 +148,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         );
       }
     });
+    totalWidth += 80;
   }
-  return columns;
+  return { columns, totalWidth };
 }

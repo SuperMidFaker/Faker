@@ -69,7 +69,7 @@ export default class EntryForm extends React.Component {
     this.props.form.validateFieldsAndScroll(errors => {
       if (!errors) {
         const { entry, totalCount, loginId } = this.props;
-        const head = { ...entry.head, ...this.props.form.getFieldsValue(), id: this.state.head_id };
+        const head = { ...entry.head, ...this.props.form.getFieldsValue(), id: entry.head.id || this.state.head_id };
         this.props.saveEntryHead({ head, totalCount, loginId }).then(
           result => {
             if (result.error) {
@@ -106,19 +106,19 @@ export default class EntryForm extends React.Component {
           </Button>
         }
         { !readonly &&
-          <Button type="ghost" icon="delete" size="small" onClick={this.handleEntryDel}/>
+          <Button type="ghost" icon="delete" size="small" onClick={this.handleEntryDel} />
         }
       </div>
       <div className="panel-body padding">
         <Collapse accordion defaultActiveKey="entry-head">
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
-            <BillHead ietype={ietype} readonly={readonly} form={form} formData={head}
-            />
+            <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
           </Panel>
           <Panel header={this.msg('entryList')} key="entry-list">
             <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
               onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id } />
+              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id }
+            />
           </Panel>
         </Collapse>
       </div>

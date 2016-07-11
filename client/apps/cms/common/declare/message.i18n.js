@@ -275,11 +275,11 @@ export default defineMessages({
   },
   grosswt: {
     id: 'cms.declare.form.gross.wt',
-    defaultMessage: '毛重(公斤)'
+    defaultMessage: '毛重(kg)'
   },
   netwt: {
     id: 'cms.declare.form.net.wt',
-    defaultMessage: '净重(公斤)'
+    defaultMessage: '净重(kg)'
   },
   certMark: {
     id: 'cms.declare.form.cert.mark',

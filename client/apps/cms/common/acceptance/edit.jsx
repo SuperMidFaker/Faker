@@ -1,24 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Col, Button, Popconfirm, message } from 'ant-ui';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
 import UploadGroup from '../delegation/attachmentUpload';
-import { loadDelg, editDelegationByCCB } from 'common/reducers/cmsDelegation';
+import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
 
-function fetchData({ cookie, params, dispatch }) {
-  return dispatch(loadDelg(cookie, {
-    delgNo: params.delgNo,
-  }));
-}
-
-@connectFetch()(fetchData)
 @connect(
   state => ({
     loginId: state.account.loginId,
     formData: state.cmsDelegation.formData,
+    submitting: state.cmsDelegation.submitting,
   }),
   { editDelegationByCCB }
 )
@@ -40,6 +33,7 @@ export default class AcceptanceEdit extends Component {
     type: PropTypes.oneOf([ 'import', 'export' ]),
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     editDelegationByCCB: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -88,7 +82,7 @@ export default class AcceptanceEdit extends Component {
     }
   }
   render() {
-    const { form, type } = this.props;
+    const { form, type, submitting } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
@@ -105,9 +99,12 @@ export default class AcceptanceEdit extends Component {
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{marginRight: 20}}
-                onClick={this.handleSaveBtnClick}>保存</Button>
+                onClick={this.handleSaveBtnClick} loading={submitting}
+              >
+              保存
+              </Button>
               <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large">一键接单</Button>
+                <Button size="large" loading={submitting}>一键接单</Button>
               </Popconfirm>
             </div>
           </Form>
