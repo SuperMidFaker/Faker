@@ -37,9 +37,6 @@ export default {
 function sendSMS(phones, datas, templateId) {
   const cloopen = SmsConfig.cloopen;
   return (done) => {
-    if (!__DEV__) {
-      return done(null, { data: true });
-    }
     const timestamp = moment().format('YYYYMMDDHHmmss');
     const sig = cloopen.accountSid + cloopen.authToken + timestamp;
     const sign = bCryptUtil.md5(sig);

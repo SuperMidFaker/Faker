@@ -38,7 +38,6 @@ export default class TrackingDetail extends React.Component {
     });
     const {shipmt, tracking} = this.props.shipmtDetail;
     const points = [];
-    let current = 0;
     tracking.points.forEach((item) => {
       points.push({
         ...item,
@@ -87,14 +86,13 @@ export default class TrackingDetail extends React.Component {
     }
     // 创建标注
     function addMarker(pt, label, index, cur, pts) {
-      console.log(`index:${index} cur:${cur} length:${pts.length}`)
       if (pt && pt.lat !== 0 && pt.lng !== 0) {
         let marker;
         const iconSize = [25, 82];
         let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
         if (index === 0) {
           iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_origin.png';
-        } else if (index === pts.length-1) {
+        } else if (index === pts.length - 1) {
           iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
         }
         const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
