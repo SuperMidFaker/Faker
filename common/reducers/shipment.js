@@ -268,8 +268,8 @@ export function sendTrackingDetailSMSMessage(data) {
         actionTypes.SEND_SMS_MESSAGE_SUCCEED,
         actionTypes.SEND_SMS_MESSAGE_FAIL,
       ],
-      endpoint: 'public/v1/transport/shipment/sendTrackingDetailSMSMessage',
-      method: 'put',
+      endpoint: 'v1/transport/shipment/sendTrackingDetailSMSMessage',
+      method: 'post',
       data,
     }
   };

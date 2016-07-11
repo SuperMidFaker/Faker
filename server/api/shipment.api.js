@@ -615,5 +615,5 @@ export default [
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
   [ 'get', '/public/v1/transport/shipment/detail', shipmtPublicDetail ],
-  [ 'put', '/public/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage ],
+  [ 'post', '/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage ],
 ];
