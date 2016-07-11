@@ -14,7 +14,7 @@ import {
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
 import { sendNewShipMessage }from '../socket.io';
-
+import SMS from '../util/sms-util';
 const vehicleTypes = VEHICLE_TYPES;
 
 const vehicleLengths = VEHICLE_LENGTH_TYPES;
@@ -574,6 +574,7 @@ function *shipmtPublicDetail() {
     };
     tracking.creator = shipmtCreator;
     tracking.points = points;
+    shipmt.status = 4;
     const KEY = makePublicUrlKey(shipmtNo, shipmt);
     if (key === KEY) {
       return Result.ok(this, {
@@ -584,6 +585,16 @@ function *shipmtPublicDetail() {
       return Result.paramError(this);
     }
     
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *sendTrackingDetailSMSMessage() {
+  const body = yield cobody(this);
+  try {
+    const result = yield SMS.sendSmsTrackingDetailMessage([body.tel], [body.lsp_name, body.shipmtNo, body.url]);
+    return Result.ok(this, result)
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
@@ -606,4 +617,5 @@ export default [
   [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
   [ 'get', '/public/v1/transport/shipment/detail', shipmtPublicDetail ],
+  [ 'put', '/public/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage ],
 ];

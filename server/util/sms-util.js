@@ -28,6 +28,34 @@ export default {
       });
       // options.rejectUnauthorized = false;
     }
+  },
+  sendSmsTrackingDetailMessage(phones, data) {
+    return sendSMS(phones, data, '98689');
   }
 }
 
+function sendSMS(phones, datas, templateId) {
+  const cloopen = SmsConfig.cloopen;
+  return (done) => {
+    if (!__DEV__) {
+      return done(null, { data: true });
+    }
+    const timestamp = moment().format('YYYYMMDDHHmmss');
+    const sig = cloopen.accountSid + cloopen.authToken + timestamp;
+    const sign = bCryptUtil.md5(sig);
+    const url = `${cloopen.url}:${cloopen.port}/${cloopen.ver}/Accounts/${cloopen.accountSid}/SMS/TemplateSMS?sig=${sign.toUpperCase()}`;
+    const auth = bCryptUtil.base64Encode(cloopen.accountSid + ':' + timestamp);
+    const body = {'to': phones.join(','), 'templateId': templateId,
+      'datas': datas, 'appId': cloopen.appid};
+    request.post(url).accept('json').set('Content-Type', 'application/json;charset=utf-8')
+    .set('Authorization', auth).send(body)
+    .end((err, resp) => {
+      if (err) {
+        done(err);
+      } else {
+        done(null, resp.body);
+      }
+    });
+    // options.rejectUnauthorized = false;
+  }
+}
