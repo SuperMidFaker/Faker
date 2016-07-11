@@ -4,6 +4,7 @@ import SmsConfig from '../../config/sms.config';
 import bCryptUtil from './BCryptUtil';
 export default {
   sendSms(phone, code) {
+    const cloopen = SmsConfig.cloopen;
     return sendSMS([phone], [code], cloopen.templateId);
   },
   sendSmsTrackingDetailMessage(phones, data) {
