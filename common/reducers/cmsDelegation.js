@@ -37,6 +37,7 @@ const initialState = {
     create_time: null,
   },
   delgFiles: [],
+  submitting: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -62,6 +63,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: { ...initialState.formData, create_time: new Date() }};
     case actionTypes.LOAD_REQUIRE_SUCCEED:
       return { ...state, formRequire: action.result.data };
+    case actionTypes.CREATE_DELGCCB:
+    case actionTypes.EDIT_DELGCCB:
+      return { ...state, submitting: true };
+    case actionTypes.EDIT_DELGCCB_SUCCEED:
+    case actionTypes.CREATE_DELGCCB_SUCCEED:
+    case actionTypes.EDIT_DELGCCB_FAIL:
+    case actionTypes.CREATE_DELGCCB_FAIL:
+      return { ...state, submitting: false };
     default:
       return state;
   }

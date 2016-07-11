@@ -61,6 +61,7 @@ export default class BillForm extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleBillSave = (ev) => {
     ev.preventDefault();
+    // todo bill head save sync with entry head, vice verse
     this.props.form.validateFieldsAndScroll(errors => {
       if (!errors) {
         const { billHead, ietype, loginId } = this.props;
