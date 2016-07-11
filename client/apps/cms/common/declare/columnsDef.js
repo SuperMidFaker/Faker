@@ -12,9 +12,8 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
     fixed: 'left',
     render: (o, record) => {
       return (
-        <RowUpdater onHit={handlers.onPreview} label={o} extra={{
-          style: record.status < 0 ? { color : '#999' } : {},
-        }}
+        <RowUpdater onHit={handlers.onPreview} label={o} row={record}
+          style={record.status < 0 ? { color : '#999' } : {}}
         />
       );
     }
@@ -105,7 +104,9 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       render: (o, record) => {
         return (
           <span>
-            <a role="button" onClick={handlers.onDelgDownload}>{msg('downloadCert')}</a>
+            <RowUpdater onHit={handlers.onDelgDownload} label={msg('downloadCert')}
+              disabled={record.files.length === 0} row={record}
+            />
             <span className="ant-divider" />
             <NavLink to={`/${ietype}/declare/make/${record.delg_no}`}>
             {msg('declareMake')}
@@ -127,7 +128,9 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
             {msg('declareMake')}
             </NavLink>
             <span className="ant-divider" />
-            <a role="button" onClick={() => handlers.onWriteEntryId(record)}>{msg('writeEntryId')}</a>
+            <RowUpdater onHit={handlers.onWriteEntryId} label={msg('writeEntryId')}
+              row={record}
+            />
           </span>
         );
       }
