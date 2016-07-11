@@ -569,11 +569,11 @@ function *shipmtPublicDetail() {
       }
     }
     shipmt.goodslist = goodslist;
-    let tracking = {
+    const tracking = {
       created_date: shipmt.created_date,
+      creator: shipmtCreator,
+      points,
     };
-    tracking.creator = shipmtCreator;
-    tracking.points = points;
     const KEY = makePublicUrlKey(shipmtNo, shipmt);
     if (key === KEY) {
       return Result.ok(this, {
@@ -583,7 +583,6 @@ function *shipmtPublicDetail() {
     } else {
       return Result.paramError(this);
     }
-    
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
