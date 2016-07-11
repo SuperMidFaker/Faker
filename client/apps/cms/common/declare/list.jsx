@@ -9,6 +9,7 @@ import { loadDelgList, openEfModal } from 'common/reducers/cmsDeclare';
 import EntryNoFillModal from './modals/entryNoFill';
 import { setNavTitle } from 'common/reducers/navbar';
 import makeColumn from './columnsDef';
+import downloadMultiple from 'client/util/multipleDownloader';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -151,12 +152,16 @@ export default class DeclareList extends React.Component {
       delgNo: row.delg_no,
     });
   }
+  handleDelgFilesDownload = (row) => {
+    downloadMultiple(row.files);
+  };
   render() {
     const { aspect, delgList, listFilter, ietype } = this.props;
     this.dataSource.remotes = delgList;
     const status = listFilter.declareType;
     const { columns, totalWidth } = makeColumn(status, aspect, ietype, {
       onWriteEntryId: this.handleEntryNoFill,
+      onDelgDownload: this.handleDelgFilesDownload,
     }, this.msg);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

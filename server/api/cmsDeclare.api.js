@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import { Delegation, Dispatch } from '../models/cmsDelegation.db';
+import { Delegation, Dispatch, DelegationFileDao } from '../models/cmsDelegation.db';
 import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../models/cmsbillEntry.db';
 import {
   CmsParamCustomsDao, CmsParamTradeDao, CmsParamTransModeDao,
@@ -33,10 +33,25 @@ function *getDelgDeclares() {
   if (delgWhere.length > 0) {
     whereClause = `where ${delgWhere.join('')}`;
   }
-  const counts = yield Delegation.getDelgBillEntryCount(billStatus, tenantId, whereClause);
   const offset = (current - 1) * pageSize;
   const limit = pageSize;
-  const rows = yield Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit);
+  const [ counts, rows ] = yield [
+    Delegation.getDelgBillEntryCount(billStatus, tenantId, whereClause),
+    Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit),
+  ];
+  const filesDbOps = [];
+  rows.forEach(row => {
+    filesDbOps.push(DelegationFileDao.findAll({
+      raw: true,
+      delg_no: row.delg_no,
+      attributes: [ [ 'doc_name', 'name' ], 'url' ],
+    }));
+  });
+  const delgFiles = yield filesDbOps;
+  for (let i = 0; i < delgFiles.length; i++) {
+    const row = rows[i];
+    row.files = delgFiles[i];
+  }
   return Result.ok(this, {
     totalCount: counts[0].count,
     pageSize,
