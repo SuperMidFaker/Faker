@@ -319,15 +319,15 @@ export default defineMessages({
   },
   element: {
     id: 'cms.declare.table.element',
-    defaultMessage: '要素'
+    defaultMessage: '申报要素'
   },
   quantity: {
     id: 'cms.declare.table.quantity',
-    defaultMessage: '数量'
+    defaultMessage: '申报数量'
   },
   unit: {
     id: 'cms.declare.table.unit',
-    defaultMessage: '单位'
+    defaultMessage: '成交单位'
   },
   icountry: {
     id: 'cms.declare.table.icountry',
@@ -348,6 +348,10 @@ export default defineMessages({
   currency: {
     id: 'cms.declare.table.currency',
     defaultMessage: '币制'
+  },
+  exemptionWay: {
+    id: 'cms.declare.table.exemptionway',
+    defaultMessage: '征免方式'
   },
   save: {
     id: 'cms.declare.table.save',
