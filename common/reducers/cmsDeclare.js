@@ -1,4 +1,4 @@
-import { WRAP_TYPE as PackTypes } from 'common/constants';
+import { WRAP_TYPE as PackTypes, DELG_EXEMPTIONWAY } from 'common/constants';
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
@@ -61,6 +61,7 @@ const initialState = {
     districts: [],
     currencies: [],
     packs: PackTypes,
+    exemptionWays: DELG_EXEMPTIONWAY,
     units: [],
   },
   visibleMSModal: false,
@@ -114,7 +115,7 @@ export default function reducer(state = initialState, action) {
         }
       });
       retParams.ports = newPorts;
-      return { ...state, params: action.result.data };
+      return { ...state, params: { ...state.params, ...retParams } };
     }
     case actionTypes.LOAD_SEARCHPARAM_SUCCEED: {
       const retParam = action.result.data;
