@@ -42,6 +42,7 @@ export default class EntryNoFillModal extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
+          this.setState({ entryNo: '' });
           this.props.closeEfModal();
           if (result.data.needReload) {
             this.props.reload();
@@ -56,7 +57,7 @@ export default class EntryNoFillModal extends React.Component {
       <Modal title={this.msg('entryNoFillModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Input onBlur={this.handleEntryNoChange} />
+        <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} />
       </Modal>
     );
   }

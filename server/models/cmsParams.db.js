@@ -104,3 +104,8 @@ export const CmsCompDeclareWayDao = sequelize.define('cms_comp_declare_way', {
   decl_way_name: STRING, // 报关类型名称
   tenant_id: INTEGER, // 所属公司(租户)id
 });
+
+export const CmsParamExemptionWayDao = sequelize.define('cms_param_exemptionway', {
+  way_code: STRING, // 征免方式编码
+  way_name: STRING, // 征免方式名称
+});

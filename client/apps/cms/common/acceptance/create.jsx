@@ -15,6 +15,7 @@ import { DELG_SOURCE } from 'common/constants';
     username: state.account.username,
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
+    submitting: state.cmsDelegation.submitting,
   }),
   { createDelegationByCCB }
 )
@@ -37,6 +38,7 @@ export default class AcceptanceCreate extends Component {
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     createDelegationByCCB: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -77,7 +79,7 @@ export default class AcceptanceCreate extends Component {
     });
   }
   render() {
-    const { form, type } = this.props;
+    const { form, type, submitting } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
@@ -92,9 +94,12 @@ export default class AcceptanceCreate extends Component {
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{marginRight: 20}}
-                onClick={this.handleSaveBtnClick}>保存</Button>
+                loading={submitting} onClick={this.handleSaveBtnClick}
+              >
+              保存
+              </Button>
               <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large">一键接单</Button>
+                <Button size="large" loading={submitting}>一键接单</Button>
               </Popconfirm>
             </div>
           </Form>

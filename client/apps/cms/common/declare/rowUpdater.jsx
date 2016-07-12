@@ -13,7 +13,7 @@ export default function RowUpdater(props) {
     }
   }
   return (
-    <a onClick={handleClick} onMouseEnter={handleHover} {...extra}>
+    <a onClick={handleClick} onMouseEnter={handleHover} {...extra} role="button">
     {label}
     </a>
   );

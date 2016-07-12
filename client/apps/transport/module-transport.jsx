@@ -52,7 +52,7 @@ function getLinksByAspect(aspect, intl) {
       key: 'tms-0',
       path: '/transport/',
       icon: 'zmdi zmdi-tv-list',
-      text: '看板'
+      text: '工作台'
     }, {
       single: true,
       key: 'tms-1',

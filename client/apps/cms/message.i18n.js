@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   comp_code_placeholder: {
     id: 'cms.manage.comp_code_placeholder',
-    defaultMessage: '18位社会信用代码'
+    defaultMessage: '社会信用代码'
   },
   comp_name: {
     id: 'cms.manage.comp_name',

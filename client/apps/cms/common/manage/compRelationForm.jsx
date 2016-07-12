@@ -78,7 +78,7 @@ class CompRelationForm extends Component {
                   required: true,
                   message: this.msg('comp_code_placeholder'),
                   type: 'string',
-                  min: 18,
+                  min: 10,
                   max: 18,
                   whitespace: false
                 }], {transform: (value) => (value.trim()), initialValue: formData.comp_code}

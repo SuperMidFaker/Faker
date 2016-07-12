@@ -75,6 +75,7 @@ ColumnSelect.proptypes = {
       value: cr.curr_code,
       text: cr.curr_name,
     })),
+    exemptions: state.cmsDeclare.params.exemptionWays,
     loginId: state.account.loginId,
   })
 )
@@ -90,6 +91,7 @@ export default class BodyTable extends React.Component {
     units: PropTypes.array,
     countries: PropTypes.array,
     currencies: PropTypes.array,
+    exemptions: PropTypes.array,
     onAdd: PropTypes.func.isRequired,
     onDel: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
@@ -114,7 +116,7 @@ export default class BodyTable extends React.Component {
     }
   }
   getColumns() {
-    const { ietype, type, readonly, units, countries, currencies } = this.props;
+    const { ietype, type, readonly, units, countries, currencies, exemptions } = this.props;
     const { editIndex, bodies, editBody } = this.state;
     const totalCount = bodies.length;
     const columns = [{
@@ -216,11 +218,11 @@ export default class BodyTable extends React.Component {
         <ColumnSelect field="curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody} />,
     }, {
-      title: this.msg('rmModeName'),
+      title: this.msg('exemptionWay'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="rm_mode" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} />,
+        <ColumnSelect field="rm_mode" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={exemptions} edit={editBody} />,
     }, {
       title: this.msg('opColumn'),
       width: 80,

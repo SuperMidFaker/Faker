@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_DRAFTFORM', 'LOAD_DRAFTFORM_SUCCEED', 'LOAD_DRAFTFORM_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
   'LOAD_PUB_DETAIL', 'LOAD_PUB_DETAIL_SUCCEED', 'LOAD_PUB_DETAIL_FAIL',
+  'SEND_SMS_MESSAGE', 'SEND_SMS_MESSAGE_SUCCEED', 'SEND_SMS_MESSAGE_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -120,6 +121,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_PUB_DETAIL_SUCCEED: {
       return { ...state, shipmtDetail: action.result.data};
+    }
+    case actionTypes.SEND_SMS_MESSAGE_SUCCEED: {
+      return { ...state};
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -252,6 +256,21 @@ export function loadPubShipmtDetail(shipmtNo, key) {
       endpoint: 'public/v1/transport/shipment/detail',
       method: 'get',
       params: { shipmtNo, key },
+    }
+  };
+}
+
+export function sendTrackingDetailSMSMessage(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_SMS_MESSAGE,
+        actionTypes.SEND_SMS_MESSAGE_SUCCEED,
+        actionTypes.SEND_SMS_MESSAGE_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/sendTrackingDetailSMSMessage',
+      method: 'post',
+      data,
     }
   };
 }

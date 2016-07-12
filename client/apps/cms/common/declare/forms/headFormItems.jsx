@@ -15,21 +15,21 @@ const Option = Select.Option;
 // 进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldProps, disabled, formData, formRequire, ietype, onSearch } = props;
-  const portProps = {
+  const { getFieldProps, disabled, formData, formRequire, ietype } = props;
+  const customsProps = {
     outercol: 8,
     col: 8,
     field: 'i_e_port',
     rules: [{ required: false }],
-    options: formRequire.ports.map(port => ({
-      value: port.port_code,
-      text: `${port.port_code} | ${port.port_c_cod}`,
+    options: formRequire.customs.map(cus => ({
+      value: cus.customs_code,
+      text: `${cus.customs_code} | ${cus.customs_name}`,
     })),
     label: ietype === 'import' ? msg('iport') : msg('eport'),
     disabled,
     formData,
     getFieldProps,
-    onSearch,
+    searchKeyFn: (opt) => opt.value,
   };
   const ieDateProps = {
     outercol: 8,
@@ -52,7 +52,7 @@ export function PortDate(props) {
   };
   return (
     <Col span="15">
-      <FormRemoteSearchSelect {...portProps} />
+      <FormLocalSearchSelect {...customsProps} />
       <FormDatePicker { ...ieDateProps } />
       <FormDatePicker { ...dDateProps } />
     </Col>
@@ -184,7 +184,7 @@ export function TradeRemission(props) {
     field: 'trade_mode',
     options: formRequire.tradeModes.map(tm => ({
       value: tm.trade_mode,
-      text: `${tm.trade_mode} | ${tm.trade_spec}`,
+      text: `${tm.trade_mode} | ${tm.trade_abbr}`,
     })),
     label: msg('tradeMode'),
     rules: [{ required: true }],

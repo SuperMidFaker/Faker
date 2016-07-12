@@ -4,16 +4,16 @@ import NavLink from 'client/components/nav-link';
 import RowUpdater from './rowUpdater';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 export default function makeColumn(type, aspect, ietype, handlers, msg) {
+  let totalWidth = 180;
   const columns = [{
     title: msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 150,
+    width: 180,
     fixed: 'left',
     render: (o, record) => {
       return (
-        <RowUpdater onHit={handlers.onPreview} label={o} extra={{
-          style: record.status < 0 ? { color : '#999' } : {},
-        }}
+        <RowUpdater onHit={handlers.onPreview} label={o} row={record}
+          style={record.status < 0 ? { color : '#999' } : {}}
         />
       );
     }
@@ -30,6 +30,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       width: 170,
       render: (o) => <TrimSpan text={o} />,
     });
+    totalWidth += 340;
     if (type === 'declared') {
       columns.push({
         title: msg('entryId'),
@@ -37,6 +38,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         width: 160,
         render: (o) => <TrimSpan text={o} />,
       });
+      totalWidth += 160;
     }
   }
   columns.push({
@@ -93,6 +95,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       );
     }
   });
+  totalWidth += 240 + 200 * 5 + 90 + 100 + 80;
   if (type === 'undeclared') {
     columns.push({
       title: msg('opColumn'),
@@ -101,7 +104,9 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
       render: (o, record) => {
         return (
           <span>
-            <a role="button" onClick={handlers.onDelgDownload}>{msg('downloadCert')}</a>
+            <RowUpdater onHit={handlers.onDelgDownload} label={msg('downloadCert')}
+              disabled={record.files.length === 0} row={record}
+            />
             <span className="ant-divider" />
             <NavLink to={`/${ietype}/declare/make/${record.delg_no}`}>
             {msg('declareMake')}
@@ -110,6 +115,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         );
       }
     });
+    totalWidth += 120;
   } else if (type === 'declaring') {
     columns.push({
       title: msg('opColumn'),
@@ -122,11 +128,14 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
             {msg('declareMake')}
             </NavLink>
             <span className="ant-divider" />
-            <a role="button" onClick={() => handlers.onWriteEntryId(record)}>{msg('writeEntryId')}</a>
+            <RowUpdater onHit={handlers.onWriteEntryId} label={msg('writeEntryId')}
+              row={record}
+            />
           </span>
         );
       }
     });
+    totalWidth += 150;
   } else {
     columns.push({
       title: msg('opColumn'),
@@ -142,6 +151,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
         );
       }
     });
+    totalWidth += 80;
   }
-  return columns;
+  return { columns, totalWidth };
 }

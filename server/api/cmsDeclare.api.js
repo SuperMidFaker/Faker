@@ -1,5 +1,5 @@
 import cobody from 'co-body';
-import { Delegation, Dispatch } from '../models/cmsDelegation.db';
+import { Delegation, Dispatch, DelegationFileDao } from '../models/cmsDelegation.db';
 import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../models/cmsbillEntry.db';
 import {
   CmsParamCustomsDao, CmsParamTradeDao, CmsParamTransModeDao,
@@ -33,10 +33,25 @@ function *getDelgDeclares() {
   if (delgWhere.length > 0) {
     whereClause = `where ${delgWhere.join('')}`;
   }
-  const counts = yield Delegation.getDelgBillEntryCount(billStatus, tenantId, whereClause);
   const offset = (current - 1) * pageSize;
   const limit = pageSize;
-  const rows = yield Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit);
+  const [ counts, rows ] = yield [
+    Delegation.getDelgBillEntryCount(billStatus, tenantId, whereClause),
+    Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit),
+  ];
+  const filesDbOps = [];
+  rows.forEach(row => {
+    filesDbOps.push(DelegationFileDao.findAll({
+      raw: true,
+      delg_no: row.delg_no,
+      attributes: [ [ 'doc_name', 'name' ], 'url' ],
+    }));
+  });
+  const delgFiles = yield filesDbOps;
+  for (let i = 0; i < delgFiles.length; i++) {
+    const row = rows[i];
+    row.files = delgFiles[i];
+  }
   return Result.ok(this, {
     totalCount: counts[0].count,
     pageSize,
@@ -315,8 +330,6 @@ function *editBillBody() {
 function *upsertEntryHead() {
   try {
     const { head, totalCount, loginId } = yield cobody(this);
-    head.comp_entry_id = `${head.bill_no}-${totalCount}`;
-    head.creater_login_id = loginId;
     let id = head.id;
     if (id) {
       yield EntryHeadDao.update(head, { where: { id }});
@@ -327,6 +340,8 @@ function *upsertEntryHead() {
         yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: head.delg_no }});
       }
     } else {
+      head.comp_entry_id = `${head.bill_no}-${totalCount}`;
+      head.creater_login_id = loginId;
       const row = yield EntryHeadDao.create(head);
       id = row.id;
     }

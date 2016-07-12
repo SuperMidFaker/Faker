@@ -11,6 +11,7 @@ import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
   state => ({
     loginId: state.account.loginId,
     formData: state.cmsDelegation.formData,
+    submitting: state.cmsDelegation.submitting,
   }),
   { editDelegationByCCB }
 )
@@ -32,6 +33,7 @@ export default class AcceptanceEdit extends Component {
     type: PropTypes.oneOf([ 'import', 'export' ]),
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+    submitting: PropTypes.bool.isRequired,
     editDelegationByCCB: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -80,7 +82,7 @@ export default class AcceptanceEdit extends Component {
     }
   }
   render() {
-    const { form, type } = this.props;
+    const { form, type, submitting } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
@@ -97,9 +99,12 @@ export default class AcceptanceEdit extends Component {
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{marginRight: 20}}
-                onClick={this.handleSaveBtnClick}>保存</Button>
+                onClick={this.handleSaveBtnClick} loading={submitting}
+              >
+              保存
+              </Button>
               <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large">一键接单</Button>
+                <Button size="large" loading={submitting}>一键接单</Button>
               </Popconfirm>
             </div>
           </Form>

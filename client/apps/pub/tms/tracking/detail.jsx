@@ -38,11 +38,13 @@ export default class TrackingDetail extends React.Component {
     });
     const {shipmt, tracking} = this.props.shipmtDetail;
     const points = [];
-    let current = 0;
+    tracking.points = tracking.points.reverse();
     tracking.points.forEach((item) => {
       points.push({
         ...item,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${item.province} ${renderLoc(item, 'province', 'city', 'district')}${item.address}`
+        lat: item.latitude,
+        lng: item.longitude,
+        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`
       });
     });
     const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr}`;
@@ -65,78 +67,99 @@ export default class TrackingDetail extends React.Component {
     }
     // map.addEventListener("dragend", draw);
     // map.addEventListener("zoomend", draw);
-    function checkPoint(item, index, arr, cb) {
-      if (index === arr.length) {
-        return cb(arr);
-      }
-      if (item.latitude === 0 && item.longitude === 0) {
+    function checkPoint(item) {
+      return new Promise((resolve) => {
         addressToPoint(`${item.province}${renderLoc(item, 'province', 'city', 'district')}${item.address}`, (point) => {
-          arr[index].latitude = point.lat;
-          arr[index].longitude = point.lng;
-          checkPoint(arr[index + 1], index + 1, arr, cb);
+          let result = {...item};
+          if (point) {
+            result = {
+              ...item,
+              ...point,
+            };
+          }
+          resolve(result);
         }, `${item.city}`);
-      } else {
-        checkPoint(arr[index + 1], index + 1, arr, cb);
-      }
+      });
     }
     // 创建标注
-    function addMarker(pt, label, index, cur, iconurl) {
-      let marker;
-      const iconSize = [25, 82];
-      const point = {
-        lat: pt.latitude,
-        lng: pt.longitude
-      };
-      const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
-      marker = new BMap.Marker(point, {icon});
-      map.addOverlay(marker);
-      if (index === cur) {
-        marker.setAnimation(BMAP_ANIMATION_BOUNCE);
-      }
-      const lab = new BMap.Label(label, {offset: new BMap.Size(30, -10)});
-      marker.setLabel(lab);
-    }
-    function draw(originPoint, pts, destPoint, cur) {
-      const originBDPoint = new BMap.Point(originPoint.longitude, originPoint.latitude);
-      const destBDPoint = new BMap.Point(destPoint.longitude, destPoint.latitude);
-      bdPoints.push(originBDPoint);
-      viewPoints.push(originBDPoint);
-      map.clearOverlays();
-      addMarker(originPoint, originPoint.label, -1, cur, 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_origin.png');
-      checkPoint(pts[0], 0, pts, (arr) => {
-        for (let i = 0; i < arr.length; i++) {
-          addMarker(arr[i], arr[i].label, i, cur, 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png');
-          const BDPoint = new BMap.Point(arr[i].longitude, arr[i].latitude);
-          bdPoints.push(BDPoint);
-          viewPoints.push(BDPoint);
+    function addMarker(pt, label, index, cur, pts) {
+      if (pt && pt.lat !== 0 && pt.lng !== 0) {
+        let marker;
+        const iconSize = [25, 82];
+        let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
+        if (index === 0) {
+          iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_origin.png';
+        } else if (index === pts.length - 1) {
+          iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
         }
-        viewPoints.push(destBDPoint);
-        addMarker(destPoint, destPoint.label, pts.length, cur, 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png');
+        const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
+        marker = new BMap.Marker(pt, {icon});
+        map.addOverlay(marker);
+        if (index === cur) {
+          marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+        }
+        const lab = new BMap.Label(label, {offset: new BMap.Size(30, -10)});
+        marker.setLabel(lab);
+      }
+    }
+    function draw(pts, cur) {
+      const promises = [];
+      for (let i = 0; i < pts.length; i++) {
+        const p = checkPoint(pts[i]);
+        promises.push(p);
+      }
+      const result = Promise.all(promises);
+      result.then((arr) => {
+        map.clearOverlays();
+        for (let i = 0; i < arr.length; i++) {
+          addMarker(arr[i], arr[i].label, i, cur, pts);
+          const BDPoint = new BMap.Point(arr[i].lng, arr[i].lat);
+          if (BDPoint.lng !== 0 && BDPoint.lat !== 0) {
+            bdPoints.push(BDPoint);
+            viewPoints.push(BDPoint);
+          }
+        }
+        if (cur !== pts.length - 1) {
+          bdPoints.pop();
+        }
         const curve = new BMapLib.CurveLine(bdPoints, {strokeColor:'#0096da', strokeWeight: 3, strokeOpacity: 0.5}); // 创建弧线对象
         map.addOverlay(curve); // 添加到地图中
         map.setViewport(viewPoints);
       });
     }
     addressToPoint(originPointAddr, (point) => {
+      let result = {
+        lat: 0,
+        lng: 0
+      };
+      if (point !== null) {
+        result = point;
+      }
       const originPoint = {
-        latitude: point.lat,
-        longitude: point.lng,
-        label: `${moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm')} ${originPointAddr}`
+        ...result,
+        label: `${shipmt.pickup_act_date || shipmt.pickup_est_date ?
+          moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm') : ''} ${originPointAddr}`
       };
       addressToPoint(destPointAddr, (point2) => {
-        const destPoint = {
-          latitude: point2.lat,
-          longitude: point2.lng,
-          label: `${moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm')} ${destPointAddr}`
-        };
-        if (shipmt.status < 4) {
-          current = -1;
-        } else if (shipmt.status === 4) {
-          current = points.length - 1;
-        } else if (shipmt.status > 4) {
-          current = points.length;
+        if (point2 !== null) {
+          result = point2;
         }
-        draw(originPoint, points, destPoint, current);
+        const destPoint = {
+          ...result,
+          label: `${shipmt.deliver_act_date || shipmt.deliver_est_date ?
+            moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm') : ''} ${destPointAddr}`
+        };
+        points.unshift(originPoint);
+        points.push(destPoint);
+        let current = 0;
+        if (shipmt.status < 4) {
+          current = 0;
+        } else if (shipmt.status === 4) {
+          current = points.length - 2;
+        } else if (shipmt.status > 4) {
+          current = points.length - 1;
+        }
+        draw(points, current);
       }, shipmt.consignee_city);
     }, shipmt.consigner_city);
   }
@@ -153,8 +176,8 @@ export default class TrackingDetail extends React.Component {
     const points = [];
     tracking.points.forEach((item) => {
       points.push({
-        title: `${renderLoc(item, 'province', 'city', 'district')}`,
-        description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
+        title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
+        description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,
       });
     });
     let latestPoint = {
@@ -185,44 +208,54 @@ export default class TrackingDetail extends React.Component {
     if (shipmt.status < 4) {
       statusDes = [{
         title: '未提货',
-        description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 预计时间:${moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}`,
+        description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 预计时间:${
+          shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}`,
       }, {
         title: '运输中',
         description: '',
       }, {
         title: '未交货',
-        description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}`,
+        description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${
+          shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
       }];
       statusPos = 0;
     } else if (shipmt.status === 4) {
       statusDes = [{
         title: '已提货',
-        description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 实际时间:${moment(shipmt.pickup_act_date).format('YYYY-MM-DD')}`,
+        description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 实际时间:${
+          shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}`,
       }, {
         title: '运输中',
-        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district')} ${moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm')}`,
+        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''} ${
+          latestPoint.location_time || latestPoint.created_date ?
+          moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
         title: '未交货',
-        description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}`,
+        description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${
+          shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
       }];
       statusPos = 1;
     } else if (shipmt.status > 4) {
       statusDes = [{
         title: '已提货',
-        description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 实际时间:${moment(shipmt.pickup_act_date).format('YYYY-MM-DD')}`,
+        description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 实际时间:${
+          shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}`,
       }, {
         title: '运输中',
-        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district')} ${moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm')}`,
+        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''} ${
+          latestPoint.location_time || latestPoint.created_date ?
+          moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
         title: '已交货',
-        description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 实际时间:${moment(shipmt.deliver_act_date).format('YYYY-MM-DD')}`,
+        description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 实际时间:${
+          shipmt.deliver_act_date ? moment(shipmt.deliver_act_date).format('YYYY-MM-DD') : ''}`,
       }];
       statusPos = 2;
     }
     const steps = statusDes.map((s, i) => <Step key={i} title={s.title} description={s.description}/>);
-    const trackingSteps = points.map((s, i, pts) => {
-      if (i === pts.length - 1) {
-        return (<Timeline.Item color="green">{s.title}{s.description}</Timeline.Item>);
+    const trackingSteps = points.map((s, i) => {
+      if (i === 0) {
+        return (<Timeline.Item color="green">{s.title} {s.description}</Timeline.Item>);
       } else {
         return (<Timeline.Item>{s.title} {s.description}</Timeline.Item>);
       }
@@ -242,12 +275,12 @@ export default class TrackingDetail extends React.Component {
                   <Collapse defaultActiveKey={['1', '2', '3']}>
                     <Panel header="发货方" key="1">
                       <p><strong>{shipmt.consigner_name || ''}</strong></p>
-                      <p>{`${shipmt.consigner_province || ''} ${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
+                      <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
                       <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
                     </Panel>
                     <Panel header="收货方" key="2">
                       <p><strong>{shipmt.consignee_name}</strong></p>
-                      <p>{`${shipmt.consignee_province || ''} ${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
+                      <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
                       <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
                     </Panel>
                     <Panel header="运输货物" key="3">
