@@ -53,6 +53,7 @@ export default class TrackingDetail extends React.Component {
     const viewPoints = [];
     // 百度地图API功能
     const map = new BMap.Map('map');          // 创建地图实例
+    const myGeo = new BMap.Geocoder(); // 创建地址解析器实例
     // const point = new BMap.Point(120.073694,30.269552);  // 创建点坐标
     // map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom();
@@ -60,8 +61,6 @@ export default class TrackingDetail extends React.Component {
     const topLeftControl = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例
     map.addControl(topLeftControl);
     function addressToPoint(addr, cb, city) {
-      // 创建地址解析器实例
-      const myGeo = new BMap.Geocoder();
       // 将地址解析结果显示在地图上,并调整地图视野
       myGeo.getPoint(addr, cb, city);
     }

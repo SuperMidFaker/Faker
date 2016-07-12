@@ -107,9 +107,10 @@ export default class PreviewPanel extends React.Component {
       publicQRcodeUrl,
       tel: shipmt.consignee_mobile,
     });
-    document.addEventListener('copy', (e) => {
-      e.clipboardData.setData('text/plain', this.state.publickUrl);
-      e.preventDefault();
+    document.addEventListener('copy', ev => {
+      ev.preventDefault();
+      ev.clipboardData.setData('text/plain', this.state.publickUrl);
+      message.info('复制成功', 3);
     });
   }
   handleTrackingDetailOk = () => {
@@ -126,7 +127,6 @@ export default class PreviewPanel extends React.Component {
   }
   handleCopyClick() {
     document.execCommand('copy');
-    message.info('复制成功', 3);
   }
   handleTelInput = (e) => {
     const value = e.target.value;

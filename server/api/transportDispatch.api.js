@@ -43,8 +43,10 @@ function *listShipmts() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
 
-  const [shipmts, totals] = yield [shipmtDispDao.getDispatchShipmts(tenantId, filters, min, pageSize),
-                                    shipmtDispDao.getDispatchShipmtsCount(tenantId, filters)];
+  const [shipmts, totals] = yield [
+    shipmtDispDao.getDispatchShipmts(tenantId, filters, min, pageSize),
+    shipmtDispDao.getDispatchShipmtsCount(tenantId, filters),
+  ];
   Result.ok(this, {
     totalCount: totals[0].count,
     pageSize,

@@ -23,6 +23,7 @@ import containerMessages from 'client/apps/message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
+import ShipmtnoColumn from '../common/shipmtnoColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../common/consignLocation';
@@ -210,7 +211,9 @@ export default class DispatchList extends React.Component {
       width: 150,
       render: (o, record) => {
         if (!sub) {
-          return <a onClick={() => this.handleShipmtPreview(record)}>{o}</a>;
+          return (
+            <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} />
+          );
         }
         return (<span>{o}</span>);
       }

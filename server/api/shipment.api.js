@@ -6,7 +6,6 @@ import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import crypto from 'crypto';
 import {
   PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_TRACK_STATUS,
@@ -15,18 +14,12 @@ import {
 import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
 import { sendNewShipMessage }from '../socket.io';
 import SMS from '../util/sms-util';
+import { makePublicUrlKey } from './_utils/shipment';
 const vehicleTypes = VEHICLE_TYPES;
 
 const vehicleLengths = VEHICLE_LENGTH_TYPES;
 
 const goodsTypes = GOODS_TYPES;
-
-function makePublicUrlKey(shipmtNo, createdDate) {
-  const dateStr = createdDate.getTime().toString();
-  const md5 = crypto.createHash('md5');
-  md5.update(shipmtNo + dateStr);
-  return md5.digest('hex');
-}
 
 function *shipmentListG() {
   const pageSize = parseInt(this.request.query.pageSize, 10);
@@ -522,7 +515,7 @@ function *shipmtDetailG() {
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstreamDispStatus > 0 ?
       tracking.downstream_status : tracking.upstream_status;
-      shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt.created_date);
+    shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt.created_date);
     return Result.ok(this, {
       shipmt,
       tracking,

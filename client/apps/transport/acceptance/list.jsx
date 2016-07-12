@@ -17,6 +17,7 @@ import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../common/consignLocation';
+import ShipmtnoColumn from '../common/shipmtnoColumn';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -132,15 +133,15 @@ export default class AcceptList extends React.Component {
     width: 150,
     fixed: 'left',
     render: (o, record) => {
+      let style;
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-        return (
-          <a style={{ color : '#999' }} onClick={() => this.handleShipmtPreview(record)}>
-          {o}
-          </a>
-        );
-      } else {
-        return <a onClick={() => this.handleShipmtPreview(record)}>{o}</a>;
+        style = { color : '#999' };
       }
+      return (
+        <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
+          style={style}
+        />
+      );
     }
   }, {
     title: this.msg('shipRequirement'),
