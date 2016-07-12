@@ -46,10 +46,7 @@ class TenantForm extends React.Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const formData = {...this.props.form.getFieldsValue()};
-        
         formData.tenant_id = this.props.formData.tenant_id;
-        console.log(formData)
-        console.log(this.props.formData)
         this.props.submitTenant(formData).then(result => {
           if (result.error) {
             message.error(result.error.message, 10);
