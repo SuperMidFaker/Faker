@@ -40,6 +40,7 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     loginId: state.account.loginId,
+    tenantId: state.account.tenantId,
   }),
   { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead, delEntry }
 )
@@ -54,6 +55,7 @@ export default class EntryForm extends React.Component {
     totalCount: PropTypes.number.isRequired,
     index: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
+    tenantId: PropTypes.number.isRequired,
     addNewEntryBody: PropTypes.func.isRequired,
     delEntryBody: PropTypes.func.isRequired,
     editEntryBody: PropTypes.func.isRequired,
@@ -66,11 +68,14 @@ export default class EntryForm extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEntryHeadSave = (ev) => {
     ev.preventDefault();
-    this.props.form.validateFieldsAndScroll(errors => {
+    this.props.form.validateFields(errors => {
       if (!errors) {
-        const { entry, totalCount, loginId } = this.props;
-        const head = { ...entry.head, ...this.props.form.getFieldsValue(), id: entry.head.id || this.state.head_id };
-        this.props.saveEntryHead({ head, totalCount, loginId }).then(
+        const { entry, totalCount, ietype, tenantId, loginId } = this.props;
+        const head = {
+          ...entry.head, ...this.props.form.getFieldsValue(),
+          id: entry.head.id || this.state.head_id,
+        };
+        this.props.saveEntryHead({ head, totalCount, loginId, ietype, tenantId }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
@@ -117,7 +122,7 @@ export default class EntryForm extends React.Component {
           <Panel header={this.msg('entryList')} key="entry-list">
             <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
               onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id }
+              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
             />
           </Panel>
         </Collapse>

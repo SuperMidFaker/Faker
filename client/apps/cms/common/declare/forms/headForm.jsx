@@ -21,7 +21,6 @@ const CODE_AS_STATE = {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     billHead: state.cmsDeclare.billHead,
     billBody: state.cmsDeclare.billBody,
     formRequire: state.cmsDeclare.params,
@@ -33,7 +32,6 @@ export default class HeadForm extends React.Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
     readonly: PropTypes.bool,
-    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     type: PropTypes.oneOf([ 'bill', 'entry' ]),
     formData: PropTypes.object.isRequired,
@@ -48,7 +46,14 @@ export default class HeadForm extends React.Component {
         [codeField]: rels[0].code,
         [nameField]: rels[0].name,
       });
-      this.setState({ [CODE_AS_STATE[codeField]]: [] });
+    }
+  }
+  handleRelationChange = (codeField, nameField, value) => {
+    if (value === undefined || value === '') {
+      this.props.form.setFieldsValue({
+        [codeField]: '',
+        [nameField]: '',
+      });
     }
   }
   handlePortSearch = (field, search) => {
@@ -65,18 +70,20 @@ export default class HeadForm extends React.Component {
       <Form horizontal form={form} className="form-compact">
         { type === 'entry' &&
           <FormInput field="pre_entry_id" outercol={9} col={6}
-            label={this.msg('preEntryId')} {...formProps} />
+            label={this.msg('preEntryId')} {...formProps}
+          />
         }
         { type === 'entry' &&
           <Col span="15">
             <FormInput field="entry_id" outercol={16} col={4}
-              label={this.msg('formEntryId')} {...formProps} />
+              label={this.msg('formEntryId')} {...formProps}
+            />
           </Col>
         }
         <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
           codeField="forwarder_code" nameField="forwarder_name"
-          codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
-          onSelect={this.handleRelationSel}
+          codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+          onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
           {...formProps} options={formRequire.forwarders}/>
         <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
           onSearch={this.handlePortSearch}
@@ -85,29 +92,33 @@ export default class HeadForm extends React.Component {
           ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
           } codeField="owner_code" nameField="owner_name" intl={intl}
           codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
-          onSelect={this.handleRelationSel}
-          {...formProps} options={formRequire.owners}/>
+          onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
+          {...formProps} options={formRequire.owners}
+        />
         <Transport {...formProps} intl={intl} formRequire={formRequire}/>
         <RelationAutoCompSelect label={this.msg('agentName')}
           codeField="agent_code" nameField="agent_name" intl={intl}
           codeRules={[ {required: true} ]} nameRules={[ { required: true } ]}
-          onSelect={this.handleRelationSel}
-          {...formProps} options={formRequire.agents}/>
-        <TradeRemission {...formProps} intl={intl} formRequire={formRequire}/>
-        <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
+          onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
+          {...formProps} options={formRequire.agents}
+        />
+        <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
+        <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
 
         <DestInvoice {...formProps} intl={intl} formRequire={formRequire}
           ietype={ietype} type={type} onSearch={this.handlePortSearch}
         />
-        <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
-        <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype}/>
+        <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+        <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
         <Col span="15">
           <FormInput field="cert_mark" outercol={16} col={4}
-            label={this.msg('certMark')} {...formProps} />
+            label={this.msg('certMark')} {...formProps}
+          />
         </Col>
         <Col span="24">
           <FormInput field="note" outercol={9} col={4} type="textarea"
-            label={this.msg('markNotes')} {...formProps} />
+            label={this.msg('markNotes')} {...formProps}
+          />
         </Col>
       </Form>
     );
