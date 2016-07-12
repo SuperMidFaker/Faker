@@ -625,12 +625,13 @@ export default class DispatchList extends React.Component {
 
   handleShipmtReturn(shipmt) {
     const { status } = this.props.filters;
-    let msg = `确定退回分配给【${shipmt.sp_name}】承运商的【${shipmt.shipmt_no}】的运单？`;
+    let msg = `将预分配给【${shipmt.sp_name}】的【${shipmt.shipmt_no}】运单退回吗？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
-      msg = `确定退回分配给【${shipmt.task_vehicle}】的【${shipmt.shipmt_no}】的运单？`;
+      msg = `将预分配给【${shipmt.task_vehicle}】的【${shipmt.shipmt_no}】运单退回吗？`;
     }
 
     Modal.confirm({
+      title: `确认退回运单`,
       content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
