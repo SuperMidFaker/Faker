@@ -163,7 +163,7 @@ export default {
     const args = [tenantId];
     return mysql.query(sql, args);
   },
-  createByLSP(shipmtNo, shipmt, spTenantId, spName, spLoginId, effective, trans) {
+  createByLSP(shipmtNo, shipmt, spTenantId, spName, spLoginId, effective, publicUrlKey, nowDT, trans) {
     const sql = `insert into tms_shipments (shipmt_no, lsp_tenant_id, lsp_partner_id,
       lsp_name, customer_tenant_id, customer_partner_id, customer_name,
       ref_external_no, ref_waybill_no, ref_entry_no, transport_mode_code, consigner_name,
@@ -173,13 +173,13 @@ export default {
       pickup_est_date, transit_time, deliver_est_date, transport_mode, container_no,
       vehicle_type, vehicle_length, package, goods_type, insure_value, total_count,
       total_weight, total_volume, remark, effective,
-      tenant_id, creater_login_id, created_date) values (?, NOW())`;
+      tenant_id, creater_login_id, public_url, created_date) values (?)`;
     const args = [
       shipmtNo, spTenantId, null, spName, shipmt.customer_tenant_id,
       shipmt.customer_partner_id, shipmt.customer_name
     ];
     packShipmentArgsByLSP(shipmt, args);
-    args.push(effective, spTenantId, spLoginId);
+    args.push(effective, spTenantId, spLoginId, publicUrlKey, nowDT);
     return mysql.insert(sql, [args], trans);
   },
   updateDispId(shipmtNo, dispId, trans) {

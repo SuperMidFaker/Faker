@@ -210,7 +210,7 @@ export default class DispatchList extends React.Component {
       width: 150,
       render: (o, record) => {
         if (!sub) {
-          return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+          return <a onClick={() => this.handleShipmtPreview(record)}>{o}</a>;
         }
         return (<span>{o}</span>);
       }
@@ -398,8 +398,8 @@ export default class DispatchList extends React.Component {
     return this.msg(s);
   }
 
-  handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp').then(result => {
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -861,16 +861,19 @@ export default class DispatchList extends React.Component {
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2420, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2420, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 1900, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />);
     }
 

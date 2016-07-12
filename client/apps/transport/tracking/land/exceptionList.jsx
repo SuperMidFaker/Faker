@@ -299,8 +299,8 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr').then(result => {
+  handleShipmtPreview(row) {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -332,6 +332,7 @@ export default class LandStatusList extends React.Component {
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

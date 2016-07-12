@@ -21,6 +21,13 @@ const vehicleLengths = VEHICLE_LENGTH_TYPES;
 
 const goodsTypes = GOODS_TYPES;
 
+function makePublicUrlKey(shipmtNo, createdDate) {
+  const dateStr = createdDate.getTime().toString();
+  const md5 = crypto.createHash('md5');
+  md5.update(shipmtNo + dateStr);
+  return md5.digest('hex');
+}
+
 function *shipmentListG() {
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const current = parseInt(this.request.query.currentPage, 10);
@@ -112,34 +119,36 @@ function *shipmtRequiresG() {
 }
 
 function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
-    const dbOps = [
-      shipmentDao.createByLSP(
-        shipmtNo, shipmt, sp.tid, sp.name, sp.login_id,
-        effective, trans
-      )
-    ];
-    if (!shipmt.consigner_id && shipmt.consigner_name
-        && shipmt.consigner_name.trim().length > 0) {
-      dbOps.push(shipmentDao.upsertLocation(
-        shipmt.consigner_id, shipmt.consigner_name, shipmt.consigner_province,
-        shipmt.consigner_city, shipmt.consigner_district, shipmt.consigner_addr,
-        shipmt.consigner_email, shipmt.consigner_contact, shipmt.consigner_mobile,
-        sp.tid, CONSIGN_TYPE.consigner, trans
-      ));
-    }
-    if (!shipmt.consignee_id && shipmt.consignee_name
-        && shipmt.consignee_name.trim().length > 0) {
-      dbOps.push(shipmentDao.upsertLocation(
-        shipmt.consignee_id, shipmt.consignee_name, shipmt.consignee_province,
-        shipmt.consignee_city, shipmt.consignee_district, shipmt.consignee_addr,
-        shipmt.consignee_email, shipmt.consignee_contact, shipmt.consignee_mobile,
-        sp.tid, CONSIGN_TYPE.consignee, trans
-      ));
-    }
-    if (shipmt.goodslist.length > 0) {
-      dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
-    }
-    yield dbOps;
+  const nowDT = new Date();
+  const publicUrlKey = makePublicUrlKey(shipmtNo, nowDT);
+  const dbOps = [
+    shipmentDao.createByLSP(
+      shipmtNo, shipmt, sp.tid, sp.name, sp.login_id,
+      effective, publicUrlKey, nowDT, trans
+    )
+  ];
+  if (!shipmt.consigner_id && shipmt.consigner_name
+      && shipmt.consigner_name.trim().length > 0) {
+    dbOps.push(shipmentDao.upsertLocation(
+      shipmt.consigner_id, shipmt.consigner_name, shipmt.consigner_province,
+      shipmt.consigner_city, shipmt.consigner_district, shipmt.consigner_addr,
+      shipmt.consigner_email, shipmt.consigner_contact, shipmt.consigner_mobile,
+      sp.tid, CONSIGN_TYPE.consigner, trans
+    ));
+  }
+  if (!shipmt.consignee_id && shipmt.consignee_name
+      && shipmt.consignee_name.trim().length > 0) {
+    dbOps.push(shipmentDao.upsertLocation(
+      shipmt.consignee_id, shipmt.consignee_name, shipmt.consignee_province,
+      shipmt.consignee_city, shipmt.consignee_district, shipmt.consignee_addr,
+      shipmt.consignee_email, shipmt.consignee_contact, shipmt.consignee_mobile,
+      sp.tid, CONSIGN_TYPE.consignee, trans
+    ));
+  }
+  if (shipmt.goodslist.length > 0) {
+    dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
+  }
+  yield dbOps;
 }
 
 function *shipmtSavePendingP() {
@@ -419,13 +428,6 @@ function *shipmtRejectP() {
   }
 }
 
-function makePublicUrlKey(shipmtNo, shipmt) {
-  const dateStr = shipmt.created_date.getTime().toString();
-  const md5 = crypto.createHash('md5');
-  md5.update(shipmtNo + dateStr);
-  return md5.digest('hex');
-}
-
 function *shipmtDetailG() {
   const shipmtNo = this.request.query.shipmtNo;
   const tenantId = this.request.query.tenantId;
@@ -520,7 +522,7 @@ function *shipmtDetailG() {
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstreamDispStatus > 0 ?
       tracking.downstream_status : tracking.upstream_status;
-      shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt);
+      shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt.created_date);
     return Result.ok(this, {
       shipmt,
       tracking,
@@ -574,7 +576,7 @@ function *shipmtPublicDetail() {
       creator: shipmtCreator,
       points,
     };
-    const KEY = makePublicUrlKey(shipmtNo, shipmt);
+    const KEY = makePublicUrlKey(shipmtNo, shipmt.created_date);
     if (key === KEY) {
       return Result.ok(this, {
         shipmt,
@@ -592,7 +594,7 @@ function *sendTrackingDetailSMSMessage() {
   const body = yield cobody(this);
   try {
     const result = yield SMS.sendSmsTrackingDetailMessage([body.tel], [body.lsp_name, body.shipmtNo, body.url]);
-    return Result.ok(this, result)
+    return Result.ok(this, result);
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
