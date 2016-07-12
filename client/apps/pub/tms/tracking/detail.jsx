@@ -38,6 +38,7 @@ export default class TrackingDetail extends React.Component {
     });
     const {shipmt, tracking} = this.props.shipmtDetail;
     const points = [];
+    tracking.points = tracking.points.reverse();
     tracking.points.forEach((item) => {
       points.push({
         ...item,
@@ -66,23 +67,19 @@ export default class TrackingDetail extends React.Component {
     }
     // map.addEventListener("dragend", draw);
     // map.addEventListener("zoomend", draw);
-    function checkPoint(item, index, arr, cb) {
-      if (index === arr.length) {
-        return cb(arr);
-      }
-      if (item.lat === 0 && item.lng === 0) {
+    function checkPoint(item) {
+      return new Promise((resolve) => {
         addressToPoint(`${item.province}${renderLoc(item, 'province', 'city', 'district')}${item.address}`, (point) => {
+          let result = {...item};
           if (point) {
-            arr[index] = {
-              ...arr[index],
-              ...point
+            result = {
+              ...item,
+              ...point,
             };
           }
-          checkPoint(arr[index + 1], index + 1, arr, cb);
+          resolve(result);
         }, `${item.city}`);
-      } else {
-        checkPoint(arr[index + 1], index + 1, arr, cb);
-      }
+      });
     }
     // 创建标注
     function addMarker(pt, label, index, cur, pts) {
@@ -106,8 +103,14 @@ export default class TrackingDetail extends React.Component {
       }
     }
     function draw(pts, cur) {
-      map.clearOverlays();
-      checkPoint(pts[0], 0, pts, (arr) => {
+      const promises = [];
+      for (let i = 0; i < pts.length; i++) {
+        const p = checkPoint(pts[i]);
+        promises.push(p);
+      }
+      const result = Promise.all(promises);
+      result.then((arr) => {
+        map.clearOverlays();
         for (let i = 0; i < arr.length; i++) {
           addMarker(arr[i], arr[i].label, i, cur, pts);
           const BDPoint = new BMap.Point(arr[i].lng, arr[i].lat);
@@ -115,6 +118,9 @@ export default class TrackingDetail extends React.Component {
             bdPoints.push(BDPoint);
             viewPoints.push(BDPoint);
           }
+        }
+        if (cur !== pts.length - 1) {
+          bdPoints.pop();
         }
         const curve = new BMapLib.CurveLine(bdPoints, {strokeColor:'#0096da', strokeWeight: 3, strokeOpacity: 0.5}); // 创建弧线对象
         map.addOverlay(curve); // 添加到地图中
@@ -170,8 +176,8 @@ export default class TrackingDetail extends React.Component {
     const points = [];
     tracking.points.forEach((item) => {
       points.push({
-        title: `${renderLoc(item, 'province', 'city', 'district')}`,
-        description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
+        title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
+        description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,
       });
     });
     let latestPoint = {
@@ -247,9 +253,9 @@ export default class TrackingDetail extends React.Component {
       statusPos = 2;
     }
     const steps = statusDes.map((s, i) => <Step key={i} title={s.title} description={s.description}/>);
-    const trackingSteps = points.map((s, i, pts) => {
-      if (i === pts.length - 1) {
-        return (<Timeline.Item color="green">{s.title}{s.description}</Timeline.Item>);
+    const trackingSteps = points.map((s, i) => {
+      if (i === 0) {
+        return (<Timeline.Item color="green">{s.title} {s.description}</Timeline.Item>);
       } else {
         return (<Timeline.Item>{s.title} {s.description}</Timeline.Item>);
       }
