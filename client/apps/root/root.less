@@ -889,6 +889,36 @@ img {
     padding: 0 16px 16px;
   }
 }
+.pane-header {
+  position: relative;
+  margin-bottom: 8px;
+  padding: 0 24px;
+  .ant-select, button {
+    margin-right: 8px;
+  }
+  span {
+    vertical-align: middle;
+  }
+  .tools {
+    float: right;
+  }
+  .left-tools {
+    display: inline-block;
+    width: 220px;
+    input {
+      width: 140px;
+      margin-right: 4px;
+    }
+  }
+  @media (max-width:767px) {
+    margin-bottom: 10px;
+    padding: 10px 10px 0 10px;
+    .tools {
+      float: none;
+      margin-bottom: 10px;
+    }
+  }
+}
 .na-operation {
   color: #fff;
 }
