@@ -330,8 +330,6 @@ function *editBillBody() {
 function *upsertEntryHead() {
   try {
     const { head, totalCount, loginId } = yield cobody(this);
-    head.comp_entry_id = `${head.bill_no}-${totalCount}`;
-    head.creater_login_id = loginId;
     let id = head.id;
     if (id) {
       yield EntryHeadDao.update(head, { where: { id }});
@@ -342,6 +340,8 @@ function *upsertEntryHead() {
         yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: head.delg_no }});
       }
     } else {
+      head.comp_entry_id = `${head.bill_no}-${totalCount}`;
+      head.creater_login_id = loginId;
       const row = yield EntryHeadDao.create(head);
       id = row.id;
     }
