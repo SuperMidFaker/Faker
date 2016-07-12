@@ -191,7 +191,6 @@ export default {
     return mysql.query(appSql);
   },
   insertTenantApps(tenantId, tenantAppList, apps){
-    console.log(tenantAppList)
     let sql = '';
     tenantAppList.forEach(item => {
       for(let i = 0; i<apps.length; i++) {
@@ -201,7 +200,6 @@ export default {
         }
       }
     });
-    console.log(sql)
     return mysql.insert(sql);
   },
   insertTenantLogin(code, email, phone, salt, password, unid){

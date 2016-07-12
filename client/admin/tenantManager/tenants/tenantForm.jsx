@@ -30,21 +30,10 @@ function fetchData({ dispatch, cookie, params }) {
     tenantAppList: state.tenants.tenantAppList
   }),
   { uploadImg, setFormValue, submitTenant, checkCorpDomain })
-@Form.formify({
-  mapPropsToFields(props) {
-    return props.formData;
-  },
-  onFieldsChange(props, fields) {
-    if (Object.keys(fields).length === 1) {
-      const name = Object.keys(fields)[0];
-      props.setFormValue(name, fields[name].value);
-    }
-  },
-  formPropName: 'formhoc'
-})
-export default class TenantForm extends React.Component {
+
+class TenantForm extends React.Component {
   static propTypes = {
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitTenant: PropTypes.func.isRequired,
     setFormValue: PropTypes.func.isRequired,
@@ -54,9 +43,14 @@ export default class TenantForm extends React.Component {
     router: PropTypes.object.isRequired,
   }
   handleSubmit = () => {
-    this.props.formhoc.validateFields((errors) => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
-        this.props.submitTenant(this.props.formData).then(result => {
+        const formData = {...this.props.form.getFieldsValue()};
+        
+        formData.tenant_id = this.props.formData.tenant_id;
+        console.log(formData)
+        console.log(this.props.formData)
+        this.props.submitTenant(formData).then(result => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -77,7 +71,7 @@ export default class TenantForm extends React.Component {
     this.props.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps, getFieldError }} = this.props;
+    const { form: { getFieldProps, getFieldError }} = this.props;
     return (
       <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}}
         help={rules && getFieldError(field)} hasFeedback required={required}>
@@ -86,26 +80,28 @@ export default class TenantForm extends React.Component {
     );
   }
   render() {
-    const { formData: { logo: logoPng }, formhoc: { getFieldProps, getFieldError }, tenantAppList }
+    const { formData: { logo: logoPng }, formData, form: { getFieldProps, getFieldError }, tenantAppList }
       = this.props;
     const tenantAppValueList = this.props.formData.tenantAppValueList || [];
     return (
       <div className="main-content">
         <div className="tenant-form page-body">
           <div className="panel-body body-responsive">
-            <Form horizontal form={this.props.formhoc}>
+            <Form horizontal form={this.props.form}>
               <Row>
                 <Col span="12">
                   {this.renderTextInput(
                     '公司名称', '请填写公司名称', 'name', true,
-                    [{required: true, message: '请填写公司名称'}]
+                    [{required: true, message: '请填写公司名称'}],
+                    {transform: (value) => (value.trim()), initialValue: formData.name}
                   )}
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
                   <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <Input type="text" {...getFieldProps('code')} placeholder="请填写企业代码"/>
+                    <Input type="text" {...getFieldProps('code', {transform: (value) => (value.trim()), initialValue: formData.code})}
+                    placeholder="请填写企业代码"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -117,21 +113,22 @@ export default class TenantForm extends React.Component {
                       message: '请填写联系人姓名',
                       type: 'string',
                       whitespace: true
-                    }], {transform: (value) => (value.trim())}
+                    }], {transform: (value) => (value.trim()), initialValue: formData.contact}
                   )}
                   {this.renderTextInput('电话', '请填写联系人电话', 'phone', true, [{
                     validator: (rule, value, callback) => validatePhone(
                       value, callback,
                       () => { return '请填写联系人电话';}
                     )
-                  }])}
+                  }], {transform: (value) => (value.trim()), initialValue: formData.phone})}
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
                   {this.renderTextInput(
                     '邮箱', '请填写联系人电子邮箱地址', 'email', false,
-                    [{type: 'email', message: '电子邮箱地址填写错误'}]
+                    [{type: 'email', message: '电子邮箱地址填写错误'}],
+                    {transform: (value) => (value.trim()), initialValue: formData.email}
                   )}
                 </Col>
               </Row>
@@ -142,7 +139,7 @@ export default class TenantForm extends React.Component {
                         height: 120, width: 120, margin: 10,
                         border: '1px solid #e0e0e0', borderRadius: 60
                       }}
-                      {...getFieldProps('logo')} />
+                      {...getFieldProps('logo', {initialValue: formData.logo})} />
                       <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } className="dropzone">
                         <div className="ant-upload ant-upload-drag" title="请拖拽或选择文"
                           style={{height: 140, marginTop: 20}}
@@ -170,7 +167,7 @@ export default class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="租户视角" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <RadioGroup onChange={ () => {} } {...getFieldProps('aspect', {initialValue: 0})} >
+                    <RadioGroup onChange={ () => {} } {...getFieldProps('aspect', {initialValue: formData.aspect})} >
                       <RadioButton value={0}>进出口企业</RadioButton>
                       <RadioButton value={1}>物流服务商</RadioButton>
                     </RadioGroup>
@@ -182,7 +179,8 @@ export default class TenantForm extends React.Component {
                   <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}}
                     help={getFieldError('subdomain')}
                   >
-                    <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain')} />
+                    <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain',
+                      {transform: (value) => (value.trim()), initialValue: formData.subdomain})} />
                   </FormItem>
                 </Col>
               </Row>
@@ -206,3 +204,5 @@ export default class TenantForm extends React.Component {
       </div>);
   }
 }
+
+export default Form.create()(TenantForm);
