@@ -44,7 +44,7 @@ export default class TrackingDetail extends React.Component {
         ...item,
         lat: item.latitude,
         lng: item.longitude,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')}${item.address || ''}`
+        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`
       });
     });
     const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr}`;
@@ -226,7 +226,7 @@ export default class TrackingDetail extends React.Component {
           shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}`,
       }, {
         title: '运输中',
-        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district')} ${
+        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''} ${
           latestPoint.location_time || latestPoint.created_date ?
           moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
@@ -242,7 +242,7 @@ export default class TrackingDetail extends React.Component {
           shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}`,
       }, {
         title: '运输中',
-        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district')} ${
+        description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''} ${
           latestPoint.location_time || latestPoint.created_date ?
           moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {

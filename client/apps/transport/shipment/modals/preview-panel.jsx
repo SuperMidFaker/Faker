@@ -73,6 +73,7 @@ export default class PreviewPanel extends React.Component {
       publicQRcodeUrl: '',
       publickUrl: '',
       tel: '',
+      SMSSendLoding: false,
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -132,10 +133,12 @@ export default class PreviewPanel extends React.Component {
     this.setState({tel: value});
   }
   handleSMSSend = () => {
+    this.setState({SMSSendLoding: true});
     validatePhone(
       this.state.tel, (err) => {
         if (err) {
           message.error('电话号码不正确');
+          this.setState({SMSSendLoding: false});
         } else {
           this.props.sendTrackingDetailSMSMessage({
             tel: this.state.tel,
@@ -143,6 +146,7 @@ export default class PreviewPanel extends React.Component {
             shipmtNo: this.props.shipmtNo,
             lsp_name: this.props.previewer.shipmt.lsp_name,
           }).then((result) => {
+            this.setState({SMSSendLoding: false});
             if (result.error) {
               message.error(result.error, 3);
             } else {
@@ -210,7 +214,10 @@ export default class PreviewPanel extends React.Component {
               <InputGroup className="ant-search-input ant-search-input-focus" help="123">
                 <Input placeholder="发送短信给客户" value={this.state.tel} onChange={this.handleTelInput}/>
                 <div className="ant-input-group-wrap">
-                  <Button className="ant-search-btn ant-search-btn-noempty" onClick={this.handleSMSSend}><Icon type="message" />发送</Button>
+                  <Button type="primary" icon="message" className="ant-search-btn ant-search-btn-noempty"
+                  onClick={this.handleSMSSend} loading={this.state.SMSSendLoding} style={{width:'67px'}}>
+                    发送
+                  </Button>
                 </div>
               </InputGroup>
             </div>
