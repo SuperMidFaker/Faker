@@ -567,7 +567,7 @@ function *shipmtPublicDetail() {
       creator: shipmtCreator,
       points,
     };
-    const KEY = makePublicUrlKey(shipmtNo, shipmt.created_date);
+    const KEY = shipmt.public_key;
     if (key === KEY) {
       return Result.ok(this, {
         shipmt,
