@@ -53,11 +53,11 @@ function goBack(router) {
     text: isCreating ? formatMsg(props.intl, 'editTitle') : props.formData.name,
     moduleName: 'corp',
     goBackFn: () => goBack(router),
-    withModuleLayout: false
+    withModuleLayout: false,
   }));
 })
 @Form.create({
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class CorpEdit extends React.Component {
   static propTypes = {
@@ -72,7 +72,7 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   onSubmitReturn(error) {
     if (error) {
@@ -95,7 +95,7 @@ export default class CorpEdit extends React.Component {
             this.onSubmitReturn(result.error);
           });
         } else {
-          const { account: { tenantId, aspect, code, subdomain, category_id }} = this.props;
+          const { account: { tenantId, aspect, code, subdomain, category_id } } = this.props;
           const tenant = {
             tenantId,
             aspect,
@@ -116,28 +116,29 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps }} = this.props;
+    const { formhoc: { getFieldProps } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        hasFeedback required={required}>
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
+      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+        hasFeedback required={required}
+      >
+        <Input type="text" placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
   renderOwnerForm() {
     const {
       formhoc: { getFieldProps }, intl,
-      formData: { contact, loginName, phone, email }, account: { code, tenantId }
+      formData: { contact, loginName, phone, email }, account: { code, tenantId },
     } = this.props;
     return (
       <div>
         {this.renderTextInput(
           formatMsg(intl, 'chief'), formatMsg(intl, 'chiefPlaceholder'), 'contact',
-          true, [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}],
+          true, [{ required: true, min: 2, message: formatMsg(intl, 'nameMessage') }],
           { initialValue: contact }
         )}
-        <FormItem label={formatMsg(intl, 'username')} labelCol={{span: 6}}
-          wrapperCol={{span: 18}} hasFeedback required
+        <FormItem label={formatMsg(intl, 'username')} labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }} hasFeedback required
         >
           <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
             rules: [{
@@ -146,37 +147,37 @@ export default class CorpEdit extends React.Component {
                 tenantId, callback, message,
                 this.props.checkLoginName,
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
-              )
+              ),
             }],
-            initialValue: loginName
+            initialValue: loginName,
           })} />
         </FormItem>
         {this.renderTextInput(formatMsg(intl, 'phone'), '', 'phone', true, [{
           validator: (rule, value, callback) => validatePhone(
             value, callback,
             (msgs, descriptor) => format(msgs)(intl, descriptor)
-          )
+          ),
         }], { initialValue: phone })}
         {this.renderTextInput('Email', '', 'email', false, [{
           type: 'email',
-          message: formatContainerMsg(intl, 'emailError')}],
-          { initialValue: email})}
+          message: formatContainerMsg(intl, 'emailError') }],
+          { initialValue: email })}
       </div>
     );
   }
   renderOwnerSelect() {
-    const { corpUsers, intl, formhoc: { getFieldProps }} = this.props;
+    const { corpUsers, intl, formhoc: { getFieldProps } } = this.props;
     return (
-      <FormItem label={formatMsg(intl, 'chief')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        required>
-        <Select style={{ width: '100%' }} { ...getFieldProps(
+      <FormItem label={formatMsg(intl, 'chief')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+        required
+      >
+        <Select style={{ width: '100%' }} {...getFieldProps(
           'coid', {
-            rules: [{required: true, message: formatMsg(intl, 'chiefRequired')}],
+            rules: [{ required: true, message: formatMsg(intl, 'chiefRequired') }],
             initialValue: this.props.formData.coid,
-          }) }
-        >
+          })}>
           {
-            corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{ u.name }</Option>)
+            corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{u.name}</Option>)
           }
         </Select>
       </FormItem>);
@@ -192,7 +193,7 @@ export default class CorpEdit extends React.Component {
           {
             this.renderTextInput(
               formatMsg(intl, 'organName'), formatMsg(intl, 'organPlaceholder'), 'name', true,
-              [{required: true, min: 2, message: formatMsg(intl, 'nameMessage')}],
+              [{ required: true, min: 2, message: formatMsg(intl, 'nameMessage') }],
               { initialValue: name }
             )
           }
@@ -200,7 +201,7 @@ export default class CorpEdit extends React.Component {
             this.renderTextInput(
               formatMsg(intl, 'organSubcode'), formatMsg(intl, 'organSubcodePlaceholder'),
               'subCode', true,
-              [{required: true, max: 20, message: formatMsg(intl, 'subcodeMessage')}],
+              [{ required: true, max: 20, message: formatMsg(intl, 'subcodeMessage') }],
               { initialValue: subCode }
             )
           }
@@ -210,7 +211,7 @@ export default class CorpEdit extends React.Component {
           <Row>
             <Col span="18" offset="6">
               <Button htmlType="submit" type="primary" loading={submitting}>{formatGlobalMsg(intl, 'ok')}</Button>
-              <Button onClick={ this.handleCancel } disabled={submitting}>{formatGlobalMsg(intl, 'cancel')}</Button>
+              <Button onClick={this.handleCancel} disabled={submitting}>{formatGlobalMsg(intl, 'cancel')}</Button>
             </Col>
           </Row>
         </Form>

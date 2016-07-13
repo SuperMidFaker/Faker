@@ -5,7 +5,7 @@ import { addUniqueKeys } from 'client/util/dataTransform';
 
 const rowSelection = {
   onSelect() {
-  }
+  },
 };
 
 export default function VehicleList(props) {
@@ -16,8 +16,9 @@ export default function VehicleList(props) {
       <span>
         <Link to={`/transport/resources/edit_car/${record.vehicle_id}`}>修改</Link>
         <span className="ant-divider"></span>
-        <a onClick={ () => onStopCarBtnClick(record.vehicle_id) }
-                disabled={record.status === '在途中'}>
+        <a onClick={() => onStopCarBtnClick(record.vehicle_id)}
+          disabled={record.status === '在途中'}
+        >
           停用
         </a>
       </span>
@@ -28,7 +29,8 @@ export default function VehicleList(props) {
     return (
       <span>
         <a
-           onClick={ () => onResumeCarBtnClick(record.vehicle_id)}>
+          onClick={() => onResumeCarBtnClick(record.vehicle_id)}
+        >
           启用
         </a>
       </span>
@@ -44,37 +46,37 @@ export default function VehicleList(props) {
     {
       title: '车型',
       dataIndex: 'type',
-      key: 'type'
+      key: 'type',
     },
     {
       title: '车长',
       dataIndex: 'length',
-      key: 'length'
+      key: 'length',
     },
     {
       title: '载重',
       dataIndex: 'load_weight',
-      key: 'load_weight'
+      key: 'load_weight',
     },
     {
       title: '容积',
       dataIndex: 'load_volume',
-      key: 'load_volume'
+      key: 'load_volume',
     },
     {
       title: '司机',
       dataIndex: 'driver_name',
-      key: 'driver_name'
+      key: 'driver_name',
     },
     {
       title: '连接类型',
       dataIndex: 'connect_type',
-      key: 'connect_type'
+      key: 'connect_type',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'status'
+      key: 'status',
     },
     {
       title: '操作',
@@ -86,8 +88,8 @@ export default function VehicleList(props) {
         } else {
           return editAndStopCarOperations(record);
         }
-      }
-    }
+      },
+    },
   ];
   return (
     <div className="main-content">
@@ -98,7 +100,7 @@ export default function VehicleList(props) {
       </div>
       <div className="page-body">
         <div className="panel-body">
-          <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>
+          <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
         </div>
       </div>
     </div>

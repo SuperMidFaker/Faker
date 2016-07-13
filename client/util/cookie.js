@@ -11,7 +11,7 @@ const cookie = {
       `${name}=${value}`,
       `path=${path}`,
       `domain=${domain}`,
-      `expires=${expires}`
+      `expires=${expires}`,
     ].join(';');
   },
 
@@ -22,7 +22,7 @@ const cookie = {
   get(name) {
     const re = new RegExp(['(?:^|; )',
       name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1'),
-      '=([^;]*)'
+      '=([^;]*)',
     ].join(''));
 
     const matches = document.cookie.match(re);
@@ -32,6 +32,6 @@ const cookie = {
 
   getHeader() {
     return { Authorization: `Bearer ${cookie.get('token')}` };
-  }
+  },
 };
 export default cookie;

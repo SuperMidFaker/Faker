@@ -29,7 +29,7 @@ BillBody.propTypes = {
   ietype: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   data: PropTypes.array.isRequired,
-  headNo: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]),
+  headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onAdd: PropTypes.func.isRequired,
   onDel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
@@ -105,12 +105,12 @@ export default class EntryForm extends React.Component {
     const head = entry.head;
     return (<div>
       <div className="panel-header">
-        { !readonly &&
+        {!readonly &&
           <Button type="primary" onClick={this.handleEntryHeadSave} icon="save" size="small">
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>
         }
-        { !readonly &&
+        {!readonly &&
           <Button type="ghost" icon="delete" size="small" onClick={this.handleEntryDel} />
         }
       </div>

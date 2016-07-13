@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const initialState = {
   error: '',
   profile: {
-    loaded: false
+    loaded: false,
     /* name, phone, email, position */
   },
   pod: {
@@ -21,7 +21,7 @@ const initialState = {
     pageSize: 20,
     current: 1,
   },
-  shipmentDispatchDetail:{}
+  shipmentDispatchDetail: {},
 };
 
 const actions = [
@@ -31,7 +31,7 @@ const actions = [
   'UPLOAD_POD',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_SUCCEED', 'LOAD_PODSHIPMT_FAIL',
   'LOAD_UPLOADED_PODSHIPMT', 'LOAD_UPLOADED_PODSHIPMT_SUCCEED', 'LOAD_UPLOADED_PODSHIPMT_FAIL',
-  'LOAD_SHIPMENTDISPATCH', 'LOAD_SHIPMENTDISPATCH_SUCCEED', 'LOAD_SHIPMENTDISPATCH_FAIL'
+  'LOAD_SHIPMENTDISPATCH', 'LOAD_SHIPMENTDISPATCH_SUCCEED', 'LOAD_SHIPMENTDISPATCH_FAIL',
 ];
 const domain = '@@welogix/weixin/';
 const actionTypes = createActionTypes(domain, actions);
@@ -39,9 +39,9 @@ const actionTypes = createActionTypes(domain, actions);
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.WX_PROFILE_LOAD_SUCCEED:
-      return { ...state, profile: { loaded: true, ...action.result.data }};
+      return { ...state, profile: { loaded: true, ...action.result.data } };
     case actionTypes.WX_UNBIND_SUCCEED:
-      return { ...state, profile: { loaded: false }};
+      return { ...state, profile: { loaded: false } };
     case actionTypes.WX_BIND_FAIL:
       return { ...state, error: action.error.msg };
     case actionTypes.UPLOAD_POD:
@@ -50,7 +50,7 @@ export default function reducer(state = initialState, action) {
           dispId: action.data.dispId,
           shipmtNo: action.data.shipmtNo,
           parentDispId: action.data.parentDispId,
-        }
+        },
       };
     case actionTypes.LOAD_PODSHIPMT_SUCCEED:
       return { ...state, shipmentlist: action.result.data };
@@ -69,8 +69,8 @@ export function loginBind(form) {
       types: [actionTypes.WX_BIND, actionTypes.WX_BIND_SUCCEED, actionTypes.WX_BIND_FAIL],
       endpoint: 'public/v1/weixin/bind',
       method: 'post',
-      data: form
-    }
+      data: form,
+    },
   };
 }
 
@@ -80,12 +80,12 @@ export function loadWelogixProfile(cookie) {
       types: [
         actionTypes.WX_PROFILE_LOAD,
         actionTypes.WX_PROFILE_LOAD_SUCCEED,
-        actionTypes.WX_PROFILE_LOAD_FAIL
+        actionTypes.WX_PROFILE_LOAD_FAIL,
       ],
       endpoint: 'v1/weixin/welogix/profile',
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -94,8 +94,8 @@ export function unbindAccount() {
     [CLIENT_API]: {
       types: [actionTypes.WX_UNBIND, actionTypes.WX_UNBIND_SUCCEED, actionTypes.WX_UNBIND_FAIL],
       endpoint: 'v1/weixin/unbind',
-      method: 'post'
-    }
+      method: 'post',
+    },
   };
 }
 
@@ -117,8 +117,8 @@ export function loadPodTable(cookie, params) {
       endpoint: 'v1/transport/tracking/shipmts',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -133,8 +133,8 @@ export function loadUploadedPodTable(cookie, params) {
       endpoint: 'v1/transport/tracking/pod/shipmts',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -149,7 +149,7 @@ export function getShipmentDispatch(cookie, params) {
       endpoint: 'v1/transport/shipment/detail',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }

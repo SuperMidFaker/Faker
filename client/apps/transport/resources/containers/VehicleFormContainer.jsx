@@ -12,14 +12,14 @@ import { setNavTitle } from 'common/reducers/navbar';
     text: '车辆信息',
     muduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: () => router.goBack()
+    goBackFn: () => router.goBack(),
   }));
 })
 @connect(state => ({
   drivers: state.transportResources.drivers,
   cars: state.transportResources.cars,
   vehicleValidate: state.transportResources.vehicleValidate,
-  tenantId: state.account.tenantId
+  tenantId: state.account.tenantId,
 }), { addVehicle, editVehicle, validateVehicle })
 @Form.create()
 export default class VehicleFormContainer extends Component {
@@ -33,13 +33,13 @@ export default class VehicleFormContainer extends Component {
     tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleCarSave = (e) => {
     e.preventDefault();
     const { form, tenantId } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addVehicle({...newCarInfo, tenant_id: tenantId});
+    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId });
     this.context.router.goBack();
   }
   handleCarEdit = (e) => {
@@ -47,7 +47,7 @@ export default class VehicleFormContainer extends Component {
     const { form, params } = this.props;
     const editCarInfo = form.getFieldsValue();
     const carId = parseInt(params.car_id, 10);
-    this.props.editVehicle({carId, carInfo: editCarInfo});
+    this.props.editVehicle({ carId, carInfo: editCarInfo });
     this.context.router.goBack();
   }
   handleVehicleNumberBlur = (e) => {
@@ -62,19 +62,21 @@ export default class VehicleFormContainer extends Component {
       const editCarInfo = cars.find(car => car.vehicle_id === carId);
       return (
         <VehicleForm mode="edit"
-                 form={form}
-                 car={editCarInfo}
-                 drivers={drivers}
-                 onSubmitBtnClicked={this.handleCarEdit}/>
+          form={form}
+          car={editCarInfo}
+          drivers={drivers}
+          onSubmitBtnClicked={this.handleCarEdit}
+        />
       );
     } else {
       return (
         <VehicleForm mode="add"
-                 form={form}
-                 drivers={drivers}
-                 vehicleValidate={vehicleValidate}
-                 onVehicleNumberBlur={this.handleVehicleNumberBlur}
-                 onSubmitBtnClicked={this.handleCarSave}/>
+          form={form}
+          drivers={drivers}
+          vehicleValidate={vehicleValidate}
+          onVehicleNumberBlur={this.handleVehicleNumberBlur}
+          onSubmitBtnClicked={this.handleCarSave}
+        />
       );
     }
   }

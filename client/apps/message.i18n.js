@@ -3,167 +3,167 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   accountNormal: {
     id: 'container.account.normal',
-    defaultMessage: '正常'
+    defaultMessage: '正常',
   },
   accountDisabled: {
     id: 'container.account.disabled',
-    defaultMessage: '停用'
+    defaultMessage: '停用',
   },
   tenantOwner: {
     id: 'container.tenant.role.owner',
-    defaultMessage: '拥有者'
+    defaultMessage: '拥有者',
   },
   tenantManager: {
     id: 'container.tenant.role.manager',
-    defaultMessage: '管理员'
+    defaultMessage: '管理员',
   },
   tenantMember: {
     id: 'container.tenant.role.member',
-    defaultMessage: '成员'
+    defaultMessage: '成员',
   },
   opColumn: {
     id: 'container.table.opColumn',
-    defaultMessage: '操作'
+    defaultMessage: '操作',
   },
   statusColumn: {
     id: 'container.table.statusColumn',
-    defaultMessage: '状态'
+    defaultMessage: '状态',
   },
   disableOp: {
     id: 'container.table.disableOp',
-    defaultMessage: '停用'
+    defaultMessage: '停用',
   },
   enableOp: {
     id: 'container.table.enableOp',
-    defaultMessage: '启用'
+    defaultMessage: '启用',
   },
   fixOp: {
     id: 'container.table.fixOp',
-    defaultMessage: '修改'
+    defaultMessage: '修改',
   },
   save: {
     id: 'container.table.save',
-    defaultMessage: '保存'
+    defaultMessage: '保存',
   },
   cancel: {
     id: 'container.table.cancel',
-    defaultMessage: '取消'
+    defaultMessage: '取消',
   },
   clearSelection: {
     id: 'container.table.clearSelection',
-    defaultMessage: '清除选择'
+    defaultMessage: '清除选择',
   },
   emailError: {
     id: 'container.form.email.error',
-    defaultMessage: 'email格式错误'
+    defaultMessage: 'email格式错误',
   },
   fullName: {
     id: 'container.profile.fullname',
-    defaultMessage: '姓名'
+    defaultMessage: '姓名',
   },
   username: {
     id: 'container.profile.username',
-    defaultMessage: '用户名'
+    defaultMessage: '用户名',
   },
   phone: {
     id: 'container.profile.phone',
-    defaultMessage: '手机号'
+    defaultMessage: '手机号',
   },
   email: {
     id: 'container.profile.email',
-    defaultMessage: '邮箱'
+    defaultMessage: '邮箱',
   },
   fullNameMessage: {
     id: 'container.profile.fullname.message',
-    defaultMessage: '2位以上中英文'
+    defaultMessage: '2位以上中英文',
   },
-  avatar : {
+  avatar: {
     id: 'container.profile.avatar',
-    defaultMessage: '头像'
+    defaultMessage: '头像',
   },
   advancedSearch: {
     id: 'container.form.advancedSearch',
-    defaultMessage: '高级搜索'
+    defaultMessage: '高级搜索',
   },
   allTypes: {
     id: 'container.table.types.all',
-    defaultMessage: '全部'
+    defaultMessage: '全部',
   },
   TENANT_ENTERPRISE: {
     id: 'container.partner.type.enterprise',
-    defaultMessage: '企业法人'
+    defaultMessage: '企业法人',
   },
   TENANT_BRANCH: {
     id: 'container.partner.type.branch',
-    defaultMessage: '分支机构'
+    defaultMessage: '分支机构',
   },
   TENANT_OFFLINE: {
     id: 'container.partner.type.offline',
-    defaultMessage: '线下'
+    defaultMessage: '线下',
   },
   corpInfo: {
     id: 'container.corpInfo',
-    defaultMessage: '企业信息'
+    defaultMessage: '企业信息',
   },
   personnelUser: {
     id: 'container.personnelUser',
-    defaultMessage: '用户管理'
+    defaultMessage: '用户管理',
   },
   organTitle: {
     id: 'container.organization',
-    defaultMessage: '组织机构'
+    defaultMessage: '组织机构',
   },
   partnership: {
     id: 'container.partnership',
-    defaultMessage: '协作网络'
+    defaultMessage: '协作网络',
   },
   partners: {
     id: 'container.partners',
-    defaultMessage: '合作伙伴'
+    defaultMessage: '合作伙伴',
   },
   recvInvitations: {
     id: 'container.recvInvitations',
-    defaultMessage: '收到的邀请'
+    defaultMessage: '收到的邀请',
   },
   sentInvitations: {
     id: 'container.sentInvitations',
-    defaultMessage: '发出的邀请'
+    defaultMessage: '发出的邀请',
   },
   serviceCenter: {
     id: 'container.serviceCenter',
-    defaultMessage: '服务中心'
+    defaultMessage: '服务中心',
   },
   servicePurchase: {
     id: 'container.servicePurchase',
-    defaultMessage: '购买服务'
+    defaultMessage: '购买服务',
   },
   servicePayment: {
     id: 'container.servicePayment',
-    defaultMessage: '付款记录'
+    defaultMessage: '付款记录',
   },
   transportDashboard: {
     id: 'container.transport.dashboard',
-    defaultMessage: '工作台'
+    defaultMessage: '工作台',
   },
   transportShipment: {
     id: 'container.transport.shipment',
-    defaultMessage: '运单'
+    defaultMessage: '运单',
   },
   transportAcceptance: {
     id: 'container.transport.acceptance',
-    defaultMessage: '受理'
+    defaultMessage: '受理',
   },
   transportDispatch: {
     id: 'container.transport.dispatch',
-    defaultMessage: '调度'
+    defaultMessage: '调度',
   },
   transportTracking: {
     id: 'container.transport.tracking',
-    defaultMessage: '跟踪'
+    defaultMessage: '跟踪',
   },
   cmsDeclare: {
     id: 'container.cms.declare',
-    defaultMessage: '制单'
+    defaultMessage: '制单',
   },
 });
 

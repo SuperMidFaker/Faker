@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Modal, Icon, Button, Form, Input } from 'antd';
 
@@ -14,14 +14,14 @@ class WarningModal extends React.Component {
     confirmString: PropTypes.string.isRequired,
     close: PropTypes.func.isRequired,
     onOk: PropTypes.func,
-    onCancel: PropTypes.func
+    onCancel: PropTypes.func,
   }
   constructor() {
     super();
     this.state = {
       visible: true,
       okDisabled: true,
-      okLoading: false
+      okLoading: false,
     };
   }
   onCancel() {
@@ -66,21 +66,21 @@ class WarningModal extends React.Component {
 
   close() {
     this.setState({
-      visible: false
+      visible: false,
     });
     this.props.close();
   }
 
   handleInputChange(ev) {
     if (ev.target.value === this.props.confirmString) {
-      this.setState({okDisabled: false});
+      this.setState({ okDisabled: false });
     } else {
-      this.setState({okDisabled: true});
+      this.setState({ okDisabled: true });
     }
   }
 
   render() {
-    const {width, title, content, iconClassType, okCancel, cancelText, okText} = this.props;
+    const { width, title, content, iconClassType, okCancel, cancelText, okText } = this.props;
     return (
       <Modal
         prefixCls="ant-modal"
@@ -90,8 +90,9 @@ class WarningModal extends React.Component {
         title=""
         transitionName="zoom"
         footer=""
-        maskTransitionName="fade" width={width}>
-        <div style={{zoom: 1, overflow: 'hidden'}}>
+        maskTransitionName="fade" width={width}
+      >
+        <div style={{ zoom: 1, overflow: 'hidden' }}>
           <div className="ant-confirm-body">
             <Icon type={iconClassType} />
             <span className="ant-confirm-title">{title}</span>
@@ -110,7 +111,8 @@ class WarningModal extends React.Component {
             </Button>
           }
             <Button type="primary" size="large" disabled={this.state.okDisabled}
-              loading={this.state.okLoading} onClick={() => this.onOk()}>
+              loading={this.state.okLoading} onClick={() => this.onOk()}
+            >
               {okText}
             </Button>
           </div>

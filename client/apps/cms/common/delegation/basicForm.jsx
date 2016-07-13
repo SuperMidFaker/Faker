@@ -31,10 +31,11 @@ function LocalSearchSelect(props) {
   const { options, field, initialValue, getFieldProps, placeholder, searchKeyFn } = props;
   return (
     <Select size="large" combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
-      placeholder={placeholder} optionFilterProp={ searchKeyFn ? 'search' : undefined}
+      placeholder={placeholder} optionFilterProp={searchKeyFn ? 'search' : undefined}
     >
     {options.map(opt => (<Option key={opt.value} value={opt.value}
-      search={searchKeyFn ? searchKeyFn(opt) : undefined}>{opt.text}</Option>))}
+      search={searchKeyFn ? searchKeyFn(opt) : undefined}
+    >{opt.text}</Option>))}
     </Select>
   );
 }
@@ -129,47 +130,48 @@ export default class BasicForm extends Component {
             <Select size="large" combobox showArrow={false} optionFilterProp="search"
               placeholder="输入客户代码或名称"
               {...getFieldProps('customer_name', { rules: [{
-                  required: true, message: '客户名称必填',
-                }],
+                required: true, message: '客户名称必填',
+              }],
                 getValueFromEvent: this.handleClientChange,
                 initialValue: fieldInits.customer_name,
               })}
             >
             {
               clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
+                search={`${data.partner_code}${data.name}`}
+              >{data.name}</Option>)
             )}
             </Select>
           </FormItem>
           <FormItem label="发票号" {...formItemLayout}>
             <Input {...getFieldProps('invoice_no', {
               initialValue: fieldInits.invoice_no,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="提运单号" {...formItemLayout}>
             <Input {...getFieldProps('bl_wb_no', {
               initialValue: fieldInits.bl_wb_no,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="备案号" {...formItemLayout}>
             <Input {...getFieldProps('ems_no', {
               initialValue: fieldInits.ems_no,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="航名航次" {...formItemLayout}>
             <Input {...getFieldProps('voyage_no', {
               initialValue: fieldInits.voyage_no,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="件数" {...formItemLayout}>
             <Input {...getFieldProps('pieces', {
               initialValue: fieldInits.pieces,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="内部编号" {...formItemLayout}>
             <Input {...getFieldProps('internal_no', {
               initialValue: fieldInits.internal_no,
-            })}/>
+            })} />
           </FormItem>
         </Col>
         <Col sm={12}>
@@ -182,7 +184,7 @@ export default class BasicForm extends Component {
           <FormItem label="合同号" {...formItemLayout}>
             <Input {...getFieldProps('contract_no', {
               initialValue: fieldInits.contract_no,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="运输方式" {...formItemLayout}>
             <LocalSearchSelect field="trans_mode" options={transModes}
@@ -193,7 +195,7 @@ export default class BasicForm extends Component {
           <FormItem label="订单号" {...formItemLayout}>
             <Input {...getFieldProps('order_no', {
               initialValue: fieldInits.order_no,
-            })}/>
+            })} />
           </FormItem>
           <FormItem label="贸易方式" {...formItemLayout}>
             <RemoteSearchSelect field="trade_mode" options={tradeModes}
@@ -204,7 +206,7 @@ export default class BasicForm extends Component {
           <FormItem label="重量" {...formItemLayout}>
             <Input {...getFieldProps('weight', {
               initialValue: fieldInits.weight,
-            })}/>
+            })} />
           </FormItem>
         </Col>
       </Card>

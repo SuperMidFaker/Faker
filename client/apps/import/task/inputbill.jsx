@@ -1,6 +1,6 @@
-import React, {PropTypes} from 'react';
-import {CONDITION_STATE, WRAP_TYPE, FEE_TYPE} from 'common/constants';
-import {connect} from 'react-redux';
+import React, { PropTypes } from 'react';
+import { CONDITION_STATE, WRAP_TYPE, FEE_TYPE } from 'common/constants';
+import { connect } from 'react-redux';
 import {
   Button,
   Form,
@@ -14,7 +14,7 @@ import {
   InputNumber,
   DatePicker,
   QueueAnim,
-  Table
+  Table,
 } from
 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -26,24 +26,24 @@ import {
   // assignForm,
   clearForm,
   setFormValue,
-  getBillList
+  getBillList,
 } from
 'common/reducers/task';
-import {setNavTitle} from 'common/reducers/navbar';
+import { setNavTitle } from 'common/reducers/navbar';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 // const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 
-function fetchData({state, dispatch, cookie, params}) {
+function fetchData({ state, dispatch, cookie, params }) {
   const pid = parseInt(params.id, 10);
   const promises = [];
   promises.push(dispatch(loadSelectSource()));
   if (pid) {
-    promises.push(dispatch(getBillList({del_id: pid})));
+    promises.push(dispatch(getBillList({ del_id: pid })));
     // if (!isFormDataLoaded(state.task, pid)) {
-      promises.push(dispatch(loadForm(cookie, pid)));
+    promises.push(dispatch(loadForm(cookie, pid)));
     // } else {
       // promises.push(dispatch(assignForm(state.task, pid)));
     // }
@@ -65,8 +65,8 @@ function goBack(router) {
   loginId: state.account.loginId,
   tenantId: state.account.tenantId,
   selectSource: state.task.selectSource,
-  billlist: state.task.billlist
-}), {loadSelectSource, setFormValue, getBillList})
+  billlist: state.task.billlist,
+}), { loadSelectSource, setFormValue, getBillList })
 
 @connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
@@ -80,7 +80,7 @@ function goBack(router) {
       : '报关清单详情',
     moduleName: '',
     goBackFn: () => goBack(router),
-    withModuleLayout: false
+    withModuleLayout: false,
   }));
 })
 @Form.formify({
@@ -93,7 +93,7 @@ function goBack(router) {
       props.setFormValue(name, fields[name].value);
     }
   },
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class InputBillEdit extends React.Component {
   static propTypes = {
@@ -102,15 +102,15 @@ export default class InputBillEdit extends React.Component {
     formhoc: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     loadSelectSource: PropTypes.func.isRequired,
-    getBillList:PropTypes.func.isRequired
+    getBillList: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = {
-      showlist: false
+      showlist: false,
     };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -127,11 +127,11 @@ export default class InputBillEdit extends React.Component {
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData, JSON.stringify({username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId})).then(result => {
+          this.props.edit(this.props.formData, JSON.stringify({ username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId })).then(result => {
             this.onSubmitReturn(result.error);
           });
         } else {
-          this.props.submit(this.props.formData, JSON.stringify({username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId})).then(result => {
+          this.props.submit(this.props.formData, JSON.stringify({ username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId })).then(result => {
             this.onSubmitReturn(result.error);
           });
         }
@@ -147,16 +147,17 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})}/>
+        span: 18,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
+        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
@@ -164,16 +165,17 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 24 - spanWidth
+        span: 24 - spanWidth,
       }} wrapperCol={{
-        span: spanWidth
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})}/>
+        span: spanWidth,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
+        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
@@ -181,14 +183,15 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem wrapperCol={{
-        span: 24
-      }} help={getFieldError(field)} hasFeedback>
-        <Input type={type} disabled={disabled} {...getFieldProps(field, {})}/>
+        span: 24,
+      }} help={getFieldError(field)} hasFeedback
+      >
+        <Input type={type} disabled={disabled} {...getFieldProps(field, {})} />
       </FormItem>
     );
   }
@@ -196,72 +199,77 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 12
+        span: 12,
       }} wrapperCol={{
-        span: 12
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})}/>
+        span: 12,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
+        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
   renderSwitch(labelName, field) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
+    const { formhoc: {
+        getFieldProps,
+      } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }}>
-        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}/>
+        span: 18,
+      }}
+      >
+        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})} />
       </FormItem>
     );
   }
   renderNumber(labelName, field, defalutValue = 0, min = 0, max = 99999999) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
+    const { formhoc: {
+        getFieldProps,
+      } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }}>
+        span: 18,
+      }}
+      >
         <InputNumber style={{
-          width: '100%'
-        }} min={min} max={max} defaultValue={defalutValue} {...getFieldProps(field, {})}/>
+          width: '100%',
+        }} min={min} max={max} defaultValue={defalutValue} {...getFieldProps(field, {})}
+        />
       </FormItem>
     );
   }
   renderNumber1(labelName, field, defalutValue = 0, min = 0, max = 99999999) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
+    const { formhoc: {
+        getFieldProps,
+      } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 12
+        span: 12,
       }} wrapperCol={{
-        span: 12
-      }}>
-        <InputNumber min={min} max={max} defaultValue={defalutValue} {...getFieldProps(field, {})}/>
+        span: 12,
+      }}
+      >
+        <InputNumber min={min} max={max} defaultValue={defalutValue} {...getFieldProps(field, {})} />
       </FormItem>
     );
   }
   renderNumberWithoutName(field, defalutValue = 0, min = 0, max = 99999999) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
+    const { formhoc: {
+        getFieldProps,
+      } } = this.props;
     return (
       <FormItem wrapperCol={{
-        span: 24
+        span: 24,
       }}>
-        <InputNumber min={min} max={max} defaultValue={defalutValue} {...getFieldProps(field)}/>
+        <InputNumber min={min} max={max} defaultValue={defalutValue} {...getFieldProps(field)} />
       </FormItem>
     );
   }
@@ -269,18 +277,20 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
+        span: 18,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
         <Select style={{
-          width: '100%'
-        }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
+          width: '100%',
+        }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, { rules })}
+        >
           <OptGroup label={placeholder}>
             {source.map((item) => (
               <Option value={item.value} key={item.value}>{item.text}</Option>
@@ -294,18 +304,20 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 12
+        span: 12,
       }} wrapperCol={{
-        span: 12
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
+        span: 12,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
         <Select style={{
-          width: '100%'
-        }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {rules})}>
+          width: '100%',
+        }} placeholder={placeholder} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, { rules })}
+        >
           <OptGroup label={placeholder}>
             {source.map((item) => (
               <Option value={item.value} key={item.value}>{item.text}</Option>
@@ -316,16 +328,17 @@ export default class InputBillEdit extends React.Component {
     );
   }
   renderDatePicker(labelName, field, disabled = false) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
+    const { formhoc: {
+        getFieldProps,
+      } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }} hasFeedback>
-        <DatePicker disabled={disabled} {...getFieldProps(field)}/>
+        span: 18,
+      }} hasFeedback
+      >
+        <DatePicker disabled={disabled} {...getFieldProps(field)} />
       </FormItem>
     );
   }
@@ -333,16 +346,18 @@ export default class InputBillEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem wrapperCol={{
-        span: 24
-      }} help={getFieldError(field)} hasFeedback>
+        span: 24,
+      }} help={getFieldError(field)} hasFeedback
+      >
         <Select style={{
-          width: '100%'
-        }} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
+          width: '100%',
+        }} disabled={disabled} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}
+        >
           <OptGroup>
             {source.map((item) => (
               <Option value={item.value} key={item.value}>{item.text}</Option>
@@ -363,8 +378,8 @@ export default class InputBillEdit extends React.Component {
         Levytype,
         District,
         Curr,
-        Port
-      }
+        Port,
+      },
     } = this.props;
     if (this.state.showlist === false) {
       return (
@@ -404,15 +419,15 @@ export default class InputBillEdit extends React.Component {
               {this.renderTextInput('备案号', '输入备案号', 'ems_no', true, [
                 {
                   required: true,
-                  message: '输入备案号'
-                }
+                  message: '输入备案号',
+                },
               ])}
               {this.renderSelect('运输方式', '选择运输方式', 'traf_mode', false, Transf, null)}
               {this.renderSelect('监管方式', '选择监管方式', 'trade_mode', true, Trade, [
                 {
                   required: true,
-                  message: '请选择监管方式'
-                }
+                  message: '请选择监管方式',
+                },
               ])}
               {this.renderSelect('起运国', '选择起运国', 'trade_country', false, Country, null)}
               <Row>
@@ -520,12 +535,12 @@ export default class InputBillEdit extends React.Component {
           <Row style={{
             display: this.props.formData.status === 3
               ? 'hide'
-              : 'inline-block'
+              : 'inline-block',
           }}>
             <Col span="12">
               <Button onClick={() => {
                 this.setState({
-                  showlist: !this.state.showlist
+                  showlist: !this.state.showlist,
                 });
               }}>报关清单表体</Button>
               <Button onClick={this.handleCancel}>取消</Button>
@@ -539,58 +554,58 @@ export default class InputBillEdit extends React.Component {
   }
   renderBillListForm() {
     const {
-      billlist
+      billlist,
     } = this.props;
     const columns = [
       {
         title: '商品货号',
         width: 150,
-        dataIndex: 'cop_g_no'
+        dataIndex: 'cop_g_no',
       }, {
         title: '商品编码',
         dataIndex: 'code_t',
-        width: 200
+        width: 200,
       }, {
         title: '附加码',
         width: 60,
-        dataIndex: 'code_s'
+        dataIndex: 'code_s',
       }, {
         title: '商品名称',
         dataIndex: 'g_name',
-        width: 200
+        width: 200,
       }, {
         title: '规格型号',
         dataIndex: 'g_model',
-        width: 200
+        width: 200,
       }, {
         title: '申报数量',
         dataIndex: 'qty',
-        width: 80
+        width: 80,
       }, {
         title: '成交单位',
         dataIndex: 'unit',
-        width: 80
+        width: 80,
       }, {
         title: '申报单价',
         dataIndex: 'dec_price',
-        width: 80
+        width: 80,
       }, {
         title: '申报总价',
         dataIndex: 'dec_total',
-        width: 80
-      }
+        width: 80,
+      },
     ];
     if (this.state.showlist) {
       return (
         <div className="main-content">
           <div className="page-body">
             <div className="panel-body body-responsive">
-              <Table columns={columns} dataSource={billlist}/>
+              <Table columns={columns} dataSource={billlist} />
             </div>
             <div className="bottom-fixed-row">
               <Button size="large" onClick={() => {
                 this.setState({
-                  showlist: !this.state.showlist
+                  showlist: !this.state.showlist,
                 });
               }}>返回</Button>
             </div>
@@ -613,15 +628,15 @@ export default class InputBillEdit extends React.Component {
           <QueueAnim className="demo-content" animConfig={[
             {
               opacity: [
-                1, 0
+                1, 0,
               ],
-              translateY: [0, 50]
+              translateY: [0, 50],
             }, {
               opacity: [
-                1, 0
+                1, 0,
               ],
-              translateY: [0, -50]
-            }
+              translateY: [0, -50],
+            },
           ]}>
           {this.renderBillListForm()}
           </QueueAnim>

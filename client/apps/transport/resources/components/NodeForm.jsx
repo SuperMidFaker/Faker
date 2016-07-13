@@ -6,8 +6,8 @@ import Cascader from 'client/components/region-cascade';
 const FormItem = Form.Item;
 
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 14}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
 };
 
 export default class CarForm extends Component {
@@ -17,7 +17,7 @@ export default class CarForm extends Component {
     if (mode === 'edit') {
       setFieldsValue(node);
       const [province, city, district] = region;
-      changeRegion({province, city, district});
+      changeRegion({ province, city, district });
     }
   }
   render() {
@@ -28,16 +28,16 @@ export default class CarForm extends Component {
       <ContentWrapper>
         <Form horizontal onSubmit={onSubmitBtnClick} className="form-edit-content offset-right-col">
           <FormItem label="名称:" required {...formItemLayout}>
-            <Input {...getFieldProps('name')} required/>
+            <Input {...getFieldProps('name')} required />
           </FormItem>
           <FormItem label="外部代码:" {...formItemLayout}>
-            <Input {...getFieldProps('node_code')}/>
+            <Input {...getFieldProps('node_code')} />
           </FormItem>
           <FormItem label="区域" {...formItemLayout}>
             <Cascader region={regionValues} uncontrolled onCascadeChange={onRegionChange} />
           </FormItem>
           <FormItem label="具体地址:" required {...formItemLayout}>
-            <Input {...getFieldProps('addr')} required/>
+            <Input {...getFieldProps('addr')} required />
           </FormItem>
           <FormItem label="联系人:" {...formItemLayout} required>
             <Input {...getFieldProps('contact')} />
@@ -49,9 +49,9 @@ export default class CarForm extends Component {
             <Input {...getFieldProps('email')} />
           </FormItem>
           <FormItem label="备注:" {...formItemLayout}>
-            <Input type="textarea" {...getFieldProps('remark')}/>
+            <Input type="textarea" {...getFieldProps('remark')} />
           </FormItem>
-          <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+          <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
             <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>
           </FormItem>
         </Form>

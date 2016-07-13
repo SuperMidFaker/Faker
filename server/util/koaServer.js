@@ -42,12 +42,12 @@ export default function create(options) {
         } else if (e.status === 402) {
           this.json({
             code: e.code,
-            msg: e.msg
+            msg: e.msg,
           });
         } else if (e.status === 403) {
           this.json({
             code: 4003,
-            msg: e.msg
+            msg: e.msg,
           });
         } else {
           throw e; // Pass the error to the next handler since it wasn't an auth error.
@@ -65,7 +65,7 @@ export default function create(options) {
       custom: function skip() {
         return !!this.skipJwt;
       },
-      path: [/^\/public/, /dist/, /assets/]
+      path: [/^\/public/, /dist/, /assets/],
     }));
   }
   if (opts.middlewares && isArray(opts.middlewares)) {

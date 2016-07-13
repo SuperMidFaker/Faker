@@ -11,27 +11,27 @@ export function appendFormAcitonTypes(domain, actypes) {
 
 export function formReducer(actionTypes, state, action, defaultForm, stateFormName) {
   switch (action.type) {
-  case actionTypes.FORM_ASSIGN: {
-    if (action.index !== -1) {
-      return {
-        ...state, selectedIndex: action.index,
-        formData: state[stateFormName].data[action.index]
-      };
-    } else {
-      return { ...state, selectedIndex: action.index };
+    case actionTypes.FORM_ASSIGN: {
+      if (action.index !== -1) {
+        return {
+          ...state, selectedIndex: action.index,
+          formData: state[stateFormName].data[action.index],
+        };
+      } else {
+        return { ...state, selectedIndex: action.index };
+      }
     }
-  }
-  case actionTypes.FORM_CLEAR:
-    return { ...state, selectedIndex: -1, formData: defaultForm };
-  case actionTypes.FORM_LOAD_SUCCEED:
-    return { ...state, formData: action.result.data };
-  case actionTypes.SET_FORM_VALUE: {
-    const form = { ...state.formData };
-    form[action.data.field] = action.data.value;
-    return { ...state, formData: form };
-  }
-  default:
-    return state;
+    case actionTypes.FORM_CLEAR:
+      return { ...state, selectedIndex: -1, formData: defaultForm };
+    case actionTypes.FORM_LOAD_SUCCEED:
+      return { ...state, formData: action.result.data };
+    case actionTypes.SET_FORM_VALUE: {
+      const form = { ...state.formData };
+      form[action.data.field] = action.data.value;
+      return { ...state, formData: form };
+    }
+    default:
+      return state;
   }
 }
 
@@ -54,8 +54,8 @@ export function loadFormC(cookie, endpoint, params, actionTypes) {
       endpoint,
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -69,19 +69,19 @@ export function assignFormC(wantedKey, state, stateListName, actionTypes) {
   });
   return {
     type: actionTypes.FORM_ASSIGN,
-    index
+    index,
   };
 }
 
 export function clearFormC(actionTypes) {
   return {
-    type: actionTypes.FORM_CLEAR
+    type: actionTypes.FORM_CLEAR,
   };
 }
 
 export function setFormValueC(actionTypes, field, newValue) {
   return {
     type: actionTypes.SET_FORM_VALUE,
-    data: { field, value: newValue }
+    data: { field, value: newValue },
   };
 }

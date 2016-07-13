@@ -10,8 +10,8 @@ export default [
   ['post', '/v1/wms/customer/inbound', getInbound],
   ['post', '/v1/wms/customer/outbound', getOutbound],
   ['post', '/v1/wms/customer/inventory', getInventory],
-  ['post', '/v1/wms/customer/wh_fee', getFee]
-]
+  ['post', '/v1/wms/customer/wh_fee', getFee],
+];
 
 function *warehouseG() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
@@ -27,7 +27,7 @@ function *warehouseG() {
       totalCount: totals.length > 0 ? totals[0].count : 0,
       pageSize,
       current,
-      data: whs
+      data: whs,
     });
   } catch (e) {
     console.log(e);
@@ -53,10 +53,10 @@ function *getWarehouses() {
       since_id: this.request.query.since_id,
       max_id: this.request.query.max_id,
       count: this.request.query.count,
-      page: this.request.query.page
+      page: this.request.query.page,
     };
     var records = yield whDao.getSlicedWarehouses(body, this.state.user.userId);
-    records = packRespRecords(records, body.since_id && !body.max_id);/*使用since_id数据库内取出为按u_code从小到大排列*/
+    records = packRespRecords(records, body.since_id && !body.max_id);/* 使用since_id数据库内取出为按u_code从小到大排列*/
     Result.ok(this, records);
   } catch (e) {
     /* handle error */

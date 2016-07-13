@@ -1,5 +1,5 @@
-import React, {PropTypes} from 'react';
-import {connect} from 'react-redux';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Modal,
   Icon,
@@ -14,7 +14,7 @@ import {
   // Menu,
   // Dropdown,
   Tabs,
-  Table
+  Table,
 } from
 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -31,10 +31,10 @@ import {
   uploadFiles,
   removeFile,
   invalidAccept,
-  loadLogs
+  loadLogs,
 } from
 'common/reducers/importaccept';
-import {setNavTitle} from 'common/reducers/navbar';
+import { setNavTitle } from 'common/reducers/navbar';
 import './upload.less';
 const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
@@ -43,12 +43,12 @@ const OptGroup = Select.OptGroup;
 // const DropdownButton = Dropdown.Button;
 const TabPane = Tabs.TabPane;
 
-function fetchData({state, dispatch, cookie, params}) {
+function fetchData({ state, dispatch, cookie, params }) {
   const pid = parseInt(params.id, 10);
   const promises = [];
   promises.push(dispatch(loadSelectOptions(cookie, {
     delId: params.id,
-    tenantId: state.account.tenantId
+    tenantId: state.account.tenantId,
   })));
   if (pid) {
     if (!isFormDataLoaded(state.importaccept, pid)) {
@@ -56,7 +56,7 @@ function fetchData({state, dispatch, cookie, params}) {
     } else {
       promises.push(dispatch(assignForm(state.importaccept, pid)));
     }
-    promises.push(dispatch(loadLogs({acceptId: pid, pageSize: state.importaccept.loglist.pageSize, currentPage: state.importaccept.loglist.current})));
+    promises.push(dispatch(loadLogs({ acceptId: pid, pageSize: state.importaccept.loglist.pageSize, currentPage: state.importaccept.loglist.current })));
   } else {
     promises.push(dispatch(clearForm()));
   }
@@ -79,7 +79,7 @@ function goBack(router) {
   tenantId: state.account.tenantId,
   ename: state.corpDomain.name,
   selectOptions: state.importaccept.selectOptions,
-  loading: state.importaccept.loading
+  loading: state.importaccept.loading,
 }), {
   setFormValue,
   edit,
@@ -87,7 +87,7 @@ function goBack(router) {
   uploadFiles,
   removeFile,
   invalidAccept,
-  loadLogs
+  loadLogs,
 })
 @connectNav((props, dispatch, router) => {
   if (props.formData.key === -1) {
@@ -101,7 +101,7 @@ function goBack(router) {
       : '报关委托详情',
     moduleName: '',
     goBackFn: () => goBack(router),
-    withModuleLayout: false
+    withModuleLayout: false,
   }));
 })
 @Form.formify({
@@ -114,7 +114,7 @@ function goBack(router) {
       props.setFormValue(name, fields[name].value);
     }
   },
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class ImportAcceptEdit extends React.Component {
   static propTypes = {
@@ -129,10 +129,10 @@ export default class ImportAcceptEdit extends React.Component {
     selectOptions: PropTypes.object.isRequired,
     uploadFiles: PropTypes.func.isRequired,
     removeFile: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   constructor() {
     super();
@@ -143,7 +143,7 @@ export default class ImportAcceptEdit extends React.Component {
       openKeys: [],
       modalVisible: false,
       voidConfirm: false,
-      fileCategory: ''
+      fileCategory: '',
     };
   }
   onSubmitReturn(error) {
@@ -158,11 +158,11 @@ export default class ImportAcceptEdit extends React.Component {
     this.props.formhoc.validateFields((errors) => {
       if (!errors) {
         if (this.props.formData.key) {
-          this.props.edit(this.props.formData, JSON.stringify({username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId, declareFileList: this.props.selectOptions.declareFileList})).then(result => {
+          this.props.edit(this.props.formData, JSON.stringify({ username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId, declareFileList: this.props.selectOptions.declareFileList })).then(result => {
             this.onSubmitReturn(result.error);
           });
         } else {
-          this.props.submit(this.props.formData, JSON.stringify({username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId, declareFileList: this.props.selectOptions.declareFileList})).then(result => {
+          this.props.submit(this.props.formData, JSON.stringify({ username: this.props.username, tenantId: this.props.tenantId, loginId: this.props.loginId, declareFileList: this.props.selectOptions.declareFileList })).then(result => {
             this.onSubmitReturn(result.error);
           });
         }
@@ -178,13 +178,13 @@ export default class ImportAcceptEdit extends React.Component {
     this.setState(JSON.parse(`{"${stateKey}":"${value}"}`));
   }
   handleShowModal() {
-    this.setState({modalVisible: true});
+    this.setState({ modalVisible: true });
   }
   handleOk() {
-    this.setState({modalVisible: false});
+    this.setState({ modalVisible: false });
   }
   handleHide() {
-    this.setState({modalVisible: false});
+    this.setState({ modalVisible: false });
   }
   handleConfirmOk() {
     if (!this.state.invalidReson || this.state.invalidReson === '') {
@@ -198,14 +198,14 @@ export default class ImportAcceptEdit extends React.Component {
       acceptId: this.props.formData.key,
       curStatus: this.props.formData.status,
       del_no: this.props.formData.del_no,
-      reason: this.state.invalidReson
+      reason: this.state.invalidReson,
     }).then(result => {
-      this.setState({voidConfirm: false});
+      this.setState({ voidConfirm: false });
       this.onSubmitReturn(result.error);
     });
   }
   handleConfirmHide() {
-    this.setState({voidConfirm: false});
+    this.setState({ voidConfirm: false });
   }
   handleUpload(files) {
     if (this.props.formData.category === undefined || this.props.formData.category === null) {
@@ -219,37 +219,39 @@ export default class ImportAcceptEdit extends React.Component {
   }
   handleMenuClick(e) {
     if (e.key === '2') {
-      this.setState({voidConfirm: true});
+      this.setState({ voidConfirm: true });
     }
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, disabled = false, type = 'text') {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})}/>
+        span: 18,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
+        <Input type={type} disabled={disabled} placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
   renderSwitch(labelName, field) {
-    const {formhoc: {
-        getFieldProps
-      }} = this.props;
+    const { formhoc: {
+        getFieldProps,
+      } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }}>
-        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}/>
+        span: 18,
+      }}
+      >
+        <Switch checked={this.props.formData[field] === 1 || this.props.formData[field] === true} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})} />
       </FormItem>
     );
   }
@@ -257,18 +259,20 @@ export default class ImportAcceptEdit extends React.Component {
     const {
       formhoc: {
         getFieldProps,
-        getFieldError
-      }
+        getFieldError,
+      },
     } = this.props;
     return (
       <FormItem label={labelName} labelCol={{
-        span: 6
+        span: 6,
       }} wrapperCol={{
-        span: 18
-      }} help={rules && getFieldError(field)} hasFeedback required={required}>
+        span: 18,
+      }} help={rules && getFieldError(field)} hasFeedback required={required}
+      >
         <Select style={{
-          width: '100%'
-        }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}>
+          width: '100%',
+        }} placeholder={placeholder} onChange={(value) => this.setState(JSON.parse(`{"${field}":"${value}"}`))} {...getFieldProps(field, {})}
+        >
           <OptGroup label={placeholder}>
             {source.map((item) => (
               <Option value={item.value} key={item.value}>{item.text}</Option>
@@ -304,7 +308,7 @@ export default class ImportAcceptEdit extends React.Component {
     }
     return (
       <span style={{
-        color: fontColor
+        color: fontColor,
       }}>
         {statusText}
       </span>
@@ -317,8 +321,8 @@ export default class ImportAcceptEdit extends React.Component {
         declareWayList,
         tradeModeList,
         declareFileList,
-        shortNameList
-      }
+        shortNameList,
+      },
     } = this.props;
 
     return (
@@ -326,7 +330,7 @@ export default class ImportAcceptEdit extends React.Component {
         <Row style={{
           display: ((this.props.formData.key === undefined || this.props.formData.key === null)
             ? 'none'
-            : 'inline-block')
+            : 'inline-block'),
         }}>
           <Col offset="3">
             <div>
@@ -345,8 +349,8 @@ export default class ImportAcceptEdit extends React.Component {
           <Col span="16" offset="1">
             {this.renderSelect('报关委托单位', '选择客户', 'send_tenant_id', true, shortNameList, [
               {
-                required: true
-              }
+                required: true,
+              },
             ])}
           </Col>
         </Row>
@@ -355,23 +359,23 @@ export default class ImportAcceptEdit extends React.Component {
             {this.renderSelect('清关海关', '选择清关海关', 'master_customs', true, customsInfoList, [
               {
                 required: true,
-                message: '请选择清关海关'
-              }
+                message: '请选择清关海关',
+              },
             ], (this.props.formData.status === 2))}
 
             {this.renderTextInput('提运单号', '请输提运单号', 'bill_no', true, [
               {
                 required: true,
-                message: '提运单号不能为空'
-              }
+                message: '提运单号不能为空',
+              },
             ], null, (this.props.formData.status === 2))}
           </Col>
           <Col span="8">
             {this.renderSelect('报关类型', '选择报关类型', 'declare_way_no', true, declareWayList, [
               {
                 required: true,
-                message: '请选择报关类型'
-              }
+                message: '请选择报关类型',
+              },
             ], (this.props.formData.status === 2))}
           </Col>
         </Row>
@@ -390,29 +394,30 @@ export default class ImportAcceptEdit extends React.Component {
         <Row>
           <Col>
             <FormItem labelCol={{
-              span: 5
-            }} label="报关单据">
+              span: 5,
+            }} label="报关单据"
+            >
               <Row>
                 <Col span="2">
                   <Dropzone onDrop={(files) => this.handleUpload(files)} style={{}}>
                     <div className="ant-upload ant-upload-drag" title="请拖拽或选择文件来改变" style={{
                       height: 100,
                       marginTop: 0,
-                      width: 100
+                      width: 100,
                     }}>
                       <span>
                         <div className="ant-upload-drag-container">
-                          <Icon type="upload"/>
+                          <Icon type="upload" />
                           <p className="ant-upload-hint">选择文件</p>
                         </div>
                       </span>
                     </div>
                   </Dropzone>
                   <span style={{
-                    cursor: 'hand'
+                    cursor: 'hand',
                   }}>
-                    <Icon type="tags"/>
-                    <label onClick= { () => { this.handleShowModal(); } }>选择单据类型</label>
+                    <Icon type="tags" />
+                    <label onClick={() => { this.handleShowModal(); }}>选择单据类型</label>
                   </span>
                 </Col>
 
@@ -420,7 +425,7 @@ export default class ImportAcceptEdit extends React.Component {
                   <Col span="2" style={{
                     display: (item.fileflag === -1)
                       ? 'none'
-                      : 'inline-block'
+                      : 'inline-block',
                   }}>
 
                     <div className="ant-upload-list ant-upload-list-picture-card">
@@ -428,13 +433,13 @@ export default class ImportAcceptEdit extends React.Component {
                         <div className="ant-upload-list-item ant-upload-list-item-done">
                           <div className="ant-upload-list-item-info">
                             <a className="ant-upload-list-item-thumbnail" target="_blank">
-                              <img src="https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png" alt={item.doc_name}/>
+                              <img src="https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png" alt={item.doc_name} />
                             </a>
                             <span>
                               <a href={item.url} target="_blank">
-                                <Icon type="download"/>
+                                <Icon type="download" />
                               </a>
-                              <Icon type="delete" onClick={() => this.handleRemoveFile(index)} alt="删除文件"/>
+                              <Icon type="delete" onClick={() => this.handleRemoveFile(index)} alt="删除文件" />
                             </span>
                           </div>
                         </div>
@@ -450,7 +455,7 @@ export default class ImportAcceptEdit extends React.Component {
         <Row style={{
           display: this.props.formData.status === 3
             ? 'hide'
-            : 'inline-block'
+            : 'inline-block',
         }}>
           <Col span="18" offset="3">
             <Button htmlType="submit" type="primary">确定</Button>
@@ -461,67 +466,67 @@ export default class ImportAcceptEdit extends React.Component {
     );
   }
   renderLogForm() {
-    const {loglist, loading} = this.props;
+    const { loglist, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadLogs(params),
       resolve: (result) => result.data,
       extraParams: {
-        acceptId: this.props.formData.key
+        acceptId: this.props.formData.key,
       },
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSize: result.pageSize
+        pageSize: result.pageSize,
       }),
       getParams: (pagination) => {
         const params = {
           pageSize: pagination.pageSize,
-          currentPage: pagination.current
+          currentPage: pagination.current,
         };
         return params;
       },
-      remotes: loglist
+      remotes: loglist,
     });
 
     const columns = [
       {
         title: '日志编号',
         width: 80,
-        dataIndex: 'key'
+        dataIndex: 'key',
       }, {
         title: '关联委托编号',
         width: 200,
-        dataIndex: 'rel_id'
+        dataIndex: 'rel_id',
       }, {
         title: '操作人ID',
         width: 120,
-        dataIndex: 'oper_id'
+        dataIndex: 'oper_id',
       }, {
         title: '操作人姓名',
         width: 120,
-        dataIndex: 'oper_name'
+        dataIndex: 'oper_name',
       }, {
         title: '操作时间',
         width: 120,
-        dataIndex: 'oper_date'
+        dataIndex: 'oper_date',
       }, {
         title: '日志内容',
-        dataIndex: 'oper_note'
-      }
+        dataIndex: 'oper_note',
+      },
     ];
     return (
       <div className="panel-body body-responsive">
-        <Table columns={columns} loading={loading} dataSource={dataSource}/>
+        <Table columns={columns} loading={loading} dataSource={dataSource} />
       </div>
     );
   }
 
   render() {
-    const {selectOptions: {
-        declareCategoryList
-      }} = this.props;
+    const { selectOptions: {
+        declareCategoryList,
+      } } = this.props;
 
     //  const disableSubmit = this.props.tenant.id === -1;
     // todo loginname no '@' change adapt and tranform logic with new rc-form
@@ -542,16 +547,19 @@ export default class ImportAcceptEdit extends React.Component {
             this.handleOk();
           }} onCancel={() => {
             this.handleHide();
-          }}>
+          }}
+          >
             <Form horizontal>
               <FormItem label="单据类型:" labelCol={{
-                span: 6
+                span: 6,
               }} wrapperCol={{
-                span: 18
-              }}>
+                span: 18,
+              }}
+              >
                 <Select combobox style={{
-                  width: '100%'
-                }} searchPlaceholder="请输入或选择单据类型" {...this.props.formhoc.getFieldProps('category', {})}>
+                  width: '100%',
+                }} searchPlaceholder="请输入或选择单据类型" {...this.props.formhoc.getFieldProps('category', {})}
+                >
                   {declareCategoryList.map((item) => (
                     <Option value={item.category} key={item.category}>{item.category}</Option>
                   ))}
@@ -564,7 +572,8 @@ export default class ImportAcceptEdit extends React.Component {
             this.handleConfirmOk();
           }} onCancel={() => {
             this.handleConfirmHide();
-          }}>
+          }}
+          >
             <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc} className="form-edit-content">
               <Row>
                 <Col>
@@ -572,7 +581,7 @@ export default class ImportAcceptEdit extends React.Component {
               </Row>
               <Row>
                 <Col span="24">
-                  <Input type="textarea" className="ant-input ant-input-lg" onChange={(e) => this.setState({invalidReson: e.target.value})} placeholder="请填写作废原因"/>
+                  <Input type="textarea" className="ant-input ant-input-lg" onChange={(e) => this.setState({ invalidReson: e.target.value })} placeholder="请填写作废原因" />
                 </Col>
               </Row>
             </Form>

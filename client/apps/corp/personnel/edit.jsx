@@ -19,7 +19,7 @@ const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 const FormItem = Form.Item;
 
-function fetchData({state, dispatch, cookie, params}) {
+function fetchData({ state, dispatch, cookie, params }) {
   const pid = parseInt(params.id, 10);
   if (pid) {
     if (!isFormDataLoaded(state.personnel, pid)) {
@@ -58,11 +58,11 @@ function goBack(router) {
       `${formatMsg(props.intl, 'user')}${props.formData.name}`,
     moduleName: 'corp',
     goBackFn: () => goBack(router),
-    withModuleLayout: false
+    withModuleLayout: false,
   }));
 })
 @Form.create({
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class CorpEdit extends React.Component {
   static propTypes = {
@@ -78,7 +78,7 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
     role: '',
@@ -122,12 +122,12 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
-    const { formhoc: { getFieldProps }} = this.props;
+    const { formhoc: { getFieldProps } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
+      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         hasFeedback required={required}
       >
-        <Input type={type} placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
+        <Input type={type} placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
@@ -143,37 +143,37 @@ export default class CorpEdit extends React.Component {
       <div className="main-content">
         <div className="page-body">
           <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
-          className="form-edit-content offset-right-col">
+            className="form-edit-content offset-right-col"
+          >
             {this.renderTextInput(
               msg('fullName'), msg('fullNamePlaceholder'), 'name', true,
-              [{required: true, min: 2, message: msg('fullNameMessage')}],
+              [{ required: true, min: 2, message: msg('fullNameMessage') }],
               { initialValue: name }
             )}
-            <FormItem label={msg('username')} labelCol={{span: 6}} wrapperCol={{span: 18}}
-            required
+            <FormItem label={msg('username')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+              required
             >
               <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(
                     value, code, this.props.formData.loginId,
                     this.props.tenant.id, callback, message, this.props.checkLoginName,
-                    (msgs, descriptor) => format(msgs)(intl, descriptor))
+                    (msgs, descriptor) => format(msgs)(intl, descriptor)),
                 }],
                 initialValue: loginName,
-              })}
-              />
+              })} />
             </FormItem>
             {
               isCreating && this.renderTextInput(
                 msg('password'), msg('passwordPlaceholder'), 'password', true,
-                [{required: true, min: 6, message: msg('passwordMessage')}],
+                [{ required: true, min: 6, message: msg('passwordMessage') }],
                 { initialValue: password }, 'password')
             }
             {this.renderTextInput(
               msg('phone'), msg('phonePlaceholder'), 'phone', true,
               [{
                 validator: (rule, value, callback) => validatePhone(value, callback,
-                  (msgs, descriptor) => format(msgs)(intl, descriptor))
+                  (msgs, descriptor) => format(msgs)(intl, descriptor)),
               }],
               { initialValue: phone }
             )}
@@ -189,9 +189,9 @@ export default class CorpEdit extends React.Component {
               )
             }
             {this.props.formData.role !== TENANT_ROLE.owner.name &&
-            <FormItem label={msg('isAdmin')} labelCol={{span: 6}} wrapperCol={{span: 18}}>
+            <FormItem label={msg('isAdmin')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                { ...getFieldProps(
+                {...getFieldProps(
                   'adminChecked', {
                     valuePropName: 'checked',
                     initialValue: this.props.formData.role === TENANT_ROLE.manager.name,
@@ -202,12 +202,12 @@ export default class CorpEdit extends React.Component {
             </FormItem>}
             <Row>
               <Col span="18" offset="6">
-                <Button disabled={ disableSubmit } htmlType="submit" type="primary" loading={submitting}
-                  title={ disableSubmit ? msg('nonTenantEdit') : '' }
+                <Button disabled={disableSubmit} htmlType="submit" type="primary" loading={submitting}
+                  title={disableSubmit ? msg('nonTenantEdit') : ''}
                 >
                 {formatGlobalMsg(intl, 'ok')}
                 </Button>
-                <Button onClick={ this.handleCancel } disabled={submitting}>
+                <Button onClick={this.handleCancel} disabled={submitting}>
                 {formatGlobalMsg(intl, 'cancel')}
                 </Button>
               </Col>

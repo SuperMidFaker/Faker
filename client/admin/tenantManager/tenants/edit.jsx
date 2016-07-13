@@ -21,13 +21,13 @@ function goBack(router) {
 })
 export default class Edit extends React.Component {
   static propTypes = {
-    params: PropTypes.object.isRequired
+    params: PropTypes.object.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   render() {
     return (
-      <TenantForm router={this.context.router} params={this.props.params}/>);
+      <TenantForm router={this.context.router} params={this.props.params} />);
   }
 }

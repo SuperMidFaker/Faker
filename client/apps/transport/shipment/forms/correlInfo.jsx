@@ -15,7 +15,7 @@ const FormItem = Form.Item;
       remark: state.shipment.formData.remark,
       freight_charge: state.shipment.formData.freight_charge,
       lsp_name: state.shipment.formData.lsp_name,
-    }
+    },
   })
 )
 export default class CorrelInfo extends React.Component {
@@ -29,7 +29,7 @@ export default class CorrelInfo extends React.Component {
   render() {
     const { tenantName, formhoc, fieldDefaults: {
       ref_waybill_no, ref_entry_no, remark, freight_charge, lsp_name: lsp,
-    }} = this.props;
+    } } = this.props;
     return (
       <Col span="8" className="right-side-col">
         <div className="subform-heading">
@@ -37,21 +37,21 @@ export default class CorrelInfo extends React.Component {
         </div>
         <div className="subform-body">
           <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
-            fieldProps={{initialValue: tenantName || lsp}} disabled rules={[{
-              required: true, message: this.msg('lspNameMust')
+            fieldProps={{ initialValue: tenantName || lsp }} disabled rules={[{
+              required: true, message: this.msg('lspNameMust'),
             }]} field="lsp"
           />
           <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')}
-          colSpan={0} field="ref_waybill_no"
-          fieldProps={{initialValue: ref_waybill_no}}
+            colSpan={0} field="ref_waybill_no"
+            fieldProps={{ initialValue: ref_waybill_no }}
           />
           <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')}
-          colSpan={0} field="ref_entry_no"
-          fieldProps={{initialValue: ref_entry_no}}
+            colSpan={0} field="ref_entry_no"
+            fieldProps={{ initialValue: ref_entry_no }}
           />
           <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')}
-          colSpan={0} field="remark"
-          fieldProps={{initialValue: remark}}
+            colSpan={0} field="remark"
+            fieldProps={{ initialValue: remark }}
           />
         </div>
         <div className="subform-heading">
@@ -60,9 +60,9 @@ export default class CorrelInfo extends React.Component {
         <div className="subform-body">
           <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
             <InputNumber style={{ width: '100%' }} min={0} step={0.1}
-            { ...formhoc.getFieldProps('freight_charge', {
-              initialValue: freight_charge
-            }) }
+              {...formhoc.getFieldProps('freight_charge', {
+              initialValue: freight_charge,
+            })}
             />
           </FormItem>
         </div>

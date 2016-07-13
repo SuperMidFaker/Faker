@@ -72,7 +72,7 @@ function fetchData({ state, dispatch, cookie }) {
     text: formatContainerMsg(props.intl, 'transportAcceptance'),
     moduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: null
+    goBackFn: null,
   }));
 })
 export default class AcceptList extends React.Component {
@@ -88,10 +88,10 @@ export default class AcceptList extends React.Component {
     revokeOrReject: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
-    loadTable: PropTypes.func.isRequired
+    loadTable: PropTypes.func.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTable(null, params),
@@ -101,7 +101,7 @@ export default class AcceptList extends React.Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize
+      pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -110,7 +110,7 @@ export default class AcceptList extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field || this.props.sortField,
         sortOrder: this.props.sortOrder,
-        filters: this.props.filters
+        filters: this.props.filters,
       };
       params.filters = params.filters.filter(
         flt => flt.name === 'type' || (flt.name in filters && filters[flt.name].length)
@@ -123,7 +123,7 @@ export default class AcceptList extends React.Component {
       params.filters = JSON.stringify(params.filters);
       return params;
     },
-    remotes: this.props.shipmentlist
+    remotes: this.props.shipmentlist,
   })
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
@@ -135,14 +135,14 @@ export default class AcceptList extends React.Component {
     render: (o, record) => {
       let style;
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-        style = { color : '#999' };
+        style = { color: '#999' };
       }
       return (
         <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
           style={style}
         />
       );
-    }
+    },
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
@@ -156,22 +156,22 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
-    width: 80
+    width: 80,
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
     width: 90,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
     width: 80,
-    render: (o, record) => <TransitTimeLabel time={record.transit_time} tformat={this.msg} />
+    render: (o, record) => <TransitTimeLabel time={record.transit_time} tformat={this.msg} />,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
     width: 90,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
@@ -203,15 +203,15 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80
+    width: 80,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80
+    width: 80,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80
+    width: 80,
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
@@ -224,13 +224,13 @@ export default class AcceptList extends React.Component {
       } else {
         return <span />;
       }
-    }
+    },
   }, {
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
     width: 100,
     sorter: true,
-    render: (text, record) => moment(record.created_date).format('MM-DD HH:mm')
+    render: (text, record) => moment(record.created_date).format('MM-DD HH:mm'),
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
@@ -306,7 +306,7 @@ export default class AcceptList extends React.Component {
     if (value !== null && value !== undefined && value !== '') {
       merged.push({
         name,
-        value
+        value,
       });
     }
     return merged;
@@ -318,7 +318,7 @@ export default class AcceptList extends React.Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
         this.setState({ selectedRowKeys });
-      }
+      },
     };
     let radioValue;
     const types = this.props.filters.filter(flt => flt.name === 'type');
@@ -327,7 +327,7 @@ export default class AcceptList extends React.Component {
     }
     let columns = this.columns;
     if (radioValue === 'unaccepted') {
-      columns = [ ...columns, {
+      columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
         fixed: 'right',
         width: 150,
@@ -363,10 +363,10 @@ export default class AcceptList extends React.Component {
               </span>
             );
           }
-        }
+        },
       }];
     } else if (radioValue === 'draft') {
-      columns = [ ...columns, {
+      columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
         width: 110,
         fixed: 'right',
@@ -384,7 +384,7 @@ export default class AcceptList extends React.Component {
               </Popconfirm>
             </span>
           );
-        }
+        },
       }];
     }
     return (
@@ -401,12 +401,12 @@ export default class AcceptList extends React.Component {
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '8px'}} />
+          <span style={{ marginLeft: '8px' }} />
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
-          <span style={{marginLeft: '8px'}} />
+          <span style={{ marginLeft: '8px' }} />
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body">

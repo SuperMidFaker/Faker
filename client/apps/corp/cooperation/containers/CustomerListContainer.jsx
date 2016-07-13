@@ -5,7 +5,7 @@ import { inviteOfflinePartner } from 'common/reducers/invitation';
 
 @connect(state => ({
   partnerlist: state.partner.partnerlist,
-  tenantId: state.account.tenantId
+  tenantId: state.account.tenantId,
 }), { inviteOnlPartner, addPartner, editPartner, changePartnerStatus, deletePartner, inviteOfflinePartner, invitePartner })
 export default class CustomerListContainer extends BaseList {
   constructor() {

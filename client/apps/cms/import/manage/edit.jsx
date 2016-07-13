@@ -6,6 +6,6 @@ export default class ImportManageCreate extends React.Component {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <Edit type="import" { ...this.props } />;
+    return <Edit type="import" {...this.props} />;
   }
 }

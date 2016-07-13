@@ -13,8 +13,8 @@ export default [
   ['post', '/whexchange/inbound', inboundP],
   ['post', '/whexchange/outbound', outboundP],
   ['post', '/whexchange/inventory', inventoryP],
-  ['post', '/whexchange/fees', feesP]
-]
+  ['post', '/whexchange/fees', feesP],
+];
 
 function *customersP() {
   const body = yield cobody(this);
@@ -22,7 +22,7 @@ function *customersP() {
   body.forEach((customer) => {
     whCustomers.push({
       whno: customer.wh_no,
-      customerno: customer.customer_no
+      customerno: customer.customer_no,
     });
   });
   let trans;

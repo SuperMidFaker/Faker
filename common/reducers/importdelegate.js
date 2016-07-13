@@ -1,8 +1,8 @@
 import {
-  CLIENT_API
+  CLIENT_API,
 } from 'common/reduxMiddlewares/requester';
 import {
-  createActionTypes
+  createActionTypes,
 } from 'client/common/redux-actions';
 import {
   appendFormAcitonTypes,
@@ -11,7 +11,7 @@ import {
   loadFormC,
   assignFormC,
   clearFormC,
-  setFormValueC
+  setFormValueC,
 } from './form-common';
 const initialState = {
   loaded: false, // used by isLoad action
@@ -21,26 +21,26 @@ const initialState = {
   editIndex: -1,
   tenant: {
     id: -1,
-    parentId: -1
+    parentId: -1,
   },
   idlist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
-    data: []
+    data: [],
   },
   loglist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
-    data: []
+    data: [],
   },
   statusList: { // 初始化状态显示数量
     statusValue: '0',
     notSendCount: 0,
     notAcceptCount: 0,
     acceptCount: 0,
-    invalidCount: 0
+    invalidCount: 0,
   },
   customsBrokerList: [],
   selectOptions: {
@@ -48,11 +48,11 @@ const initialState = {
     declareWayList: [],
     tradeModeList: [],
     declareFileList: [],
-    declareCategoryList: []
+    declareCategoryList: [],
   },
   sendlist: {
-    data: []
-  }
+    data: [],
+  },
 };
 // 定义操作状态 每个操作默认有三个状态 [进行时、成功、失败],在每个action提交的时候,type数组必须按照该类型排序
 const actions = [
@@ -67,7 +67,7 @@ const actions = [
   'SEND_LOAD', 'SEND_LOAD_SUCCEED', 'SEND_LOAD_FAIL',
   'SEND', 'SEND_SUCCEED', 'SEND_FAIL',
   'INVALID', 'INVALID_SUCCEED', 'INVALID_FAIL',
-  'LOG_LOAD', 'LOG_LOAD_SUCCEED', 'LOG_LOAD_FAIL'
+  'LOG_LOAD', 'LOG_LOAD_SUCCEED', 'LOG_LOAD_FAIL',
 ];
 const domain = '@@welogix/importdelegate/';
 const actionTypes = createActionTypes(domain, actions);
@@ -76,69 +76,69 @@ appendFormAcitonTypes(domain, actionTypes);
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.ID_LOAD:
-      return {...state,
+      return { ...state,
         loading: true,
-        needUpdate: false
+        needUpdate: false,
       };
     case actionTypes.ID_LOAD_SUCCEED:
-      return {...state,
+      return { ...state,
         loaded: true,
         loading: false,
-        statusList: {...state.statusList,
+        statusList: { ...state.statusList,
           statusValue: action.params.currentStatus || '0',
           invalidCount: action.result.data.statusList.invalidCount,
           notSendCount: action.result.data.statusList.notSendCount,
           notAcceptCount: action.result.data.statusList.notAcceptCount,
-          acceptCount: action.result.data.statusList.acceptCount
+          acceptCount: action.result.data.statusList.acceptCount,
         },
-        idlist: action.result.data.idlist
+        idlist: action.result.data.idlist,
       };
     case actionTypes.LOG_LOAD_SUCCEED:
-      return {...state,
+      return { ...state,
         loaded: true,
         loading: false,
-        loglist: action.result.data.loglist
+        loglist: action.result.data.loglist,
       };
     case actionTypes.ID_LOAD_FAIL:
-      return {...state,
+      return { ...state,
         loaded: true,
         loading: false,
-        idlist: initialState.idlist
+        idlist: initialState.idlist,
       };
     case actionTypes.FILE_UPLOAD_SUCCEED:
       {
-        const selectOptions = {...state.selectOptions
+        const selectOptions = { ...state.selectOptions,
         };
         selectOptions.declareFileList.push({
           id: -1,
           url: action.result.data,
           doc_name: action.fileName,
           category: action.category,
-          fileflag: 0
+          fileflag: 0,
         });
         selectOptions.declareCategoryList.push({
-          category: action.category
+          category: action.category,
         });
-        return {...state,
-          selectOptions
+        return { ...state,
+          selectOptions,
         };
       }
 
     case actionTypes.REMOVEFILE:
       {
-        const selectOptions = {...state.selectOptions
+        const selectOptions = { ...state.selectOptions,
         };
         selectOptions.declareFileList[action.index].fileflag = -1;
-        return {...state,
-          selectOptions
+        return { ...state,
+          selectOptions,
         };
       }
 
     case actionTypes.ID_SUBMIT_SUCCEED:
       {
-        const idlist = {...state.idlist
+        const idlist = { ...state.idlist,
         };
-        const statusList = {...state.statusList
+        const statusList = { ...state.statusList,
         };
         if ((idlist.current - 1) * idlist.pageSize <= idlist.totalCount // '=' because of totalCount 0
           && idlist.current * idlist.pageSize > idlist.totalCount) {
@@ -146,103 +146,103 @@ export default function reducer(state = initialState, action) {
         }
         idlist.totalCount++;
         statusList.notSendCount++;
-        return {...state,
+        return { ...state,
           idlist,
-          statusList
+          statusList,
         };
       }
     case actionTypes.ID_UPDATE_SUCCEED:
       {
         const idDataArray = [...state.idlist.data];
         idDataArray[state.editIndex] = action.data.importdelegate;
-        return {...state,
-          idlist: {...state.idlist,
-            data: idDataArray
+        return { ...state,
+          idlist: { ...state.idlist,
+            data: idDataArray,
           },
           formData: {},
-          editIndex: -1
+          editIndex: -1,
         };
       }
     case actionTypes.ID_DELETE_SUCCEED:
-      return {...state,
+      return { ...state,
         needUpdate: true,
-        idlist: {...state.idlist,
-          totalCount: state.idlist.totalCount - 1
-        }
+        idlist: { ...state.idlist,
+          totalCount: state.idlist.totalCount - 1,
+        },
       };
     case actionTypes.ID_BEGIN_EDIT:
-      return {...state,
+      return { ...state,
         formData: action.data.item,
-        editIndex: action.data.index
+        editIndex: action.data.index,
       };
     case actionTypes.ID_EDIT:
-      return {...state,
-        formData: {...state.formData,
-          [action.data.name]: action.data.value
-        }
+      return { ...state,
+        formData: { ...state.formData,
+          [action.data.name]: action.data.value,
+        },
       };
     case actionTypes.ID_EDIT_CANCEL:
-      return {...state,
+      return { ...state,
         formData: {},
-        editIndex: -1
+        editIndex: -1,
       };
     case actionTypes.ID_LOAD_STATUS:
-      return {...state,
-        statusList: initialState.statusList
+      return { ...state,
+        statusList: initialState.statusList,
       };
     case actionTypes.ID_LOAD_STATUS_SUCCEED:
-      return {...state,
-        statusList: {...state.statusList,
+      return { ...state,
+        statusList: { ...state.statusList,
           invalidCount: action.result.data.invalidCount,
           notSendCount: action.result.data.notSendCount,
           notAcceptCount: action.result.data.notAcceptCount,
-          acceptCount: action.result.data.acceptCount
-        }
+          acceptCount: action.result.data.acceptCount,
+        },
       };
     case actionTypes.ID_LOAD_STATUS_FAIL:
-      return {...state,
-        statusList: initialState.statusList
+      return { ...state,
+        statusList: initialState.statusList,
       };
     case actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED:
-      return {...state,
-        customsBrokerList: action.result.data
+      return { ...state,
+        customsBrokerList: action.result.data,
       };
     case actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED:
-      return {...state,
-        selectOptions: {...state.selectOptions,
+      return { ...state,
+        selectOptions: { ...state.selectOptions,
           customsInfoList: action.result.data.customsInfoList,
           declareWayList: action.result.data.declareWayList,
           tradeModeList: action.result.data.tradeModeList,
           declareFileList: action.result.data.declareFileList,
-          declareCategoryList: action.result.data.declareCategoryList
-        }
+          declareCategoryList: action.result.data.declareCategoryList,
+        },
       };
     case actionTypes.IMPORT_EDIT_SUCCEED:
       {
         if (state.selectedIndex !== -1) {
-          const idlist = {...state.idlist
+          const idlist = { ...state.idlist,
           };
           idlist.data[state.selectedIndex] = action.data.importdelegate;
-          return {...state,
+          return { ...state,
             selectedIndex: -1,
-            idlist
+            idlist,
           };
         } else {
-          return {...state
+          return { ...state,
           };
         }
       }
     case actionTypes.SEND_LOAD_SUCCEED:
-      return {...state,
+      return { ...state,
         loaded: true,
         loading: false,
         sendlist: {
-          data: action.sendlist.data
-        }
+          data: action.sendlist.data,
+        },
       };
     case actionTypes.SEND_SUCCEED:
       {
-        const idlist = {...state.idlist
+        const idlist = { ...state.idlist,
         };
         const newlist = [];
 
@@ -252,19 +252,19 @@ export default function reducer(state = initialState, action) {
           }
         });
 
-        return {...state,
-          idlist: {...state.idlist,
-            data: newlist
+        return { ...state,
+          idlist: { ...state.idlist,
+            data: newlist,
           },
-          statusList: {...state.statusList,
+          statusList: { ...state.statusList,
             notSendCount: state.statusList.notSendCount - (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1),
-            notAcceptCount: state.statusList.notAcceptCount + (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1)
-          }
+            notAcceptCount: state.statusList.notAcceptCount + (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1),
+          },
         };
       }
     case actionTypes.INVALID_SUCCEED:
       {
-        const idlist = {...state.idlist
+        const idlist = { ...state.idlist,
         };
         const newlist = [];
 
@@ -274,16 +274,16 @@ export default function reducer(state = initialState, action) {
           }
         });
 
-        return {...state,
-          idlist: {...state.idlist,
-            data: newlist
+        return { ...state,
+          idlist: { ...state.idlist,
+            data: newlist,
           },
-          statusList: {...state.statusList,
+          statusList: { ...state.statusList,
             notSendCount: state.statusList.notSendCount - (action.params.curStatus === 0 ? 1 : 0),
             notAcceptCount: state.statusList.notAcceptCount - (action.params.curStatus === 1 ? 1 : 0),
             acceptCount: state.statusList.acceptCount - (action.params.curStatus === 2 ? 1 : 0),
-            invalidCount: state.statusList.invalidCount + 1
-          }
+            invalidCount: state.statusList.invalidCount + 1,
+          },
         };
       }
     default:
@@ -298,8 +298,8 @@ export function loadDelegates(cookie, params) {
       endpoint: 'v1/import/importdelegates',
       method: 'get',
       cookie,
-      params
-    }
+      params,
+    },
   };
 }
 
@@ -312,9 +312,9 @@ export function submit(importdelegate, params) {
       method: 'post',
       data: {
         importdelegate,
-        params
-      }
-    }
+        params,
+      },
+    },
   };
 }
 
@@ -325,9 +325,9 @@ export function updateId(importdelegate) {
       endpoint: 'v1/import/importdelegate',
       method: 'put',
       data: {
-        importdelegate
-      }
-    }
+        importdelegate,
+      },
+    },
   };
 }
 
@@ -338,9 +338,9 @@ export function delId(idkey) {
       endpoint: 'v1/import/importdelegate',
       method: 'del',
       data: {
-        idkey
-      }
-    }
+        idkey,
+      },
+    },
   };
 }
 
@@ -351,8 +351,8 @@ export function loadStatus(cookie, params) {
       endpoint: 'v1/import/status',
       method: 'get',
       cookie,
-      params
-    }
+      params,
+    },
   };
 }
 
@@ -362,8 +362,8 @@ export function loadCustomsBrokers(cookie, tenantId) {
       types: [actionTypes.ID_LOAD_CUSTOMSBROKERS, actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED, actionTypes.ID_LOAD_CUSTOMSBROKERS_FAIL],
       endpoint: `v1/import/${tenantId}/customsBrokers`,
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -371,11 +371,11 @@ export function loadSelectOptions(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_LOAD_SELECTOPTIONS, actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED, actionTypes.ID_LOAD_SELECTOPTIONS_FAIL],
-      endpoint: `v1/import/getSelectOptions`,
+      endpoint: 'v1/import/getSelectOptions',
       method: 'get',
       cookie,
-      params
-    }
+      params,
+    },
   };
 }
 
@@ -389,7 +389,7 @@ export function isFormDataLoaded(importdelegateState, idId) {
 
 export function loadForm(cookie, idId) {
   return loadFormC(cookie, 'v1/import/importdelegate', {
-    pid: idId
+    pid: idId,
   }, actionTypes);
 }
 
@@ -409,15 +409,15 @@ export function uploadFiles(file, fileName, category) {
       method: 'post',
       files: file,
       fileName,
-      category
-    }
+      category,
+    },
   };
 }
 
 export function removeFile(index) {
   return {
     type: actionTypes.REMOVEFILE,
-    index
+    index,
   };
 }
 
@@ -429,9 +429,9 @@ export function edit(importdelegate, params) {
       method: 'put',
       data: {
         importdelegate,
-        params
-      }
-    }
+        params,
+      },
+    },
   };
 }
 
@@ -441,22 +441,22 @@ export function beginEdit(item, index) {
     type: actionTypes.ID_BEGIN_EDIT,
     data: {
       item,
-      index
-    }
+      index,
+    },
   };
 }
 
 
 export function cancelEdit() {
   return {
-    type: actionTypes.ID_EDIT_CANCEL
+    type: actionTypes.ID_EDIT_CANCEL,
   };
 }
 
 export function loadSend(sendlist) {
   return {
     type: actionTypes.SEND_LOAD_SUCCEED,
-    sendlist
+    sendlist,
   };
 }
 
@@ -466,8 +466,8 @@ export function sendDelegate(params) {
       types: [actionTypes.SEND, actionTypes.SEND_SUCCEED, actionTypes.SEND_FAIL],
       endpoint: 'v1/import/senddelegate',
       method: 'put',
-      params
-    }
+      params,
+    },
   };
 }
 
@@ -477,8 +477,8 @@ export function invalidDelegate(params) {
       types: [actionTypes.INVALID, actionTypes.INVALID_SUCCEED, actionTypes.INVALID_FAIL],
       endpoint: 'v1/import/invalidDelegate',
       method: 'put',
-      params
-    }
+      params,
+    },
   };
 }
 
@@ -488,7 +488,7 @@ export function loadLogs(params) {
       types: [actionTypes.LOG_LOAD, actionTypes.LOG_LOAD_SUCCEED, actionTypes.LOG_LOAD_FAIL],
       endpoint: 'v1/import/importdelegatelogs',
       method: 'get',
-      params
-    }
+      params,
+    },
   };
 }

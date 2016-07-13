@@ -9,6 +9,6 @@ export default {
     var sql = 'insert into sso_sms(phone, code, created_date, type) values(?, ?, NOW(), ?)';
     var args = [phone, code, type];
     return mysql.insert(sql, args);
-  }
-}
+  },
+};
 

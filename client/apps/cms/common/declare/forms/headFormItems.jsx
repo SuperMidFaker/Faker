@@ -67,14 +67,14 @@ export function PortDate(props) {
   return (
     <Col span="15">
       <FormLocalSearchSelect {...customsProps} />
-      <FormDatePicker { ...ieDateProps } />
-      <FormDatePicker { ...dDateProps } />
+      <FormDatePicker {...ieDateProps} />
+      <FormDatePicker {...dDateProps} />
     </Col>
   );
 }
 PortDate.propTypes = {
   intl: intlShape.isRequired,
-  ietype: PropTypes.oneOf([ 'import', 'export' ]),
+  ietype: PropTypes.oneOf(['import', 'export']),
   disabled: PropTypes.bool,
   getFieldProps: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
@@ -119,12 +119,13 @@ export function RelationAutoCompSelect(props) {
               }
             </Select>
           </Col>
-          <Col span="12" style={{paddingRight: 0}}>
+          <Col span="12" style={{ paddingRight: 0 }}>
             <Input placeholder={msg('relationName')} disabled={disabled}
-            {...getFieldProps(nameField, {
+              {...getFieldProps(nameField, {
               rules: nameRules,
               initialValue: formData && formData[nameField],
-            })} disabled={disabled} />
+            })} disabled={disabled}
+            />
           </Col>
         </CompositeInputGroup>
       </FormItem>
@@ -182,9 +183,9 @@ export function Transport(props) {
   };
   return (
     <Col span="15">
-      <FormLocalSearchSelect { ...modeProps } />
-      <FormInput { ...modeNameProps} />
-      <FormInput { ...blwbProps} />
+      <FormLocalSearchSelect {...modeProps} />
+      <FormInput {...modeNameProps} />
+      <FormInput {...blwbProps} />
     </Col>
   );
 }
@@ -240,9 +241,9 @@ export function TradeRemission(props) {
   };
   return (
     <Col span="15">
-      <FormLocalSearchSelect { ...tradeModeProps } />
-      <FormLocalSearchSelect { ...remissionProps} />
-      <FormInput { ...emsNoProps} />
+      <FormLocalSearchSelect {...tradeModeProps} />
+      <FormLocalSearchSelect {...remissionProps} />
+      <FormInput {...emsNoProps} />
     </Col>
   );
 }
@@ -267,7 +268,7 @@ export function CountryAttr(props) {
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
     })),
     label: msg('tradeCountry'),
-    rules: [{ required: false, }],
+    rules: [{ required: false }],
     disabled,
     formData,
     getFieldProps,
@@ -282,7 +283,7 @@ export function CountryAttr(props) {
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
     })),
     label: ietype === 'import' ? msg('departCountry') : msg('destinateCountry'),
-    rules: [{ required: false, }],
+    rules: [{ required: false }],
     disabled,
     formData,
     getFieldProps,
@@ -349,21 +350,21 @@ export function CountryAttr(props) {
   };
   return (
     <Col span="9">
-      <FormLocalSearchSelect { ...tradeCountryProps } />
-      <FormLocalSearchSelect { ...departCountryProps } />
-      <FormInput { ...licenseNoProps } />
-      <FormLocalSearchSelect { ...trxModeProps } />
-      <FormInput { ...contractNoProps } />
-      <FormInput { ...packCountProps } />
-      <FormInput { ...containerNoProps } />
-      <FormInput { ...usageProps } />
+      <FormLocalSearchSelect {...tradeCountryProps} />
+      <FormLocalSearchSelect {...departCountryProps} />
+      <FormInput {...licenseNoProps} />
+      <FormLocalSearchSelect {...trxModeProps} />
+      <FormInput {...contractNoProps} />
+      <FormInput {...packCountProps} />
+      <FormInput {...containerNoProps} />
+      <FormInput {...usageProps} />
     </Col>
   );
 }
 
 CountryAttr.propTypes = {
   intl: intlShape.isRequired,
-  ietype: PropTypes.oneOf([ 'import', 'export' ]),
+  ietype: PropTypes.oneOf(['import', 'export']),
   disabled: PropTypes.bool,
   getFieldProps: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
@@ -415,17 +416,17 @@ export function DestInvoice(props) {
   };
   return (
     <Col span="15">
-      <FormRemoteSearchSelect { ...destPortProps } />
-      <FormLocalSearchSelect { ...districtProps } />
-      { type === 'bill' && <FormInput { ...invoiceNoProps} /> }
+      <FormRemoteSearchSelect {...destPortProps} />
+      <FormLocalSearchSelect {...districtProps} />
+      {type === 'bill' && <FormInput {...invoiceNoProps} />}
     </Col>
   );
 }
 
 DestInvoice.propTypes = {
   intl: intlShape.isRequired,
-  ietype: PropTypes.oneOf([ 'import', 'export' ]),
-  type: PropTypes.oneOf([ 'bill', 'entry' ]),
+  ietype: PropTypes.oneOf(['import', 'export']),
+  type: PropTypes.oneOf(['bill', 'entry']),
   disabled: PropTypes.bool,
   getFieldProps: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
@@ -458,7 +459,7 @@ function FeeFormItem(props) {
         <Col span="12">
           <FormInput {...feeProps} />
         </Col>
-        <Col span="12" style={{paddingRight: 0}}>
+        <Col span="12" style={{ paddingRight: 0 }}>
           <FormLocalSearchSelect {...currencyProps} />
         </Col>
       </InputGroup>
@@ -482,15 +483,18 @@ export function Fee(props) {
     <Col span="15">
       <Col span="8">
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
-          currencyField="fee_curr" />
+          currencyField="fee_curr"
+        />
       </Col>
       <Col span="8">
         <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
-          currencyField="insur_curr" />
+          currencyField="insur_curr"
+        />
       </Col>
       <Col span="8">
         <FeeFormItem {...props} label={msg('sundry')} feeField="other_rate"
-          currencyField="other_curr" />
+          currencyField="other_curr"
+        />
       </Col>
     </Col>
   );

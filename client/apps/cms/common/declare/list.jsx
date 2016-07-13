@@ -71,7 +71,7 @@ export default class DeclareList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.status !== this.props.params.status) {
@@ -117,7 +117,7 @@ export default class DeclareList extends React.Component {
      */
       return params;
     },
-    remotes: this.props.delgList
+    remotes: this.props.delgList,
   })
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -143,7 +143,7 @@ export default class DeclareList extends React.Component {
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     this.context.router.push({ pathname:
-      `/${this.props.ietype}/declare/list/${targetVal}`
+      `/${this.props.ietype}/declare/list/${targetVal}`,
     });
   }
   handleEntryNoFill = (row) => {

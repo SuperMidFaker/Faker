@@ -28,7 +28,7 @@ function fetch({ state, dispatch, cookie }) {
   lspLoaded: state.transportDispatch.lspLoaded,
   dispatched: state.transportDispatch.dispatched,
   vehicleTypes: state.transportDispatch.vehicleTypes,
-  vehicleLengths: state.transportDispatch.vehicleLengths
+  vehicleLengths: state.transportDispatch.vehicleLengths,
 }), { loadLsps, loadVehicles, doDispatch })
 export default class DispatchDock extends Component {
   static propTypes = {
@@ -47,7 +47,7 @@ export default class DispatchDock extends Component {
     dispatched: PropTypes.bool.isRequired,
     loginId: PropTypes.number.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
-    vehicleLengths: PropTypes.array.isRequired
+    vehicleLengths: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -56,7 +56,7 @@ export default class DispatchDock extends Component {
     this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
     this.onCloseWrapper = (reload) => {
-      this.setState({quotation: 0, podType: 'ePOD'});
+      this.setState({ quotation: 0, podType: 'ePOD' });
       this.onClose(reload);
     };
     this.consigneeCols = [{
@@ -67,26 +67,26 @@ export default class DispatchDock extends Component {
         return (<span>
                 <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
                 </span>);
-      }
+      },
     }, {
       title: '承运商',
       dataIndex: 'partner_name',
-      width: 180
+      width: 180,
     }, {
       title: '价格协议',
       dataIndex: 'quotation_promise',
       width: 100,
-      render: () => (<span></span>)
+      render: () => (<span></span>),
     }, {
       title: '运输时效',
       dataIndex: 'transit',
       width: 80,
-      render: () => (<span></span>)
+      render: () => (<span></span>),
     }, {
       title: '成本价（元）',
       dataIndex: 'quotation',
       width: 120,
-      render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
+      render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />),
     }, {
       title: this.msg('shipmtOP'),
       width: 50,
@@ -95,16 +95,16 @@ export default class DispatchDock extends Component {
                 <a role="button" onClick={() => this.showConfirm('tenant', record)}>
                 {this.msg('btnTextDispatch')}
                 </a></span>);
-      }
+      },
     }];
     this.vehicleCols = [{
       title: '车牌',
       dataIndex: 'plate_number',
-      width: 50
+      width: 50,
     }, {
       title: '司机',
       dataIndex: 'name',
-      width: 50
+      width: 50,
     }, {
       title: '车型',
       dataIndex: 'type',
@@ -114,7 +114,7 @@ export default class DispatchDock extends Component {
           return this.props.vehicleTypes[t].text;
         }
         return '';
-      }
+      },
     }, {
       title: '车长',
       dataIndex: 'length',
@@ -124,25 +124,25 @@ export default class DispatchDock extends Component {
           return this.props.vehicleLengths[l].text;
         }
         return '';
-      }
+      },
     }, {
       title: '载重',
       width: 30,
-      dataIndex: 'load_weight'
+      dataIndex: 'load_weight',
     }, {
       title: '已分配',
       dataIndex: 'dispatched',
       width: 20,
       render: () => {
         return (<span>否</span>);
-      }
+      },
     }, {
       title: '在途',
       dataIndex: 'driving',
       width: 20,
       render: () => {
         return (<span>否</span>);
-      }
+      },
     }, {
       title: this.msg('shipmtOP'),
       width: 50,
@@ -151,7 +151,7 @@ export default class DispatchDock extends Component {
                 <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
                 {this.msg('btnTextDispatch')}
                 </a></span>);
-      }
+      },
     }];
   }
 
@@ -170,7 +170,7 @@ export default class DispatchDock extends Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize
+      pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -183,7 +183,7 @@ export default class DispatchDock extends Component {
       };
       return params;
     },
-    remotes: this.props.lsps
+    remotes: this.props.lsps,
   })
 
   vesds = new Table.DataSource({
@@ -194,7 +194,7 @@ export default class DispatchDock extends Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize
+      pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -207,7 +207,7 @@ export default class DispatchDock extends Component {
       };
       return params;
     },
-    remotes: this.props.vehicles
+    remotes: this.props.vehicles,
   })
 
   handleShipmtDispatch(type, target) {
@@ -215,7 +215,7 @@ export default class DispatchDock extends Component {
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
     const shipmtNos = shipmts.map(s => {
-      return {shipmtNo: s.shipmt_no, dispId: s.key};
+      return { shipmtNo: s.shipmt_no, dispId: s.key };
     });
     if (type === 'tenant') {
       this.props.doDispatch(null, {
@@ -227,7 +227,7 @@ export default class DispatchDock extends Component {
         partnerTenantId: target.partner_tenant_id,
         freightCharge: this.state.quotation,
         podType,
-        type
+        type,
       }).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -247,7 +247,7 @@ export default class DispatchDock extends Component {
         taskDriverName: target.name,
         freightCharge: this.state.quotation,
         podType,
-        type
+        type,
       }).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -260,7 +260,7 @@ export default class DispatchDock extends Component {
 
   handleQuotationChange = val => {
     this.setState({
-      quotation: val
+      quotation: val,
     });
   }
 
@@ -270,7 +270,7 @@ export default class DispatchDock extends Component {
       this.props.loadVehicles(null, {
         tenantId,
         pageSize: vehicles.pageSize,
-        current: 1
+        current: 1,
       }).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -282,7 +282,7 @@ export default class DispatchDock extends Component {
       this.props.loadLsps(null, {
         tenantId,
         pageSize: lsps.pageSize,
-        current: 1
+        current: 1,
       }).then(result => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -292,7 +292,7 @@ export default class DispatchDock extends Component {
   }
 
   handlePodTypeChange = podType => {
-    this.setState({podType});
+    this.setState({ podType });
   }
   handleCarrierSearch = value => {
     const { lsps, tenantId } = this.props;
@@ -307,7 +307,7 @@ export default class DispatchDock extends Component {
       }
     });
     this.setState({
-      carrierSearch: value
+      carrierSearch: value,
     });
   }
   handlePlateSearch = value => {
@@ -323,11 +323,11 @@ export default class DispatchDock extends Component {
       }
     });
     this.setState({
-      plateSearch: value
+      plateSearch: value,
     });
   }
   showConfirm(type, target) {
-    const [ shipmt ] = this.props.shipmts;
+    const [shipmt] = this.props.shipmts;
     let msg = `即将【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运，请选择对回单的要求：`;
     if (type === 'vehicle') {
       msg = `将【${shipmt.shipmt_no}】分配给【${target.plate_number}】承运，请选择对回单的要求：`;
@@ -339,7 +339,7 @@ export default class DispatchDock extends Component {
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
         this.handleShipmtDispatch(type, target);
-      }
+      },
     });
   }
 
@@ -397,14 +397,14 @@ export default class DispatchDock extends Component {
                   </div>
                 </div>
               </div>);*/
-        dock = (
+      dock = (
           <div className="dock-panel inside">
             <div className="panel-content">
               <div className="header">
                 <span className="title">分配 {shipmts.length}个运单</span>
                 <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
                 <div className="pull-right">
-                  <Button type="ghost" shape="circle-outline" onClick={ this.onCloseWrapper }>
+                  <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
                     <Icon type="cross" />
                   </Button>
                 </div>
@@ -441,7 +441,7 @@ export default class DispatchDock extends Component {
     }
 
     return (
-      <QueueAnim key="dockcontainer" animConfig={{translateX:[0, 600], opacity:[1, 1]}}>{dock}</QueueAnim>
+      <QueueAnim key="dockcontainer" animConfig={{ translateX: [0, 600], opacity: [1, 1] }}>{dock}</QueueAnim>
     );
   }
 }

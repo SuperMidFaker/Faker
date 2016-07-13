@@ -1,10 +1,10 @@
 import mysql from '../util/mysql';
 function prepareAllParameter(wh) {
   const args = [];
-  const whColumns = [`wh_no`, `wh_mode`, `wh_name`, `wh_short_name`, `open_date`, `acreage`, `day_rent`,
-    `rent_term`, `wh_desc`, `service_man_qty`, `service_time`, `week_days`, `rest_man_qty`, `vacation_day`, `service_mode`,
-  `country`, `province`, `city`, `district`, `address`, `longitude`, `latitude`, `zip_code`, `linkman`, `mobile`,
-  `telephone`, `fax`, `email`, `qq`, `url`, `remark`];
+  const whColumns = ['wh_no', 'wh_mode', 'wh_name', 'wh_short_name', 'open_date', 'acreage', 'day_rent',
+    'rent_term', 'wh_desc', 'service_man_qty', 'service_time', 'week_days', 'rest_man_qty', 'vacation_day', 'service_mode',
+  'country', 'province', 'city', 'district', 'address', 'longitude', 'latitude', 'zip_code', 'linkman', 'mobile',
+  'telephone', 'fax', 'email', 'qq', 'url', 'remark'];
   whColumns.forEach((column) => {
     if (column in wh) {
       if (column === 'open_date') {
@@ -22,8 +22,8 @@ function prepareAllParameter(wh) {
 function packSlicedCondition(opts, args) {
   let TRANS_DATE = '';
   if (opts.date) {
-      TRANS_DATE += 'and trans_date = ?';
-      args.push(opts.date);
+    TRANS_DATE += 'and trans_date = ?';
+    args.push(opts.date);
   } else {
     if (opts.date_start) {
       TRANS_DATE += 'and trans_date >= ?';
@@ -79,7 +79,7 @@ function packSlicedCondition(opts, args) {
 }
 export default {
   getWhTotalCount(corpId) {
-    const sql = `select count(id) as count from wms_warehouses where corp_id = ?`;
+    const sql = 'select count(id) as count from wms_warehouses where corp_id = ?';
     const args = [corpId];
     return mysql.query(sql, args);
   },
@@ -187,5 +187,5 @@ export default {
       = C.customer_no where C.account_id = ?) AS AUTH on WH.wh_no = AUTH.wh_no where 1=1 ${LIMIT}`;
     console.log('args', args, 'sql', sql);
     return mysql.query(sql, args);
-  }
-}
+  },
+};

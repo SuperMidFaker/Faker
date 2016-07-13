@@ -11,13 +11,13 @@ const SubMenu = Menu.SubMenu;
 @injectIntl
 @connect(
   state => ({
-    avatar: state.account.profile.avatar
+    avatar: state.account.profile.avatar,
   })
 )
 export default class AmUserNav extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    avatar: PropTypes.string
+    avatar: PropTypes.string,
   }
   render() {
     const MenuItem = Menu.Item;
@@ -25,7 +25,7 @@ export default class AmUserNav extends React.Component {
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     return (
       <Menu mode="horizontal">
-        <SubMenu title={<span><img className="avatar" src={avatar || defaultAvatar } /> <i className="angle-down s7-angle-down"/></span>}>
+        <SubMenu title={<span><img className="avatar" src={avatar || defaultAvatar} /> <i className="angle-down s7-angle-down" /></span>}>
           <MenuItem key="corps">
             <NavLink to="/account/profile">
               <Icon type="solution" />
@@ -38,7 +38,7 @@ export default class AmUserNav extends React.Component {
               <span>{formatMsg(intl, 'pwdSetting')}</span>
             </NavLink>
           </MenuItem>
-          <Menu.Divider/>
+          <Menu.Divider />
           <MenuItem>
             <a href="/account/logout">
               <Icon type="logout" />

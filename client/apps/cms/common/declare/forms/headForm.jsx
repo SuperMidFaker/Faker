@@ -13,9 +13,9 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 const CODE_AS_STATE = {
-  'forwarder_code': 'forwarders',
-  'owner_code': 'owners',
-  'agent_code': 'agents',
+  forwarder_code: 'forwarders',
+  owner_code: 'owners',
+  agent_code: 'agents',
 };
 
 @injectIntl
@@ -33,7 +33,7 @@ export default class HeadForm extends React.Component {
     ietype: PropTypes.string.isRequired,
     readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
-    type: PropTypes.oneOf([ 'bill', 'entry' ]),
+    type: PropTypes.oneOf(['bill', 'entry']),
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
@@ -68,12 +68,12 @@ export default class HeadForm extends React.Component {
     };
     return (
       <Form horizontal form={form} className="form-compact">
-        { type === 'entry' &&
+        {type === 'entry' &&
           <FormInput field="pre_entry_id" outercol={9} col={6}
             label={this.msg('preEntryId')} {...formProps}
           />
         }
-        { type === 'entry' &&
+        {type === 'entry' &&
           <Col span="15">
             <FormInput field="entry_id" outercol={16} col={4}
               label={this.msg('formEntryId')} {...formProps}
@@ -84,21 +84,22 @@ export default class HeadForm extends React.Component {
           codeField="forwarder_code" nameField="forwarder_name"
           codeRules={[{ required: true }]} nameRules={[{ required: true }]}
           onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-          {...formProps} options={formRequire.forwarders}/>
+          {...formProps} options={formRequire.forwarders}
+        />
         <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
           onSearch={this.handlePortSearch}
         />
         <RelationAutoCompSelect label={
           ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
           } codeField="owner_code" nameField="owner_name" intl={intl}
-          codeRules={[ { required: true } ]} nameRules={[ { required: true }]}
+          codeRules={[{ required: true }]} nameRules={[{ required: true }]}
           onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
           {...formProps} options={formRequire.owners}
         />
-        <Transport {...formProps} intl={intl} formRequire={formRequire}/>
+        <Transport {...formProps} intl={intl} formRequire={formRequire} />
         <RelationAutoCompSelect label={this.msg('agentName')}
           codeField="agent_code" nameField="agent_name" intl={intl}
-          codeRules={[ {required: true} ]} nameRules={[ { required: true } ]}
+          codeRules={[{ required: true }]} nameRules={[{ required: true }]}
           onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
           {...formProps} options={formRequire.agents}
         />

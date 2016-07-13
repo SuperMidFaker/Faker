@@ -17,7 +17,7 @@ const MenuItem = Menu.Item;
     text: formatContainerMsg(props.intl, 'transportTracking'),
     moduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: null
+    goBackFn: null,
   }));
 })
 export default class TrackingMenu extends React.Component {
@@ -35,7 +35,7 @@ export default class TrackingMenu extends React.Component {
   componentWillMount() {
     if (this.props.location && this.props.location.pathname) {
       const paths = this.props.location.pathname.split('/');
-      this.setState({ currentKey: [ paths[3] ] });
+      this.setState({ currentKey: [paths[3]] });
     }
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
@@ -54,7 +54,7 @@ export default class TrackingMenu extends React.Component {
     return (
       <div>
         <Menu mode="horizontal" selectedKeys={this.state.currentKey}
-        onClick={this.handleMenuChange}
+          onClick={this.handleMenuChange}
         >
           <MenuItem key="land">{this.msg('landTransport')}</MenuItem>
           <MenuItem key="air">{this.msg('airTransport')}</MenuItem>

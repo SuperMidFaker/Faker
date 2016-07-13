@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { load, submit, update, del, beginEdit, edit, cancelEdit } from 'common/reducers/notice';
 import { isLoaded } from 'client/common/redux-actions';
-import {Table, Button, Icon, Form, Input, Row, Col, message} from 'antd';
+import { Table, Button, Icon, Form, Input, Row, Col, message } from 'antd';
 const FormItem = Form.Item;
 
 function fetchData({ state, dispatch, cookie }) {
@@ -20,9 +20,9 @@ function fetchData({ state, dispatch, cookie }) {
     formData: state.notice.formData,
     notices: state.notice.notices,
     needUpdate: state.notice.needUpdate,
-    loading: state.notice.loading
+    loading: state.notice.loading,
   }),
-  {load, submit, update, del, beginEdit, edit, cancelEdit}
+  { load, submit, update, del, beginEdit, edit, cancelEdit }
 )
 @Form.formify({
   mapPropsToFields: (props) => (props.formData),
@@ -32,7 +32,7 @@ function fetchData({ state, dispatch, cookie }) {
       props.edit(key, fields[key].value);
     }
   },
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class Notice extends React.Component {
   static propTypes = {
@@ -49,12 +49,12 @@ export default class Notice extends React.Component {
     cancelEdit: PropTypes.func.isRequired,
     needUpdate: PropTypes.bool,
     corpId: PropTypes.number.isRequired,
-    tenantId: PropTypes.number.isRequired
+    tenantId: PropTypes.number.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = {
-      showForm: false
+      showForm: false,
     };
   }
   handleFormReg() {
@@ -73,7 +73,7 @@ export default class Notice extends React.Component {
             message.error(result.error.message, 10);
           } else {
             this.setState({
-              showForm: false
+              showForm: false,
             });
           }
         });
@@ -84,7 +84,7 @@ export default class Notice extends React.Component {
               message.error(result.error.message, 10);
             } else {
               this.setState({
-                showForm: false
+                showForm: false,
               });
             }
           });
@@ -96,29 +96,30 @@ export default class Notice extends React.Component {
     this.props.formhoc.reset();
     this.props.cancelEdit();
     this.setState({
-      showForm: false
+      showForm: false,
     });
   }
   handleEdit(notice, index) {
     this.props.beginEdit(notice, index);
     this.setState({
-      showForm: true
+      showForm: true,
     });
   }
   handleRemove(key) {
     this.props.del(key);
   }
   renderInput(labelName, field, required, rules, fieldProps) {
-    const {getFieldProps, getFieldError} = this.props.formhoc;
+    const { getFieldProps, getFieldError } = this.props.formhoc;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 8}}
-      help={ rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type="text" {...getFieldProps(field, {rules, ...fieldProps})} />
+      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 8 }}
+        help={rules && getFieldError(field)} hasFeedback required={required}
+      >
+        <Input type="text" {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
   render() {
-    const { notices, loading, needUpdate, formhoc: {getFieldProps, getFieldError} } = this.props;
+    const { notices, loading, needUpdate, formhoc: { getFieldProps, getFieldError } } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.load(params),
       resolve: (result) => result.data,
@@ -132,14 +133,14 @@ export default class Notice extends React.Component {
           Math.ceil(result.totalCount / result.pageSize) : result.current,
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSize: result.pageSize
+        pageSize: result.pageSize,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
         };
         for (const key in filters) {
           if (filters[key]) {
@@ -147,28 +148,28 @@ export default class Notice extends React.Component {
           }
         }
         return params;
-      }
+      },
     });
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
       onSelect: (/* record, selected, selectedRows */) => {
       },
       onSelectAll: (/* selected, selectedRows */) => {
-      }
+      },
     };
     const columns = [{
       title: '标题',
-      dataIndex: 'title'
+      dataIndex: 'title',
     }, {
       title: '分类',
-      dataIndex: 'subject'
+      dataIndex: 'subject',
     }, {
       title: '发布时间',
       dataIndex: 'created_date',
       render: (o, record) => {
         const date = new Date(record.created_date);
         return <span>{`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`}</span>;
-      }
+      },
     }, {
       title: '操作',
       dataIndex: '',
@@ -183,26 +184,27 @@ export default class Notice extends React.Component {
           更多 <Icon type="down" />
           </a>
         </span>);
-      }
+      },
     }];
     return (
       <div className="table-wrapper">
         <div className="row">
-          <div className={ this.state.showForm ? 'form-fade-leave' : '' }>
+          <div className={this.state.showForm ? 'form-fade-leave' : ''}>
             <div className="table-header">
-              <Button type="primary" size="large" onClick={ () => this.handleFormReg() }><Icon type="plus" /><span>新增</span></Button>
+              <Button type="primary" size="large" onClick={() => this.handleFormReg()}><Icon type="plus" /><span>新增</span></Button>
             </div>
             <div className="table-body">
-              <Table rowSelection={rowSelection} columns={ columns } loading={ loading } remoteData={ notices } dataSource={ dataSource }/>
+              <Table rowSelection={rowSelection} columns={columns} loading={loading} remoteData={notices} dataSource={dataSource} />
             </div>
           </div>
-          <div className={ this.state.showForm ? 'form-fade-enter' : 'form-fade-leave' }>
-            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} form={ this.props.formhoc }>
-              {this.renderInput('标题', 'title', true, [{required: true, message: '标题不能为空'}])}
-              {this.renderInput('分类', 'subject', true, [{required: true, message: '类别不能为空'}])}
-              <FormItem label="内容" labelCol={{span: 6}} wrapperCol={{span: 8}}
-              help={getFieldError('body')} hasFeedback required>
-                <Input type="textarea" rows="10" name="body" {...getFieldProps('body', {rules: [{required: true, message: '内容不能为空'}]})} />
+          <div className={this.state.showForm ? 'form-fade-enter' : 'form-fade-leave'}>
+            <Form horizontal onSubmit={(ev) => this.handleSubmit(ev)} form={this.props.formhoc}>
+              {this.renderInput('标题', 'title', true, [{ required: true, message: '标题不能为空' }])}
+              {this.renderInput('分类', 'subject', true, [{ required: true, message: '类别不能为空' }])}
+              <FormItem label="内容" labelCol={{ span: 6 }} wrapperCol={{ span: 8 }}
+                help={getFieldError('body')} hasFeedback required
+              >
+                <Input type="textarea" rows="10" name="body" {...getFieldProps('body', { rules: [{ required: true, message: '内容不能为空' }] })} />
               </FormItem>
               <Row>
                 <Col span="2" offset="8">

@@ -20,8 +20,8 @@ function sendSMS(phones, datas, templateId) {
     const sign = bCryptUtil.md5(sig);
     const url = `${cloopen.url}:${cloopen.port}/${cloopen.ver}/Accounts/${cloopen.accountSid}/SMS/TemplateSMS?sig=${sign.toUpperCase()}`;
     const auth = bCryptUtil.base64Encode(cloopen.accountSid + ':' + timestamp);
-    const body = {'to': phones.join(','), 'templateId': templateId,
-      'datas': datas, 'appId': cloopen.appid};
+    const body = { 'to': phones.join(','), templateId,
+      datas, 'appId': cloopen.appid };
     request.post(url).accept('json').set('Content-Type', 'application/json;charset=utf-8')
     .set('Authorization', auth).send(body)
     .end((err, resp) => {
@@ -32,5 +32,5 @@ function sendSMS(phones, datas, templateId) {
       }
     });
     // options.rejectUnauthorized = false;
-  }
+  };
 }

@@ -18,7 +18,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     if (flt.name === 'type') {
       return {
         name: 'type',
-        value: params.state
+        value: params.state,
       };
     } else {
       return flt;
@@ -57,7 +57,7 @@ export default class LandStatusList extends React.Component {
     showAuditModal: PropTypes.func.isRequired,
     resubmitPod: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadPodTable: PropTypes.func.isRequired
+    loadPodTable: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -68,7 +68,7 @@ export default class LandStatusList extends React.Component {
     }, this.msg);
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,7 +78,7 @@ export default class LandStatusList extends React.Component {
         if (flt.name === 'type') {
           return {
             name: 'type',
-            value: nextProps.params.state
+            value: nextProps.params.state,
           };
         } else {
           return flt;
@@ -112,7 +112,7 @@ export default class LandStatusList extends React.Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize
+      pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -121,7 +121,7 @@ export default class LandStatusList extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-        filters: this.props.filters
+        filters: this.props.filters,
       };
       params.filters = params.filters.filter(
         flt => flt.name === 'type' || flt.name === 'shipmt_no'
@@ -135,7 +135,7 @@ export default class LandStatusList extends React.Component {
       params.filters = JSON.stringify(params.filters);
       return params;
     },
-    remotes: this.props.shipmentlist
+    remotes: this.props.shipmentlist,
   })
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
@@ -187,7 +187,7 @@ export default class LandStatusList extends React.Component {
     if (value !== null && value !== undefined && value !== '') {
       merged.push({
         name,
-        value
+        value,
       });
     }
     return merged;
@@ -200,7 +200,7 @@ export default class LandStatusList extends React.Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
         this.setState({ selectedRowKeys });
-      }
+      },
     };
     return (
       <div>

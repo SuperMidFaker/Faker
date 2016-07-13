@@ -26,7 +26,7 @@ function goBack(router) {
   state => ({
     code: state.account.code,
     loading: state.cmsCompRelation.loading,
-    formData: state.cmsCompRelation.formData
+    formData: state.cmsCompRelation.formData,
   }),
   { loadCompRelation })
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -44,18 +44,18 @@ function goBack(router) {
 export default class EditCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf([ 'import', 'export' ]),
-    loadCompRelation: PropTypes.func.isRequired
+    type: PropTypes.oneOf(['import', 'export']),
+    loadCompRelation: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   render() {
     const { formData } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
-          <CompRelationForm router={this.context.router} formData={formData}/>
+          <CompRelationForm router={this.context.router} formData={formData} />
         </div>
       </div>
     );

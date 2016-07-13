@@ -13,7 +13,7 @@ const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 
 const rowSelection = {
-  onSelect() {}
+  onSelect() {},
 };
 function fetchData({ state, dispatch, cookie }) {
   if (!state.cmsCompRelation.loaded) {
@@ -33,25 +33,25 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     code: state.account.code,
     loading: state.cmsCompRelation.loading,
-    list: state.cmsCompRelation.list
+    list: state.cmsCompRelation.list,
   }),
   { loadCompRelations, switchStatus })
 export default class Manage extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf([ 'import', 'export' ]),
-    loadCompRelations: PropTypes.func.isRequired
+    type: PropTypes.oneOf(['import', 'export']),
+    loadCompRelations: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleStatusSwitch(record, index) {
     this.props.switchStatus(index, record.id, record.status === 1 ? 0 : 1).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        }
-      });
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
   }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
@@ -59,7 +59,7 @@ export default class Manage extends Component {
   renderColumnText(status, text) {
     let style = {};
     if (status === 0) {
-      style = {color: '#CCC'};
+      style = { color: '#CCC' };
     }
     return <span style={style}>{text}</span>;
   }
@@ -70,11 +70,11 @@ export default class Manage extends Component {
       {
         title: msg('comp_code'),
         dataIndex: 'comp_code',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: msg('comp_name'),
         dataIndex: 'comp_name',
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: msg('relation_type'),
         dataIndex: 'relation_type',
@@ -84,7 +84,7 @@ export default class Manage extends Component {
               return this.renderColumnText(record.status, RELATION_TYPES[i].value);
             }
           }
-        }
+        },
       }, {
         title: msg('i_e_type'),
         dataIndex: 'i_e_type',
@@ -94,7 +94,7 @@ export default class Manage extends Component {
               return this.renderColumnText(record.status, I_E_TYPES[i].value);
             }
           }
-        }
+        },
       }, {
         title: formatContainerMsg(intl, 'statusColumn'),
         width: 50,
@@ -106,7 +106,7 @@ export default class Manage extends Component {
             text = formatContainerMsg(intl, 'accountDisabled');
           }
           return <span style={style}>{text}</span>;
-        }
+        },
       }, {
         title: formatContainerMsg(intl, 'opColumn'),
         width: 150,
@@ -132,12 +132,12 @@ export default class Manage extends Component {
           } else {
             return <span />;
           }
-        }
+        },
       },
     ];
     const dataSource = new Table.DataSource({
-      fetcher: params => {return this.props.loadCompRelations(null, params);},
-      resolve: (result) => {return result.rows;},
+      fetcher: params => { return this.props.loadCompRelations(null, params); },
+      resolve: (result) => { return result.rows; },
       getPagination: (result, resolve) => {
         const pagination = {
           tenantId,
@@ -146,7 +146,7 @@ export default class Manage extends Component {
           current: resolve(result.totalCount, result.currentPage, result.pageSize),
           showSizeChanger: true,
           showQuickJumper: false,
-          pageSize: result.pageSize
+          pageSize: result.pageSize,
         };
         return pagination;
       },
@@ -156,19 +156,19 @@ export default class Manage extends Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
         };
         return params;
       },
-      remotes: list
+      remotes: list,
     });
     return (
       <div className="main-content">
-        <div className="page-body" style={{padding: 16}}>
-          <Button size="large" type="primary" style={{marginBottom: 8}} onClick={() => this.handleNavigationTo(`/${type}/manage/create`)}>
+        <div className="page-body" style={{ padding: 16 }}>
+          <Button size="large" type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo(`/${type}/manage/create`)}>
           {msg('new')}
           </Button>
-          <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection}/>
+          <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />
         </div>
       </div>
     );

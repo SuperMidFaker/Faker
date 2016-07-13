@@ -5,7 +5,7 @@ import mysql from '../util/mysql';
 export const messages = sequelize.define('sso_messages', {
   id: {
     type: INTEGER,
-    primaryKey: true
+    primaryKey: true,
   },
   tenant_id: INTEGER,
   login_id: INTEGER,
@@ -16,7 +16,7 @@ export const messages = sequelize.define('sso_messages', {
   url: STRING,
   status: INTEGER,
   read_time: DATE,
-  time: DATE
+  time: DATE,
 }, {
-    freezeTableName: true
+  freezeTableName: true,
 });

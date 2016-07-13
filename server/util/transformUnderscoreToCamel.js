@@ -3,7 +3,7 @@
  * @param {obj}             待转化key的对象字面量
  * @param {exclude<Array>}  指定哪些建不被转化
  * @return {obj}
- * 
+ *
  */
 export default function transformUnderscoreToCamel(obj, exclude) {
   return Object.keys(obj).reduce((ret, key) => {

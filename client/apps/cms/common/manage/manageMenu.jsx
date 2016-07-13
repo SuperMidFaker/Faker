@@ -10,7 +10,7 @@ const MenuItem = Menu.Item;
 export default class ManageMenu extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf([ 'import', 'export' ]),
+    type: PropTypes.oneOf(['import', 'export']),
     location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
   }
@@ -23,7 +23,7 @@ export default class ManageMenu extends Component {
   componentWillMount() {
     if (this.props.location && this.props.location.pathname) {
       const paths = this.props.location.pathname.split('/');
-      this.setState({ currentKey: [ paths[3] ] });
+      this.setState({ currentKey: [paths[3]] });
     }
   }
   handleMenuChange = (ev) => {
@@ -37,7 +37,7 @@ export default class ManageMenu extends Component {
     return (
         <div>
           <Menu mode="horizontal" selectedKeys={this.state.currentKey}
-          onClick={this.handleMenuChange}
+            onClick={this.handleMenuChange}
           >
             <MenuItem key="compRelation">{formatMsg(this.props.intl, 'relation')}</MenuItem>
           </Menu>

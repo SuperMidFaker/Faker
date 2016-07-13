@@ -14,7 +14,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
       transit_time: state.shipment.formData.transit_time,
       pickup_est_date: state.shipment.formData.pickup_est_date,
       deliver_est_date: state.shipment.formData.deliver_est_date,
-    }
+    },
   })
 )
 export default class ScheduleInfo extends React.Component {
@@ -44,7 +44,7 @@ export default class ScheduleInfo extends React.Component {
         pickupDt.getTime() + value * ONE_DAY_MS
       );
       this.props.formhoc.setFieldsValue({
-        'deliver_est_date': deliverDate,
+        deliver_est_date: deliverDate,
       });
     }
   }
@@ -54,13 +54,13 @@ export default class ScheduleInfo extends React.Component {
       deliverDt.getTime() - transitTime * ONE_DAY_MS
     );
     this.props.formhoc.setFieldsValue({
-      'pickup_est_date': pickupDt,
+      pickup_est_date: pickupDt,
     });
   }
   render() {
     const { formhoc: { getFieldProps }, fieldDefaults: {
       pickup_est_date, transit_time, deliver_est_date,
-    }} = this.props;
+    } } = this.props;
     const outerColSpan = 8;
     const labelColSpan = 8;
     return (
@@ -69,51 +69,48 @@ export default class ScheduleInfo extends React.Component {
           <div className="subform-title">{this.msg('scheduleInfo')}</div>
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('pickupDate')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} required
+          <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }} required
           >
             <DatePicker style={{ width: '100%' }} {...getFieldProps(
               'pickup_est_date', {
                 onChange: this.handlePickupChange,
                 rules: [{
-                  required: true, message: this.msg('deliveryDateMust'), type: 'date'
+                  required: true, message: this.msg('deliveryDateMust'), type: 'date',
                 }],
                 initialValue: pickup_est_date,
               }
-            )}
-            />
+            )} />
           </FormItem>
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('shipmtTransit')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} required
+          <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }} required
           >
-            <InputNumber style={{ width: '100%' }} min={0} { ...getFieldProps(
+            <InputNumber style={{ width: '100%' }} min={0} {...getFieldProps(
               'transit_time', {
                 onChange: this.handleTransitChange,
                 rules: [{
-                  required: true, message: this.msg('tranistTimeMust'), type: 'number'
+                  required: true, message: this.msg('tranistTimeMust'), type: 'number',
                 }],
                 initialValue: transit_time,
               })
-            }
-            />
+            } />
           </FormItem>
         </Col>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('deliveryDate')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} required
+          <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }} required
           >
             <DatePicker style={{ width: '100%' }} {...getFieldProps(
               'deliver_est_date', {
                 onChange: this.handleDeliveryChange,
                 rules: [{
-                  required: true, message: this.msg('deliveryDateMust'), type: 'date'
+                  required: true, message: this.msg('deliveryDateMust'), type: 'date',
                 }],
                 initialValue: deliver_est_date,
               }
-            )}
-            />
+            )} />
           </FormItem>
         </Col>
       </Row>

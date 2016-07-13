@@ -92,8 +92,8 @@ export default class VehicleUpdater extends React.Component {
         onOk={this.handleOk} visible={this.props.visible}
       >
         <Form className="row">
-          <FormItem label={this.msg('vehiclePlate')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('vehiclePlate')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <Col span="17">
               <ModalInput field="vehiclePlate" value={vehiclePlate}
@@ -106,8 +106,8 @@ export default class VehicleUpdater extends React.Component {
               </Checkbox>
             </Col>
           </FormItem>
-          <FormItem label={this.msg('driverName')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('driverName')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <Col span="17">
               <ModalInput field="driverName" value={driverName}
@@ -120,8 +120,8 @@ export default class VehicleUpdater extends React.Component {
               </Checkbox>
             </Col>
           </FormItem>
-          <FormItem label={this.msg('taskRemark')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('taskRemark')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <ModalInput type="textarea" placeholder={this.msg('remarkPlaceholder')}
               field="remark" value={remark} onChange={this.handleFieldChange}

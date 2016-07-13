@@ -45,7 +45,7 @@ export default class AttchmentUpload extends Component {
       uid: file.uid, name: file.name,
       url: file.response.data,
     };
-    const nextFileList = [ ...prevFileList, nextFile ];
+    const nextFileList = [...prevFileList, nextFile];
     this.setState({
       attachments: nextFileList,
     });

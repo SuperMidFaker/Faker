@@ -25,7 +25,7 @@ export default class EntryNoFillModal extends React.Component {
     reload: PropTypes.func.isRequired,
   }
   state = {
-    entryNo: ''
+    entryNo: '',
   }
   handleEntryNoChange = ev => {
     this.setState({ entryNo: ev.target.value });

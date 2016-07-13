@@ -67,34 +67,34 @@ export const CmsParamHsCode = sequelize.define('cms_param_hscode', {
   product_name: STRING, // 商品名称
   product_english_name: STRING, //       商品英文名称
   declared_elements: STRING, //       申报要素
-  declared_elements_src : STRING, //      申报要素补充
-  declared_elements_price : STRING, //
-  review  : STRING, //      审单及其他申报要素
+  declared_elements_src: STRING, //      申报要素补充
+  declared_elements_price: STRING, //
+  review: STRING, //      审单及其他申报要素
   declared_elements_remark: STRING, //       申报要素举例说明
   declared_elements_example: STRING, //       申报要素填报案例
-  first_unit  : STRING, //     法定第一单位
-  second_unit : STRING, //     法定第二单位
-  mfn_rates : STRING, //     最惠国进口税率
-  general_rates : STRING, //     普通进口税率
-  provisional_rates : STRING, //      暂定进口税率
-  vat_rates : STRING, //      增值税率(进口)
-  gst_rates : STRING, //      消费税率
-  export_rates  : STRING, //     出口关税率
-  export_provisional_rates  : STRING, //     出口暂定关税
-  export_rebate_rates : STRING, //     出口退税率
-  export_vat_rates  : STRING, //     增值税率（出口）
-  check_cert  : STRING, //      报检特殊单证
-  check_price : STRING, //      报检费率
-  check_price_desc  : STRING, //      报检计费说明
+  first_unit: STRING, //     法定第一单位
+  second_unit: STRING, //     法定第二单位
+  mfn_rates: STRING, //     最惠国进口税率
+  general_rates: STRING, //     普通进口税率
+  provisional_rates: STRING, //      暂定进口税率
+  vat_rates: STRING, //      增值税率(进口)
+  gst_rates: STRING, //      消费税率
+  export_rates: STRING, //     出口关税率
+  export_provisional_rates: STRING, //     出口暂定关税
+  export_rebate_rates: STRING, //     出口退税率
+  export_vat_rates: STRING, //     增值税率（出口）
+  check_cert: STRING, //      报检特殊单证
+  check_price: STRING, //      报检费率
+  check_price_desc: STRING, //      报检计费说明
   check_remark: STRING, //       报检备注
-  customs : STRING, //     海关监管条件
-  inspection  : STRING, //     检验检疫类别
+  customs: STRING, //     海关监管条件
+  inspection: STRING, //     检验检疫类别
   product_remark: STRING, //       商品描述
   product_category: STRING, //       商品类别
   used: STRING,
   verified: STRING,
   used_remark: STRING,
-  import_customs  : STRING,
+  import_customs: STRING,
   special_mark: INTEGER, // 特殊商品编码1代表特殊商品编码
 });
 

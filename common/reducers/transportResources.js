@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
   'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
   'CHANGE_REGION',
-  'VALIDATE_VEHICLE', 'VALIDATE_VEHICLE_SUCCEED', 'VALIDATE_VEHICLE_FAIL'
+  'VALIDATE_VEHICLE', 'VALIDATE_VEHICLE_SUCCEED', 'VALIDATE_VEHICLE_FAIL',
 ]);
 
 const initialState = {
@@ -28,8 +28,8 @@ const initialState = {
   region: {
     province: '',
     city: '',
-    district: ''
-  }
+    district: '',
+  },
 };
 
 /**
@@ -37,14 +37,14 @@ const initialState = {
  * @param {}
  * @return {}
  */
-function updateArray({array, key, value, updateInfo}) {
+function updateArray({ array, key, value, updateInfo }) {
   const updatingItem = array.find(item => item[key] === value);
   const updatingItemIndex = array.findIndex(item => item[key] === value);
   const newItem = Object.assign({}, updatingItem, updateInfo);
   return [
     ...array.slice(0, updatingItemIndex),
     newItem,
-    ...array.slice(updatingItemIndex + 1)
+    ...array.slice(updatingItemIndex + 1),
   ];
 }
 
@@ -58,7 +58,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.EDIT_CAR_SUCCEED: {
       const { carId, carInfo } = action.result.data;
-      const cars = updateArray({array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo});
+      const cars = updateArray({ array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo });
       return { ...state, loading: false, cars };
     }
     case actionTypes.ADD_CAR:
@@ -67,7 +67,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.EDIT_DRIVER_SUCCEED: {
       const { driverId, driverInfo } = action.result.data;
-      const drivers = updateArray({array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo});
+      const drivers = updateArray({ array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo });
       return { ...state, loading: false, drivers };
     }
     case actionTypes.LOAD_CARLIST:
@@ -107,27 +107,27 @@ export function addVehicle(carInfo) {
       types: [
         actionTypes.ADD_CAR,
         actionTypes.ADD_CAR_SUCCEED,
-        actionTypes.ADD_CAR_FAIL
+        actionTypes.ADD_CAR_FAIL,
       ],
       endpoint: 'v1/transport/resources/add_vehicle',
       method: 'post',
-      data: { carInfo }
-    }
+      data: { carInfo },
+    },
   };
 }
 
-export function editVehicle({carId, carInfo}) {
+export function editVehicle({ carId, carInfo }) {
   return {
     [CLIENT_API]: {
       types: [
         actionTypes.EDIT_CAR,
         actionTypes.EDIT_CAR_SUCCEED,
-        actionTypes.EDIT_CAR_FAIL
+        actionTypes.EDIT_CAR_FAIL,
       ],
       endpoint: 'v1/transport/resources/edit_vehicle',
       method: 'post',
-      data: { carInfo, carId }
-    }
+      data: { carInfo, carId },
+    },
   };
 }
 
@@ -137,12 +137,12 @@ export function loadVehicleList(tenantId) {
       types: [
         actionTypes.LOAD_CARLIST,
         actionTypes.LOAD_CARLIST_SUCCEED,
-        actionTypes.LOAD_CARLIST_FAIL
+        actionTypes.LOAD_CARLIST_FAIL,
       ],
       endpoint: 'v1/transport/resources/vehicle_list',
       method: 'get',
-      params: { tenantId }
-    }
+      params: { tenantId },
+    },
   };
 }
 
@@ -152,12 +152,12 @@ export function validateVehicle(tenantId, vehicleNumber) {
       types: [
         actionTypes.VALIDATE_VEHICLE,
         actionTypes.VALIDATE_VEHICLE_SUCCEED,
-        actionTypes.VALIDATE_VEHICLE_FAIL
+        actionTypes.VALIDATE_VEHICLE_FAIL,
       ],
       endpoint: 'v1/transport/resources/validate_vehicle',
       method: 'get',
-      params: { tenantId, vehicleNumber }
-    }
+      params: { tenantId, vehicleNumber },
+    },
   };
 }
 
@@ -170,27 +170,27 @@ export function addDriver(driverInfo) {
       types: [
         actionTypes.ADD_DRIVER,
         actionTypes.ADD_DRIVER_SUCCEED,
-        actionTypes.ADD_DRIVER_FAIL
+        actionTypes.ADD_DRIVER_FAIL,
       ],
       endpoint: 'v1/transport/resources/add_driver',
       method: 'post',
-      data: { driverInfo }
-    }
+      data: { driverInfo },
+    },
   };
 }
 
-export function editDriver({driverId, driverInfo}) {
+export function editDriver({ driverId, driverInfo }) {
   return {
     [CLIENT_API]: {
       types: [
         actionTypes.EDIT_DRIVER,
         actionTypes.EDIT_DRIVER_SUCCEED,
-        actionTypes.EDIT_DRIVER_FAIL
+        actionTypes.EDIT_DRIVER_FAIL,
       ],
       endpoint: 'v1/transport/resources/edit_driver',
       method: 'post',
-      data: { driverInfo, driverId }
-    }
+      data: { driverInfo, driverId },
+    },
   };
 }
 
@@ -200,12 +200,12 @@ export function loadDriverList(tenantId) {
       types: [
         actionTypes.LOAD_DRIVERLIST,
         actionTypes.LOAD_DRIVERLIST_SUCCEED,
-        actionTypes.LOAD_DRIVERLIST_FAIL
+        actionTypes.LOAD_DRIVERLIST_FAIL,
       ],
       endpoint: 'v1/transport/resources/driver_list',
       method: 'get',
-      params: { tenantId }
-    }
+      params: { tenantId },
+    },
   };
 }
 
@@ -218,12 +218,12 @@ export function loadNodeList(tenantId) {
       types: [
         actionTypes.LOAD_NODELIST,
         actionTypes.LOAD_NODELIST_SUCCEED,
-        actionTypes.LOAD_NODELIST_FAIL
+        actionTypes.LOAD_NODELIST_FAIL,
       ],
       endpoint: 'v1/transport/resources/node_list',
       method: 'get',
-      params: { tenantId }
-    }
+      params: { tenantId },
+    },
   };
 }
 
@@ -233,27 +233,27 @@ export function addNode(nodeInfo) {
       types: [
         actionTypes.ADD_NODE,
         actionTypes.ADD_NODE_SUCCEED,
-        actionTypes.ADD_NODE_FAIL
+        actionTypes.ADD_NODE_FAIL,
       ],
       endpoint: 'v1/transport/resources/add_node',
       method: 'post',
-      data: { nodeInfo }
-    }
+      data: { nodeInfo },
+    },
   };
 }
 
-export function editNode({nodeId, nodeInfo}) {
+export function editNode({ nodeId, nodeInfo }) {
   return {
     [CLIENT_API]: {
       types: [
         actionTypes.EDIT_NODE,
         actionTypes.EDIT_NODE_SUCCEED,
-        actionTypes.EDIT_NODE_FAIL
+        actionTypes.EDIT_NODE_FAIL,
       ],
       endpoint: 'v1/transport/resources/edit_node',
       method: 'post',
-      data: { nodeId, nodeInfo }
-    }
+      data: { nodeId, nodeInfo },
+    },
   };
 }
 
@@ -263,23 +263,23 @@ export function removeNode(nodeId) {
       types: [
         actionTypes.REMOVE_NODE,
         actionTypes.REMOVE_NODE_SUCCEED,
-        actionTypes.REMOVE_NODE_FAIL
+        actionTypes.REMOVE_NODE_FAIL,
       ],
       endpoint: 'v1/transport/resources/remove_node',
       method: 'post',
-      data: { nodeId }
-    }
+      data: { nodeId },
+    },
   };
 }
 
 export function setNodeType(nodeType) {
-  return {type: actionTypes.SET_NODE_TYPE, nodeType};
+  return { type: actionTypes.SET_NODE_TYPE, nodeType };
 }
 
 export function setMenuItemKey(key) {
-  return {type: actionTypes.SET_MENU_ITEM_KEY, key};
+  return { type: actionTypes.SET_MENU_ITEM_KEY, key };
 }
 
 export function changeRegion(region) {
-  return {type: actionTypes.CHANGE_REGION, region};
+  return { type: actionTypes.CHANGE_REGION, region };
 }

@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadSendInvitations, cancelInvite } from 'common/reducers/invitation';
 
 const rowSelection = {
-  onChange() {}
+  onChange() {},
 };
 
 function fetchData({ state, dispatch }) {
@@ -16,7 +16,7 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({sendInvitations: state.invitation.sendInvitations}), { cancelInvite })
+@connect(state => ({ sendInvitations: state.invitation.sendInvitations }), { cancelInvite })
 export default class SendInvitation extends Component {
   static propTypes = {
     sendInvitations: PropTypes.array.isRequired,  // 发出的邀请
@@ -26,12 +26,12 @@ export default class SendInvitation extends Component {
     {
       title: '合作伙伴',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
     },
     {
       title: '代码',
       dataIndex: 'code',
-      key: 'code'
+      key: 'code',
     },
     {
       title: '邀请对方成为',
@@ -41,7 +41,7 @@ export default class SendInvitation extends Component {
         return (
           <span>{mapPartnerships(record.partnerships)}</span>
         );
-      }
+      },
     },
     {
       title: '发出时间',
@@ -51,7 +51,7 @@ export default class SendInvitation extends Component {
         return (
           <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
         );
-      }
+      },
     },
     {
       title: '状态',
@@ -70,7 +70,7 @@ export default class SendInvitation extends Component {
           default:
             return null;
         }
-      }
+      },
     },
     {
       title: '操作',
@@ -82,8 +82,8 @@ export default class SendInvitation extends Component {
         } else {
           return null;
         }
-      }
-    }
+      },
+    },
   ]
   handleCancelInviteBtnClick = (id, partnerId) => {
     this.props.cancelInvite(id, partnerId);
@@ -91,7 +91,7 @@ export default class SendInvitation extends Component {
   render() {
     const { sendInvitations } = this.props;
     return (
-      <Table columns={this.columns} dataSource={addUniqueKeys(sendInvitations)} rowSelection={rowSelection}/>
+      <Table columns={this.columns} dataSource={addUniqueKeys(sendInvitations)} rowSelection={rowSelection} />
     );
   }
 }

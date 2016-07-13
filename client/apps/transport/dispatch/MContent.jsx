@@ -6,7 +6,7 @@ const RadioButton = Radio.Button;
 export default class MContent extends Component {
   static propTypes = {
     msg: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -17,12 +17,12 @@ export default class MContent extends Component {
   }
 
   state = {
-    podType: 'ePOD'
+    podType: 'ePOD',
   }
 
   handlePodTypeChange(e) {
     const podType = e.target.value;
-    this.setState({podType});
+    this.setState({ podType });
     this.onChange(podType);
   }
 

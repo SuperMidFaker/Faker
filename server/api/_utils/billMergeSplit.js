@@ -4,7 +4,7 @@ import DataGrouper from './dataGrouper';
 const dg = new DataGrouper();
 dg.register('merge', item => {
   const combined = {};
-  const summedKeys = [ 'qty', 'dec_total', 'gross_wt', 'wet_wt' ];
+  const summedKeys = ['qty', 'dec_total', 'gross_wt', 'wet_wt'];
   summedKeys.forEach(sk => {
     combined[sk] = _.reduce(item.elements, (prev, elem) => {
       if (elem[sk] && !isNaN(Number(elem[sk]))) {

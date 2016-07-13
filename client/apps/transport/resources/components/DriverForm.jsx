@@ -5,8 +5,8 @@ import ContentWrapper from './ContentWrapper';
 const FormItem = Form.Item;
 
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 14}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
 };
 
 
@@ -25,16 +25,16 @@ export default class DriverForm extends Component {
       <ContentWrapper>
         <Form horizontal onSubmit={onSubmitBtnClicked} className="form-edit-content offset-right-col">
           <FormItem {...formItemLayout} label="姓名" required>
-            <Input {...getFieldProps('name')} required/>
+            <Input {...getFieldProps('name')} required />
           </FormItem>
           <FormItem {...formItemLayout} label="手机号码" required>
-            <Input {...getFieldProps('phone')} required/>
+            <Input {...getFieldProps('phone')} required />
           </FormItem>
           <FormItem {...formItemLayout} label="备注">
-            <Input {...getFieldProps('remark')} type="textarea"/>
+            <Input {...getFieldProps('remark')} type="textarea" />
           </FormItem>
-          <FormItem wrapperCol={{span:16, offset: 6}} style={{marginTop: 16}}>
-            <Button type="primary" htmlType="submit">{ mode === 'edit' ? '修改' : '新建' }</Button>
+          <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 16 }}>
+            <Button type="primary" htmlType="submit">{mode === 'edit' ? '修改' : '新建'}</Button>
           </FormItem>
         </Form>
       </ContentWrapper>

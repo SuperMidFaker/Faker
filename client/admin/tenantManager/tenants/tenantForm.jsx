@@ -27,7 +27,7 @@ function fetchData({ dispatch, cookie, params }) {
 @connect(
   state => ({
     formData: state.tenants.formData,
-    tenantAppList: state.tenants.tenantAppList
+    tenantAppList: state.tenants.tenantAppList,
   }),
   { uploadImg, setFormValue, submitTenant, checkCorpDomain })
 
@@ -45,7 +45,7 @@ class TenantForm extends React.Component {
   handleSubmit = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const formData = {...this.props.form.getFieldsValue()};
+        const formData = { ...this.props.form.getFieldsValue() };
         formData.tenant_id = this.props.formData.tenant_id;
         this.props.submitTenant(formData).then(result => {
           if (result.error) {
@@ -68,11 +68,12 @@ class TenantForm extends React.Component {
     this.props.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { form: { getFieldProps, getFieldError }} = this.props;
+    const { form: { getFieldProps, getFieldError } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}}
-        help={rules && getFieldError(field)} hasFeedback required={required}>
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, {rules, ...fieldProps})} />
+      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
+        help={rules && getFieldError(field)} hasFeedback required={required}
+      >
+        <Input type="text" placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
       </FormItem>
     );
   }
@@ -89,16 +90,17 @@ class TenantForm extends React.Component {
                 <Col span="12">
                   {this.renderTextInput(
                     '公司名称', '请填写公司名称', 'name', true,
-                    [{required: true, message: '请填写公司名称'}],
-                    {transform: (value) => (value.trim()), initialValue: formData.name}
+                    [{ required: true, message: '请填写公司名称' }],
+                    { transform: (value) => (value.trim()), initialValue: formData.name }
                   )}
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="企业代码" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <Input type="text" {...getFieldProps('code', {transform: (value) => (value.trim()), initialValue: formData.code})}
-                    placeholder="请填写企业代码"/>
+                  <FormItem label="企业代码" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
+                    <Input type="text" {...getFieldProps('code', { transform: (value) => (value.trim()), initialValue: formData.code })}
+                      placeholder="请填写企业代码"
+                    />
                   </FormItem>
                 </Col>
               </Row>
@@ -109,37 +111,37 @@ class TenantForm extends React.Component {
                       required: true,
                       message: '请填写联系人姓名',
                       type: 'string',
-                      whitespace: true
-                    }], {transform: (value) => (value.trim()), initialValue: formData.contact}
+                      whitespace: true,
+                    }], { transform: (value) => (value.trim()), initialValue: formData.contact }
                   )}
                   {this.renderTextInput('电话', '请填写联系人电话', 'phone', true, [{
                     validator: (rule, value, callback) => validatePhone(
                       value, callback,
-                      () => { return '请填写联系人电话';}
-                    )
-                  }], {transform: (value) => (value.trim()), initialValue: formData.phone})}
+                      () => { return '请填写联系人电话'; }
+                    ),
+                  }], { transform: (value) => (value.trim()), initialValue: formData.phone })}
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
                   {this.renderTextInput(
                     '邮箱', '请填写联系人电子邮箱地址', 'email', false,
-                    [{type: 'email', message: '电子邮箱地址填写错误'}],
-                    {transform: (value) => (value.trim()), initialValue: formData.email}
+                    [{ type: 'email', message: '电子邮箱地址填写错误' }],
+                    { transform: (value) => (value.trim()), initialValue: formData.email }
                   )}
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}} className="imgZone">
+                  <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} className="imgZone">
                       <img src={logoPng || '/assets/img/wetms.png'} style={{
                         height: 120, width: 120, margin: 10,
-                        border: '1px solid #e0e0e0', borderRadius: 60
+                        border: '1px solid #e0e0e0', borderRadius: 60,
                       }} alt="logo"
                       />
-                      <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } className="dropzone">
+                      <Dropzone onDrop={(files) => this.props.uploadImg('logo', files)} className="dropzone">
                         <div className="ant-upload ant-upload-drag" title="请拖拽或选择文"
-                          style={{height: 140, marginTop: 20}}
+                          style={{ height: 140, marginTop: 20 }}
                         >
                           <span>
                             <div className="ant-upload-drag-container">
@@ -154,17 +156,17 @@ class TenantForm extends React.Component {
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="租户应用列表" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
+                  <FormItem label="租户应用列表" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
                     <CheckboxGroup options={tenantAppList}
-                    {...getFieldProps('tenantAppList', {initialValue: tenantAppValueList.map(item => { return item.value; })})}
+                      {...getFieldProps('tenantAppList', { initialValue: tenantAppValueList.map(item => { return item.value; }) })}
                     />
                   </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="租户视角" labelCol={{span: 6}} wrapperCol={{span: 16}} required>
-                    <RadioGroup onChange={ () => {} } {...getFieldProps('aspect', {initialValue: formData.aspect})} >
+                  <FormItem label="租户视角" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
+                    <RadioGroup onChange={() => {}} {...getFieldProps('aspect', { initialValue: formData.aspect })} >
                       <RadioButton value={0}>进出口企业</RadioButton>
                       <RadioButton value={1}>物流服务商</RadioButton>
                     </RadioGroup>
@@ -173,11 +175,11 @@ class TenantForm extends React.Component {
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem label="登录入口域" labelCol={{span: 6}} wrapperCol={{span: 16}}
+                  <FormItem label="登录入口域" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
                     help={getFieldError('subdomain')}
                   >
                     <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain',
-                      {transform: (value) => (value.trim()), initialValue: formData.subdomain})} />
+                      { transform: (value) => (value.trim()), initialValue: formData.subdomain })} />
                   </FormItem>
                 </Col>
               </Row>

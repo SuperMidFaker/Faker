@@ -48,7 +48,7 @@ function fetchData({ state, dispatch, cookie }) {
 })
 export default class AcceptanceList extends Component {
   static propTypes = {
-    type: PropTypes.oneOf([ 'import', 'export' ]),
+    type: PropTypes.oneOf(['import', 'export']),
     aspect: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -60,14 +60,14 @@ export default class AcceptanceList extends Component {
     delDelg: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
   }
   columns = [{
     title: '报关委托号',
-    dataIndex: 'delg_no'
+    dataIndex: 'delg_no',
   }, {
     title: '委托客户',
     dataIndex: 'customer_name',
@@ -111,7 +111,7 @@ export default class AcceptanceList extends Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize
+      pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -123,7 +123,7 @@ export default class AcceptanceList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.delegationlist
+    remotes: this.props.delegationlist,
   })
   handleCreateBtnClick = () => {
     this.context.router.push(`/${this.props.type}/accept/create`);
@@ -143,7 +143,7 @@ export default class AcceptanceList extends Component {
   }
   handleDelegationAccept = (dispId) => {
     const { tenantId, loginId, loginName, listFilter,
-      delegationlist: { pageSize, current }} = this.props;
+      delegationlist: { pageSize, current } } = this.props;
     this.props.acceptDelg(loginId, loginName, dispId).then(
       result => {
         if (result.error) {
@@ -160,7 +160,7 @@ export default class AcceptanceList extends Component {
     );
   }
   handleDelgDel = (delgNo) => {
-    const { tenantId, listFilter, delegationlist: { pageSize, current }} = this.props;
+    const { tenantId, listFilter, delegationlist: { pageSize, current } } = this.props;
     this.props.delDelg(delgNo).then(result => {
       if (result.error) {
         message.error(result.error.message);
@@ -181,9 +181,9 @@ export default class AcceptanceList extends Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
         this.setState({ selectedRowKeys });
-      }
+      },
     };
-    const columns = [ ...this.columns ];
+    const columns = [...this.columns];
     if (listFilter.status === 'unaccepted') {
       columns.push({
         title: '操作',

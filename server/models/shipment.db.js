@@ -59,15 +59,15 @@ shipmtOrm.asalias = 'S';
 
 function packShipmentArgsByLSP(shipmt, args) {
   const columns = [
-    `ref_external_no`, `ref_waybill_no`, `ref_entry_no`, 'transport_mode_code',
-    'consigner_name', `consigner_province`, `consigner_city`, `consigner_district`,
-    `consigner_addr`, `consigner_email`,
-    `consigner_contact`, `consigner_mobile`, `consignee_name`, `consignee_province`,
-    `consignee_city`, `consignee_district`, `consignee_addr`, `consignee_email`,
-    `consignee_contact`, `consignee_mobile`, `pickup_est_date`, `transit_time`,
-    `deliver_est_date`, `transport_mode`, 'container_no', `vehicle_type`, `vehicle_length`,
-    `package`, `goods_type`, `insure_value`, `total_count`, `total_weight`,
-    `total_volume`, `remark`
+    'ref_external_no', 'ref_waybill_no', 'ref_entry_no', 'transport_mode_code',
+    'consigner_name', 'consigner_province', 'consigner_city', 'consigner_district',
+    'consigner_addr', 'consigner_email',
+    'consigner_contact', 'consigner_mobile', 'consignee_name', 'consignee_province',
+    'consignee_city', 'consignee_district', 'consignee_addr', 'consignee_email',
+    'consignee_contact', 'consignee_mobile', 'pickup_est_date', 'transit_time',
+    'deliver_est_date', 'transport_mode', 'container_no', 'vehicle_type', 'vehicle_length',
+    'package', 'goods_type', 'insure_value', 'total_count', 'total_weight',
+    'total_volume', 'remark',
   ];
   columns.forEach(col => {
     if (col in shipmt) {
@@ -88,7 +88,7 @@ export default {
   shipmentOrm: shipmtOrm,
   *genShipmtNoAsync(tenantId) {
     const subdomainSql = 'select subdomain from sso_tenants where tenant_id = ?';
-    const subs = yield mysql.query(subdomainSql, [ tenantId ]);
+    const subs = yield mysql.query(subdomainSql, [tenantId]);
     const tenantTmsPrefix = subs[0].subdomain.length <= 16 ? subs[0].subdomain
       : subs[0].subdomain.substr(16);
     // 最长16位企业tms代号(目前用企业子域名) + 2位年份 + 6位序号(前面补0)
@@ -100,7 +100,7 @@ export default {
       select shipmt_no from tms_shipments where tenant_id = ? and parent_no is null
       order by shipmt_no desc limit 1
     `;
-    const args = [ tenantId ];
+    const args = [tenantId];
     const shipmtnos = yield mysql.query(shipmtnoSql, args);
     let newnoStr = '1';
     if (shipmtnos.length === 1) {
@@ -177,7 +177,7 @@ export default {
       tenant_id, creater_login_id, public_key, created_date) values (?)`;
     const args = [
       shipmtNo, spTenantId, null, spName, shipmt.customer_tenant_id,
-      shipmt.customer_partner_id, shipmt.customer_name
+      shipmt.customer_partner_id, shipmt.customer_name,
     ];
     packShipmentArgsByLSP(shipmt, args);
     args.push(effective, spTenantId, spLoginId, publicKey, nowDT);
@@ -209,10 +209,10 @@ export default {
     const args = [
       [
         id, name, type, province, city, district, addr,
-        contact, email, mobile, tenantId
+        contact, email, mobile, tenantId,
       ],
       name, province, city,
-      district, addr, contact, email, mobile
+      district, addr, contact, email, mobile,
     ];
     return mysql.insert(sql, args, trans);
   },

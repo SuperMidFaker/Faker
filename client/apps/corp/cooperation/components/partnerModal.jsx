@@ -17,15 +17,15 @@ const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 14}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
 };
 
 const options = [
-  {label: '货代', value: 'FWD'},
-  {label: '报关', value: 'CCB'},
-  {label: '运输', value: 'TRS'},
-  {label: '仓储', value: 'WHS'}
+  { label: '货代', value: 'FWD' },
+  { label: '报关', value: 'CCB' },
+  { label: '运输', value: 'TRS' },
+  { label: '仓储', value: 'WHS' },
 ];
 
 class PartnerForm extends React.Component {
@@ -93,7 +93,7 @@ class PartnerForm extends React.Component {
               取消
             </Button>
             <Button type="primary" size="large" htmlType="submit">
-            { inEdit ? '修改' : '添加' }
+            {inEdit ? '修改' : '添加'}
             </Button>
           </FormItem>
         </Form>
@@ -124,7 +124,8 @@ function editProviderForm(props) {
           <CheckboxGroup
             options={options}
             defaultValue={checkedProviderValues}
-            onChange={handleProvierChange} {...formItemLayout}/>
+            onChange={handleProvierChange} {...formItemLayout}
+          />
         </Form>
       </div>
       <div className="ant-confirm-btns">
@@ -163,7 +164,7 @@ function partnerModal(config) {
 
   let body;
   if (props.mode === 'editProvider') {
-    body = editProviderForm({onCancel, close, onOk: props.onOk, checkedProviderValues: props.providerValues});
+    body = editProviderForm({ onCancel, close, onOk: props.onOk, checkedProviderValues: props.providerValues });
   } else {
     body = <PartnerForm onCancel={onCancel} close={close} {...props} />;
   }
@@ -184,7 +185,8 @@ function partnerModal(config) {
       footer=""
       maskTransitionName="fade"
       style={style}
-      width={width}>
+      width={width}
+    >
       <div style={{ zoom: 1, overflow: 'hidden' }}>{body}</div>
     </Modal>
     , div, function A() {

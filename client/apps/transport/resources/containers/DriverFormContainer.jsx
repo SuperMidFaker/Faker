@@ -12,10 +12,10 @@ import { setNavTitle } from 'common/reducers/navbar';
     text: '司机信息',
     muduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: () => router.goBack()
+    goBackFn: () => router.goBack(),
   }));
 })
-@connect(state => ({drivers: state.transportResources.drivers, tenantId: state.account.tenantId}), { addDriver, editDriver })
+@connect(state => ({ drivers: state.transportResources.drivers, tenantId: state.account.tenantId }), { addDriver, editDriver })
 @Form.create()
 export default class DriverFormContainer extends Component {
   static propTypes = {
@@ -28,13 +28,13 @@ export default class DriverFormContainer extends Component {
     tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleDriverAdd = (e) => {
     e.preventDefault();
     const { form, tenantId } = this.props;
     const newDriverInfo = form.getFieldsValue();
-    this.props.addDriver({...newDriverInfo, tenant_id: tenantId});
+    this.props.addDriver({ ...newDriverInfo, tenant_id: tenantId });
     this.context.router.goBack();
   }
   handleDriverEdit = (e) => {
@@ -42,7 +42,7 @@ export default class DriverFormContainer extends Component {
     const { form, params } = this.props;
     const editDriverInfo = form.getFieldsValue();
     const editDriverId = parseInt(params.driver_id, 10);
-    this.props.editDriver({driverId: editDriverId, driverInfo: editDriverInfo});
+    this.props.editDriver({ driverId: editDriverId, driverInfo: editDriverInfo });
     this.context.router.goBack();
   }
   render() {
@@ -51,15 +51,17 @@ export default class DriverFormContainer extends Component {
       const editDriverInfo = drivers.find(driver => driver.driver_id === parseInt(params.driver_id, 10));
       return (
         <DriverForm mode="edit"
-                    form={form}
-                    driver={editDriverInfo}
-                    onSubmitBtnClicked={this.handleDriverEdit}/>
+          form={form}
+          driver={editDriverInfo}
+          onSubmitBtnClicked={this.handleDriverEdit}
+        />
       );
     } else {
       return (
         <DriverForm mode="add"
-                    form={form}
-                    onSubmitBtnClicked={this.handleDriverAdd}/>
+          form={form}
+          onSubmitBtnClicked={this.handleDriverAdd}
+        />
       );
     }
   }

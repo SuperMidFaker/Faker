@@ -7,16 +7,16 @@ import '../apps/root/root.less';
   state => ({
     locale: state.intl.locale,
     messages: state.intl.messages,
-    isAuthed: state.auth.isAuthed
+    isAuthed: state.auth.isAuthed,
   })
 )
 export default class Root extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
-    isAuthed: PropTypes.bool.isRequired
+    isAuthed: PropTypes.bool.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
 
   componentWillReceiveProps(nextProps) {
@@ -31,9 +31,9 @@ export default class Root extends React.Component {
     const { locale, messages } = this.props;
     return (
       <IntlProvider key={locale}
-          locale={locale}
-          messages={messages}
-        >
+        locale={locale}
+        messages={messages}
+      >
         {this.props.children}
         </IntlProvider>
       );

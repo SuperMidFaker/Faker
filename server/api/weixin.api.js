@@ -63,5 +63,5 @@ function *unbindWxUserP() {
 export default [
    ['post', '/public/v1/weixin/bind', bindWxUserP],
    ['get', '/v1/weixin/welogix/profile', wlProfileG],
-   ['post', '/v1/weixin/unbind', unbindWxUserP]
-]
+   ['post', '/v1/weixin/unbind', unbindWxUserP],
+];

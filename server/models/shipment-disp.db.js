@@ -48,7 +48,7 @@ const dispCols = [
   'surcharge/f',
   'special_charge/f',
   'fine/f',
-  'task_remark/v'
+  'task_remark/v',
 ];
 
 // note:child_send_status only used in dispatch.api.js with doDispatch api
@@ -58,7 +58,7 @@ dispOrm.asalias = 'SD';
 
 function packGoodsArgs(goods) {
   const columns = [
-    `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
+    'name', 'goods_no', 'package', 'length', 'width', 'height', 'amount', 'weight', 'volume', 'remark',
   ];
   const args = [];
   columns.forEach(col => {
@@ -148,15 +148,15 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
     if (flt.name === 'type') {
       const targetVal = flt.value;
       if (targetVal === 'uploaded') {
-        clause = `and (pod_status = ? or pod_status = ?)`;
+        clause = 'and (pod_status = ? or pod_status = ?)';
         args.push(SHIPMENT_POD_STATUS.pending);
         args.push(SHIPMENT_POD_STATUS.rejectByUs);
       } else if (targetVal === 'submitted') {
-        clause = `and (pod_status = ? or pod_status = ?)`;
+        clause = 'and (pod_status = ? or pod_status = ?)';
         args.push(SHIPMENT_POD_STATUS.acceptByUs);
         args.push(SHIPMENT_POD_STATUS.rejectByClient);
       } else if (targetVal === 'passed') {
-        clause = `and pod_status = ?`;
+        clause = 'and pod_status = ?';
         args.push(SHIPMENT_POD_STATUS.acceptByClient);
       } else {
         clause = '';
@@ -324,7 +324,7 @@ export default {
       ons1: 'S.shipmt_no = SD.shipmt_no',
       _orders: order,
       wheres: awhere,
-      _limits: {min: offset, max: pageSize}
+      _limits: { min: offset, max: pageSize },
     };
 
     return dispOrm.leftJoin(shipmentOrm, obj);
@@ -332,9 +332,9 @@ export default {
   getDispatchShipmtsCount(tenantId, filter) {
     const awhere = genDispFilters(filter, tenantId);
     const obj = {
-      fields: `count(S.shipmt_no) as count`,
+      fields: 'count(S.shipmt_no) as count',
       ons1: 'S.shipmt_no = SD.shipmt_no',
-      wheres: awhere
+      wheres: awhere,
     };
 
     return dispOrm.leftJoin(shipmentOrm, obj);
@@ -389,7 +389,7 @@ export default {
     const obj = {
       fields: 'S.shipmt_no, SD.id, SD.status',
       ons1: 'SD.shipmt_no = S.shipmt_no',
-      wheres: {'S.parent_no': shipmtNo}
+      wheres: { 'S.parent_no': shipmtNo },
     };
     return shipmentOrm.leftJoin(dispOrm, obj);
   },
@@ -430,7 +430,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTrackingCount(tenantId, filters) {
-    const args = [ tenantId ];
+    const args = [tenantId];
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
     const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
@@ -438,7 +438,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTrackingShipments(tenantId, filters, pageSize, current) {
-    const args = [ tenantId ];
+    const args = [tenantId];
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, ref_external_no, customer_tenant_id,
       customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
@@ -455,7 +455,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTrackingPodCount(tenantId, filters) {
-    const args = [ tenantId ];
+    const args = [tenantId];
     const whereCond = getTrackingPodClause(filters, 'S', 'SD', args);
     const sql = `select count(id) as count from tms_shipment_dispatch as SD inner join
       tms_shipments as S on SD.shipmt_no = S.shipmt_no where sr_tenant_id = ?
@@ -463,7 +463,7 @@ export default {
     return mysql.query(sql, args);
   },
   getTrackingPodShipments(tenantId, filters, pageSize, current) {
-    const args = [ tenantId ];
+    const args = [tenantId];
     const whereCond = getTrackingPodClause(filters, 'S', 'SD', args);
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
       parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
@@ -534,7 +534,7 @@ export default {
   },
   updateGoodsWithInfo(goodsInfo) {
     const columns = [
-      `name`, `goods_no`, `package`, `length`, `width`, `height`, `amount`, `weight`, `volume`, `remark`
+      'name', 'goods_no', 'package', 'length', 'width', 'height', 'amount', 'weight', 'volume', 'remark',
     ];
     const updateClause = generateUpdateClauseWithInfo(goodsInfo, columns);
     const sql = `UPDATE tms_shipment_manifest SET ${updateClause} WHERE id IN (${goodsInfo.map(info => info.id).join(',')})`;
@@ -555,7 +555,7 @@ export default {
   },
   getShipmtsGrouped(tenantId, filter) {
     const awhere = {
-      'S.segmented = 0 and SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id': tenantId
+      'S.segmented = 0 and SD.status = 2 and SD.disp_status = 1 and SD.sp_tenant_id': tenantId,
     };
     const strGroup = genGroupBy(filter);
     const obj = {
@@ -566,9 +566,9 @@ export default {
       ons1: 'S.shipmt_no = SD.shipmt_no',
       _orders: 'acpt_time desc',
       _groups: strGroup,
-      wheres: awhere
+      wheres: awhere,
     };
 
     return dispOrm.leftJoin(shipmentOrm, obj);
-  }
+  },
 };

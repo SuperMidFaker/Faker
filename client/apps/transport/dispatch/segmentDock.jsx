@@ -10,8 +10,8 @@ function noop() {}
 
 @connect(state => ({
   nodeLocations: state.transportDispatch.nodeLocations,
-  transitModes: state.transportDispatch.transitModes
-}), {segmentRequest})
+  transitModes: state.transportDispatch.transitModes,
+}), { segmentRequest })
 export default class SegmentDock extends React.Component {
   static propTypes = {
     show: PropTypes.bool.isRequired,
@@ -20,7 +20,7 @@ export default class SegmentDock extends React.Component {
     shipmts: PropTypes.array.isRequired,
     nodeLocations: PropTypes.array.isRequired,
     transitModes: PropTypes.array.isRequired,
-    segmentRequest: PropTypes.func.isRequired
+    segmentRequest: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -38,15 +38,15 @@ export default class SegmentDock extends React.Component {
           deliverEstDate: null,
           pickupEstDate: null,
           deliverMode: {},
-          pickupMode: {}
+          pickupMode: {},
         },
         segGroupSecond: {
           nodeLocation: {},
           deliverEstDate: null,
           pickupEstDate: null,
           deliverMode: {},
-          pickupMode: {}
-        }
+          pickupMode: {},
+        },
       });
       this.onClose(reload);
     };
@@ -61,15 +61,15 @@ export default class SegmentDock extends React.Component {
       deliverEstDate: null,
       pickupEstDate: null,
       deliverMode: {},
-      pickupMode: {}
+      pickupMode: {},
     },
     segGroupSecond: {
       nodeLocation: {},
       deliverEstDate: null,
       pickupEstDate: null,
       deliverMode: {},
-      pickupMode: {}
-    }
+      pickupMode: {},
+    },
   }
 
   buildSegmentGroup(order) {
@@ -119,13 +119,13 @@ export default class SegmentDock extends React.Component {
   handleAddSegment(e) {
     if (e) {
       const segments = [this.buildSegmentGroup(2)];
-      this.setState({segments, twoable: true});
+      this.setState({ segments, twoable: true });
     }
   }
 
   handleDayChange(order, type, date) {
     if (order === 1) {
-      const {segGroupFirst} = this.state;
+      const { segGroupFirst } = this.state;
       if (type === 'deliver') {
         segGroupFirst.deliverEstDate = date;
       } else if (type === 'pickup') {
@@ -133,7 +133,7 @@ export default class SegmentDock extends React.Component {
       }
       this.setState(segGroupFirst);
     } else {
-      const {segGroupSecond} = this.state;
+      const { segGroupSecond } = this.state;
       if (type === 'deliver') {
         segGroupSecond.deliverEstDate = date;
       } else if (type === 'pickup') {
@@ -146,7 +146,7 @@ export default class SegmentDock extends React.Component {
   handleTransitModeChange(order, type, value) {
     const mode = this.props.transitModes.filter(v => v.id === value)[0];
     if (order === 1) {
-      const {segGroupFirst} = this.state;
+      const { segGroupFirst } = this.state;
       if (type === 'deliver') {
         segGroupFirst.deliverMode = mode;
       } else if (type === 'pickup') {
@@ -154,7 +154,7 @@ export default class SegmentDock extends React.Component {
       }
       this.setState(segGroupFirst);
     } else {
-      const {segGroupSecond} = this.state;
+      const { segGroupSecond } = this.state;
       if (type === 'deliver') {
         segGroupSecond.deliverMode = mode;
       } else if (type === 'pickup') {
@@ -167,11 +167,11 @@ export default class SegmentDock extends React.Component {
   handleNodeLocationChange(order, value) {
     const nd = this.props.nodeLocations.filter(v => v.node_id === value)[0];
     if (order === 1) {
-      const {segGroupFirst} = this.state;
+      const { segGroupFirst } = this.state;
       segGroupFirst.nodeLocation = nd;
       this.setState(segGroupFirst);
     } else {
-      const {segGroupSecond} = this.state;
+      const { segGroupSecond } = this.state;
       segGroupSecond.nodeLocation = nd;
       this.setState(segGroupSecond);
     }
@@ -195,28 +195,28 @@ export default class SegmentDock extends React.Component {
 
   handleSegment= () => {
     const shipmtNos = this.props.shipmts.map(s => {
-      return {shipmtNo: s.shipmt_no, dispId: s.key};
+      return { shipmtNo: s.shipmt_no, dispId: s.key };
     });
 
     const { segGroupFirst, segGroupSecond, twoable } = this.state;
     if (!this.validGroup(segGroupFirst)) {
-      this.setState({errable: true});
+      this.setState({ errable: true });
       return;
     }
     if (twoable && !this.validGroup(segGroupSecond)) {
-      this.setState({errable: true});
+      this.setState({ errable: true });
       return;
     }
     this.props.segmentRequest(null, {
       shipmtNos,
       segGroupFirst,
-      segGroupSecond
+      segGroupSecond,
     }).then(result => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.onCloseWrapper(true);
-        }
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.onCloseWrapper(true);
+      }
     });
   }
 
@@ -248,7 +248,7 @@ export default class SegmentDock extends React.Component {
       const sg = this.buildSegmentGroup();
       let err = '';
       if (this.state.errable) {
-        err = (<Alert message="分段参数错误" type="error" showIcon closable/>);
+        err = (<Alert message="分段参数错误" type="error" showIcon closable />);
       }
 
       /*
@@ -287,14 +287,14 @@ export default class SegmentDock extends React.Component {
                 </div>
               </div>);
               */
-        dock = (
+      dock = (
           <div className="dock-panel inside">
             <div className="panel-content">
               <div className="header">
                 <span className="title">分段 {shipmts.length}个运单</span>
                 <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
                 <div className="pull-right">
-                  <Button type="ghost" shape="circle-outline" onClick={ this.onCloseWrapper }>
+                  <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
                     <Icon type="cross" />
                   </Button>
                 </div>
@@ -315,9 +315,9 @@ export default class SegmentDock extends React.Component {
                   {sg}
                   {this.state.segments}
                   <div style={{ marginTop: 24 }}>
-                    <Button type="ghost" onClick={ this.onCloseWrapper }>{this.msg('btnTextCancel')}</Button>
-                    <span className="ant-divider" style={{width: '0px'}}/>
-                    <Button type="primary" onClick={this.handleSegment }>{this.msg('btnTextOk')}</Button>
+                    <Button type="ghost" onClick={this.onCloseWrapper}>{this.msg('btnTextCancel')}</Button>
+                    <span className="ant-divider" style={{ width: '0px' }} />
+                    <Button type="primary" onClick={this.handleSegment}>{this.msg('btnTextOk')}</Button>
                   </div>
                 </div>
               </div>
@@ -327,7 +327,7 @@ export default class SegmentDock extends React.Component {
     }
 
     return (
-      <QueueAnim key="dockcontainer" animConfig={{translateX:[0, 480], opacity:[1, 1]}}>{dock}</QueueAnim>
+      <QueueAnim key="dockcontainer" animConfig={{ translateX: [0, 480], opacity: [1, 1] }}>{dock}</QueueAnim>
     );
   }
 }

@@ -23,11 +23,11 @@
  *
  */
 export function generateUpdateClauseWithInfo(updateInfo, columns) {
-  if(Array.isArray(updateInfo)) {
+  if (Array.isArray(updateInfo)) {
     return columns.filter(key => updateInfo.some(info => info[key] !== null)).map(key => {
-        return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join("");
-      }).join("END,\n") + 'END\n';
-  }else {
+      return `${key} = CASE id\n` + updateInfo.map(info => info[key] ? `WHEN ${info.id} THEN '${info[key]}'\n` : '').join('');
+    }).join('END,\n') + 'END\n';
+  } else {
     return columns.filter(key => updateInfo[key] !== null && updateInfo[key] !== undefined).map(key => `${key} = '${updateInfo[key]}'`).join(', ');
   }
 }
@@ -42,9 +42,9 @@ export function generateUpdateClauseWithInfo(updateInfo, columns) {
  *
  */
 export function generateDeleteClauseWithIds(ids) {
-  if(ids.length == 1) {
-    return `id = ${ids[0]}`
-  }else {
+  if (ids.length == 1) {
+    return `id = ${ids[0]}`;
+  } else {
     return ids.map(id => `id = ${id}`).join(' OR ');
   }
 }

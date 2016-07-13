@@ -13,11 +13,11 @@ export default class ModuleLayout extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     enabledmods: PropTypes.array.isRequired, // todo get from state.account
-    size: PropTypes.oneOf(['', 'large'])
+    size: PropTypes.oneOf(['', 'large']),
   };
 
   static defaultProps = {
-    enabledmods: Object.keys(DEFAULT_MODULES).map(mod => DEFAULT_MODULES[mod])
+    enabledmods: Object.keys(DEFAULT_MODULES).map(mod => DEFAULT_MODULES[mod]),
   };
 
   render() {

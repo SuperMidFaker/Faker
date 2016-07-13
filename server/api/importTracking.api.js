@@ -6,7 +6,7 @@ import mysql from '../util/mysql';
 export default [
   ['get', '/v1/import/importtracking', importtracking],
   ['get', '/v1/import/:tid/customsBrokers', customsBrokersG],
-]
+];
 
 function* importtracking() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
@@ -26,8 +26,8 @@ function* importtracking() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: ids
-      }
+        data: ids,
+      },
     });
   } catch (e) {
     console.log(e);

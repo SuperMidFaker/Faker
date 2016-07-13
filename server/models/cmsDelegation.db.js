@@ -15,7 +15,7 @@ function fillZero(num) {
 export const Delegation = sequelize.define('cms_delegations', {
   delg_no: {
     type: STRING,
-    primaryKey: true
+    primaryKey: true,
   },
   delg_type: INTEGER,
   order_no: STRING,
@@ -40,8 +40,8 @@ export const Delegation = sequelize.define('cms_delegations', {
   creater_login_id: INTEGER,
   created_date: {
     type: DATE,
-    defaultValue: NOW
-  }
+    defaultValue: NOW,
+  },
 }, {
   classMethods: {
     generateDelgNo(code, delgType, serialNo) {
@@ -60,7 +60,7 @@ export const Delegation = sequelize.define('cms_delegations', {
         and DD.bill_status = ? and DD.status > 1 left outer join cms_delegation_bill_head BH
         on D.delg_no = BH.delg_no left outer join cms_delegation_entry_head EH
         on BH.bill_no = EH.bill_no`, {
-          replacements: [ tenantId, billStatus ], type: sequelize.QueryTypes.SELECT
+          replacements: [tenantId, billStatus], type: sequelize.QueryTypes.SELECT,
         });
     },
     getPagedDelgBillEntry(billStatus, tenantId, delgWhere, offset, limit) {
@@ -73,10 +73,10 @@ export const Delegation = sequelize.define('cms_delegations', {
         and DD.bill_status = ? and DD.status > 1 left outer join cms_delegation_bill_head BH
         on D.delg_no = BH.delg_no left outer join cms_delegation_entry_head EH
         on BH.bill_no = EH.bill_no limit ?, ?`, {
-          replacements: [ tenantId, billStatus, offset, limit ], type: sequelize.QueryTypes.SELECT
-      });
+          replacements: [tenantId, billStatus, offset, limit], type: sequelize.QueryTypes.SELECT,
+        });
     },
-  }
+  },
 });
 
 export const Dispatch = sequelize.define('cms_delegation_dispatch', {
@@ -96,7 +96,7 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
   recv_name: STRING,
   delg_time: {
     type: DATE,
-    defaultValue: NOW
+    defaultValue: NOW,
   },
   acpt_time: DATE,
   decl_time: DATE,
@@ -105,7 +105,7 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
   send_audit_date: DATE,
   bill_status: {
     type: INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
   },
   status: INTEGER,
   source: INTEGER,

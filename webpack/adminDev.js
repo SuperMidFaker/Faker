@@ -21,10 +21,10 @@ wpConfig.devServer = {
   inline: true,
   progress: true,
   stats: {
-    colors: true
+    colors: true,
   },
   host: '0.0.0.0',
-  port: config.get('webpack_admin_port')
+  port: config.get('webpack_admin_port'),
 };
 wpConfig.devtool = 'source-map';
 
@@ -32,13 +32,13 @@ wpConfig.plugins.push(
   new webpack.optimize.CommonsChunkPlugin({
     names: 'vendor',
     filename: '[name]-[hash].js',
-    minChunks: Infinity
+    minChunks: Infinity,
   }),
   new webpack.HotModuleReplacementPlugin() // sync with browser while developing
 );
 wpConfig.module.loaders.push({
   test: /\.less$/,
-  loader: 'style!css?&sourceMap!postcss!less'
+  loader: 'style!css?&sourceMap!postcss!less',
 });
 
 wpConfig.plugins.push(isomorphicPlugin.development());

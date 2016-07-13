@@ -18,10 +18,12 @@ export default function FormDatePicker(props) {
   return (
     <Col span={outercol}>
       <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
-        required={required}>
+        required={required}
+      >
         <DatePicker disabled={disabled} style={{ width: '100%' }}
           {...getFieldProps(field, { rules, initialValue,
-          ...fieldProps })} />
+          ...fieldProps })}
+        />
       </FormItem>
     </Col>
   );

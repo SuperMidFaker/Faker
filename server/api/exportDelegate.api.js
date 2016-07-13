@@ -14,13 +14,13 @@ export default [
   ['put', '/v1/export/senddelegate', sendDelegate],
   ['put', '/v1/export/invalidDelegate', invalidDelegate],
   ['get', '/v1/export/exportdelegatelogs', exportdelegatelogs],
-]
+];
 
 function* exportdelegates() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
-  const currentStatus = parseInt(this.request.query.currentStatus || 0, 10) //木有状态则默认查询未发送的数据;
+  const currentStatus = parseInt(this.request.query.currentStatus || 0, 10); // 木有状态则默认查询未发送的数据;
 
 
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
@@ -42,14 +42,14 @@ function* exportdelegates() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: ids
+        data: ids,
       },
       statusList: {
         notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
         notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
         acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
-        invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0
-      }
+        invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0,
+      },
     });
   } catch (e) {
     console.log(e);
@@ -58,7 +58,6 @@ function* exportdelegates() {
 }
 
 function* exportdelegateStatusG() {
-
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
 
@@ -72,7 +71,7 @@ function* exportdelegateStatusG() {
       notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
       notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
       acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
-      invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0
+      invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0,
     });
   } catch (e) {
     console.log(e);
@@ -108,15 +107,13 @@ function* getSelectOptions() {
   const declareFileList = yield idDao.getDeclareFileList(tenantId, delId);
   const declareCategoryList = yield idDao.getDeclareCategoryList(tenantId);
   return Result.ok(this, {
-    customsInfoList: customsInfoList,
-    declareWayList: declareWayList,
-    tradeModeList: tradeModeList,
-    declareFileList: declareFileList,
-    declareCategoryList: declareCategoryList
+    customsInfoList,
+    declareWayList,
+    tradeModeList,
+    declareFileList,
+    declareCategoryList,
   });
 }
-
-
 
 
 function* editExportDelegate() {
@@ -229,8 +226,8 @@ function* exportdelegatelogs() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: logs
-      }
+        data: logs,
+      },
     });
   } catch (e) {
     console.log(e);

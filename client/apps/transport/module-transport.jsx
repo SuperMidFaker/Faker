@@ -14,31 +14,31 @@ function getLinksByAspect(aspect, intl) {
       key: 'tms-0',
       path: '/transport/',
       icon: 'zmdi zmdi-tv-list',
-      text: '工作台'
+      text: '工作台',
     }, {
       single: true,
       key: 'tms-1',
       path: '/transport/acceptance',
       icon: 'zmdi zmdi-inbox',
-      text: formatMsg(intl, 'transportAcceptance')
+      text: formatMsg(intl, 'transportAcceptance'),
     }, {
       single: true,
       key: 'tms-2',
       path: '/transport/dispatch',
       icon: 'zmdi zmdi-arrow-split',
-      text: '调度'
+      text: '调度',
     }, {
       single: true,
       key: 'tms-3',
       path: '/transport/tracking',
       icon: 'zmdi zmdi-assignment-check',
-      text: '追踪'
+      text: '追踪',
     }, {
       single: true,
       key: 'tms-4',
       path: '/transport/resources',
       icon: 'zmdi zmdi-library',
-      text: '管理'
+      text: '管理',
     }];
   } else {
     return [{
@@ -46,26 +46,26 @@ function getLinksByAspect(aspect, intl) {
       key: 'tms-0',
       path: '/transport/',
       icon: 'zmdi zmdi-tv-list',
-      text: '工作台'
+      text: '工作台',
     }, {
       single: true,
       key: 'tms-2',
       path: '/transport/tracking',
       icon: 'zmdi zmdi-eye',
-      text: '追踪'
+      text: '追踪',
     }, {
       single: true,
       key: 'tms-3',
       path: '/transport/resources',
       icon: 'zmdi zmdi-library',
-      text: '管理'
+      text: '管理',
     }];
   }
 }
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect
+    aspect: state.account.aspect,
   })
 )
 export default class Transport extends React.Component {
@@ -73,14 +73,14 @@ export default class Transport extends React.Component {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
   render() {
     const { aspect, intl } = this.props;
     const linkMenus = getLinksByAspect(aspect, intl);
     return (
       <div className="am-content">
-        <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
+        <AmLeftSidebar links={linkMenus} location={this.props.location} />
         {this.props.children}
       </div>
     );

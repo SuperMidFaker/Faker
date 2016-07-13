@@ -48,7 +48,7 @@ export default {
     return mysql.query(sql, args);
   },
   getOwnerLoginId(tenantId) {
-    const sql = `select login_id as id from sso_tenant_users where tenant_id = ? and user_type = 'owner'`;
+    const sql = 'select login_id as id from sso_tenant_users where tenant_id = ? and user_type = \'owner\'';
     const args = [tenantId];
     return mysql.query(sql, args);
   },
@@ -72,23 +72,23 @@ export default {
     return mysql.query(sql, args);
   },
   updateOwnerInfo(loginId, contact, position, trans) {
-    const sql = `update sso_tenant_users set name = ?, position = ? where login_id = ?`;
+    const sql = 'update sso_tenant_users set name = ?, position = ? where login_id = ?';
     const args = [contact, position, loginId];
     return mysql.update(sql, args, trans);
   },
   updateStatus(id, status, trans) {
-    const sql = `update sso_tenant_users set status = ? where user_id = ?`;
+    const sql = 'update sso_tenant_users set status = ? where user_id = ?';
     const args = [status, id];
     return mysql.update(sql, args, trans);
   },
   updateUserType(id, userType, trans) {
-    const sql = `update sso_tenant_users set user_type = ? where user_id = ?`;
+    const sql = 'update sso_tenant_users set user_type = ? where user_id = ?';
     const args = [userType, id];
     return mysql.update(sql, args, trans);
   },
   deleteTenantUsers(corpId, trans) {
     const sql = 'delete from sso_tenant_users where tenant_id = ? or parent_tenant_id = ?';
-    const args = [ corpId, corpId ];
+    const args = [corpId, corpId];
     return mysql.delete(sql, args, trans);
   },
   getTenantPersonnelCount(tenantId, filters) {
@@ -122,7 +122,7 @@ export default {
     return mysql.insert(sql, args, trans);
   },
   updatePersonnel(p, trans) {
-    const sql = `update sso_tenant_users set name = ?, user_type = ?, position = ? where user_id = ?`;
+    const sql = 'update sso_tenant_users set name = ?, user_type = ?, position = ? where user_id = ?';
     const args = [p.name, p.role, p.position, p.key];
     return mysql.update(sql, args, trans);
   },
@@ -151,16 +151,16 @@ export default {
     return mysql.query(sql, args);
   },
   updatePersonnelName(loginId, name, trans) {
-    const sql = `update sso_tenant_users set name = ? where login_id = ?`;
+    const sql = 'update sso_tenant_users set name = ? where login_id = ?';
     const args = [name, loginId];
     return mysql.update(sql, args, trans);
-  }
-}
+  },
+};
 
 export const TenantUser = sequelize.define('sso_tenant_users', {
   user_id: {
     type: INTEGER,
-    primaryKey: true
+    primaryKey: true,
   },
   tenant_id: INTEGER,
   parent_tenant_id: INTEGER,

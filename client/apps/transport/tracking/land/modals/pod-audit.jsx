@@ -111,7 +111,7 @@ export default class PodAuditModal extends React.Component {
     this.props.closePodModal();
   }
   render() {
-    const { auditModal: { readonly, visible }} = this.props;
+    const { auditModal: { readonly, visible } } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const colSpan = 4;
     return (
@@ -127,8 +127,8 @@ export default class PodAuditModal extends React.Component {
         ]}
       >
         <Form className="row">
-          <FormItem label={this.msg('signStatus')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('signStatus')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <RadioGroup onChange={this.handleSignRadioChange} value={signStatus}>
               <Radio key="normal" value={1} disabled={readonly}>{this.msg('normalSign')}</Radio>
@@ -136,22 +136,22 @@ export default class PodAuditModal extends React.Component {
               <Radio key="refused" value={3} disabled={readonly}>{this.msg('refusedSign')}</Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label={this.msg('signRemark')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('signRemark')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <Input type="textarea" placeholder={this.msg('signRemarkPlaceholder')}
               rows="5" value={remark} onChange={this.handleFieldChange}
               disabled={readonly}
             />
           </FormItem>
-          <FormItem label={this.msg('podPhoto')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('podPhoto')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <Upload action="/v1/upload/img" listType="picture" onRemove={this.handlePhotoRemove}
-            onChange={this.handlePhotoUpload} fileList={photoList}
+              onChange={this.handlePhotoUpload} fileList={photoList}
             >
               <Button icon="upload" type="ghost" disabled={readonly} />
-              { this.msg('photoSubmit') }
+              {this.msg('photoSubmit')}
             </Upload>
           </FormItem>
         </Form>

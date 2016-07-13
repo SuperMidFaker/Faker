@@ -35,40 +35,40 @@ function concatFilterSql(filters, args) {
   return sqlClause === ' and ' ? '' : sqlClause;
 }
 export default {
-  getIdTotalCount(filters, tenantId) { //获取满足条件的总记录数
-      const args = [tenantId, tenantId, tenantId];
-      const filterClause = concatFilterSql(filters, args);
-      const sql = `select count(*) as count
+  getIdTotalCount(filters, tenantId) { // 获取满足条件的总记录数
+    const args = [tenantId, tenantId, tenantId];
+    const filterClause = concatFilterSql(filters, args);
+    const sql = `select count(*) as count
       from g_entry_head geh inner join g_entry_log gel on geh.entry_id = gel.entry_id
       inner join g_bus_delegate gbd on geh.del_no = gbd.del_no
       where (gbd.tenant_id= ? or gbd.send_tenant_id= ? or gbd.tenant_id =? ) and gbd.delegate_type= 0  ${filterClause}`;
-      console.log(sql, args);
-      return mysql.query(sql, args);
-    },
-    getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, tenantId) { //分页显示数据
-      const args = [tenantId, tenantId, tenantId];
+    console.log(sql, args);
+    return mysql.query(sql, args);
+  },
+  getPagedIdsByCorp(current, pageSize, filters, sortField, sortOrder, tenantId) { // 分页显示数据
+    const args = [tenantId, tenantId, tenantId];
 
-      const filterClause = concatFilterSql(filters, args);
-      let sortColumn = sortField || 'entry_id';
-      const sortClause = ` order by ${sortColumn} ${sortOrder === 'ascend' ? 'asc' : 'desc'} `;
+    const filterClause = concatFilterSql(filters, args);
+    let sortColumn = sortField || 'entry_id';
+    const sortClause = ` order by ${sortColumn} ${sortOrder === 'ascend' ? 'asc' : 'desc'} `;
 
-      const sql = `select gel.entry_id,gel.process_name,
+    const sql = `select gel.entry_id,gel.process_name,
       DATE_FORMAT(gel.process_date,'%Y-%m-%d %H:%i') process_date,
       gel.id as \`key\`,geh.del_no,geh.pre_entry_id,
       gbd.bill_no,gbd.rec_tenant_name,gbd.send_tenant_name,gbd.send_tenant_id,gbd.rec_tenant_id,gbd.tenant_id
       from g_entry_head geh inner join g_entry_log gel on geh.entry_id = gel.entry_id
       inner join g_bus_delegate gbd on geh.del_no = gbd.del_no
       where (gbd.tenant_id= ? or gbd.send_tenant_id= ? or gbd.tenant_id =? ) and gbd.delegate_type= 0  ${filterClause} ${sortClause}  limit ?, ?`;
-      args.push((current - 1) * pageSize, pageSize);
-      console.log(sql, args);
-      return mysql.query(sql, args);
-    },
-    getcustomsBrokers(tenantId) {
-      const args = [tenantId, tenantId];
-      const sql = `SELECT t.name as short_name,t.partner_tenant_id as \`key\`  FROM sso_partners as t
+    args.push((current - 1) * pageSize, pageSize);
+    console.log(sql, args);
+    return mysql.query(sql, args);
+  },
+  getcustomsBrokers(tenantId) {
+    const args = [tenantId, tenantId];
+    const sql = `SELECT t.name as short_name,t.partner_tenant_id as \`key\`  FROM sso_partners as t
                     inner join sso_partnerships as t1 on t.partner_tenant_id=t1.partner_tenant_id and (t.tenant_id=t1.tenant_id or t.send_tenant_id=t1.send_tenant_id)
                     where t1.type=1 and (t.tenant_id= ? or t.send_tenant_id= ?) order by t.partner_tenant_id`;
-      console.log(sql, args);
-      return mysql.query(sql, args);
-    },
-}
+    console.log(sql, args);
+    return mysql.query(sql, args);
+  },
+};

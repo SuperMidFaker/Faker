@@ -10,7 +10,7 @@ export default function connectNav(navCallback) {
     class WrappedComponent extends Component {
       static contextTypes = {
         router: React.PropTypes.object.isRequired,
-        store: PropTypes.object.isRequired
+        store: PropTypes.object.isRequired,
       }
       componentDidMount() {
         // todo change to object parameter

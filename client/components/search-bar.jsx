@@ -6,7 +6,7 @@ export default class SearchBar extends React.Component {
     placeholder: PropTypes.string,
     value: PropTypes.string,
     extraParams: PropTypes.object,
-    onInputSearch: PropTypes.func.isRequired
+    onInputSearch: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);

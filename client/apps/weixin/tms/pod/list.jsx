@@ -7,20 +7,20 @@ import moment from 'moment';
 import WeUI from 'react-weui';
 import '../../weui.less';
 
-const {Cells, CellsTitle, Cell, CellBody, CellFooter, Icon} = WeUI;
+const { Cells, CellsTitle, Cell, CellBody, CellFooter, Icon } = WeUI;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];
   let p = dispatch(loadPodTable(cookie, {
     tenantId: state.account.tenantId,
-    filters: JSON.stringify([ { name: 'type', value: 'delivered' } ]),
+    filters: JSON.stringify([{ name: 'type', value: 'delivered' }]),
     pageSize: state.weixin.shipmentlist.pageSize,
     currentPage: state.weixin.shipmentlist.current,
   }));
   promises.push(p);
   p = dispatch(loadUploadedPodTable(cookie, {
     tenantId: state.account.tenantId,
-    filters: JSON.stringify([ { name: 'type', value: 'submitted' } ]),
+    filters: JSON.stringify([{ name: 'type', value: 'submitted' }]),
     pageSize: state.weixin.uploadedShipmentlist.pageSize,
     currentPage: state.weixin.uploadedShipmentlist.current,
   }));
@@ -43,7 +43,7 @@ export default class List extends React.Component {
     toUploadPod: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
@@ -53,7 +53,7 @@ export default class List extends React.Component {
     this.handleNavigationTo('/weixin/tms/pod/upload');
   }
   render() {
-    const {shipmentlist, uploadedShipmentlist} = this.props;
+    const { shipmentlist, uploadedShipmentlist } = this.props;
     return (
       <div className="panel-body">
         <section>
@@ -61,7 +61,7 @@ export default class List extends React.Component {
             <Cells access>
             {shipmentlist.data.map(item => {
               return (
-                  <Cell className="" onClick={() => {this.handleUploadPod(item); }}>
+                  <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
                     <CellBody>
                       {item.shipmt_no}
                     </CellBody>
@@ -76,7 +76,7 @@ export default class List extends React.Component {
           <Cells>
             {uploadedShipmentlist.data.map(item => {
               return (
-                <Cell style={{color: '#CCCCCC'}}>
+                <Cell style={{ color: '#CCCCCC' }}>
                   <CellBody>
                     {item.shipmt_no}
                   </CellBody>

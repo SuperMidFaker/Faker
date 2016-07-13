@@ -50,12 +50,12 @@ function *shipmentListG() {
   });
   try {
     if (shipmtType !== undefined) {
-      const [ totals, shipmts ] = yield [
+      const [totals, shipmts] = yield [
         shipmentDao.getCountByType(tenantId, shipmtType, shipmtNo),
         shipmentDao.getShipmentsByType(
           tenantId, shipmtType, shipmtNo, pageSize, current,
           sortField, sortOrder
-        )
+        ),
       ];
       return Result.ok(this, {
         totalCount: totals[0].count,
@@ -64,7 +64,7 @@ function *shipmentListG() {
         data: shipmts,
       });
     } else {
-      const [ totals, shipmts ] = yield [
+      const [totals, shipmts] = yield [
         shipmentDispDao.getFilteredTotalCount(
           tenantId, shipmtDispType, shipmtNo,
           SHIPMENT_DISPATCH_STATUS.confirmed, SHIPMENT_TRACK_STATUS.unaccepted
@@ -72,7 +72,7 @@ function *shipmentListG() {
         shipmentDispDao.getFilteredShipments(
           tenantId, shipmtDispType, shipmtNo, SHIPMENT_DISPATCH_STATUS.confirmed,
           pageSize, current, sortField, sortOrder, SHIPMENT_TRACK_STATUS.unaccepted
-        )
+        ),
       ];
       return Result.ok(this, {
         totalCount: totals[0].count,
@@ -89,14 +89,14 @@ function *shipmentListG() {
 function *shipmtRequiresG() {
   const tenantId = this.request.query.tenantId;
   try {
-    const [ consignerLocations, consigneeLocations, transitModes, packagings, clients ] =
+    const [consignerLocations, consigneeLocations, transitModes, packagings, clients] =
       yield [
         shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consigner),
         shipmentDao.getConsignLocations(tenantId, CONSIGN_TYPE.consignee),
         shipmentDao.getTransitModes(tenantId),
         shipmentDao.getPackagings(tenantId),
-        coopDao.getPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer)
-    ];
+        coopDao.getPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer),
+      ];
     return Result.ok(this, {
       consignerLocations,
       consigneeLocations,
@@ -120,7 +120,7 @@ function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
     shipmentDao.createByLSP(
       shipmtNo, shipmt, sp.tid, sp.name, sp.login_id,
       effective, publicUrlKey, nowDT, trans
-    )
+    ),
   ];
   if (!shipmt.consigner_id && shipmt.consigner_name
       && shipmt.consigner_name.trim().length > 0) {
@@ -221,7 +221,7 @@ function *shipmtAcceptP() {
         body.disperId, body.disperName, SHIPMENT_DISPATCH_STATUS.confirmed,
         SHIPMENT_TRACK_STATUS.undispatched, trans
       ),
-      shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.effected, trans)
+      shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.effected, trans),
     ];
     yield mysql.commit(trans);
     const disps = yield shipmentDispDao.getShipmtDispWithNo(body.shipmtDispId);
@@ -234,7 +234,7 @@ function *shipmtAcceptP() {
       to_tenant_id: disp.sr_tenant_id,
       title: '接单通知',
       remark: `${disp.sp_name} 接单了，快去看看吧！`,
-      content: `${disp.sp_name} 接单了，快去看看吧！运单号：${disp.shipmt_no}`
+      content: `${disp.sp_name} 接单了，快去看看吧！运单号：${disp.shipmt_no}`,
     });
     const shipmentEvent = yield ShipmentEvent.create({
       tenant_id: disp.sp_tenant_id,
@@ -351,7 +351,7 @@ function *shipmtG() {
   try {
     const [shipmtInfo] = yield shipmentDispDao.getShipmtWithNo(shipmtNo);
     const goodslist = yield shipmentDispDao.getShipmtGoodsWithNo(shipmtNo);
-    return Result.ok(this, {formData: {...shipmtInfo, goodslist}});
+    return Result.ok(this, { formData: { ...shipmtInfo, goodslist } });
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
@@ -369,7 +369,7 @@ function *shipmtSaveEditP() {
     const dbOps = [
       shipmentDao.updateShipmtWithInfo(shipment, trans),
       shipmentDispDao.updateDispInfo(shipment.disp_id, {
-       freight_charge: shipment.freight_charge,
+        freight_charge: shipment.freight_charge,
       }, trans),
     ];
     if (editGoods.length > 0) {
@@ -399,7 +399,7 @@ function *shipmtRevokeP() {
   try {
     const body = yield cobody(this);
     trans = yield mysql.beginTransaction();
-    const [ _, logRes, __ ] = yield [
+    const [_, logRes, __] = yield [
       shipmentDao.updateEffective(body.shipmtDispId, SHIPMENT_EFFECTIVES.cancelled, trans),
       shipmentAuxDao.createLog('revoke', body.reason, trans),
       shipmentDispDao.updateLogAction('revoke', body.shipmtDispId, trans),
@@ -440,7 +440,7 @@ function *shipmtDetailG() {
   const tenantId = this.request.query.tenantId;
   const sourceType = this.request.query.sourceType;
   try {
-    const [ goodslist, shipmts, shipmtSrDisps, shipmtSpDisps, points ] = yield [
+    const [goodslist, shipmts, shipmtSrDisps, shipmtSpDisps, points] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
       shipmentDispDao.getShipmtDispInfo(shipmtNo, tenantId, 'sr'),
@@ -449,7 +449,7 @@ function *shipmtDetailG() {
     ];
     let shipmt = {};
     const charges = {
-      earnings:  shipmtSpDisps.length === 1 ? shipmtSpDisps[0].freight_charge : null,
+      earnings: shipmtSpDisps.length === 1 ? shipmtSpDisps[0].freight_charge : null,
       payout: shipmtSrDisps.length === 1 && shipmtSrDisps[0].sp_tenant_id !== 0
         ? shipmtSrDisps[0].freight_charge : null,
     };
@@ -544,7 +544,7 @@ function *shipmtPublicDetail() {
   const shipmtNo = this.request.query.shipmtNo;
   const key = this.request.query.key;
   try {
-    const [ goodslist, shipmts, shipmtDisp, points ] = yield [
+    const [goodslist, shipmts, shipmtDisp, points] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
       shipmentDispDao.getShipmtDispWithShipmtNo(shipmtNo),

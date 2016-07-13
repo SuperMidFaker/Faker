@@ -12,33 +12,33 @@ function prepareParam(item, columns) {
   return args;
 }
 function prepProductParam(item) {
-  const columns = [`customer_no`, `wh_no`, `goods_no`, `goods_mode`, `goods_name`,
-    `goods_short_name`, `goods_desc`, `price_cost`, `price_wholesale`, `price_retail`,
-    `curr`, `billing_mode`, `facture`, `country`, `brand`, `spec`, `texture`, `remark`];
+  const columns = ['customer_no', 'wh_no', 'goods_no', 'goods_mode', 'goods_name',
+    'goods_short_name', 'goods_desc', 'price_cost', 'price_wholesale', 'price_retail',
+    'curr', 'billing_mode', 'facture', 'country', 'brand', 'spec', 'texture', 'remark'];
   return prepareParam(item, columns);
 }
 
 function prepInboundParam(item) {
-  const columns = [`wh_no`, `customer_no`, `trans_no`, `trans_mode`, `trans_company`, `trans_date`,
-    `goods_no`, `goods_name`, `spec`, `qty`, `measure`, `amount`, `currency`, `remark`];
+  const columns = ['wh_no', 'customer_no', 'trans_no', 'trans_mode', 'trans_company', 'trans_date',
+    'goods_no', 'goods_name', 'spec', 'qty', 'measure', 'amount', 'currency', 'remark'];
   return prepareParam(item, columns);
 }
 
 function prepOutboundParam(item) {
-  const columns = [`wh_no`, `customer_no`, `wh_name`, `trans_no`, `trans_mode`, `trans_company`,
-    `trans_date`, `goods_no`, `goods_name`, `spec`, `qty`, `measure`, `amount`, `currency`, `remark`];
+  const columns = ['wh_no', 'customer_no', 'wh_name', 'trans_no', 'trans_mode', 'trans_company',
+    'trans_date', 'goods_no', 'goods_name', 'spec', 'qty', 'measure', 'amount', 'currency', 'remark'];
   return prepareParam(item, columns);
 }
 
 function prepInventoryParam(item) {
-  const columns = [`wh_no`, `customer_no`, `wh_name`, `trans_date`, `goods_no`,
-    `goods_name`, `spec`, `qty`, `measure`, `amount`, `currency`, `remark`];
+  const columns = ['wh_no', 'customer_no', 'wh_name', 'trans_date', 'goods_no',
+    'goods_name', 'spec', 'qty', 'measure', 'amount', 'currency', 'remark'];
   return prepareParam(item, columns);
 }
 
 function prepFeeParam(item) {
-  const columns = [`wh_no`, `customer_no`, `wh_name`, `trans_date`, `fee_name`,
-    `amount`, `currency`, `remark`];
+  const columns = ['wh_no', 'customer_no', 'wh_name', 'trans_date', 'fee_name',
+    'amount', 'currency', 'remark'];
   return prepareParam(item, columns);
 }
 
@@ -101,5 +101,5 @@ export default {
       args.push(singleArgs);
     });
     return mysql.insert(sql, [args], trans);
-  }
-}
+  },
+};

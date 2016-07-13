@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import {
   loadOrgans, delCorp, switchStatus, switchTenantApp,
-  openTenantAppsEditor, closeTenantAppsEditor, INITIAL_LIST_PAGE_SIZE
+  openTenantAppsEditor, closeTenantAppsEditor, INITIAL_LIST_PAGE_SIZE,
 } from 'common/reducers/corps';
 import { Table, Button, Icon, message } from 'antd';
 import NavLink from '../../../components/nav-link';
@@ -29,7 +29,7 @@ function fetchData({ state, dispatch, cookie }) {
     return dispatch(loadOrgans(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.corps.corplist.pageSize,
-      currentPage: state.corps.corplist.current
+      currentPage: state.corps.corplist.current,
     }));
   }
 }
@@ -40,11 +40,11 @@ function fetchData({ state, dispatch, cookie }) {
     corplist: state.corps.corplist,
     loading: state.corps.loading,
     appEditor: state.corps.appEditor,
-    tenantId: state.account.tenantId
+    tenantId: state.account.tenantId,
   }),
   {
     loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
-    closeTenantAppsEditor
+    closeTenantAppsEditor,
   }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -56,7 +56,7 @@ function fetchData({ state, dispatch, cookie }) {
     text: formatContainerMsg(props.intl, 'organTitle'),
     moduleName: 'corp',
     withModuleLayout: false,
-    goBackFn: ''
+    goBackFn: '',
   }));
 })
 export default class CorpList extends React.Component {
@@ -71,16 +71,16 @@ export default class CorpList extends React.Component {
     openTenantAppsEditor: PropTypes.func.isRequired,
     closeTenantAppsEditor: PropTypes.func.isRequired,
     delCorp: PropTypes.func.isRequired,
-    loadOrgans: PropTypes.func.isRequired
+    loadOrgans: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   };
   handleSelectionClear = () => {
-    this.setState({selectedRowKeys: []});
+    this.setState({ selectedRowKeys: [] });
   }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
@@ -97,11 +97,11 @@ export default class CorpList extends React.Component {
           this.props.loadOrgans(null, {
             tenantId,
             pageSize,
-            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize),
           });
         }
       }),
-      confirmString: 'DELETE'
+      confirmString: 'DELETE',
     });
   }
   handleStatusSwitch(tenant, index) {
@@ -121,7 +121,7 @@ export default class CorpList extends React.Component {
   renderColumnText(status, text) {
     let style = {};
     if (status === ACCOUNT_STATUS.blocked.name) {
-      style = {color: '#CCC'};
+      style = { color: '#CCC' };
     }
     return <span style={style}>{text}</span>;
   }
@@ -136,7 +136,7 @@ export default class CorpList extends React.Component {
         showSizeChanger: true,
         showQuickJumper: false,
         pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`],
-        pageSize: result.pageSize
+        pageSize: result.pageSize,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
@@ -144,7 +144,7 @@ export default class CorpList extends React.Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
         };
         for (const key in filters) {
           if (filters[key]) {
@@ -153,40 +153,40 @@ export default class CorpList extends React.Component {
         }
         return params;
       },
-      remotes: corplist
+      remotes: corplist,
     });
     // 通过 rowSelection 对象表明需要行选择
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
-        this.setState({selectedRowKeys});
-      }
+        this.setState({ selectedRowKeys });
+      },
     };
     const columns = [{
       title: formatMsg(intl, 'nameColumn'),
       dataIndex: 'name',
       width: 150,
-      render: (o, record) => this.renderColumnText(record.status, record.name)
+      render: (o, record) => this.renderColumnText(record.status, record.name),
     }, {
       title: formatMsg(intl, 'subcodeColumn'),
       dataIndex: 'subCode',
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.subCode)
+      render: (o, record) => this.renderColumnText(record.status, record.subCode),
     }, {
       title: formatMsg(intl, 'contactColumn'),
       dataIndex: 'contact',
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.contact)
+      render: (o, record) => this.renderColumnText(record.status, record.contact),
     }, {
       title: formatMsg(intl, 'phoneColumn'),
       dataIndex: 'phone',
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.phone)
+      render: (o, record) => this.renderColumnText(record.status, record.phone),
     }, {
       title: formatMsg(intl, 'emailColumn'),
       dataIndex: 'email',
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.email)
+      render: (o, record) => this.renderColumnText(record.status, record.email),
     }, {
       title: formatMsg(intl, 'appsColumn'),
       width: 200,
@@ -209,17 +209,17 @@ export default class CorpList extends React.Component {
               <Icon type="edit" />
             </Button>
           </span>);
-      }
+      },
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
       width: 100,
       render: (o, record) => {
-        let style = {color: '#51C23A'};
+        let style = { color: '#51C23A' };
         if (record.status === ACCOUNT_STATUS.blocked.name) {
-          style = {color: '#CCC'};
+          style = { color: '#CCC' };
         }
         return <span style={style}>{formatContainerMsg(intl, ACCOUNT_STATUS[record.status].text)}</span>;
-      }
+      },
     }, {
       title: formatContainerMsg(intl, 'opColumn'),
       width: 150,
@@ -249,31 +249,33 @@ export default class CorpList extends React.Component {
         } else {
           return <span />;
         }
-      }
+      },
     }];
     return (
       <div className="page-body fixed">
         <div className="panel-header">
           <div className="pull-right action-btns">
             <span>{formatMsg(intl, 'quotas')}{' '}</span>
-            <span style={{fontSize: 20, fontWeight:700, color:'#51C23A'}}>{corplist.totalCount}</span>
-            <span style={{fontSize: 20, fontWeight:400, color:'#333'}}>/</span>
-            <span style={{fontSize: 20, fontWeight:700, color:'#333'}}>10</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: '#51C23A' }}>{corplist.totalCount}</span>
+            <span style={{ fontSize: 20, fontWeight: 400, color: '#333' }}>/</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: '#333' }}>10</span>
           </div>
           <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
-              onClick={() => this.handleNavigationTo('/corp/organization/new')}>
+            onClick={() => this.handleNavigationTo('/corp/organization/new')}
+          >
               <Icon type="plus-circle-o" />
               {formatGlobalMsg(intl, 'createNew')}
           </Button>
         </div>
         <div className="panel-body body-responsive">
-          <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
+          <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
         </div>
         <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-          <Button shape="circle-outline" icon="cross" onClick={ this.handleSelectionClear } className="pull-right" />
+          <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
         </div>
-        <AppEditor { ...this.props.appEditor } switchTenantApp={this.props.switchTenantApp}
-          appPackage={this.props.corplist.tenantAppPackage} onCancel={ this.handleEditorHide }/>
+        <AppEditor {...this.props.appEditor} switchTenantApp={this.props.switchTenantApp}
+          appPackage={this.props.corplist.tenantAppPackage} onCancel={this.handleEditorHide}
+        />
       </div>);
   }
 }

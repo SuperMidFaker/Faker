@@ -17,5 +17,5 @@ function *renderBusinessPage() {
 export default [
   ['get', '/weixin/bind', renderWxPage],
   ['get', '/weixin/account', renderWxPage],
-  ['get', '/weixin/tms/*', renderWxPage]
+  ['get', '/weixin/tms/*', renderWxPage],
 ];

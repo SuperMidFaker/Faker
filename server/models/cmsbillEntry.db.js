@@ -84,8 +84,8 @@ export const BillHeadDao = sequelize.define('cms_delegation_bill_head', {
       buf.write(year, 2);
       buf.write(serial, 10 - serial.length);
       return buf.toString();
-    }
-  }
+    },
+  },
 });
 
 export const BillBodyDao = sequelize.define('cms_delegation_bill_list', {

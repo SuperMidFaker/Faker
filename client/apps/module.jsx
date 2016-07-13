@@ -24,13 +24,13 @@ import { DEFAULT_MODULES } from 'common/constants';
     text,
     moduleName,
     withModuleLayout: true,
-    goBackFn: null
+    goBackFn: null,
   }));
 })
 export default class Module extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
 
   render() {

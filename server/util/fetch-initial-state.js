@@ -1,5 +1,5 @@
 function fetchDeferredState(components, locals) {
-	const fetchers = components.filter((component) => component && component.deferredfetchers) // only look at ones with a static prefetcher
+	                    const fetchers = components.filter((component) => component && component.deferredfetchers) // only look at ones with a static prefetcher
 	.map((component) => component.deferredfetchers)    // pull out fetch data methods
   .reduce((fetchers, fetcher) => fetchers.concat(fetcher), [])
 	.map(fetchData => fetchData(locals));  // call fetch data methods and save promises
@@ -7,7 +7,7 @@ function fetchDeferredState(components, locals) {
 }
 
 function prefetchState(components, locals) {
-	const fetchers = components.filter((component) => component && component.prefetchers) // only look at ones with a static prefetcher
+	                    const fetchers = components.filter((component) => component && component.prefetchers) // only look at ones with a static prefetcher
 	.map((component) => component.prefetchers)    // pull out fetch data methods
   .reduce((fetchers, fetcher) => fetchers.concat(fetcher), [])
 	.map(fetchData => fetchData(locals));  // call fetch data methods and save promises
@@ -20,7 +20,7 @@ export default (components, store, cookie, location, params) => {
       fetchDeferredState(components, { state: store.getState(), dispatch: store.dispatch, cookie, location, params })
         .then(resolve)
         .catch(error => {
-          // TODO: there is no error return here for api promise, maybe we need handle failure 
+          // TODO: there is no error return here for api promise, maybe we need handle failure
           // in then
           console.warn('Warning: Error in fetchDataDeferred', error);
           return resolve();
@@ -34,4 +34,4 @@ export default (components, store, cookie, location, params) => {
         return doTransition();
       });
   });
-}
+};

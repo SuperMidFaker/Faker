@@ -5,7 +5,7 @@ import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadVehicleList, editVehicle } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
-function fetchData({dispatch, state}) {
+function fetchData({ dispatch, state }) {
   return dispatch(loadVehicleList(state.account.tenantId));
 }
 
@@ -20,25 +20,26 @@ export default class VehicleListContainer extends Component {
     editVehicle: PropTypes.func.isRequired,           // 停用和启用车辆的action creator
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleAddCarBtnClick = () => {
     this.context.router.push('/transport/resources/add_car');
   }
   handleStopCarBtnClick = (carId) => {
-    this.props.editVehicle({carId, carInfo: {status: -1}});
+    this.props.editVehicle({ carId, carInfo: { status: -1 } });
   }
   handleResumeCarBtnClick = (carId) => {
-    this.props.editVehicle({carId, carInfo: {status: 0}});
+    this.props.editVehicle({ carId, carInfo: { status: 0 } });
   }
   render() {
     const { cars } = this.props;
     const dataSource = cars.map(transformRawCarDataToDisplayData);
     return (
       <VehicleList dataSource={dataSource}
-                   onStopCarBtnClick={this.handleStopCarBtnClick}
-                   onResumeCarBtnClick={this.handleResumeCarBtnClick}
-                   onAddCarBtnClick={this.handleAddCarBtnClick}/>
+        onStopCarBtnClick={this.handleStopCarBtnClick}
+        onResumeCarBtnClick={this.handleResumeCarBtnClick}
+        onAddCarBtnClick={this.handleAddCarBtnClick}
+      />
     );
   }
 }

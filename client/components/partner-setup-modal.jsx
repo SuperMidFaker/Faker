@@ -22,7 +22,7 @@ const Option = Select.Option;
     partnerTenants: state.partner.partnerTenants,
     isPlatformTenant: state.partner.isPlatformTenant,
     stepView: state.partner.modalViewport,
-    visible: state.partner.visibleModal
+    visible: state.partner.visibleModal,
   }),
   { hidePartnerModal, setModalViewport, inviteOnlPartner, inviteOfflPartner }
 )
@@ -37,8 +37,8 @@ export default class PartnerSetupDialog extends React.Component {
     partnershipTypes: PropTypes.array.isRequired,
     partnerTenants: PropTypes.array.isRequired,
     isPlatformTenant: PropTypes.bool.isRequired,
-    stepView: PropTypes.oneOf([ 'invite-initial', 'invite-sent', 'invite-offline' ]),
-    visible: PropTypes.bool.isRequired
+    stepView: PropTypes.oneOf(['invite-initial', 'invite-sent', 'invite-offline']),
+    visible: PropTypes.bool.isRequired,
   }
   state = {
     isProviderPartner: false,
@@ -46,12 +46,12 @@ export default class PartnerSetupDialog extends React.Component {
     tenantInput: '',
     tenantCode: '',
     tenantSelected: false,
-    offlineContact: ''
+    offlineContact: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible) {
       this.setState({
-        offlineContact: ''
+        offlineContact: '',
       });
     }
     /* todo select will focus input and dropdown if we change the value
@@ -76,26 +76,26 @@ export default class PartnerSetupDialog extends React.Component {
       this.setState({
         tenantSelected: false,
         tenantCode: '',
-        tenantInput: value
+        tenantInput: value,
       });
     } else {
       this.setState({
         tenantSelected: true,
         tenantCode: value,
-        tenantInput: label
+        tenantInput: label,
       });
     }
   }
   handleTenantCodeChange = (ev) => {
     this.setState({
-      tenantCode: ev.target.value
+      tenantCode: ev.target.value,
     });
   }
   handlePartnershipRadioChange = (ev) => {
     if (ev.target.value === 'client') {
       this.setState({
         isProviderPartner: false,
-        checkedProviderTypes: []
+        checkedProviderTypes: [],
       });
     } else {
       this.setState({ isProviderPartner: true });
@@ -120,7 +120,7 @@ export default class PartnerSetupDialog extends React.Component {
     const tenant = this.props.partnerTenants.find(elem => elem.code === this.state.tenantCode);
     const selectedTenantId = tenant ? tenant.id : -1;
     const partnerships = this.state.isProviderPartner ?
-      this.state.checkedProviderTypes : [ PARTNERSHIP_TYPE_INFO.customer ];
+      this.state.checkedProviderTypes : [PARTNERSHIP_TYPE_INFO.customer];
     if (selectedTenantId !== -1) {
       this.props.inviteOnlPartner(
         this.props.tenantId, selectedTenantId, this.state.tenantCode,
@@ -136,12 +136,12 @@ export default class PartnerSetupDialog extends React.Component {
   }
   handleContactInputChange = (ev) => {
     this.setState({
-      offlineContact: ev.target.value
+      offlineContact: ev.target.value,
     });
   }
   handleOfflineInvite = () => {
     const partnerships = this.state.isProviderPartner ?
-      this.state.checkedProviderTypes : [ PARTNERSHIP_TYPE_INFO.customer ];
+      this.state.checkedProviderTypes : [PARTNERSHIP_TYPE_INFO.customer];
     this.props.inviteOfflPartner(
       this.props.tenantId, this.state.tenantInput, this.state.tenantCode,
       partnerships, this.state.offlineContact, 'invite-sent'
@@ -157,7 +157,7 @@ export default class PartnerSetupDialog extends React.Component {
   render() {
     const {
       isProviderPartner, checkedProviderTypes, offlineContact, tenantSelected,
-      tenantInput, tenantCode
+      tenantInput, tenantCode,
     } = this.state;
     const { intl, stepView, visible, partnershipTypes, isPlatformTenant } = this.props;
     let footer = <div />;
@@ -168,7 +168,7 @@ export default class PartnerSetupDialog extends React.Component {
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
         {formatGlobalMsg(intl, 'cancel')}
-        </Button>
+        </Button>,
       ];
     } else if (stepView === 'invite-offline') {
       footer = [
@@ -177,13 +177,13 @@ export default class PartnerSetupDialog extends React.Component {
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
         {formatGlobalMsg(intl, 'cancel')}
-        </Button>
+        </Button>,
       ];
     } else if (stepView === 'invite-sent') {
       footer = [
         <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
         {this.msg('iknow')}
-        </Button>
+        </Button>,
       ];
     }
     return (
@@ -199,7 +199,7 @@ export default class PartnerSetupDialog extends React.Component {
             {this.getTenantOptions()}
             </Select>
           </Form.Item>
-          <Form.Item label={this.msg('partnerCode')} labelCol={{span: 7}} wrapperCol={{span: 14}}>
+          <Form.Item label={this.msg('partnerCode')} labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
             <Input placeholder={this.msg('partnerCodePlaceholder')} value={tenantCode}
               disabled={tenantSelected} onChange={this.handleTenantCodeChange}
             />
@@ -214,7 +214,7 @@ export default class PartnerSetupDialog extends React.Component {
               <Radio.Button value="provider">{this.msg('provider')}</Radio.Button>
             </Radio.Group>
           </Form.Item>
-          { isProviderPartner &&
+          {isProviderPartner &&
           <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
             <div className="ant-checkbox-group">
             {
@@ -233,8 +233,7 @@ export default class PartnerSetupDialog extends React.Component {
           }
         </Form>
         <div className={`partner-modal-offline-body
-          ${stepView === 'invite-offline' ? '' : ' hide'}`}
-        >
+          ${stepView === 'invite-offline' ? '' : ' hide'}`}>
           <i className="anticon anticon-info-circle" />
           <span>
           {this.msg('invitationForOffline')}
@@ -246,8 +245,7 @@ export default class PartnerSetupDialog extends React.Component {
           </div>
         </div>
         <div className={`partner-modal-confirm-body
-          ${stepView === 'invite-sent' ? '' : ' hide'}`}
-        >
+          ${stepView === 'invite-sent' ? '' : ' hide'}`}>
           <i className="anticon anticon-info-circle" />
           <span className="partner-modal-title">{this.msg('invitationSent')}</span>
           <div className="partner-modal-content">

@@ -12,14 +12,14 @@ import { setNavTitle } from 'common/reducers/navbar';
     text: '节点信息',
     muduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: () => router.goBack()
+    goBackFn: () => router.goBack(),
   }));
 })
 @connect(state => ({
   nodes: state.transportResources.nodes,
   nodeType: state.transportResources.nodeType,
   region: state.transportResources.region,
-  tenantId: state.account.tenantId
+  tenantId: state.account.tenantId,
 }), { addNode, editNode, changeRegion })
 @Form.create()
 export default class NodeFormConainer extends Component {
@@ -33,7 +33,7 @@ export default class NodeFormConainer extends Component {
     tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleAddNode = (e) => {
     e.preventDefault();
@@ -49,12 +49,12 @@ export default class NodeFormConainer extends Component {
     const nodeInfoInform = form.getFieldsValue();
     const nodeInfo = { ...nodeInfoInform, ...region };
     const nodeId = params.node_id;
-    this.props.editNode({nodeId, nodeInfo});
+    this.props.editNode({ nodeId, nodeInfo });
     this.context.router.goBack();
   }
   handleRegionChange = (value) => {
     const [province, city, district] = value;
-    const region = Object.assign({}, {province, city, district});
+    const region = Object.assign({}, { province, city, district });
     this.props.changeRegion(region);
   }
   render() {
@@ -66,19 +66,21 @@ export default class NodeFormConainer extends Component {
       const region = [province, city, district];
       return (
         <NodeForm mode="edit"
-                  form={form}
-                  node={editNodeInfo}
-                  region={region}
-                  changeRegion={this.props.changeRegion}
-                  onRegionChange={this.handleRegionChange}
-                  onSubmitBtnClick={this.handleEditNode} />
+          form={form}
+          node={editNodeInfo}
+          region={region}
+          changeRegion={this.props.changeRegion}
+          onRegionChange={this.handleRegionChange}
+          onSubmitBtnClick={this.handleEditNode}
+        />
       );
     } else {
       return (
         <NodeForm mode="add"
-                  form={form}
-                  onRegionChange={this.handleRegionChange}
-                  onSubmitBtnClick={this.handleAddNode}/>
+          form={form}
+          onRegionChange={this.handleRegionChange}
+          onSubmitBtnClick={this.handleAddNode}
+        />
       );
     }
   }

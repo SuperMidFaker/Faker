@@ -2,27 +2,27 @@ const ACCOUNT_STATUS = {
   normal: {
     id: 0,
     name: 'normal',
-    text: 'accountNormal'
+    text: 'accountNormal',
   },
   blocked: {
     id: 1,
     name: 'blocked',
-    text: 'accountDisabled'
-  }
+    text: 'accountDisabled',
+  },
 };
 const TENANT_ROLE = {
   owner: {
     name: 'owner',
-    text: 'tenantOwner'
+    text: 'tenantOwner',
   },
   manager: {
     name: 'manager',
-    text: 'tenantManager'
+    text: 'tenantManager',
   },
   member: {
     name: 'member',
-    text: 'tenantMember'
-  }
+    text: 'tenantMember',
+  },
 };
 const TENANT_ASPECT = {
   BO: 0, // 企业主
@@ -33,128 +33,128 @@ const DEFAULT_MODULES = {
     cls: 'import',
     url: '/import',
     text: 'moduleImport',
-    status: 'enabled'
+    status: 'enabled',
   },
   export: {
     cls: 'export',
     url: '/export',
     text: 'moduleExport',
-    status: 'enabled'
+    status: 'enabled',
   },
   tms: {
     cls: 'transport',
     url: '/transport',
     text: 'moduleTransport',
-    status: 'enabled'
+    status: 'enabled',
   },
   forwarding: {
     cls: 'forwarding',
     url: '/forwarding',
     text: 'moduleForwarding',
-    status: 'disabled'
+    status: 'disabled',
   },
   wms: {
     cls: 'inventory',
     url: '/inventory',
     text: 'moduleInventory',
-    status: 'disabled'
+    status: 'disabled',
   },
   tracking: {
     cls: 'tracking',
     url: '/tracking',
     text: 'moduleTracking',
-    status: 'disabled'
+    status: 'disabled',
   },
   datacenter: {
     cls: 'datacenter',
     url: '/datacenter',
     text: 'moduleDatacenter',
-    status: 'disabled'
+    status: 'disabled',
   },
   integration: {
     cls: 'integration',
     url: '/integration',
     text: 'moduleIntegration',
-    status: 'disabled'
-  }
+    status: 'disabled',
+  },
 };
 const APP_ENTITY_META_INFO = {
   import: {
     name: 'importApp',
-    desc: 'importAppDesc'
+    desc: 'importAppDesc',
   },
   export: {
     name: 'exportApp',
-    desc: 'exportAppDesc'
+    desc: 'exportAppDesc',
   },
   tms: {
     name: 'tmsApp',
-    desc: 'tmsAppDesc'
+    desc: 'tmsAppDesc',
   },
   wms: {
     name: 'wmsApp',
-    desc: 'wmsAppDesc'
-  }
+    desc: 'wmsAppDesc',
+  },
 };
 const TENANT_LEVEL = {
   STANDARD: 0,
   ENTERPRISE: 1,
-  PLATFORM: 2
+  PLATFORM: 2,
 };
 const INVITATION_STATUS = {
   NEW_SENT: 0,
   ACCEPTED: 1,
   REJECTED: 2,
-  CANCELED: 3 // 取消邀请
+  CANCELED: 3, // 取消邀请
 };
 const PARTNERSHIP_TYPE_INFO = {
   customer: 'CUS',
   customsClearanceBroker: 'CCB',
   freightForwarder: 'FWD',
   transportation: 'TRS',
-  warehouse: 'WHS'
+  warehouse: 'WHS',
 };
 
 const PARTNER_TENANT_TYPE = ['TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_EXT', 'TENANT_OFFLINE'];
 
 const CONDITION_STATE = [{
   text: '1|是',
-  value: '1'
+  value: '1',
 }, {
   text: '0|否',
-  value: '0'
+  value: '0',
 }];
 const WRAP_TYPE = [{
   text: '木箱',
-  value: '1'
+  value: '1',
 }, {
   text: '纸箱',
-  value: '2'
+  value: '2',
 }, {
   text: '桶装',
-  value: '3'
+  value: '3',
 }, {
   text: '散装',
-  value: '4'
+  value: '4',
 }, {
   text: '托盘',
-  value: '5'
+  value: '5',
 }, {
   text: '包',
-  value: '6'
+  value: '6',
 }, {
   text: '其它',
-  value: '7'
+  value: '7',
 }];
 const FEE_TYPE = [{
   text: '1|率',
-  value: '1'
+  value: '1',
 }, {
   text: '2|单价',
-  value: '2'
+  value: '2',
 }, {
   text: '3|总价',
-  value: '3'
+  value: '3',
 }];
 
 export const DELG_EXEMPTIONWAY = [{
@@ -243,64 +243,64 @@ const SHIPMENT_POD_STATUS = {
 
 
 const VEHICLE_STATUS = {
-  disabled: {value: -1, text: '停用'},
-  notUse: {value: 0, text: '不在途'},
-  inUse: {value: 1, text: '在途'}
+  disabled: { value: -1, text: '停用' },
+  notUse: { value: 0, text: '不在途' },
+  inUse: { value: 1, text: '在途' },
 };
 
 const VEHICLE_TYPES = [
-  {value:0, text: '牵引'},
-  {value:1, text: '厢式车'},
-  {value:2, text: '低栏'},
-  {value:3, text: '高栏'},
-  {value:4, text: '平板'},
-  {value:5, text: '集装箱'},
-  {value:6, text: '罐式车'},
-  {value:7, text: '冷藏'},
-  {value:8, text: '超宽车'}
+  { value: 0, text: '牵引' },
+  { value: 1, text: '厢式车' },
+  { value: 2, text: '低栏' },
+  { value: 3, text: '高栏' },
+  { value: 4, text: '平板' },
+  { value: 5, text: '集装箱' },
+  { value: 6, text: '罐式车' },
+  { value: 7, text: '冷藏' },
+  { value: 8, text: '超宽车' },
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  {value:2, text: '2米'},
-  {value:42, text: '4.2米'},
-  {value:52, text: '5.2米'},
-  {value:62, text: '6.2米'},
-  {value:68, text: '6.8米'},
-  {value:72, text: '7.2米'},
-  {value:76, text: '7.6米'},
-  {value:82, text: '8.2米'},
-  {value:85, text: '8.5米'},
-  {value:96, text: '9.6米'},
-  {value:12, text: '12米'},
-  {value:125, text: '12.5米'},
-  {value:13, text: '13米'},
-  {value:135, text: '13.5米'},
-  {value:16, text: '16米'},
-  {value:175, text: '17.5米'},
+  { value: 2, text: '2米' },
+  { value: 42, text: '4.2米' },
+  { value: 52, text: '5.2米' },
+  { value: 62, text: '6.2米' },
+  { value: 68, text: '6.8米' },
+  { value: 72, text: '7.2米' },
+  { value: 76, text: '7.6米' },
+  { value: 82, text: '8.2米' },
+  { value: 85, text: '8.5米' },
+  { value: 96, text: '9.6米' },
+  { value: 12, text: '12米' },
+  { value: 125, text: '12.5米' },
+  { value: 13, text: '13米' },
+  { value: 135, text: '13.5米' },
+  { value: 16, text: '16米' },
+  { value: 175, text: '17.5米' },
 ];
 
 const VPROPROTY_TYPES = {
-  selfVehicle: {value: 0, text: '社会协作车辆'},
-  publicVehicle: {value: 1, text: '公司自有车辆'}
+  selfVehicle: { value: 0, text: '社会协作车辆' },
+  publicVehicle: { value: 1, text: '公司自有车辆' },
 };
 
 const DRIVER_STATUS = {
-  notUse: {value: 0, text: '不可用'},
-  inUse: {value: 1, text: '可用'}
+  notUse: { value: 0, text: '不可用' },
+  inUse: { value: 1, text: '可用' },
 };
 
 const GOODS_TYPES = [{
   value: 0,
-  text: '普通货物'
+  text: '普通货物',
 }, {
   value: 1,
-  text: '冷链'
+  text: '冷链',
 }, {
   value: 2,
-  text: '危险品'
+  text: '危险品',
 }, {
   value: 3,
-  text: '大件'
+  text: '大件',
 }];
 
 const CONTAINER_PACKAGE_TYPE = [{
@@ -321,16 +321,16 @@ const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
 
 const RELATION_TYPES = [
-  {key: 'forwarder', value: '收发货人'},
-  {key: 'owner', value: '消费使用单位'},
-  {key: 'trade', value: '申报单位'},
-  {key: 'producer', value: '生产消费单位'}
+  { key: 'forwarder', value: '收发货人' },
+  { key: 'owner', value: '消费使用单位' },
+  { key: 'trade', value: '申报单位' },
+  { key: 'producer', value: '生产消费单位' },
 ];
 
 const I_E_TYPES = [
-  {key: 'I', value: '进口'},
-  {key: 'E', value: '出口'},
-  {key: 'A', value: '进出口'}
+  { key: 'I', value: '进口' },
+  { key: 'E', value: '出口' },
+  { key: 'A', value: '进出口' },
 ];
 
 const CMS_BILL_STATUS = {
@@ -342,15 +342,15 @@ const CMS_BILL_STATUS = {
 const MESSAGE_STATUS = {
   notRead: {
     key: 0,
-    value: '未读'
+    value: '未读',
   },
   read: {
     key: 1,
-    value: '已读'
+    value: '已读',
   },
   delete3: {
     key: 3,
-    value: '已删除'
+    value: '已删除',
   },
 };
 

@@ -17,16 +17,16 @@ var _bucketname, _username, _password;
  * return null
  */
 var UPYun = function (bucketname, username, password) {
-    _bucketname = bucketname;
-    _username = username;
-    _password = md5(password);
-}
+  _bucketname = bucketname;
+  _username = username;
+  _password = md5(password);
+};
 
 exports.UPYun = UPYun;
 
-UPYun.prototype.version = function(){
-    return '1.0.1';
-}
+UPYun.prototype.version = function () {
+  return '1.0.1';
+};
 
 /**
  * 切换 API 接口的域名
@@ -34,17 +34,17 @@ UPYun.prototype.version = function(){
  * return null;
  */
 UPYun.prototype.setApiDomain = function (domain) {
-    _apiDomain = domain;
-}
+  _apiDomain = domain;
+};
 
 /**
  * 设置待上传文件的 Content-MD5 值（如又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 Not Acceptable 错误）
  * @param $str （文件 MD5 校验码）
  * return null;
  */
-UPYun.prototype.setContentMD5 = function(str){
-    _contentMD5 = str;
-}
+UPYun.prototype.setContentMD5 = function (str) {
+  _contentMD5 = str;
+};
 
 /**
 * 设置待上传文件的 访问密钥（注意：仅支持图片空！，设置密钥后，无法根据原文件URL直接访问，需带 URL 后面加上 （缩略图间隔标志符+密钥） 进行访问）
@@ -52,62 +52,62 @@ UPYun.prototype.setContentMD5 = function(str){
 * @param $str （文件 MD5 校验码）
 * return null;
 */
-UPYun.prototype.setFileSecret = function(str){
-	_fileSecret = str;
-}
+UPYun.prototype.setFileSecret = function (str) {
+	                    _fileSecret = str;
+};
 
 /**
 * 获取文件信息
 * @param $file 文件路径（包含文件名）
 * return object { 'type': file | folder, 'size': file size, 'date': unix time } 或 null
 */
-UPYun.prototype.getFileInfo = function(file, callback){
-    httpAction('HEAD', file, null, null, function(err, res){
-        if (!err) {
-            callback(err, {
-                'type': res.headers['x-upyun-file-type'],
-                'size': res.headers['x-upyun-file-size'],
-                'date': res.headers['x-upyun-file-date']
-            });
-        }
-        else {
-            callback(err);
-        }
-    });
-}
+UPYun.prototype.getFileInfo = function (file, callback) {
+  httpAction('HEAD', file, null, null, function (err, res) {
+    if (!err) {
+      callback(err, {
+        'type': res.headers['x-upyun-file-type'],
+        'size': res.headers['x-upyun-file-size'],
+        'date': res.headers['x-upyun-file-date'],
+      });
+    }
+    else {
+      callback(err);
+    }
+  });
+};
 
 /**
 * 获取上传文件后的信息（仅图片空间有返回数据）
 * @param $key 信息字段名（x-upyun-width、x-upyun-height、x-upyun-frames、x-upyun-file-type）
 * return value or NULL
 */
-UPYun.prototype.getWritedFileInfo = function(key){
-    if (!_tmpInfo[key]) return null;
-    return _tmpInfo[key];
-}
+UPYun.prototype.getWritedFileInfo = function (key) {
+  if (!_tmpInfo[key]) return null;
+  return _tmpInfo[key];
+};
 
 
 /**
  * 获取总体空间的占用信息
  * @param callback 回调函数
  */
-UPYun.prototype.getBucketUsage = function(callback){
-    this.getFolderUsage('/', callback);
-}
+UPYun.prototype.getBucketUsage = function (callback) {
+  this.getFolderUsage('/', callback);
+};
 
 /**
  * 获取某个子目录的占用信息
  * @param path 目标路径
  * @param callback 回调函数
  */
-UPYun.prototype.getFolderUsage = function (path, callback){
-    httpAction('GET', path + '?usage', null, null, function(err, res){
-        if (!err)
-            callback(err, res.body);
-        else
+UPYun.prototype.getFolderUsage = function (path, callback) {
+  httpAction('GET', path + '?usage', null, null, function (err, res) {
+    if (!err)
+      callback(err, res.body);
+    else
             callback(err);
-    });
-}
+  });
+};
 
 /**
  * 上传文件
@@ -117,20 +117,20 @@ UPYun.prototype.getFolderUsage = function (path, callback){
  * @param 回调函数
  * @param opts 可选参数, opts.header可用于指定额外的http header
  */
-UPYun.prototype.writeFile = function (file, data, autoMkdir, callback, opts){
-    _autoMkdir = autoMkdir;
+UPYun.prototype.writeFile = function (file, data, autoMkdir, callback, opts) {
+  _autoMkdir = autoMkdir;
 
-    httpAction('PUT', file, data, null, function(err, res){
-        if (!err)
-            callback(err, res.body);
-        else
+  httpAction('PUT', file, data, null, function (err, res) {
+    if (!err)
+      callback(err, res.body);
+    else
             callback(err);
-    }, opts);
-}
+  }, opts);
+};
 
-UPYun.prototype.changeBucket = function(bucketname){
-    _bucketname = bucketname;
-}
+UPYun.prototype.changeBucket = function (bucketname) {
+  _bucketname = bucketname;
+};
 
 /**
 * 读取文件
@@ -139,27 +139,27 @@ UPYun.prototype.changeBucket = function(bucketname){
 * return 文件内容 或 null
 */
 UPYun.prototype.readFile = function (file, output_file, callback) {
-    httpAction('GET', file, null, output_file, function(err, res){
-        if (!err)
-            callback(err, res.body);
-        else
+  httpAction('GET', file, null, output_file, function (err, res) {
+    if (!err)
+      callback(err, res.body);
+    else
             callback(err);
-    });
-}
+  });
+};
 
 /**
 * 删除文件
 * @param $file 文件路径（包含文件名）
 * return true or false
 */
-UPYun.prototype.deleteFile = function (file, callback){
-    httpAction('DELETE', file, null, null, function(err, res){
-        if (!err)
-            callback(err, res.body);
-        else
+UPYun.prototype.deleteFile = function (file, callback) {
+  httpAction('DELETE', file, null, null, function (err, res) {
+    if (!err)
+      callback(err, res.body);
+    else
             callback(err);
-    });
-}
+  });
+};
 
 /**
 * 创建目录
@@ -167,58 +167,58 @@ UPYun.prototype.deleteFile = function (file, callback){
 * @param auto_mkdir 是否自动创建父级目录
 */
 UPYun.prototype.mkDir = function (path, autoMkdir, callback) {
-    _autoMkdir = autoMkdir;
-    httpAction('PUT', path, null, null, function(err, res){
-        if (!err)
-            callback(err, res.body);
-        else
+  _autoMkdir = autoMkdir;
+  httpAction('PUT', path, null, null, function (err, res) {
+    if (!err)
+      callback(err, res.body);
+    else
             callback(err);
-    }, { header: { folder: true } });
-}
+  }, { header: { folder: true } });
+};
 
 /**
 * 删除目录
 * @param path 目录路径
 */
-UPYun.prototype.rmDir = function (path, callback){
-    httpAction('DELETE', path, null, null, function(err, res){
-        if (!err)
-            callback(err, res.body);
-        else
+UPYun.prototype.rmDir = function (path, callback) {
+  httpAction('DELETE', path, null, null, function (err, res) {
+    if (!err)
+      callback(err, res.body);
+    else
             callback(err);
-    });
-}
+  });
+};
 
 /**
 * 读取目录列表
 * @param path 目录路径
 */
-UPYun.prototype.readDir = function (path, callback){
-    callback = typeof callback == 'function' ? callback : function() {};
-	httpAction('GET', path, null, null, function(err, data) {
-        if (!err) {
-	        var dirs = data.body.split("\n");
-            var result = [];
+UPYun.prototype.readDir = function (path, callback) {
+  callback = typeof callback == 'function' ? callback : function () {};
+	                    httpAction('GET', path, null, null, function (err, data) {
+  if (!err) {
+	                                                      var dirs = data.body.split('\n');
+    var result = [];
 
-            for (var i = 0; i < dirs.length; i++) {
-                var dir = dirs[i];
-                var attrs = dir.split("\t");
-                dir = {
-                    name: attrs[0],
-                    type: attrs[1],
-                    size: attrs[2],
-                    time: attrs[3]
-                }
-                result.push(dir);
-            }
+    for (var i = 0; i < dirs.length; i++) {
+      var dir = dirs[i];
+      var attrs = dir.split('\t');
+      dir = {
+        name: attrs[0],
+        type: attrs[1],
+        size: attrs[2],
+        time: attrs[3],
+      };
+      result.push(dir);
+    }
 
-            callback(err, result);
-        }
-        else {
-            callback(err);
-        }
-    });
-}
+    callback(err, result);
+  }
+  else {
+    callback(err);
+  }
+});
+};
 
 
 /**
@@ -227,9 +227,9 @@ UPYun.prototype.readDir = function (path, callback){
  * return md5 digest of given string in hex encoding.
  */
 function md5(string) {
-    var md5sum = crypto.createHash('md5');
-    md5sum.update(string, 'utf8');
-    return md5sum.digest('hex');
+  var md5sum = crypto.createHash('md5');
+  md5sum.update(string, 'utf8');
+  return md5sum.digest('hex');
 }
 
 /**
@@ -238,107 +238,107 @@ function md5(string) {
  * return 签名字符串
  */
 function sign(method, uri, date, length) {
-    var sign = method + '&' + uri + '&' + date + '&' + length +
+  var sign = method + '&' + uri + '&' + date + '&' + length +
         '&' + _password;
-    return 'UpYun ' + _username + ':' + md5(sign);
+  return 'UpYun ' + _username + ':' + md5(sign);
 }
 
 function httpAction(method, uri, data, outputFile, callback, opts) {
-    callback = typeof callback == 'function' ? callback : function() {};
+  callback = typeof callback == 'function' ? callback : function () {};
 
-    _tmpInfo = {};
-    uri = '/' + _bucketname + uri;
-    var options = {
-        host: _apiDomain,
-        method: method,
-        path: uri
-    };
+  _tmpInfo = {};
+  uri = '/' + _bucketname + uri;
+  var options = {
+    host: _apiDomain,
+    method,
+    path: uri,
+  };
 
-    var length = data ? (Buffer.isBuffer(data) ? data.length : Buffer.byteLength(data)) : 0;
-    var headers = {};
+  var length = data ? (Buffer.isBuffer(data) ? data.length : Buffer.byteLength(data)) : 0;
+  var headers = {};
 
-    headers['Expect'] = '';
+  headers['Expect'] = '';
 
-	if (_contentMD5 !== null) {
-        headers['Content-MD5'] = _contentMD5;
+	                    if (_contentMD5 !== null) {
+  headers['Content-MD5'] = _contentMD5;
+}
+  _contentMD5 = null;
+
+	                    if (_fileSecret !== null) {
+  headers['Content-Secret'] = _fileSecret;
+}
+  _fileSecret = null;
+
+  headers['Content-Length'] = length;
+
+  if (opts && opts.header) {
+    for (key in opts.header) {
+      headers[key] = opts.header[key];
     }
-    _contentMD5 = null;
+  }
 
-	if (_fileSecret !== null) {
-        headers['Content-Secret'] = _fileSecret;
-    }
-    _fileSecret = null;
+  if ((method == 'PUT' || method == 'POST') && _autoMkdir == true) {
+    headers.mkdir = 'true';
+  }
 
-    headers['Content-Length'] = length;
+  var date = (new Date()).toUTCString();
+  headers.Date = date;
+  headers.Authorization = sign(method, uri, date, length);
 
-    if (opts && opts.header) {
-        for (key in opts.header) {
-            headers[key] = opts.header[key];
-        }
-    }
+  options.headers = headers;
 
-    if ((method == 'PUT' || method == 'POST') && _autoMkdir == true) {
-        headers.mkdir = 'true';
-    }
+  var resData = '';
 
-    var date = (new Date()).toUTCString();
-    headers.Date = date;
-    headers.Authorization = sign(method, uri, date, length);
-
-    options.headers = headers;
-
-    var resData = '';
-
-    var req = http.request(options, function(res) {
+  var req = http.request(options, function (res) {
         // Hander request
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-            resData += chunk;
-        });
-        res.on('end', function() {
-            for (let key in res.headers) {
-                if (key.indexOf('x-upyun') == 0) {
-                    if (~['width', 'heigh', 'frame'].indexOf(key.substr(8, 5))) {
-                        _tmpInfo[key] = Number(res.headers[key]);
-                    }
-                    else {
-                        _tmpInfo[key] = res.headers[key];
-                    }
-                }
-            }
-
-            if (outputFile) {
-                var fs = require('fs');
-                fs.writeFile(outputFile, resData, 'utf8', function(err) {
-                    callback(err, {
-                        headers: res.headers,
-                        body: resData
-                    });
-                })
-            }
-            else {
-                if (res.statusCode >= 400 && res.statusCode < 600) {
-                    callback({
-                        statusCode: res.statusCode,
-                        message: resData
-                    });
-                }
-                else {
-                    callback(null, {
-                        headers: res.headers,
-                        body: resData
-                    });
-                }
-            }
-        });
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+      resData += chunk;
     });
-
-    req.on('error', function(e) {
-        if (typeof callback == 'function') {
-            callback(e, null);
+    res.on('end', function () {
+      for (let key in res.headers) {
+        if (key.indexOf('x-upyun') == 0) {
+          if (~['width', 'heigh', 'frame'].indexOf(key.substr(8, 5))) {
+            _tmpInfo[key] = Number(res.headers[key]);
+          }
+          else {
+            _tmpInfo[key] = res.headers[key];
+          }
         }
-    });
+      }
 
-    data && req.write(data);
-    req.end();
+      if (outputFile) {
+        var fs = require('fs');
+        fs.writeFile(outputFile, resData, 'utf8', function (err) {
+          callback(err, {
+            headers: res.headers,
+            body: resData,
+          });
+        });
+      }
+      else {
+        if (res.statusCode >= 400 && res.statusCode < 600) {
+          callback({
+            statusCode: res.statusCode,
+            message: resData,
+          });
+        }
+        else {
+          callback(null, {
+            headers: res.headers,
+            body: resData,
+          });
+        }
+      }
+    });
+  });
+
+  req.on('error', function (e) {
+    if (typeof callback == 'function') {
+      callback(e, null);
+    }
+  });
+
+  data && req.write(data);
+  req.end();
 }

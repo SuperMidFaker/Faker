@@ -1,9 +1,9 @@
-import React, {PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {loadSend, sendDelegate} from 'common/reducers/exportdelegate';
-import {Table, Button, Select, message} from 'antd';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { loadSend, sendDelegate } from 'common/reducers/exportdelegate';
+import { Table, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import {setNavTitle} from 'common/reducers/navbar';
+import { setNavTitle } from 'common/reducers/navbar';
 import './upload.less';
 const Option = Select.Option;
 
@@ -14,8 +14,8 @@ function goBack(router) {
 @connect(state => ({ // 从初始化state中加载数据
   tenantId: state.account.tenantId,
   sendlist: state.exportdelegate.sendlist,
-  customsBrokerList: state.exportdelegate.customsBrokerList
-}), {loadSend, sendDelegate})
+  customsBrokerList: state.exportdelegate.customsBrokerList,
+}), { loadSend, sendDelegate })
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,
@@ -24,7 +24,7 @@ function goBack(router) {
       : '撤销报关业务',
     moduleName: '',
     goBackFn: () => goBack(router),
-    withModuleLayout: false
+    withModuleLayout: false,
   }));
 })
 
@@ -35,16 +35,16 @@ export default class ExportDelegateSend extends React.Component {
     loadSend: PropTypes.func.isRequired,
     sendDelegate: PropTypes.func.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
-    params: PropTypes.object.isRequired
+    params: PropTypes.object.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
     this.state = { // 设置默认视图状态
-      sendDisable: false
+      sendDisable: false,
     };
   }
   onSendReturn(error) {
@@ -62,11 +62,11 @@ export default class ExportDelegateSend extends React.Component {
       message.error('请选择报关行信息', 10);
       return;
     }
-    this.setState({sendDisable: true});
+    this.setState({ sendDisable: true });
     const keys = [];
     this.props.sendlist.data.map((item) => (keys.push(item.key)));
-    this.props.sendDelegate({tenantId: this.props.tenantId, customsBroker: this.state.customsValue, sendlist: keys, status: this.props.params.status}).then(result => {
-      this.setState({sendDisable: false});
+    this.props.sendDelegate({ tenantId: this.props.tenantId, customsBroker: this.state.customsValue, sendlist: keys, status: this.props.params.status }).then(result => {
+      this.setState({ sendDisable: false });
       this.props.sendlist.data = [];
       this.onSendReturn(result.error);
     });
@@ -75,34 +75,34 @@ export default class ExportDelegateSend extends React.Component {
     return <span>{text}</span>;
   }
   render() {
-    const {sendlist, customsBrokerList} = this.props;
-    const {sendDisable} = this.state;
+    const { sendlist, customsBrokerList } = this.props;
+    const { sendDisable } = this.state;
     const columns = [
       {
         title: '序号',
         width: 40,
-        render: (text, record, index) => this.renderColumnText(record, index + 1, text)
+        render: (text, record, index) => this.renderColumnText(record, index + 1, text),
       }, {
         title: '报关业务单号',
         dataIndex: 'del_no',
         width: 300,
-        render: (text, record) => this.renderColumnText(record, text)
+        render: (text, record) => this.renderColumnText(record, text),
       }, {
         title: '发票号',
         width: 150,
         dataIndex: 'invoice_no',
-        render: (text, record) => this.renderColumnText(record, text)
+        render: (text, record) => this.renderColumnText(record, text),
       }, {
         title: '提单号',
         dataIndex: 'bill_no',
         width: 150,
-        render: (text, record) => this.renderColumnText(record, text)
+        render: (text, record) => this.renderColumnText(record, text),
       }, {
         title: '创建时间',
         dataIndex: 'created_date',
         width: 150,
-        render: (text, record) => this.renderColumnText(record, text)
-      }
+        render: (text, record) => this.renderColumnText(record, text),
+      },
     ];
     return (
       <div className="main-content">
@@ -111,12 +111,13 @@ export default class ExportDelegateSend extends React.Component {
             <div style={{
               display: (this.props.params.status === '0'
                 ? 'inline-block'
-                : 'none')
+                : 'none'),
             }}>
               <label>选择报关行：</label>
               <Select showSearch style={{
-                width: 200
-              }} placeholder="请选择报关行" optionFilterProp="children" onSelect={(value) => this.setState({customsValue: value})} notFoundContent="无法找到" searchPlaceholder="输入关键词">
+                width: 200,
+              }} placeholder="请选择报关行" optionFilterProp="children" onSelect={(value) => this.setState({ customsValue: value })} notFoundContent="无法找到" searchPlaceholder="输入关键词"
+              >
                 {customsBrokerList.map((item) => (
                   <Option value={item.key}>{item.short_name}</Option>
                 ))
@@ -125,7 +126,7 @@ export default class ExportDelegateSend extends React.Component {
             </div>
           </div>
           <div className="panel-body body-responsive">
-            <Table columns={columns} dataSource={sendlist.data}/>
+            <Table columns={columns} dataSource={sendlist.data} />
           </div>
           <div className="bottom-fixed-row">
             <Button size="large" type="primary" disabled={sendDisable} onClick={() => this.handleSendDelegate()}>{this.props.params.status === '0'

@@ -6,7 +6,7 @@ import partnerModal from './partnerModal';
 import inviteModal from './inviteModal';
 
 const rowSelection = {
-  onChange() {}
+  onChange() {},
 };
 
 /**
@@ -27,12 +27,12 @@ export default class BaseList extends Component {
     {
       title: '客户名称',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
     },
     {
       title: '客户代码',
       dataIndex: 'partnerCode',
-      key: 'partnerCode'
+      key: 'partnerCode',
     },
     {
       title: '是否平台租户',
@@ -60,22 +60,22 @@ export default class BaseList extends Component {
             <span>{tenantTypes[record.tenantType]}</span>
           );
         }
-      }
+      },
     },
     {
       title: '业务量',
       dataIndex: 'volume',
-      key: 'volume'
+      key: 'volume',
     },
     {
       title: '营收',
       dataIndex: 'revenue',
-      key: 'revenue'
+      key: 'revenue',
     },
     {
       title: '成本',
       dataIndex: 'cost',
-      key: 'cost'
+      key: 'cost',
     },
     {
       title: '创建日期',
@@ -85,7 +85,7 @@ export default class BaseList extends Component {
         return (
           <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
         );
-      }
+      },
     },
     {
       title: '操作',
@@ -97,7 +97,7 @@ export default class BaseList extends Component {
         } else {
           return this.renderDeleteAndResumeOperations(record);
         }
-      }
+      },
     },
   ]
   updateColumns(columns) { // 子类重载这个方法来自定义新的columns结构
@@ -118,7 +118,7 @@ export default class BaseList extends Component {
     partnerships = Array.isArray(partnerships) ? partnerships : [partnerships];
     partnerModal({
       onOk: (partnerInfo) => {
-        this.props.addPartner({tenantId, partnerInfo, partnerships});
+        this.props.addPartner({ tenantId, partnerInfo, partnerships });
         message.success('合作伙伴已添加');
       },
     });
@@ -143,9 +143,9 @@ export default class BaseList extends Component {
     const { tenantId } = this.props;
     inviteModal({
       onOk: (contactInfo) => {
-        this.props.inviteOfflinePartner({tenantId, contactInfo, inviteeInfo});
+        this.props.inviteOfflinePartner({ tenantId, contactInfo, inviteeInfo });
         this.props.invitePartner(inviteeInfo.partnerId);
-      }
+      },
     });
   }
   handleStopBtnClick(id) {
@@ -196,7 +196,7 @@ export default class BaseList extends Component {
         </div>
         <div className="page-body">
           <div className="panel-body">
-            <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection}/>
+            <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
           </div>
         </div>
       </div>

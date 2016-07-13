@@ -44,7 +44,7 @@ function getTrackStatusMsg(status, eff) {
     status: state.shipment.previewer.shipmt.status,
     effective: state.shipment.previewer.shipmt.effective,
     shipmt: state.shipment.previewer.shipmt,
-    previewer: state.shipment.previewer
+    previewer: state.shipment.previewer,
   }),
   { hidePreviewer, sendTrackingDetailSMSMessage }
 )
@@ -62,7 +62,7 @@ export default class PreviewPanel extends React.Component {
     previewer: PropTypes.object.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
@@ -130,15 +130,15 @@ export default class PreviewPanel extends React.Component {
   }
   handleTelInput = (e) => {
     const value = e.target.value;
-    this.setState({tel: value});
+    this.setState({ tel: value });
   }
   handleSMSSend = () => {
-    this.setState({SMSSendLoding: true});
+    this.setState({ SMSSendLoding: true });
     validatePhone(
       this.state.tel, (err) => {
         if (err) {
           message.error('电话号码不正确');
-          this.setState({SMSSendLoding: false});
+          this.setState({ SMSSendLoding: false });
         } else {
           this.props.sendTrackingDetailSMSMessage({
             tel: this.state.tel,
@@ -146,7 +146,7 @@ export default class PreviewPanel extends React.Component {
             shipmtNo: this.props.shipmtNo,
             lsp_name: this.props.previewer.shipmt.lsp_name,
           }).then((result) => {
-            this.setState({SMSSendLoding: false});
+            this.setState({ SMSSendLoding: false });
             if (result.error) {
               message.error(result.error, 3);
             } else {
@@ -155,7 +155,7 @@ export default class PreviewPanel extends React.Component {
           });
         }
       },
-      () => { return '电话号码不正确';}
+      () => { return '电话号码不正确'; }
     );
   }
   render() {
@@ -167,7 +167,7 @@ export default class PreviewPanel extends React.Component {
             <span className="title">{shipmtNo}</span>
             <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
             <div className="pull-right">
-              <Button type="primary" shape="circle-outline" style={{marginRight: '10px'}} onClick={this.showTrackingDetailModal}>
+              <Button type="primary" shape="circle-outline" style={{ marginRight: '10px' }} onClick={this.showTrackingDetailModal}>
                 <Icon type="share-alt" />
               </Button>
               <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
@@ -190,32 +190,32 @@ export default class PreviewPanel extends React.Component {
           </div>
         </div>
         <div>
-          <Modal ref="modal" style={{width: '680px'}}
+          <Modal ref="modal" style={{ width: '680px' }}
             visible={this.state.trackingDetailModalVisible}
             title={`${shipmtNo} 分享运单`} onOk={this.handleTrackingDetailOk} onCancel={this.handleTrackingDetailCancel}
             footer={[
-              <Button key="back" type="ghost" size="large" onClick={this.handleTrackingDetailCancel}>关 闭</Button>
+              <Button key="back" type="ghost" size="large" onClick={this.handleTrackingDetailCancel}>关 闭</Button>,
             ]}
           >
-            <div style={{width: '250px', height: '250px', margin: '0 auto'}}>
+            <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
               <a href={this.state.publickUrlPath} target="_blank">
-                <img style={{width: '100%', height: '100%'}} src={this.state.publicQRcodeUrl} alt="二维码加载中..."/>
+                <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
               </a>
             </div>
-            <br/>
-            <div style={{width: '90%', margin: '0 auto'}}>
+            <br />
+            <div style={{ width: '90%', margin: '0 auto' }}>
               <InputGroup>
                 <Col span="18">
-                <Input placeholder="" defaultValue={this.state.publickUrl}/>
+                <Input placeholder="" defaultValue={this.state.publickUrl} />
                 </Col>
                 <Col span="6">
                   <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>
                 </Col>
               </InputGroup>
-              <br/>
+              <br />
               <InputGroup>
                 <Col span="18">
-                <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput}/>
+                <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput} />
                 </Col>
                 <Col span="6">
                   <Button type="primary" icon="message" onClick={this.handleSMSSend} loading={this.state.SMSSendLoding}>

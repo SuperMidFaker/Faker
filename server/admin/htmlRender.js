@@ -61,7 +61,7 @@ export default function render(request) {
     const store = createStore();
     const cookie = request.get('cookie');
     const curLocale = getRequestLocale(request);
-    store.getState().intl = { locale:  curLocale };
+    store.getState().intl = { locale: curLocale };
     match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {
       if (err) {
         reject([500], err);
@@ -73,7 +73,7 @@ export default function render(request) {
         addLocaleData(require(`react-intl/locale-data/${curLocale}`));
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
-            const component = (<App routingContext = {props} store = {store} />);
+            const component = (<App routingContext={props} store={store} />);
             const content = ReactDom.renderToString(component);
             const assets = webpackIsomorphicTools.assets();
             let pageCss = '';

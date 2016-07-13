@@ -9,7 +9,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadToInvites, inviteOnlinePartner, inviteOfflinePartner } from 'common/reducers/invitation';
 
 const rowSelection = {
-  onChange() {}
+  onChange() {},
 };
 
 function fetchData({ state, dispatch }) {
@@ -19,7 +19,7 @@ function fetchData({ state, dispatch }) {
 @connectFetch()(fetchData)
 @connect(state => ({
   toInvites: state.invitation.toInvites,
-  tenantId: state.account.tenantId
+  tenantId: state.account.tenantId,
 }), { inviteOnlinePartner, inviteOfflinePartner })
 export default class ToInviteList extends Component {
   static propTypes = {
@@ -31,12 +31,12 @@ export default class ToInviteList extends Component {
     {
       title: '合作伙伴',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
     },
     {
       title: '代码',
       dataIndex: 'code',
-      key: 'code'
+      key: 'code',
     },
     {
       title: '关系类型',
@@ -46,7 +46,7 @@ export default class ToInviteList extends Component {
         return (
           <span>{mapPartnerships(record.partnerships)}</span>
         );
-      }
+      },
     },
     {
       title: '创建日期',
@@ -56,7 +56,7 @@ export default class ToInviteList extends Component {
         return (
           <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
         );
-      }
+      },
     },
     {
       title: '操作',
@@ -72,25 +72,25 @@ export default class ToInviteList extends Component {
         return (
           <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
         );
-      }
-    }
+      },
+    },
   ]
   handleInviteBtnClick = (inviteeInfo) => {
     const { tenantId } = this.props;
     if (inviteeInfo.tenantId === -1) { // 线下邀请
       inviteModal({
         onOk: (contactInfo) => {
-          this.props.inviteOfflinePartner({tenantId, contactInfo, inviteeInfo});
-        }
+          this.props.inviteOfflinePartner({ tenantId, contactInfo, inviteeInfo });
+        },
       });
     } else { // 线上邀请
-      this.props.inviteOnlinePartner({tenantId, inviteeInfo});
+      this.props.inviteOnlinePartner({ tenantId, inviteeInfo });
     }
   }
   render() {
     const { toInvites } = this.props;
     return (
-      <Table columns={this.columns} dataSource={addUniqueKeys(toInvites)} rowSelection={rowSelection}/>
+      <Table columns={this.columns} dataSource={addUniqueKeys(toInvites)} rowSelection={rowSelection} />
     );
   }
 }

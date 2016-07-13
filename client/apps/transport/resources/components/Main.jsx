@@ -8,18 +8,18 @@ const MenuItem = Menu.Item;
 
 const styles = {
   show: {
-    display: 'block'
+    display: 'block',
   },
   hidden: {
-    display: 'none'
-  }
+    display: 'none',
+  },
 };
 
 export default function Main(props) {
   const { selectedKeys, onClick, loading } = props;
   const [selectedKey] = selectedKeys;
   const content = [<VehicleListContainer />, <DriverListContainer />, <NodeListContainer />]
-     .map((container, index) => <div style={ parseInt(selectedKey, 10) === index ? styles.show : styles.hidden } key={index}>{container}</div>);
+     .map((container, index) => <div style={parseInt(selectedKey, 10) === index ? styles.show : styles.hidden} key={index}>{container}</div>);
   return (
     <div>
       <Menu mode="horizontal" selectedKeys={selectedKeys} onClick={onClick}>

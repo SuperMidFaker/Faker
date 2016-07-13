@@ -83,8 +83,8 @@ export default class PodSubmitter extends React.Component {
         onOk={this.handleOk} visible={this.props.visible}
       >
         <Form className="row">
-          <FormItem label={this.msg('signStatus')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('signStatus')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <RadioGroup onChange={this.handleSignRadioChange} value={signStatus}>
               <Radio key="normal" value={1}>{this.msg('normalSign')}</Radio>
@@ -92,21 +92,21 @@ export default class PodSubmitter extends React.Component {
               <Radio key="refused" value={3}>{this.msg('refusedSign')}</Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label={this.msg('signRemark')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('signRemark')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <Input type="textarea" placeholder={this.msg('signRemarkPlaceholder')}
               rows="5" value={remark} onChange={this.handleFieldChange}
             />
           </FormItem>
-          <FormItem label={this.msg('podPhoto')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}}
+          <FormItem label={this.msg('podPhoto')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }}
           >
             <Upload action="/v1/upload/img" listType="picture"
-            onChange={this.handlePhotoUpload} fileList={this.state.photoList}
+              onChange={this.handlePhotoUpload} fileList={this.state.photoList}
             >
               <Button icon="upload" type="ghost" />
-              { this.msg('photoSubmit') }
+              {this.msg('photoSubmit')}
             </Upload>
           </FormItem>
         </Form>

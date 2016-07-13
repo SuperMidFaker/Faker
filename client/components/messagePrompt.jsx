@@ -12,29 +12,29 @@ let socket = null;
 @connect(
   state => {
     return {
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId
-  };
-})
+      tenantId: state.account.tenantId,
+      loginId: state.account.loginId,
+    };
+  })
 export default class MessagePrompt extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   componentDidMount() {
     if (socket === null) {
       socket = io.connect();
       socket.on('connect', () => {
-        const {tenantId, loginId} = this.props;
-        socket.emit('room', {tenantId, loginId});
+        const { tenantId, loginId } = this.props;
+        socket.emit('room', { tenantId, loginId });
       });
       socket.on('message', (data) => {
         this.notif(data.title, {
           body: data.content,
           icon: data.logo,
-          url: data.url
+          url: data.url,
         });
       });
     }

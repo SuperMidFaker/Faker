@@ -4,7 +4,7 @@ import NodeList from '../components/NodeList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadNodeList, setNodeType, removeNode } from 'common/reducers/transportResources';
 
-function fetchData({dispatch, state}) {
+function fetchData({ dispatch, state }) {
   return dispatch(loadNodeList(state.account.tenantId));
 }
 
@@ -22,7 +22,7 @@ export default class NodeListContainer extends Component {
     removeNode: PropTypes.func.isRequired,            // 移除某个节点时的action creator
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleDeleteBtnClick = (nodeId) => {
     this.props.removeNode(nodeId);
@@ -38,10 +38,11 @@ export default class NodeListContainer extends Component {
     const toDisplayNodes = nodes.filter(node => node.type === nodeType);
     return (
       <NodeList dataSource={toDisplayNodes}
-                nodeType={nodeType}
-                onAddNoteBtnClick={this.handleAddNoteBtnClick}
-                onRadioButtonChange={this.handleNodeTypeChange}
-                onDeleteBtnClick={this.handleDeleteBtnClick} />
+        nodeType={nodeType}
+        onAddNoteBtnClick={this.handleAddNoteBtnClick}
+        onRadioButtonChange={this.handleNodeTypeChange}
+        onDeleteBtnClick={this.handleDeleteBtnClick}
+      />
     );
   }
 }

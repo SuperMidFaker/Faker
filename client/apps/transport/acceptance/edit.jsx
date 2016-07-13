@@ -23,7 +23,7 @@ function fetchData({ state, dispatch, params, cookie }) {
   const shipmtNo = params.shipmt;
   promises.push(dispatch(loadForm(cookie, {
     tenantId: state.account.tenantId,
-    shipmtNo
+    shipmtNo,
   })));
   promises.push(dispatch(loadFormRequire(
     cookie, state.account.tenantId
@@ -56,11 +56,11 @@ function fetchData({ state, dispatch, params, cookie }) {
     text: props.formData.shipmt_no,
     moduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: () => router.goBack()
+    goBackFn: () => router.goBack(),
   }));
 })
 @Form.create({
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class ShipmentEdit extends React.Component {
   static propTypes = {
@@ -127,7 +127,7 @@ export default class ShipmentEdit extends React.Component {
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
-                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>
+                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc} />
               </Col>
               <CorrelInfo formhoc={formhoc} intl={intl} />
             </div>
