@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Radio, Upload, Button, Modal, message } from 'ant-ui';
+import { Form, Input, Radio, Upload, Button, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closePodModal, passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';

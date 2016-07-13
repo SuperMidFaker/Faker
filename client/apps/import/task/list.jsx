@@ -4,7 +4,7 @@ import {loadTask} from
 'common/reducers/task';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
-import {Table, Radio, Tag} from 'ant-ui';
+import {Table, Radio, Tag} from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import {isLoaded} from 'client/common/redux-actions';
 const RadioButton = Radio.Button;

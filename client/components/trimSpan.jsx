@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Tooltip } from 'ant-ui';
+import { Tooltip } from 'antd';
 
 export default function TrimSpan(props) {
   const { maxLen = 13, text } = props;

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message } from 'ant-ui';
+import { Radio, Button, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -89,17 +89,19 @@ export default class AcceptanceList extends Component {
     dataIndex: 'voyage_no',
   }, {
     title: '企业内部编号',
-    render: (o, record) =>
+    render: (o, record) => (
       this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
-      : record.ref_recv_external_no,
+      : record.ref_recv_external_no
+    ),
   }, {
     title: '件数',
     dataIndex: 'pieces',
   }, {
     title: '来源',
     dataIndex: 'source',
-    render: (o, record) =>
-      record.source === DELG_SOURCE.consigned ? '委托' : '分包',
+    render: (o, record) => (
+      record.source === DELG_SOURCE.consigned ? '委托' : '分包'
+    ),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadAcceptanceTable(null, params),

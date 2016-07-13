@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Tooltip } from 'ant-ui';
+import { Row, Col, Tooltip } from 'antd';
 import InputItem from './input-item';
 import AutoCompSelectItem from './autocomp-select-item';
 import { setConsignFields } from 'common/reducers/shipment';

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Radio, Popconfirm } from 'ant-ui';
+import { Table, Button, Radio, Popconfirm } from 'antd';
 import { Link } from 'react-router';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';

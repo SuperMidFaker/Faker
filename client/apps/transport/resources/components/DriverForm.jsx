@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button } from 'ant-ui';
+import { Form, Input, Button } from 'antd';
 import ContentWrapper from './ContentWrapper';
 
 const FormItem = Form.Item;

@@ -1,6 +1,13 @@
 {
   "parser": "babel-eslint",
   "extends": "airbnb",
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": './webpack/wpbase.js'
+      }
+    }
+  },
   "globals": {
     "__CLIENT__": true,
     "__CDN__": true,
@@ -19,18 +26,28 @@
       "afterColon": true
     }],
     "no-else-return": 0,
-    "space-before-function-paren": [0, "always"],
-    "id-length":[0],
     "react/jsx-quotes": [0, "single"],
-    "max-len": 0,
-    "react/jsx-closing-bracket-location": 0,
     "object-curly-spacing": 0,
     "array-bracket-spacing": 0,
     "indent": 0,
+    "react/jsx-first-prop-new-line": 0,
+    "no-underscore-dangle": 0,
+    "global-require": 0,
+    "react/jsx-space-before-closing": 0,
+    "react/jsx-curly-spacing": 0,
+    "react/jsx-indent": 0,
+    "react/prefer-stateless-function": 0,
+    "block-spacing": 0,
+    "no-restricted-syntax": 0,
+    "space-before-function-paren": [0, "always"],
+    "react/jsx-closing-bracket-location": 0,
     "react/jsx-indent-props": 0,
-    "arrow-body-style": 0,
+    "id-length":[0],
+    "max-len": 0,
     "quote-props": 0,
+    "arrow-body-style": 0,
     "react/jsx-no-bind": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "consistent-return": 0
   }
 }

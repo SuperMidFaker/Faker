@@ -17,6 +17,10 @@ export default function connectFetch(conn = {deferred: false}) {
         static contextTypes = {
           store: PropTypes.object.isRequired
         }
+
+        static deferredfetchers = conn.deferred ? fetchers : [];
+        static prefetchers = !conn.deferred ? fetchers : [];
+
         componentDidMount() {
           const { store } = this.context;
           const { location, params } = this.props;
@@ -25,9 +29,6 @@ export default function connectFetch(conn = {deferred: false}) {
             location, params}));
           Promise.all(promises);
         }
-
-        static deferredfetchers = conn.deferred ? fetchers : [];
-        static prefetchers = !conn.deferred ? fetchers : [];
 
         render() {
           return <Wrapped {...this.props} />;

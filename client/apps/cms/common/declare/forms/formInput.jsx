@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Col, Form, Input } from 'ant-ui';
+import { Col, Form, Input } from 'antd';
 const FormItem = Form.Item;
 
 export default class FormInput extends React.Component {

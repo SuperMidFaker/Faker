@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Icon } from 'ant-ui';
+import { Menu, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -25,7 +25,7 @@ export default class AmUserNav extends React.Component {
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     return (
       <Menu mode="horizontal">
-        <SubMenu  title={<span><img className="avatar" src={avatar || defaultAvatar } /> <i className="angle-down s7-angle-down"/></span>}>
+        <SubMenu title={<span><img className="avatar" src={avatar || defaultAvatar } /> <i className="angle-down s7-angle-down"/></span>}>
           <MenuItem key="corps">
             <NavLink to="/account/profile">
               <Icon type="solution" />

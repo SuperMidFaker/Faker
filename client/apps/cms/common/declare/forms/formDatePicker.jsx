@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Col, Form, DatePicker } from 'ant-ui';
+import { Col, Form, DatePicker } from 'antd';
 const FormItem = Form.Item;
 
 export default function FormDatePicker(props) {

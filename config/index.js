@@ -6,7 +6,7 @@ if (!isNaN(process.env.PORT)) {
 
 const config = makeConfig(port, __dirname, 'welogix');
 config.set('vendor_dependencies', [
-  'ant-ui',
+  'antd',
   'react',
   'react-dom',
   'react-intl',

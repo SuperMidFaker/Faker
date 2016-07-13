@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'ant-ui';
+import { Modal, Button, Radio, Select, Form, Checkbox, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
 import { getFormatMsg } from 'client/util/react-ant';

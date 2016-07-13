@@ -16,7 +16,7 @@ import {
   Tabs,
   Table
 } from
-'ant-ui';
+'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import {

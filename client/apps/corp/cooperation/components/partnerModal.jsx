@@ -10,7 +10,7 @@
  */
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Form, Checkbox, Input } from 'ant-ui';
+import { Modal, Button, Form, Checkbox, Input } from 'antd';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;

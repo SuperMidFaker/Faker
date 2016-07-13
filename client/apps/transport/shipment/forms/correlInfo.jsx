@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, InputNumber } from 'ant-ui';
+import { Col, Form, InputNumber } from 'antd';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';

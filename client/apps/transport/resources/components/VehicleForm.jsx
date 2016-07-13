@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Button, Select, Input } from 'ant-ui';
+import { Form, Button, Select, Input } from 'antd';
 import ContentWrapper from './ContentWrapper';
 import { VEHICLE_TYPES, VEHICLE_LENGTH_TYPES } from 'common/constants';
 

@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {loadSend, sendDelegate} from 'common/reducers/importdelegate';
-import {Table, Button, Select, message} from 'ant-ui';
+import {Table, Button, Select, message} from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import {setNavTitle} from 'common/reducers/navbar';
 import './upload.less';

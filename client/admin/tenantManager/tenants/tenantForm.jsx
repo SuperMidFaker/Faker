@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Form, Input, Row, Col, message, Checkbox, Radio } from 'ant-ui';
+import { Icon, Button, Form, Input, Row, Col, message, Checkbox, Radio } from 'antd';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -135,8 +135,8 @@ class TenantForm extends React.Component {
                       <img src={logoPng || '/assets/img/wetms.png'} style={{
                         height: 120, width: 120, margin: 10,
                         border: '1px solid #e0e0e0', borderRadius: 60
-                      }}
-                      {...getFieldProps('logo', {initialValue: formData.logo})} />
+                      }} alt="logo"
+                      />
                       <Dropzone onDrop={ (files) => this.props.uploadImg('logo', files) } className="dropzone">
                         <div className="ant-upload ant-upload-drag" title="请拖拽或选择文"
                           style={{height: 140, marginTop: 20}}

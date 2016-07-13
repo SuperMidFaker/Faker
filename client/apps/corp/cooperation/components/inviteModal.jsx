@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Form, Input, Icon } from 'ant-ui';
+import { Modal, Button, Form, Input, Icon } from 'antd';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input, Select, Table } from 'ant-ui';
+import { Row, Col, Form, Input, Select, Table } from 'antd';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';

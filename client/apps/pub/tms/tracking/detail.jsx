@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Steps, Card, Collapse, Timeline, Row, Col } from 'ant-ui';
+import { Steps, Card, Collapse, Timeline, Row, Col } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { renderConsignLoc, renderLoc } from '../../../transport/common/consignLocation';

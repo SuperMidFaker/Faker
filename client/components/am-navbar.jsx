@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover, Menu, Icon, Badge } from 'ant-ui';
+import { Popover, Menu, Icon, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';

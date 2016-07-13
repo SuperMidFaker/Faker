@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Dropdown, Menu, Icon } from 'ant-ui';
+import { Tabs, Dropdown, Menu, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';

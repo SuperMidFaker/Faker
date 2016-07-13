@@ -13,7 +13,7 @@ import {
 import {isLoaded} from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBar from 'client/components/search-bar';
-import {Table, Button, message, Radio, Icon} from 'ant-ui';
+import {Table, Button, message, Radio, Icon} from 'antd';
 import showWarningModal from 'client/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from 'client/util/react-ant';
 

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Icon, Button, Form, Input, Row, Col, Select, Tabs, Upload, message
-  } from 'ant-ui';
+  } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -248,7 +248,7 @@ export default class CorpInfo extends React.Component {
                 <img src={this.state.logo || '/assets/img/wetms.png'} style={{
                   height: 120, width: 120, margin: 10,
                   border: '1px solid #e0e0e0', borderRadius: 60
-                }}
+                }} alt="logo"
                 />
                 <div title={msg('dragHint')} style={{height: 140, marginTop: 20}}>
                   <Dragger onChange={this.handleImgUpload} showUploadList={false}

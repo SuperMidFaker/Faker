@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Icon, Button, Form, Input } from 'ant-ui';
+import { Modal, Icon, Button, Form, Input } from 'antd';
 
 class WarningModal extends React.Component {
   static propTypes = {

@@ -18,12 +18,6 @@ import * as Cooperation from './corp/cooperation';
 import MyProfile from './account/profile';
 import Password from './account/password';
 import Module from './module';
-import ExportM from './export/module-export';
-import ExportBoard from './export/dashboard';
-import * as ExportDelegate from './export/delegate';
-import * as ExportAccept from './export/accept';
-import * as ExportTask from './export/task';
-import * as ExportTracking from './export/tracking';
 import Transport from './transport/module-transport';
 import TMSDashboard from './transport/dashboard';
 import * as TMSAcceptance from './transport/acceptance';
@@ -37,9 +31,10 @@ import * as ImportAcceptance from './cms/import/acceptance';
 import * as ImportDeclare from './cms/import/declare';
 import * as ImportManage from './cms/import/manage';
 import * as WeiXinPod from './weixin/tms/pod';
+import * as PublicTMS from './pub/tms';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
-import * as PublicTMS from './pub/tms';
+
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
@@ -132,27 +127,6 @@ export default(store, cookie) => {
               <Route path="compRelation" component={ImportManage.List}/>
               <Route path="create" component={ImportManage.Create}/>
               <Route path="edit/:id" component={ImportManage.Edit}/>
-            </Route>
-          </Route>
-          <Route path="export" component={ExportM}>
-            <IndexRoute component={ExportBoard}/>
-            <Route path="delegate">
-              <IndexRoute component={ExportDelegate.List}/>
-              <Route path="new" component={ExportDelegate.Edit}/>
-              <Route path="edit/:id" component={ExportDelegate.Edit}/>
-              <Route path="exportsend/:status" component={ExportDelegate.Send}/>
-            </Route>
-            <Route path="accept">
-              <IndexRoute component={ExportAccept.List}/>
-              <Route path="new" component={ExportAccept.Edit}/>
-              <Route path="edit/:id" component={ExportAccept.Edit}/>
-            </Route>
-            <Route path="task">
-              <IndexRoute component={ExportTask.List}/>
-              <Route path="inputbill/:id" component={ExportTask.InputBill}/>
-            </Route>
-            <Route path="tracking">
-              <IndexRoute component={ExportTracking.List}/>
             </Route>
           </Route>
           <Route path="transport" component={Transport}>

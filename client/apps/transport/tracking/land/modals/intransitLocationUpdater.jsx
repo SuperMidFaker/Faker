@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Modal, DatePicker, message } from 'ant-ui';
+import { Form, Modal, DatePicker, message } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import InputItem from '../../../shipment/forms/input-item';
 import { closeLocModal, reportLoc } from 'common/reducers/trackingLandStatus';

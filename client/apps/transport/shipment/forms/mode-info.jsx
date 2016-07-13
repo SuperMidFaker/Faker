@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Select } from 'ant-ui';
+import { Row, Col, Form, Select } from 'antd';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import { setConsignFields } from 'common/reducers/shipment';

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col } from 'ant-ui';
+import { Form, Select, Input, Card, Col } from 'antd';
 import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
 import { TENANT_ASPECT } from 'common/constants';
 
@@ -15,10 +15,12 @@ function getFieldInits(aspect, formData) {
   const init = {};
   if (formData) {
     [
-      `invoice_no`, `contract_no`, `bl_wb_no`, `pieces`, `weight`, `trans_mode`,
-      `voyage_no`, `trade_mode`, `decl_way_code`, `ems_no`, `customer_name`,
+      'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight', 'trans_mode',
+      'voyage_no', 'trade_mode', 'decl_way_code', 'ems_no', 'customer_name',
       'order_no',
-    ].forEach(fd => init[fd] = formData[fd]);
+    ].forEach(fd => {
+      init[fd] = formData[fd];
+    });
     init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no
       : formData.ref_recv_external_no;
   }

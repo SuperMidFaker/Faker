@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Input, Form, Row, Col, Select, message } from 'ant-ui';
+import { Button, Input, Form, Row, Col, Select, message } from 'antd';
 import { submitCompRelation } from 'common/reducers/cmsCompRelation';
 import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -152,7 +152,7 @@ class CompRelationForm extends Component {
                 >
                 {formatContainerMsg(intl, 'cancel')}
                 </Button>
-               </FormItem>
+              </FormItem>
             </Col>
           </Row>
         </Form>

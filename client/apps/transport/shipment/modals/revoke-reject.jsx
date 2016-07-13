@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, message } from 'ant-ui';
+import { Modal, Input, message } from 'antd';
 import { closeReModal, revokeShipment, rejectShipment } from
   'common/reducers/transport-acceptance';
 import { format } from 'client/common/i18n/helpers';

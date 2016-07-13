@@ -4,7 +4,7 @@ import { submitWarehouse, loadWarehouses, updateWh, delWh, beginEdit, edit, canc
 import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { toNumber } from 'client/common/transformer';
-import {Table, Button, Icon, Form, Input, Radio, Row, Col, DatePicker, Select, message} from 'ant-ui';
+import {Table, Button, Icon, Form, Input, Radio, Row, Col, DatePicker, Select, message} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;

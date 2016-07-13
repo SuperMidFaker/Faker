@@ -6,7 +6,7 @@
  */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { Upload, Card, Icon, Button, message } from 'ant-ui';
+import { Upload, Card, Icon, Button, message } from 'antd';
 
 @connect(
   state => ({

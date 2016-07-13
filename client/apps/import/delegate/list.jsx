@@ -20,7 +20,7 @@ import {
   Radio,
   Tag,
   Icon
-} from 'ant-ui';
+} from 'antd';
 import showWarningModal from 'client/components/deletion-warning-modal';
 import {resolveCurrentPageNumber} from 'client/util/react-ant';
 

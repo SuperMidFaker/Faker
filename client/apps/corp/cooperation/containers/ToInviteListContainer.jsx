@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Table } from 'ant-ui';
+import { Table } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';

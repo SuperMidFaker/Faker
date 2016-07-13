@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Select, Row, Col, message } from 'ant-ui';
+import { Modal, Select, Row, Col, message } from 'antd';
 import { closeAcceptModal, acceptDispShipment } from 'common/reducers/transport-acceptance';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button, Input, message } from 'ant-ui';
+import { Modal, Button, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { hideInviteModal, sendInvitation } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';

@@ -64,7 +64,7 @@ export default class WxProfile extends React.Component {
               <Input type="tel" defaultValue={phone} disabled />
             </CellBody>
             <CellFooter>
-              <img />
+              <img role="presentation"/>
             </CellFooter>
           </FormCell>
           <FormCell>

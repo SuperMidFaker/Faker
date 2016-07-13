@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Form, Select } from 'ant-ui';
+import { Form, Select } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 

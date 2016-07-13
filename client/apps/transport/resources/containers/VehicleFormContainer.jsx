@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Form } from 'ant-ui';
+import { Form } from 'antd';
 import { connect } from 'react-redux';
 import VehicleForm from '../components/VehicleForm.jsx';
 import { addVehicle, editVehicle, validateVehicle } from 'common/reducers/transportResources';

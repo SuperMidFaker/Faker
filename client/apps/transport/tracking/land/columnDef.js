@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Icon, Tag, Tooltip } from 'ant-ui';
+import { Icon, Tag, Tooltip } from 'antd';
 import RowUpdater from './rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';

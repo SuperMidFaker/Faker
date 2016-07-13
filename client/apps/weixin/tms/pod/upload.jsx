@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Upload, Icon, message } from 'ant-ui';
+import { Upload, Icon, message } from 'antd';
 import { saveSubmitPod } from 'common/reducers/trackingLandStatus';
 
 import WeUI from 'react-weui';

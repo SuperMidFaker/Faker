@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, message } from 'ant-ui';
+import { Table, Button, Radio, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';

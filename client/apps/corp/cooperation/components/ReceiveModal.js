@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Icon, Checkbox } from 'ant-ui';
+import { Modal, Button, Icon, Checkbox } from 'antd';
 import classNames from 'classnames';
 
 const CheckboxGroup = Checkbox.Group;

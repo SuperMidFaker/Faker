@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { load, submit, update, del, beginEdit, edit, cancelEdit } from 'common/reducers/notice';
 import { isLoaded } from 'client/common/redux-actions';
-import {Table, Button, Icon, Form, Input, Row, Col, message} from 'ant-ui';
+import {Table, Button, Icon, Form, Input, Row, Col, message} from 'antd';
 const FormItem = Form.Item;
 
 function fetchData({ state, dispatch, cookie }) {

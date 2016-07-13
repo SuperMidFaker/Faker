@@ -4,7 +4,7 @@ import {loadTracking, loadCustomsBrokers} from 'common/reducers/exporttracking';
 import {isLoaded} from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBar from 'client/components/search-bar';
-import {Table, Radio} from 'ant-ui';
+import {Table, Radio} from 'antd';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;

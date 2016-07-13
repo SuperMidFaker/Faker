@@ -64,7 +64,7 @@ export default class Binder extends React.Component {
                 onChange={(ev) => this.handleTextChange(ev, 'password')}/>
             </CellBody>
             <CellFooter>
-              <img />
+              <img role="presentation" />
             </CellFooter>
           </FormCell>
         </Form>

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'ant-ui';
+import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
@@ -236,8 +236,8 @@ export default class DispatchList extends React.Component {
         title: this.msg('shipAcceptTime'),
         dataIndex: 'acpt_time',
         width: 100,
-        render: (text, record) => record.acpt_time ?
-         moment(record.acpt_time).format('MM-DD HH:mm') : ' '
+        render: (text, record) => (record.acpt_time ?
+         moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
@@ -313,8 +313,8 @@ export default class DispatchList extends React.Component {
         title: timetitle,
         dataIndex: 'disp_time',
         width: 100,
-        render: (text, record) => record.disp_time ?
-         moment(record.disp_time).format('MM-DD HH:mm') : ' '
+        render: (text, record) => (record.disp_time ?
+         moment(record.disp_time).format('MM-DD HH:mm') : ' '),
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
@@ -564,7 +564,7 @@ export default class DispatchList extends React.Component {
     });
 
     Modal.confirm({
-      title: `确认批量发送运单`,
+      title: '确认批量发送运单',
       content: `将已选定的${count}个运单发送给承运商？`,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
@@ -596,7 +596,7 @@ export default class DispatchList extends React.Component {
       msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.task_vehicle}】？`;
     }
     Modal.confirm({
-      title: `确认发送运单`,
+      title: '确认发送运单',
       content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
@@ -638,7 +638,7 @@ export default class DispatchList extends React.Component {
     }
 
     Modal.confirm({
-      title: `确认退回运单`,
+      title: '确认退回运单',
       content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),

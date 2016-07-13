@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Form } from 'ant-ui';
+import { Form } from 'antd';
 import { connect } from 'react-redux';
 import NodeForm from '../components/NodeForm';
 import { addNode, editNode, changeRegion } from 'common/reducers/transportResources';

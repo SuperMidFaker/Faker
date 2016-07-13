@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Card, Radio, Checkbox, Select, message, Row, Col } from 'ant-ui';
+import { Modal, Card, Radio, Checkbox, Select, message, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';

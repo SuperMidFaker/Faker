@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, message, Popconfirm } from 'ant-ui';
+import { Table, Button, Radio, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -236,8 +236,8 @@ export default class AcceptList extends React.Component {
     dataIndex: 'acpt_time',
     width: 110,
     sorter: true,
-    render: (text, record) => record.acpt_time ?
-    moment(record.acpt_time).format('MM-DD HH:mm') : ' '
+    render: (text, record) => (record.acpt_time ?
+     moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
     this.props.loadTable(null, {

@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import {
   loadTenants, delTenant, switchStatus, INITIAL_LIST_PAGE_SIZE
 } from 'common/reducers/tenants';
-import { Table, Button, message, Popconfirm } from 'ant-ui';
+import { Table, Button, message, Popconfirm } from 'antd';
 import NavLink from '../../../components/nav-link';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';

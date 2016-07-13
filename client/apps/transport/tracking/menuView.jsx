@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Menu } from 'ant-ui';
+import { Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';

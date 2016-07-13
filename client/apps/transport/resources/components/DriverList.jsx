@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button } from 'ant-ui';
+import { Table, Button } from 'antd';
 import { Link } from 'react-router';
 import { addUniqueKeys } from 'client/util/dataTransform';
 

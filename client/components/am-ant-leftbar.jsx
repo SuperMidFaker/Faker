@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import NavLink from './nav-link';
-import { Menu } from 'ant-ui';
+import { Menu } from 'antd';
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 import './am-ant-leftbar.less';

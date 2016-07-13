@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Button, Input } from 'ant-ui';
+import { Form, Button, Input } from 'antd';
 import ContentWrapper from './ContentWrapper';
 import Cascader from 'client/components/region-cascade';
 

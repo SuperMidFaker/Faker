@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Tabs } from 'ant-ui';
+import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Tabs } from 'antd';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch } from 'common/reducers/transportDispatch';

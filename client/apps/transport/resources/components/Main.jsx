@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Menu, Spin } from 'ant-ui';
+import { Menu, Spin } from 'antd';
 import VehicleListContainer from '../containers/VehicleListContainer';
 import DriverListContainer from '../containers/DriverListContainer';
 import NodeListContainer from '../containers/NodeListContainer';

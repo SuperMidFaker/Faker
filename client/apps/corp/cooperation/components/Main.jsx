@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Menu } from 'ant-ui';
+import { Menu } from 'antd';
 import CustomerListContainer from '../containers/CustomerListContainer';
 import SupplierListContainer from '../containers/SupplierListContainer';
 import ProviderListContainer from '../containers/ProviderListContainer';

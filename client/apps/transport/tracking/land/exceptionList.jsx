@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Icon, message } from 'ant-ui';
+import { Table, Button, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -178,6 +178,7 @@ export default class LandStatusList extends React.Component {
         return `${this.msg('podUploadAction')}
         ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
       }
+      return '';
     },
   }, {
     title: this.msg('shipmtCarrier'),
@@ -247,11 +248,13 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
     width: 100,
-    render: (o, record) => record.pickup_act_date ?
+    render: (o, record) => (
+      record.pickup_act_date ?
       (<span className="mdc-text-green">
       {moment(record.pickup_act_date).format('YYYY.MM.DD')}
       </span>
       ) : <span />
+    ),
   }, {
     title: this.msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -261,11 +264,13 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => record.deliver_act_date ?
+    render: (o, record) => (
+      record.deliver_act_date ?
       (<span className="mdc-text-green">
       {moment(record.deliver_act_date).format('YYYY.MM.DD')}
       </span>
       ) : <span />
+    ),
   }, {
     title: this.msg('proofOfDelivery'),
     dataIndex: 'pod_type',

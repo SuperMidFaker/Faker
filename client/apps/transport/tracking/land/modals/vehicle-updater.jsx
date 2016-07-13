@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Col, Checkbox, Modal, message } from 'ant-ui';
+import { Form, Input, Col, Checkbox, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeVehicleModal, saveVehicle } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';

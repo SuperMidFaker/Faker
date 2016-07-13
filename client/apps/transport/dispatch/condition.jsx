@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Icon, Popover, Radio, Slider, Row, Col } from 'ant-ui';
+import { Button, Icon, Popover, Radio, Slider, Row, Col } from 'antd';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;

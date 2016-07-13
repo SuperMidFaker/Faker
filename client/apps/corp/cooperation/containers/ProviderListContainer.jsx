@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Radio, Icon, message } from 'ant-ui';
+import { Radio, Icon, message } from 'antd';
 import BaseList from '../components/BaseList';
 import { setProviderType, editProviderTypes, addPartner, editPartner, changePartnerStatus, deletePartner, invitePartner } from 'common/reducers/partner';
 import { inviteOfflinePartner } from 'common/reducers/invitation';

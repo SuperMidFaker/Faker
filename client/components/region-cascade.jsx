@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Select, Cascader } from 'ant-ui';
+import { Row, Select, Cascader } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CHINA_CODE } from '../../common/constants';
 import { format } from 'client/common/i18n/helpers';

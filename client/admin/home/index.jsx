@@ -30,7 +30,6 @@ export default class Home extends React.Component {
     });
   }
   render() {
-    const { logo, name } = this.props;
     return (
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />

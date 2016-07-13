@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Input, Select, message } from 'ant-ui';
+import { Table, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from '../rowUpdater';
 import { format } from 'client/common/i18n/helpers';

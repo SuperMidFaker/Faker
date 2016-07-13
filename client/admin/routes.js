@@ -4,7 +4,6 @@ import Root from './root';
 import Home from 'client/admin/home';
 import SSO from 'client/apps/sso/pack-sso';
 import Login from 'client/apps/sso/login';
-import Forgot from 'client/apps/sso/forgot';
 import PackAccount from 'client/apps/account/pack-account';
 import MyProfile from 'client/apps/account/profile';
 import Password from 'client/apps/account/password';

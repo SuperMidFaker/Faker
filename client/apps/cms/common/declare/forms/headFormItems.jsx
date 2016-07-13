@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
-import { Col, Form, Input, Select } from 'ant-ui';
+import { Col, Form, Input, Select } from 'antd';
 import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';

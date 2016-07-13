@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, DatePicker, Modal, message } from 'ant-ui';
+import { Form, DatePicker, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Form, Input } from 'ant-ui';
+import { Form, Input } from 'antd';
 const FormItem = Form.Item;
 
 export default function InputItem(props) {

@@ -15,7 +15,7 @@ const messages = defineMessages({
   },
   loginUserNotFound: {
     id: 'sso.login.user.notfound',
-    defaultMessage: `用户{username}不存在`
+    defaultMessage: '用户{username}不存在',
   },
   loginExceptionError: {
     id: 'sso.login.error.exception',

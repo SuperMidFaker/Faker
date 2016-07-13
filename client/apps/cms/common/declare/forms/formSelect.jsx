@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
-import { Col, Form, Select } from 'ant-ui';
+import { Col, Form, Select } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 

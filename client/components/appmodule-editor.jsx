@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
+import { Modal, Button, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { APP_ENTITY_META_INFO } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';

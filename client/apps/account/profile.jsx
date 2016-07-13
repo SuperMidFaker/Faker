@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Upload, Form, Input, Row, Col, message } from 'ant-ui';
+import { Icon, Button, Upload, Form, Input, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
