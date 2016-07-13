@@ -167,7 +167,7 @@ export default class Dashboard extends React.Component {
 			});
 
 			const option = {
-				backgroundColor: '#404a59',
+				backgroundColor: '#f0f0f0',
 				title: {
 					text: '',
 					subtext: '',
