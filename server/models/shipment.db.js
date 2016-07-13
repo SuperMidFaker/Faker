@@ -263,10 +263,10 @@ export default {
   },
   shipmentStatistics(tenantId) {
     const sql = `select consigner_province, consigner_city, consignee_province, consignee_city, count(*) as value
-    from tms_shipments where (shipmt_no in (select shipmt_no from tms_shipment_dispatch where sr_tenant_id=? or sp_tenant_id=?)
-    or tenant_id = ?) and consigner_province is not null and consigner_city is not null and consignee_province is not null and consignee_city is not null
+    from tms_shipments where (shipmt_no in (select shipmt_no from tms_shipment_dispatch where status=4 and (sr_tenant_id=? or sp_tenant_id=?))) 
+    and consigner_province is not null and consigner_city is not null and consignee_province is not null and consignee_city is not null
     group by consigner_province, consigner_city, consignee_province, consignee_city order by created_date desc limit 0,50`;
-    const args = [tenantId, tenantId, tenantId];
+    const args = [tenantId, tenantId];
     return mysql.query(sql, args);
   },
 };
