@@ -99,7 +99,7 @@ export default defineMessages({
   },
   deliveryDate: {
     id: 'transport.shipment.delivery.date',
-    defaultMessage: '交货日期'
+    defaultMessage: '预计交货日期'
   },
   deliveryDateMust: {
     id: 'transport.shipment.delivery.date.must',
@@ -301,9 +301,9 @@ export default defineMessages({
     id: 'transport.shipment.tab.dynamic',
     defaultMessage: '动态'
   },
-  shipmtTracking: {
-    id: 'transport.shipment.tab.tracking',
-    defaultMessage: '跟踪'
+  shipmtOperations: {
+    id: 'transport.shipment.tab.operations',
+    defaultMessage: '操作'
   },
   shipmtCharge: {
     id: 'transport.shipment.tab.charge',
