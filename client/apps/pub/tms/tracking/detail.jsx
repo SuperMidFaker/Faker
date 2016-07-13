@@ -83,7 +83,6 @@ export default class TrackingDetail extends React.Component {
     // 创建标注
     function addMarker(pt, label, index, cur, pts) {
       if (pt && pt.lat !== 0 && pt.lng !== 0) {
-        let marker;
         const iconSize = [25, 82];
         let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
         if (index === 0) {
@@ -92,7 +91,7 @@ export default class TrackingDetail extends React.Component {
           iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
         }
         const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
-        marker = new BMap.Marker(pt, {icon});
+        const marker = new BMap.Marker(pt, {icon});
         map.addOverlay(marker);
         if (index === cur) {
           marker.setAnimation(BMAP_ANIMATION_BOUNCE);
