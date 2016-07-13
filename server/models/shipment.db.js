@@ -260,4 +260,11 @@ export default {
     shipmt.wheres = { 'shipmt_no': shipmtInfo.shipmt_no };
     return shipmtOrm.updateObj(shipmt, trans);
   },
+  shipmentStatistics(tenantId) {
+    const sql = `select consigner_province, consigner_city, consignee_province, consignee_city, count(*) as value
+    from tms_shipments where tenant_id = ? and consigner_province is not null and consigner_city is not null and consignee_province is not null and consignee_city is not null
+    group by consigner_province, consigner_city, consignee_province, consignee_city order by created_date desc limit 0,50`;
+    const args = [tenantId];
+    return mysql.query(sql, args);
+  },
 };

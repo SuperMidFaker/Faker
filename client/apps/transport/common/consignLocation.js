@@ -26,3 +26,18 @@ export function renderConsignLoc(shipmt, field) {
   const county = `${field}_district`;
   return renderLoc(shipmt, province, city, county);
 }
+export function renderCity(shipmt, field) {
+  const provinceFd = `${field}_province`;
+  const cityFd = `${field}_city`;
+  const countyFd = `${field}_district`;
+  if (shipmt[cityFd] && (shipmt[cityFd] === '市辖区' || shipmt[cityFd] === '县')) {
+    return shipmt[provinceFd].replace(/市/, '');
+  } else if (shipmt[countyFd] && (shipmt[countyFd] === '市辖区' || shipmt[countyFd] === '县')) {
+    return shipmt[cityFd].replace(/市/, '') || '';
+  } else {
+    if (shipmt[cityFd]) {
+      return shipmt[cityFd].replace(/市/, '') || '';
+    }
+  }
+  return '';
+}

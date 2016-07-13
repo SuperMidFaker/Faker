@@ -598,6 +598,20 @@ function *sendTrackingDetailSMSMessage() {
   }
 }
 
+function *shipmentStatistics() {
+  const query = this.request.query;
+  try {
+    const points = yield shipmentDao.shipmentStatistics(parseInt(query.tenantId, 10));
+    const count = [0, 0, 0, 0, 0];
+    return Result.ok(this, {
+      points,
+      count
+    });
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
 export default [
   [ 'get', '/v1/transport/shipments', shipmentListG ],
   [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
@@ -616,4 +630,5 @@ export default [
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
   [ 'get', '/public/v1/transport/shipment/detail', shipmtPublicDetail ],
   [ 'post', '/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage ],
+  [ 'get', '/v1/transport/shipment/statistics', shipmentStatistics]
 ];

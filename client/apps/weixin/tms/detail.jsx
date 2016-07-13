@@ -28,7 +28,7 @@ export default class Detail extends React.Component {
     shipmentDispatchDetail: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    $('title').text('运单详情');
+    window.$('title').text('运单详情');
   }
   renderFormCell(label = '', text) {
     return (
