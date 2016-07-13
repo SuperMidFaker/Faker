@@ -31,6 +31,7 @@ export default {
     msg: 'not found your request url, maybe your request method not valid'
   },
   internal_server_error: {
+    status: 500,
     err_code: 50001,
     msg: 'internal server error, maybe your request params not valid'
   },
