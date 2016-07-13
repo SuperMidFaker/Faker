@@ -206,13 +206,16 @@ export default class TrackingDetail extends React.Component {
     let statusPos = 0;
     if (shipmt.status < 4) {
       statusDes = [{
+        status: 'wait',
         title: '未提货',
         description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 预计时间:${
           shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}`,
       }, {
-        title: '运输中',
+        status: 'wait',
+        title: '待运输',
         description: '',
       }, {
+        status: 'wait',
         title: '未交货',
         description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${
           shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
@@ -220,15 +223,18 @@ export default class TrackingDetail extends React.Component {
       statusPos = 0;
     } else if (shipmt.status === 4) {
       statusDes = [{
+        status: 'finish',
         title: '已提货',
         description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 实际时间:${
           shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}`,
       }, {
+        status: 'process',
         title: '运输中',
         description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''} ${
           latestPoint.location_time || latestPoint.created_date ?
           moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
+        status: 'wait',
         title: '未交货',
         description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${
           shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
@@ -236,22 +242,25 @@ export default class TrackingDetail extends React.Component {
       statusPos = 1;
     } else if (shipmt.status > 4) {
       statusDes = [{
+        status: 'finish',
         title: '已提货',
         description: `始发地: ${renderConsignLoc(shipmt, 'consigner')} 实际时间:${
           shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}`,
       }, {
-        title: '运输中',
+        status: 'finish',
+        title: '运输完成',
         description: `最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''} ${
           latestPoint.location_time || latestPoint.created_date ?
           moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
+        status: 'finish',
         title: '已交货',
         description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 实际时间:${
           shipmt.deliver_act_date ? moment(shipmt.deliver_act_date).format('YYYY-MM-DD') : ''}`,
       }];
       statusPos = 2;
     }
-    const steps = statusDes.map((s, i) => <Step key={i} title={s.title} description={s.description}/>);
+    const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} description={s.description}/>);
     const trackingSteps = points.map((s, i) => {
       if (i === 0) {
         return (<Timeline.Item color="green">{s.title} {s.description}</Timeline.Item>);
