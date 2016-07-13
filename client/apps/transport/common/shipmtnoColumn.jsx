@@ -7,7 +7,7 @@ function makeShipmtPublicUrl(shipmtNo, publicKey) {
 export default function ShipmtNoColumnRender(props) {
   const { publicKey, shipmtNo, ...extra } = props;
   return (
-    <a {...extra} href={makeShipmtPublicUrl(shipmtNo, publicKey)}>
+    <a {...extra} href={makeShipmtPublicUrl(shipmtNo, publicKey)} target="_blank">
     {shipmtNo}
     </a>
   );

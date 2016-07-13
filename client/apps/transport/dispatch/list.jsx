@@ -869,14 +869,12 @@ export default class DispatchList extends React.Component {
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2420, y: 460 }}
-              onRowClick={this.handleShipmtPreview}
             />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 1900, y: 460 }}
-              onRowClick={this.handleShipmtPreview}
             />);
     }
 

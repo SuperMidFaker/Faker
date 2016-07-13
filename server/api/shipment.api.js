@@ -515,7 +515,7 @@ function *shipmtDetailG() {
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstreamDispStatus > 0 ?
       tracking.downstream_status : tracking.upstream_status;
-    shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt.created_date);
+    shipmt.publicUrlKey = shipmt.public_key;
     return Result.ok(this, {
       shipmt,
       tracking,
@@ -530,19 +530,17 @@ function *shipmtPublicDetail() {
   const shipmtNo = this.request.query.shipmtNo;
   const key = this.request.query.key;
   try {
-    const [ goodslist, shipmts, draftShipmts, shipmtDisp, points ] = yield [
+    const [ goodslist, shipmts, shipmtDisp, points ] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
-      shipmentDao.getDraftShipmt(shipmtNo),
       shipmentDispDao.getShipmtDispWithShipmtNo(shipmtNo),
       shipmentAuxDao.getShipmentPoints(shipmtNo),
     ];
     let shipmt = {};
     let shipmtCreator;
-    if (shipmts.length === 1 && draftShipmts.length === 1) {
+    if (shipmts.length === 1) {
       shipmt = {
         ...shipmts[0],
-        ...draftShipmts[0],
         ...shipmtDisp[0],
       };
       if (shipmt.vehicle_type) {

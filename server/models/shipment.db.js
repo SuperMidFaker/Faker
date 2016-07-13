@@ -49,6 +49,7 @@ const cols = ['shipmt_no/v',
   'segmented/i',
   'merged/i',
   'effective/i',
+  'public_key/v',
   'tenant_id/i',
   'creater_login_id/i',
   'created_date/dtt'];
@@ -218,7 +219,7 @@ export default {
   getShipmtInfo(shipmtNo) {
     const sql = `select shipmt_no, customer_name, customer_tenant_id, lsp_name, lsp_tenant_id,
       consigner_name, consigner_province, consigner_city, consigner_district, consigner_addr,
-      consigner_contact, consigner_mobile, total_count, total_weight, total_volume,
+      consigner_contact, consigner_mobile, total_count, total_weight, total_volume, public_key,
       consignee_name, consignee_province, consignee_city, consignee_district, consignee_addr,
       consignee_contact, consignee_mobile, pickup_est_date, transit_time, deliver_est_date,
       transport_mode, transport_mode_code, vehicle_type, vehicle_length, container_no, package,
