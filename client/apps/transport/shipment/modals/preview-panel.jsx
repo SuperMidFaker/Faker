@@ -180,7 +180,7 @@ export default class PreviewPanel extends React.Component {
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
               </TabPane>
-              <TabPane tab={this.msg('shipmtTracking')} key="tracking">
+              <TabPane tab={this.msg('shipmtOperations')} key="operations">
                 <TrackingPane />
               </TabPane>
               <TabPane tab={this.msg('shipmtCharge')} key="charge">
