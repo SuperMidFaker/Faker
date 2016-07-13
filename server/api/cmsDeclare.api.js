@@ -230,9 +230,60 @@ function *getSearchedParams() {
   return Result.ok(this);
 }
 
+function *upsertRelationComp(head, ietype, tenantId, dbOps) {
+  const ieType = ietype === 'import' ? 'I' : 'E';
+  const ieClause = {
+    $or: [{
+      i_e_type: ietype === 'import' ? 'I' : 'E',
+    }, {
+      i_e_type: 'A',
+    }],
+  };
+  const forwarder = {
+    relation_type: RELATION_TYPES[0].key,
+    comp_code: head.forwarder_code,
+    comp_name: head.forwarder_name,
+    tenant_id: tenantId,
+    status: 1,
+  };
+  const owner = {
+    relation_type: RELATION_TYPES[1].key,
+    comp_code: head.owner_code,
+    comp_name: head.owner_name,
+    tenant_id: tenantId,
+    status: 1,
+  };
+  const agent = {
+    relation_type: RELATION_TYPES[2].key,
+    comp_code: head.agent_code,
+    comp_name: head.agent_name,
+    tenant_id: tenantId,
+    status: 1,
+  };
+  const [ withForwarder, withOwner, withAgent ] = yield [
+    CmsCompRelationDao.findOne({ where: { ...forwarder, ...ieClause }}),
+    CmsCompRelationDao.findOne({ where: { ...owner, ...ieClause }}),
+    CmsCompRelationDao.findOne({ where: { ...agent, ...ieClause }}),
+  ];
+  if (!withForwarder) {
+    dbOps.push(CmsCompRelationDao.create({
+      ...forwarder, i_e_type: ieType
+    }));
+  }
+  if (!withOwner) {
+    dbOps.push(CmsCompRelationDao.create({
+      ...owner, i_e_type: ieType
+    }));
+  }
+  if (!withAgent) {
+    dbOps.push(CmsCompRelationDao.create({
+      ...agent, i_e_type: ieType
+    }));
+  }
+}
 function *upsertDelgBillHead() {
   try {
-    const { head, ietype, loginId } = yield cobody(this);
+    const { head, ietype, loginId, tenantId } = yield cobody(this);
     let billNo = head.bill_no;
     const dbOps = [];
     if (!billNo) {
@@ -251,6 +302,7 @@ function *upsertDelgBillHead() {
         BillHeadDao.update(head, { where: { bill_no: billNo }})
       );
     }
+    yield* upsertRelationComp(head, ietype, tenantId, dbOps);
     yield dbOps;
     return Result.ok(this, { bill_no: billNo, ...head });
   } catch (e) {
@@ -329,7 +381,7 @@ function *editBillBody() {
 
 function *upsertEntryHead() {
   try {
-    const { head, totalCount, loginId } = yield cobody(this);
+    const { head, totalCount, ietype, tenantId, loginId } = yield cobody(this);
     let id = head.id;
     if (id) {
       yield EntryHeadDao.update(head, { where: { id }});
@@ -345,6 +397,9 @@ function *upsertEntryHead() {
       const row = yield EntryHeadDao.create(head);
       id = row.id;
     }
+    const dbOps = [];
+    yield* upsertRelationComp(head, ietype, tenantId, dbOps);
+    yield dbOps;
     return Result.ok(this, { id });
   } catch (e) {
     return Result.internalServerError(this, e.message);

@@ -63,7 +63,7 @@ export default class ClientInfo extends React.Component {
         {
           mode === 'edit' ?
           <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
-          field="customer_name" disabled fieldProps={{ initialValue: name }}
+            field="customer_name" disabled fieldProps={{ initialValue: name }}
           /> :
           <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
             <div>

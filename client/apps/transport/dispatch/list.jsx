@@ -23,6 +23,7 @@ import containerMessages from 'client/apps/message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
+import ShipmtnoColumn from '../common/shipmtnoColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../common/consignLocation';
@@ -210,7 +211,9 @@ export default class DispatchList extends React.Component {
       width: 150,
       render: (o, record) => {
         if (!sub) {
-          return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+          return (
+            <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} />
+          );
         }
         return (<span>{o}</span>);
       }
@@ -398,8 +401,8 @@ export default class DispatchList extends React.Component {
     return this.msg(s);
   }
 
-  handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp').then(result => {
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -625,12 +628,13 @@ export default class DispatchList extends React.Component {
 
   handleShipmtReturn(shipmt) {
     const { status } = this.props.filters;
-    let msg = `确定退回分配给【${shipmt.sp_name}】承运商的【${shipmt.shipmt_no}】的运单？`;
+    let msg = `将预分配给【${shipmt.sp_name}】的【${shipmt.shipmt_no}】运单退回吗？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
-      msg = `确定退回分配给【${shipmt.task_vehicle}】的【${shipmt.shipmt_no}】的运单？`;
+      msg = `将预分配给【${shipmt.task_vehicle}】的【${shipmt.shipmt_no}】运单退回吗？`;
     }
 
     Modal.confirm({
+      title: `确认退回运单`,
       content: msg,
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
@@ -860,6 +864,7 @@ export default class DispatchList extends React.Component {
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2420, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}

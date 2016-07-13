@@ -41,6 +41,7 @@ const Panel = Collapse.Panel;
     billHead: state.cmsDeclare.billHead,
     billBody: state.cmsDeclare.billBody,
     loginId: state.account.loginId,
+    tenantId: state.account.tenantId,
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead }
 )
@@ -50,6 +51,7 @@ export default class BillForm extends React.Component {
     ietype: PropTypes.string.isRequired,
     intl: intlShape.isRequired,
     readonly: PropTypes.bool,
+    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     billHead: PropTypes.object.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -62,11 +64,11 @@ export default class BillForm extends React.Component {
   handleBillSave = (ev) => {
     ev.preventDefault();
     // todo bill head save sync with entry head, vice verse
-    this.props.form.validateFieldsAndScroll(errors => {
+    this.props.form.validateFields(errors => {
       if (!errors) {
-        const { billHead, ietype, loginId } = this.props;
+        const { billHead, ietype, loginId, tenantId } = this.props;
         const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId }).then(
+        this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
@@ -79,10 +81,7 @@ export default class BillForm extends React.Component {
     });
   }
   render() {
-    const {
-      ietype, readonly, form, billHead, billBody,
-      ...actions,
-    } = this.props;
+    const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
     return (<div>
       <div className="panel-header">
         { !readonly &&
@@ -94,13 +93,12 @@ export default class BillForm extends React.Component {
       <div className="panel-body padding">
         <Collapse accordion defaultActiveKey="bill-head">
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
-            <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead}
-            />
+            <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
           </Panel>
           <Panel header={this.msg('billList')} key="bill-list">
             <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_no}
-              onAdd={actions.addNewBillBody} onDel={actions.delBillBody}
-              onEdit={actions.editBillBody} />
+              onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+            />
           </Panel>
         </Collapse>
       </div>

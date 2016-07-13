@@ -17,7 +17,7 @@ import codes from '../codes';
 import bcrypt from '../../util/BCryptUtil';
 
 const KEY = 'lkasdjo9q23u54120934il.mZD;fljopwu2-341';
-const DEFAULT_INTERVAL = 2592000;  // one mounth seconds
+const DEFAULT_INTERVAL = 2592000;  // one month seconds
 
 function genToken(appid, appSecret, ip) {
   const s = util.format('%s%s%s%s%s', appid, Date.now(), appSecret, KEY, ip);

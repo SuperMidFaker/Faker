@@ -4,6 +4,7 @@ import { Icon, Tag, Tooltip } from 'ant-ui';
 import RowUpdater from './rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
+import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
 
@@ -35,7 +36,7 @@ export default function makeColumns(type, handlers, msg) {
     fixed: 'left',
     width: 150,
     render: (o, record) => {
-      return <RowUpdater label={o} onAnchored={handlers.onShipmtPreview} row={record} />;
+      return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} />;
     },
   }, {
     title: msg('departurePlace'),

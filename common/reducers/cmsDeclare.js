@@ -302,7 +302,7 @@ export function editBillBody(body) {
   };
 }
 
-export function saveBillHead({ head, ietype, loginId }) {
+export function saveBillHead({ head, ietype, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -312,7 +312,7 @@ export function saveBillHead({ head, ietype, loginId }) {
       ],
       endpoint: 'v1/cms/declare/billhead',
       method: 'post',
-      data: { head, ietype, loginId },
+      data: { head, ietype, loginId, tenantId },
     },
   };
 }
@@ -368,7 +368,7 @@ export function editEntryBody(body) {
   };
 }
 
-export function saveEntryHead({ head, totalCount, loginId }) {
+export function saveEntryHead({ head, totalCount, loginId, tenantId, ietype }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -378,7 +378,7 @@ export function saveEntryHead({ head, totalCount, loginId }) {
       ],
       endpoint: 'v1/cms/declare/entryhead',
       method: 'post',
-      data: { head, totalCount, loginId },
+      data: { head, totalCount, loginId, tenantId, ietype },
     },
   };
 }

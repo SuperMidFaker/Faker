@@ -49,6 +49,7 @@ const cols = ['shipmt_no/v',
   'segmented/i',
   'merged/i',
   'effective/i',
+  'public_key/v',
   'tenant_id/i',
   'creater_login_id/i',
   'created_date/dtt'];
@@ -137,7 +138,7 @@ export default {
       consigner_province, consigner_city, consigner_district, consigner_addr, consignee_name,
       consignee_province, effective, consignee_city, consignee_district, consignee_addr, ref_external_no,
       pickup_est_date, transit_time, deliver_est_date, transport_mode, total_count, total_weight,
-      total_volume, created_date from tms_shipments where tenant_id = ? and effective = ?
+      public_key, total_volume, created_date from tms_shipments where tenant_id = ? and effective = ?
       ${shipmtNoWhere} order by ${sortField} ${sortOrder} limit ?, ?`;
     args.push((current - 1) * pageSize, pageSize);
     return mysql.query(sql, args);
@@ -163,7 +164,7 @@ export default {
     const args = [tenantId];
     return mysql.query(sql, args);
   },
-  createByLSP(shipmtNo, shipmt, spTenantId, spName, spLoginId, effective, trans) {
+  createByLSP(shipmtNo, shipmt, spTenantId, spName, spLoginId, effective, publicKey, nowDT, trans) {
     const sql = `insert into tms_shipments (shipmt_no, lsp_tenant_id, lsp_partner_id,
       lsp_name, customer_tenant_id, customer_partner_id, customer_name,
       ref_external_no, ref_waybill_no, ref_entry_no, transport_mode_code, consigner_name,
@@ -173,13 +174,13 @@ export default {
       pickup_est_date, transit_time, deliver_est_date, transport_mode, container_no,
       vehicle_type, vehicle_length, package, goods_type, insure_value, total_count,
       total_weight, total_volume, remark, effective,
-      tenant_id, creater_login_id, created_date) values (?, NOW())`;
+      tenant_id, creater_login_id, public_key, created_date) values (?)`;
     const args = [
       shipmtNo, spTenantId, null, spName, shipmt.customer_tenant_id,
       shipmt.customer_partner_id, shipmt.customer_name
     ];
     packShipmentArgsByLSP(shipmt, args);
-    args.push(effective, spTenantId, spLoginId);
+    args.push(effective, spTenantId, spLoginId, publicKey, nowDT);
     return mysql.insert(sql, [args], trans);
   },
   updateDispId(shipmtNo, dispId, trans) {
@@ -218,7 +219,7 @@ export default {
   getShipmtInfo(shipmtNo) {
     const sql = `select shipmt_no, customer_name, customer_tenant_id, lsp_name, lsp_tenant_id,
       consigner_name, consigner_province, consigner_city, consigner_district, consigner_addr,
-      consigner_contact, consigner_mobile, total_count, total_weight, total_volume,
+      consigner_contact, consigner_mobile, total_count, total_weight, total_volume, public_key,
       consignee_name, consignee_province, consignee_city, consignee_district, consignee_addr,
       consignee_contact, consignee_mobile, pickup_est_date, transit_time, deliver_est_date,
       transport_mode, transport_mode_code, vehicle_type, vehicle_length, container_no, package,

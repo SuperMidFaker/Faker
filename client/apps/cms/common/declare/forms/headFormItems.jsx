@@ -12,6 +12,20 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
 
+// Form.create ref 不能用stateless InputGroup, 否则saveRef会清空this.fieldMetas
+class CompositeInputGroup extends React.Component {
+  static propTypes = {
+    children: PropTypes.object.isRequired,
+  }
+  render() {
+    return (
+      <span className="ant-input-group">
+        {this.props.children}
+      </span>
+    );
+  }
+}
+
 // 进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
@@ -73,26 +87,33 @@ export function RelationAutoCompSelect(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const {
     label, codeField, nameField, formData, disabled, options,
-    getFieldProps, codeRules, nameRules, onSelect,
+    getFieldProps, codeRules, nameRules, onSelect, onChange,
   } = props;
   function handleSelect(value) {
     if (onSelect) {
       onSelect(codeField, nameField, value);
     }
   }
+  function handleInputChange(value) {
+    if (onChange) {
+      onChange(codeField, nameField, value);
+    }
+  }
   return (
     <Col span="9">
       <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
-        <InputGroup { ...getFieldProps(codeField, { rules: codeRules })}>
+        <CompositeInputGroup {...getFieldProps(codeField, { rules: codeRules })}>
           <Col span="12">
             <Select size="large" combobox showArrow={false} disabled={disabled}
-              defaultActiveFirstOption={false} allowClear optionFilterProp="search"
+              allowClear optionFilterProp="search"
               placeholder={msg('relationCodeSearch')} {
                 ...getFieldProps(codeField, {
                   rules: codeRules,
+                  onChange: handleInputChange,
                   initialValue: formData && formData[codeField],
                 })
-              } onSelect={handleSelect}>
+              } onSelect={handleSelect}
+            >
               {
                 options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
               }
@@ -105,7 +126,7 @@ export function RelationAutoCompSelect(props) {
               initialValue: formData && formData[nameField],
             })} disabled={disabled} />
           </Col>
-        </InputGroup>
+        </CompositeInputGroup>
       </FormItem>
     </Col>
   );
@@ -120,7 +141,8 @@ RelationAutoCompSelect.propTypes = {
   getFieldProps: PropTypes.func.isRequired,
   codeRules: PropTypes.array,
   nameRules: PropTypes.array,
-  onSelect: PropTypes.func,
+  onSelect: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 // 运输方式、运输名称、提运单号
