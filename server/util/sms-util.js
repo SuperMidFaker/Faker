@@ -8,7 +8,7 @@ export default {
     return sendSMS([phone], [code], cloopen.templateId);
   },
   sendSmsTrackingDetailMessage(phones, data) {
-    return sendSMS(phones, data, '98689');
+    return sendSMS(phones, data, '100309');
   }
 }
 
