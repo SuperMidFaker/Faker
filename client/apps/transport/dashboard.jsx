@@ -13,7 +13,7 @@ const RangePicker = DatePicker.RangePicker;
 
 
 function fetchData({ state, dispatch, cookie }) {
-	const { startDate, endDate } = state.shipment.statistics;
+  const { startDate, endDate } = state.shipment.statistics;
   return dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate));
 }
 @connectFetch()(fetchData)
@@ -33,7 +33,7 @@ export default class Dashboard extends React.Component {
     this.createEcharts(nextProps.statistics);
   }
   onDateChange = (e) => {
-		this.props.loadShipmentStatistics(null, this.props.tenantId, e[0], e[1]);
+    this.props.loadShipmentStatistics(null, this.props.tenantId, e[0], e[1]);
   }
   createEcharts(statistics) {
     const { points } = statistics;

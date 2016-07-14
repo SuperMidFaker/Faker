@@ -25,7 +25,7 @@ import {
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import parse from 'co-body';
-import { sendNewShipMessage }from '../socket.io';
+import { sendNewShipMessage } from '../socket.io';
 import { ShipmentEvent } from '../models/shipmentEvent.db';
 import { DispEventRelation } from '../models/dispEventRelation.db';
 

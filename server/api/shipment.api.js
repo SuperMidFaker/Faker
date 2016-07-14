@@ -12,7 +12,7 @@ import {
   VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES, CONTAINER_PACKAGE_TYPE,
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE, SHIPMENT_EVENT_TYPE } from '../util/constants';
-import { sendNewShipMessage }from '../socket.io';
+import { sendNewShipMessage } from '../socket.io';
 import SMS from '../util/sms-util';
 import { makePublicUrlKey } from './_utils/shipment';
 import { ShipmentEvent } from '../models/shipmentEvent.db';
@@ -657,22 +657,22 @@ function *shipmentStatistics() {
 }
 
 export default [
-  [ 'get', '/v1/transport/shipments', shipmentListG ],
-  [ 'get', '/v1/transport/shipment/requires', shipmtRequiresG ],
-  [ 'post', '/v1/transport/shipment/save', shipmtSavePendingP ],
-  [ 'post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP ],
-  [ 'post', '/v1/transport/shipment/accept', shipmtAcceptP ],
-  [ 'post', '/v1/transport/shipment/draft', shipmtDraftP ],
-  [ 'get', '/v1/transport/shipment', shipmtG ],
-  [ 'post', '/v1/transport/shipment/save_edit', shipmtSaveEditP ],
-  [ 'get', '/v1/transport/shipment/draft', shipmtDraftG ],
-  [ 'post', '/v1/transport/shipment/draft/saveaccept', shipmtDraftSaveAcceptP ],
-  [ 'post', '/v1/transport/shipment/draft/del', shipmtDraftDelP ],
-  [ 'get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG ],
-  [ 'post', '/v1/transport/shipment/revoke', shipmtRevokeP ],
-  [ 'post', '/v1/transport/shipment/reject', shipmtRejectP ],
-  [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
-  [ 'get', '/public/v1/transport/shipment/detail', shipmtPublicDetail ],
-  [ 'post', '/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage ],
-  [ 'get', '/v1/transport/shipment/statistics', shipmentStatistics]
+  ['get', '/v1/transport/shipments', shipmentListG],
+  ['get', '/v1/transport/shipment/requires', shipmtRequiresG],
+  ['post', '/v1/transport/shipment/save', shipmtSavePendingP],
+  ['post', '/v1/transport/shipment/saveaccept', shipmtSaveAcceptP],
+  ['post', '/v1/transport/shipment/accept', shipmtAcceptP],
+  ['post', '/v1/transport/shipment/draft', shipmtDraftP],
+  ['get', '/v1/transport/shipment', shipmtG],
+  ['post', '/v1/transport/shipment/save_edit', shipmtSaveEditP],
+  ['get', '/v1/transport/shipment/draft', shipmtDraftG],
+  ['post', '/v1/transport/shipment/draft/saveaccept', shipmtDraftSaveAcceptP],
+  ['post', '/v1/transport/shipment/draft/del', shipmtDraftDelP],
+  ['get', '/v1/transport/shipment/dispatchers', shipmtDispatchersG],
+  ['post', '/v1/transport/shipment/revoke', shipmtRevokeP],
+  ['post', '/v1/transport/shipment/reject', shipmtRejectP],
+  ['get', '/v1/transport/shipment/detail', shipmtDetailG],
+  ['get', '/public/v1/transport/shipment/detail', shipmtPublicDetail],
+  ['post', '/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage],
+  ['get', '/v1/transport/shipment/statistics', shipmentStatistics],
 ];

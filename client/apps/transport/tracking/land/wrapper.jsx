@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio } from 'ant-ui';
+import { Radio } from 'antd';
 import SearchBar from 'client/components/search-bar';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
 import { changePodFilter } from 'common/reducers/trackingLandPod';

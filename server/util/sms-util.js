@@ -9,8 +9,8 @@ export default {
   },
   sendSmsTrackingDetailMessage(phones, data) {
     return sendSMS(phones, data, '100309');
-  }
-}
+  },
+};
 
 function sendSMS(phones, datas, templateId) {
   const cloopen = SmsConfig.cloopen;

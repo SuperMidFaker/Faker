@@ -1,11 +1,11 @@
 import cobody from 'co-body';
 import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'common/constants';
 import { SHIPMENT_POD_TYPE, SHIPMENT_DISPATCH_POD_TYPE, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import { sendNewShipMessage }from '../socket.io';
+import { sendNewShipMessage } from '../socket.io';
 import { ShipmentEvent } from '../models/shipmentEvent.db';
 import { DispEventRelation } from '../models/dispEventRelation.db';
 

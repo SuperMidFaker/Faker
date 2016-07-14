@@ -17,8 +17,8 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value : 'all' },
-    { name: 'shipmt_no', value: ''},
+    { name: 'type', value: 'all' },
+    { name: 'shipmt_no', value: '' },
   ],
   /*
      sortField: 'created_date',
@@ -110,20 +110,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.REPORT_LOC_SUCCEED:
       return {
         ...state, locReportedShipments: [
-<<<<<<< 5591e34648d2bf5b94821485b85092937a7d3e89
-          ...state.locReportedShipments, action.data.shipmtNo
-        ]
+          ...state.locReportedShipments, action.data.shipmtNo,
+        ],
     };
     case actionTypes.CHANGE_FILTER: {
       const filters = state.filters.filter(flt => flt.name !== action.data.field);
       filters.push({ name: action.data.field, value: action.data.value });
       return { ...state, filters };
     }
-=======
-          ...state.locReportedShipments, action.data.shipmtNo,
-        ],
-      };
->>>>>>> fix: trail comma and spacing lint rule enable & eslint autofix
     default:
       return state;
   }
@@ -196,13 +190,8 @@ export function savePickOrDeliverDate(data) {
       ],
       endpoint: 'v1/transport/tracking/pickordeliverdate',
       method: 'post',
-<<<<<<< 5591e34648d2bf5b94821485b85092937a7d3e89
       data,
-    }
-=======
-      data: { shipmtNo, dispId, type, actDate, loginId },
     },
->>>>>>> fix: trail comma and spacing lint rule enable & eslint autofix
   };
 }
 

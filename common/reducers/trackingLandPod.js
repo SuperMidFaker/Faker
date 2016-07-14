@@ -14,8 +14,8 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value : 'uploaded' },
-    { name: 'shipmt_no', value: ''},
+    { name: 'type', value: 'uploaded' },
+    { name: 'shipmt_no', value: '' },
   ],
   /*
      sortField: 'created_date',
@@ -128,13 +128,8 @@ export function passAudit(podId, dispId, parentDispId, auditor, tenantId, loginI
       ],
       endpoint: 'v1/transport/tracking/pod/audit',
       method: 'post',
-<<<<<<< 5591e34648d2bf5b94821485b85092937a7d3e89
       data: { podId, dispId, parentDispId, auditor, tenantId, loginId },
-    }
-=======
-      data: { podId, dispId, parentDispId, auditor },
     },
->>>>>>> fix: trail comma and spacing lint rule enable & eslint autofix
   };
 }
 
