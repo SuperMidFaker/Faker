@@ -1,10 +1,11 @@
-import { Delegation, Dispatch } from '../models/cmsDelegation.db';
-import tenantDao from '../models/tenant.db';
-import { Partner } from '../models/cooperation.db';
-import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../models/cmsbillEntry.db';
-import { CmsParamHsCode } from '../models/cmsParams.db';
+import { Delegation, Dispatch, DelegationEntryLogDao } from '../../models/cmsDelegation.db';
+import tenantDao from '../../models/tenant.db';
+import { Partner } from '../../models/cooperation.db';
+import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../../models/cmsbillEntry.db';
+import { CmsParamHsCode } from '../../models/cmsParams.db';
 import { makePartnerCode } from './saas.api';
 import { PARTNER_TENANT_TYPE, DELG_STATUS, DELG_SOURCE } from 'common/constants';
+import codes from '../codes';
 
 function *checkDelgNoExternalNoOrThrow(head, billSrc, index) {
   let delgNo = head.delg_no;
@@ -176,6 +177,9 @@ function *createBillBody(billNo, lists) {
 function *billsP() {
   const { bills } = this.reqbody;
   const clientTenantId = this.tenant_id;
+  if (!bills) {
+    return this.error(codes.params_error, 'bills is not defined');
+  }
   try {
     for (let i = 0; i < bills.length; i++) {
       const { head, lists } = bills[i];
@@ -203,6 +207,9 @@ function *billsP() {
 
 function *billsG() {
   const { delg_no: delgNo } = this.reqbody;
+  if (!delgNo) {
+    return this.error(codes.params_error, 'delg_no is not defined');
+  }
   try {
     const heads = yield BillHeadDao.findAll({
       raw: true,
@@ -248,6 +255,9 @@ function *createEntryBody(headId, lists) {
 function *entriesP() {
   const { entries } = this.reqbody;
   const clientTenantId = this.tenant_id;
+  if (!entries) {
+    return this.error(codes.params_error, 'entries is not defined');
+  }
   try {
     for (let i = 0; i < entries.length; i++) {
       const { head, lists } = entries[i];
@@ -275,11 +285,20 @@ function *entriesP() {
 
 function *entryG() {
   const { delg_no: delgNo, entry_id: entryNo } = this.reqbody;
-  const heads = yield EntryHeadDao.findAll({
-    raw: true,
-    delg_no: delgNo,
-    entry_id: entryNo,
-  });
+  let heads = [];
+  if (delgNo) {
+    heads = yield EntryHeadDao.findAll({
+      raw: true,
+      delg_no: delgNo,
+    });
+  } else if (entryNo) {
+    heads = yield EntryHeadDao.findAll({
+      raw: true,
+      entry_id: entryNo,
+    });
+  } else {
+    return this.error(codes.params_error, 'delg_no and entry_id are empty');
+  }
   const results = [];
   for (let i = 0; i < heads.length; i++) {
     const head = heads[i];
@@ -292,9 +311,61 @@ function *entryG() {
   return this.ok(results);
 }
 
+function *entryLogG() {
+  const { entry_id: entryNoStr } = this.reqbody;
+  if (!entryNoStr) {
+    return this.error(codes.params_error, 'entry_id is empty');
+  }
+  const entryNos = entryNoStr.split(',');
+  const entryNoDbOps = [];
+  for (let i = 0; i < entryNos.length; i++) {
+    const entryNo = entryNos[i];
+    entryNoDbOps.push(DelegationEntryLogDao.findAll({
+      raw: true,
+      attributes: [ 'entry_id', 'process_name', 'process_date' ],
+      where: { entry_id: entryNo },
+    }));
+  }
+  const entryNoLogss = yield entryNoDbOps;
+  const results = [];
+  for (let i = 0; i < entryNos.length; i++) {
+    const entryNo = entryNos[i];
+    const entryNoLogs = entryNoLogss[i];
+    results.push({
+      entry_id: entryNo,
+      logs: entryNoLogs,
+    });
+  }
+  this.ok(results);
+}
+
+function *entryNosP() {
+  const { entry_id: entryNoStr, comp_entry_id: compEntryIdStr } = this.reqbody;
+  if (!entryNoStr || !compEntryIdStr) {
+    return this.error(codes.params_error, 'entry_id or comp_entry_id is empty');
+  }
+  const entryNos = entryNoStr.split(',');
+  const compEntryIds = compEntryIdStr.split(',');
+  if (entryNos.length !== compEntryIds.length) {
+    return this.error(codes.params_error, 'entry_id and comp_entry_id length is unequal');
+  }
+  const dbOps = [];
+  for (let i = 0; i < entryNos.length; i++) {
+    const entryNo = entryNos[i];
+    dbOps.push(EntryHeadDao.update({
+      entry_id: entryNo,
+    }, {
+      where: { comp_entry_id: compEntryIds[i] },
+    }));
+  }
+  yield dbOps;
+}
+
 export default [
   ['post', '/v1/cms/bills', billsP],
   ['get', '/v1/cms/bills', billsG],
   ['post', '/v1/cms/entries', entriesP],
   ['get', '/v1/cms/entry', entryG],
+  ['get', '/v1/cms/entry/logs', entryLogG],
+  ['post', '/v1/cms/entrynos', entryNosP],
 ];

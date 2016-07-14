@@ -1,6 +1,7 @@
 import tenantDao from '../../models/tenant.db';
 import coopDao, { Partner, Partnership } from '../../models/cooperation.db';
 import { PARTNER_TENANT_TYPE } from 'common/constants';
+import codes from '../codes';
 
 export function makePartnerCode(code, subCode) {
   return `${code}/${subCode}`;
@@ -70,8 +71,11 @@ function *partnersP() {
 }
 
 function *partnersG() {
+  const { tenant_id: tid, type_code: tc } = this.reqbody;
+  if (!tid || !tc) {
+    return this.error(codes.params_error, 'tenant_id or type_code is empty');
+  }
   try {
-    const { tenant_id: tid, type_code: tc } = this.reqbody;
     const partners = yield coopDao.getPartnerByTypeCode(tid, tc);
     return this.ok(partners);
   } catch (e) {

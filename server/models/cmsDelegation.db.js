@@ -123,3 +123,19 @@ export const DelegationFileDao = sequelize.define('cms_delegation_files', {
     defaultValue: NOW,
   },
 });
+
+export const DelegationLogDao = sequelize.define('cms_delegation_logs', {
+  delg_no: STRING,
+  oper_id: INTEGER,
+  oper_name: STRING,
+  oper_tenant_id: INTEGER,
+  oper_note: STRING,
+  oper_date: DATE,
+  result: STRING,
+});
+
+export const DelegationEntryLogDao = sequelize.define('cms_delegation_entry_logs', {
+  entry_id: STRING,
+  process_name: STRING,
+  process_date: STRING,
+});
