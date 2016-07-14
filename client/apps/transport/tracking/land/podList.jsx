@@ -96,7 +96,7 @@ export default class LandStatusList extends React.Component {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
         pageSize: nextProps.shipmentlist.pageSize,
-        currentPage: nextProps.shipmentlist.current,
+        currentPage: 1,
         /*
            sortField: state.transportTracking.transit.sortField,
            sortOrder: state.transportTracking.transit.sortOrder,
