@@ -295,74 +295,66 @@ export default class Dashboard extends React.Component {
 
     return (
       <div className="main-content">
-        <div className="tenant-form page-body" style={{padding: '20px'}}>
-          <Card title="进度看板" extra={datePicker} style={{ width: '100%' }}>
+        <div className="page-body" style={{padding: '24px'}}>
+          <Card title="运单统计" extra={datePicker}>
             <Row type="flex" justify="space-around" align="middle">
-              <Col span={4}>
-                <div className="col">
-                  <i className="zmdi zmdi-file-plus" style={{backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle}}></i>
+              <Col span={4} className="stats-data">
+                  <i className="zmdi zmdi-file-plus" style={{backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle}}/>
                   <div style={right}>
-                    <div style={rightTop}>
-                    {count[0]}
-                    </div>
+                    <div style={rightTop}>{count[0]}</div>
                     <div style={rightBottom}>已受理运单</div>
                   </div>
-                </div>
               </Col>
-              <Col span={4}>
-                <div className="col">
-                  <i className="zmdi zmdi-mail-send" style={{backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle}}></i>
+              <Col span={4} className="stats-data">
+                  <i className="zmdi zmdi-mail-send" style={{backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle}}/>
                   <div style={right}>
                     <div style={rightTop}>
                     {count[1]}
                     </div>
                     <div style={rightBottom}>已调度运单</div>
                   </div>
-                </div>
               </Col>
-              <Col span={4}>
-                <div className="col">
-                  <i className="zmdi zmdi-forward" style={{backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle}}></i>
+              <Col span={4} className="stats-data">
+                  <i className="zmdi zmdi-forward" style={{backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle}}/>
                   <div style={right}>
                     <div style={rightTop}>
                     {count[2]}
                     </div>
                     <div style={rightBottom}>已提货运单</div>
                   </div>
-                </div>
               </Col>
-              <Col span={4}>
-                <div className="col">
-                  <i className="zmdi zmdi-assignment-check" style={{backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle}}></i>
+              <Col span={4} className="stats-data">
+                  <i className="zmdi zmdi-assignment-check" style={{backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle}}/>
                   <div style={right}>
                     <div style={rightTop}>
                     {count[3]}
                     </div>
                     <div style={rightBottom}>已交货运单</div>
                   </div>
-                </div>
               </Col>
-              <Col span={4}>
-                <div className="col">
-                  <i className="zmdi zmdi-badge-check" style={{backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle}}></i>
+              <Col span={4} className="stats-data">
+                  <i className="zmdi zmdi-badge-check" style={{backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle}}/>
                   <div style={right}>
                     <div style={rightTop}>
                     {count[4]}
                     </div>
                     <div style={rightBottom}>已完成运单</div>
                   </div>
-                </div>
               </Col>
             </Row>
           </Card>
-          <div className="chartsArea">
-            <Card title="待处理" style={{ width: '30%' }}>
-              <Table columns={columns} dataSource={data} bordered pagination={false}/>
-            </Card>
-            <Card title="运单实况" style={{ width: '69%'}}>
-              <div id="chart" style={{width: '106%', height: '700px', margin: '-25px'}}></div>
-            </Card>
-          </div>
+          <Row style={{marginTop: 24}}>
+            <Col span={9}>
+              <Card title="待处理">
+                <Table columns={columns} dataSource={data} bordered pagination={false}/>
+              </Card>
+            </Col>
+            <Col span={15}>
+              <Card title="运输实况" style={{marginLeft: 24}}>
+                <div id="chart" style={{width: '110%', height: '480px', margin: '-25px'}}></div>
+              </Card>
+            </Col>
+          </Row>
         </div>
       </div>
     );
