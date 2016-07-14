@@ -18,9 +18,7 @@ const dispatch = loadRoute(__dirname, 'apis', '/v1');
 const apis = {};
 for (let i = 0; i < dispatch.router.stack.length; i++) {
   const r = dispatch.router.stack[i];
-  if (r.name) {
-    apis[r.name] = r.path;
-  }
+  apis[r.name || i] = r.path;
 }
 const port = process.env.PORT || 3023;
 create({

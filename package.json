@@ -21,7 +21,7 @@
     "prod": "NODE_ENV=production node . --port=3022",
     "pm2": "pm2 start pm2/prod.js",
     "deploy": "npm run clean && npm run build && npm run pm2",
-    "test": "mocha --reporter spec --check-leaks tests/*_test.js"
+    "test": "mocha --reporter spec --bail --check-leaks tests/*_test.js"
   },
   "repository": {
     "type": "git",

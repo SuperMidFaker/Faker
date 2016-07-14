@@ -14,6 +14,7 @@ module.exports = (app) => {
   };
 
   app.context.error = app.response.error = function err(obj, errMsg) {
+    console.log(codes.error(obj, errMsg));
     this.json(codes.error(obj, errMsg));
   };
 

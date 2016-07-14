@@ -1,13 +1,14 @@
+/* eslint no-console:0 */
 import { Delegation, Dispatch, DelegationEntryLogDao } from '../../models/cmsDelegation.db';
 import tenantDao from '../../models/tenant.db';
 import { Partner } from '../../models/cooperation.db';
 import { BillHeadDao, BillBodyDao, EntryHeadDao, EntryBodyDao } from '../../models/cmsbillEntry.db';
 import { CmsParamHsCode } from '../../models/cmsParams.db';
-import { makePartnerCode } from './saas.api';
+import { makePartnerCode } from '../util';
 import { PARTNER_TENANT_TYPE, DELG_STATUS, DELG_SOURCE } from 'common/constants';
 import codes from '../codes';
 
-function *checkDelgNoExternalNoOrThrow(head, billSrc, index) {
+function *checkDelgNoExternalNoOrThrow(head, delgSrc, index) {
   let delgNo = head.delg_no;
   let billFinished = false;
   if (delgNo) {
@@ -16,22 +17,22 @@ function *checkDelgNoExternalNoOrThrow(head, billSrc, index) {
       where: { delg_no: delgNo, parent_id: null },
     });
     if (!delg) {
-      throw new Error({ error_code: 3001, msg: `invalid delegation no at index ${index}`});
+      throw { err_code: 3001, msg: `invalid delegation no at index ${index}`};
     }
-    if ((billSrc === 0 && delg.ref_delg_external_no !== head.external_no)
-       || (billSrc === 1 && delg.ref_recv_external_no !== head.external_no)) {
-      throw new Error({
+    if ((delgSrc === 0 && delg.ref_delg_external_no !== head.external_no)
+       || (delgSrc === 1 && delg.ref_recv_external_no !== head.external_no)) {
+      throw {
         err_code: 3002,
         msg: `external_no not associated with delg_no at index ${index}`,
-      });
+      };
     }
     if (delg.bill_status > 1) {
       // 已制单
       billFinished = true;
     }
-  } else {
+  } else if (head.external_no) {
     let externalNoWhere;
-    if (billSrc === 0) {
+    if (delgSrc === 0) {
       externalNoWhere = { ref_delg_external_no: head.external_no };
     } else {
       externalNoWhere = { ref_recv_external_no: head.external_no };
@@ -111,7 +112,7 @@ function *createDelegate(head, billSrc, clientTid) {
     ref_recv_external_no: billSrc === 0 ? null : head.external_no,
     ref_delg_external_no: billSrc === 0 ? head.external_no : null,
     send_tenant_id: delg.customer_tenant_id,
-    send_partner_id: delg.customer_tenant_id,
+    send_partner_id: delg.customer_partner_id,
     send_name: delg.customer_name,
     recv_tenant_id: delg.ccb_tenant_id,
     recv_partner_id: delg.ccb_partner_id,
@@ -184,11 +185,12 @@ function *billsP() {
     for (let i = 0; i < bills.length; i++) {
       const { head, lists } = bills[i];
       const billSrc = parseInt(head.bill_source, 10);
-      if (billSrc !== 0 || billSrc !== 1) {
-        throw new Error({ err_code: 3003, msg: `bill_source is empty at index ${i}` });
+      if (billSrc !== 0 && billSrc !== 1) {
+        throw { err_code: 3003, msg: `bill_source is empty at index ${i}` };
       }
       const delgResult = yield* checkDelgNoExternalNoOrThrow(head, billSrc, i);
       if (delgResult.billFinished) {
+        console.log('skip bill', head.delg_no, head.external_no);
         continue;
       }
       let delgNo = delgResult.delgNo;
@@ -201,7 +203,7 @@ function *billsP() {
     return this.ok();
   } catch (e) {
     /* handle error */
-    this.internalServerError({ err_code: e.err_code, msg: e.msg });
+    this.internalServerError({ err_code: e.err_code || e.internalServerError.err_code, msg: e.msg || e.message });
   }
 }
 
@@ -226,7 +228,7 @@ function *billsG() {
     }
     return this.ok(results);
   } catch (e) {
-    this.internalServerError({ msg: e.message });
+    this.internalServerError({ err_code: e.err_code || e.internalServerError.err_code, msg: e.msg || e.message });
   }
 }
 
@@ -261,25 +263,25 @@ function *entriesP() {
   try {
     for (let i = 0; i < entries.length; i++) {
       const { head, lists } = entries[i];
-      const billSrc = parseInt(head.entry_source, 10);
-      if (billSrc !== 0 || billSrc !== 1) {
-        throw new Error({ err_code: 3003, msg: `entry_source is empty at index ${i}` });
+      const entrySrc = parseInt(head.entry_source, 10);
+      if (entrySrc !== 0 && entrySrc !== 1) {
+        throw { err_code: 3003, msg: `entry_source is empty at index ${i}` };
       }
-      const delgResult = yield* checkDelgNoExternalNoOrThrow(head, billSrc, i);
+      const delgResult = yield* checkDelgNoExternalNoOrThrow(head, entrySrc, i);
       if (delgResult.billFinished) {
+        console.log('skip entry', head.delg_no, head.external_no);
         continue;
       }
       let delgNo = delgResult.delgNo;
       if (!delgNo) {
-        delgNo = yield* createDelegate(head, billSrc, clientTenantId);
+        delgNo = yield* createDelegate(head, entrySrc, clientTenantId);
       }
       const headId = yield* createEntryHead(delgNo, head);
       yield* createEntryBody(headId, lists);
     }
     return this.ok();
   } catch (e) {
-    /* handle error */
-    this.internalServerError({ err_code: e.err_code, msg: e.msg });
+    this.internalServerError({ err_code: e.err_code || e.internalServerError.err_code, msg: e.msg || e.message });
   }
 }
 
@@ -359,13 +361,14 @@ function *entryNosP() {
     }));
   }
   yield dbOps;
+  this.ok();
 }
 
 export default [
-  ['post', '/v1/cms/bills', billsP],
-  ['get', '/v1/cms/bills', billsG],
-  ['post', '/v1/cms/entries', entriesP],
-  ['get', '/v1/cms/entry', entryG],
-  ['get', '/v1/cms/entry/logs', entryLogG],
-  ['post', '/v1/cms/entrynos', entryNosP],
+  ['post', '/cms/bills', billsP],
+  ['get', '/cms/bills', billsG],
+  ['post', '/cms/entries', entriesP],
+  ['get', '/cms/entry', entryG],
+  ['get', '/cms/entry/logs', entryLogG],
+  ['post', '/cms/entrynos', entryNosP],
 ];

@@ -100,7 +100,7 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
   },
   acpt_time: DATE,
   decl_time: DATE,
-  clea_time: DATE,
+  clean_time: DATE,
   send_auditor: STRING,
   send_audit_date: DATE,
   bill_status: {

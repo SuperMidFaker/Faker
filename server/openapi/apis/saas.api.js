@@ -1,11 +1,8 @@
 import tenantDao from '../../models/tenant.db';
 import coopDao, { Partner, Partnership } from '../../models/cooperation.db';
 import { PARTNER_TENANT_TYPE } from 'common/constants';
+import { makePartnerCode } from '../util';
 import codes from '../codes';
-
-export function makePartnerCode(code, subCode) {
-  return `${code}/${subCode}`;
-}
 
 function *partnersP() {
   const partners = this.reqbody.partners;
@@ -25,13 +22,13 @@ function *partnersP() {
       if (ptenants.length === 1) {
         ptenant = ptenants[0];
       }
-      const partnerTid = ptenant ? ptenant.id : -1;
+      const partnerTid = ptenant ? ptenant.tenant_id : 0;
       const tenantType = ptenant ?
         PARTNER_TENANT_TYPE[ptenant.level] : PARTNER_TENANT_TYPE[3];
       partnerDbOps.push(
         Partner.create({
           name: pt.partner.name,
-          partner_code: makePartnerCode(pt.code, pt.sub_code),
+          partner_code: makePartnerCode(pt.partner.code, pt.partner.sub_code),
           tenant_type: tenantType,
           partner_tenant_id: partnerTid,
           tenant_id: clientTenantId,
@@ -46,8 +43,8 @@ function *partnersP() {
       if (ptenants.length === 1) {
         ptenant = ptenants[0];
       }
-      const partnerTid = ptenant ? ptenant.id : -1;
-      const pcode = makePartnerCode(pt.code, pt.sub_code);
+      const partnerTid = ptenant ? ptenant.tenant_id : -1;
+      const pcode = makePartnerCode(pt.partner.code, pt.partner.sub_code);
       pt.ships.forEach(ps => {
         partnershipDbOps.push(
           Partnership.create({
@@ -84,6 +81,6 @@ function *partnersG() {
 }
 
 export default [
-  ['post', '/v1/saas/partners', partnersP],
-  ['get', '/v1/saas/partners', partnersG],
+  ['post', '/saas/partners', partnersP],
+  ['get', '/saas/partners', partnersG],
 ];

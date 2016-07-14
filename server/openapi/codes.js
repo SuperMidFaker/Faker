@@ -10,6 +10,7 @@
  */
 import { _extend } from 'util';
 
+// todo cleanup the return value status, err_code msg logic
 export default {
   ok(data) {
     return {
