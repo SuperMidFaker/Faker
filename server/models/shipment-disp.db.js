@@ -435,7 +435,7 @@ export default {
   getTrackingShipments(tenantId, filters, pageSize, current) {
     const args = [ tenantId ];
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
-    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
+    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, ref_external_no, customer_tenant_id,
       customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
       pickup_est_date, deliver_est_date, transit_time, transport_mode, total_count,

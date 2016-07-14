@@ -251,7 +251,7 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2300, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2450, y: 460 }}
               onRowClick={this.handleShipmtPreview}
             />
           </div>
