@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
+import { Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';

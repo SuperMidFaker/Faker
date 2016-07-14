@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Select, message } from 'antd';
+import { Button, Select, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
  'common/reducers/personnel';

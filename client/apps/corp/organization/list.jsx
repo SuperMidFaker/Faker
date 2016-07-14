@@ -5,7 +5,8 @@ import {
   loadOrgans, delCorp, switchStatus, switchTenantApp,
   openTenantAppsEditor, closeTenantAppsEditor, INITIAL_LIST_PAGE_SIZE,
 } from 'common/reducers/corps';
-import { Table, Button, Icon, message } from 'antd';
+import { Button, Icon, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import NavLink from '../../../components/nav-link';
 import showWarningModal from 'client/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';

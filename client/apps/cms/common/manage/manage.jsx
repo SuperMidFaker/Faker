@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button, message } from 'antd';
+import { Button, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import NavLink from '../../../../components/nav-link';
 import { loadCompRelations, switchStatus } from 'common/reducers/cmsCompRelation';

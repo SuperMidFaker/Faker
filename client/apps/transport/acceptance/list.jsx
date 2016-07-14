@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, message, Popconfirm } from 'antd';
+import { Button, Radio, message, Popconfirm } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
