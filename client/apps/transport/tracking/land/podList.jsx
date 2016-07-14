@@ -124,7 +124,8 @@ export default class LandStatusList extends React.Component {
         filters: this.props.filters
       };
       params.filters = params.filters.filter(
-        flt => flt.name === 'type' || (flt.name in filters && filters[flt.name].length)
+        flt => flt.name === 'type' || flt.name === 'shipmt_no'
+          || (flt.name in filters && filters[flt.name].length)
       );
       for (const key in filters) {
         if (filters[key] && filters[key].length > 0) {
