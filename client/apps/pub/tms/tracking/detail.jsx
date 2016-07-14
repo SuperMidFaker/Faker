@@ -168,7 +168,7 @@ export default class TrackingDetail extends React.Component {
     } else {
       this.setState({stepsDirection: 'horizontal'});
     }
-    //$('#map').height($(window).height() - 50);
+    $('#map').height($(window).height() - 50);
   }
   render() {
     const {shipmt, tracking} = this.props.shipmtDetail;
@@ -272,7 +272,7 @@ export default class TrackingDetail extends React.Component {
       <div className="panel-body">
         <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no}</strong></nav>
           <Row>
-            <Col lg={15}>
+            <Col lg={15} sm={24}>
               <div className="main-content">
                 <Card title="运输进度" extra={<a href="#"></a>} style={{ width: '100%' }}>
                   <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
@@ -305,7 +305,7 @@ export default class TrackingDetail extends React.Component {
                 </Row>
               </div>
             </Col>
-            <Col lg={9}>
+            <Col lg={9} sm={24}>
               <div id="map"></div>
             </Col>
           </Row>
