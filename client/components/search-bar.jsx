@@ -5,6 +5,7 @@ export default class SearchBar extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,
     value: PropTypes.string,
+    extraParams: PropTypes.object,
     onInputSearch: PropTypes.func.isRequired
   }
   constructor(props) {
@@ -23,7 +24,7 @@ export default class SearchBar extends React.Component {
     if (!('value' in this.props)) {
       this.setState({ value: ev.target.value });
     }
-    this.props.onInputSearch(ev.target.value);
+    this.props.onInputSearch(ev.target.value, this.props.extraParams);
   }
   render() {
     const { placeholder } = this.props;

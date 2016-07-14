@@ -90,8 +90,9 @@ export default class LandStatusList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
-      const newfilters = nextProps.filters.map(flt => {
+      newfilters = nextProps.filters.map(flt => {
         if (flt.name === 'type') {
           return {
             name: 'type',
@@ -101,6 +102,14 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
+    } else {
+      const nextShipmtno = nextProps.filters.filter(flt => flt.name === 'shipmt_no');
+      const shipmtno = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+      if (nextShipmtno[0].value !== shipmtno[0].value) {
+        newfilters = nextProps.filters;
+      }
+    }
+    if (newfilters) {
       this.props.loadTransitTable(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
@@ -251,7 +260,7 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2300, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2460, y: 460 }}
               onRowClick={this.handleShipmtPreview}
             />
           </div>

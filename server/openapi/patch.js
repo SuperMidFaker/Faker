@@ -17,6 +17,10 @@ module.exports = (app) => {
     this.json(codes.error(obj, errMsg));
   };
 
+  app.context.internalServerError = app.response.internalServerError = function ise(errObj) {
+    this.json({ ...codes.internal_server_error, ...errObj });
+  };
+
   app.context.nf = app.response.nf = function nf() {
     this.json(codes.notFound(codes.not_found));
   };

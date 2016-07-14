@@ -1,3 +1,4 @@
+/* eslint prefer-template: 0 */
 import mysql from '../util/mysql';
 import Orm from '../util/orm';
 import { shipmentOrm } from './shipment.db';
@@ -113,9 +114,9 @@ function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
   let clause = 'and effective = 1 and (disp_status = 1 or disp_status = 2)';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
-    if (flt.name === 'shipmt_no') {
-      clause = `${clause} and ${aliasS}.shipmt_no like ?`;
-      args.push(flt.value);
+    if (flt.name === 'shipmt_no' && flt.value) {
+      clause = `${clause} and (${aliasS}.shipmt_no like ? or ${aliasS}.ref_external_no like ?)`;
+      args.push(`%${flt.value}%`, `%${flt.value}%`);
     }
     if (flt.name === 'type' && flt.value !== 'all') {
       clause = `${clause} and ${aliasSD}.status = ?`;
@@ -140,6 +141,10 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
   let clause = '';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
+    if (flt.name === 'shipmt_no' && flt.value) {
+      clause = `${clause} and (${aliasS}.shipmt_no like ? or ${aliasS}.ref_external_no like ?)`;
+      args.push(`%${flt.value}%`, `%${flt.value}%`);
+    }
     if (flt.name === 'type') {
       const targetVal = flt.value;
       if (targetVal === 'uploaded') {
@@ -435,7 +440,7 @@ export default {
   getTrackingShipments(tenantId, filters, pageSize, current) {
     const args = [ tenantId ];
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
-    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
+    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, ref_external_no, customer_tenant_id,
       customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
       pickup_est_date, deliver_est_date, transit_time, transport_mode, total_count,
@@ -463,7 +468,7 @@ export default {
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
       parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
-      consigner_district, consignee_district, public_key,
+      consigner_district, consignee_district, public_key, ref_external_no,
       pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,

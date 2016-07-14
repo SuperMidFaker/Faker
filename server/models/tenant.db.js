@@ -1,11 +1,11 @@
-import { STRING, INTEGER, DATE, TEXT, NOW } from 'sequelize';
+import { STRING, INTEGER, DATE } from 'sequelize';
 import sequelize from './sequelize';
 import mysql from '../util/mysql';
 function packColumnArgs(item) {
   const columns = [
-    `code`, `sub_code`, `aspect`, `name`, `phone`, `subdomain`, `country`, `province`, `city`,
-    `district`, `address`, `logo`, `short_name`, `category_id`, `website`, `remark`,
-    `level`, `email`, `contact`
+    'code', 'sub_code', 'aspect', 'name', 'phone', 'subdomain', 'country', 'province', 'city',
+    'district', 'address', 'logo', 'short_name', 'category_id', 'website', 'remark',
+    'level', 'email', 'contact'
   ];
   const args = [];
   columns.forEach(c => {
@@ -194,7 +194,7 @@ export default {
     let sql = '';
     tenantAppList.forEach(item => {
       for(let i = 0; i<apps.length; i++) {
-        if(apps[i].value == item) {
+        if(apps[i].value === item) {
           sql += `insert into sso_tenant_apps (tenant_id, app_id, app_name, app_desc, package, date_start)
           values ( '${tenantId}', '${apps[i].value}', '${apps[i].label}', '${apps[i].app_desc}', '${apps[i].package}', now() );`;
         }

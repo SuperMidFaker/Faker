@@ -39,6 +39,11 @@ export default function makeColumns(type, handlers, msg) {
       return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} />;
     },
   }, {
+    title: msg('refCustomerNo'),
+    dataIndex: 'ref_external_no',
+    width: 140,
+    render: (o) => <TrimSpan text={o} />,
+  }, {
     title: msg('departurePlace'),
     width: 150,
     render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />

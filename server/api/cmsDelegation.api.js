@@ -83,7 +83,7 @@ function *createDelegationByCCB() {
       // 新建一条Delegation
       Delegation.create({
         ...delegation, tenant_id: tenantId, delg_no: delgNo, ccb_tenant_id: tenantId,
-        ccb_partner_name: tenantName, creater_login_id: loginId, creater_login_name: username,
+        ccb_name: tenantName, creater_login_id: loginId, creater_login_name: username,
       }),
       // 新建一条Delegation Dispatch
       Dispatch.create({
