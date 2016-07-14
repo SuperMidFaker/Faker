@@ -2,20 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Steps, Table, Tabs } from 'ant-ui';
-import { SHIPMENT_TRACK_STATUS, TRACKING_POINT_FROM_TYPE } from 'common/constants';
-import { renderLoc } from '../../../common/consignLocation';
+import { Steps } from 'ant-ui';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const Step = Steps.Step;
-const TabPane = Tabs.TabPane;
 
 const timeFormat = 'YYYY-MM-DD HH:mm';
-
-function rowKeyFn(row) {
-  return row.id;
-}
 
 function StepDesc(props) {
   const texts = props.texts.filter(txt => txt);
