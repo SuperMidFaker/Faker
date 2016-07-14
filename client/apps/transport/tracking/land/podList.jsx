@@ -72,8 +72,9 @@ export default class LandStatusList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
-      const newfilters = nextProps.filters.map(flt => {
+      newfilters = nextProps.filters.map(flt => {
         if (flt.name === 'type') {
           return {
             name: 'type',
@@ -83,6 +84,14 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
+    } else {
+      const nextShipmtno = nextProps.filters.filter(flt => flt.name === 'shipmt_no');
+      const shipmtno = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+      if (nextShipmtno[0].value !== shipmtno[0].value) {
+        newfilters = nextProps.filters;
+      }
+    }
+    if (newfilters) {
       this.props.loadPodTable(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),

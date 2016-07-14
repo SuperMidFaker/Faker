@@ -2,6 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Radio } from 'ant-ui';
+import SearchBar from 'client/components/search-bar';
+import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
+import { changePodFilter } from 'common/reducers/trackingLandPod';
+import { changeExcpFilter } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SearchBar from 'client/components/search-bar';
@@ -16,7 +20,8 @@ const RadioGroup = Radio.Group;
     statusfilters: state.trackingLandStatus.filters,
     podfilters: state.trackingLandPod.filters,
     excpfilters: state.trackingLandException.filters,
-  })
+  }),
+  { changeStatusFilter, changePodFilter, changeExcpFilter }
 )
 export default class TrackingLandWrapper extends React.Component {
   static propTypes = {
@@ -26,9 +31,15 @@ export default class TrackingLandWrapper extends React.Component {
     podfilters: PropTypes.array,
     excpfilters: PropTypes.array,
     children: PropTypes.object.isRequired,
+    changeStatusFilter: PropTypes.func.isRequired,
+    changePodFilter: PropTypes.func.isRequired,
+    changeExcpFilter: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    searchInput: '',
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
@@ -45,6 +56,12 @@ export default class TrackingLandWrapper extends React.Component {
     this.context.router.push(
       `/transport/tracking/land/shipmt/exception/${ev.target.value}`
     );
+  }
+  handleSearchInput = value => {
+    this.setState({ searchInput: value });
+    this.props.changeStatusFilter('shipmt_no', value);
+    this.props.changePodFilter('shipmt_no', value);
+    this.props.changeExcpFilter('shipmt_no', value);
   }
   render() {
     const locName = this.props.location.pathname.split('/')[5];
@@ -87,6 +104,11 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
             <RadioButton value="loss">{this.msg('exceptionLoss')}</RadioButton>
           </RadioGroup>
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+              value={this.state.searchInput}
+            />
+          </div>
         </div>
         { this.props.children }
       </div>

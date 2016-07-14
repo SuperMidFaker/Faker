@@ -9,6 +9,10 @@ export default defineMessages({
     id: 'transport.tracking.ref.customer.no',
     defaultMessage: '客户单号'
   },
+  searchShipmtPH: {
+    id: 'transport.tracking.shipmt.search.placeholder',
+    defaultMessage: '搜索运单号'
+  },
   shipmtStatus: {
     id: 'transport.tracking.shipmt.status',
     defaultMessage: '当前状态'

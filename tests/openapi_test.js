@@ -63,40 +63,35 @@ describe('#partner get/post v1 api', function () {
         done(err);
       });
   });
-  it('-- should create customer suppliers with appid and appsecret', function (done) {
-    request.post('/v1/whexchange/supplies?app_id=30276b5e9d0984bca13ffa3e11f61a4e&app_secret=lAkcegrVax5plJUCgK5tZEucnPg9s//FOi1mu9BgfC4=')
-    .send([{
-      wh_no: 'wh2',
-      customer_no: 'cust1',
-      name: 'product1'
-    }, {
-      wh_no: 'wh3',
-      customer_no: 'cust1',
-      name: 'product2'
-    }])
-    .end(function(err, res){
-      const data = res.body;
-      log(data);
-      assert.equal(data.status, 200);
-      done(err);
-    });
+  it('-- should get bills', function (done) {
+    request.get('/v1/cms/bills')
+      .query({
+        delg_no: 'NLOCI16070760003',
+      })
+      .end(function(err, res){
+        const data = res.body;
+        log(data);
+        assert.equal(data.status, 200);
+        done(err);
+      });
   });
-  it('-- should create warehouses with appid and appsecret', function (done) {
-    request.post('/v1/whexchange/warehouses?app_id=30276b5e9d0984bca13ffa3e11f61a4e&app_secret=lAkcegrVax5plJUCgK5tZEucnPg9s//FOi1mu9BgfC4=')
-    .send([{
-      wh_no: 'wh20',
-      wh_mode: 'free',
-      wh_name: 'ware20'
-    }, {
-      wh_no: 'wh30',
-      wh_mode: 'paid',
-      wh_name: 'ware30'
-    }])
-    .end(function(err, res){
-      const data = res.body;
-      assert.equal(data.status, 200);
-      done(err);
-    });
+  it('-- should create bills with delg_no and external_no', function (done) {
+    request.post('/v1/cms/bills')
+      .send({ access_token: '14ebb0993859fd1c5ab3c0a5b280ae1a82ead67c581f5dbace6e4a6d70f9e862' })
+      .send([{
+        wh_no: 'wh20',
+        wh_mode: 'free',
+        wh_name: 'ware20'
+      }, {
+        wh_no: 'wh30',
+        wh_mode: 'paid',
+        wh_name: 'ware30'
+      }])
+        .end(function(err, res){
+          const data = res.body;
+          assert.equal(data.status, 200);
+          done(err);
+        });
   });
   it('-- should create products with appid and appsecret', function (done) {
     request.post('/v1/whexchange/products?app_id=30276b5e9d0984bca13ffa3e11f61a4e&app_secret=lAkcegrVax5plJUCgK5tZEucnPg9s//FOi1mu9BgfC4=')

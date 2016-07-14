@@ -1,3 +1,4 @@
+/* eslint prefer-template: 0 */
 import mysql from '../util/mysql';
 import Orm from '../util/orm';
 import { shipmentOrm } from './shipment.db';
@@ -113,9 +114,9 @@ function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
   let clause = 'and effective = 1 and (disp_status = 1 or disp_status = 2)';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
-    if (flt.name === 'shipmt_no') {
-      clause = `${clause} and ${aliasS}.shipmt_no like ?`;
-      args.push(flt.value);
+    if (flt.name === 'shipmt_no' && flt.value) {
+      clause = `${clause} and (${aliasS}.shipmt_no like ? or ${aliasS}.ref_external_no like ?)`;
+      args.push(`%${flt.value}%`, `%${flt.value}%`);
     }
     if (flt.name === 'type' && flt.value !== 'all') {
       clause = `${clause} and ${aliasSD}.status = ?`;
@@ -140,6 +141,10 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
   let clause = '';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
+    if (flt.name === 'shipmt_no' && flt.value) {
+      clause = `${clause} and (${aliasS}.shipmt_no like ? or ${aliasS}.ref_external_no like ?)`;
+      args.push(`%${flt.value}%`, `%${flt.value}%`);
+    }
     if (flt.name === 'type') {
       const targetVal = flt.value;
       if (targetVal === 'uploaded') {
