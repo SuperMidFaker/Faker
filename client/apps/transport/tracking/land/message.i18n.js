@@ -5,6 +5,10 @@ export default defineMessages({
     id: 'transport.tracking.shipmt.no',
     defaultMessage: '运单号'
   },
+  refCustomerNo: {
+    id: 'transport.tracking.ref.customer.no',
+    defaultMessage: '客户单号'
+  },
   shipmtStatus: {
     id: 'transport.tracking.shipmt.status',
     defaultMessage: '当前状态'
@@ -124,6 +128,10 @@ export default defineMessages({
   shipmtActDeliveryDate: {
     id: 'transport.tracking.act.delivery.date',
     defaultMessage: '实际交货'
+  },
+  searchPlaceholder: {
+    id: 'transport.tracking.search.placeholder',
+    defaultMessage: '搜索运单号'
   },
   allShipmt: {
     id: 'transport.tracking.all.shipment',

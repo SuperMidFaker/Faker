@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Radio } from 'ant-ui';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import SearchBar from 'client/components/search-bar';
 const formatMsg = format(messages);
 
 const RadioButton = Radio.Button;
@@ -63,6 +64,9 @@ export default class TrackingLandWrapper extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          </div>
           <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
