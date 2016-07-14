@@ -23,9 +23,12 @@ import {
   VEHICLE_TYPES,
   VEHICLE_LENGTH_TYPES,
 } from 'common/constants';
-import { SHIPMENT_DISPATCH_STATUS } from '../util/constants';
+import { SHIPMENT_DISPATCH_STATUS, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import parse from 'co-body';
 import { sendNewShipMessage }from '../socket.io';
+import { ShipmentEvent } from '../models/shipmentEvent.db';
+import { DispEventRelation } from '../models/dispEventRelation.db';
+
 /**
  * filters => {
  *   status: waiting(待分配)/dispatching(待发送)/dispatched(已发送)
@@ -217,7 +220,7 @@ function *doDispatch() {
  * 分配承运商后确认分配
  */
 function *doSend() {
-  const { tenantId, loginId, list } = yield parse(this.req);
+  const { tenantId, loginId, list, loginName } = yield parse(this.req);
   const alist = JSON.parse(list);
   const arr = [];
   alist.forEach(t => {
@@ -256,8 +259,22 @@ function *doSend() {
     });
     arr.push(shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus), s);
   });
-
   yield arr;
+  for (let i = 0; i < alist.length; i ++) {
+    const { dispId } = alist[i];
+    const shipmentEvent = yield ShipmentEvent.create({
+      tenant_id: tenantId,
+      login_id: loginId,
+      login_name: loginName,
+      type: SHIPMENT_EVENT_TYPE.sent,
+      content: '',
+      created_date: new Date(),
+    });
+    yield DispEventRelation.create({
+      disp_id: dispId,
+      event_id: shipmentEvent['null'],
+    });
+  }
   Result.ok(this);
 }
 /**

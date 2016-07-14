@@ -113,7 +113,7 @@ export function closePodModal() {
   };
 }
 
-export function passAudit(podId, dispId, parentDispId, auditor) {
+export function passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -123,7 +123,7 @@ export function passAudit(podId, dispId, parentDispId, auditor) {
       ],
       endpoint: 'v1/transport/tracking/pod/audit',
       method: 'post',
-      data: { podId, dispId, parentDispId, auditor },
+      data: { podId, dispId, parentDispId, auditor, tenantId, loginId },
     }
   };
 }

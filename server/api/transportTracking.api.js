@@ -2,10 +2,12 @@ import cobody from 'co-body';
 import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, } from 'common/constants';
-import { SHIPMENT_POD_TYPE } from '../util/constants';
+import { SHIPMENT_POD_TYPE, SHIPMENT_DISPATCH_POD_TYPE, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
 import { sendNewShipMessage }from '../socket.io';
+import { ShipmentEvent } from '../models/shipmentEvent.db';
+import { DispEventRelation } from '../models/dispEventRelation.db';
 
 function *trackingShipmtListG() {
   const tenantId = parseInt(this.request.query.tenantId, 10);
@@ -53,17 +55,20 @@ function *trackingPickDeliverDateP() {
   let trans;
   try {
     const body = yield cobody(this);
-    const { dispId, shipmtNo, type, actDate, loginId } = body;
+    const { dispId, shipmtNo, type, actDate, loginId, tenantId, loginName } = body;
     let fields;
     let operationType = '';
+    let shipmentEventType = '';
     if (type === 'pickup') {
       operationType = '提货';
+      shipmentEventType = SHIPMENT_EVENT_TYPE.pickedup;
       fields = {
         pickup_act_date: new Date(actDate),
         status: SHIPMENT_TRACK_STATUS.intransit,
       };
     } else {
       operationType = '交货';
+      shipmentEventType = SHIPMENT_EVENT_TYPE.delivered;
       fields = {
         deliver_act_date: new Date(actDate),
         status: SHIPMENT_TRACK_STATUS.delivered,
@@ -94,7 +99,34 @@ function *trackingPickDeliverDateP() {
       }
       id = disp.parent_id;
     }
-    
+    const shipmentEvent = yield ShipmentEvent.create({
+      tenant_id: tenantId,
+      login_id: loginId,
+      login_name: loginName,
+      type: shipmentEventType,
+      content: '',
+      created_date: new Date(),
+    });
+    yield DispEventRelation.create({
+      disp_id: dispId,
+      event_id: shipmentEvent['null'],
+    });
+    const disps = yield shipmentDispDao.getShipmtDispWithNo(id);
+    const disp = disps[0];
+    if (disp.pod_type === SHIPMENT_DISPATCH_POD_TYPE.none) {
+      const shipmentEvent1 = yield ShipmentEvent.create({
+        tenant_id: tenantId,
+        login_id: loginId,
+        login_name: loginName,
+        type: SHIPMENT_EVENT_TYPE.completed,
+        content: '不需回单，交货完成',
+        created_date: new Date(),
+      });
+      yield DispEventRelation.create({
+        disp_id: dispId,
+        event_id: shipmentEvent1['null'],
+      });
+    }
     return Result.ok(this);
   } catch (e) {
     if (trans) {
@@ -211,7 +243,7 @@ function *trackingPodAuditP() {
   let trans;
   try {
     const body = yield cobody(this);
-    const { podId, dispId, parentDispId, auditor } = body;
+    const { podId, dispId, parentDispId, auditor, tenantId, loginId } = body;
     trans = yield mysql.beginTransaction();
     // 默认当前pod为审核接受已提交
     let currPodStatus = SHIPMENT_POD_STATUS.acceptByUs;
@@ -245,8 +277,21 @@ function *trackingPodAuditP() {
         }, trans)
       );
     }
+
     yield dbUpdates;
     yield mysql.commit(trans);
+    const shipmentEvent = yield ShipmentEvent.create({
+      tenant_id: tenantId,
+      login_id: loginId,
+      login_name: auditor,
+      type: SHIPMENT_EVENT_TYPE.completed,
+      content: '回单通过，完成',
+      created_date: new Date(),
+    });
+    yield DispEventRelation.create({
+      disp_id: dispId,
+      event_id: shipmentEvent['null'],
+    });
     return Result.ok(this);
   } catch (e) {
     if (trans) {

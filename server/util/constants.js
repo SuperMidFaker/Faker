@@ -59,6 +59,20 @@ const SHIPMENT_POD_TYPE = {
   paperprint: 2,
 };
 
+const SHIPMENT_DISPATCH_POD_TYPE = {
+  none: 'none',
+  ePOD: 'ePOD',
+  qrPOD: 'qrPOD',
+};
+
+const SHIPMENT_EVENT_TYPE = {
+  accepted: 'accepted',
+  sent: 'sent',
+  pickedup: 'pickedup',
+  delivered: 'delivered',
+  completed: 'completed',
+};
+
 const __DEFAULT_PASSWORD__ = '123456';
 const ADMIN = 'admin';
 
@@ -71,4 +85,6 @@ export {
   CONSIGN_TYPE,
   SHIPMENT_DISPATCH_STATUS,
   SHIPMENT_POD_TYPE,
+  SHIPMENT_DISPATCH_POD_TYPE,
+  SHIPMENT_EVENT_TYPE,
 };

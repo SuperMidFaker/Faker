@@ -57,6 +57,7 @@ function fetch({ state, dispatch, cookie }) {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     avatar: state.account.profile.avatar,
     shipmentlist: state.transportDispatch.shipmentlist,
     filters: state.transportDispatch.filters,
@@ -79,6 +80,7 @@ export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     filters: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
@@ -570,11 +572,12 @@ export default class DispatchList extends React.Component {
         if (count === 0) {
           return;
         }
-        const { tenantId, loginId, avatar } = this.props;
+        const { tenantId, loginId, avatar, loginName } = this.props;
         this.props.doSend(null, {
           tenantId,
           loginId,
           avatar,
+          loginName,
           list: JSON.stringify(list)
         }).then(result => {
           if (result.error) {
@@ -598,11 +601,12 @@ export default class DispatchList extends React.Component {
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
-        const { tenantId, loginId, avatar } = this.props;
+        const { tenantId, loginId, avatar, loginName } = this.props;
         this.props.doSend(null, {
           tenantId,
           loginId,
           avatar,
+          loginName,
           list: JSON.stringify([{dispId: shipmt.key,
           shipmtNo: shipmt.shipmt_no,
           sp_tenant_id: shipmt.sp_tenant_id,

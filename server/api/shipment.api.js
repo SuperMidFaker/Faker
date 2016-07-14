@@ -11,10 +11,12 @@ import {
   SHIPMENT_TRACK_STATUS,
   VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES, CONTAINER_PACKAGE_TYPE,
 } from 'common/constants';
-import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
+import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import { sendNewShipMessage }from '../socket.io';
 import SMS from '../util/sms-util';
 import { makePublicUrlKey } from './_utils/shipment';
+import { ShipmentEvent } from '../models/shipmentEvent.db';
+import { DispEventRelation } from '../models/dispEventRelation.db';
 const vehicleTypes = VEHICLE_TYPES;
 
 const vehicleLengths = VEHICLE_LENGTH_TYPES;
@@ -233,6 +235,18 @@ function *shipmtAcceptP() {
       title: '接单通知',
       remark: `${disp.sp_name} 接单了，快去看看吧！`,
       content: `${disp.sp_name} 接单了，快去看看吧！运单号：${disp.shipmt_no}`
+    });
+    const shipmentEvent = yield ShipmentEvent.create({
+      tenant_id: disp.sp_tenant_id,
+      login_id: body.acptId,
+      login_name: body.acptName,
+      type: SHIPMENT_EVENT_TYPE.accepted,
+      content: '',
+      created_date: new Date(),
+    });
+    yield DispEventRelation.create({
+      disp_id: body.shipmtDispId,
+      event_id: shipmentEvent['null'],
     });
     return Result.ok(this);
   } catch (e) {
@@ -595,7 +609,33 @@ function *shipmentStatistics() {
   const query = this.request.query;
   try {
     const points = yield shipmentDao.shipmentStatistics(parseInt(query.tenantId, 10));
-    const count = [0, 0, 0, 0, 0];
+    const count = [
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.accepted
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.sent
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.pickedup
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.delivered
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.completed
+        }
+      }),
+    ];
     return Result.ok(this, {
       points,
       count

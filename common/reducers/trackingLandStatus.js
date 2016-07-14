@@ -176,7 +176,7 @@ export function closeDateModal() {
   };
 }
 
-export function savePickOrDeliverDate(type, shipmtNo, dispId, actDate, loginId) {
+export function savePickOrDeliverDate(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -186,7 +186,7 @@ export function savePickOrDeliverDate(type, shipmtNo, dispId, actDate, loginId) 
       ],
       endpoint: 'v1/transport/tracking/pickordeliverdate',
       method: 'post',
-      data: { shipmtNo, dispId, type, actDate, loginId },
+      data,
     }
   };
 }

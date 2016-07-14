@@ -13,6 +13,8 @@ const RadioGroup = Radio.Group;
 @connect(
   state => ({
     auditor: state.account.username,
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     auditModal: state.trackingLandPod.auditModal,
   }),
   { closePodModal, passAudit, returnAudit })
@@ -82,8 +84,8 @@ export default class PodAuditModal extends React.Component {
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
    */
-    const { auditModal: { dispId, parentDispId, podId }, auditor, onOK } = this.props;
-    this.props.passAudit(podId, dispId, parentDispId, auditor).then(
+    const { auditModal: { dispId, parentDispId, podId }, auditor, tenantId, loginId, onOK } = this.props;
+    this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
