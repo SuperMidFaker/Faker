@@ -60,12 +60,8 @@ const RemoteAntTable = React.createClass({
     }
     return (
       <Table {...this.props} dataSource={dataSource} pagination={pagination}
-<<<<<<< HEAD
-        onChange={this.handleTableChange} />
-=======
         onChange={this.handleTableChange}
       />
->>>>>>> origin/antd
     );
   },
 });
