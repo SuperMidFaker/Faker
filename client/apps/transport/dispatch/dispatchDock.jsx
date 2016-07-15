@@ -8,7 +8,6 @@ import { addPartner } from 'common/reducers/partner';
 import SearchBar from 'client/components/search-bar';
 import MContent from './MContent';
 import partnerModal from '../../corp/cooperation/components/partnerModal';
-
 const TabPane = Tabs.TabPane;
 
 function noop() {}
@@ -354,7 +353,7 @@ export default class DispatchDock extends Component {
       isProvider: true,
       partnerships: ['TRS'],
       onOk: (partnerInfo) => {
-        this.props.addPartner({ tenantId, partnerInfo, partnerships: partnerInfo.partnerships }).then(result => {
+        this.props.addPartner({ tenantId, partnerInfo, partnerships: partnerInfo.partnerships }).then(() => {
           message.success('合作伙伴已添加');
           const { lsps } = this.props;
           this.props.loadLsps(null, {
@@ -368,7 +367,7 @@ export default class DispatchDock extends Component {
     });
   }
   handleNewVehicleClick = () => {
-    
+
   }
   render() {
     const { show, shipmts, lsps, vehicles } = this.props;
@@ -459,6 +458,15 @@ export default class DispatchDock extends Component {
                     <div className="pane-content tab-pane">
                       <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
                     </div>
+                    <Modal visible={this.state.showVehicleFormMini}
+                      className="ant-confirm"
+                      closable={false}
+                      transitionName="zoom"
+                      footer=""
+                      maskTransitionName="fade"
+                      style={{ width: '520px' }}
+                    >
+                    </Modal>
                   </TabPane>
                 </Tabs>
               </div>
