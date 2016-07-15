@@ -84,7 +84,7 @@ function DriverList(props) {
         </div>
       </div>
       <div className="page-body">
-        <div className="panel-body">
+        <div className="panel-body table-panel">
           <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
         </div>
       </div>

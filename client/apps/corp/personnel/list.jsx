@@ -316,7 +316,7 @@ export default class PersonnelSetting extends React.Component {
     }];
     return (
       <div className="main-content">
-        <div className="page-header fixed">
+        <div className="page-header">
           <div className="tools">
             <Button type="primary" size="large" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
               {msg('newUser')}
@@ -333,8 +333,8 @@ export default class PersonnelSetting extends React.Component {
           <span style={{ marginLeft: '8px' }} />
           <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
-        <div className="page-body fixed">
-          <div className="panel-body body-responsive">
+        <div className="page-body">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

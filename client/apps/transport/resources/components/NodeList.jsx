@@ -96,7 +96,7 @@ export default function NodeList(props) {
         </RadioGroup>
       </div>
       <div className="page-body">
-        <div className="panel-body">
+        <div className="panel-body table-panel">
           <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
         </div>
       </div>

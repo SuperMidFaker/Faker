@@ -411,7 +411,7 @@ export default class AcceptList extends React.Component {
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body">
-          <div className="panel-body">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2800/* , y: 460 */ }}
               onRowClick={this.handleShipmtPreview}

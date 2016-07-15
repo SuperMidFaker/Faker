@@ -416,7 +416,7 @@ export default class ExportDelegate extends React.Component {
               <Icon type="plus-circle-o" />新增报关业务
             </Button>
           </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body table-panel">
             <Table useFixedHeader rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>
           <div className={`bottom-fixed-row ${this.state.sendlist.length === 0

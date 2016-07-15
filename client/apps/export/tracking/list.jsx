@@ -165,7 +165,7 @@ export default class ExportTracking extends React.Component {
         </div>
         <div className="page-body fixed">
           <div className="panel-min-header">&nbsp;</div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body table-panel">
             <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource} />
           </div>
         </div>
