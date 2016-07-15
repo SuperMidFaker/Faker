@@ -136,6 +136,7 @@ export default class MyProfile extends React.Component {
       <div className="acc-panel">
         <div className="panel-heading">
           <h3>{this.msg('profileTitle')}</h3>
+          <Button size="large" onClick={this.handleCancel} style={{float: 'right'}} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
         </div>
         <div className="panel-body">
           <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
@@ -184,12 +185,7 @@ export default class MyProfile extends React.Component {
             />
             <Row>
               <Col span="18" offset="6">
-                <Button htmlType="submit" type="primary">
-                {formatGlobalMsg(intl, 'ok')}
-                </Button>
-                <Button onClick={this.handleCancel}>
-                {formatGlobalMsg(intl, 'back')}
-                </Button>
+                <Button size="large" htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
               </Col>
             </Row>
           </Form>

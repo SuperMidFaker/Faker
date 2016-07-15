@@ -178,8 +178,8 @@ export default class MessageList extends React.Component {
     return (
       <div className="acc-panel">
         <div className="panel-heading">
-          <h3 style={{display: 'inline-block'}}>{msg('messageCenter')}</h3>
-          <Button type="primary" onClick={() => {this.context.router.goBack();}} style={{float: 'right'}}><Icon type="left" />{msg('goBack')}</Button>
+          <h3>{msg('messageCenter')}</h3>
+          <Button size="large" onClick={() => {this.context.router.goBack();}} style={{float: 'right'}} icon="left">{msg('goBack')}</Button>
         </div>
         <div className="panel-body" style={{padding:20}}>
           <div>
