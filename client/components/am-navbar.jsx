@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover, Menu, Icon, Badge } from 'antd';
+import { Popover, Menu, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
@@ -13,7 +13,6 @@ import MessagePrompt from './messagePrompt';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
 
 @injectIntl
 @connect(

@@ -25,7 +25,7 @@ export default class AmUserNav extends React.Component {
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     return (
       <Menu mode="horizontal">
-        <SubMenu title={<span><img className="avatar" src={avatar || defaultAvatar} /> <i className="angle-down s7-angle-down" /></span>}>
+        <SubMenu title={<span><img className="avatar" src={avatar || defaultAvatar} alt="avatar" /><i className="angle-down s7-angle-down" /></span>}>
           <MenuItem key="corps">
             <NavLink to="/account/profile">
               <Icon type="solution" />

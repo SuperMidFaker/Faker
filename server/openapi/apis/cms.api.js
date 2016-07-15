@@ -312,7 +312,7 @@ function *entryG() {
       raw: true,
       where: {
         head_id: head.id,
-      }
+      },
     });
     results.push({ head, lists });
   }

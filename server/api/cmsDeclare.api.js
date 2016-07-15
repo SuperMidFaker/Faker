@@ -46,7 +46,7 @@ function *getDelgDeclares() {
       where: {
         delg_no: row.delg_no,
       },
-      attributes: [ [ 'doc_name', 'name' ], 'url' ],
+      attributes: [['doc_name', 'name'], 'url'],
     }));
   });
   const delgFiles = yield filesDbOps;
