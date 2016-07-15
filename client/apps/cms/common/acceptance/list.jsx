@@ -123,8 +123,9 @@ export default class AcceptanceList extends Component {
       return;
     }
     const filter = JSON.stringify({ ...this.props.listFilter, status: ev.target.value });
-    const { tenantId, delegationlist } = this.props;
+    const { ietype, tenantId, delegationlist } = this.props;
     this.props.loadAcceptanceTable(null, {
+      ietype,
       tenantId,
       filter,
       pageSize: delegationlist.pageSize,
@@ -132,7 +133,7 @@ export default class AcceptanceList extends Component {
     });
   }
   handleDelegationAccept = (dispId) => {
-    const { tenantId, loginId, loginName, listFilter,
+    const { tenantId, loginId, loginName, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
     this.props.acceptDelg(loginId, loginName, dispId).then(
       result => {
@@ -140,6 +141,7 @@ export default class AcceptanceList extends Component {
           message.error(result.error.message);
         } else {
           this.props.loadAcceptanceTable(null, {
+            ietype,
             tenantId,
             filter: JSON.stringify(listFilter),
             pageSize,
@@ -150,12 +152,13 @@ export default class AcceptanceList extends Component {
     );
   }
   handleDelgDel = (delgNo) => {
-    const { tenantId, listFilter, delegationlist: { pageSize, current } } = this.props;
+    const { tenantId, listFilter, ietype, delegationlist: { pageSize, current } } = this.props;
     this.props.delDelg(delgNo).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else {
         this.props.loadAcceptanceTable(null, {
+          ietype,
           tenantId,
           filter: JSON.stringify(listFilter),
           pageSize,
@@ -218,7 +221,9 @@ export default class AcceptanceList extends Component {
           </RadioGroup>
         </div>
         <div className="page-body">
-          <Table columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} />
+          <div className="panel-body table-panel">
+            <Table columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} />
+          </div>
         </div>
       </div>
     );

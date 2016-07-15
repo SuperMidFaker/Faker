@@ -6,8 +6,14 @@ function makeShipmtPublicUrl(shipmtNo, publicKey) {
 
 export default function ShipmtNoColumnRender(props) {
   const { publicKey, shipmtNo, ...extra } = props;
+  function handleClick(ev) {
+    ev.stopPropagation();
+    return false;
+  }
   return (
-    <a {...extra} href={makeShipmtPublicUrl(shipmtNo, publicKey)} target="_blank">
+    <a {...extra} href={makeShipmtPublicUrl(shipmtNo, publicKey)}
+      onClick={handleClick} target="_blank"
+    >
     {shipmtNo}
     </a>
   );

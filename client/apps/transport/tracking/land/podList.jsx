@@ -158,7 +158,9 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowAuditModal = (row) => {
+  handleShowAuditModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.loadPod(row.pod_id).then(result => {
       if (result.error) {
         message.error(result.error.message);
@@ -167,7 +169,9 @@ export default class LandStatusList extends React.Component {
       }
     });
   }
-  handleResubmit = row => {
+  handleResubmit = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.resubmitPod(row.disp_id, row.parent_id).then(result => {
       if (result.error) {
         message.error(result.error.message);
@@ -206,7 +210,7 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
-          <div className="panel-body body-responsive">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2470/* , y: 460 */ }}
               onRowClick={this.handleShipmtPreview}

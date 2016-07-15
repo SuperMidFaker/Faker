@@ -18,6 +18,7 @@ function *getDelgDeclares() {
   tenantId = parseInt(tenantId, 10);
   filter = JSON.parse(filter);
   let billStatus = CMS_BILL_STATUS.undeclared;
+  const ietype = this.request.query.ietype;
   if (filter.declareType === 'declaring') {
     billStatus = CMS_BILL_STATUS.declaring;
   } else if (filter.declareType === 'declared') {
@@ -29,9 +30,14 @@ function *getDelgDeclares() {
       delg_no LIKE '%${filter.name}%' OR invoice_no LIKE '%${filter.name}%' OR bl_wb_no LIKE '%${filter.name}%'
     `);
   }
+  if (ietype === 'import') {
+    delgWhere.push('delg_type = 0');
+  } else {
+    delgWhere.push('delg_type = 1');
+  }
   let whereClause = '';
   if (delgWhere.length > 0) {
-    whereClause = `where ${delgWhere.join('')}`;
+    whereClause = `where ${delgWhere.join(' and ')}`;
   }
   const offset = (current - 1) * pageSize;
   const limit = pageSize;

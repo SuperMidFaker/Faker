@@ -125,7 +125,7 @@ export default class ExportDelegateSend extends React.Component {
               </Select>
             </div>
           </div>
-          <div className="panel-body body-responsive">
+          <div className="panel-body table-panel">
             <Table columns={columns} dataSource={sendlist.data} />
           </div>
           <div className="bottom-fixed-row">

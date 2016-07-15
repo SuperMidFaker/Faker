@@ -8,6 +8,7 @@ import { CmsCompDeclareWayDao, CmsParamTransModeDao, CmsParamTradeDao }
 import { PARTNERSHIP_TYPE_INFO, DELG_STATUS } from 'common/constants';
 
 function *getAcceptDelegations() {
+  const ietype = this.request.query.ietype === 'import' ? 0 : 1;
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const current = parseInt(this.request.query.currentPage, 10);
   const filters = JSON.parse(this.request.query.filter);
@@ -35,6 +36,7 @@ function *getAcceptDelegations() {
       ],
       where: { ...dispWhere, recv_tenant_id: tenantId },
     }],
+    where: { delg_type: ietype },
   });
   // todo clean the model.attribute with model name
   delgs.rows = delgs.rows.map(row => {

@@ -176,23 +176,33 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowVehicleModal = row => {
+  handleShowVehicleModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.showVehicleModal(row.disp_id, row.shipmt_no);
   }
-  handleShowPickModal = row => {
+  handleShowPickModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
   }
-  handleShowDeliverModal = row => {
+  handleShowDeliverModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
-  handleShowTransitModal = row => {
+  handleShowTransitModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
       parent_no: row.parent_no,
       pickup_act_date: row.pickup_act_date,
     });
   }
-  handleShowPodModal = (row) => {
+  handleShowPodModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = row => {
@@ -202,7 +212,7 @@ export default class LandStatusList extends React.Component {
       }
     });
   }
-  handleReportLocHover = row => {
+  handleReportLocHover = (row) => {
     this.props.loadShipmtLastPoint(row.shipmt_no).then(result => {
       if (!result.error) {
         this.setState({ lastLocReportTime: result.data.location_time });
@@ -233,12 +243,9 @@ export default class LandStatusList extends React.Component {
     );
     return (
       <span>
-        <RowUpdater label={locLabel}
+        <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
           onAnchored={this.handleShowTransitModal} row={record}
-          anchorProps={{
-            className: reported ? 'mdc-text-grey' : '',
-            onHover: this.handleReportLocHover,
-          }}
+          className={reported ? 'mdc-text-grey' : ''}
         />
         <span className="ant-divider" />
         <RowUpdater label={this.msg('updateDelivery')}
@@ -260,7 +267,7 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
-          <div className="panel-body">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2460/* , y: 460 */ }}
               onRowClick={this.handleShipmtPreview}

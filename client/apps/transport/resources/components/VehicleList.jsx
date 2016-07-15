@@ -99,7 +99,7 @@ export default function VehicleList(props) {
         </div>
       </div>
       <div className="page-body">
-        <div className="panel-body">
+        <div className="panel-body table-panel">
           <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
         </div>
       </div>

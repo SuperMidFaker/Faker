@@ -271,7 +271,9 @@ export default class AcceptList extends React.Component {
     }
     this.handleTableLoad(filterArray, 1, sortField, sortOrder);
   }
-  handleShipmtAccept(dispId) {
+  handleShipmtAccept(dispId, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.loadAcceptDispatchers(
       this.props.tenantId, dispId
     ).then(result => {
@@ -280,13 +282,19 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleShipmtRevoke(dispId) {
+  handleShipmtRevoke(dispId, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.revokeOrReject('revoke', dispId);
   }
-  handleShipmtReject(dispId) {
+  handleShipmtReject(dispId, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.revokeOrReject('reject', dispId);
   }
-  handleShipmtDraftDel(shipmtNo) {
+  handleShipmtDraftDel(shipmtNo, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.delDraft(shipmtNo).then(result => {
       if (result.error) {
         message.error(result.error.message);
@@ -338,7 +346,7 @@ export default class AcceptList extends React.Component {
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
-              <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+              <a role="button" onClick={(ev) => this.handleShipmtAccept(record.key, ev)}>
               {this.msg('shipmtAccept')}
               </a>
               <span className="ant-divider" />
@@ -346,7 +354,7 @@ export default class AcceptList extends React.Component {
                 {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleShipmtRevoke(record.key)}>
+                <a role="button" onClick={(ev) => this.handleShipmtRevoke(record.key, ev)}>
                 {this.msg('shipmtRevoke')}
                 </a>
               </span>
@@ -354,11 +362,11 @@ export default class AcceptList extends React.Component {
           } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
             return (
               <span>
-                <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+                <a role="button" onClick={(ev) => this.handleShipmtAccept(record.key, ev)}>
                 {this.msg('shipmtAccept')}
                 </a>
                 <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleShipmtReject(record.key)}>
+                <a role="button" onClick={(ev) => this.handleShipmtReject(record.key, ev)}>
                 {this.msg('shipmtReject')}
                 </a>
               </span>
@@ -378,7 +386,7 @@ export default class AcceptList extends React.Component {
               {formatGlobalMsg(intl, 'modify')}
               </NavLink>
               <span className="ant-divider" />
-              <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={() => this.handleShipmtDraftDel(record.shipmt_no)}>
+              <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={(ev) => this.handleShipmtDraftDel(record.shipmt_no, ev)}>
                 <a role="button">
                 {formatGlobalMsg(intl, 'delete')}
                 </a>
@@ -411,7 +419,7 @@ export default class AcceptList extends React.Component {
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body">
-          <div className="panel-body">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2800/* , y: 460 */ }}
               onRowClick={this.handleShipmtPreview}

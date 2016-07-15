@@ -205,7 +205,7 @@ export default class List extends React.Component {
           </div>
         </div>
         <div className="page-body">
-          <div className="panel-body">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
