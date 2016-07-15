@@ -75,10 +75,13 @@ export default {
   },
   presetTmsPackages(tenantId) {
     const packages = [
-      [ 'A', '散装' ],
-      [ 'B', '木箱' ],
-      [ 'C', '托盘' ],
-      [ 'D', '不配货' ],
+      [ 'BULK', '散装' ],
+      [ 'WBOX', '木箱' ],
+      [ 'PBOX', '纸箱' ],
+      [ 'PALLET', '托盘' ],
+      [ 'BOTTLE', '桶装' ],
+      [ 'PARCEL', '包裹' ],
+      [ 'OTHER', '其它' ],
     ];
     const promises = [];
     packages.forEach(pck => {
