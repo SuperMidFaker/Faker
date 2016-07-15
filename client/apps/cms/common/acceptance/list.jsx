@@ -218,7 +218,9 @@ export default class AcceptanceList extends Component {
           </RadioGroup>
         </div>
         <div className="page-body">
-          <Table columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} />
+          <div className="panel-body table-panel">
+            <Table columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} />
+          </div>
         </div>
       </div>
     );

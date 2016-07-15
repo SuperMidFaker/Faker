@@ -517,7 +517,7 @@ export default class ExportAcceptEdit extends React.Component {
       },
     ];
     return (
-      <div className="panel-body body-responsive">
+      <div className="panel-body table-panel">
         <Table columns={columns} loading={loading} dataSource={dataSource} />
       </div>
     );

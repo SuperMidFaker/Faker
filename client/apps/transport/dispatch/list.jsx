@@ -920,7 +920,7 @@ export default class DispatchList extends React.Component {
           {this.state.panelHeader}
         </div>
         <div className="page-body">
-          <div className="panel-body">
+          <div className="panel-body table-panel">
             <div className="dispatch-table">
               {tb}
             </div>

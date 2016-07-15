@@ -172,7 +172,7 @@ export default class DeclareList extends React.Component {
           </RadioGroup>
         </div>
         <div className="page-body">
-          <div className="panel-body">
+          <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
               dataSource={this.dataSource} scroll={{ x: totalWidth/* , y: 460 */ }} rowKey={getRowKey}
             />
