@@ -1,14 +1,14 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Upload, Icon, message } from 'ant-ui';
+import { Upload, Icon, message } from 'antd';
 import { saveSubmitPod } from 'common/reducers/trackingLandStatus';
 
 import WeUI from 'react-weui';
 import '../../weui.less';
 
-const {Cells, CellsTitle, Cell, CellBody, CellFooter, TextArea,
-Button, Select, } = WeUI;
+const { Cells, CellsTitle, Cell, CellBody, CellFooter, TextArea,
+Button, Select } = WeUI;
 
 @connect(
   state => ({
@@ -27,7 +27,7 @@ export default class UploadPod extends React.Component {
     saveSubmitPod: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
     signStatus: '',
@@ -91,7 +91,7 @@ export default class UploadPod extends React.Component {
                     <option value={3}>拒绝签收</option>
                 </Select>
               </CellBody>
-              <CellFooter/>
+              <CellFooter />
             </Cell>
           </Cells>
           <CellsTitle>拍摄回单</CellsTitle>
@@ -99,7 +99,7 @@ export default class UploadPod extends React.Component {
             <Cell className="">
               <CellBody>
                 <Upload action="/v1/upload/img" listType="picture-card"
-                onChange={this.handlePhotoUpload} fileList={this.state.photoList}
+                  onChange={this.handlePhotoUpload} fileList={this.state.photoList}
                 >
                   <Icon type="plus" />
                   <div className="ant-upload-text">上传照片</div>
@@ -111,16 +111,16 @@ export default class UploadPod extends React.Component {
           <Cells>
             <Cell className="">
               <CellBody>
-                <TextArea placeholder="货差/货损/拒绝原因" rows="3" maxlength="500" value={remark} onChange={this.handleFieldChange}/>
+                <TextArea placeholder="货差/货损/拒绝原因" rows="3" maxlength="500" value={remark} onChange={this.handleFieldChange} />
               </CellBody>
             </Cell>
           </Cells>
         </form>
-        <div className="button" style={{marginTop: '20px'}}>
+        <div className="button" style={{ marginTop: '20px' }}>
           <Button type="primary" onClick={this.handleOk}>
             确定
           </Button>
-          <Button type="default" onClick={() => {this.context.router.goBack();}}>
+          <Button type="default" onClick={() => { this.context.router.goBack(); }}>
             取消
           </Button>
         </div>

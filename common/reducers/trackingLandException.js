@@ -10,8 +10,8 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value : 'all' },
-    { name: 'shipmt_no', value: ''},
+    { name: 'type', value: 'all' },
+    { name: 'shipmt_no', value: '' },
   ],
   shipmentlist: {
     totalCount: 0,
@@ -31,7 +31,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_EXCPSHIPMT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters)
+        filters: JSON.parse(action.params.filters),
     };
     case actionTypes.CHANGE_FILTER: {
       const filters = state.filters.filter(flt => flt.name !== action.data.field);
@@ -54,8 +54,8 @@ export function loadExcpShipments(cookie, params) {
       endpoint: 'v1/transport/tracking/exception/shipmts',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 

@@ -1,7 +1,7 @@
 import mysql from '../util/mysql';
 import userDao from './user.db';
 import bcrypt from '../util/BCryptUtil';
-import {__DEFAULT_PASSWORD__, } from '../util/constants';
+import { __DEFAULT_PASSWORD__ } from '../util/constants';
 import { CUSTOMER } from 'common/constants';
 
 function prepareParam(item, columns) {
@@ -17,16 +17,16 @@ function prepareParam(item, columns) {
 }
 
 function prepCustomerParam(item) {
-  const columns = [`customer_no`, `name`, `short_name`, `english_name`, `country`,
-    `province`, `city`, `district`, `address`, `zip_code`, `linkman`, `mobile`,
-    `telephone`, `fax`, `email`, `qq`, `url`, `remark`];
+  const columns = ['customer_no', 'name', 'short_name', 'english_name', 'country',
+    'province', 'city', 'district', 'address', 'zip_code', 'linkman', 'mobile',
+    'telephone', 'fax', 'email', 'qq', 'url', 'remark'];
   return prepareParam(item, columns);
 }
 
 function prepSupplierParam(item) {
-  const columns = [`wh_no`, `customer_no`, `supply_no`, `name`, `short_name`,
-    `english_name`, `country`, `province`, `city`, `district`, `address`, `zip_code`,
-    `linkman`, `mobile`, `telephone`, `fax`, `email`, `qq`, `url`, `remark`];
+  const columns = ['wh_no', 'customer_no', 'supply_no', 'name', 'short_name',
+    'english_name', 'country', 'province', 'city', 'district', 'address', 'zip_code',
+    'linkman', 'mobile', 'telephone', 'fax', 'email', 'qq', 'url', 'remark'];
   return prepareParam(item, columns);
 }
 
@@ -49,7 +49,7 @@ export default {
       }
       console.log('customer account ids', accountIds);
       return accountIds;
-    }
+    };
   },
   batchInsert(customers, accountIds, corpId, tenantId, trans) {
     const sql = `insert into wms_customers (customer_no, name, short_name, english_name,
@@ -74,5 +74,5 @@ export default {
       args.push(singleArgs);
     });
     return mysql.insert(sql, [args], trans);
-  }
-}
+  },
+};

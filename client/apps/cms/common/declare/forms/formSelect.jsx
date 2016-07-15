@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
-import { Col, Form, Select } from 'ant-ui';
+import { Col, Form, Select } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -29,14 +29,16 @@ export class FormLocalSearchSelect extends React.Component {
     return (
       <Col span={outercol}>
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
-          required={required}>
+          required={required}
+        >
           <Select disabled={disabled} showSearch={!!searchKeyFn} showArrow
             {...getFieldProps(field, { rules, initialValue: formData && formData[field],
             ...fieldProps })} optionFilterProp={searchKeyFn ? 'search' : undefined}
           >
             {
               options.map(opt => (<Option key={opt.value}
-                search={searchKeyFn ? searchKeyFn(opt) : undefined}>
+                search={searchKeyFn ? searchKeyFn(opt) : undefined}
+              >
                 {opt.text}</Option>))
             }
           </Select>

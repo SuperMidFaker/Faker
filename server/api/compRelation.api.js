@@ -8,7 +8,7 @@ export default [
   ['put', '/v1/cms/compRelation', insertCompRelation],
   ['get', '/v1/cms/compRelation', compRelation],
   ['post', '/v1/cms/compRelationStatus', compRelationStatus],
-]
+];
 
 function* compRelations() {
   try {
@@ -18,14 +18,14 @@ function* compRelations() {
     const currentPage = parseInt(query.currentPage, 10);
     const result = yield CompRelation.findAll({
       raw: true,
-      where:{
-        tenant_id: tenantId
+      where: {
+        tenant_id: tenantId,
       },
-      offset: (currentPage-1) * pageSize,
-      limit: pageSize
+      offset: (currentPage - 1) * pageSize,
+      limit: pageSize,
     });
     const totalCount = yield CompRelation.count();
-    return Result.ok(this, {rows: result, pageSize, currentPage, totalCount});
+    return Result.ok(this, { rows: result, pageSize, currentPage, totalCount });
   } catch (e) {
     console.log(e);
     return Result.internalServerError(this, e.message);
@@ -36,9 +36,9 @@ function* compRelation() {
     const query = this.request.query;
     const result = yield CompRelation.findOne({
       raw: true,
-      where:{
-        id: query.id
-      }
+      where: {
+        id: query.id,
+      },
     });
     return Result.ok(this, result);
   } catch (e) {
@@ -50,18 +50,17 @@ function* insertCompRelation() {
   try {
     const body = yield cobody(this);
     const { id } = body;
-    if(id == -1) {
+    if (id == -1) {
       delete body.id;
       const result = yield CompRelation.create(body);
-      return Result.ok(this, {insertId: result['null'], id});
+      return Result.ok(this, { insertId: result['null'], id });
     }
     else {
-      const set = {...body};
+      const set = { ...body };
       delete set.id;
-      const result = yield CompRelation.update(set,{where:{ id }});
-      return Result.ok(this, {result, id});
+      const result = yield CompRelation.update(set, { where: { id } });
+      return Result.ok(this, { result, id });
     }
-
   } catch (e) {
     console.log(e);
     return Result.internalServerError(this, e.message);
@@ -70,7 +69,7 @@ function* insertCompRelation() {
 function* compRelationStatus() {
   try {
     const body = yield cobody(this);
-    const result = yield CompRelation.update(body.set, {where:body.where});
+    const result = yield CompRelation.update(body.set, { where: body.where });
     return Result.ok(this);
   } catch (e) {
     console.log(e);

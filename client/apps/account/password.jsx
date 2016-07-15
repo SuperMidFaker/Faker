@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Row, Col, message } from 'ant-ui';
+import { Button, Form, Input, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'common/reducers/account';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -25,34 +25,34 @@ const FormItem = Form.Item;
     return;
   }
   dispatch(setNavTitle({
-    depth: 1
+    depth: 1,
   }));
 })
 @Form.create({
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class ChangePassword extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     formhoc: PropTypes.object.isRequired,
-    changePassword: PropTypes.func.isRequired
+    changePassword: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   msg = (key) => formatMsg(this.props.intl, key);
   oldPwdRules = {
     validate: [{
       rules: [
-        { required: true, whitespace: true, message: this.msg('pwdRequired') }
+        { required: true, whitespace: true, message: this.msg('pwdRequired') },
       ],
-      trigger: [ 'onBlur', 'onChange' ]
-    }]
+      trigger: ['onBlur', 'onChange'],
+    }],
   }
 
   pwdRules = {
     rules: [{
-      required: true, whitespace: true, min: 6, message: this.msg('newPwdRule')
+      required: true, whitespace: true, min: 6, message: this.msg('newPwdRule'),
     }, {
       validator: (rule, value, callback) => {
         if (value) {
@@ -65,13 +65,13 @@ export default class ChangePassword extends React.Component {
         } else {
           callback();
         }
-      }
-    }]
+      },
+    }],
   }
 
   confirmPwdRules = {
     rules: [{
-      required: true, whitespace: true, message: this.msg('pwdRequired')
+      required: true, whitespace: true, message: this.msg('pwdRequired'),
     }, {
       validator: (rule, value, callback) => {
         if (value && value !== this.props.formhoc.getFieldValue('newPwd')) {
@@ -79,8 +79,8 @@ export default class ChangePassword extends React.Component {
         } else {
           callback();
         }
-      }
-    }]
+      },
+    }],
   }
 
   handlePasswordChange = (ev) => {
@@ -103,11 +103,12 @@ export default class ChangePassword extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, field, rules) {
-    const { formhoc: { getFieldProps, getFieldError }} = this.props;
+    const { formhoc: { getFieldProps, getFieldError } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 18}}
-        help={rules && getFieldError(field)} hasFeedback required>
-        <Input type="password" { ...getFieldProps(field, rules) } />
+      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+        help={rules && getFieldError(field)} hasFeedback required
+      >
+        <Input type="password" {...getFieldProps(field, rules)} />
       </FormItem>
     );
   }
@@ -117,15 +118,15 @@ export default class ChangePassword extends React.Component {
       <div className="acc-panel">
         <div className="panel-heading">
           <h3>{this.msg('pwdTitle')}</h3>
-          <Button size="large" onClick={this.handleCancel} style={{float: 'right'}} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
+          <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
         </div>
         <div className="panel-body">
           <Form horizontal onSubmit={this.handlePasswordChange} form={formhoc}
             className="form-edit-content offset-right-col"
           >
-            { this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules) }
-            { this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules) }
-            { this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules) }
+            {this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules)}
+            {this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules)}
+            {this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules)}
             <Row>
               <Col span="18" offset="6">
                 <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>

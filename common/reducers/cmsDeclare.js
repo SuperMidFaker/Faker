@@ -75,18 +75,18 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_DELGLIST:
-      return { ...state, delgList: { ...state.delgList, loading: true }};
+      return { ...state, delgList: { ...state.delgList, loading: true } };
     case actionTypes.LOAD_DELGLIST_SUCCEED:
       return { ...state,
         listFilter: JSON.parse(action.params.filter),
         delgList: {
-        ...state.delgList, loaded: true,
-        loading: false, ...action.result.data,
-      }};
+          ...state.delgList, loaded: true,
+          loading: false, ...action.result.data,
+        } };
     case actionTypes.LOAD_DELGLIST_FAIL:
-      return { ...state, delgList: { ...state.delgList, loading: false }};
+      return { ...state, delgList: { ...state.delgList, loading: false } };
     case actionTypes.LOAD_BILLS_SUCCEED: {
-      const ports = [ ...state.params.ports ];
+      const ports = [...state.params.ports];
       const iePort = action.result.data.iePort;
       const destPort = action.result.data.destPort;
       if (iePort &&
@@ -107,7 +107,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
       const retPorts = retParams.ports;
-      const newPorts = [ ...retPorts ];
+      const newPorts = [...retPorts];
       const originPorts = state.params.ports;
       originPorts.forEach(op => {
         if (retPorts.filter(rp => rp.port_code === op.port_code).length === 0) {
@@ -122,7 +122,7 @@ export default function reducer(state = initialState, action) {
       if (retParam.ports) {
         // 合并查找到ports数据至原params中
         const retPorts = retParam.ports;
-        const newPorts = [ ...retPorts ];
+        const newPorts = [...retPorts];
         const originPorts = state.params.ports;
         originPorts.forEach(op => {
           if (retPorts.filter(rp => rp.port_code === op.port_code).length === 0) {
@@ -131,7 +131,7 @@ export default function reducer(state = initialState, action) {
         });
         retParam.ports = newPorts;
       }
-      return { ...state, params: { ...state.params, ...retParam }};
+      return { ...state, params: { ...state.params, ...retParam } };
     }
     case actionTypes.SAVE_BILLHEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
@@ -152,21 +152,21 @@ export default function reducer(state = initialState, action) {
       const prevHead = state.entries.length > 0 ? state.entries[0].head : state.billHead;
       const head = copyHead(prevHead);
       return {
-        ...state, entries: [ ...state.entries, { head, bodies: [] } ],
-        activeTabKey: `entry${state.entries.length}`
+        ...state, entries: [...state.entries, { head, bodies: [] }],
+        activeTabKey: `entry${state.entries.length}`,
       };
     }
     case actionTypes.DEL_ENTRY_SUCCEED: {
-      const entries = [ ...state.entries ];
+      const entries = [...state.entries];
       entries.splice(action.index, 1);
       return { ...state, entries };
     }
     case actionTypes.SET_TABKEY:
       return { ...state, activeTabKey: action.data };
     case actionTypes.OPEN_MS_MODAL:
-      return { ...state, visibleMSModal: true, };
+      return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
-      return { ...state, visibleMSModal: false, };
+      return { ...state, visibleMSModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, entries: action.result.data };
     case actionTypes.OPEN_EF_MODAL:
@@ -394,7 +394,7 @@ export function delEntry(headId, index) {
       endpoint: 'v1/cms/declare/entry/del',
       method: 'post',
       data: { headId },
-      index
+      index,
     },
   };
 }

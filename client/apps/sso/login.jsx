@@ -12,7 +12,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     code: state.corpDomain.code,
-    auth: state.auth
+    auth: state.auth,
   }),
   { submit, setValue }
 )
@@ -22,7 +22,7 @@ export default class Login extends React.Component {
     auth: PropTypes.object,
     code: PropTypes.string.isRequired,
     setValue: PropTypes.func,
-    submit: PropTypes.func
+    submit: PropTypes.func,
   }
 
   handleTextChange(ev, field) {
@@ -42,7 +42,7 @@ export default class Login extends React.Component {
       code,
       username,
       password,
-      remember
+      remember,
     };
     this.props.submit(form);
   }
@@ -51,10 +51,10 @@ export default class Login extends React.Component {
     const { auth: { error, username, remember }, intl } = this.props;
     return (
       <div className="panel-body">
-        { error ? <div>{
+        {error ? <div>{
           `C${error.code}:
             ${getFormatMsg(error.message, (key, values) => formatMsg(intl, key, values))}`
-        }</div> : null }
+        }</div> : null}
         <form onSubmit={::this.handleSubmit} className="form-horizontal">
           <div className="login-form">
             <div className="form-group">

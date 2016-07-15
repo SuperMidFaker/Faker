@@ -13,7 +13,7 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'REVOKE_SHIPMT', 'REVOKE_SHIPMT_SUCCEED', 'REVOKE_SHIPMT_FAIL',
   'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
   'DEL_DRAFT', 'DEL_DRAFT_SUCCEED', 'DEL_DRAFT_FAIL',
-  'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL'
+  'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL',
 ]);
 
 const initialState = {
@@ -22,7 +22,7 @@ const initialState = {
     loaded: false,
     loading: false,
     filters: [
-      { name: 'type', value : 'unaccepted' },
+      { name: 'type', value: 'unaccepted' },
       /* { name: 'shipmt_no', value: ''} */
     ],
     sortField: 'created_date',
@@ -32,7 +32,7 @@ const initialState = {
       pageSize: 10,
       current: 1,
       data: [],
-    }
+    },
   },
   acceptModal: {
     visible: false,
@@ -51,14 +51,14 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_APTSHIPMENT:
       return { ...state, table: { ...state.table, loading: true,
-    }};
+    } };
     case actionTypes.LOAD_APTSHIPMENT_FAIL:
-      return { ...state, table: { ...state.table, loading: false }};
+      return { ...state, table: { ...state.table, loading: false } };
     case actionTypes.LOAD_APTSHIPMENT_SUCCEED:
       return { ...state, table: { ...state.table, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters)
-    }};
+        filters: JSON.parse(action.params.filters),
+    } };
     case actionTypes.SAVE_PENDING:
     case actionTypes.SAVE_SHIPMT:
     case actionTypes.SAVE_DRAFT:
@@ -72,25 +72,25 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_DRAFT_SUCCEED:
       return { ...state, submitting: false };
     case actionTypes.HIDE_ACCEPT_MODAL:
-      return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
+      return { ...state, acceptModal: { ...state.acceptModal, visible: false } };
     case actionTypes.LOAD_DISPATCHERS:
       return { ...state, acceptModal: { ...state.acceptModal, visible: true,
-        dispatchId: action.modal.dispId }};
+        dispatchId: action.modal.dispId } };
     case actionTypes.LOAD_DISPATCHERS_SUCCEED:
-      return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data }};
+      return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data } };
     case actionTypes.ACCP_DISP_SUCCEED:
-      return { ...state, acceptModal: { ...state.acceptModal, visible: false }};
+      return { ...state, acceptModal: { ...state.acceptModal, visible: false } };
     case actionTypes.CLOSE_RE_MODAL:
-      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false }};
+      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false } };
     case actionTypes.REVOKE_OR_REJECT:
       return {
-      ...state, revokejectModal: {
-        ...state.revokejectModal, visible: true, dispId: action.data.dispId,
-        type: action.data.type
-      }};
+        ...state, revokejectModal: {
+          ...state.revokejectModal, visible: true, dispId: action.data.dispId,
+          type: action.data.type,
+        } };
     case actionTypes.REVOKE_SHIPMT_SUCCEED:
     case actionTypes.REJECT_SHIPMT_SUCCEED:
-      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false }};
+      return { ...state, revokejectModal: { ...state.revokejectModal, visible: false } };
     default:
       return state;
   }
@@ -107,8 +107,8 @@ export function loadTable(cookie, params) {
       endpoint: 'v1/transport/shipments',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -118,12 +118,12 @@ export function saveEdit(shipment, tenantId, loginId) {
       types: [
         actionTypes.SAVE_EDIT,
         actionTypes.SAVE_EDIT_SUCCEED,
-        actionTypes.SAVE_EDIT_FAIL
+        actionTypes.SAVE_EDIT_FAIL,
       ],
       endpoint: 'v1/transport/shipment/save_edit',
       method: 'post',
-      data: { shipment, tenantId, loginId }
-    }
+      data: { shipment, tenantId, loginId },
+    },
   };
 }
 
@@ -138,7 +138,7 @@ export function savePending(shipment, sp) {
       method: 'post',
       endpoint: 'v1/transport/shipment/save',
       data: { shipment, sp },
-    }
+    },
   };
 }
 
@@ -153,7 +153,7 @@ export function saveAndAccept(shipment, sp) {
       method: 'post',
       endpoint: 'v1/transport/shipment/saveaccept',
       data: { shipment, sp },
-    }
+    },
   };
 }
 
@@ -168,7 +168,7 @@ export function saveDraft(shipment, sp) {
       method: 'post',
       endpoint: 'v1/transport/shipment/draft',
       data: { shipment, sp },
-    }
+    },
   };
 }
 
@@ -183,7 +183,7 @@ export function acceptDraft(shipment, loginId, loginName, tenantId) {
       method: 'post',
       endpoint: 'v1/transport/shipment/draft/saveaccept',
       data: { shipment, loginId, loginName, tenantId },
-    }
+    },
   };
 }
 
@@ -198,7 +198,7 @@ export function delDraft(shipmtno) {
       method: 'post',
       endpoint: 'v1/transport/shipment/draft/del',
       data: { shipmtno },
-    }
+    },
   };
 }
 
@@ -214,7 +214,7 @@ export function loadAcceptDispatchers(tenantId, dispId) {
       endpoint: 'v1/transport/shipment/dispatchers',
       params: { tenantId },
       modal: { dispId },
-    }
+    },
   };
 }
 
@@ -235,14 +235,14 @@ export function acceptDispShipment(shipmtDispId, acptId, acptName, disperId, dis
       method: 'post',
       endpoint: 'v1/transport/shipment/accept',
       data: { shipmtDispId, acptId, acptName, disperId, disperName },
-    }
+    },
   };
 }
 
 export function revokeOrReject(type, dispId) {
   return {
     type: actionTypes.REVOKE_OR_REJECT,
-    data: { type, dispId }
+    data: { type, dispId },
   };
 }
 
@@ -263,7 +263,7 @@ export function revokeShipment(shipmtDispId, reason) {
       method: 'post',
       endpoint: 'v1/transport/shipment/revoke',
       data: { shipmtDispId, reason },
-    }
+    },
   };
 }
 
@@ -278,6 +278,6 @@ export function rejectShipment(dispId, reason) {
       method: 'post',
       endpoint: 'v1/transport/shipment/reject',
       data: { dispId, reason },
-    }
+    },
   };
 }

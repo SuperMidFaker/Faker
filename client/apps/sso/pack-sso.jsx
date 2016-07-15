@@ -9,20 +9,20 @@ const formatMsg = format(messages);
 export default class SSOPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
 
   render() {
     return (
       <div className="am-splash-screen">
-        <img src={ `${__CDN__}/assets/img/welogix_logo_160_100_white.png` } />
+        <img src={`${__CDN__}/assets/img/welogix_logo_160_100_white.png`} alt="logo" />
         <div className="am-wrapper am-login">
           <div className="am-content">
             <div className="main-content">
               <div className="login-container">
                 <div className="panel panel-default">
                   <div className="panel-heading">
-                    <img src={`${__CDN__}/assets/img/welogix-badge.png`} alt="logo" width="120px" className="logo-img" />
+                    <img src={`${__CDN__}/assets/img/welogix-badge.png`} alt="badge" width="120px" className="logo-img" />
                     <span>{formatMsg(this.props.intl, 'slogan')}</span>
                   </div>
                   {this.props.children}

@@ -7,6 +7,6 @@ export default class ImportManageMenu extends React.Component {
     children: PropTypes.object.isRequired,
   }
   render() {
-    return <Menu type="import" { ...this.props } />;
+    return <Menu type="import" {...this.props} />;
   }
 }

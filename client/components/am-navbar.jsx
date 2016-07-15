@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover, Menu, Icon, Badge } from 'ant-ui';
+import { Popover, Menu, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
@@ -13,13 +13,12 @@ import MessagePrompt from './messagePrompt';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
 
 @injectIntl
 @connect(
   state => ({
     curLocale: state.intl.locale,
-    navTitle: state.navbar.navTitle
+    navTitle: state.navbar.navTitle,
   }),
   { loadTranslation }
 )
@@ -28,10 +27,10 @@ export default class AmNavBar extends React.Component {
     intl: intlShape.isRequired,
     loadTranslation: PropTypes.func.isRequired,
     curLocale: PropTypes.oneOf(['en', 'zh']),
-    navTitle: PropTypes.object.isRequired
+    navTitle: PropTypes.object.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleClick = (ev) => {
     this.setState({ currentLang: ev.key });
@@ -77,7 +76,7 @@ export default class AmNavBar extends React.Component {
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="page-title">
-              <span>{ formatGlobalMsg(intl, 'brand') }</span>
+              <span>{formatGlobalMsg(intl, 'brand')}</span>
             </div>
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps"></i>
@@ -87,7 +86,7 @@ export default class AmNavBar extends React.Component {
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
               <li className="dropdown">
-              { amTitleNav }
+              {amTitleNav}
               </li>
             </ul>
             <ul className="nav navbar-nav navbar-right am-user-nav">
@@ -97,10 +96,10 @@ export default class AmNavBar extends React.Component {
               <Menu mode="horizontal">
                 <SubMenu selectedKeys={[curLocale]} onClick={this.handleClick} title={<span className="icon s7-global"></span>}>
                     <MenuItem key="zh">
-                      <span>{ formatGlobalMsg(intl, 'chinese') }</span>
+                      <span>{formatGlobalMsg(intl, 'chinese')}</span>
                     </MenuItem>
                     <MenuItem key="en">
-                      <span>{ formatGlobalMsg(intl, 'english') }</span>
+                      <span>{formatGlobalMsg(intl, 'english')}</span>
                     </MenuItem>
                 </SubMenu>
                 <Menu.Item key="messages">
@@ -119,7 +118,7 @@ export default class AmNavBar extends React.Component {
             </ul>
           </div>
         </div>
-        <MessagePrompt/>
+        <MessagePrompt />
       </nav>);
   }
 }

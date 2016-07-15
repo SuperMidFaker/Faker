@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Select, Row, Col, message } from 'ant-ui';
+import { Modal, Select, Row, Col, message } from 'antd';
 import { closeAcceptModal, acceptDispShipment } from 'common/reducers/transport-acceptance';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -66,7 +66,7 @@ export default class AccepterModal extends React.Component {
       >
         <Row>
           <Col span="18" offset="3">
-            <Select labelInValue style={{width: '90%'}} onChange={this.handleSelect}>
+            <Select labelInValue style={{ width: '90%' }} onChange={this.handleSelect}>
             {
               dispatchers.map(
                 disp =>

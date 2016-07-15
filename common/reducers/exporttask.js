@@ -1,8 +1,8 @@
 import {
-  CLIENT_API
+  CLIENT_API,
 } from 'common/reduxMiddlewares/requester';
 import {
-  createActionTypes
+  createActionTypes,
 } from 'client/common/redux-actions';
 import {
   appendFormAcitonTypes,
@@ -11,12 +11,12 @@ import {
   loadFormC,
   assignFormC,
   clearFormC,
-  setFormValueC
+  setFormValueC,
 } from './form-common';
 const actionTypes = createActionTypes('@@welogix/exporttask/', [
   'TASK_LOAD', 'TASK_LOAD_SUCCEED', 'TASK_LOAD_FAIL',
   'SOURCE_LOAD', 'SOURCE_LOAD_SUCCEED', 'SOURCE_LOAD_FAIL',
-  'LIST_LOAD', 'LIST_LOAD_SUCCEED', 'LIST_LOAD_FAIL'
+  'LIST_LOAD', 'LIST_LOAD_SUCCEED', 'LIST_LOAD_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/exporttask/', actionTypes);
 
@@ -27,22 +27,22 @@ const initialState = {
   selectedIndex: -1,
   tenant: {
     id: -1,
-    parentId: -1
+    parentId: -1,
   },
   formData: {
-    key: -1
+    key: -1,
   },
   exporttasklist: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
-    data: []
+    data: [],
   },
-  billlist:[],
+  billlist: [],
   statusList: { // 初始化状态显示数量
     statusValue: 1,
     haveOrderCount: 0,
-    closeOrderCount: 0
+    closeOrderCount: 0,
   },
   selectSource: {
     CustomsRel: [],
@@ -53,33 +53,33 @@ const initialState = {
     Levytype: [],
     District: [],
     Curr: [],
-    Port: []
-  }
+    Port: [],
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TASK_LOAD:
-      return {...state,
-        loading: true
+      return { ...state,
+        loading: true,
       };
     case actionTypes.TASK_LOAD_SUCCEED:
-      return {...state,
+      return { ...state,
         loaded: true,
         loading: false,
-        statusList: {...state.statusList,
+        statusList: { ...state.statusList,
           statusValue: action.params.currentStatus || '1',
           haveOrderCount: action.result.data.statusList.haveOrderCount,
-          closeOrderCount: action.result.data.statusList.closeOrderCount
+          closeOrderCount: action.result.data.statusList.closeOrderCount,
         },
-        exporttasklist: action.result.data.exporttasklist
+        exporttasklist: action.result.data.exporttasklist,
       };
     case actionTypes.TASK_LOAD_FAIL:
-      return {...state,
-        loading: false
+      return { ...state,
+        loading: false,
       };
     case actionTypes.SOURCE_LOAD_SUCCEED:
-      return {...state,
-        selectSource: {...state.selectSource,
+      return { ...state,
+        selectSource: { ...state.selectSource,
           CustomsRel: action.result.data.CustomsRel,
           Trade: action.result.data.Trade,
           Transac: action.result.data.Transac,
@@ -88,12 +88,12 @@ export default function reducer(state = initialState, action) {
           Levytype: action.result.data.Levytype,
           District: action.result.data.District,
           Curr: action.result.data.Curr,
-          Port: action.result.data.Port
-        }
+          Port: action.result.data.Port,
+        },
       };
     case actionTypes.LIST_LOAD_SUCCEED:
-    return {...state,
-      billlist:action.result.data
+      return { ...state,
+      billlist: action.result.data,
     };
       // todo deal with submit fail submit loading
     default:
@@ -106,8 +106,8 @@ export function loadSelectSource() {
     [CLIENT_API]: {
       types: [actionTypes.SOURCE_LOAD, actionTypes.SOURCE_LOAD_SUCCEED, actionTypes.SOURCE_LOAD_FAIL],
       endpoint: 'v1/export/exporttasks/loadSource',
-      method: 'get'
-    }
+      method: 'get',
+    },
   };
 }
 
@@ -118,8 +118,8 @@ export function loadExportTask(cookie, params) {
       endpoint: 'v1/export/exporttasks',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -129,8 +129,8 @@ export function getBillList(params) {
       types: [actionTypes.LIST_LOAD, actionTypes.LIST_LOAD_SUCCEED, actionTypes.LIST_LOAD_FAIL],
       endpoint: 'v1/export/exporttasks/billlist',
       method: 'get',
-      params
-    }
+      params,
+    },
   };
 }
 
@@ -152,6 +152,6 @@ export function setFormValue(field, newValue) {
 
 export function loadForm(cookie, key) {
   return loadFormC(cookie, 'v1/export/exporttask', {
-    del_id: key
+    del_id: key,
   }, actionTypes);
 }

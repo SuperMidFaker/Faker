@@ -3,7 +3,7 @@ import AmNavBar from 'client/components/am-navbar';
 
 export default class AccountPack extends React.Component {
   static propTypes = {
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
 
   render() {

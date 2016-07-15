@@ -9,12 +9,12 @@ export default [
   ['get', '/v1/import/tasks', getTasks],
   ['get', '/v1/import/task', getTask],
   ['get', '/v1/import/tasks/billlist', getBillList],
-  ['get', '/v1/import/tasks/loadSource', loadSource]
+  ['get', '/v1/import/tasks/loadSource', loadSource],
 ];
 
-function* getTask(){
+function* getTask() {
   const del_id = parseInt(this.request.query.del_id || 0, 10);
-  const task= yield taskDao.getTask(del_id);
+  const task = yield taskDao.getTask(del_id);
 
   try {
     return Result.ok(this, task[0]);
@@ -38,15 +38,15 @@ function* loadSource() {
 
 
     return Result.ok(this, {
-        CustomsRel:CustomsRel,
-        Trade:Trade,
-        Transac:Transac,
-        Transf:Transf,
-        Country:Country,
-        Levytype:Levytype,
-        District:District,
-        Curr:Curr,
-        Port:Port
+      CustomsRel,
+      Trade,
+      Transac,
+      Transf,
+      Country,
+      Levytype,
+      District,
+      Curr,
+      Port,
     });
   } catch (e) {
     console.log(e);
@@ -54,16 +54,16 @@ function* loadSource() {
   }
 }
 
-function* getBillList(){
-    const del_id = parseInt(this.request.query.del_id || 0, 10);
-    const billlist= yield taskDao.getBillList(del_id);
+function* getBillList() {
+  const del_id = parseInt(this.request.query.del_id || 0, 10);
+  const billlist = yield taskDao.getBillList(del_id);
 
-    try {
-      return Result.ok(this, billlist);
-    } catch (e) {
-      console.log(e);
-      return Result.internalServerError(this, e.message);
-    }
+  try {
+    return Result.ok(this, billlist);
+  } catch (e) {
+    console.log(e);
+    return Result.internalServerError(this, e.message);
+  }
 }
 
 function* getTasks() {
@@ -71,7 +71,7 @@ function* getTasks() {
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
   const loginId = parseInt(this.request.query.loginId || 0, 10);
-  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10)
+  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10);
 
 
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
@@ -91,12 +91,12 @@ function* getTasks() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: tasks
+        data: tasks,
       },
       statusList: {
         haveOrderCount: haveOrderCount.length > 0 ? haveOrderCount[0].count : 0,
-        closeOrderCount: closeOrderCount.length > 0 ? closeOrderCount[0].count : 0
-      }
+        closeOrderCount: closeOrderCount.length > 0 ? closeOrderCount[0].count : 0,
+      },
     });
   } catch (e) {
     console.log(e);

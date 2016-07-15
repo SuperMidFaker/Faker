@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Modal, DatePicker, message } from 'ant-ui';
+import { Form, Modal, DatePicker, message } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import InputItem from '../../../shipment/forms/input-item';
 import { closeLocModal, reportLoc } from 'common/reducers/trackingLandStatus';
@@ -76,18 +76,18 @@ export default class LocationUpdater extends React.Component {
     const { form: { getFieldProps }, intl } = this.props;
     return (
       <Modal title={this.msg('reportTransitLoc')} onCancel={this.handleCancel}
-      onOk={this.handleOk} visible={this.props.visible}
+        onOk={this.handleOk} visible={this.props.visible}
       >
         <Form form={this.props.form} horizontal>
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportTime')}
             wrapperCol={{ span: 18 }} required
           >
             <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
-              { ...getFieldProps('location_time', {
+              {...getFieldProps('location_time', {
                 rules: [{
                   type: 'date',
-                  required: true, message: this.msg('reportTimeMust')
-                }]
+                  required: true, message: this.msg('reportTimeMust'),
+                }],
               })} disabledDate={this.disabledDateRange}
             />
           </FormItem>
@@ -96,7 +96,7 @@ export default class LocationUpdater extends React.Component {
           >
             <RegionCascade intl={intl} setFormValue={this.setRegionValue} />
           </FormItem>
-          <InputItem colSpan={ 6 } labelName={this.msg('reportLocAddr')}
+          <InputItem colSpan={6} labelName={this.msg('reportLocAddr')}
             formhoc={this.props.form} field="address"
           />
         </Form>

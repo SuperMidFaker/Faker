@@ -8,23 +8,23 @@ export default function CmsWrapper(props) {
     key: `${type}-0`,
     path: `/${type}/accept`,
     icon: 'zmdi zmdi-inbox',
-    text: '受理'
+    text: '受理',
   }, {
     single: true,
     key: `${type}-1`,
     path: `/${type}/declare`,
     icon: 'zmdi zmdi-file-text',
-    text: '制单'
+    text: '制单',
   }, {
     single: true,
     key: `${type}-3`,
     path: `/${type}/manage`,
     icon: 'zmdi zmdi-storage',
-    text: '管理'
+    text: '管理',
   }];
   return (
     <div className="am-content">
-      <AmLeftSidebar location={location} links={ linkMenus } />
+      <AmLeftSidebar location={location} links={linkMenus} />
       {children}
     </div>
   );
@@ -33,5 +33,5 @@ export default function CmsWrapper(props) {
 CmsWrapper.propTypes = {
   type: PropTypes.oneOf(['import', 'export']),
   location: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired
+  children: PropTypes.object.isRequired,
 };

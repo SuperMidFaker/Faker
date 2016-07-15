@@ -10,12 +10,12 @@ import { isMobile, getSmsCode } from '../../common/validater';
 import smsUtil from '../util/sms-util';
 import {
   TENANT_LEVEL, TENANT_ROLE,
-  ACCOUNT_STATUS, ENTERPRISE, BRANCH, PERSONNEL
+  ACCOUNT_STATUS, ENTERPRISE, BRANCH, PERSONNEL,
 } from 'common/constants';
-import {__DEFAULT_PASSWORD__, SMS_TYPE, ADMIN } from '../util/constants';
+import { __DEFAULT_PASSWORD__, SMS_TYPE, ADMIN } from '../util/constants';
 import { genJwtCookie } from '../util/jwt-kit';
 import { messages } from '../models/messages.db';
-import { sendMessage, sendNewShipMessage }from '../socket.io';
+import { sendMessage, sendNewShipMessage } from '../socket.io';
 
 export default [
    ['post', '/public/v1/login', loginUserP],
@@ -47,7 +47,7 @@ export default [
    ['get', '/v1/user/account/messages', getMessages],
    ['post', '/v1/user/account/messages/status', updateMessagesStatus],
    ['post', '/v1/user/account/message/status', updateMessageStatus],
-   ['put', '/v1/user/account/message', sendPromptMessage]
+   ['put', '/v1/user/account/message', sendPromptMessage],
 ];
 
 function *loginUserP() {
@@ -75,7 +75,7 @@ function *loginUserP() {
               userType = BRANCH;
             }
           } else {
-           userType = PERSONNEL;
+            userType = PERSONNEL;
           }
         }
         genJwtCookie(this.cookies, user.id, userType, body.remember);
@@ -84,7 +84,7 @@ function *loginUserP() {
         return Result.paramError(this, { key: 'loginErrorParam' });
       }
     } else {
-      return Result.notFound(this, { key: 'loginUserNotFound', values: { username }});
+      return Result.notFound(this, { key: 'loginUserNotFound', values: { username } });
     }
   } catch (e) {
     console.log(e);
@@ -143,9 +143,9 @@ function *getUserAccount() {
   }
   const curUserId = this.state.user.userId;
   try {
-    const [ accounts, profiles ] = yield [
+    const [accounts, profiles] = yield [
       tenantUserDao.getAccountInfo(curUserId),
-      tenantUserDao.getProfile(curUserId)
+      tenantUserDao.getProfile(curUserId),
     ];
     if (accounts.length === 1 && profiles.length === 1) {
       profiles[0].username = profiles[0].username.split('@')[0];
@@ -164,10 +164,10 @@ function *getOrganizations() {
   const current = parseInt(this.request.query.currentPage, 10);
   try {
     console.time('organ count');
-    const [ counts, corps, tenantAppPackage ] = yield [
+    const [counts, corps, tenantAppPackage] = yield [
       tenantDao.getOrganCountByParent(parentTenantId),
       tenantDao.getPagedOrgansByParent(parentTenantId, current, pageSize),
-      tenantDao.getAppsInfoById(parentTenantId)
+      tenantDao.getAppsInfoById(parentTenantId),
     ];
     console.timeEnd('organ count');
     console.time('apps');
@@ -182,7 +182,7 @@ function *getOrganizations() {
       totalCount: counts[0].num,
       pageSize,
       current,
-      data: corps
+      data: corps,
     };
     Result.ok(this, data);
   } catch (e) {
@@ -278,7 +278,7 @@ function *getOrganization() {
     const users = yield tenantUserDao.getTenantUsers(corpId);
     return Result.ok(this, {
       tenant: tenants[0],
-      users
+      users,
     });
   } catch (e) {
     Result.internalServerError(this, e.message);
@@ -292,10 +292,10 @@ function *editOrganization() {
   let trans;
   try {
     trans = yield mysql.beginTransaction();
-    const [ users, _, __ ] = yield [
+    const [users, _, __] = yield [
       tenantUserDao.getPersonnelInfo(currOwnerId),
       tenantUserDao.updateUserType(prevOwnerId, TENANT_ROLE.member.name, trans),
-      tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans)
+      tenantUserDao.updateUserType(currOwnerId, TENANT_ROLE.owner.name, trans),
     ];
     if (users.length !== 1) {
       throw new Error('not found selected owner');
@@ -311,7 +311,7 @@ function *editOrganization() {
       subCode: corp.subCode,
       contact: currOwner.name,
       phone: currOwner.phone,
-      email: currOwner.email
+      email: currOwner.email,
     });
   } catch (e) {
     yield mysql.rollback(trans);
@@ -352,11 +352,11 @@ function *getCorpPersonnels() {
   const sortField = this.request.query.sortField;
   const sortOrder = this.request.query.sortOrder;
   try {
-    const [ counts, personnel ] = yield [
+    const [counts, personnel] = yield [
       tenantUserDao.getTenantPersonnelCount(tenantId, filters),
       tenantUserDao.getPagedPersonnelInCorp(
         tenantId, current, pageSize, filters, sortField, sortOrder
-      )
+      ),
     ];
     // 换页,切换页数时从这里传到reducer里更新
     Result.ok(this, {
@@ -364,9 +364,9 @@ function *getCorpPersonnels() {
       current,
       pageSize,
       data: personnel.map(pers => {
-        pers.loginName = pers.loginName.split('@')[0]
+        pers.loginName = pers.loginName.split('@')[0];
         return pers;
-      })
+      }),
     });
   } catch (e) {
     Result.internalServerError(this, e.message);
@@ -466,9 +466,9 @@ function *getPersonnelInfo() {
 function *changePassword() {
   const curUserId = this.state.user.userId;
   try {
-    const [ body, users ] = yield [
+    const [body, users] = yield [
       cobody(this),
-      userDao.getUserById(curUserId)
+      userDao.getUserById(curUserId),
     ];
     if (users.length > 0) {
       const user = users[0];
@@ -537,11 +537,11 @@ function *switchPersonnelStatus() {
 function *getCorpBySubdomain() {
   const subdomain = this.request.query.subdomain;
   try {
-   const result = yield tenantDao.getTenantByDomain(subdomain);
-   if (result.length === 0) {
-     throw ({ key: 'subdomainNotFound' });
-   }
-   Result.ok(this, result[0]);
+    const result = yield tenantDao.getTenantByDomain(subdomain);
+    if (result.length === 0) {
+      throw ({ key: 'subdomainNotFound' });
+    }
+    Result.ok(this, result[0]);
   } catch (e) {
     Result.internalServerError(this, e.message || e);
   }
@@ -570,7 +570,7 @@ function *updateUserProfile() {
       ),
       tenantUserDao.updatePersonnelName(
         profile.loginId, profile.name, trans
-      )
+      ),
     ];
     if (profile.role === TENANT_ROLE.owner.name) {
       yielders.push(tenantDao.updateCorpOwnerInfo(
@@ -590,30 +590,30 @@ function *updateUserProfile() {
 function *getMessages() {
   try {
     const query = this.request.query;
-    const status = parseInt(query.status, 10);;
-    const loginId = parseInt(query.loginId, 10);;
+    const status = parseInt(query.status, 10);
+    const loginId = parseInt(query.loginId, 10);
 
     let pageSize = parseInt(query.pageSize, 10);
     let currentPage = parseInt(query.currentPage, 10);
     const result = yield messages.findAll({
       raw: true,
-      where:{
+      where: {
         login_id: loginId,
-        status: status
+        status,
       },
-      offset: (currentPage-1) * pageSize,
+      offset: (currentPage - 1) * pageSize,
       limit: pageSize,
       order: [
-        ['time', 'DESC']
-      ]
+        ['time', 'DESC'],
+      ],
     });
     const totalCount = yield messages.count({
-      where:{
+      where: {
         login_id: loginId,
-        status: status
-      }
+        status,
+      },
     });
-    Result.ok(this, {data: result, pageSize, currentPage: currentPage, totalCount, status});
+    Result.ok(this, { data: result, pageSize, currentPage, totalCount, status });
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
@@ -622,30 +622,30 @@ function *getMessages() {
 function *updateMessagesStatus() {
   try {
     const body = yield cobody(this);
-    const {loginId, status} = body;
+    const { loginId, status } = body;
     let result;
     if (status === 1) {
       result = yield messages.update({
-          status: 1,
-          read_time: new Date()
-        },
-        {where:{
+        status: 1,
+        read_time: new Date(),
+      },
+        { where: {
           status: 0,
-          login_id: loginId
-        } 
+          login_id: loginId,
+        },
       });
     }
     else if (status === 2) {
       result = yield messages.update({
-          status: 2
-        },
-        {where:{
+        status: 2,
+      },
+        { where: {
           status: 1,
-          login_id: loginId
-        } 
+          login_id: loginId,
+        },
       });
     }
-    Result.ok(this,result);
+    Result.ok(this, result);
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
@@ -654,16 +654,16 @@ function *updateMessagesStatus() {
 function *updateMessageStatus() {
   try {
     const body = yield cobody(this);
-    const {id, status} = body;
+    const { id, status } = body;
     let result = yield messages.update({
-        status: status,
-        read_time: new Date()
+      status,
+      read_time: new Date(),
+    },
+      { where: {
+        id,
       },
-      {where:{
-        id: id
-      } 
     });
-    Result.ok(this,result);
+    Result.ok(this, result);
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
@@ -672,8 +672,8 @@ function *updateMessageStatus() {
 function *sendPromptMessage() {
   try {
     const body = yield cobody(this);
-    const {from, to, msg} = body;
-    sendMessage(from,to,msg);
+    const { from, to, msg } = body;
+    sendMessage(from, to, msg);
     Result.ok(this);
   } catch (e) {
     Result.internalServerError(this, e.message);

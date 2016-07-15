@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Select, message } from 'ant-ui';
+import { Button, Select, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
  'common/reducers/personnel';
@@ -29,7 +30,7 @@ function fetchData({ state, dispatch, cookie }) {
     p = dispatch(loadPersonnel(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.personnel.personnelist.pageSize,
-      currentPage: state.personnel.personnelist.current
+      currentPage: state.personnel.personnelist.current,
     }));
     promises.push(p);
   }
@@ -49,7 +50,7 @@ function fetchData({ state, dispatch, cookie }) {
     text: formatContainerMsg(props.intl, 'personnelUser'),
     moduleName: 'corp',
     withModuleLayout: false,
-    goBackFn: ''
+    goBackFn: '',
   }));
 })
 @connect(
@@ -59,7 +60,7 @@ function fetchData({ state, dispatch, cookie }) {
     filters: state.personnel.filters,
     branches: state.personnel.branches,
     tenant: state.personnel.tenant,
-    loading: state.personnel.loading
+    loading: state.personnel.loading,
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 export default class PersonnelSetting extends React.Component {
@@ -75,17 +76,17 @@ export default class PersonnelSetting extends React.Component {
     loadPersonnel: PropTypes.func.isRequired,
     switchTenant: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    delPersonnel: PropTypes.func.isRequired
+    delPersonnel: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   }
   handleSelectionClear = () => {
     this.setState({
-      selectedRowKeys: []
+      selectedRowKeys: [],
     });
   }
   handleTenantSwitch(val) {
@@ -94,7 +95,7 @@ export default class PersonnelSetting extends React.Component {
       tenantId: val,
       pageSize: personnelist.pageSize,
       filters: JSON.stringify(filters),
-      currentPage: 1
+      currentPage: 1,
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -104,7 +105,7 @@ export default class PersonnelSetting extends React.Component {
           if (`${br.key}` === val) {
             tenant = {
               id: br.key,
-              parentId: br.parentId
+              parentId: br.parentId,
             };
             return;
           }
@@ -134,7 +135,7 @@ export default class PersonnelSetting extends React.Component {
           tenantId: tenant.id,
           pageSize,
           filters: JSON.stringify(filters),
-          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize),
         });
       }
     });
@@ -149,13 +150,13 @@ export default class PersonnelSetting extends React.Component {
       filters.push(
         [{
           name: 'name',
-          value: searchVal
+          value: searchVal,
         }, {
           name: 'email',
-          value: searchVal
+          value: searchVal,
         }, {
           name: 'phone',
-          value: searchVal
+          value: searchVal,
         }]
       );
     }
@@ -163,13 +164,13 @@ export default class PersonnelSetting extends React.Component {
       tenantId: this.props.tenant.id,
       pageSize: this.props.personnelist.pageSize,
       currentPage: 1,
-      filters: JSON.stringify(filters)
+      filters: JSON.stringify(filters),
     });
   }
   renderColumnText(status, text) {
     let style = {};
     if (status === ACCOUNT_STATUS.blocked.id) {
-      style = {color: '#CCC'};
+      style = { color: '#CCC' };
     }
     return <span style={style}>{text}</span>;
   }
@@ -185,7 +186,7 @@ export default class PersonnelSetting extends React.Component {
         current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSize: result.pageSize
+        pageSize: result.pageSize,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
@@ -194,7 +195,7 @@ export default class PersonnelSetting extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          filters: this.props.filters
+          filters: this.props.filters,
         };
         // 首先去除不存在的过滤条件
         params.filters = params.filters.filter(
@@ -205,45 +206,45 @@ export default class PersonnelSetting extends React.Component {
             params.filters = params.filters.filter(flt => flt.name !== key);
             params.filters.push({
               name: key,
-              value: filters[key][0]
+              value: filters[key][0],
             });
           }
         }
         params.filters = JSON.stringify(params.filters);
         return params;
       },
-      remotes: personnelist
+      remotes: personnelist,
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
-        this.setState({selectedRowKeys});
-      }
+        this.setState({ selectedRowKeys });
+      },
     };
     const columns = [{
       title: msg('fullName'),
       dataIndex: 'name',
       width: 100,
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.name)
+      render: (o, record) => this.renderColumnText(record.status, record.name),
     }, {
       title: msg('username'),
       width: 200,
-      render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`)
+      render: (o, record) => this.renderColumnText(record.status, `${record.loginName}@${code}`),
     }, {
       title: msg('phone'),
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.phone)
+      render: (o, record) => this.renderColumnText(record.status, record.phone),
     }, {
       title: msg('email'),
       dataIndex: 'email',
       width: 200,
       sorter: true,
-      render: (o, record) => this.renderColumnText(record.status, record.email)
+      render: (o, record) => this.renderColumnText(record.status, record.email),
     }, {
       title: msg('position'),
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.position)
+      render: (o, record) => this.renderColumnText(record.status, record.position),
     }, {
       title: msg('role'),
       sorter: true,
@@ -251,15 +252,15 @@ export default class PersonnelSetting extends React.Component {
       width: 100,
       filters: [{
         text: formatContainerMsg(intl, 'tenantManager'),
-        value: TENANT_ROLE.manager.name
+        value: TENANT_ROLE.manager.name,
       }, {
         text: formatContainerMsg(intl, 'tenantMember'),
-        value: TENANT_ROLE.member.name
+        value: TENANT_ROLE.member.name,
       }],
       render: (o, record) => this.renderColumnText(
         record.status,
         formatContainerMsg(intl, TENANT_ROLE[record.role].text)
-      )
+      ),
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
       width: 50,
@@ -271,7 +272,7 @@ export default class PersonnelSetting extends React.Component {
           text = ACCOUNT_STATUS.blocked.text;
         }
         return <span style={style}>{formatContainerMsg(intl, text)}</span>;
-      }
+      },
     }, {
       title: formatContainerMsg(intl, 'opColumn'),
       width: 150,
@@ -311,7 +312,7 @@ export default class PersonnelSetting extends React.Component {
         } else {
           return <span />;
         }
-      }
+      },
     }];
     return (
       <div className="main-content">
@@ -322,18 +323,19 @@ export default class PersonnelSetting extends React.Component {
             </Button>
           </div>
           <span>{msg('affiliatedOrganizations')}</span>
-          <Select style={{width: 200}} size="large" value={`${tenant.id}`}
-              onChange={(value) => this.handleTenantSwitch(value)}>
+          <Select style={{ width: 200 }} size="large" value={`${tenant.id}`}
+            onChange={(value) => this.handleTenantSwitch(value)}
+          >
             {
               branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
             }
           </Select>
-          <span style={{marginLeft: '8px'}} />
+          <span style={{ marginLeft: '8px' }} />
           <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body fixed">
           <div className="panel-body body-responsive">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader/>
+            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />

@@ -17,7 +17,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
   'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
   'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
-  'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL'
+  'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -34,13 +34,13 @@ const initialState = {
   formData: {
     poid: '',
     coid: '',
-    country: CHINA_CODE
+    country: CHINA_CODE,
   },
   appEditor: {
     tenantApps: [],
     tenantId: -1,
     index: -1,
-    visible: false
+    visible: false,
   },
   corpUsers: [],
   corplist: {
@@ -48,25 +48,25 @@ const initialState = {
     totalCount: 0,
     pageSize: INITIAL_LIST_PAGE_SIZE,
     current: 1,
-    data: [] // structure see getOrganizations
+    data: [], // structure see getOrganizations
   },
-  messages:{
+  messages: {
     loginId: 0,
     totalCount: 0,
     pageSize: 20,
     currentPage: 1,
     status: 0,
-    data: []
-  }
+    data: [],
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     // corp/info
     case actionTypes.CORP_EDIT_SUCCEED: {
       if (state.selectedIndex !== -1) {
-        const corplist = {...state.corplist};
+        const corplist = { ...state.corplist };
         corplist.data[state.selectedIndex] = action.data.corp;
-        return {...state, selectedIndex: -1, corplist};
+        return { ...state, selectedIndex: -1, corplist };
       } else {
         return { ...state, formData: action.data.corp };
       }
@@ -79,7 +79,6 @@ export default function reducer(state = initialState, action) {
       } else {
         return state;
       }
-      break;
     case actionTypes.ORGAN_FORM_LOAD_SUCCEED: {
       const actresult = action.result.data;
       const formData = {
@@ -87,7 +86,7 @@ export default function reducer(state = initialState, action) {
         subCode: actresult.tenant.subCode,
         name: actresult.tenant.name,
         coid: `${actresult.tenant.uid}`,
-        poid: `${actresult.tenant.uid}`
+        poid: `${actresult.tenant.uid}`,
       };
       return { ...state, corpUsers: actresult.users, formData };
     }
@@ -95,7 +94,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.ORGANS_LOAD_SUCCEED: {
       const corplist = { ...state.corplist, ...action.result.data };
-      return {...state, loading: false, loaded: true, corplist};
+      return { ...state, loading: false, loaded: true, corplist };
     }
     case actionTypes.ORGANS_LOAD_FAIL:
       return { ...state, loading: false };
@@ -124,8 +123,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CORP_SUBMIT:
       return { ...state, submitting: true };
     case actionTypes.ORGAN_EDIT_SUCCEED: {
-      const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
-        { ...corp, ...action.result.data } : corp);
+      const corps = state.corplist.data.map(corp => {
+        return corp.key === action.data.corp.key ?
+        { ...corp, ...action.result.data } : corp;
+      });
       return { ...state, corplist: { ...state.corplist, data: corps },
         formData: initialState.formData, corpUsers: [], submitting: false };
     }
@@ -169,8 +170,8 @@ export function delCorp(corpId, parentTenantId) {
         actionTypes.CORP_DELETE_FAIL],
       endpoint: 'v1/user/corp',
       method: 'del',
-      data: { corpId, parentTenantId }
-    }
+      data: { corpId, parentTenantId },
+    },
   };
 }
 
@@ -180,8 +181,8 @@ export function edit(corp) {
       types: [actionTypes.CORP_EDIT, actionTypes.CORP_EDIT_SUCCEED, actionTypes.CORP_EDIT_FAIL],
       endpoint: 'v1/user/corp',
       method: 'put',
-      data: { corp }
-    }
+      data: { corp },
+    },
   };
 }
 
@@ -192,8 +193,8 @@ export function submit(corp, tenant) {
         actionTypes.CORP_SUBMIT_FAIL],
       endpoint: 'v1/user/corp',
       method: 'post',
-      data: { corp, tenant }
-    }
+      data: { corp, tenant },
+    },
   };
 }
 
@@ -205,8 +206,8 @@ export function loadOrganizationForm(cookie, corpId) {
       endpoint: 'v1/user/organization',
       method: 'get',
       cookie,
-      params: { corpId }
-    }
+      params: { corpId },
+    },
   };
 }
 
@@ -216,8 +217,8 @@ export function editOrganization(corp) {
       types: [actionTypes.ORGAN_EDIT, actionTypes.ORGAN_EDIT_SUCCEED, actionTypes.ORGAN_EDIT_FAIL],
       endpoint: 'v1/user/organization',
       method: 'put',
-      data: { corp }
-    }
+      data: { corp },
+    },
   };
 }
 
@@ -226,7 +227,7 @@ export function isFormDataLoaded(corpsState, corpId) {
 }
 
 export function loadForm(cookie, corpId) {
-  return loadFormC(cookie, 'v1/user/corp', {corpId}, actionTypes);
+  return loadFormC(cookie, 'v1/user/corp', { corpId }, actionTypes);
 }
 
 export function clearForm() {
@@ -243,8 +244,8 @@ export function checkLoginName(loginName, loginId, tenantId) {
       types: [actionTypes.CHECK_LOGINNAME, actionTypes.CHECK_LOGINNAME_SUCCEED, actionTypes.CHECK_LOGINNAME_FAIL],
       endpoint: 'v1/user/check/loginname',
       method: 'get',
-      params: { loginName, loginId, tenantId }
-    }
+      params: { loginName, loginId, tenantId },
+    },
   };
 }
 
@@ -255,8 +256,8 @@ export function switchStatus(index, tenantId, status) {
       endpoint: 'v1/user/corp/status',
       method: 'put',
       index,
-      data: { status, tenantId }
-    }
+      data: { status, tenantId },
+    },
   };
 }
 
@@ -267,8 +268,8 @@ export function loadOrgans(cookie, params) {
       endpoint: 'v1/user/organizations',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -279,8 +280,8 @@ export function switchTenantApp(tenantId, checked, app, index) {
       endpoint: 'v1/user/corp/app',
       method: 'post',
       index,
-      data: { tenantId, checked, app }
-    }
+      data: { tenantId, checked, app },
+    },
   };
 }
 
@@ -291,14 +292,14 @@ export function openTenantAppsEditor(record, index) {
       visible: true,
       tenantId: record.key,
       tenantApps: record.apps,
-      index
-    }
+      index,
+    },
   };
 }
 
 export function closeTenantAppsEditor() {
   return {
-    type: actionTypes.CLOSE_TENANT_APPS_EDITOR
+    type: actionTypes.CLOSE_TENANT_APPS_EDITOR,
   };
 }
 
@@ -309,8 +310,8 @@ export function loadMessages(cookie, params) {
       endpoint: 'v1/user/account/messages',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -320,8 +321,8 @@ export function markMessages(params) {
       types: [actionTypes.MARK_MESSAGES, actionTypes.MARK_MESSAGES_SUCCEED, actionTypes.MARK_MESSAGES_FAIL],
       endpoint: 'v1/user/account/messages/status',
       method: 'post',
-      data: params
-    }
+      data: params,
+    },
   };
 }
 
@@ -331,7 +332,7 @@ export function markMessage(params) {
       types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],
       endpoint: 'v1/user/account/message/status',
       method: 'post',
-      data: params
-    }
+      data: params,
+    },
   };
 }

@@ -12,7 +12,7 @@ function *addDriver() {
   try {
     yield TransportResourcesDao.addDriverWithInfo(driverInfo);
     return Result.ok(this);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -22,7 +22,7 @@ function *getDriverList() {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getDriverList(tenantId);
     return Result.ok(this, result);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -31,9 +31,9 @@ function *editDriver() {
   try {
     const body = yield cobody(this);
     const { driverId, driverInfo } = body;
-    yield TransportResourcesDao.updateDriverWithInfo({driverId, driverInfo});
+    yield TransportResourcesDao.updateDriverWithInfo({ driverId, driverInfo });
     return Result.ok(this, { driverId, driverInfo });
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -44,7 +44,7 @@ function *addVehicle() {
     const { carInfo } = body;
     yield TransportResourcesDao.addCarWithInfo(carInfo);
     return Result.ok(this);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -54,7 +54,7 @@ function *getVehicleList() {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getCarList(tenantId);
     return Result.ok(this, result);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -63,9 +63,9 @@ function *editVehicle() {
   try {
     const body = yield cobody(this);
     const { carInfo, carId } = body;
-    yield TransportResourcesDao.updateCarWithInfo({carInfo, carId});
-    return Result.ok(this, { carId , carInfo });
-  } catch(e) {
+    yield TransportResourcesDao.updateCarWithInfo({ carInfo, carId });
+    return Result.ok(this, { carId, carInfo });
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -76,7 +76,7 @@ function *validateVehicle() {
     const result = yield TransportResourcesDao.searchVehicleWithNumber(tenantId, vehicleNumber);
     const vehicleValidate = result.length === 0;
     return Result.ok(this, { vehicleValidate });
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -86,7 +86,7 @@ function *getNodeList() {
     const { tenantId } = this.request.query;
     const result = yield TransportResourcesDao.getNodeList(tenantId);
     return Result.ok(this, result);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -97,7 +97,7 @@ function *addNode() {
     const { nodeInfo } = body;
     yield TransportResourcesDao.addNode(nodeInfo);
     return Result.ok(this);
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -106,9 +106,9 @@ function *editNode() {
   try {
     const body = yield cobody(this);
     const { nodeInfo, nodeId } = body;
-    yield TransportResourcesDao.updateNodeWithInfo({nodeInfo, nodeId});
-    return Result.ok(this, {nodeInfo, nodeId});
-  } catch(e) {
+    yield TransportResourcesDao.updateNodeWithInfo({ nodeInfo, nodeId });
+    return Result.ok(this, { nodeInfo, nodeId });
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -119,7 +119,7 @@ function *removeNode() {
     const { nodeId } = body;
     yield TransportResourcesDao.removeNodeWithId(nodeId);
     return Result.ok(this, { nodeId });
-  } catch(e) {
+  } catch (e) {
     return Result.internalServerError(this, e.message);
   }
 }
@@ -135,5 +135,5 @@ export default [
   ['get', '/v1/transport/resources/node_list', getNodeList],
   ['post', '/v1/transport/resources/add_node', addNode],
   ['post', '/v1/transport/resources/edit_node', editNode],
-  ['post', '/v1/transport/resources/remove_node', removeNode]
+  ['post', '/v1/transport/resources/remove_node', removeNode],
 ];

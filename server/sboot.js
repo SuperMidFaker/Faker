@@ -9,7 +9,7 @@ process.env.NODE_PATH = path.resolve(__dirname, '..');
 require('module').Module._initPaths();
 require('babel/register')({
   stage: 0,
-  blacklist: ['regenerator']
+  blacklist: ['regenerator'],
 });
 console.time('starting web server');
 if (!isNaN(argv.port)) {

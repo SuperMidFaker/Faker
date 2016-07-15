@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Switch, Row, Col, message } from 'ant-ui';
+import { Modal, Button, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { APP_ENTITY_META_INFO } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -19,11 +19,11 @@ export default class ModuleEditor extends React.Component {
     appPackage: PropTypes.array.isRequired,
     switchTenantApp: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
-    tenantApps: PropTypes.array
+    tenantApps: PropTypes.array,
   }
   state = {
     visible: false,
-    enabledApps: {}
+    enabledApps: {},
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible === true) {
@@ -47,7 +47,7 @@ export default class ModuleEditor extends React.Component {
       id: ap.id,
       name: formatGlobalMsg(this.props.intl, APP_ENTITY_META_INFO[ap.id].name),
       desc: formatGlobalMsg(this.props.intl, APP_ENTITY_META_INFO[ap.id].desc),
-      package: ap.package
+      package: ap.package,
     };
     this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then(
       (result) => {
@@ -63,17 +63,17 @@ export default class ModuleEditor extends React.Component {
         onCancel={this.handleCancel} footer={
           [
             <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
-            { formatGlobalMsg(intl, 'ok') }
-            </Button>
+            {formatGlobalMsg(intl, 'ok')}
+            </Button>,
           ]
         }
       >
         <Row className="module-editor">
-          <Col span="8"><h4>{ formatMsg(intl, 'appEditorNameCol') }</h4></Col>
-          <Col span="8"><p className="type-label">{ formatGlobalMsg(intl, 'desc') }</p></Col>
+          <Col span="8"><h4>{formatMsg(intl, 'appEditorNameCol')}</h4></Col>
+          <Col span="8"><p className="type-label">{formatGlobalMsg(intl, 'desc')}</p></Col>
           <Col span="8">
             <label className="type-label pull-right">
-            { formatMsg(intl, 'appEditorSetCol') }
+            {formatMsg(intl, 'appEditorSetCol')}
             </label>
           </Col>
         </Row>

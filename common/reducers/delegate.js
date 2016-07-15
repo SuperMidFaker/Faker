@@ -29,17 +29,17 @@ const initialState = {
   customs_code: [],
   tenant: {
     id: -1,
-    parentId: -1
+    parentId: -1,
   },
   customs: {
-    code: -1
+    code: -1,
   },
   formData: {},
   delegateist: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
-    data: []
+    data: [],
   },
   customsBrokerList: [],
   selectOptions: {
@@ -47,23 +47,23 @@ const initialState = {
     declareWayList: [],
     tradeModeList: [],
     declareFileList: [],
-    declareCategoryList: []
+    declareCategoryList: [],
   },
   statusList: { // 初始化状态显示数量
     notSendCount: 0,
     notAcceptCount: 0,
     acceptCount: 0,
-    invalidCount: 0
+    invalidCount: 0,
   },
   sendlist: {
-    data: []
+    data: [],
   },
   loglist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
-    data: []
-  }
+    data: [],
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -71,59 +71,59 @@ export default function reducer(state = initialState, action) {
       // 租户变化时重新加载
       return { ...state, loaded: false };
     case actionTypes.delegate_LOAD:
-      return {...state, loading: true, needUpdate: false};
+      return { ...state, loading: true, needUpdate: false };
     case actionTypes.delegate_LOAD_SUCCEED:
-      return {...state, loaded: true, loading: false,
-        delegateist: {...state.delegateist, ...action.result.data}
+      return { ...state, loaded: true, loading: false,
+        delegateist: { ...state.delegateist, ...action.result.data },
       };
     case actionTypes.delegate_LOAD_FAIL:
-      return {...state, loading: false};
+      return { ...state, loading: false };
     case actionTypes.delegate_UnsentUnsent:
-      return {...state, loading: true, needUpdate: false};
+      return { ...state, loading: true, needUpdate: false };
     case actionTypes.delegate_UnsentUnsent_SUCCEED:
-      return {...state, loaded: true, loading: false,
-        delegateist: {...state.delegateist, ...action.result.data}
+      return { ...state, loaded: true, loading: false,
+        delegateist: { ...state.delegateist, ...action.result.data },
       };
-      case actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED:
-      return {...state,
-        selectOptions: {...state.selectOptions,
+    case actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED:
+      return { ...state,
+        selectOptions: { ...state.selectOptions,
           customsInfoList: action.result.data.customsInfoList,
           declareWayList: action.result.data.declareWayList,
           tradeModeList: action.result.data.tradeModeList,
           declareFileList: action.result.data.declareFileList,
-          declareCategoryList: action.result.data.declareCategoryList
-        }
+          declareCategoryList: action.result.data.declareCategoryList,
+        },
       };
-       case actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED:
-      return {...state,
-        customsBrokerList: action.result.data
+    case actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED:
+      return { ...state,
+        customsBrokerList: action.result.data,
       };
-      case actionTypes.REMOVEFILE:
+    case actionTypes.REMOVEFILE:
       {
-        const selectOptions = {...state.selectOptions
+        const selectOptions = { ...state.selectOptions,
         };
         selectOptions.declareFileList[action.index].fileflag = -1;
-        return {...state,
-          selectOptions
+        return { ...state,
+          selectOptions,
         };
       }
-      case actionTypes.LOG_LOAD_SUCCEED:
-      return {...state,
+    case actionTypes.LOG_LOAD_SUCCEED:
+      return { ...state,
         loaded: true,
         loading: false,
-        loglist: action.result.data.loglist
+        loglist: action.result.data.loglist,
       };
-      case actionTypes.SEND_LOAD_SUCCEED:
-      return {...state,
+    case actionTypes.SEND_LOAD_SUCCEED:
+      return { ...state,
         loaded: true,
         loading: false,
         sendlist: {
-          data: action.sendlist.data
-        }
+          data: action.sendlist.data,
+        },
       };
-       case actionTypes.SEND_SUCCEED:
+    case actionTypes.SEND_SUCCEED:
       {
-        const delegateist = {...state.delegateist
+        const delegateist = { ...state.delegateist,
         };
         const newlist = [];
 
@@ -133,110 +133,110 @@ export default function reducer(state = initialState, action) {
           }
         });
 
-        return {...state,
-          delegateist: {...state.delegateist,
-            data: newlist
+        return { ...state,
+          delegateist: { ...state.delegateist,
+            data: newlist,
           },
-          statusList: {...state.statusList,
+          statusList: { ...state.statusList,
             notSendCount: state.statusList.notSendCount - (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1),
-            notAcceptCount: state.statusList.notAcceptCount + (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1)
-          }
+            notAcceptCount: state.statusList.notAcceptCount + (action.params.sendlist.length) * (action.params.status === '0' ? 1 : -1),
+          },
         };
       }
-      case actionTypes.ID_LOAD_STATUS:
-      return {...state,
-        statusList: initialState.statusList
+    case actionTypes.ID_LOAD_STATUS:
+      return { ...state,
+        statusList: initialState.statusList,
       };
-      case actionTypes.FILE_UPLOAD_SUCCEED:
+    case actionTypes.FILE_UPLOAD_SUCCEED:
       {
-        const selectOptions = {...state.selectOptions
+        const selectOptions = { ...state.selectOptions,
         };
         selectOptions.declareFileList.push({
           id: -1,
           url: action.result.data,
           doc_name: action.fileName,
           category: action.category,
-          fileflag: 0
+          fileflag: 0,
         });
         selectOptions.declareCategoryList.push({
-          category: action.category
+          category: action.category,
         });
-        return {...state,
-          selectOptions
+        return { ...state,
+          selectOptions,
         };
       }
     case actionTypes.ID_LOAD_STATUS_SUCCEED:
-      return {...state,
-        statusList: {...state.statusList,
+      return { ...state,
+        statusList: { ...state.statusList,
           invalidCount: action.result.data.invalidCount,
           notSendCount: action.result.data.notSendCount,
           notAcceptCount: action.result.data.notAcceptCount,
-          acceptCount: action.result.data.acceptCount
-        }
+          acceptCount: action.result.data.acceptCount,
+        },
       };
     case actionTypes.ID_LOAD_STATUS_FAIL:
-      return {...state,
-        statusList: initialState.statusList
+      return { ...state,
+        statusList: initialState.statusList,
       };
     case actionTypes.delegate_UnsentUnsent_FAIL:
-      return {...state, loading: false};
+      return { ...state, loading: false };
     case actionTypes.MASTER_TENANTS_LOAD_SUCCEED:
-      return {...state, branches: action.result.data,
+      return { ...state, branches: action.result.data,
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
-          parentId: action.result.data[0].parentId
-        } : {}};
-     case actionTypes.MASTER_Master_Customs_LOAD_SUCCEED:
-      return {...state, customs_code: action.result.data,
+          parentId: action.result.data[0].parentId,
+        } : {} };
+    case actionTypes.MASTER_Master_Customs_LOAD_SUCCEED:
+      return { ...state, customs_code: action.result.data,
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
-          parentId: action.result.data[0].parentId
-        } : {}};
+          parentId: action.result.data[0].parentId,
+        } : {} };
     case actionTypes.SWITCH_TENANT:
-      return {...state, tenant: action.tenant};
+      return { ...state, tenant: action.tenant };
     case actionTypes.Customs_CodeS:
-      return {...state, customs_code: action.customs_code};
+      return { ...state, customs_code: action.customs_code };
     case actionTypes.SWITCH_STATUS_SUCCEED: {
-      const delegateist = {...state.delegateist};
+      const delegateist = { ...state.delegateist };
       delegateist.data[action.index].status = action.data.status;
-      return {...state, delegateist};
+      return { ...state, delegateist };
     }
     case actionTypes.Delegate_EDIT_SUCCEED: {
       if (state.selectedIndex !== -1) {
-          const delegateist = {...state.delegateist
+        const delegateist = { ...state.delegateist,
           };
-          delegateist.data[state.selectedIndex] = action.data.delegate;
-          return {...state,
+        delegateist.data[state.selectedIndex] = action.data.delegate;
+        return { ...state,
             selectedIndex: -1,
-            delegateist
+            delegateist,
           };
-        } else {
-          return {...state
+      } else {
+        return { ...state,
           };
-        }
+      }
     }
     case actionTypes.delegate_DELETE_SUCCEED: {
-      return { ...state, delegateist: {...state.delegateist, totalCount: state.delegateist.totalCount - 1}, needUpdate: true };
+      return { ...state, delegateist: { ...state.delegateist, totalCount: state.delegateist.totalCount - 1 }, needUpdate: true };
     }
     case actionTypes.delegate_SUBMIT_SUCCEED: {
-      const delegateist = {...state.delegateist
+      const delegateist = { ...state.delegateist,
         };
-        const statusList = {...state.statusList
+      const statusList = { ...state.statusList,
         };
-        if ((delegateist.current - 1) * delegateist.pageSize <= delegateist.totalCount // '=' because of totalCount 0
+      if ((delegateist.current - 1) * delegateist.pageSize <= delegateist.totalCount // '=' because of totalCount 0
           && delegateist.current * delegateist.pageSize > delegateist.totalCount) {
-          delegateist.data.push(action.result.data);
-        }
-        delegateist.totalCount++;
-        statusList.notSendCount++;
-        return {...state,
+        delegateist.data.push(action.result.data);
+      }
+      delegateist.totalCount++;
+      statusList.notSendCount++;
+      return { ...state,
           delegateist,
-          statusList
+          statusList,
         };
     }
     case actionTypes.INVALID_SUCCEED:
       {
-        const delegateist = {...state.delegateist
+        const delegateist = { ...state.delegateist,
         };
         const newlist = [];
 
@@ -246,16 +246,16 @@ export default function reducer(state = initialState, action) {
           }
         });
 
-        return {...state,
-          delegateist: {...state.delegateist,
-            data: newlist
+        return { ...state,
+          delegateist: { ...state.delegateist,
+            data: newlist,
           },
-          statusList: {...state.statusList,
+          statusList: { ...state.statusList,
             notSendCount: state.statusList.notSendCount - (action.params.curStatus === 0 ? 1 : 0),
             notAcceptCount: state.statusList.notAcceptCount - (action.params.curStatus === 1 ? 1 : 0),
             acceptCount: state.statusList.acceptCount - (action.params.curStatus === 2 ? 1 : 0),
-            invalidCount: state.statusList.invalidCount + 1
-          }
+            invalidCount: state.statusList.invalidCount + 1,
+          },
         };
       }
     // todo deal with submit fail submit loading
@@ -271,8 +271,8 @@ export function deldelegate(idkey) {
       types: [actionTypes.delegate_DELETE, actionTypes.delegate_DELETE_SUCCEED, actionTypes.delegate_DELETE_FAIL],
       endpoint: 'v1/delegate/delete',
       method: 'del',
-      data: { idkey }
-    }
+      data: { idkey },
+    },
   };
 }
 
@@ -282,8 +282,8 @@ export function edit(delegate, params) {
       types: [actionTypes.delegate_EDIT, actionTypes.Delegate_EDIT_SUCCEED, actionTypes.delegate_EDIT_FAIL],
       endpoint: 'v1/delegate/edit',
       method: 'put',
-      data: { delegate, params }
-    }
+      data: { delegate, params },
+    },
   };
 }
 
@@ -293,8 +293,8 @@ export function submit(delegate, tenantId, params, loginId, username) {
       types: [actionTypes.delegate_SUBMIT, actionTypes.delegate_SUBMIT_SUCCEED, actionTypes.delegate_SUBMIT_FAIL],
       endpoint: 'v1/delegate/submit',
       method: 'post',
-      data: { delegate, tenantId, params, loginId, username }
-    }
+      data: { delegate, tenantId, params, loginId, username },
+    },
   };
 }
 export function isFormDataLoaded(delegateState, persId) {
@@ -302,7 +302,7 @@ export function isFormDataLoaded(delegateState, persId) {
 }
 
 export function loadForm(cookie, persId) {
-  return loadFormC(cookie, 'v1/delegate/delegate', {pid: persId}, actionTypes);
+  return loadFormC(cookie, 'v1/delegate/delegate', { pid: persId }, actionTypes);
 }
 
 export function assignForm(delegateState, persId) {
@@ -319,7 +319,7 @@ export function setFormValue(field, newValue) {
 export function loadSend(sendlist) {
   return {
     type: actionTypes.SEND_LOAD_SUCCEED,
-    sendlist
+    sendlist,
   };
 }
 
@@ -330,8 +330,8 @@ export function loaddelegate(cookie, params) {
       endpoint: 'v1/delegate/delegate',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -341,8 +341,8 @@ export function loadTenantsByMaster(cookie, tenantId) {
       types: [actionTypes.MASTER_TENANTS_LOAD, actionTypes.MASTER_TENANTS_LOAD_SUCCEED, actionTypes.MASTER_TENANTS_LOAD_FAIL],
       endpoint: `v1/delegate/${tenantId}/tenants`,
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -350,18 +350,18 @@ export function loadSelectOptions(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ID_LOAD_SELECTOPTIONS, actionTypes.ID_LOAD_SELECTOPTIONS_SUCCEED, actionTypes.ID_LOAD_SELECTOPTIONS_FAIL],
-      endpoint: `v1/delegate/getSelectOptions`,
+      endpoint: 'v1/delegate/getSelectOptions',
       method: 'get',
       cookie,
-      params
-    }
+      params,
+    },
   };
 }
 
 export function switchTenant(tenant) {
   return {
     type: actionTypes.SWITCH_TENANT,
-    tenant
+    tenant,
   };
 }
 export function switchStatus(index, pid, status) {
@@ -371,19 +371,19 @@ export function switchStatus(index, pid, status) {
       endpoint: 'v1/delegate/status',
       method: 'put',
       index,
-      data: { status, pid }
-    }
+      data: { status, pid },
+    },
   };
 }
-  export function UnsentUnsent(cookie, params) {
+export function UnsentUnsent(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.delegate_UnsentUnsent, actionTypes.delegate_UnsentUnsent_SUCCEED, actionTypes.delegate_UnsentUnsent_FAIL],
       endpoint: 'v1/delegate/UnsentUnsent',
       method: 'put',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 export function loadStatus(cookie, params) {
@@ -393,8 +393,8 @@ export function loadStatus(cookie, params) {
       endpoint: 'v1/delegate/StatusG',
       method: 'get',
       cookie,
-      params
-    }
+      params,
+    },
   };
 }
 export function uploadFiles(file, fileName, category) {
@@ -405,14 +405,14 @@ export function uploadFiles(file, fileName, category) {
       method: 'post',
       files: file,
       fileName,
-      category
-    }
+      category,
+    },
   };
 }
 export function removeFile(index) {
   return {
     type: actionTypes.REMOVEFILE,
-    index
+    index,
   };
 }
 export function sendDelegate(params) {
@@ -421,8 +421,8 @@ export function sendDelegate(params) {
       types: [actionTypes.SEND, actionTypes.SEND_SUCCEED, actionTypes.SEND_FAIL],
       endpoint: 'v1/delegate/senddelegate',
       method: 'put',
-      params
-    }
+      params,
+    },
   };
 }
 export function loadCustomsBrokers(cookie, tenantId) {
@@ -431,8 +431,8 @@ export function loadCustomsBrokers(cookie, tenantId) {
       types: [actionTypes.ID_LOAD_CUSTOMSBROKERS, actionTypes.ID_LOAD_CUSTOMSBROKERS_SUCCEED, actionTypes.ID_LOAD_CUSTOMSBROKERS_FAIL],
       endpoint: `v1/delegate/${tenantId}/customsBrokers`,
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 export function loadLogs(params) {
@@ -441,8 +441,8 @@ export function loadLogs(params) {
       types: [actionTypes.LOG_LOAD, actionTypes.LOG_LOAD_SUCCEED, actionTypes.LOG_LOAD_FAIL],
       endpoint: 'v1/delegate/exportdelegatelogs',
       method: 'get',
-      params
-    }
+      params,
+    },
   };
 }
 export function invalidDelegate(params) {
@@ -451,7 +451,7 @@ export function invalidDelegate(params) {
       types: [actionTypes.INVALID, actionTypes.INVALID_SUCCEED, actionTypes.INVALID_FAIL],
       endpoint: 'v1/delegate/invalidDelegate',
       method: 'put',
-      params
-    }
+      params,
+    },
   };
 }

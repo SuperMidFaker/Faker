@@ -35,7 +35,7 @@ function *getDelgDeclares() {
   }
   const offset = (current - 1) * pageSize;
   const limit = pageSize;
-  const [ counts, rows ] = yield [
+  const [counts, rows] = yield [
     Delegation.getDelgBillEntryCount(billStatus, tenantId, whereClause),
     Delegation.getPagedDelgBillEntry(billStatus, tenantId, whereClause, offset, limit),
   ];
@@ -46,7 +46,7 @@ function *getDelgDeclares() {
       where: {
         delg_no: row.delg_no,
       },
-      attributes: [ [ 'doc_name', 'name' ], 'url' ],
+      attributes: [['doc_name', 'name'], 'url'],
     }));
   });
   const delgFiles = yield filesDbOps;
@@ -64,7 +64,7 @@ function *getDelgDeclares() {
 
 function *getDelgBills() {
   const { delgNo } = this.request.query;
-  const [ bhead, delg ] = yield [
+  const [bhead, delg] = yield [
     BillHeadDao.findOne({
       raw: true,
       where: {
@@ -83,7 +83,7 @@ function *getDelgBills() {
   }
   let head = bhead;
   if (head) {
-    const [ bodies, iePort, destPort ] = yield [
+    const [bodies, iePort, destPort] = yield [
       BillBodyDao.findAll({
         raw: true,
         where: {
@@ -166,7 +166,7 @@ function *getDelgParams() {
     CmsParamUnit.findAll({ raw: true }),
     CmsCompRelationDao.findAll({
       raw: true,
-      attributes: ['relation_type', [ 'comp_code', 'code' ], [ 'comp_name', 'name' ]],
+      attributes: ['relation_type', ['comp_code', 'code'], ['comp_name', 'name']],
       where: {
         $or: [{
           i_e_type: ieType === 'import' ? 'I' : 'E',
@@ -205,14 +205,14 @@ function *getSearchedParams() {
   if (paramType === 'port') {
     const ports = yield CmsParamPorts.findAll({
       raw: true, limit: 10,
-      where: { port_code: { $like: `%${search}%` }}
+      where: { port_code: { $like: `%${search}%` } },
     });
     return Result.ok(this, { ports });
   } else if (paramType === 'comprelation') {
     const { type, ietype, tenantId } = JSON.parse(extra);
     const relations = yield CmsCompRelationDao.findAll({
       raw: true,
-      attributes: [[ 'comp_code', 'code' ], [ 'comp_name', 'name' ]],
+      attributes: [['comp_code', 'code'], ['comp_name', 'name']],
       where: {
         $or: [{
           i_e_type: ietype === 'import' ? 'I' : 'E',
@@ -225,7 +225,7 @@ function *getSearchedParams() {
           $like: `%${search}%`,
         },
         status: 1,
-      }
+      },
     });
     return Result.ok(this, relations);
   }
@@ -262,24 +262,24 @@ function *upsertRelationComp(head, ietype, tenantId, dbOps) {
     tenant_id: tenantId,
     status: 1,
   };
-  const [ withForwarder, withOwner, withAgent ] = yield [
-    CmsCompRelationDao.findOne({ where: { ...forwarder, ...ieClause }}),
-    CmsCompRelationDao.findOne({ where: { ...owner, ...ieClause }}),
-    CmsCompRelationDao.findOne({ where: { ...agent, ...ieClause }}),
+  const [withForwarder, withOwner, withAgent] = yield [
+    CmsCompRelationDao.findOne({ where: { ...forwarder, ...ieClause } }),
+    CmsCompRelationDao.findOne({ where: { ...owner, ...ieClause } }),
+    CmsCompRelationDao.findOne({ where: { ...agent, ...ieClause } }),
   ];
   if (!withForwarder) {
     dbOps.push(CmsCompRelationDao.create({
-      ...forwarder, i_e_type: ieType
+      ...forwarder, i_e_type: ieType,
     }));
   }
   if (!withOwner) {
     dbOps.push(CmsCompRelationDao.create({
-      ...owner, i_e_type: ieType
+      ...owner, i_e_type: ieType,
     }));
   }
   if (!withAgent) {
     dbOps.push(CmsCompRelationDao.create({
-      ...agent, i_e_type: ieType
+      ...agent, i_e_type: ieType,
     }));
   }
 }
@@ -297,11 +297,11 @@ function *upsertDelgBillHead() {
       }
       dbOps.push(
         BillHeadDao.create({ ...head, bill_no: billNo, creater_login_id: loginId }),
-        Dispatch.update({ bill_status: 1}, { where: { delg_no: head.delg_no }})
+        Dispatch.update({ bill_status: 1 }, { where: { delg_no: head.delg_no } })
       );
     } else {
       dbOps.push(
-        BillHeadDao.update(head, { where: { bill_no: billNo }})
+        BillHeadDao.update(head, { where: { bill_no: billNo } })
       );
     }
     yield* upsertRelationComp(head, ietype, tenantId, dbOps);
@@ -386,12 +386,12 @@ function *upsertEntryHead() {
     const { head, totalCount, ietype, tenantId, loginId } = yield cobody(this);
     let id = head.id;
     if (id) {
-      yield EntryHeadDao.update(head, { where: { id }});
+      yield EntryHeadDao.update(head, { where: { id } });
       const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: {
         entry_id: null, delg_no: head.delg_no,
-      }});
+      } });
       if (unfilledEntryHeadCount === 0) {
-        yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: head.delg_no }});
+        yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: head.delg_no } });
       }
     } else {
       head.comp_entry_id = `${head.bill_no}-${totalCount}`;
@@ -458,17 +458,17 @@ function *delEntry() {
 function *mergeSplitBill() {
   try {
     const { billNo, mergeOpt, splitOpt, sortOpt } = yield cobody(this);
-    const [ billHead, billList, lastEntryHead ] = yield [
+    const [billHead, billList, lastEntryHead] = yield [
       BillHeadDao.findOne({
         raw: true,
-        attributes: { exclude: [ 'id' ] },
+        attributes: { exclude: ['id'] },
         where: {
           bill_no: billNo,
         },
       }),
       BillBodyDao.findAll({
         raw: true,
-        attributes: { exclude: [ 'id' ] },
+        attributes: { exclude: ['id'] },
         where: {
           bill_no: billNo,
         },
@@ -521,10 +521,10 @@ function *mergeSplitBill() {
 function *fillEntryNo() {
   try {
     const { delgNo, entryNo, entryHeadId } = yield cobody(this);
-    yield EntryHeadDao.update({ entry_id: entryNo }, { where: { id: entryHeadId }});
-    const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: { entry_id: null, delg_no: delgNo }});
+    yield EntryHeadDao.update({ entry_id: entryNo }, { where: { id: entryHeadId } });
+    const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: { entry_id: null, delg_no: delgNo } });
     if (unfilledEntryHeadCount === 0) {
-      yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo }});
+      yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo } });
     }
     return Result.ok(this, { needReload: unfilledEntryHeadCount === 0 });
   } catch (e) {
@@ -533,20 +533,20 @@ function *fillEntryNo() {
 }
 
 export default [
-  [ 'get', '/v1/cms/delegation/declares', getDelgDeclares ],
-  [ 'get', '/v1/cms/declare/bills', getDelgBills ],
-  [ 'get', '/v1/cms/declare/entries', getDelgEntries ],
-  [ 'get', '/v1/cms/declare/params', getDelgParams ],
-  [ 'get', '/v1/cms/declare/paramfilters', getSearchedParams ],
-  [ 'post', '/v1/cms/declare/billhead', upsertDelgBillHead ],
-  [ 'post', '/v1/cms/declare/billbody/add', addBillBody ],
-  [ 'post', '/v1/cms/declare/billbody/del', delBillBody ],
-  [ 'post', '/v1/cms/declare/billbody/edit', editBillBody ],
-  [ 'post', '/v1/cms/declare/entryhead', upsertEntryHead ],
-  [ 'post', '/v1/cms/declare/entrybody/add', addEntryBody ],
-  [ 'post', '/v1/cms/declare/entrybody/del', delEntryBody ],
-  [ 'post', '/v1/cms/declare/entrybody/edit', editEntryBody ],
-  [ 'post', '/v1/cms/declare/entry/del', delEntry ],
-  [ 'post', '/v1/cms/declare/bill/mergesplit', mergeSplitBill ],
-  [ 'post', '/v1/cms/declare/entry/fillno', fillEntryNo ],
+  ['get', '/v1/cms/delegation/declares', getDelgDeclares],
+  ['get', '/v1/cms/declare/bills', getDelgBills],
+  ['get', '/v1/cms/declare/entries', getDelgEntries],
+  ['get', '/v1/cms/declare/params', getDelgParams],
+  ['get', '/v1/cms/declare/paramfilters', getSearchedParams],
+  ['post', '/v1/cms/declare/billhead', upsertDelgBillHead],
+  ['post', '/v1/cms/declare/billbody/add', addBillBody],
+  ['post', '/v1/cms/declare/billbody/del', delBillBody],
+  ['post', '/v1/cms/declare/billbody/edit', editBillBody],
+  ['post', '/v1/cms/declare/entryhead', upsertEntryHead],
+  ['post', '/v1/cms/declare/entrybody/add', addEntryBody],
+  ['post', '/v1/cms/declare/entrybody/del', delEntryBody],
+  ['post', '/v1/cms/declare/entrybody/edit', editEntryBody],
+  ['post', '/v1/cms/declare/entry/del', delEntry],
+  ['post', '/v1/cms/declare/bill/mergesplit', mergeSplitBill],
+  ['post', '/v1/cms/declare/entry/fillno', fillEntryNo],
 ];

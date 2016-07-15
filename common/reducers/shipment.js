@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
-  assignFormC, clearFormC, setFormValueC
+  assignFormC, clearFormC, setFormValueC,
 } from './form-common';
 import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
 import { LOAD_TRANSHIPMT_SUCCEED } from './trackingLandStatus';
@@ -39,7 +39,7 @@ const initialState = {
     goodsTypes: [],
     packagings: [],
     containerPackagings: [],
-    clients: []
+    clients: [],
   },
   formData: {
     key: null,
@@ -62,15 +62,15 @@ const initialState = {
   shipmtDetail: {
     shipmt: {},
     tracking: {
-      points: []
-    }
+      points: [],
+    },
   },
-  statistics:{
+  statistics: {
     points: [],
     count: [0, 0, 0, 0, 0],
     startDate,
     endDate,
-  }
+  },
 };
 
 function transformJsonDate(val) {
@@ -82,27 +82,27 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case LOAD_APTSHIPMENT_SUCCEED:
     case LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state, previewer: { ...state.previewer, visible: false }};
+      return { ...state, previewer: { ...state.previewer, visible: false } };
     case actionTypes.LOAD_FORMREQUIRE:
       // force formData change to rerender after formrequire load
       return { ...state, formData: { goodslist: [] } };
     case actionTypes.LOAD_FORMREQUIRE_SUCCEED:
-      return { ...state, formRequire: action.result.data, formData: { ...initialState.formData, ...state.formData }};
+      return { ...state, formRequire: action.result.data, formData: { ...initialState.formData, ...state.formData } };
     case actionTypes.SET_CONSIGN_FIELDS:
-      return { ...state, formData: { ...state.formData, ...action.data }};
+      return { ...state, formData: { ...state.formData, ...action.data } };
     case actionTypes.SAVE_LOCAL_GOODS:
       return { ...state, formData: { ...state.formData,
-        goodslist: [...state.formData.goodslist, action.data.goods] }};
+        goodslist: [...state.formData.goodslist, action.data.goods] } };
     case actionTypes.EDIT_LOCAL_GOODS: {
       const goodslist = [...state.formData.goodslist];
       goodslist[action.data.index] = action.data.goods;
-      return { ...state, formData: { ...state.formData, goodslist }};
+      return { ...state, formData: { ...state.formData, goodslist } };
     }
     case actionTypes.REM_LOCAL_GOODS: {
       const goodslist = [...state.formData.goodslist];
       const originalRemovedGoodsIds = state.formData.removedGoodsIds ? state.formData.removedGoodsIds : [];
       const removedGoodsIds = [...originalRemovedGoodsIds, ...goodslist.splice(action.data.index, 1).map(goods => goods.id)];
-      return { ...state, formData: { ...state.formData, goodslist, removedGoodsIds }};
+      return { ...state, formData: { ...state.formData, goodslist, removedGoodsIds } };
     }
     case actionTypes.LOAD_FORM:
       return { ...state, formData: initialState.formData };
@@ -111,7 +111,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: { ...state.formData, ...formData,
         pickup_est_date: transformJsonDate(formData.pickup_est_date),
         deliver_est_date: transformJsonDate(formData.deliver_est_date),
-      }};
+      } };
     }
     case actionTypes.LOAD_DRAFTFORM:
       return { ...state, formData: initialState.formData };
@@ -120,8 +120,8 @@ export default function reducer(state = initialState, action) {
         ...state.formData, ...action.result.data.shipmt,
         pickup_est_date: transformJsonDate(action.result.data.shipmt.pickup_est_date),
         deliver_est_date: transformJsonDate(action.result.data.shipmt.deliver_est_date),
-        goodslist: action.result.data.goodslist
-      }};
+        goodslist: action.result.data.goodslist,
+      } };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
@@ -129,16 +129,16 @@ export default function reducer(state = initialState, action) {
         charges: action.result.data.charges,
         visible: true,
         tabKey: action.tabKey,
-      }};
+      } };
     }
     case actionTypes.HIDE_PREVIWER: {
-      return { ...state, previewer: { ...state.previewer, visible: false }};
+      return { ...state, previewer: { ...state.previewer, visible: false } };
     }
     case actionTypes.LOAD_PUB_DETAIL_SUCCEED: {
-      return { ...state, shipmtDetail: action.result.data};
+      return { ...state, shipmtDetail: action.result.data };
     }
     case actionTypes.SEND_SMS_MESSAGE_SUCCEED: {
-      return { ...state};
+      return { ...state };
     }
     case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
       return { ...state, statistics: action.result.data };
@@ -155,13 +155,13 @@ export function loadFormRequire(cookie, tenantId) {
       types: [
         actionTypes.LOAD_FORMREQUIRE,
         actionTypes.LOAD_FORMREQUIRE_SUCCEED,
-        actionTypes.LOAD_FORMREQUIRE_FAIL
+        actionTypes.LOAD_FORMREQUIRE_FAIL,
       ],
       endpoint: 'v1/transport/shipment/requires',
       method: 'get',
       params: { tenantId },
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -176,8 +176,8 @@ export function loadForm(cookie, params) {
       endpoint: 'v1/transport/shipment',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -192,15 +192,15 @@ export function loadDraftForm(cookie, params) {
       endpoint: 'v1/transport/shipment/draft',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
 export function setConsignFields(data) {
   return {
     type: actionTypes.SET_CONSIGN_FIELDS,
-    data
+    data,
   };
 }
 
@@ -253,7 +253,7 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
       method: 'get',
       params: { shipmtNo, tenantId, sourceType },
       tabKey,
-    }
+    },
   };
 }
 
@@ -274,7 +274,7 @@ export function loadPubShipmtDetail(shipmtNo, key) {
       endpoint: 'public/v1/transport/shipment/detail',
       method: 'get',
       params: { shipmtNo, key },
-    }
+    },
   };
 }
 
@@ -289,7 +289,7 @@ export function sendTrackingDetailSMSMessage(data) {
       endpoint: 'v1/transport/shipment/sendTrackingDetailSMSMessage',
       method: 'post',
       data,
-    }
+    },
   };
 }
 
@@ -299,12 +299,12 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
       types: [
         actionTypes.SHIPMENT_STATISTICS,
         actionTypes.SHIPMENT_STATISTICS_SUCCEED,
-        actionTypes.SHIPMENT_STATISTICS_FAIL
+        actionTypes.SHIPMENT_STATISTICS_FAIL,
       ],
       endpoint: 'v1/transport/shipment/statistics',
       method: 'get',
       cookie,
-      params: { tenantId, startDate: sDate, endDate: eDate }
-    }
+      params: { tenantId, startDate: sDate, endDate: eDate },
+    },
   };
 }

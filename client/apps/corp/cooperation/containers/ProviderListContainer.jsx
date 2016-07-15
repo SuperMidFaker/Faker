@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Radio, Icon, message } from 'ant-ui';
+import { Radio, Icon, message } from 'antd';
 import BaseList from '../components/BaseList';
 import { setProviderType, editProviderTypes, addPartner, editPartner, changePartnerStatus, deletePartner, invitePartner } from 'common/reducers/partner';
 import { inviteOfflinePartner } from 'common/reducers/invitation';
@@ -13,11 +13,11 @@ const RadioGroup = Radio.Group;
 @connect(state => ({
   partnerlist: state.partner.partnerlist,
   tenantId: state.account.tenantId,
-  providerType: state.partner.providerType
+  providerType: state.partner.providerType,
 }), {
   setProviderType, editProviderTypes,
   addPartner, editPartner, changePartnerStatus, deletePartner,
-  inviteOfflinePartner, invitePartner
+  inviteOfflinePartner, invitePartner,
 })
 export default class ProviderListContainer extends BaseList {
   constructor() {
@@ -31,9 +31,9 @@ export default class ProviderListContainer extends BaseList {
       isProvider: true,
       partnerships: this.type === 'ALL' ? [] : [providerType],
       onOk: (partnerInfo) => {
-        this.props.addPartner({tenantId, partnerInfo, partnerships: partnerInfo.partnerships});
+        this.props.addPartner({ tenantId, partnerInfo, partnerships: partnerInfo.partnerships });
         message.success('合作伙伴已添加');
-      }
+      },
     });
   }
   updateColumns(columns) {
@@ -45,17 +45,17 @@ export default class ProviderListContainer extends BaseList {
       render: (_, record) => {
         return (
           <span>
-            {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record)}><Icon type="edit"/></a>
+            {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record)}><Icon type="edit" /></a>
           </span>
         );
-      }
+      },
     };
     retColumns[0].title = '提供商名称';
     retColumns[1].title = '提供商代码';
     return [
       ...retColumns.slice(0, 2),
       providerSeviceColumn,
-      ...retColumns.slice(2)
+      ...retColumns.slice(2),
     ];
   }
   dataSourceFromPartnerlist(partnerlist) {
@@ -66,7 +66,7 @@ export default class ProviderListContainer extends BaseList {
     } else {
       dataSource = partnerlist.filter(partner => partner.partnerships.some(ps => ps === type));
     }
-    dataSource = dataSource.map(data => ({...data, providerTypes: data.partnerships.filter(ps => ['TRS', 'CCB', 'WHS', 'FWD'].includes(ps)).map(ps => providerShorthandTypes[ps])}));
+    dataSource = dataSource.map(data => ({ ...data, providerTypes: data.partnerships.filter(ps => ['TRS', 'CCB', 'WHS', 'FWD'].includes(ps)).map(ps => providerShorthandTypes[ps]) }));
     return dataSource;
   }
   setHeader() {
@@ -94,9 +94,9 @@ export default class ProviderListContainer extends BaseList {
       mode: 'editProvider',
       providerValues,
       onOk: (partnerships) => {
-        this.props.editProviderTypes({id: record.id, tenantId, partnerships});
+        this.props.editProviderTypes({ id: record.id, tenantId, partnerships });
         message.success('物流服务修改成功');
-      }
+      },
     });
   }
 }

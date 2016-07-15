@@ -11,7 +11,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    accountType: state.account.type
+    accountType: state.account.type,
   })
 )
 export default class CorpPack extends React.Component {
@@ -19,7 +19,7 @@ export default class CorpPack extends React.Component {
     intl: intlShape.isRequired,
     location: PropTypes.object.isRequired,
     accountType: PropTypes.string.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
 
   render() {
@@ -29,32 +29,32 @@ export default class CorpPack extends React.Component {
       key: 'corpsetting-1',
       path: '/corp/info',
       icon: 'zmdi zmdi-info-outline',
-      text: formatMsg(intl, 'corpInfo')
+      text: formatMsg(intl, 'corpInfo'),
     }, {
       single: true,
       key: 'corpsetting-2',
       path: '/corp/personnel',
       icon: 'zmdi zmdi-accounts-alt',
-      text: formatMsg(intl, 'personnelUser')
+      text: formatMsg(intl, 'personnelUser'),
     }, {
       invisible: this.props.accountType === BRANCH,
       single: true,
       key: 'corpsetting-3',
       path: '/corp/organization',
       icon: 'zmdi zmdi-group',
-      text: formatMsg(intl, 'organTitle')
+      text: formatMsg(intl, 'organTitle'),
     }, {
       single: true,
       key: 'corpsetting-4',
       path: '/corp/partners',
       icon: 'zmdi zmdi-share',
-      text: formatMsg(intl, 'partnership')
+      text: formatMsg(intl, 'partnership'),
     }];
     return (
       <div className="am-wrapper am-fixed-sidebar">
         <AmNavBar />
         <div className="am-content">
-          <AmLeftSidebar links={ linkMenus } location={ this.props.location } />
+          <AmLeftSidebar links={linkMenus} location={this.props.location} />
           {this.props.children}
         </div>
       </div>);

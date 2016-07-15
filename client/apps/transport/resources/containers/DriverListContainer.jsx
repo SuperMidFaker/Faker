@@ -5,7 +5,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadDriverList, editDriver } from 'common/reducers/transportResources';
 import { transformRawDriverDataToDisplayData } from '../utils/dataMapping';
 
-function fetchData({dispatch, state}) {
+function fetchData({ dispatch, state }) {
   return dispatch(loadDriverList(state.account.tenantId));
 }
 
@@ -19,25 +19,26 @@ export default class DriverListContainer extends Component {
     loading: PropTypes.bool.isRequired,               // 当前组件是否正在加载
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   handleAddDriverBtnClicked = () => {
     this.context.router.push('/transport/resources/add_driver');
   }
   handleStopDriverBtnClick = (driverId) => {
-    this.props.editDriver({driverId, driverInfo: {status: 0}});
+    this.props.editDriver({ driverId, driverInfo: { status: 0 } });
   }
   handleResumeDriverBtnClick = (driverId) => {
-    this.props.editDriver({driverId, driverInfo: {status: 1}});
+    this.props.editDriver({ driverId, driverInfo: { status: 1 } });
   }
   render() {
     const { drivers } = this.props;
     const dataSource = drivers.map(transformRawDriverDataToDisplayData);
     return (
       <DriverList dataSource={dataSource}
-                  onStopDriverBtnClick={this.handleStopDriverBtnClick}
-                  onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
-                  onAddDriverBtnClicked={this.handleAddDriverBtnClicked} />
+        onStopDriverBtnClick={this.handleStopDriverBtnClick}
+        onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
+        onAddDriverBtnClicked={this.handleAddDriverBtnClicked}
+      />
     );
   }
 }

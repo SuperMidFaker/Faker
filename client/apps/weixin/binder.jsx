@@ -4,11 +4,11 @@ import { loginBind } from 'common/reducers/weixin';
 import WeUI from 'react-weui';
 import './weui.less';
 
-const {Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input} = WeUI;
+const { Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input } = WeUI;
 
 @connect(
   state => ({
-    errorMsg: state.weixin.error
+    errorMsg: state.weixin.error,
   }),
   { loginBind }
 )
@@ -16,14 +16,14 @@ export default class Binder extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     errorMsg: PropTypes.string.isRequired,
-    loginBind: PropTypes.func.isRequired
+    loginBind: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
     username: '',
-    password: ''
+    password: '',
   }
   handleTextChange(ev, field) {
     this.setState({ [field]: ev.target.value });
@@ -45,14 +45,14 @@ export default class Binder extends React.Component {
     const { username, password } = this.state;
     return (
       <div className="panel-body">
-        { this.props.errorMsg }
+        {this.props.errorMsg}
         <Form>
           <FormCell>
             <CellHeader>
               <Label>手机号</Label>
             </CellHeader>
             <CellBody>
-              <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={(ev) => this.handleTextChange(ev, 'username')}/>
+              <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={(ev) => this.handleTextChange(ev, 'username')} />
             </CellBody>
           </FormCell>
           <FormCell vcode>
@@ -61,14 +61,15 @@ export default class Binder extends React.Component {
             </CellHeader>
             <CellBody>
               <Input type="password" placeholder="请输入密码" defaultValue={password}
-                onChange={(ev) => this.handleTextChange(ev, 'password')}/>
+                onChange={(ev) => this.handleTextChange(ev, 'password')}
+              />
             </CellBody>
             <CellFooter>
-              <img />
+              <img role="presentation" />
             </CellFooter>
           </FormCell>
         </Form>
-        <Button className="button" style={{marginTop:'30px', width:'90%'}} onClick={this.handleSubmit}>
+        <Button className="button" style={{ marginTop: '30px', width: '90%' }} onClick={this.handleSubmit}>
           登录绑定
         </Button>
       </div>

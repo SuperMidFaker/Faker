@@ -25,7 +25,7 @@ import {
 } from 'common/constants';
 import { SHIPMENT_DISPATCH_STATUS, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import parse from 'co-body';
-import { sendNewShipMessage }from '../socket.io';
+import { sendNewShipMessage } from '../socket.io';
 import { ShipmentEvent } from '../models/shipmentEvent.db';
 import { DispEventRelation } from '../models/dispEventRelation.db';
 
@@ -87,7 +87,7 @@ function *listExpandShipmts() {
   const params = {
     'S.parent_no': shipmtNo,
     'SD.sp_tenant_id': spTenantId,
-    'SD.sr_tenant_id': srTenantId
+    'SD.sr_tenant_id': srTenantId,
   };
   const res = yield shipmtDispDao.getDispatchShipmts(tenantId, params, 0, 100);
   Result.ok(this, res);
@@ -99,7 +99,7 @@ function *listLsps() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const min = (current - 1) * pageSize;
   const filter = {
-    partner_name:this.request.query.carrier,
+    partner_name: this.request.query.carrier,
   };
   const [partners, totals] = yield [
     copsDao.getAllPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.transportation,
@@ -122,7 +122,7 @@ function *listVehicles() {
   const tenantId = parseInt(this.request.query.tenantId, 10) || 0;
   const plate = this.request.query.plate;
   const min = (current - 1) * pageSize;
-  const [ vehicles, totals ] = yield [
+  const [vehicles, totals] = yield [
     vehiclesDao.getVehicles(tenantId, plate, min, pageSize),
     vehiclesDao.getVehiclesCount(tenantId, plate),
   ];
@@ -150,10 +150,10 @@ function *doDispatch() {
           taskVehicle,
           taskDriverId,
           taskDriverName,
-          connectType
+          connectType,
         } = yield parse(this.req);
 
-  const [ tenants, tusers ] = yield [tenantDao.getTenantInfo(tenantId),
+  const [tenants, tusers] = yield [tenantDao.getTenantInfo(tenantId),
     tenantUserDao.getAccountInfo(loginId)];
 
   if (tenants.length === 0 || tusers.length === 0) {
@@ -176,7 +176,7 @@ function *doDispatch() {
       disp_time: new Date(),
       disp_status: SHIPMENT_DISPATCH_STATUS.unconfirmed,
       status: SHIPMENT_TRACK_STATUS.unaccepted,
-      pod_type: podType
+      pod_type: podType,
     };
 
     if (type === 'tenant') {
@@ -206,8 +206,8 @@ function *doDispatch() {
       wheres: {
         sp_tenant_id: tenantId,
         shipmt_no: shipmtNo,
-        id: parentId
-      }
+        id: parentId,
+      },
     };
 
     arr.push(shipmtDispDao.addDisp(disp), shipmtDispDao.updateDisp(upstatus));
@@ -233,8 +233,8 @@ function *doSend() {
       wheres: {
         sp_tenant_id: tenantId,
         shipmt_no: shipmtNo,
-        id: parentId
-      }
+        id: parentId,
+      },
     };
 
     const upstatus = {
@@ -243,8 +243,8 @@ function *doSend() {
       wheres: {
         sr_tenant_id: tenantId,
         shipmt_no: shipmtNo,
-        id: dispId
-      }
+        id: dispId,
+      },
     };
     const s = sendNewShipMessage({
       ...t,
@@ -255,7 +255,7 @@ function *doSend() {
       shipmt_no: shipmtNo,
       title: '新运单通知',
       remark: `${sr_name} 下单了，快去看看吧！`,
-      content: `${sr_name} 下单了，快去看看吧！运单号：${shipmtNo}`
+      content: `${sr_name} 下单了，快去看看吧！运单号：${shipmtNo}`,
     });
     arr.push(shipmtDispDao.updateDisp(upParentStatus), shipmtDispDao.updateDisp(upstatus), s);
   });
@@ -289,16 +289,16 @@ function *doReturn() {
     wheres: {
       sp_tenant_id: tenantId,
       shipmt_no: shipmtNo,
-      id: parentId
-    }
+      id: parentId,
+    },
   };
 
   const del = {
     wheres: {
       id: dispId,
       sr_tenant_id: tenantId,
-      shipmt_no: shipmtNo
-    }
+      shipmt_no: shipmtNo,
+    },
   };
 
   yield [shipmtDispDao.updateDisp(upstatus),
@@ -315,7 +315,7 @@ function *listSegReq() {
     transitModes,
     nodeLocations,
     vehicleLengths: VEHICLE_LENGTH_TYPES,
-    vehicleTypes: VEHICLE_TYPES
+    vehicleTypes: VEHICLE_TYPES,
   });
 }
 
@@ -336,17 +336,17 @@ function buildConsigneeSegment(sno, shipmtNo, dispId, group, idx) {
     parent_no: shipmtNo,
     segmented: 0,
     wheres: {
-      shipmt_no: shipmtNo
-    }
+      shipmt_no: shipmtNo,
+    },
   };
   const disp = {
     shipmt_no: `${sno}-0${idx}`,
     wheres: {
-      id: dispId
-    }
+      id: dispId,
+    },
   };
 
-  return {shipmt, disp};
+  return { shipmt, disp };
 }
 
 function buildConsignerSegment(sno, shipmtNo, dispId, group, idx) {
@@ -366,17 +366,17 @@ function buildConsignerSegment(sno, shipmtNo, dispId, group, idx) {
     parent_no: shipmtNo,
     segmented: 0,
     wheres: {
-      shipmt_no: shipmtNo
-    }
+      shipmt_no: shipmtNo,
+    },
   };
   const disp = {
     shipmt_no: `${sno}-0${idx}`,
     wheres: {
-      id: dispId
-    }
+      id: dispId,
+    },
   };
 
-  return {shipmt, disp};
+  return { shipmt, disp };
 }
 
 function validGroup(group) {
@@ -428,7 +428,7 @@ function *segmentRequest() {
       arr.push(shipmtDao.copyShipmt(tmp.shipmt), shipmtDispDao.copyDisp(tmp.disp));
     }
 
-    arr.push(shipmtDao.updateShipmt({segmented: 1, wheres: {shipmt_no: o.shipmtNo}}));
+    arr.push(shipmtDao.updateShipmt({ segmented: 1, wheres: { shipmt_no: o.shipmtNo } }));
   });
 
   yield arr;
@@ -452,10 +452,10 @@ function *segmentCancelRequest() {
   // TODO delete shipment and shipment dispatch
   const arr = [];
   res.forEach(v => {
-    arr.push(shipmtDao.deleteShipmt({wheres: {shipmt_no: v.shipmt_no}}));
-    arr.push(shipmtDispDao.deleteDisp({wheres: {id: v.id}}));
+    arr.push(shipmtDao.deleteShipmt({ wheres: { shipmt_no: v.shipmt_no } }));
+    arr.push(shipmtDispDao.deleteDisp({ wheres: { id: v.id } }));
   });
-  arr.push(shipmtDao.updateShipmt({segmented: 0, wheres: {shipmt_no: shipmtNo}}));
+  arr.push(shipmtDao.updateShipmt({ segmented: 0, wheres: { shipmt_no: shipmtNo } }));
   yield arr;
   Result.ok(this);
 }
@@ -471,17 +471,17 @@ function *segmentCancelCheckRequest() {
 }
 
 export default [
-  [ 'get', '/v1/transport/dispatch/shipmts', listShipmts ],
-  [ 'get', '/v1/transport/dispatch/expandlist', listExpandShipmts ],
-  [ 'get', '/v1/transport/dispatch/shipmts/grouped', listShipmtsGrouped ],
-  [ 'get', '/v1/transport/dispatch/shipmts/groupedsub', listShipmtsGroupedSub ],
-  [ 'get', '/v1/transport/dispatch/lsps', listLsps ],
-  [ 'get', '/v1/transport/dispatch/vehicles', listVehicles ],
-  [ 'get', '/v1/transport/dispatch/segrequires', listSegReq ],
-  [ 'post', '/v1/transport/dispatch/segment/cancel', segmentCancelRequest ],
-  [ 'post', '/v1/transport/dispatch/segment/cancelcheck', segmentCancelCheckRequest ],
-  [ 'post', '/v1/transport/dispatch', doDispatch ],
-  [ 'post', '/v1/transport/dispatch/send', doSend ],
-  [ 'post', '/v1/transport/dispatch/return', doReturn ],
-  [ 'post', '/v1/transport/dispatch/segment', segmentRequest ],
+  ['get', '/v1/transport/dispatch/shipmts', listShipmts],
+  ['get', '/v1/transport/dispatch/expandlist', listExpandShipmts],
+  ['get', '/v1/transport/dispatch/shipmts/grouped', listShipmtsGrouped],
+  ['get', '/v1/transport/dispatch/shipmts/groupedsub', listShipmtsGroupedSub],
+  ['get', '/v1/transport/dispatch/lsps', listLsps],
+  ['get', '/v1/transport/dispatch/vehicles', listVehicles],
+  ['get', '/v1/transport/dispatch/segrequires', listSegReq],
+  ['post', '/v1/transport/dispatch/segment/cancel', segmentCancelRequest],
+  ['post', '/v1/transport/dispatch/segment/cancelcheck', segmentCancelCheckRequest],
+  ['post', '/v1/transport/dispatch', doDispatch],
+  ['post', '/v1/transport/dispatch/send', doSend],
+  ['post', '/v1/transport/dispatch/return', doReturn],
+  ['post', '/v1/transport/dispatch/segment', segmentRequest],
 ];

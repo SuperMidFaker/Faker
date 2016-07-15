@@ -17,7 +17,7 @@ function *checkDelgNoExternalNoOrThrow(head, delgSrc, index) {
       where: { delg_no: delgNo, parent_id: null },
     });
     if (!delg) {
-      throw { err_code: 3001, msg: `invalid delegation no at index ${index}`};
+      throw { err_code: 3001, msg: `invalid delegation no at index ${index}` };
     }
     if ((delgSrc === 0 && delg.ref_delg_external_no !== head.external_no)
        || (delgSrc === 1 && delg.ref_recv_external_no !== head.external_no)) {
@@ -54,12 +54,12 @@ function *checkDelgNoExternalNoOrThrow(head, delgSrc, index) {
 
 function *createDelegate(head, billSrc, clientTid) {
   const ietype = head.delg_type;
-  const [ tenants, lastDelegation ] = yield [
+  const [tenants, lastDelegation] = yield [
     tenantDao.getTenantInfo(clientTid),
     Delegation.findOne({
       where: { delg_type: ietype },
-      attributes: [ 'delg_no' ],
-      order: [[ 'created_date', 'DESC' ]],
+      attributes: ['delg_no'],
+      order: [['created_date', 'DESC']],
     }),
   ];
   let delgNo;
@@ -142,7 +142,7 @@ function *createBillHead(delgNo, head) {
   }
   yield [
     BillHeadDao.create({ ...head, bill_no: billNo, delg_no: delgNo }),
-    Dispatch.update({ bill_status: 1}, { where: { delg_no: head.delg_no }}),
+    Dispatch.update({ bill_status: 1 }, { where: { delg_no: head.delg_no } }),
   ];
   return billNo;
 }
@@ -236,9 +236,9 @@ function *createEntryHead(delgNo, head) {
   const row = yield EntryHeadDao.create({ ...head, delg_no: delgNo });
   const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: {
     entry_id: null, delg_no: delgNo,
-  }});
+  } });
   if (unfilledEntryHeadCount === 0) {
-    yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo }});
+    yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo } });
   }
   return row.id;
 }
@@ -312,7 +312,7 @@ function *entryG() {
       raw: true,
       where: {
         head_id: head.id,
-      }
+      },
     });
     results.push({ head, lists });
   }
@@ -330,7 +330,7 @@ function *entryLogG() {
     const entryNo = entryNos[i];
     entryNoDbOps.push(DelegationEntryLogDao.findAll({
       raw: true,
-      attributes: [ 'entry_id', 'process_name', 'process_date' ],
+      attributes: ['entry_id', 'process_name', 'process_date'],
       where: { entry_id: entryNo },
     }));
   }

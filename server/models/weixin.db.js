@@ -9,7 +9,7 @@ export default {
       access_token = ?, unionid = ?, expires_in = ?, refresh_token = ?, created_date = ?`;
     const args = [
       [openid, accToken, unionid, expiresIn, refreshToken, createdAt],
-      accToken, unionid, expiresIn, refreshToken, createdAt
+      accToken, unionid, expiresIn, refreshToken, createdAt,
     ];
     return mysql.insert(sql, args);
   },
@@ -33,20 +33,20 @@ export default {
     const sql = 'update sso_weixin_auth set login_id = ? where openid = ?';
     const args = [loginId, openid];
     return mysql.update(sql, args);
-  }
-}
+  },
+};
 
 export const WeixinUser = sequelize.define('sso_weixin_auth', {
   openid: {
     type: STRING,
-    primaryKey: true
+    primaryKey: true,
   },
   access_token: STRING,
   expires_in: INTEGER,
   refresh_token: STRING,
   login_id: INTEGER,
   unionid: STRING,
-  created_date: DATE
+  created_date: DATE,
 }, {
-    freezeTableName: true
+  freezeTableName: true,
 });

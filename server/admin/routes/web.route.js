@@ -25,5 +25,5 @@ export default [
    ['get', '/manager*', renderWebPage],
    ['get', '/account/password', renderWebPage],
    ['get', '/account/profile', renderWebPage],
-   ['get', '/account/logout', logoutUser]
+   ['get', '/account/logout', logoutUser],
 ];

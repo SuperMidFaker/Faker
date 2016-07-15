@@ -6,7 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import WeUI from 'react-weui';
 import './weui.less';
 
-const {Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input} = WeUI;
+const { Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input } = WeUI;
 
 function fetchData({ state, dispatch, cookie }) {
   if (!state.weixin.profile.loaded) {
@@ -17,20 +17,20 @@ function fetchData({ state, dispatch, cookie }) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    profile: state.weixin.profile
+    profile: state.weixin.profile,
   }),
   { unbindAccount }
 )
 export default class WxProfile extends React.Component {
   static propTypes = {
     profile: PropTypes.object.isRequired,
-    unbindAccount: PropTypes.func.isRequired
+    unbindAccount: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
-    error: ''
+    error: '',
   }
   handleSubmit = (ev) => {
     ev.preventDefault();
@@ -46,7 +46,7 @@ export default class WxProfile extends React.Component {
     const { name, phone, email, position } = this.props.profile;
     return (
       <div className="panel-body">
-        { this.state.error }
+        {this.state.error}
         <Form>
           <FormCell>
             <CellHeader>
@@ -64,7 +64,7 @@ export default class WxProfile extends React.Component {
               <Input type="tel" defaultValue={phone} disabled />
             </CellBody>
             <CellFooter>
-              <img />
+              <img role="presentation" />
             </CellFooter>
           </FormCell>
           <FormCell>
@@ -84,8 +84,9 @@ export default class WxProfile extends React.Component {
             </CellBody>
           </FormCell>
         </Form>
-        <Button style={{position: 'fixed', bottom: '5%', left: '5%', width: '90%', backgroundColor: 'rgba(255, 102, 0, 1)'}}
-          onClick={this.handleSubmit}>
+        <Button style={{ position: 'fixed', bottom: '5%', left: '5%', width: '90%', backgroundColor: 'rgba(255, 102, 0, 1)' }}
+          onClick={this.handleSubmit}
+        >
            解除绑定
         </Button>
       </div>

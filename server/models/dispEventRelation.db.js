@@ -5,10 +5,10 @@ import mysql from '../util/mysql';
 export const DispEventRelation = sequelize.define('tms_disp_event_relations', {
   id: {
     type: INTEGER,
-    primaryKey: true
+    primaryKey: true,
   },
   disp_id: INTEGER,
   event_id: INTEGER,
 }, {
-    freezeTableName: true
+    freezeTableName: true,
 });

@@ -29,7 +29,7 @@ create({
     dispatch,
     function *nf() {
       return this.json(apis);
-    }
-  ]
+    },
+  ],
 });
 console.log(`api start listen on ${port}`);

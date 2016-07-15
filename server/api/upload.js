@@ -30,5 +30,5 @@ function *uploadImgs() {
 }
 
 export default [
-   ['post', '/v1/upload/img/', uploadImgs]
+   ['post', '/v1/upload/img/', uploadImgs],
 ];

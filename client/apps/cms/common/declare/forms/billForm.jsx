@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Button, message } from 'ant-ui';
+import { Collapse, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -28,7 +28,7 @@ BillBody.propTypes = {
   ietype: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   data: PropTypes.array.isRequired,
-  headNo: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]),
+  headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onAdd: PropTypes.func.isRequired,
   onDel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
@@ -84,7 +84,7 @@ export default class BillForm extends React.Component {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
     return (<div>
       <div className="panel-header">
-        { !readonly &&
+        {!readonly &&
           <Button type="primary" onClick={this.handleBillSave} icon="save" size="small">
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>

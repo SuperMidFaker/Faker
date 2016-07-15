@@ -11,13 +11,13 @@ import { setNavTitle } from 'common/reducers/navbar';
     text: '资源',
     muduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: null
+    goBackFn: null,
   }));
 })
 @connect(state => ({
   selectedKey: state.transportResources.selectedMenuItemKey,
-  loading: state.transportResources.loading
-}), {setMenuItemKey})
+  loading: state.transportResources.loading,
+}), { setMenuItemKey })
 export default class MainContainer extends Component {
   static propTypes = {
     selectedKey: PropTypes.string.isRequired,  // 当前选中的MenuItem key
@@ -30,8 +30,9 @@ export default class MainContainer extends Component {
     const { selectedKey, loading } = this.props;
     return (
       <Main selectedKeys={[selectedKey]}
-            onClick={this.handleMenuItemClick}
-            loading={loading}/>
+        onClick={this.handleMenuItemClick}
+        loading={loading}
+      />
     );
   }
 }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import NavLink from './nav-link';
-import { Menu } from 'ant-ui';
+import { Menu } from 'antd';
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 import './am-ant-leftbar.less';
@@ -37,7 +37,7 @@ function isEqualPath(pathA, pathB) {
 export default class AmLeftSidebar extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    links: PropTypes.array.isRequired
+    links: PropTypes.array.isRequired,
     /* {
      *   single:
      *   key:
@@ -54,7 +54,7 @@ export default class AmLeftSidebar extends React.Component {
   }
   state = {
     selectedKeys: [],
-    openedKey: []
+    openedKey: [],
   };
 
   componentDidMount() {
@@ -75,7 +75,7 @@ export default class AmLeftSidebar extends React.Component {
         if (isEqualPath(link.path, path)) {
           this.setState({
             openedKey: [],
-            selectedKeys: [link.key]
+            selectedKeys: [link.key],
           });
           return;
         }
@@ -85,7 +85,7 @@ export default class AmLeftSidebar extends React.Component {
           if (isEqualPath(sublink.path, path)) {
             this.setState({
               openedKey: [link.key],
-              selectedKeys: [sublink.key]
+              selectedKeys: [sublink.key],
             });
             return;
           }
@@ -99,7 +99,7 @@ export default class AmLeftSidebar extends React.Component {
   handleClick = (ev) => {
     // keyPath ['subkey', 'menukey']
     this.setState({
-      openedKey: ev.keyPath.slice(1)
+      openedKey: ev.keyPath.slice(1),
     });
   }
   render() {
@@ -111,25 +111,26 @@ export default class AmLeftSidebar extends React.Component {
         <div className="nano-content">
        */}
         <Menu onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
-          prefixCls="am-sidebar" onClick={ this.handleClick } mode="vertical"
+          prefixCls="am-sidebar" onClick={this.handleClick} mode="vertical"
         >
         {
           links.map(link => {
             if (link.single) {
               return (<MenuItem key={link.key}>
-                <NavLink to={ link.path }>
-                  <i className={ `icon  ${link.icon}` }></i>
+                <NavLink to={link.path}>
+                  <i className={`icon  ${link.icon}`}></i>
                   <span>{link.text}</span>
                 </NavLink>
               </MenuItem>);
             } else {
               return (
                 <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'am-sidebar-submenu-expanded' : ''}
-                      title={<div><i className={ `icon  ${link.icon}` }></i><span>{link.text}</span></div>}>
+                  title={<div><i className={`icon  ${link.icon}`}></i><span>{link.text}</span></div>}
+                >
                   {
                     link.sublinks.map(sub => {
                       return (<MenuItem key={sub.key}>
-                        <NavLink to={ sub.path }>
+                        <NavLink to={sub.path}>
                           {sub.text}
                         </NavLink>
                       </MenuItem>);

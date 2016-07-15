@@ -78,7 +78,7 @@ function billHeadToEntryHead(entryId, head) {
     decl_port: head.master_customs,
     tenant_id: head.tenant_id,
     create_tenant_id: head.create_tenant_id,
-    creater_login_id: 0
+    creater_login_id: 0,
   };
 }
 
@@ -120,7 +120,7 @@ function billHeadToDelegate(head, sendName, recName, cTenantId) {
     urgent: 0,
     delegate_type: head.delegate_type,
     tenant_id: cTenantId,
-    created_date: new Date()
+    created_date: new Date(),
   };
 }
 
@@ -261,12 +261,12 @@ function *partnersImport() {
         }
 
         if (uid > 0) {
-          yield tenantUserDao.insertPersonnel(0, uid, {name: '', role: TENANT_ROLE.owner.name}, {id: tid, parentId: 0});
+          yield tenantUserDao.insertPersonnel(0, uid, { name: '', role: TENANT_ROLE.owner.name }, { id: tid, parentId: 0 });
         }
 
         const results = yield [
           copsDao.insertPartner(stenantId, tid, ppcode, p.name, PARTNER_TENANT_TYPE[0], 1),
-          copsDao.insertPartner(tid, stenantId, spcode, name, PARTNER_TENANT_TYPE[0], 1)
+          copsDao.insertPartner(tid, stenantId, spcode, name, PARTNER_TENANT_TYPE[0], 1),
         ];
 
         if (isArray(part.ships) && part.ships.length > 0) {
@@ -274,11 +274,11 @@ function *partnersImport() {
           const arr2 = [];
           part.ships.forEach(v => {
             if (v.type_code === PARTNERSHIP_TYPE_INFO.customer) {
-              arr2.push({key: 2, code: PARTNERSHIP_TYPE_INFO.customsClearanceBroker});
+              arr2.push({ key: 2, code: PARTNERSHIP_TYPE_INFO.customsClearanceBroker });
             } else {
-              arr2.push({key: 0, code: PARTNERSHIP_TYPE_INFO.customer});
+              arr2.push({ key: 0, code: PARTNERSHIP_TYPE_INFO.customer });
             }
-            arr1.push({key: v.type, code: v.type_code});
+            arr1.push({ key: v.type, code: v.type_code });
           });
 
           yield [
@@ -321,7 +321,7 @@ function *entryLogs() {
           lid = e.entry_id;
           rarr.push({
             entry_id: lid,
-            logs: [e]
+            logs: [e],
           });
         } else {
           rarr[idx].logs.push(e);
@@ -330,7 +330,7 @@ function *entryLogs() {
         lid = e.entry_id;
         rarr.push({
           entry_id: lid,
-          logs: [e]
+          logs: [e],
         });
       }
     }
@@ -365,5 +365,5 @@ export default [
   ['get', '/customs/status', billStatus, 'bill_status_info_url'],
   ['post', '/customs/partners', partnersImport, 'import_partners_url'],
   ['post', '/customs/entries', addEntries, 'add_entry_ids_url'],
-  ['get', '/customs/entries/logs', entryLogs, 'gen_entry_logs_by_entry_id_url']
+  ['get', '/customs/entries/logs', entryLogs, 'gen_entry_logs_by_entry_id_url'],
 ];

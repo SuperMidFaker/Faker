@@ -11,7 +11,7 @@ const REACT_STATICS = {
   getDefaultProps: true,
   mixins: true,
   propTypes: true,
-  type: true
+  type: true,
 };
 
 const KNOWN_STATICS = {
@@ -20,7 +20,7 @@ const KNOWN_STATICS = {
   prototype: true,
   caller: true,
   arguments: true,
-  arity: true
+  arity: true,
 };
 
 

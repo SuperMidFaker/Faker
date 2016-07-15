@@ -28,17 +28,17 @@ function goBack(router) {
 export default class CreateCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf([ 'import', 'export' ]),
-    loadCompRelations: PropTypes.func.isRequired
+    type: PropTypes.oneOf(['import', 'export']),
+    loadCompRelations: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   render() {
     return (
       <div className="main-content">
         <div className="page-body">
-          <CompRelationForm router={this.context.router} formData={initialState.formData}/>
+          <CompRelationForm router={this.context.router} formData={initialState.formData} />
         </div>
       </div>
     );

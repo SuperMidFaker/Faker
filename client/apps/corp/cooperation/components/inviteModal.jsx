@@ -8,14 +8,14 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal, Button, Form, Input, Icon } from 'ant-ui';
+import { Modal, Button, Form, Input, Icon } from 'antd';
 import classNames from 'classnames';
 
 const FormItem = Form.Item;
 
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 14}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
 };
 
 function inviteModal(config) {
@@ -45,22 +45,22 @@ function inviteModal(config) {
     if (props.onOk) {
       const phone = document.getElementById('yInvitePhone').value;
       const email = document.getElementById('yInviteEmail').value;
-      props.onOk({phone, email});
+      props.onOk({ phone, email });
     }
   }
   const body = (
     <div>
-      <div className="ant-confirm-title" style={{marginBottom: 10, marginLeft: 20}}>
-        <Icon type="info-circle-o" style={{color: '#2DB7F5', marginRight: 5}}/>该合作伙伴为线下用户,发送短信或邮件邀请他成为线上租户
+      <div className="ant-confirm-title" style={{ marginBottom: 10, marginLeft: 20 }}>
+        <Icon type="info-circle-o" style={{ color: '#2DB7F5', marginRight: 5 }} />该合作伙伴为线下用户,发送短信或邮件邀请他成为线上租户
       </div>
-      <hr/>
+      <hr />
       <div className="ant-confirm-body">
         <Form horizontal>
           <FormItem label="手机号码:" {...formItemLayout}>
-            <Input id="yInvitePhone"/>
+            <Input id="yInvitePhone" />
           </FormItem>
           <FormItem label="邮箱:" {...formItemLayout}>
-            <Input id="yInviteEmail"/>
+            <Input id="yInviteEmail" />
           </FormItem>
         </Form>
       </div>
@@ -90,7 +90,8 @@ function inviteModal(config) {
       footer=""
       maskTransitionName="fade"
       style={style}
-      width={width}>
+      width={width}
+    >
       <div style={{ zoom: 1, overflow: 'hidden' }}>{body}</div>
     </Modal>
     , div, function A() {

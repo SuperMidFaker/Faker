@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Select, Cascader } from 'ant-ui';
+import { Row, Select, Cascader } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CHINA_CODE } from '../../common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -42,7 +42,7 @@ export default class RegionCascade extends React.Component {
       disableCascader: false,
       country: CHINA_CODE,
       areaItems: !this.props.uncontrolled && this.props.region && this.props.region.province ?
-        [ this.props.region.province, this.props.region.city, this.props.region.district ]
+        [this.props.region.province, this.props.region.city, this.props.region.district]
         : [],
     };
   }
@@ -79,7 +79,7 @@ export default class RegionCascade extends React.Component {
       });
     } else {
       this.setState({
-        disableCascader: false
+        disableCascader: false,
       });
     }
     if ('setFormValue' in this.props) {
@@ -95,7 +95,7 @@ export default class RegionCascade extends React.Component {
       this.props.onCascadeChange(areas);
     }
     if ('setFormValue' in this.props) {
-      const [ province, city, district ] = areas;
+      const [province, city, district] = areas;
       this.props.setFormValue('province', province);
       this.props.setFormValue('city', city);
       this.props.setFormValue('district', district);
@@ -112,7 +112,7 @@ export default class RegionCascade extends React.Component {
       <Row>
         {
           this.props.withCountry &&
-          <Select size="large" value={country} style={{width: '100%', marginBottom: 8}} onChange={this.handleCountryChange}>
+          <Select size="large" value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
             <OptGroup label={formatMsg(intl, 'selectCountry')}>
             {
               world.countries.map(ctry => <Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>)
@@ -121,8 +121,8 @@ export default class RegionCascade extends React.Component {
           </Select>
         }
         <Cascader size="large" options={chinaRegions} onChange={this.handleCascaderChange} expandTrigger="hover"
-        placeholder={formatMsg(intl, 'defaultCascaderRegion')} disabled={disableCascader}
-        { ...valueProps }
+          placeholder={formatMsg(intl, 'defaultCascaderRegion')} disabled={disableCascader}
+          {...valueProps}
         />
       </Row>
     );

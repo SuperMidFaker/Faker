@@ -60,9 +60,10 @@ export default function downloadMultiple(files) {
   files.forEach((file) => {
     // the download init has to be sequential for firefox if the urls are not on the same domain
     if (isFirefox() && !sameDomain(file.url)) {
-      return setTimeout(download.bind(null, file.url, file.name), 100 * ++delay);
+      setTimeout(download.bind(null, file.url, file.name), 100 * ++delay);
     }
 
     download(file.url, file.name);
   });
+  return null;
 }

@@ -35,7 +35,7 @@ export default () => {
           weixinOAuth.setCookie(this.cookies, openid, wxcookie.loginId);
         } catch (e) {
           this.throw(403, {
-            msg: e.message
+            msg: e.message,
           });
         }
       }
@@ -54,7 +54,7 @@ export default () => {
           }
         } catch (e) {
           this.throw(403, {
-            msg: e.message
+            msg: e.message,
           });
         }
       } else {
@@ -62,4 +62,4 @@ export default () => {
       }
     }
   };
-}
+};

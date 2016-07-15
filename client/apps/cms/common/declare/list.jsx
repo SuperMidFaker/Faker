@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Radio, message } from 'ant-ui';
+import { Button, Radio, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -71,7 +72,7 @@ export default class DeclareList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.status !== this.props.params.status) {
@@ -117,7 +118,7 @@ export default class DeclareList extends React.Component {
      */
       return params;
     },
-    remotes: this.props.delgList
+    remotes: this.props.delgList,
   })
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -143,7 +144,7 @@ export default class DeclareList extends React.Component {
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     this.context.router.push({ pathname:
-      `/${this.props.ietype}/declare/list/${targetVal}`
+      `/${this.props.ietype}/declare/list/${targetVal}`,
     });
   }
   handleEntryNoFill = (row) => {
@@ -184,7 +185,7 @@ export default class DeclareList extends React.Component {
         <div className="page-body">
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
-              dataSource={this.dataSource} scroll={{ x: totalWidth, y: 460 }} rowKey={getRowKey}
+              dataSource={this.dataSource} scroll={{ x: totalWidth/* , y: 460 */ }} rowKey={getRowKey}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

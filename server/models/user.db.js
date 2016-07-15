@@ -3,11 +3,11 @@ export default {
   getUserByAccount(account, code) {
     const sql = `SELECT id, username, phone, email, password, unid, user_type
       FROM sso_login WHERE phone = ? OR username = ? OR email = ? AND disabled = 0 LIMIT 1`;
-    const args = [account, `${account}${ code ? '@' : '' }${ code || '' }`, account];
+    const args = [account, `${account}${code ? '@' : ''}${code || ''}`, account];
     return mysql.query(sql, args);
   },
   getUserByPhone(phone) {
-    const sql = `select id, phone from sso_login where phone = ? and disabled = 0 limit 1`;
+    const sql = 'select id, phone from sso_login where phone = ? and disabled = 0 limit 1';
     const args = [phone];
     return mysql.query(sql, args);
   },
@@ -28,7 +28,7 @@ export default {
     return mysql.insert(sql, args, trans);
   },
   deleteAccounts(accounts, trans) {
-    const sql = `delete from sso_login where id in (?)`;
+    const sql = 'delete from sso_login where id in (?)';
     const args = [accounts];
     return mysql.delete(sql, args, trans);
   },
@@ -51,5 +51,5 @@ export default {
     const sql = 'update sso_login set phone = ?, avatar = ?, username = ?, email = ? where id = ?';
     const args = [phone, avatar, name, email, lid];
     return mysql.update(sql, args, trans);
-  }
-}
+  },
+};

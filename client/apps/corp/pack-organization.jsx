@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 export default class OrganizationWrapper extends React.Component {
   static propTypes = {
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
   };
   render() {
     return (

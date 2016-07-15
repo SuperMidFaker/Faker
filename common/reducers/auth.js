@@ -19,7 +19,7 @@ const initialState = {
   isAuthed: false,
   nonTenant: false,
   userId: null,
-  smsId: null
+  smsId: null,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         isAuthed: false,
-        loggingIn: true
+        loggingIn: true,
       };
     case LOGIN_SUCCEED: {
       const userType = action.result.data && action.result.data.userType;
@@ -38,7 +38,7 @@ export default function reducer(state = initialState, action = {}) {
         error: null,
         password: '',
         isAuthed: true,
-        userType
+        userType,
       };
     }
     case LOGIN_FAIL:
@@ -47,13 +47,13 @@ export default function reducer(state = initialState, action = {}) {
         loggingIn: false,
         error: {
           code: action.error.error_code,
-          message:  action.error.msg
-        }
+          message: action.error.msg,
+        },
       };
     case INPUT_CHANGE:
       return {
         ...state,
-        [action.data.field]: action.data.value
+        [action.data.field]: action.data.value,
       };
     case ACC_LOAD_SUCCEED:
       return { ...state, isAuthed: true };
@@ -63,8 +63,8 @@ export default function reducer(state = initialState, action = {}) {
         nonTenant: true,
         error: {
           code: 5001,
-          message: action.error.msg
-        }
+          message: action.error.msg,
+        },
       };
     case SMS_REQUEST_SUCCEED:
       return { ...state, smsId: action.result.data.smsId, userId: action.result.data.userId };
@@ -78,39 +78,39 @@ export default function reducer(state = initialState, action = {}) {
 export function submit(userForm) {
   return {
     [CLIENT_API]: {
-      types: [ LOGIN, LOGIN_SUCCEED, LOGIN_FAIL ],
+      types: [LOGIN, LOGIN_SUCCEED, LOGIN_FAIL],
       endpoint: 'public/v1/login',
       method: 'post',
-      data: userForm
-    }
+      data: userForm,
+    },
   };
 }
 
 export function setValue(field, value) {
   return {
     type: INPUT_CHANGE,
-    data: { field, value }
+    data: { field, value },
   };
 }
 
 export function requestSms(phone) {
   return {
     [CLIENT_API]: {
-      types: [ SMS_REQUEST, SMS_REQUEST_SUCCEED, SMS_REQUEST_FAIL ],
+      types: [SMS_REQUEST, SMS_REQUEST_SUCCEED, SMS_REQUEST_FAIL],
       endpoint: 'public/v1/sms/code',
       method: 'post',
-      data: { phone }
-    }
+      data: { phone },
+    },
   };
 }
 
 export function verifySms(smsId, userId, smsCode, newPwd) {
   return {
     [CLIENT_API]: {
-      types: [ SMS_VERIFY, SMS_VERIFY_SUCCEED, SMS_VERIFY_FAIL ],
+      types: [SMS_VERIFY, SMS_VERIFY_SUCCEED, SMS_VERIFY_FAIL],
       endpoint: 'public/v1/sms/verify',
       method: 'post',
-      data: { smsId, userId, smsCode, newPwd }
-    }
+      data: { smsId, userId, smsCode, newPwd },
+    },
   };
 }

@@ -17,8 +17,8 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value : 'all' },
-    { name: 'shipmt_no', value: ''},
+    { name: 'type', value: 'all' },
+    { name: 'shipmt_no', value: '' },
   ],
   /*
      sortField: 'created_date',
@@ -67,11 +67,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters)
+        filters: JSON.parse(action.params.filters),
     };
     case actionTypes.SHOW_VEHICLE_MODAL:
       return { ...state,
-        vehicleModal: { visible: true, dispId: action.data.dispId }
+        vehicleModal: { visible: true, dispId: action.data.dispId },
       };
     case actionTypes.HIDE_VEHICLE_MODAL:
       return { ...state, vehicleModal: initialState.vehicleModal };
@@ -81,7 +81,7 @@ export default function reducer(state = initialState, action) {
           visible: true, dispId: action.data.dispId,
           type: action.data.type,
           shipmtNo: action.data.shipmtNo,
-        }
+        },
       };
     case actionTypes.HIDE_DATE_MODAL:
       return { ...state, dateModal: initialState.dateModal };
@@ -91,27 +91,27 @@ export default function reducer(state = initialState, action) {
           visible: true, dispId: action.data.dispId,
           shipmtNo: action.data.shipmtNo,
           parentDispId: action.data.parentDispId,
-        }
+        },
       };
     case actionTypes.HIDE_POD_MODAL:
       return { ...state, podModal: initialState.podModal };
     case actionTypes.SHOW_LOC_MODAL:
       return {
         ...state, locModal: {
-          visible: true, transit: action.data
-        }
+          visible: true, transit: action.data,
+        },
       };
     case actionTypes.HIDE_LOC_MODAL:
       return {
         ...state, locModal: {
-          visible: false, transit: {}
-        }
+          visible: false, transit: {},
+        },
       };
     case actionTypes.REPORT_LOC_SUCCEED:
       return {
         ...state, locReportedShipments: [
-          ...state.locReportedShipments, action.data.shipmtNo
-        ]
+          ...state.locReportedShipments, action.data.shipmtNo,
+        ],
     };
     case actionTypes.CHANGE_FILTER: {
       const filters = state.filters.filter(flt => flt.name !== action.data.field);
@@ -134,8 +134,8 @@ export function loadTransitTable(cookie, params) {
       endpoint: 'v1/transport/tracking/shipmts',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -163,7 +163,7 @@ export function saveVehicle(dispId, plate, driver, remark) {
       endpoint: 'v1/transport/tracking/vehicle',
       method: 'post',
       data: { dispId, plate, driver, remark },
-    }
+    },
   };
 }
 
@@ -191,7 +191,7 @@ export function savePickOrDeliverDate(data) {
       endpoint: 'v1/transport/tracking/pickordeliverdate',
       method: 'post',
       data,
-    }
+    },
   };
 }
 
@@ -232,7 +232,7 @@ export function reportLoc(tenantId, shipmtNo, parentNo, point) {
       endpoint: 'v1/transport/tracking/point',
       method: 'post',
       data: { tenantId, shipmtNo, parentNo, point },
-    }
+    },
   };
 }
 
@@ -248,7 +248,7 @@ export function saveSubmitPod(shipmtNo, dispId, parentDispId,
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
       data: { shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
-    }
+    },
   };
 }
 
@@ -263,7 +263,7 @@ export function loadShipmtLastPoint(shipmtNo) {
       endpoint: 'v1/transport/tracking/lastpoint',
       method: 'get',
       params: { shipmtNo },
-    }
+    },
   };
 }
 

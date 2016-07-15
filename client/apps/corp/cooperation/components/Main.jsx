@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Menu } from 'ant-ui';
+import { Menu } from 'antd';
 import CustomerListContainer from '../containers/CustomerListContainer';
 import SupplierListContainer from '../containers/SupplierListContainer';
 import ProviderListContainer from '../containers/ProviderListContainer';
@@ -10,7 +10,7 @@ const MenuItem = Menu.Item;
 export default function Main(props) {
   const { selectedMenuItemKey, onMenuItemClick } = props;
   const content = [<CustomerListContainer />, <SupplierListContainer />, <div></div>, <ProviderListContainer />, <InvitationListContainer />]
-    .map((container, index) => <div style={{display: index === parseInt(selectedMenuItemKey, 10) ? 'block' : 'none'}} key={index}>{container}</div>);
+    .map((container, index) => <div style={{ display: index === parseInt(selectedMenuItemKey, 10) ? 'block' : 'none' }} key={index}>{container}</div>);
   return (
     <div>
       <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuItemClick}>

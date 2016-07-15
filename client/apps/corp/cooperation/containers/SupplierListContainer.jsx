@@ -8,7 +8,7 @@ import { inviteOfflinePartner } from 'common/reducers/invitation';
   tenantId: state.account.tenantId,
 }), {
   inviteOnlPartner, addPartner, editPartner,
-  changePartnerStatus, deletePartner, inviteOfflinePartner, invitePartner
+  changePartnerStatus, deletePartner, inviteOfflinePartner, invitePartner,
 })
 export default class SupplierListContainer extends BaseList {
   constructor() {

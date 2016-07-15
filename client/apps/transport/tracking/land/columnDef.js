@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Icon, Tag, Tooltip } from 'ant-ui';
+import { Icon, Tag, Tooltip } from 'antd';
 import RowUpdater from './rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
@@ -46,12 +46,12 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('departurePlace'),
     width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
     width: 90,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD'),
   }, {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
@@ -60,67 +60,67 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('arrivalPlace'),
     width: 150,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
     width: 90,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
     render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
   }, {
-      title: msg('shipmtStatus'),
-      dataIndex: 'status',
-      width: 120,
-      render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-          return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-          return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          return <Tag color="blue">{`4 ${msg('intransitShipmt')}`}</Tag>;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          return <Tag color="green">{`5 ${msg('deliveredShipmt')}`}</Tag>;
-        } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-          return <Tag color="green">{`6 ${msg('proofOfDelivery')}`}</Tag>;
-        } else {
-          return <span />;
-        }
+    title: msg('shipmtStatus'),
+    dataIndex: 'status',
+    width: 120,
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        return <Tag color="blue">{`4 ${msg('intransitShipmt')}`}</Tag>;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+        return <Tag color="green">{`5 ${msg('deliveredShipmt')}`}</Tag>;
+      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+        return <Tag color="green">{`6 ${msg('proofOfDelivery')}`}</Tag>;
+      } else {
+        return <span />;
       }
-    }, {
-      title: msg('shipmtPrevTrack'),
-      width: 140,
-      render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          return `${msg('sendAction')}
+    },
+  }, {
+    title: msg('shipmtPrevTrack'),
+    width: 140,
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return `${msg('sendAction')}
           ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-          return `${msg('acceptAction')}
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        return `${msg('acceptAction')}
           ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-          return `${msg('dispatchAction')}
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        return `${msg('dispatchAction')}
           ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          return `${msg('pickupAction')}
+      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        return `${msg('pickupAction')}
           ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          return `${msg('deliverAction')}
+      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+        return `${msg('deliverAction')}
           ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
-        } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-          return `${msg('podUploadAction')}
+      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+        return `${msg('podUploadAction')}
           ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
-        }
-      },
-    }, {
-      title: msg('shipmtException'),
-      width: 80,
-      dataIndex: 'excp_level',
-    }];
+      }
+    },
+  }, {
+    title: msg('shipmtException'),
+    width: 80,
+    dataIndex: 'excp_level',
+  }];
 
   columns.push({
     title: msg('shipmtCarrier'),
@@ -150,23 +150,23 @@ export default function makeColumns(type, handlers, msg) {
       } else {
         return msg('ownFleet');
       }
-    }
+    },
   }, {
     title: msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
-    width: 120
+    width: 120,
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80
+    width: 80,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80
+    width: 80,
   }, {
     title: msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80
+    width: 80,
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',
@@ -175,20 +175,20 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',
-    width: 80
+    width: 80,
   }, {
-      title: msg('proofOfDelivery'),
-      dataIndex: 'pod_type',
-      width: 80,
-      render: (text, record) => {
-        if (record.pod_type === 'qrPOD') {
-          return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
-        } else if (record.pod_type === 'ePOD') {
-          return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
-        } else {
-          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
-        }
-    }
+    title: msg('proofOfDelivery'),
+    dataIndex: 'pod_type',
+    width: 80,
+    render: (text, record) => {
+      if (record.pod_type === 'qrPOD') {
+        return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
+      } else if (record.pod_type === 'ePOD') {
+        return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
+      } else {
+        return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
+      }
+    },
   });
 
   if (type !== 'pod') {
@@ -205,7 +205,7 @@ export default function makeColumns(type, handlers, msg) {
               // 线下客户手动更新
               return (
                 <RowUpdater label={msg('updateVehicleDriver')}
-                onAnchored={handlers.onShowVehicleModal} row={record}
+                  onAnchored={handlers.onShowVehicleModal} row={record}
                 />
               );
             } else {
@@ -215,7 +215,7 @@ export default function makeColumns(type, handlers, msg) {
             if (record.sp_tenant_id === -1) {
               return (
                 <RowUpdater label={msg('updatePickup')}
-                onAnchored={handlers.onShowPickModal} row={record}
+                  onAnchored={handlers.onShowPickModal} row={record}
                 />
               );
             } else if (record.sp_tenant_id === 0) {
@@ -224,7 +224,7 @@ export default function makeColumns(type, handlers, msg) {
                 // 线下司机
                 return (
                   <RowUpdater label={msg('updatePickup')}
-                  onAnchored={handlers.onShowPickModal} row={record}
+                    onAnchored={handlers.onShowPickModal} row={record}
                   />
                 );
               } else {
@@ -251,14 +251,14 @@ export default function makeColumns(type, handlers, msg) {
             } else if (record.sp_tenant_id === -1) {
               return (
                 <RowUpdater label={msg('submitPod')}
-                onAnchored={handlers.onShowPodModal} row={record}
+                  onAnchored={handlers.onShowPodModal} row={record}
                 />
               );
             } else if (record.sp_tenant_id === 0) {
               if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
                 return (
                   <RowUpdater label={msg('submitPod')}
-                  onAnchored={handlers.onShowPodModal} row={record}
+                    onAnchored={handlers.onShowPodModal} row={record}
                   />
                 );
               } else {
@@ -283,7 +283,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
             <RowUpdater label={msg('auditPod')}
-            onAnchored={handlers.onShowAuditModal} row={record}
+              onAnchored={handlers.onShowAuditModal} row={record}
             />
             </div>
           );
@@ -298,7 +298,8 @@ export default function makeColumns(type, handlers, msg) {
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           return (
             <div><Icon type="frown" /> <RowUpdater label={msg('resubmitPod')}
-            onAnchored={handlers.onResubmit} row={record} />
+              onAnchored={handlers.onResubmit} row={record}
+            />
             </div>
           );
         } else {

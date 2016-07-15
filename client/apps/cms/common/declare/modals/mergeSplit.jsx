@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Card, Radio, Checkbox, Select, message, Row, Col } from 'ant-ui';
+import { Modal, Card, Radio, Checkbox, Select, message, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
@@ -18,7 +18,7 @@ function MSCheckbox(props) {
   return (
     <div>
       <Checkbox onChange={handleChange} checked={state[fieldOpt][field]}>
-      { text }
+      {text}
       </Checkbox>
     </div>
   );
@@ -143,7 +143,7 @@ export default class MergeSplitModal extends React.Component {
     const { mergeOpt } = this.state;
     let mergeConditions = this.mergeConditions;
     if (this.props.isCustomRegisted) {
-      mergeConditions = [ ...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
+      mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
     }
     return (
       <Modal onCancel={this.handleCancel} onOk={this.handleOk}
@@ -160,7 +160,8 @@ export default class MergeSplitModal extends React.Component {
                 </Col>
                 <Col offset="2" span="19">
                   <CheckboxGroup options={mergeConditions} disabled={!mergeOpt.checked}
-                    onChange={this.handleMergeCheck}/>
+                    onChange={this.handleMergeCheck}
+                  />
                 </Col>
               </Row>
               <Row>

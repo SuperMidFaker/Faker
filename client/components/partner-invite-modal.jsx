@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button, Input, message } from 'ant-ui';
+import { Modal, Button, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { hideInviteModal, sendInvitation } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
@@ -17,7 +17,7 @@ import './partner-modal.less';
     partnerName: state.partner.inviteModal.partnerName,
     partnerCode: state.partner.inviteModal.partnerCode,
     step: state.partner.inviteModal.step,
-    visible: state.partner.inviteModal.visible
+    visible: state.partner.inviteModal.visible,
   }),
   { hideInviteModal, sendInvitation }
 )
@@ -30,22 +30,22 @@ export default class PartnerInviteDialog extends React.Component {
     partnerName: PropTypes.string.isRequired,
     partnerCode: PropTypes.string.isRequired,
     step: PropTypes.number.isRequired,
-    visible: PropTypes.bool.isRequired
+    visible: PropTypes.bool.isRequired,
   }
   state = {
-    contact: ''
+    contact: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible) {
       this.setState({
-        contact: ''
+        contact: '',
       });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleContactInputChange = (ev) => {
     this.setState({
-      contact: ev.target.value
+      contact: ev.target.value,
     });
   }
   handleCancel = () => {
@@ -74,13 +74,13 @@ export default class PartnerInviteDialog extends React.Component {
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
         {formatGlobalMsg(this.props.intl, 'cancel')}
-        </Button>
+        </Button>,
       ];
     } else if (step === 2) {
       footer = [
         <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
         {this.msg('iknow')}
-        </Button>
+        </Button>,
       ];
     }
     return (

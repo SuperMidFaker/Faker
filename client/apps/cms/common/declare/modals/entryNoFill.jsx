@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, message } from 'ant-ui';
+import { Modal, Input, message } from 'antd';
 import { closeEfModal, fillEntryNo } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -25,7 +25,7 @@ export default class EntryNoFillModal extends React.Component {
     reload: PropTypes.func.isRequired,
   }
   state = {
-    entryNo: ''
+    entryNo: '',
   }
   handleEntryNoChange = ev => {
     this.setState({ entryNo: ev.target.value });

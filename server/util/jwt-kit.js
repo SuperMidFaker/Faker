@@ -13,22 +13,22 @@ export function genJwtCookie(cookies, userId, userType, remember) {
   const jwtoken = kJwt.sign(claims, privateKey, opts);
   const ONE_DAY = 24 * 60 * 60;
   cookies.set(config.get('jwt_cookie_key'), jwtoken, {
-    httpOnly : __DEV__ ? false : true,
+    httpOnly: __DEV__ ? false : true,
     expires: remember ? new Date(Date.now() + config.get('jwt_expire_seconds') * 1000) : new Date(Date.now() + ONE_DAY * 1000),
-    domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
+    domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain'),
   });
 }
 
 export function clearJwtCookie(cookies) {
   cookies.set(config.get('jwt_cookie_key'), '', {
-    httpOnly : __DEV__ ? false : true,
-    domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain')
+    httpOnly: __DEV__ ? false : true,
+    domain: !__PROD__ ? undefined : config.get('jwt_cookie_domain'),
   });
 }
 
 export const koaJwtOptions = kJwt(
   Object.assign({
     cookie: config.get('jwt_cookie_key'),
-    secret: publicKey
+    secret: publicKey,
   }, config.get('jwt_crypt'))
 );

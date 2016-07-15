@@ -12,7 +12,7 @@ const formatGlobalMsg = format(globalMessages);
 @connect(
   state => ({
     smsId: state.auth.smsId,
-    userId: state.auth.userId
+    userId: state.auth.userId,
   }),
   { requestSms, verifySms })
 export default class Forgot extends React.Component {
@@ -21,16 +21,16 @@ export default class Forgot extends React.Component {
     smsId: PropTypes.number,
     userId: PropTypes.number,
     requestSms: PropTypes.func.isRequired,
-    verifySms: PropTypes.func.isRequired
+    verifySms: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
     error: null, // { message: {}},
     phone: '',
     smsCode: '',
-    newPwd: ''
+    newPwd: '',
   }
   handleTextChange(ev, field) {
     this.setState({ [field]: ev.target.value });
@@ -66,7 +66,7 @@ export default class Forgot extends React.Component {
     const error = this.state.error;
     return (
       <div className="panel-body">
-        { !this.props.smsId ?
+        {!this.props.smsId ?
         (<form className="form-horizontal">
           <p className="text-center">{formatMsg(intl, 'verifyCodeGuide')}</p>
           <div className="form-group">
@@ -79,7 +79,7 @@ export default class Forgot extends React.Component {
               />
             </div>
           </div>
-          <button className="btn btn-block btn-primary btn-lg" onClick={ (ev) => this.handleSmsRequest(ev) }>
+          <button className="btn btn-block btn-primary btn-lg" onClick={(ev) => this.handleSmsRequest(ev)}>
             {formatMsg(intl, 'verifyObtatin')}
           </button>
           <button className="btn btn-block" onClick={(ev) => this.handleSmsCancel(ev)}>{formatGlobalMsg(intl, 'cancel')}</button>
@@ -114,7 +114,7 @@ export default class Forgot extends React.Component {
           <button className="btn btn-block btn-primary btn-lg" onClick={(ev) => this.handleSmsVerify(ev)}>
           {formatMsg(intl, 'finishVerify')}
           </button>
-          <button className="btn btn-block" onClick={ (ev) => this.handleSmsCancel(ev) }>
+          <button className="btn btn-block" onClick={(ev) => this.handleSmsCancel(ev)}>
           {formatGlobalMsg(intl, 'cancel')}
           </button>
           {

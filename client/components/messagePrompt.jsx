@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, notification } from 'ant-ui';
+import { Button, notification } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -12,29 +12,29 @@ let socket = null;
 @connect(
   state => {
     return {
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId
-  };
-})
+      tenantId: state.account.tenantId,
+      loginId: state.account.loginId,
+    };
+  })
 export default class MessagePrompt extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   componentDidMount() {
     if (socket === null) {
       socket = io.connect();
       socket.on('connect', () => {
-        const {tenantId, loginId} = this.props;
-        socket.emit('room', {tenantId, loginId});
+        const { tenantId, loginId } = this.props;
+        socket.emit('room', { tenantId, loginId });
       });
       socket.on('message', (data) => {
         this.notif(data.title, {
           body: data.content,
           icon: data.logo,
-          url: data.url
+          url: data.url,
         });
       });
     }

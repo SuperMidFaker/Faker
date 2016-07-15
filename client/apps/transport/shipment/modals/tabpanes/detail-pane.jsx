@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Row, Col, Table, Card } from 'ant-ui';
+import { Row, Col, Table, Card } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
 import messages from '../../message.i18n';
@@ -90,41 +90,41 @@ export default class PreviewPanel extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Row className="pane-section">
-          <Col span="12" style={{paddingRight: 8}}>
+          <Col span="12" style={{ paddingRight: 8 }}>
             <Card bodyStyle={{ padding: 16 }}>
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
-                field={ shipmt.consigner_name } fieldCol={{ span: 18 }}
+                field={shipmt.consigner_name} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('departurePort')}
-                field={ renderConsignLoc(shipmt, 'consigner')} fieldCol={{ span: 18 }}
+                field={renderConsignLoc(shipmt, 'consigner')} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('pickupAddr')}
-                field={ shipmt.consigner_addr } fieldCol={{ span: 18 }}
+                field={shipmt.consigner_addr} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
-                field={ shipmt.consigner_contact } fieldCol={{ span: 18 }}
+                field={shipmt.consigner_contact} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
-                field={ shipmt.consigner_mobile } fieldCol={{ span: 18 }}
+                field={shipmt.consigner_mobile} fieldCol={{ span: 18 }}
               />
             </Card>
           </Col>
-          <Col span="12" style={{paddingLeft: 8}}>
+          <Col span="12" style={{ paddingLeft: 8 }}>
             <Card bodyStyle={{ padding: 16 }}>
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consignee')}
-                field={ shipmt.consignee_name } fieldCol={{ span: 18 }}
+                field={shipmt.consignee_name} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('arrivalPort')}
-                field={ renderConsignLoc(shipmt, 'consignee')} fieldCol={{ span: 18 }}
+                field={renderConsignLoc(shipmt, 'consignee')} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('deliveryAddr')}
-                field={ shipmt.consignee_addr } fieldCol={{ span: 18 }}
+                field={shipmt.consignee_addr} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
-                field={ shipmt.consignee_contact } fieldCol={{ span: 18 }}
+                field={shipmt.consignee_contact} fieldCol={{ span: 18 }}
               />
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
-                field={ shipmt.consignee_mobile } fieldCol={{ span: 18 }}
+                field={shipmt.consignee_mobile} fieldCol={{ span: 18 }}
               />
             </Card>
           </Col>
@@ -134,41 +134,41 @@ export default class PreviewPanel extends React.Component {
             <Row>
               <Col span="8">
                 <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupDate')}
-                  field={ moment(shipmt.pickup_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
+                  field={moment(shipmt.pickup_est_date).format('YYYY-MM-DD')} fieldCol={{ span: 16 }}
                 />
               </Col>
               <Col span="8">
                 <PaneFormItem labelCol={{ span: 8 }} label={this.msg('shipmtTransit')}
-                  field={ `${shipmt.transit_time || 0}${this.msg('day')}` } fieldCol={{ span: 16 }}
+                  field={`${shipmt.transit_time || 0}${this.msg('day')}`} fieldCol={{ span: 16 }}
                 />
               </Col>
               <Col span="8">
                 <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryDate')}
-                  field={ moment(shipmt.deliver_est_date).format('YYYY-MM-DD') } fieldCol={{ span: 16 }}
+                  field={moment(shipmt.deliver_est_date).format('YYYY-MM-DD')} fieldCol={{ span: 16 }}
                 />
               </Col>
             </Row>
             <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
-                field={ shipmt.transport_mode } fieldCol={{ span: 16 }}
+                field={shipmt.transport_mode} fieldCol={{ span: 16 }}
               />
             </Col>
-            { shipmt.transport_mode_code === 'FTL' &&
+            {shipmt.transport_mode_code === 'FTL' &&
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
-                field={ shipmt.vehicle_type } fieldCol={{ span: 16 }}
+                field={shipmt.vehicle_type} fieldCol={{ span: 16 }}
               />
             </Col>
             }
-            { shipmt.transport_mode_code === 'FTL' &&
+            {shipmt.transport_mode_code === 'FTL' &&
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
                 field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
               />
             </Col>
             }
-            { shipmt.transport_mode_code === 'CTN' &&
+            {shipmt.transport_mode_code === 'CTN' &&
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
                 field={shipmt.container_no} fieldCol={{ span: 16 }}
@@ -177,7 +177,7 @@ export default class PreviewPanel extends React.Component {
             }
             <Col span="24">
               <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
-                field={ shipmt.remark } fieldCol={{ span: 21 }}
+                field={shipmt.remark} fieldCol={{ span: 21 }}
               />
             </Col>
             </Row>

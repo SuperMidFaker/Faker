@@ -14,13 +14,13 @@ export default [
   ['put', '/v1/import/sendaccept', sendAccept],
   ['put', '/v1/import/invalidAccept', invalidAccept],
   ['get', '/v1/import/importacceptlogs', importacceptlogs],
-]
+];
 
 function* importaccepts() {
   const current = parseInt(this.request.query.currentPage || 1, 10);
   const pageSize = parseInt(this.request.query.pageSize || 10, 10);
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
-  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10)
+  const currentStatus = parseInt(this.request.query.currentStatus || 1, 10);
 
 
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
@@ -42,14 +42,14 @@ function* importaccepts() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: ids
+        data: ids,
       },
       statusList: {
         notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
         notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
         acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
-        invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0
-      }
+        invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0,
+      },
     });
   } catch (e) {
     console.log(e);
@@ -58,7 +58,6 @@ function* importaccepts() {
 }
 
 function* importacceptStatusG() {
-
   const tenantId = parseInt(this.request.query.tenantId || 0, 10);
   const filters = this.request.query.filters ? JSON.parse(this.request.query.filters) : [];
 
@@ -72,7 +71,7 @@ function* importacceptStatusG() {
       notSendCount: notSendCount.length > 0 ? notSendCount[0].count : 0,
       notAcceptCount: notAcceptCount.length > 0 ? notAcceptCount[0].count : 0,
       acceptCount: acceptCount.length > 0 ? acceptCount[0].count : 0,
-      invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0
+      invalidCount: invalidCount.length > 0 ? invalidCount[0].count : 0,
     });
   } catch (e) {
     console.log(e);
@@ -102,23 +101,21 @@ function* getSelectOptions() {
   const customsInfoList = yield idDao.getCustomsInfo();
   const declareWayList = yield idDao.getDeclareWay();
   const tradeModeList = yield idDao.getTradeMode();
-  const shortNameList=yield idDao.getShortName();
+  const shortNameList = yield idDao.getShortName();
   const tenantId = params.tenantId;
   const delId = params.delId;
 
   const declareFileList = yield idDao.getDeclareFileList(tenantId, delId);
   const declareCategoryList = yield idDao.getDeclareCategoryList(tenantId);
   return Result.ok(this, {
-    customsInfoList: customsInfoList,
-    declareWayList: declareWayList,
-    tradeModeList: tradeModeList,
-    declareFileList: declareFileList,
-    declareCategoryList: declareCategoryList,
-    shortNameList:shortNameList
+    customsInfoList,
+    declareWayList,
+    tradeModeList,
+    declareFileList,
+    declareCategoryList,
+    shortNameList,
   });
 }
-
-
 
 
 function* editImportAccept() {
@@ -229,8 +226,8 @@ function* importacceptlogs() {
         totalCount: totals.length > 0 ? totals[0].count : 0,
         pageSize,
         current,
-        data: logs
-      }
+        data: logs,
+      },
     });
   } catch (e) {
     console.log(e);

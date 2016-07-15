@@ -13,7 +13,7 @@ function goBack(router) {
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: `新建租户`,
+    text: '新建租户',
     moduleName: 'tenants',
     withModuleLayout: false,
     goBackFn: () => goBack(router),
@@ -21,12 +21,12 @@ function goBack(router) {
 })
 export default class Create extends React.Component {
   static propTypes = {
-    params: PropTypes.object.isRequired
+    params: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   render() {
-    return <TenantForm router={this.context.router} params={this.props.params}/>;
+    return <TenantForm router={this.context.router} params={this.props.params} />;
   }
 }

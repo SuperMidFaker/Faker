@@ -7,5 +7,5 @@ export default function ImportWrapper(props) {
 
 ImportWrapper.propTypes = {
   location: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired
+  children: PropTypes.object.isRequired,
 };

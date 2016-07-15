@@ -14,24 +14,24 @@ function *getAcceptDelegations() {
   const tenantId = parseInt(this.request.query.tenantId, 10);
   let dispWhere = {};
   if (filters.status === 'accepted') {
-    dispWhere = { status: { $gt: DELG_STATUS.unaccepted }};
+    dispWhere = { status: { $gt: DELG_STATUS.unaccepted } };
   } else if (filters.status === 'unaccepted') {
     dispWhere = { status: DELG_STATUS.unaccepted };
   }
   const delgs = yield Delegation.findAndCountAll({
     raw: true,
     attributes: [
-      [ 'delg_no', 'key' ],
-      `delg_no`, `invoice_no`, `contract_no`, `customer_name`,
-      `bl_wb_no`, `pieces`, `weight`, `voyage_no`,
+      ['delg_no', 'key'],
+      'delg_no', 'invoice_no', 'contract_no', 'customer_name',
+      'bl_wb_no', 'pieces', 'weight', 'voyage_no',
     ],
     offset: (current - 1) * pageSize,
     limit: pageSize,
     include: [{
       model: Dispatch,
       attributes: [
-        `ref_delg_external_no`, `ref_recv_external_no`,
-        `delg_time`, `acpt_time`, 'source', 'id',
+        'ref_delg_external_no', 'ref_recv_external_no',
+        'delg_time', 'acpt_time', 'source', 'id',
       ],
       where: { ...dispWhere, recv_tenant_id: tenantId },
     }],
@@ -63,12 +63,12 @@ function *createDelegationByCCB() {
       accepted,
     } = body;
     // 生成委托运单号delg_no
-    const [ tenants, lastDelegation ] = yield [
+    const [tenants, lastDelegation] = yield [
       tenantDao.getTenantInfo(tenantId),
       Delegation.findOne({
         where: { delg_type: ietype },
-        attributes: [ 'delg_no' ],
-        order: [[ 'created_date', 'DESC' ]],
+        attributes: ['delg_no'],
+        order: [['created_date', 'DESC']],
       }),
     ];
     let delgNo;
@@ -115,7 +115,7 @@ function *findDelgParams() {
   if (field === 'decl_way_code') {
     const declareWayModes = yield CmsCompDeclareWayDao.findAll({
       raw: true,
-      attributes: [['decl_way_code', 'value'], [ 'decl_way_name', 'text' ]],
+      attributes: [['decl_way_code', 'value'], ['decl_way_name', 'text']],
       where: {
         tenant_id: tenantId,
         i_e_type: ieType === 'import' ? 0 : 1,
@@ -128,14 +128,14 @@ function *findDelgParams() {
   } else if (field === 'trans_mode') {
     const transModes = yield CmsParamTransModeDao.findAll({
       raw: true,
-      attributes: [[ 'trans_code', 'value' ], [ 'trans_spec', 'text' ]],
-      where: [ 'trans_spec like ?', `%${searched}%` ],
+      attributes: [['trans_code', 'value'], ['trans_spec', 'text']],
+      where: ['trans_spec like ?', `%${searched}%`],
     });
     return Result.ok(this, { transModes });
   } else if (field === 'trade_mode') {
     const tradeModes = yield CmsParamTradeDao.findAll({
       raw: true,
-      attributes: [[ 'trade_mode', 'value' ], [ 'trade_abbr', 'text' ]],
+      attributes: [['trade_mode', 'value'], ['trade_abbr', 'text']],
       where: {
         trade_mode: {
           $like: `%${searched}%`,
@@ -156,7 +156,7 @@ function *acceptDelg() {
       recv_login_name: loginName,
       status: DELG_STATUS.undeclared,
       acpt_time: new Date(),
-    }, { where: { id: dispId }});
+    }, { where: { id: dispId } });
     return Result.ok(this);
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -168,43 +168,43 @@ function getDelgRequireObjs(tenantId, ieType) {
     coopDao.getPartnerByTypeCode(tenantId, PARTNERSHIP_TYPE_INFO.customer),
     CmsParamTransModeDao.findAll({
       raw: true,
-      attributes: [ [ 'trans_code', 'value' ], ['trans_spec', 'text'] ],
+      attributes: [['trans_code', 'value'], ['trans_spec', 'text']],
     }),
     CmsParamTradeDao.findAll({
-        raw: true,
-        attributes: [ [ 'trade_mode', 'value' ], ['trade_abbr', 'text'] ],
-        limit: 10,
-      }),
-      CmsCompDeclareWayDao.findAll({
-          raw: true,
-          attributes: [ [ 'decl_way_code', 'value' ], [ 'decl_way_name', 'text' ] ],
-          where: { tenant_id: tenantId, i_e_type: ieType === 'import' ? 0 : 1 },
-        }),
+      raw: true,
+      attributes: [['trade_mode', 'value'], ['trade_abbr', 'text']],
+      limit: 10,
+    }),
+    CmsCompDeclareWayDao.findAll({
+      raw: true,
+      attributes: [['decl_way_code', 'value'], ['decl_way_name', 'text']],
+      where: { tenant_id: tenantId, i_e_type: ieType === 'import' ? 0 : 1 },
+    }),
   ];
 }
 
 function *getDelegation() {
   const { delgNo, tenantId, ieType } = this.request.query;
   try {
-    const [delegation, files, [ clients, transModes, tradeModes, declareWayModes ]] = yield [
+    const [delegation, files, [clients, transModes, tradeModes, declareWayModes]] = yield [
       Delegation.findOne({
         raw: true,
         attributes: [
-          `delg_no`, 'order_no', `invoice_no`, `contract_no`, `bl_wb_no`, `pieces`,
-          `weight`, `trans_mode`, `voyage_no`, `trade_mode`, `decl_way_code`,
-          `ems_no`, `customer_tenant_id`, `customer_partner_id`, `customer_name`,
+          'delg_no', 'order_no', 'invoice_no', 'contract_no', 'bl_wb_no', 'pieces',
+          'weight', 'trans_mode', 'voyage_no', 'trade_mode', 'decl_way_code',
+          'ems_no', 'customer_tenant_id', 'customer_partner_id', 'customer_name',
         ],
         where: {
-            delg_no: delgNo,
-          },
-          include: [{
-            model: Dispatch,
-            attributes: [ 'ref_delg_external_no', 'ref_recv_external_no' ],
-          }],
+          delg_no: delgNo,
+        },
+        include: [{
+          model: Dispatch,
+          attributes: ['ref_delg_external_no', 'ref_recv_external_no'],
+        }],
       }),
       DelegationFileDao.findAll({
         raw: true,
-        attributes: [[ 'id', 'uid' ], [ 'doc_name', 'name' ], 'url' ],
+        attributes: [['id', 'uid'], ['doc_name', 'name'], 'url'],
         where: {
           delg_no: delgNo,
         },
@@ -214,7 +214,7 @@ function *getDelegation() {
     if (delegation.trade_mode && tradeModes.filter(tm => tm.value === delegation.trade_mode).length === 0) {
       const tradeMode = yield CmsParamTradeDao.findOne({
         raw: true,
-        attributes: [[ 'trade_mode', 'value' ], [ 'trade_abbr', 'text' ]],
+        attributes: [['trade_mode', 'value'], ['trade_abbr', 'text']],
         where: {
           trade_mode: delegation.trade_mode,
         },
@@ -238,12 +238,12 @@ function *editDelgByCCB() {
   try {
     const { delegation, addedFiles, removedFiles, accepted, loginId } = yield cobody(this);
     const dbOps = [
-      Delegation.update(delegation, { where: { delg_no: delegation.delg_no }}),
+      Delegation.update(delegation, { where: { delg_no: delegation.delg_no } }),
       Dispatch.update({
         status: accepted ? DELG_STATUS.undeclared : DELG_STATUS.unaccepted,
         acpt_time: accepted ? new Date() : undefined,
         ref_recv_external_no: delegation.internal_no,
-      }, { where: { delg_no: delegation.delg_no }}),
+      }, { where: { delg_no: delegation.delg_no } }),
     ];
     addedFiles.forEach(af => dbOps.push(
       DelegationFileDao.create({
@@ -266,9 +266,9 @@ function *editDelgByCCB() {
 }
 
 function *getDelgRequires() {
-  const { tenantId, ieType, } = this.request.query;
+  const { tenantId, ieType } = this.request.query;
   try {
-    const [ clients, transModes, tradeModes, declareWayModes ] = yield getDelgRequireObjs(tenantId, ieType);
+    const [clients, transModes, tradeModes, declareWayModes] = yield getDelgRequireObjs(tenantId, ieType);
     return Result.ok(this, {
       clients, transModes, tradeModes, declareWayModes,
     });
@@ -281,9 +281,9 @@ function *delDelg() {
   try {
     const { delgNo } = yield cobody(this);
     yield [
-      Delegation.destroy({ where: { delg_no: delgNo }}),
-      Dispatch.destroy({ where: { delg_no: delgNo }}),
-      DelegationFileDao.destroy({ where: { delg_no: delgNo }}),
+      Delegation.destroy({ where: { delg_no: delgNo } }),
+      Dispatch.destroy({ where: { delg_no: delgNo } }),
+      DelegationFileDao.destroy({ where: { delg_no: delgNo } }),
     ];
     return Result.ok(this);
   } catch (e) {
@@ -292,13 +292,13 @@ function *delDelg() {
 }
 
 export default [
-  [ 'get', '/v1/cms/acceptance/delegations', getAcceptDelegations ],
-  [ 'post', '/v1/cms/ccb/delegation', createDelegationByCCB ],
-  [ 'get', '/v1/cms/delegation/params', findDelgParams ],
-  [ 'get', '/v1/cms/delegation/form/requires', getDelgRequires ],
-  [ 'post', '/v1/cms/delegation/accept', acceptDelg ],
-  [ 'get', '/v1/cms/ccb/delegation', getDelegation ],
-  [ 'post', '/v1/cms/ccb/delegation/edit', editDelgByCCB ],
-  [ 'post', '/v1/cms/delegation/accept', acceptDelg ],
-  [ 'post', '/v1/cms/delegation/del', delDelg ],
+  ['get', '/v1/cms/acceptance/delegations', getAcceptDelegations],
+  ['post', '/v1/cms/ccb/delegation', createDelegationByCCB],
+  ['get', '/v1/cms/delegation/params', findDelgParams],
+  ['get', '/v1/cms/delegation/form/requires', getDelgRequires],
+  ['post', '/v1/cms/delegation/accept', acceptDelg],
+  ['get', '/v1/cms/ccb/delegation', getDelegation],
+  ['post', '/v1/cms/ccb/delegation/edit', editDelgByCCB],
+  ['post', '/v1/cms/delegation/accept', acceptDelg],
+  ['post', '/v1/cms/delegation/del', delDelg],
 ];

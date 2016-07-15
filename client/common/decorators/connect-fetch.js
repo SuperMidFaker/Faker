@@ -6,7 +6,7 @@ import { argumentContainer } from '../util';
     When this decorator is used, it MUST be the first (outermost) decorator.
     Otherwise, we cannot find and call the fetchers methods.
 */
-export default function connectFetch(conn = {deferred: false}) {
+export default function connectFetch(conn = { deferred: false }) {
   return (...fetchers) => {
     return Wrapped => {
       class WrappedComponent extends Component {
@@ -15,19 +15,20 @@ export default function connectFetch(conn = {deferred: false}) {
           params: PropTypes.object,
         }
         static contextTypes = {
-          store: PropTypes.object.isRequired
+          store: PropTypes.object.isRequired,
         }
+
+        static deferredfetchers = conn.deferred ? fetchers : [];
+        static prefetchers = !conn.deferred ? fetchers : [];
+
         componentDidMount() {
           const { store } = this.context;
           const { location, params } = this.props;
           const promises = fetchers.map(fetcher => fetcher({
             state: store.getState(), dispatch: store.dispatch,
-            location, params}));
+            location, params }));
           Promise.all(promises);
         }
-
-        static deferredfetchers = conn.deferred ? fetchers : [];
-        static prefetchers = !conn.deferred ? fetchers : [];
 
         render() {
           return <Wrapped {...this.props} />;

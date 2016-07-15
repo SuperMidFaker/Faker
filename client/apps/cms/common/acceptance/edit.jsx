@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Popconfirm, message } from 'ant-ui';
+import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
@@ -30,7 +30,7 @@ import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
 @Form.create()
 export default class AcceptanceEdit extends Component {
   static propTypes = {
-    type: PropTypes.oneOf([ 'import', 'export' ]),
+    type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -70,7 +70,7 @@ export default class AcceptanceEdit extends Component {
   }
   handleUploadedFile = (file) => {
     this.setState({
-      addedFiles: [ ...this.state.addedFiles, file ],
+      addedFiles: [...this.state.addedFiles, file],
     });
   }
   handleFileRemove = (file) => {
@@ -78,7 +78,7 @@ export default class AcceptanceEdit extends Component {
     if (filters.length !== this.state.addedFiles.length) {
       this.setState({ addedFiles: filters });
     } else {
-      this.setState({ removedFiles: [ ...this.state.removedFiles, file ]});
+      this.setState({ removedFiles: [...this.state.removedFiles, file] });
     }
   }
   render() {
@@ -89,7 +89,7 @@ export default class AcceptanceEdit extends Component {
           <Form horizontal form={form}>
             <div className="panel-body body-responsive">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type}/>
+                <BasicForm form={form} ieType={type} />
               </Col>
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
                 <UploadGroup onFileUpload={this.handleUploadedFile}
@@ -98,7 +98,7 @@ export default class AcceptanceEdit extends Component {
               </Col>
             </div>
             <div style={{ padding: '16px' }}>
-              <Button size="large" type="primary" style={{marginRight: 20}}
+              <Button size="large" type="primary" style={{ marginRight: 20 }}
                 onClick={this.handleSaveBtnClick} loading={submitting}
               >
               保存

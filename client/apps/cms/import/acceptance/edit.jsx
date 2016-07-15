@@ -5,10 +5,10 @@ import { loadDelg } from 'common/reducers/cmsDelegation';
 
 function fetchData({ cookie, params, dispatch, state }) {
   return dispatch(loadDelg(cookie, {
-      delgNo: params.delgNo,
-      tenantId: state.account.tenantId,
-      ieType: 'import',
-    })
+    delgNo: params.delgNo,
+    tenantId: state.account.tenantId,
+    ieType: 'import',
+  })
   );
 }
 
@@ -18,6 +18,6 @@ export default class ImportAcceptanceEdit extends React.Component {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <Edit type="import" { ...this.props } />;
+    return <Edit type="import" {...this.props} />;
   }
 }
