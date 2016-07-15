@@ -43,7 +43,9 @@ function *getDelgDeclares() {
   rows.forEach(row => {
     filesDbOps.push(DelegationFileDao.findAll({
       raw: true,
-      delg_no: row.delg_no,
+      where: {
+        delg_no: row.delg_no,
+      },
       attributes: [ [ 'doc_name', 'name' ], 'url' ],
     }));
   });
