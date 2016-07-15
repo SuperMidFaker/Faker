@@ -117,6 +117,7 @@ export default class ChangePassword extends React.Component {
       <div className="acc-panel">
         <div className="panel-heading">
           <h3>{this.msg('pwdTitle')}</h3>
+          <Button size="large" onClick={this.handleCancel} style={{float: 'right'}} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
         </div>
         <div className="panel-body">
           <Form horizontal onSubmit={this.handlePasswordChange} form={formhoc}
@@ -128,7 +129,6 @@ export default class ChangePassword extends React.Component {
             <Row>
               <Col span="18" offset="6">
                 <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-                <Button size="large" onClick={this.handleCancel}>{formatGlobalMsg(intl, 'back')}</Button>
               </Col>
             </Row>
           </Form>

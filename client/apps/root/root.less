@@ -24,12 +24,7 @@ img {
 .ant-menu-vertical {
   border-right: none;
 }
-.ant-menu-item .icon {
-  font-size: 20px;
-  vertical-align: middle;
-  margin-right: 6px;
-  line-height: 15px;
-}
+
 .ant-menu-vertical .ant-menu-item {
   border-right: none;
 }
@@ -94,6 +89,30 @@ img {
     display: block;
     position: relative;
   }
+  .ant-menu {
+    border-bottom: none;
+  }
+  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a {
+    display: block;
+    color: #666;
+  }
+  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a:hover {
+    color: #2db7f5;
+  }
+  .ant-menu-item, .ant-menu-submenu-title {
+    padding: 0 12px;
+  }
+  .ant-menu-item, 
+  .ant-menu-submenu-title  {
+    .icon {
+      font-size: 24px;
+      vertical-align: middle;
+      line-height: 18px;
+    }
+  }
+  .ant-menu-sub {
+    width: 100px;
+  }
 }
 .navbar-nav {
   margin: 8px -15px;
@@ -109,7 +128,7 @@ img {
 }
 .navbar {
   position: relative;
-  min-height: 50px;
+  min-height: @am-header-height;
   margin-bottom: 18px;
   border: 1px solid transparent;
   border-radius: 0px;
@@ -148,7 +167,7 @@ img {
   padding: 16px 15px;
   font-size: 15px;
   line-height: 18px;
-  height: 50px;
+  height: 48px;
 }
 .btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container-fluid:after, .container-fluid:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-collapse:after, .navbar-collapse:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
   content: " ";
@@ -273,7 +292,7 @@ img {
       display:none;
       padding:0 16px;
       border-width:0;
-      line-height:50px;
+      line-height:48px;
       @media (max-width:767px) {
         width: 60px;
         display:block;
@@ -381,6 +400,11 @@ img {
       }
     }
     .am-user-nav {
+      .avatar {
+        max-width:32px;
+        max-height:32px;
+        border-radius:50%;
+      }
       >li.dropdown {
         >a {
           padding-left:16px;
@@ -403,19 +427,6 @@ img {
           }
         }
       }
-      /*
-      .dropdown-menu {
-        li a .icon {
-          font-size:20px;
-          vertical-align:middle;
-          margin-right:6px;
-        }
-        &:after {
-          left:auto;
-          right:20px
-        }
-      }
-      */
     }
     .am-icons-nav {
       margin-right:20px;
@@ -512,7 +523,7 @@ img {
       margin-right: 10px;
       width: 80px;
       background-image: url("../../../public/assets/img/welogix_logo_160_100.png");
-      background-size: auto 50px;
+      background-size: auto 48px;
       @media (min-width:768px) and (max-width:991px) {
         margin-right:0;
         padding-left:0;
