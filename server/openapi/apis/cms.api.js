@@ -291,12 +291,16 @@ function *entryG() {
   if (delgNo) {
     heads = yield EntryHeadDao.findAll({
       raw: true,
-      delg_no: delgNo,
+      where: {
+        delg_no: delgNo,
+      },
     });
   } else if (entryNo) {
     heads = yield EntryHeadDao.findAll({
       raw: true,
-      entry_id: entryNo,
+      where: {
+        entry_id: entryNo,
+      },
     });
   } else {
     return this.error(codes.params_error, 'delg_no and entry_id are empty');
@@ -306,7 +310,9 @@ function *entryG() {
     const head = heads[i];
     const lists = yield EntryBodyDao.findAll({
       raw: true,
-      head_id: head.id,
+      where: {
+        head_id: head.id,
+      }
     });
     results.push({ head, lists });
   }
