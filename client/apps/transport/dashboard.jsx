@@ -68,18 +68,18 @@ export default class Dashboard extends React.Component {
       });
     }
     const promises = [];
-    for (const i in geoCoordMap) {
-      const p = queryGeoLocation(i);
+    Object.keys(geoCoordMap).forEach(geo => {
+      const p = queryGeoLocation(geo);
       promises.push(p);
-    }
+    });
     const result = Promise.all(promises);
     result.then((arr) => {
       let j = 0;
-      for (const i in geoCoordMap) {
-        geoCoordMap[i][0] = arr[j].result.location.lng;
-        geoCoordMap[i][1] = arr[j].result.location.lat;
+      Object.keys(geoCoordMap).forEach(geo => {
+        geoCoordMap[geo][0] = arr[j].result.location.lng;
+        geoCoordMap[geo][1] = arr[j].result.location.lat;
         j++;
-      }
+      });
 
       const convertData = (data) => {
         const res = [];
