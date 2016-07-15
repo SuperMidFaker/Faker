@@ -66,6 +66,7 @@ export default class DeclareList extends React.Component {
     if (nextProps.params.status !== this.props.params.status) {
       const filter = { ...nextProps.listFilter, declareType: nextProps.params.status };
       return nextProps.loadDelgList(null, {
+        ietype: nextProps.ietype,
         tenantId: nextProps.tenantId,
         filter: JSON.stringify(filter),
         pageSize: nextProps.delgList.pageSize,
@@ -113,6 +114,7 @@ export default class DeclareList extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleTableLoad = (filter, current) => {
     this.props.loadDelgList(null, {
+      ietype: this.props.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.delgList.pageSize,

@@ -368,7 +368,7 @@ export default class DispatchDock extends Component {
     });
   }
   handleNewVehicleClick = () => {
-    
+
   }
   render() {
     const { show, shipmts, lsps, vehicles } = this.props;
