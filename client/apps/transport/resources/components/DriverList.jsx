@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Table, Button } from 'ant-ui';
+import { Table, Button } from 'antd';
 import { Link } from 'react-router';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
 const rowSelection = {
   onSelect() {
-  }
+  },
 };
 
 function DriverList(props) {
@@ -16,8 +16,9 @@ function DriverList(props) {
       <span>
         <Link to={`/transport/resources/edit_driver/${record.driver_id}`}>修改</Link>
         <span className="ant-divider"></span>
-        <a onClick={ () => onStopDriverBtnClick(record.driver_id) }
-           disabled={record.status === '不可用'}>
+        <a onClick={() => onStopDriverBtnClick(record.driver_id)}
+          disabled={record.status === '不可用'}
+        >
           停用
         </a>
       </span>
@@ -28,7 +29,8 @@ function DriverList(props) {
     return (
       <span>
         <a
-          onClick={ () => onResumeDriverBtnClick(record.driver_id)}>
+          onClick={() => onResumeDriverBtnClick(record.driver_id)}
+        >
           启用
         </a>
       </span>
@@ -44,22 +46,22 @@ function DriverList(props) {
     {
       title: '手机号码',
       dataIndex: 'phone',
-      key: 'type'
+      key: 'type',
     },
     {
       title: '指派车辆',
       dataIndex: 'plate_number',
-      key: 'plate_number'
+      key: 'plate_number',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'status'
+      key: 'status',
     },
     {
       title: '备注',
       dataIndex: 'remark',
-      key: 'remark'
+      key: 'remark',
     },
     {
       title: '操作',
@@ -71,8 +73,8 @@ function DriverList(props) {
         } else {
           return editAndStopDriverOperations(record);
         }
-      }
-    }
+      },
+    },
   ];
   return (
     <div className="main-content">
@@ -83,7 +85,7 @@ function DriverList(props) {
       </div>
       <div className="page-body">
         <div className="panel-body">
-          <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection}/>
+          <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
         </div>
       </div>
     </div>

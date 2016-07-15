@@ -31,7 +31,7 @@ export function getWebAccessToken(request, code) {
     appid: weixinConfig.get('APP_ID'),
     secret: weixinConfig.get('APP_SECRET'),
     code,
-    grant_type: 'authorization_code'
+    grant_type: 'authorization_code',
   });
 }
 
@@ -49,7 +49,7 @@ export function refreshAccessToken(request, refreshToken) {
   return request.get(weixinConfig.get('REFRESH_TOKEN_URL')).query({
     appid: weixinConfig.get('APP_ID'),
     grant_type: 'refresh_token',
-    refresh_token: refreshToken
+    refresh_token: refreshToken,
   });
 }
 
@@ -57,6 +57,6 @@ export function getSnsUserInfo(request, accessToken, openid) {
   return request.get(weixinConfig.get('SNS_USER_URL')).query({
     access_token: accessToken,
     openid,
-    lang: 'zh_CN'
+    lang: 'zh_CN',
   });
 }

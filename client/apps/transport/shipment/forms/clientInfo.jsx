@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Tooltip } from 'ant-ui';
+import { Row, Col, Tooltip } from 'antd';
 import InputItem from './input-item';
 import AutoCompSelectItem from './autocomp-select-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -68,13 +68,13 @@ export default class ClientInfo extends React.Component {
           <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
             <div>
               <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
-              field="customer_name"
-              required optionData={clientOpts} filterFields={[ 'code' ]}
-              optionField="name" optionKey="key" optionValue="value"
-              rules={[{
-                required: true, message: this.msg('clientNameMust')
+                field="customer_name"
+                required optionData={clientOpts} filterFields={['code']}
+                optionField="name" optionKey="key" optionValue="value"
+                rules={[{
+                required: true, message: this.msg('clientNameMust'),
               }]}
-              initialValue={name} getValueFromEvent={this.findClientValue}
+                initialValue={name} getValueFromEvent={this.findClientValue}
               />
             </div>
           </Tooltip>
@@ -82,7 +82,7 @@ export default class ClientInfo extends React.Component {
         </Col>
         <Col span={24 - outerColSpan} className="subform-body">
           <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8}
-          field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
+            field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
           />
         </Col>
       </Row>

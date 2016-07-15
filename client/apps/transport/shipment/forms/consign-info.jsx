@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form } from 'ant-ui';
+import { Row, Col, Form } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
@@ -21,7 +21,7 @@ function getRenderFields(type) {
     addr: 'consignee_addr',
     contact: 'consignee_contact',
     mobile: 'consignee_mobile',
-    email: 'consignee_email'
+    email: 'consignee_email',
   } : {
     name: 'consigner_name',
     province: 'consigner_province',
@@ -30,7 +30,7 @@ function getRenderFields(type) {
     addr: 'consigner_addr',
     contact: 'consigner_contact',
     mobile: 'consigner_mobile',
-    email: 'consigner_email'
+    email: 'consigner_email',
   };
 }
 
@@ -48,7 +48,7 @@ function getFieldDefaults(state, type) {
     fieldDefaults: getFieldDefaults(state, props.type),
     consignLocations: props.type === 'consignee' ?
       state.shipment.formRequire.consigneeLocations :
-      state.shipment.formRequire.consignerLocations
+      state.shipment.formRequire.consignerLocations,
   }),
   { setFormValue, setConsignFields }
 )
@@ -89,7 +89,7 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.contact]: selectConsignLoc.contact,
         [this.renderFields.mobile]: selectConsignLoc.mobile,
-        [this.renderFields.email]: selectConsignLoc.email
+        [this.renderFields.email]: selectConsignLoc.email,
       });
     }
   }
@@ -123,12 +123,12 @@ export default class ConsignInfo extends React.Component {
     title: 'consigneeInfo',
     name: 'consignee',
     portal: 'arrivalPort',
-    addr: 'deliveryAddr'
+    addr: 'deliveryAddr',
   } : {
     title: 'consignerInfo',
     name: 'consigner',
     portal: 'departurePort',
-    addr: 'pickupAddr'
+    addr: 'pickupAddr',
   }
   renderFields = getRenderFields(this.props.type)
   renderRules = this.props.type === 'consignee' ? {
@@ -143,7 +143,7 @@ export default class ConsignInfo extends React.Component {
     name: {
       required: true,
       rules: [{
-        required: true, message: this.msg('consignerNameMessage')
+        required: true, message: this.msg('consignerNameMessage'),
       }],
     },
     portal: {
@@ -151,7 +151,7 @@ export default class ConsignInfo extends React.Component {
     addr: {
       required: true,
       rules: [{
-        required: true, message: this.msg('consignerAddrMessage')
+        required: true, message: this.msg('consignerAddrMessage'),
       }],
     },
   }
@@ -177,19 +177,19 @@ export default class ConsignInfo extends React.Component {
         </div>
         <Col span={`${outerColSpan}`} className="subform-body">
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} colSpan={4} { ...this.renderRules.name }
+            field={this.renderFields.name} colSpan={4} {...this.renderRules.name}
             optionField="name" optionKey="key" optionValue="name"
             formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
             allowClear onChange={this.handleAutoInputChange}
             initialValue={fieldDefaults[name]}
           />
-          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{span: 4}}
-            wrapperCol={{span: 20}} { ...this.renderRules.portal }
+          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }} {...this.renderRules.portal}
           >
             <RegionCascade region={region} setFormValue={this.handleRegionValue} />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} colSpan={4} { ...this.renderRules.addr }
+            field={this.renderFields.addr} colSpan={4} {...this.renderRules.addr}
             fieldProps={{ initialValue: fieldDefaults[addr] }}
           />
         </Col>

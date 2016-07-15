@@ -6,6 +6,6 @@ export default class ImportAcceptanceList extends React.Component {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <List type="import" { ...this.props } />;
+    return <List type="import" {...this.props} />;
   }
 }

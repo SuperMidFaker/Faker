@@ -8,17 +8,17 @@ function *getIntlMessages() {
   const translations = globSync('./public/assets/langs/*.json')
     .map(filename => [
       path.basename(filename, '.json'),
-      readFileSync(filename, 'utf8')
+      readFileSync(filename, 'utf8'),
     ])
     .map(([locale, file]) => [locale, JSON.parse(file)])
     .reduce((collection, [locale, messages]) => {
       collection[locale] = messages;
       return collection;
     }, {});
-    const messages = translations[locale];
-    return messages ? Result.ok(this, messages) : Result.notFound(this);
+  const messages = translations[locale];
+  return messages ? Result.ok(this, messages) : Result.notFound(this);
 }
 
 export default [
-   ['get', '/public/v1/intl/messages', getIntlMessages]
+   ['get', '/public/v1/intl/messages', getIntlMessages],
 ];

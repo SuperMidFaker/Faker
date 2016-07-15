@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Card, DatePicker, Row, Col, Table } from 'ant-ui';
+import { Card, DatePicker, Row, Col, Table } from 'antd';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
 import './index.less';
 import echarts from 'echarts';
@@ -13,7 +13,7 @@ const RangePicker = DatePicker.RangePicker;
 
 
 function fetchData({ state, dispatch, cookie }) {
-	const {startDate, endDate} = state.shipment.statistics;
+  const { startDate, endDate } = state.shipment.statistics;
   return dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate));
 }
 @connectFetch()(fetchData)
@@ -27,22 +27,22 @@ function fetchData({ state, dispatch, cookie }) {
 
 export default class Dashboard extends React.Component {
   static propTypes = {
-    children: PropTypes.object
+    children: PropTypes.object,
   }
   componentWillReceiveProps(nextProps) {
     this.createEcharts(nextProps.statistics);
   }
   onDateChange = (e) => {
-		this.props.loadShipmentStatistics(null, this.props.tenantId, e[0], e[1]);
+    this.props.loadShipmentStatistics(null, this.props.tenantId, e[0], e[1]);
   }
   createEcharts(statistics) {
-    const {points} = statistics;
+    const { points } = statistics;
     const geoCoordMap = {};
     const SHData = [];
     for (let i = 0; i < points.length; i ++) {
       const consignerCity = renderCity(points[i], 'consigner');
       const consigneeCity = renderCity(points[i], 'consignee');
-      SHData.push([{name: consignerCity}, {name: consigneeCity, value: points[i].value * 10}]);
+      SHData.push([{ name: consignerCity }, { name: consigneeCity, value: points[i].value * 10 }]);
       if (geoCoordMap[consignerCity] === undefined) {
         geoCoordMap[consignerCity] = [0, 0];
       }
@@ -63,23 +63,23 @@ export default class Dashboard extends React.Component {
           dataType: 'jsonp',
           success: (data) => {
             resolve(data);
-          }
+          },
         });
       });
     }
     const promises = [];
-    for (const i in geoCoordMap) {
-      const p = queryGeoLocation(i);
+    Object.keys(geoCoordMap).forEach(geo => {
+      const p = queryGeoLocation(geo);
       promises.push(p);
-    }
+    });
     const result = Promise.all(promises);
     result.then((arr) => {
       let j = 0;
-      for (const i in geoCoordMap) {
-        geoCoordMap[i][0] = arr[j].result.location.lng;
-        geoCoordMap[i][1] = arr[j].result.location.lat;
+      Object.keys(geoCoordMap).forEach(geo => {
+        geoCoordMap[geo][0] = arr[j].result.location.lng;
+        geoCoordMap[geo][1] = arr[j].result.location.lat;
         j++;
-      }
+      });
 
       const convertData = (data) => {
         const res = [];
@@ -91,7 +91,7 @@ export default class Dashboard extends React.Component {
             res.push({
               fromName: dataItem[0].name,
               toName: dataItem[1].name,
-              coords: [fromCoord, toCoord]
+              coords: [fromCoord, toCoord],
             });
           }
         }
@@ -109,16 +109,16 @@ export default class Dashboard extends React.Component {
             period: 6,
             trailLength: 0.7,
             color: '#fff',
-            symbolSize: 3
+            symbolSize: 3,
           },
           lineStyle: {
             normal: {
               color,
               width: 0,
-              curveness: 0.2
-            }
+              curveness: 0.2,
+            },
           },
-          data: convertData(item[1])
+          data: convertData(item[1]),
         }, {
           name: '',
           type: 'lines',
@@ -126,46 +126,46 @@ export default class Dashboard extends React.Component {
           effect: {
             show: true,
             period: 6,
-            trailLength: 0
+            trailLength: 0,
           },
           lineStyle: {
             normal: {
               color,
               width: 1,
               opacity: 0.4,
-              curveness: 0.2
-            }
+              curveness: 0.2,
+            },
           },
-          data: convertData(item[1])
+          data: convertData(item[1]),
         }, {
           name: '',
           type: 'effectScatter',
           coordinateSystem: 'geo',
           zlevel: 2,
           rippleEffect: {
-            brushType: 'stroke'
+            brushType: 'stroke',
           },
           label: {
             normal: {
               show: true,
               position: 'right',
-              formatter: '{b}'
-            }
+              formatter: '{b}',
+            },
           },
           symbolSize: (val) => {
             return val[2] / 8;
           },
           itemStyle: {
             normal: {
-              color
-            }
+              color,
+            },
           },
           data: item[1].map((dataItem) => {
             return {
               name: dataItem[1].name,
-              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
+              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value]),
             };
-          })
+          }),
         });
       });
 
@@ -175,42 +175,42 @@ export default class Dashboard extends React.Component {
           text: '',
           subtext: '',
           left: 'center',
-          textStyle : {
-            color: '#fff'
-          }
+          textStyle: {
+            color: '#fff',
+          },
         },
-        tooltip : {
-          trigger: 'item'
+        tooltip: {
+          trigger: 'item',
         },
         legend: {
           orient: 'vertical',
           top: 'bottom',
           left: 'left',
-          data:[],
+          data: [],
           textStyle: {
-            color: '#fff'
+            color: '#fff',
           },
-          selectedMode: 'single'
+          selectedMode: 'single',
         },
         geo: {
           map: 'china',
           label: {
             emphasis: {
-              show: false
-            }
+              show: false,
+            },
           },
           roam: true,
           itemStyle: {
             normal: {
               areaColor: '#323c48',
-              borderColor: '#404a59'
+              borderColor: '#404a59',
             },
             emphasis: {
-              areaColor: '#2a333d'
-            }
-          }
+              areaColor: '#2a333d',
+            },
+          },
         },
-        series
+        series,
       };
       if (document) {
         echarts.registerMap('china', chinaJson);
@@ -220,11 +220,12 @@ export default class Dashboard extends React.Component {
     });
   }
   render() {
-    const {count, startDate, endDate} = this.props.statistics;
+    const { count, startDate, endDate } = this.props.statistics;
     const datePicker = (
       <div>
         <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate).format('YYYY-MM-DD HH:mm:ss'), moment(endDate).format('YYYY-MM-DD HH:mm:ss')]}
-        format="yyyy-MM-dd HH:mm:ss" onChange={this.onDateChange} />
+          format="yyyy-MM-dd HH:mm:ss" onChange={this.onDateChange}
+        />
       </div>);
     const iconStyle = {
       fontSize: '46px',
@@ -255,14 +256,14 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '操作',
       dataIndex: 'name',
-      width:'20%',
+      width: '20%',
       render(text) {
         return text;
       },
     }, {
       title: '详情',
       dataIndex: 'operation',
-      width:'80%',
+      width: '80%',
       render: (value) => {
         return value;
       },
@@ -299,18 +300,18 @@ export default class Dashboard extends React.Component {
 
     return (
       <div className="main-content">
-        <div className="page-body" style={{padding: '24px'}}>
+        <div className="page-body" style={{ padding: '24px' }}>
           <Card title="运单统计" extra={datePicker}>
             <Row type="flex" justify="space-around" align="middle">
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-file-plus" style={{backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle}}/>
+                  <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>{count[0]}</div>
                     <div style={rightBottom}>已受理运单</div>
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-mail-send" style={{backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle}}/>
+                  <i className="zmdi zmdi-mail-send" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[1]}
@@ -319,7 +320,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-forward" style={{backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle}}/>
+                  <i className="zmdi zmdi-forward" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[2]}
@@ -328,7 +329,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-assignment-check" style={{backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle}}/>
+                  <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[3]}
@@ -337,7 +338,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-badge-check" style={{backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle}}/>
+                  <i className="zmdi zmdi-badge-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[4]}
@@ -347,15 +348,15 @@ export default class Dashboard extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Row style={{marginTop: 24}}>
+          <Row style={{ marginTop: 24 }}>
             <Col span={9}>
               <Card title="待处理">
-                <Table columns={columns} dataSource={data} bordered pagination={false}/>
+                <Table columns={columns} dataSource={data} bordered pagination={false} />
               </Card>
             </Col>
             <Col span={15}>
-              <Card title="运输实况" style={{marginLeft: 24}}>
-                <div id="chart" style={{width: '110%', height: '480px', margin: '-25px'}}></div>
+              <Card title="运输实况" style={{ marginLeft: 24 }}>
+                <div id="chart" style={{ width: '110%', height: '480px', margin: '-25px' }}></div>
               </Card>
             </Col>
           </Row>

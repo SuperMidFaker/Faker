@@ -26,17 +26,17 @@ const initialState = {
   branches: [],
   tenant: {
     id: -1,
-    parentId: -1
+    parentId: -1,
   },
   formData: {
-    key: -1
+    key: -1,
   },
   personnelist: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
-    data: []
-  }
+    data: [],
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -50,12 +50,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.PERSONNEL_LOAD:
       return {
         ...state, loading: true,
-        filters: action.params.filters ? JSON.parse(action.params.filters) : []
+        filters: action.params.filters ? JSON.parse(action.params.filters) : [],
       };
     case actionTypes.PERSONNEL_LOAD_SUCCEED:
       return {
         ...state, loaded: true, loading: false,
-        personnelist: { ...state.personnelist, ...action.result.data }
+        personnelist: { ...state.personnelist, ...action.result.data },
       };
     case actionTypes.PERSONNEL_LOAD_FAIL:
       return { ...state, loading: false };
@@ -64,11 +64,11 @@ export default function reducer(state = initialState, action) {
         ...state, branches: action.result.data,
         tenant: action.result.data.length > 0 ? {
           id: action.result.data[0].key,
-          parentId: action.result.data[0].parentId
-        } : initialState.tenant
+          parentId: action.result.data[0].parentId,
+        } : initialState.tenant,
       };
     case actionTypes.SWITCH_TENANT:
-      return {...state, tenant: action.tenant};
+      return { ...state, tenant: action.tenant };
     case actionTypes.SWITCH_STATUS_SUCCEED: {
       const personnelist = { ...state.personnelist };
       personnelist.data[action.index].status = action.data.status;
@@ -90,7 +90,7 @@ export default function reducer(state = initialState, action) {
       if (personnelist.current * personnelist.pageSize > personnelist.totalCount) {
         personnelist.data.push({
           ...action.data.personnel, key: action.result.data.pid,
-          loginId: action.result.data.loginId, status: action.result.data.status
+          loginId: action.result.data.loginId, status: action.result.data.status,
         });
       }
       personnelist.totalCount++;
@@ -108,8 +108,8 @@ export function delPersonnel(pid, loginId, tenant) {
       types: [actionTypes.PERSONNEL_DELETE, actionTypes.PERSONNEL_DELETE_SUCCEED, actionTypes.PERSONNEL_DELETE_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'del',
-      data: { pid, loginId, tenant }
-    }
+      data: { pid, loginId, tenant },
+    },
   };
 }
 
@@ -119,8 +119,8 @@ export function edit(personnel, code, tenantId) {
       types: [actionTypes.PERSONNEL_EDIT, actionTypes.PERSONNEL_EDIT_SUCCEED, actionTypes.PERSONNEL_EDIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'put',
-      data: { personnel, code, tenantId }
-    }
+      data: { personnel, code, tenantId },
+    },
   };
 }
 
@@ -130,8 +130,8 @@ export function submit(personnel, code, tenant) {
       types: [actionTypes.PERSONNEL_SUBMIT, actionTypes.PERSONNEL_SUBMIT_SUCCEED, actionTypes.PERSONNEL_SUBMIT_FAIL],
       endpoint: 'v1/user/personnel',
       method: 'post',
-      data: { personnel, code, tenant }
-    }
+      data: { personnel, code, tenant },
+    },
   };
 }
 export function isFormDataLoaded(personnelState, persId) {
@@ -139,7 +139,7 @@ export function isFormDataLoaded(personnelState, persId) {
 }
 
 export function loadForm(cookie, persId) {
-  return loadFormC(cookie, 'v1/user/personnel', {pid: persId}, actionTypes);
+  return loadFormC(cookie, 'v1/user/personnel', { pid: persId }, actionTypes);
 }
 
 export function assignForm(personnelState, persId) {
@@ -157,8 +157,8 @@ export function loadPersonnel(cookie, params) {
       endpoint: 'v1/user/personnels',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -168,15 +168,15 @@ export function loadTenantsByMaster(cookie, tenantId) {
       types: [actionTypes.MASTER_TENANTS_LOAD, actionTypes.MASTER_TENANTS_LOAD_SUCCEED, actionTypes.MASTER_TENANTS_LOAD_FAIL],
       endpoint: `v1/user/${tenantId}/tenants`,
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
 export function switchTenant(tenant) {
   return {
     type: actionTypes.SWITCH_TENANT,
-    tenant
+    tenant,
   };
 }
 
@@ -187,7 +187,7 @@ export function switchStatus(index, pid, status) {
       endpoint: 'v1/user/personnel/status',
       method: 'put',
       index,
-      data: { status, pid }
-    }
+      data: { status, pid },
+    },
   };
 }

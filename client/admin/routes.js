@@ -4,7 +4,6 @@ import Root from './root';
 import Home from 'client/admin/home';
 import SSO from 'client/apps/sso/pack-sso';
 import Login from 'client/apps/sso/login';
-import Forgot from 'client/apps/sso/forgot';
 import PackAccount from 'client/apps/account/pack-account';
 import MyProfile from 'client/apps/account/profile';
 import Password from 'client/apps/account/password';
@@ -19,15 +18,15 @@ export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
       const query = nextState.location.query;
-      const { auth: { isAuthed }, account: { level }} = store.getState();
+      const { auth: { isAuthed }, account: { level } } = store.getState();
       if (!(isAuthed && level === TENANT_LEVEL.PLATFORM)) {
         const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',
           query: {
             next: nextState.location.pathname,
-            ...prevQuery
-          }
+            ...prevQuery,
+          },
         });
       }
       cb();
@@ -41,13 +40,13 @@ export default(store, cookie) => {
   return (
     <Route path="/" component={Root}>
       <Route component={SSO}>
-        <Route path="login" component={Login}/>
+        <Route path="login" component={Login} />
       </Route>
       <Route onEnter={requireAuth}>
-        <IndexRoute component={Home}/>
+        <IndexRoute component={Home} />
         <Route path="account" component={PackAccount}>
-          <Route path="profile" component={MyProfile}/>
-          <Route path="password" component={Password}/>
+          <Route path="profile" component={MyProfile} />
+          <Route path="password" component={Password} />
         </Route>
         <Route path="manager" component={PackTenantMgr}>
           <IndexRoute component={TenantMgrDashboard} />

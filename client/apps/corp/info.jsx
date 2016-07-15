@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  Icon, Button, Form, Input, Row, Col, Select, Tabs, Upload, message
-  } from 'ant-ui';
+  Icon, Button, Form, Input, Row, Col, Select, Tabs, Upload, message,
+  } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -26,7 +26,7 @@ const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const Dragger = Upload.Dragger;
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   const corpId = state.account.tenantId;
   if (!isFormDataLoaded(state.corps, corpId)) {
     return dispatch(loadForm(cookie, corpId));
@@ -44,16 +44,16 @@ function fetchData({state, dispatch, cookie}) {
     text: formatContainerMsg(props.intl, 'corpInfo'),
     moduleName: 'corp',
     withModuleLayout: false,
-    goBackFn: ''
+    goBackFn: '',
   }));
 })
 @connect(
   state => ({
-    formData: state.corps.formData
+    formData: state.corps.formData,
   }),
   { edit, checkCorpDomain })
 @Form.create({
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class CorpInfo extends React.Component {
   static propTypes = {
@@ -64,7 +64,7 @@ export default class CorpInfo extends React.Component {
     checkCorpDomain: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
@@ -72,7 +72,7 @@ export default class CorpInfo extends React.Component {
     this.state = { country, province, city, district, logo };
   }
   componentWillReceiveProps(nextProps) {
-    const newState = {};
+    const newState = this.state;
     ['country', 'province', 'city', 'district', 'logo'].forEach(fld => {
       if (nextProps.formData[fld] !== this.props.formData[fld]) {
         newState[fld] = nextProps.formData[fld];
@@ -88,7 +88,7 @@ export default class CorpInfo extends React.Component {
     if (file.status === 'done') {
       if (file.response.status === 200) {
         this.setState({
-          logo: file.response.data
+          logo: file.response.data,
         });
       } else {
         message.error(file.response.msg);
@@ -120,15 +120,14 @@ export default class CorpInfo extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps }} = this.props;
+    const { formhoc: { getFieldProps } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{span: 6}} wrapperCol={{span: 16}}
+      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
         hasFeedback required={required}
       >
         <Input type="text" placeholder={placeholder} {
-          ...getFieldProps(field, {rules, ...fieldProps})
-        }
-        />
+          ...getFieldProps(field, { rules, ...fieldProps })
+        } />
       </FormItem>
     );
   }
@@ -138,7 +137,7 @@ export default class CorpInfo extends React.Component {
         name, short_name, address,
         code, type, remark, website, contact, phone, email,
       },
-      formhoc: { getFieldProps }, intl
+      formhoc: { getFieldProps }, intl,
     } = this.props;
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
@@ -149,22 +148,21 @@ export default class CorpInfo extends React.Component {
             <Col span="12">
               {this.renderTextInput(
                 msg('companyName'), msg('companyNameTip'), 'name', true,
-                [{required: true, message: msg('companyNameRequired')}],
+                [{ required: true, message: msg('companyNameRequired') }],
                 { initialValue: name }
               )}
               {this.renderTextInput(
                 msg('companyShortName'), '', 'short_name', false,
                 [{
                   type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
-                  message: msg('shortNameMessage')
+                  message: msg('shortNameMessage'),
                 }],
                 { initialValue: short_name }
               )}
-              <FormItem label={msg('location')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+              <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Region withCountry setFormValue={this.handleRegionChange} region={{
-                  country, province, city, district
-                }}
-                />
+                  country, province, city, district,
+                }} />
               </FormItem>
               {
                 this.renderTextInput(
@@ -174,24 +172,23 @@ export default class CorpInfo extends React.Component {
               }
             </Col>
             <Col span="12">
-              <FormItem label={msg('enterpriseCode')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+              <FormItem label={msg('enterpriseCode')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Input type="text" disabled {...getFieldProps('code', { initialValue: code })} />
               </FormItem>
-              <FormItem label={msg('tradeCategory')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                <Select defaultValue="lucy" style={{width:'100%'}}
-                {...getFieldProps('type', { initialValue: type})}
+              <FormItem label={msg('tradeCategory')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+                <Select defaultValue="lucy" style={{ width: '100%' }}
+                  {...getFieldProps('type', { initialValue: type })}
                 >
                   <Option value="freight">货代</Option>
                 </Select>
               </FormItem>
-              <FormItem label={msg('companyAbout')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+              <FormItem label={msg('companyAbout')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Input type="textarea" rows="3" {...getFieldProps('remark', { initialValue: remark })} />
               </FormItem>
-              <FormItem label={msg('companyWebsite')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+              <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Input type="text" addonBefore="http://" {
                   ...getFieldProps('website', { initialValue: website })
-                }
-                />
+                } />
               </FormItem>
             </Col>
           </Row>
@@ -202,7 +199,7 @@ export default class CorpInfo extends React.Component {
                   required: true,
                   message: msg('contactRequired'),
                   type: 'string',
-                  whitespace: true
+                  whitespace: true,
                 }], {
                   transform: (value) => (value.trim()),
                   initialValue: contact,
@@ -212,16 +209,16 @@ export default class CorpInfo extends React.Component {
                 validator: (rule, value, callback) => validatePhone(
                   value, callback,
                   (msgs, descriptor) => format(msgs)(intl, descriptor)
-                )
+                ),
               }], { initialValue: phone })}
             </Col>
             <Col span="12">
-              <FormItem label={msg('position')} labelCol={{span: 6}} wrapperCol={{span: 16}}>
+              <FormItem label={msg('position')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Input type="text" {...getFieldProps('position')} />
               </FormItem>
               {this.renderTextInput(
                 'Email', '', 'email', false,
-                [{type: 'email', message: formatContainerMsg(intl, 'emailError')}],
+                [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
                 { initialValue: email }
               )}
             </Col>
@@ -244,15 +241,15 @@ export default class CorpInfo extends React.Component {
         <Form horizontal className="form-edit-content">
           <Row>
             <Col span="12">
-              <FormItem label="LOGO" labelCol={{span: 6}} wrapperCol={{span: 18}}>
+              <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                 <img src={this.state.logo || '/assets/img/wetms.png'} style={{
                   height: 120, width: 120, margin: 10,
-                  border: '1px solid #e0e0e0', borderRadius: 60
-                }}
+                  border: '1px solid #e0e0e0', borderRadius: 60,
+                }} alt="logo"
                 />
-                <div title={msg('dragHint')} style={{height: 140, marginTop: 20}}>
+                <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
                   <Dragger onChange={this.handleImgUpload} showUploadList={false}
-                  action="/v1/upload/img"
+                    action="/v1/upload/img"
                   >
                     <Icon type="upload" />
                     <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
@@ -263,8 +260,8 @@ export default class CorpInfo extends React.Component {
           </Row>
           <Row>
             <Col span="12">
-              <FormItem label={msg('loginSubdomain')} labelCol={{span: 6}}
-              wrapperCol={{span: 16}}
+              <FormItem label={msg('loginSubdomain')} labelCol={{ span: 6 }}
+                wrapperCol={{ span: 16 }}
               >
                 <Input type="text" addonAfter=".welogix.cn" disabled value={subdomain} />
               </FormItem>

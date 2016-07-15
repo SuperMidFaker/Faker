@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Icon } from 'ant-ui';
+import { Icon } from 'antd';
 import './search-bar.less';
 export default class SearchBar extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,
     value: PropTypes.string,
     extraParams: PropTypes.object,
-    onInputSearch: PropTypes.func.isRequired
+    onInputSearch: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);

@@ -7,7 +7,7 @@ export default (routes, dynamic) => {
     static propTypes = {
       store: PropTypes.object.isRequired,
       routingContext: PropTypes.object,
-      routerHistory: PropTypes.object
+      routerHistory: PropTypes.object,
     }
 
     renderRouter() {
@@ -32,7 +32,7 @@ export default (routes, dynamic) => {
       return (
         <Provider store={store}>
             <div className="full-container">
-            { this.renderRouter() }
+            {this.renderRouter()}
             </div>
         </Provider>
       );

@@ -23,10 +23,10 @@ create({
       custom: function skip() {
         return !!this.skipJwt;
       },
-      path: [/^\/public/, /dist/, /assets/]
+      path: [/^\/public/, /dist/, /assets/],
     }),
-    loadRoute(__dirname, '../api')
-  ]
+    loadRoute(__dirname, '../api'),
+  ],
 });
 console.log('server start to listen');
 /* eslint-enable no-undef, no-console */

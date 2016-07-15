@@ -14,8 +14,8 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value : 'uploaded' },
-    { name: 'shipmt_no', value: ''},
+    { name: 'type', value: 'uploaded' },
+    { name: 'shipmt_no', value: '' },
   ],
   /*
      sortField: 'created_date',
@@ -49,18 +49,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PODSHIPMT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters)
+        filters: JSON.parse(action.params.filters),
     };
     case actionTypes.LOAD_POD_SUCCEED:
       return { ...state, auditModal: {
-        ...state.auditModal, ...action.result.data
-    }};
+        ...state.auditModal, ...action.result.data,
+      } };
     case actionTypes.SHOW_AUDIT_MODAL:
       return { ...state,
         auditModal: {
           ...state.auditModal, visible: true, dispId: action.data.dispId, readonly: true,
           parentDispId: action.data.parentDispId, podId: action.data.podId,
-        }
+        },
       };
     case actionTypes.HIDE_AUDIT_MODAL:
       return { ...state, auditModal: initialState.auditModal };
@@ -85,8 +85,8 @@ export function loadPodTable(cookie, params) {
       endpoint: 'v1/transport/tracking/pod/shipmts',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -101,7 +101,7 @@ export function loadPod(podId) {
       endpoint: 'v1/transport/tracking/pod',
       method: 'get',
       params: { podId },
-    }
+    },
   };
 }
 
@@ -129,7 +129,7 @@ export function passAudit(podId, dispId, parentDispId, auditor, tenantId, loginI
       endpoint: 'v1/transport/tracking/pod/audit',
       method: 'post',
       data: { podId, dispId, parentDispId, auditor, tenantId, loginId },
-    }
+    },
   };
 }
 
@@ -144,7 +144,7 @@ export function returnAudit(dispId) {
       endpoint: 'v1/transport/tracking/pod/return',
       method: 'post',
       data: { dispId },
-    }
+    },
   };
 }
 
@@ -159,7 +159,7 @@ export function resubmitPod(dispId, parentDispId) {
       endpoint: 'v1/transport/tracking/pod/resubmit',
       method: 'post',
       data: { dispId, parentDispId },
-    }
+    },
   };
 }
 

@@ -9,7 +9,7 @@ const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 const wpConfig = {
   // Entry point to the project
   entry: {
-    vendor: config.get('vendor_dependencies')
+    vendor: config.get('vendor_dependencies'),
   },
   context: path.resolve(__dirname, '..'),
   // Webpack config options on how to obtain modules
@@ -17,12 +17,12 @@ const wpConfig = {
     // When requiring, you don't need to add these extensions
     extensions: ['', '.js', '.jsx'],
     // Modules will be searched for in these directories
-    root: path.resolve(__dirname, '..')
+    root: path.resolve(__dirname, '..'),
   },
   output: {
     path: config.get('output_path'), // Path of output file
     publicPath: config.get('webpack_public_path'),
-    filename: '[name]-[hash].js'  // Name of output file
+    filename: '[name]-[hash].js',  // Name of output file
   },
   plugins: [
     new webpack.IgnorePlugin(/assets\.json$/),
@@ -33,7 +33,7 @@ const wpConfig = {
       __PRODUCTIONS_ROOT_GROUP__: JSON.stringify(config.get('__PRODUCTIONS_ROOT_GROUP__')),
       __PRODUCTIONS_DOMAIN_GROUP__: JSON.stringify(config.get('__PRODUCTIONS_DOMAIN_GROUP__')),
       __DEVTOOLS__: config.get('__DEVTOOLS__'),
-      __DEV__: config.get('__DEV__')
+      __DEV__: config.get('__DEV__'),
     }),
   ],
   module: {
@@ -42,7 +42,7 @@ const wpConfig = {
       test: /\.(js|jsx)$/,
       loader: 'eslint-loader',
       include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'common')],
-      exclude: [nodeModulesPath]
+      exclude: [nodeModulesPath],
     }],
     loaders: [{
       test: /\.(js|jsx)$/, // All .js and .jsx files
@@ -56,40 +56,38 @@ const wpConfig = {
         env: {
           development: {
             plugins: [
-              'react-transform'
+              'react-transform',
             ],
             extra: {
               'react-transform': {
                 transforms: [{
                   transform: 'react-transform-hmr',
                   imports: ['react'],
-                  locals:  ['module']
-                }, {
-                  transform: 'react-transform-catch-errors',
-                  imports: ['react', 'redbox-react']
-                }]
-              }
-            }
-          }
-        }
-      }
+                  locals: ['module'],
+                }],
+              },
+            },
+          },
+        },
+      },
     },
     { test: /\.json$/, loader: 'json-loader' },
     { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
     { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
     { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
     { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-    { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' }
-    ]
+    { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
+    ],
   },
   postcss: function postcss() {
     return [autoprefixer];
   },
   eslint: {
     configFile: '.eslintrc',
-    failOnError : false,
-    emitWarning : true
-  }
+    failOnError: false,
+    emitWarning: true,
+    fix: true,
+  },
 };
 
 module.exports = wpConfig;

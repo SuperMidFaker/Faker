@@ -8,13 +8,13 @@ import './home.less';
 const mods = [{
   cls: 'manager',
   url: '/manager',
-  text: '运营管理'
+  text: '运营管理',
 }];
 
 @connect(
   state => ({
     logo: state.corpDomain.logo,
-    name: state.corpDomain.name
+    name: state.corpDomain.name,
   }),
   { setNavTitle }
 )
@@ -22,15 +22,14 @@ export default class Home extends React.Component {
   static propTypes = {
     setNavTitle: PropTypes.func.isRequired,
     logo: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
   };
   componentWillMount() {
     this.props.setNavTitle({
-      depth: 1
+      depth: 1,
     });
   }
   render() {
-    const { logo, name } = this.props;
     return (
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />

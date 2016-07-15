@@ -10,8 +10,8 @@ export default class NavLink extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.element,
       PropTypes.string,
-      PropTypes.array
-    ])
+      PropTypes.array,
+    ]),
   }
 
   render() {
@@ -19,7 +19,7 @@ export default class NavLink extends React.Component {
     const NavComp = component || Link;
     return (
       <NavComp to={to} className={className} onChange={(ev) => onChange(ev)}>
-      { children }
+      {children}
       </NavComp>);
   }
 }

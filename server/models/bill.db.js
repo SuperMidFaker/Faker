@@ -1,8 +1,8 @@
 import mysql from '../util/mysql';
 function prepareArgs(input) {
   const args = [];
-  const columns = [`payer_id`, `payee_id`, `subject`, `body`, `amount`, `batch_no`,
-    `merge_batch_no`, `status`, `payment_id`, `payment_date`];
+  const columns = ['payer_id', 'payee_id', 'subject', 'body', 'amount', 'batch_no',
+    'merge_batch_no', 'status', 'payment_id', 'payment_date'];
   columns.forEach((column) => {
     if (column in input) {
       if (column === 'payment_date') {
@@ -18,7 +18,7 @@ function prepareArgs(input) {
 }
 export default {
   getBillTotalCount(corpId) {
-    const sql = `select count(id) as count from wms_bills where corp_id = ?`;
+    const sql = 'select count(id) as count from wms_bills where corp_id = ?';
     const args = [corpId];
     return mysql.query(sql, args);
   },
@@ -34,5 +34,5 @@ export default {
     console.log(bill);
     console.log('args length', args.length, args);
     return mysql.insert(sql, [args]);
-  }
+  },
 };

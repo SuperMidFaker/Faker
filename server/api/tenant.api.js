@@ -27,19 +27,19 @@ function *switchTenantApp() {
 
 function *getTenantAppList() {
   let result = yield tenantDao.getTenantApps();
-  Result.ok(this,result);
+  Result.ok(this, result);
 }
 
-function *getTenants(){
+function *getTenants() {
   const pageSize = parseInt(this.request.query.pageSize, 10);
   const currentPage = parseInt(this.request.query.currentPage, 10);
   try {
-    const tenants = yield tenantDao.getTenants(currentPage-1, pageSize);
+    const tenants = yield tenantDao.getTenants(currentPage - 1, pageSize);
     const count = yield tenantDao.countTenants();
-    Result.ok(this,{
+    Result.ok(this, {
       data: tenants,
       totalCount: count[0].totalCount,
-      pageSize: pageSize,
+      pageSize,
       current: currentPage,
     });
   } catch (e) {
@@ -47,13 +47,13 @@ function *getTenants(){
   }
 }
 
-function *getTenant(){
+function *getTenant() {
   const tid = this.params.tid;
   try {
     let tenant = yield tenantDao.getTenant(tid);
     let tenantAppValueList = yield tenantDao.getTenantAppListByTenantId(tid);
     tenant[0].tenantAppValueList = tenantAppValueList;
-    Result.ok(this,tenant);
+    Result.ok(this, tenant);
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
@@ -82,7 +82,7 @@ function *upsertTenant() {
       ];
     } else {
       yield tenantDao.updateTenantByTenantId(body.tenant_id, code, name, aspect, phone, subdomain, logo, contact, email);
-      if(tenantAppList != undefined && tenantAppList.length !== 0) {
+      if (tenantAppList != undefined && tenantAppList.length !== 0) {
         yield tenantDao.deleteTenantApps(body.tenant_id);
         yield tenantDao.insertTenantApps(body.tenant_id, tenantAppList, apps);
       }
@@ -101,12 +101,12 @@ function *deleteTenantByTenantId() {
       TmsParamTransMode.destroy({
         where: {
           tenant_id: body.tenantId,
-        }
+        },
       }),
       TmsParamPackage.destroy({
         where: {
           tenant_id: body.tenantId,
-        }
+        },
       }),
     ];
     Result.ok(this);

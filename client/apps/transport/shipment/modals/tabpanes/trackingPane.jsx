@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Steps } from 'ant-ui';
+import { Steps } from 'antd';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -53,8 +53,7 @@ export default class PreviewPanel extends React.Component {
         <StepDesc texts={[
           tracking.creator,
           tracking.created_date && moment(tracking.created_date).format(timeFormat),
-        ]}
-        />
+        ]} />
       ),
     }];
     let currentStep = 0;
@@ -65,8 +64,7 @@ export default class PreviewPanel extends React.Component {
           <StepDesc texts={[
             tracking.upstream_name,
             tracking.upstream_acpt_time && moment(tracking.upstream_acpt_time).format(timeFormat),
-          ]}
-          />
+          ]} />
         ),
       });
       trackingSteps.push({
@@ -76,8 +74,7 @@ export default class PreviewPanel extends React.Component {
             tracking.upstream_name,
             tracking.upstream_disp_time && tracking.upstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
               moment(tracking.upstream_disp_time).format(timeFormat),
-          ]}
-          />
+          ]} />
         ),
       });
       currentStep = tracking.upstream_status - 1;
@@ -89,8 +86,7 @@ export default class PreviewPanel extends React.Component {
           <StepDesc texts={[
             tracking.downstream_name,
             tracking.downstream_acpt_time && moment(tracking.downstream_acpt_time).format(timeFormat),
-          ]}
-          />
+          ]} />
         ),
       });
       trackingSteps.push({
@@ -100,8 +96,7 @@ export default class PreviewPanel extends React.Component {
             tracking.downstream_name,
             tracking.downstream_disp_time && tracking.downstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
               moment(tracking.downstream_disp_time).format(timeFormat),
-          ]}
-          />
+          ]} />
         ),
       });
       if (tracking.upstream_status < SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -112,34 +107,31 @@ export default class PreviewPanel extends React.Component {
       }
     }
     trackingSteps.push(
-     {
-      title: this.msg('trackPickup'),
-      desc: (
+      {
+        title: this.msg('trackPickup'),
+        desc: (
         <StepDesc texts={[
           tracking.vehicle,
           tracking.pickup_act_date && moment(tracking.pickup_act_date).format(timeFormat),
-        ]}
-        />
+        ]} />
       ),
-    }, {
-      title: this.msg('trackDeliver'),
-      desc: (
+      }, {
+        title: this.msg('trackDeliver'),
+        desc: (
         <StepDesc texts={[
           tracking.vehicle,
           tracking.deliver_act_date && moment(tracking.deliver_act_date).format(timeFormat),
-        ]}
-        />
+        ]} />
       ),
-    }, {
-      title: this.msg('trackPod'),
-      desc: (
+      }, {
+        title: this.msg('trackPod'),
+        desc: (
         <StepDesc texts={[
           tracking.poder,
           tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
-        ]}
-        />
+        ]} />
       ),
-    });
+      });
     return (
       <div className="pane-content tab-pane">
         <Steps current={currentStep} direction="vertical">

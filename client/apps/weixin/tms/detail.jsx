@@ -7,12 +7,12 @@ import { renderConsignLoc } from '../../transport/common/consignLocation';
 import WeUI from 'react-weui';
 import '../weui.less';
 
-const {Cells, CellsTitle, Cell, CellBody, CellHeader, Input, Label } = WeUI;
+const { Cells, CellsTitle, Cell, CellBody, CellHeader, Input, Label } = WeUI;
 
 function fetchData({ state, dispatch, cookie, params }) {
   const p = {
     ...params,
-    tenantId: state.account.tenantId
+    tenantId: state.account.tenantId,
   };
   return dispatch(getShipmentDispatch(cookie, p));
 }
@@ -20,7 +20,7 @@ function fetchData({ state, dispatch, cookie, params }) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    shipmentDispatchDetail: state.weixin.shipmentDispatchDetail
+    shipmentDispatchDetail: state.weixin.shipmentDispatchDetail,
   }),
 )
 export default class Detail extends React.Component {
@@ -43,7 +43,7 @@ export default class Detail extends React.Component {
     );
   }
   render() {
-    const {shipmt} = this.props.shipmentDispatchDetail;
+    const { shipmt } = this.props.shipmentDispatchDetail;
     let transportMode = shipmt.transport_mode;
     if (shipmt.transport_mode_code === 'CTN') {
       transportMode += ` ${shipmt.container_no}`;

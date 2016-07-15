@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Radio } from 'ant-ui';
+import { Radio } from 'antd';
 import ToInviteListContainer from '../containers/ToInviteListContainer';
 import ReceiveInvitationListContainer from '../containers/ReceiveInvitationListContainer';
 import SendInvitationListContainer from '../containers/SendInvitationListContainer';

@@ -31,7 +31,7 @@ const initialState = {
     tenantAppValueList: [],
     aspect: 0,
     email: '',
-    logo: ''
+    logo: '',
   },
   tenantAppList: [],
   corplist: {
@@ -55,7 +55,7 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.TENANTS_LOAD_SUCCEED: {
       const corplist = action.result.data;
-      return {...state, loading: false, loaded: true, corplist};
+      return { ...state, loading: false, loaded: true, corplist };
     }
     case actionTypes.TENANT_FORM_LOAD_SUCCEED: {
       const formData = action.result.data[0];
@@ -112,8 +112,8 @@ export function uploadImg(field, pics) {
       endpoint: 'v1/upload/img',
       method: 'post',
       files: pics,
-      field
-    }
+      field,
+    },
   };
 }
 
@@ -122,7 +122,7 @@ export function isFormDataLoaded(corpsState, corpId) {
 }
 
 export function loadForm(cookie, corpId) {
-  return loadFormC(cookie, 'v1/user/corp', {corpId}, actionTypes);
+  return loadFormC(cookie, 'v1/user/corp', { corpId }, actionTypes);
 }
 
 export function clearForm() {
@@ -139,8 +139,8 @@ export function checkLoginName(loginName, loginId, tenantId) {
       types: [actionTypes.CHECK_LOGINNAME, actionTypes.CHECK_LOGINNAME_SUCCEED, actionTypes.CHECK_LOGINNAME_FAIL],
       endpoint: 'v1/user/check/loginname',
       method: 'get',
-      params: { loginName, loginId, tenantId }
-    }
+      params: { loginName, loginId, tenantId },
+    },
   };
 }
 
@@ -151,8 +151,8 @@ export function switchStatus(index, tenantId, status) {
       endpoint: 'v1/user/corp/status',
       method: 'put',
       index,
-      data: { status, tenantId }
-    }
+      data: { status, tenantId },
+    },
   };
 }
 
@@ -161,8 +161,8 @@ export function getTenantAppList() {
     [CLIENT_API]: {
       types: [actionTypes.GET_TENANTAPP, actionTypes.GET_TENANTAPP_SUCCEED, actionTypes.GET_TENANTAPP_FAIL],
       endpoint: 'v1/user/corp/tenant/getTenantAppList',
-      method: 'get'
-    }
+      method: 'get',
+    },
   };
 }
 export function loadTenants(cookie, params) {
@@ -172,8 +172,8 @@ export function loadTenants(cookie, params) {
       endpoint: 'v1/user/corp/tenants',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -183,8 +183,8 @@ export function loadTenantForm(cookie, params) {
       types: [actionTypes.TENANT_FORM_LOAD, actionTypes.TENANT_FORM_LOAD_SUCCEED, actionTypes.TENANT_FORM_LOAD_FAIL],
       endpoint: `v1/user/corp/tenant/${params}`,
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -195,8 +195,8 @@ export function delTenant(tenantId, loginId) {
         actionTypes.TENANT_DELETE_FAIL],
       endpoint: 'v1/user/corp/tenant/delete',
       method: 'del',
-      data: { tenantId, loginId }
-    }
+      data: { tenantId, loginId },
+    },
   };
 }
 
@@ -206,7 +206,7 @@ export function submitTenant(params) {
       types: [actionTypes.TENANT_NEW, actionTypes.TENANT_NEW_SUCCEED, actionTypes.TENANT_NEW_FAIL],
       endpoint: 'v1/user/corp/tenant/upsert',
       method: 'put',
-      data: params
-    }
+      data: params,
+    },
   };
 }

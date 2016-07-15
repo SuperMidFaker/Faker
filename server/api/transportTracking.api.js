@@ -1,11 +1,11 @@
 import cobody from 'co-body';
 import shipmentAuxDao from '../models/shipment-auxil.db';
 import shipmentDispDao from '../models/shipment-disp.db';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS } from 'common/constants';
 import { SHIPMENT_POD_TYPE, SHIPMENT_DISPATCH_POD_TYPE, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import { sendNewShipMessage }from '../socket.io';
+import { sendNewShipMessage } from '../socket.io';
 import { ShipmentEvent } from '../models/shipmentEvent.db';
 import { DispEventRelation } from '../models/dispEventRelation.db';
 
@@ -23,7 +23,7 @@ function *trackingShipmtListG() {
       totalCount: totalCounts[0].count,
       pageSize,
       current,
-      data: shipments
+      data: shipments,
     });
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -81,7 +81,7 @@ function *trackingPickDeliverDateP() {
     );
     yield mysql.commit(trans);
     let id = dispId;
-    while(id !== null)
+    while (id !== null)
     {
       const disps = yield shipmentDispDao.getShipmtDispWithNo(id);
       const disp = disps[0];
@@ -94,7 +94,7 @@ function *trackingPickDeliverDateP() {
           to_tenant_id: disp.sr_tenant_id,
           title: `${operationType}通知`,
           remark: `${disp.sp_name} ${operationType}了，快去看看吧！`,
-          content: `${disp.sp_name} ${operationType}了，快去看看吧！运单号：${shipmtNo}`
+          content: `${disp.sp_name} ${operationType}了，快去看看吧！运单号：${shipmtNo}`,
         });
       }
       id = disp.parent_id;
@@ -111,7 +111,7 @@ function *trackingPickDeliverDateP() {
       disp_id: dispId,
       event_id: shipmentEvent['null'],
     });
-    const disps = yield shipmentDispDao.getShipmtDispWithNo(id);
+    const disps = yield shipmentDispDao.getShipmtDispWithNo(dispId);
     const disp = disps[0];
     if (disp.pod_type === SHIPMENT_DISPATCH_POD_TYPE.none) {
       const shipmentEvent1 = yield ShipmentEvent.create({
@@ -144,7 +144,7 @@ function *trackingPointP() {
     trans = yield mysql.beginTransaction();
     const result = yield shipmentAuxDao.createPoint(point, tenantId, trans);
     const dbs = [
-      shipmentAuxDao.createShipmentPointRel(shipmtNo, result.insertId, trans)
+      shipmentAuxDao.createShipmentPointRel(shipmtNo, result.insertId, trans),
     ];
     if (parentNo) {
       dbs.push(
@@ -222,7 +222,7 @@ function *trackingPodShipmtListG() {
       totalCount: totalCounts[0].count,
       pageSize,
       current,
-      data: shipments
+      data: shipments,
     });
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -274,7 +274,7 @@ function *trackingPodAuditP() {
             pod_id: podId,
             pod_status: SHIPMENT_POD_STATUS.pending,
             status: SHIPMENT_TRACK_STATUS.podsubmit,
-        }, trans)
+          }, trans)
       );
     }
 
@@ -346,7 +346,7 @@ function *trackingPodResubmitP() {
         pod_status: SHIPMENT_POD_STATUS.pending,
         status: SHIPMENT_TRACK_STATUS.podsubmit,
       }, trans),
-    ]
+    ];
     yield mysql.commit(trans);
     return Result.ok(this);
   } catch (e) {
@@ -371,7 +371,7 @@ function *trackingExcpShipmtsG() {
       totalCount: totalCounts[0].count,
       pageSize,
       current,
-      data: shipments
+      data: shipments,
     });
   } catch (e) {
     return Result.internalServerError(this, e.message);
@@ -379,16 +379,16 @@ function *trackingExcpShipmtsG() {
 }
 
 export default [
-  [ 'get', '/v1/transport/tracking/shipmts', trackingShipmtListG ],
-  [ 'post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP ],
-  [ 'post', '/v1/transport/tracking/pickordeliverdate', trackingPickDeliverDateP ],
-  [ 'post', '/v1/transport/tracking/point', trackingPointP ],
-  [ 'get', '/v1/transport/tracking/lastpoint', trackingLastPointG ],
-  [ 'post', '/v1/transport/tracking/pod', trackingPodUpdateP ],
-  [ 'get', '/v1/transport/tracking/pod/shipmts', trackingPodShipmtListG ],
-  [ 'get', '/v1/transport/tracking/pod', trackingPodG ],
-  [ 'post', '/v1/transport/tracking/pod/audit', trackingPodAuditP ],
-  [ 'post', '/v1/transport/tracking/pod/return', trackingPodReturnP ],
-  [ 'post', '/v1/transport/tracking/pod/resubmit', trackingPodResubmitP ],
-  [ 'get', '/v1/transport/tracking/exception/shipmts', trackingExcpShipmtsG ],
+  ['get', '/v1/transport/tracking/shipmts', trackingShipmtListG],
+  ['post', '/v1/transport/tracking/vehicle', trackingVehicleUpdateP],
+  ['post', '/v1/transport/tracking/pickordeliverdate', trackingPickDeliverDateP],
+  ['post', '/v1/transport/tracking/point', trackingPointP],
+  ['get', '/v1/transport/tracking/lastpoint', trackingLastPointG],
+  ['post', '/v1/transport/tracking/pod', trackingPodUpdateP],
+  ['get', '/v1/transport/tracking/pod/shipmts', trackingPodShipmtListG],
+  ['get', '/v1/transport/tracking/pod', trackingPodG],
+  ['post', '/v1/transport/tracking/pod/audit', trackingPodAuditP],
+  ['post', '/v1/transport/tracking/pod/return', trackingPodReturnP],
+  ['post', '/v1/transport/tracking/pod/resubmit', trackingPodResubmitP],
+  ['get', '/v1/transport/tracking/exception/shipmts', trackingExcpShipmtsG],
 ];

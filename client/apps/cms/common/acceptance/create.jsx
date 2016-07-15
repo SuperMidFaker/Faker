@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Popconfirm, message } from 'ant-ui';
+import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
@@ -34,7 +34,7 @@ import { DELG_SOURCE } from 'common/constants';
 @Form.create()
 export default class AcceptanceCreate extends Component {
   static propTypes = {
-    type: PropTypes.oneOf([ 'import', 'export' ]),
+    type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
@@ -86,14 +86,14 @@ export default class AcceptanceCreate extends Component {
           <Form horizontal form={form}>
             <div className="panel-body body-responsive">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type}/>
+                <BasicForm form={form} ieType={type} />
               </Col>
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
-                <UploadGroup onFileListUpdate={this.handleUploadFiles}/>
+                <UploadGroup onFileListUpdate={this.handleUploadFiles} />
               </Col>
             </div>
             <div style={{ padding: '16px' }}>
-              <Button size="large" type="primary" style={{marginRight: 20}}
+              <Button size="large" type="primary" style={{ marginRight: 20 }}
                 loading={submitting} onClick={this.handleSaveBtnClick}
               >
               保存

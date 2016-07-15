@@ -62,97 +62,97 @@ class OrmObject {
     let minLen = 0;
     let def = aa => { return aa; };
     switch (ss[0]) {
-    case 'a':
-      type = 'auto_increment';
-      break;
-    case 'v':
-      type = 'varchar';
-      def = str => {
-        if (str === null || str === undefined) return str;
-        if (typeof str === 'string') return str;
-        if (typeof str === 'object') return JSON.stringify(str);
-        if (typeof str !== 'string') {
-          return String(str);
-        }
-      };
-      break;
-    case 'i':
-      type = 'int';
-      def = (i) => {
-        if (!i || isNaN(i)) {
-          return 0;
-        }
-        return parseInt(i, 10) || 0;
-      };
-      break;
-    case 'f':
-      type = 'float';
-      def = (i) => {
-        if (!i || isNaN(i)) {
-          return 0;
-        }
-        return parseFloat(i) || 0;
-      };
-      break;
-    case 'd':
-      type = 'double';
-      def = (i) => {
-        if (!i || isNaN(i)) {
-          return 0;
-        }
-        return parseFloat(i) || 0;
-      };
-      break;
-    case 'e':
-      type = 'decimal';
-      def = (i) => {
-        if (!i || isNaN(i)) {
-          return 0;
-        }
-        return parseFloat(i) || 0;
-      };
-      break;
-    case 'dt':
-      type = 'date';
-      def = (d) => {
-        if (!d) {
-          return null;
-        }
-        if (d instanceof Date) {
-          return d;
-        }
-        return new Date(d);
-      };
-      break;
-    case 'dtt':
-      type = 'datetime';
-      def = (d) => {
-        if (!d) {
-          return null;
-        }
-        if (d instanceof Date) {
-          return d;
-        }
-        return new Date(d);
-      };
-      break;
-    case 'dtn':
-      type = 'datetime';
-      def = () => {
-        return new Date();
-      };
-      break;
-    default:
-      type = 'varchar';
-      def = str => {
-        if (!str) return '';
-        if (typeof str === 'string') return str;
-        if (typeof str === 'object') return JSON.stringify(str);
-        if (typeof str !== 'string') {
-          return String(str);
-        }
-      };
-      break;
+      case 'a':
+        type = 'auto_increment';
+        break;
+      case 'v':
+        type = 'varchar';
+        def = str => {
+          if (str === null || str === undefined) return str;
+          if (typeof str === 'string') return str;
+          if (typeof str === 'object') return JSON.stringify(str);
+          if (typeof str !== 'string') {
+            return String(str);
+          }
+        };
+        break;
+      case 'i':
+        type = 'int';
+        def = (i) => {
+          if (!i || isNaN(i)) {
+            return 0;
+          }
+          return parseInt(i, 10) || 0;
+        };
+        break;
+      case 'f':
+        type = 'float';
+        def = (i) => {
+          if (!i || isNaN(i)) {
+            return 0;
+          }
+          return parseFloat(i) || 0;
+        };
+        break;
+      case 'd':
+        type = 'double';
+        def = (i) => {
+          if (!i || isNaN(i)) {
+            return 0;
+          }
+          return parseFloat(i) || 0;
+        };
+        break;
+      case 'e':
+        type = 'decimal';
+        def = (i) => {
+          if (!i || isNaN(i)) {
+            return 0;
+          }
+          return parseFloat(i) || 0;
+        };
+        break;
+      case 'dt':
+        type = 'date';
+        def = (d) => {
+          if (!d) {
+            return null;
+          }
+          if (d instanceof Date) {
+            return d;
+          }
+          return new Date(d);
+        };
+        break;
+      case 'dtt':
+        type = 'datetime';
+        def = (d) => {
+          if (!d) {
+            return null;
+          }
+          if (d instanceof Date) {
+            return d;
+          }
+          return new Date(d);
+        };
+        break;
+      case 'dtn':
+        type = 'datetime';
+        def = () => {
+          return new Date();
+        };
+        break;
+      default:
+        type = 'varchar';
+        def = str => {
+          if (!str) return '';
+          if (typeof str === 'string') return str;
+          if (typeof str === 'object') return JSON.stringify(str);
+          if (typeof str !== 'string') {
+            return String(str);
+          }
+        };
+        break;
     }
     if (ss.length > 1) {
       maxLen = parseInt(ss[1], 10);
@@ -160,7 +160,7 @@ class OrmObject {
         minLen = parseInt(ss[2], 10);
       }
     }
-    return {type, maxLen, minLen, nullable: true, def, val: def()};
+    return { type, maxLen, minLen, nullable: true, def, val: def() };
   }
 
   build(columns) {
@@ -448,7 +448,7 @@ class OrmObject {
       }
     });
 
-    sqlArr.push(tmpSql.join(','), `) select `, tmpSel.join(','), ` from ${this.tbname} `);
+    sqlArr.push(tmpSql.join(','), ') select ', tmpSel.join(','), ` from ${this.tbname} `);
     const w = this.toWhere(obj.wheres);
     return db.query(sqlArr.concat(w.sqlArr).join(''), args.concat(w.args));
   }

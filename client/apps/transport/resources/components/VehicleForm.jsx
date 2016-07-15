@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Button, Select, Input } from 'ant-ui';
+import { Form, Button, Select, Input } from 'antd';
 import ContentWrapper from './ContentWrapper';
 import { VEHICLE_TYPES, VEHICLE_LENGTH_TYPES } from 'common/constants';
 
@@ -7,8 +7,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 14}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
 };
 
 export default class VehicleForm extends Component {
@@ -30,14 +30,15 @@ export default class VehicleForm extends Component {
       <ContentWrapper>
         <Form horizontal onSubmit={onSubmitBtnClicked} className="form-edit-content offset-right-col">
           <FormItem label="车牌号:"
-                    required
-                    validateStatus={numberValidate ? '' : 'error'}
-                    help={numberValidate ? '' : '该车辆已存在'}
-            {...formItemLayout}>
-            <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'} onBlur={(e) => onVehicleNumberBlur(e)}/>
+            required
+            validateStatus={numberValidate ? '' : 'error'}
+            help={numberValidate ? '' : '该车辆已存在'}
+            {...formItemLayout}
+          >
+            <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'} onBlur={(e) => onVehicleNumberBlur(e)} />
           </FormItem>
           <FormItem label="挂车牌号:" {...formItemLayout}>
-            <Input {...getFieldProps('trailer_number')}/>
+            <Input {...getFieldProps('trailer_number')} />
           </FormItem>
           <FormItem label="车型:" required {...formItemLayout}>
             <Select {...getFieldProps('type')} required>
@@ -54,7 +55,7 @@ export default class VehicleForm extends Component {
             </Select>
           </FormItem>
           <FormItem label="额定载重:" required {...formItemLayout}>
-            <Input type="number" {...getFieldProps('load_weight')} addonAfter="吨" required/>
+            <Input type="number" {...getFieldProps('load_weight')} addonAfter="吨" required />
           </FormItem>
           <FormItem label="额定体积:" {...formItemLayout}>
             <Input type="number" {...getFieldProps('load_volume')} addonAfter="立方米" />
@@ -67,13 +68,13 @@ export default class VehicleForm extends Component {
           </FormItem>
           <FormItem label="指派司机:" {...formItemLayout}>
             <Select {...getFieldProps('driver_id')}>
-              { drivers && driversOptions }
+              {drivers && driversOptions}
             </Select>
           </FormItem>
           <FormItem label="备注:" {...formItemLayout}>
-            <Input type="textarea" {...getFieldProps('remark')}/>
+            <Input type="textarea" {...getFieldProps('remark')} />
           </FormItem>
-          <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+          <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
             <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>
           </FormItem>
         </Form>

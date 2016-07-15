@@ -7,7 +7,7 @@ import koaRoute from 'koa-router';
 export default function loadRoute(rootDir, route, prefix) {
   console.time(`load route ${route}`);
   const routeDir = path.resolve(rootDir, route);
-  const kroute = koaRoute({prefix: (prefix || '')});
+  const kroute = koaRoute({ prefix: (prefix || '') });
   fs.readdirSync(routeDir).forEach((file) => {
     const fpath = path.resolve(routeDir, file);
     const status = fs.statSync(fpath);

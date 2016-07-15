@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Select } from 'ant-ui';
+import { Row, Col, Form, Select } from 'antd';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -54,7 +54,7 @@ export default class ModeInfo extends React.Component {
     const {
       transitModes, vehicleTypes, vehicleLengths,
       formhoc: { getFieldProps },
-      fieldDefaults: { vehicle_type, vehicle_length, container_no, transport_mode_code: tmc }
+      fieldDefaults: { vehicle_type, vehicle_length, container_no, transport_mode_code: tmc },
     } = this.props;
     let outerColSpan = 24;
     let labelColSpan = 2;
@@ -66,8 +66,8 @@ export default class ModeInfo extends React.Component {
       labelColSpan = 8;
       modeEditCols.push(
         <Col key="vehicle_type" span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('vehicleType')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}}
+          <FormItem label={this.msg('vehicleType')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }}
           >
             <Select {...getFieldProps('vehicle_type', { initialValue: vehicle_type })}>
             {vehicleTypes.map(
@@ -77,8 +77,8 @@ export default class ModeInfo extends React.Component {
           </FormItem>
         </Col>,
         <Col key="vehicle_length" span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('vehicleLength')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}}
+          <FormItem label={this.msg('vehicleLength')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }}
           >
             <Select {...getFieldProps('vehicle_length', { initialValue: vehicle_length })}>
             {vehicleLengths.map(
@@ -95,8 +95,8 @@ export default class ModeInfo extends React.Component {
       modeEditCols.push(
         <Col key="container_no" span={`${outerColSpan}`} className="subform-body">
           <InputItem labelName={this.msg('containerNo')} field="container_no"
-          colSpan={labelColSpan} formhoc={this.props.formhoc}
-          fieldProps={{ initialValue: container_no }}
+            colSpan={labelColSpan} formhoc={this.props.formhoc}
+            fieldProps={{ initialValue: container_no }}
           />
         </Col>,
         <Col key="subform-padding" span={`${outerColSpan}`} className="subform-body" />
@@ -112,26 +112,25 @@ export default class ModeInfo extends React.Component {
     return (
       <Row>
         <Col span={`${outerColSpan}`} className="subform-body">
-          <FormItem label={this.msg('transitModeInfo')} labelCol={{span: labelColSpan}}
-            wrapperCol={{span: 24 - labelColSpan}} required
+          <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }} required
           >
             <Select {...getFieldProps(
               'transport_mode_code', {
                 rules: [{
-                  required: true, message: this.msg('transitModeMust')
+                  required: true, message: this.msg('transitModeMust'),
                 }],
                 initialValue: tmc,
                 onChange: this.handleModeChange,
               }
-            )}
-            >
+            )}>
             {transitModes.map(
               tm => <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
             )}
             </Select>
           </FormItem>
         </Col>
-        { modeEditCols }
+        {modeEditCols}
       </Row>
     );
   }

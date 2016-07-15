@@ -31,14 +31,14 @@ export default {
     return mysql.insert(sql, [args], trans);
   },
   getPartnerByTypeCode(tenantId, typeCode) {
-    const args = [ tenantId, typeCode ];
+    const args = [tenantId, typeCode];
     const sql = `select partner_tenant_id as tid, partner_name as name,
       partner_id, partner_code from sso_partnerships where tenant_id = ?
       and type_code = ?`;
     return mysql.query(sql, args);
   },
   getAllPartnerByTypeCode(tenantId, typeCode, filter, offset, size) {
-    const args = [ tenantId, typeCode ];
+    const args = [tenantId, typeCode];
     const partnerTypeWhere = genPartnershipClause(filter, args);
     const sql = `select partner_id, partner_tenant_id, partner_name from sso_partnerships
       where tenant_id = ? and type_code = ? ${partnerTypeWhere} limit ?, ?`;
@@ -46,12 +46,12 @@ export default {
     return mysql.query(sql, args);
   },
   getAllPartnerByTypeCodeCount(tenantId, typeCode, filter) {
-    const args = [ tenantId, typeCode];
+    const args = [tenantId, typeCode];
     const partnerTypeWhere = genPartnershipClause(filter, args);
     const sql = `select count(partner_id) as count from sso_partnerships
       where tenant_id = ? and type_code = ? ${partnerTypeWhere}`;
     return mysql.query(sql, args);
-  }
+  },
 };
 
 export const Partner = sequelize.define('sso_partners', {
@@ -65,27 +65,27 @@ export const Partner = sequelize.define('sso_partners', {
   cost: INTEGER,
   established: {
     type: INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
   },
   status: {
     type: INTEGER,
-    defaultValue: 1
+    defaultValue: 1,
   },
   invited: {
     type: INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
   },
   created_date: {
     type: DATE,
-    defaultValue: NOW
-  }
+    defaultValue: NOW,
+  },
 }, {
   instanceMethods: {
     transformPartnerships() {
       this.setDataValue('partnerships', this.getDataValue('partnerships').map(ps => ps.type_code));
       return this;
-    }
-  }
+    },
+  },
 });
 
 export const Partnership = sequelize.define('sso_partnerships', {
@@ -96,7 +96,7 @@ export const Partnership = sequelize.define('sso_partnerships', {
   partner_code: STRING,
   type: INTEGER,
   type_code: STRING,
-  status: INTEGER
+  status: INTEGER,
 });
 
 export const Invitation = sequelize.define('sso_partner_invitations', {
@@ -108,13 +108,13 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
   invitation_code: STRING,
   created_date: {
     type: DATE,
-    defaultValue: NOW
+    defaultValue: NOW,
   },
   accept_date: DATE,
   status: {
     type: INTEGER,
-    defaultValue: 0
-  }
+    defaultValue: 0,
+  },
 }, {
   classMethods: {
     getSendInvitationsByTenantId(tenantId) {
@@ -126,7 +126,7 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
         WHERE inviter_tenant_id = ${tenantId} ORDER BY status, created_date DESC;
       `;
       return sequelize
-        .query(sql, {model: Invitation, type: sequelize.QueryTypes.SELECT})
+        .query(sql, { model: Invitation, type: sequelize.QueryTypes.SELECT })
         .then(invitations => this.transformInvitations(invitations.map(invitation => invitation.get())));
     },
     getReceiveInvitationsByTenantId(tenantId) {
@@ -141,11 +141,11 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
           ON PPI.invitee_tenant_id = P.partner_tenant_id AND PPI.inviter_tenant_id = P.tenant_id
       ORDER BY status, created_date DESC;`;
       return sequelize
-        .query(sql, {model: Invitation, type: sequelize.QueryTypes.SELECT})
+        .query(sql, { model: Invitation, type: sequelize.QueryTypes.SELECT })
         .then(invitations => this.transformInvitations(invitations.map(invitation => invitation.get())));
     },
     transformInvitations(rawInvites) {
-      return rawInvites.map(invitee => ({...invitee, partnerships: [invitee.partnerships]})).reduce((total, invitee) => {
+      return rawInvites.map(invitee => ({ ...invitee, partnerships: [invitee.partnerships] })).reduce((total, invitee) => {
         const foundIndex = total.findIndex(item => invitee.code === item.code && invitee.name === item.name);
         if (foundIndex !== -1) {
           total[foundIndex].partnerships.push(invitee.partnerships[0]);
@@ -154,7 +154,7 @@ export const Invitation = sequelize.define('sso_partner_invitations', {
         }
         return total;
       }, []);
-    }
+    },
   },
 });
 

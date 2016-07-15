@@ -27,7 +27,7 @@ function genToken(appid, appSecret, ip) {
   return {
     access_token: atoken,
     refresh_token: refreshToken,
-    expires_in: DEFAULT_INTERVAL
+    expires_in: DEFAULT_INTERVAL,
   };
 }
 
@@ -47,14 +47,14 @@ function *token() {
         appid: b.appid,
         app_secret: b.app_secret,
         tenant_id: app.tenant_id,
-        ip
+        ip,
       }, t));
     } else {
       yield appDao.updateAuth(util._extend({
         appid: b.appid,
         app_secret: b.app_secret,
         tenant_id: app.tenant_id,
-        ip
+        ip,
       }, t));
     }
 
@@ -70,5 +70,5 @@ function *authorize() {
 
 export default [
   ['post', '/token', token, 'generate_token_url'],
-  ['post', '/authorize', authorize, 'grant_authorization_url']
+  ['post', '/authorize', authorize, 'grant_authorization_url'],
 ];

@@ -4,7 +4,7 @@ import InvitationList from '../components/InvitationList';
 import { changeInvitationType } from 'common/reducers/invitation';
 
 @connect((state) => ({
-  invitationType: state.invitation.invitationType
+  invitationType: state.invitation.invitationType,
 }), { changeInvitationType })
 export default class InvitationListContainer extends Component {
   handleInvitationTypeChange = (invitationType) => {
@@ -15,7 +15,8 @@ export default class InvitationListContainer extends Component {
     return (
       <InvitationList
         onInvitationTypeChange={this.handleInvitationTypeChange}
-        invitationType={invitationType}/>
+        invitationType={invitationType}
+      />
     );
   }
 }

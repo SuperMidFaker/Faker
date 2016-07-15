@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, DatePicker, Modal, message } from 'ant-ui';
+import { Form, DatePicker, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
@@ -42,7 +42,7 @@ export default class PickupDeliverUpdater extends React.Component {
       if (!errors) {
         const { formhoc, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
         const { actDate } = formhoc.getFieldsValue();
-        this.props.savePickOrDeliverDate({type, shipmtNo, dispId, actDate, loginId, tenantId, loginName}).then(
+        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
@@ -60,7 +60,7 @@ export default class PickupDeliverUpdater extends React.Component {
     this.props.formhoc.resetFields();
   }
   render() {
-    const { formhoc, formhoc: { getFieldProps }} = this.props;
+    const { formhoc, formhoc: { getFieldProps } } = this.props;
     const colSpan = 6;
     let title;
     let ruleMsg;
@@ -73,16 +73,16 @@ export default class PickupDeliverUpdater extends React.Component {
     }
     return (
       <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
-      visible={this.props.visible}
+        visible={this.props.visible}
       >
         <Form className="row" form={formhoc}>
-          <FormItem label={this.msg('chooseActualTime')} labelCol={{span: colSpan}}
-            wrapperCol={{span: 24 - colSpan}} required
+          <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
+            wrapperCol={{ span: 24 - colSpan }} required
           >
             <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
-            { ...getFieldProps('actDate', {
+              {...getFieldProps('actDate', {
               rules: [{
-                type: 'date', required: true, message: ruleMsg
+                type: 'date', required: true, message: ruleMsg,
               }],
             })}
             />

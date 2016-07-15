@@ -20,7 +20,7 @@ function genWhere(plate, args) {
 }
 export default {
   getVehicles(tenantId, plate, offset, size) {
-    const args = [ tenantId, offset, size ];
+    const args = [tenantId, offset, size];
     const plateWhere = genWhere(plate, args);
     const sql = `select v.vehicle_id, v.plate_number, v.connect_type,
       v.trailer_number, v.type, v.load_weight, v.load_volume, v.length,
@@ -31,12 +31,12 @@ export default {
     return mysql.query(sql, args);
   },
   getVehiclesCount(tenantId, plate) {
-    const args = [ tenantId ];
+    const args = [tenantId];
     const plateWhere = genWhere(plate, args);
     return mysql.query(
       `select count(vehicle_id) as count from tms_vehicles
       where tenant_id = ? ${plateWhere}`,
       args
     );
-  }
+  },
 };

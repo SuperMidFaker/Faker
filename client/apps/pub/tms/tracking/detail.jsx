@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Steps, Card, Collapse, Timeline, Row, Col } from 'ant-ui';
+import { Steps, Card, Collapse, Timeline, Row, Col } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { renderConsignLoc, renderLoc } from '../../../transport/common/consignLocation';
@@ -17,7 +17,7 @@ function fetchData({ dispatch, params }) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    shipmtDetail: state.shipment.shipmtDetail
+    shipmtDetail: state.shipment.shipmtDetail,
   }),
   { }
 )
@@ -26,17 +26,17 @@ export default class TrackingDetail extends React.Component {
     location: PropTypes.object.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   state = {
-    stepsDirection: 'horizontal'
+    stepsDirection: 'horizontal',
   };
   componentDidMount() {
     this.resize();
     $(window).resize(() => {
       this.resize();
     });
-    const {shipmt, tracking} = this.props.shipmtDetail;
+    const { shipmt, tracking } = this.props.shipmtDetail;
     const points = [];
     tracking.points = tracking.points.reverse();
     tracking.points.forEach((item) => {
@@ -44,7 +44,7 @@ export default class TrackingDetail extends React.Component {
         ...item,
         lat: item.latitude,
         lng: item.longitude,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`
+        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`,
       });
     });
     const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr}`;
@@ -58,7 +58,7 @@ export default class TrackingDetail extends React.Component {
     // map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom();
     map.addControl(new BMap.NavigationControl());  // 添加默认缩放平移控件
-    const topLeftControl = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例
+    const topLeftControl = new BMap.ScaleControl({ anchor: BMAP_ANCHOR_TOP_LEFT });// 左上角，添加比例
     map.addControl(topLeftControl);
     function addressToPoint(addr, cb, city) {
       // 将地址解析结果显示在地图上,并调整地图视野
@@ -69,7 +69,7 @@ export default class TrackingDetail extends React.Component {
     function checkPoint(item) {
       return new Promise((resolve) => {
         addressToPoint(`${item.province}${renderLoc(item, 'province', 'city', 'district')}${item.address}`, (point) => {
-          let result = {...item};
+          let result = { ...item };
           if (point) {
             result = {
               ...item,
@@ -83,7 +83,6 @@ export default class TrackingDetail extends React.Component {
     // 创建标注
     function addMarker(pt, label, index, cur, pts) {
       if (pt && pt.lat !== 0 && pt.lng !== 0) {
-        let marker;
         const iconSize = [25, 82];
         let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
         if (index === 0) {
@@ -92,12 +91,12 @@ export default class TrackingDetail extends React.Component {
           iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
         }
         const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
-        marker = new BMap.Marker(pt, {icon});
+        const marker = new BMap.Marker(pt, { icon });
         map.addOverlay(marker);
         if (index === cur) {
           marker.setAnimation(BMAP_ANIMATION_BOUNCE);
         }
-        const lab = new BMap.Label(label, {offset: new BMap.Size(30, -10)});
+        const lab = new BMap.Label(label, { offset: new BMap.Size(30, -10) });
         marker.setLabel(lab);
       }
     }
@@ -121,7 +120,7 @@ export default class TrackingDetail extends React.Component {
         if (cur !== pts.length - 1) {
           bdPoints.pop();
         }
-        const curve = new BMapLib.CurveLine(bdPoints, {strokeColor:'#0096da', strokeWeight: 3, strokeOpacity: 0.5}); // 创建弧线对象
+        const curve = new BMapLib.CurveLine(bdPoints, { strokeColor: '#0096da', strokeWeight: 3, strokeOpacity: 0.5 }); // 创建弧线对象
         map.addOverlay(curve); // 添加到地图中
         map.setViewport(viewPoints);
       });
@@ -129,7 +128,7 @@ export default class TrackingDetail extends React.Component {
     addressToPoint(originPointAddr, (point) => {
       let result = {
         lat: 0,
-        lng: 0
+        lng: 0,
       };
       if (point !== null) {
         result = point;
@@ -137,7 +136,7 @@ export default class TrackingDetail extends React.Component {
       const originPoint = {
         ...result,
         label: `${shipmt.pickup_act_date || shipmt.pickup_est_date ?
-          moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm') : ''} ${originPointAddr}`
+          moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm') : ''} ${originPointAddr}`,
       };
       addressToPoint(destPointAddr, (point2) => {
         if (point2 !== null) {
@@ -146,7 +145,7 @@ export default class TrackingDetail extends React.Component {
         const destPoint = {
           ...result,
           label: `${shipmt.deliver_act_date || shipmt.deliver_est_date ?
-            moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm') : ''} ${destPointAddr}`
+            moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm') : ''} ${destPointAddr}`,
         };
         points.unshift(originPoint);
         points.push(destPoint);
@@ -164,14 +163,14 @@ export default class TrackingDetail extends React.Component {
   }
   resize() {
     if ($(window).width() <= 950) {
-      this.setState({stepsDirection: 'vertical'});
+      this.setState({ stepsDirection: 'vertical' });
     } else {
-      this.setState({stepsDirection: 'horizontal'});
+      this.setState({ stepsDirection: 'horizontal' });
     }
     $('#map').height($(window).height() - 50);
   }
   render() {
-    const {shipmt, tracking} = this.props.shipmtDetail;
+    const { shipmt, tracking } = this.props.shipmtDetail;
     const points = [];
     tracking.points.forEach((item) => {
       points.push({
@@ -197,7 +196,7 @@ export default class TrackingDetail extends React.Component {
       sat: 0,
       altitude: 0,
       location_time: null,
-      created_date: null
+      created_date: null,
     };
     if (tracking.points.length > 0) {
       latestPoint = tracking.points[tracking.points.length - 1];
@@ -260,7 +259,7 @@ export default class TrackingDetail extends React.Component {
       }];
       statusPos = 2;
     }
-    const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} description={s.description}/>);
+    const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} description={s.description} />);
     const trackingSteps = points.map((s, i) => {
       if (i === 0) {
         return (<Timeline.Item color="green">{s.title} {s.description}</Timeline.Item>);
@@ -291,9 +290,9 @@ export default class TrackingDetail extends React.Component {
                         <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
                       </Panel>
                       <Panel header="运输货物" key="3">
-                        <p>运输方式：<span style={{marginLeft: 30}}>{shipmt.transport_mode}</span></p>
-                        <p>总件数：<span style={{marginLeft: 45}}>{shipmt.total_count}</span></p>
-                        <p>总重量：<span style={{marginLeft: 45}}>{shipmt.total_weight}公斤</span></p>
+                        <p>运输方式：<span style={{ marginLeft: 30 }}>{shipmt.transport_mode}</span></p>
+                        <p>总件数：<span style={{ marginLeft: 45 }}>{shipmt.total_count}</span></p>
+                        <p>总重量：<span style={{ marginLeft: 45 }}>{shipmt.total_weight}公斤</span></p>
                       </Panel>
                     </Collapse>
                   </Col>

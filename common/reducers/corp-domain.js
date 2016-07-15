@@ -5,12 +5,12 @@ const initialState = {
   loaded: false, // used by isLoad action
   name: '',
   code: '',
-  logo: ''
+  logo: '',
 };
 
 const actions = [
   'CPD_LOAD', 'CPD_LOAD_SUCCEED', 'CPD_LOAD_FAIL',
-  'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL'
+  'CHECK_CORP_DOMAIN', 'CHECK_DOMAIN_SUCCEED', 'CHECK_DOMAIN_FAIL',
 ];
 const domain = '@@welogix/corpd/';
 const actionTypes = createActionTypes(domain, actions);
@@ -32,8 +32,8 @@ export function checkCorpDomain(subdomain, tenantId) {
       types: [actionTypes.CHECK_CORP_DOMAIN, actionTypes.CHECK_DOMAIN_SUCCEED, actionTypes.CHECK_DOMAIN_FAIL],
       endpoint: 'v1/user/corp/check/subdomain',
       method: 'get',
-      params: {domain: subdomain, tenantId}
-    }
+      params: { domain: subdomain, tenantId },
+    },
   };
 }
 
@@ -44,7 +44,7 @@ export function loadCorpByDomain(cookie, subdomain) {
       endpoint: 'public/v1/subdomain/corp',
       method: 'get',
       params: { subdomain },
-      cookie
-    }
+      cookie,
+    },
   };
 }

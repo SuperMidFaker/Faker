@@ -1,5 +1,5 @@
-import React, {PropTypes} from 'react';
-import {connect} from 'react-redux';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import NavLink from 'client/components/nav-link';
 import {
   loadAccepts,
@@ -8,25 +8,25 @@ import {
   beginEdit,
   edit,
   cancelEdit,
-  loadCustomsBrokers
+  loadCustomsBrokers,
 } from 'common/reducers/importaccept';
-import {isLoaded} from 'client/common/redux-actions';
+import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBar from 'client/components/search-bar';
-import {Table, Button, message, Radio, Icon} from 'ant-ui';
+import { Table, Button, message, Radio, Icon } from 'antd';
 import showWarningModal from 'client/components/deletion-warning-modal';
-import {resolveCurrentPageNumber} from 'client/util/react-ant';
+import { resolveCurrentPageNumber } from 'client/util/react-ant';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   const promises = [];
   if (!isLoaded(state, 'importaccept')) {
     let p = dispatch(loadAccepts(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.importaccept.idlist.pageSize,
-      currentPage: state.importaccept.idlist.current
+      currentPage: state.importaccept.idlist.current,
     }));
     promises.push(p);
     p = dispatch(loadCustomsBrokers(cookie, state.account.tenantId));
@@ -44,14 +44,14 @@ function fetchData({state, dispatch, cookie}) {
   customsBrokerList: state.importaccept.customsBrokerList,
   needUpdate: state.importaccept.needUpdate,
   formData: state.importaccept.formData,
-  loading: state.importaccept.loading
+  loading: state.importaccept.loading,
 }), {
   updateId,
   delId,
   loadAccepts,
   beginEdit,
   edit,
-  cancelEdit
+  cancelEdit,
 })
 export default class ImportAccept extends React.Component {
   static propTypes = { // 属性检测
@@ -66,10 +66,10 @@ export default class ImportAccept extends React.Component {
     cancelEdit: PropTypes.func.isRequired,
     loadAccepts: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
-    sendlist: PropTypes.object.isRequired
+    sendlist: PropTypes.object.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
@@ -79,11 +79,11 @@ export default class ImportAccept extends React.Component {
       searchVal: '',
       sendlist: [],
       buttonText: '撤回',
-      sendStatus: 1
+      sendStatus: 1,
     };
   }
   handleIdReg() {
-    this.setState({showForm: true});
+    this.setState({ showForm: true });
   }
   handleIdRemove(idKey) { // 删除
     const {
@@ -91,8 +91,8 @@ export default class ImportAccept extends React.Component {
       idlist: {
         totalCount,
         current,
-        pageSize
-      }
+        pageSize,
+      },
     } = this.props;
     showWarningModal({
       title: '请输入DELETE进行下一步操作',
@@ -104,11 +104,11 @@ export default class ImportAccept extends React.Component {
           this.props.loadAccepts(null, {
             tenantId,
             pageSize,
-            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize)
+            currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize),
           });
         }
       }),
-      confirmString: 'DELETE'
+      confirmString: 'DELETE',
     });
   }
   handleChangeStatus(e) {
@@ -119,25 +119,25 @@ export default class ImportAccept extends React.Component {
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
       currentStatus: e.target.value,
-      filters: JSON.stringify(filters)
+      filters: JSON.stringify(filters),
     });
 
-    this.setState({statusValue: e.target.value});
+    this.setState({ statusValue: e.target.value });
   }
 
   handleSearch(value) {
-    this.setState({searchVal: value});
+    this.setState({ searchVal: value });
     const filters = this.createFilters(value);
     this.props.loadAccepts(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
       currentStatus: this.state.statusValue,
-      filters: JSON.stringify(filters)
+      filters: JSON.stringify(filters),
     });
   }
   handleNavigationTo(to, query) {
-    this.context.router.push({pathname: to, query});
+    this.context.router.push({ pathname: to, query });
   }
   handleSend(status, record) {
     this.props.sendlist.data = [];
@@ -153,22 +153,22 @@ export default class ImportAccept extends React.Component {
       [
         {
           name: 'del_no',
-          value: searchVal
+          value: searchVal,
         }, {
           name: 'bill_no',
-          value: searchVal
+          value: searchVal,
         }, {
           name: 'invoice_no',
-          value: searchVal
-        }
-      ]
+          value: searchVal,
+        },
+      ],
     ];
   }
   renderColumnText(record, text, ishref = false) {
     let style = {};
     if (record.status === 3) {
       style = {
-        color: '#CCC'
+        color: '#CCC',
       };
     }
     if (ishref === true) {
@@ -184,23 +184,23 @@ export default class ImportAccept extends React.Component {
       statusList: {
         statusValue,
         notAcceptCount,
-        acceptCount
+        acceptCount,
       },
       idlist,
-      loading
+      loading,
     } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadAccepts(null, params),
       resolve: (result) => result.data,
       extraParams: {
-        tenantId: this.props.tenantId
+        tenantId: this.props.tenantId,
       },
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSize: result.pageSize
+        pageSize: result.pageSize,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
@@ -209,18 +209,18 @@ export default class ImportAccept extends React.Component {
           sortField: sorter.field,
           sortOrder: sorter.order,
           currentStatus: statusValue,
-          filters: []
+          filters: [],
         };
         for (const key in filters) {
           if (filters[key]) {
-            params.filters.push({name: key, value: `'${filters[key].join("','")}'`});
+            params.filters.push({ name: key, value: `'${filters[key].join("','")}'` });
           }
         }
         params.filters = JSON.stringify(params.filters);
         // console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
         return params;
       },
-      remotes: idlist
+      remotes: idlist,
     });
 
     // 通过 rowSelection 对象表明需要行选择
@@ -237,37 +237,37 @@ export default class ImportAccept extends React.Component {
     const filterArray = [];
     // branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
     customsBrokerList.map(item => {
-      filterArray.push({text: item.short_name, value: `${item.key}`});
+      filterArray.push({ text: item.short_name, value: `${item.key}` });
     });
     const columns = [
       {
         title: '报关业务单号',
         dataIndex: 'del_no',
         width: 120,
-        render: (text, record) => this.renderColumnText(record, text, true)
+        render: (text, record) => this.renderColumnText(record, text, true),
       }, {
         title: '客户名称',
         sorter: true,
         dataIndex: 'send_tenant_name',
         width: 180,
         filters: filterArray,
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: '委托时间',
         sorter: true,
         dataIndex: 'del_date',
         width: 100,
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: '接单时间',
         dataIndex: 'rec_del_date',
         width: 100,
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: '运单号',
         dataIndex: 'bill_no',
         width: 150,
-        render: (text, record) => this.renderColumnText(record.status, text)
+        render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -298,12 +298,12 @@ export default class ImportAccept extends React.Component {
           }
           return (
             <span style={{
-              color: fontColor
+              color: fontColor,
             }}>
               {statusText}
             </span>
           );
-        }
+        },
       }, {
         title: '操作',
         width: 120,
@@ -313,7 +313,7 @@ export default class ImportAccept extends React.Component {
               return (
                 <span>
                   <NavLink to={`/import/accept/edit/${record.key}`}>查看</NavLink>
-                  <span className="ant-divider"/>
+                  <span className="ant-divider" />
                   <a href="#" className="ant-dropdown-link">接单</a>
                 </span>
               );
@@ -321,7 +321,7 @@ export default class ImportAccept extends React.Component {
               return (
                 <span>
                   <NavLink to={`/import/accept/edit/${record.key}`}>查看</NavLink>
-                  <span className="ant-divider"/>
+                  <span className="ant-divider" />
                   <NavLink to={`/import/task/inputbill/${record.key}`}>报关清单</NavLink>
                 </span>
               );
@@ -329,21 +329,21 @@ export default class ImportAccept extends React.Component {
               return (
                 <span>
                   <NavLink to={`/import/accept/edit/${record.key}`}>查看</NavLink>
-                  <span className="ant-divider"/>
+                  <span className="ant-divider" />
                   <NavLink to={`/import/task/inputbill/${record.key}`}>报关清单</NavLink>
                 </span>
               );
             default:
-              return (<span/>);
+              return (<span />);
           }
-        }
-      }
+        },
+      },
     ];
     return (
       <div className="main-content">
         <div className="page-header fixed">
           <div className="tools">
-            <SearchBar placeholder="提运单号/报关业务号" onInputSearch={(val) => this.handleSearch(val)}/>
+            <SearchBar placeholder="提运单号/报关业务号" onInputSearch={(val) => this.handleSearch(val)} />
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
           <RadioGroup defaultValue="1" size="large" value={statusValue} onChange={(e) => this.handleChangeStatus(e)}>
@@ -361,11 +361,11 @@ export default class ImportAccept extends React.Component {
         <div className="page-body fixed">
           <div className="panel-header">
             <Button type="primary" onClick={() => this.handleNavigationTo('/import/accept/new')}>
-              <Icon type="plus-circle-o"/>新增报关业务
+              <Icon type="plus-circle-o" />新增报关业务
             </Button>
           </div>
           <div className="panel-body body-responsive">
-            <Table useFixedHeader rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table useFixedHeader rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, message } from 'ant-ui';
+import { Modal, Input, message } from 'antd';
 import { closeReModal, revokeShipment, rejectShipment } from
   'common/reducers/transport-acceptance';
 import { format } from 'client/common/i18n/helpers';
@@ -29,7 +29,7 @@ export default class RevokejectModal extends React.Component {
     reload: PropTypes.func.isRequired,
   }
   state = {
-    reason: ''
+    reason: '',
   }
   handleReasonChange = ev => {
     this.setState({ reason: ev.target.value });
@@ -65,8 +65,7 @@ export default class RevokejectModal extends React.Component {
       <Modal title={this.msg('revokejectModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Input type="textarea" rows="4" onBlur={this.handleReasonChange}
-        />
+        <Input type="textarea" rows="4" onBlur={this.handleReasonChange} />
       </Modal>
     );
   }

@@ -1,6 +1,6 @@
 import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/navbar/', [
-  'NAVB_SET_TITLE'
+  'NAVB_SET_TITLE',
 ]);
 
 const initialState = {
@@ -12,8 +12,8 @@ const initialState = {
     text: '',
     moduleName: '',
     withModuleLayout: false,
-    goBackFn: null
-  }
+    goBackFn: null,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -28,6 +28,6 @@ export default function reducer(state = initialState, action) {
 export function setNavTitle(navInfo) {
   return {
     type: actionTypes.NAVB_SET_TITLE,
-    navInfo
+    navInfo,
   };
 }

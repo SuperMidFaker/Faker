@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { Table, Button, Radio, Icon } from 'ant-ui';
+import { Button, Radio } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
@@ -15,12 +16,12 @@ const formatMsg = format(messages);
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadMessages(cookie, {
     loginId: state.account.loginId,
     pageSize: state.corps.messages.pageSize,
     currentPage: state.corps.messages.currentPage,
-    status: state.corps.messages.status
+    status: state.corps.messages.status,
   }));
 }
 
@@ -30,7 +31,7 @@ function fetchData({state, dispatch, cookie}) {
 @connect(
   state => ({
     messages: state.corps.messages,
-    loginId: state.account.loginId
+    loginId: state.account.loginId,
   }),
   { loadMessages, markMessages, markMessage }
 )
@@ -39,7 +40,7 @@ function fetchData({state, dispatch, cookie}) {
     return;
   }
   dispatch(setNavTitle({
-    depth: 1
+    depth: 1,
   }));
 })
 
@@ -48,10 +49,10 @@ export default class MessageList extends React.Component {
     intl: intlShape.isRequired,
     loadMessages: PropTypes.func.isRequired,
     markMessages: PropTypes.func.isRequired,
-    markMessage: PropTypes.func.isRequired
+    markMessage: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   getDateDiff(refDate) {
     const time = new Date(refDate).getTime();
@@ -84,11 +85,11 @@ export default class MessageList extends React.Component {
     this.handleLoadMessages(this.props.messages.status);
   }
   haveReadAllMessages = () => {
-    this.props.markMessages({loginId: this.props.loginId, status: 1});
+    this.props.markMessages({ loginId: this.props.loginId, status: 1 });
     this.handleLoadMessages(0);
   }
   clearAllMessages = () => {
-    this.props.markMessages({loginId: this.props.loginId, status: 2});
+    this.props.markMessages({ loginId: this.props.loginId, status: 2 });
     this.handleLoadMessages(1);
   }
   readMessage = (record) => {
@@ -103,7 +104,7 @@ export default class MessageList extends React.Component {
       loginId: this.props.loginId,
       pageSize: this.props.messages.pageSize,
       currentPage: this.props.messages.currentPage,
-      status
+      status,
     });
   }
   handleNavigationTo = (to, query) => {
@@ -112,15 +113,15 @@ export default class MessageList extends React.Component {
   renderColumnText(status, text, record) {
     let style = {};
     if (status === MESSAGE_STATUS.read.key) {
-      style = {color: '#CCC'};
+      style = { color: '#CCC' };
     }
     return <a onClick={() => this.readMessage(record)} style={style}>{text}</a>;
   }
   renderMyButton() {
     if (this.props.messages.status === MESSAGE_STATUS.notRead.key) {
-      return (<Button style={{float:'right'}} onClick={this.haveReadAllMessages}>{formatMsg(this.props.intl, 'markAll')}</Button>);
+      return (<Button style={{ float: 'right' }} onClick={this.haveReadAllMessages}>{formatMsg(this.props.intl, 'markAll')}</Button>);
     } else {
-      return (<Button style={{float:'right'}} onClick={this.clearAllMessages}>{formatMsg(this.props.intl, 'clearAll')}</Button>);
+      return (<Button style={{ float: 'right' }} onClick={this.clearAllMessages}>{formatMsg(this.props.intl, 'clearAll')}</Button>);
     }
   }
   render() {
@@ -131,24 +132,24 @@ export default class MessageList extends React.Component {
         title: msg('content'),
         dataIndex: 'content',
         width: '70%',
-        render: (text, record) => this.renderColumnText(record.status, text, record)
+        render: (text, record) => this.renderColumnText(record.status, text, record),
       }, {
         title: msg('from_name'),
         dataIndex: 'from_name',
         width: '14%',
-        render: (text, record) => this.renderColumnText(record.status, text, record)
+        render: (text, record) => this.renderColumnText(record.status, text, record),
       }, {
         title: msg('time'),
         dataIndex: 'time',
         width: '14%',
         render: (text, record) => {
           return this.renderColumnText(record.status, this.getDateDiff(text), record);
-        }
-      }
+        },
+      },
     ];
     const dataSource = new Table.DataSource({
-      fetcher: params => {return this.props.loadMessages(null, params);},
-      resolve: (result) => {return result.data;},
+      fetcher: params => { return this.props.loadMessages(null, params); },
+      resolve: (result) => { return result.data; },
       getPagination: (result, resolve) => {
         const pagination = {
           total: result.totalCount,
@@ -158,7 +159,7 @@ export default class MessageList extends React.Component {
           loginId: this.props.loginId,
           showSizeChanger: true,
           showQuickJumper: false,
-          pageSize: result.pageSize
+          pageSize: result.pageSize,
         };
         return pagination;
       },
@@ -169,19 +170,19 @@ export default class MessageList extends React.Component {
           status: this.props.messages.status,
           loginId: this.props.loginId,
           sortField: sorter.field,
-          sortOrder: sorter.order
+          sortOrder: sorter.order,
         };
         return params;
       },
-      remotes: this.props.messages
+      remotes: this.props.messages,
     });
     return (
       <div className="acc-panel">
         <div className="panel-heading">
-          <h3 style={{display: 'inline-block'}}>{msg('messageCenter')}</h3>
-          <Button type="primary" onClick={() => {this.context.router.goBack();}} style={{float: 'right'}}><Icon type="left" />{msg('goBack')}</Button>
+          <h3>{msg('messageCenter')}</h3>
+          <Button size="large" onClick={() => { this.context.router.goBack(); }} style={{ float: 'right' }} icon="left">{msg('goBack')}</Button>
         </div>
-        <div className="panel-body" style={{padding:20}}>
+        <div className="panel-body" style={{ padding: 20 }}>
           <div>
             <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.handleStatusChange}>
               <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
@@ -189,7 +190,7 @@ export default class MessageList extends React.Component {
             </RadioGroup>
             {this.renderMyButton()}
           </div>
-          <Table columns={columns} dataSource={dataSource} style={{marginTop:20}}/>
+          <Table columns={columns} dataSource={dataSource} style={{ marginTop: 20 }} />
         </div>
       </div>
     );

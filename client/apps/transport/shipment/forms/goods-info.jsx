@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input, Select, Table } from 'ant-ui';
+import { Row, Col, Form, Input, Select, Table } from 'antd';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';
@@ -42,7 +42,7 @@ ColumnInput.propTypes = {
   state: PropTypes.object.isRequired,
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 };
 
 function ColumnSelect(props) {
@@ -126,12 +126,12 @@ export default class GoodsInfo extends React.Component {
       height: undefined,
       remark: undefined,
     },
-    editGoodsIndex: -1
+    editGoodsIndex: -1,
   }
   handleGoodsAdd = (ev) => {
     ev.preventDefault();
     this.setState({
-      editGoodsIndex: this.props.goods.length // 取最后一个自动添加元素
+      editGoodsIndex: this.props.goods.length, // 取最后一个自动添加元素
     });
   }
   handleGoodsListCompute = (ev) => {
@@ -152,7 +152,7 @@ export default class GoodsInfo extends React.Component {
   }
   handleGoodsColumnEdit = (field, value) => {
     this.setState({
-      editGoods: { ...this.state.editGoods, [field]: value }
+      editGoods: { ...this.state.editGoods, [field]: value },
     });
   }
   handleGoodsSave = () => {
@@ -166,7 +166,7 @@ export default class GoodsInfo extends React.Component {
       this.props.saveLocalGoods({
         ...this.state.editGoods,
         volume,
-        key: `goodsinfinity${this.props.goods.length}`
+        key: `goodsinfinity${this.props.goods.length}`,
       });
     } else {
       // 更新
@@ -186,7 +186,7 @@ export default class GoodsInfo extends React.Component {
   handleGoodsCancel = () => {
     this.setState({
       editGoods: {},
-      editGoodsIndex: -1
+      editGoodsIndex: -1,
     });
   }
   handleGoodsEdit(goods, index) {
@@ -207,8 +207,8 @@ export default class GoodsInfo extends React.Component {
     } = this.props;
     const apackagings = getFieldValue('transport_mode_code') === 'CTN' ? containerPackagings
       : packagings.map(pk => ({
-          key: pk.package_code,
-          value: pk.package_name,
+        key: pk.package_code,
+        value: pk.package_name,
       }));
     const outerColSpan = 8;
     const columns = [{
@@ -217,14 +217,14 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="goods_no" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsName'),
       dataIndex: 'name',
       render: (text, record, index) =>
         <ColumnInput record={record} field="name" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsPackage'),
       dataIndex: 'package',
@@ -237,7 +237,7 @@ export default class GoodsInfo extends React.Component {
             value: pk.key,
             name: pk.value,
           }))}
-        />
+        />,
     }, {
       title: this.msg('goodsCount'),
       dataIndex: 'count',
@@ -245,7 +245,7 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="count" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsWeight'),
       dataIndex: 'weight',
@@ -253,7 +253,7 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="weight" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsVolume'),
       dataIndex: 'volume',
@@ -261,7 +261,7 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="volume" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsLength'),
       dataIndex: 'length',
@@ -269,7 +269,7 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="length" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsWidth'),
       dataIndex: 'width',
@@ -277,7 +277,7 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="width" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsHeight'),
       dataIndex: 'height',
@@ -285,14 +285,14 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnInput record={record} field="height" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsRemark'),
       dataIndex: 'remark',
       render: (text, record, index) =>
         <ColumnInput record={record} field="remark" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />
+        />,
     }, {
       title: this.msg('goodsOp'),
       width: 80,
@@ -343,7 +343,7 @@ export default class GoodsInfo extends React.Component {
           );
         }
         return rendered;
-      }
+      },
     }];
     return (
       <Row>
@@ -352,16 +352,15 @@ export default class GoodsInfo extends React.Component {
         </div>
         <div className="subform-body">
           <Col span={`${outerColSpan}`}>
-            <FormItem label={this.msg('goodsType')} labelCol={{span: labelColSpan}}
-              wrapperCol={{span: 24 - labelColSpan}} required
+            <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
+              wrapperCol={{ span: 24 - labelColSpan }} required
             >
               <Select {...getFieldProps('goods_type', {
                 rules: [{
-                  required: true, type: 'number', message: this.msg('goodsTypeMust')
+                  required: true, type: 'number', message: this.msg('goodsTypeMust'),
                 }],
-                initialValue: goods_type
-              })}
-              >
+                initialValue: goods_type,
+              })}>
               {goodsTypes.map(
                 gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
               )}
@@ -373,8 +372,8 @@ export default class GoodsInfo extends React.Component {
             />
           </Col>
           <Col span={`${outerColSpan}`}>
-            <FormItem label={this.msg('goodsPackage')} labelCol={{span: labelColSpan}}
-              wrapperCol={{span: 24 - labelColSpan}}
+            <FormItem label={this.msg('goodsPackage')} labelCol={{ span: labelColSpan }}
+              wrapperCol={{ span: 24 - labelColSpan }}
             >
               <Select {...getFieldProps('package', { initialValue: packageform })}>
               {apackagings.map(
@@ -401,11 +400,11 @@ export default class GoodsInfo extends React.Component {
             <Table size="middle" bordered columns={columns} dataSource={[...goods, {
               key: 'goodsinfinity', __ops: [{
                 name: formatGlobalMsg(this.props.intl, 'add'),
-                handler: this.handleGoodsAdd
+                handler: this.handleGoodsAdd,
               }, {
                 name: formatMsg(this.props.intl, 'compute'),
-                handler: this.handleGoodsListCompute
-              }]
+                handler: this.handleGoodsListCompute,
+              }],
             }]} pagination={false}
             />
           </Col>

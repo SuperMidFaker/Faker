@@ -13,10 +13,10 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
     render: (o, record) => {
       return (
         <RowUpdater onHit={handlers.onPreview} label={o} row={record}
-          style={record.status < 0 ? { color : '#999' } : {}}
+          style={record.status < 0 ? { color: '#999' } : {}}
         />
       );
-    }
+    },
   }];
   if (type !== 'undeclared') {
     columns.push({
@@ -77,11 +77,11 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'pieces',
-    width: 90
+    width: 90,
   }, {
     title: msg('delgWeight'),
     dataIndex: 'weight',
-    width: 100
+    width: 100,
   }, {
     title: msg('delgSource'),
     dataIndex: 'source',
@@ -93,7 +93,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
           : msg('subcontractSource')
         }</span>
       );
-    }
+    },
   });
   totalWidth += 240 + 200 * 5 + 90 + 100 + 80;
   if (type === 'undeclared') {
@@ -113,7 +113,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
             </NavLink>
           </span>
         );
-      }
+      },
     });
     totalWidth += 120;
   } else if (type === 'declaring') {
@@ -133,7 +133,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
             />
           </span>
         );
-      }
+      },
     });
     totalWidth += 150;
   } else {
@@ -149,7 +149,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
             </NavLink>
           </span>
         );
-      }
+      },
     });
     totalWidth += 80;
   }

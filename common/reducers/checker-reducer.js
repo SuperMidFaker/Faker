@@ -10,8 +10,8 @@ export function checkLoginName(loginName, loginId, tenantId) {
       types: [actionTypes.CHECK_LOGINNAME, actionTypes.CHECK_LOGINNAME_SUCCEED, actionTypes.CHECK_LOGINNAME_FAIL],
       endpoint: 'v1/user/check/loginname',
       method: 'get',
-      params: { loginName, loginId, tenantId }
-    }
+      params: { loginName, loginId, tenantId },
+    },
   };
 }
 

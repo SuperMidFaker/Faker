@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
-import { Row, Col } from 'ant-ui';
+import { Row, Col } from 'antd';
 import { DEFAULT_MODULES } from '../../common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -13,11 +13,11 @@ export default class ModuleLayout extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     enabledmods: PropTypes.array.isRequired, // todo get from state.account
-    size: PropTypes.oneOf(['', 'large'])
+    size: PropTypes.oneOf(['', 'large']),
   };
 
   static defaultProps = {
-    enabledmods: Object.keys(DEFAULT_MODULES).map(mod => DEFAULT_MODULES[mod])
+    enabledmods: Object.keys(DEFAULT_MODULES).map(mod => DEFAULT_MODULES[mod]),
   };
 
   render() {

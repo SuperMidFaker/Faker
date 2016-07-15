@@ -6,7 +6,7 @@ const isomorphicPlugin = new WebpackIsomorphicPlugin(require('./isomorphic'));
 
 wpConfig.entry.app = [
   'webpack/hot/dev-server',
-  config.get('client_entry')
+  config.get('client_entry'),
 ];
 
 // Configuration for dev server
@@ -18,10 +18,10 @@ wpConfig.devServer = {
   inline: true,
   progress: true,
   stats: {
-    colors: true
+    colors: true,
   },
   host: '0.0.0.0',
-  port: config.get('webpack_port')
+  port: config.get('webpack_port'),
 };
 wpConfig.devtool = 'source-map';
 
@@ -29,13 +29,13 @@ wpConfig.plugins.push(
   new webpack.optimize.CommonsChunkPlugin({
     names: 'vendor',
     filename: '[name]-[hash].js',
-    minChunks: Infinity
+    minChunks: Infinity,
   }),
   new webpack.HotModuleReplacementPlugin() // sync with browser while developing
 );
 wpConfig.module.loaders.push({
   test: /\.less$/,
-  loader: 'style!css?&sourceMap!postcss!less'
+  loader: 'style!css?&sourceMap!postcss!less',
 });
 
 wpConfig.plugins.push(isomorphicPlugin.development());

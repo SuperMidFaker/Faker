@@ -22,12 +22,12 @@ const initialState = {
     status: 'waiting',
     segmented: 0,
     merged: 0,
-    origin: 0
+    origin: 0,
   },
   cond: {
     type: 'none',
     consignerStep: 20,
-    consigneeStep: 20
+    consigneeStep: 20,
   },
   shipmentlist: {
     totalCount: 0,
@@ -40,13 +40,13 @@ const initialState = {
     totalCount: 0,
     pageSize: 10,
     current: 1,
-    data: []
+    data: [],
   },
   vehicles: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
-    data: []
+    data: [],
   },
   lspLoaded: false,
   vehicleLoaded: false,
@@ -57,13 +57,13 @@ const initialState = {
   nodeLocations: [],
   transitModes: [],
   vehicleLengths: [],
-  vehicleTypes: []
+  vehicleTypes: [],
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_APTSHIPMENT:
-      return { ...state, loading: true, dispatched: false};
+      return { ...state, loading: true, dispatched: false };
     case actionTypes.LOAD_APTSHIPMENT_FAIL:
       return { ...state, loading: false, dispatched: false };
     case actionTypes.LOAD_APTSHIPMENT_SUCCEED: {
@@ -71,34 +71,34 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters,
-        cond: {type: 'none'},
+        cond: { type: 'none' },
         dispatched: false,
         segmented: false,
         lspLoaded: false,
-        vehicleLoaded: false
+        vehicleLoaded: false,
       };
     }
     case actionTypes.LOAD_LSPS_SUCCEED:
-      return { ...state, lsps: action.result.data, lspLoaded: true};
+      return { ...state, lsps: action.result.data, lspLoaded: true };
     case actionTypes.LOAD_VEHICLES_SUCCEED:
-      return { ...state, vehicles: action.result.data, vehicleLoaded: true};
+      return { ...state, vehicles: action.result.data, vehicleLoaded: true };
     case actionTypes.DO_DISPATCH_SUCCEED:
-      return { ...state, dispatched: true};
+      return { ...state, dispatched: true };
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
       return { ...state, nodeLocations: action.result.data.nodeLocations,
       transitModes: action.result.data.transitModes,
       vehicleLengths: action.result.data.vehicleLengths,
-      vehicleTypes: action.result.data.vehicleTypes
+      vehicleTypes: action.result.data.vehicleTypes,
     };
     case actionTypes.SEGMENT_SUCCEED:
-      return { ...state, segmented: true};
+      return { ...state, segmented: true };
     case actionTypes.LOAD_EXPANDLIST_SUCCEED: {
       const expandList = { ...state.expandList };
       expandList[action.params.shipmtNo] = action.result.data;
       return { ...state, expandList };
     }
     case actionTypes.GROUPED_LIST_SUCCEED: {
-      const {shipmentlist} = {...state};
+      const { shipmentlist } = { ...state };
       shipmentlist.data = action.result.data;
       shipmentlist.totalCount = shipmentlist.data.length;
       return { ...state, loading: false,
@@ -107,11 +107,11 @@ export default function reducer(state = initialState, action) {
         dispatched: false,
         segmented: false,
         lspLoaded: false,
-        vehicleLoaded: false
+        vehicleLoaded: false,
       };
     }
     case actionTypes.REMOVE_GROUPEDSUB: {
-      const {expandList} = {...state};
+      const { expandList } = { ...state };
       const keys = Object.keys(expandList);
       let idx = -1;
       let key = '';
@@ -131,7 +131,7 @@ export default function reducer(state = initialState, action) {
       if (idx > -1) {
         expandList[key].splice(idx, 1);
       }
-      return {...state, expandList};
+      return { ...state, expandList };
     }
     default:
       return state;
@@ -149,8 +149,8 @@ export function loadTable(cookie, params) {
       endpoint: 'v1/transport/dispatch/shipmts',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -165,8 +165,8 @@ export function loadLsps(cookie, params) {
       endpoint: 'v1/transport/dispatch/lsps',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -181,8 +181,8 @@ export function loadVehicles(cookie, params) {
       endpoint: 'v1/transport/dispatch/vehicles',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -197,8 +197,8 @@ export function doDispatch(cookie, params) {
       endpoint: 'v1/transport/dispatch',
       method: 'post',
       data: params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -213,8 +213,8 @@ export function doSend(cookie, params) {
       endpoint: 'v1/transport/dispatch/send',
       method: 'post',
       data: params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -229,8 +229,8 @@ export function doReturn(cookie, params) {
       endpoint: 'v1/transport/dispatch/return',
       method: 'post',
       data: params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -245,8 +245,8 @@ export function loadSegRq(cookie, params) {
       endpoint: 'v1/transport/dispatch/segrequires',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -261,8 +261,8 @@ export function segmentRequest(cookie, params) {
       endpoint: 'v1/transport/dispatch/segment',
       method: 'post',
       data: params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -277,8 +277,8 @@ export function segmentCancelRequest(cookie, params) {
       endpoint: 'v1/transport/dispatch/segment/cancel',
       method: 'post',
       data: params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -293,8 +293,8 @@ export function segmentCancelCheckRequest(cookie, params) {
       endpoint: 'v1/transport/dispatch/segment/cancelcheck',
       method: 'post',
       data: params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -309,8 +309,8 @@ export function loadExpandList(cookie, params) {
       endpoint: 'v1/transport/dispatch/expandlist',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -325,8 +325,8 @@ export function loadShipmtsGrouped(cookie, params) {
       endpoint: 'v1/transport/dispatch/shipmts/grouped',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
@@ -341,11 +341,11 @@ export function loadShipmtsGroupedSub(cookie, params) {
       endpoint: 'v1/transport/dispatch/shipmts/groupedsub',
       method: 'get',
       params,
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
 export function removeGroupedSubShipmt(key, shipmtNo) {
-  return {type: actionTypes.REMOVE_GROUPEDSUB, data: {key, shipmtNo}};
+  return { type: actionTypes.REMOVE_GROUPEDSUB, data: { key, shipmtNo } };
 }

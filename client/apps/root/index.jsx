@@ -27,7 +27,7 @@ function fetchData({ state, dispatch, cookie, location }) {
   state => ({
     locale: state.intl.locale,
     messages: state.intl.messages,
-    isAuthed: state.auth.isAuthed
+    isAuthed: state.auth.isAuthed,
   })
 )
 export default class Root extends React.Component {
@@ -36,10 +36,10 @@ export default class Root extends React.Component {
     location: PropTypes.object.isRequired,
     locale: PropTypes.string.isRequired,
     messages: PropTypes.object.isRequired,
-    isAuthed: PropTypes.bool.isRequired
+    isAuthed: PropTypes.bool.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
 
   componentWillReceiveProps(nextProps) {

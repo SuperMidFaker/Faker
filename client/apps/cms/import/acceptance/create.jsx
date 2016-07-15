@@ -16,6 +16,6 @@ export default class ImportAcceptanceCreate extends React.Component {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <Create type="import" { ...this.props } />;
+    return <Create type="import" {...this.props} />;
   }
 }

@@ -6,20 +6,20 @@ export default {
   assets: {
     images: {
       extensions: ['png', 'jpg', 'gif', 'ico', 'svg', 'jpeg'],
-      parser: WebpackIsomorphicPlugin.url_loader_parser
+      parser: WebpackIsomorphicPlugin.url_loader_parser,
     },
     fonts: {
       extensions: [
         'woff',
         'woff2',
         'ttf',
-        'eot'
+        'eot',
       ],
-      parser: WebpackIsomorphicPlugin.url_loader_parser
+      parser: WebpackIsomorphicPlugin.url_loader_parser,
     },
     style_decriptor: {
       extensions: ['css', 'scss', 'less'],
-      filter:(module, regex, options, log) => {
+      filter: (module, regex, options, log) => {
         if (options.development) {
           // in development mode there's webpack "style-loader",
           // so the module.name is not equal to module.name
@@ -48,7 +48,7 @@ export default {
           // in production mode there's Extract Text Loader which extracts CSS text away
           return module.source;
         }
-      }
-    }
-  }
+      },
+    },
+  },
 };

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Radio, Popconfirm } from 'ant-ui';
+import { Table, Button, Radio, Popconfirm } from 'antd';
 import { Link } from 'react-router';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
@@ -10,7 +10,7 @@ const RadioGroup = Radio.Group;
 const rowSelection = {
   onSelect() {
 
-  }
+  },
 };
 
 export default function NodeList(props) {
@@ -19,52 +19,52 @@ export default function NodeList(props) {
     {
       title: '名称',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
     },
     {
       title: '外部代码',
       dataIndex: 'node_code',
-      key: 'node_code'
+      key: 'node_code',
     },
     {
       title: '关联方',
       dataIndex: 'ref_partner_name',
-      key: 'ref_partner_name'
+      key: 'ref_partner_name',
     },
     {
       title: '省/城市/县区',
       dataIndex: 'region',
-      key: 'region'
+      key: 'region',
     },
     {
       title: '地址/坐标',
       dataIndex: 'addr',
-      key: 'addr'
+      key: 'addr',
     },
     {
       title: '联系人',
       dataIndex: 'contact',
-      key: 'contact'
+      key: 'contact',
     },
     {
       title: '联系电话',
       dataIndex: 'mobile',
-      key: 'mobile'
+      key: 'mobile',
     },
     {
       title: '联系邮箱',
       dataIndex: 'email',
-      key: 'email'
+      key: 'email',
     },
     {
       title: '围栏及范围',
       dataIndex: 'geo_longitude',
-      key: 'geo_longitude'
+      key: 'geo_longitude',
     },
     {
       title: '备注',
       dataIndex: 'remark',
-      key: 'remark'
+      key: 'remark',
     },
     {
       title: '操作',
@@ -80,8 +80,8 @@ export default function NodeList(props) {
             </Popconfirm>
           </span>
         );
-      }
-    }
+      },
+    },
   ];
   return (
     <div className="main-content">
@@ -97,7 +97,7 @@ export default function NodeList(props) {
       </div>
       <div className="page-body">
         <div className="panel-body">
-          <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)}/>
+          <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
         </div>
       </div>
     </div>

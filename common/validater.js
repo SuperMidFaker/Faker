@@ -49,5 +49,5 @@ export function isPositiveInteger(val) {
 export {
   validatePhone,
   isMobile,
-  getSmsCode
+  getSmsCode,
 };

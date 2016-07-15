@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, message, Popconfirm } from 'ant-ui';
+import { Col, Form, Button, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -50,11 +50,11 @@ function fetchData({ state, dispatch, cookie }) {
     text: formatMsg(props.intl, 'shipmtCreate'),
     moduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: () => router.goBack()
+    goBackFn: () => router.goBack(),
   }));
 })
 @Form.create({
-  formPropName: 'formhoc'
+  formPropName: 'formhoc',
 })
 export default class ShipmentCreate extends React.Component {
   static propTypes = {
@@ -76,7 +76,7 @@ export default class ShipmentCreate extends React.Component {
     saveDraft: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSavePending = (ev) => {
@@ -185,14 +185,14 @@ export default class ShipmentCreate extends React.Component {
               <Col span="16" className="main-col">
                 <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                labelColSpan={8} formhoc={formhoc}
+                  labelColSpan={8} formhoc={formhoc}
                 />
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                labelColSpan={8} formhoc={formhoc}
+                  labelColSpan={8} formhoc={formhoc}
                 />
                 <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
-                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc}/>
+                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc} />
               </Col>
               <CorrelInfo formhoc={formhoc} intl={intl} tenantName={tenantName} />
             </div>

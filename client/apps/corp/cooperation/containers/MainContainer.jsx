@@ -8,7 +8,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadPartners(cookie, {
-    tenantId: state.account.tenantId
+    tenantId: state.account.tenantId,
   }));
 }
 
@@ -19,10 +19,10 @@ function fetchData({ state, dispatch, cookie }) {
     text: '协作网络',
     muduleName: 'corp',
     withModuleLayout: false,
-    goBackFn: null
+    goBackFn: null,
   }));
 })
-@connect(state => ({selectedMenuItemKey: state.partner.selectedMenuItemKey}), { setMenuItemKey })
+@connect(state => ({ selectedMenuItemKey: state.partner.selectedMenuItemKey }), { setMenuItemKey })
 export default class MainContainer extends Component {
   static propsTypes = {
     selectedMenuItemKey: PropTypes.string.isRequired,   // 当前选中的Menu Item Key
@@ -34,7 +34,7 @@ export default class MainContainer extends Component {
   render() {
     const { selectedMenuItemKey = '0' } = this.props;
     return (
-      <Main selectedMenuItemKey={selectedMenuItemKey} onMenuItemClick={this.handleMenuItemClick}/>
+      <Main selectedMenuItemKey={selectedMenuItemKey} onMenuItemClick={this.handleMenuItemClick} />
     );
   }
 }

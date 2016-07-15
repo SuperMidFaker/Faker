@@ -14,13 +14,13 @@ const initialState = {
   tenantName: '',
   profile: {
     // name(same as outter username), username(loginName without @), phone, email, role
-  }
+  },
 };
 
 const actions = [
   'ACC_LOAD', 'ACC_LOAD_SUCCEED', 'ACC_LOAD_FAIL',
   'PWD_CHANGE', 'PWD_CHANGE_SUCCEED', 'PWD_CHANGE_FAIL',
-  'PROFILE_UPDATE', 'PROFILE_UPDATE_SUCCEED', 'PROFILE_UPDATE_FAIL'
+  'PROFILE_UPDATE', 'PROFILE_UPDATE_SUCCEED', 'PROFILE_UPDATE_FAIL',
 ];
 const domain = '@@welogix/account/';
 const actionTypes = createActionTypes(domain, actions);
@@ -33,8 +33,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loaded: true, ...action.result.data };
     case actionTypes.PROFILE_UPDATE_SUCCEED:
       return { ...state, profile: {
-      ...state.profile, ...action.data.profile
-    }};
+        ...state.profile, ...action.data.profile,
+      } };
     default:
       return state;
   }
@@ -46,19 +46,19 @@ export function loadAccount(cookie) {
       types: [actionTypes.ACC_LOAD, actionTypes.ACC_LOAD_SUCCEED, actionTypes.ACC_LOAD_FAIL],
       endpoint: 'v1/user/account',
       method: 'get',
-      cookie
-    }
+      cookie,
+    },
   };
 }
 
 export function changePassword(oldPwd, newPwd) {
   return {
     [CLIENT_API]: {
-      types: [ actionTypes.PWD_CHANGE, actionTypes.PWD_CHANGE_SUCCEED, actionTypes.PWD_CHANGE_FAIL ],
+      types: [actionTypes.PWD_CHANGE, actionTypes.PWD_CHANGE_SUCCEED, actionTypes.PWD_CHANGE_FAIL],
       endpoint: 'v1/user/password',
       method: 'put',
-      data: { oldPwd, newPwd }
-    }
+      data: { oldPwd, newPwd },
+    },
   };
 }
 
@@ -68,11 +68,11 @@ export function updateProfile(profile, code, tenantId) {
       types: [
         actionTypes.PROFILE_UPDATE,
         actionTypes.PROFILE_UPDATE_SUCCEED,
-        actionTypes.PROFILE_UPDATE_FAIL
+        actionTypes.PROFILE_UPDATE_FAIL,
       ],
       endpoint: 'v1/user/profile',
       method: 'put',
-      data: { profile, code, tenantId }
-    }
+      data: { profile, code, tenantId },
+    },
   };
 }

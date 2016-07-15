@@ -1,21 +1,21 @@
-import React, {PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {loadTracking, loadCustomsBrokers} from 'common/reducers/exporttracking';
-import {isLoaded} from 'client/common/redux-actions';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { loadTracking, loadCustomsBrokers } from 'common/reducers/exporttracking';
+import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBar from 'client/components/search-bar';
-import {Table, Radio} from 'ant-ui';
+import { Table, Radio } from 'antd';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-function fetchData({state, dispatch, cookie}) {
+function fetchData({ state, dispatch, cookie }) {
   const promises = [];
   if (!isLoaded(state, 'exporttracking')) {
     let p = dispatch(loadTracking(cookie, {
       tenantId: state.account.tenantId,
       pageSize: state.exporttracking.idlist.pageSize,
-      currentPage: state.exporttracking.idlist.current
+      currentPage: state.exporttracking.idlist.current,
     }));
     promises.push(p);
     p = dispatch(loadCustomsBrokers(cookie, state.account.tenantId));
@@ -29,42 +29,42 @@ function fetchData({state, dispatch, cookie}) {
   tenantId: state.account.tenantId,
   idlist: state.exporttracking.idlist,
   customsBrokerList: state.exporttracking.customsBrokerList,
-  loading: state.exporttracking.loading
-}), {loadTracking})
+  loading: state.exporttracking.loading,
+}), { loadTracking })
 export default class ExportTracking extends React.Component {
   static propTypes = { // 属性检测
     idlist: PropTypes.object.isRequired,
     customsBrokerList: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     loadTracking: PropTypes.func.isRequired,
-    tenantId: PropTypes.number.isRequired
+    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = { // 设置默认视图状态
       showForm: false,
-      searchVal: ''
+      searchVal: '',
     };
   }
   handleIdReg() {
-    this.setState({showForm: true});
+    this.setState({ showForm: true });
   }
 
   handleSearch(value) {
-    this.setState({searchVal: value});
+    this.setState({ searchVal: value });
     const filters = this.createFilters(value);
     this.props.loadTracking(null, {
       tenantId: this.props.tenantId,
       pageSize: this.props.idlist.pageSize,
       currentPage: 1,
-      filters: JSON.stringify(filters)
+      filters: JSON.stringify(filters),
     });
   }
   handleNavigationTo(to, query) {
-    this.context.router.push({pathname: to, query});
+    this.context.router.push({ pathname: to, query });
   }
 
   createFilters(searchVal) { // 创建过滤
@@ -72,32 +72,32 @@ export default class ExportTracking extends React.Component {
       [
         {
           name: 'del_no',
-          value: searchVal
+          value: searchVal,
         }, {
           name: 'entry_id',
-          value: searchVal
+          value: searchVal,
         }, {
           name: 'bill_no',
-          value: searchVal
-        }
-      ]
+          value: searchVal,
+        },
+      ],
     ];
   }
 
   render() {
-    const {customsBrokerList, idlist, loading} = this.props;
+    const { customsBrokerList, idlist, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: (params) => this.props.loadTracking(null, params),
       resolve: (result) => result.data,
       extraParams: {
-        tenantId: this.props.tenantId
+        tenantId: this.props.tenantId,
       },
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSize: result.pageSize
+        pageSize: result.pageSize,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
@@ -105,56 +105,56 @@ export default class ExportTracking extends React.Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order,
-          filters: []
+          filters: [],
         };
         for (const key in filters) {
           if (filters[key]) {
-            params.filters.push({name: key, value: `'${filters[key].join("','")}'`});
+            params.filters.push({ name: key, value: `'${filters[key].join("','")}'` });
           }
         }
         params.filters = JSON.stringify(params.filters);
         // console.log('getParams 的参数是：', pagination, filters, sorter, '请求参数：', params);
         return params;
       },
-      remotes: idlist
+      remotes: idlist,
     });
 
     const filterArray = [];
     // branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
     customsBrokerList.map(item => {
-      filterArray.push({text: item.short_name, value: `${item.key}`});
+      filterArray.push({ text: item.short_name, value: `${item.key}` });
     });
     const columns = [
       {
         title: '报关单号',
-        dataIndex: 'entry_id'
+        dataIndex: 'entry_id',
       }, {
         title: '处理环节',
-        dataIndex: 'process_name'
+        dataIndex: 'process_name',
       }, {
         title: '处理时间',
         sorter: true,
         dataIndex: 'process_date',
-        filters: filterArray
+        filters: filterArray,
       }, {
         title: '报关业务号',
-        dataIndex: 'del_no'
+        dataIndex: 'del_no',
       }, {
         title: '提运单号',
-        dataIndex: 'bill_no'
+        dataIndex: 'bill_no',
       }, {
         title: '报关受理方',
-        dataIndex: 'rec_tenant_name'
+        dataIndex: 'rec_tenant_name',
       }, {
         title: '报关委托方',
-        dataIndex: 'send_tenant_name'
-      }
+        dataIndex: 'send_tenant_name',
+      },
     ];
     return (
       <div className="main-content">
         <div className="page-header fixed">
           <div className="tools">
-            <SearchBar placeholder="报关单号/报关业务号/提运单号" onInputSearch={(val) => this.handleSearch(val)}/>
+            <SearchBar placeholder="报关单号/报关业务号/提运单号" onInputSearch={(val) => this.handleSearch(val)} />
             <a className="hidden-xs" role="button">高级搜索</a>
           </div>
           <RadioGroup defaultValue="-1" size="large">
@@ -166,7 +166,7 @@ export default class ExportTracking extends React.Component {
         <div className="page-body fixed">
           <div className="panel-min-header">&nbsp;</div>
           <div className="panel-body body-responsive">
-            <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource}/>
+            <Table useFixedHeader columns={columns} loading={loading} dataSource={dataSource} />
           </div>
         </div>
       </div>

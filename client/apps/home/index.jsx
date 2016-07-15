@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu } from 'ant-ui';
+import { Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import NavLink from 'client/components/nav-link';
@@ -17,7 +17,7 @@ const formatMsg = format(messages);
   state => ({
     accountType: state.account.type,
     logo: state.corpDomain.logo,
-    name: state.corpDomain.name
+    name: state.corpDomain.name,
   }),
   { setNavTitle }
 )
@@ -27,11 +27,11 @@ export default class Home extends React.Component {
     setNavTitle: PropTypes.func.isRequired,
     accountType: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
   };
   componentWillMount() {
     this.props.setNavTitle({
-      depth: 1
+      depth: 1,
     });
   }
   render() {
@@ -40,7 +40,7 @@ export default class Home extends React.Component {
       <Menu.Item key="apps">
         <i className="zmdi zmdi-apps"></i>
         {formatMsg(intl, 'applications')}
-      </Menu.Item>
+      </Menu.Item>,
     ];
     if (accountType !== PERSONNEL) {
       tenantMenus.push(
@@ -58,12 +58,12 @@ export default class Home extends React.Component {
         <div className="am-content">
           <div className="home-header home-header-bg">
             <div className="tenant-info">
-              <div className="tenant-logo " style={{backgroundImage:`url("${logo || '/assets/img/home/tenant-logo.png'}")`}} />
+              <div className="tenant-logo " style={{ backgroundImage: `url("${logo || '/assets/img/home/tenant-logo.png'}")` }} />
               <h2 className="tenant-name">{name}</h2>
             </div>
             <div className="tenant-nav">
               <Menu defaultSelectedKeys={['apps']} mode="horizontal">
-              { tenantMenus }
+              {tenantMenus}
               </Menu>
             </div>
           </div>

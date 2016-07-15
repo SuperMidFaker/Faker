@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Icon, message } from 'ant-ui';
+import { Button, Icon, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -19,7 +20,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     if (flt.name === 'type') {
       return {
         name: 'type',
-        value: params.state
+        value: params.state,
       };
     } else {
       return flt;
@@ -55,10 +56,10 @@ export default class LandStatusList extends React.Component {
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadExcpShipments: PropTypes.func.isRequired
+    loadExcpShipments: PropTypes.func.isRequired,
   }
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,7 +68,7 @@ export default class LandStatusList extends React.Component {
         if (flt.name === 'type') {
           return {
             name: 'type',
-            value: nextProps.params.state
+            value: nextProps.params.state,
           };
         } else {
           return flt;
@@ -93,7 +94,7 @@ export default class LandStatusList extends React.Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize
+      pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -102,7 +103,7 @@ export default class LandStatusList extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-        filters: this.props.filters
+        filters: this.props.filters,
       };
       params.filters = params.filters.filter(
         flt => flt.name === 'type' || (flt.name in filters && filters[flt.name].length)
@@ -115,7 +116,7 @@ export default class LandStatusList extends React.Component {
       params.filters = JSON.stringify(params.filters);
       return params;
     },
-    remotes: this.props.shipmentlist
+    remotes: this.props.shipmentlist,
   })
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -126,9 +127,9 @@ export default class LandStatusList extends React.Component {
     render: (o, record) => {
       return (
         <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
-        row={record.shipmt_no}
+          row={record.shipmt_no}
         />);
-    }
+    },
   }, {
     title: this.msg('shipmtException'),
     fixed: 'left',
@@ -154,7 +155,7 @@ export default class LandStatusList extends React.Component {
       } else {
         return <span />;
       }
-    }
+    },
   }, {
     title: this.msg('shipmtPrevTrack'),
     width: 140,
@@ -178,6 +179,7 @@ export default class LandStatusList extends React.Component {
         return `${this.msg('podUploadAction')}
         ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
       }
+      return '';
     },
   }, {
     title: this.msg('shipmtCarrier'),
@@ -205,67 +207,71 @@ export default class LandStatusList extends React.Component {
       } else {
         return this.msg('ownFleet');
       }
-    }
+    },
   }, {
     title: this.msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
-    width: 120
+    width: 120,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 50
+    width: 50,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 50
+    width: 50,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 50
+    width: 50,
   }, {
     title: this.msg('shipmtCustomer'),
     dataIndex: 'customer_name',
-    width: 240
+    width: 240,
   }, {
     title: this.msg('departurePlace'),
     width: 150,
-    render: (o, record) => renderConsignLoc(record, 'consigner')
+    render: (o, record) => renderConsignLoc(record, 'consigner'),
   }, {
     title: this.msg('arrivalPlace'),
     width: 150,
-    render: (o, record) => renderConsignLoc(record, 'consignee')
+    render: (o, record) => renderConsignLoc(record, 'consignee'),
   }, {
     title: this.msg('shipmtMode'),
     dataIndex: 'transport_mode',
-    width: 80
+    width: 80,
   }, {
     title: this.msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
     width: 100,
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
     width: 100,
-    render: (o, record) => record.pickup_act_date ?
+    render: (o, record) => (
+      record.pickup_act_date ?
       (<span className="mdc-text-green">
       {moment(record.pickup_act_date).format('YYYY.MM.DD')}
       </span>
       ) : <span />
+    ),
   }, {
     title: this.msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
     width: 100,
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD')
+    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => record.deliver_act_date ?
+    render: (o, record) => (
+      record.deliver_act_date ?
       (<span className="mdc-text-green">
       {moment(record.deliver_act_date).format('YYYY.MM.DD')}
       </span>
       ) : <span />
+    ),
   }, {
     title: this.msg('proofOfDelivery'),
     dataIndex: 'pod_type',
@@ -278,7 +284,7 @@ export default class LandStatusList extends React.Component {
       } else {
         return <Icon type="qrcode" />;
       }
-    }
+    },
   }]
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
     this.props.loadExcpShipments(null, {
@@ -311,7 +317,7 @@ export default class LandStatusList extends React.Component {
     if (value !== null && value !== undefined && value !== '') {
       merged.push({
         name,
-        value
+        value,
       });
     }
     return merged;
@@ -324,14 +330,14 @@ export default class LandStatusList extends React.Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
         this.setState({ selectedRowKeys });
-      }
+      },
     };
     return (
       <div>
         <div className="page-body">
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2400, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2400/* , y: 460 */ }}
               onRowClick={this.handleShipmtPreview}
             />
           </div>

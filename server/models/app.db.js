@@ -21,5 +21,5 @@ export default {
     const sql = 'update m_app_auth set type = ?, access_token = ?, expires_in = ?, refresh_token = ?, ip = ?, updated_date = NOW() where appid = ? and app_secret = ?';
     const args = [a.type || 0, a.access_token, (a.expires_in * 1000 + Date.now()), a.refresh_token, a.ip, a.appid, a.app_secret];
     return mysql.update(sql, args);
-  }
+  },
 };

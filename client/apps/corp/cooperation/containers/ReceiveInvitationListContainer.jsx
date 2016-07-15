@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Table } from 'ant-ui';
+import { Table } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
@@ -9,7 +9,7 @@ import { loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'comm
 import receiveModal from '../components/ReceiveModal';
 
 const rowSelection = {
-  onChange() {}
+  onChange() {},
 };
 
 function fetchData({ state, dispatch }) {
@@ -17,7 +17,7 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({receiveInvitations: state.invitation.receiveInvitations}), { rejectInvitation, acceptInvitation })
+@connect(state => ({ receiveInvitations: state.invitation.receiveInvitations }), { rejectInvitation, acceptInvitation })
 export default class ReceiveInvitationList extends Component {
   static propTypes = {
     receiveInvitations: PropTypes.array.isRequired,    // 收到的邀请
@@ -28,12 +28,12 @@ export default class ReceiveInvitationList extends Component {
     {
       title: '合作伙伴',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
     },
     {
       title: '代码',
       dataIndex: 'code',
-      key: 'code'
+      key: 'code',
     },
     {
       title: '邀请我方成为',
@@ -43,7 +43,7 @@ export default class ReceiveInvitationList extends Component {
         return (
           <span>{mapPartnerships(record.partnerships)}</span>
         );
-      }
+      },
     },
     {
       title: '收到时间',
@@ -53,7 +53,7 @@ export default class ReceiveInvitationList extends Component {
         return (
           <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
         );
-      }
+      },
     },
     {
       title: '状态',
@@ -70,7 +70,7 @@ export default class ReceiveInvitationList extends Component {
           default:
             return null;
         }
-      }
+      },
     },
     {
       title: '操作',
@@ -88,15 +88,15 @@ export default class ReceiveInvitationList extends Component {
         } else {
           return null;
         }
-      }
-    }
+      },
+    },
   ]
   handleAcceptBtnClick = (id, partnerId, partnerships) => {
     if (partnerships[0] === 'CUS') {
       receiveModal({
         onOk: (reversePartnerships) => {
           this.props.acceptInvitation(id, partnerId, reversePartnerships);
-        }
+        },
       });
     } else {
       this.props.acceptInvitation(id, partnerId, ['CUS']);
@@ -110,7 +110,7 @@ export default class ReceiveInvitationList extends Component {
 
     const dataSource = receiveInvitations.filter(invitation => invitation.status !== 3);
     return (
-      <Table columns={this.columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}/>
+      <Table columns={this.columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
     );
   }
 }

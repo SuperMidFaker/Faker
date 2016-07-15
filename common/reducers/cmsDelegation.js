@@ -43,12 +43,12 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_ACCEPT:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: true }};
+      return { ...state, delegationlist: { ...state.delegationlist, loading: true } };
     case actionTypes.LOAD_ACCEPT_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
-        ...action.result.data }, listFilter: JSON.parse(action.params.filter)};
+        ...action.result.data }, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_ACCEPT_FAIL:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false }};
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
     case actionTypes.LOAD_DELG:
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
@@ -56,11 +56,11 @@ export default function reducer(state = initialState, action) {
         delgFiles: action.result.data.files, formRequire: action.result.data.formRequire,
       };
     case actionTypes.SEARCH_PARAM_SUCCEED:
-      return { ...state, formRequire: { ...state.formRequire, ...action.result.data }};
+      return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
     case actionTypes.SET_CLIENT_FORM:
-      return { ...state, formData: { ...state.formData, ...action.data }};
+      return { ...state, formData: { ...state.formData, ...action.data } };
     case actionTypes.NEW_FORM:
-      return { ...state, formData: { ...initialState.formData, create_time: new Date() }};
+      return { ...state, formData: { ...initialState.formData, create_time: new Date() } };
     case actionTypes.LOAD_REQUIRE_SUCCEED:
       return { ...state, formRequire: action.result.data };
     case actionTypes.CREATE_DELGCCB:
@@ -88,7 +88,7 @@ export function loadAcceptanceTable(cookie, params) {
       method: 'get',
       params,
       cookie,
-    }
+    },
   };
 }
 
@@ -103,7 +103,7 @@ export function acceptDelg(loginId, loginName, dispId) {
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
       data: { loginId, loginName, dispId },
-    }
+    },
   };
 }
 
@@ -126,7 +126,7 @@ export function createDelegationByCCB({
         ietype, source, tenantName, attachments,
         accepted,
       },
-    }
+    },
   };
 }
 
@@ -142,7 +142,7 @@ export function loadDelg(cookie, params) {
       method: 'get',
       cookie,
       params,
-    }
+    },
   };
 }
 
@@ -161,7 +161,7 @@ export function editDelegationByCCB({
       data: {
         delegation, addedFiles, removedFiles, accepted,
       },
-    }
+    },
   };
 }
 
@@ -183,7 +183,7 @@ export function searchParams(field, searched, tenantId, ieType) {
       endpoint: 'v1/cms/delegation/params',
       method: 'get',
       params: { tenantId, searched, field, ieType },
-    }
+    },
   };
 }
 
@@ -198,7 +198,7 @@ export function delDelg(delgNo) {
       endpoint: 'v1/cms/delegation/del',
       method: 'post',
       data: { delgNo },
-    }
+    },
   };
 }
 

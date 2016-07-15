@@ -4,10 +4,10 @@ const initialState = {
   loaded: false,
   locale: '',
   messages: {
-  }
+  },
 };
 const actionTypes = createActionTypes('@@welogix/intl/', [
-  'TRANSLATION_LOAD', 'TRANSLATION_LOAD_SUCCEED', 'TRANSLATION_LOAD_FAIL'
+  'TRANSLATION_LOAD', 'TRANSLATION_LOAD_SUCCEED', 'TRANSLATION_LOAD_FAIL',
 ]);
 
 export default function reducer(state = initialState, action) {
@@ -28,7 +28,7 @@ export function loadTranslation(cookie, locale) {
       endpoint: 'public/v1/intl/messages',
       method: 'get',
       cookie,
-      params: { locale }
-    }
+      params: { locale },
+    },
   };
 }

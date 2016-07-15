@@ -5,6 +5,6 @@
  */
 export function addUniqueKeys(arr) {
   return arr.map((item, index) => {
-    return {...item, key: index};
+    return { ...item, key: index };
   });
 }

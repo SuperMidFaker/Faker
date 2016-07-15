@@ -6,7 +6,7 @@
  */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { Upload, Card, Icon, Button, message } from 'ant-ui';
+import { Upload, Card, Icon, Button, message } from 'antd';
 
 @connect(
   state => ({
@@ -45,7 +45,7 @@ export default class AttchmentUpload extends Component {
       uid: file.uid, name: file.name,
       url: file.response.data,
     };
-    const nextFileList = [ ...prevFileList, nextFile ];
+    const nextFileList = [...prevFileList, nextFile];
     this.setState({
       attachments: nextFileList,
     });

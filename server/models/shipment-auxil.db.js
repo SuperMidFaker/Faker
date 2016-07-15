@@ -42,7 +42,7 @@ export default {
   createPod(type, signStatus, signRemark, photos, submitter, trans) {
     const sql = `insert into tms_shipment_pods(type, sign_status, sign_remark,
       photos, submitter, submit_date, created_date) values (?, NOW(), NOW())`;
-    const args = [ type, signStatus, signRemark, photos, submitter ];
+    const args = [type, signStatus, signRemark, photos, submitter];
     return mysql.insert(sql, [args], trans);
   },
   createPoint(point, tenantId, trans) {
@@ -53,32 +53,35 @@ export default {
       point.from, point.province, point.city, point.district,
       point.address, new Date(point.location_time), tenantId,
     ];
-    return mysql.insert(sql, [ args ], trans);
+    return mysql.insert(sql, [args], trans);
   },
   createShipmentPointRel(shipmtNo, pointId, trans) {
     const sql = `insert into tms_shipment_point_relation(shipmt_no, point_id)
       values (?)`;
-    const args = [ shipmtNo, pointId ];
-    return mysql.insert(sql, [ args ], trans);
+    const args = [shipmtNo, pointId];
+    return mysql.insert(sql, [args], trans);
   },
   getShipmentPoints(shipmtNo) {
     const sql = `select P.* from tms_tracking_points P inner join tms_shipment_point_relation PR
       on PR.point_id = P.id where PR.shipmt_no = ? order by P.location_time desc`;
-    const args = [ shipmtNo ];
+    const args = [shipmtNo];
     return mysql.query(sql, args);
   },
   getLastPoint(shipmtNo) {
     const sql = `select P.location_time from tms_tracking_points P inner join tms_shipment_point_relation PR
       on PR.point_id = P.id where PR.shipmt_no = ? order by P.location_time desc limit 1`;
-    const args = [ shipmtNo ];
+    const args = [shipmtNo];
     return mysql.query(sql, args);
   },
   presetTmsPackages(tenantId) {
     const packages = [
-      [ 'A', '散装' ],
-      [ 'B', '木箱' ],
-      [ 'C', '托盘' ],
-      [ 'D', '不配货' ],
+      ['BULK', '散装'],
+      ['WBOX', '木箱'],
+      ['PBOX', '纸箱'],
+      ['PALLET', '托盘'],
+      ['BOTTLE', '桶装'],
+      ['PARCEL', '包裹'],
+      ['OTHER', '其它'],
     ];
     const promises = [];
     packages.forEach(pck => {
@@ -92,11 +95,11 @@ export default {
   },
   presetTmsModes(tenantId) {
     const modes = [
-      [ 'FTL', '整车' ],
-      [ 'LTL', '零担' ],
-      [ 'AIR', '空运' ],
-      [ 'EXP', '快递' ],
-      [ 'CTN', '集装箱' ],
+      ['FTL', '整车'],
+      ['LTL', '零担'],
+      ['AIR', '空运'],
+      ['EXP', '快递'],
+      ['CTN', '集装箱'],
     ];
     const promises = [];
     modes.forEach(md => {
