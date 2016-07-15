@@ -83,7 +83,7 @@ export default class DispatchDock extends Component {
       width: 80,
       render: () => (<span></span>)
     }, {
-      title: '报价（元）',
+      title: '成本价（元）',
       dataIndex: 'quotation',
       width: 120,
       render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />)
@@ -412,20 +412,24 @@ export default class DispatchDock extends Component {
               <div className="body">
                 <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
                   <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
-                    <div className="pane-content tab-pane">
+                    <div className="pane-header">
+                      <div className="tools"><Button>新增承运商</Button></div>
                       <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
                         onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
                       />
-                      <div style={{ marginBottom: '5px' }} />
+                    </div>
+                    <div className="pane-content tab-pane">
                       <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
                     </div>
                   </TabPane>
                   <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
-                    <div className="pane-content tab-pane">
+                    <div className="pane-header">
+                      <div className="tools"><Button>新增车辆</Button></div>
                       <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
                         onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
                       />
-                      <div style={{ marginBottom: '5px' }} />
+                    </div>
+                    <div className="pane-content tab-pane">
                       <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
                     </div>
                   </TabPane>

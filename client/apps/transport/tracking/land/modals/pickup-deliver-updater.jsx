@@ -11,7 +11,9 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     visible: state.trackingLandStatus.dateModal.visible,
     type: state.trackingLandStatus.dateModal.type,
     dispId: state.trackingLandStatus.dateModal.dispId,
@@ -38,9 +40,9 @@ export default class PickupDeliverUpdater extends React.Component {
   handleOk = () => {
     this.props.formhoc.validateFields(errors => {
       if (!errors) {
-        const { formhoc, type, shipmtNo, dispId, onOK, loginId } = this.props;
+        const { formhoc, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
         const { actDate } = formhoc.getFieldsValue();
-        this.props.savePickOrDeliverDate(type, shipmtNo, dispId, actDate, loginId).then(
+        this.props.savePickOrDeliverDate({type, shipmtNo, dispId, actDate, loginId, tenantId, loginName}).then(
           result => {
             if (result.error) {
               message.error(result.error.message);

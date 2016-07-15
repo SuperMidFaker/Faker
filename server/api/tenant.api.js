@@ -80,10 +80,9 @@ function *upsertTenant() {
         shipmentAuxDao.presetTmsPackages(tenant_id),
         shipmentAuxDao.presetTmsModes(tenant_id),
       ];
-      Result.ok(this);
     } else {
       yield tenantDao.updateTenantByTenantId(body.tenant_id, code, name, aspect, phone, subdomain, logo, contact, email);
-      if(tenantAppList != undefined) {
+      if(tenantAppList != undefined && tenantAppList.length !== 0) {
         yield tenantDao.deleteTenantApps(body.tenant_id);
         yield tenantDao.insertTenantApps(body.tenant_id, tenantAppList, apps);
       }

@@ -6,15 +6,17 @@ import coopDao from '../models/cooperation.db';
 import tenantUserDao from '../models/tenant-user.db';
 import mysql from '../util/mysql';
 import Result from '../util/responseResult';
-import crypto from 'crypto';
 import {
   PARTNERSHIP_TYPE_INFO, SHIPMENT_EFFECTIVES, SHIPMENT_SOURCE,
   SHIPMENT_TRACK_STATUS,
   VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, GOODS_TYPES, CONTAINER_PACKAGE_TYPE,
 } from 'common/constants';
-import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE } from '../util/constants';
+import { SHIPMENT_DISPATCH_STATUS, CONSIGN_TYPE, SHIPMENT_EVENT_TYPE } from '../util/constants';
 import { sendNewShipMessage }from '../socket.io';
 import SMS from '../util/sms-util';
+import { makePublicUrlKey } from './_utils/shipment';
+import { ShipmentEvent } from '../models/shipmentEvent.db';
+import { DispEventRelation } from '../models/dispEventRelation.db';
 const vehicleTypes = VEHICLE_TYPES;
 
 const vehicleLengths = VEHICLE_LENGTH_TYPES;
@@ -112,34 +114,36 @@ function *shipmtRequiresG() {
 }
 
 function *createShipment(shipmtNo, shipmt, sp, effective, trans) {
-    const dbOps = [
-      shipmentDao.createByLSP(
-        shipmtNo, shipmt, sp.tid, sp.name, sp.login_id,
-        effective, trans
-      )
-    ];
-    if (!shipmt.consigner_id && shipmt.consigner_name
-        && shipmt.consigner_name.trim().length > 0) {
-      dbOps.push(shipmentDao.upsertLocation(
-        shipmt.consigner_id, shipmt.consigner_name, shipmt.consigner_province,
-        shipmt.consigner_city, shipmt.consigner_district, shipmt.consigner_addr,
-        shipmt.consigner_email, shipmt.consigner_contact, shipmt.consigner_mobile,
-        sp.tid, CONSIGN_TYPE.consigner, trans
-      ));
-    }
-    if (!shipmt.consignee_id && shipmt.consignee_name
-        && shipmt.consignee_name.trim().length > 0) {
-      dbOps.push(shipmentDao.upsertLocation(
-        shipmt.consignee_id, shipmt.consignee_name, shipmt.consignee_province,
-        shipmt.consignee_city, shipmt.consignee_district, shipmt.consignee_addr,
-        shipmt.consignee_email, shipmt.consignee_contact, shipmt.consignee_mobile,
-        sp.tid, CONSIGN_TYPE.consignee, trans
-      ));
-    }
-    if (shipmt.goodslist.length > 0) {
-      dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
-    }
-    yield dbOps;
+  const nowDT = new Date();
+  const publicUrlKey = makePublicUrlKey(shipmtNo, nowDT);
+  const dbOps = [
+    shipmentDao.createByLSP(
+      shipmtNo, shipmt, sp.tid, sp.name, sp.login_id,
+      effective, publicUrlKey, nowDT, trans
+    )
+  ];
+  if (!shipmt.consigner_id && shipmt.consigner_name
+      && shipmt.consigner_name.trim().length > 0) {
+    dbOps.push(shipmentDao.upsertLocation(
+      shipmt.consigner_id, shipmt.consigner_name, shipmt.consigner_province,
+      shipmt.consigner_city, shipmt.consigner_district, shipmt.consigner_addr,
+      shipmt.consigner_email, shipmt.consigner_contact, shipmt.consigner_mobile,
+      sp.tid, CONSIGN_TYPE.consigner, trans
+    ));
+  }
+  if (!shipmt.consignee_id && shipmt.consignee_name
+      && shipmt.consignee_name.trim().length > 0) {
+    dbOps.push(shipmentDao.upsertLocation(
+      shipmt.consignee_id, shipmt.consignee_name, shipmt.consignee_province,
+      shipmt.consignee_city, shipmt.consignee_district, shipmt.consignee_addr,
+      shipmt.consignee_email, shipmt.consignee_contact, shipmt.consignee_mobile,
+      sp.tid, CONSIGN_TYPE.consignee, trans
+    ));
+  }
+  if (shipmt.goodslist.length > 0) {
+    dbOps.push(shipmentDispDao.createGoods(shipmt.goodslist, shipmtNo, sp.tid, sp.login_id, trans));
+  }
+  yield dbOps;
 }
 
 function *shipmtSavePendingP() {
@@ -231,6 +235,18 @@ function *shipmtAcceptP() {
       title: '接单通知',
       remark: `${disp.sp_name} 接单了，快去看看吧！`,
       content: `${disp.sp_name} 接单了，快去看看吧！运单号：${disp.shipmt_no}`
+    });
+    const shipmentEvent = yield ShipmentEvent.create({
+      tenant_id: disp.sp_tenant_id,
+      login_id: body.acptId,
+      login_name: body.acptName,
+      type: SHIPMENT_EVENT_TYPE.accepted,
+      content: '',
+      created_date: new Date(),
+    });
+    yield DispEventRelation.create({
+      disp_id: body.shipmtDispId,
+      event_id: shipmentEvent['null'],
     });
     return Result.ok(this);
   } catch (e) {
@@ -419,13 +435,6 @@ function *shipmtRejectP() {
   }
 }
 
-function makePublicUrlKey(shipmtNo, shipmt) {
-  const dateStr = shipmt.created_date.getTime().toString();
-  const md5 = crypto.createHash('md5');
-  md5.update(shipmtNo + dateStr);
-  return md5.digest('hex');
-}
-
 function *shipmtDetailG() {
   const shipmtNo = this.request.query.shipmtNo;
   const tenantId = this.request.query.tenantId;
@@ -520,7 +529,7 @@ function *shipmtDetailG() {
     shipmt.status = tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted
       && downstreamDispStatus > 0 ?
       tracking.downstream_status : tracking.upstream_status;
-      shipmt.publicUrlKey = makePublicUrlKey(shipmtNo, shipmt);
+    shipmt.publicUrlKey = shipmt.public_key;
     return Result.ok(this, {
       shipmt,
       tracking,
@@ -535,19 +544,17 @@ function *shipmtPublicDetail() {
   const shipmtNo = this.request.query.shipmtNo;
   const key = this.request.query.key;
   try {
-    const [ goodslist, shipmts, draftShipmts, shipmtDisp, points ] = yield [
+    const [ goodslist, shipmts, shipmtDisp, points ] = yield [
       shipmentDispDao.getShipmtGoodsWithNo(shipmtNo),
       shipmentDao.getShipmtInfo(shipmtNo),
-      shipmentDao.getDraftShipmt(shipmtNo),
       shipmentDispDao.getShipmtDispWithShipmtNo(shipmtNo),
       shipmentAuxDao.getShipmentPoints(shipmtNo),
     ];
     let shipmt = {};
     let shipmtCreator;
-    if (shipmts.length === 1 && draftShipmts.length === 1) {
+    if (shipmts.length === 1) {
       shipmt = {
         ...shipmts[0],
-        ...draftShipmts[0],
         ...shipmtDisp[0],
       };
       if (shipmt.vehicle_type) {
@@ -574,7 +581,7 @@ function *shipmtPublicDetail() {
       creator: shipmtCreator,
       points,
     };
-    const KEY = makePublicUrlKey(shipmtNo, shipmt);
+    const KEY = shipmt.public_key;
     if (key === KEY) {
       return Result.ok(this, {
         shipmt,
@@ -592,7 +599,58 @@ function *sendTrackingDetailSMSMessage() {
   const body = yield cobody(this);
   try {
     const result = yield SMS.sendSmsTrackingDetailMessage([body.tel], [body.lsp_name, body.shipmtNo, body.url]);
-    return Result.ok(this, result)
+    return Result.ok(this, result);
+  } catch (e) {
+    return Result.internalServerError(this, e.message);
+  }
+}
+
+function *shipmentStatistics() {
+  const {tenantId, startDate, endDate} = this.request.query;
+  try {
+    const points = yield shipmentDao.shipmentStatistics(parseInt(tenantId, 10));
+    const created_date = {
+      $gte: startDate,
+      $lt: endDate,
+    };
+    const count = [
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.accepted,
+          created_date,
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.sent,
+          created_date,
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.pickedup,
+          created_date,
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.delivered,
+          created_date,
+        }
+      }),
+      yield ShipmentEvent.count({
+        where:{
+          type: SHIPMENT_EVENT_TYPE.completed,
+          created_date,
+        }
+      }),
+    ];
+    return Result.ok(this, {
+      points,
+      count,
+      startDate,
+      endDate,
+    });
   } catch (e) {
     return Result.internalServerError(this, e.message);
   }
@@ -616,4 +674,5 @@ export default [
   [ 'get', '/v1/transport/shipment/detail', shipmtDetailG ],
   [ 'get', '/public/v1/transport/shipment/detail', shipmtPublicDetail ],
   [ 'post', '/v1/transport/shipment/sendTrackingDetailSMSMessage', sendTrackingDetailSMSMessage ],
+  [ 'get', '/v1/transport/shipment/statistics', shipmentStatistics]
 ];

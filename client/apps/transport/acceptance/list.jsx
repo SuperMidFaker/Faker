@@ -10,13 +10,14 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft } from
-  'common/reducers/transport-acceptance';
+'common/reducers/transport-acceptance';
 import { setNavTitle } from 'common/reducers/navbar';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'common/constants';
 import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../common/consignLocation';
+import ShipmtnoColumn from '../common/shipmtnoColumn';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -132,15 +133,15 @@ export default class AcceptList extends React.Component {
     width: 150,
     fixed: 'left',
     render: (o, record) => {
+      let style;
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-        return (
-          <a style={{ color : '#999' }} onClick={() => this.handleShipmtPreview(record.shipmt_no)}>
-          {o}
-          </a>
-        );
-      } else {
-        return <a onClick={() => this.handleShipmtPreview(record.shipmt_no)}>{o}</a>;
+        style = { color : '#999' };
       }
+      return (
+        <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
+          style={style}
+        />
+      );
     }
   }, {
     title: this.msg('shipRequirement'),
@@ -236,7 +237,7 @@ export default class AcceptList extends React.Component {
     width: 110,
     sorter: true,
     render: (text, record) => record.acpt_time ?
-     moment(record.acpt_time).format('MM-DD HH:mm') : ' '
+    moment(record.acpt_time).format('MM-DD HH:mm') : ' '
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
     this.props.loadTable(null, {
@@ -293,8 +294,8 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleShipmtPreview(shipmtNo) {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp').then(result => {
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp').then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -336,11 +337,11 @@ export default class AcceptList extends React.Component {
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
-                <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
-                {this.msg('shipmtAccept')}
-                </a>
-                <span className="ant-divider" />
-                <NavLink to={`/transport/acceptance/shipment/edit/${record.shipmt_no}`}>
+              <a role="button" onClick={() => this.handleShipmtAccept(record.key)}>
+              {this.msg('shipmtAccept')}
+              </a>
+              <span className="ant-divider" />
+              <NavLink to={`/transport/acceptance/shipment/edit/${record.shipmt_no}`}>
                 {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
@@ -412,6 +413,7 @@ export default class AcceptList extends React.Component {
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2800, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

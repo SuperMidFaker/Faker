@@ -14,7 +14,12 @@ module.exports = (app) => {
   };
 
   app.context.error = app.response.error = function err(obj, errMsg) {
+    console.log(codes.error(obj, errMsg));
     this.json(codes.error(obj, errMsg));
+  };
+
+  app.context.internalServerError = app.response.internalServerError = function ise(errObj) {
+    this.json({ ...codes.internal_server_error, ...errObj });
   };
 
   app.context.nf = app.response.nf = function nf() {

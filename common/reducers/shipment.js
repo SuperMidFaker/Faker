@@ -17,9 +17,18 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
   'LOAD_PUB_DETAIL', 'LOAD_PUB_DETAIL_SUCCEED', 'LOAD_PUB_DETAIL_FAIL',
   'SEND_SMS_MESSAGE', 'SEND_SMS_MESSAGE_SUCCEED', 'SEND_SMS_MESSAGE_FAIL',
+  'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
-
+const startDate = new Date();
+startDate.setHours(0);
+startDate.setMinutes(0);
+startDate.setSeconds(0);
+const endDate = new Date();
+endDate.setDate(endDate.getDate() + 1);
+endDate.setHours(0);
+endDate.setMinutes(0);
+endDate.setSeconds(0);
 const initialState = {
   formRequire: {
     consignerLocations: [],
@@ -55,6 +64,12 @@ const initialState = {
     tracking: {
       points: []
     }
+  },
+  statistics:{
+    points: [],
+    count: [0, 0, 0, 0, 0],
+    startDate,
+    endDate,
   }
 };
 
@@ -124,6 +139,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SEND_SMS_MESSAGE_SUCCEED: {
       return { ...state};
+    }
+    case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
+      return { ...state, statistics: action.result.data };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -271,6 +289,22 @@ export function sendTrackingDetailSMSMessage(data) {
       endpoint: 'v1/transport/shipment/sendTrackingDetailSMSMessage',
       method: 'post',
       data,
+    }
+  };
+}
+
+export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHIPMENT_STATISTICS,
+        actionTypes.SHIPMENT_STATISTICS_SUCCEED,
+        actionTypes.SHIPMENT_STATISTICS_FAIL
+      ],
+      endpoint: 'v1/transport/shipment/statistics',
+      method: 'get',
+      cookie,
+      params: { tenantId, startDate: sDate, endDate: eDate }
     }
   };
 }

@@ -72,8 +72,9 @@ export default class LandStatusList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
-      const newfilters = nextProps.filters.map(flt => {
+      newfilters = nextProps.filters.map(flt => {
         if (flt.name === 'type') {
           return {
             name: 'type',
@@ -83,11 +84,19 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
+    } else {
+      const nextShipmtno = nextProps.filters.filter(flt => flt.name === 'shipmt_no');
+      const shipmtno = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+      if (nextShipmtno[0].value !== shipmtno[0].value) {
+        newfilters = nextProps.filters;
+      }
+    }
+    if (newfilters) {
       this.props.loadPodTable(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
         pageSize: nextProps.shipmentlist.pageSize,
-        currentPage: nextProps.shipmentlist.current,
+        currentPage: 1,
         /*
            sortField: state.transportTracking.transit.sortField,
            sortOrder: state.transportTracking.transit.sortOrder,
@@ -115,7 +124,8 @@ export default class LandStatusList extends React.Component {
         filters: this.props.filters
       };
       params.filters = params.filters.filter(
-        flt => flt.name === 'type' || (flt.name in filters && filters[flt.name].length)
+        flt => flt.name === 'type' || flt.name === 'shipmt_no'
+          || (flt.name in filters && filters[flt.name].length)
       );
       for (const key in filters) {
         if (filters[key] && filters[key].length > 0) {
@@ -197,7 +207,8 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body body-responsive">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2310, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2470, y: 460 }}
+              onRowClick={this.handleShipmtPreview}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

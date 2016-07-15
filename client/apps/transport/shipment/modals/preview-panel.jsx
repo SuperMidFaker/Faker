@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag, Modal, Input, message } from 'ant-ui';
+import { Button, Icon, Tabs, Tag, Modal, Input, message, Col } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -73,6 +73,7 @@ export default class PreviewPanel extends React.Component {
       publicQRcodeUrl: '',
       publickUrl: '',
       tel: '',
+      SMSSendLoding: false,
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -103,11 +104,13 @@ export default class PreviewPanel extends React.Component {
       trackingDetailModalVisible: true,
       publickUrlPath,
       publickUrl,
-      publicQRcodeUrl
+      publicQRcodeUrl,
+      tel: shipmt.consignee_mobile,
     });
-    document.addEventListener('copy', (e) => {
-      e.clipboardData.setData('text/plain', this.state.publickUrl);
-      e.preventDefault();
+    document.addEventListener('copy', ev => {
+      ev.preventDefault();
+      ev.clipboardData.setData('text/plain', this.state.publickUrl);
+      message.info('复制成功', 3);
     });
   }
   handleTrackingDetailOk = () => {
@@ -124,17 +127,18 @@ export default class PreviewPanel extends React.Component {
   }
   handleCopyClick() {
     document.execCommand('copy');
-    message.info('复制成功', 3);
   }
   handleTelInput = (e) => {
     const value = e.target.value;
     this.setState({tel: value});
   }
   handleSMSSend = () => {
+    this.setState({SMSSendLoding: true});
     validatePhone(
       this.state.tel, (err) => {
         if (err) {
           message.error('电话号码不正确');
+          this.setState({SMSSendLoding: false});
         } else {
           this.props.sendTrackingDetailSMSMessage({
             tel: this.state.tel,
@@ -142,6 +146,7 @@ export default class PreviewPanel extends React.Component {
             shipmtNo: this.props.shipmtNo,
             lsp_name: this.props.previewer.shipmt.lsp_name,
           }).then((result) => {
+            this.setState({SMSSendLoding: false});
             if (result.error) {
               message.error(result.error, 3);
             } else {
@@ -175,7 +180,7 @@ export default class PreviewPanel extends React.Component {
               <TabPane tab={this.msg('shipmtDetail')} key="detail">
                 <DetailPane />
               </TabPane>
-              <TabPane tab={this.msg('shipmtTracking')} key="tracking">
+              <TabPane tab={this.msg('shipmtOperations')} key="operations">
                 <TrackingPane />
               </TabPane>
               <TabPane tab={this.msg('shipmtCharge')} key="charge">
@@ -187,7 +192,7 @@ export default class PreviewPanel extends React.Component {
         <div>
           <Modal ref="modal" style={{width: '680px'}}
             visible={this.state.trackingDetailModalVisible}
-            title={`${shipmtNo} 分享详情`} onOk={this.handleTrackingDetailOk} onCancel={this.handleTrackingDetailCancel}
+            title={`${shipmtNo} 分享运单`} onOk={this.handleTrackingDetailOk} onCancel={this.handleTrackingDetailCancel}
             footer={[
               <Button key="back" type="ghost" size="large" onClick={this.handleTrackingDetailCancel}>关 闭</Button>
             ]}
@@ -199,18 +204,24 @@ export default class PreviewPanel extends React.Component {
             </div>
             <br/>
             <div style={{width: '90%', margin: '0 auto'}}>
-              <InputGroup className="ant-search-input ant-search-input-focus">
+              <InputGroup>
+                <Col span="18">
                 <Input placeholder="" defaultValue={this.state.publickUrl}/>
-                <div className="ant-input-group-wrap">
-                  <Button className="ant-search-btn ant-search-btn-noempty" onClick={() => this.handleCopyClick()}><Icon type="copy" />复制</Button>
-                </div>
+                </Col>
+                <Col span="6">
+                  <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>
+                </Col>
               </InputGroup>
               <br/>
-              <InputGroup className="ant-search-input ant-search-input-focus" help="123">
-                <Input placeholder="发送短信给客户" value={this.state.tel} onChange={this.handleTelInput}/>
-                <div className="ant-input-group-wrap">
-                  <Button className="ant-search-btn ant-search-btn-noempty" onClick={this.handleSMSSend}><Icon type="message" />发送</Button>
-                </div>
+              <InputGroup>
+                <Col span="18">
+                <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput}/>
+                </Col>
+                <Col span="6">
+                  <Button type="primary" icon="message" onClick={this.handleSMSSend} loading={this.state.SMSSendLoding}>
+                    发送短信
+                  </Button>
+                </Col>
               </InputGroup>
             </div>
           </Modal>

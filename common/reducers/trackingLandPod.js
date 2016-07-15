@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/pod/', [
-  'SHOW_AUDIT_MODAL', 'HIDE_AUDIT_MODAL',
+  'SHOW_AUDIT_MODAL', 'HIDE_AUDIT_MODAL', 'CHANGE_FILTER',
   'AUDIT_POD', 'AUDIT_POD_SUCCEED', 'AUDIT_POD_FAIL',
   'RETURN_POD', 'RETURN_POD_SUCCEED', 'RETURN_POD_FAIL',
   'RESUBMIT_POD', 'RESUMBIT_POD_SUCCEED', 'RESUBMIT_POD_FAIL',
@@ -15,7 +15,7 @@ const initialState = {
   loading: false,
   filters: [
     { name: 'type', value : 'uploaded' },
-    /* { name: 'shipmt_no', value: ''} */
+    { name: 'shipmt_no', value: ''},
   ],
   /*
      sortField: 'created_date',
@@ -64,6 +64,11 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.HIDE_AUDIT_MODAL:
       return { ...state, auditModal: initialState.auditModal };
+    case actionTypes.CHANGE_FILTER: {
+      const filters = state.filters.filter(flt => flt.name !== action.data.field);
+      filters.push({ name: action.data.field, value: action.data.value });
+      return { ...state, filters };
+    }
     default:
       return state;
   }
@@ -113,7 +118,7 @@ export function closePodModal() {
   };
 }
 
-export function passAudit(podId, dispId, parentDispId, auditor) {
+export function passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -123,7 +128,7 @@ export function passAudit(podId, dispId, parentDispId, auditor) {
       ],
       endpoint: 'v1/transport/tracking/pod/audit',
       method: 'post',
-      data: { podId, dispId, parentDispId, auditor },
+      data: { podId, dispId, parentDispId, auditor, tenantId, loginId },
     }
   };
 }
@@ -155,5 +160,12 @@ export function resubmitPod(dispId, parentDispId) {
       method: 'post',
       data: { dispId, parentDispId },
     }
+  };
+}
+
+export function changePodFilter(field, value) {
+  return {
+    type: actionTypes.CHANGE_FILTER,
+    data: { field, value },
   };
 }

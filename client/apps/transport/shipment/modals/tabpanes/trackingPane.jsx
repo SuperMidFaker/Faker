@@ -2,20 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Steps, Table, Tabs } from 'ant-ui';
-import { SHIPMENT_TRACK_STATUS, TRACKING_POINT_FROM_TYPE } from 'common/constants';
-import { renderLoc } from '../../../common/consignLocation';
+import { Steps } from 'ant-ui';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const Step = Steps.Step;
-const TabPane = Tabs.TabPane;
 
 const timeFormat = 'YYYY-MM-DD HH:mm';
-
-function rowKeyFn(row) {
-  return row.id;
-}
 
 function StepDesc(props) {
   const texts = props.texts.filter(txt => txt);
@@ -50,45 +44,7 @@ export default class PreviewPanel extends React.Component {
     tracking: PropTypes.object.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  columns = [{
-    title: this.msg('trackingPoistion'),
-    width: 150,
-    render: (o, record) => {
-      const position = [];
-      const provcity = renderLoc(record, 'province', 'city', 'district');
-      if (provcity) {
-        position.push(provcity);
-      }
-      if (record.address) {
-        position.push(record.address);
-      }
-      return position.join('-');
-    },
-  }, {
-    title: this.msg('poistionMode'),
-    dataIndex: 'from',
-    render: (o, record) => {
-      if (record.from === TRACKING_POINT_FROM_TYPE.manual) {
-        return this.msg('posModeManual');
-      } else if (record.from === TRACKING_POINT_FROM_TYPE.app) {
-        return this.msg('posModeApp');
-      } else {
-        return this.msg('posModeGPS');
-      }
-    },
-  }, {
-    title: this.msg('positionTime'),
-    dataIndex: 'location_time',
-    render: (o, record) => {
-      return moment(record.location_time).format('MM-DD HH:mm');
-    },
-  }]
-  pagination={
-    current: 1,
-    total: this.props.tracking.points.length,
-    pageSize: 10,
-    size: 'small',
-  }
+
   render() {
     const { tracking } = this.props;
     const trackingSteps = [{
@@ -185,24 +141,15 @@ export default class PreviewPanel extends React.Component {
       ),
     });
     return (
-      <div>
-        <Tabs tabPosition="left">
-          <TabPane tab={this.msg('trackingStepTitle')} key="1">
-            <Steps current={currentStep} direction="vertical">
-            {
-              trackingSteps.map(
-                (ts, i) =>
+      <div className="pane-content tab-pane">
+        <Steps current={currentStep} direction="vertical">
+          {
+            trackingSteps.map(
+              (ts, i) =>
                 <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
               )
-            }
-            </Steps>
-          </TabPane>
-          <TabPane tab={this.msg('trackingPoistionTitle')} key="2">
-            <Table size="middle" rowKey={rowKeyFn} dataSource={tracking.points} columns={this.columns}
-              pagination={this.pagination}
-            />
-          </TabPane>
-        </Tabs>
+          }
+        </Steps>
       </div>
     );
   }

@@ -39,12 +39,6 @@ function getLinksByAspect(aspect, intl) {
       path: '/transport/resources',
       icon: 'zmdi zmdi-library',
       text: '管理'
-    }, {
-      single: true,
-      key: 'tms-5',
-      path: '/transport/settings',
-      icon: 'zmdi zmdi-settings',
-      text: '设置'
     }];
   } else {
     return [{
@@ -52,13 +46,7 @@ function getLinksByAspect(aspect, intl) {
       key: 'tms-0',
       path: '/transport/',
       icon: 'zmdi zmdi-tv-list',
-      text: '看板'
-    }, {
-      single: true,
-      key: 'tms-1',
-      path: '/transport/shipping',
-      icon: 'zmdi zmdi-mail-send',
-      text: '托运',
+      text: '工作台'
     }, {
       single: true,
       key: 'tms-2',
@@ -71,12 +59,6 @@ function getLinksByAspect(aspect, intl) {
       path: '/transport/resources',
       icon: 'zmdi zmdi-library',
       text: '管理'
-    }, {
-      single: true,
-      key: 'tms-4',
-      path: '/transport/settings',
-      icon: 'zmdi zmdi-settings',
-      text: '设置'
     }];
   }
 }

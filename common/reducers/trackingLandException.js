@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/exception/', [
   'LOAD_EXCPSHIPMT', 'LOAD_EXCPSHIPMT_FAIL', 'LOAD_EXCPSHIPMT_SUCCEED',
+  'CHANGE_FILTER',
 ]);
 
 const initialState = {
@@ -10,7 +11,7 @@ const initialState = {
   loading: false,
   filters: [
     { name: 'type', value : 'all' },
-    /* { name: 'shipmt_no', value: ''} */
+    { name: 'shipmt_no', value: ''},
   ],
   shipmentlist: {
     totalCount: 0,
@@ -32,6 +33,11 @@ export default function reducer(state = initialState, action) {
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters)
     };
+    case actionTypes.CHANGE_FILTER: {
+      const filters = state.filters.filter(flt => flt.name !== action.data.field);
+      filters.push({ name: action.data.field, value: action.data.value });
+      return { ...state, filters };
+    }
     default:
       return state;
   }
@@ -50,5 +56,12 @@ export function loadExcpShipments(cookie, params) {
       params,
       cookie
     }
+  };
+}
+
+export function changeExcpFilter(field, value) {
+  return {
+    type: actionTypes.CHANGE_FILTER,
+    data: { field, value },
   };
 }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover, Menu } from 'ant-ui';
+import { Popover, Menu, Icon, Badge } from 'ant-ui';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
@@ -12,6 +12,8 @@ import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 @injectIntl
 @connect(
@@ -92,43 +94,28 @@ export default class AmNavBar extends React.Component {
               <AmUserNav />
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
-              <Popover placement="bottomLeft" trigger="hover" content={
-                <Menu selectedKeys={[curLocale]} onClick={this.handleClick}>
-                  <MenuItem key="zh">
-                    <span>{ formatGlobalMsg(intl, 'chinese') }</span>
-                  </MenuItem>
-                  <MenuItem key="en">
-                    <span>{ formatGlobalMsg(intl, 'english') }</span>
-                  </MenuItem>
-                </Menu>
-              }>
-                <li className="dropdown">
-                  <a className="dropdown-toggle" role="button" aria-expanded="false">
-                    <span className="icon s7-global"></span>
+              <Menu mode="horizontal">
+                <SubMenu selectedKeys={[curLocale]} onClick={this.handleClick} title={<span className="icon s7-global"></span>}>
+                    <MenuItem key="zh">
+                      <span>{ formatGlobalMsg(intl, 'chinese') }</span>
+                    </MenuItem>
+                    <MenuItem key="en">
+                      <span>{ formatGlobalMsg(intl, 'english') }</span>
+                    </MenuItem>
+                </SubMenu>
+                <Menu.Item key="messages">
+                  <Badge count={0}>
+                    <NavLink to="/account/messages">
+                    <span className="icon s7-bell"></span>
+                    </NavLink>
+                  </Badge>
+                </Menu.Item>
+                <Menu.Item key="helpdesk">
+                  <a href="https://welogix.kf5.com/hc/" target="_blank">
+                    <span className="icon s7-help1"></span>
                   </a>
-                </li>
-              </Popover>
-              <li className="dropdown hidden-xs">
-                <a className="dropdown-toggle" aria-expanded="false" role="button" onClick={() => this.handleNavigationTo('/account/messages')}>
-                  <span className="icon s7-bell"></span>
-                </a>
-              </li>
-              <Popover placement="bottomLeft" trigger="hover" content={
-                <Menu>
-                  <MenuItem>
-                    <span>{ formatGlobalMsg(intl, 'helpdesk') }</span>
-                  </MenuItem>
-                  <MenuItem>
-                    <span>{ formatGlobalMsg(intl, 'onlinecs') }</span>
-                  </MenuItem>
-                </Menu>
-              }>
-              <li className="dropdown hidden-xs">
-                <a className="dropdown-toggle" role="button" aria-expanded="false">
-                  <span className="icon s7-help1"></span>
-                </a>
-              </li>
-              </Popover>
+                </Menu.Item>
+              </Menu>
             </ul>
           </div>
         </div>

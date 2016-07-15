@@ -10,6 +10,7 @@
  */
 import { _extend } from 'util';
 
+// todo cleanup the return value status, err_code msg logic
 export default {
   ok(data) {
     return {
@@ -31,6 +32,7 @@ export default {
     msg: 'not found your request url, maybe your request method not valid'
   },
   internal_server_error: {
+    status: 500,
     err_code: 50001,
     msg: 'internal server error, maybe your request params not valid'
   },

@@ -1,3 +1,4 @@
+/* eslint prefer-template: 0 */
 import mysql from '../util/mysql';
 import Orm from '../util/orm';
 import { shipmentOrm } from './shipment.db';
@@ -113,9 +114,9 @@ function getTrackingShipmtClause(filters, aliasS, aliasSD, args) {
   let clause = 'and effective = 1 and (disp_status = 1 or disp_status = 2)';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
-    if (flt.name === 'shipmt_no') {
-      clause = `${clause} and ${aliasS}.shipmt_no like ?`;
-      args.push(flt.value);
+    if (flt.name === 'shipmt_no' && flt.value) {
+      clause = `${clause} and (${aliasS}.shipmt_no like ? or ${aliasS}.ref_external_no like ?)`;
+      args.push(`%${flt.value}%`, `%${flt.value}%`);
     }
     if (flt.name === 'type' && flt.value !== 'all') {
       clause = `${clause} and ${aliasSD}.status = ?`;
@@ -140,6 +141,10 @@ function getTrackingPodClause(filters, aliasS, aliasSD, args) {
   let clause = '';
   for (let i = 0; i < filters.length; i++) {
     const flt = filters[i];
+    if (flt.name === 'shipmt_no' && flt.value) {
+      clause = `${clause} and (${aliasS}.shipmt_no like ? or ${aliasS}.ref_external_no like ?)`;
+      args.push(`%${flt.value}%`, `%${flt.value}%`);
+    }
     if (flt.name === 'type') {
       const targetVal = flt.value;
       if (targetVal === 'uploaded') {
@@ -289,7 +294,7 @@ export default {
     const clause = getShipmtClause(shipmtDispType, unacceptSt, shipmtNo, 'S', 'SD', args);
     const sorterFd = sortField === 'created_date' ? 'S.created_date' : 'acpt_time';
     const sql = `select SD.id as \`key\`, S.shipmt_no as shipmt_no, sr_name,
-      pickup_est_date, transit_time, deliver_est_date, consigner_name,
+      pickup_est_date, transit_time, deliver_est_date, consigner_name, public_key,
       consigner_province, consigner_city, consigner_district, consigner_addr,
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
@@ -314,7 +319,7 @@ export default {
       consignee_name, consignee_province, consignee_city, consignee_district,
       consignee_addr, transport_mode, total_count, total_weight, total_volume,
       SD.source, S.created_date, acpt_time, disp_time,pod_type, freight_charge,
-      SD.sr_tenant_id, SD.sp_tenant_id,
+      SD.sr_tenant_id, SD.sp_tenant_id, public_key,
       effective, SD.sp_tenant_id, SD.sp_name, SD.parent_id,segmented, SD.task_id, SD.task_vehicle, SD.disp_status`,
       ons1: 'S.shipmt_no = SD.shipmt_no',
       _orders: order,
@@ -419,7 +424,7 @@ export default {
   getShipmtDispWithNo(id) {
     const args = [id];
     const sql = `select sd.id, sd.parent_id, sd.shipmt_no, sd.status, sd.sr_name, sd.sr_tenant_id, sd.sr_login_id, sd.sp_name, sd.sp_tenant_id,
-    s.consigner_province, s.consigner_city, s.consigner_district, s.consignee_province, s.consignee_city, s.consignee_district
+    sd.pod_type, s.consigner_province, s.consigner_city, s.consigner_district, s.consignee_province, s.consignee_city, s.consignee_district
     from tms_shipment_dispatch sd
     inner join tms_shipments s on s.shipmt_no=sd.shipmt_no where sd.id = ?`;
     return mysql.query(sql, args);
@@ -435,11 +440,11 @@ export default {
   getTrackingShipments(tenantId, filters, pageSize, current) {
     const args = [ tenantId ];
     const whereCond = getTrackingShipmtClause(filters, 'S', 'SD', args);
-    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
+    const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, ref_external_no, customer_tenant_id,
       customer_partner_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
       pickup_est_date, deliver_est_date, transit_time, transport_mode, total_count,
-      total_weight, total_volume, sp_tenant_id, sp_partner_id, sp_name,
+      total_weight, total_volume, sp_tenant_id, sp_partner_id, sp_name, public_key,
       disp_time, acpt_time, parent_no, consignee_district, consigner_district,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,
       excp_last_event, pod_id, pod_type, pod_status, task_vehicle, vehicle_connect_type,
@@ -463,7 +468,7 @@ export default {
     const sql = `select S.shipmt_no as \`key\`, S.shipmt_no, customer_tenant_id,
       parent_id, customer_name, lsp_tenant_id, lsp_partner_id, lsp_name,
       consigner_province, consigner_city, consignee_province, consignee_city,
-      consigner_district, consignee_district,
+      consigner_district, consignee_district, public_key, ref_external_no,
       pickup_est_date, deliver_est_date, transport_mode, total_count, total_weight,
       total_volume, sp_tenant_id, sp_partner_id, sp_name, disp_time, acpt_time,
       pickup_act_date, deliver_act_date, pod_recv_date, pod_acpt_date, excp_level,

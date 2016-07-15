@@ -4,8 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL', 'SHOW_POD_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'HIDE_POD_MODAL',
-  'SHOW_LOC_MODAL',
-  'HIDE_LOC_MODAL',
+  'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
   'SAVE_VEHICLE', 'SAVE_VEHICLE_SUCCEED', 'SAVE_VEHICLE_FAIL',
@@ -19,7 +18,7 @@ const initialState = {
   loading: false,
   filters: [
     { name: 'type', value : 'all' },
-    /* { name: 'shipmt_no', value: ''} */
+    { name: 'shipmt_no', value: ''},
   ],
   /*
      sortField: 'created_date',
@@ -114,6 +113,11 @@ export default function reducer(state = initialState, action) {
           ...state.locReportedShipments, action.data.shipmtNo
         ]
     };
+    case actionTypes.CHANGE_FILTER: {
+      const filters = state.filters.filter(flt => flt.name !== action.data.field);
+      filters.push({ name: action.data.field, value: action.data.value });
+      return { ...state, filters };
+    }
     default:
       return state;
   }
@@ -176,7 +180,7 @@ export function closeDateModal() {
   };
 }
 
-export function savePickOrDeliverDate(type, shipmtNo, dispId, actDate, loginId) {
+export function savePickOrDeliverDate(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -186,7 +190,7 @@ export function savePickOrDeliverDate(type, shipmtNo, dispId, actDate, loginId) 
       ],
       endpoint: 'v1/transport/tracking/pickordeliverdate',
       method: 'post',
-      data: { shipmtNo, dispId, type, actDate, loginId },
+      data,
     }
   };
 }
@@ -260,5 +264,12 @@ export function loadShipmtLastPoint(shipmtNo) {
       method: 'get',
       params: { shipmtNo },
     }
+  };
+}
+
+export function changeStatusFilter(field, value) {
+  return {
+    type: actionTypes.CHANGE_FILTER,
+    data: { field, value },
   };
 }

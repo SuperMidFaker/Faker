@@ -100,7 +100,7 @@ export const Dispatch = sequelize.define('cms_delegation_dispatch', {
   },
   acpt_time: DATE,
   decl_time: DATE,
-  clea_time: DATE,
+  clean_time: DATE,
   send_auditor: STRING,
   send_audit_date: DATE,
   bill_status: {
@@ -122,4 +122,20 @@ export const DelegationFileDao = sequelize.define('cms_delegation_files', {
     type: DATE,
     defaultValue: NOW,
   },
+});
+
+export const DelegationLogDao = sequelize.define('cms_delegation_logs', {
+  delg_no: STRING,
+  oper_id: INTEGER,
+  oper_name: STRING,
+  oper_tenant_id: INTEGER,
+  oper_note: STRING,
+  oper_date: DATE,
+  result: STRING,
+});
+
+export const DelegationEntryLogDao = sequelize.define('cms_delegation_entry_logs', {
+  entry_id: STRING,
+  process_name: STRING,
+  process_date: STRING,
 });
