@@ -252,7 +252,7 @@ export default class DispatchList extends React.Component {
           if (origin) {
             if (record.segmented === 1 && sub !== 'sub') {
               return (<span>
-                  <a role="button" onClick={() => this.handleSegmentCancelConfirm(record)}>
+                  <a role="button" onClick={(ev) => this.handleSegmentCancelConfirm(record, ev)}>
                   {this.msg('btnTextSegmentCancel')}
                   </a></span>);
             } else {
@@ -261,11 +261,11 @@ export default class DispatchList extends React.Component {
           }
           return (
             <span>
-              <a role="button" onClick={() => this.handleDispatchDockShow(record)}>
+              <a role="button" onClick={(ev) => this.handleDispatchDockShow(record, ev)}>
               {this.msg('btnTextDispatch')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={() => this.handleSegmentDockShow(record)}>
+              <a role="button" onClick={(ev) => this.handleSegmentDockShow(record, ev)}>
               {this.msg('btnTextSegment')}
               </a>
             </span>
@@ -323,18 +323,18 @@ export default class DispatchList extends React.Component {
         render: (o, record) => {
           if (s === 'dispatched') {
             if (record.disp_status === 2) {
-              return (<span><a role="button" onClick={() => this.handleShipmtReturn(record)}>
+              return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
                       {this.msg('btnTextReturn')}</a></span>);
             }
             return (<span className="na-operation">NA</span>);
           }
           return (
             <span>
-              <a role="button" onClick={() => this.handleShipmtSend(record)}>
+              <a role="button" onClick={(ev) => this.handleShipmtSend(record, ev)}>
               {this.msg('btnTextSend')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={() => this.handleShipmtReturn(record)}>
+              <a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
               {this.msg('btnTextReturn')}
               </a>
             </span>
@@ -381,11 +381,11 @@ export default class DispatchList extends React.Component {
       render: (o, record) => {
         return (
             <span>
-              <a role="button" onClick={() => this.handleCondDispatchDockShow(record)}>
+              <a role="button" onClick={(ev) => this.handleCondDispatchDockShow(record, ev)}>
               {this.msg('btnTextDispatch')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={() => this.handleCondSegmentDockShow(record)}>
+              <a role="button" onClick={(ev) => this.handleCondSegmentDockShow(record, ev)}>
               {this.msg('btnTextSegment')}
               </a>
             </span>
@@ -470,7 +470,9 @@ export default class DispatchList extends React.Component {
     this.setState({ panelHeader, show: false, sshow: false, shipmts: [], selectedRowKeys: [] });
   }
 
-  handleDispatchDockShow(shipmt) {
+  handleDispatchDockShow(shipmt, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.setState({ show: true, shipmts: [shipmt], selectedRowKeys: [shipmt.key] });
   }
 
@@ -498,7 +500,9 @@ export default class DispatchList extends React.Component {
     }
   }
 
-  handleSegmentDockShow(shipmt) {
+  handleSegmentDockShow(shipmt, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.setState({ sshow: true, shipmts: [shipmt], selectedRowKeys: [shipmt.key] });
   }
 
@@ -510,7 +514,9 @@ export default class DispatchList extends React.Component {
     }
   }
 
-  handleSegmentCancelConfirm = (shipmt) => {
+  handleSegmentCancelConfirm = (shipmt, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     const { tenantId } = this.props;
     this.props.segmentCancelCheckRequest(null, {
       tenantId,
@@ -591,7 +597,9 @@ export default class DispatchList extends React.Component {
     });
   }
 
-  handleShipmtSend(shipmt) {
+  handleShipmtSend(shipmt, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     let msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.sp_name}】？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
       msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.task_vehicle}】？`;
@@ -631,7 +639,9 @@ export default class DispatchList extends React.Component {
     });
   }
 
-  handleShipmtReturn(shipmt) {
+  handleShipmtReturn(shipmt, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     const { status } = this.props.filters;
     let msg = `将预分配给【${shipmt.sp_name}】的【${shipmt.shipmt_no}】运单退回吗？`;
     if (!shipmt.sp_tenant_id && shipmt.task_id > 0) {
@@ -795,7 +805,9 @@ export default class DispatchList extends React.Component {
     return filters;
   }
 
-  handleCondDispatchDockShow = row => {
+  handleCondDispatchDockShow = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     const { tenantId } = this.props;
     const filters = this.genFilters(row);
     if (!this.props.expandList[row.key]) {
@@ -815,7 +827,9 @@ export default class DispatchList extends React.Component {
     }
   }
 
-  handleCondSegmentDockShow = row => {
+  handleCondSegmentDockShow = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     const { tenantId } = this.props;
     const filters = this.genFilters(row);
     if (!this.props.expandList[row.key]) {
