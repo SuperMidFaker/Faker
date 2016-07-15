@@ -4,7 +4,6 @@ import { Button, Radio, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import SearchBar from 'client/components/search-bar';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadDelgList, openEfModal } from 'common/reducers/cmsDeclare';
 import EntryNoFillModal from './modals/entryNoFill';
@@ -24,17 +23,6 @@ function getRowKey(row) {
   return row.comp_entry_id || row.delg_no;
 }
 
-function fetchData({ state, dispatch, cookie, params }) {
-  const filter = { ...state.cmsDeclare.listFilter, declareType: params.status };
-  return dispatch(loadDelgList(cookie, {
-    tenantId: state.account.tenantId,
-    filter: JSON.stringify(filter),
-    pageSize: state.cmsDeclare.delgList.pageSize,
-    current: 1,
-  }));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -97,6 +85,7 @@ export default class DeclareList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
+        ietype: this.props.ietype,
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,

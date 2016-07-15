@@ -3,14 +3,27 @@ import { Form, Select } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-export default function AutoCompletionSelectItem(props) {
-  const {
-    labelName, field, colSpan, placeholder, required, rules,
-    formhoc: { getFieldError, getFieldProps }, optionData,
-    optionField, optionKey, optionValue, filterFields = [],
-    allowClear, onSelect, onChange, initialValue, getValueFromEvent,
-  } = props;
-  const getComboFilter = (input, option) => {
+export default class AutoCompletionSelectItem extends React.Component {
+  static propTypes = {
+    labelName: PropTypes.string,
+    field: PropTypes.string.isRequired,
+    colSpan: PropTypes.number,
+    formhoc: PropTypes.object,
+    placeholder: PropTypes.string,
+    required: PropTypes.bool,
+    allowClear: PropTypes.bool,
+    rules: PropTypes.array,
+    onSelect: PropTypes.func,
+    optionData: PropTypes.array,
+    optionField: PropTypes.string,
+    optionValue: PropTypes.string,
+    optionKey: PropTypes.string,
+    filterFields: PropTypes.array, // 优先筛选判断的字段名称列表
+    initialValue: PropTypes.string,
+    getValueFromEvent: PropTypes.func,
+  }
+  getComboFilter = (input, option) => {
+    const { filterFields = [], optionField } = this.props;
     const optFields = [...filterFields, optionField]; // fallback to optionField
     for (let i = 0; i < optFields.length; i++) {
       const fld = optFields[i];
@@ -20,48 +33,37 @@ export default function AutoCompletionSelectItem(props) {
       }
     }
     return false;
-  };
-  const handleComboSelect = (value) => {
-    if (onSelect) {
-      onSelect(value);
+  }
+  handleComboSelect= (value) => {
+    if (this.props.onSelect) {
+      this.props.onSelect(value);
     }
-  };
-  return (
-    <FormItem label={labelName} labelCol={{ span: colSpan }} required={required}
-      wrapperCol={{ span: 24 - colSpan }} help={getFieldError(field)}
-    >
-      <Select combobox filterOption={getComboFilter} placeholder={placeholder}
-        {...getFieldProps(field, { onChange, rules, initialValue, getValueFromEvent })}
-        onSelect={handleComboSelect} allowClear={allowClear}
+  }
+  render() {
+    const {
+      labelName, field, colSpan, placeholder, required, rules,
+      formhoc: { getFieldError, getFieldProps }, optionData,
+      optionField, optionKey, optionValue,
+      allowClear, onChange, initialValue, getValueFromEvent,
+    } = this.props;
+    return (
+      <FormItem label={labelName} labelCol={{ span: colSpan }} required={required}
+        wrapperCol={{ span: 24 - colSpan }} help={getFieldError(field)}
       >
+        <Select combobox filterOption={this.getComboFilter} placeholder={placeholder}
+          {...getFieldProps(field, { onChange, rules, initialValue, getValueFromEvent })}
+          onSelect={this.handleComboSelect} allowClear={allowClear}
+        >
         {
           optionData.map(
-            od =>
-            <Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
-            {od[optionField]}
-            </Option>
-          )
+              od =>
+              <Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
+              {od[optionField]}
+              </Option>
+              )
         }
-      </Select>
-    </FormItem>
-  );
+        </Select>
+      </FormItem>);
+  }
 }
 
-AutoCompletionSelectItem.propTypes = {
-  labelName: PropTypes.string,
-  field: PropTypes.string.isRequired,
-  colSpan: PropTypes.number,
-  formhoc: PropTypes.object,
-  placeholder: PropTypes.string,
-  required: PropTypes.bool,
-  allowClear: PropTypes.bool,
-  rules: PropTypes.array,
-  onSelect: PropTypes.func,
-  optionData: PropTypes.array,
-  optionField: PropTypes.string,
-  optionValue: PropTypes.string,
-  optionKey: PropTypes.string,
-  filterFields: PropTypes.array, // 优先筛选判断的字段名称列表
-  initialValue: PropTypes.string,
-  getValueFromEvent: PropTypes.func,
-};

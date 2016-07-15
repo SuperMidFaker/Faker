@@ -5,7 +5,6 @@ import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadAcceptanceTable, acceptDelg, delDelg } from 'common/reducers/cmsDelegation';
@@ -13,16 +12,6 @@ import { loadAcceptanceTable, acceptDelg, delDelg } from 'common/reducers/cmsDel
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
-function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadAcceptanceTable(cookie, {
-    tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.cmsDelegation.listFilter),
-    pageSize: state.cmsDelegation.delegationlist.pageSize,
-    currentPage: state.cmsDelegation.delegationlist.current,
-  }));
-}
-
-@connectFetch()(fetchData)
 @connect(
   state => ({
     aspect: state.account.aspect,
@@ -41,14 +30,14 @@ function fetchData({ state, dispatch, cookie }) {
   dispatch(setNavTitle({
     depth: 2,
     text: '受理',
-    moduleName: props.type,
+    moduleName: props.ietype,
     withModuleLayout: false,
     goBackFn: null,
   }));
 })
 export default class AcceptanceList extends Component {
   static propTypes = {
-    type: PropTypes.oneOf(['import', 'export']),
+    ietype: PropTypes.oneOf(['import', 'export']),
     aspect: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -115,6 +104,7 @@ export default class AcceptanceList extends Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
+        ietype: this.props.ietype,
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
@@ -126,7 +116,7 @@ export default class AcceptanceList extends Component {
     remotes: this.props.delegationlist,
   })
   handleCreateBtnClick = () => {
-    this.context.router.push(`/${this.props.type}/accept/create`);
+    this.context.router.push(`/${this.props.ietype}/accept/create`);
   }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
@@ -194,7 +184,7 @@ export default class AcceptanceList extends Component {
               接单
               </a>
               <span className="ant-divider" />
-              <NavLink to={`/${this.props.type}/accept/edit/${record.delg_no}`}>
+              <NavLink to={`/${this.props.ietype}/accept/edit/${record.delg_no}`}>
               修改
               </NavLink>
               <span className="ant-divider" />
