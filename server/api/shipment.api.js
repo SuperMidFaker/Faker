@@ -606,39 +606,50 @@ function *sendTrackingDetailSMSMessage() {
 }
 
 function *shipmentStatistics() {
-  const query = this.request.query;
+  const {tenantId, startDate, endDate} = this.request.query;
   try {
-    const points = yield shipmentDao.shipmentStatistics(parseInt(query.tenantId, 10));
+    const points = yield shipmentDao.shipmentStatistics(parseInt(tenantId, 10));
+    const created_date = {
+      $gte: startDate,
+      $lt: endDate,
+    };
     const count = [
       yield ShipmentEvent.count({
         where:{
-          type: SHIPMENT_EVENT_TYPE.accepted
+          type: SHIPMENT_EVENT_TYPE.accepted,
+          created_date,
         }
       }),
       yield ShipmentEvent.count({
         where:{
-          type: SHIPMENT_EVENT_TYPE.sent
+          type: SHIPMENT_EVENT_TYPE.sent,
+          created_date,
         }
       }),
       yield ShipmentEvent.count({
         where:{
-          type: SHIPMENT_EVENT_TYPE.pickedup
+          type: SHIPMENT_EVENT_TYPE.pickedup,
+          created_date,
         }
       }),
       yield ShipmentEvent.count({
         where:{
-          type: SHIPMENT_EVENT_TYPE.delivered
+          type: SHIPMENT_EVENT_TYPE.delivered,
+          created_date,
         }
       }),
       yield ShipmentEvent.count({
         where:{
-          type: SHIPMENT_EVENT_TYPE.completed
+          type: SHIPMENT_EVENT_TYPE.completed,
+          created_date,
         }
       }),
     ];
     return Result.ok(this, {
       points,
-      count
+      count,
+      startDate,
+      endDate,
     });
   } catch (e) {
     return Result.internalServerError(this, e.message);

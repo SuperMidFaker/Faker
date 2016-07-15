@@ -8,11 +8,13 @@ import './index.less';
 import echarts from 'echarts';
 import chinaJson from './china.json';
 import { renderCity } from './common/consignLocation';
+import moment from 'moment';
 const RangePicker = DatePicker.RangePicker;
 
 
 function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadShipmentStatistics(cookie, state.account.tenantId));
+	const {startDate, endDate} = state.shipment.statistics;
+  return dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate));
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -30,7 +32,8 @@ export default class Dashboard extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.createEcharts(nextProps.statistics);
   }
-  onChange = () => {
+  onDateChange = (e) => {
+		this.props.loadShipmentStatistics(null, this.props.tenantId, e[0], e[1]);
   }
   createEcharts(statistics) {
     const {points} = statistics;
@@ -217,10 +220,11 @@ export default class Dashboard extends React.Component {
     });
   }
   render() {
-    const {count} = this.props.statistics;
+    const {count, startDate, endDate} = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} onChange={this.onChange} />
+        <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate).format('YYYY-MM-DD HH:mm:ss'), moment(endDate).format('YYYY-MM-DD HH:mm:ss')]}
+        format="yyyy-MM-dd HH:mm:ss" onChange={this.onDateChange} />
       </div>);
     const iconStyle = {
       fontSize: '46px',
