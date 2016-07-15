@@ -3,8 +3,10 @@ import { Icon, QueueAnim, Tag, InputNumber, Button, Table, message, Modal, Tabs 
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch } from 'common/reducers/transportDispatch';
+import { addPartner } from 'common/reducers/partner';
 import SearchBar from 'client/components/search-bar';
 import MContent from './MContent';
+import partnerModal from '../../corp/cooperation/components/partnerModal';
 
 const TabPane = Tabs.TabPane;
 
@@ -28,8 +30,9 @@ function fetch({ state, dispatch, cookie }) {
   lspLoaded: state.transportDispatch.lspLoaded,
   dispatched: state.transportDispatch.dispatched,
   vehicleTypes: state.transportDispatch.vehicleTypes,
-  vehicleLengths: state.transportDispatch.vehicleLengths
-}), { loadLsps, loadVehicles, doDispatch })
+  vehicleLengths: state.transportDispatch.vehicleLengths,
+  providerType: state.partner.providerType
+}), { loadLsps, loadVehicles, doDispatch, addPartner })
 export default class DispatchDock extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
@@ -97,6 +100,7 @@ export default class DispatchDock extends Component {
                 </a></span>);
       }
     }];
+    console.log(this.props.vehicleTypes)
     this.vehicleCols = [{
       title: '车牌',
       dataIndex: 'plate_number',
@@ -110,6 +114,7 @@ export default class DispatchDock extends Component {
       dataIndex: 'type',
       width: 50,
       render: (t) => {
+        console.log(t)
         if (this.props.vehicleTypes) {
           return this.props.vehicleTypes[t].text;
         }
@@ -342,7 +347,25 @@ export default class DispatchDock extends Component {
       }
     });
   }
-
+  handleNewCarrierClick = (e) => {
+    const { tenantId, providerType } = this.props;
+    partnerModal({
+      isProvider: true,
+      partnerships: ['TRS'],
+      onOk: (partnerInfo) => {
+        this.props.addPartner({tenantId, partnerInfo, partnerships: partnerInfo.partnerships}).then(result => {
+          message.success('合作伙伴已添加');
+          const { lsps, tenantId } = this.props;
+          this.props.loadLsps(null, {
+            tenantId,
+            pageSize: lsps.pageSize,
+            current: 1,
+            carrier: '',
+          });
+        });
+      }
+    });
+  }
   render() {
     const { show, shipmts, lsps, vehicles } = this.props;
     this.lspsds.remotes = lsps;
@@ -413,7 +436,7 @@ export default class DispatchDock extends Component {
                 <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
                   <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
                     <div className="pane-header">
-                      <div className="tools"><Button>新增承运商</Button></div>
+                      <div className="tools"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
                       <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
                         onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
                       />
@@ -424,7 +447,7 @@ export default class DispatchDock extends Component {
                   </TabPane>
                   <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
                     <div className="pane-header">
-                      <div className="tools"><Button>新增车辆</Button></div>
+                      <div className="tools"><Button onClick={this.handleNewCarrierClick}>新增车辆</Button></div>
                       <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
                         onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
                       />
