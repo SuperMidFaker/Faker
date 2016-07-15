@@ -111,7 +111,7 @@ function *trackingPickDeliverDateP() {
       disp_id: dispId,
       event_id: shipmentEvent['null'],
     });
-    const disps = yield shipmentDispDao.getShipmtDispWithNo(id);
+    const disps = yield shipmentDispDao.getShipmtDispWithNo(dispId);
     const disp = disps[0];
     if (disp.pod_type === SHIPMENT_DISPATCH_POD_TYPE.none) {
       const shipmentEvent1 = yield ShipmentEvent.create({
