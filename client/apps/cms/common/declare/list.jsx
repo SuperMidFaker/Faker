@@ -185,7 +185,7 @@ export default class DeclareList extends React.Component {
         <div className="page-body">
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
-              dataSource={this.dataSource} scroll={{ x: totalWidth, y: 460 }} rowKey={getRowKey}
+              dataSource={this.dataSource} scroll={{ x: totalWidth/* , y: 460 */ }} rowKey={getRowKey}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

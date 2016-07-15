@@ -86,6 +86,7 @@ const wpConfig = {
     configFile: '.eslintrc',
     failOnError: false,
     emitWarning: true,
+    fix: true,
   },
 };
 

@@ -72,7 +72,7 @@ export default class CorpInfo extends React.Component {
     this.state = { country, province, city, district, logo };
   }
   componentWillReceiveProps(nextProps) {
-    const newState = {};
+    const newState = this.state;
     ['country', 'province', 'city', 'district', 'logo'].forEach(fld => {
       if (nextProps.formData[fld] !== this.props.formData[fld]) {
         newState[fld] = nextProps.formData[fld];

@@ -413,7 +413,7 @@ export default class AcceptList extends React.Component {
         <div className="page-body">
           <div className="panel-body">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2800, y: 460 }}
+              dataSource={this.dataSource} scroll={{ x: 2800/* , y: 460 */ }}
               onRowClick={this.handleShipmtPreview}
             />
           </div>
