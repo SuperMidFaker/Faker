@@ -39,7 +39,6 @@ export default class ChargePanel extends React.Component {
     });
     return (
       <div className="pane-content tab-pane">
-        <Row className="pane-section">
           <Card bodyStyle={{ padding: 16 }}>
             <Row>
               <Col span="8">
@@ -54,14 +53,11 @@ export default class ChargePanel extends React.Component {
               </Col>
             </Row>
           </Card>
-        </Row>
-        <Row className="pane-section">
           <Card bodyStyle={{ padding: 0 }}>
             <Table size="small" columns={this.columns} pagination={false}
               dataSource={ds}
             />
           </Card>
-        </Row>
       </div>
     );
   }

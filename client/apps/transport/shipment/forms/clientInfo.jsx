@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Col, Tooltip, Card } from 'antd';
+import { Row, Col, Tooltip, Card } from 'antd';
 import InputItem from './input-item';
 import AutoCompSelectItem from './autocomp-select-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -55,33 +55,35 @@ export default class ClientInfo extends React.Component {
       name: cl.name,
     }));
     return (
-      <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 8 }}>
-        <Col span={outerColSpan}>
-        {
-          mode === 'edit' ?
-          <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
-            field="customer_name" disabled fieldProps={{ initialValue: name }}
-          /> :
-          <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
-            <div>
-              <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
-                field="customer_name"
-                required optionData={clientOpts} filterFields={['code']}
-                optionField="name" optionKey="key" optionValue="value"
-                rules={[{
-                required: true, message: this.msg('clientNameMust'),
-              }]}
-                initialValue={name} getValueFromEvent={this.findClientValue}
-              />
-            </div>
-          </Tooltip>
-        }
-        </Col>
-        <Col span={24 - outerColSpan}>
-          <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8}
-            field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
-          />
-        </Col>
+      <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }}>
+        <Row>
+          <Col span={outerColSpan}>
+          {
+            mode === 'edit' ?
+            <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+              field="customer_name" disabled fieldProps={{ initialValue: name }}
+            /> :
+            <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
+              <div>
+                <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+                  field="customer_name"
+                  required optionData={clientOpts} filterFields={['code']}
+                  optionField="name" optionKey="key" optionValue="value"
+                  rules={[{
+                  required: true, message: this.msg('clientNameMust'),
+                }]}
+                  initialValue={name} getValueFromEvent={this.findClientValue}
+                />
+              </div>
+            </Tooltip>
+          }
+          </Col>
+          <Col span={24 - outerColSpan}>
+            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8}
+              field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
+            />
+          </Col>
+        </Row>
       </Card>
     );
   }

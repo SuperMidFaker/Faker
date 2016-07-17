@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Col, Form, Card } from 'antd';
+import { Row, Col, Form, Card } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
@@ -171,39 +171,41 @@ export default class ConsignInfo extends React.Component {
       district: fieldDefaults[district],
     };
     return (
-      <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 8 }}>
-        <Col span={`${outerColSpan}`}>
-          <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} colSpan={4} {...this.renderRules.name}
-            optionField="name" optionKey="key" optionValue="name"
-            formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
-            allowClear onChange={this.handleAutoInputChange}
-            initialValue={fieldDefaults[name]}
-          />
-          <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }} {...this.renderRules.portal}
-          >
-            <RegionCascade region={region} setFormValue={this.handleRegionValue} />
-          </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} colSpan={4} {...this.renderRules.addr}
-            fieldProps={{ initialValue: fieldDefaults[addr] }}
-          />
-        </Col>
-        <Col span={`${24 - outerColSpan}`}>
-          <InputItem formhoc={formhoc} labelName={this.msg('contact')}
-            field={this.renderFields.contact} colSpan={labelColSpan}
-            fieldProps={{ initialValue: fieldDefaults[contact] }}
-          />
-          <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
-            field={this.renderFields.mobile} colSpan={labelColSpan}
-            fieldProps={{ initialValue: fieldDefaults[mobile] }}
-          />
-          <InputItem formhoc={formhoc} labelName={this.msg('email')}
-            field={this.renderFields.email} colSpan={labelColSpan}
-            fieldProps={{ initialValue: fieldDefaults[email] }}
-          />
-        </Col>
+      <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 16 }}>
+        <Row>
+          <Col span={`${outerColSpan}`}>
+            <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
+              field={this.renderFields.name} colSpan={4} {...this.renderRules.name}
+              optionField="name" optionKey="key" optionValue="name"
+              formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
+              allowClear onChange={this.handleAutoInputChange}
+              initialValue={fieldDefaults[name]}
+            />
+            <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }} {...this.renderRules.portal}
+            >
+              <RegionCascade region={region} setFormValue={this.handleRegionValue} />
+            </FormItem>
+            <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
+              field={this.renderFields.addr} colSpan={4} {...this.renderRules.addr}
+              fieldProps={{ initialValue: fieldDefaults[addr] }}
+            />
+          </Col>
+          <Col span={`${24 - outerColSpan}`}>
+            <InputItem formhoc={formhoc} labelName={this.msg('contact')}
+              field={this.renderFields.contact} colSpan={labelColSpan}
+              fieldProps={{ initialValue: fieldDefaults[contact] }}
+            />
+            <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
+              field={this.renderFields.mobile} colSpan={labelColSpan}
+              fieldProps={{ initialValue: fieldDefaults[mobile] }}
+            />
+            <InputItem formhoc={formhoc} labelName={this.msg('email')}
+              field={this.renderFields.email} colSpan={labelColSpan}
+              fieldProps={{ initialValue: fieldDefaults[email] }}
+            />
+          </Col>
+        </Row>
       </Card>
     );
   }

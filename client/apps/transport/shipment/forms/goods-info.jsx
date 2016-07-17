@@ -346,7 +346,7 @@ export default class GoodsInfo extends React.Component {
       },
     }];
     return (
-      <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 8 }}>
+      <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 16 }}>
         <Row>
           <Col span={`${outerColSpan}`}>
             <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
