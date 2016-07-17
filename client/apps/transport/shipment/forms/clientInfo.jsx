@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Tooltip } from 'antd';
+import { Row, Col, Tooltip, Card } from 'antd';
 import InputItem from './input-item';
 import AutoCompSelectItem from './autocomp-select-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -55,11 +55,8 @@ export default class ClientInfo extends React.Component {
       name: cl.name,
     }));
     return (
-      <Row>
-        <div className="subform-heading">
-          <div className="subform-title">{this.msg('customerInfo')}</div>
-        </div>
-        <Col span={outerColSpan} className="subform-body">
+      <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 8 }}>
+        <Col span={outerColSpan}>
         {
           mode === 'edit' ?
           <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
@@ -80,12 +77,12 @@ export default class ClientInfo extends React.Component {
           </Tooltip>
         }
         </Col>
-        <Col span={24 - outerColSpan} className="subform-body">
+        <Col span={24 - outerColSpan}>
           <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8}
             field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
           />
         </Col>
-      </Row>
+      </Card>
     );
   }
 }

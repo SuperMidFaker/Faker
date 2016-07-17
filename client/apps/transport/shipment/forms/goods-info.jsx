@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input, Select, Table } from 'antd';
+import { Row, Col, Form, Input, Select, Table, Card } from 'antd';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';
@@ -346,11 +346,8 @@ export default class GoodsInfo extends React.Component {
       },
     }];
     return (
-      <Row>
-        <div className="subform-heading">
-          <div className="subform-title">{this.msg('goodsInfo')}</div>
-        </div>
-        <div className="subform-body">
+      <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 8 }}>
+        <Row>
           <Col span={`${outerColSpan}`}>
             <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
               wrapperCol={{ span: 24 - labelColSpan }} required
@@ -396,8 +393,10 @@ export default class GoodsInfo extends React.Component {
               fieldProps={{ initialValue: total_volume }}
             />
           </Col>
-          <Col span="24" className="subform-body">
-            <Table size="middle" bordered columns={columns} dataSource={[...goods, {
+        </Row>
+        <Row>
+          <Col span="24">
+            <Table size="small" columns={columns} dataSource={[...goods, {
               key: 'goodsinfinity', __ops: [{
                 name: formatGlobalMsg(this.props.intl, 'add'),
                 handler: this.handleGoodsAdd,
@@ -408,8 +407,8 @@ export default class GoodsInfo extends React.Component {
             }]} pagination={false}
             />
           </Col>
-        </div>
-      </Row>
+        </Row>
+      </Card>
     );
   }
 }
