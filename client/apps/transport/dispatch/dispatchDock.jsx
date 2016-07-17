@@ -396,34 +396,6 @@ export default class DispatchDock extends Component {
           totalVolume += v.total_volume;
         }
       });
-
-/*
-      dock = (<div className="dock-containers" key="dock1" onClick={(e) => {e.stopPropagation();}}>
-
-                <div className="dock-content">
-                  <div className="dock-sp">
-                    <div className="dock-sp-body">
-                      <div className="dock-sp-toolbar">
-                        <a onClick={ this.onCloseWrapper }><Icon type="cross" className="closable"/></a>
-                        <div className="shipno-containers">
-                          <span className="detail-title">共 {shipmts.length} 订单，{totalCount}件，{totalWeight}公斤，{totalVolume}立方</span>
-                          {arr}
-                        </div>
-                      </div>
-                      <div className="dock-sp-content">
-                        <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
-                          <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
-                            <Table columns={this.consigneeCols} dataSource={this.lspsds} pagination={false} />
-                          </TabPane>
-                          <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
-                            <Table columns={this.vehicleCols} dataSource={this.vesds} pagination={false} />
-                          </TabPane>
-                        </Tabs>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>);*/
       dock = (
           <div className="dock-panel inside">
             <div className="panel-content">

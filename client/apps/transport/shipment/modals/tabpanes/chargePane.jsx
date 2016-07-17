@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Table } from 'antd';
+import { Row, Col, Card, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -40,9 +40,27 @@ export default class ChargePanel extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Row className="pane-section">
-          <Table size="middle" bordered columns={this.columns} pagination={false}
-            dataSource={ds}
-          />
+          <Card bodyStyle={{ padding: 16 }}>
+            <Row>
+              <Col span="8">
+                <h5>营收</h5>
+
+              </Col>
+              <Col span="8">
+                <h5>成本</h5>
+              </Col>
+              <Col span="8">
+                <h5>利润</h5>
+              </Col>
+            </Row>
+          </Card>
+        </Row>
+        <Row className="pane-section">
+          <Card bodyStyle={{ padding: 0 }}>
+            <Table size="small" columns={this.columns} pagination={false}
+              dataSource={ds}
+            />
+          </Card>
         </Row>
       </div>
     );

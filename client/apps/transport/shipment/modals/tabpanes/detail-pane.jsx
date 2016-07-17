@@ -184,9 +184,11 @@ export default class PreviewPanel extends React.Component {
           </Card>
         </Row>
         <Row className="pane-section">
-          <Table size="small" bordered columns={this.columns} pagination={false}
-            dataSource={shipmt.goodslist}
-          />
+          <Card bodyStyle={{ padding: 0 }}>
+            <Table size="small" columns={this.columns} pagination={false}
+              dataSource={shipmt.goodslist}
+            />
+          </Card>
         </Row>
       </div>
     );
