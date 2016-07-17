@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Card } from 'antd';
+import { Col, Form, Card } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
