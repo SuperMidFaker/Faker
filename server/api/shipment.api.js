@@ -607,8 +607,9 @@ function *sendTrackingDetailSMSMessage() {
 
 function *shipmentStatistics() {
   const { tenantId, startDate, endDate } = this.request.query;
+  const tenant_id = parseInt(tenantId, 10)
   try {
-    const points = yield shipmentDao.shipmentStatistics(parseInt(tenantId, 10));
+    const points = yield shipmentDao.shipmentStatistics(tenant_id);
     const created_date = {
       $gte: startDate,
       $lt: endDate,
@@ -618,30 +619,35 @@ function *shipmentStatistics() {
         where: {
           type: SHIPMENT_EVENT_TYPE.accepted,
           created_date,
+          tenant_id,
         },
       }),
       yield ShipmentEvent.count({
         where: {
           type: SHIPMENT_EVENT_TYPE.sent,
           created_date,
+          tenant_id,
         },
       }),
       yield ShipmentEvent.count({
         where: {
           type: SHIPMENT_EVENT_TYPE.pickedup,
           created_date,
+          tenant_id,
         },
       }),
       yield ShipmentEvent.count({
         where: {
           type: SHIPMENT_EVENT_TYPE.delivered,
           created_date,
+          tenant_id,
         },
       }),
       yield ShipmentEvent.count({
         where: {
           type: SHIPMENT_EVENT_TYPE.completed,
           created_date,
+          tenant_id,
         },
       }),
     ];
