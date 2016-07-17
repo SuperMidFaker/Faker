@@ -14,7 +14,7 @@ export default function ShipmtNoColumnRender(props) {
     <a {...extra} href={makeShipmtPublicUrl(shipmtNo, publicKey)}
       onClick={handleClick} target="_blank"
     >
-    {shipmtNo}
+    <TrimSpan text={shipmtNo} maxLen={16} />
     </a>
   );
 }
