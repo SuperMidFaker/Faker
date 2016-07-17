@@ -63,18 +63,15 @@ export default class DispatchDock extends Component {
       this.onClose(reload);
     };
     this.consigneeCols = [{
-      title: '',
-      dataIndex: 'partner_tenant_id',
-      width: 30,
-      render: (tid, record) => {
-        return (<span>
-                <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
-                </span>);
-      },
-    }, {
       title: '承运商',
       dataIndex: 'partner_name',
       width: 180,
+      render: (o, record) => {
+        return (<span>
+                <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
+                record.partner_name
+                </span>);
+      },
     }, {
       title: '价格协议',
       dataIndex: 'quotation_promise',
