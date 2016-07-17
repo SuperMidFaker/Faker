@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import TrimSpan from 'client/components/trimSpan';
 
 function makeShipmtPublicUrl(shipmtNo, publicKey) {
   return `/pub/tms/tracking/detail/${shipmtNo}/${publicKey}`;
@@ -14,7 +15,7 @@ export default function ShipmtNoColumnRender(props) {
     <a {...extra} href={makeShipmtPublicUrl(shipmtNo, publicKey)}
       onClick={handleClick} target="_blank"
     >
-    <TrimSpan text={shipmtNo} maxLen={16} />
+      <TrimSpan text={shipmtNo} maxLen={16} />
     </a>
   );
 }
