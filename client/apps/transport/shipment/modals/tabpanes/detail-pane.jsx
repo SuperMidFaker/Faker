@@ -89,7 +89,7 @@ export default class PreviewPanel extends React.Component {
     const { shipmt } = this.props;
     return (
       <div className="pane-content tab-pane">
-        <Row className="pane-section">
+        <Row>
           <Col span="12" style={{ paddingRight: 8 }}>
             <Card bodyStyle={{ padding: 16 }}>
               <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
@@ -129,7 +129,6 @@ export default class PreviewPanel extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row className="pane-section">
           <Card bodyStyle={{ padding: 16 }}>
             <Row>
               <Col span="8">
@@ -182,14 +181,11 @@ export default class PreviewPanel extends React.Component {
             </Col>
             </Row>
           </Card>
-        </Row>
-        <Row className="pane-section">
           <Card bodyStyle={{ padding: 0 }}>
             <Table size="small" columns={this.columns} pagination={false}
               dataSource={shipmt.goodslist}
             />
           </Card>
-        </Row>
       </div>
     );
   }

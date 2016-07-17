@@ -146,7 +146,7 @@ export default class ModeInfo extends React.Component {
       );
     }
     return (
-      <Card title={this.msg('scheduleInfo')} bodyStyle={{ padding: 8 }}>
+      <Card title={this.msg('scheduleInfo')} bodyStyle={{ padding: 16 }}>
       <Row>
         <Col span={`${outerColSpan}`} >
           <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}

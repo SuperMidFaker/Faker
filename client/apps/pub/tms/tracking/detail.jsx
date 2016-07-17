@@ -277,7 +277,7 @@ export default class TrackingDetail extends React.Component {
                   <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
                 </Card>
                 <Row>
-                  <Col lg={12} sm={24} style={{ marginTop: 16 }}>
+                  <Col lg={12} sm={24}>
                     <Card bodyStyle={{ padding: 0 }}>
                       <Collapse defaultActiveKey={['1', '2', '3']}>
                         <Panel header="发货方" key="1">
@@ -298,7 +298,7 @@ export default class TrackingDetail extends React.Component {
                       </Collapse>
                     </Card>
                   </Col>
-                  <Col lg={12} sm={24} style={{ marginTop: 16 }}>
+                  <Col lg={12} sm={24}>
                     <Card id="tracing-timeline" title="追踪详情" extra={<a href="#"></a>}>
                       <Timeline>{trackingSteps}</Timeline>
                     </Card>

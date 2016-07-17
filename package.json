@@ -1,7 +1,7 @@
 {
   "name": "welogix-web",
-  "version": "0.0.1",
-  "description": "welogix cooperation web system",
+  "version": "1.0.0",
+  "description": "WeLogix GTM Collaboration Network",
   "main": "server/sboot.js",
   "scripts": {
     "clean": "rm -rf public/dist",
@@ -40,7 +40,7 @@
   "license": "MIT",
   "pre-commit": [],
   "dependencies": {
-    "antd": "^1.6.4",
+    "antd": "^1.6.5",
     "babel": "^5.8.38",
     "bcrypt": "^0.8.7",
     "classnames": "^2.2.5",
