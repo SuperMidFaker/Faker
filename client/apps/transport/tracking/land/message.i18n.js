@@ -167,19 +167,19 @@ export default defineMessages({
   },
   uploadedPOD: {
     id: 'transport.tracking.uploaded.pod',
-    defaultMessage: '待审核回单',
+    defaultMessage: '回单待审核',
   },
   submittedPOD: {
     id: 'transport.tracking.submitted.pod',
-    defaultMessage: '已提交回单',
+    defaultMessage: '回单已提交',
   },
   passedPOD: {
     id: 'transport.tracking.passed.pod',
-    defaultMessage: '已接受回单',
+    defaultMessage: '回单已接受',
   },
   exceptionWarn: {
     id: 'transport.tracking.exception.warning',
-    defaultMessage: '预警',
+    defaultMessage: '警告',
   },
   exceptionErr: {
     id: 'transport.tracking.exception.error',

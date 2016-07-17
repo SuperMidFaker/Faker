@@ -180,7 +180,7 @@ export default class ShipmentCreate extends React.Component {
         <Form form={formhoc} horizontal>
           <div className="page-body">
             <div className="panel-header" />
-            <div className="panel-body body-responsive">
+            <div className="panel-body">
               <Col span="16" className="main-col">
                 <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16}

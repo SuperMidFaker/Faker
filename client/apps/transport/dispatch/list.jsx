@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
+import { Button, Radio, Icon, message, Select, Modal, Alert, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -290,15 +290,15 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipPod'),
         dataIndex: 'pod_type',
-        width: 100,
+        width: 40,
         render: (text) => {
           switch (text) {
             case 'qrPOD':
-              return '扫描签收回单';
+              return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
             case 'ePOD':
-              return '需要电子回单';
+              return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
             default:
-              return '不要电子回单';
+              return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
           }
         },
       }, {
