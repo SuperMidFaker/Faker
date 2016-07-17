@@ -749,6 +749,15 @@ img {
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   margin-bottom: 72px;
   clear: both;
+  .ant-card{
+    margin-bottom: 16px;
+    .ant-form-item {
+      margin-bottom: 8px;
+    }
+    .ant-collapse {
+      border: none;
+    }
+  } 
   &.fixed {
     position: fixed;
     top: 106px;
@@ -793,7 +802,7 @@ img {
   padding: 0 8px 24px 24px;
 }
 .right-side-col {
-  padding: 0 24px 24px 32px;
+  padding: 0 24px 0 8px;
 }
 .body-responsive {
   overflow-x: auto;
@@ -867,9 +876,6 @@ img {
 }
 .ant-tabs-tabpane .panel-header {
   padding: 0 16px 0;
-}
-.ant-card .ant-collapse {
-  border: none;
 }
 .panel-min-header {
   position: relative;

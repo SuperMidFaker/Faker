@@ -10,7 +10,6 @@ import { acceptDraft, loadTable, saveEdit } from 'common/reducers/transport-acce
 import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
-import ScheduleInfo from '../shipment/forms/schedule-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import CorrelInfo from '../shipment/forms/correlInfo';
 import { format } from 'client/common/i18n/helpers';
@@ -147,7 +146,6 @@ export default class ShipmentDraftEdit extends React.Component {
                 <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
-                <ScheduleInfo intl={intl} formhoc={formhoc} />
                 <ModeInfo intl={intl} formhoc={formhoc} />
                 <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc} />
               </Col>

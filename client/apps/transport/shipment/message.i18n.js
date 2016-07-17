@@ -99,7 +99,7 @@ export default defineMessages({
   },
   deliveryDate: {
     id: 'transport.shipment.delivery.date',
-    defaultMessage: '预计交货日期',
+    defaultMessage: '预计交货',
   },
   deliveryDateMust: {
     id: 'transport.shipment.delivery.date.must',

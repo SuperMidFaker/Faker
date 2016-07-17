@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form } from 'antd';
+import { Col, Form, Card } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
@@ -171,11 +171,8 @@ export default class ConsignInfo extends React.Component {
       district: fieldDefaults[district],
     };
     return (
-      <Row>
-        <div className="subform-heading">
-          <div className="subform-title">{this.msg(this.renderMsgKeys.title)}</div>
-        </div>
-        <Col span={`${outerColSpan}`} className="subform-body">
+      <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 8 }}>
+        <Col span={`${outerColSpan}`}>
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
             field={this.renderFields.name} colSpan={4} {...this.renderRules.name}
             optionField="name" optionKey="key" optionValue="name"
@@ -193,7 +190,7 @@ export default class ConsignInfo extends React.Component {
             fieldProps={{ initialValue: fieldDefaults[addr] }}
           />
         </Col>
-        <Col span={`${24 - outerColSpan}`} className="subform-body">
+        <Col span={`${24 - outerColSpan}`}>
           <InputItem formhoc={formhoc} labelName={this.msg('contact')}
             field={this.renderFields.contact} colSpan={labelColSpan}
             fieldProps={{ initialValue: fieldDefaults[contact] }}
@@ -207,7 +204,7 @@ export default class ConsignInfo extends React.Component {
             fieldProps={{ initialValue: fieldDefaults[email] }}
           />
         </Col>
-      </Row>
+      </Card>
     );
   }
 }
