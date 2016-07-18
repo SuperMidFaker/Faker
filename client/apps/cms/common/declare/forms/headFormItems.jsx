@@ -1,3 +1,4 @@
+/* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
 import { Col, Form, Input, Select } from 'antd';
@@ -83,68 +84,72 @@ PortDate.propTypes = {
 };
 
 // 关联单位
-export function RelationAutoCompSelect(props) {
-  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const {
-    label, codeField, nameField, formData, disabled, options,
-    getFieldProps, codeRules, nameRules, onSelect, onChange,
-  } = props;
-  function handleSelect(value) {
+export class RelationAutoCompSelect extends React.Component {
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    codeField: PropTypes.string.isRequired,
+    nameField: PropTypes.string.isRequired,
+    formData: PropTypes.object,
+    disabled: PropTypes.bool,
+    getFieldProps: PropTypes.func.isRequired,
+    codeRules: PropTypes.array,
+    nameRules: PropTypes.array,
+    onSelect: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+  }
+
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
+  handleSelect = (value) => {
+    const { onSelect, codeField, nameField } = this.props;
     if (onSelect) {
       onSelect(codeField, nameField, value);
     }
   }
-  function handleInputChange(value) {
+  handleInputChange = (value) => {
+    const { onChange, codeField, nameField } = this.props;
     if (onChange) {
       onChange(codeField, nameField, value);
     }
   }
-  return (
-    <Col span="9">
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
-        <CompositeInputGroup {...getFieldProps(codeField, { rules: codeRules })}>
-          <Col span="12">
-            <Select size="large" combobox showArrow={false} disabled={disabled}
-              allowClear optionFilterProp="search"
-              placeholder={msg('relationCodeSearch')} {
-                ...getFieldProps(codeField, {
-                  rules: codeRules,
-                  onChange: handleInputChange,
-                  initialValue: formData && formData[codeField],
-                })
-              } onSelect={handleSelect}
-            >
-              {
-                options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
-              }
-            </Select>
-          </Col>
-          <Col span="12" style={{ paddingRight: 0 }}>
-            <Input placeholder={msg('relationName')} disabled={disabled}
-              {...getFieldProps(nameField, {
-              rules: nameRules,
-              initialValue: formData && formData[nameField],
-            })} disabled={disabled}
-            />
-          </Col>
-        </CompositeInputGroup>
-      </FormItem>
-    </Col>
-  );
+  render() {
+    const {
+      label, codeField, nameField, formData, disabled, options,
+      getFieldProps, codeRules, nameRules,
+    } = this.props;
+    return (
+      <Col span="9">
+        <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
+          <CompositeInputGroup {...getFieldProps(codeField, { rules: codeRules })}>
+            <Col span="12">
+              <Select size="large" combobox showArrow={false} disabled={disabled}
+                allowClear optionFilterProp="search"
+                placeholder={this.msg('relationCodeSearch')} {
+                  ...getFieldProps(codeField, {
+                    rules: codeRules,
+                    onChange: this.handleInputChange,
+                    initialValue: formData && formData[codeField] || '',
+                  })
+                } onSelect={this.handleSelect}
+              >
+                {
+                  options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
+                }
+              </Select>
+            </Col>
+            <Col span="12" style={{ paddingRight: 0 }}>
+              <Input placeholder={this.msg('relationName')} disabled={disabled}
+                {...getFieldProps(nameField, {
+                rules: nameRules,
+                initialValue: formData && formData[nameField],
+              })} disabled={disabled}
+              />
+            </Col>
+          </CompositeInputGroup>
+        </FormItem>
+      </Col>
+    );
+  }
 }
-
-RelationAutoCompSelect.propTypes = {
-  label: PropTypes.string.isRequired,
-  codeField: PropTypes.string.isRequired,
-  nameField: PropTypes.string.isRequired,
-  formData: PropTypes.object,
-  disabled: PropTypes.bool,
-  getFieldProps: PropTypes.func.isRequired,
-  codeRules: PropTypes.array,
-  nameRules: PropTypes.array,
-  onSelect: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
 
 // 运输方式、运输名称、提运单号
 export function Transport(props) {
