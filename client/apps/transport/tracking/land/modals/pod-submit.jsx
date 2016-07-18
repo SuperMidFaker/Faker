@@ -103,7 +103,7 @@ export default class PodSubmitter extends React.Component {
             wrapperCol={{ span: 24 - colSpan }}
           >
             <Upload action="/v1/upload/img" listType="picture"
-              onChange={this.handlePhotoUpload} fileList={this.state.photoList}
+              onChange={this.handlePhotoUpload}
             >
               <Button icon="upload" type="ghost" />
               {this.msg('photoSubmit')}

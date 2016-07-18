@@ -64,7 +64,7 @@ export class FormRemoteSearchSelect extends React.Component {
     onSearch: PropTypes.func,
   };
 
-  handleSearch(value) {
+  handleSearch = (value) => {
     const { onSearch, field } = this.props;
     if (onSearch) {
       onSearch(field, value);
