@@ -18,6 +18,8 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
   'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
   'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
+  'COUNT_MESSAGES', 'COUNT_MESSAGES_SUCCEED', 'COUNT_MESSAGES_FAIL',
+  'ADD_MESSAGE_BADGE',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -58,6 +60,7 @@ const initialState = {
     status: 0,
     data: [],
   },
+  notReadMessagesNum: 0,
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -156,6 +159,12 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.MARK_MESSAGES_SUCCEED: {
       return state;
+    }
+    case actionTypes.COUNT_MESSAGES_SUCCEED: {
+      return { ...state, ...action.result.data };
+    }
+    case actionTypes.ADD_MESSAGE_BADGE: {
+      return { ...state, ...action.data };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null, country: CHINA_CODE }, 'corplist')
@@ -334,5 +343,24 @@ export function markMessage(params) {
       method: 'post',
       data: params,
     },
+  };
+}
+
+export function countMessages(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.COUNT_MESSAGES, actionTypes.COUNT_MESSAGES_SUCCEED, actionTypes.COUNT_MESSAGES_FAIL],
+      endpoint: 'v1/user/account/messages/count',
+      method: 'get',
+      params,
+      cookie,
+    },
+  };
+}
+
+export function messageBadgeNum(notReadMessagesNum) {
+  return {
+    type: actionTypes.ADD_MESSAGE_BADGE,
+    data: { notReadMessagesNum },
   };
 }
