@@ -294,6 +294,7 @@ export function sendTrackingDetailSMSMessage(data) {
 }
 
 export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
+  const params = { tenantId, startDate: sDate.toString(), endDate: eDate.toString() };
   return {
     [CLIENT_API]: {
       types: [
@@ -304,7 +305,7 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
       endpoint: 'v1/transport/shipment/statistics',
       method: 'get',
       cookie,
-      params: { tenantId, startDate: sDate, endDate: eDate },
+      params,
     },
   };
 }

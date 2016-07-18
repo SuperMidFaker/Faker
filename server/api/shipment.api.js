@@ -607,7 +607,7 @@ function *sendTrackingDetailSMSMessage() {
 
 function *shipmentStatistics() {
   const { tenantId, startDate, endDate } = this.request.query;
-  const tenant_id = parseInt(tenantId, 10)
+  const tenant_id = parseInt(tenantId, 10);
   try {
     const points = yield shipmentDao.shipmentStatistics(tenant_id);
     const created_date = {
