@@ -108,7 +108,6 @@ export default class TrackingDetail extends React.Component {
       }
       const result = Promise.all(promises);
       result.then((arr) => {
-        console.log(arr);
         map.clearOverlays();
         for (let i = 0; i < arr.length; i++) {
           addMarker(arr[i], arr[i].label, i, cur, pts);
