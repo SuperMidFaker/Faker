@@ -34,6 +34,10 @@ import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tms';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
+import ExportWrapper from './cms/export/wrapper';
+import * as ExportAcceptance from './cms/export/acceptance';
+import * as ExportDeclare from './cms/export/declare';
+import * as ExportManage from './cms/export/manage';
 
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -127,6 +131,26 @@ export default(store, cookie) => {
               <Route path="compRelation" component={ImportManage.List} />
               <Route path="create" component={ImportManage.Create} />
               <Route path="edit/:id" component={ImportManage.Edit} />
+            </Route>
+          </Route>
+          <Route path="export" component={ExportWrapper}>
+            <IndexRedirect to="/export/accept" />
+            <Route path="accept">
+              <IndexRoute component={ExportAcceptance.List} />
+              <Route path="create" component={ExportAcceptance.Create} />
+              <Route path="edit/:delgNo" component={ExportAcceptance.Edit} />
+            </Route>
+            <Route path="declare">
+              <IndexRedirect to="/export/declare/list/undeclared" />
+              <Route path="list/:status" component={ExportDeclare.List} />
+              <Route path="make/:delgNo" component={ExportDeclare.Make} />
+              <Route path="view/:delgNo" component={ExportDeclare.View} />
+            </Route>
+            <Route path="manage" component={ExportManage.Menu}>
+              <IndexRoute component={ExportManage.List} />
+              <Route path="compRelation" component={ExportManage.List} />
+              <Route path="create" component={ExportManage.Create} />
+              <Route path="edit/:id" component={ExportManage.Edit} />
             </Route>
           </Route>
           <Route path="transport" component={Transport}>
