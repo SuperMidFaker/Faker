@@ -8,6 +8,7 @@ import { addPartner } from 'common/reducers/partner';
 import SearchBar from 'client/components/search-bar';
 import MContent from './MContent';
 import partnerModal from '../../corp/cooperation/components/partnerModal';
+import VehicleFormMini from '../resources/components/VehicleForm-mini';
 const TabPane = Tabs.TabPane;
 
 function noop() {}
@@ -162,6 +163,7 @@ export default class DispatchDock extends Component {
     podType: 'ePOD', // none, qrPOD, ePOD
     carrierSearch: '',
     plateSearch: '',
+    newVehicleVisible: false,
   }
 
   lspsds = new Table.DataSource({
@@ -189,7 +191,12 @@ export default class DispatchDock extends Component {
   })
 
   vesds = new Table.DataSource({
-    fetcher: params => this.props.loadVehicles(null, params),
+    fetcher: params => {
+      this.setState({
+        newVehicleVisible: false,
+      });
+      return this.props.loadVehicles(null, params);
+    },
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -263,10 +270,14 @@ export default class DispatchDock extends Component {
   handleQuotationChange = val => {
     this.setState({
       quotation: val,
+      newVehicleVisible: false,
     });
   }
 
   handleTabChange = key => {
+    this.setState({
+      newVehicleVisible: false,
+    });
     if (key === 'vehicle' && !this.props.vehicleLoaded) {
       const { vehicles, tenantId } = this.props;
       this.props.loadVehicles(null, {
@@ -294,7 +305,7 @@ export default class DispatchDock extends Component {
   }
 
   handlePodTypeChange = podType => {
-    this.setState({ podType });
+    this.setState({ podType, newVehicleVisible: false });
   }
   handleCarrierSearch = value => {
     const { lsps, tenantId } = this.props;
@@ -310,6 +321,7 @@ export default class DispatchDock extends Component {
     });
     this.setState({
       carrierSearch: value,
+      newVehicleVisible: false,
     });
   }
   handlePlateSearch = value => {
@@ -326,6 +338,7 @@ export default class DispatchDock extends Component {
     });
     this.setState({
       plateSearch: value,
+      newVehicleVisible: false,
     });
   }
   showConfirm(type, target) {
@@ -364,7 +377,7 @@ export default class DispatchDock extends Component {
     });
   }
   handleNewVehicleClick = () => {
-
+    this.setState({ newVehicleVisible: true });
   }
   render() {
     const { show, shipmts, lsps, vehicles } = this.props;
@@ -427,14 +440,7 @@ export default class DispatchDock extends Component {
                     <div className="pane-content tab-pane">
                       <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
                     </div>
-                    <Modal visible={this.state.showVehicleFormMini}
-                      className="ant-confirm"
-                      closable={false}
-                      transitionName="zoom"
-                      footer=""
-                      maskTransitionName="fade"
-                      style={{ width: '520px' }}
-                    />
+                    <VehicleFormMini visible={this.state.newVehicleVisible} />
                   </TabPane>
                 </Tabs>
               </div>
