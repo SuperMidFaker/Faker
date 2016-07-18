@@ -33,19 +33,31 @@ export default class AttchmentUpload extends Component {
   }
   handleChange = (info) => {
     if (info.file.status === 'uploading') {
+      if (this.state.attachments.filter(attach => attach.uid === info.file.uid).length === 0) {
+        this.setState({
+          attachments: [...this.state.attachments, info.file],
+        });
+      }
       return;
     }
     if (info.file.response.status !== 200) {
       message.error(info.file.response.msg);
+      const nextFileList = [...this.state.attachments];
+      nextFileList.splice(nextFileList.length - 1, 1);
+      this.setState({
+        attachments: nextFileList,
+      });
       return;
     }
     const file = info.file;
-    const prevFileList = this.state.attachments;
+    const nextFileList = [...this.state.attachments];
     const nextFile = {
-      uid: file.uid, name: file.name,
+      uid: file.uid,
+      name: file.name,
       url: file.response.data,
+      status: 'done',
     };
-    const nextFileList = [...prevFileList, nextFile];
+    nextFileList.splice(nextFileList.length - 1, 1, nextFile);
     this.setState({
       attachments: nextFileList,
     });

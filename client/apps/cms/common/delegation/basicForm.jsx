@@ -1,3 +1,4 @@
+/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col } from 'antd';
@@ -27,53 +28,58 @@ function getFieldInits(aspect, formData) {
   return init;
 }
 
-function LocalSearchSelect(props) {
-  const { options, field, initialValue, getFieldProps, placeholder, searchKeyFn } = props;
-  return (
-    <Select size="large" combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
-      placeholder={placeholder} optionFilterProp={searchKeyFn ? 'search' : undefined}
-    >
-    {options.map(opt => (<Option key={opt.value} value={opt.value}
-      search={searchKeyFn ? searchKeyFn(opt) : undefined}
-    >{opt.text}</Option>))}
-    </Select>
-  );
+class LocalSearchSelect extends React.Component {
+  static propTypes = {
+    options: PropTypes.array.isRequired,
+    field: PropTypes.string.isRequired,
+    getFieldProps: PropTypes.func.isRequired,
+    searchKeyFn: PropTypes.func,
+    initialValue: PropTypes.string,
+    placeholder: PropTypes.string,
+  }
+
+  render() {
+    const { options, field, initialValue, getFieldProps, placeholder, searchKeyFn } = this.props;
+    return (
+      <Select size="large" combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
+        placeholder={placeholder} optionFilterProp={searchKeyFn ? 'search' : undefined}
+      >
+      {options.map(opt => (<Option key={opt.value} value={opt.value}
+        search={searchKeyFn ? searchKeyFn(opt) : undefined}
+      >{opt.text}</Option>))}
+      </Select>
+    );
+  }
 }
 
-LocalSearchSelect.propTypes = {
-  options: PropTypes.array.isRequired,
-  field: PropTypes.string.isRequired,
-  getFieldProps: PropTypes.func.isRequired,
-  searchKeyFn: PropTypes.func,
-  initialValue: PropTypes.string,
-  placeholder: PropTypes.string,
-};
+class RemoteSearchSelect extends React.Component {
+  static propTypes = {
+    options: PropTypes.array.isRequired,
+    field: PropTypes.string.isRequired,
+    getFieldProps: PropTypes.func.isRequired,
+    onSearch: PropTypes.func,
+    initialValue: PropTypes.string,
+    placeholder: PropTypes.string,
+  }
 
-function RemoteSearchSelect(props) {
-  const { options, field, initialValue, getFieldProps, onSearch, placeholder } = props;
-  function handleSearch(searched) {
+  handleSearch = (searched) => {
+    const { field, onSearch } = this.props;
     if (onSearch) {
       onSearch(field, searched);
     }
   }
-  return (
-    <Select size="large" filterOption={false} showSearch onSearch={handleSearch} {
-      ...getFieldProps(field, { initialValue })} defaultActiveFirstOption
-      placeholder={placeholder}
-    >
-    {options.map(opt => <Option key={opt.value} value={opt.value}>{opt.text}</Option>)}
-    </Select>
-  );
+  render() {
+    const { options, field, initialValue, getFieldProps, placeholder } = this.props;
+    return (
+      <Select size="large" filterOption={false} showSearch onSearch={this.handleSearch} {
+        ...getFieldProps(field, { initialValue })}
+        placeholder={placeholder}
+      >
+      {options.map(opt => <Option key={opt.value} value={opt.value}>{opt.text}</Option>)}
+      </Select>
+    );
+  }
 }
-
-RemoteSearchSelect.propTypes = {
-  options: PropTypes.array.isRequired,
-  field: PropTypes.string.isRequired,
-  getFieldProps: PropTypes.func.isRequired,
-  onSearch: PropTypes.func,
-  initialValue: PropTypes.string,
-  placeholder: PropTypes.string,
-};
 
 @connect(
   state => ({
@@ -119,7 +125,10 @@ export default class BasicForm extends Component {
     return value;
   }
   handleTradeModeSearch = (field, searched) => {
-    this.props.searchParams(field, searched);
+    // todo else search with nonempty getFieldsValue()
+    if (searched) {
+      this.props.searchParams(field, searched);
+    }
   }
   render() {
     const { form: { getFieldProps }, fieldInits, clients, tradeModes, transModes, declareWayModes } = this.props;
