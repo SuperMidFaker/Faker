@@ -19,6 +19,7 @@ const SubMenu = Menu.SubMenu;
   state => ({
     curLocale: state.intl.locale,
     navTitle: state.navbar.navTitle,
+    notReadMessagesNum: state.corps.notReadMessagesNum,
   }),
   { loadTranslation }
 )
@@ -41,7 +42,7 @@ export default class AmNavBar extends React.Component {
   }
   render() {
     const MenuItem = Menu.Item;
-    const { intl, curLocale, navTitle } = this.props;
+    const { intl, curLocale, navTitle, notReadMessagesNum } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
     if (navTitle.depth === 2) {
@@ -103,7 +104,7 @@ export default class AmNavBar extends React.Component {
                     </MenuItem>
                 </SubMenu>
                 <Menu.Item key="messages">
-                  <Badge count={0}>
+                  <Badge count={notReadMessagesNum} overflowCount={99}>
                     <NavLink to="/account/messages">
                     <span className="icon s7-bell"></span>
                     </NavLink>

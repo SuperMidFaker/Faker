@@ -48,6 +48,7 @@ export default [
    ['post', '/v1/user/account/messages/status', updateMessagesStatus],
    ['post', '/v1/user/account/message/status', updateMessageStatus],
    ['put', '/v1/user/account/message', sendPromptMessage],
+   ['get', '/v1/user/account/messages/count', countMessages],
 ];
 
 function *loginUserP() {
@@ -675,6 +676,23 @@ function *sendPromptMessage() {
     const { from, to, msg } = body;
     sendMessage(from, to, msg);
     Result.ok(this);
+  } catch (e) {
+    Result.internalServerError(this, e.message);
+  }
+}
+
+function *countMessages() {
+  try {
+    const query = this.request.query;
+    const status = parseInt(query.status, 10);
+    const loginId = parseInt(query.loginId, 10);
+    let result = yield messages.count({
+      where: {
+        login_id: loginId,
+        status,
+      },
+    });
+    Result.ok(this, {notReadMessagesNum: result});
   } catch (e) {
     Result.internalServerError(this, e.message);
   }
