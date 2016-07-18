@@ -69,7 +69,7 @@ export default class DispatchDock extends Component {
       render: (o, record) => {
         return (<span>
                 <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
-                record.partner_name
+                {record.partner_name}
                 </span>);
       },
     }, {
