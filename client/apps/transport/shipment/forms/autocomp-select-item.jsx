@@ -51,7 +51,8 @@ export default class AutoCompletionSelectItem extends React.Component {
         wrapperCol={{ span: 24 - colSpan }} help={getFieldError(field)}
       >
         <Select combobox filterOption={this.getComboFilter} placeholder={placeholder}
-          {...getFieldProps(field, { onChange, rules, initialValue, getValueFromEvent })}
+          {...getFieldProps(field, { onChange, rules, initialValue: initialValue || '',
+          getValueFromEvent })}
           onSelect={this.handleComboSelect} allowClear={allowClear}
         >
         {
