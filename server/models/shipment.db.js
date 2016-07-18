@@ -1,5 +1,6 @@
 import mysql from '../util/mysql';
 import Orm from '../util/orm';
+import { genShipmtNo } from '../api/_utils/shipment';
 
 const cols = ['shipmt_no/v',
   'parent_no/v',
@@ -91,27 +92,17 @@ export default {
     const subs = yield mysql.query(subdomainSql, [tenantId]);
     const tenantTmsPrefix = subs[0].subdomain.length <= 16 ? subs[0].subdomain
       : subs[0].subdomain.substr(16);
-    // 最长16位企业tms代号(目前用企业子域名) + 2位年份 + 6位序号(前面补0)
-    const totalLen = tenantTmsPrefix.length + 2 + 6;
-    const buf = new Buffer(totalLen);
-    buf.fill('0');
-    const year = String(new Date().getFullYear()).substr(2);
     const shipmtnoSql = `
       select shipmt_no from tms_shipments where tenant_id = ? and parent_no is null
       order by shipmt_no desc limit 1
     `;
     const args = [tenantId];
+    let currShipmtno;
     const shipmtnos = yield mysql.query(shipmtnoSql, args);
-    let newnoStr = '1';
     if (shipmtnos.length === 1) {
-      const biggestNo = shipmtnos[0].shipmt_no;
-      newnoStr = biggestNo.substr(biggestNo.length - 1 - 6);
-      newnoStr = String(parseInt(newnoStr, 10) + 1);
+      currShipmtno = shipmtnos[0].shipmt_no;
     }
-    buf.write(tenantTmsPrefix.toUpperCase());
-    buf.write(year, tenantTmsPrefix.length);
-    buf.write(newnoStr, totalLen - newnoStr.length);
-    return buf.toString();
+    return genShipmtNo(tenantTmsPrefix, currShipmtno);
   },
   getCountByType(tenantId, shipmtType, shipmtNo) {
     const args = [tenantId, shipmtType];
@@ -257,8 +248,10 @@ export default {
   updateShipmtWithInfo(shipmtInfo, trans) {
     const shipmt = {};
     Object.keys(shipmtInfo).filter(key => key !== 'shipmt_no')
-      .forEach(key => shipmt[key] = shipmtInfo[key]);
-    shipmt.wheres = { 'shipmt_no': shipmtInfo.shipmt_no };
+      .forEach(key => {
+        shipmt[key] = shipmtInfo[key];
+      });
+    shipmt.wheres = { shipmt_no: shipmtInfo.shipmt_no };
     return shipmtOrm.updateObj(shipmt, trans);
   },
   shipmentStatistics(tenantId) {

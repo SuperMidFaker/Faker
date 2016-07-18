@@ -434,8 +434,7 @@ export default class DispatchDock extends Component {
                       footer=""
                       maskTransitionName="fade"
                       style={{ width: '520px' }}
-                    >
-                    </Modal>
+                    />
                   </TabPane>
                 </Tabs>
               </div>
