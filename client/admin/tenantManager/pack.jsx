@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import AmLeftSidebar from 'client/components/am-ant-leftbar';
-import AmNavBar from 'client/components/am-navbar';
+import AmNavBar from '../components/am-navbar';
 
 function getLinksByAspect() {
   return [{

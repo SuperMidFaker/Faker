@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import AmNavBar from 'client/components/am-navbar';
+import AmNavBar from '../components/am-navbar';
 import ModuleLayout from 'client/components/module-layout';
 import { setNavTitle } from 'common/reducers/navbar';
 import './home.less';
