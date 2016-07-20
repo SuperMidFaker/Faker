@@ -293,16 +293,20 @@ function *upsertDelgBillHead() {
   try {
     const { head, ietype, loginId, tenantId } = yield cobody(this);
     let billNo = head.bill_no;
+    const delgType = ietype === 'import' ? 0 : 1;
     const dbOps = [];
     if (!billNo) {
-      const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
+      const lastBill = yield BillHeadDao.findOne({
+        order: 'bill_no DESC',
+        where: { delg_type: delgType },
+      });
       if (lastBill) {
         billNo = BillHeadDao.genBillNo(lastBill.bill_no.slice(-6), ietype);
       } else {
         billNo = BillHeadDao.genBillNo(0, ietype);
       }
       dbOps.push(
-        BillHeadDao.create({ ...head, bill_no: billNo, creater_login_id: loginId }),
+        BillHeadDao.create({ ...head, bill_no: billNo, creater_login_id: loginId, delg_type: delgType }),
         Dispatch.update({ bill_status: 1 }, { where: { delg_no: head.delg_no } })
       );
     } else {

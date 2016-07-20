@@ -133,8 +133,11 @@ function *createDelegate(head, billSrc, clientTid) {
 
 function *createBillHead(delgNo, head) {
   let billNo;
-  const ietype = head.delg_type;
-  const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC' });
+  const ietype = head.delg_type === 0 ? 'import' : 'export';
+  const lastBill = yield BillHeadDao.findOne({
+    order: 'bill_no DESC',
+    where: { delg_type: head.delg_type },
+  });
   if (lastBill) {
     billNo = BillHeadDao.genBillNo(lastBill.bill_no.slice(-6), ietype);
   } else {
