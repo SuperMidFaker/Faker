@@ -76,6 +76,24 @@ export const Delegation = sequelize.define('cms_delegations', {
           replacements: [tenantId, billStatus, offset, limit], type: sequelize.QueryTypes.SELECT,
         });
     },
+    getDelegationsByCUS(delg_type, status, tenantId, skip, limit) {
+      return sequelize.query(`select D.*, DD.ref_delg_external_no, DD.ref_recv_external_no,
+        DD.source, EH.entry_id  from cms_delegations as D inner join
+        cms_delegation_dispatch DD on D.delg_no = DD.delg_no
+        left outer join cms_delegation_entry_head EH
+        on D.delg_no = EH.delg_no where D.delg_type = ? and DD.status = ? and DD.send_tenant_id = ? limit ?, ?`,{
+          replacements: [delg_type, status, tenantId, skip, limit], type: sequelize.QueryTypes.SELECT,
+        });
+    },
+    countDelegationsByCUS(delg_type, status, tenantId) {
+      return sequelize.query(`select count(*) as count
+        from cms_delegations as D inner join
+        cms_delegation_dispatch DD on D.delg_no = DD.delg_no
+        left outer join cms_delegation_entry_head EH
+        on D.delg_no = EH.delg_no where D.delg_type = ? and DD.status = ? and DD.send_tenant_id = ?`,{
+          replacements: [delg_type, status, tenantId], type: sequelize.QueryTypes.SELECT,
+        });
+    },
   },
 });
 

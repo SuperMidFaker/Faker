@@ -89,7 +89,7 @@ export default class AcceptanceEdit extends Component {
           <Form horizontal form={form}>
             <div className="panel-body body-responsive">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type} />
+                <BasicForm form={form} ieType={type} partnershipType="CCB" />
               </Col>
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
                 <UploadGroup onFileUpload={this.handleUploadedFile}

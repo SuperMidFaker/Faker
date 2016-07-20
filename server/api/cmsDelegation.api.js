@@ -56,6 +56,23 @@ function *getAcceptDelegations() {
   });
 }
 
+function *getDelegationsByCUS() {
+  const ietype = this.request.query.ietype === 'import' ? 0 : 1;
+  const pageSize = parseInt(this.request.query.pageSize, 10);
+  const current = parseInt(this.request.query.currentPage, 10);
+  const filters = JSON.parse(this.request.query.filter);
+  const tenantId = parseInt(this.request.query.tenantId, 10);
+
+  const delgs = yield Delegation.getDelegationsByCUS(ietype, DELG_STATUS[filters.status], tenantId, (current - 1) * pageSize, pageSize);
+  const totalCount = yield Delegation.countDelegationsByCUS(ietype, DELG_STATUS[filters.status], tenantId);
+  return Result.ok(this, {
+    totalCount: totalCount[0].count,
+    pageSize,
+    current,
+    data: delgs,
+  });
+}
+
 function *createDelegationByCCB() {
   try {
     const body = yield cobody(this);
@@ -304,4 +321,5 @@ export default [
   ['post', '/v1/cms/ccb/delegation/edit', editDelgByCCB],
   ['post', '/v1/cms/delegation/accept', acceptDelg],
   ['post', '/v1/cms/delegation/del', delDelg],
+  ['get', '/v1/cms/delegate/delegations', getDelegationsByCUS],
 ];

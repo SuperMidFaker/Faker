@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
   'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
+  'LOAD_DELEGATE', 'LOAD_DELEGATE_SUCCEED', 'LOAD_DELEGATE_FAIL',
 ]);
 
 const initialState = {
@@ -24,6 +25,7 @@ const initialState = {
     sortField: '',
     sortOrder: '',
     status: 'unaccepted',
+    customerType: 'BBC',
   },
   formRequire: {
     clients: [],
@@ -38,6 +40,12 @@ const initialState = {
   },
   delgFiles: [],
   submitting: false,
+  delegateListFilter: {
+    sortField: '',
+    sortOrder: '',
+    status: 'undelg',
+    customerType: 'BBC',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -47,6 +55,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ACCEPT_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, listFilter: JSON.parse(action.params.filter) };
+    case actionTypes.LOAD_DELEGATE_SUCCEED:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false,
+        ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
     case actionTypes.LOAD_DELG:
@@ -85,6 +96,23 @@ export function loadAcceptanceTable(cookie, params) {
         actionTypes.LOAD_ACCEPT_FAIL,
       ],
       endpoint: 'v1/cms/acceptance/delegations',
+      method: 'get',
+      params,
+      cookie,
+    },
+  };
+}
+
+
+export function loadDelegateTable(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELEGATE,
+        actionTypes.LOAD_DELEGATE_SUCCEED,
+        actionTypes.LOAD_DELEGATE_FAIL,
+      ],
+      endpoint: 'v1/cms/delegate/delegations',
       method: 'get',
       params,
       cookie,

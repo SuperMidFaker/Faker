@@ -5,19 +5,15 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
 import UploadGroup from '../delegation/attachmentUpload';
-import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
-import { DELG_SOURCE } from 'common/constants';
+import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
 
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
   }),
-  { createDelegationByCCB }
+  { editDelegationByCCB }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -25,38 +21,37 @@ import { DELG_SOURCE } from 'common/constants';
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: '新建报关委托',
+    text: props.params.delgNo,
     moduleName: props.type,
     withModuleLayout: false,
     goBackFn: () => router.goBack(),
   }));
 })
 @Form.create()
-export default class AcceptanceCreate extends Component {
+export default class AcceptanceEdit extends Component {
   static propTypes = {
     type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
-    createDelegationByCCB: PropTypes.func.isRequired,
+    editDelegationByCCB: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    attachments: [],
+    addedFiles: [],
+    removedFiles: [],
   }
-  handleSave = ({ accepted }) => {
+  handleSave = ({ isAccepted }) => {
     this.props.form.validateFields(errors => {
       if (!errors) {
-        const { type, tenantId, loginId, username, tenantName, formData } = this.props;
+        const { type, formData } = this.props;
+        const { addedFiles, removedFiles } = this.state;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        this.props.createDelegationByCCB({
-          delegation, tenantId, loginId, username,
-          ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,
-          attachments: this.state.attachments, tenantName,
-          accepted,
+        this.props.editDelegationByCCB({
+          delegation, addedFiles, removedFiles,
+          accepted: isAccepted,
         }).then(result => {
           if (result.error) {
             message.error(result.error.message);
@@ -68,15 +63,23 @@ export default class AcceptanceCreate extends Component {
     });
   }
   handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
+    this.handleSave({ isAccepted: false });
   }
   handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
+    this.handleSave({ isAccepted: true });
   }
-  handleUploadFiles = (fileList) => {
+  handleUploadedFile = (file) => {
     this.setState({
-      attachments: fileList,
+      addedFiles: [...this.state.addedFiles, file],
     });
+  }
+  handleFileRemove = (file) => {
+    const filters = this.state.addedFiles.filter(af => af.uid !== file.uid);
+    if (filters.length !== this.state.addedFiles.length) {
+      this.setState({ addedFiles: filters });
+    } else {
+      this.setState({ removedFiles: [...this.state.removedFiles, file] });
+    }
   }
   render() {
     const { form, type, submitting } = this.props;
@@ -86,15 +89,17 @@ export default class AcceptanceCreate extends Component {
           <Form horizontal form={form}>
             <div className="panel-body body-responsive">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                <BasicForm form={form} ieType={type} />
               </Col>
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
-                <UploadGroup onFileListUpdate={this.handleUploadFiles} />
+                <UploadGroup onFileUpload={this.handleUploadedFile}
+                  onFileRemove={this.handleFileRemove}
+                />
               </Col>
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{ marginRight: 20 }}
-                loading={submitting} onClick={this.handleSaveBtnClick}
+                onClick={this.handleSaveBtnClick} loading={submitting}
               >
               保存
               </Button>

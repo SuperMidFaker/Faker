@@ -21,6 +21,12 @@ export default function CmsWrapper(props) {
     path: `/${type}/manage`,
     icon: 'zmdi zmdi-storage',
     text: '管理',
+  }, {
+    single: true,
+    key: `${type}-4`,
+    path: `/${type}/delegate`,
+    icon: 'zmdi zmdi-storage',
+    text: '委托',
   }];
   return (
     <div className="am-content">

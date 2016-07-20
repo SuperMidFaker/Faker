@@ -30,6 +30,7 @@ import ImportWrapper from './cms/import/wrapper';
 import * as ImportAcceptance from './cms/import/acceptance';
 import * as ImportDeclare from './cms/import/declare';
 import * as ImportManage from './cms/import/manage';
+import * as ImportDelegate from './cms/import/delegate';
 import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tms';
 import WxLoadAccount from './weixin/loadAccount';
@@ -131,6 +132,11 @@ export default(store, cookie) => {
               <Route path="compRelation" component={ImportManage.List} />
               <Route path="create" component={ImportManage.Create} />
               <Route path="edit/:id" component={ImportManage.Edit} />
+            </Route>
+            <Route path="delegate">
+              <IndexRoute component={ImportDelegate.List} />
+              <Route path="create" component={ImportDelegate.Create} />
+              <Route path="edit" component={ImportDelegate.Edit} />
             </Route>
           </Route>
           <Route path="export" component={ExportWrapper}>

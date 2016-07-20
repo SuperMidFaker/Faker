@@ -131,15 +131,31 @@ export default class BasicForm extends Component {
     }
   }
   render() {
-    const { form: { getFieldProps }, fieldInits, clients, tradeModes, transModes, declareWayModes } = this.props;
+    const { form: { getFieldProps }, fieldInits, clients, tradeModes, transModes, declareWayModes, partnershipType } = this.props;
+    let customerName = {
+      display: '',
+      required: true,
+    };
+    if (partnershipType === 'CCB') {
+      customerName = {
+        display: '',
+        required: true,
+      };
+    } else if (partnershipType === 'CUS') {
+      customerName = {
+        display: 'none',
+        required: false,
+      };
+    }
+
     return (
       <Card title="基础信息">
         <Col sm={12}>
-          <FormItem label="客户" {...formItemLayout}>
+          <FormItem label="客户" {...formItemLayout} style={{ display: customerName.display }}>
             <Select size="large" combobox showArrow={false} optionFilterProp="search"
               placeholder="输入客户代码或名称"
               {...getFieldProps('customer_name', { rules: [{
-                required: true, message: '客户名称必填',
+                required: customerName.required, message: '客户名称必填',
               }],
                 getValueFromEvent: this.handleClientChange,
                 initialValue: fieldInits.customer_name,

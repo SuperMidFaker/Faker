@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Popconfirm, message } from 'antd';
+import { Form, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
@@ -49,9 +49,11 @@ export default class AcceptanceCreate extends Component {
   }
   handleSave = ({ accepted }) => {
     this.props.form.validateFields(errors => {
+      console.log(errors);
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
+        console.log(delegation)
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
           ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,
@@ -61,7 +63,7 @@ export default class AcceptanceCreate extends Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push(`/${type}/accept`);
+            // this.context.router.push(`/${type}/delegate`);
           }
         });
       }
@@ -69,9 +71,6 @@ export default class AcceptanceCreate extends Component {
   }
   handleSaveBtnClick = () => {
     this.handleSave({ accepted: false });
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
   }
   handleUploadFiles = (fileList) => {
     this.setState({
@@ -86,7 +85,7 @@ export default class AcceptanceCreate extends Component {
           <Form horizontal form={form}>
             <div className="panel-body body-responsive">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                <BasicForm form={form} ieType={type} partnershipType="CUS" />
               </Col>
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
                 <UploadGroup onFileListUpdate={this.handleUploadFiles} />
@@ -98,9 +97,6 @@ export default class AcceptanceCreate extends Component {
               >
               保存
               </Button>
-              <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large" loading={submitting}>一键接单</Button>
-              </Popconfirm>
             </div>
           </Form>
         </div>
