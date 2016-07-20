@@ -1,13 +1,25 @@
+/* eslint no-console:0 */
 import superagent from 'superagent';
 
 function apiRequestPromise() {
   const requests = [];
   ['get', 'post', 'patch', 'del', 'put'].forEach((method) => {
     requests[method] = (endpoint, option) => {
-      // 访问其他应用api时直接传入全路径
-      const furl = (endpoint.indexOf('http') !== 0) ? __API_ROOT__ + endpoint : endpoint;
+      let furl = endpoint;
+      if (endpoint.indexOf('http') === -1) {
+        let rootUrl = API_ROOTS.default;
+        if (option.origin) {
+          rootUrl = API_ROOTS[option.origin];
+        }
+        if (!rootUrl) {
+          console.error('API_ROOT not exist');
+        }
+        furl = `${rootUrl}${endpoint}`;
+      }
       return new Promise((resolve, reject) => {
         const request = superagent[method](furl);
+        // cross domain ajax request
+        request.withCredentials();
         if (option && option.files) {
           option.files.forEach((file) => {
             request.attach(file.name, file);
@@ -27,9 +39,7 @@ function apiRequestPromise() {
         }
         request.end((err, resp) => {
           if (err || !resp.body || resp.body.status !== 200) {
-            /* eslint-disable no-console */
             console.log('api mw err', err, 'body', resp && resp.body);
-            /* eslint-enable no-console */
             if (resp.body.status === 401) {
               // 在浏览器端验证api请求验证错误时跳转至login页面
               if (!(typeof document === 'undefined' ||

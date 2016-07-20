@@ -29,6 +29,7 @@ export function loadTranslation(cookie, locale) {
       method: 'get',
       cookie,
       params: { locale },
+      origin: 'self',
     },
   };
 }

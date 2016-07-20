@@ -10,7 +10,7 @@ import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shi
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import './preview-panel.less';
-import qrcode from '../../../../../server/util/qrcode';
+import qrcode from 'client/common/qrcode';
 import { validatePhone } from 'common/validater';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;

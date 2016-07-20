@@ -31,7 +31,6 @@ export default (serverPort, dirName, appName) => {
   config.set('webpack_admin_path', `http://${config.get('server_host')}:${config.get('webpack_admin_port')}/`);
   config.set('webpack_admin_public_path', `${config.get('webpack_admin_path')}${config.get('webpack_dist')}/`);
   config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
-  config.set('__API_ROOT__', '/'); // `http://${config.get('server_host')}:${config.get('server_port')}/`);
   // todo how to make the port configurable
   config.set('__PRODUCTIONS_ROOT_GROUP__', {
     'sso': `http://${config.get('server_host')}:3020/`,
@@ -40,10 +39,17 @@ export default (serverPort, dirName, appName) => {
   config.set('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__', config.get('__PRODUCTIONS_ROOT_GROUP__'));
   if (__DEV__) {
     config.set('webpack_public_path', `${config.get('webpack_dev_path')}${config.get('webpack_dist')}/`);
+    config.set('API_ROOTS', {
+      default: 'http://localhost:3030/',
+      self: '/',
+    });
   }
   if (__TEST_PROD__) {
     config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
-    config.set('__API_ROOT__', `http://192.168.0.200:${config.get('server_port')}/`);
+    config.set('API_ROOTS', {
+      default: `http://192.168.0.200:${config.get('server_port')}/`,
+      self: '/',
+    });
     config.set('__PRODUCTIONS_ROOT_GROUP__', {
       'sso': 'http://192.168.0.200:3020/',
       'wewms': 'http://192.168.0.200:3024/'
@@ -55,15 +61,16 @@ export default (serverPort, dirName, appName) => {
       'sso': 'http://sso.wetms.com/',
       'wewms': 'http://wms.wetms.com/'
     });
-    // config.set('__API_ROOT__', '/');
+    config.set('API_ROOTS', {
+      default: 'https://api.welogix.cn/',
+      self: '/',
+    });
     // config.set('CDN_URL', 'http://s.welogix.cn');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }
   config.set('__PRODUCTIONS_DOMAIN_GROUP__', config.get('__PRODUCTIONS_ROOT_GROUP__'));
   config.set('output_path', path.resolve(dirName, '..', 'public', config.get('webpack_dist')));
-
-  config.set('webpack_lint_in_dev', true);
 
   // ------------------------------------
   // Project
