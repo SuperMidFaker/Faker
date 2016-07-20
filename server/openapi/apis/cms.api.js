@@ -241,7 +241,7 @@ function *createEntryHead(delgNo, head) {
     entry_id: null, delg_no: delgNo,
   } });
   if (unfilledEntryHeadCount === 0) {
-    yield Dispatch.update({ bill_status: 2, status: 3 }, { where: { delg_no: delgNo } });
+    yield Dispatch.update({ bill_status: 2, status: 3, decl_time: new Date() }, { where: { delg_no: delgNo } });
   }
   return row.id;
 }
@@ -369,6 +369,7 @@ function *entryNosP() {
       where: { comp_entry_id: compEntryIds[i] },
     }));
   }
+  ////to do:update delegation_dispatch status(status=3)
   yield dbOps;
   this.ok();
 }
