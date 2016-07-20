@@ -36,7 +36,8 @@ const DropdownButton = Dropdown.Button;
     text: `${formatMsg(props.intl, 'cmsDelegation')}${props.params.delgNo}`,
     moduleName: props.ietype,
     withModuleLayout: false,
-    goBackFn: () => router.goBack(),
+    // router.goBack won't work on initial login next
+    goBackFn: () => router.push(`/${props.ietype}/declare`),
   }));
 })
 export default class EntryBillForm extends React.Component {

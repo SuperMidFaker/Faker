@@ -4,10 +4,7 @@ import assets from 'koa-static';
 import path from 'path';
 import { isArray } from 'util';
 
-import { koaJwtOptions } from './jwt-kit';
-import Result, { patch } from './responseResult';
-import io from 'socket.io';
-import { SocketIO } from '../socket.io';
+import { patch } from './responseResult';
 /**
  * create koa server with options
  * @param  {Object} options {
@@ -30,52 +27,15 @@ export default function create(options) {
     opts.prepare(app);
   }
 
-  if (opts.authError) {
-    app.use(function *catchAuthError(next) {
-      try {
-        yield next; // Attempt to go through the JWT or App Validator
-      } catch (e) {
-        console.log(e.stack);
-        if (e.status === 401) {
-          Result.authError(this);
-          // this.redirect(ssoRedirectUrl(this.request));
-        } else if (e.status === 402) {
-          this.json({
-            code: e.code,
-            msg: e.msg,
-          });
-        } else if (e.status === 403) {
-          this.json({
-            code: 4003,
-            msg: e.msg,
-          });
-        } else {
-          throw e; // Pass the error to the next handler since it wasn't an auth error.
-        }
-      }
-    });
-  }
   app.use(kLogger());
   if (opts.public) {
     app.use(assets(path.resolve(__dirname, '../..', 'public')));
   }
-  if (opts.jwt) {
-    // 受限API用户验证
-    app.use(koaJwtOptions.unless({
-      custom: function skip() {
-        return !!this.skipJwt;
-      },
-      path: [/^\/public/, /dist/, /assets/],
-    }));
-  }
   if (opts.middlewares && isArray(opts.middlewares)) {
     opts.middlewares.forEach(m => app.use(m));
   }
-  const server = require('http').createServer(app.callback());
-  SocketIO.initialize(io(server));
   if (opts.port) {
-    // app.listen(opts.port);
-    server.listen(opts.port);
+    app.listen(opts.port);
   }
 
   return app;

@@ -1,3 +1,4 @@
+/* eslint no-console:0 no-undef:0 */
 if (process.env.NODE_ENV === 'production') {
   require('oneapm');
 }
@@ -31,17 +32,16 @@ if (argv.api) {
   global.__DEVTOOLS__ = config.get('__DEVTOOLS__');
   global.__PORT__ = process.env.PORT || config.get('server_port');
   global.__CDN__ = config.get('CDN_URL');
-  /* eslint-disable no-undef */
-  global.__API_ROOT__ = `http://localhost:${__PORT__}/`;
-  /* eslint-enable no-undef */
+  global.API_ROOTS = {
+    default: 'http://localhost:3030/',
+    self: `http://localhost:${__PORT__}/`,
+  };
   global.__PRODUCTIONS_ROOT_GROUP__ = config.get('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__');
   global.__PRODUCTIONS_DOMAIN_GROUP__ = config.get('__PRODUCTIONS_DOMAIN_GROUP__');
-  const sequelize = require('./models/sequelize');
-  sequelize.authenticate().then(() => {
-    const isomorphic = argv.admin ?
-      require('../webpack/adminIsomorphic')
+  const isomorphic = argv.admin ?
+    require('../webpack/adminIsomorphic')
       : require('../webpack/isomorphic');
-    global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
+  global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
     .development(__DEV__)
     .server(rootDir, () => {
       if (argv.admin) {
@@ -51,7 +51,4 @@ if (argv.api) {
       }
       console.timeEnd('starting web server');
     });
-  }).catch(err => {
-    console.log('connect to mysql database failed:', err);
-  });
 }

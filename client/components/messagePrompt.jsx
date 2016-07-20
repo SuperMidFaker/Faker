@@ -37,7 +37,7 @@ export default class MessagePrompt extends React.Component {
   }
   componentDidMount() {
     if (socket === null) {
-      socket = io.connect();
+      socket = io.connect(API_ROOTS.default);
       socket.on('connect', () => {
         const { tenantId, loginId } = this.props;
         socket.emit('room', { tenantId, loginId });

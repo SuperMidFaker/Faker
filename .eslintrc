@@ -17,7 +17,7 @@
     "__DEV__": false,
     "__PROD__": false,
     "__DEVTOOLS__": false,
-    "__API_ROOT__": false
+    "API_ROOTS": false
   },
   "rules": {
     "no-else-return": 0,
