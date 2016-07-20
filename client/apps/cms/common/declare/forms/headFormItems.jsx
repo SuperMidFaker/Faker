@@ -171,7 +171,7 @@ export function Transport(props) {
   const modeNameProps = {
     outercol: 8,
     col: 8,
-    field: 'trans_mode_name',
+    field: 'trans_spec',
     label: msg('transModeName'),
     disabled,
     formData,
@@ -224,7 +224,7 @@ export function TradeRemission(props) {
   const remissionProps = {
     outercol: 8,
     col: 8,
-    field: 'rm_modes',
+    field: 'rm_mode',
     options: formRequire.remissionModes.map(rm => ({
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
