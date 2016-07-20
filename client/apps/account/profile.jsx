@@ -126,10 +126,11 @@ export default class MyProfile extends React.Component {
     const { intl, profile, formhoc: { getFieldProps }, code } = this.props;
     const cmsg = (descriptor) => formatContainerMsg(intl, descriptor);
     const uploadProps = {
-      action: '/v1/upload/img',
+      action: `${API_ROOTS.default}v1/upload/img/`,
       multiple: false,
       showUploadList: false,
       onChange: this.handleAvatarChange,
+      withCredentials: true,
     };
     const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (

@@ -249,7 +249,7 @@ export default class CorpInfo extends React.Component {
                 />
                 <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
                   <Dragger onChange={this.handleImgUpload} showUploadList={false}
-                    action="/v1/upload/img"
+                    action={`${API_ROOTS.default}v1/upload/img`} withCredentials
                   >
                     <Icon type="upload" />
                     <p className="ant-upload-hint">{msg('imgUploadHint')}</p>

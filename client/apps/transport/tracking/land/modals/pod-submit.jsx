@@ -102,8 +102,8 @@ export default class PodSubmitter extends React.Component {
           <FormItem label={this.msg('podPhoto')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Upload action="/v1/upload/img" listType="picture"
-              onChange={this.handlePhotoUpload}
+            <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
+              onChange={this.handlePhotoUpload} withCredentials
             >
               <Button icon="upload" type="ghost" />
               {this.msg('photoSubmit')}

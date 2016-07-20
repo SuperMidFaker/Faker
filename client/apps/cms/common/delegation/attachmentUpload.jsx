@@ -85,7 +85,7 @@ export default class AttchmentUpload extends Component {
       <Card title="附件">
         <Upload listType="text" fileList={this.state.attachments}
           onRemove={this.handleRemove} onChange={this.handleChange}
-          action="/v1/upload/img/"
+          action={`${API_ROOTS.default}v1/upload/img/`} withCredentials
         >
           <Button type="ghost">
             <Icon type="upload" /> 点击上传

@@ -147,8 +147,8 @@ export default class PodAuditModal extends React.Component {
           <FormItem label={this.msg('podPhoto')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Upload action="/v1/upload/img" listType="picture" onRemove={this.handlePhotoRemove}
-              onChange={this.handlePhotoUpload} fileList={photoList}
+            <Upload action={`${API_ROOTS.default}v1/upload/img`} listType="picture" onRemove={this.handlePhotoRemove}
+              onChange={this.handlePhotoUpload} fileList={photoList} withCredentials
             >
               <Button icon="upload" type="ghost" disabled={readonly} />
               {this.msg('photoSubmit')}
