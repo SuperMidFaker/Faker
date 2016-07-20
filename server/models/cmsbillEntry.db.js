@@ -5,6 +5,7 @@ import { Delegation } from './cmsDelegation.db';
 export const BillHeadDao = sequelize.define('cms_delegation_bill_head', {
   bill_no: STRING,
   delg_no: STRING,
+  delg_type: INTEGER,
   pre_entry_id: STRING,
   category: STRING,
   invoice_no: STRING,
