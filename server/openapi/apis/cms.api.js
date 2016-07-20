@@ -241,7 +241,7 @@ function *createEntryHead(delgNo, head) {
     entry_id: null, delg_no: delgNo,
   } });
   if (unfilledEntryHeadCount === 0) {
-    yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo } });
+    yield Dispatch.update({ bill_status: 2, status: 3 }, { where: { delg_no: delgNo } });
   }
   return row.id;
 }

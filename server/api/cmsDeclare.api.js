@@ -534,7 +534,7 @@ function *fillEntryNo() {
     yield EntryHeadDao.update({ entry_id: entryNo }, { where: { id: entryHeadId } });
     const unfilledEntryHeadCount = yield EntryHeadDao.count({ where: { entry_id: null, delg_no: delgNo } });
     if (unfilledEntryHeadCount === 0) {
-      yield Dispatch.update({ bill_status: 2 }, { where: { delg_no: delgNo } });
+      yield Dispatch.update({ bill_status: 2, status: 3 }, { where: { delg_no: delgNo } });
     }
     return Result.ok(this, { needReload: unfilledEntryHeadCount === 0 });
   } catch (e) {
