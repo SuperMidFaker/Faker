@@ -296,7 +296,10 @@ function *upsertDelgBillHead() {
     const delgType = ietype === 'import' ? 0 : 1;
     const dbOps = [];
     if (!billNo) {
-      const lastBill = yield BillHeadDao.findOne({ order: 'bill_no DESC', delg_type: delgType });
+      const lastBill = yield BillHeadDao.findOne({
+        order: 'bill_no DESC',
+        where: { delg_type: delgType },
+      });
       if (lastBill) {
         billNo = BillHeadDao.genBillNo(lastBill.bill_no.slice(-6), ietype);
       } else {
