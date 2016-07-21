@@ -21,6 +21,7 @@ const actions = [
   'ACC_LOAD', 'ACC_LOAD_SUCCEED', 'ACC_LOAD_FAIL',
   'PWD_CHANGE', 'PWD_CHANGE_SUCCEED', 'PWD_CHANGE_FAIL',
   'PROFILE_UPDATE', 'PROFILE_UPDATE_SUCCEED', 'PROFILE_UPDATE_FAIL',
+  'LOGOUT', 'LOGOUT_SUCCEED', 'LOGOUT_FAIL',
 ];
 const domain = '@@welogix/account/';
 const actionTypes = createActionTypes(domain, actions);
@@ -73,6 +74,20 @@ export function updateProfile(profile, code, tenantId) {
       endpoint: 'v1/user/profile',
       method: 'put',
       data: { profile, code, tenantId },
+    },
+  };
+}
+
+export function logout() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOGOUT,
+        actionTypes.LOGOUT_SUCCEED,
+        actionTypes.LOGOUT_FAIL,
+      ],
+      endpoint: 'v1/logout',
+      method: 'post',
     },
   };
 }

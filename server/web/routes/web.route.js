@@ -1,5 +1,5 @@
+/* eslint no-console:0 */
 import renderHtml from '../htmlRender';
-import { clearJwtCookie } from '../../util/jwt-kit';
 
 function *renderWebPage() {
   try {
@@ -10,11 +10,6 @@ function *renderWebPage() {
       this.redirect(e[1].pathname + e[1].search);
     }
   }
-}
-
-function *logoutUser() {
-  clearJwtCookie(this.cookies);
-  this.redirect('/login');
 }
 
 export default [
@@ -30,6 +25,5 @@ export default [
    ['get', '/account/password', renderWebPage],
    ['get', '/account/profile', renderWebPage],
    ['get', '/account/messages', renderWebPage],
-   ['get', '/account/logout', logoutUser],
    ['get', '/pub/*', renderWebPage],
 ];
