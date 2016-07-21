@@ -7,7 +7,8 @@ import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { loadDelegateTable, acceptDelg, delDelg } from 'common/reducers/cmsDelegation';
+import { loadDelegateTable, acceptDelg, delDelg, toggleSendDelegateModal, returnDelegate } from 'common/reducers/cmsDelegation';
+import SendPanel from '../modals/send-panel';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -23,7 +24,7 @@ const RadioButton = Radio.Button;
       delegateListFilter: state.cmsDelegation.delegateListFilter,
     };
   },
-  { loadDelegateTable, acceptDelg, delDelg }
+  { loadDelegateTable, acceptDelg, delDelg, toggleSendDelegateModal, returnDelegate }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -49,6 +50,7 @@ export default class AcceptanceList extends Component {
     loadDelegateTable: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
+    returnDelegate: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -166,6 +168,20 @@ export default class AcceptanceList extends Component {
       }
     });
   }
+  handleLoadSendModal = (row) => {
+    const { tenantId, ietype } = this.props;
+    this.props.toggleSendDelegateModal(true, { tenantId, ieType: ietype }, [row]).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleNavigationTo = (to, query) => {
+    this.context.router.push({ pathname: to, query });
+  }
+  handleReturn = (data) => {
+    this.props.returnDelegate(data);
+  }
   render() {
     const { delegationlist, delegateListFilter } = this.props;
     this.dataSource.remotes = delegationlist;
@@ -183,13 +199,13 @@ export default class AcceptanceList extends Component {
         render: (o, record) => {
           return (
             <span>
-              <NavLink to={`/${this.props.ietype}/accept/edit/${record.delg_no}`}>
+              <NavLink to={`/${this.props.ietype}/delegate/edit/${record.delg_no}`}>
               修改
               </NavLink>
               <span className="ant-divider" />
-              <NavLink to={`/${this.props.ietype}/accept/edit/${record.delg_no}`}>
+              <a onClick={() => { this.handleLoadSendModal(record); }} >
               发送
-              </NavLink>
+              </a>
               <span className="ant-divider" />
               <Popconfirm title="确定删除?" onConfirm={() => this.handleDelgDel(record.delg_no)}>
                 <a role="button">删除</a>
@@ -208,7 +224,7 @@ export default class AcceptanceList extends Component {
               修改
               </NavLink>
               <span className="ant-divider" />
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
+              <a role="button" onClick={() => this.handleReturn({ delgNo: record.delg_no, dispId: record.dispId })}>
               退回
               </a>
             </span>
@@ -300,6 +316,7 @@ export default class AcceptanceList extends Component {
             <Table columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} />
           </div>
         </div>
+        <SendPanel ietype={this.props.ietype} />
       </div>
     );
   }

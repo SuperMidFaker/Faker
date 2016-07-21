@@ -136,7 +136,7 @@ export default(store, cookie) => {
             <Route path="delegate">
               <IndexRoute component={ImportDelegate.List} />
               <Route path="create" component={ImportDelegate.Create} />
-              <Route path="edit" component={ImportDelegate.Edit} />
+              <Route path="edit/:delgNo" component={ImportDelegate.Edit} />
             </Route>
           </Route>
           <Route path="export" component={ExportWrapper}>

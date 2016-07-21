@@ -12,6 +12,10 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
   'LOAD_DELEGATE', 'LOAD_DELEGATE_SUCCEED', 'LOAD_DELEGATE_FAIL',
+  'SEND_DELEGATE', 'SEND_DELEGATE_SUCCEED', 'SEND_DELEGATE_FAIL',
+  'RETURN_DELEGATE', 'RETURN_DELEGATE_SUCCEED', 'RETURN_DELEGATE_FAIL',
+  'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
+  'CUS_CREATE_DELGCCB', 'CUS_CREATE_DELGCCB_SUCCEED', 'CUS_CREATE_DELGCCB_FAIL',
 ]);
 
 const initialState = {
@@ -25,7 +29,6 @@ const initialState = {
     sortField: '',
     sortOrder: '',
     status: 'unaccepted',
-    customerType: 'BBC',
   },
   formRequire: {
     clients: [],
@@ -44,7 +47,10 @@ const initialState = {
     sortField: '',
     sortOrder: '',
     status: 'undelg',
-    customerType: 'BBC',
+  },
+  sendPanel: {
+    visible: false,
+    delegations: [],
   },
 };
 
@@ -79,9 +85,20 @@ export default function reducer(state = initialState, action) {
       return { ...state, submitting: true };
     case actionTypes.EDIT_DELGCCB_SUCCEED:
     case actionTypes.CREATE_DELGCCB_SUCCEED:
+    case actionTypes.CUS_CREATE_DELGCCB_SUCCEED:
     case actionTypes.EDIT_DELGCCB_FAIL:
     case actionTypes.CREATE_DELGCCB_FAIL:
       return { ...state, submitting: false };
+    case actionTypes.SEND_DELEGATE_SUCCEED:
+      return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'unaccepted' } };
+    case actionTypes.RETURN_DELEGATE_SUCCEED:
+      return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'undelg' } };
+    case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:
+      if (action.visible) {
+        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, formRequire: action.result.data };
+      } else {
+        return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
+      }
     default:
       return state;
   }
@@ -158,6 +175,21 @@ export function createDelegationByCCB({
   };
 }
 
+export function createDelegationByCUS(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CUS_CREATE_DELGCCB,
+        actionTypes.CUS_CREATE_DELGCCB_SUCCEED,
+        actionTypes.CUS_CREATE_DELGCCB_FAIL,
+      ],
+      endpoint: 'v1/cms/cus/delegation',
+      method: 'post',
+      data,
+    },
+  };
+}
+
 export function loadDelg(cookie, params) {
   return {
     [CLIENT_API]: {
@@ -166,17 +198,39 @@ export function loadDelg(cookie, params) {
         actionTypes.LOAD_DELG_SUCCEED,
         actionTypes.LOAD_DELG_FAIL,
       ],
-      endpoint: 'v1/cms/ccb/delegation',
+      endpoint: 'v1/cms/delegation',
       method: 'get',
       cookie,
-      params,
+      params: { ...params, partershipType: 'CUS' },
     },
   };
 }
 
-export function editDelegationByCCB({
-  delegation, addedFiles, removedFiles, accepted,
-}) {
+export function toggleSendDelegateModal(visible = true, params = {}, delegations = []) {
+  if (visible) {
+    return {
+      [CLIENT_API]: {
+        types: [
+          actionTypes.SHOW_SEND_DELEGATE_MODAL,
+          actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
+          actionTypes.SHOW_SEND_DELEGATE_MODAL_FAIL,
+        ],
+        endpoint: 'v1/cms/delegation/form/requires',
+        method: 'get',
+        params: { ...params, partershipType: 'CCB' },
+        visible,
+        delegations,
+      },
+    };
+  } else {
+    return {
+      type: actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
+      visible,
+    };
+  }
+}
+
+export function editDelegation(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -184,11 +238,9 @@ export function editDelegationByCCB({
         actionTypes.EDIT_DELGCCB_SUCCEED,
         actionTypes.EDIT_DELGCCB_FAIL,
       ],
-      endpoint: 'v1/cms/ccb/delegation/edit',
+      endpoint: 'v1/cms/delegation/edit',
       method: 'post',
-      data: {
-        delegation, addedFiles, removedFiles, accepted,
-      },
+      data,
     },
   };
 }
@@ -236,7 +288,7 @@ export function loadNewForm() {
   };
 }
 
-export function loadFormRequire(cookie, tenantId, ieType) {
+export function loadFormRequire(cookie, tenantId, ieType, partershipType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -246,8 +298,38 @@ export function loadFormRequire(cookie, tenantId, ieType) {
       ],
       endpoint: 'v1/cms/delegation/form/requires',
       method: 'get',
-      params: { tenantId, ieType },
+      params: { tenantId, ieType, partershipType },
       cookie,
+    },
+  };
+}
+
+export function sendDelegate(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_DELEGATE,
+        actionTypes.SEND_DELEGATE_SUCCEED,
+        actionTypes.SEND_DELEGATE_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/send',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function returnDelegate(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RETURN_DELEGATE,
+        actionTypes.RETURN_DELEGATE_SUCCEED,
+        actionTypes.RETURN_DELEGATE_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/return',
+      method: 'post',
+      data,
     },
   };
 }

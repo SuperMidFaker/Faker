@@ -5,7 +5,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
 import UploadGroup from '../delegation/attachmentUpload';
-import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
+import { editDelegation } from 'common/reducers/cmsDelegation';
 
 @connect(
   state => ({
@@ -13,7 +13,7 @@ import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
   }),
-  { editDelegationByCCB }
+  { editDelegation }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -34,7 +34,7 @@ export default class AcceptanceEdit extends Component {
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
-    editDelegationByCCB: PropTypes.func.isRequired,
+    editDelegation: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -49,8 +49,8 @@ export default class AcceptanceEdit extends Component {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        this.props.editDelegationByCCB({
-          delegation, addedFiles, removedFiles,
+        this.props.editDelegation({
+          delegation, addedFiles, removedFiles, patnershipType: 'CCB',
           accepted: isAccepted,
         }).then(result => {
           if (result.error) {

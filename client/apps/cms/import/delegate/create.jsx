@@ -4,10 +4,8 @@ import Create from '../../common/delegate/create';
 import { loadFormRequire, loadNewForm } from 'common/reducers/cmsDelegation';
 
 function fetchData({ cookie, dispatch, state }) {
-  dispatch(loadNewForm());
-  return dispatch(
-    loadFormRequire(cookie, state.account.tenantId, 'import')
-  );
+  const promises = [dispatch(loadNewForm()), dispatch(loadFormRequire(cookie, state.account.tenantId, 'import', 'CCB'))];
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)

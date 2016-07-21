@@ -1,16 +1,20 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import List from '../../common/delegate/list';
-import { loadDelegateTable } from 'common/reducers/cmsDelegation';
+import { loadDelegateTable, loadFormRequire } from 'common/reducers/cmsDelegation';
+
 
 function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadDelegateTable(cookie, {
+  return Promise.all([dispatch(loadDelegateTable(cookie, {
     ietype: 'import',
     tenantId: state.account.tenantId,
     filter: JSON.stringify(state.cmsDelegation.delegateListFilter),
     pageSize: state.cmsDelegation.delegationlist.pageSize,
     currentPage: state.cmsDelegation.delegationlist.current,
-  }));
+  })),
+  dispatch(
+    loadFormRequire(cookie, state.account.tenantId, 'import')
+  )]);
 }
 
 @connectFetch()(fetchData)

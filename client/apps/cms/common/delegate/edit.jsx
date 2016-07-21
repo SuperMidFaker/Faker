@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Popconfirm, message } from 'antd';
+import { Form, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
 import UploadGroup from '../delegation/attachmentUpload';
-import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
+import { editDelegation } from 'common/reducers/cmsDelegation';
 
 @connect(
   state => ({
@@ -13,7 +13,7 @@ import { editDelegationByCCB } from 'common/reducers/cmsDelegation';
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
   }),
-  { editDelegationByCCB }
+  { editDelegation }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -34,7 +34,7 @@ export default class AcceptanceEdit extends Component {
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
-    editDelegationByCCB: PropTypes.func.isRequired,
+    editDelegation: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -43,30 +43,26 @@ export default class AcceptanceEdit extends Component {
     addedFiles: [],
     removedFiles: [],
   }
-  handleSave = ({ isAccepted }) => {
+  handleSave = () => {
     this.props.form.validateFields(errors => {
       if (!errors) {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        this.props.editDelegationByCCB({
-          delegation, addedFiles, removedFiles,
-          accepted: isAccepted,
+        this.props.editDelegation({
+          delegation, addedFiles, removedFiles, patnershipType: 'CUS',
         }).then(result => {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push(`/${type}/accept`);
+            this.context.router.push(`/${type}/delegate`);
           }
         });
       }
     });
   }
   handleSaveBtnClick = () => {
-    this.handleSave({ isAccepted: false });
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ isAccepted: true });
+    this.handleSave();
   }
   handleUploadedFile = (file) => {
     this.setState({
@@ -89,7 +85,7 @@ export default class AcceptanceEdit extends Component {
           <Form horizontal form={form}>
             <div className="panel-body body-responsive">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type} />
+                <BasicForm form={form} ieType={type} partnershipType="CUS" />
               </Col>
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
                 <UploadGroup onFileUpload={this.handleUploadedFile}
@@ -103,9 +99,6 @@ export default class AcceptanceEdit extends Component {
               >
               保存
               </Button>
-              <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large" loading={submitting}>一键接单</Button>
-              </Popconfirm>
             </div>
           </Form>
         </div>
