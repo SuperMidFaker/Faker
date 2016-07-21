@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 import renderHtml from '../htmlRender';
 
 function *renderWxPage() {
@@ -9,9 +10,6 @@ function *renderWxPage() {
       this.redirect(e[1].pathname + e[1].search);
     }
   }
-}
-
-function *renderBusinessPage() {
 }
 
 export default [

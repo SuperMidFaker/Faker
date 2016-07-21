@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Menu, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
+import { logout } from 'common/reducers/account';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
@@ -12,12 +13,21 @@ const SubMenu = Menu.SubMenu;
 @connect(
   state => ({
     avatar: state.account.profile.avatar,
-  })
+  }),
+  { logout }
 )
 export default class AmUserNav extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     avatar: PropTypes.string,
+    logout: PropTypes.func.isRequired,
+  }
+  handleLogout = () => {
+    this.props.logout().then(result => {
+      if (!result.error) {
+        window.location.href = '/login';
+      }
+    });
   }
   render() {
     const MenuItem = Menu.Item;
@@ -40,7 +50,7 @@ export default class AmUserNav extends React.Component {
           </MenuItem>
           <Menu.Divider />
           <MenuItem>
-            <a href="/account/logout">
+            <a role="button" onClick={this.handleLogout}>
               <Icon type="logout" />
               <span>{formatMsg(intl, 'userLogout')}</span>
             </a>

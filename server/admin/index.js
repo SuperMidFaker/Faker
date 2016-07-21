@@ -8,8 +8,23 @@
  * Version: 1.0
  * Description: admin
  */
-import loadRoute from '../middlewares/route-loader';
+import koaRoute from 'koa-router';
 import create from '../util/koaServer';
+import webRoutes from './routes/web.route';
+
+function loadRoutes(routes) {
+  const kroute = koaRoute();
+  if (routes.length > 0) {
+    routes.forEach(r => {
+      if (r.length === 4) {
+        kroute[r[0].toLowerCase()](r[3], r[1], r[2]);
+      } else {
+        kroute[r[0].toLowerCase()](r[1], r[2]);
+      }
+    });
+  }
+  return kroute.routes();
+}
 
 /* eslint-disable no-undef, no-console */
 create({
@@ -17,7 +32,7 @@ create({
   port: __PORT__,
   authError: true,
   middlewares: [
-    loadRoute(__dirname, 'routes'),
+    loadRoutes([...webRoutes]),
   ],
 });
 console.log('server start to listen');
