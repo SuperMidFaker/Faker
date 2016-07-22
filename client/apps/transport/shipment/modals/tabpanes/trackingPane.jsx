@@ -67,17 +67,10 @@ export default class PreviewPanel extends React.Component {
           ]} />
         ),
       });
-      trackingSteps.push({
-        title: this.msg('trackDispatch'),
-        desc: (
-          <StepDesc texts={[
-            tracking.upstream_name,
-            tracking.upstream_disp_time && tracking.upstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
-              moment(tracking.upstream_disp_time).format(timeFormat),
-          ]} />
-        ),
-      });
-      currentStep = tracking.upstream_status - 1;
+      currentStep = tracking.upstream_status - 1; // -1: Step index begin at 0;
+      if (tracking.upstream_status >= SHIPMENT_TRACK_STATUS.undelivered) {
+        currentStep -= 1; // remove the dispatch step
+      }
     }
     if (tracking.downstream_status >= SHIPMENT_TRACK_STATUS.unaccepted) {
       trackingSteps.push({
@@ -89,21 +82,14 @@ export default class PreviewPanel extends React.Component {
           ]} />
         ),
       });
-      trackingSteps.push({
-        title: this.msg('trackDispatch'),
-        desc: (
-          <StepDesc texts={[
-            tracking.downstream_name,
-            tracking.downstream_disp_time && tracking.downstream_status >= SHIPMENT_TRACK_STATUS.undelivered &&
-              moment(tracking.downstream_disp_time).format(timeFormat),
-          ]} />
-        ),
-      });
       if (tracking.upstream_status < SHIPMENT_TRACK_STATUS.unaccepted) {
         // 客户查看没有上游
         currentStep = tracking.downstream_status - 1;
       } else {
-        currentStep = tracking.downstream_status - 1 + 2;
+        currentStep = tracking.downstream_status - 1 + 1; // +1: upstream accept step
+      }
+      if (tracking.downstream_status >= SHIPMENT_TRACK_STATUS.undelivered) {
+        currentStep -= 1;
       }
     }
     trackingSteps.push(
