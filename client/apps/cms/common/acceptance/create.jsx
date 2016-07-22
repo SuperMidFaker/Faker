@@ -52,6 +52,7 @@ export default class AcceptanceCreate extends Component {
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
+        if (delegation.weight === '') delegation.weight = null;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
           ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,

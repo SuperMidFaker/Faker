@@ -90,7 +90,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CREATE_DELGCCB_FAIL:
       return { ...state, submitting: false };
     case actionTypes.SEND_DELEGATE_SUCCEED:
-      return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'unaccepted' } };
+      return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'unaccepted' },
+      sendPanel: initialState.sendPanel };
     case actionTypes.RETURN_DELEGATE_SUCCEED:
       return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'undelg' } };
     case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:

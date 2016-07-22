@@ -49,6 +49,7 @@ export default class AcceptanceEdit extends Component {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
+        if (delegation.weight === '') delegation.weight = null;
         this.props.editDelegation({
           delegation, addedFiles, removedFiles, patnershipType: 'CCB',
           accepted: isAccepted,
