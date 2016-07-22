@@ -117,12 +117,6 @@ export default class SendPanel extends React.Component {
                     <Button type="default" size="large" style={{ marginLeft: '50px' }} onClick={this.handleClose}>取消</Button>
                   </div>
                 </Panel>
-                <Panel header="选择车辆" key="2">
-                  <p></p>
-                </Panel>
-                <Panel header="询价" key="3">
-                  <p></p>
-                </Panel>
               </Collapse>
           </div>
         </div>
