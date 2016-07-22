@@ -11,9 +11,27 @@ export default class CmsWrapper extends React.Component {
   static propTypes = {
     type: PropTypes.oneOf(['import', 'export']),
     location: PropTypes.object.isRequired,
-    children: PropTypes.object.isRequired,
     aspect: PropTypes.number.isRequired,
+    children: PropTypes.object,
   };
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+  componentWillMount() {
+    const { aspect, type, location } = this.props;
+    let pathname = location.pathname.substr(1);
+    // todo pathname equal
+    if (pathname[pathname.length - 1] === '/') {
+      pathname = pathname.substr(0, pathname.length - 1);
+    }
+    if (pathname === type) {
+      if (aspect === TENANT_ASPECT.SP) {
+        this.context.router.push(`/${type}/accept`);
+      } else {
+        this.context.router.push(`/${type}/delegate`);
+      }
+    }
+  }
   render() {
     const { type, location, children, aspect } = this.props;
     let linkMenus;

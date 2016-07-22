@@ -40,6 +40,7 @@ import * as ExportAcceptance from './cms/export/acceptance';
 import * as ExportDeclare from './cms/export/declare';
 import * as ExportManage from './cms/export/manage';
 
+// todo IndexRedirect passed nginx added subdomain
 export default(store, cookie) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
@@ -120,7 +121,6 @@ export default(store, cookie) => {
         </Route>
         <Route component={Module}>
           <Route path="import" component={ImportWrapper}>
-            <IndexRedirect to="/import/accept" />
             <Route path="accept">
               <IndexRoute component={ImportAcceptance.List} />
               <Route path="create" component={ImportAcceptance.Create} />
@@ -145,7 +145,6 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path="export" component={ExportWrapper}>
-            <IndexRedirect to="/export/accept" />
             <Route path="accept">
               <IndexRoute component={ExportAcceptance.List} />
               <Route path="create" component={ExportAcceptance.Create} />
