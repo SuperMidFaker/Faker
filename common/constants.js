@@ -249,14 +249,14 @@ const VEHICLE_STATUS = {
 };
 
 const VEHICLE_TYPES = [
-  { value: 0, text: '牵引' },
+  { value: 0, text: '牵引车' },
   { value: 1, text: '厢式车' },
-  { value: 2, text: '低栏' },
-  { value: 3, text: '高栏' },
-  { value: 4, text: '平板' },
+  { value: 2, text: '低栏车' },
+  { value: 3, text: '高栏车' },
+  { value: 4, text: '平板车' },
   { value: 5, text: '集装箱' },
   { value: 6, text: '罐式车' },
-  { value: 7, text: '冷藏' },
+  { value: 7, text: '冷藏车' },
   { value: 8, text: '超宽车' },
 ];
 

@@ -195,9 +195,9 @@ export default class ModeInfo extends React.Component {
         </Col>
        </Row>
        <Row>
-        <Col span={`${outerColSpan}`}>
-          <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }} required
+        <Col span={16}>
+          <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }} required
           >
             <Select {...getFieldProps(
               'transport_mode_code', {
@@ -214,6 +214,8 @@ export default class ModeInfo extends React.Component {
             </Select>
           </FormItem>
         </Col>
+      </Row>
+      <Row>
         {modeEditCols}
       </Row>
       </Card>
