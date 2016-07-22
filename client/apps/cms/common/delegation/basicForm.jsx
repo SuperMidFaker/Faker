@@ -18,7 +18,7 @@ function getFieldInits(aspect, formData) {
     [
       'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight', 'trans_mode',
       'voyage_no', 'trade_mode', 'decl_way_code', 'ems_no', 'customer_name',
-      'order_no',
+      'order_no', 'remark',
     ].forEach(fd => {
       init[fd] = formData[fd] || '';
     });
@@ -136,15 +136,24 @@ export default class BasicForm extends Component {
       display: '',
       required: true,
     };
+    let remarkDisplay = {
+      display: '',
+    };
     if (partnershipType === 'CCB') {
       customerName = {
         display: '',
         required: true,
       };
+      remarkDisplay = {
+        display: 'none',
+      };
     } else if (partnershipType === 'CUS') {
       customerName = {
         display: 'none',
         required: false,
+      };
+      remarkDisplay = {
+        display: '',
       };
     }
 
@@ -196,6 +205,11 @@ export default class BasicForm extends Component {
           <FormItem label="内部编号" {...formItemLayout}>
             <Input {...getFieldProps('internal_no', {
               initialValue: fieldInits.internal_no,
+            })} />
+          </FormItem>
+          <FormItem label="备注" {...formItemLayout} style={{ display: remarkDisplay.display }}>
+            <Input {...getFieldProps('remark', {
+              initialValue: fieldInits.remark,
             })} />
           </FormItem>
         </Col>

@@ -4,7 +4,7 @@ import { Button, Icon, Collapse, message, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { toggleSendDelegateModal, sendDelegate } from 'common/reducers/cmsDelegation';
+import { toggleSendDelegateModal, sendDelegate, loadDelegateTable } from 'common/reducers/cmsDelegation';
 const Panel = Collapse.Panel;
 const Option = Select.Option;
 
@@ -18,8 +18,10 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     sendPanel: state.cmsDelegation.sendPanel,
     formRequire: state.cmsDelegation.formRequire,
+    delegationlist: state.cmsDelegation.delegationlist,
+    delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { toggleSendDelegateModal, sendDelegate }
+  { toggleSendDelegateModal, sendDelegate, loadDelegateTable }
 )
 export default class SendPanel extends React.Component {
   static propTypes = {
@@ -27,6 +29,8 @@ export default class SendPanel extends React.Component {
     visible: PropTypes.bool.isRequired,
     sendPanel: PropTypes.object.isRequired,
     sendDelegate: PropTypes.func.isRequired,
+    delegationlist: PropTypes.object.isRequired,
+    delegateListFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -49,7 +53,7 @@ export default class SendPanel extends React.Component {
   }
 
   handleSend = () => {
-    const { sendPanel, tenantId, loginId, loginName, tenantName } = this.props;
+    const { sendPanel, tenantId, loginId, loginName, tenantName, ietype, delegationlist } = this.props;
     if (this.state.receiver === null) {
       message.error('请选择报关行', 5);
     } else {
@@ -58,7 +62,15 @@ export default class SendPanel extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.handleNavigationTo(`/${this.props.ietype}/delegate`);
+          message.info('发送成功', 3);
+          const filter = JSON.stringify(this.props.delegateListFilter);
+          this.props.loadDelegateTable(null, {
+            ietype,
+            tenantId,
+            filter,
+            pageSize: delegationlist.pageSize,
+            currentPage: delegationlist.current,
+          });
         }
       });
     }

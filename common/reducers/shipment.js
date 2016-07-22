@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_PUB_DETAIL', 'LOAD_PUB_DETAIL_SUCCEED', 'LOAD_PUB_DETAIL_FAIL',
   'SEND_SMS_MESSAGE', 'SEND_SMS_MESSAGE_SUCCEED', 'SEND_SMS_MESSAGE_FAIL',
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
+  'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = new Date();
@@ -142,6 +143,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
       return { ...state, statistics: action.result.data };
+    }
+    case actionTypes.SHIPMENT_SEARCH_SUCCEED: {
+      return { ...state, searchResult: action.result.data };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -305,6 +309,22 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
       endpoint: 'v1/transport/shipment/statistics',
       method: 'get',
       cookie,
+      params,
+    },
+  };
+}
+
+export function searchShipment(searchText) {
+  const params = { searchText };
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHIPMENT_SEARCH,
+        actionTypes.SHIPMENT_SEARCH_SUCCEED,
+        actionTypes.SHIPMENT_SEARCH_FAIL,
+      ],
+      endpoint: 'public/v1/transport/shipment/search',
+      method: 'get',
       params,
     },
   };

@@ -1,3 +1,17 @@
+Welogix SaaS Web前端与Render服务
+===================
+技术栈参考
+=====
+  * [[https://webpack.github.io|Webpack]]
+  * [[https://babeljs.io/|Babel]]
+  * [[https://babeljs.io/docs/learn-es2015/|ES6]] [[https://hacks.mozilla.org/category/es6-in-depth/|es6 in depth]] [[https://babeljs.algolia.com/docs/usage/experimental/|ES7 supported by Babel 5]](现在用到包括es7.decorators, es7.objectRestSpread, es7.classProperties)
+  * [[https://facebook.github.io/react/|React]] [[https://facebook.github.io/react/docs/tutorial.html|入门tutorial]]
+  * [[http://redux.js.org/|Redux]]  [[https://github.com/rackt/redux/tree/master/examples|Redux库内可学习例子]]
+  * [[https://github.com/rackt/react-router|React-Router]]
+  * 国内的文章
+    - https://blog.coding.net/blog/React-server-rendering
+    - [[https://github.com/my-fe/wiki/issues/1|百度母婴商场webapp React实践]]
+
 主目录说明
 =====
   * client        //前端代码目录

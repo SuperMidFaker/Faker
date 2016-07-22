@@ -32,7 +32,7 @@ const RadioButton = Radio.Button;
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: '受理',
+    text: '委托',
     moduleName: props.ietype,
     withModuleLayout: false,
     goBackFn: null,
@@ -180,7 +180,20 @@ export default class AcceptanceList extends Component {
     this.context.router.push({ pathname: to, query });
   }
   handleReturn = (data) => {
-    this.props.returnDelegate(data);
+    const { tenantId, delegateListFilter, ietype, delegationlist: { pageSize, current } } = this.props;
+    this.props.returnDelegate(data).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadDelegateTable(null, {
+          ietype,
+          tenantId,
+          filter: JSON.stringify(delegateListFilter),
+          pageSize,
+          currentPage: current,
+        });
+      }
+    });
   }
   render() {
     const { delegationlist, delegateListFilter } = this.props;
