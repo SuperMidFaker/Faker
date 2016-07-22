@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { Button, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -16,6 +18,7 @@ const formatContainerMsg = format(containerMessages);
 const rowSelection = {
   onSelect() {},
 };
+
 function fetchData({ state, dispatch, cookie }) {
   if (!state.cmsCompRelation.loaded) {
     return dispatch(loadCompRelations(cookie, {
@@ -37,6 +40,15 @@ function fetchData({ state, dispatch, cookie }) {
     list: state.cmsCompRelation.list,
   }),
   { loadCompRelations, switchStatus })
+@connectNav((props, dispatch) => {
+  dispatch(setNavTitle({
+    depth: 2,
+    text: '管理',
+    moduleName: props.ietype,
+    withModuleLayout: false,
+    goBackFn: null,
+  }));
+})
 export default class Manage extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,

@@ -32,7 +32,7 @@ const RadioButton = Radio.Button;
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: '受理',
+    text: '委托',
     moduleName: props.ietype,
     withModuleLayout: false,
     goBackFn: null,

@@ -6,6 +6,6 @@ export default class ImportManageList extends React.Component {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <List type="import" {...this.props} />;
+    return <List ietype="import" type="import" {...this.props} />;
   }
 }
