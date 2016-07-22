@@ -96,9 +96,7 @@ export default class TrackingLandWrapper extends React.Component {
           </RadioGroup>
           <span style={{ marginLeft: '8px' }} />
           <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
-            <RadioButton value="warning">{this.msg('exceptionWarn')}</RadioButton>
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
-            <RadioButton value="loss">{this.msg('exceptionLoss')}</RadioButton>
           </RadioGroup>
           <div className="tools">
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
