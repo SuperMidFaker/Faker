@@ -51,13 +51,13 @@ export default class MessagePrompt extends React.Component {
         this.props.messageBadgeNum(this.props.corps.notReadMessagesNum + 1);
       });
     }
-    if (Notification && Notification.permission !== 'granted') {
-      Notification.requestPermission(status => {
-        if (Notification.permission !== status) {
-          Notification.permission = status;
-        }
-      });
-    }
+    // if (Notification && Notification.permission !== 'granted') {
+    //   Notification.requestPermission(status => {
+    //     if (Notification.permission !== status) {
+    //       Notification.permission = status;
+    //     }
+    //   });
+    // }
   }
   notif(title, data) {
     if (Notification && Notification.permission === 'granted') {
