@@ -17,38 +17,32 @@ if (!isNaN(argv.port)) {
   process.env.PORT = parseInt(argv.port, 10);
 }
 
-if (argv.api) {
-  require('./openapi');
-} else {
-  // https://github.com/visionmedia/superagent/issues/205
-  // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-  const config = require('../config');
-  const rootDir = config.get('project_root');
-  const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+// https://github.com/visionmedia/superagent/issues/205
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+const config = require('../config');
+const rootDir = config.get('project_root');
+const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 
-  global.__CLIENT__ = false;
-  global.__DEV__ = config.get('__DEV__');
-  global.__PROD__ = config.get('__PROD__');
-  global.__DEVTOOLS__ = config.get('__DEVTOOLS__');
-  global.__PORT__ = process.env.PORT || config.get('server_port');
-  global.__CDN__ = config.get('CDN_URL');
-  global.API_ROOTS = {
-    default: 'http://localhost:3030/',
-    self: `http://localhost:${__PORT__}/`,
-  };
-  global.__PRODUCTIONS_ROOT_GROUP__ = config.get('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__');
-  global.__PRODUCTIONS_DOMAIN_GROUP__ = config.get('__PRODUCTIONS_DOMAIN_GROUP__');
-  const isomorphic = argv.admin ?
-    require('../webpack/adminIsomorphic')
-      : require('../webpack/isomorphic');
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
-    .development(__DEV__)
-    .server(rootDir, () => {
-      if (argv.admin) {
-        require('./admin');
-      } else {
-        require('./web');
-      }
-      console.timeEnd('starting web server');
-    });
-}
+global.__CLIENT__ = false;
+global.__DEV__ = config.get('__DEV__');
+global.__PROD__ = config.get('__PROD__');
+global.__DEVTOOLS__ = config.get('__DEVTOOLS__');
+global.__PORT__ = process.env.PORT || config.get('server_port');
+global.__CDN__ = config.get('CDN_URL');
+global.API_ROOTS = {
+  default: 'http://localhost:3030/',
+  self: `http://localhost:${__PORT__}/`,
+};
+const isomorphic = argv.admin ?
+  require('../webpack/adminIsomorphic')
+    : require('../webpack/isomorphic');
+global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
+  .development(__DEV__)
+  .server(rootDir, () => {
+    if (argv.admin) {
+      require('./admin');
+    } else {
+      require('./web');
+    }
+    console.timeEnd('starting web server');
+  });

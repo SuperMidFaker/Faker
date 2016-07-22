@@ -1,16 +1,16 @@
 Welogix SaaS Web前端与Render服务
 ===================
-技术栈参考
+技术栈
 =====
-  * [[https://webpack.github.io|Webpack]]
-  * [[https://babeljs.io/|Babel]]
-  * [[https://babeljs.io/docs/learn-es2015/|ES6]] [[https://hacks.mozilla.org/category/es6-in-depth/|es6 in depth]] [[https://babeljs.algolia.com/docs/usage/experimental/|ES7 supported by Babel 5]](现在用到包括es7.decorators, es7.objectRestSpread, es7.classProperties)
-  * [[https://facebook.github.io/react/|React]] [[https://facebook.github.io/react/docs/tutorial.html|入门tutorial]]
-  * [[http://redux.js.org/|Redux]]  [[https://github.com/rackt/redux/tree/master/examples|Redux库内可学习例子]]
-  * [[https://github.com/rackt/react-router|React-Router]]
+  * [Webpack](https://webpack.github.io): 模块打包工具
+  * [Babel](https://babeljs.io/) [ES6](https://babeljs.io/docs/learn-es2015/) [es6 in depth](https://hacks.mozilla.org/category/es6-in-depth/) [ES7 supported by Babel 5(现在用到包括es7.decorators, es7.objectRestSpread, es7.classProperti)](https://babeljs.algolia.com/docs/usage/experimental/)
+  * [React](https://facebook.github.io/react/) [tutorial](https://facebook.github.io/react/docs/tutorial.html)
+  * [Redux](http://redux.js.org/)  [例子](https://github.com/rackt/redux/tree/master/examples)
+  * [React-Router](https://github.com/rackt/react-router)
+  * [Eslint](http://eslint.cn/) [Rules](https://github.com/airbnb/javascript): 代码规范
   * 国内的文章
     - https://blog.coding.net/blog/React-server-rendering
-    - [[https://github.com/my-fe/wiki/issues/1|百度母婴商场webapp React实践]]
+    - [百度母婴商场webapp React实践](https://github.com/my-fe/wiki/issues/1)
 
 主目录说明
 =====
@@ -30,7 +30,8 @@ client
 ======
   * common        //前端公共的代码
   * components    //前端公共的组件代码
-  * containers    //前端应用相关的代码(按照模块目录具体细分，尽量保持独立)  暂定
+  * apps    //前端应用相关的代码(按照模块目录具体细分，尽量保持独立)  暂定
+  * admin   // 平台管理功能
   * util          //前端工具类代码
 
 
@@ -42,16 +43,34 @@ common
 
 ------------------------------------
 
-config
-======
-  * keys         //授权用的jwt rsa keys
-
-------------------------------------
-
 server
 ======
-  * api          //功能性接口目录
-  * middlewares  //koa的中间件
-  * openapi      //开放接口目录
   * routes       //路由相关的代码
-  * util         //server端使用的工具类
+
+开发说明
+====
+
+## SASS主站点
+  ```
+    npm i
+    npm run hot
+    npm run dev
+  ```
+
+## ADMIN站点
+  ```
+    npm run admin-hot
+    npm run admin-dev
+  ```
+
+## 全局变量
+  * API_ROOTS: API地址列表,在reducer内通过origin属性指定
+
+## API服务
+   
+  git clone git@git.welogix.cn:saas/welogix-api-mysql.git
+
+## Caveats
+  
+  * 使用HTTP-only cookie保存用户授权token, 因此要求API域名必须子welogix.cn下面的子域名
+  * API服务与站点Web服务端口必须固定, Saas: 3022, ADMIN:3024, api-mysql: 3030, openapi-mysql: 3031
