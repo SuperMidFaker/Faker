@@ -55,7 +55,7 @@ export default class ClientInfo extends React.Component {
       name: cl.name,
     }));
     return (
-      <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }}>
+      <Card bodyStyle={{ padding: 16 }}>
         <Row>
           <Col span={outerColSpan}>
           {

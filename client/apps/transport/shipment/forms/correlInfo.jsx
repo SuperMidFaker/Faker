@@ -32,7 +32,7 @@ export default class CorrelInfo extends React.Component {
     } } = this.props;
     return (
       <Col span="8" className="right-side-col">
-        <Card title={this.msg('correlativeInfo')} bodyStyle={{ padding: 16 }}>
+        <Card bodyStyle={{ padding: 16 }}>
           <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
             fieldProps={{ initialValue: tenantName || lsp }} disabled rules={[{
               required: true, message: this.msg('lspNameMust'),
@@ -51,7 +51,7 @@ export default class CorrelInfo extends React.Component {
             fieldProps={{ initialValue: remark }}
           />
         </Card>
-        <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 8 }}>
+        <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}>
           <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
             <InputNumber style={{ width: '100%' }} min={0} step={0.1}
               {...formhoc.getFieldProps('freight_charge', {
