@@ -70,7 +70,12 @@ export default(store, cookie) => {
   return (
     <Route path="/" component={Root}>
       <Route path="pub">
-        <Route path="tms/tracking/detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail} />
+        <Route path="tms">
+          <Route path="tracking">
+            <Route path="detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail} />
+            <Route path="search" component={PublicTMS.TrackingSearch} />
+          </Route>
+        </Route>
       </Route>
       <Route path="weixin">
         <Route path="bind" component={WeixinBinder} />
