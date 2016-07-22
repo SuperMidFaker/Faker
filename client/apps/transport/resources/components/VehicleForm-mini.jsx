@@ -22,7 +22,6 @@ const formItemLayout = {
 
 class VehicleFormMini extends Component {
   static propTypes = {
-    onSubmitBtnClicked: PropTypes.func.isRequired,  // 创建按钮点击时执行的回调函数
     form: PropTypes.object.isRequired,              // 对应于antd中的form对象
     vehicleValidate: PropTypes.bool,                // 表示车牌号是否可用
     onVehicleNumberBlur: PropTypes.func,            // 车牌号改变执行的回调函数
@@ -44,15 +43,20 @@ class VehicleFormMini extends Component {
   handleCarSave = () => {
     const { form, tenantId, vehicles } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId });
-    this.props.loadVehicles(null, {
-      tenantId,
-      pageSize: vehicles.pageSize,
-      current: 1,
-    }).then(result => {
-      this.setState({ visible: false });
+    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId }).then(result => {
       if (result.error) {
-        message.error(result.error.message, 10);
+        message.error(result.error.message, 5);
+      } else {
+        this.props.loadVehicles(null, {
+          tenantId,
+          pageSize: vehicles.pageSize,
+          current: 1,
+        }).then(addResult => {
+          this.setState({ visible: false });
+          if (addResult.error) {
+            message.error(addResult.error.message, 5);
+          }
+        });
       }
     });
   }
