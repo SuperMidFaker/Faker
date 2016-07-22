@@ -7,5 +7,4 @@ export default function ExportWrapper(props) {
 
 ExportWrapper.propTypes = {
   location: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired,
 };
