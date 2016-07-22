@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   moduleTransport: {
     id: 'component.module.transport',
-    defaultMessage: '运输协同',
+    defaultMessage: '国内运输',
   },
   moduleForwarding: {
     id: 'component.module.forwarding',

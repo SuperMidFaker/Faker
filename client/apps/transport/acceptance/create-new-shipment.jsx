@@ -204,9 +204,6 @@ export default class ShipmentCreate extends React.Component {
               {this.msg('saveAndAccept')}
               </Button>
             </Popconfirm>
-            <Button size="large" loading={submitting} onClick={this.handleDraftSave}>
-            {this.msg('saveAsDraft')}
-            </Button>
           </div>
         </Form>
       </div>
