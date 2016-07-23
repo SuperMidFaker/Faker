@@ -61,7 +61,7 @@ export default class AmNavBar extends React.Component {
     let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
     if (navTitle.depth !== 1) {
       brandNav = (
-        <Tooltip placement="right" title="{formatGlobalMsg(intl, 'goHome')}">
+        <Tooltip placement="right" title={formatGlobalMsg(intl, 'goHome')}>
           <span><NavLink to="/" className={`navbar-brand module-${moduleName}`} /></span>
         </Tooltip>
       );
