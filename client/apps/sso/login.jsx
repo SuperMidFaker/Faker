@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Button } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { submit, setValue } from '../../../common/reducers/auth';
@@ -79,9 +80,7 @@ export default class Login extends React.Component {
               </div>
             </div>
             <div className="form-group login-submit">
-              <button data-dismiss="modal" type="submit" className="btn btn-primary btn-lg">
-              {formatMsg(intl, 'login')}
-              </button>
+              <Button type="primary" className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
             </div>
             <div className="form-group footer row">
               <div className="col-xs-6">
