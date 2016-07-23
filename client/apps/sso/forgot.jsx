@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Button } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { requestSms, verifySms } from 'common/reducers/auth';
@@ -79,10 +80,14 @@ export default class Forgot extends React.Component {
               />
             </div>
           </div>
-          <button className="btn btn-block btn-primary btn-lg" onClick={(ev) => this.handleSmsRequest(ev)}>
+          <div className="form-group login-submit">
+            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={(ev) => this.handleSmsRequest(ev)}>
             {formatMsg(intl, 'verifyObtatin')}
-          </button>
-          <button className="btn btn-block" onClick={(ev) => this.handleSmsCancel(ev)}>{formatGlobalMsg(intl, 'cancel')}</button>
+            </Button>
+            <Button type="ghost" className="btn btn-block" size="large" onClick={(ev) => this.handleSmsCancel(ev)}>
+            {formatGlobalMsg(intl, 'cancel')}
+            </Button>
+          </div>
           {
             error && (
             <div className="row text-center">
@@ -111,12 +116,14 @@ export default class Forgot extends React.Component {
               />
             </div>
           </div>
-          <button className="btn btn-block btn-primary btn-lg" onClick={(ev) => this.handleSmsVerify(ev)}>
-          {formatMsg(intl, 'finishVerify')}
-          </button>
-          <button className="btn btn-block" onClick={(ev) => this.handleSmsCancel(ev)}>
-          {formatGlobalMsg(intl, 'cancel')}
-          </button>
+          <div className="form-group login-submit">
+            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={(ev) => this.handleSmsVerify(ev)}>
+            {formatMsg(intl, 'finishVerify')}
+            </Button>
+            <Button type="ghost" className="btn btn-block" size="large" onClick={(ev) => this.handleSmsCancel(ev)}>
+            {formatGlobalMsg(intl, 'cancel')}
+            </Button>
+          </div>
           {
             error && (
             <div className="row text-center">
