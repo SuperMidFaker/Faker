@@ -34,11 +34,20 @@ function getLinksByAspect(aspect, intl) {
       icon: 'zmdi zmdi-assignment-check',
       text: '追踪',
     }, {
-      single: true,
+      single: false,
       key: 'tms-4',
       path: '/transport/resources',
       icon: 'zmdi zmdi-library',
       text: '管理',
+      sublinks: [{
+        key: 'ui-1',
+        path: '/transport/resources',
+        text: '资源管理',
+      }, {
+        key: 'ui-2',
+        path: '/transport/tariff',
+        text: '价格管理',
+      }],
     }];
   } else {
     return [{

@@ -106,12 +106,8 @@ export default class AmLeftSidebar extends React.Component {
     const links = this.props.links.filter(l => !l.invisible);
     return (
       <div className="am-left-sidebar">
-      {/*
-        <div className="am-scroller nano">
-        <div className="nano-content">
-       */}
         <Menu onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
-          prefixCls="am-sidebar" onClick={this.handleClick} mode="vertical"
+          onClick={this.handleClick} mode="vertical" theme="dark"
         >
         {
           links.map(link => {
@@ -124,7 +120,7 @@ export default class AmLeftSidebar extends React.Component {
               </MenuItem>);
             } else {
               return (
-                <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'am-sidebar-submenu-expanded' : ''}
+                <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'ant-menu-submenu-selected' : ''}
                   title={<div><i className={`icon  ${link.icon}`}></i><span>{link.text}</span></div>}
                 >
                   {
@@ -142,42 +138,6 @@ export default class AmLeftSidebar extends React.Component {
           })
         }
         </Menu>
-        {/*
-        </div>
-        </div>
-       */}
-      {/*
-        <div className="content">
-          <div className="am-logo"></div>
-          <ul className="sidebar-elements">
-          {
-            links.map(link => {
-              if (link.single) {
-                return (<li className={ navPath.indexOf(link.path) >= 0 ? 'active' : '' } key={ link.key }>
-                  <NavLink to={ link.path }>
-                    <i className={ 'icon ' + link.icon }></i>
-                    <span>{ link.text }</span>
-                  </NavLink>
-                </li>);
-              } else {
-                return (<li className={ 'parent' + (navPath.indexOf(link.path) >= 0 ? ' active' : '') } key={ link.key }>
-                  <a href="#"><i className={ 'icon ' + link.icon }></i><span>{ link.text }</span></a>
-                  <ul className="sub-menu">
-                  {
-                    link.subLinks.map(sublink => {
-                      return (<li className={ navPath.indexOf(sublink.path) >= 0 ? 'active' : '' } key={ sublink.key }>
-                                <NavLink to={ sublink.path }>
-                                {sublink.text}
-                                </NavLink></li>);
-                    })
-                  }
-                  </ul>
-                </li>);
-              }
-            })
-          }
-          </ul>
-         */}
       </div>
     );
   }
