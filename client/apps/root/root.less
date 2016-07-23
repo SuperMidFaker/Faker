@@ -245,7 +245,6 @@ img {
       background-size: auto 45px;
       background-repeat:no-repeat;
       background-position:center center;
-      margin-right:20px;
       border-bottom:1px solid #474646;
       @media (max-width:767px) {
         display:none;
@@ -385,6 +384,7 @@ img {
       }
     }
     .am-title-nav {
+      margin-left: 20px;
       .apps-toggle {
         margin-left: 16px;
       }
@@ -548,90 +548,12 @@ img {
   }
 }
 .am-left-sidebar {
-  background-color:#3d3c3c;
+  background-color:#333;
   width: @am-leftbar-width;
   height:100%;
   left:0;
   position:absolute;
   transition:all .35s ease;
-  .sidebar-elements {
-    margin:0;
-    padding:0;
-    >li {
-      border-bottom:1px solid #474646;
-      list-style:none;
-      &:hover {
-        background-color:inherit
-      }
-      >a {
-        display:block;
-        padding:15px;
-        color:#e1e1e1;
-        text-align:center;
-        font-size:12px;
-        @media (max-width:767px) {
-          text-align:left;
-          position:relative
-        }
-        .icon {
-          display:block;
-          font-size:29px;
-          @media (max-width:767px) {
-            display:inline-block;
-            font-size:25px;
-            margin-right:10px;
-            vertical-align:middle
-          }
-        }
-        span {
-          display:block;
-          margin-top:5px;
-          @media (max-width:767px) {
-            display:inline-block
-          }
-        }
-      }
-      >ul {
-        display:none;
-        position:fixed;
-        left:100px;
-        top:0;
-        height:100%;
-        background-color:#484747;
-        z-index:1031;
-        padding:0;
-        table-layout:fixed;
-        list-style:none;
-        width:280px;
-        &.visible {
-          display:table
-        }
-        &.title {
-          color:#fff;
-          border-bottom:1px solid #6d6b6b;
-          font-size:26px;
-          font-weight:300;
-          margin:0 25px;
-          padding-bottom:18px;
-          padding-top:25px
-        }
-        >.nav-items {
-          display:table-row;
-          height:100%
-        }
-      }
-      &:hover {
-        background-color:#424141;
-        >ul {
-          display:table
-        }
-      }
-      &.active>a {
-        border-left:2px solid @am-theme-color;
-        padding-left:13px
-      }
-    }
-  }
   .am-logo {
     display:none;
     @media (max-width:767px) {

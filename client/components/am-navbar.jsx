@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Popover, Menu, Badge } from 'antd';
+import { Menu, Badge, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
-import ModuleLayout from './module-layout';
 import { loadTranslation } from '../../common/reducers/intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -46,30 +45,25 @@ export default class AmNavBar extends React.Component {
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
     if (navTitle.depth === 2) {
-      if (navTitle.withModuleLayout) {
-        amTitleNav = (
-          <Popover placement="bottomLeft" trigger="hover" content={<ModuleLayout />}>
-            <a role="button" aria-expanded="false" className="dropdown-toggle">
-              <i className={`hidden-xs zmdi zmdi-${moduleName}`}></i>
-              {formatMsg(intl, navTitle.text)}
-              <span className="angle-down s7-angle-down"></span>
-            </a>
-          </Popover>
-          );
-      } else {
-        amTitleNav = (
-          <a role="button" aria-expanded="false" className="dropdown-toggle">
-            <i className={`hidden-xs zmdi zmdi-${moduleName}`} />
-            {navTitle.text}
-          </a>
-        );
-      }
+      amTitleNav = (
+        <a role="button" aria-expanded="false" className="dropdown-toggle">
+          {formatMsg(intl, navTitle.text)}
+        </a>
+      );
     } else if (navTitle.depth === 3) {
       amTitleNav = (
         <a role="button" onClick={navTitle.goBackFn}>
           <i className="zmdi zmdi-arrow-left" />
           {navTitle.text}
         </a>
+      );
+    }
+    let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
+    if (navTitle.depth !== 1) {
+      brandNav = (
+        <Tooltip placement="right" title="{formatGlobalMsg(intl, 'goHome')}">
+          <span><NavLink to="/" className={`navbar-brand module-${moduleName}`} /></span>
+        </Tooltip>
       );
     }
     return (
@@ -82,7 +76,7 @@ export default class AmNavBar extends React.Component {
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps"></i>
             </NavLink>
-            <NavLink to="/" className={`navbar-brand module-${moduleName}`} />
+            {brandNav}
           </div>
           <div id="am-navbar-collapse" className="collapse navbar-collapse">
             <ul className="nav navbar-nav am-title-nav">
@@ -95,14 +89,14 @@ export default class AmNavBar extends React.Component {
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
               <Menu mode="horizontal">
-                <SubMenu selectedKeys={[curLocale]} onClick={this.handleClick} title={<span className="icon s7-global"></span>}>
+                {/* <SubMenu selectedKeys={[curLocale]} onClick={this.handleClick} title={<span className="icon s7-global"></span>}>
                     <MenuItem key="zh">
                       <span>{formatGlobalMsg(intl, 'chinese')}</span>
                     </MenuItem>
                     <MenuItem key="en">
                       <span>{formatGlobalMsg(intl, 'english')}</span>
                     </MenuItem>
-                </SubMenu>
+                </SubMenu>*/}
                 <Menu.Item key="messages">
                   <Badge count={notReadMessagesNum} overflowCount={99}>
                     <NavLink to="/account/messages">

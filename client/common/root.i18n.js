@@ -5,6 +5,10 @@ const messages = defineMessages({
     id: 'root.brand',
     defaultMessage: '微骆',
   },
+  goHome: {
+    id: 'root.go.home',
+    defaultMessage: '返回首页',
+  },
   chinese: {
     id: 'root.chinese',
     defaultMessage: '中文',
