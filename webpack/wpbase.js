@@ -30,8 +30,6 @@ const wpConfig = {
       __CLIENT__: true,
       __CDN__: JSON.stringify(config.get('CDN_URL')),
       API_ROOTS: JSON.stringify(config.get('API_ROOTS')),
-      __PRODUCTIONS_ROOT_GROUP__: JSON.stringify(config.get('__PRODUCTIONS_ROOT_GROUP__')),
-      __PRODUCTIONS_DOMAIN_GROUP__: JSON.stringify(config.get('__PRODUCTIONS_DOMAIN_GROUP__')),
       __DEVTOOLS__: config.get('__DEVTOOLS__'),
       __DEV__: config.get('__DEV__'),
     }),
