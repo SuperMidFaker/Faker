@@ -26,8 +26,6 @@ export default function Main(props) {
         <MenuItem key="0">车辆管理</MenuItem>
         <MenuItem key="1">司机管理</MenuItem>
         <MenuItem key="2">节点管理</MenuItem>
-        <MenuItem key="3">价格管理</MenuItem>
-        <MenuItem key="4">线路管理</MenuItem>
       </Menu>
       <Spin spinning={loading}>
         {content}
