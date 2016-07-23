@@ -2,11 +2,11 @@
 @import "~antd/lib/style/themes/default.less";
 .am-left-sidebar{
   .ant-menu-dark {
-    background-color: #3d3c3c;
+    background-color: #333;
     .ant-menu-submenu,
     .ant-menu-item {
       &:hover {
-        background-color: #424141;
+        background-color: #404040;
       }
       .ant-menu-submenu-title,
       >a {
@@ -30,7 +30,7 @@
       }
     }
     .ant-menu-item-selected {
-      background-color: #424141;
+      background-color: #404040;
       color: #2db7f5;
       &:hover {
         color: #2db7f5;
@@ -43,6 +43,7 @@
     .ant-menu-item-selected a,
     .ant-menu-item-selected a:hover,
     .ant-menu-submenu-selected .ant-menu-submenu-title {
+      background-color: #404040;
       color: #2db7f5;
     }
   }
@@ -56,6 +57,8 @@
     right: 8px;
   }
   .ant-menu-vertical.ant-menu-sub > .ant-menu-item {
+    background-color: #404040;
+    border-radius: 4px;
     padding: 0px 8px 0 8px;
     height: 48px;
     >a{

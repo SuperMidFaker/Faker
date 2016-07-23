@@ -2,6 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
+import { format } from 'client/common/i18n/helpers';
+import containerMessages from 'client/apps/message.i18n';
 import { Card, DatePicker, Row, Col, Table } from 'antd';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
 import './index.less';
@@ -10,7 +14,7 @@ import chinaJson from './china.json';
 import { renderCity } from './common/consignLocation';
 import moment from 'moment';
 const RangePicker = DatePicker.RangePicker;
-
+const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
   const { startDate, endDate } = state.shipment.statistics;
@@ -24,6 +28,18 @@ function fetchData({ state, dispatch, cookie }) {
     statistics: state.shipment.statistics,
   }),
   { loadShipmentStatistics })
+@connectNav((props, dispatch, router, lifecycle) => {
+  if (lifecycle !== 'componentDidMount') {
+    return;
+  }
+  dispatch(setNavTitle({
+    depth: 2,
+    text: formatContainerMsg(props.intl, 'transportDashboard'),
+    moduleName: 'transport',
+    withModuleLayout: false,
+    goBackFn: null,
+  }));
+})
 
 export default class Dashboard extends React.Component {
   static propTypes = {
