@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Input, Button, Col, message } from 'antd';
 import { searchShipment } from 'common/reducers/shipment';
-import '../index.less';
+import './index.less';
 
 const InputGroup = Input.Group;
 

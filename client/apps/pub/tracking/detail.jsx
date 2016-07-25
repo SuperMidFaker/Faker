@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { Steps, Card, Collapse, Timeline, Row, Col } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { renderConsignLoc, renderLoc } from '../../../transport/common/consignLocation';
+import { renderConsignLoc, renderLoc } from '../../transport/common/consignLocation';
 import moment from 'moment';
 const Step = Steps.Step;
 const Panel = Collapse.Panel;
-import '../index.less';
+import './index.less';
 
 function fetchData({ dispatch, params }) {
   return dispatch(loadPubShipmtDetail(params.shipmtNo, params.key));

@@ -32,7 +32,7 @@ import * as ImportDeclare from './cms/import/declare';
 import * as ImportManage from './cms/import/manage';
 import * as ImportDelegate from './cms/import/delegate';
 import * as WeiXinPod from './weixin/tms/pod';
-import * as PublicTMS from './pub/tms';
+import * as PublicTMS from './pub/tracking';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
 import ExportWrapper from './cms/export/wrapper';
@@ -71,12 +71,8 @@ export default(store, cookie) => {
   return (
     <Route path="/" component={Root}>
       <Route path="pub">
-        <Route path="tms">
-          <Route path="tracking">
-            <Route path="detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail} />
-            <Route path="search" component={PublicTMS.TrackingSearch} />
-          </Route>
-        </Route>
+        <Route path="tracking" component={PublicTMS.TrackingSearch} />
+        <Route path="tms/tracking/detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail} />
       </Route>
       <Route path="weixin">
         <Route path="bind" component={WeixinBinder} />
