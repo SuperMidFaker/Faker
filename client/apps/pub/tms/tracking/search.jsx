@@ -32,7 +32,13 @@ export default class TrackingSearch extends React.Component {
   }
 
   handleSearch = () => {
-    this.props.searchShipment(this.state.searchText, this.props.location.query).then(result => {
+    let subdomain = '';
+    if (__DEV__) {
+      subdomain = this.props.location.query.subdomain;
+    } else {
+      subdomain = window.location.hostname.split('.')[0];
+    }
+    this.props.searchShipment(this.state.searchText, subdomain).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.length === 0) {

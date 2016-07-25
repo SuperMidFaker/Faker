@@ -314,8 +314,8 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
   };
 }
 
-export function searchShipment(searchText, query) {
-  const params = { ...query, searchText };
+export function searchShipment(searchText, subdomain) {
+  const params = { searchText, subdomain };
   return {
     [CLIENT_API]: {
       types: [
