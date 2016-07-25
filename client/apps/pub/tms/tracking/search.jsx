@@ -55,7 +55,7 @@ export default class TrackingSearch extends React.Component {
         <div className="tmsSearch">
           <InputGroup>
             <Col span="18">
-            <Input placeholder="请输入运单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
+            <Input placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
               onChange={this.handleInputChange}
             />
             </Col>
