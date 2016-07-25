@@ -1,9 +1,9 @@
 import React from 'react';
-import { loadAccount } from 'common/reducers/account';
+import { loadWelogixProfile } from 'common/reducers/weixin';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
 function fetchData({ dispatch, cookie }) {
-  return dispatch(loadAccount(cookie));
+  return dispatch(loadWelogixProfile(cookie));
 }
 
 @connectFetch()(fetchData)

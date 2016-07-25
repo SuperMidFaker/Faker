@@ -40,7 +40,8 @@ export default class TrackingSearch extends React.Component {
       } else {
         const shipment = result.data[0];
         window.open(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);
-      } });
+      }
+    });
   }
   render() {
     return (
