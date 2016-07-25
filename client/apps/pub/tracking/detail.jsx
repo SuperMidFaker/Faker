@@ -267,9 +267,13 @@ export default class TrackingDetail extends React.Component {
         return (<Timeline.Item>{s.title} {s.description}</Timeline.Item>);
       }
     });
+    let refExternalNo = '';
+    if (shipmt.ref_external_no && shipmt.ref_external_no !== '') {
+      refExternalNo = `(${shipmt.ref_external_no})`;
+    }
     return (
       <div className="panel-body">
-        <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no}</strong></nav>
+        <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no} {refExternalNo}</strong></nav>
           <Row>
             <Col lg={15} sm={24}>
               <div className="main-content">
