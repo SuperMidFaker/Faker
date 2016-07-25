@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 import superagent from 'superagent';
 
-function apiRequestPromise() {
+function apiRequestPromise(initialReq) {
   const requests = [];
   ['get', 'post', 'patch', 'del', 'put'].forEach((method) => {
     requests[method] = (endpoint, option) => {
@@ -37,6 +37,9 @@ function apiRequestPromise() {
         if (option && option.cookie) {
           request.set('cookie', option.cookie);
         }
+        if (initialReq) {
+          request.set('cookie', initialReq.get('cookie'));
+        }
         request.end((err, resp) => {
           if (err || !resp.body || resp.body.status !== 200) {
             console.log('api mw err', err, 'body', resp && resp.body);
@@ -62,8 +65,8 @@ function apiRequestPromise() {
 }
 
 export const CLIENT_API = Symbol('client');
-export default function thunkOrClientApiMiddleware() {
-  const requests = apiRequestPromise();
+export default function thunkOrClientApiMiddleware(initialReq) {
+  const requests = apiRequestPromise(initialReq);
   return ({ dispatch, getState }) => {
     return next => action => {
       if (typeof action === 'function') {

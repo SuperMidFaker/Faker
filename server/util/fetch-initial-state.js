@@ -1,17 +1,18 @@
+/* eslint no-console: 0 */
 function fetchDeferredState(components, locals) {
-	                    const fetchers = components.filter((component) => component && component.deferredfetchers) // only look at ones with a static prefetcher
-	.map((component) => component.deferredfetchers)    // pull out fetch data methods
-  .reduce((fetchers, fetcher) => fetchers.concat(fetcher), [])
-	.map(fetchData => fetchData(locals));  // call fetch data methods and save promises
-  return Promise.all(fetchers);
+  const fproms = components.filter((component) => component && component.deferredfetchers) // only look at ones with a static prefetcher
+    .map((component) => component.deferredfetchers)    // pull out fetch data methods
+    .reduce((fetchers, fetcher) => fetchers.concat(fetcher), [])
+    .map(fetchData => fetchData(locals));  // call fetch data methods and save promises
+  return Promise.all(fproms);
 }
 
 function prefetchState(components, locals) {
-	                    const fetchers = components.filter((component) => component && component.prefetchers) // only look at ones with a static prefetcher
-	.map((component) => component.prefetchers)    // pull out fetch data methods
-  .reduce((fetchers, fetcher) => fetchers.concat(fetcher), [])
-	.map(fetchData => fetchData(locals));  // call fetch data methods and save promises
-  return Promise.all(fetchers);
+  const fproms = components.filter((component) => component && component.prefetchers) // only look at ones with a static prefetcher
+    .map((component) => component.prefetchers)    // pull out fetch data methods
+    .reduce((fetchers, fetcher) => fetchers.concat(fetcher), [])
+    .map(fetchData => fetchData(locals));  // call fetch data methods and save promises
+  return Promise.all(fproms);
 }
 
 export default (components, store, cookie, location, params) => {
