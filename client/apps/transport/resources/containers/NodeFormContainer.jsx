@@ -9,7 +9,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,
-    text: '节点信息',
+    text: '地点信息',
     muduleName: 'transport',
     withModuleLayout: false,
     goBackFn: () => router.goBack(),

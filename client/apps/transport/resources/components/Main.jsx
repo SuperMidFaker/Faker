@@ -25,7 +25,7 @@ export default function Main(props) {
       <Menu mode="horizontal" selectedKeys={selectedKeys} onClick={onClick}>
         <MenuItem key="0">车辆管理</MenuItem>
         <MenuItem key="1">司机管理</MenuItem>
-        <MenuItem key="2">节点管理</MenuItem>
+        <MenuItem key="2">地点管理</MenuItem>
       </Menu>
       <Spin spinning={loading}>
         {content}
