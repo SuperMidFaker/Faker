@@ -32,7 +32,7 @@ export default class TrackingSearch extends React.Component {
   }
 
   handleSearch = () => {
-    this.props.searchShipment(this.state.searchText).then(result => {
+    this.props.searchShipment(this.state.searchText, this.props.location.query).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.length === 0) {
