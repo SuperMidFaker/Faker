@@ -3,7 +3,8 @@ Welogix SaaS Web前端与Render服务
 技术栈
 =====
   * [Webpack](https://webpack.github.io): 模块打包工具
-  * [Babel](https://babeljs.io/) [ES6](https://babeljs.io/docs/learn-es2015/) [es6 in depth](https://hacks.mozilla.org/category/es6-in-depth/) [ES7 supported by Babel 5(现在用到包括es7.decorators, es7.objectRestSpread, es7.classProperti)](https://babeljs.algolia.com/docs/usage/experimental/)
+  * [Babel](https://babeljs.io/) [ES6](https://babeljs.io/docs/learn-es2015/) [es6 in depth](https://hacks.mozilla.org/category/es6-in-depth/)
+  * [ES7 supported by Babel 5(现在用到包括es7.decorators, es7.objectRestSpread, es7.classProperty)](https://babeljs.algolia.com/docs/usage/experimental/)
   * [React](https://facebook.github.io/react/) [tutorial](https://facebook.github.io/react/docs/tutorial.html)
   * [Redux](http://redux.js.org/)  [例子](https://github.com/rackt/redux/tree/master/examples)
   * [React-Router](https://github.com/rackt/react-router)
@@ -72,5 +73,6 @@ server
 
 ## Caveats
   
-  * 使用HTTP-only cookie保存用户授权token, 因此要求API域名必须子welogix.cn下面的子域名
-  * API服务与站点Web服务端口必须固定, Saas: 3022, ADMIN:3024, api-mysql: 3030, openapi-mysql: 3031
+  * 使用HTTP-only cookie保存用户授权token, 因此要求API域名必须为welogix.cn下面的子域名
+  * API服务与站点Web服务端口必须固定, Saas: 3022, ADMIN:3024, api-mysql: 3030, openapi-mysql: 3031, api-mongo: 3032
+  * 顶层Route可用connect-fetch在服务端获取数据
