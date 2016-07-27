@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Table } from 'antd';
 import moment from 'moment';
-const timeFormat = 'YYYY-MM-DD HH:mm';
+const timeFormat = 'YYYY-MM-DD';
 @injectIntl
 @connect(
   state => ({
