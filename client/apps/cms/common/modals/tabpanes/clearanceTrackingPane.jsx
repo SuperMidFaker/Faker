@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Table } from 'antd';
-
+import moment from 'moment';
+const timeFormat = 'YYYY-MM-DD HH:mm';
 @injectIntl
 @connect(
   state => ({
@@ -32,6 +33,9 @@ export default class ClearanceTrackingPane extends React.Component {
       dataIndex: 'process_date',
       key: 'process_date',
       width: '30%',
+      render: (o) => {
+        return `${o ? moment(o).format(timeFormat) : ''}`;
+      },
     }];
 
     const dataSource = [];
