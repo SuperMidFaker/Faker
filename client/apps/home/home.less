@@ -84,12 +84,20 @@
     background-image: -moz-radial-gradient(10% 0, farthest-side ellipse, rgba(119,157,207,0.8) 30%, rgba(174,180,186,0.8) 76%, rgba(199,175,156,0.8));
     */
     &-wrapper {
-      width: 1000px;
+      width: 960px;
       margin: 0 auto;
-      padding: 40px;
+      padding: 16px;
+      .apps-handler-set {
+        padding: 8px;
+        width: 100%;
+        text-align: right;
+        >button {
+          margin-left: 8px;
+        }
+      }
       @media (max-width:767px) {
         width: auto;
-        padding: 10px;
+        padding: 8px;
       }
     }
   }

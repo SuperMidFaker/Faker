@@ -256,7 +256,7 @@ export default class CorpList extends React.Component {
       <div>
       <div className="page-header">
         <div className="tools">
-          <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
+          <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary" size="large"
             onClick={() => this.handleNavigationTo('/corp/organization/new')} icon="plus-circle-o"
           >
               {formatGlobalMsg(intl, 'createNew')}
