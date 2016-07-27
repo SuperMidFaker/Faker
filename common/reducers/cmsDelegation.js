@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'RETURN_DELEGATE', 'RETURN_DELEGATE_SUCCEED', 'RETURN_DELEGATE_FAIL',
   'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
   'CUS_CREATE_DELGCCB', 'CUS_CREATE_DELGCCB_SUCCEED', 'CUS_CREATE_DELGCCB_FAIL',
+  'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
+  'HIDE_PREVIEWER',
 ]);
 
 const initialState = {
@@ -51,6 +53,13 @@ const initialState = {
   sendPanel: {
     visible: false,
     delegations: [],
+  },
+  previewer: {
+    visible: false,
+    tabKey: 'basic',
+    delegation: {},
+    delegateTracking: {},
+    clearanceTracking: [],
   },
 };
 
@@ -99,6 +108,10 @@ export default function reducer(state = initialState, action) {
       } else {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
+    case actionTypes.SHOW_PREVIEWER_SUCCEED:
+      return { ...state, previewer: { ...state.previewer, visible: action.visible, ...action.result.data } };
+    case actionTypes.HIDE_PREVIEWER:
+      return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     default:
       return state;
   }
@@ -331,5 +344,29 @@ export function returnDelegate(data) {
       method: 'post',
       data,
     },
+  };
+}
+
+export function showPreviewer(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHOW_PREVIEWER,
+        actionTypes.SHOW_PREVIEWER_SUCCEED,
+        actionTypes.SHOW_PREVIEWER_FAILED,
+      ],
+      endpoint: 'v1/cms/delegate/previewer',
+      method: 'get',
+      params,
+      visible: true,
+    },
+  };
+}
+
+export function hidePreviewer(delgNo) {
+  return {
+    type: actionTypes.HIDE_PREVIEWER,
+    delgNo,
+    visible: false,
   };
 }
