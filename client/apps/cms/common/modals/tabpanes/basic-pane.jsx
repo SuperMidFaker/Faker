@@ -91,28 +91,36 @@ export default class BasicPane extends React.Component {
                 field={`${delegation.weight ? delegation.weight : ''} 公斤`} fieldCol={{ span: 9 }}
               />
             </Col>
+           </Row>
+          <Row>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="报关类型"
                 field={delegation.delg_type} fieldCol={{ span: 9 }}
               />
             </Col>
-           </Row>
-          <Row>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="贸易方式"
                 field={delegation.trade_mode} fieldCol={{ span: 9 }}
               />
             </Col>
+          </Row>
+          <Row>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="备案号"
                 field={delegation.ems_no} fieldCol={{ span: 9 }}
               />
             </Col>
-          </Row>
-          <Row>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="企业内部编号"
                 field={this.props.aspect === TENANT_ASPECT.BO ? delegation.ref_delg_external_no : delegation.ref_recv_external_no}
+                fieldCol={{ span: 9 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 3 }} label="备注"
+                field={delegation.remark}
                 fieldCol={{ span: 9 }}
               />
             </Col>
