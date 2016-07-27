@@ -105,9 +105,11 @@ export default class AmNavBar extends React.Component {
                   </Badge>
                 </Menu.Item>
                 <Menu.Item key="helpdesk">
-                  <a href="https://welogix.kf5.com/hc/" target="_blank">
-                    <span className="icon s7-help1"></span>
-                  </a>
+                  <Tooltip placement="bottom" title="帮助中心">
+                    <a href="https://welogix.kf5.com/hc/" target="_blank">
+                      <span className="icon s7-help1"></span>
+                    </a>
+                  </Tooltip>
                 </Menu.Item>
               </Menu>
             </ul>

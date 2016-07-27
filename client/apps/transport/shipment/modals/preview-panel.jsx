@@ -69,9 +69,9 @@ export default class PreviewPanel extends React.Component {
     this.state = {
       tabKey: props.tabKey || 'detail',
       trackingDetailModalVisible: false,
-      publickUrlPath: '',
+      publicUrlPath: '',
       publicQRcodeUrl: '',
-      publickUrl: '',
+      publicUrl: '',
       tel: '',
       SMSSendLoding: false,
     };
@@ -90,10 +90,10 @@ export default class PreviewPanel extends React.Component {
   }
   showTrackingDetailModal = () => {
     const { shipmtNo, shipmt } = this.props;
-    const publickUrlPath = `/pub/tms/tracking/detail/${shipmtNo}/${shipmt.publicUrlKey}`;
-    const publickUrl = `https://wx.welogix.cn${publickUrlPath}`;
+    const publicUrlPath = `/pub/tms/tracking/detail/${shipmtNo}/${shipmt.publicUrlKey}`;
+    const publicUrl = `https://wx.welogix.cn${publicUrlPath}`;
     const qr = qrcode.qrcode(6, 'M');
-    qr.addData(publickUrl);  // 解决中文乱码
+    qr.addData(publicUrl);  // 解决中文乱码
     qr.make();
     const tag = qr.createImgTag(5, 10);  // 获取base64编码图片字符串
     const base64 = tag.match(/src="([^"]*)"/)[1];  // 获取图片src数据
@@ -102,14 +102,14 @@ export default class PreviewPanel extends React.Component {
     const publicQRcodeUrl = base64;
     this.setState({
       trackingDetailModalVisible: true,
-      publickUrlPath,
-      publickUrl,
+      publicUrlPath,
+      publicUrl,
       publicQRcodeUrl,
       tel: shipmt.consignee_mobile,
     });
     document.addEventListener('copy', ev => {
       ev.preventDefault();
-      ev.clipboardData.setData('text/plain', this.state.publickUrl);
+      ev.clipboardData.setData('text/plain', this.state.publicUrl);
       message.info('复制成功', 3);
     });
   }
@@ -142,7 +142,7 @@ export default class PreviewPanel extends React.Component {
         } else {
           this.props.sendTrackingDetailSMSMessage({
             tel: this.state.tel,
-            url: this.state.publickUrl,
+            url: this.state.publicUrl,
             shipmtNo: this.props.shipmtNo,
             lsp_name: this.props.previewer.shipmt.lsp_name,
           }).then((result) => {
@@ -198,7 +198,7 @@ export default class PreviewPanel extends React.Component {
             ]}
           >
             <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
-              <a href={this.state.publickUrlPath} target="_blank">
+              <a href={this.state.publicUrlPath} target="_blank">
                 <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
               </a>
             </div>
@@ -206,7 +206,7 @@ export default class PreviewPanel extends React.Component {
             <div style={{ width: '90%', margin: '0 auto' }}>
               <InputGroup>
                 <Col span="18">
-                <Input placeholder="" defaultValue={this.state.publickUrl} />
+                <Input placeholder="" defaultValue={this.state.publicUrl} />
                 </Col>
                 <Col span="6">
                   <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>

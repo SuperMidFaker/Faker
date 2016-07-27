@@ -1,15 +1,15 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Input, Button, Col, message } from 'antd';
+import { Input, Button, Alert, message } from 'antd';
 import { searchShipment } from 'common/reducers/shipment';
 import './index.less';
-
-const InputGroup = Input.Group;
 
 @connect(
   state => ({
     shipmtDetail: state.shipment.shipmtDetail,
+    logo: state.corpDomain.logo,
+    name: state.corpDomain.name,
   }),
   { searchShipment }
 )
@@ -17,6 +17,8 @@ export default class TrackingSearch extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     searchShipment: PropTypes.func.isRequired,
+    logo: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -50,22 +52,29 @@ export default class TrackingSearch extends React.Component {
     });
   }
   render() {
+    const { logo, name } = this.props;
     return (
-      <div className="panel-body">
-        <div className="tmsSearch">
-          <InputGroup>
-            <Col span="18">
-            <Input placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
+      <div className="main-content">
+        <div className="page-body" style={{ padding: 64, marginBottom: 16 }}>
+          <div className="tracking-form">
+            <div className="tenant-info">
+              <div className="tenant-logo " style={{ backgroundImage: `url("${logo || '/assets/img/home/tenant-logo.png'}")` }} />
+              <h2 className="tenant-name">运单追踪</h2>
+            </div>
+            <center>
+            <Input size="large" placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
               onChange={this.handleInputChange}
             />
-            </Col>
-            <Col span="6">
-              <Button type="primary" icon="search" style={{ height: '38px', width: '90px' }} onClick={this.handleSearch} >
-                查询
-              </Button>
-            </Col>
-          </InputGroup>
+            <Button type="primary" size="large" icon="search" style={{ height: '38px', width: '120px', marginTop: 24 }} onClick={this.handleSearch} >
+              查询
+            </Button>
+            <div style={{ width: 400, marginTop: 96 }}>
+              <Alert message="为了能够浏览追踪页面，请您设置允许浏览器弹出窗口" type="info" showIcon />
+            </div>
+            </center>
+          </div>
         </div>
+        <div className="tenant-footer"><center>{name}</center></div>
       </div>
     );
   }
