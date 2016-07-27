@@ -42,7 +42,7 @@ export default class ClearanceTrackingPane extends React.Component {
     for (let i = 0; i < clearanceTracking.length; i++) {
       if (dataSource.length === 0) {
         dataSource.push({ ...clearanceTracking[i] });
-        dataSource[0].children = [{ ...clearanceTracking[i] }];
+        dataSource[0].children = [];
       } else {
         let flag = false;
         for (let j = 0; j < dataSource.length; j++) {
@@ -54,7 +54,7 @@ export default class ClearanceTrackingPane extends React.Component {
         }
         if (flag === false) {
           dataSource.push({ ...clearanceTracking[i] });
-          dataSource[dataSource.length - 1].children = [{ ...clearanceTracking[i] }];
+          dataSource[dataSource.length - 1].children = [];
         }
       }
     }

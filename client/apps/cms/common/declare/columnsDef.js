@@ -3,7 +3,7 @@ import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from './rowUpdater';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
-export default function makeColumn(type, aspect, ietype, handlers, msg) {
+export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId) {
   let totalWidth = 180;
   const columns = [{
     title: msg('delgNo'),
@@ -12,7 +12,10 @@ export default function makeColumn(type, aspect, ietype, handlers, msg) {
     fixed: 'left',
     render: (o, record) => {
       return (
-        <RowUpdater onHit={handlers.onPreview} label={o} row={record}
+        <RowUpdater onHit={() => handlers.onPreview({
+          delgNo: o,
+          tenantId,
+        }, type)} label={o} row={record}
           style={record.status < 0 ? { color: '#999' } : {}}
         />
       );

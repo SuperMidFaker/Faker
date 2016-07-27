@@ -109,7 +109,11 @@ export default function reducer(state = initialState, action) {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
     case actionTypes.SHOW_PREVIEWER_SUCCEED:
-      return { ...state, previewer: { ...state.previewer, visible: action.visible, ...action.result.data } };
+      return { ...state, previewer: {
+        ...state.previewer,
+        visible: action.visible,
+        status: action.status,
+        ...action.result.data } };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     default:
@@ -347,7 +351,7 @@ export function returnDelegate(data) {
   };
 }
 
-export function showPreviewer(params) {
+export function showPreviewer(params, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -359,6 +363,7 @@ export function showPreviewer(params) {
       method: 'get',
       params,
       visible: true,
+      status,
     },
   };
 }

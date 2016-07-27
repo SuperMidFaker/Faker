@@ -68,9 +68,7 @@ export default class AcceptanceList extends Component {
         <a onClick={() => this.props.showPreviewer({
           delgNo: o,
           tenantId: this.props.tenantId,
-          aspect: this.props.aspect,
-          status: this.props.delegateListFilter.status,
-        })}>
+        }, this.props.delegateListFilter.status)}>
           {o}
         </a>);
     },

@@ -7,8 +7,8 @@ import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { loadAcceptanceTable, acceptDelg, delDelg } from 'common/reducers/cmsDelegation';
-
+import { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
+import PreviewPanel from '../modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -21,7 +21,7 @@ const RadioButton = Radio.Button;
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
   }),
-  { loadAcceptanceTable, acceptDelg, delDelg }
+  { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -57,6 +57,15 @@ export default class AcceptanceList extends Component {
   columns = [{
     title: '报关委托号',
     dataIndex: 'delg_no',
+    render: (o) => {
+      return (
+        <a onClick={() => this.props.showPreviewer({
+          delgNo: o,
+          tenantId: this.props.tenantId,
+        }, this.props.listFilter.status)}>
+          {o}
+        </a>);
+    },
   }, {
     title: '委托客户',
     dataIndex: 'customer_name',
@@ -224,6 +233,7 @@ export default class AcceptanceList extends Component {
           <div className="panel-body table-panel">
             <Table columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} />
           </div>
+          <PreviewPanel />
         </div>
       </div>
     );

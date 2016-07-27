@@ -13,6 +13,8 @@ import downloadMultiple from 'client/util/multipleDownloader';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
+import { showPreviewer } from 'common/reducers/cmsDelegation';
+import PreviewPanel from '../modals/preview-panel';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 
@@ -31,7 +33,7 @@ function getRowKey(row) {
     delgList: state.cmsDeclare.delgList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadDelgList, openEfModal })
+  { loadDelgList, openEfModal, showPreviewer })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -154,7 +156,8 @@ export default class DeclareList extends React.Component {
     const { columns, totalWidth } = makeColumn(status, aspect, ietype, {
       onWriteEntryId: this.handleEntryNoFill,
       onDelgDownload: this.handleDelgFilesDownload,
-    }, this.msg);
+      onPreview: this.props.showPreviewer,
+    }, this.msg, this.props.tenantId);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: selectedRowKeys => {
@@ -178,6 +181,7 @@ export default class DeclareList extends React.Component {
             <Table rowSelection={rowSelection} columns={columns} loading={delgList.loading}
               dataSource={this.dataSource} scroll={{ x: totalWidth/* , y: 460 */ }} rowKey={getRowKey}
             />
+            <PreviewPanel />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />

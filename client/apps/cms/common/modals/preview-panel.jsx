@@ -60,7 +60,9 @@ export default class PreviewPanel extends React.Component {
   tablePan() {
     const { previewer } = this.props;
     const { delegation, delegateTracking } = previewer;
-    if (this.props.delegateListFilter.status === 'declared' || this.props.delegateListFilter.status === 'finished') {
+    if (previewer.status === 'declared'
+      || previewer.status === 'finished'
+      || previewer.status === 'accepted') {
       return (
         <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab="基础信息" key="basic">
