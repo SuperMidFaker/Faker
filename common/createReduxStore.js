@@ -1,9 +1,9 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import requester from 'common/reduxMiddlewares/requester';
 
-export default function createReduxStore(initialState, rootReducer) {
+export default function createReduxStore(initialState, rootReducer, initialReq) {
   let createMiddlewaredStore;
-  const client = requester();
+  const client = requester(initialReq);
   if (__DEV__ && __DEVTOOLS__) {
     const composers = [];
     if (typeof devToolsExtension === 'function') {
