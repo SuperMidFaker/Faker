@@ -39,6 +39,7 @@ import ExportWrapper from './cms/export/wrapper';
 import * as ExportAcceptance from './cms/export/acceptance';
 import * as ExportDeclare from './cms/export/declare';
 import * as ExportManage from './cms/export/manage';
+import * as ExportDelegate from './cms/export/delegate';
 
 // todo IndexRedirect passed nginx added subdomain
 export default(store, cookie) => {
@@ -157,6 +158,11 @@ export default(store, cookie) => {
               <Route path="compRelation" component={ExportManage.List} />
               <Route path="create" component={ExportManage.Create} />
               <Route path="edit/:id" component={ExportManage.Edit} />
+            </Route>
+            <Route path="delegate">
+              <IndexRoute component={ExportDelegate.List} />
+              <Route path="create" component={ExportDelegate.Create} />
+              <Route path="edit/:delgNo" component={ExportDelegate.Edit} />
             </Route>
           </Route>
           <Route path="transport" component={Transport}>
