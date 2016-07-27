@@ -18,6 +18,8 @@ function getRenderFields(type) {
     province: 'consignee_province',
     city: 'consignee_city',
     district: 'consignee_district',
+    street: 'consignee_street',
+    regionCode: 'consignee_region_code',
     addr: 'consignee_addr',
     contact: 'consignee_contact',
     mobile: 'consignee_mobile',
@@ -27,6 +29,8 @@ function getRenderFields(type) {
     province: 'consigner_province',
     city: 'consigner_city',
     district: 'consigner_district',
+    street: 'consigner_street',
+    regionCode: 'consigner_region_code',
     addr: 'consigner_addr',
     contact: 'consigner_contact',
     mobile: 'consigner_mobile',
@@ -84,6 +88,8 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,
+        [this.renderFields.street]: selectConsignLoc.street,
+        [this.renderFields.regionCode]: selectConsignLoc.region_code,
       });
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
@@ -101,6 +107,8 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.province]: '',
         [this.renderFields.city]: '',
         [this.renderFields.district]: '',
+        [this.renderFields.street]: '',
+        [this.renderFields.regionCode]: '',
       });
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: '',
@@ -117,6 +125,10 @@ export default class ConsignInfo extends React.Component {
       this.props.setFormValue(this.renderFields.city, value);
     } else if (field === 'district') {
       this.props.setFormValue(this.renderFields.district, value);
+    } else if (field === 'street') {
+      this.props.setFormValue(this.renderFields.street, value);
+    } else if (field === 'code') {
+      this.props.setFormValue(this.renderFields.regionCode, value);
     }
   }
   renderMsgKeys = this.props.type === 'consignee' ? {
@@ -164,11 +176,12 @@ export default class ConsignInfo extends React.Component {
       name: cl.name,
       key: `${cl.node_id}${cl.name}`,
     }));
-    const { province, city, district, name, addr, contact, mobile, email } = this.renderFields;
+    const { province, city, district, street, name, addr, contact, mobile, email } = this.renderFields;
     const region = {
       province: fieldDefaults[province],
       city: fieldDefaults[city],
       district: fieldDefaults[district],
+      street: fieldDefaults[street],
     };
     return (
       <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 16 }}>

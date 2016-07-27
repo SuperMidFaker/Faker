@@ -250,7 +250,7 @@ export default class RegionCascade extends React.Component {
       this.props.setFormValue('code', selOpts[selOpts.length - 1].code);
     }
   }
-  handleRegionChange = (areaItems) => {
+  handleRegionChange = (areaItems, selOpts) => {
     if (areaItems.length === 0) {
       // clear
       this.state.areaItems = []; // used in willReceiveProps
@@ -264,6 +264,20 @@ export default class RegionCascade extends React.Component {
         this.props.setFormValue('district', undefined);
         this.props.setFormValue('street', undefined);
         this.props.setFormValue('code', undefined);
+      }
+    } else if (areaItems.length === 4) {
+      this.state.areaItems = areaItems; // used in willReceiveProps
+      this.setState({ areaItems });
+      if (this.props.onCascadeChange) {
+        this.props.onCascadeChange(areaItems);
+      }
+      if ('setFormValue' in this.props) {
+        const [province, city, district, street] = areaItems;
+        this.props.setFormValue('province', province);
+        this.props.setFormValue('city', city);
+        this.props.setFormValue('district', district);
+        this.props.setFormValue('street', street);
+        this.props.setFormValue('code', selOpts[selOpts.length - 1].code);
       }
     }
   }
