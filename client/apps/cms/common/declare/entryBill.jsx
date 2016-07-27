@@ -37,7 +37,7 @@ const DropdownButton = Dropdown.Button;
     moduleName: props.ietype,
     withModuleLayout: false,
     // router.goBack won't work on initial login next
-    goBackFn: () => router.push(`/${props.ietype}/declare`),
+    goBackFn: () => router.goBack(),
   }));
 })
 export default class EntryBillForm extends React.Component {

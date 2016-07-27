@@ -7,8 +7,9 @@ import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, DELG_SOURCE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { loadDelegateTable, acceptDelg, delDelg, toggleSendDelegateModal, returnDelegate } from 'common/reducers/cmsDelegation';
+import { loadDelegateTable, acceptDelg, delDelg, toggleSendDelegateModal, returnDelegate, showPreviewer } from 'common/reducers/cmsDelegation';
 import SendPanel from '../modals/send-panel';
+import PreviewPanel from '../modals/preview-panel';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -24,7 +25,7 @@ const RadioButton = Radio.Button;
       delegateListFilter: state.cmsDelegation.delegateListFilter,
     };
   },
-  { loadDelegateTable, acceptDelg, delDelg, toggleSendDelegateModal, returnDelegate }
+  { loadDelegateTable, acceptDelg, delDelg, toggleSendDelegateModal, returnDelegate, showPreviewer }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -51,6 +52,7 @@ export default class AcceptanceList extends Component {
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
     returnDelegate: PropTypes.func.isRequired,
+    showPreviewer: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -61,6 +63,17 @@ export default class AcceptanceList extends Component {
   columns = [{
     title: '报关委托号',
     dataIndex: 'delg_no',
+    render: (o) => {
+      return (
+        <a onClick={() => this.props.showPreviewer({
+          delgNo: o,
+          tenantId: this.props.tenantId,
+          aspect: this.props.aspect,
+          status: this.props.delegateListFilter.status,
+        })}>
+          {o}
+        </a>);
+    },
   }, {
     title: '合同号',
     dataIndex: 'contract_no',
@@ -330,6 +343,7 @@ export default class AcceptanceList extends Component {
           </div>
         </div>
         <SendPanel ietype={this.props.ietype} />
+        <PreviewPanel />
       </div>
     );
   }
