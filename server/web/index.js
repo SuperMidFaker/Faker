@@ -6,6 +6,7 @@ import create from '../util/koaServer';
 import webRoutes from './routes/web.route';
 import wxRoutes from './routes/weixin.route';
 import apiRoutes from './routes/intl.api';
+import weixinAuth from '../middlewares/weixin-auth';
 
 function loadRoutes(routes) {
   const kroute = koaRoute();
@@ -25,6 +26,7 @@ create({
   port: __PORT__,
   authError: true,
   middlewares: [
+    weixinAuth(),
     loadRoutes([...webRoutes, ...wxRoutes, ...apiRoutes]),
   ],
 });
