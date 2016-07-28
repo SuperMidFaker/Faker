@@ -14,8 +14,12 @@ export default () =>
     }
     const authRes = yield superagent.get(`${API_ROOTS.default}public/v1/weixin/auth`)
       .set('cookies', this.cookies)
-      .query({ code: this.request.query.code, url: encodeURIComponent(this.request.path) });
+      .query({ code: this.request.query.code, url: this.request.path });
     const result = authRes.body.data;
+    console.log('result');
+    console.log(result);
+    console.log('authRes.cookies');
+    console.log(authRes.cookies);
     if (result.code === 'unauthed') {
       // 认为是第一次访问,跳转至公众号授权地址, 返回为请求地址
       this.redirect(result.redirectUrl);
