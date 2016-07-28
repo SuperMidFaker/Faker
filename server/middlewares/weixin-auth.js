@@ -13,7 +13,7 @@ export default () =>
       return;
     }
     const authRes = yield superagent.get(`${API_ROOTS.default}public/v1/weixin/auth`)
-      .set('cookies', this.header.cookie)
+      .set('cookie', this.header.cookie)
       .query({ code: this.request.query.code, url: this.request.path });
     const result = authRes.body.data;
     if (result.code === 'unauthed') {
@@ -24,8 +24,8 @@ export default () =>
         msg: result.message,
       });
     } else {
-      const cookie = authRes.headers.cookie;
-      this.set('cookies', cookie);
+      const cookie = authRes.header['set-cookie'];
+      this.set('cookie', cookie);
       if (result.code === 'rebind') {
         // 用户不存在,需登录绑定
         this.redirect(`/weixin/bind?next=${encodeURIComponent(this.request.path)}`);
