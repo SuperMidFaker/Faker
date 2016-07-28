@@ -55,8 +55,8 @@ export default class NodeFormConainer extends Component {
     });
   }
   handleRegionChange = (value) => {
-    const [province, city, district] = value;
-    const region = Object.assign({}, { province, city, district });
+    const [province, city, district, street, code] = value;
+    const region = Object.assign({}, { province, city, district, street, region_code: code });
     this.props.changeRegion(region);
   }
   render() {

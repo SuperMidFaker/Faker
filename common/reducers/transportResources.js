@@ -29,6 +29,8 @@ const initialState = {
     province: '',
     city: '',
     district: '',
+    street: '',
+    region_code: '',
   },
 };
 
