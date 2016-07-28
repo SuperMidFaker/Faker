@@ -53,7 +53,7 @@ export default class WxProfile extends React.Component {
               <Label>姓名</Label>
             </CellHeader>
             <CellBody>
-              <Input type="text" defaultValue={name} disabled />
+              <Input type="text" value={name} disabled />
             </CellBody>
           </FormCell>
           <FormCell vcode>
@@ -61,7 +61,7 @@ export default class WxProfile extends React.Component {
               <Label>手机号</Label>
             </CellHeader>
             <CellBody>
-              <Input type="tel" defaultValue={phone} disabled />
+              <Input type="tel" value={phone} disabled />
             </CellBody>
             <CellFooter>
               <img role="presentation" />
@@ -72,7 +72,7 @@ export default class WxProfile extends React.Component {
               <Label>邮箱</Label>
             </CellHeader>
             <CellBody>
-              <Input type="email" defaultValue={email} disabled />
+              <Input type="email" value={email} disabled />
             </CellBody>
           </FormCell>
           <FormCell>
@@ -80,7 +80,7 @@ export default class WxProfile extends React.Component {
               <Label>职位</Label>
             </CellHeader>
             <CellBody>
-              <Input type="text" defaultValue={position} disabled />
+              <Input type="text" value={position} disabled />
             </CellBody>
           </FormCell>
         </Form>

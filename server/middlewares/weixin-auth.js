@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 import superagent from 'superagent';
 
 function isWxAccessUrl(url) {
@@ -19,12 +20,14 @@ export default () =>
       // 认为是第一次访问,跳转至公众号授权地址, 返回为请求地址
       this.redirect(result.redirectUrl);
     } else if (result.code === 'exceptional') {
+      console.log('weixinMPMw exceptional error', result.message);
       this.throw(403, {
         msg: result.message,
       });
     } else {
       const cookie = authRes.header['set-cookie'];
-      this.append('Set-Cookie', cookie);
+      console.log('new cookie', cookie);
+      this.set('Set-Cookie', cookie); // 重置原cookie, append似乎会导致仍然用key value
       if (result.code === 'rebind') {
         // 用户不存在,需登录绑定
         this.redirect(`/weixin/bind?next=${encodeURIComponent(this.request.path)}`);
