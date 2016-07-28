@@ -13,13 +13,9 @@ export default () =>
       return;
     }
     const authRes = yield superagent.get(`${API_ROOTS.default}public/v1/weixin/auth`)
-      .set('cookies', this.cookies)
+      .set('cookies', this.header.cookie)
       .query({ code: this.request.query.code, url: this.request.path });
     const result = authRes.body.data;
-    console.log('result');
-    console.log(result);
-    console.log('authRes.cookies');
-    console.log(authRes.cookies);
     if (result.code === 'unauthed') {
       // 认为是第一次访问,跳转至公众号授权地址, 返回为请求地址
       this.redirect(result.redirectUrl);
@@ -28,7 +24,8 @@ export default () =>
         msg: result.message,
       });
     } else {
-      this.cookies.set(authRes.cookies);
+      const cookie = authRes.headers.cookie;
+      this.set('cookies', cookie);
       if (result.code === 'rebind') {
         // 用户不存在,需登录绑定
         this.redirect(`/weixin/bind?next=${encodeURIComponent(this.request.path)}`);
