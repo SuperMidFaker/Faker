@@ -11,35 +11,23 @@ const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const formatMsg = format(messages);
 
-function isPropsChange(nextProps, props, field) {
-  return Object.prototype.hasOwnProperty.call(nextProps, field) &&
-    nextProps[field] && nextProps[field] !== props[field];
-}
-
-function isRegionChanged(nextRegion, region, stateRegionArea) {
+function getRegionProps(nextRegion) {
   let province;
   let city;
   let district;
   let street;
-  let changed = false;
   if (Array.isArray(nextRegion)) {
-    province = stateRegionArea[0];
-    city = stateRegionArea[1];
-    district = stateRegionArea[2];
-    street = stateRegionArea[3];
-    changed = province !== region[0] ||
-      city !== region[1] ||
-      district !== region[2];
+    province = nextRegion[0];
+    city = nextRegion[1];
+    district = nextRegion[2];
+    street = nextRegion[3];
   } else {
     province = nextRegion.province;
     city = nextRegion.city;
     district = nextRegion.district;
     street = nextRegion.street;
-    changed = isPropsChange(nextRegion, region, 'province') ||
-      isPropsChange(nextRegion, region, 'city') ||
-      isPropsChange(nextRegion, region, 'district');
   }
-  return { province, city, district, street, changed: !!changed };
+  return { province, city, district, street };
 }
 
 @injectIntl
@@ -76,6 +64,7 @@ export default class RegionCascade extends React.Component {
   static defaultProps = {
     withCountry: false,
     uncontrolled: false,
+    region: undefined,
   }
   constructor(...args) {
     super(...args);
@@ -128,23 +117,16 @@ export default class RegionCascade extends React.Component {
       }));
       this.setState({ chinaRegions });
     }
-    if (nextProps.region) {
-      const propsAsState = {};
-      if (nextProps.region.country !== this.props.region.country) {
-        propsAsState.country = nextProps.region.country;
-      }
-      const { province, city, district, street, changed } =
-        isRegionChanged(nextProps.region, this.props.region, this.state.areaItems);
-      console.log(changed, this.state);
-      if (!province && !Array.isArray(nextProps.region)) {
+    if (nextProps.region && this.props.region === undefined) {
+      const propsAsState = {
+        country: nextProps.region.country,
+      };
+      const { province, city, district, street } = getRegionProps(nextProps.region);
+      if (!province) {
         // 清空
         propsAsState.areaItems = [];
       } else {
-        if (changed) {
-          propsAsState.areaItems = [province, city, district, street];
-        } else {
-          propsAsState.areaItems = this.state.areaItems;
-        }
+        propsAsState.areaItems = [province, city, district, street];
         nextProps.loadNextRegionList(province, city, district).then(result => {
           const chinaRegions = nextProps.provinces.map(prov => ({
             value: prov.name,
@@ -217,15 +199,12 @@ export default class RegionCascade extends React.Component {
     }
   }
   handleRegionLoad = (selOpts) => {
-    const areaItems = [];
-    for (let i = 0; i < selOpts.length; i++) {
-      areaItems.push(selOpts[i].value);
-    }
     const targetOption = selOpts[selOpts.length - 1];
     this.props.loadRegionChildren(targetOption.code).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else {
+        // todo does this change the origin data
         targetOption.children = result.data.map(rg => ({
           value: rg.name,
           label: rg.name,
@@ -235,30 +214,14 @@ export default class RegionCascade extends React.Component {
         this.setState({ chinaRegions: [...this.state.chinaRegions] });
       }
     });
-    this.state.areaItems = areaItems;
-    console.log('region load', areaItems);
-    this.setState({ areaItems });
-    if (this.props.onCascadeChange) {
-      while (areaItems.length < 4) {
-        areaItems.push(undefined);
-      }
-      areaItems.push(selOpts[selOpts.length - 1].code);
-      this.props.onCascadeChange(areaItems);
-    }
-    if ('setFormValue' in this.props) {
-      const [province, city, district, street] = areaItems;
-      this.props.setFormValue('province', province);
-      this.props.setFormValue('city', city);
-      this.props.setFormValue('district', district);
-      this.props.setFormValue('street', street);
-      this.props.setFormValue('code', selOpts[selOpts.length - 1].code);
-    }
   }
-  handleRegionChange = (areaItems, selOpts) => {
+  handleRegionChange = (values, selOpts) => {
+    const areaItems = [];
+    for (let i = 0; i < selOpts.length; i++) {
+      areaItems.push(selOpts[i].value);
+    }
     if (areaItems.length === 0) {
       // clear
-      this.state.areaItems = []; // used in willReceiveProps
-      this.setState({ areaItems });
       if (this.props.onCascadeChange) {
         this.props.onCascadeChange(areaItems);
       }
@@ -269,9 +232,7 @@ export default class RegionCascade extends React.Component {
         this.props.setFormValue('street', undefined);
         this.props.setFormValue('code', undefined);
       }
-    } else if (areaItems.length === 4) {
-      this.state.areaItems = areaItems; // used in willReceiveProps
-      this.setState({ areaItems });
+    } else {
       if (this.props.onCascadeChange) {
         areaItems.push(selOpts[selOpts.length - 1].code);
         this.props.onCascadeChange(areaItems);
@@ -285,11 +246,11 @@ export default class RegionCascade extends React.Component {
         this.props.setFormValue('code', selOpts[selOpts.length - 1].code);
       }
     }
+    this.setState({ areaItems });
   }
   render() {
     const { areaItems, country, disableCascader, chinaRegions } = this.state;
     const { intl } = this.props;
-    const valueProps = { value: areaItems };
     console.log('render', this.state);
     return (
       <Row>
@@ -305,7 +266,7 @@ export default class RegionCascade extends React.Component {
         }
         <Cascader size="large" options={chinaRegions} disabled={disableCascader}
           placeholder={formatMsg(intl, 'defaultCascaderRegion')} onChange={this.handleRegionChange}
-          loadData={this.handleRegionLoad} changeOnSelect {...valueProps}
+          loadData={this.handleRegionLoad} changeOnSelect value={areaItems}
         />
       </Row>
     );
