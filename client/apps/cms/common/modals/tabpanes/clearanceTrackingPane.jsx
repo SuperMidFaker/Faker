@@ -61,7 +61,7 @@ export default class ClearanceTrackingPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
-          <Table columns={columns} dataSource={dataSource} rowKey="id" bordered pagination="false" />
+          <Table columns={columns} dataSource={dataSource} rowKey="id" bordered pagination={false} />
         </Card>
       </div>
     );
