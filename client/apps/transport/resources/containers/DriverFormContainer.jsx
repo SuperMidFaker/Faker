@@ -34,16 +34,18 @@ export default class DriverFormContainer extends Component {
     e.preventDefault();
     const { form, tenantId } = this.props;
     const newDriverInfo = form.getFieldsValue();
-    this.props.addDriver({ ...newDriverInfo, tenant_id: tenantId });
-    this.context.router.goBack();
+    this.props.addDriver({ ...newDriverInfo, tenant_id: tenantId }).then(() => {
+      this.context.router.goBack();
+    });
   }
   handleDriverEdit = (e) => {
     e.preventDefault();
     const { form, params } = this.props;
     const editDriverInfo = form.getFieldsValue();
     const editDriverId = parseInt(params.driver_id, 10);
-    this.props.editDriver({ driverId: editDriverId, driverInfo: editDriverInfo });
-    this.context.router.goBack();
+    this.props.editDriver({ driverId: editDriverId, driverInfo: editDriverInfo }).then(() => {
+      this.context.router.goBack();
+    });
   }
   render() {
     const { form, params, drivers } = this.props;

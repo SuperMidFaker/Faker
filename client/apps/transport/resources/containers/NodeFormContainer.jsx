@@ -40,8 +40,9 @@ export default class NodeFormConainer extends Component {
     const { form, nodeType, tenantId, region } = this.props;
     const nodeInfoInForm = form.getFieldsValue();
     const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
-    this.props.addNode(nodeInfo);
-    this.context.router.goBack();
+    this.props.addNode(nodeInfo).then(() => {
+      this.context.router.goBack();
+    });
   }
   handleEditNode = (e) => {
     e.preventDefault();
@@ -49,8 +50,9 @@ export default class NodeFormConainer extends Component {
     const nodeInfoInform = form.getFieldsValue();
     const nodeInfo = { ...nodeInfoInform, ...region };
     const nodeId = params.node_id;
-    this.props.editNode({ nodeId, nodeInfo });
-    this.context.router.goBack();
+    this.props.editNode({ nodeId, nodeInfo }).then(() => {
+      this.context.router.goBack();
+    });
   }
   handleRegionChange = (value) => {
     const [province, city, district] = value;

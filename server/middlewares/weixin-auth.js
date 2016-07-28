@@ -12,9 +12,9 @@ export default () =>
       yield next;
       return;
     }
-    const authRes = yield superagent.get(`${API_ROOTS.default}public/v1/weixin/auth?url=${encodeURIComponent(this.request.path)}`)
+    const authRes = yield superagent.get(`${API_ROOTS.default}public/v1/weixin/auth`)
       .set('cookies', this.cookies)
-      .query({ code: this.request.query.code });
+      .query({ code: this.request.query.code, url: encodeURIComponent(this.request.path) });
     const result = authRes.body.data;
     if (result.code === 'unauthed') {
       // 认为是第一次访问,跳转至公众号授权地址, 返回为请求地址

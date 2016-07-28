@@ -39,16 +39,18 @@ export default class VehicleFormContainer extends Component {
     e.preventDefault();
     const { form, tenantId } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId });
-    this.context.router.goBack();
+    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId }).then(() => {
+      this.context.router.goBack();
+    });
   }
   handleCarEdit = (e) => {
     e.preventDefault();
     const { form, params } = this.props;
     const editCarInfo = form.getFieldsValue();
     const carId = parseInt(params.car_id, 10);
-    this.props.editVehicle({ carId, carInfo: editCarInfo });
-    this.context.router.goBack();
+    this.props.editVehicle({ carId, carInfo: editCarInfo }).then(() => {
+      this.context.router.goBack();
+    });
   }
   handleVehicleNumberBlur = (e) => {
     const vehicleNumber = e.target.value;
