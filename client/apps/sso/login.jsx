@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Button } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { submit, setValue } from '../../../common/reducers/auth';
+import { submit, setValue, systemLoading } from '../../../common/reducers/auth';
 import NavLink from '../../components/nav-link';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
@@ -14,8 +14,9 @@ const formatMsg = format(messages);
   state => ({
     code: state.corpDomain.code,
     auth: state.auth,
+    loading: state.auth.loading,
   }),
-  { submit, setValue }
+  { submit, setValue, systemLoading }
 )
 export default class Login extends React.Component {
   static propTypes = {
@@ -24,9 +25,7 @@ export default class Login extends React.Component {
     code: PropTypes.string.isRequired,
     setValue: PropTypes.func,
     submit: PropTypes.func,
-  }
-  state = {
-    loading: false,
+    loading: PropTypes.bool.isRequired,
   }
   handleTextChange(ev, field) {
     this.props.setValue(field, ev.target.value);
@@ -35,7 +34,7 @@ export default class Login extends React.Component {
     this.props.setValue(field, ev.target.checked);
   }
   handleSubmit(ev) {
-    this.setState({ loading: true });
+    this.props.systemLoading(true);
     ev.preventDefault();
     if (this.props.auth.nonTenant) {
       return;
@@ -49,7 +48,7 @@ export default class Login extends React.Component {
       remember,
     };
     this.props.submit(form).then(() => {
-      this.setState({ loading: false });
+      this.props.systemLoading(false);
     });
   }
 
@@ -85,7 +84,7 @@ export default class Login extends React.Component {
               </div>
             </div>
             <div className="form-group login-submit">
-              <Button type="primary" loading={this.state.loading} className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
+              <Button type="primary" loading={this.props.loading} className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
             </div>
             <div className="form-group footer row">
               <div className="col-xs-6">

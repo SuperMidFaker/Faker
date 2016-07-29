@@ -6,7 +6,6 @@ import { systemLoading } from 'common/reducers/auth';
 import { loadTranslation } from 'common/reducers/intl';
 import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import SystemLoading from './system-loading';
 import './root.less';
 
 function fetchData({ state, dispatch, cookie, location }) {
@@ -58,14 +57,12 @@ export default class Root extends React.Component {
   render() {
     const { locale, messages } = this.props;
     return (
-      <SystemLoading>
-        <IntlProvider key={locale}
-          locale={locale}
-          messages={messages}
-        >
-        {this.props.children}
-        </IntlProvider>
-      </SystemLoading>
+      <IntlProvider key={locale}
+        locale={locale}
+        messages={messages}
+      >
+      {this.props.children}
+      </IntlProvider>
     );
   }
 }
