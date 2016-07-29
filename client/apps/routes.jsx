@@ -24,6 +24,7 @@ import * as TMSAcceptance from './transport/acceptance';
 import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
 import * as TMSResources from './transport/resources';
+import * as TMSTariff from './transport/tariff';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import ImportWrapper from './cms/import/wrapper';
@@ -196,6 +197,9 @@ export default(store, cookie) => {
               <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
               <Route path="add_node" component={TMSResources.NodeFormContainer} />
               <Route path="edit_node/:node_id" component={TMSResources.NodeFormContainer} />
+            </Route>
+            <Route path="tariff">
+              <IndexRoute component={TMSTariff.List} />
             </Route>
           </Route>
         </Route>

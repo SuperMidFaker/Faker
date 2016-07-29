@@ -241,7 +241,6 @@ const SHIPMENT_POD_STATUS = {
   acceptByClient: 3,
 };
 
-
 const VEHICLE_STATUS = {
   disabled: { value: -1, text: '停用' },
   notUse: { value: 0, text: '不在途' },
