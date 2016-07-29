@@ -7,7 +7,6 @@ function isWxAccessUrl(url) {
 // 微信公众平台页面访问对openid与loginid的中间处理
 export default () =>
   function* weixinMPAuthMw(next) {
-    yield next;
     if (!isWxAccessUrl(this.request.url)) {
       yield next;
       return;
