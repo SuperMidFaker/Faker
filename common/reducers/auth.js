@@ -5,6 +5,7 @@ const LOGIN = '@@qm-auth/auth/LOGIN';
 const LOGIN_SUCCEED = '@@qm-auth/auth/LOGIN_SUCCEED';
 const LOGIN_FAIL = '@@qm-auth/auth/LOGIN_FAIL';
 const INPUT_CHANGE = '@@qm-auth/auth/INPUT_CHANGE';
+const LOGIN_PAGE_LOADED = '@@qm-auth/auth/LOGIN_PAGE_LOADED';
 const SMS_REQUEST = '@@qm-auth/auth/SMS_REQUEST';
 const SMS_REQUEST_SUCCEED = '@@qm-auth/auth/SMS_REQUEST_SUCCEED';
 const SMS_REQUEST_FAIL = '@@qm-auth/auth/SMS_REQUEST_FAIL';
@@ -20,6 +21,7 @@ const initialState = {
   nonTenant: false,
   userId: null,
   smsId: null,
+  loading: true,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -70,6 +72,8 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, smsId: action.result.data.smsId, userId: action.result.data.userId };
     case SMS_VERIFY_SUCCEED:
       return { ...state, smsId: null, userId: null };
+    case LOGIN_PAGE_LOADED:
+      return { ...state, loading: action.loading };
     default:
       return state;
   }
@@ -112,5 +116,12 @@ export function verifySms(smsId, userId, smsCode, newPwd) {
       method: 'post',
       data: { smsId, userId, smsCode, newPwd },
     },
+  };
+}
+
+export function systemLoading(loading) {
+  return {
+    type: LOGIN_PAGE_LOADED,
+    loading,
   };
 }
