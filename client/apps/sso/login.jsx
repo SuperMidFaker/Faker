@@ -26,10 +26,7 @@ export default class Login extends React.Component {
     submit: PropTypes.func,
   }
   state = {
-    loading: true,
-  }
-  componentWillReceiveProps() {
-    this.setState({ loading: false });
+    loading: false,
   }
   handleTextChange(ev, field) {
     this.props.setValue(field, ev.target.value);
@@ -38,6 +35,7 @@ export default class Login extends React.Component {
     this.props.setValue(field, ev.target.checked);
   }
   handleSubmit(ev) {
+    this.setState({ loading: true });
     ev.preventDefault();
     if (this.props.auth.nonTenant) {
       return;
@@ -50,7 +48,9 @@ export default class Login extends React.Component {
       password,
       remember,
     };
-    this.props.submit(form);
+    this.props.submit(form).then(() => {
+      this.setState({ loading: false });
+    });
   }
 
   render() {
