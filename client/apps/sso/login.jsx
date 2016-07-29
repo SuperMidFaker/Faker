@@ -25,7 +25,12 @@ export default class Login extends React.Component {
     setValue: PropTypes.func,
     submit: PropTypes.func,
   }
-
+  state = {
+    loading: true,
+  }
+  componentWillReceiveProps() {
+    this.setState({ loading: false });
+  }
   handleTextChange(ev, field) {
     this.props.setValue(field, ev.target.value);
   }
@@ -80,7 +85,7 @@ export default class Login extends React.Component {
               </div>
             </div>
             <div className="form-group login-submit">
-              <Button type="primary" className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
+              <Button type="primary" loading={this.state.loading} className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
             </div>
             <div className="form-group footer row">
               <div className="col-xs-6">
