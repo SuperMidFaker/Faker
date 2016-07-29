@@ -9,9 +9,9 @@ const messages = defineMessages({
     id: 'sso.login.empty.param',
     defaultMessage: '用户名或密码为空',
   },
-  loginErrorParam: {
+  pwdErrorParam: {
     id: 'sso.login.error.param',
-    defaultMessage: '用户名或密码有误',
+    defaultMessage: '密码有误',
   },
   loginUserNotFound: {
     id: 'sso.login.user.notfound',

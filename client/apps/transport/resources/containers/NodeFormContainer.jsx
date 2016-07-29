@@ -55,8 +55,8 @@ export default class NodeFormConainer extends Component {
     });
   }
   handleRegionChange = (value) => {
-    const [province, city, district] = value;
-    const region = Object.assign({}, { province, city, district });
+    const [province, city, district, street, code] = value;
+    const region = Object.assign({}, { province, city, district, street, region_code: code });
     this.props.changeRegion(region);
   }
   render() {
@@ -64,8 +64,8 @@ export default class NodeFormConainer extends Component {
     if (params.node_id) {
       const editNodeId = parseInt(params.node_id, 10);
       const editNodeInfo = nodes.find(node => node.node_id === editNodeId);
-      const { province, city, district } = editNodeInfo;
-      const region = [province, city, district];
+      const { province, city, district, street } = editNodeInfo;
+      const region = [province, city, district, street];
       return (
         <NodeForm mode="edit"
           form={form}

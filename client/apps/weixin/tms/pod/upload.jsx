@@ -99,7 +99,7 @@ export default class UploadPod extends React.Component {
             <Cell className="">
               <CellBody>
                 <Upload action={`${API_ROOTS.default}v1/upload/img`} listType="picture-card"
-                  onChange={this.handlePhotoUpload} fileList={this.state.photoList} withCredentials
+                  onChange={this.handlePhotoUpload} withCredentials
                 >
                   <Icon type="plus" />
                   <div className="ant-upload-text">上传照片</div>

@@ -183,6 +183,7 @@ export default class ConsignInfo extends React.Component {
       district: fieldDefaults[district],
       street: fieldDefaults[street],
     };
+    // todo region array, setFormValue -> onChange, formData formOrigin
     return (
       <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 16 }}>
         <Row>

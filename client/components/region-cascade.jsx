@@ -239,6 +239,10 @@ export default class RegionCascade extends React.Component {
     console.log('region load', areaItems);
     this.setState({ areaItems });
     if (this.props.onCascadeChange) {
+      while (areaItems.length < 4) {
+        areaItems.push(undefined);
+      }
+      areaItems.push(selOpts[selOpts.length - 1].code);
       this.props.onCascadeChange(areaItems);
     }
     if ('setFormValue' in this.props) {
@@ -269,6 +273,7 @@ export default class RegionCascade extends React.Component {
       this.state.areaItems = areaItems; // used in willReceiveProps
       this.setState({ areaItems });
       if (this.props.onCascadeChange) {
+        areaItems.push(selOpts[selOpts.length - 1].code);
         this.props.onCascadeChange(areaItems);
       }
       if ('setFormValue' in this.props) {
