@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { loadCorpByDomain } from 'common/reducers/corp-domain';
-import { systemLoading } from 'common/reducers/auth';
 import { loadTranslation } from 'common/reducers/intl';
 import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -30,7 +29,6 @@ function fetchData({ state, dispatch, cookie, location }) {
     messages: state.intl.messages,
     isAuthed: state.auth.isAuthed,
   }),
-  { systemLoading }
 )
 export default class Root extends React.Component {
   static propTypes = {
@@ -42,9 +40,6 @@ export default class Root extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
-  componentDidMount() {
-    this.props.systemLoading(false);
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.isAuthed && nextProps.isAuthed) {

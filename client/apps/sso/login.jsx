@@ -27,6 +27,9 @@ export default class Login extends React.Component {
     submit: PropTypes.func,
     loading: PropTypes.bool.isRequired,
   }
+  componentDidMount() {
+    this.props.systemLoading(false);
+  }
   handleTextChange(ev, field) {
     this.props.setValue(field, ev.target.value);
   }
