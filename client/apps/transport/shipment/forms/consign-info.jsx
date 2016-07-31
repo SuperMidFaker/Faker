@@ -5,7 +5,7 @@ import { Row, Col, Form, Card } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
-import { setFormValue, setConsignFields } from 'common/reducers/shipment';
+import { setConsignFields } from 'common/reducers/shipment';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -54,7 +54,7 @@ function getFieldDefaults(state, type) {
       state.shipment.formRequire.consigneeLocations :
       state.shipment.formRequire.consignerLocations,
   }),
-  { setFormValue, setConsignFields }
+  { setConsignFields }
 )
 export default class ConsignInfo extends React.Component {
   static propTypes = {
@@ -63,7 +63,6 @@ export default class ConsignInfo extends React.Component {
     type: PropTypes.oneOf(['consignee', 'consigner']),
     outerColSpan: PropTypes.number.isRequired,
     labelColSpan: PropTypes.number.isRequired,
-    setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     formhoc: PropTypes.object.isRequired,
     fieldDefaults: PropTypes.object.isRequired,

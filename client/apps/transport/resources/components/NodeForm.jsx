@@ -34,7 +34,7 @@ export default class CarForm extends Component {
             <Input {...getFieldProps('node_code')} />
           </FormItem>
           <FormItem label="区域" {...formItemLayout}>
-            <Cascader region={regionValues} onCascadeChange={onRegionChange} />
+            <Cascader region={regionValues} onChange={onRegionChange} />
           </FormItem>
           <FormItem label="具体地址:" required {...formItemLayout}>
             <Input {...getFieldProps('addr')} required />
