@@ -80,8 +80,15 @@ export default class CorpInfo extends React.Component {
     });
     this.setState(newState);
   }
-  handleRegionChange = (field, value) => {
-    this.setState({ [field]: value });
+  handleRegionChange = (region, country) => {
+    const [, province, city, district, street] = region;
+    this.setState({
+      province,
+      city,
+      district,
+      street,
+      country,
+    });
   }
   handleImgUpload = (upinfo) => {
     const file = upinfo.file;
@@ -160,9 +167,9 @@ export default class CorpInfo extends React.Component {
                 { initialValue: short_name }
               )}
               <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Region withCountry setFormValue={this.handleRegionChange} region={{
-                  country, province, city, district,
-                }} />
+                <Region onChange={this.handleRegionChange} country={country} region={[
+                  province, city, district,
+                ]} />
               </FormItem>
               {
                 this.renderTextInput(

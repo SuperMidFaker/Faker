@@ -16,8 +16,8 @@ export default class CarForm extends Component {
     const setFieldsValue = form.setFieldsValue;
     if (mode === 'edit') {
       setFieldsValue(node);
-      const [province, city, district] = region;
-      changeRegion({ province, city, district });
+      const [code, province, city, district, street] = region;
+      changeRegion({ province, city, district, region_code: code, street });
     }
   }
   render() {
@@ -34,7 +34,7 @@ export default class CarForm extends Component {
             <Input {...getFieldProps('node_code')} />
           </FormItem>
           <FormItem label="区域" {...formItemLayout}>
-            <Cascader region={regionValues} uncontrolled onCascadeChange={onRegionChange} />
+            <Cascader region={regionValues} onCascadeChange={onRegionChange} />
           </FormItem>
           <FormItem label="具体地址:" required {...formItemLayout}>
             <Input {...getFieldProps('addr')} required />

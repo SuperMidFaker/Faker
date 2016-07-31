@@ -12,21 +12,7 @@ const OptGroup = Select.OptGroup;
 const formatMsg = format(messages);
 
 function getRegionProps(nextRegion) {
-  let province;
-  let city;
-  let district;
-  let street;
-  if (Array.isArray(nextRegion)) {
-    province = nextRegion[0];
-    city = nextRegion[1];
-    district = nextRegion[2];
-    street = nextRegion[3];
-  } else {
-    province = nextRegion.province;
-    city = nextRegion.city;
-    district = nextRegion.district;
-    street = nextRegion.street;
-  }
+  const [province, city, district, street] = nextRegion;
   const items = [];
   if (province) {
     items.push(province);
@@ -98,11 +84,7 @@ function isEmptyRegionProp(region) {
   if (!region) {
     return true;
   }
-  if (Array.isArray(region)) {
-    return region.length === 0;
-  } else {
-    return !region.province;
-  }
+  return region.length === 0 || !region[0];
 }
 
 @injectIntl
@@ -116,27 +98,14 @@ function isEmptyRegionProp(region) {
 export default class RegionCascade extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    withCountry: PropTypes.bool,
+    country: PropTypes.string, // undefined 不显示country编辑框
     // todo 统一region使用
-    region: PropTypes.oneOfType([
-      PropTypes.shape({
-        country: PropTypes.string,
-        province: PropTypes.string,
-        city: PropTypes.string,
-        district: PropTypes.string,
-        street: PropTypes.string,
-      }),
-      PropTypes.array,  // [ 'province', 'city', 'district', 'street' ]
-    ]),
+    region: PropTypes.array,  // [ 'province', 'city', 'district', 'street' ]
     provinces: PropTypes.array.isRequired,
     provLoaded: PropTypes.bool.isRequired,
-    setFormValue: PropTypes.func, // 'province'/'city'/'district', value
-    onCascadeChange: PropTypes.func, // ant-design cascade本身的onChange参数
+    onChange: PropTypes.func, // value参数 ['region_code', 'province', 'city','district', 'street'], country
     loadProvinces: PropTypes.func.isRequired,
     loadNextRegionList: PropTypes.func.isRequired,
-  }
-  static defaultProps = {
-    withCountry: false,
   }
   constructor(...args) {
     super(...args);
@@ -159,7 +128,6 @@ export default class RegionCascade extends React.Component {
     }
     if (this.props.region) {
       console.log('will mount region', this.props.region);
-
       const areaItems = getRegionProps(this.props.region);
       if (areaItems.length > 0) {
         getNextChinaRegions(areaItems, this.props, chinaRegions => {
@@ -229,13 +197,8 @@ export default class RegionCascade extends React.Component {
         disableCascader: false,
       });
     }
-    if ('setFormValue' in this.props) {
-      this.props.setFormValue('country', value);
-      this.props.setFormValue('province', undefined);
-      this.props.setFormValue('city', undefined);
-      this.props.setFormValue('district', undefined);
-      this.props.setFormValue('street', undefined);
-      this.props.setFormValue('code', undefined);
+    if (this.props.onChange) {
+      this.props.onChange([], value);
     }
   }
   handleRegionLoad = (selOpts) => {
@@ -244,7 +207,6 @@ export default class RegionCascade extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        // todo does this change the origin data
         targetOption.children = result.data.map(rg => ({
           value: rg.name,
           label: rg.name,
@@ -258,56 +220,19 @@ export default class RegionCascade extends React.Component {
     for (let i = 0; i < selOpts.length; i++) {
       areaItems.push(selOpts[i].value);
     }
-    while (areaItems.length < 4) {
-      areaItems.push(undefined);
+    this.setState({ areaItems: [...areaItems] });
+    if (this.props.onChange) {
+      areaItems.unshift(selOpts[selOpts.length - 1].code);
+      this.props.onChange(areaItems);
     }
-    areaItems.push(selOpts[selOpts.length - 1].code);
-    if (this.props.onCascadeChange) {
-      this.props.onCascadeChange(areaItems);
-    }
-    if ('setFormValue' in this.props) {
-      const [province, city, district, street, code] = areaItems;
-      this.props.setFormValue('province', province);
-      this.props.setFormValue('city', city);
-      this.props.setFormValue('district', district);
-      this.props.setFormValue('street', street);
-      this.props.setFormValue('code', code);
-    }
-    this.setState({ areaItems });
   }
   handleRegionChange = (values, selOpts) => {
-    const areaItems = [];
-    if (selOpts.length === 0) {
-      if (this.props.onCascadeChange) {
-        this.props.onCascadeChange(areaItems);
+    if (this.props.onChange) {
+      const areaItems = [...values];
+      if (selOpts.length > 0) {
+        areaItems.unshift(selOpts[selOpts.length - 1].code);
       }
-      if ('setFormValue' in this.props) {
-        this.props.setFormValue('province', undefined);
-        this.props.setFormValue('city', undefined);
-        this.props.setFormValue('district', undefined);
-        this.props.setFormValue('street', undefined);
-        this.props.setFormValue('code', undefined);
-      }
-    } else {
-      for (let i = 0; i < selOpts.length; i++) {
-        areaItems.push(selOpts[i].value);
-      }
-      while (areaItems.length < 4) {
-        areaItems.push(undefined);
-      }
-      areaItems.push(selOpts[selOpts.length - 1].code);
-      if (this.props.onCascadeChange) {
-        areaItems.push(selOpts[selOpts.length - 1].code);
-        this.props.onCascadeChange(areaItems);
-      }
-      if ('setFormValue' in this.props) {
-        const [province, city, district, street, code] = areaItems;
-        this.props.setFormValue('province', province);
-        this.props.setFormValue('city', city);
-        this.props.setFormValue('district', district);
-        this.props.setFormValue('street', street);
-        this.props.setFormValue('code', code);
-      }
+      this.props.onChange(areaItems);
     }
     console.log('region change', values);
     this.setState({ areaItems: values });
@@ -319,7 +244,7 @@ export default class RegionCascade extends React.Component {
     return (
       <Row>
         {
-          this.props.withCountry &&
+          this.props.country !== undefined &&
           <Select size="large" value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
             <OptGroup label={formatMsg(intl, 'selectCountry')}>
             {
