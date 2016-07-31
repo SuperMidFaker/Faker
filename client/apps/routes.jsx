@@ -200,6 +200,8 @@ export default(store, cookie) => {
             </Route>
             <Route path="tariff">
               <IndexRoute component={TMSTariff.List} />
+              <Route path="new" component={TMSTariff.CreateNew} />
+              <Route path="edit/:uid" component={TMSTariff.Edit} />
             </Route>
           </Route>
         </Route>
