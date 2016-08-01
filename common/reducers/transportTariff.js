@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'LOAD_TARIFF', 'LOAD_TARIFF_SUCCEED', 'LOAD_TARIFF_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
+  'LOAD_FORMPARAMS', 'LOAD_FORMPARAMS_SUCCEED', 'LOAD_FORMPARAMS_FAIL',
 ]);
 
 const initialState = {
@@ -18,6 +19,13 @@ const initialState = {
     current: 1,
     data: [],
   },
+  formData: {
+    limits: [],
+  },
+  partners: [],
+  formParams: {
+    transModes: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -30,7 +38,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false,
         loaded: true, tarifflist: action.result.data,
         filters: JSON.parse(action.params.filters),
-    };
+      };
+    case actionTypes.LOAD_PARTNERS_SUCCEED:
+     return { ...state, partners: action.result.data };
+    case actionTypes.LOAD_FORMPARAMS_SUCCEED:
+      return { ...state, formParams: action.result.data };
     default:
       return state;
   }
@@ -52,7 +64,7 @@ export function loadTable(params) {
   };
 }
 
-export function loadPartners(tenantId, type) {
+export function loadPartners(tenantId, typeCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -62,7 +74,22 @@ export function loadPartners(tenantId, type) {
       ],
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
-      params: { tenantId, type },
+      params: { tenantId, typeCode },
+    },
+  };
+}
+
+export function loadFormParams(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FORMPARAMS,
+        actionTypes.LOAD_FORMPARAMS_SUCCEED,
+        actionTypes.LOAD_FORMPARAMS_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/params',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }

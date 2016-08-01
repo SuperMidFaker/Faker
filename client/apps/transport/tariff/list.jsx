@@ -37,8 +37,6 @@ function fetchData({ state, dispatch }) {
     tarifflist: state.transportTariff.tarifflist,
     filters: state.transportTariff.filters,
     loading: state.transportTariff.loading,
-    sortField: state.transportTariff.sortField,
-    sortOrder: state.transportTariff.sortOrder,
   }),
   { loadTable })
 @connectNav((props, dispatch, router, lifecycle) => {
@@ -58,14 +56,8 @@ export default class TariffList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     filters: PropTypes.array.isRequired,
-    sortField: PropTypes.string.isRequired,
-    sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     tarifflist: PropTypes.object.isRequired,
-    delDraft: PropTypes.func.isRequired,
-    revokeOrReject: PropTypes.func.isRequired,
-    loadShipmtDetail: PropTypes.func.isRequired,
-    loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired,
   }
   state = {
@@ -107,7 +99,7 @@ export default class TariffList extends React.Component {
     title: this.msg('tariffType'),
     dataIndex: 'kind',
     width: 80,
-    render: (o) => TARIFF_KINDS[o],
+    render: (o) => TARIFF_KINDS[o].text,
   }, {
     title: this.msg('effectiveDate'),
     dataIndex: 'effectiveDate',

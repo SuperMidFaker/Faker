@@ -50,7 +50,6 @@ export default class TariffCreate extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <div className="panel-header" />
           <div className="panel-body">
             <Tabs onChange={this.handleTabChange}>
               <AgreementForm />
