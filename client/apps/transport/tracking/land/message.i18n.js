@@ -127,11 +127,11 @@ export default defineMessages({
   },
   shipmtEstDeliveryDate: {
     id: 'transport.tracking.est.delivery.date',
-    defaultMessage: '预计交货',
+    defaultMessage: '预计到达',
   },
   shipmtActDeliveryDate: {
     id: 'transport.tracking.act.delivery.date',
-    defaultMessage: '实际交货',
+    defaultMessage: '实际到达',
   },
   searchPlaceholder: {
     id: 'transport.tracking.search.placeholder',
