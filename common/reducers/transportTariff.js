@@ -19,7 +19,7 @@ const initialState = {
     current: 1,
     data: [],
   },
-  formData: {
+  agreement: {
     limits: [],
   },
   partners: [],
