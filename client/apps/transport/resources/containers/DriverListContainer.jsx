@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DriverList from '../components/DriverList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadDriverList, editDriver } from 'common/reducers/transportResources';
+import { loadDriverList, editDriver, editDriverLogin } from 'common/reducers/transportResources';
 import { transformRawDriverDataToDisplayData } from '../utils/dataMapping';
 
 function fetchData({ dispatch, state }) {
@@ -12,7 +12,7 @@ function fetchData({ dispatch, state }) {
 @connectFetch()(fetchData)
 @connect(state => ({
   drivers: state.transportResources.drivers,
-}), { editDriver })
+}), { editDriver, editDriverLogin })
 export default class DriverListContainer extends Component {
   static propTypes = {
     drivers: PropTypes.array.isRequired,              // 服务器返回的司机数组
@@ -38,6 +38,7 @@ export default class DriverListContainer extends Component {
         onStopDriverBtnClick={this.handleStopDriverBtnClick}
         onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
         onAddDriverBtnClicked={this.handleAddDriverBtnClicked}
+        editDriverLogin={this.props.editDriverLogin}
       />
     );
   }

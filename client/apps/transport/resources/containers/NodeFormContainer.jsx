@@ -1,11 +1,19 @@
 import React, { Component, PropTypes } from 'react';
-import { Form } from 'antd';
+import { Form, Row, Col, Card } from 'antd';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import NodeForm from '../components/NodeForm';
-import { addNode, editNode, changeRegion } from 'common/reducers/transportResources';
+import ContentWrapper from '../components/ContentWrapper';
+import { addNode, editNode, changeRegion, loadNodeUserList, addNodeUser, editNodeUser, removeNodeUser, updateUserStatus } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
+import NodeUserList from '../components/NodeUserList';
 
+function fetchData({ dispatch, params }) {
+  return dispatch(loadNodeUserList(params.node_id || -1));
+}
+
+@connectFetch()(fetchData)
 @connectNav((props, dispatch, router) => {
   dispatch(setNavTitle({
     depth: 3,
@@ -20,7 +28,8 @@ import { setNavTitle } from 'common/reducers/navbar';
   nodeType: state.transportResources.nodeType,
   region: state.transportResources.region,
   tenantId: state.account.tenantId,
-}), { addNode, editNode, changeRegion })
+  nodeUsers: state.transportResources.nodeUsers,
+}), { addNode, editNode, changeRegion, addNodeUser, editNodeUser, removeNodeUser, updateUserStatus })
 @Form.create()
 export default class NodeFormConainer extends Component {
   static propTypes = {
@@ -31,6 +40,11 @@ export default class NodeFormConainer extends Component {
     changeRegion: PropTypes.func.isRequired,  // region级联选项改变时发生的action creator
     region: PropTypes.object.isRequired,      // 代表级联选项的值
     tenantId: PropTypes.number.isRequired,
+    nodeUsers: PropTypes.array.isRequired,
+    addNodeUser: PropTypes.func.isRequired,
+    editNodeUser: PropTypes.func.isRequired,
+    removeNodeUser: PropTypes.func.isRequired,
+    updateUserStatus: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -67,22 +81,44 @@ export default class NodeFormConainer extends Component {
       const { province, city, district, street } = editNodeInfo;
       const region = [province, city, district, street];
       return (
-        <NodeForm mode="edit"
-          form={form}
-          node={editNodeInfo}
-          region={region}
-          changeRegion={this.props.changeRegion}
-          onRegionChange={this.handleRegionChange}
-          onSubmitBtnClick={this.handleEditNode}
-        />
+        <ContentWrapper>
+          <Row>
+            <Col span={12}>
+              <Card title="地点信息" style={{ margin: '0 12px 24px 24px' }}>
+                <NodeForm mode="edit"
+                  form={form}
+                  node={editNodeInfo}
+                  region={region}
+                  changeRegion={this.props.changeRegion}
+                  onRegionChange={this.handleRegionChange}
+                  onSubmitBtnClick={this.handleEditNode}
+                  style={{ width: '100%' }}
+                />
+              </Card>
+            </Col>
+            <Col span={12}>
+              <NodeUserList
+                node={editNodeInfo}
+                tenantId={this.props.tenantId}
+                nodeUsers={this.props.nodeUsers}
+                addNodeUser={this.props.addNodeUser}
+                eitNodeUser={this.props.editNodeUser}
+                removeNodeUser={this.props.removeNodeUser}
+                updateUserStatus={this.props.updateUserStatus}
+              />
+            </Col>
+          </Row>
+        </ContentWrapper>
       );
     } else {
       return (
-        <NodeForm mode="add"
-          form={form}
-          onRegionChange={this.handleRegionChange}
-          onSubmitBtnClick={this.handleAddNode}
-        />
+        <ContentWrapper>
+          <NodeForm mode="add"
+            form={form}
+            onRegionChange={this.handleRegionChange}
+            onSubmitBtnClick={this.handleAddNode}
+          />
+        </ContentWrapper>
       );
     }
   }

@@ -9,7 +9,29 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick } = props;
+  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick, editDriverLogin } = props;
+
+  function phoneLogin(record) {
+    if (record.login_id === -1) {
+      return (
+        <span>
+          <span className="ant-divider"></span>
+          <a onClick={() => editDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, phone: record.phone } })}>
+            开启手机登录
+          </a>
+        </span>
+      );
+    } else {
+      return (
+        <span>
+          <span className="ant-divider"></span>
+          <a onClick={() => editDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, phone: record.phone } })}>
+            关闭手机登录
+          </a>
+        </span>
+      );
+    }
+  }
 
   function editAndStopDriverOperations(record) {
     return (
@@ -21,6 +43,7 @@ function DriverList(props) {
         >
           停用
         </a>
+        {phoneLogin(record)}
       </span>
     );
   }

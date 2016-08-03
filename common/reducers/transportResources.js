@@ -7,14 +7,20 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'LOAD_CARLIST', 'LOAD_CARLIST_SUCCEED', 'LOAD_CARLIST_FAIL',
   'ADD_DRIVER', 'ADD_DRIVER_SUCCEED', 'ADD_DRIVER_FAIL',
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
+  'EDIT_DRIVER_LOGIN', 'EDIT_DRIVER_LOGIN_SUCCEED', 'EDIT_DRIVER_LOGIN_FAIL',
   'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
   'SET_MENU_ITEM_KEY', 'SET_NODE_TYPE',
   'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL',
+  'LOAD_NODE_USERLIST', 'LOAD_NODE_USERLIST_SUCCEED', 'LOAD_NODE_USERLIST_FAIL',
   'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
   'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
   'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
   'CHANGE_REGION',
   'VALIDATE_VEHICLE', 'VALIDATE_VEHICLE_SUCCEED', 'VALIDATE_VEHICLE_FAIL',
+  'ADD_NODE_USER', 'ADD_NODE_USER_SUCCEED', 'ADD_NODE_USER_FAIL',
+  'EDIT_NODE_USER', 'EDIT_NODE_USER_SUCCEED', 'EDIT_NODE_USER_FAIL',
+  'REMOVE_NODE_USER', 'REMOVE_NODE_USER_SUCCEED', 'REMOVE_NODE_USER_FAIL',
+  'UPDATE_USER_STATUS', 'UPDATE_USER_STATUS_SUCCEED', 'UPDATE_USER_STATUS_FAIL',
 ]);
 
 const initialState = {
@@ -32,6 +38,7 @@ const initialState = {
     street: '',
     region_code: '',
   },
+  nodeUsers: [],
 };
 
 /**
@@ -72,6 +79,11 @@ export default function reducer(state = initialState, action) {
       const drivers = updateArray({ array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo });
       return { ...state, loading: false, drivers };
     }
+    case actionTypes.EDIT_DRIVER_LOGIN_SUCCEED: {
+      const { driverId, driverInfo } = action.result.data;
+      const drivers = updateArray({ array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo });
+      return { ...state, loading: false, drivers };
+    }
     case actionTypes.LOAD_CARLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
@@ -95,6 +107,27 @@ export default function reducer(state = initialState, action) {
       return { ...state, region: action.region };
     case actionTypes.VALIDATE_VEHICLE_SUCCEED:
       return { ...state, vehicleValidate: action.result.data.vehicleValidate };
+    case actionTypes.LOAD_NODE_USERLIST_SUCCEED:
+      return { ...state, nodeUsers: action.result.data };
+    case actionTypes.ADD_NODE_USER_SUCCEED:
+      state.nodeUsers.unshift(action.result.data);
+      return { ...state };
+    case actionTypes.EDIT_NODE_USER_SUCCEED: {
+      const i = state.nodeUsers.findIndex(item => item.id === action.data.id);
+      state.nodeUsers.splice(i, 1, { ...state.nodeUsers[i], ...action.data.nodeUserInfo });
+      return { ...state };
+    }
+    case actionTypes.REMOVE_NODE_USER_SUCCEED: {
+      const nodeUsers = [...state.nodeUsers];
+      const index = nodeUsers.findIndex(item => item.id === action.data.id);
+      nodeUsers.splice(index, 1);
+      return { ...state, nodeUsers };
+    }
+    case actionTypes.UPDATE_USER_STATUS_SUCCEED: {
+      const i = state.nodeUsers.findIndex(item => item.login_id === action.data.loginId);
+      state.nodeUsers.splice(i, 1, { ...state.nodeUsers[i], disabled: action.data.disabled });
+      return { ...state };
+    }
     default:
       return state;
   }
@@ -196,6 +229,21 @@ export function editDriver({ driverId, driverInfo }) {
   };
 }
 
+export function editDriverLogin({ driverId, driverInfo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_DRIVER_LOGIN,
+        actionTypes.EDIT_DRIVER_LOGIN_SUCCEED,
+        actionTypes.EDIT_DRIVER_LOGIN_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/edit_driver_login',
+      method: 'post',
+      data: { driverInfo, driverId },
+    },
+  };
+}
+
 export function loadDriverList(tenantId) {
   return {
     [CLIENT_API]: {
@@ -284,4 +332,80 @@ export function setMenuItemKey(key) {
 
 export function changeRegion(region) {
   return { type: actionTypes.CHANGE_REGION, region };
+}
+
+export function loadNodeUserList(nodeId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NODE_USERLIST,
+        actionTypes.LOAD_NODE_USERLIST_SUCCEED,
+        actionTypes.LOAD_NODE_USERLIST_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/node_user_list',
+      method: 'get',
+      params: { nodeId },
+    },
+  };
+}
+
+export function addNodeUser(nodeId, nodeUserInfo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_NODE_USER,
+        actionTypes.ADD_NODE_USER_SUCCEED,
+        actionTypes.ADD_NODE_USER_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/add_node_user',
+      method: 'post',
+      data: { nodeId, nodeUserInfo },
+    },
+  };
+}
+
+export function editNodeUser(id, nodeUserInfo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_NODE_USER,
+        actionTypes.EDIT_NODE_USER_SUCCEED,
+        actionTypes.EDIT_NODE_USER_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/edit_node_user',
+      method: 'post',
+      data: { id, nodeUserInfo },
+    },
+  };
+}
+
+export function removeNodeUser(id, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_NODE_USER,
+        actionTypes.REMOVE_NODE_USER_SUCCEED,
+        actionTypes.REMOVE_NODE_USER_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/remove_node_user',
+      method: 'post',
+      data: { id, loginId },
+    },
+  };
+}
+
+
+export function updateUserStatus(loginId, disabled) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_USER_STATUS,
+        actionTypes.UPDATE_USER_STATUS_SUCCEED,
+        actionTypes.UPDATE_USER_STATUS_FAIL,
+      ],
+      endpoint: 'v1/user/status',
+      method: 'put',
+      data: { loginId, disabled },
+    },
+  };
 }

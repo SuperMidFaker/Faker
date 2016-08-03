@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Form, Button, Input } from 'antd';
-import ContentWrapper from './ContentWrapper';
 import Cascader from 'client/components/region-cascade';
 
 const FormItem = Form.Item;
@@ -16,8 +15,8 @@ export default class CarForm extends Component {
     const setFieldsValue = form.setFieldsValue;
     if (mode === 'edit') {
       setFieldsValue(node);
-      const [province, city, district] = region;
-      changeRegion({ province, city, district });
+      const [code, province, city, district, street] = region;
+      changeRegion({ province, city, district, region_code: code, street });
     }
   }
   render() {
@@ -25,37 +24,35 @@ export default class CarForm extends Component {
     const getFieldProps = form.getFieldProps;
     const regionValues = region || [];
     return (
-      <ContentWrapper>
-        <Form horizontal onSubmit={onSubmitBtnClick} className="form-edit-content offset-right-col">
-          <FormItem label="名称:" required {...formItemLayout}>
-            <Input {...getFieldProps('name')} required />
-          </FormItem>
-          <FormItem label="外部代码:" {...formItemLayout}>
-            <Input {...getFieldProps('node_code')} />
-          </FormItem>
-          <FormItem label="区域" {...formItemLayout}>
-            <Cascader region={regionValues} uncontrolled onCascadeChange={onRegionChange} />
-          </FormItem>
-          <FormItem label="具体地址:" required {...formItemLayout}>
-            <Input {...getFieldProps('addr')} required />
-          </FormItem>
-          <FormItem label="联系人:" {...formItemLayout} required>
-            <Input {...getFieldProps('contact')} />
-          </FormItem>
-          <FormItem label="手机号:" {...formItemLayout} required>
-            <Input {...getFieldProps('mobile')} required />
-          </FormItem>
-          <FormItem label="邮箱:" {...formItemLayout}>
-            <Input {...getFieldProps('email')} />
-          </FormItem>
-          <FormItem label="备注:" {...formItemLayout}>
-            <Input type="textarea" {...getFieldProps('remark')} />
-          </FormItem>
-          <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-            <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>
-          </FormItem>
-        </Form>
-      </ContentWrapper>
+      <Form horizontal onSubmit={onSubmitBtnClick} className="form-edit-content offset-right-col" style={this.props.style}>
+        <FormItem label="名称:" required {...formItemLayout}>
+          <Input {...getFieldProps('name')} required />
+        </FormItem>
+        <FormItem label="外部代码:" {...formItemLayout}>
+          <Input {...getFieldProps('node_code')} />
+        </FormItem>
+        <FormItem label="区域" {...formItemLayout}>
+          <Cascader region={regionValues} onChange={onRegionChange} />
+        </FormItem>
+        <FormItem label="具体地址:" required {...formItemLayout}>
+          <Input {...getFieldProps('addr')} required />
+        </FormItem>
+        <FormItem label="联系人:" {...formItemLayout} required>
+          <Input {...getFieldProps('contact')} />
+        </FormItem>
+        <FormItem label="手机号:" {...formItemLayout} required>
+          <Input {...getFieldProps('mobile')} required />
+        </FormItem>
+        <FormItem label="邮箱:" {...formItemLayout}>
+          <Input {...getFieldProps('email')} />
+        </FormItem>
+        <FormItem label="备注:" {...formItemLayout}>
+          <Input type="textarea" {...getFieldProps('remark')} />
+        </FormItem>
+        <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
+          <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>
+        </FormItem>
+      </Form>
     );
   }
 }
