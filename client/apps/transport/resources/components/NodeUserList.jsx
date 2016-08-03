@@ -190,7 +190,7 @@ export default class NodeUserList extends Component {
               help={this.state.phoneInput.help}
               required
             >
-              <Input value={this.state.phoneInput.value} id="error" onChange={this.handlePhoneInputChange} disabled={this.state === 'edit'} />
+              <Input value={this.state.phoneInput.value} id="error" onChange={this.handlePhoneInputChange} disabled={this.state.mode === 'edit'} />
             </FormItem>
           </Form>
         </Modal>
