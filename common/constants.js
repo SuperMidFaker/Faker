@@ -117,13 +117,6 @@ const PARTNERSHIP_TYPE_INFO = {
 
 const PARTNER_TENANT_TYPE = ['TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_EXT', 'TENANT_OFFLINE'];
 
-const CONDITION_STATE = [{
-  text: '1|是',
-  value: '1',
-}, {
-  text: '0|否',
-  value: '0',
-}];
 const WRAP_TYPE = [{
   text: '木箱',
   value: '1',
@@ -145,16 +138,6 @@ const WRAP_TYPE = [{
 }, {
   text: '其它',
   value: '7',
-}];
-const FEE_TYPE = [{
-  text: '1|率',
-  value: '1',
-}, {
-  text: '2|单价',
-  value: '2',
-}, {
-  text: '3|总价',
-  value: '3',
 }];
 
 export const DELG_EXEMPTIONWAY = [{
@@ -241,7 +224,6 @@ const SHIPMENT_POD_STATUS = {
   acceptByClient: 3,
 };
 
-
 const VEHICLE_STATUS = {
   disabled: { value: -1, text: '停用' },
   notUse: { value: 0, text: '不在途' },
@@ -314,6 +296,36 @@ const CONTAINER_PACKAGE_TYPE = [{
   value: 'HQ40',
 }];
 
+export const TARIFF_KINDS = [{
+  value: 'sales',
+  text: '销售价',
+}, {
+  value: 'cost',
+  text: '成本价',
+}, {
+  value: 'salesBase',
+  text: '销售基准价',
+  isBase: true,
+}, {
+  value: 'costBase',
+  text: '成本基准价',
+  isBase: true,
+}];
+
+export const TARIFF_METER_METHODS = [{
+  value: 'kg',
+  text: '公斤单价',
+}, {
+  value: 't',
+  text: '吨单价',
+}, {
+  value: 'm3',
+  text: '立方米单价',
+}, {
+  value: 't*m',
+  text: '吨*公里系数',
+}];
+
 const ENTERPRISE = 'enterprise';
 const BRANCH = 'branch';
 const PERSONNEL = 'personnel';
@@ -370,9 +382,7 @@ export {
   ENTERPRISE,
   BRANCH,
   PERSONNEL,
-  CONDITION_STATE,
   WRAP_TYPE,
-  FEE_TYPE,
   SHIPMENT_EFFECTIVES,
   SHIPMENT_SOURCE,
   SHIPMENT_TRACK_STATUS,

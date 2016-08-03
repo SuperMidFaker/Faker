@@ -5,7 +5,7 @@ import { Row, Col, Form, Card } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
-import { setFormValue, setConsignFields } from 'common/reducers/shipment';
+import { setConsignFields } from 'common/reducers/shipment';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -54,7 +54,7 @@ function getFieldDefaults(state, type) {
       state.shipment.formRequire.consigneeLocations :
       state.shipment.formRequire.consignerLocations,
   }),
-  { setFormValue, setConsignFields }
+  { setConsignFields }
 )
 export default class ConsignInfo extends React.Component {
   static propTypes = {
@@ -63,7 +63,6 @@ export default class ConsignInfo extends React.Component {
     type: PropTypes.oneOf(['consignee', 'consigner']),
     outerColSpan: PropTypes.number.isRequired,
     labelColSpan: PropTypes.number.isRequired,
-    setFormValue: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     formhoc: PropTypes.object.isRequired,
     fieldDefaults: PropTypes.object.isRequired,
@@ -118,18 +117,15 @@ export default class ConsignInfo extends React.Component {
       });
     }
   }
-  handleRegionValue = (field, value) => {
-    if (field === 'province') {
-      this.props.setFormValue(this.renderFields.province, value);
-    } else if (field === 'city') {
-      this.props.setFormValue(this.renderFields.city, value);
-    } else if (field === 'district') {
-      this.props.setFormValue(this.renderFields.district, value);
-    } else if (field === 'street') {
-      this.props.setFormValue(this.renderFields.street, value);
-    } else if (field === 'code') {
-      this.props.setFormValue(this.renderFields.regionCode, value);
-    }
+  handleRegionValue = (region) => {
+    const [code, province, city, district, street] = region;
+    this.props.setConsignFields({
+      [this.renderFields.province]: province,
+      [this.renderFields.city]: city,
+      [this.renderFields.district]: district,
+      [this.renderFields.street]: street,
+      [this.renderFields.regionCode]: code,
+    });
   }
   renderMsgKeys = this.props.type === 'consignee' ? {
     title: 'consigneeInfo',
@@ -177,13 +173,10 @@ export default class ConsignInfo extends React.Component {
       key: `${cl.node_id}${cl.name}`,
     }));
     const { province, city, district, street, name, addr, contact, mobile, email } = this.renderFields;
-    const region = {
-      province: fieldDefaults[province],
-      city: fieldDefaults[city],
-      district: fieldDefaults[district],
-      street: fieldDefaults[street],
-    };
-    // todo region array, setFormValue -> onChange, formData formOrigin
+    // todo formData formOrigin
+    const region = [
+      fieldDefaults[province], fieldDefaults[city], fieldDefaults[district], fieldDefaults[street],
+    ];
     return (
       <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 16 }}>
         <Row>
@@ -198,7 +191,7 @@ export default class ConsignInfo extends React.Component {
             <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }} {...this.renderRules.portal}
             >
-              <RegionCascade region={region} setFormValue={this.handleRegionValue} />
+              <RegionCascade region={region} onChange={this.handleRegionValue} />
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
               field={this.renderFields.addr} colSpan={4} {...this.renderRules.addr}

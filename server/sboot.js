@@ -31,6 +31,7 @@ global.__PORT__ = process.env.PORT || config.get('server_port');
 global.__CDN__ = config.get('CDN_URL');
 global.API_ROOTS = {
   default: 'http://localhost:3030/',
+  mongo: 'http://localhost:3032/',
   self: `http://localhost:${__PORT__}/`,
 };
 const isomorphic = argv.admin ?

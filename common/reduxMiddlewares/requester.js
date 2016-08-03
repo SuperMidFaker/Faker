@@ -45,7 +45,7 @@ function apiRequestPromise(initialReq) {
         request.end((err, resp) => {
           if (err || !resp.body || resp.body.status !== 200) {
             console.log('api mw err', err, 'body', resp && resp.body);
-            if (resp.body.status === 401) {
+            if (resp && resp.body && resp.body.status === 401) {
               // 在浏览器端验证api请求验证错误时跳转至login页面
               if (!(typeof document === 'undefined' ||
                     typeof window === 'undefined' ||

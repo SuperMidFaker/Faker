@@ -11,35 +11,60 @@ const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const formatMsg = format(messages);
 
-function isPropsChange(nextProps, props, field) {
-  return Object.prototype.hasOwnProperty.call(nextProps, field) &&
-    nextProps[field] && nextProps[field] !== props[field];
+function getRegionProps(nextRegion) {
+  const [province, city, district, street] = nextRegion;
+  const items = [];
+  if (province) {
+    items.push(province);
+  }
+  if (city) {
+    items.push(city);
+  }
+  if (district) {
+    items.push(district);
+  }
+  if (street) {
+    items.push(street);
+  }
+  return items;
 }
 
-function isRegionChanged(nextRegion, region, stateRegionArea) {
-  let province;
-  let city;
-  let district;
-  let street;
-  let changed = false;
-  if (Array.isArray(nextRegion)) {
-    province = stateRegionArea[0];
-    city = stateRegionArea[1];
-    district = stateRegionArea[2];
-    street = stateRegionArea[3];
-    changed = province !== region[0] ||
-      city !== region[1] ||
-      district !== region[2];
-  } else {
-    province = nextRegion.province;
-    city = nextRegion.city;
-    district = nextRegion.district;
-    street = nextRegion.street;
-    changed = isPropsChange(nextRegion, region, 'province') ||
-      isPropsChange(nextRegion, region, 'city') ||
-      isPropsChange(nextRegion, region, 'district');
+function getNextChinaRegions(nextRegion, props, resolve) {
+  const [province, city, district] = nextRegion;
+  props.loadNextRegionList(province, city, district).then(result => {
+    const chinaRegions = props.provinces.map(prov => ({
+      value: prov.name,
+      label: prov.name,
+      code: prov.code,
+      isLeaf: false,
+    }));
+    let regions = chinaRegions;
+    const tests = [province, city, district];
+    const results = [result.data.cities, result.data.districts, result.data.streets];
+    for (let level = 0; level < 3; level++) {
+      for (let i = 0; i < regions.length; i++) {
+        const rg = regions[i];
+        if (rg.label === tests[level]) {
+          rg.children = results[level].map(cit => ({
+            value: cit.name,
+            label: cit.name,
+            code: cit.code,
+            isLeaf: level === 2,
+          }));
+          regions = rg.children;
+          break;
+        }
+      }
+    }
+    resolve(chinaRegions);
+  });
+}
+
+function isEmptyRegionProp(region) {
+  if (!region) {
+    return true;
   }
-  return { province, city, district, street, changed: !!changed };
+  return region.length === 0 || !region[0];
 }
 
 @injectIntl
@@ -53,29 +78,13 @@ function isRegionChanged(nextRegion, region, stateRegionArea) {
 export default class RegionCascade extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    withCountry: PropTypes.bool,
-    uncontrolled: PropTypes.bool, // 值由cascade本身控制, true时region传入数组结构
-    // todo 统一region使用
-    region: PropTypes.oneOfType([
-      PropTypes.shape({
-        country: PropTypes.string,
-        province: PropTypes.string,
-        city: PropTypes.string,
-        district: PropTypes.string,
-        street: PropTypes.string,
-      }),
-      PropTypes.array,  // [ 'province', 'city', 'district', 'street' ]
-    ]),
+    country: PropTypes.string, // undefined 不显示country编辑框
+    region: PropTypes.array,  // [ 'province', 'city', 'district', 'street' ]
     provinces: PropTypes.array.isRequired,
     provLoaded: PropTypes.bool.isRequired,
-    setFormValue: PropTypes.func, // 'province'/'city'/'district', value
-    onCascadeChange: PropTypes.func, // ant-design cascade本身的onChange参数
+    onChange: PropTypes.func.isRequired, // value参数 ['region_code', 'province', 'city','district', 'street'], country
     loadProvinces: PropTypes.func.isRequired,
     loadNextRegionList: PropTypes.func.isRequired,
-  }
-  static defaultProps = {
-    withCountry: false,
-    uncontrolled: false,
   }
   constructor(...args) {
     super(...args);
@@ -83,7 +92,7 @@ export default class RegionCascade extends React.Component {
       disableCascader: false,
       country: CHINA_CODE,
       chinaRegions: [],
-      areaItems: [],
+      cascadeRegion: [],
     };
   }
   componentWillMount() {
@@ -96,17 +105,17 @@ export default class RegionCascade extends React.Component {
       }));
       this.setState({ chinaRegions });
     }
+    if (this.props.country !== undefined) {
+      this.setState({ country: this.props.country });
+    }
     if (this.props.region) {
-      let areaItems;
-      if (Array.isArray(this.props.region)) {
-        areaItems = this.props.region;
-      } else {
-        areaItems = [
-          this.props.region.province, this.props.region.city,
-          this.props.region.district, this.props.region.street,
-        ];
+      const areaItems = getRegionProps(this.props.region);
+      if (areaItems.length > 0) {
+        getNextChinaRegions(areaItems, this.props, chinaRegions => {
+          this.setState({ chinaRegions });
+        });
+        this.setState({ cascadeRegion: areaItems });
       }
-      this.setState({ areaItems });
     }
   }
   componentDidMount() {
@@ -119,108 +128,57 @@ export default class RegionCascade extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.province !== this.props.provinces) {
-      const chinaRegions = nextProps.provinces.map(prov => ({
-        value: prov.name,
-        label: prov.name,
-        code: prov.code,
-        isLeaf: false,
-      }));
-      this.setState({ chinaRegions });
+    console.log('will receive', nextProps, this.props);
+    if (nextProps.region.country !== this.props.region.country) {
+      this.setState({
+        country: nextProps.region.country,
+      });
     }
-    if (nextProps.region) {
-      const propsAsState = {};
-      if (nextProps.region.country !== this.props.region.country) {
-        propsAsState.country = nextProps.region.country;
-      }
-      const { province, city, district, street, changed } =
-        isRegionChanged(nextProps.region, this.props.region, this.state.areaItems);
-      console.log(changed, this.state);
-      if (!province && !Array.isArray(nextProps.region)) {
-        // 清空
-        propsAsState.areaItems = [];
-      } else {
-        if (changed) {
-          propsAsState.areaItems = [province, city, district, street];
-        } else {
-          propsAsState.areaItems = this.state.areaItems;
-        }
-        nextProps.loadNextRegionList(province, city, district).then(result => {
-          const chinaRegions = nextProps.provinces.map(prov => ({
-            value: prov.name,
-            label: prov.name,
-            code: prov.code,
-            isLeaf: false,
-          }));
-          let regions = chinaRegions;
-          for (let i = 0; i < regions.length; i++) {
-            const provRg = regions[i];
-            if (provRg.label === province) {
-              provRg.children = result.data.cities.map(cit => ({
-                value: cit.name,
-                label: cit.name,
-                code: cit.code,
-                isLeaf: false,
-              }));
-              regions = provRg.children;
-              break;
-            }
-          }
-          for (let i = 0; i < regions.length; i++) {
-            const cityRg = regions[i];
-            if (cityRg.label === city) {
-              cityRg.children = result.data.districts.map(distr => ({
-                value: distr.name,
-                label: distr.name,
-                code: distr.code,
-                isLeaf: false,
-              }));
-              regions = cityRg.children;
-              break;
-            }
-          }
-          for (let i = 0; i < regions.length; i++) {
-            const distrRg = regions[i];
-            if (distrRg.label === district) {
-              distrRg.children = result.data.streets.map(str => ({
-                value: str.name,
-                label: str.name,
-                code: str.code,
-              }));
-              break;
-            }
-          }
+    if (nextProps.provinces.length !== this.props.provinces.length) {
+      const areaItems = getRegionProps(nextProps.region);
+      if (areaItems.length > 0) {
+        getNextChinaRegions(areaItems, nextProps, chinaRegions => {
           this.setState({ chinaRegions });
         });
+        this.setState({ cascadeRegion: areaItems });
+      } else {
+        const chinaRegions = nextProps.provinces.map(prov => ({
+          value: prov.name,
+          label: prov.name,
+          code: prov.code,
+          isLeaf: false,
+        }));
+        this.setState({ chinaRegions });
       }
-      this.setState(propsAsState);
+    } else if (!isEmptyRegionProp(nextProps.region)) {
+      if (isEmptyRegionProp(this.props.region)) {
+        const areaItems = getRegionProps(nextProps.region);
+        getNextChinaRegions(areaItems, nextProps,
+          chinaRegions => {
+            this.setState({ chinaRegions });
+        });
+        console.log('new state', areaItems);
+        this.setState({ cascadeRegion: areaItems });
+      }
+    } else if (!isEmptyRegionProp(this.props.region)) {
+      console.log('set areas empty');
+      this.setState({ cascadeRegion: [] });
     }
   }
   handleCountryChange = (value) => {
     if (value !== CHINA_CODE) {
       this.setState({
         disableCascader: true,
-        areaItems: [],
+        cascadeRegion: [],
       });
     } else {
       this.setState({
         disableCascader: false,
       });
     }
-    if ('setFormValue' in this.props) {
-      this.props.setFormValue('country', value);
-      this.props.setFormValue('province', undefined);
-      this.props.setFormValue('city', undefined);
-      this.props.setFormValue('district', undefined);
-      this.props.setFormValue('street', undefined);
-      this.props.setFormValue('code', undefined);
-    }
+    this.props.onChange([], value);
   }
   handleRegionLoad = (selOpts) => {
-    const areaItems = [];
-    for (let i = 0; i < selOpts.length; i++) {
-      areaItems.push(selOpts[i].value);
-    }
     const targetOption = selOpts[selOpts.length - 1];
     this.props.loadRegionChildren(targetOption.code).then(result => {
       if (result.error) {
@@ -235,66 +193,32 @@ export default class RegionCascade extends React.Component {
         this.setState({ chinaRegions: [...this.state.chinaRegions] });
       }
     });
-    this.state.areaItems = areaItems;
-    console.log('region load', areaItems);
-    this.setState({ areaItems });
-    if (this.props.onCascadeChange) {
-      while (areaItems.length < 4) {
-        areaItems.push(undefined);
-      }
-      areaItems.push(selOpts[selOpts.length - 1].code);
-      this.props.onCascadeChange(areaItems);
+    const areaItems = [];
+    for (let i = 0; i < selOpts.length; i++) {
+      areaItems.push(selOpts[i].value);
     }
-    if ('setFormValue' in this.props) {
-      const [province, city, district, street] = areaItems;
-      this.props.setFormValue('province', province);
-      this.props.setFormValue('city', city);
-      this.props.setFormValue('district', district);
-      this.props.setFormValue('street', street);
-      this.props.setFormValue('code', selOpts[selOpts.length - 1].code);
-    }
+    this.setState({ cascadeRegion: areaItems });
+    this.props.onChange(
+      [selOpts[selOpts.length - 1].code, ...areaItems],
+      this.state.country
+    );
   }
-  handleRegionChange = (areaItems, selOpts) => {
-    if (areaItems.length === 0) {
-      // clear
-      this.state.areaItems = []; // used in willReceiveProps
-      this.setState({ areaItems });
-      if (this.props.onCascadeChange) {
-        this.props.onCascadeChange(areaItems);
-      }
-      if ('setFormValue' in this.props) {
-        this.props.setFormValue('province', undefined);
-        this.props.setFormValue('city', undefined);
-        this.props.setFormValue('district', undefined);
-        this.props.setFormValue('street', undefined);
-        this.props.setFormValue('code', undefined);
-      }
-    } else if (areaItems.length === 4) {
-      this.state.areaItems = areaItems; // used in willReceiveProps
-      this.setState({ areaItems });
-      if (this.props.onCascadeChange) {
-        areaItems.push(selOpts[selOpts.length - 1].code);
-        this.props.onCascadeChange(areaItems);
-      }
-      if ('setFormValue' in this.props) {
-        const [province, city, district, street] = areaItems;
-        this.props.setFormValue('province', province);
-        this.props.setFormValue('city', city);
-        this.props.setFormValue('district', district);
-        this.props.setFormValue('street', street);
-        this.props.setFormValue('code', selOpts[selOpts.length - 1].code);
-      }
+  handleRegionChange = (values, selOpts) => {
+    this.setState({ cascadeRegion: values });
+    const areaItems = [...values];
+    if (selOpts.length > 0) {
+      areaItems.unshift(selOpts[selOpts.length - 1].code);
     }
+    this.props.onChange(areaItems, this.state.country);
   }
   render() {
-    const { areaItems, country, disableCascader, chinaRegions } = this.state;
+    const { cascadeRegion, country, disableCascader, chinaRegions } = this.state;
     const { intl } = this.props;
-    const valueProps = { value: areaItems };
     console.log('render', this.state);
     return (
       <Row>
         {
-          this.props.withCountry &&
+          this.props.country !== undefined &&
           <Select size="large" value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
             <OptGroup label={formatMsg(intl, 'selectCountry')}>
             {
@@ -305,7 +229,7 @@ export default class RegionCascade extends React.Component {
         }
         <Cascader size="large" options={chinaRegions} disabled={disableCascader}
           placeholder={formatMsg(intl, 'defaultCascaderRegion')} onChange={this.handleRegionChange}
-          loadData={this.handleRegionLoad} changeOnSelect {...valueProps}
+          loadData={this.handleRegionLoad} changeOnSelect value={cascadeRegion}
         />
       </Row>
     );

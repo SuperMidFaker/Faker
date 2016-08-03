@@ -17,6 +17,7 @@ import trackingLandException from './trackingLandException';
 import shipment from './shipment';
 import transportDispatch from './transportDispatch';
 import transportResources from './transportResources';
+import transportTariff from './transportTariff';
 import cmsDelegation from './cmsDelegation';
 import cmsDeclare from './cmsDeclare';
 import cmsCompRelation from './cmsCompRelation';
@@ -40,6 +41,7 @@ export default combineReducers({
   trackingLandException,
   transportDispatch,
   transportResources,
+  transportTariff,
   cmsDelegation,
   cmsDeclare,
   cmsCompRelation,

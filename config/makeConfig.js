@@ -37,6 +37,7 @@ export default (serverPort, dirName, appName) => {
     // todo how to make the port configurable
     config.set('API_ROOTS', {
       default: 'http://localhost:3030/',
+      mongo: 'http://localhost:3032/',
       self: '/',
     });
   }
@@ -50,6 +51,7 @@ export default (serverPort, dirName, appName) => {
   if (__PROD__) {
     config.set('API_ROOTS', {
       default: 'https://api.welogix.cn/',
+      mongo: 'https://api1.welogix.cn/',
       self: '/',
     });
     // config.set('CDN_URL', 'http://s.welogix.cn');
