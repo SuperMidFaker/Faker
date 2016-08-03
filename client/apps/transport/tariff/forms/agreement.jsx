@@ -4,7 +4,7 @@ import { Card, Row, Col, Form, Input, Select, DatePicker, Button, message } from
 import PricingLTL from './pricingLTL';
 import PricingFTL from './pricingFTL';
 import PricingCTN from './pricingCTN';
-import { loadPartners } from 'common/reducers/transportTariff';
+import { loadPartners, submitAgreement } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, GOODS_TYPES, PARTNERSHIP_TYPE_INFO, PRESET_TRANSMODES } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -17,35 +17,39 @@ const formItemLayout = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     formData: state.transportTariff.agreement,
     partners: state.transportTariff.partners,
     formParams: state.transportTariff.formParams,
   }),
-  { loadPartners }
+  { loadPartners, submitAgreement }
 )
 @Form.create()
 export default class AgreementForm extends React.Component {
   static propTypes = {
+    tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     formParams: PropTypes.object.isRequired,
     loadPartners: PropTypes.func.isRequired,
+    submitAgreement: PropTypes.func.isRequired,
   }
   state = {
-    partnerDisabled: false,
+    partnerVisible: true,
     transMode: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData !== this.props.formData) {
       this.price = {
         vehicleTypes: nextProps.formData.vehicleTypes,
-        intervals: nextProps.formData.limits,
+        intervals: nextProps.formData.intervals,
       };
     }
   }
   price = {
     vehicleTypes: this.props.formData.vehicleTypes,
-    intervals: this.props.formData.limits,
+    intervals: this.props.formData.intervals,
   }
   handlePriceChange = (intervals, vehicleTypes) => {
     this.price.intervals = intervals;
@@ -55,14 +59,30 @@ export default class AgreementForm extends React.Component {
   handleSubmit = () => {
     this.props.form.validateFields(errors => {
       if (errors) {
-        message.error(errors);
+        message.error('表单信息错误');
+      } else {
+        const editForm = this.props.form.getFieldsValue();
+        const selpartners = this.props.partners.filter(pt => pt.partner_id === editForm.partnerId);
+        const partnerName = selpartners[0].name;
+        const { tenantId, loginId } = this.props;
+        const forms = {
+          ...this.props.formData, ...editForm, ...this.price, partnerName,
+          tenantId, loginId,
+        };
+        this.props.submitAgreement(forms).then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            message.success('保存成功');
+          }
+        });
       }
     });
   }
   handleTariffKindSelect = (value) => {
     const kind = TARIFF_KINDS[value];
     if (kind.isBase) {
-      this.setState({ partnerDisabled: true });
+      this.setState({ partnerVisible: false });
     } else {
       if (kind.value === 'sales') {
         this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
@@ -70,8 +90,7 @@ export default class AgreementForm extends React.Component {
             if (result.error) {
               message.error(result.error.message);
             } else {
-              this.props.form.setFieldsValue({ partnerId: undefined });
-              this.setState({ partnerDisabled: false });
+              this.setState({ partnerVisible: true });
             }
           });
       } else if (kind.value === 'cost') {
@@ -80,8 +99,7 @@ export default class AgreementForm extends React.Component {
             if (result.error) {
               message.error(result.error.message);
             } else {
-              this.props.form.setFieldsValue({ partnerId: undefined });
-              this.setState({ partnerDisabled: false });
+              this.setState({ partnerVisible: true });
             }
           });
       }
@@ -100,7 +118,7 @@ export default class AgreementForm extends React.Component {
   }
   render() {
     const { form, formData, formParams, submitting, partners, form: { getFieldProps } } = this.props;
-    const { partnerDisabled, transMode } = this.state;
+    const { partnerVisible, transMode } = this.state;
     return (
       <Form horizontal form={form}>
         <div className="panel-body body-responsive">
@@ -134,8 +152,10 @@ export default class AgreementForm extends React.Component {
             </Row>
             <Row>
               <Col sm={12}>
+              {
+                partnerVisible &&
                 <FormItem label="合作伙伴" {...formItemLayout}>
-                  <Select showSearch disabled={partnerDisabled} optionFilterProp="searched"
+                  <Select showSearch optionFilterProp="searched"
                     {...getFieldProps('partnerId', {
                       initialValue: formData.partnerId,
                       rules: [{ required: true, message: '合作伙伴必选', type: 'number' }],
@@ -152,6 +172,7 @@ export default class AgreementForm extends React.Component {
                   }
                   </Select>
                 </FormItem>
+              }
               </Col>
               <Col sm={6} style={{ paddingLeft: '8px' }}>
                 <FormItem label="有效期起始" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>

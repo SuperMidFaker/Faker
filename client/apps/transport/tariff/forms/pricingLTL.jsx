@@ -67,13 +67,13 @@ IntervalInput.propTypes = {
 @connect(
   state => ({
     meter: state.transportTariff.agreement.meter,
-    limits: state.transportTariff.agreement.limits,
+    intervals: state.transportTariff.agreement.intervals,
   })
 )
 export default class PricingLTL extends React.Component {
   static propTypes = {
     meter: PropTypes.number,
-    limits: PropTypes.array,
+    intervals: PropTypes.array,
     formItemLayout: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,

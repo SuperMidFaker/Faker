@@ -129,9 +129,9 @@ export default class RegionCascade extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     console.log('will receive', nextProps, this.props);
-    if (nextProps.region.country !== this.props.region.country) {
+    if (nextProps.country !== this.props.country) {
       this.setState({
-        country: nextProps.region.country,
+        country: nextProps.country,
       });
     }
     if (nextProps.provinces.length !== this.props.provinces.length) {

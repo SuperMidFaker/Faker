@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Tabs, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -6,6 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadFormParams } from 'common/reducers/transportTariff';
 import AgreementForm from './forms/agreement';
+import RatesForm from './forms/rates';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -18,6 +20,11 @@ function fetchData({ dispatch, state }) {
 
 @connectFetch()(fetchData)
 @injectIntl
+@connect(
+  state => ({
+    tariffId: state.transportTariff.tariffId,
+  })
+)
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -33,20 +40,28 @@ function fetchData({ dispatch, state }) {
 export default class TariffCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tariffId: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
+    const { tariffId } = this.props;
     return (
       <div className="main-content">
         <div className="page-body">
           <div className="panel-body">
-            <Tabs onChange={this.handleTabChange}>
+            <Tabs defaultActiveKey="agreement">
               <TabPane tab={<span><Icon type="book" />协议概括</span>} key="agreement">
                 <AgreementForm />
               </TabPane>
+              {
+                tariffId &&
+                <TabPane tab={<span><Icon type="file-text" />基础费率</span>} key="rates">
+                  <RatesForm />
+                </TabPane>
+              }
             </Tabs>
           </div>
         </div>

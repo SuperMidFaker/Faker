@@ -42,7 +42,7 @@ IntervalSelect.propTypes = {
 
 @connect(
   state => ({
-    intervals: state.transportTariff.agreement.limits,
+    intervals: state.transportTariff.agreement.intervals,
   })
 )
 export default class PricingLTL extends React.Component {
