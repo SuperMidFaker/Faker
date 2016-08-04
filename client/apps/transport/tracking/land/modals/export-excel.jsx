@@ -69,7 +69,7 @@ export default class ExportExcel extends React.Component {
         >
           <Form horizontal>
             <FormItem
-              label="提货时间"
+              label="创建时间"
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
