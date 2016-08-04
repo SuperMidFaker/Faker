@@ -329,4 +329,12 @@ export default defineMessages({
     id: 'transport.tracking.pod.modal.audit.return',
     defaultMessage: '退回',
   },
+  export: {
+    id: 'transport.tracking.pod.modal.export.export',
+    defaultMessage: '导出',
+  },
+  exportExcel: {
+    id: 'transport.tracking.pod.modal.export.exportExcel',
+    defaultMessage: '导出Excel',
+  },
 });

@@ -7,6 +7,7 @@ import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
 import { changePodFilter } from 'common/reducers/trackingLandPod';
 import { changeExcpFilter } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
+import ExportExcel from './modals/export-excel';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 
@@ -98,6 +99,8 @@ export default class TrackingLandWrapper extends React.Component {
           <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
+          <span style={{ marginLeft: '8px' }} />
+          <ExportExcel />
           <div className="tools">
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
               value={this.state.searchInput}
