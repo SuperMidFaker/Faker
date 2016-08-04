@@ -72,7 +72,7 @@ IntervalInput.propTypes = {
 )
 export default class PricingLTL extends React.Component {
   static propTypes = {
-    meter: PropTypes.number,
+    meter: PropTypes.string,
     intervals: PropTypes.array,
     formItemLayout: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,

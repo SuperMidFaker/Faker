@@ -3,36 +3,23 @@ import { connect } from 'react-redux';
 import { Form, Modal, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RegionCascader from 'client/components/region-cascade';
-import { submitRateSource, loadRatesSources } from 'common/reducers/transportTariff';
+import { submitRateSource, loadRatesSources, updateRateSource,
+  delRateSource, loadRateEnds, loadTariff } from 'common/reducers/transportTariff';
+import { getRowKey, renderRegion, RowClick } from './commodity';
 
 const FormItem = Form.Item;
 
-function renderRegion(region) {
-  const rgs = [];
-  if (region.province) {
-    rgs.push(region.province);
-  }
-  if (region.city && (region.city.indexOf('市') !== 0 || region.city.indexOf('县') !== 0)) {
-    rgs.push(region.city);
-  }
-  if (region.district) {
-    rgs.push(region.district);
-  }
-  if (region.street) {
-    rgs.push(region.street);
-  }
-  return rgs.join('-');
-}
 @connect(
   state => ({
     tariffId: state.transportTariff.tariffId,
     loading: state.transportTariff.ratesSourceLoading,
     ratesSourceList: state.transportTariff.ratesSourceList,
   }),
-  { submitRateSource, loadRatesSources }
+  { submitRateSource, loadRatesSources, updateRateSource,
+    delRateSource, loadRateEnds, loadTariff }
 )
 @Form.create()
-export default class TariffRatesForm extends React.Component {
+export default class RateSourceTable extends React.Component {
   static propTypes = {
     visibleModal: PropTypes.bool.isRequired,
     tariffId: PropTypes.string.isRequired,
@@ -42,11 +29,15 @@ export default class TariffRatesForm extends React.Component {
     onChangeVisible: PropTypes.func.isRequired,
     submitRateSource: PropTypes.func.isRequired,
     loadRatesSources: PropTypes.func.isRequired,
+    updateRateSource: PropTypes.func.isRequired,
+    delRateSource: PropTypes.func.isRequired,
+    loadRateEnds: PropTypes.func.isRequired,
+    loadTariff: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    region_code: null,
-    sourceId: null,
+    regionCode: null,
+    rateId: null,
     modalRegion: [],
   }
   dataSource = new Table.DataSource({
@@ -74,39 +65,73 @@ export default class TariffRatesForm extends React.Component {
   columns = [{
     title: '起始地',
     dataIndex: 'source',
+    width: 200,
     render: (o, record) => renderRegion(record.source),
   }, {
     title: '操作',
     width: 130,
-    render: () => {
+    render: (o, record) => {
       return (
         <span>
-          <a role="button">编辑</a>
+          <RowClick text="编辑" onHit={this.handleEdit} row={record} />
           <span className="ant-divider" />
-          <a role="button">删除</a>
+          <RowClick text="删除" onHit={this.handleDel} row={record} />
         </span>
       );
     },
   }]
   loadSources = (pageSize, current) => {
-    this.props.loadRatesSources({
+    return this.props.loadRatesSources({
       tariffId: this.props.tariffId,
       pageSize,
       currentPage: current,
       filters: JSON.stringify(this.props.filters),
     });
   }
+  handleEdit = (row, ev) => {
+    ev.stopPropagation();
+    const { code, province, city, district, street } = row.source;
+    this.setState({
+      rateId: row._id,
+      regionCode: code,
+      modalRegion: [province, city, district, street],
+    });
+    this.props.onChangeVisible('source', true);
+  }
+  handleDel = (row) => {
+    this.props.delRateSource(row._id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        let current = this.props.ratesSourceList.current;
+        if (current > 1 &&
+            this.props.ratesSourceList.pageSize * (current - 1)
+            === this.props.ratesSourceList.totalCount - 1) {
+          current -= 1;
+        }
+        this.loadSources(this.props.ratesSourceList.pageSize, current);
+      }
+    });
+  }
   handleSourceSave = () => {
-    if (this.state.region_code) {
-      this.props.submitRateSource(
-        this.props.tariffId,
-        this.state.region_code,
-        this.state.modalRegion
-      ).then(result => {
+    if (this.state.regionCode) {
+      let prom;
+      if (this.state.rateId) {
+        prom = this.props.updateRateSource(
+            this.state.rateId,
+            this.state.regionCode,
+            this.state.modalRegion);
+      } else {
+        prom = this.props.submitRateSource(
+            this.props.tariffId,
+            this.state.regionCode,
+            this.state.modalRegion);
+      }
+      prom.then(result => {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          message.success('创建成功');
+          message.success('保存成功');
           let current = this.props.ratesSourceList.current;
           if (this.props.ratesSourceList.pageSize * current
               < this.props.ratesSourceList.totalCount + 1) {
@@ -115,9 +140,9 @@ export default class TariffRatesForm extends React.Component {
           this.loadSources(this.props.ratesSourceList.pageSize, current)
             .then(() => {
               this.setState({
-                region_code: null,
+                regionCode: null,
                 modalRegion: [],
-                sourceId: null,
+                rateId: null,
               });
               this.props.onChangeVisible('source', false);
             });
@@ -129,18 +154,33 @@ export default class TariffRatesForm extends React.Component {
   }
   handleCancel = () => {
     this.loadSources(10, 1);
+    this.props.loadTariff(this.props.tariffId);
     this.props.onChangeVisible('source', false);
     this.setState({
-      region_code: null,
+      regionCode: null,
       modalRegion: [],
-      sourceId: null,
+      rateId: null,
     });
   }
   handleRegionChange = (region) => {
     const [code, province, city, district, street] = region;
     this.setState({
-      region_code: code,
+      regionCode: code,
       modalRegion: [province, city, district, street],
+    });
+  }
+  handleRowClick = (row) => {
+    this.setState({
+      selectedRowKeys: [row._id],
+    });
+    this.props.loadRateEnds({
+      rateId: row._id,
+      pageSize: 10,
+      current: 1,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
     });
   }
   render() {
@@ -148,15 +188,18 @@ export default class TariffRatesForm extends React.Component {
     const { modalRegion } = this.state;
     this.dataSource.remotes = ratesSourceList;
     const rowSelection = {
+      type: 'radio',
       selectedRowKeys: this.state.selectedRowKeys,
+      /*
       onChange: selectedRowKeys => {
         this.setState({ selectedRowKeys });
       },
+      */
     };
     return (
       <div>
         <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-          dataSource={this.dataSource}
+          dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
         />
         <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
           closable={false}

@@ -6,12 +6,12 @@ import RateEndTable from './rateEndTable';
 
 @connect(
   state => ({
-    rateSourceId: state.transportTariff.rateSourceId,
+    rateId: state.transportTariff.rateId,
   })
 )
 export default class TariffRatesForm extends React.Component {
   static propTypes = {
-    rateSourceId: PropTypes.string,
+    rateId: PropTypes.string,
   }
   state = {
     sourceModal: false,
@@ -31,7 +31,7 @@ export default class TariffRatesForm extends React.Component {
     }
   }
   render() {
-    const { sourceModal, endModal, rateSourceId } = this.state;
+    const { sourceModal, endModal } = this.state;
     return (
       <div className="panel-body body-responsive">
         <Col sm={8} style={{ padding: 8 }}>
@@ -50,12 +50,15 @@ export default class TariffRatesForm extends React.Component {
           <Card>
             <div style={{ padding: '0 8px 8px' }}>
               <Button type="primary" size="large" icon="plus-circle-o"
-                onClick={this.handleEndAdd} disabled={!rateSourceId}
+                onClick={this.handleEndAdd} disabled={!this.props.rateId}
               >
                 添加
               </Button>
             </div>
-            <RateEndTable visibleModal={endModal} onChangeVisible={this.handleVisibleChange} />
+            {
+              this.props.rateId &&
+              <RateEndTable visibleModal={endModal} onChangeVisible={this.handleVisibleChange} />
+            }
           </Card>
         </Col>
       </div>

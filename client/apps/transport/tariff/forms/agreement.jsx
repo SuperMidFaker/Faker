@@ -46,6 +46,9 @@ export default class AgreementForm extends React.Component {
         intervals: nextProps.formData.intervals,
       };
     }
+    if (nextProps.formData.transModeCode !== this.props.formData.transModeCode) {
+      this.handleModeSelect(nextProps.formData.transModeCode);
+    }
   }
   price = {
     vehicleTypes: this.props.formData.vehicleTypes,
