@@ -17,7 +17,8 @@ const RangePicker = DatePicker.RangePicker;
 const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
-  const { startDate, endDate } = state.shipment.statistics;
+  const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
+  const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
   return dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate));
 }
 @connectFetch()(fetchData)
@@ -46,10 +47,12 @@ export default class Dashboard extends React.Component {
     children: PropTypes.object,
   }
   componentWillReceiveProps(nextProps) {
+    console.log('nextProps');
+    console.log(nextProps);
     this.createEcharts(nextProps.statistics);
   }
-  onDateChange = (e) => {
-    this.props.loadShipmentStatistics(null, this.props.tenantId, e[0], e[1]);
+  onDateChange = (value, dateString) => {
+    this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
   }
   createEcharts(statistics) {
     const { points } = statistics;
@@ -90,6 +93,8 @@ export default class Dashboard extends React.Component {
     });
     const result = Promise.all(promises);
     result.then((arr) => {
+      console.log('arr');
+      console.log(arr);
       let j = 0;
       Object.keys(geoCoordMap).forEach(geo => {
         geoCoordMap[geo][0] = arr[j].result.location.lng;
@@ -236,12 +241,12 @@ export default class Dashboard extends React.Component {
     });
   }
   render() {
-    const { count, startDate, endDate } = this.props.statistics;
+    const { count } = this.props.statistics;
+    const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
+    const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate).format('YYYY-MM-DD HH:mm:ss'), moment(endDate).format('YYYY-MM-DD HH:mm:ss')]}
-          format="yyyy-MM-dd HH:mm:ss" onChange={this.onDateChange}
-        />
+        <RangePicker style={{ width: 200 }} defaultValue={[startDate, endDate]} onChange={this.onDateChange} />
       </div>);
     const iconStyle = {
       fontSize: '46px',

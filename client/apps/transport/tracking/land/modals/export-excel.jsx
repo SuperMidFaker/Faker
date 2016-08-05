@@ -23,37 +23,28 @@ export default class ExportExcel extends React.Component {
   }
   state = {
     visible: false,
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`,
+    endDate: `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`,
   }
   showModal = () => {
-    const startDate = new Date();
-    startDate.setHours(0);
-    startDate.setMinutes(0);
-    startDate.setSeconds(0);
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 1);
-    endDate.setHours(0);
-    endDate.setMinutes(0);
-    endDate.setSeconds(0);
     this.setState({
       visible: true,
-      startDate,
-      endDate,
     });
   }
   handleOk = () => {
-    window.open(`${API_ROOTS.default}v1/transport/tracking/export/excel.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
+    const timeStr = moment(new Date()).format('YYYY-MM-DD');
+    const timestamp = Date.now().toString().substr(-6);
+    window.open(`${API_ROOTS.default}v1/transport/tracking/export/tracking_${timeStr}_${timestamp}.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
   }
   handleCancel = () => {
     this.setState({
       visible: false,
     });
   }
-  handleRangeChange = (value) => {
+  handleRangeChange = (value, dateString) => {
     this.setState({
-      startDate: value[0],
-      endDate: value[1],
+      startDate: `${dateString[0]} 00:00:00`,
+      endDate: `${dateString[1]} 23:59:59`,
     });
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)

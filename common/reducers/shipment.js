@@ -21,15 +21,6 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
-const startDate = new Date();
-startDate.setHours(0);
-startDate.setMinutes(0);
-startDate.setSeconds(0);
-const endDate = new Date();
-endDate.setDate(endDate.getDate() + 1);
-endDate.setHours(0);
-endDate.setMinutes(0);
-endDate.setSeconds(0);
 const initialState = {
   formRequire: {
     consignerLocations: [],
@@ -69,8 +60,6 @@ const initialState = {
   statistics: {
     points: [],
     count: [0, 0, 0, 0, 0],
-    startDate,
-    endDate,
   },
 };
 
