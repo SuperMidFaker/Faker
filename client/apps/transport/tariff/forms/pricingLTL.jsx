@@ -82,6 +82,21 @@ export default class PricingLTL extends React.Component {
     unit: '公斤',
     intervals: [0, 0],
   }
+  componentWillMount() {
+    this.handleMeterSelect(this.props.meter);
+    if (this.props.intervals.length > 0) {
+      this.setState({ intervals: [0, ...this.props.intervals] });
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.meter !== this.props.meter) {
+      this.handleMeterSelect(nextProps.meter);
+    }
+    if (nextProps.intervals.length > 0 &&
+      nextProps.intervals !== this.props.intervals) {
+      this.setState({ intervals: [0, ...nextProps.intervals] });
+    }
+  }
   handleMeterSelect = value => {
     if (value === 't') {
       this.setState({ unit: '吨' });

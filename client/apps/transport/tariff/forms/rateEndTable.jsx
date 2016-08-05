@@ -5,7 +5,8 @@ import { Form, Modal, Input, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RegionCascader from 'client/components/region-cascade';
 import { getEndTableVarColumns, renderRegion, RowClick } from './commodity';
-import { submitRateEnd, updateRateEnd, delRateEnd, loadRateEnds } from 'common/reducers/transportTariff';
+import { submitRateEnd, updateRateEnd, delRateEnd,
+  loadRateEnds } from 'common/reducers/transportTariff';
 import { PRESET_TRANSMODES } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -35,7 +36,7 @@ export default class RateEndTable extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    editEnd: { _id: null, gradients: [] },
+    editEnd: { id: null, gradients: [] },
     editRegionCode: '',
     editRegion: [],
   }
@@ -53,7 +54,7 @@ export default class RateEndTable extends React.Component {
       const params = {
         rateId: this.props.rateId,
         pageSize: pagination.pageSize,
-        currentPage: pagination.current,
+        current: pagination.current,
         filters: this.props.filters,
       };
       params.filters = JSON.stringify(params.filters);
@@ -88,7 +89,7 @@ export default class RateEndTable extends React.Component {
   }
   handleGradientChange = (idx, value) => {
     const state = update(this.state, { editEnd: {
-      gradients: { [idx]: { $set: value } } },
+      gradients: { [idx]: { $set: Number(value) } } },
     });
     this.setState(state);
   }
@@ -100,9 +101,10 @@ export default class RateEndTable extends React.Component {
         } else {
           let prom;
           const formValues = this.props.form.getFieldsValue();
-          if (this.state.editEnd._id) {
+          if (this.state.editEnd.id) {
             prom = this.props.updateRateEnd({
-              id: this.state.editEnd._id,
+              rateId: this.props.rateId,
+              id: this.state.editEnd.id,
               regionCode: this.state.editRegionCode,
               region: this.state.editRegion,
               km: formValues.km,
@@ -126,9 +128,22 @@ export default class RateEndTable extends React.Component {
               message.error(result.error.message);
             } else {
               message.success('保存成功');
+              this.props.onChangeVisible('end', false);
+              this.setState({
+                editEnd: {
+                  id: null,
+                  gradients: [],
+                  time: '',
+                  km: '',
+                  flare: '',
+                },
+                editRegionCode: '',
+                editRegion: [],
+              });
+              this.props.form.resetFields();
               this.loadEnds().then(leres => {
                 if (leres.error) {
-                  message.error(result.error.message);
+                  message.error(leres.error.message);
                 }
               });
             }
@@ -142,9 +157,46 @@ export default class RateEndTable extends React.Component {
   handleCancel = () => {
     this.props.onChangeVisible('end', false);
     this.setState({
-      editEnd: { gradients: [] },
+      editEnd: {
+        id: null,
+        gradients: [],
+        time: '',
+        km: '',
+        flare: '',
+      },
       editRegionCode: '',
       editRegion: [],
+    });
+    this.props.form.resetFields();
+  }
+  handleEdit = (row) => {
+    const { code, province, city, district, street } = row.end;
+    this.setState({
+      editEnd: {
+        id: row._id,
+        gradients: row.gradients,
+        time: row.time,
+        km: row.km,
+        flare: row.flare,
+      },
+      editRegionCode: code,
+      editRegion: [province, city, district, street],
+    });
+    this.props.onChangeVisible('end', true);
+  }
+  handleDel = (row) => {
+    this.props.delRateEnd(this.props.rateId, row._id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        let current = this.props.ratesEndList.current;
+        if (current > 1 &&
+            this.props.ratesEndList.pageSize * (current - 1)
+            === this.props.ratesEndList.totalCount - 1) {
+          current -= 1;
+        }
+        this.loadEnds(current);
+      }
     });
   }
   render() {
@@ -241,7 +293,7 @@ export default class RateEndTable extends React.Component {
               varColumns.map((vc, idx) => (
                 <FormItem key={vc.title} label={vc.title} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 <Input {...getFieldProps(`gradient${idx}`, {
-                  initialValue: editEnd.gradients[vc.index],
+                  initialValue: editEnd.gradients[vc.index] || '',
                   onChange: (ev) => this.handleGradientChange(idx, ev.target.value),
                   rules: [{ required: true, message: '梯度费率必填',
                     type: 'number', transform: v => Number(v) }],

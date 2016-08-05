@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FORMPARAMS', 'LOAD_FORMPARAMS_SUCCEED', 'LOAD_FORMPARAMS_FAIL',
   'SUBMIT_AGREEMENT', 'SUBMIT_AGREEMENT_SUCCEED', 'SUBMIT_AGREEMENT_FAIL',
+  'UPDATE_AGREEMENT', 'UPDATE_AGREEMENT_SUCCEED', 'UPDATE_AGREEMENT_FAIL',
   'SUBMIT_RATESRC', 'SUBMIT_RATESRC_SUCCEED', 'SUBMIT_RATESRC_FAIL',
   'LOAD_RATESRC', 'LOAD_RATESRC_SUCCEED', 'LOAD_RATESRC_FAIL',
   'UPDATE_RATESRC', 'UPDATE_RATESRC_SUCCEED', 'UPDATE_RATESRC_FAIL',
@@ -15,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'SUBMIT_RATEND', 'SUBMIT_RATEND_SUCCEED', 'SUBMIT_RATEND_FAIL',
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
+  'LOAD_NEW_FORM',
 ]);
 
 const initialState = {
@@ -29,7 +31,7 @@ const initialState = {
     current: 1,
     data: [],
   },
-  tariffId: '57a300796e52154715d2b015',
+  tariffId: '',
   agreement: {
     intervals: [],
   },
@@ -66,8 +68,43 @@ export default function reducer(state = initialState, action) {
         loaded: true, tarifflist: action.result.data,
         filters: JSON.parse(action.params.filters),
       };
-    case actionTypes.LOAD_TARIFF_SUCCEED:
-      return { ...state, agreement: action.result.data.agreement, ratesRefAgreement: action.result.data.agreement };
+    case actionTypes.LOAD_NEW_FORM:
+      return { ...state, agreement: initialState.agreement,
+        ratesRefAgreement: initialState.agreement,
+        tariffId: initialState.tariffId,
+        ratesSourceList: initialState.ratesSourceList,
+        rateId: initialState.rateId,
+        ratesEndList: initialState.ratesEndList,
+        partners: [],
+      };
+    case actionTypes.LOAD_TARIFF_SUCCEED: {
+      const res = action.result.data.tariff.agreement;
+      const agreement = {
+        id: res._id,
+        kind: res.kind,
+        name: res.name,
+        partnerId: res.partner && res.partner.id,
+        effectiveDate: new Date(res.effectiveDate),
+        expiryDate: new Date(res.expiryDate),
+        transModeCode: res.transModeCode,
+        goodsType: res.goodsType,
+        meter: res.meter,
+        intervals: res.intervals,
+        vehicleTypes: res.vehicleTypes,
+      };
+      const partners = res.partner ? [{ partner_code: res.partner.name,
+        partner_id: res.partner.id, name: res.partner.name }] : [];
+      return { ...state, agreement, partners,
+        ratesRefAgreement: agreement,
+        tariffId: action.result.data.tariff._id,
+        ratesSourceList: { ...state.ratesSourceList,
+          ...action.result.data.ratesSourceList },
+        rateId: action.result.data.ratesSourceList.data.length > 0
+          && action.result.data.ratesSourceList.data[0]._id,
+        ratesEndList: { ...state.ratesEndList,
+          ...action.result.data.ratesEndList },
+      };
+    }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
      return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
@@ -87,7 +124,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_RATENDS:
       return { ...state, ratesEndLoading: true };
     case actionTypes.LOAD_RATENDS_SUCCEED:
-      return { ...state, ratesEndLoading: false, rateId: action.params.rateId, ratesEndList: action.result.data };
+      return { ...state, ratesEndLoading: false, rateId: action.params.rateId,
+        ratesEndList: action.result.data };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };
     default:
@@ -142,6 +180,12 @@ export function loadPartners(tenantId, typeCode) {
   };
 }
 
+export function loadNewForm() {
+  return {
+    type: actionTypes.LOAD_NEW_FORM,
+  };
+}
+
 export function loadFormParams(tenantId) {
   return {
     [CLIENT_API]: {
@@ -166,6 +210,22 @@ export function submitAgreement(forms) {
         actionTypes.SUBMIT_AGREEMENT_FAIL,
       ],
       endpoint: 'v1/transport/tariff',
+      method: 'post',
+      data: forms,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function updateAgreement(forms) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_AGREEMENT,
+        actionTypes.UPDATE_AGREEMENT_SUCCEED,
+        actionTypes.UPDATE_AGREEMENT_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/agreement',
       method: 'post',
       data: forms,
       origin: 'mongo',
@@ -285,7 +345,7 @@ export function updateRateEnd(data) {
   };
 }
 
-export function delRateEnd(rateEndId) {
+export function delRateEnd(rateId, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -295,7 +355,7 @@ export function delRateEnd(rateEndId) {
       ],
       endpoint: 'v1/transport/tariff/del/ratend',
       method: 'post',
-      data: { rateEndId },
+      data: { rateId, id },
       origin: 'mongo',
     },
   };

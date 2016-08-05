@@ -12,6 +12,7 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     tariffId: state.transportTariff.tariffId,
+    rateId: state.transportTariff.rateId,
     loading: state.transportTariff.ratesSourceLoading,
     ratesSourceList: state.transportTariff.ratesSourceList,
   }),
@@ -39,6 +40,16 @@ export default class RateSourceTable extends React.Component {
     regionCode: null,
     rateId: null,
     modalRegion: [],
+  }
+  componentWillMount() {
+    if (this.props.rateId) {
+      this.setState({ selectedRowKeys: [this.props.rateId] });
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.rateId !== this.props.rateId) {
+      this.setState({ selectedRowKeys: [nextProps.rateId] });
+    }
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadRatesSources(params),
@@ -170,9 +181,6 @@ export default class RateSourceTable extends React.Component {
     });
   }
   handleRowClick = (row) => {
-    this.setState({
-      selectedRowKeys: [row._id],
-    });
     this.props.loadRateEnds({
       rateId: row._id,
       pageSize: 10,

@@ -54,6 +54,11 @@ export default class PricingLTL extends React.Component {
   state = {
     intervals: [null],
   }
+  componentWillMount() {
+    if (this.props.intervals.length !== 0) {
+      this.setState({ intervals: this.props.intervals });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.intervals !== this.props.intervals) {
       this.setState({ intervals: nextProps.intervals });

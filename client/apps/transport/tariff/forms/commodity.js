@@ -56,7 +56,7 @@ export function getEndTableVarColumns(agreement) {
     }
     columns.push({
       title: `>${agreement.intervals[agreement.intervals.length - 1]}${unit}`,
-      index: agreement.intervals.length - 1,
+      index: agreement.intervals.length,
     });
   }
   return columns;

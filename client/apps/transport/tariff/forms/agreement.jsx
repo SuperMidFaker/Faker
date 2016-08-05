@@ -4,8 +4,10 @@ import { Card, Row, Col, Form, Input, Select, DatePicker, Button, message } from
 import PricingLTL from './pricingLTL';
 import PricingFTL from './pricingFTL';
 import PricingCTN from './pricingCTN';
-import { loadPartners, submitAgreement } from 'common/reducers/transportTariff';
-import { TARIFF_KINDS, GOODS_TYPES, PARTNERSHIP_TYPE_INFO, PRESET_TRANSMODES } from 'common/constants';
+import { loadPartners, submitAgreement,
+  updateAgreement } from 'common/reducers/transportTariff';
+import { TARIFF_KINDS, GOODS_TYPES, PARTNERSHIP_TYPE_INFO,
+  PRESET_TRANSMODES } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -18,26 +20,34 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
+    tariffId: state.transportTariff.tariffId,
     formData: state.transportTariff.agreement,
     partners: state.transportTariff.partners,
     formParams: state.transportTariff.formParams,
   }),
-  { loadPartners, submitAgreement }
+  { loadPartners, submitAgreement, updateAgreement }
 )
 @Form.create()
 export default class AgreementForm extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
+    tariffId: PropTypes.string,
     formData: PropTypes.object.isRequired,
     formParams: PropTypes.object.isRequired,
     loadPartners: PropTypes.func.isRequired,
     submitAgreement: PropTypes.func.isRequired,
+    updateAgreement: PropTypes.func.isRequired,
   }
   state = {
     partnerVisible: true,
     transMode: '',
+  }
+  componentWillMount() {
+    this.handleModeSelect(this.props.formData.transModeCode);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData !== this.props.formData) {
@@ -65,14 +75,26 @@ export default class AgreementForm extends React.Component {
         message.error('表单信息错误');
       } else {
         const editForm = this.props.form.getFieldsValue();
-        const selpartners = this.props.partners.filter(pt => pt.partner_id === editForm.partnerId);
-        const partnerName = selpartners[0].name;
-        const { tenantId, loginId } = this.props;
+        let partnerName;
+        if (editForm.partnerId) {
+          const selpartners = this.props.partners.filter(
+            pt => pt.partner_id === editForm.partnerId);
+          partnerName = selpartners[0].name;
+        }
+        const { tariffId, tenantId, loginId, loginName } = this.props;
         const forms = {
           ...this.props.formData, ...editForm, ...this.price, partnerName,
-          tenantId, loginId,
         };
-        this.props.submitAgreement(forms).then(result => {
+        let promise;
+        if (tariffId) {
+          forms.loginName = loginName;
+          promise = this.props.updateAgreement(forms);
+        } else {
+          forms.tenantId = tenantId;
+          forms.loginId = loginId;
+          promise = this.props.submitAgreement(forms);
+        }
+        promise.then(result => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -117,6 +139,8 @@ export default class AgreementForm extends React.Component {
       this.setState({ transMode: 'ctn' });
     } else if (value === PRESET_TRANSMODES.exp) {
       this.setState({ transMode: 'ltl' });
+    } else {
+      this.setState({ transMode: '' });
     }
   }
   render() {

@@ -70,6 +70,14 @@ export default class PricingLTL extends React.Component {
     vehicleTypes: [null],
     vehicleLengths: [null],
   }
+  componentWillMount() {
+    if (this.props.vehicleLengths.length !== 0) {
+      this.setState({
+        vehicleTypes: this.props.vehicleTypes,
+        vehicleLengths: this.props.vehicleLengths,
+      });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.vehicleLengths.length !== this.props.vehicleLengths.length) {
       this.setState({
