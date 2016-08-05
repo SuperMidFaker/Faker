@@ -350,7 +350,7 @@ export default class AcceptList extends React.Component {
               {this.msg('shipmtAccept')}
               </a>
               <span className="ant-divider" />
-              <NavLink to={`/transport/acceptance/shipment/edit/${record.shipmt_no}`}>
+              <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
                 {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
@@ -382,7 +382,7 @@ export default class AcceptList extends React.Component {
         render: (o, record) => {
           return (
             <span>
-              <NavLink to={`/transport/acceptance/shipment/draft/${record.shipmt_no}`}>
+              <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
               {formatGlobalMsg(intl, 'modify')}
               </NavLink>
               <span className="ant-divider" />
@@ -400,7 +400,7 @@ export default class AcceptList extends React.Component {
       <div className="main-content">
         <div className="page-header">
           <div className="tools">
-            <NavLink to="/transport/acceptance/shipment/new">
+            <NavLink to="/transport/shipment/new">
               <Button type="primary" size="large" icon="plus-circle-o">
                 {this.msg('shipmtCreate')}
               </Button>

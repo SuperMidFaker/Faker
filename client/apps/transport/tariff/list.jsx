@@ -186,12 +186,13 @@ export default class TariffList extends React.Component {
     return (
       <div className="main-content">
         <div className="page-header">
-          <NavLink to="/transport/tariff/new">
-            <Button type="primary" size="large" icon="plus-circle-o">
-              {this.msg('tariffCreate')}
-            </Button>
-          </NavLink>
-          <span style={{ marginLeft: '8px' }} />
+          <div className="tools">
+            <NavLink to="/transport/tariff/new">
+              <Button type="primary" size="large" icon="plus-circle-o">
+                {this.msg('tariffCreate')}
+              </Button>
+            </NavLink>
+          </div>
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="page-body">

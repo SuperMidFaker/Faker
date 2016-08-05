@@ -329,7 +329,7 @@ export default class Dashboard extends React.Component {
                   <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
-                      <NavLink to={'/transport/acceptance'}>
+                      <NavLink to={'/transport/shipment'}>
                       {count[0]}
                       </NavLink>
                     </div>
