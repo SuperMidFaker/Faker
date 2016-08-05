@@ -249,11 +249,11 @@ export default class Dashboard extends React.Component {
         <RangePicker style={{ width: 200 }} defaultValue={[startDate, endDate]} onChange={this.onDateChange} />
       </div>);
     const iconStyle = {
-      fontSize: '46px',
+      fontSize: '32px',
       fontWeight: 'bolder',
       borderRadius: '50%',
       color: '#fff',
-      padding: '13px 18px',
+      padding: '18px 24px',
       width: '70px',
       height: '70px',
     };
@@ -332,7 +332,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-mail-send" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
+                  <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[1]}
@@ -341,7 +341,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-forward" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
+                  <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[2]}
@@ -350,7 +350,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
+                  <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[3]}
@@ -359,7 +359,7 @@ export default class Dashboard extends React.Component {
                   </div>
               </Col>
               <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-badge-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
+                  <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
                   <div style={right}>
                     <div style={rightTop}>
                     {count[4]}

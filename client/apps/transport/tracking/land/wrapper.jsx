@@ -100,11 +100,11 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
           <span style={{ marginLeft: '8px' }} />
-          <ExportExcel />
+          <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+            value={this.state.searchInput}
+          />
           <div className="tools">
-            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-              value={this.state.searchInput}
-            />
+            <ExportExcel />
           </div>
         </div>
         {this.props.children}
