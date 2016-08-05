@@ -18,9 +18,9 @@ function getLinksByAspect(aspect, intl) {
     }, {
       single: true,
       key: 'tms-1',
-      path: '/transport/acceptance',
+      path: '/transport/shipment',
       icon: 'zmdi zmdi-inbox',
-      text: formatMsg(intl, 'transportAcceptance'),
+      text: formatMsg(intl, 'transportShipment'),
     }, {
       single: true,
       key: 'tms-2',

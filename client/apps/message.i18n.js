@@ -159,7 +159,7 @@ const messages = defineMessages({
   },
   transportTracking: {
     id: 'container.transport.tracking',
-    defaultMessage: '跟踪',
+    defaultMessage: '追踪',
   },
   transportTariff: {
     id: 'container.transport.tracking',
