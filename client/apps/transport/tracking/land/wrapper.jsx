@@ -44,17 +44,17 @@ export default class TrackingLandWrapper extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
     this.context.router.push(
-      `/transport/tracking/land/shipmt/status/${ev.target.value}`
+      `/transport/tracking/road/status/${ev.target.value}`
     );
   }
   handlePodNav = (ev) => {
     this.context.router.push(
-      `/transport/tracking/land/shipmt/pod/${ev.target.value}`
+      `/transport/tracking/road/pod/${ev.target.value}`
     );
   }
   handleExcpNav = (ev) => {
     this.context.router.push(
-      `/transport/tracking/land/shipmt/exception/${ev.target.value}`
+      `/transport/tracking/road/exception/${ev.target.value}`
     );
   }
   handleSearchInput = value => {
@@ -89,17 +89,17 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="intransit">{this.msg('intransitShipmt')}</RadioButton>
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
-          <span style={{ marginLeft: '8px' }} />
+          <span />
           <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
             <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
             <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
-          <span style={{ marginLeft: '8px' }} />
+          <span />
           <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
-          <span style={{ marginLeft: '8px' }} />
+          <span />
           <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
             value={this.state.searchInput}
           />
