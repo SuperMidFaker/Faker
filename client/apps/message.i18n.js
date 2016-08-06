@@ -162,7 +162,7 @@ const messages = defineMessages({
     defaultMessage: '追踪',
   },
   transportTariff: {
-    id: 'container.transport.tracking',
+    id: 'container.transport.tariff',
     defaultMessage: '价格管理',
   },
   cmsDeclare: {

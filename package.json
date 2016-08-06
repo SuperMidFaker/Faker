@@ -40,7 +40,7 @@
   "license": "MIT",
   "pre-commit": [],
   "dependencies": {
-    "antd": "^1.6.5",
+    "antd": "^1.7.0",
     "babel": "^5.8.38",
     "classnames": "^2.2.5",
     "co-body": "^4.2.0",
