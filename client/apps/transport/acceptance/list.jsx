@@ -70,7 +70,7 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportShipment'),
+    text: formatContainerMsg(props.intl, 'transportAcceptance'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null,
