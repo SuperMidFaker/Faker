@@ -93,6 +93,8 @@ export default class Dashboard extends React.Component {
         if (arr[j].result && arr[j].result.location) {
           geoCoordMap[geo][0] = arr[j].result.location.lng;
           geoCoordMap[geo][1] = arr[j].result.location.lat;
+        } else {
+          delete geoCoordMap[geo];
         }
         j++;
       });
