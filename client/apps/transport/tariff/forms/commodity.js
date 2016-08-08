@@ -24,17 +24,17 @@ export function getRowKey(row) {
 export function getEndTableVarColumns(agreement) {
   const columns = [];
   if (agreement.transModeCode === PRESET_TRANSMODES.ftl) {
-    for (let i = 0; i < agreement.intervals; i++) {
+    for (let i = 0; i < agreement.intervals.length; i++) {
       const vlts = VEHICLE_LENGTH_TYPES.filter(vlt => vlt.value === agreement.intervals[i]);
       const vts = VEHICLE_TYPES.filter(vt => vt.value === agreement.vehicleTypes[i]);
-      const title = `${vlts[0]}/${vts[0]}`;
+      const title = `${vlts[0].text}/${vts[0].text}`;
       columns.push({ title, index: i });
     }
   } else if (agreement.transModeCode === PRESET_TRANSMODES.ctn) {
-    for (let i = 0; i < agreement.intervals; i++) {
+    for (let i = 0; i < agreement.intervals.length; i++) {
       const ctn = agreement.intervals[i];
       const cpts = CONTAINER_PACKAGE_TYPE.filter(cpt => cpt.id === ctn);
-      columns.push({ title: cpts[0], index: i });
+      columns.push({ title: cpts[0].value, index: i });
     }
   } else {
     let unit;

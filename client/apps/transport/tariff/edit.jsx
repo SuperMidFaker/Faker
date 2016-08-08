@@ -53,7 +53,7 @@ export default class TariffEdit extends React.Component {
           <div className="panel-body">
             <Tabs defaultActiveKey="agreement">
               <TabPane tab={<span><Icon type="book" />协议概括</span>} key="agreement">
-                <AgreementForm />
+                <AgreementForm readonly />
               </TabPane>
               <TabPane tab={<span><Icon type="file-text" />基础费率</span>} key="rates">
                 <RatesForm />

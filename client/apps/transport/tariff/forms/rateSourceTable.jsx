@@ -127,7 +127,8 @@ export default class RateSourceTable extends React.Component {
   handleSourceSave = () => {
     if (this.state.regionCode) {
       let prom;
-      if (this.state.rateId) {
+      const rateId = this.state.rateId;
+      if (rateId) {
         prom = this.props.updateRateSource(
             this.state.rateId,
             this.state.regionCode,
@@ -157,6 +158,13 @@ export default class RateSourceTable extends React.Component {
               });
               this.props.onChangeVisible('source', false);
             });
+          if (!rateId) {
+            this.props.loadRateEnds({
+              rateId: result.data.id,
+              pageSize: 10,
+              current: 1,
+            });
+          }
         }
       });
     } else {

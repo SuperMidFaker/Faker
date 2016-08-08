@@ -6,9 +6,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
+import { RowClick } from './forms/commodity';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadTable } from 'common/reducers/transportTariff';
+import { loadTable, delTariff } from 'common/reducers/transportTariff';
 import { setNavTitle } from 'common/reducers/navbar';
 import { TARIFF_KINDS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -38,7 +39,7 @@ function fetchData({ state, dispatch }) {
     filters: state.transportTariff.filters,
     loading: state.transportTariff.loading,
   }),
-  { loadTable })
+  { loadTable, delTariff })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
     return;
@@ -59,12 +60,13 @@ export default class TariffList extends React.Component {
     loading: PropTypes.bool.isRequired,
     tarifflist: PropTypes.object.isRequired,
     loadTable: PropTypes.func.isRequired,
+    delTariff: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
   }
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadTable(null, params),
+    fetcher: params => this.props.loadTable(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -139,12 +141,13 @@ export default class TariffList extends React.Component {
           {this.msg('revise')}
           </NavLink>
           <span className="ant-divider" />
+          <RowClick row={record} text="删除" onHit={this.handleDel} />
         </span>
       );
     },
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
-    this.props.loadTable(null, {
+    this.props.loadTable({
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
       pageSize: this.props.tarifflist.pageSize,
@@ -154,6 +157,15 @@ export default class TariffList extends React.Component {
     }).then(result => {
       if (result.error) {
         message.error(result.error.message, 10);
+      }
+    });
+  }
+  handleDel = (row) => {
+    this.props.delTariff(row._id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
       }
     });
   }

@@ -8,7 +8,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function IntervalSelect(props) {
-  const { index, vt, vl, onRemove, onVtChange, onVlChange } = props;
+  const { readonly, index, vt, vl, onRemove, onVtChange, onVlChange } = props;
   function handleRemove() {
     onRemove(index);
   }
@@ -21,7 +21,7 @@ function IntervalSelect(props) {
   return (
     <Row>
       <Col sm={11} style={{ paddingBottom: 8 }}>
-        <Select value={vl} onChange={handleVlChange}>
+        <Select disabled={readonly} value={vl} onChange={handleVlChange}>
           {
             VEHICLE_LENGTH_TYPES.map(vlt =>
               <Option key={vlt.value} value={vlt.value}>{vlt.text}</Option>
@@ -30,7 +30,7 @@ function IntervalSelect(props) {
         </Select>
       </Col>
       <Col sm={11} style={{ paddingLeft: 8, paddingBottom: 8 }}>
-        <Select value={vt} onChange={handleVtChange}>
+        <Select disabled={readonly} value={vt} onChange={handleVtChange}>
           {
             VEHICLE_TYPES.map(ovt =>
               <Option key={ovt.value} value={ovt.value}>{ovt.text}</Option>
@@ -39,13 +39,17 @@ function IntervalSelect(props) {
         </Select>
       </Col>
       <Col sm={1} style={{ paddingLeft: 8, paddingBottom: 8 }}>
-        <Button onClick={handleRemove}>删除</Button>
+        {
+          !readonly &&
+          <Button onClick={handleRemove}>删除</Button>
+        }
       </Col>
     </Row>
   );
 }
 
 IntervalSelect.propTypes = {
+  readonly: PropTypes.bool,
   vt: PropTypes.number,
   vl: PropTypes.number,
   index: PropTypes.number.isRequired,
@@ -62,6 +66,7 @@ IntervalSelect.propTypes = {
 )
 export default class PricingLTL extends React.Component {
   static propTypes = {
+    readonly: PropTypes.bool,
     vehicleTypes: PropTypes.array,
     vehicleLengths: PropTypes.array,
     formItemLayout: PropTypes.object.isRequired,
@@ -118,10 +123,11 @@ export default class PricingLTL extends React.Component {
   render() {
     const items = [];
     const { vehicleTypes, vehicleLengths } = this.state;
-    const { formItemLayout } = this.props;
+    const { readonly, formItemLayout } = this.props;
     for (let i = 0; i < vehicleTypes.length; i++) {
       items.push(
         <IntervalSelect index={i} vt={vehicleTypes[i]} vl={vehicleLengths[i]}
+          readonly={readonly}
           onRemove={this.handleLimitRemove}
           onVtChange={this.handleVtChange}
           onVlChange={this.handleVlChange}
@@ -132,7 +138,10 @@ export default class PricingLTL extends React.Component {
       <Col sm={12}>
         <FormItem label="价格区间" {...formItemLayout}>
           {items}
-          <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleLimitAdd} />
+          {
+            !readonly &&
+            <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleLimitAdd} />
+          }
         </FormItem>
       </Col>
     );
