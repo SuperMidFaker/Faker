@@ -31,6 +31,7 @@ const formItemLayout = {
 @Form.create()
 export default class AgreementForm extends React.Component {
   static propTypes = {
+    readonly: PropTypes.bool,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
@@ -55,6 +56,12 @@ export default class AgreementForm extends React.Component {
         vehicleTypes: nextProps.formData.vehicleTypes,
         intervals: nextProps.formData.intervals,
       };
+      if (nextProps.formData.kind) {
+        const kind = TARIFF_KINDS[nextProps.formData.kind];
+        if (kind.isBase) {
+          this.setState({ partnerVisible: false });
+        }
+      }
     }
     if (nextProps.formData.transModeCode !== this.props.formData.transModeCode) {
       this.handleModeSelect(nextProps.formData.transModeCode);
@@ -144,7 +151,8 @@ export default class AgreementForm extends React.Component {
     }
   }
   render() {
-    const { form, formData, formParams, submitting, partners, form: { getFieldProps } } = this.props;
+    const { form, formData, formParams, readonly, submitting, partners,
+      form: { getFieldProps } } = this.props;
     const { partnerVisible, transMode } = this.state;
     return (
       <Form horizontal form={form}>
@@ -153,7 +161,7 @@ export default class AgreementForm extends React.Component {
             <Row>
               <Col sm={12}>
                 <FormItem label="价格类型" {...formItemLayout}>
-                  <Select {...getFieldProps('kind', {
+                  <Select disabled={readonly} {...getFieldProps('kind', {
                     initialValue: formData.kind,
                     rules: [{ required: true, message: '价格类型必选', type: 'number' }],
                   })} onSelect={this.handleTariffKindSelect}
@@ -182,7 +190,7 @@ export default class AgreementForm extends React.Component {
               {
                 partnerVisible &&
                 <FormItem label="合作伙伴" {...formItemLayout}>
-                  <Select showSearch optionFilterProp="searched"
+                  <Select showSearch optionFilterProp="searched" disabled={readonly}
                     {...getFieldProps('partnerId', {
                       initialValue: formData.partnerId,
                       rules: [{ required: true, message: '合作伙伴必选', type: 'number' }],
@@ -224,7 +232,8 @@ export default class AgreementForm extends React.Component {
                   <Select onSelect={this.handleModeSelect} {...getFieldProps('transModeCode', {
                     initialValue: formData.transModeCode,
                     rules: [{ required: true, message: '运输模式必选' }],
-                  })}>
+                  })} disabled={readonly}
+                  >
                   {
                     formParams.transModes.map(tm =>
                       <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
@@ -238,7 +247,8 @@ export default class AgreementForm extends React.Component {
                   <Select {...getFieldProps('goodsType', {
                     initialValue: formData.goodsType,
                     rules: [{ required: true, message: '货物类型必选', type: 'number' }],
-                  })}>
+                  })} disabled={readonly}
+                  >
                   {
                     GOODS_TYPES.map(gt =>
                       <Option value={gt.value} key={gt.value}>{gt.text}</Option>
@@ -249,13 +259,19 @@ export default class AgreementForm extends React.Component {
               </Col>
             </Row>
             {transMode === 'ltl' &&
-              <PricingLTL form={form} formItemLayout={formItemLayout} onChange={this.handlePriceChange} />
+              <PricingLTL form={form} formItemLayout={formItemLayout} onChange={this.handlePriceChange}
+                readonly={readonly}
+              />
             }
             {transMode === 'ftl' &&
-              <PricingFTL formItemLayout={formItemLayout} onChange={this.handlePriceChange} />
+              <PricingFTL formItemLayout={formItemLayout} onChange={this.handlePriceChange}
+                readonly={readonly}
+              />
             }
             {transMode === 'ctn' &&
-              <PricingCTN formItemLayout={formItemLayout} onChange={this.handlePriceChange} />
+              <PricingCTN formItemLayout={formItemLayout} onChange={this.handlePriceChange}
+                readonly={readonly}
+              />
             }
           </Card>
           <Col style={{ padding: '16px' }}>

@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'LOAD_TARIFFS', 'LOAD_TARIFFS_SUCCEED', 'LOAD_TARIFFS_FAIL',
   'LOAD_TARIFF', 'LOAD_TARIFF_SUCCEED', 'LOAD_TARIFF_FAIL',
+  'DEL_TARIFF', 'DEL_TARIFF_SUCCEED', 'DEL_TARIFF_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FORMPARAMS', 'LOAD_FORMPARAMS_SUCCEED', 'LOAD_FORMPARAMS_FAIL',
   'SUBMIT_AGREEMENT', 'SUBMIT_AGREEMENT_SUCCEED', 'SUBMIT_AGREEMENT_FAIL',
@@ -33,6 +34,7 @@ const initialState = {
   },
   tariffId: '',
   agreement: {
+    name: '',
     intervals: [],
   },
   ratesRefAgreement: {},
@@ -71,7 +73,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_NEW_FORM:
       return { ...state, agreement: initialState.agreement,
         ratesRefAgreement: initialState.agreement,
-        tariffId: initialState.tariffId,
+        tariffId: null,
         ratesSourceList: initialState.ratesSourceList,
         rateId: initialState.rateId,
         ratesEndList: initialState.ratesEndList,
@@ -108,7 +110,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS_SUCCEED:
      return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
-      return { ...state, formParams: action.result.data };
+      return { ...state, tariffId: '', formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
       return { ...state, tariffId: action.result.data,
         ratesRefAgreement: action.data };
@@ -119,6 +121,8 @@ export default function reducer(state = initialState, action) {
         rateId: '', ratesEndList: initialState.ratesEndList };
     case actionTypes.LOAD_RATESRC_FAIL:
       return { ...state, ratesSourceLoading: false };
+    case actionTypes.SUBMIT_RATESRC_SUCCEED:
+      return { ...state, rateId: action.result.data.id };
     case actionTypes.DEL_RATESRC_SUCCEED:
       return { ...state, rateId: '', ratesEndList: initialState.ratesEndList };
     case actionTypes.LOAD_RATENDS:
@@ -160,6 +164,22 @@ export function loadTariff(tariffId) {
       endpoint: 'v1/transport/tariff',
       method: 'get',
       params: { tariffId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function delTariff(tariffId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_TARIFF,
+        actionTypes.DEL_TARIFF_SUCCEED,
+        actionTypes.DEL_TARIFF_FAIL,
+      ],
+      endpoint: 'v1/transport/del/tariff',
+      method: 'post',
+      data: { tariffId },
       origin: 'mongo',
     },
   };

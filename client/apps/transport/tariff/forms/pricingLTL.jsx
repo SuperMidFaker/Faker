@@ -8,7 +8,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function IntervalInput(props) {
-  const { unit, index, intervals, onRemove, onChange } = props;
+  const { readonly, unit, index, intervals, onRemove, onChange } = props;
   function handleRemove() {
     onRemove(index);
   }
@@ -23,12 +23,12 @@ function IntervalInput(props) {
       <Row>
         <Col sm={11} style={{ paddingBottom: '8px' }}>
           <Input addonBefore=">" addonAfter={unit} value={intervals[index]}
-            onChange={handleOddChange} size="large"
+            onChange={handleOddChange} size="large" readOnly={readonly}
           />
         </Col>
         <Col sm={11} style={{ paddingLeft: '8px', paddingBottom: '8px' }}>
           <Input addonBefore="≤" addonAfter={unit} value={intervals[index + 1]}
-            onChange={handleEvenChange} size="large"
+            onChange={handleEvenChange} size="large" readOnly={readonly}
           />
         </Col>
       </Row>
@@ -38,16 +38,19 @@ function IntervalInput(props) {
       <Row>
         <Col sm={11} style={{ paddingBottom: '8px' }}>
           <Input addonBefore=">" addonAfter={unit} value={intervals[index]}
-            onChange={handleOddChange} size="large"
+            onChange={handleOddChange} size="large" readOnly={readonly}
           />
         </Col>
         <Col sm={11} style={{ paddingLeft: '8px', paddingBottom: '8px' }}>
           <Input addonBefore="≤" addonAfter={unit} value={intervals[index + 1]}
-            onChange={handleEvenChange} size="large"
+            onChange={handleEvenChange} size="large" readOnly={readonly}
           />
         </Col>
         <Col sm={1} style={{ paddingLeft: 8, paddingBottom: 8 }}>
-          <Button onClick={handleRemove}>删除</Button>
+          {
+            !readonly &&
+            <Button onClick={handleRemove}>删除</Button>
+          }
         </Col>
       </Row>
     );
@@ -57,6 +60,7 @@ function IntervalInput(props) {
 }
 
 IntervalInput.propTypes = {
+  readonly: PropTypes.bool,
   unit: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   intervals: PropTypes.array.isRequired,
@@ -72,6 +76,7 @@ IntervalInput.propTypes = {
 )
 export default class PricingLTL extends React.Component {
   static propTypes = {
+    readonly: PropTypes.bool,
     meter: PropTypes.string,
     intervals: PropTypes.array,
     formItemLayout: PropTypes.object.isRequired,
@@ -124,7 +129,7 @@ export default class PricingLTL extends React.Component {
     this.props.onChange(state.intervals.slice(1));
   }
   render() {
-    const { meter, formItemLayout, form: { getFieldProps } } = this.props;
+    const { meter, readonly, formItemLayout, form: { getFieldProps } } = this.props;
     const { unit, intervals } = this.state;
     return (
       <div>
@@ -133,7 +138,8 @@ export default class PricingLTL extends React.Component {
             <FormItem label="计价方式" {...formItemLayout}>
               <Select onSelect={this.handleMeterSelect} {...getFieldProps('meter', {
                 initialValue: meter || 'kg',
-              })}>
+              })} disabled={readonly}
+              >
               {
                 TARIFF_METER_METHODS.map(tmm =>
                   <Option value={tmm.value} key={tmm.value}>{tmm.text}</Option>
@@ -149,13 +155,17 @@ export default class PricingLTL extends React.Component {
               {
                 intervals.map((limit, index) =>
                   <IntervalInput index={index} intervals={intervals}
+                    readonly={readonly}
                     onRemove={this.handleLimitRemove}
                     onChange={this.handleLimitChange}
                     unit={unit}
                     key={`${limit}${index}`}
                   />)
               }
-              <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleLimitAdd} />
+              {
+                !readonly &&
+                <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleLimitAdd} />
+              }
             </FormItem>
           </Col>
         </Row>

@@ -8,7 +8,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function IntervalSelect(props) {
-  const { index, ctn, onChange, onRemove } = props;
+  const { index, ctn, readonly, onChange, onRemove } = props;
   function handleRemove() {
     onRemove(index);
   }
@@ -18,7 +18,7 @@ function IntervalSelect(props) {
   return (
     <Row>
       <Col sm={22} style={{ paddingBottom: 8 }}>
-        <Select value={ctn} onChange={handleChange}>
+        <Select disabled={readonly} value={ctn} onChange={handleChange}>
           {
             CONTAINER_PACKAGE_TYPE.map(cpt =>
               <Option key={cpt.key} value={cpt.id}>{cpt.value}</Option>
@@ -27,13 +27,17 @@ function IntervalSelect(props) {
         </Select>
       </Col>
       <Col sm={1} style={{ paddingLeft: 8, paddingBottom: 8 }}>
-        <Button onClick={handleRemove}>删除</Button>
+        {
+          !readonly &&
+          <Button onClick={handleRemove}>删除</Button>
+        }
       </Col>
     </Row>
   );
 }
 
 IntervalSelect.propTypes = {
+  readonly: PropTypes.bool,
   ctn: PropTypes.number,
   index: PropTypes.number.isRequired,
   onRemove: PropTypes.func.isRequired,
@@ -47,6 +51,7 @@ IntervalSelect.propTypes = {
 )
 export default class PricingLTL extends React.Component {
   static propTypes = {
+    readonly: PropTypes.bool,
     intervals: PropTypes.array,
     formItemLayout: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -81,10 +86,11 @@ export default class PricingLTL extends React.Component {
   render() {
     const items = [];
     const { intervals } = this.state;
-    const { formItemLayout } = this.props;
+    const { formItemLayout, readonly } = this.props;
     for (let i = 0; i < intervals.length; i++) {
       items.push(
         <IntervalSelect index={i} ctn={intervals[i]}
+          readonly={readonly}
           onRemove={this.handleLimitRemove}
           onChange={this.handleLimitChange}
           key={`vehicle-length-type-${i}`}
@@ -94,7 +100,10 @@ export default class PricingLTL extends React.Component {
       <Col sm={12}>
         <FormItem label="价格区间" {...formItemLayout}>
           {items}
-          <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleLimitAdd} />
+          {
+            !readonly &&
+            <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleLimitAdd} />
+          }
         </FormItem>
       </Col>
     );
