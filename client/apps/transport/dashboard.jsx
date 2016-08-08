@@ -96,7 +96,7 @@ export default class Dashboard extends React.Component {
         } else {
           delete geoCoordMap[geo];
           for (let i = 0; i < SHData.length; i++) {
-            if (geo === SHData[i][1].name) {
+            if (geo === SHData[i][0].name || geo === SHData[i][1].name) {
               delete SHData[i];
             }
           }
@@ -186,7 +186,7 @@ export default class Dashboard extends React.Component {
           data: item[1].map((dataItem) => {
             return {
               name: dataItem[1].name,
-              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value]),
+              value: [geoCoordMap[dataItem[1].name][0], geoCoordMap[dataItem[1].name][1], dataItem[1].value],
             };
           }),
         });
