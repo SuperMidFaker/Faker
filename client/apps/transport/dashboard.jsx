@@ -93,13 +93,6 @@ export default class Dashboard extends React.Component {
         if (arr[j].result && arr[j].result.location) {
           geoCoordMap[geo][0] = arr[j].result.location.lng;
           geoCoordMap[geo][1] = arr[j].result.location.lat;
-        } else {
-          delete geoCoordMap[geo];
-          for (let i = 0; i < SHData.length; i++) {
-            if (geo === SHData[i][0].name || geo === SHData[i][1].name) {
-              delete SHData[i];
-            }
-          }
         }
         j++;
       });
@@ -110,7 +103,7 @@ export default class Dashboard extends React.Component {
           const dataItem = data[i];
           const fromCoord = geoCoordMap[dataItem[0].name];
           const toCoord = geoCoordMap[dataItem[1].name];
-          if (fromCoord && toCoord) {
+          if (fromCoord && toCoord && fromCoord[0] !== 0 && fromCoord[1] !== 0 && toCoord[0] !== 0 && toCoord[1] !== 0) {
             res.push({
               fromName: dataItem[0].name,
               toName: dataItem[1].name,
@@ -186,7 +179,7 @@ export default class Dashboard extends React.Component {
           data: item[1].map((dataItem) => {
             return {
               name: dataItem[1].name,
-              value: [geoCoordMap[dataItem[1].name][0], geoCoordMap[dataItem[1].name][1], dataItem[1].value],
+              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value]),
             };
           }),
         });
