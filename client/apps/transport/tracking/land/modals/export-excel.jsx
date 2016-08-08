@@ -9,7 +9,8 @@ const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const RangePicker = DatePicker.RangePicker;
-
+const startDate = new Date();
+startDate.setDate(1);
 @injectIntl
 @connect(
   state => ({
@@ -23,7 +24,7 @@ export default class ExportExcel extends React.Component {
   }
   state = {
     visible: false,
-    startDate: `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`,
+    startDate: `${moment(startDate).format('YYYY-MM-DD')} 00:00:00`,
     endDate: `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`,
   }
   showModal = () => {

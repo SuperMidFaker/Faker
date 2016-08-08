@@ -6,6 +6,7 @@ import {
 } from './form-common';
 import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
 import { LOAD_TRANSHIPMT_SUCCEED } from './trackingLandStatus';
+import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
@@ -21,6 +22,8 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
+const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
+const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
 const initialState = {
   formRequire: {
     consignerLocations: [],
@@ -60,6 +63,8 @@ const initialState = {
   statistics: {
     points: [],
     count: [0, 0, 0, 0, 0],
+    startDate,
+    endDate,
   },
 };
 

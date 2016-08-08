@@ -13,13 +13,12 @@ import './index.less';
 import echarts from 'echarts';
 import chinaJson from './china.json';
 import { renderCity } from './common/consignLocation';
-import moment from 'moment';
+
 const RangePicker = DatePicker.RangePicker;
 const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
-  const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
-  const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
+  const { startDate, endDate } = state.shipment.statistics;
   return dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate));
 }
 @connectFetch()(fetchData)
@@ -236,9 +235,7 @@ export default class Dashboard extends React.Component {
     });
   }
   render() {
-    const { count } = this.props.statistics;
-    const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
-    const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
+    const { count, startDate, endDate } = this.props.statistics;
     const datePicker = (
       <div>
         <RangePicker style={{ width: 200 }} defaultValue={[startDate, endDate]} onChange={this.onDateChange} />
