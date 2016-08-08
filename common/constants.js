@@ -286,12 +286,15 @@ const GOODS_TYPES = [{
 }];
 
 const CONTAINER_PACKAGE_TYPE = [{
+  id: 0,
   key: 'GP20',
   value: 'GP20',
 }, {
+  id: 1,
   key: 'GP40',
   value: 'GP40',
 }, {
+  id: 2,
   key: 'HQ40',
   value: 'HQ40',
 }];
@@ -322,9 +325,16 @@ export const TARIFF_METER_METHODS = [{
   value: 'm3',
   text: '立方米单价',
 }, {
-  value: 't*m',
+  value: 't*km',
   text: '吨*公里系数',
 }];
+
+export const PRESET_TRANSMODES = {
+  ftl: 'FTL', // 整车
+  exp: 'EXP', // 快递
+  ltl: 'LTL', // 零担
+  ctn: 'CTN', // 集装箱
+};
 
 const ENTERPRISE = 'enterprise';
 const BRANCH = 'branch';

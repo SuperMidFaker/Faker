@@ -90,16 +90,16 @@ export default class TariffList extends React.Component {
   columns = [{
     title: this.msg('tariffName'),
     dataIndex: 'name',
-    width: 170,
+    width: 160,
   }, {
     title: this.msg('partnerName'),
-    width: 130,
+    width: 140,
     dataIndex: 'partnerName',
   }, {
     title: this.msg('tariffType'),
     dataIndex: 'kind',
     width: 80,
-    render: (o) => TARIFF_KINDS[o].text,
+    render: (o) => typeof o === 'number' && TARIFF_KINDS[o].text,
   }, {
     title: this.msg('effectiveDate'),
     dataIndex: 'effectiveDate',
@@ -123,7 +123,8 @@ export default class TariffList extends React.Component {
     title: this.msg('revisionDate'),
     dataIndex: 'revisionDate',
     width: 120,
-    render: (o, record) => moment(record.revisionDate).format('YYYY.MM.DD'),
+    render: (o, record) => record.revisionDate &&
+      moment(record.revisionDate).format('YYYY.MM.DD'),
   }, {
     title: this.msg('tariffReviser'),
     dataIndex: 'reviser',

@@ -77,7 +77,7 @@ export default class TrackingLandWrapper extends React.Component {
     this.props.changeExcpFilter('shipmt_no', value);
   }
   render() {
-    const locName = this.props.location.pathname.split('/')[5];
+    const locName = this.props.location.pathname.split('/')[4];
     let propFilters = [];
     if (locName === 'status') {
       propFilters = this.props.statusfilters;
