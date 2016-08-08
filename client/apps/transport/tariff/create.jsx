@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Icon } from 'antd';
+import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -50,13 +50,13 @@ export default class TariffCreate extends React.Component {
   render() {
     const { tariffId } = this.props;
     const panes = [
-      <TabPane tab={<span><Icon type="book" />协议概括</span>} key="agreement">
+      <TabPane tab={<span>协议概况</span>} key="agreement">
         <AgreementForm />
       </TabPane>,
     ];
     if (tariffId) {
       panes.push(
-        <TabPane tab={<span><Icon type="file-text" />基础费率</span>} key="rates">
+        <TabPane tab={<span>基础费率</span>} key="rates">
           <RatesForm />
         </TabPane>
       );

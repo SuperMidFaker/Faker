@@ -239,7 +239,7 @@ export default class RateEndTable extends React.Component {
     });
     columns.push({
       title: '操作',
-      width: 130,
+      width: 80,
       render: (o, record) => {
         return (
           <span>
@@ -251,7 +251,7 @@ export default class RateEndTable extends React.Component {
     });
     return (
       <div>
-        <Table rowSelection={rowSelection} columns={columns} loading={loading}
+        <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource} scroll={{ x: totalWidth + 100 }}
         />
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>

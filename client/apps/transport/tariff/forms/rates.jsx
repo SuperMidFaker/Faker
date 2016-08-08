@@ -33,11 +33,11 @@ export default class TariffRatesForm extends React.Component {
   render() {
     const { sourceModal, endModal } = this.state;
     return (
-      <div className="panel-body body-responsive">
-        <Col sm={8} style={{ padding: 8 }}>
-          <Card>
-            <div style={{ padding: '0 8px 8px' }}>
-              <Button type="primary" size="large" icon="plus-circle-o"
+      <div className="panel-body">
+        <Col sm={6} style={{ padding: '0 8px 0px 16px' }}>
+          <Card bodyStyle={{ padding: 0 }}>
+            <div style={{ padding: '8px 8px' }}>
+              <Button size="small" icon="plus-circle-o"
                 onClick={this.handleSourceAdd}
               >
                 添加
@@ -46,10 +46,10 @@ export default class TariffRatesForm extends React.Component {
             <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} />
           </Card>
         </Col>
-        <Col sm={16} style={{ padding: 8 }}>
-          <Card>
-            <div style={{ padding: '0 8px 8px' }}>
-              <Button type="primary" size="large" icon="plus-circle-o"
+        <Col sm={18} style={{ padding: '0 16px 0px 8px' }}>
+          <Card bodyStyle={{ padding: 0 }}>
+            <div style={{ padding: '8px 8px' }}>
+              <Button size="small" icon="plus-circle-o"
                 onClick={this.handleEndAdd} disabled={!this.props.rateId}
               >
                 添加
