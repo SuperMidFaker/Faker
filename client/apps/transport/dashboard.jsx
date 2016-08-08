@@ -98,7 +98,6 @@ export default class Dashboard extends React.Component {
           for (let i = 0; i < SHData.length; i++) {
             if (geo === SHData[i][1].name) {
               delete SHData[i];
-              break;
             }
           }
         }
