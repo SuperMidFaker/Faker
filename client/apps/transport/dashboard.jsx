@@ -48,8 +48,6 @@ export default class Dashboard extends React.Component {
     children: PropTypes.object,
   }
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps');
-    console.log(nextProps);
     this.createEcharts(nextProps.statistics);
   }
   onDateChange = (value, dateString) => {
@@ -63,12 +61,8 @@ export default class Dashboard extends React.Component {
       const consignerCity = renderCity(points[i], 'consigner');
       const consigneeCity = renderCity(points[i], 'consignee');
       SHData.push([{ name: consignerCity }, { name: consigneeCity, value: points[i].value * 10 }]);
-      if (geoCoordMap[consignerCity] === undefined) {
-        geoCoordMap[consignerCity] = [0, 0];
-      }
-      if (geoCoordMap[consigneeCity] === undefined) {
-        geoCoordMap[consigneeCity] = [0, 0];
-      }
+      geoCoordMap[consignerCity] = [0, 0];
+      geoCoordMap[consigneeCity] = [0, 0];
     }
     function queryGeoLocation(item) {
       return new Promise((resolve) => {
@@ -94,12 +88,12 @@ export default class Dashboard extends React.Component {
     });
     const result = Promise.all(promises);
     result.then((arr) => {
-      console.log('arr');
-      console.log(arr);
       let j = 0;
       Object.keys(geoCoordMap).forEach(geo => {
-        geoCoordMap[geo][0] = arr[j].result.location.lng;
-        geoCoordMap[geo][1] = arr[j].result.location.lat;
+        if (arr[j].result && arr[j].result.location) {
+          geoCoordMap[geo][0] = arr[j].result.location.lng;
+          geoCoordMap[geo][1] = arr[j].result.location.lat;
+        }
         j++;
       });
 
