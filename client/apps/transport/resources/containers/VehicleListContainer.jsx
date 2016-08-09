@@ -16,7 +16,6 @@ function fetchData({ dispatch, state }) {
 export default class VehicleListContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,                 // 服务器返回的车辆数组
-    loading: PropTypes.bool.isRequired,               // 加载状态
     editVehicle: PropTypes.func.isRequired,           // 停用和启用车辆的action creator
   }
   static contextTypes = {

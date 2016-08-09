@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { message } from 'antd';
 import { connect } from 'react-redux';
 import DriverList from '../components/DriverList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -16,7 +17,6 @@ function fetchData({ dispatch, state }) {
 export default class DriverListContainer extends Component {
   static propTypes = {
     drivers: PropTypes.array.isRequired,              // 服务器返回的司机数组
-    loading: PropTypes.bool.isRequired,               // 当前组件是否正在加载
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -30,6 +30,13 @@ export default class DriverListContainer extends Component {
   handleResumeDriverBtnClick = (driverId) => {
     this.props.editDriver({ driverId, driverInfo: { status: 1 } });
   }
+  handleEditDriverLogin = (driver) => {
+    this.props.editDriverLogin(driver).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   render() {
     const { drivers } = this.props;
     const dataSource = drivers.map(transformRawDriverDataToDisplayData);
@@ -38,7 +45,7 @@ export default class DriverListContainer extends Component {
         onStopDriverBtnClick={this.handleStopDriverBtnClick}
         onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
         onAddDriverBtnClicked={this.handleAddDriverBtnClicked}
-        editDriverLogin={this.props.editDriverLogin}
+        handleEditDriverLogin={this.handleEditDriverLogin}
       />
     );
   }

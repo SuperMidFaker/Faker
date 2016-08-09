@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Popconfirm } from 'antd';
 import { PRESET_TRANSMODES, VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, CONTAINER_PACKAGE_TYPE } from 'common/constants';
 export function renderRegion(region) {
   const rgs = [];
@@ -61,6 +62,24 @@ export function getEndTableVarColumns(agreement) {
   }
   return columns;
 }
+
+export function ConfirmDel(props) {
+  const { row, text, onConfirm } = props;
+  function handleConfirm() {
+    onConfirm(row);
+  }
+  return (
+    <Popconfirm title="确认删除?" onConfirm={handleConfirm}>
+     <a role="button">{text}</a>
+    </Popconfirm>
+  );
+}
+
+ConfirmDel.propTypes = {
+  row: PropTypes.object.isRequired,
+  text: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+};
 
 export function RowClick(props) {
   const { row, text, onHit } = props;

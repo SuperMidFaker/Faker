@@ -16,7 +16,6 @@ function fetchData({ dispatch, state }) {
 export default class NodeListContainer extends Component {
   static propTypes = {
     nodes: PropTypes.array.isRequired,                // 节点数组,包括发货地、收获地和中转地
-    loading: PropTypes.bool.isRequired,               // 表示组件是否正在获取数据
     nodeType: PropTypes.number.isRequired,            // 当前选中的节点类型
     setNodeType: PropTypes.func.isRequired,           // 改变节点类型的action creator
     removeNode: PropTypes.func.isRequired,            // 移除某个节点时的action creator

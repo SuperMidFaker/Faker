@@ -46,9 +46,13 @@ export default class AgreementForm extends React.Component {
   state = {
     partnerVisible: true,
     transMode: '',
+    readonly: false,
   }
   componentWillMount() {
     this.handleModeSelect(this.props.formData.transModeCode);
+    if (this.props.readonly) {
+      this.setState({ readonly: true });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData !== this.props.formData) {
@@ -66,6 +70,9 @@ export default class AgreementForm extends React.Component {
     if (nextProps.formData.transModeCode !== this.props.formData.transModeCode) {
       this.handleModeSelect(nextProps.formData.transModeCode);
     }
+    if (nextProps.readonly && !this.props.readonly) {
+      this.setState({ readonly: true });
+    }
   }
   price = {
     vehicleTypes: this.props.formData.vehicleTypes,
@@ -77,6 +84,7 @@ export default class AgreementForm extends React.Component {
     // console.log(this.price);
   }
   handleSubmit = () => {
+    // todo date到天0点, rangeDisable
     this.props.form.validateFields(errors => {
       if (errors) {
         message.error('表单信息错误');
@@ -105,6 +113,7 @@ export default class AgreementForm extends React.Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
+            this.setState({ readonly: true });
             message.success('保存成功');
           }
         });
@@ -151,11 +160,11 @@ export default class AgreementForm extends React.Component {
     }
   }
   render() {
-    const { form, formData, formParams, readonly, submitting, partners,
+    const { form, formData, formParams, submitting, partners,
       form: { getFieldProps } } = this.props;
-    const { partnerVisible, transMode } = this.state;
+    const { partnerVisible, readonly, transMode } = this.state;
     return (
-      <Form horizontal form={form}>
+      <Form horizontal>
         <div className="panel-body">
           <Card style={{ margin: '0 16px' }}>
             <Row>
