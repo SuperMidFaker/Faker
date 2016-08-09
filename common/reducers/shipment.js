@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SEND_SMS_MESSAGE', 'SEND_SMS_MESSAGE_SUCCEED', 'SEND_SMS_MESSAGE_FAIL',
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
+  'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -323,3 +324,19 @@ export function searchShipment(searchText, subdomain) {
     },
   };
 }
+
+export function loadShipmtPoints(shipmtNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHIPMENT_POINTS,
+        actionTypes.LOAD_SHIPMENT_POINTS_SUCCEED,
+        actionTypes.LOAD_SHIPMENT_POINTS_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/points',
+      method: 'get',
+      params: { shipmtNo },
+    },
+  };
+}
+

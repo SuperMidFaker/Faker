@@ -36,7 +36,7 @@ const initialState = {
   },
   acceptModal: {
     visible: false,
-    dispatchId: -1,
+    dispatchIds: [],
     dispatchers: [],
   },
   revokejectModal: {
@@ -75,7 +75,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, acceptModal: { ...state.acceptModal, visible: false } };
     case actionTypes.LOAD_DISPATCHERS:
       return { ...state, acceptModal: { ...state.acceptModal, visible: true,
-        dispatchId: action.modal.dispId } };
+        dispatchIds: action.modal.dispIds } };
     case actionTypes.LOAD_DISPATCHERS_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data } };
     case actionTypes.ACCP_DISP_SUCCEED:
@@ -202,7 +202,7 @@ export function delDraft(shipmtno) {
   };
 }
 
-export function loadAcceptDispatchers(tenantId, dispId) {
+export function loadAcceptDispatchers(tenantId, dispIds) {
   return {
     [CLIENT_API]: {
       types: [
@@ -213,7 +213,7 @@ export function loadAcceptDispatchers(tenantId, dispId) {
       method: 'get',
       endpoint: 'v1/transport/shipment/dispatchers',
       params: { tenantId },
-      modal: { dispId },
+      modal: { dispIds },
     },
   };
 }
@@ -224,7 +224,7 @@ export function closeAcceptModal() {
   };
 }
 
-export function acceptDispShipment(shipmtDispId, acptId, acptName, disperId, disperName) {
+export function acceptDispShipment(shipmtDispIds, acptId, acptName, disperId, disperName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -234,7 +234,7 @@ export function acceptDispShipment(shipmtDispId, acptId, acptName, disperId, dis
       ],
       method: 'post',
       endpoint: 'v1/transport/shipment/accept',
-      data: { shipmtDispId, acptId, acptName, disperId, disperName },
+      data: { shipmtDispIds, acptId, acptName, disperId, disperName },
     },
   };
 }

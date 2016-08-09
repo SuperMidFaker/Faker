@@ -140,7 +140,7 @@ export default class AcceptList extends React.Component {
       }
       return (
         <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
-          style={style}
+          style={style} shipment={record}
         />
       );
     },
@@ -275,7 +275,19 @@ export default class AcceptList extends React.Component {
     ev.preventDefault();
     ev.stopPropagation();
     this.props.loadAcceptDispatchers(
-      this.props.tenantId, dispId
+      this.props.tenantId, [dispId]
+    ).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+    this.setState({ selectedRowKeys: [dispId] });
+  }
+  handleShipmtsAccept(dispIds, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.loadAcceptDispatchers(
+      this.props.tenantId, dispIds
     ).then(result => {
       if (result.error) {
         message.error(result.error.message);
@@ -335,6 +347,7 @@ export default class AcceptList extends React.Component {
       radioValue = types[0].value;
     }
     let columns = this.columns;
+    let btns = '';
     if (radioValue === 'unaccepted') {
       columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
@@ -374,6 +387,13 @@ export default class AcceptList extends React.Component {
           }
         },
       }];
+      btns = (
+        <div style={{ float: 'left' }}>
+          <Button type="primary" size="large" onClick={(ev) => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+          批量接单
+          </Button>
+        </div>
+      );
     } else if (radioValue === 'draft') {
       columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
@@ -426,6 +446,7 @@ export default class AcceptList extends React.Component {
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            {btns}
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>

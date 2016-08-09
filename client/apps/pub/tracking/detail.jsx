@@ -1,10 +1,11 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Steps, Card, Collapse, Timeline, Row, Col } from 'antd';
+import { Steps, Card, Collapse, Row, Col } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { renderConsignLoc, renderLoc } from '../../transport/common/consignLocation';
+import TrackingTimeline from '../../transport/common/trackingTimeline';
 import moment from 'moment';
 const Step = Steps.Step;
 const Panel = Collapse.Panel;
@@ -171,13 +172,6 @@ export default class TrackingDetail extends React.Component {
   }
   render() {
     const { shipmt, tracking } = this.props.shipmtDetail;
-    const points = [];
-    tracking.points.forEach((item) => {
-      points.push({
-        title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
-        description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,
-      });
-    });
     let latestPoint = {
       id: 15,
       from: 0,
@@ -260,13 +254,6 @@ export default class TrackingDetail extends React.Component {
       statusPos = 2;
     }
     const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} description={s.description} />);
-    const trackingSteps = points.map((s, i) => {
-      if (i === 0) {
-        return (<Timeline.Item color="green">{s.title} {s.description}</Timeline.Item>);
-      } else {
-        return (<Timeline.Item>{s.title} {s.description}</Timeline.Item>);
-      }
-    });
     let refExternalNo = '';
     if (shipmt.ref_external_no && shipmt.ref_external_no !== '') {
       refExternalNo = `(${shipmt.ref_external_no})`;
@@ -304,7 +291,7 @@ export default class TrackingDetail extends React.Component {
                   </Col>
                   <Col lg={12} sm={24}>
                     <Card id="tracing-timeline" title="追踪详情" extra={<a href="#"></a>}>
-                      <Timeline>{trackingSteps}</Timeline>
+                      <TrackingTimeline tracking={tracking} />
                     </Card>
                   </Col>
                 </Row>

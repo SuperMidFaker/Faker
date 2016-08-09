@@ -14,7 +14,7 @@ const Option = Select.Option;
     acpterId: state.account.loginId,
     acpterName: state.account.username,
     visible: state.transportAcceptance.acceptModal.visible,
-    shipmtDispId: state.transportAcceptance.acceptModal.dispatchId,
+    shipmtDispIds: state.transportAcceptance.acceptModal.dispatchIds,
     dispatchers: state.transportAcceptance.acceptModal.dispatchers,
   }),
   { closeAcceptModal, acceptDispShipment }
@@ -25,7 +25,7 @@ export default class AccepterModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     acpterId: PropTypes.number.isRequired,
     acpterName: PropTypes.string.isRequired,
-    shipmtDispId: PropTypes.number.isRequired,
+    shipmtDispIds: PropTypes.array.isRequired,
     dispatchers: PropTypes.array.isRequired,
     closeAcceptModal: PropTypes.func.isRequired,
     acceptDispShipment: PropTypes.func.isRequired,
@@ -37,7 +37,7 @@ export default class AccepterModal extends React.Component {
   }
   handleAccept = () => {
     this.props.acceptDispShipment(
-      this.props.shipmtDispId,
+      this.props.shipmtDispIds,
       this.props.acpterId, this.props.acpterName,
       this.state.disperId, this.state.disperName
     ).then(result => {

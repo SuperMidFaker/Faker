@@ -215,7 +215,7 @@ export default class DispatchList extends React.Component {
       render: (o, record) => {
         if (!sub) {
           return (
-            <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} />
+            <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} />
           );
         }
         return (<span>{o}</span>);
