@@ -66,11 +66,12 @@ export default class RateEndTable extends React.Component {
     title: '目的地',
     dataIndex: 'end',
     width: 200,
+    fixed: 'left',
     render: (o, record) => renderRegion(record.end),
   }, {
     title: '运输时间',
     dataIndex: 'time',
-    width: 100,
+    width: 60,
   }]
   loadEnds = (current) => {
     return this.props.loadRateEnds({
@@ -211,7 +212,7 @@ export default class RateEndTable extends React.Component {
       },
     };
     const columns = [...this.columns];
-    let totalWidth = 430;
+    let totalWidth = 400;
     if (agreementRef.transModeCode === PRESET_TRANSMODES.ltl) {
       if (agreementRef.meter === 't*km') {
         columns.push({
@@ -240,6 +241,7 @@ export default class RateEndTable extends React.Component {
     columns.push({
       title: '操作',
       width: 80,
+      fixed: 'right',
       render: (o, record) => {
         return (
           <span>
