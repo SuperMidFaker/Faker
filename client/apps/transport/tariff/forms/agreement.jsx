@@ -156,8 +156,8 @@ export default class AgreementForm extends React.Component {
     const { partnerVisible, transMode } = this.state;
     return (
       <Form horizontal form={form}>
-        <div className="panel-body body-responsive">
-          <Card style={{ margin: '16px' }}>
+        <div className="panel-body">
+          <Card style={{ margin: '0 16px' }}>
             <Row>
               <Col sm={12}>
                 <FormItem label="价格类型" {...formItemLayout}>

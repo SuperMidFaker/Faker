@@ -76,11 +76,10 @@ export default class RateSourceTable extends React.Component {
   columns = [{
     title: '起始地',
     dataIndex: 'source',
-    width: 200,
     render: (o, record) => renderRegion(record.source),
   }, {
     title: '操作',
-    width: 130,
+    width: 80,
     render: (o, record) => {
       return (
         <span>
@@ -214,7 +213,7 @@ export default class RateSourceTable extends React.Component {
     };
     return (
       <div>
-        <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+        <Table size="middle" rowSelection={rowSelection} columns={this.columns} loading={loading}
           dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
         />
         <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
