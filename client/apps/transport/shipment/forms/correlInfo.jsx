@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, InputNumber, Card } from 'antd';
+import { Col, Card } from 'antd';
 import InputItem from './input-item';
+import FreightCharge from './freightCharge';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
-const FormItem = Form.Item;
 
 @connect(
   state => ({
@@ -13,7 +13,6 @@ const FormItem = Form.Item;
       ref_waybill_no: state.shipment.formData.ref_waybill_no,
       ref_entry_no: state.shipment.formData.ref_entry_no,
       remark: state.shipment.formData.remark,
-      freight_charge: state.shipment.formData.freight_charge,
       lsp_name: state.shipment.formData.lsp_name,
     },
   })
@@ -28,7 +27,7 @@ export default class CorrelInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const { tenantName, formhoc, fieldDefaults: {
-      ref_waybill_no, ref_entry_no, remark, freight_charge, lsp_name: lsp,
+      ref_waybill_no, ref_entry_no, remark, lsp_name: lsp,
     } } = this.props;
     return (
       <Col span="8" className="right-side-col">
@@ -51,15 +50,7 @@ export default class CorrelInfo extends React.Component {
             fieldProps={{ initialValue: remark }}
           />
         </Card>
-        <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}>
-          <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
-            <InputNumber style={{ width: '100%' }} min={0} step={0.1}
-              {...formhoc.getFieldProps('freight_charge', {
-              initialValue: freight_charge,
-            })}
-            />
-          </FormItem>
-        </Card>
+        <FreightCharge formhoc={formhoc} intl={this.props.intl} />
       </Col>
     );
   }
