@@ -22,7 +22,6 @@ export default class DriverFormContainer extends Component {
     form: PropTypes.object.isRequired,     // @Form.create的form对象
     params: PropTypes.object.isRequired,   // 用于获取:driver_id参数
     drivers: PropTypes.array.isRequired,   // 服务器返回的司机数组
-    dispatch: PropTypes.func.isRequired,   // store.dispatch函数
     addDriver: PropTypes.func.isRequired,  // 增加车辆的actionCreator
     editDriver: PropTypes.func.isRequired, // 修改车辆信息的actionCreator
     tenantId: PropTypes.number.isRequired,
