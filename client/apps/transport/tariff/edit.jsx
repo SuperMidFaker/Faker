@@ -22,7 +22,7 @@ function fetchData({ params, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    name: state.transportTariff.agreement.name,
+    name: state.transportTariff.agreement.name, // todo: 连续两次进入,标题不会变
   })
 )
 @connectNav((props, dispatch, router, lifecycle) => {

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RegionCascader from 'client/components/region-cascade';
-import { getEndTableVarColumns, renderRegion, RowClick } from './commodity';
+import { getEndTableVarColumns, renderRegion, RowClick, ConfirmDel } from './commodity';
 import { submitRateEnd, updateRateEnd, delRateEnd,
   loadRateEnds } from 'common/reducers/transportTariff';
 import { PRESET_TRANSMODES } from 'common/constants';
@@ -245,7 +245,7 @@ export default class RateEndTable extends React.Component {
           <span>
             <RowClick text="编辑" onHit={this.handleEdit} row={record} />
             <span className="ant-divider" />
-            <RowClick text="删除" onHit={this.handleDel} row={record} />
+            <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
           </span>);
       },
     });

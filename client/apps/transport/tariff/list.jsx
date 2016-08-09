@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
-import { RowClick } from './forms/commodity';
+import { ConfirmDel } from './forms/commodity';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTable, delTariff } from 'common/reducers/transportTariff';
@@ -141,7 +141,7 @@ export default class TariffList extends React.Component {
           {this.msg('revise')}
           </NavLink>
           <span className="ant-divider" />
-          <RowClick row={record} text="删除" onHit={this.handleDel} />
+          <ConfirmDel row={record} text="删除" onConfirm={this.handleDel} />
         </span>
       );
     },
