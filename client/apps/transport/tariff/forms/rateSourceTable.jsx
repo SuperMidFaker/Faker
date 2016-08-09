@@ -5,7 +5,7 @@ import Table from 'client/components/remoteAntTable';
 import RegionCascader from 'client/components/region-cascade';
 import { submitRateSource, loadRatesSources, updateRateSource,
   delRateSource, loadRateEnds, loadTariff } from 'common/reducers/transportTariff';
-import { getRowKey, renderRegion, RowClick } from './commodity';
+import { getRowKey, renderRegion, RowClick, ConfirmDel } from './commodity';
 
 const FormItem = Form.Item;
 
@@ -85,7 +85,7 @@ export default class RateSourceTable extends React.Component {
         <span>
           <RowClick text="编辑" onHit={this.handleEdit} row={record} />
           <span className="ant-divider" />
-          <RowClick text="删除" onHit={this.handleDel} row={record} />
+          <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
         </span>
       );
     },
