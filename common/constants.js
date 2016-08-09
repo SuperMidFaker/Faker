@@ -243,22 +243,22 @@ const VEHICLE_TYPES = [
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  { value: 2, text: '2米' },
-  { value: 42, text: '4.2米' },
-  { value: 52, text: '5.2米' },
-  { value: 62, text: '6.2米' },
-  { value: 68, text: '6.8米' },
-  { value: 72, text: '7.2米' },
-  { value: 76, text: '7.6米' },
-  { value: 82, text: '8.2米' },
-  { value: 85, text: '8.5米' },
-  { value: 96, text: '9.6米' },
-  { value: 12, text: '12米' },
-  { value: 125, text: '12.5米' },
-  { value: 13, text: '13米' },
-  { value: 135, text: '13.5米' },
-  { value: 16, text: '16米' },
-  { value: 175, text: '17.5米' },
+  { value: 2, text: '2M' },
+  { value: 42, text: '4.2M|2T' },
+  { value: 52, text: '5.2M' },
+  { value: 62, text: '6.2M|5T' },
+  { value: 68, text: '6.8M' },
+  { value: 72, text: '7.2M' },
+  { value: 76, text: '7.6M' },
+  { value: 82, text: '8.2M|10T' },
+  { value: 85, text: '8.5M' },
+  { value: 96, text: '9.6M|15T' },
+  { value: 12, text: '12M' },
+  { value: 125, text: '12.5M|20T' },
+  { value: 13, text: '13M' },
+  { value: 135, text: '13.5M' },
+  { value: 16, text: '16M' },
+  { value: 175, text: '17.5M|30T' },
 ];
 
 const VPROPROTY_TYPES = {
