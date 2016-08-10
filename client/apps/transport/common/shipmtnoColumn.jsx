@@ -4,6 +4,8 @@ import TrimSpan from 'client/components/trimSpan';
 import { Popover, Button } from 'antd';
 import { loadShipmtPoints } from 'common/reducers/shipment';
 import TrackingTimeline from './trackingTimeline';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
+
 @connect(
   () => ({
   }),
@@ -32,7 +34,7 @@ export default class ShipmtNoColumnRender extends React.Component {
   }
   handleMouseOver = () => {
     const { shipmtNo, shipment } = this.props;
-    if (shipment.status >= 4) {
+    if (shipment.status >= SHIPMENT_TRACK_STATUS.intransit) {
       this.props.loadShipmtPoints(shipmtNo).then(result => {
         this.setState({ tracking: result.data });
       });
@@ -51,7 +53,7 @@ export default class ShipmtNoColumnRender extends React.Component {
           </a>
       </div>
     );
-    if (shipment.status >= 4) {
+    if (shipment.status >= SHIPMENT_TRACK_STATUS.intransit) {
       return (
         <Popover placement="rightTop" title="位置追踪" content={content} trigger="hover">
           <a onClick={this.handleClick} onMouseOver={this.handleMouseOver}>

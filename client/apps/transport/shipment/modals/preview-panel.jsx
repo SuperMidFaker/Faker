@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
 import ChargePane from './tabpanes/chargePane';
+import PodPane from './tabpanes/podPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
@@ -158,6 +159,41 @@ export default class PreviewPanel extends React.Component {
       () => { return '电话号码不正确'; }
     );
   }
+  renderTabs() {
+    const shipmt = this.props.previewer.shipmt;
+    if (shipmt.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+      return (
+        <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtDetail')} key="detail">
+            <DetailPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtOperations')} key="operations">
+            <TrackingPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtCharge')} key="charge">
+            <ChargePane />
+          </TabPane>
+          <TabPane tab={this.msg('trackPod')} key="pod">
+            <PodPane />
+          </TabPane>
+        </Tabs>
+      );
+    } else {
+      return (
+        <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtDetail')} key="detail">
+            <DetailPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtOperations')} key="operations">
+            <TrackingPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtCharge')} key="charge">
+            <ChargePane />
+          </TabPane>
+        </Tabs>
+      );
+    }
+  }
   render() {
     const { visible, shipmtNo, status, effective } = this.props;
     return (
@@ -176,17 +212,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-              <TabPane tab={this.msg('shipmtDetail')} key="detail">
-                <DetailPane />
-              </TabPane>
-              <TabPane tab={this.msg('shipmtOperations')} key="operations">
-                <TrackingPane />
-              </TabPane>
-              <TabPane tab={this.msg('shipmtCharge')} key="charge">
-                <ChargePane />
-              </TabPane>
-            </Tabs>
+            {this.renderTabs()}
           </div>
         </div>
         <div>
