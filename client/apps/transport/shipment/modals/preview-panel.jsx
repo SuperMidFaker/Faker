@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag, Modal, Input, message, Col } from 'antd';
+import { Button, Icon, Tabs, Tag, Modal, Input, message, Col, Menu, Dropdown } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -15,6 +15,14 @@ import { validatePhone } from 'common/validater';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 const InputGroup = Input.Group;
+const DropdownButton = Dropdown.Button;
+
+const menu = (
+  <Menu>
+    <Menu.Item key="2">修改运单</Menu.Item>
+    <Menu.Item key="3">删除运单</Menu.Item>
+  </Menu>
+);
 
 function getTrackStatusMsg(status, eff) {
   let msg = 'trackDraft';
@@ -167,9 +175,6 @@ export default class PreviewPanel extends React.Component {
             <span className="title">{shipmtNo}</span>
             <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
             <div className="pull-right">
-              <Button type="primary" shape="circle-outline" style={{ marginRight: '10px' }} onClick={this.showTrackingDetailModal}>
-                <Icon type="share-alt" />
-              </Button>
               <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
                 <Icon type="cross" />
               </Button>
@@ -187,6 +192,16 @@ export default class PreviewPanel extends React.Component {
                 <ChargePane />
               </TabPane>
             </Tabs>
+          </div>
+          <div className="footer">
+            <div className="more-actions">
+              <DropdownButton overlay={menu} onClick={this.showTrackingDetailModal}>
+                <Icon type="share-alt" />共享运单
+              </DropdownButton>
+            </div>
+            <Button type="primary" >
+                接单
+            </Button>
           </div>
         </div>
         <div>

@@ -182,7 +182,7 @@ export default class PreviewPanel extends React.Component {
             </Row>
           </Card>
           <Card bodyStyle={{ padding: 0 }}>
-            <Table size="small" columns={this.columns} pagination={false}
+            <Table size="small" columns={this.columns} pagination={false} showHeader={false}
               dataSource={shipmt.goodslist}
             />
           </Card>

@@ -147,7 +147,7 @@ export default defineMessages({
   },
   acceptedShipmt: {
     id: 'transport.tracking.accepted.shipment',
-    defaultMessage: '待分配',
+    defaultMessage: '待调度',
   },
   dispatchedShipmt: {
     id: 'transport.tracking.dispatched.shipment',
