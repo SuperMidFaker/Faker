@@ -7,6 +7,7 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
+import PickupDeliverUpdaterPopover from './modals/pickup-deliver-updater-popover';
 
 function renderActDate(recordActDate, recordEstDate) {
   if (recordActDate) {
@@ -56,7 +57,43 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
     width: 90,
-    render: (o, record) => renderActDate(record.pickup_act_date, record.pickup_est_date),
+    render: (o, record) => {
+      if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        if (record.sp_tenant_id === -1) {
+          return (
+            <PickupDeliverUpdaterPopover
+              type="pickup"
+              shipmtNo={record.shipmt_no}
+              dispId={record.disp_id}
+              onOK={handlers.onTableLoad}
+            >
+            {msg('updatePickup')}
+            </PickupDeliverUpdaterPopover>
+          );
+        } else if (record.sp_tenant_id === 0) {
+          // 已分配给车队
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            // 线下司机
+            return (
+              <PickupDeliverUpdaterPopover
+                type="pickup"
+                shipmtNo={record.shipmt_no}
+                dispId={record.disp_id}
+                onOK={handlers.onTableLoad}
+              >
+              {msg('updatePickup')}
+            </PickupDeliverUpdaterPopover>
+            );
+          } else {
+            return msg('driverUpdate');
+          }
+        } else {
+          return msg('carrierUpdate');
+        }
+      } else {
+        return renderActDate(record.pickup_act_date, record.pickup_est_date);
+      }
+    },
   }, {
     title: msg('arrivalPlace'),
     width: 150,
@@ -70,7 +107,41 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
+    render: (o, record) => {
+      if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        if (record.sp_tenant_id === -1) {
+          return (
+            <PickupDeliverUpdaterPopover
+              type="deliver"
+              shipmtNo={record.shipmt_no}
+              dispId={record.disp_id}
+              onOK={handlers.onTableLoad}
+            >
+            {msg('updateDelivery')}
+            </PickupDeliverUpdaterPopover>
+          );
+        } else if (record.sp_tenant_id === 0) {
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            return (
+              <PickupDeliverUpdaterPopover
+                type="deliver"
+                shipmtNo={record.shipmt_no}
+                dispId={record.disp_id}
+                onOK={handlers.onTableLoad}
+              >
+              {msg('updateDelivery')}
+              </PickupDeliverUpdaterPopover>
+            );
+          } else {
+            return msg('driverUpdate');
+          }
+        } else {
+          return msg('carrierUpdate');
+        }
+      } else {
+        return renderActDate(record.deliver_act_date, record.deliver_est_date);
+      }
+    },
   }, {
     title: msg('shipmtStatus'),
     dataIndex: 'status',

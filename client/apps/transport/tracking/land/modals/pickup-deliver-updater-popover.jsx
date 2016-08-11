@@ -1,0 +1,120 @@
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { Form, DatePicker, message, Popover, Button } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+const formatMsg = format(messages);
+const FormItem = Form.Item;
+
+@injectIntl
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
+  }),
+  { savePickOrDeliverDate }
+)
+@Form.create({
+  formPropName: 'formhoc',
+})
+export default class PickupDeliverUpdaterPopover extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    formhoc: PropTypes.object.isRequired,
+    onOK: PropTypes.func,
+    savePickOrDeliverDate: PropTypes.func.isRequired,
+  }
+  state = {
+    visible: false,
+  }
+  componentDidMount() {
+    const { shipmtNo } = this.props;
+    window.$(document).click((event) => {
+      const pickupDeliverClicked = window.$(event.target).closest(`.pickupDeliver${shipmtNo}`).length > 0;
+      const antPopoverClicked = window.$(event.target).closest('.ant-popover').length > 0;
+      const calenderClicked = window.$(event.target).closest('.ant-calendar-picker-container').length > 0;
+      if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked) {
+        this.handleClose();
+      }
+    });
+  }
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  handleOk = () => {
+    this.props.formhoc.validateFields(errors => {
+      if (!errors) {
+        const { formhoc, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
+        const { actDate } = formhoc.getFieldsValue();
+        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName }).then(
+          result => {
+            if (result.error) {
+              message.error(result.error.message);
+            } else {
+              formhoc.resetFields();
+              this.setState({ visible: false });
+              onOK();
+            }
+        });
+      }
+    });
+  }
+  handleClose = () => {
+    this.setState({ visible: false });
+  }
+  handleShowPopover = () => {
+    this.setState({ visible: true });
+  }
+  render() {
+    const { shipmtNo, formhoc: { getFieldProps } } = this.props;
+    const colSpan = 8;
+    let title;
+    let ruleMsg;
+    if (this.props.type === 'pickup') {
+      title = this.msg('pickupModalTitle');
+      ruleMsg = this.msg('pickupTimeMust');
+    } else {
+      title = this.msg('deliverModalTitle');
+      ruleMsg = this.msg('deliverTimeMust');
+    }
+    const content = (
+      <Form className="row" style={{ width: '300px' }}>
+        <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
+          wrapperCol={{ span: 24 - colSpan }} required
+        >
+          <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
+            {...getFieldProps('actDate', {
+            rules: [{
+              type: 'date', required: true, message: ruleMsg,
+            }],
+          })}
+          />
+        </FormItem>
+        <FormItem
+          style={{ marginTop: 24, marginLeft: '20%' }}
+        >
+          <Button type="default" onClick={this.handleClose} style={{ marginRight: 50 }}>取消</Button>
+          <Button type="primary" htmlType="submit" onClick={this.handleOk}>确定</Button>
+        </FormItem>
+      </Form>
+    );
+    return (
+      <Popover title={title}
+        placement="rightTop"
+        trigger="click"
+        content={content}
+        visible={this.state.visible}
+        onClick={this.handleShowPopover}
+      >
+        <a className={`pickupDeliver${shipmtNo}`} onClick={ev => {
+          ev.preventDefault();
+          ev.stopPropagation();
+        }}>{this.props.children}</a>
+      </Popover>
+    );
+  }
+}

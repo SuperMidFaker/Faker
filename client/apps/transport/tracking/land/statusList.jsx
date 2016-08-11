@@ -83,6 +83,8 @@ export default class LandStatusList extends React.Component {
       onShowPickModal: this.handleShowPickModal,
       renderIntransitUpdater: this.renderIntransitUpdater,
       onShowPodModal: this.handleShowPodModal,
+      onShowDeliverModal: this.handleShowDeliverModal,
+      onTableLoad: this.handleTableLoad,
     }, this.msg);
   }
   state = {

@@ -450,7 +450,7 @@ export default class AcceptList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <AccepterModal reload={this.handleTableLoad} />
+        <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
         <PreviewPanel />
       </div>
