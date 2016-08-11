@@ -36,8 +36,9 @@ export default class ExportExcel extends React.Component {
     const timeStr = moment(new Date()).format('YYYY-MM-DD');
     const timestamp = Date.now().toString().substr(-6);
     window.open(`${API_ROOTS.default}v1/transport/tracking/export/tracking_${timeStr}_${timestamp}.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
+    this.handleClose();
   }
-  handleCancel = () => {
+  handleClose = () => {
     this.setState({
       visible: false,
     });
@@ -57,7 +58,7 @@ export default class ExportExcel extends React.Component {
         <Modal title={this.msg('exportExcel')}
           visible={this.state.visible}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          onCancel={this.handleClose}
         >
           <Form horizontal>
             <FormItem
