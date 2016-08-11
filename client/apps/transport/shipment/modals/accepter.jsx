@@ -30,6 +30,7 @@ export default class AccepterModal extends React.Component {
     closeAcceptModal: PropTypes.func.isRequired,
     acceptDispShipment: PropTypes.func.isRequired,
     reload: PropTypes.func.isRequired,
+    clearSelection: PropTypes.func.isRequired,
   }
   state = {
     disperId: -1,
@@ -44,12 +45,14 @@ export default class AccepterModal extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
+        this.props.clearSelection();
         this.props.reload();
       }
     });
   }
   handleCancel = () => {
     this.props.closeAcceptModal();
+    this.props.clearSelection();
   }
   handleSelect = ({ key, label }) => {
     this.setState({

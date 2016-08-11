@@ -37,19 +37,30 @@ export default class ChargePanel extends React.Component {
         });
       }
     });
+    const profit = {
+      value: charges.earnings - charges.payout,
+      color: '#87D068',
+    };
+    if (profit.value === 0) {
+      profit.color = '#666';
+    } else if (profit.value < 0) {
+      profit.color = '#f50';
+    }
     return (
       <div className="pane-content tab-pane">
           <Card bodyStyle={{ padding: 16 }}>
             <Row>
               <Col span="8">
                 <h5>营收</h5>
-
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>¥ {charges.earnings ? charges.earnings.toFixed(2) : '0.00'}</div>
               </Col>
               <Col span="8">
                 <h5>成本</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>¥ {charges.payout ? charges.payout.toFixed(2) : '0.00'}</div>
               </Col>
               <Col span="8">
                 <h5>利润</h5>
+                <div style={{ color: profit.color, fontSize: '18px' }}>¥ {profit.value.toFixed(2)}</div>
               </Col>
             </Row>
           </Card>
