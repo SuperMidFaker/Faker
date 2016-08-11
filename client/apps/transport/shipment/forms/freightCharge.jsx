@@ -117,8 +117,8 @@ export default class FreightCharge extends React.Component {
     const { formhoc, formData } = this.props;
     const { computed, checkPickup, checkDeliver } = this.state;
     return (
-      <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}>
-        <Button style={{ width: '100%', height: 37, marginBottom: 10 }} type="primary"
+      <Card bodyStyle={{ padding: 16 }}>
+        <Button style={{ width: '100%', marginBottom: 16 }} type="primary" size="large" icon="calculator"
           onClick={this.handleCompute}
         >
           {this.msg('computeCharge')}
@@ -127,7 +127,7 @@ export default class FreightCharge extends React.Component {
           computed &&
           <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}
             field="freight_charge" fieldProps={{ initialValue: formData.freight_charge }}
-            colSpan={4} readOnly
+            colSpan={8} readOnly
           />
         }
         {
@@ -138,7 +138,7 @@ export default class FreightCharge extends React.Component {
               {this.msg('pickupCharge')}
             </span>}
             field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
-            colSpan={4} readOnly colon={false}
+            colSpan={8} readOnly colon={false}
           />
         }
         {
@@ -149,7 +149,7 @@ export default class FreightCharge extends React.Component {
               {this.msg('deliverCharge')}
             </span>}
             field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}
-            colSpan={4} readOnly colon={false}
+            colSpan={8} readOnly colon={false}
           />
         }
         {
@@ -157,12 +157,12 @@ export default class FreightCharge extends React.Component {
           <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
             field="surcharge" fieldProps={{ initialValue: formData.surcharge,
               onChange: this.handleSurchargeChange }}
-            colSpan={4}
+            colSpan={8}
           />
         }
         <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
           field="total_charge" fieldProps={{ initialValue: formData.total_charge }}
-          colSpan={4} readOnly={computed}
+          colSpan={8} readOnly={computed}
         />
       </Card>
     );
