@@ -85,6 +85,14 @@ export default class PreviewPanel extends React.Component {
       SMSSendLoding: false,
     };
   }
+  componentDidMount() {
+    window.$(document).click((event) => {
+      const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
+      if (!previewerClicked) {
+        this.handleClose();
+      }
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey !== this.state.tabKey) {
       this.setState({ tabKey: nextProps.tabKey || 'detail' });
@@ -205,7 +213,7 @@ export default class PreviewPanel extends React.Component {
   render() {
     const { visible, shipmtNo, status, effective } = this.props;
     return (
-      <div className={`preview-panel ${visible ? 'inside' : ''}`}>
+      <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
         <div className="panel-content">
           <div className="header">
             <span className="title">{shipmtNo}</span>
