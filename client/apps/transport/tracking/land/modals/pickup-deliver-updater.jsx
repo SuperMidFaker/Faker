@@ -60,7 +60,7 @@ export default class PickupDeliverUpdater extends React.Component {
     this.props.formhoc.resetFields();
   }
   render() {
-    const { formhoc, formhoc: { getFieldProps } } = this.props;
+    const { formhoc: { getFieldProps } } = this.props;
     const colSpan = 6;
     let title;
     let ruleMsg;
@@ -75,7 +75,7 @@ export default class PickupDeliverUpdater extends React.Component {
       <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
-        <Form className="row" form={formhoc}>
+        <Form className="row">
           <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }} required
           >

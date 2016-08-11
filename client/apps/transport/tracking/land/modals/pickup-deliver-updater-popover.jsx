@@ -34,8 +34,9 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     visible: false,
   }
   componentDidMount() {
+    const { shipmtNo } = this.props;
     window.$(document).click((event) => {
-      const pickupDeliverClicked = window.$(event.target).closest('.pickupDeliver').length > 0;
+      const pickupDeliverClicked = window.$(event.target).closest(`.pickupDeliver${shipmtNo}`).length > 0;
       const antPopoverClicked = window.$(event.target).closest('.ant-popover').length > 0;
       const calenderClicked = window.$(event.target).closest('.ant-calendar-picker-container').length > 0;
       if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked) {
@@ -69,7 +70,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     this.setState({ visible: true });
   }
   render() {
-    const { formhoc, formhoc: { getFieldProps } } = this.props;
+    const { shipmtNo, formhoc: { getFieldProps } } = this.props;
     const colSpan = 8;
     let title;
     let ruleMsg;
@@ -81,7 +82,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       ruleMsg = this.msg('deliverTimeMust');
     }
     const content = (
-      <Form className="row" form={formhoc} style={{ width: '300px' }}>
+      <Form className="row" style={{ width: '300px' }}>
         <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
           wrapperCol={{ span: 24 - colSpan }} required
         >
@@ -109,7 +110,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
         visible={this.state.visible}
         onClick={this.handleShowPopover}
       >
-        <a className="pickupDeliver" onClick={ev => {
+        <a className={`pickupDeliver${shipmtNo}`} onClick={ev => {
           ev.preventDefault();
           ev.stopPropagation();
         }}>{this.props.children}</a>
