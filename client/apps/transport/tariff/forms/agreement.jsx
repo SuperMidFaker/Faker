@@ -25,6 +25,7 @@ const formItemLayout = {
     formData: state.transportTariff.agreement,
     partners: state.transportTariff.partners,
     formParams: state.transportTariff.formParams,
+    surcharge: state.transportTariff.surcharge,
   }),
   { loadPartners, submitAgreement, updateAgreement }
 )
@@ -38,6 +39,7 @@ export default class AgreementForm extends React.Component {
     form: PropTypes.object.isRequired,
     tariffId: PropTypes.string,
     formData: PropTypes.object.isRequired,
+    surcharge: PropTypes.object.isRequired,
     formParams: PropTypes.object.isRequired,
     loadPartners: PropTypes.func.isRequired,
     submitAgreement: PropTypes.func.isRequired,
@@ -100,6 +102,8 @@ export default class AgreementForm extends React.Component {
         const forms = {
           ...this.props.formData, ...editForm, ...this.price, partnerName,
         };
+        forms.surcharge = { ...this.props.surcharge };
+        console.log('forms: ', JSON.stringify(forms));
         let promise;
         if (tariffId) {
           forms.loginName = loginName;

@@ -11,12 +11,12 @@ import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
-const SubMenu = Menu.SubMenu;
+// const SubMenu = Menu.SubMenu;
 
 @injectIntl
 @connect(
   state => ({
-    curLocale: state.intl.locale,
+    // curLocale: state.intl.locale,
     navTitle: state.navbar.navTitle,
     notReadMessagesNum: state.corps.notReadMessagesNum,
   }),
@@ -40,8 +40,8 @@ export default class AmNavBar extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   render() {
-    const MenuItem = Menu.Item;
-    const { intl, curLocale, navTitle, notReadMessagesNum } = this.props;
+    // const MenuItem = Menu.Item;
+    const { intl, navTitle, notReadMessagesNum } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
     if (navTitle.depth === 2) {
