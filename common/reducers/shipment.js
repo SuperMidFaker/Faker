@@ -41,7 +41,6 @@ const initialState = {
   formData: {
     key: null,
     shipmt_no: '',
-    freight_charge: 0.0,
     transit_time: 0,
     goodslist: [],
   },

@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Button, Card, Checkbox, message } from 'antd';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
-import { computeCharge } from 'common/reducers/shipment';
+import { computeCharge, setConsignFields } from 'common/reducers/shipment';
+import { TARIFF_METER_METHODS } from 'common/constants';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -13,7 +14,7 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     formData: state.shipment.formData,
   }),
-  { computeCharge }
+  { computeCharge, setConsignFields }
 )
 export default class FreightCharge extends React.Component {
   static propTypes = {
@@ -22,6 +23,7 @@ export default class FreightCharge extends React.Component {
     formhoc: PropTypes.object.isRequired,
     intl: PropTypes.object.isRequired,
     computeCharge: PropTypes.func.isRequired,
+    setConsignFields: PropTypes.func.isRequired,
   }
   state = {
     computed: false,
@@ -64,6 +66,25 @@ export default class FreightCharge extends React.Component {
           computed: true,
           checkPickup: true,
           checkDeliver: true,
+        });
+        const { meter, quantity, unitRatio, gradient, miles } = result.data;
+        const amounts = [];
+        if (meter === TARIFF_METER_METHODS[3].value) {
+          amounts.push(`x${miles}公里`);
+        }
+        if (quantity) {
+          if (meter === TARIFF_METER_METHODS[2].value) {
+            amounts.push(`x${quantity}${this.msg('cubicMeter')}`);
+          } else {
+            amounts.push(`x${quantity}${this.msg('kilogram')}`);
+          }
+        }
+        if (unitRatio !== 1) {
+          amounts.push(`x${unitRatio}`);
+        }
+        this.props.setConsignFields({
+          charge_gradient: gradient,
+          charge_amount: amounts.join(''),
         });
       }
     });
