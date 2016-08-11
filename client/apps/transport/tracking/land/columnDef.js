@@ -84,11 +84,7 @@ export default function makeColumns(type, handlers, msg) {
               {msg('updatePickup')}
             </PickupDeliverUpdaterPopover>
             );
-          } else {
-            return msg('driverUpdate');
           }
-        } else {
-          return msg('carrierUpdate');
         }
       } else {
         return renderActDate(record.pickup_act_date, record.pickup_est_date);
@@ -132,11 +128,7 @@ export default function makeColumns(type, handlers, msg) {
               {msg('updateDelivery')}
               </PickupDeliverUpdaterPopover>
             );
-          } else {
-            return msg('driverUpdate');
           }
-        } else {
-          return msg('carrierUpdate');
         }
       } else {
         return renderActDate(record.deliver_act_date, record.deliver_est_date);
@@ -196,10 +188,10 @@ export default function makeColumns(type, handlers, msg) {
   columns.push({
     title: msg('shipmtCarrier'),
     dataIndex: 'sp_name',
-    width: 200,
+    width: 180,
     render: (o, record) => {
       if (record.sp_name) {
-        const spSpan = <TrimSpan text={record.sp_name} />;
+        const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
         if (record.sp_tenant_id > 0) {
           // todo pure css circle
           return (
@@ -229,20 +221,20 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80,
+    width: 40,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80,
+    width: 60,
   }, {
     title: msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80,
+    width: 60,
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',
-    width: 220,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    width: 180,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',
@@ -250,7 +242,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('proofOfDelivery'),
     dataIndex: 'pod_type',
-    width: 80,
+    width: 40,
     render: (text, record) => {
       if (record.pod_type === 'qrPOD') {
         return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);

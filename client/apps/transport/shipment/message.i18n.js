@@ -365,4 +365,28 @@ export default defineMessages({
     id: 'transport.acceptance.freight.charge',
     defaultMessage: '运费',
   },
+  basicCharge: {
+    id: 'transport.acceptance.basic.charge',
+    defaultMessage: '基本运费',
+  },
+  pickupCharge: {
+    id: 'transport.acceptance.pickup.charge',
+    defaultMessage: '提货费',
+  },
+  deliverCharge: {
+    id: 'transport.acceptance.deliver.charge',
+    defaultMessage: '配送费',
+  },
+  surcharge: {
+    id: 'transport.acceptance.surcharge',
+    defaultMessage: '运费调整项',
+  },
+  totalCharge: {
+    id: 'transport.acceptance.total.charge',
+    defaultMessage: '总运费',
+  },
+  computeCharge: {
+    id: 'transport.acceptance.compute.charge',
+    defaultMessage: '计算运费',
+  },
 });

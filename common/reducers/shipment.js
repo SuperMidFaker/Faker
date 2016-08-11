@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
   'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
+  'COMPUTE_CHARGE', 'COMPUTE_CHARGE_SUCCEED', 'COMPUTE_CHARGE_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -40,7 +41,6 @@ const initialState = {
   formData: {
     key: null,
     shipmt_no: '',
-    freight_charge: 0.0,
     transit_time: 0,
     goodslist: [],
   },
@@ -344,3 +344,18 @@ export function loadShipmtPoints(shipmtNo) {
   };
 }
 
+export function computeCharge(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPUTE_CHARGE,
+        actionTypes.COMPUTE_CHARGE_SUCCEED,
+        actionTypes.COMPUTE_CHARGE_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/compute',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
