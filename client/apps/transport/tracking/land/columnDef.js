@@ -158,19 +158,19 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80,
+    width: 40,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80,
+    width: 60,
   }, {
     title: msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80,
+    width: 60,
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',
-    width: 220,
+    width: 200,
     render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: msg('shipmtMode'),
@@ -179,7 +179,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('proofOfDelivery'),
     dataIndex: 'pod_type',
-    width: 80,
+    width: 40,
     render: (text, record) => {
       if (record.pod_type === 'qrPOD') {
         return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
