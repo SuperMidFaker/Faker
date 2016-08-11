@@ -1,3 +1,4 @@
+/* eslint camelcase: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Card, Checkbox, message } from 'antd';
@@ -33,15 +34,18 @@ export default class FreightCharge extends React.Component {
       customer_partner_id, consigner_region_code, consignee_region_code,
       transport_mode_code,
     } = this.props.formData;
-    const { goods_type, container_no, vehicle_type, vehicle_length, total_weight, total_volume } =
+    const { goods_type, package: ctn, vehicle_type, vehicle_length, total_weight, total_volume } =
       this.props.formhoc.getFieldsValue([
-        'goods_type', 'container_no', 'vehicle_type',
+        'goods_type', 'package', 'vehicle_type',
         'vehicle_length', 'total_weight', 'total_volume',
       ]);
+    if (!(total_volume || total_weight || ctn || vehicle_length)) {
+      message.error('运单数量如(总体积/总重量/集装箱包装类型)未填');
+    }
     const created = this.props.formData.created_date || Date.now();
     this.props.computeCharge({
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_code, ctn: container_no,
+      goods_type, trans_mode: transport_mode_code, ctn,
       tenant_id: this.props.tenantId, created_date: created,
       vehicle_type, vehicle_length, total_weight, total_volume, type: 'sales',
     }).then(result => {
@@ -56,9 +60,58 @@ export default class FreightCharge extends React.Component {
           deliver_charge: result.data.deliver,
           total_charge: result.data.freight + result.data.pickup + result.data.deliver,
         });
-        this.setState({ computed: true });
+        this.setState({
+          computed: true,
+          checkPickup: true,
+          checkDeliver: true,
+        });
       }
     });
+  }
+  handlePickupCheck = (ev) => {
+    this.setState({ checkPickup: ev.target.checked });
+    const { formhoc } = this.props;
+    if (ev.target.checked) {
+      formhoc.setFieldsValue({
+        total_charge: formhoc.getFieldValue('total_charge')
+          + formhoc.getFieldValue('pickup_charge'),
+      });
+    } else {
+      formhoc.setFieldsValue({
+        total_charge: formhoc.getFieldValue('total_charge')
+          - formhoc.getFieldValue('pickup_charge'),
+      });
+    }
+  }
+  handleDeliverCheck = (ev) => {
+    this.setState({ checkDeliver: ev.target.checked });
+    const { formhoc } = this.props;
+    if (ev.target.checked) {
+      formhoc.setFieldsValue({
+        total_charge: formhoc.getFieldValue('total_charge')
+          + formhoc.getFieldValue('deliver_charge'),
+      });
+    } else {
+      formhoc.setFieldsValue({
+        total_charge: formhoc.getFieldValue('total_charge')
+          - formhoc.getFieldValue('deliver_charge'),
+      });
+    }
+  }
+  handleSurchargeChange = (ev) => {
+    const { formhoc } = this.props;
+    const { checkPickup, checkDeliver } = this.state;
+    let total = formhoc.getFieldValue('freight_charge');
+    if (ev.target.value) {
+      total += parseInt(ev.target.value, 10);
+    }
+    if (checkPickup) {
+      total += formhoc.getFieldValue('pickup_charge');
+    }
+    if (checkDeliver) {
+      total += formhoc.getFieldValue('deliver_charge');
+    }
+    formhoc.setFieldsValue({ total_charge: total });
   }
   render() {
     const { formhoc, formData } = this.props;
@@ -80,7 +133,10 @@ export default class FreightCharge extends React.Component {
         {
           computed &&
           <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
-            labelName={<Checkbox checked={checkPickup}>{this.msg('pickupCharge')}</Checkbox>}
+            labelName={<span>
+              <Checkbox checked={checkPickup} onChange={this.handlePickupCheck} />
+              {this.msg('pickupCharge')}
+            </span>}
             field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
             colSpan={4} readOnly colon={false}
           />
@@ -88,7 +144,10 @@ export default class FreightCharge extends React.Component {
         {
           computed &&
           <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
-            labelName={<Checkbox checked={checkDeliver}>{this.msg('deliverCharge')}</Checkbox>}
+            labelName={<span>
+              <Checkbox checked={checkDeliver} onChange={this.handleDeliverCheck} />
+              {this.msg('deliverCharge')}
+            </span>}
             field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}
             colSpan={4} readOnly colon={false}
           />
@@ -96,7 +155,8 @@ export default class FreightCharge extends React.Component {
         {
           computed &&
           <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
-            field="surcharge" fieldProps={{ initialValue: formData.surcharge }}
+            field="surcharge" fieldProps={{ initialValue: formData.surcharge,
+              onChange: this.handleSurchargeChange }}
             colSpan={4}
           />
         }
