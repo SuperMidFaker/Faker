@@ -102,8 +102,7 @@ export default class SurchargeForm extends React.Component {
     const { formhoc: { getFieldProps }, formdata } = this.props;
     const { disabled1, disabled2 } = this.state;
     return (
-      <div className="main-content">
-        <div className="page-body" style={{ padding: '24px' }}>
+        <div style={{ padding: '24px' }}>
           <Row>
             <Col span={7}>
               <Card title="提货费">
@@ -161,7 +160,6 @@ export default class SurchargeForm extends React.Component {
                 {this.renderInput('unload.mode', 'unload.value', { initialValue: formdata.unload.mode }, { initialValue: formdata.unload.value })}
               </Card>
             </Col>
-
             <Col span={7} offset={1}>
               <Card title="其他费用二"
                 extra={
@@ -195,7 +193,6 @@ export default class SurchargeForm extends React.Component {
               </Card>
             </Col>
           </Row>
-
           <Row>
             <Col span={7}>
               <Card title="价格调整系数">
@@ -240,7 +237,6 @@ export default class SurchargeForm extends React.Component {
             </FormItem>
           </Row>
         </div>
-      </div>
     );
   }
 }

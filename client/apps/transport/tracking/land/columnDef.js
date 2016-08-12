@@ -156,38 +156,14 @@ export default function makeColumns(type, handlers, msg) {
       }
     },
   }, {
-    title: msg('shipmtPrevTrack'),
-    width: 110,
-    render: (o, record) => {
-      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return `${msg('sendAction')}
-          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-        return `${msg('acceptAction')}
-          ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-        return `${msg('dispatchAction')}
-          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        return `${msg('pickupAction')}
-          ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        return `${msg('deliverAction')}
-          ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
-      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-        return `${msg('podUploadAction')}
-          ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
-      }
-    },
-  }, {
     title: msg('shipmtException'),
     width: 130,
     dataIndex: 'excp_level',
     render: () => {
       return (<span>
-        <span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 99</span>
-        <span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 99</span>
-        <span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 99</span>
+        <span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 0</span>
+        <span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 0</span>
+        <span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 0</span>
       </span>);
     },
   }];
@@ -271,6 +247,30 @@ export default function makeColumns(type, handlers, msg) {
         return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
       } else {
         return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
+      }
+    },
+  }, {
+    title: msg('shipmtPrevTrack'),
+    width: 110,
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return `${msg('sendAction')}
+          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        return `${msg('acceptAction')}
+          ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        return `${msg('dispatchAction')}
+          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        return `${msg('pickupAction')}
+          ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
+      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+        return `${msg('deliverAction')}
+          ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
+      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+        return `${msg('podUploadAction')}
+          ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
       }
     },
   });
