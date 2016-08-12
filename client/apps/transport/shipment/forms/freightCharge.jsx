@@ -138,7 +138,7 @@ export default class FreightCharge extends React.Component {
     const { formhoc, formData } = this.props;
     const { computed, checkPickup, checkDeliver } = this.state;
     return (
-      <Card bodyStyle={{ padding: 16 }}>
+      <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}>
         <Button style={{ width: '100%', marginBottom: 16 }} type="primary" size="large" icon="calculator"
           onClick={this.handleCompute}
         >
