@@ -157,11 +157,9 @@ export default class RegionCascade extends React.Component {
           chinaRegions => {
             this.setState({ chinaRegions });
         });
-        console.log('new state', areaItems);
         this.setState({ cascadeRegion: areaItems });
       }
     } else if (!isEmptyRegionProp(this.props.region)) {
-      console.log('set areas empty');
       this.setState({ cascadeRegion: [] });
     }
   }

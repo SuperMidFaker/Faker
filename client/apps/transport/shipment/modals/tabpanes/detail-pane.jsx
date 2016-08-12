@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Row, Col, Table, Card } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
+import { PRESET_TRANSMODES } from 'common/constants';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 import './pane.less';
@@ -153,21 +154,21 @@ export default class PreviewPanel extends React.Component {
                 field={shipmt.transport_mode} fieldCol={{ span: 16 }}
               />
             </Col>
-            {shipmt.transport_mode_code === 'FTL' &&
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
                 field={shipmt.vehicle_type} fieldCol={{ span: 16 }}
               />
             </Col>
             }
-            {shipmt.transport_mode_code === 'FTL' &&
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
                 field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
               />
             </Col>
             }
-            {shipmt.transport_mode_code === 'CTN' &&
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
                 field={shipmt.container_no} fieldCol={{ span: 16 }}

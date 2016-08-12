@@ -105,6 +105,7 @@ export default class AgreementForm extends React.Component {
           forms.loginName = loginName;
           promise = this.props.updateAgreement(forms);
         } else {
+          forms.id = tariffId;
           forms.tenantId = tenantId;
           forms.loginId = loginId;
           promise = this.props.submitAgreement(forms);
@@ -147,16 +148,12 @@ export default class AgreementForm extends React.Component {
     }
   }
   handleModeSelect = (value) => {
-    if (value === PRESET_TRANSMODES.ltl) {
-      this.setState({ transMode: 'ltl' });
-    } else if (value === PRESET_TRANSMODES.ftl) {
+    if (value === PRESET_TRANSMODES.ftl) {
       this.setState({ transMode: 'ftl' });
     } else if (value === PRESET_TRANSMODES.ctn) {
       this.setState({ transMode: 'ctn' });
-    } else if (value === PRESET_TRANSMODES.exp) {
-      this.setState({ transMode: 'ltl' });
     } else {
-      this.setState({ transMode: '' });
+      this.setState({ transMode: 'ltl' });
     }
   }
   render() {
