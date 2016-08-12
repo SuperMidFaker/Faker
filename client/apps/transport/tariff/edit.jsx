@@ -7,7 +7,8 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { setNavTitle } from 'common/reducers/navbar';
 import AgreementForm from './forms/agreement';
 import RatesForm from './forms/rates';
-import { loadTariff } from 'common/reducers/transportTariff';
+import SurchargeForm from './forms/surcharge';
+import { loadTariff, loadSurcharge } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -57,6 +58,9 @@ export default class TariffEdit extends React.Component {
               </TabPane>
               <TabPane tab={<span>基础费率</span>} key="rates">
                 <RatesForm />
+              </TabPane>
+              <TabPane tab={<span>附加费税</span>} key="surcharges">
+                <SurchargeForm />
               </TabPane>
             </Tabs>
           </div>

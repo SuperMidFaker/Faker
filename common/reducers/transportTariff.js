@@ -17,7 +17,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'SUBMIT_RATEND', 'SUBMIT_RATEND_SUCCEED', 'SUBMIT_RATEND_FAIL',
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
-  'LOAD_NEW_FORM',
+  'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -57,6 +57,16 @@ const initialState = {
   formParams: {
     transModes: [],
   },
+  surcharge: {
+      pickup: { mode: 0, value: 0 },
+      delivery: { mode: 0, value: 0 },
+      other1: { mode: 0, value: 0 },
+      other2: { mode: 0, value: 0 },
+      load: { mode: 0, value: 0 },
+      unload: { mode: 0, value: 0 },
+      adjustCoefficient: 0,
+      taxrate: { mode: 0, value: 0 },
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -94,9 +104,20 @@ export default function reducer(state = initialState, action) {
         intervals: res.intervals,
         vehicleTypes: res.vehicleTypes,
       };
+      const sur = action.result.data.tariff.surcharge;
+      const surcharge = {
+      adjustCoefficient: sur.adjustCoefficient,
+      pickup: { mode: sur.pickup.mode, value: sur.pickup.value },
+      delivery: { mode: sur.delivery.mode, value: sur.delivery.value },
+      load: { mode: sur.load.mode, value: sur.load.value },
+      unload: { mode: sur.unload.mode, value: sur.unload.value },
+      other1: { mode: sur.other1.mode, value: sur.other1.value },
+      other2: { mode: sur.other2.mode, value: sur.other2.value },
+      taxrate: { mode: sur.taxrate.mode, value: sur.taxrate.value },
+      };
       const partners = res.partner ? [{ partner_code: res.partner.name,
         partner_id: res.partner.id, name: res.partner.name }] : [];
-      return { ...state, agreement, partners,
+      return { ...state, agreement, partners, surcharge,
         ratesRefAgreement: agreement,
         tariffId: action.result.data.tariff._id,
         ratesSourceList: { ...state.ratesSourceList,
@@ -135,6 +156,18 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function submitSurcharges(tariffId, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SURC_SAVE, actionTypes.SURC_SAVE_SUCCEED, actionTypes.SURC_SAVE_FAIL],
+      endpoint: 'v1/transport/tariff/surcharge',
+      method: 'post',
+      data: { tariffId, params },
+      origin: 'mongo',
+    },
+  };
 }
 
 export function loadTable(params) {
