@@ -30,9 +30,9 @@ export default class ShipmtNoColumnRender extends React.Component {
   makeShipmtPublicUrl(shipmtNo, publicKey) {
     return `/pub/tms/tracking/detail/${shipmtNo}/${publicKey}`;
   }
-  handleClick = (ev, shipment) => {
+  handleClick = (ev) => {
     ev.stopPropagation();
-    this.props.onClick(shipment);
+    this.props.onClick(this.props.shipment);
     return false;
   }
   handleMouseOver = () => {
@@ -59,14 +59,14 @@ export default class ShipmtNoColumnRender extends React.Component {
     if (shipment.status >= SHIPMENT_TRACK_STATUS.intransit) {
       return (
         <Popover placement="rightTop" title="位置追踪" content={content} trigger="hover">
-          <a onClick={ev => this.handleClick(ev, shipment)} onMouseOver={this.handleMouseOver}>
+          <a onClick={this.handleClick} onMouseOver={this.handleMouseOver}>
             <TrimSpan text={shipmtNo} maxLen={16} />
           </a>
         </Popover>
       );
     } else {
       return (
-        <a {...extra} onClick={ev => this.handleClick(ev, shipment)}>
+        <a {...extra} onClick={this.handleClick}>
           <TrimSpan text={shipmtNo} maxLen={16} />
         </a>
       );
