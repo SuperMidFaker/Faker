@@ -139,15 +139,15 @@ export default class DispatchList extends React.Component {
   commonCols = [{
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80,
+    width: 40,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80,
+    width: 60,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80,
+    width: 60,
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
@@ -156,17 +156,17 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsigner'),
     dataIndex: 'consigner_name',
-    width: 190,
-    render: (o) => <TrimSpan text={o} />,
+    width: 120,
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignerPlace'),
-    width: 190,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />,
+    width: 120,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
-    width: 210,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    width: 140,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -175,17 +175,17 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 190,
-    render: (o) => <TrimSpan text={o} />,
+    width: 120,
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 190,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />,
+    width: 120,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 210,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    width: 140,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }];
   buildCols(sub) {
     const { status, origin } = this.props.filters;
@@ -225,7 +225,7 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
-        width: 230,
+        width: 200,
         render: (o) => <TrimSpan text={o} maxLen={15} />,
       }, {
         title: this.msg('shipMode'),
@@ -884,17 +884,17 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 2420/* , y: 460 */ }}
+      dataSource={this.dataSource} scroll={{ x: 1900 }}
     />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2420/* , y: 460 */ }}
+        dataSource={this.dataSource} scroll={{ x: 1900 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 1900/* , y: 460 */ }}
+        dataSource={this.dataSource} scroll={{ x: 1900 }}
       />);
     }
 

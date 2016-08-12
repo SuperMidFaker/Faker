@@ -67,7 +67,7 @@ export default class ChargeSpecForm extends React.Component {
   render() {
     const { charge } = this.props;
     const { checkPickup, checkDeliver } = this.state;
-    const span = 4;
+    const span = 6;
     return (
       <Form horizontal>
         <FormItem label={this.msg('basicCharge')} labelCol={{ span }} wrapperCol={{ span: 24 - span }}>
