@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Icon, message, Select, Modal, Alert, Tooltip } from 'antd';
+import { Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -256,7 +256,7 @@ export default class DispatchList extends React.Component {
                   {this.msg('btnTextSegmentCancel')}
                   </a></span>);
             } else {
-              return (<span className="na-operation">NA</span>);
+              return (<span></span>);
             }
           }
           return (
@@ -276,7 +276,32 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipSp'),
         dataIndex: 'sp_name',
-        width: 220,
+        width: 180,
+        render: (o, record) => {
+      if (record.sp_name) {
+        const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
+        if (record.sp_tenant_id > 0) {
+          // todo pure css circle
+          return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-green" />
+              {spSpan}
+            </span>
+          );
+        } else if (record.sp_tenant_id === -1) {
+          return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-grey" />
+              {spSpan}
+            </span>
+          );
+        } else {
+          return spSpan;
+        }
+      } else {
+        return this.msg('ownFleet');
+      }
+    },
       }, {
         title: this.msg('shipVehicle'),
         dataIndex: 'task_vehicle',
@@ -287,7 +312,8 @@ export default class DispatchList extends React.Component {
       if (s === 'dispatched') {
         timetitle = this.msg('shipSendTime');
       }
-      cols.push({
+      cols.push(
+        /* {
         title: this.msg('shipPod'),
         dataIndex: 'pod_type',
         width: 40,
@@ -310,7 +336,8 @@ export default class DispatchList extends React.Component {
             return (<span>{text}</span>);
           }
         },
-      }, {
+      }, */
+      {
         title: timetitle,
         dataIndex: 'disp_time',
         width: 100,
@@ -326,7 +353,7 @@ export default class DispatchList extends React.Component {
               return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
                       {this.msg('btnTextReturn')}</a></span>);
             }
-            return (<span className="na-operation">NA</span>);
+            return (<span></span>);
           }
           return (
             <span>

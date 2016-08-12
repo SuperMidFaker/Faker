@@ -20,6 +20,7 @@ const DropdownButton = Dropdown.Button;
 
 const menu = (
   <Menu>
+    <Menu.Item key="terminate"><span className="mdc-text-red"><Icon type="delete" /> 终止运单</span></Menu.Item>
   </Menu>
 );
 
@@ -368,7 +369,7 @@ export default class PreviewPanel extends React.Component {
           </div>
           <div className="footer">
             <div className="more-actions">
-              <DropdownButton overlay={menu} onClick={this.showTrackingDetailModal}>
+              <DropdownButton size="large" overlay={menu} onClick={this.showTrackingDetailModal}>
                 <Icon type="share-alt" />共享运单
               </DropdownButton>
             </div>

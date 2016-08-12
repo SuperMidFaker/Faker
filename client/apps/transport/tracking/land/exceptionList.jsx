@@ -135,6 +135,13 @@ export default class LandStatusList extends React.Component {
     fixed: 'left',
     width: 140,
     dataIndex: 'excp_level',
+    render: () => {
+      return (<span>
+        <span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 99</span>
+        <span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 99</span>
+        <span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 99</span>
+      </span>);
+    },
   }, {
     title: this.msg('shipmtStatus'),
     dataIndex: 'status',
@@ -337,7 +344,7 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2400/* , y: 460 */ }}
+              dataSource={this.dataSource} scroll={{ x: 2260 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

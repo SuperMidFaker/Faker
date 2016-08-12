@@ -1,7 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import update from 'react/lib/update';
-import { Icon, QueueAnim, Tag, InputNumber, Button, Popover, message, Modal, Tabs }
+import { Icon, Tag, InputNumber, Button, Popover, message, Modal, Tabs }
   from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';

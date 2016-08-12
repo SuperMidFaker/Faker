@@ -21,9 +21,13 @@ export default defineMessages({
     id: 'transport.tracking.shipmt.prev.track',
     defaultMessage: '上一节点时间',
   },
+  podTime: {
+    id: 'transport.tracking.shipmt.pod.time',
+    defaultMessage: '回单时间',
+  },
   shipmtNextUpdate: {
     id: 'transport.tracking.shipmt.next.update',
-    defaultMessage: '节点操作',
+    defaultMessage: '操作',
   },
   carrierUpdate: {
     id: 'transport.tracking.carrier.update',
