@@ -20,8 +20,6 @@ const DropdownButton = Dropdown.Button;
 
 const menu = (
   <Menu>
-    <Menu.Item key="2">修改运单</Menu.Item>
-    <Menu.Item key="3">删除运单</Menu.Item>
   </Menu>
 );
 
@@ -374,7 +372,6 @@ export default class PreviewPanel extends React.Component {
                 <Icon type="share-alt" />共享运单
               </DropdownButton>
             </div>
-            {this.renderButtons()}
           </div>
         </div>
         <div>
