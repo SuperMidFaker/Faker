@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Icon, QueueAnim, Tag, Button, Select, DatePicker, Row, Col, message, Alert } from 'antd';
+import { Icon, Tag, Button, Select, DatePicker, Row, Col, message, Alert } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import { segmentRequest } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
