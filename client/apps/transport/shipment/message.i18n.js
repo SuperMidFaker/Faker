@@ -277,13 +277,25 @@ export default defineMessages({
     id: 'transport.shipment.track.pod',
     defaultMessage: '回单',
   },
-  chargeItem: {
-    id: 'transport.shipment.track.charge.item',
-    defaultMessage: '项目',
+  revenueItem: {
+    id: 'transport.shipment.track.charge.revenue.item',
+    defaultMessage: '收入明细项',
+  },
+  chargeRate: {
+    id: 'transport.shipment.track.charge.rate',
+    defaultMessage: '费率',
+  },
+  chargeAmount: {
+    id: 'transport.shipment.track.charge.amount',
+    defaultMessage: '计费量',
   },
   chargeFee: {
     id: 'transport.shipment.track.charge.fee',
     defaultMessage: '金额',
+  },
+  expenseItem: {
+    id: 'transport.shipment.track.charge.expense.item',
+    defaultMessage: '成本明细项',
   },
   trackEarnings: {
     id: 'transport.shipment.track.earnings',

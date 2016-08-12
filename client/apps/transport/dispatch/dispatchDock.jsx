@@ -1,16 +1,36 @@
 import React, { PropTypes, Component } from 'react';
-import { Icon, QueueAnim, Tag, InputNumber, Button, message, Modal, Tabs } from 'antd';
+import update from 'react/lib/update';
+import { Icon, QueueAnim, Tag, InputNumber, Button, Popover, message, Modal, Tabs }
+  from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch } from 'common/reducers/transportDispatch';
 import { addPartner } from 'common/reducers/partner';
+import { computeCostCharge } from 'common/reducers/shipment';
+import { getChargeAmountExpression } from '../common/charge';
+import ChargeSpecForm from '../shipment/forms/chargeSpec';
 import SearchBar from 'client/components/search-bar';
 import MContent from './MContent';
 import partnerModal from '../../corp/cooperation/components/partnerModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';
+
 const TabPane = Tabs.TabPane;
 
+export function RowClick(props) {
+  const { text, onHit, row, index } = props;
+  function handleClick(ev) {
+    onHit(ev, row, index);
+  }
+  return <a role="button" onClick={handleClick}>{text}</a>;
+}
+
+RowClick.propTypes = {
+  row: PropTypes.object.isRequired,
+  index: PropTypes.number,
+  text: PropTypes.string.isRequired,
+  onHit: PropTypes.func.isRequired,
+};
 function noop() {}
 
 function fetch({ state, dispatch, cookie }) {
@@ -32,8 +52,9 @@ function fetch({ state, dispatch, cookie }) {
   dispatched: state.transportDispatch.dispatched,
   vehicleTypes: state.transportDispatch.vehicleTypes,
   vehicleLengths: state.transportDispatch.vehicleLengths,
-}), { loadLsps, loadVehicles, doDispatch, addPartner })
-
+}),
+  { loadLsps, loadVehicles, doDispatch, addPartner, computeCostCharge }
+)
 export default class DispatchDock extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
@@ -52,6 +73,7 @@ export default class DispatchDock extends Component {
     loginId: PropTypes.number.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
+    computeCostCharge: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -67,36 +89,52 @@ export default class DispatchDock extends Component {
       title: '承运商',
       dataIndex: 'partner_name',
       width: 180,
-      render: (o, record) => {
-        return (<span>
-                <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
-                {record.partner_name}
-                </span>);
-      },
-    }, {
-      title: '价格协议',
-      dataIndex: 'quotation_promise',
-      width: 100,
-      render: () => (<span></span>),
-    }, {
-      title: '运输时效',
-      dataIndex: 'transit',
-      width: 80,
-      render: () => (<span></span>),
+      render: (o, record) => (
+        <span>
+          <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
+          {record.partner_name}
+        </span>
+      ),
     }, {
       title: '成本价（元）',
-      dataIndex: 'quotation',
+      dataIndex: 'charge',
       width: 120,
-      render: () => (<InputNumber min={1} onChange={this.handleQuotationChange} />),
+      render: (o, record, index) => {
+        if (o) {
+          return (
+            <Popover overlayStyle={{ width: '40%' }} title="价格明细" content={
+              <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
+            } placement="bottom"
+            >
+              <span>{o.total_charge}</span>
+            </Popover>
+          );
+        } else if (this.props.shipmts.length > 1) {
+          return <InputNumber min={1} onChange={this.handleQuotationChange} />;
+        } else {
+          return '';
+        }
+      },
     }, {
       title: this.msg('shipmtOP'),
-      width: 50,
-      render: (o, record) => {
-        return (<span>
-                <a role="button" onClick={() => this.showConfirm('tenant', record)}>
-                {this.msg('btnTextDispatch')}
-                </a></span>);
-      },
+      width: 100,
+      render: (o, record, idx) => (
+        <span>
+          <a role="button" onClick={() => this.showConfirm('tenant', record)}>
+          {this.msg('btnTextDispatch')}
+          </a>
+          {
+            this.props.shipmts.length === 1 &&
+            <span className="ant-divider" />
+          }
+          {
+            this.props.shipmts.length === 1 && (
+            <RowClick row={record} text={this.msg('btnChargeCompute')}
+              index={idx} onHit={this.handleCostCompute}
+            />)
+          }
+        </span>
+      ),
     }];
     this.vehicleCols = [{
       title: '车牌',
@@ -149,21 +187,29 @@ export default class DispatchDock extends Component {
     }, {
       title: this.msg('shipmtOP'),
       width: 50,
-      render: (o, record) => {
-        return (<span>
-                <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
-                {this.msg('btnTextDispatch')}
-                </a></span>);
-      },
+      render: (o, record) => (
+        <span>
+          <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
+          {this.msg('btnTextDispatch')}
+          </a>
+        </span>
+      ),
     }];
   }
 
   state = {
+    lspsVar: null,
     quotation: 0,
     podType: 'ePOD', // none, qrPOD, ePOD
     carrierSearch: '',
     plateSearch: '',
     newVehicleVisible: false,
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.lsps !== this.props.lsps) {
+      this.setState({ lspsVar: nextProps.lsps });
+    }
   }
 
   lspsds = new Table.DataSource({
@@ -227,14 +273,14 @@ export default class DispatchDock extends Component {
       return { shipmtNo: s.shipmt_no, dispId: s.key };
     });
     if (type === 'tenant') {
-      this.props.doDispatch(null, {
+      this.props.doDispatch({
         tenantId,
         loginId,
         shipmtNos,
+        charge: target.charge || { total_charge: this.state.quotation },
         partnerId: target.partner_id,
         partnerName: target.partner_name,
         partnerTenantId: target.partner_tenant_id,
-        freightCharge: this.state.quotation,
         podType,
         type,
       }).then(result => {
@@ -245,7 +291,7 @@ export default class DispatchDock extends Component {
         }
       });
     } else if (type === 'vehicle') {
-      this.props.doDispatch(null, {
+      this.props.doDispatch({
         tenantId,
         loginId,
         shipmtNos,
@@ -254,7 +300,6 @@ export default class DispatchDock extends Component {
         taskVehicle: target.plate_number,
         taskDriverId: target.driver_id,
         taskDriverName: target.name,
-        freightCharge: this.state.quotation,
         podType,
         type,
       }).then(result => {
@@ -341,6 +386,45 @@ export default class DispatchDock extends Component {
       newVehicleVisible: false,
     });
   }
+  handleChargeChange = (charge, index) => {
+    const state = update(this.state, { lspsVar: { data:
+      { [index]: { charge: { $set: charge } } } } });
+    this.setState(state);
+  }
+  handleCostCompute = (ev, row, index) => {
+    const {
+      consigner_region_code, consignee_region_code, transport_mode_code,
+      package: ctn, created_date: created, goods_type,
+      vehicle_type, vehicle_length, total_weight, total_volume,
+    } = this.props.shipmts[0];
+    this.props.computeCostCharge({
+      tenant_id: this.props.tenantId, created_date: created,
+      partner_id: row.partner_id, consigner_region_code, consignee_region_code,
+      goods_type, trans_mode: transport_mode_code, ctn,
+      vehicle_type, vehicle_length, total_weight, total_volume,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else if (result.data.freight === -1) {
+        message.error('未找到适合计算的价格协议');
+      } else {
+        const { freight, pickup, deliver, meter, quantity,
+          unitRatio, gradient, miles } = result.data;
+        const charge = {
+          freight_charge: freight,
+          pickup_charge: pickup,
+          deliver_charge: deliver,
+          total_charge: freight + pickup + deliver,
+          charge_gradient: gradient,
+          charge_amount: getChargeAmountExpression(meter, miles, quantity,
+              unitRatio),
+        };
+        const state = update(this.state, { lspsVar: { data: {
+          [index]: { charge: { $set: charge } } } } });
+        this.setState(state);
+      }
+    });
+  }
   showConfirm(type, target) {
     const [shipmt] = this.props.shipmts;
     let msg = `即将【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运，请选择对回单的要求：`;
@@ -380,8 +464,8 @@ export default class DispatchDock extends Component {
     this.setState({ newVehicleVisible: true });
   }
   render() {
-    const { show, shipmts, lsps, vehicles } = this.props;
-    this.lspsds.remotes = lsps;
+    const { show, shipmts, vehicles } = this.props;
+    this.lspsds.remotes = this.state.lspsVar;
     this.vesds.remotes = vehicles;
     let dock = '';
     if (show) {

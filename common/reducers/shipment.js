@@ -4,8 +4,6 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
-import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
-import { LOAD_TRANSHIPMT_SUCCEED } from './trackingLandStatus';
 import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
@@ -21,7 +19,8 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
   'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
-  'COMPUTE_CHARGE', 'COMPUTE_CHARGE_SUCCEED', 'COMPUTE_CHARGE_FAIL',
+  'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
+  'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -52,10 +51,11 @@ const initialState = {
     },
     tracking: {
     },
+    dispatch: {
+    },
     charges: {
     },
     pod: {
-
     },
   },
   shipmtDetail: {
@@ -79,9 +79,6 @@ function transformJsonDate(val) {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case LOAD_APTSHIPMENT_SUCCEED:
-    case LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state, previewer: { ...state.previewer, visible: false } };
     case actionTypes.LOAD_FORMREQUIRE:
       // force formData change to rerender after formrequire load
       return { ...state, formData: { goodslist: [] } };
@@ -125,6 +122,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
         tracking: action.result.data.tracking,
+        dispatch: action.result.data.dispatch,
         charges: action.result.data.charges,
         pod: action.result.data.pod,
         visible: true,
@@ -344,15 +342,31 @@ export function loadShipmtPoints(shipmtNo) {
   };
 }
 
-export function computeCharge(data) {
+export function computeSaleCharge(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.COMPUTE_CHARGE,
-        actionTypes.COMPUTE_CHARGE_SUCCEED,
-        actionTypes.COMPUTE_CHARGE_FAIL,
+        actionTypes.COMPUTE_SALECHARGE,
+        actionTypes.COMPUTE_SALECHARGE_SUCCEED,
+        actionTypes.COMPUTE_SALECHARGE_FAIL,
       ],
-      endpoint: 'v1/transport/tariff/compute',
+      endpoint: 'v1/transport/tariff/sale/compute',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function computeCostCharge(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPUTE_COSTCHARGE,
+        actionTypes.COMPUTE_COSTCHARGE_SUCCEED,
+        actionTypes.COMPUTE_COSTCHARGE_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/cost/compute',
       method: 'post',
       data,
       origin: 'mongo',

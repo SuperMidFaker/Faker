@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Button, Card, Checkbox, message } from 'antd';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
-import { computeCharge, setConsignFields } from 'common/reducers/shipment';
-import { TARIFF_METER_METHODS } from 'common/constants';
+import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
+import { getChargeAmountExpression } from '../../common/charge';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -14,7 +14,7 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     formData: state.shipment.formData,
   }),
-  { computeCharge, setConsignFields }
+  { computeSaleCharge, setConsignFields }
 )
 export default class FreightCharge extends React.Component {
   static propTypes = {
@@ -22,7 +22,7 @@ export default class FreightCharge extends React.Component {
     formData: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     intl: PropTypes.object.isRequired,
-    computeCharge: PropTypes.func.isRequired,
+    computeSaleCharge: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
   }
   state = {
@@ -45,46 +45,36 @@ export default class FreightCharge extends React.Component {
       message.error('运单数量如(总体积/总重量/集装箱包装类型)未填');
     }
     const created = this.props.formData.created_date || Date.now();
-    this.props.computeCharge({
+    this.props.computeSaleCharge({
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
       goods_type, trans_mode: transport_mode_code, ctn,
       tenant_id: this.props.tenantId, created_date: created,
-      vehicle_type, vehicle_length, total_weight, total_volume, type: 'sales',
+      vehicle_type, vehicle_length, total_weight, total_volume,
     }).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
-        message.error('价格协议不存在');
+        message.error('未找到适合计算的价格协议');
       } else {
+        const { freight, pickup, deliver, meter, quantity,
+          unitRatio, gradient, miles } = result.data;
         this.props.formhoc.setFieldsValue({
-          freight_charge: result.data.freight,
-          pickup_charge: result.data.pickup,
-          deliver_charge: result.data.deliver,
-          total_charge: result.data.freight + result.data.pickup + result.data.deliver,
+          freight_charge: freight,
+          pickup_charge: pickup,
+          deliver_charge: deliver,
+          total_charge: freight + pickup + deliver + (
+            this.props.formhoc.getFieldValue('surcharge') || this.props.formData.surcharge || 0
+          ),
         });
         this.setState({
           computed: true,
           checkPickup: true,
           checkDeliver: true,
         });
-        const { meter, quantity, unitRatio, gradient, miles } = result.data;
-        const amounts = [];
-        if (meter === TARIFF_METER_METHODS[3].value) {
-          amounts.push(`x${miles}公里`);
-        }
-        if (quantity) {
-          if (meter === TARIFF_METER_METHODS[2].value) {
-            amounts.push(`x${quantity}${this.msg('cubicMeter')}`);
-          } else {
-            amounts.push(`x${quantity}${this.msg('kilogram')}`);
-          }
-        }
-        if (unitRatio !== 1) {
-          amounts.push(`x${unitRatio}`);
-        }
         this.props.setConsignFields({
           charge_gradient: gradient,
-          charge_amount: amounts.join(''),
+          charge_amount: getChargeAmountExpression(meter, miles, quantity,
+              unitRatio),
         });
       }
     });

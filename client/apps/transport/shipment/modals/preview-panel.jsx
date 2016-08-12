@@ -6,7 +6,7 @@ import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
 import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES, SHIPMENT_POD_STATUS } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -47,6 +47,7 @@ function getTrackStatusMsg(status, eff) {
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     visible: state.shipment.previewer.visible,
     tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
@@ -60,6 +61,7 @@ function getTrackStatusMsg(status, eff) {
 export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
@@ -69,6 +71,7 @@ export default class PreviewPanel extends React.Component {
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
+    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'transit', 'pod', 'exception']),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -210,6 +213,144 @@ export default class PreviewPanel extends React.Component {
       );
     }
   }
+  renderButtons() {
+    const { tenantId, status, stage, previewer: { dispatch, tracking } } = this.props;
+    if (stage === 'acceptance') {
+      if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return (
+          <div>
+            <Button type="primary" >
+              接单
+            </Button>
+          </div>
+        );
+      } else if (status !== SHIPMENT_TRACK_STATUS.unaccepted) {
+        return (
+          <div>
+            <Button type="default" >
+              退回
+            </Button>
+          </div>
+        );
+      }
+    } else if (stage === 'dispatch') {
+      if (dispatch.child_send_status === 0 && dispatch.status === 2 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
+        return (
+          <div>
+            <Button type="primary" >
+              分配
+            </Button>
+            <Button type="default" >
+              分段
+            </Button>
+          </div>
+        );
+      } else if (dispatch.disp_status === 0 && dispatch.sr_tenant_id === tenantId) {
+        return (
+          <div>
+            <Button type="primary" >
+              发送
+            </Button>
+            <Button type="default" >
+              退回
+            </Button>
+          </div>
+        );
+      } else if (dispatch.disp_status > 0 && dispatch.sr_tenant_id === tenantId) {
+        if (tracking.downstream_status === 1) {
+          return (
+            <div>
+              <Button type="primary" >
+                导出 PDF
+              </Button>
+              <Button type="default" >
+                撤回
+              </Button>
+            </div>
+          );
+        } else {
+          return (
+            <div>
+              <Button type="primary" >
+                导出 PDF
+              </Button>
+            </div>
+          );
+        }
+      }
+    } else if (stage === 'transit') {
+      if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        return (
+          <div>
+            <Button type="default" >
+              催促接单
+            </Button>
+          </div>
+        );
+      } else if (status === SHIPMENT_TRACK_STATUS.undispatched) {
+        return (
+          <div>
+            <Button type="default" >
+              催促调度
+            </Button>
+          </div>
+        );
+      } else if (status === SHIPMENT_TRACK_STATUS.undelivered) {
+        return (
+          <div>
+            <Button type="primary" >
+              更新提货
+            </Button>
+            <Button type="default" >
+              催促提货
+            </Button>
+          </div>
+        );
+      } else if (status === SHIPMENT_TRACK_STATUS.intransit) {
+        return (
+          <div>
+            <Button type="primary" >
+              更新交货
+            </Button>
+            <Button type="default" >
+              上报位置
+            </Button>
+          </div>
+        );
+      } else if (status === SHIPMENT_TRACK_STATUS.delivered) {
+        return (
+          <div>
+            <Button type="primary" >
+              上传回单
+            </Button>
+            <Button type="default" >
+              催促回单
+            </Button>
+          </div>
+        );
+      }
+    } else if (stage === 'pod') {
+      if (dispatch.pod_status === SHIPMENT_POD_STATUS.pending || dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
+        return (
+          <div>
+            <Button type="primary" >
+              接受
+            </Button>
+            <Button type="default" >
+              拒绝
+            </Button>
+          </div>
+        );
+      } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByUs || dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
+        return (<div></div>);
+      } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
+        return (<div></div>);
+      }
+    } else if (stage === 'exception') {
+      return (<div></div>);
+    }
+    return (<div></div>);
+  }
   render() {
     const { visible, shipmtNo, status, effective } = this.props;
     return (
@@ -233,9 +374,7 @@ export default class PreviewPanel extends React.Component {
                 <Icon type="share-alt" />共享运单
               </DropdownButton>
             </div>
-            <Button type="primary" >
-                接单
-            </Button>
+            {this.renderButtons()}
           </div>
         </div>
         <div>

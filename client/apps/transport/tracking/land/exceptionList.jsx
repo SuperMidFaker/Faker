@@ -338,14 +338,13 @@ export default class LandStatusList extends React.Component {
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2400/* , y: 460 */ }}
-              onRowClick={this.handleShipmtPreview}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel />
+        <PreviewPanel stage="exception" />
       </div>
     );
   }

@@ -181,6 +181,10 @@ export default defineMessages({
     id: 'transport.dispatch.btn.text.dispatch',
     defaultMessage: '分配',
   },
+  btnChargeCompute: {
+    id: 'transport.dispatch.btn.charge.compute',
+    defaultMessage: '计算运费',
+  },
   btnTextBatchDispatch: {
     id: 'transport.dispatch.btn.text.batch_dispatch',
     defaultMessage: '批量分配',
