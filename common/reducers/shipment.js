@@ -21,7 +21,8 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
   'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
-  'COMPUTE_CHARGE', 'COMPUTE_CHARGE_SUCCEED', 'COMPUTE_CHARGE_FAIL',
+  'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
+  'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -344,15 +345,31 @@ export function loadShipmtPoints(shipmtNo) {
   };
 }
 
-export function computeCharge(data) {
+export function computeSaleCharge(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.COMPUTE_CHARGE,
-        actionTypes.COMPUTE_CHARGE_SUCCEED,
-        actionTypes.COMPUTE_CHARGE_FAIL,
+        actionTypes.COMPUTE_SALECHARGE,
+        actionTypes.COMPUTE_SALECHARGE_SUCCEED,
+        actionTypes.COMPUTE_SALECHARGE_FAIL,
       ],
-      endpoint: 'v1/transport/tariff/compute',
+      endpoint: 'v1/transport/tariff/sale/compute',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function computeCostCharge(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPUTE_COSTCHARGE,
+        actionTypes.COMPUTE_COSTCHARGE_SUCCEED,
+        actionTypes.COMPUTE_COSTCHARGE_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/cost/compute',
       method: 'post',
       data,
       origin: 'mongo',

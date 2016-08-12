@@ -186,7 +186,7 @@ export function loadVehicles(cookie, params) {
   };
 }
 
-export function doDispatch(cookie, params) {
+export function doDispatch(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -197,7 +197,6 @@ export function doDispatch(cookie, params) {
       endpoint: 'v1/transport/dispatch',
       method: 'post',
       data: params,
-      cookie,
     },
   };
 }
