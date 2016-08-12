@@ -215,7 +215,7 @@ export default class DispatchList extends React.Component {
       render: (o, record) => {
         if (!sub) {
           return (
-            <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} />
+            <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />
           );
         }
         return (<span>{o}</span>);
@@ -885,7 +885,6 @@ export default class DispatchList extends React.Component {
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
       dataSource={this.dataSource} scroll={{ x: 2420/* , y: 460 */ }}
-      onRowClick={this.handleShipmtPreview}
     />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
@@ -943,7 +942,7 @@ export default class DispatchList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel />
+        <PreviewPanel stage="dispatch" />
         <DispatchDock key="dispDock"
           show={this.state.show}
           shipmts={this.state.shipmts}

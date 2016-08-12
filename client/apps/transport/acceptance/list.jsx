@@ -140,7 +140,7 @@ export default class AcceptList extends React.Component {
       }
       return (
         <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
-          style={style} shipment={record}
+          style={style} shipment={record} onClick={this.handleShipmtPreview}
         />
       );
     },
@@ -442,7 +442,6 @@ export default class AcceptList extends React.Component {
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2800/* , y: 460 */ }}
-              onRowClick={this.handleShipmtPreview}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -452,7 +451,7 @@ export default class AcceptList extends React.Component {
         </div>
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <PreviewPanel />
+        <PreviewPanel stage="acceptance" />
       </div>
     );
   }

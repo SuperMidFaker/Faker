@@ -220,7 +220,7 @@ export default class LandStatusList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel />
+        <PreviewPanel stage="pod" />
         <PodAuditModal onOK={this.handleTableLoad} />
       </div>
     );

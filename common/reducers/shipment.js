@@ -52,10 +52,11 @@ const initialState = {
     },
     tracking: {
     },
+    dispatch: {
+    },
     charges: {
     },
     pod: {
-
     },
   },
   shipmtDetail: {
@@ -125,6 +126,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
         tracking: action.result.data.tracking,
+        dispatch: action.result.data.dispatch,
         charges: action.result.data.charges,
         pod: action.result.data.pod,
         visible: true,

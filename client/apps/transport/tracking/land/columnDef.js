@@ -37,7 +37,7 @@ export default function makeColumns(type, handlers, msg) {
     fixed: 'left',
     width: 150,
     render: (o, record) => {
-      return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} />;
+      return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={handlers.onShipmtPreview} />;
     },
   }, {
     title: msg('refCustomerNo'),
