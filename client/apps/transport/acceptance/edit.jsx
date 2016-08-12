@@ -116,7 +116,7 @@ export default class ShipmentEdit extends React.Component {
     const { intl, submitting, formhoc } = this.props;
     return (
       <div className="main-content">
-        <Form form={formhoc} horizontal>
+        <Form horizontal>
           <div className="page-body">
             <div className="panel-header"></div>
             <div className="panel-body body-responsive">

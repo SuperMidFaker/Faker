@@ -376,6 +376,29 @@ const MESSAGE_STATUS = {
   },
 };
 
+const TAX_MODE = {
+  eachwaybill: {
+    key: 0,
+    value: '按照每运单',
+  },
+  chargeunit: {
+    key: 1,
+    value: '按运单计费单位',
+  },
+};
+
+const TAX_STATUS = {
+  exctax: {
+    key: 0,
+    value: '运费含税',
+  },
+  inctax: {
+    key: 1,
+    value: '运费不含税',
+  },
+};
+
+
 const WELOGIX_LOGO_URL = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/welogix-badge.png';
 export {
   DEFAULT_MODULES,
@@ -411,6 +434,8 @@ export {
   I_E_TYPES,
   CMS_BILL_STATUS,
   MESSAGE_STATUS,
+  TAX_MODE,
+  TAX_STATUS,
   WELOGIX_LOGO_URL,
   DELG_STATUS,
 };

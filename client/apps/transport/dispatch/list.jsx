@@ -95,7 +95,7 @@ export default class DispatchList extends React.Component {
     removeGroupedSubShipmt: PropTypes.func.isRequired,
     loadExpandList: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
-    expandList: PropTypes.array.isRequired,
+    expandList: PropTypes.object.isRequired,
     cond: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
   }

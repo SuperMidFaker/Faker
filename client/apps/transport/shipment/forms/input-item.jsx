@@ -5,7 +5,7 @@ const FormItem = Form.Item;
 
 export default class InputItem extends React.Component {
   static propTypes = {
-    labelName: PropTypes.string,
+    labelName: PropTypes.oneOfType([PropTypes.string, React.Element]),
     colSpan: PropTypes.number,
     formhoc: PropTypes.object.isRequired,
     field: PropTypes.string,

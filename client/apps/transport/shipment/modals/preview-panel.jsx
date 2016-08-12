@@ -345,12 +345,12 @@ export default class PreviewPanel extends React.Component {
           </div>
         );
       } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByUs || dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
-
+        return (<div></div>);
       } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
-
+        return (<div></div>);
       }
     } else if (stage === 'exception') {
-
+      return (<div></div>);
     }
     return (<div></div>);
   }

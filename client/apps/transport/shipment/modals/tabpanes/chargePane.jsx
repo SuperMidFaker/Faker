@@ -18,33 +18,113 @@ export default class ChargePanel extends React.Component {
     charges: PropTypes.object.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  columns = [{
-    title: this.msg('chargeItem'),
+  revenueColumns = [{
+    title: this.msg('revenueItem'),
     dataIndex: 'item',
+  }, {
+    title: this.msg('chargeRate'),
+    dataIndex: 'rate',
+  }, {
+    title: this.msg('chargeAmount'),
+    dataIndex: 'amount',
   }, {
     title: this.msg('chargeFee'),
     dataIndex: 'fee',
   }]
-  render() {
-    const { charges } = this.props;
-    const ds = [];
-    Object.keys(charges).forEach(chf => {
-      if (charges[chf] !== null) {
-        ds.push({
-          key: chf,
-          item: chf === 'earnings' ? this.msg('trackEarnings') : this.msg('trackPay'),
-          fee: charges[chf],
-        });
-      }
+  expenseColumns = [{
+    title: this.msg('expenseItem'),
+    dataIndex: 'item',
+  }, {
+    title: this.msg('chargeRate'),
+    dataIndex: 'rate',
+  }, {
+    title: this.msg('chargeAmount'),
+    dataIndex: 'amount',
+  }, {
+    title: this.msg('chargeFee'),
+    dataIndex: 'fee',
+  }]
+  assembleChargeItems(charge, outDs) {
+    const { intl } = this.props;
+    if (charge.freight_charge) {
+      outDs.push({
+        key: 'basic',
+        item: this.msg('basicCharge'),
+        rate: charge.charge_gradient,
+        amount: charge.charge_amount,
+        fee: intl.formatNumber(charge.freight_charge, {
+          style: 'currency',
+          currency: 'CNY',
+        }),
+      });
+    }
+    if (charge.pickup_charge) {
+      outDs.push({
+        key: 'pickup',
+        item: this.msg('pickupCharge'),
+        rate: charge.pickup_charge,
+        amount: '',
+        fee: intl.formatNumber(charge.pickup_charge, {
+          style: 'currency',
+          currency: 'CNY',
+        }),
+      });
+    }
+    if (charge.deliver_charge) {
+      outDs.push({
+        key: 'deliver',
+        item: this.msg('deliverCharge'),
+        rate: charge.deliver_charge,
+        amount: '',
+        fee: intl.formatNumber(charge.deliver_charge, {
+          style: 'currency',
+          currency: 'CNY',
+        }),
+      });
+    }
+    if (charge.surcharge) {
+      outDs.push({
+        key: 'surcharge',
+        item: this.msg('surcharge'),
+        rate: '',
+        amount: '',
+        fee: intl.formatNumber(charge.surcharge, {
+          style: 'currency',
+          currency: 'CNY',
+        }),
+      });
+    }
+    outDs.push({
+      key: 'total',
+      item: this.msg('totalCharge'),
+      rate: '',
+      amount: '',
+      fee: intl.formatNumber(charge.total_charge, {
+        style: 'currency',
+        currency: 'cny',
+      }),
     });
-    const profit = {
-      value: charges.earnings - charges.payout,
-      color: '#87D068',
-    };
-    if (profit.value === 0) {
-      profit.color = '#666';
-    } else if (profit.value < 0) {
-      profit.color = '#f50';
+  }
+  render() {
+    const { charges, intl } = this.props;
+    const revenueds = [];
+    const expenseds = [];
+    let revenue = 0;
+    let expense = 0;
+    if (charges.revenue) {
+      revenue = charges.revenue.total_charge || revenue;
+      this.assembleChargeItems(charges.revenue, revenueds);
+    }
+    if (charges.expense) {
+      expense = charges.expense.total_charge || expense;
+      this.assembleChargeItems(charges.expense, expenseds);
+    }
+    const profit = revenue - expense;
+    let profitColor = '#87D068';
+    if (profit === 0) {
+      profitColor = '#666';
+    } else if (profit < 0) {
+      profitColor = '#f50';
     }
     return (
       <div className="pane-content tab-pane">
@@ -52,22 +132,29 @@ export default class ChargePanel extends React.Component {
             <Row>
               <Col span="8">
                 <h5>营收</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>¥ {charges.earnings ? charges.earnings.toFixed(2) : '0.00'}</div>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                  intl.formatNumber(revenue.toFixed(2), { style: 'currency', currency: 'cny' })
+                }</div>
               </Col>
               <Col span="8">
                 <h5>成本</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>¥ {charges.payout ? charges.payout.toFixed(2) : '0.00'}</div>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                  intl.formatNumber(expense.toFixed(2), { style: 'currency', currency: 'cny' })
+                }</div>
               </Col>
               <Col span="8">
                 <h5>利润</h5>
-                <div style={{ color: profit.color, fontSize: '18px' }}>¥ {profit.value.toFixed(2)}</div>
+                <div style={{ color: profitColor, fontSize: '18px' }}>{
+                  intl.formatNumber(profit.toFixed(2), { style: 'currency', currency: 'cny' })
+                }</div>
               </Col>
             </Row>
           </Card>
           <Card bodyStyle={{ padding: 0 }}>
-            <Table size="small" columns={this.columns} pagination={false}
-              dataSource={ds}
-            />
+            <Table size="small" columns={this.revenueColumns} pagination={false} dataSource={revenueds} />
+          </Card>
+          <Card bodyStyle={{ padding: 0 }}>
+            <Table size="small" columns={this.expenseColumns} pagination={false} dataSource={expenseds} />
           </Card>
       </div>
     );
