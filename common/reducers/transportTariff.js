@@ -60,11 +60,11 @@ const initialState = {
   surcharge: {
       pickup: { mode: 0, value: 0 },
       delivery: { mode: 0, value: 0 },
-      other1: { mode: 0, value: 0 },
-      other2: { mode: 0, value: 0 },
+      other1: { enabled: false, mode: 0, value: 0 },
+      other2: { enabled: false, mode: 0, value: 0 },
       load: { mode: 0, value: 0 },
       unload: { mode: 0, value: 0 },
-      adjustCoefficient: 0,
+      adjustCoefficient: 1,
       taxrate: { mode: 0, value: 0 },
   },
 };
@@ -105,16 +105,19 @@ export default function reducer(state = initialState, action) {
         vehicleTypes: res.vehicleTypes,
       };
       const sur = action.result.data.tariff.surcharge;
-      const surcharge = {
-      adjustCoefficient: sur.adjustCoefficient,
-      pickup: { mode: sur.pickup.mode, value: sur.pickup.value },
-      delivery: { mode: sur.delivery.mode, value: sur.delivery.value },
-      load: { mode: sur.load.mode, value: sur.load.value },
-      unload: { mode: sur.unload.mode, value: sur.unload.value },
-      other1: { mode: sur.other1.mode, value: sur.other1.value },
-      other2: { mode: sur.other2.mode, value: sur.other2.value },
-      taxrate: { mode: sur.taxrate.mode, value: sur.taxrate.value },
-      };
+      let surcharge = initialState.surcharge;
+      if (sur) {
+        surcharge = {
+          adjustCoefficient: sur.adjustCoefficient,
+          pickup: sur.pickup,
+          delivery: sur.delivery,
+          load: sur.load,
+          unload: sur.unload,
+          other1: sur.other1,
+          other2: sur.other2,
+          taxrate: sur.taxrate,
+        };
+      }
       const partners = res.partner ? [{ partner_code: res.partner.name,
         partner_id: res.partner.id, name: res.partner.name }] : [];
       return { ...state, agreement, partners, surcharge,

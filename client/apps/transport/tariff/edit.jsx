@@ -8,7 +8,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 import AgreementForm from './forms/agreement';
 import RatesForm from './forms/rates';
 import SurchargeForm from './forms/surcharge';
-import { loadTariff, loadSurcharge } from 'common/reducers/transportTariff';
+import { loadTariff } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
