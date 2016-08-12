@@ -4,8 +4,6 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
-import { LOAD_APTSHIPMENT_SUCCEED } from './transport-acceptance';
-import { LOAD_TRANSHIPMT_SUCCEED } from './trackingLandStatus';
 import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
@@ -80,9 +78,6 @@ function transformJsonDate(val) {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case LOAD_APTSHIPMENT_SUCCEED:
-    case LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state, previewer: { ...state.previewer, visible: false } };
     case actionTypes.LOAD_FORMREQUIRE:
       // force formData change to rerender after formrequire load
       return { ...state, formData: { goodslist: [] } };
