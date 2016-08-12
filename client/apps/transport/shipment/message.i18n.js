@@ -313,9 +313,9 @@ export default defineMessages({
     id: 'transport.shipment.tab.dynamic',
     defaultMessage: '动态',
   },
-  shipmtOperations: {
-    id: 'transport.shipment.tab.operations',
-    defaultMessage: '操作',
+  shipmtLogs: {
+    id: 'transport.shipment.tab.logs',
+    defaultMessage: '日志',
   },
   shipmtCharge: {
     id: 'transport.shipment.tab.charge',
