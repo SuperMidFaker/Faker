@@ -215,9 +215,6 @@ export default class PreviewPanel extends React.Component {
   }
   renderButtons() {
     const { tenantId, status, effective, stage, previewer: { dispatch, tracking } } = this.props;
-    console.log(dispatch);
-    console.log(`status: ${status}`);
-    console.log(`stage: ${stage}`);
     if (stage === 'acceptance') {
       if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return (
