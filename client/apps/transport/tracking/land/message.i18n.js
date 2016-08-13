@@ -251,23 +251,27 @@ export default defineMessages({
   },
   pickupModalTitle: {
     id: 'transport.tracking.modal.pickup.title',
-    defaultMessage: '更新提货时间',
+    defaultMessage: '更新提货',
   },
   deliverModalTitle: {
     id: 'transport.tracking.modal.deliver.title',
-    defaultMessage: '更新交货时间',
+    defaultMessage: '更新交货',
   },
-  chooseActualTime: {
-    id: 'transport.tracking.modal.choose.actual.time',
-    defaultMessage: '选择实际时间',
+  pickupActDate: {
+    id: 'transport.tracking.pickup.act.date',
+    defaultMessage: '实际提货日期',
+  },
+  deliveryActDate: {
+    id: 'transport.tracking.delivery.act.date',
+    defaultMessage: '实际交货日期',
   },
   pickupTimeMust: {
     id: 'transport.tracking.modal.pickup.time.must',
-    defaultMessage: '提货时间必填',
+    defaultMessage: '提货时间必选',
   },
   deliverTimeMust: {
     id: 'transport.tracking.modal.deliver.time.must',
-    defaultMessage: '交货时间必填',
+    defaultMessage: '交货时间必选',
   },
   podModalTitle: {
     id: 'transport.tracking.modal.pod.title',

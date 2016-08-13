@@ -74,18 +74,19 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     const colSpan = 8;
     let title;
     let ruleMsg;
+    let label;
     if (this.props.type === 'pickup') {
       title = this.msg('pickupModalTitle');
       ruleMsg = this.msg('pickupTimeMust');
+      label = this.msg('pickupActDate');
     } else {
       title = this.msg('deliverModalTitle');
       ruleMsg = this.msg('deliverTimeMust');
+      label = this.msg('deliverActDate');
     }
     const content = (
       <Form className="row" style={{ width: '300px' }}>
-        <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
-          wrapperCol={{ span: 24 - colSpan }} required
-        >
+        <FormItem label={label} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
           <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
             {...getFieldProps('actDate', {
             rules: [{
@@ -94,11 +95,9 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
           })}
           />
         </FormItem>
-        <FormItem
-          style={{ marginTop: 24, marginLeft: '20%' }}
-        >
-          <Button type="default" onClick={this.handleClose} style={{ marginRight: 50 }}>取消</Button>
+        <FormItem wrapperCol={{ span: 16, offset: 8 }}>
           <Button type="primary" htmlType="submit" onClick={this.handleOk}>确定</Button>
+          <Button type="ghost" onClick={this.handleClose} style={{ marginLeft: 16 }}>取消</Button>
         </FormItem>
       </Form>
     );
