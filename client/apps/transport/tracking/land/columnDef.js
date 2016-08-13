@@ -279,7 +279,7 @@ export default function makeColumns(type, handlers, msg) {
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           return (
-            <span><Icon type="meh" /> {msg('submitToUpper')}</span>
+            <span><Icon type="clock-circle-o" /> {msg('submitToUpper')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           return (
