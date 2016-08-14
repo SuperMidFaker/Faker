@@ -31,8 +31,8 @@ function getTrackStatusMsg(status, eff) {
     msg = 'trackNullified';
   } else if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
     msg = 'trackUnaccept';
-  } else if (status === SHIPMENT_TRACK_STATUS.undispatched) {
-    msg = 'trackUndispatched';
+  } else if (status === SHIPMENT_TRACK_STATUS.accepted) {
+    msg = 'trackAccepted';
   } else if (status === SHIPMENT_TRACK_STATUS.dispatched) {
     msg = 'trackDispatched';
   } else if (status === SHIPMENT_TRACK_STATUS.intransit) {
@@ -287,7 +287,7 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </div>
         );
-      } else if (status === SHIPMENT_TRACK_STATUS.undispatched) {
+      } else if (status === SHIPMENT_TRACK_STATUS.accepted) {
         return (
           <div>
             <Button type="default" >

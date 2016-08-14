@@ -245,8 +245,8 @@ export default defineMessages({
     id: 'transport.shipment.track.unaccept',
     defaultMessage: '待接单',
   },
-  trackUndispatched: {
-    id: 'transport.shipment.track.undispatched',
+  trackAccepted: {
+    id: 'transport.shipment.track.accepted',
     defaultMessage: '待调度',
   },
   trackDispatched: {

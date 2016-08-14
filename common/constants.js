@@ -196,7 +196,7 @@ const DELG_STATUS = {
 
 const SHIPMENT_TRACK_STATUS = {
   unaccepted: 1,
-  undispatched: 2,
+  accepted: 2,
   dispatched: 3,
   intransit: 4,
   delivered: 5,

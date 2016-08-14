@@ -141,7 +141,7 @@ export default function makeColumns(type, handlers, msg) {
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
           return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
@@ -198,7 +198,7 @@ export default function makeColumns(type, handlers, msg) {
       dataIndex: 'task_vehicle',
       width: 120,
       render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           if (record.sp_tenant_id === -1) {
             // 线下客户手动更新
             return (
@@ -316,7 +316,7 @@ export default function makeColumns(type, handlers, msg) {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return `${msg('sendAction')}
             ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           return `${msg('acceptAction')}
             ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
@@ -343,7 +343,7 @@ export default function makeColumns(type, handlers, msg) {
               <RowUpdater label={msg('notifyAccept')}
                 onAnchored={handlers.onShowVehicleModal} row={record}
               />);
-          } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+          } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
             if (record.sp_tenant_id === -1) {
               // 线下客户手动更新
               return (
