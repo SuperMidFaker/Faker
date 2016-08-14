@@ -30,8 +30,8 @@ export default class SSOPack extends React.Component {
               <div className="browser-tip">
                 <p>WeLogix支持IE10及以上版本的浏览器。为了您更顺畅的使用体验，请选择使用：</p>
                 <ul>
-                  <li><a href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
-                  <li><a href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
+                  <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
+                  <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
                 </ul>
               </div>
             </div>

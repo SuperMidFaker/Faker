@@ -37,21 +37,6 @@ function renderAsHtml(pageCss, pageJs, content) {
 </html>`;
 }
 
-function getRequestLocale(request) {
-  let locale = request.query.locale;
-  if (!locale) {
-    const accept = request.acceptsLanguages() || '';
-    const reg = /(^|,\s*)([a-z-]+)/gi;
-    let m;
-    while (m = reg.exec(accept)) {
-      if (!locale) {
-        locale = m[2];
-      }
-    }
-    locale = locale && locale.split('-')[0];
-  }
-  return locale || 'zh';
-}
 export default function render(request) {
   if (__DEV__) {
     webpackIsomorphicTools.refresh();
@@ -60,8 +45,7 @@ export default function render(request) {
     const url = request.url;
     const store = createStore();
     const cookie = request.get('cookie');
-    const curLocale = getRequestLocale(request);
-    store.getState().intl = { locale: curLocale };
+    store.getState().intl = { locale: 'zh' };
     match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {
       if (err) {
         reject([500], err);
@@ -70,14 +54,14 @@ export default function render(request) {
       } else if (!props) {
         reject([404]);
       } else {
-        addLocaleData(require(`react-intl/locale-data/${curLocale}`));
+        addLocaleData(require('react-intl/locale-data/zh'));
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
             const component = (<App routingContext={props} store={store} />);
             const content = ReactDom.renderToString(component);
             const assets = webpackIsomorphicTools.assets();
             let pageCss = '';
-            Object.keys(assets.styles).map(style => {
+            Object.keys(assets.styles).forEach(style => {
               pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
             });
             // manifest could be inline script
@@ -88,7 +72,7 @@ export default function render(request) {
             pageJs += assets.javascript.manifest ? `<script src=${assets.javascript.manifest}></script>` : '';
             pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
             Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'manifest')
-            .map(script => {
+            .forEach(script => {
               pageJs += `<script src=${assets.javascript[script]}></script>`;
             });
             const htmls = renderAsHtml(pageCss, pageJs, content);

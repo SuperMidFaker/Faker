@@ -31,6 +31,7 @@ import { renderConsignLoc } from '../common/consignLocation';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 
@@ -278,30 +279,30 @@ export default class DispatchList extends React.Component {
         dataIndex: 'sp_name',
         width: 180,
         render: (o, record) => {
-      if (record.sp_name) {
-        const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
-        if (record.sp_tenant_id > 0) {
+          if (record.sp_name) {
+            const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
+            if (record.sp_tenant_id > 0) {
           // todo pure css circle
-          return (
+              return (
             <span>
               <i className="zmdi zmdi-circle mdc-text-green" />
               {spSpan}
             </span>
           );
-        } else if (record.sp_tenant_id === -1) {
-          return (
+            } else if (record.sp_tenant_id === -1) {
+              return (
             <span>
               <i className="zmdi zmdi-circle mdc-text-grey" />
               {spSpan}
             </span>
           );
-        } else {
-          return spSpan;
-        }
-      } else {
-        return this.msg('ownFleet');
-      }
-    },
+            } else {
+              return spSpan;
+            }
+          } else {
+            return this.msg('ownFleet');
+          }
+        },
       }, {
         title: this.msg('shipVehicle'),
         dataIndex: 'task_vehicle',
@@ -337,25 +338,25 @@ export default class DispatchList extends React.Component {
           }
         },
       }, */
-      {
-        title: timetitle,
-        dataIndex: 'disp_time',
-        width: 100,
-        render: (text, record) => (record.disp_time ?
+        {
+          title: timetitle,
+          dataIndex: 'disp_time',
+          width: 100,
+          render: (text, record) => (record.disp_time ?
          moment(record.disp_time).format('MM-DD HH:mm') : ' '),
-      }, {
-        title: this.msg('shipmtOP'),
-        width: 100,
-        fixed: fixedRight,
-        render: (o, record) => {
-          if (s === 'dispatched') {
-            if (record.disp_status === 2) {
-              return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
+        }, {
+          title: this.msg('shipmtOP'),
+          width: 100,
+          fixed: fixedRight,
+          render: (o, record) => {
+            if (s === 'dispatched') {
+              if (record.disp_status === 2) {
+                return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
                       {this.msg('btnTextReturn')}</a></span>);
+              }
+              return (<span></span>);
             }
-            return (<span></span>);
-          }
-          return (
+            return (
             <span>
               <a role="button" onClick={(ev) => this.handleShipmtSend(record, ev)}>
               {this.msg('btnTextSend')}
@@ -366,8 +367,8 @@ export default class DispatchList extends React.Component {
               </a>
             </span>
           );
-        },
-      });
+          },
+        });
     }
 
     return cols;
@@ -481,17 +482,15 @@ export default class DispatchList extends React.Component {
     } else if (origin) {
       panelHeader.push((<span className="ant-divider" style={{ width: '0px' }} />),
       (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>));
-    } else {
-      if (status === 'waiting') {
-        panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
+    } else if (status === 'waiting') {
+      panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
         (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>));
-      } else if (status === 'dispatched') {
-        panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
-          <Option value="0">最近七天</Option>
-          <Option value="1">最近一月</Option>
-        </Select>),
+    } else if (status === 'dispatched') {
+      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
+        <Option value="0">最近七天</Option>
+        <Option value="1">最近一月</Option>
+      </Select>),
         (<Button onClick={this.handleExportDispShipmts} icon="export"><span>{this.msg('btnTextExport')}</span></Button>));
-      }
     }
 
     this.setState({ panelHeader, show: false, sshow: false, shipmts: [], selectedRowKeys: [] });

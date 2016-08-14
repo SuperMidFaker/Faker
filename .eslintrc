@@ -15,7 +15,10 @@
     "__DEV__": false,
     "__PROD__": false,
     "__DEVTOOLS__": false,
-    "API_ROOTS": false
+    "API_ROOTS": false,
+    "Notification": true,
+    "window": true,
+    "document": true
   },
   "rules": {
     "no-else-return": 0,
@@ -23,14 +26,22 @@
     "global-require": 0,
     "no-restricted-syntax": 0,
     "react/prefer-stateless-function": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/newline-after-import": 0,
+    "react/jsx-filename-extension": 0,
     "react/jsx-first-prop-new-line": 0,
     "react/jsx-indent": 0,
+    "react/self-closing-comp": 0,
+    "import/imports-first": 0,
+    "import/prefer-default-export": 0,
+    "jsx-a11y/href-no-hash": 0,
     "id-length":[0],
     "max-len": 0,
-    "indent": 0,
     "react/jsx-no-bind": 0,
     "react/prop-types": 0,
     "arrow-body-style": 0,
-    "consistent-return": 0
+    "consistent-return": 0,
+    "no-mixed-operators": 0,
+    "object-property-newline": 0
   }
 }

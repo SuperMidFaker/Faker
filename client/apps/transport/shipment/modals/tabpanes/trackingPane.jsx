@@ -87,7 +87,7 @@ export default class PreviewPanel extends React.Component {
         // 客户查看没有上游
         currentStep = tracking.downstream_status - 1;
       } else {
-        currentStep = tracking.downstream_status - 1 + 1; // +1: upstream accept step
+        currentStep = (tracking.downstream_status - 1) + 1; // +1: upstream accept step
       }
       if (tracking.downstream_status >= SHIPMENT_TRACK_STATUS.dispatched) {
         currentStep -= 1;

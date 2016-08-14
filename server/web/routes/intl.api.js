@@ -1,4 +1,4 @@
-/* eslint no-param-reassign: 0 */
+/* eslint no-param-reassign: 0, require-yield: 0 */
 import { sync as globSync } from 'glob';
 import { readFileSync } from 'fs';
 import * as path from 'path';

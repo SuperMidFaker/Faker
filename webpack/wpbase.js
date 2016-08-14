@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const config = require('../config');
+
 const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 
 const wpConfig = {

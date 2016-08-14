@@ -1,12 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, Calendar, Card, Form, DatePicker, Modal, Row, Col, message } from 'antd';
+import { Alert, Button, Calendar, Card, Form, Modal, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
-const FormItem = Form.Item;
 
 @injectIntl
 @connect(

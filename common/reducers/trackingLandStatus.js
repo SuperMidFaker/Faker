@@ -112,7 +112,7 @@ export default function reducer(state = initialState, action) {
         ...state, locReportedShipments: [
           ...state.locReportedShipments, action.data.shipmtNo,
         ],
-    };
+      };
     case actionTypes.CHANGE_FILTER: {
       const filters = state.filters.filter(flt => flt.name !== action.data.field);
       filters.push({ name: action.data.field, value: action.data.value });
