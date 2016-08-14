@@ -31,6 +31,7 @@ import { renderConsignLoc } from '../common/consignLocation';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 
@@ -481,17 +482,15 @@ export default class DispatchList extends React.Component {
     } else if (origin) {
       panelHeader.push((<span className="ant-divider" style={{ width: '0px' }} />),
       (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>));
-    } else {
-      if (status === 'waiting') {
-        panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
+    } else if (status === 'waiting') {
+      panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
         (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>));
-      } else if (status === 'dispatched') {
-        panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
-          <Option value="0">最近七天</Option>
-          <Option value="1">最近一月</Option>
-        </Select>),
+    } else if (status === 'dispatched') {
+      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
+        <Option value="0">最近七天</Option>
+        <Option value="1">最近一月</Option>
+      </Select>),
         (<Button onClick={this.handleExportDispShipmts} icon="export"><span>{this.msg('btnTextExport')}</span></Button>));
-      }
     }
 
     this.setState({ panelHeader, show: false, sshow: false, shipmts: [], selectedRowKeys: [] });

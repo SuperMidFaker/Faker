@@ -125,26 +125,24 @@ export default class AgreementForm extends React.Component {
     const kind = TARIFF_KINDS[value];
     if (kind.isBase) {
       this.setState({ partnerVisible: false });
-    } else {
-      if (kind.value === 'sales') {
-        this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
-          .then(result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.setState({ partnerVisible: true });
-            }
-          });
-      } else if (kind.value === 'cost') {
-        this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation)
-          .then(result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.setState({ partnerVisible: true });
-            }
-          });
-      }
+    } else if (kind.value === 'sales') {
+      this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
+        .then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.setState({ partnerVisible: true });
+          }
+        });
+    } else if (kind.value === 'cost') {
+      this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation)
+        .then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.setState({ partnerVisible: true });
+          }
+        });
     }
   }
   handleModeSelect = (value) => {

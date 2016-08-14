@@ -38,7 +38,7 @@
   ],
   "author": "The Welogix Team",
   "license": "MIT",
-  "pre-commit": [],
+  "pre-commit": [ "lint" ],
   "dependencies": {
     "antd": "^1.8.0",
     "babel": "^5.8.38",
