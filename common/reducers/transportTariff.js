@@ -87,6 +87,7 @@ export default function reducer(state = initialState, action) {
         ratesSourceList: initialState.ratesSourceList,
         rateId: initialState.rateId,
         ratesEndList: initialState.ratesEndList,
+        surcharge: initialState.surcharge,
         partners: [],
       };
     case actionTypes.LOAD_TARIFF_SUCCEED: {
