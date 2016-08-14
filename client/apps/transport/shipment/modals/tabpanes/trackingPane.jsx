@@ -69,7 +69,7 @@ export default class PreviewPanel extends React.Component {
         ),
       });
       currentStep = tracking.upstream_status - 1; // -1: Step index begin at 0;
-      if (tracking.upstream_status >= SHIPMENT_TRACK_STATUS.dispatched) {
+      if (tracking.upstream_status >= SHIPMENT_TRACK_STATUS.undelivered) {
         currentStep -= 1; // remove the dispatch step
       }
     }
@@ -89,7 +89,7 @@ export default class PreviewPanel extends React.Component {
       } else {
         currentStep = (tracking.downstream_status - 1) + 1; // +1: upstream accept step
       }
-      if (tracking.downstream_status >= SHIPMENT_TRACK_STATUS.dispatched) {
+      if (tracking.downstream_status >= SHIPMENT_TRACK_STATUS.undelivered) {
         currentStep -= 1;
       }
     }
