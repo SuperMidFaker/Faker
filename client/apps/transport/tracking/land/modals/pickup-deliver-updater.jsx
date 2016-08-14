@@ -81,10 +81,10 @@ export default class PickupDeliverUpdater extends React.Component {
           >
             <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
               {...getFieldProps('actDate', {
-              rules: [{
-                type: 'date', required: true, message: ruleMsg,
-              }],
-            })}
+                rules: [{
+                  type: 'date', required: true, message: ruleMsg,
+                }],
+              })}
             />
           </FormItem>
         </Form>

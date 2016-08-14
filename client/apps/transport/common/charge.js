@@ -1,6 +1,6 @@
 import { TARIFF_METER_METHODS } from 'common/constants';
 
-export function getChargeAmountExpression(meter, miles, quantity, unitRatio) {
+export function getChargeAmountExpression(meter, miles, quantity, unitRatio, coefficient) {
   const amounts = [];
   if (meter) {
     if (meter === TARIFF_METER_METHODS[3].value) {
@@ -14,6 +14,9 @@ export function getChargeAmountExpression(meter, miles, quantity, unitRatio) {
   }
   if (!meter || unitRatio !== 1) {
     amounts.push(`x${unitRatio}`);
+  }
+  if (coefficient !== 1) {
+    amounts.push(`x${coefficient}`);
   }
   return amounts.join('');
 }

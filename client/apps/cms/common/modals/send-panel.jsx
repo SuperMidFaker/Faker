@@ -59,20 +59,20 @@ export default class SendPanel extends React.Component {
     } else {
       this.props.sendDelegate({ delegations: sendPanel.delegations, receiver: this.state.receiver, tenantId, loginId, loginName, tenantName }).then(
         result => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          message.info('发送成功', 3);
-          const filter = JSON.stringify(this.props.delegateListFilter);
-          this.props.loadDelegateTable(null, {
-            ietype,
-            tenantId,
-            filter,
-            pageSize: delegationlist.pageSize,
-            currentPage: delegationlist.current,
-          });
-        }
-      });
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            message.info('发送成功', 3);
+            const filter = JSON.stringify(this.props.delegateListFilter);
+            this.props.loadDelegateTable(null, {
+              ietype,
+              tenantId,
+              filter,
+              pageSize: delegationlist.pageSize,
+              currentPage: delegationlist.current,
+            });
+          }
+        });
     }
   }
   handleCollapseChange = () => {

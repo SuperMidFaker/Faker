@@ -1,10 +1,10 @@
+import moment from 'moment';
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
-import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',

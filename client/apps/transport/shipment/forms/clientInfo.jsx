@@ -70,8 +70,8 @@ export default class ClientInfo extends React.Component {
                   required optionData={clientOpts} filterFields={['code']}
                   optionField="name" optionKey="key" optionValue="value"
                   rules={[{
-                  required: true, message: this.msg('clientNameMust'),
-                }]}
+                    required: true, message: this.msg('clientNameMust'),
+                  }]}
                   initialValue={name} getValueFromEvent={this.findClientValue}
                 />
               </div>

@@ -3,8 +3,6 @@ if (process.env.NODE_ENV === 'production') {
   require('oneapm');
 }
 
-const argv = require('./util/minimist')(process.argv.slice(2));
-
 const path = require('path');
 process.env.NODE_PATH = path.resolve(__dirname, '..');
 require('module').Module._initPaths();
@@ -13,6 +11,8 @@ require('babel/register')({
   blacklist: ['regenerator'],
 });
 console.time('starting web server');
+
+const argv = require('./util/minimist')(process.argv.slice(2));
 if (!isNaN(argv.port)) {
   process.env.PORT = parseInt(argv.port, 10);
 }
