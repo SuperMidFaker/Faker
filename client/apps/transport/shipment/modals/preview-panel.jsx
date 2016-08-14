@@ -20,6 +20,7 @@ const DropdownButton = Dropdown.Button;
 
 const menu = (
   <Menu>
+    <Menu.Item key="share"><span><Icon type="share-alt" /> 共享运单</span></Menu.Item>
     <Menu.Item key="terminate"><span className="mdc-text-red"><Icon type="delete" /> 终止运单</span></Menu.Item>
   </Menu>
 );
@@ -191,7 +192,7 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('trackPod')} key="pod">
             <PodPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtLogs')} key="events">
+          <TabPane tab={this.msg('shipmtEvents')} key="events">
             <TrackingPane />
           </TabPane>
         </Tabs>
@@ -369,8 +370,8 @@ export default class PreviewPanel extends React.Component {
           </div>
           <div className="footer">
             <div className="more-actions">
-              <DropdownButton size="large" overlay={menu} onClick={this.showTrackingDetailModal}>
-                <Icon type="share-alt" />共享运单
+              <DropdownButton size="large" overlay={menu}>
+                <Icon type="export" />导出运单
               </DropdownButton>
             </div>
           </div>

@@ -35,15 +35,15 @@ export default function makeColumns(type, handlers, msg) {
       title: msg('shipNo'),
       dataIndex: 'shipmt_no',
       fixed: 'left',
-      width: 150,
+      width: 130,
       render: (o, record) => {
         return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={handlers.onShipmtPreview} />;
       },
     }, {
       title: msg('refCustomerNo'),
       dataIndex: 'ref_external_no',
-      width: 120,
-      render: (o) => <TrimSpan text={o} />,
+      width: 100,
+      render: (o) => <TrimSpan text={o} maxLen={10} />,
     }, {
       title: msg('departurePlace'),
       width: 150,
@@ -214,7 +214,7 @@ export default function makeColumns(type, handlers, msg) {
     }, {
       title: msg('packageNum'),
       dataIndex: 'total_count',
-      width: 40,
+      width: 45,
     }, {
       title: msg('shipWeight'),
       dataIndex: 'total_weight',
@@ -339,7 +339,10 @@ export default function makeColumns(type, handlers, msg) {
         fixed: 'right',
         render: (o, record) => {
           if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-            return msg('carrierUpdate');
+            return (
+              <RowUpdater label={msg('notifyAccept')}
+                onAnchored={handlers.onShowVehicleModal} row={record}
+              />);
           } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
             if (record.sp_tenant_id === -1) {
               // 线下客户手动更新
@@ -349,7 +352,9 @@ export default function makeColumns(type, handlers, msg) {
                 />
               );
             } else {
-              return msg('carrierUpdate');
+              return (<RowUpdater label={msg('notifyDispatch')}
+                onAnchored={handlers.onShowVehicleModal} row={record}
+              />);
             }
           } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
             if (record.sp_tenant_id === -1) {

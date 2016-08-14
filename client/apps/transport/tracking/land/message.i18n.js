@@ -37,6 +37,22 @@ export default defineMessages({
     id: 'transport.tracking.driver.update',
     defaultMessage: '由司机更新',
   },
+  notifyAccept: {
+    id: 'transport.tracking.notify.accept',
+    defaultMessage: '催促接单',
+  },
+  notifyDispatch: {
+    id: 'transport.tracking.notify.dispatch',
+    defaultMessage: '催促调度',
+  },
+  notifyPOD: {
+    id: 'transport.tracking.notify.pod',
+    defaultMessage: '催促回单',
+  },
+  updateEvents: {
+    id: 'transport.tracking.update.events',
+    defaultMessage: '追踪记录',
+  },
   updateVehicleDriver: {
     id: 'transport.tracking.update.drivervehicle',
     defaultMessage: '更新车辆司机',

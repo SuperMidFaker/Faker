@@ -123,7 +123,7 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 150,
+    width: 130,
     render: (o, record) => {
       return (
         <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
