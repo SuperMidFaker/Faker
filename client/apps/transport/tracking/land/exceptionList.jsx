@@ -151,7 +151,7 @@ export default class LandStatusList extends React.Component {
         return `1 ${this.msg('pendingShipmt')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
         return `2 ${this.msg('acceptedShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         return `3 ${this.msg('dispatchedShipmt')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
         return `4 ${this.msg('intransitShipmt')}`;
@@ -173,7 +173,7 @@ export default class LandStatusList extends React.Component {
       } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
         return `${this.msg('acceptAction')}
         ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         return `${this.msg('dispatchAction')}
         ${moment(record.disp_time).format('MM.DD HH:mm')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {

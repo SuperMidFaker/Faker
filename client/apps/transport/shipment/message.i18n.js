@@ -247,11 +247,11 @@ export default defineMessages({
   },
   trackUndispatched: {
     id: 'transport.shipment.track.undispatched',
-    defaultMessage: '待分配',
+    defaultMessage: '待调度',
   },
-  trackUndelivered: {
-    id: 'transport.shipment.track.undelivered',
-    defaultMessage: '已分配',
+  trackDispatched: {
+    id: 'transport.shipment.track.dispatched',
+    defaultMessage: '待提货',
   },
   trackIntransit: {
     id: 'transport.shipment.track.intransit',

@@ -58,7 +58,7 @@ export default function makeColumns(type, handlers, msg) {
       dataIndex: 'pickup_act_date',
       width: 90,
       render: (o, record) => {
-        if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.dispatched) {
           if (record.sp_tenant_id === -1) {
             return (
               <PickupDeliverUpdaterPopover
@@ -143,7 +143,7 @@ export default function makeColumns(type, handlers, msg) {
           return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
           return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
           return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
           return <Tag color="blue">{`4 ${msg('intransitShipmt')}`}</Tag>;
@@ -319,7 +319,7 @@ export default function makeColumns(type, handlers, msg) {
         } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
           return `${msg('acceptAction')}
             ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
           return `${msg('dispatchAction')}
             ${moment(record.disp_time).format('MM.DD HH:mm')}`;
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
@@ -356,7 +356,7 @@ export default function makeColumns(type, handlers, msg) {
                 onAnchored={handlers.onShowVehicleModal} row={record}
               />);
             }
-          } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+          } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
             if (record.sp_tenant_id === -1) {
               return (
                 <RowUpdater label={msg('updatePickup')}
