@@ -187,7 +187,7 @@ export default class AgreementForm extends React.Component {
                     ...getFieldProps('name', {
                       initialValue: formData.name,
                       rules: [{ required: true, message: '名称必填' }],
-                  })} />
+                    })} />
                 </FormItem>
               </Col>
             </Row>

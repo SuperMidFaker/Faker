@@ -9,8 +9,8 @@ export function polyfill(runAppFn) {
         'intl/locale-data/jsonp/en.js',
       ], require => {
         require('intl');
-        require('intl/locale-data/jsonp/zh.js');
-        require('intl/locale-data/jsonp/en.js');
+        require('intl/locale-data/jsonp/zh');
+        require('intl/locale-data/jsonp/en');
         runAppFn();
       });
     } else {

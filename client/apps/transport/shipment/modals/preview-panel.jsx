@@ -384,7 +384,7 @@ export default class PreviewPanel extends React.Component {
             ]}
           >
             <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
-              <a href={this.state.publicUrlPath} target="_blank">
+              <a href={this.state.publicUrlPath} target="_blank" rel="noopener noreferrer">
                 <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
               </a>
             </div>

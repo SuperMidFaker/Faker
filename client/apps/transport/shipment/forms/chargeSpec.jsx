@@ -37,9 +37,9 @@ export default class ChargeSpecForm extends React.Component {
     this.setState({ checkDeliver: ev.target.checked });
     const { charge, index, onChange } = this.props;
     if (ev.target.checked) {
-      charge.total_charge = charge.total_charge + charge.deliver_charge;
+      charge.total_charge += charge.deliver_charge;
     } else {
-      charge.total_charge = charge.total_charge - charge.deliver_charge;
+      charge.total_charge -= charge.deliver_charge;
     }
     onChange(charge, index);
   }

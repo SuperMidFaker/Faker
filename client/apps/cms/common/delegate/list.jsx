@@ -16,7 +16,7 @@ const RadioButton = Radio.Button;
 
 @connect(
   state => {
-      return {
+    return {
       aspect: state.account.aspect,
       tenantId: state.account.tenantId,
       loginId: state.account.loginId,

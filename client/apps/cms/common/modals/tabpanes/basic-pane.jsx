@@ -20,7 +20,7 @@ function PaneFormItem(props) {
   const fieldCls = `pane-field ${getColCls(fieldCol)}`;
   return (
     <div className="pane-form-item">
-      <label className={labelCls}>{label}：</label>
+      <label className={labelCls} htmlFor="pane">{label}：</label>
       <div className={fieldCls}>{field}</div>
     </div>
   );

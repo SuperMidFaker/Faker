@@ -63,21 +63,19 @@ export default class NodeUserList extends Component {
             help: '电话号码不正确',
           },
         });
-      } else {
-        if (this.state.mode === 'add') {
-          const { node, tenantId } = this.props;
-          this.props.addNodeUser(node.node_id, { ...nodeUserInfo, tenant_id: tenantId }).then(() => {
-            this.setState({
-              visible: false,
-            });
+      } else if (this.state.mode === 'add') {
+        const { node, tenantId } = this.props;
+        this.props.addNodeUser(node.node_id, { ...nodeUserInfo, tenant_id: tenantId }).then(() => {
+          this.setState({
+            visible: false,
           });
-        } else if (this.state.mode === 'edit') {
-          this.props.eitNodeUser(this.state.nodeUser.id, nodeUserInfo).then(() => {
-            this.setState({
-              visible: false,
-            });
+        });
+      } else if (this.state.mode === 'edit') {
+        this.props.eitNodeUser(this.state.nodeUser.id, nodeUserInfo).then(() => {
+          this.setState({
+            visible: false,
           });
-        }
+        });
       }
     }, (messages, m) => {
       return m;

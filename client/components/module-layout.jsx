@@ -31,7 +31,7 @@ export default class ModuleLayout extends React.Component {
                 <div className={containerCls}>
                   <div className={`module-icon-bg ${mod.cls} ${mod.status}`}>
                     <div className="module-icon">
-                      <i className={`zmdi zmdi-${mod.cls}`}></i>
+                      <i className={`zmdi zmdi-${mod.cls}`} />
                     </div>
                   </div>
                   <span className="module-text">{formatMsg(this.props.intl, mod.text)}</span>

@@ -214,22 +214,23 @@ export default class PartnerSetupDialog extends React.Component {
               <Radio.Button value="provider">{this.msg('provider')}</Radio.Button>
             </Radio.Group>
           </Form.Item>
-          {isProviderPartner &&
-          <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
-            <div className="ant-checkbox-group">
-            {
-              partnershipTypes.filter(pst => pst.code !== PARTNERSHIP_TYPE_INFO.customer)
-              .map(pst =>
-                <label className="ant-checkbox-group-item" key={pst.code}>
-                  <Checkbox checked={checkedProviderTypes.indexOf(pst.code) !== -1}
-                    onChange={() => this.handlePartnerProviderTypeChange(pst.code)}
-                  />
-                  {formatGlobalMsg(intl, pst.code)}
-                </label>
-                  )
-            }
-            </div>
-          </Form.Item>
+          {
+            isProviderPartner &&
+            <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
+              <div className="ant-checkbox-group">
+              {
+                partnershipTypes.filter(pst => pst.code !== PARTNERSHIP_TYPE_INFO.customer)
+                .map(pst =>
+                  <label htmlFor="checkbox" className="ant-checkbox-group-item" key={pst.code}>
+                    <Checkbox checked={checkedProviderTypes.indexOf(pst.code) !== -1}
+                      onChange={() => this.handlePartnerProviderTypeChange(pst.code)}
+                    />
+                    {formatGlobalMsg(intl, pst.code)}
+                  </label>
+                    )
+              }
+              </div>
+            </Form.Item>
           }
         </Form>
         <div className={`partner-modal-offline-body

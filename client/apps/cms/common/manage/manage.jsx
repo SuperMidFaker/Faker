@@ -92,7 +92,7 @@ export default class Manage extends Component {
         title: msg('relation_type'),
         dataIndex: 'relation_type',
         render: (text, record) => {
-          for (let i = 0; i < RELATION_TYPES.length; i ++) {
+          for (let i = 0; i < RELATION_TYPES.length; i++) {
             if (RELATION_TYPES[i].key === text) {
               return this.renderColumnText(record.status, RELATION_TYPES[i].value);
             }
@@ -102,7 +102,7 @@ export default class Manage extends Component {
         title: msg('i_e_type'),
         dataIndex: 'i_e_type',
         render: (text, record) => {
-          for (let i = 0; i < I_E_TYPES.length; i ++) {
+          for (let i = 0; i < I_E_TYPES.length; i++) {
             if (I_E_TYPES[i].key === text) {
               return this.renderColumnText(record.status, I_E_TYPES[i].value);
             }

@@ -74,7 +74,7 @@ export default class AmNavBar extends React.Component {
               <span>{formatGlobalMsg(intl, 'brand')}</span>
             </div>
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
-              <i className="zmdi zmdi-apps"></i>
+              <i className="zmdi zmdi-apps" />
             </NavLink>
             {brandNav}
           </div>
@@ -100,14 +100,14 @@ export default class AmNavBar extends React.Component {
                 <Menu.Item key="messages">
                   <Badge count={notReadMessagesNum} overflowCount={99}>
                     <NavLink to="/account/messages">
-                    <span className="icon s7-bell"></span>
+                    <span className="icon s7-bell" />
                     </NavLink>
                   </Badge>
                 </Menu.Item>
                 <Menu.Item key="helpdesk">
                   <Tooltip placement="bottom" title="帮助中心">
-                    <a href="https://welogix.kf5.com/hc/" target="_blank">
-                      <span className="icon s7-help1"></span>
+                    <a rel="noopener noreferrer" href="https://welogix.kf5.com/hc/" target="_blank">
+                      <span className="icon s7-help1" />
                     </a>
                   </Tooltip>
                 </Menu.Item>

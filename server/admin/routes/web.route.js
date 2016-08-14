@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 import renderHtml from '../htmlRender';
 
-function *renderWebPage() {
+function* renderWebPage() {
   try {
     this.body = yield renderHtml(this.request);
   } catch (e) {

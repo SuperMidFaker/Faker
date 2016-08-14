@@ -72,7 +72,7 @@ export default class ModuleEditor extends React.Component {
           <Col span="8"><h4>{formatMsg(intl, 'appEditorNameCol')}</h4></Col>
           <Col span="8"><p className="type-label">{formatGlobalMsg(intl, 'desc')}</p></Col>
           <Col span="8">
-            <label className="type-label pull-right">
+            <label htmlFor="editor" className="type-label pull-right">
             {formatMsg(intl, 'appEditorSetCol')}
             </label>
           </Col>

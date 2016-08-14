@@ -160,7 +160,7 @@ export default class DispatchDock extends Component {
       dataIndex: 'length',
       width: 30,
       render: (l) => {
-        for (let i = 0; i < this.props.vehicleLengths.length; i ++) {
+        for (let i = 0; i < this.props.vehicleLengths.length; i++) {
           if (this.props.vehicleLengths[i].value === l) {
             return this.props.vehicleLengths[i].text;
           }

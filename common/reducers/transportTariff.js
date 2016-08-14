@@ -58,14 +58,14 @@ const initialState = {
     transModes: [],
   },
   surcharge: {
-      pickup: { mode: 0, value: 0 },
-      delivery: { mode: 0, value: 0 },
-      other1: { enabled: false, mode: 0, value: 0 },
-      other2: { enabled: false, mode: 0, value: 0 },
-      load: { mode: 0, value: 0 },
-      unload: { mode: 0, value: 0 },
-      adjustCoefficient: 1,
-      taxrate: { mode: 0, value: 0 },
+    pickup: { mode: 0, value: 0 },
+    delivery: { mode: 0, value: 0 },
+    other1: { enabled: false, mode: 0, value: 0 },
+    other2: { enabled: false, mode: 0, value: 0 },
+    load: { mode: 0, value: 0 },
+    unload: { mode: 0, value: 0 },
+    adjustCoefficient: 1,
+    taxrate: { mode: 0, value: 0 },
   },
 };
 
@@ -132,7 +132,7 @@ export default function reducer(state = initialState, action) {
       };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-     return { ...state, partners: action.result.data };
+      return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
       return { ...state, tariffId: '', formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:

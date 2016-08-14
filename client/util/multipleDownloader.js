@@ -28,14 +28,14 @@ function fallback(files) {
 
 function isFirefox() {
   // sad panda :(
-  return /Firefox\//i.test(navigator.userAgent);
+  return /Firefox\//i.test(window.navigator.userAgent);
 }
 
 function sameDomain(url) {
   const a = document.createElement('a');
   a.href = url;
 
-  return location.hostname === a.hostname && location.protocol === a.protocol;
+  return window.location.hostname === a.hostname && window.location.protocol === a.protocol;
 }
 
 function download(url, filename) {
@@ -43,7 +43,7 @@ function download(url, filename) {
   link.setAttribute('download', filename);
   link.href = url;
   // firefox doesn't support `a.click()`...
-  link.dispatchEvent(new MouseEvent('click'));
+  link.dispatchEvent(new window.MouseEvent('click'));
 }
 
 export default function downloadMultiple(files) {
