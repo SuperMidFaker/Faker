@@ -265,6 +265,10 @@ export default defineMessages({
     id: 'transport.tracking.modal.remark.placeholder',
     defaultMessage: '司机联系方式等',
   },
+  trackingEventsModalTitle: {
+    id: 'transport.tracking.modal.events.title',
+    defaultMessage: '追踪事件记录',
+  },
   pickupModalTitle: {
     id: 'transport.tracking.modal.pickup.title',
     defaultMessage: '更新提货',
@@ -277,7 +281,7 @@ export default defineMessages({
     id: 'transport.tracking.pickup.act.date',
     defaultMessage: '实际提货日期',
   },
-  deliveryActDate: {
+  deliverActDate: {
     id: 'transport.tracking.delivery.act.date',
     defaultMessage: '实际交货日期',
   },

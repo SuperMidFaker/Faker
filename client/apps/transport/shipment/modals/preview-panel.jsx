@@ -377,15 +377,15 @@ export default class PreviewPanel extends React.Component {
           </div>
         </div>
         <div>
-          <Modal ref="modal" style={{ width: '680px' }}
-            visible={this.state.trackingDetailModalVisible}
-            title={`${shipmtNo} 分享运单`} onOk={this.handleTrackingDetailOk} onCancel={this.handleTrackingDetailCancel}
+          <Modal style={{ width: '680px' }} visible={this.state.trackingDetailModalVisible}
+            title={`${shipmtNo} 分享运单`} onOk={this.handleTrackingDetailOk}
+            onCancel={this.handleTrackingDetailCancel}
             footer={[
               <Button key="back" type="ghost" size="large" onClick={this.handleTrackingDetailCancel}>关 闭</Button>,
             ]}
           >
             <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
-              <a href={this.state.publicUrlPath} target="_blank">
+              <a href={this.state.publicUrlPath} target="_blank" rel="noopener noreferrer">
                 <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
               </a>
             </div>

@@ -97,9 +97,12 @@ export default class PricingLTL extends React.Component {
     if (nextProps.meter !== this.props.meter) {
       this.handleMeterSelect(nextProps.meter);
     }
-    if (nextProps.intervals.length > 0 &&
-      nextProps.intervals !== this.props.intervals) {
-      this.setState({ intervals: [0, ...nextProps.intervals] });
+    if (nextProps.intervals !== this.props.intervals) {
+      if (nextProps.intervals.length > 0) {
+        this.setState({ intervals: [0, ...nextProps.intervals] });
+      } else {
+        this.setState({ intervals: [0, 0] });
+      }
     }
   }
   handleMeterSelect = value => {

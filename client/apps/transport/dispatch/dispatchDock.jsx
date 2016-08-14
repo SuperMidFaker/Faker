@@ -160,7 +160,7 @@ export default class DispatchDock extends Component {
       dataIndex: 'length',
       width: 30,
       render: (l) => {
-        for (let i = 0; i < this.props.vehicleLengths.length; i ++) {
+        for (let i = 0; i < this.props.vehicleLengths.length; i++) {
           if (this.props.vehicleLengths[i].value === l) {
             return this.props.vehicleLengths[i].text;
           }
@@ -410,15 +410,15 @@ export default class DispatchDock extends Component {
         message.error('未找到适合计算的价格协议');
       } else {
         const { freight, pickup, deliver, meter, quantity,
-          unitRatio, gradient, miles } = result.data;
+          unitRatio, gradient, miles, coefficient } = result.data;
         const charge = {
           freight_charge: freight,
           pickup_charge: pickup,
           deliver_charge: deliver,
-          total_charge: freight + pickup + deliver,
+          total_charge: Number(freight) + Number(pickup) + Number(deliver),
           charge_gradient: gradient,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,
-              unitRatio),
+              unitRatio, coefficient),
         };
         const state = update(this.state, { lspsVar: { data: {
           [index]: { charge: { $set: charge } } } } });

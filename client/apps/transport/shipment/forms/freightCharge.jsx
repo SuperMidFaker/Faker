@@ -43,6 +43,7 @@ export default class FreightCharge extends React.Component {
       ]);
     if (!(total_volume || total_weight || ctn || vehicle_length)) {
       message.error('运单数量如(总体积/总重量/集装箱包装类型)未填');
+      return;
     }
     const created = this.props.formData.created_date || Date.now();
     this.props.computeSaleCharge({
@@ -56,13 +57,14 @@ export default class FreightCharge extends React.Component {
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
       } else {
+        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量? 重置?
         const { freight, pickup, deliver, meter, quantity,
-          unitRatio, gradient, miles } = result.data;
+          unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
           freight_charge: freight,
           pickup_charge: pickup,
           deliver_charge: deliver,
-          total_charge: freight + pickup + deliver + (
+          total_charge: Number(freight) + Number(pickup) + Number(deliver) + (
             this.props.formhoc.getFieldValue('surcharge') || this.props.formData.surcharge || 0
           ),
         });
@@ -74,7 +76,7 @@ export default class FreightCharge extends React.Component {
         this.props.setConsignFields({
           charge_gradient: gradient,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,
-              unitRatio),
+              unitRatio, coefficient),
         });
       }
     });

@@ -59,18 +59,18 @@ export default class SurchargeForm extends React.Component {
   }
 
   handleSave = () => {
-      const formdata = {
-        ...this.props.formdata,
-        ...this.props.formhoc.getFieldsValue(),
-      };
-     const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
-     prom.then(result => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-        }
-      });
+    const formdata = {
+      ...this.props.formdata,
+      ...this.props.formhoc.getFieldsValue(),
+    };
+    const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
+    prom.then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+      }
+    });
   }
 
   renderInput(selected, field, initialMode, initialValue) {

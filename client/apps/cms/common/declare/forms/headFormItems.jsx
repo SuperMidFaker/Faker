@@ -139,9 +139,9 @@ export class RelationAutoCompSelect extends React.Component {
             <Col span="12" style={{ paddingRight: 0 }}>
               <Input placeholder={this.msg('relationName')} disabled={disabled}
                 {...getFieldProps(nameField, {
-                rules: nameRules,
-                initialValue: formData && formData[nameField],
-              })} disabled={disabled}
+                  rules: nameRules,
+                  initialValue: formData && formData[nameField],
+                })} disabled={disabled}
               />
             </Col>
           </CompositeInputGroup>
