@@ -35,15 +35,15 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 150,
+    width: 130,
     render: (o, record) => {
       return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={handlers.onShipmtPreview} />;
     },
   }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    width: 120,
-    render: (o) => <TrimSpan text={o} />,
+    width: 100,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('departurePlace'),
     width: 150,
@@ -58,7 +58,7 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'pickup_act_date',
     width: 90,
     render: (o, record) => {
-      if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+      if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (record.sp_tenant_id === -1) {
           return (
               <PickupDeliverUpdaterPopover
@@ -141,9 +141,9 @@ export default function makeColumns(type, handlers, msg) {
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
         return <Tag color="blue">{`4 ${msg('intransitShipmt')}`}</Tag>;
@@ -198,7 +198,7 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'task_vehicle',
     width: 120,
     render: (o, record) => {
-      if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+      if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (record.sp_tenant_id === -1) {
             // 线下客户手动更新
           return (
@@ -214,7 +214,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 40,
+    width: 45,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
@@ -316,10 +316,10 @@ export default function makeColumns(type, handlers, msg) {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return `${msg('sendAction')}
             ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           return `${msg('acceptAction')}
             ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
           return `${msg('dispatchAction')}
             ${moment(record.disp_time).format('MM.DD HH:mm')}`;
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
@@ -339,8 +339,11 @@ export default function makeColumns(type, handlers, msg) {
       fixed: 'right',
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          return msg('carrierUpdate');
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+          return (
+              <RowUpdater label={msg('notifyAccept')}
+                onAnchored={handlers.onShowVehicleModal} row={record}
+              />);
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           if (record.sp_tenant_id === -1) {
               // 线下客户手动更新
             return (
@@ -349,41 +352,48 @@ export default function makeColumns(type, handlers, msg) {
                 />
               );
           } else {
-            return msg('carrierUpdate');
+            return (<RowUpdater label={msg('notifyDispatch')}
+              onAnchored={handlers.onShowVehicleModal} row={record}
+            />);
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-          if (record.sp_tenant_id === -1) {
-            return (
+        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
+            /*
+            if (record.sp_tenant_id === -1) {
+              return (
                 <RowUpdater label={msg('updatePickup')}
                   onAnchored={handlers.onShowPickModal} row={record}
                 />
               );
-          } else if (record.sp_tenant_id === 0) {
-              // 已分配给车队
-            if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                // 线下司机
-              return (
+            } else if (record.sp_tenant_id === 0) {
+              if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+                return (
                   <RowUpdater label={msg('updatePickup')}
                     onAnchored={handlers.onShowPickModal} row={record}
                   />
                 );
+              }
             } else {
-              return msg('driverUpdate');
-            }
-          } else {
-            return msg('carrierUpdate');
-          }
+              */
+          return (
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowPickModal} row={record}
+                />
+              );
+            /*
+          }*/
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
           if (record.sp_tenant_id === -1) {
             return handlers.renderIntransitUpdater(record);
           } else if (record.sp_tenant_id === 0) {
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               return handlers.renderIntransitUpdater(record);
-            } else {
-              return msg('driverUpdate');
             }
           } else {
-            return msg('carrierUpdate');
+            return (
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowPickModal} row={record}
+                />
+              );
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
           if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
@@ -401,11 +411,13 @@ export default function makeColumns(type, handlers, msg) {
                     onAnchored={handlers.onShowPodModal} row={record}
                   />
                 );
-            } else {
-              return msg('driverUpdate');
             }
           } else {
-            return msg('carrierUpdate');
+            return (
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowPickModal} row={record}
+                />
+              );
           }
         } else {
           return msg('carrierUpdate');
