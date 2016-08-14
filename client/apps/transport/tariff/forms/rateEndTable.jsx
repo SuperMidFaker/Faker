@@ -70,7 +70,6 @@ export default class RateEndTable extends React.Component {
   }, {
     title: '运输时间',
     dataIndex: 'time',
-    width: 60,
   }]
   loadEnds = (current) => {
     return this.props.loadRateEnds({
@@ -211,31 +210,24 @@ export default class RateEndTable extends React.Component {
       },
     };
     const columns = [...this.columns];
-    let totalWidth = 350;
     if (agreementRef.meter) {
       if (agreementRef.meter === 't*km') {
         columns.push({
           title: '公里数',
           dataIndex: 'km',
-          width: 100,
         });
-        totalWidth += 100;
       }
       columns.push({
         title: '起步价',
         dataIndex: 'flare',
-        width: 120,
       });
-      totalWidth += 120;
     }
     const varColumns = getEndTableVarColumns(agreementRef);
     varColumns.forEach(vc => {
       columns.push({
         title: vc.title,
-        width: 150,
         render: (o, record) => record.gradients[vc.index],
       });
-      totalWidth += 150;
     });
     columns.push({
       title: '操作',
@@ -253,7 +245,7 @@ export default class RateEndTable extends React.Component {
     return (
       <div>
         <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} scroll={{ x: totalWidth }}
+          dataSource={this.dataSource} scroll={{ x: 1000 }}
         />
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
           <Form horizontal>
