@@ -278,7 +278,7 @@ export default class LandStatusList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel stage="transit" />
+        <PreviewPanel stage="tracking" />
         <VehicleModal onOK={this.handleTableLoad} />
         <PickupOrDeliverModal onOK={this.handleTableLoad} />
         <LocationModal onOK={this.handleTableLoad} />
