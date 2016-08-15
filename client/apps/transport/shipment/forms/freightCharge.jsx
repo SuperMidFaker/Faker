@@ -57,7 +57,7 @@ export default class FreightCharge extends React.Component {
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
       } else {
-        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量? 重置?
+        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
