@@ -57,14 +57,14 @@ export default class FreightCharge extends React.Component {
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
       } else {
-        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量? 重置?
+        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
           freight_charge: freight,
           pickup_charge: pickup,
           deliver_charge: deliver,
-          total_charge: Number(freight) + Number(pickup) + Number(deliver) + (
+          total_charge: freight + Number(pickup) + Number(deliver) + (
             this.props.formhoc.getFieldValue('surcharge') || this.props.formData.surcharge || 0
           ),
         });
@@ -126,11 +126,28 @@ export default class FreightCharge extends React.Component {
     }
     formhoc.setFieldsValue({ total_charge: total });
   }
+  handleReset = (ev) => {
+    ev.preventDefault();
+    this.setState({ computed: false });
+    this.props.formhoc.setFieldsValue({
+      freight_charge: undefined,
+      pickup_charge: undefined,
+      deliver_charge: undefined,
+      surcharge: undefined,
+      total_charge: undefined,
+    });
+    this.props.setConsignFields({
+      charge_gradient: undefined,
+      charge_amount: undefined,
+    });
+  }
   render() {
     const { formhoc, formData } = this.props;
     const { computed, checkPickup, checkDeliver } = this.state;
     return (
-      <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}>
+      <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}
+        extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : null}
+      >
         <Button style={{ width: '100%', marginBottom: 16 }} type="primary" size="large" icon="calculator"
           onClick={this.handleCompute}
         >
@@ -173,9 +190,11 @@ export default class FreightCharge extends React.Component {
             colSpan={8}
           />
         }
-        <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
+        <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')}
+          addonAfter={this.msg('CNY')} colSpan={8} readOnly={computed} hasFeedback
           field="total_charge" fieldProps={{ initialValue: formData.total_charge }}
-          colSpan={8} readOnly={computed}
+          rules={[{ type: 'number', transform: v => Number(v),
+            message: this.msg('totalChargeMustBeNumber') }]}
         />
       </Card>
     );

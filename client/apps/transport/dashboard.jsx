@@ -294,7 +294,7 @@ export default class Dashboard extends React.Component {
       operation: '',
     }, {
       key: '2',
-      name: '待调度',
+      name: '待分配',
       operation: '',
     }, {
       key: '3',

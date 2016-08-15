@@ -37,22 +37,6 @@ export default defineMessages({
     id: 'transport.tracking.driver.update',
     defaultMessage: '由司机更新',
   },
-  notifyAccept: {
-    id: 'transport.tracking.notify.accept',
-    defaultMessage: '催促接单',
-  },
-  notifyDispatch: {
-    id: 'transport.tracking.notify.dispatch',
-    defaultMessage: '催促调度',
-  },
-  notifyPOD: {
-    id: 'transport.tracking.notify.pod',
-    defaultMessage: '催促回单',
-  },
-  updateEvents: {
-    id: 'transport.tracking.update.events',
-    defaultMessage: '追踪记录',
-  },
   updateVehicleDriver: {
     id: 'transport.tracking.update.drivervehicle',
     defaultMessage: '更新车辆司机',
@@ -265,10 +249,6 @@ export default defineMessages({
     id: 'transport.tracking.modal.remark.placeholder',
     defaultMessage: '司机联系方式等',
   },
-  trackingEventsModalTitle: {
-    id: 'transport.tracking.modal.events.title',
-    defaultMessage: '追踪事件记录',
-  },
   pickupModalTitle: {
     id: 'transport.tracking.modal.pickup.title',
     defaultMessage: '更新提货',
@@ -281,7 +261,7 @@ export default defineMessages({
     id: 'transport.tracking.pickup.act.date',
     defaultMessage: '实际提货日期',
   },
-  deliverActDate: {
+  deliveryActDate: {
     id: 'transport.tracking.delivery.act.date',
     defaultMessage: '实际交货日期',
   },
