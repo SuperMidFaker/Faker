@@ -90,6 +90,8 @@ export default function reducer(state = initialState, action) {
         surcharge: initialState.surcharge,
         partners: [],
       };
+    case actionTypes.LOAD_TARIFF:
+      return { ...state, agreement: initialState.agreement };
     case actionTypes.LOAD_TARIFF_SUCCEED: {
       const res = action.result.data.tariff.agreement;
       const agreement = {

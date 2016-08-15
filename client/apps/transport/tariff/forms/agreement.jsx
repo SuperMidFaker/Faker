@@ -84,7 +84,6 @@ export default class AgreementForm extends React.Component {
     // console.log(this.price);
   }
   handleSubmit = () => {
-    // todo date到天0点, rangeDisable
     this.props.form.validateFields(errors => {
       if (errors) {
         message.error('表单信息错误');
@@ -96,15 +95,20 @@ export default class AgreementForm extends React.Component {
             pt => pt.partner_id === editForm.partnerId);
           partnerName = selpartners[0].name;
         }
-        const { tariffId, tenantId, loginId, loginName } = this.props;
+        const effDate = editForm.effectiveDate;
+        const expDate = new Date(editForm.expiryDate);
         const forms = {
           ...this.props.formData, ...editForm, ...this.price, partnerName,
+          effectiveDate: effDate.setHours(0, 0, 0, 0),
+          // 取下一天0点
+          expiryDate: new Date(expDate.setDate(expDate.getDate() + 1)).setHours(0, 0, 0, 0),
         };
         let promise;
-        if (tariffId) {
-          forms.loginName = loginName;
+        if (this.props.tariffId) {
+          forms.loginName = this.props.loginName;
           promise = this.props.updateAgreement(forms);
         } else {
+          const { tariffId, tenantId, loginId } = this.props;
           forms.id = tariffId;
           forms.tenantId = tenantId;
           forms.loginId = loginId;
@@ -153,6 +157,26 @@ export default class AgreementForm extends React.Component {
     } else {
       this.setState({ transMode: 'ltl' });
     }
+  }
+  isEffectiveDateDisabled = (effDate) => {
+    if (!effDate) {
+      return false;
+    }
+    const expiryDate = this.props.form.getFieldValue('expiryDate');
+    if (!expiryDate) {
+      return false;
+    }
+    return effDate.getTime() >= expiryDate.getTime();
+  }
+  isExpiryDateDisabled = (expiryDate) => {
+    if (!expiryDate) {
+      return false;
+    }
+    const effDate = this.props.form.getFieldValue('effectiveDate');
+    if (!effDate) {
+      return false;
+    }
+    return effDate.getTime() >= expiryDate.getTime();
   }
   render() {
     const { form, formData, formParams, submitting, partners,
@@ -218,7 +242,8 @@ export default class AgreementForm extends React.Component {
                   <DatePicker style={{ width: '100%' }} {...getFieldProps('effectiveDate', {
                     initialValue: formData.effectiveDate,
                     rules: [{ required: true, message: '起始时间必填', type: 'date' }],
-                  })} />
+                  })} disabledDate={this.isEffectiveDateDisabled}
+                  />
                 </FormItem>
               </Col>
               <Col sm={6} style={{ paddingLeft: '8px' }}>
@@ -226,7 +251,8 @@ export default class AgreementForm extends React.Component {
                   <DatePicker style={{ width: '100%' }} {...getFieldProps('expiryDate', {
                     initialValue: formData.expiryDate,
                     rules: [{ required: true, message: '截止时间必填', type: 'date' }],
-                  })} />
+                  })} disabledDate={this.isExpiryDateDisabled}
+                  />
                 </FormItem>
               </Col>
             </Row>
