@@ -245,13 +245,13 @@ export default defineMessages({
     id: 'transport.shipment.track.unaccept',
     defaultMessage: '待接单',
   },
-  trackUndispatched: {
-    id: 'transport.shipment.track.undispatched',
-    defaultMessage: '待分配',
+  trackAccepted: {
+    id: 'transport.shipment.track.accepted',
+    defaultMessage: '待调度',
   },
-  trackUndelivered: {
-    id: 'transport.shipment.track.undelivered',
-    defaultMessage: '已分配',
+  trackDispatched: {
+    id: 'transport.shipment.track.dispatched',
+    defaultMessage: '待提货',
   },
   trackIntransit: {
     id: 'transport.shipment.track.intransit',
@@ -432,10 +432,6 @@ export default defineMessages({
   totalCharge: {
     id: 'transport.acceptance.total.charge',
     defaultMessage: '总运费',
-  },
-  totalChargeMustBeNumber: {
-    id: 'transport.acceptance.total.charge.must.number',
-    defaultMessage: '总运费必须为整数',
   },
   computeCharge: {
     id: 'transport.acceptance.compute.charge',
