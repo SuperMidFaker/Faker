@@ -433,6 +433,10 @@ export default defineMessages({
     id: 'transport.acceptance.total.charge',
     defaultMessage: '总运费',
   },
+  totalChargeMustBeNumber: {
+    id: 'transport.acceptance.total.charge.must.number',
+    defaultMessage: '总运费必须为整数',
+  },
   computeCharge: {
     id: 'transport.acceptance.compute.charge',
     defaultMessage: '计算运费',
