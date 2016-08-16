@@ -13,7 +13,7 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 const CODE_AS_STATE = {
-  forwarder_code: 'forwarders',
+  trade_co: 'trades',
   owner_code: 'owners',
   agent_code: 'agents',
 };
@@ -81,10 +81,10 @@ export default class HeadForm extends React.Component {
           </Col>
         }
         <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
-          codeField="forwarder_code" nameField="forwarder_name"
+          codeField="trade_co" nameField="trade_name"
           codeRules={[{ required: true }]} nameRules={[{ required: true }]}
           onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-          {...formProps} options={formRequire.forwarders}
+          {...formProps} options={formRequire.trades}
         />
         <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
           onSearch={this.handlePortSearch}

@@ -123,7 +123,7 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 150,
+    width: 130,
     render: (o, record) => {
       return (
         <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
@@ -149,9 +149,9 @@ export default class LandStatusList extends React.Component {
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return `1 ${this.msg('pendingShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         return `2 ${this.msg('acceptedShipmt')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         return `3 ${this.msg('dispatchedShipmt')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
         return `4 ${this.msg('intransitShipmt')}`;
@@ -170,10 +170,10 @@ export default class LandStatusList extends React.Component {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return `${this.msg('sendAction')}
         ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         return `${this.msg('acceptAction')}
         ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+      } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         return `${this.msg('dispatchAction')}
         ${moment(record.disp_time).format('MM.DD HH:mm')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {

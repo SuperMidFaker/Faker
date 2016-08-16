@@ -17,10 +17,14 @@ const FormItem = Form.Item;
   }),
   { submitSurcharges }
 )
-@Form.create()
+
+@Form.create({
+  formPropName: 'formhoc',
+})
+
 export default class SurchargeForm extends React.Component {
   static propTypes = {
-    form: PropTypes.object.isRequired,
+    formhoc: PropTypes.object.isRequired,
     formdata: PropTypes.object.isRequired,
     submitSurcharges: PropTypes.func.isRequired,
     tariffId: PropTypes.string.isRequired,
@@ -57,7 +61,7 @@ export default class SurchargeForm extends React.Component {
   handleSave = () => {
     const formdata = {
       ...this.props.formdata,
-      ...this.props.form.getFieldsValue(),
+      ...this.props.formhoc.getFieldsValue(),
     };
     const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
     prom.then(result => {
@@ -70,12 +74,12 @@ export default class SurchargeForm extends React.Component {
   }
 
   renderInput(selected, field, initialMode, initialValue) {
-    const { getFieldProps } = this.props.form;
+    const { getFieldProps } = this.props.formhoc;
     return (
       <Form horizontal>
        <Row>
          <Col span={16}>
-            <FormItem>
+            <FormItem hasFeedback>
               <RadioGroup {...getFieldProps(selected, initialMode)}>
                 <RadioButton value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</RadioButton>
                 <RadioButton value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</RadioButton>
@@ -95,7 +99,7 @@ export default class SurchargeForm extends React.Component {
   }
 
   render() {
-    const { form: { getFieldProps }, formdata } = this.props;
+    const { formhoc: { getFieldProps }, formdata } = this.props;
     const { disabled1, disabled2 } = this.state;
     return (
         <div className="panel-body" style={{ padding: '0 16px' }}>
@@ -124,7 +128,7 @@ export default class SurchargeForm extends React.Component {
                 <Form horizontal>
                   <Row>
                     <Col span={16}>
-                      <FormItem>
+                      <FormItem hasFeedback>
                         <RadioGroup disabled={disabled1} {...getFieldProps('other1.mode', { initialValue: formdata.other1.mode })}>
                           <RadioButton value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</RadioButton>
                           <RadioButton value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</RadioButton>
@@ -168,7 +172,7 @@ export default class SurchargeForm extends React.Component {
                 <Form>
                   <Row>
                     <Col span={16}>
-                      <FormItem>
+                      <FormItem hasFeedback>
                         <RadioGroup disabled={disabled2} {...getFieldProps('other2.mode', { initialValue: formdata.other2.mode })}>
                           <RadioButton value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</RadioButton>
                           <RadioButton value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</RadioButton>

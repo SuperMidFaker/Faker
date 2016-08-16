@@ -12,7 +12,7 @@ import {
 } from 'common/reducers/trackingLandStatus';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
-import PickupOrDeliverModal from './modals/pickup-deliver-updater';
+import ExcpEventsModal from './modals/excpEventsModal';
 import LocationModal from './modals/intransitLocationUpdater';
 import PodModal from './modals/pod-submit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
@@ -250,7 +250,7 @@ export default class LandStatusList extends React.Component {
           className={reported ? 'mdc-text-grey' : ''}
         />
         <span className="ant-divider" />
-        <RowUpdater label={this.msg('updateDelivery')}
+        <RowUpdater label={this.msg('updateEvents')}
           onAnchored={this.handleShowDeliverModal} row={record}
         />
       </span>
@@ -271,7 +271,7 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2250 }}
+              dataSource={this.dataSource} scroll={{ x: 2260 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -280,7 +280,7 @@ export default class LandStatusList extends React.Component {
         </div>
         <PreviewPanel stage="transit" />
         <VehicleModal onOK={this.handleTableLoad} />
-        <PickupOrDeliverModal onOK={this.handleTableLoad} />
+        <ExcpEventsModal onOK={this.handleTableLoad} />
         <LocationModal onOK={this.handleTableLoad} />
         <PodModal onOK={this.handleTableLoad} />
       </div>

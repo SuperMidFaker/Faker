@@ -60,14 +60,14 @@ export default class ShipmtNoColumnRender extends React.Component {
       return (
         <Popover placement="rightTop" title="位置追踪" content={content} trigger="hover">
           <a onClick={this.handleClick} onMouseOver={this.handleMouseOver}>
-            <TrimSpan text={shipmtNo} maxLen={16} />
+            <TrimSpan text={shipmtNo} maxLen={14} />
           </a>
         </Popover>
       );
     } else {
       return (
         <a {...extra} onClick={this.handleClick}>
-          <TrimSpan text={shipmtNo} maxLen={16} />
+          <TrimSpan text={shipmtNo} maxLen={14} />
         </a>
       );
     }
