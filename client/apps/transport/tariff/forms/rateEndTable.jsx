@@ -7,7 +7,6 @@ import RegionCascader from 'client/components/region-cascade';
 import { getEndTableVarColumns, renderRegion, RowClick, ConfirmDel } from './commodity';
 import { submitRateEnd, updateRateEnd, delRateEnd,
   loadRateEnds } from 'common/reducers/transportTariff';
-import { PRESET_TRANSMODES } from 'common/constants';
 
 const FormItem = Form.Item;
 @connect(
@@ -71,7 +70,6 @@ export default class RateEndTable extends React.Component {
   }, {
     title: '运输时间',
     dataIndex: 'time',
-    width: 60,
   }]
   loadEnds = (current) => {
     return this.props.loadRateEnds({
@@ -201,8 +199,8 @@ export default class RateEndTable extends React.Component {
     });
   }
   render() {
-    const { ratesEndList, loading, visibleModal, form,
-      form: { getFieldProps }, agreementRef } = this.props;
+    const { ratesEndList, loading, visibleModal, form: { getFieldProps },
+      agreementRef } = this.props;
     const { editEnd, editRegion } = this.state;
     this.dataSource.remotes = ratesEndList;
     const rowSelection = {
@@ -212,35 +210,28 @@ export default class RateEndTable extends React.Component {
       },
     };
     const columns = [...this.columns];
-    let totalWidth = 400;
-    if (agreementRef.transModeCode === PRESET_TRANSMODES.ltl) {
+    if (agreementRef.meter) {
       if (agreementRef.meter === 't*km') {
         columns.push({
           title: '公里数',
           dataIndex: 'km',
-          width: 80,
         });
-        totalWidth += 80;
       }
       columns.push({
         title: '起步价',
         dataIndex: 'flare',
-        width: 100,
       });
-      totalWidth += 100;
     }
     const varColumns = getEndTableVarColumns(agreementRef);
     varColumns.forEach(vc => {
       columns.push({
         title: vc.title,
-        width: 100,
         render: (o, record) => record.gradients[vc.index],
       });
-      totalWidth += 100;
     });
     columns.push({
       title: '操作',
-      width: 80,
+      width: 120,
       fixed: 'right',
       render: (o, record) => {
         return (
@@ -254,10 +245,10 @@ export default class RateEndTable extends React.Component {
     return (
       <div>
         <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} scroll={{ x: totalWidth + 100 }}
+          dataSource={this.dataSource} scroll={{ x: 1000 }}
         />
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
-          <Form horizontal form={form}>
+          <Form horizontal>
             <FormItem label="目的地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               <RegionCascader region={editRegion} onChange={this.handleRegionChange} />
             </FormItem>
@@ -281,7 +272,7 @@ export default class RateEndTable extends React.Component {
               </FormItem>
             }
             {
-              agreementRef.transModeCode === PRESET_TRANSMODES.ltl &&
+              agreementRef.meter &&
               <FormItem label="起步价" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 <Input {...getFieldProps('flare', {
                   initialValue: editEnd.flare,

@@ -2,12 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Row, Col, Table, Card } from 'antd';
+import { Col, Table, Collapse, Timeline, Icon } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
+import { PRESET_TRANSMODES } from 'common/constants';
 import messages from '../../message.i18n';
-const formatMsg = format(messages);
 import './pane.less';
+const formatMsg = format(messages);
+const Panel = Collapse.Panel;
 
 function getColCls(col) {
   if (col) {
@@ -24,7 +26,7 @@ function PaneFormItem(props) {
   const fieldCls = `pane-field ${getColCls(fieldCol)}`;
   return (
     <div className="pane-form-item">
-      <label className={labelCls}>{label}：</label>
+      <label className={labelCls} htmlFor="pane">{label}：</label>
       <div className={fieldCls}>{field}</div>
     </div>
   );
@@ -32,7 +34,7 @@ function PaneFormItem(props) {
 PaneFormItem.propTypes = {
   label: PropTypes.string.isRequired,
   labelCol: PropTypes.object,
-  field: PropTypes.string,
+  field: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   fieldCol: PropTypes.object,
 };
 @injectIntl
@@ -89,103 +91,81 @@ export default class PreviewPanel extends React.Component {
     const { shipmt } = this.props;
     return (
       <div className="pane-content tab-pane">
-        <Row>
-          <Col span="12" style={{ paddingRight: 8 }}>
-            <Card bodyStyle={{ padding: 16 }}>
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consigner')}
-                field={shipmt.consigner_name} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('departurePort')}
-                field={renderConsignLoc(shipmt, 'consigner')} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('pickupAddr')}
-                field={shipmt.consigner_addr} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
-                field={shipmt.consigner_contact} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
-                field={shipmt.consigner_mobile} fieldCol={{ span: 18 }}
-              />
-            </Card>
-          </Col>
-          <Col span="12" style={{ paddingLeft: 8 }}>
-            <Card bodyStyle={{ padding: 16 }}>
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('consignee')}
-                field={shipmt.consignee_name} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('arrivalPort')}
-                field={renderConsignLoc(shipmt, 'consignee')} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('deliveryAddr')}
-                field={shipmt.consignee_addr} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('contact')}
-                field={shipmt.consignee_contact} fieldCol={{ span: 18 }}
-              />
-              <PaneFormItem labelCol={{ span: 6 }} label={this.msg('mobile')}
-                field={shipmt.consignee_mobile} fieldCol={{ span: 18 }}
-              />
-            </Card>
-          </Col>
-        </Row>
-          <Card bodyStyle={{ padding: 16 }}>
-            <Row>
-              <Col span="8">
-                <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupDate')}
-                  field={moment(shipmt.pickup_est_date).format('YYYY-MM-DD')} fieldCol={{ span: 16 }}
-                />
-              </Col>
-              <Col span="8">
-                <PaneFormItem labelCol={{ span: 8 }} label={this.msg('shipmtTransit')}
-                  field={`${shipmt.transit_time || 0}${this.msg('day')}`} fieldCol={{ span: 16 }}
-                />
-              </Col>
-              <Col span="8">
-                <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryDate')}
-                  field={moment(shipmt.deliver_est_date).format('YYYY-MM-DD')} fieldCol={{ span: 16 }}
-                />
-              </Col>
-            </Row>
-            <Row>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
-                field={shipmt.transport_mode} fieldCol={{ span: 16 }}
+        <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
+          <Panel header={this.msg('customerInfo')} key="customer">
+            <Col span="24">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
+                field={shipmt.customer_name} fieldCol={{ span: 16 }}
               />
             </Col>
-            {shipmt.transport_mode_code === 'FTL' &&
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
-                field={shipmt.vehicle_type} fieldCol={{ span: 16 }}
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
+                field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
               />
             </Col>
-            }
-            {shipmt.transport_mode_code === 'FTL' &&
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
-                field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
-              />
-            </Col>
-            }
-            {shipmt.transport_mode_code === 'CTN' &&
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
-                field={shipmt.container_no} fieldCol={{ span: 16 }}
-              />
-            </Col>
-            }
+          </Panel>
+          <Panel header={`${this.msg('shipmtSchedule')}  ${shipmt.transit_time || '当'}${this.msg('day')}`} key="trans_schedule">
+            <Timeline>
+              <Timeline.Item color="blue" dot={<Icon type="circle-o-up" style={{ fontSize: '16px' }} />}>
+                <p><strong>{this.msg('pickupEstDate')} {moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}</strong></p>
+                <p><strong>{shipmt.consigner_name || ''}</strong></p>
+                <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
+                <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
+              </Timeline.Item>
+              <Timeline.Item color="green" dot={<Icon type="circle-o-down" style={{ fontSize: '16px' }} />}>
+                <p><strong>{this.msg('deliveryEstDate')} {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}</strong></p>
+                <p><strong>{shipmt.consignee_name}</strong></p>
+                <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
+                <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
+              </Timeline.Item>
+            </Timeline>
+          </Panel>
+          <Panel header={`${this.msg('transitModeInfo')} ${shipmt.transport_mode}`} key="trans_mode">
             <Col span="24">
               <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
                 field={shipmt.remark} fieldCol={{ span: 21 }}
               />
             </Col>
-            </Row>
-          </Card>
-          <Card bodyStyle={{ padding: 0 }}>
-            <Table size="small" columns={this.columns} pagination={false} showHeader={false}
-              dataSource={shipmt.goodslist}
-            />
-          </Card>
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
+                field={shipmt.vehicle_type} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
+                field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
+                field={shipmt.container_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+          </Panel>
+          <Panel header={`${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`} key="cargo">
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
+                field={shipmt.goods_type} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
+                field={shipmt.insure_value} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="24">
+              <Table size="small" columns={this.columns} pagination={false}
+                dataSource={shipmt.goodslist}
+              />
+            </Col>
+          </Panel>
+        </Collapse>
       </div>
     );
   }

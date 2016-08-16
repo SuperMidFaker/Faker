@@ -43,6 +43,7 @@ export default class FreightCharge extends React.Component {
       ]);
     if (!(total_volume || total_weight || ctn || vehicle_length)) {
       message.error('运单数量如(总体积/总重量/集装箱包装类型)未填');
+      return;
     }
     const created = this.props.formData.created_date || Date.now();
     this.props.computeSaleCharge({
@@ -56,13 +57,14 @@ export default class FreightCharge extends React.Component {
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
       } else {
+        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量? 重置?
         const { freight, pickup, deliver, meter, quantity,
-          unitRatio, gradient, miles } = result.data;
+          unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
           freight_charge: freight,
           pickup_charge: pickup,
           deliver_charge: deliver,
-          total_charge: freight + pickup + deliver + (
+          total_charge: Number(freight) + Number(pickup) + Number(deliver) + (
             this.props.formhoc.getFieldValue('surcharge') || this.props.formData.surcharge || 0
           ),
         });
@@ -74,7 +76,7 @@ export default class FreightCharge extends React.Component {
         this.props.setConsignFields({
           charge_gradient: gradient,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,
-              unitRatio),
+              unitRatio, coefficient),
         });
       }
     });
@@ -129,7 +131,7 @@ export default class FreightCharge extends React.Component {
     const { computed, checkPickup, checkDeliver } = this.state;
     return (
       <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}>
-        <Button style={{ width: '100%', height: 37, marginBottom: 10 }} type="primary"
+        <Button style={{ width: '100%', marginBottom: 16 }} type="primary" size="large" icon="calculator"
           onClick={this.handleCompute}
         >
           {this.msg('computeCharge')}
@@ -138,7 +140,7 @@ export default class FreightCharge extends React.Component {
           computed &&
           <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}
             field="freight_charge" fieldProps={{ initialValue: formData.freight_charge }}
-            colSpan={4} readOnly
+            colSpan={8} readOnly
           />
         }
         {
@@ -149,7 +151,7 @@ export default class FreightCharge extends React.Component {
               {this.msg('pickupCharge')}
             </span>}
             field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
-            colSpan={4} readOnly colon={false}
+            colSpan={8} readOnly colon={false}
           />
         }
         {
@@ -160,7 +162,7 @@ export default class FreightCharge extends React.Component {
               {this.msg('deliverCharge')}
             </span>}
             field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}
-            colSpan={4} readOnly colon={false}
+            colSpan={8} readOnly colon={false}
           />
         }
         {
@@ -168,12 +170,12 @@ export default class FreightCharge extends React.Component {
           <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
             field="surcharge" fieldProps={{ initialValue: formData.surcharge,
               onChange: this.handleSurchargeChange }}
-            colSpan={4}
+            colSpan={8}
           />
         }
         <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
           field="total_charge" fieldProps={{ initialValue: formData.total_charge }}
-          colSpan={4} readOnly={computed}
+          colSpan={8} readOnly={computed}
         />
       </Card>
     );

@@ -114,14 +114,14 @@ export default class AmLeftSidebar extends React.Component {
             if (link.single) {
               return (<MenuItem key={link.key}>
                 <NavLink to={link.path}>
-                  <i className={`icon  ${link.icon}`}></i>
+                  <i className={`icon  ${link.icon}`} />
                   <span>{link.text}</span>
                 </NavLink>
               </MenuItem>);
             } else {
               return (
                 <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'ant-menu-submenu-selected' : ''}
-                  title={<div><i className={`icon  ${link.icon}`}></i><span>{link.text}</span></div>}
+                  title={<div><i className={`icon  ${link.icon}`} /><span>{link.text}</span></div>}
                 >
                   {
                     link.sublinks.map(sub => {

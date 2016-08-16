@@ -199,7 +199,7 @@ export default class RateSourceTable extends React.Component {
     });
   }
   render() {
-    const { ratesSourceList, loading, visibleModal, form } = this.props;
+    const { ratesSourceList, loading, visibleModal } = this.props;
     const { modalRegion } = this.state;
     this.dataSource.remotes = ratesSourceList;
     const rowSelection = {
@@ -219,7 +219,7 @@ export default class RateSourceTable extends React.Component {
         <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
           closable={false}
         >
-          <Form horizontal form={form}>
+          <Form horizontal>
             <FormItem label="起始地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} required>
               <RegionCascader region={modalRegion} onChange={this.handleRegionChange} />
             </FormItem>

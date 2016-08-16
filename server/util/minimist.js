@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Copyright (c) 2012-2015 Qeemo Ltd. All Rights Reserved.
  */
@@ -11,7 +12,7 @@
 module.exports = function (args, opts) {
   if (!opts) opts = {};
 
-  var flags = { bools: {}, strings: {}, unknownFn: null };
+  const flags = { bools: {}, strings: {}, unknownFn: null };
 
   if (typeof opts['unknown'] === 'function') {
     flags.unknownFn = opts['unknown'];
@@ -25,7 +26,7 @@ module.exports = function (args, opts) {
     });
   }
 
-  var aliases = {};
+  const aliases = {};
   Object.keys(opts.alias || {}).forEach(function (key) {
     aliases[key] = [].concat(opts.alias[key]);
     aliases[key].forEach(function (x) {
@@ -42,14 +43,14 @@ module.exports = function (args, opts) {
     }
   });
 
-  var defaults = opts['default'] || {};
+  const defaults = opts['default'] || {};
 
-  var argv = { _: [] };
+  const argv = { _: [] };
   Object.keys(flags.bools).forEach(function (key) {
     setArg(key, defaults[key] === undefined ? false : defaults[key]);
   });
 
-  var notFlags = [];
+  let notFlags = [];
 
   if (args.indexOf('--') !== -1) {
     notFlags = args.slice(args.indexOf('--') + 1);
@@ -66,7 +67,7 @@ module.exports = function (args, opts) {
       if (flags.unknownFn(arg) === false) return;
     }
 
-    var value = !flags.strings[key] && isNumber(val)
+    const value = !flags.strings[key] && isNumber(val)
             ? Number(val) : val
         ;
     setKey(argv, key.split('.'), value);
@@ -77,13 +78,13 @@ module.exports = function (args, opts) {
   }
 
   function setKey(obj, keys, value) {
-    var o = obj;
+    let o = obj;
     keys.slice(0, -1).forEach(function (key) {
       if (o[key] === undefined) o[key] = {};
       o = o[key];
     });
 
-    var key = keys[keys.length - 1];
+    const key = keys[keys.length - 1];
     if (o[key] === undefined || flags.bools[key] || typeof o[key] === 'boolean') {
       o[key] = value;
     }
@@ -101,16 +102,16 @@ module.exports = function (args, opts) {
     });
   }
 
-  for (var i = 0; i < args.length; i++) {
-    var arg = args[i];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
 
     if (/^--.+=/.test(arg)) {
             // Using [\s\S] instead of . because js doesn't support the
             // 'dotall' regex modifier. See:
             // http://stackoverflow.com/a/1068308/13216
-      var m = arg.match(/^--([^=]+)=([\s\S]*)$/);
+      const m = arg.match(/^--([^=]+)=([\s\S]*)$/);
       var key = m[1];
-      var value = m[2];
+      let value = m[2];
       if (flags.bools[key]) {
         value = value !== 'false';
       }
@@ -139,10 +140,10 @@ module.exports = function (args, opts) {
           }
         }
         else if (/^-[^-]+/.test(arg)) {
-          var letters = arg.slice(1, -1).split('');
+          const letters = arg.slice(1, -1).split('');
 
-          var broken = false;
-          for (var j = 0; j < letters.length; j++) {
+          let broken = false;
+          for (let j = 0; j < letters.length; j++) {
             var next = arg.slice(j + 2);
 
             if (next === '-') {
@@ -229,12 +230,12 @@ module.exports = function (args, opts) {
 };
 
 function hasKey(obj, keys) {
-  var o = obj;
+  let o = obj;
   keys.slice(0, -1).forEach(function (key) {
     o = (o[key] || {});
   });
 
-  var key = keys[keys.length - 1];
+  const key = keys[keys.length - 1];
   return key in o;
 }
 
@@ -243,3 +244,4 @@ function isNumber(x) {
   if (/^0x[0-9a-f]+$/i.test(x)) return true;
   return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(e[-+]?\d+)?$/.test(x);
 }
+/* eslint-disable */

@@ -163,18 +163,18 @@ export default class MyProfile extends React.Component {
             />
             <FormInput label={cmsg('username')} required field="username"
               addonAfter={`@${code}`} rules={[{
-              validator: (rule, value, callback) => isLoginNameExist(
+                validator: (rule, value, callback) => isLoginNameExist(
                 value, code, profile.loginId,
                 this.props.parentTenantId || this.props.tenantId,
                 callback, message, this.props.checkLoginName,
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               ),
-            }]} fieldProps={{ initialValue: profile.username }}
+              }]} fieldProps={{ initialValue: profile.username }}
               getFieldProps={getFieldProps}
             />
             <FormInput label={cmsg('phone')} field="phone" required hasFeedback
               rules={[{
-              validator: (rule, value, callback) => validatePhone(
+                validator: (rule, value, callback) => validatePhone(
                 value, callback,
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               ) }]}

@@ -181,7 +181,7 @@ export default class LandStatusList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'pod').then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'pod', row).then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -212,7 +212,7 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2470/* , y: 460 */ }}
+              dataSource={this.dataSource} scroll={{ x: 2260 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

@@ -200,7 +200,7 @@ export default class ShipmentCreate extends React.Component {
             {formatGlobalMsg(intl, 'save')}
             </Button>
             <Popconfirm placement="top" title={this.msg('saveAndAcceptConfirm')} onConfirm={this.handleSaveAndAccept}>
-              <Button size="large" loading={submitting}>
+              <Button size="large" type="ghost" loading={submitting}>
               {this.msg('saveAndAccept')}
               </Button>
             </Popconfirm>

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag, Modal, Input, message, Col } from 'antd';
+import { Button, Icon, Tabs, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -11,12 +11,10 @@ import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shi
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import './preview-panel.less';
-import qrcode from 'client/common/qrcode';
-import { validatePhone } from 'common/validater';
 import Footer from './preview-panel-footer';
+import ShareShipmentModal from './share-shipment';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
-const InputGroup = Input.Group;
 
 function getTrackStatusMsg(status, eff) {
   let msg = 'trackDraft';
@@ -73,12 +71,7 @@ export default class PreviewPanel extends React.Component {
     super(props);
     this.state = {
       tabKey: props.tabKey || 'detail',
-      trackingDetailModalVisible: false,
-      publicUrlPath: '',
-      publicQRcodeUrl: '',
-      publicUrl: '',
-      tel: '',
-      SMSSendLoding: false,
+      shareShipmentModalVisible: false,
     };
   }
   componentDidMount() {
@@ -88,6 +81,9 @@ export default class PreviewPanel extends React.Component {
         this.handleClose();
       }
     });
+  }
+  componentWillUnmount() {
+    window.$(document).unbind('click');
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey !== this.state.tabKey) {
@@ -101,75 +97,13 @@ export default class PreviewPanel extends React.Component {
   handleClose = () => {
     this.props.hidePreviewer();
   }
-  showTrackingDetailModal = () => {
-    const { shipmtNo, shipmt } = this.props;
-    const publicUrlPath = `/pub/tms/tracking/detail/${shipmtNo}/${shipmt.publicUrlKey}`;
-    const publicUrl = `https://wx.welogix.cn${publicUrlPath}`;
-    const qr = qrcode.qrcode(6, 'M');
-    qr.addData(publicUrl);  // 解决中文乱码
-    qr.make();
-    const tag = qr.createImgTag(5, 10);  // 获取base64编码图片字符串
-    const base64 = tag.match(/src="([^"]*)"/)[1];  // 获取图片src数据
-    // base64 = base64.replace(/^data:image\/\w+;base64,/, '');  // 获取base64编码
-    // base64 = new Buffer(base64, 'base64');  // 新建base64图片缓存
-    const publicQRcodeUrl = base64;
+  handleShowShareShipmentModal = () => {
     this.setState({
-      trackingDetailModalVisible: true,
-      publicUrlPath,
-      publicUrl,
-      publicQRcodeUrl,
-      tel: shipmt.consignee_mobile,
+      shareShipmentModalVisible: true,
     });
-    document.addEventListener('copy', ev => {
-      ev.preventDefault();
-      ev.clipboardData.setData('text/plain', this.state.publicUrl);
-      message.info('复制成功', 3);
-    });
-  }
-  handleTrackingDetailOk = () => {
-    this.setState({ loading: true });
     setTimeout(() => {
-      this.setState({ loading: false, trackingDetailModalVisible: false });
-    }, 3000);
-  }
-  handleTrackingDetailCancel = () => {
-    this.setState({ trackingDetailModalVisible: false, publicQRcodeUrl: '' });
-  }
-  handleNavigationTo = (to, query) => {
-    this.context.router.push({ pathname: to, query });
-  }
-  handleCopyClick() {
-    document.execCommand('copy');
-  }
-  handleTelInput = (e) => {
-    const value = e.target.value;
-    this.setState({ tel: value });
-  }
-  handleSMSSend = () => {
-    this.setState({ SMSSendLoding: true });
-    validatePhone(
-      this.state.tel, (err) => {
-        if (err) {
-          message.error('电话号码不正确');
-          this.setState({ SMSSendLoding: false });
-        } else {
-          this.props.sendTrackingDetailSMSMessage({
-            tel: this.state.tel,
-            url: this.state.publicUrl,
-            shipmtNo: this.props.shipmtNo,
-            lsp_name: this.props.previewer.shipmt.lsp_name,
-          }).then((result) => {
-            this.setState({ SMSSendLoding: false });
-            if (result.error) {
-              message.error(result.error, 3);
-            } else {
-              message.info('发送成功', 3);
-            }
-          });
-        }
-      },
-      () => { return '电话号码不正确'; }
-    );
+      this.setState({ shareShipmentModalVisible: false });
+    }, 500);
   }
   renderTabs() {
     const shipmt = this.props.previewer.shipmt;
@@ -179,14 +113,14 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtOperations')} key="operations">
-            <TrackingPane />
-          </TabPane>
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
           </TabPane>
           <TabPane tab={this.msg('trackPod')} key="pod">
             <PodPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtLogs')} key="events">
+            <TrackingPane />
           </TabPane>
         </Tabs>
       );
@@ -196,11 +130,11 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtOperations')} key="operations">
-            <TrackingPane />
-          </TabPane>
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtEvents')} key="events">
+            <TrackingPane />
           </TabPane>
         </Tabs>
       );
@@ -210,7 +144,7 @@ export default class PreviewPanel extends React.Component {
     return (<div></div>);
   }
   render() {
-    const { visible, shipmtNo, status, effective, stage } = this.props;
+    const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;
     return (
       <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
         <div className="panel-content">
@@ -226,45 +160,9 @@ export default class PreviewPanel extends React.Component {
           <div className="body">
             {this.renderTabs()}
           </div>
-          <Footer stage={stage} />
+          <Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />
         </div>
-        <div>
-          <Modal ref="modal" style={{ width: '680px' }}
-            visible={this.state.trackingDetailModalVisible}
-            title={`${shipmtNo} 分享运单`} onOk={this.handleTrackingDetailOk} onCancel={this.handleTrackingDetailCancel}
-            footer={[
-              <Button key="back" type="ghost" size="large" onClick={this.handleTrackingDetailCancel}>关 闭</Button>,
-            ]}
-          >
-            <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
-              <a href={this.state.publicUrlPath} target="_blank">
-                <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
-              </a>
-            </div>
-            <br />
-            <div style={{ width: '90%', margin: '0 auto' }}>
-              <InputGroup>
-                <Col span="18">
-                <Input placeholder="" defaultValue={this.state.publicUrl} />
-                </Col>
-                <Col span="6">
-                  <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>
-                </Col>
-              </InputGroup>
-              <br />
-              <InputGroup>
-                <Col span="18">
-                <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput} />
-                </Col>
-                <Col span="6">
-                  <Button type="primary" icon="message" onClick={this.handleSMSSend} loading={this.state.SMSSendLoding}>
-                    发送短信
-                  </Button>
-                </Col>
-              </InputGroup>
-            </div>
-          </Modal>
-        </div>
+        <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
       </div>
     );
   }

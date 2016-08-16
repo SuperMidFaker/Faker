@@ -56,7 +56,7 @@ export default class Dashboard extends React.Component {
     const { points } = statistics;
     const geoCoordMap = {};
     const SHData = [];
-    for (let i = 0; i < points.length; i ++) {
+    for (let i = 0; i < points.length; i++) {
       const consignerCity = renderCity(points[i], 'consigner');
       const consigneeCity = renderCity(points[i], 'consignee');
       SHData.push([{ name: consignerCity }, { name: consigneeCity, value: points[i].value * 10 }]);
@@ -93,7 +93,7 @@ export default class Dashboard extends React.Component {
           geoCoordMap[geo][0] = arr[j].result.location.lng;
           geoCoordMap[geo][1] = arr[j].result.location.lat;
         } else {
-          for (let k = 0; k < SHData.length; k ++) {
+          for (let k = 0; k < SHData.length; k++) {
             if (geo === SHData[k][1].name) {
               SHData.splice(k, 1);
               break;

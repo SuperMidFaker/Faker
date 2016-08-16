@@ -69,9 +69,8 @@ class VehicleFormMini extends Component {
     const { form, vehicleValidate } = this.props;
     const getFieldProps = form.getFieldProps;
     return (
-      <Modal ref="modal"
-        visible={this.state.visible}
-        title="新增车辆" onOk={this.handleCarSave} onCancel={this.handleCancel}
+      <Modal visible={this.state.visible} title="新增车辆"
+        onOk={this.handleCarSave} onCancel={this.handleCancel}
       >
         <Form className="">
           <FormItem label="车牌号:" required {...formItemLayout}

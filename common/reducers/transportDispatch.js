@@ -13,10 +13,10 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
    'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
    'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL',
-   'REMOVE_GROUPEDSUB']);
+   'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS']);
 
 const initialState = {
-  loaded: false,
+  loaded: true,
   loading: false,
   filters: {
     status: 'waiting',
@@ -54,6 +54,7 @@ const initialState = {
   segmented: false,
   dispDockShow: false,
   segDockShow: false,
+  shipmts: [],
   nodeLocations: [],
   transitModes: [],
   vehicleLengths: [],
@@ -133,6 +134,14 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, expandList };
     }
+    case actionTypes.CHANGE_DOCK_STATUS:
+      return { ...state, ...action.data };
+    case actionTypes.DO_DISPATCH_SUCCEED:
+      return { ...state, loaded: false };
+    case actionTypes.DO_SEND_SUCCEED:
+      return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
+    case actionTypes.DO_RETURN_SUCCEED:
+      return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     default:
       return state;
   }
@@ -348,3 +357,11 @@ export function loadShipmtsGroupedSub(cookie, params) {
 export function removeGroupedSubShipmt(key, shipmtNo) {
   return { type: actionTypes.REMOVE_GROUPEDSUB, data: { key, shipmtNo } };
 }
+
+export function changeDockStatus(params) {
+  return {
+    type: actionTypes.CHANGE_DOCK_STATUS,
+    data: params,
+  };
+}
+

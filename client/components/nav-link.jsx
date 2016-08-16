@@ -10,6 +10,7 @@ export default class NavLink extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.element,
       PropTypes.string,
+      PropTypes.number,
       PropTypes.array,
     ]),
   }

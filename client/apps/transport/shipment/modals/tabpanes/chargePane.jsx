@@ -21,28 +21,36 @@ export default class ChargePanel extends React.Component {
   revenueColumns = [{
     title: this.msg('revenueItem'),
     dataIndex: 'item',
+    width: 80,
   }, {
     title: this.msg('chargeRate'),
     dataIndex: 'rate',
+    width: 100,
   }, {
     title: this.msg('chargeAmount'),
     dataIndex: 'amount',
+    width: 240,
   }, {
     title: this.msg('chargeFee'),
     dataIndex: 'fee',
+    width: 180,
   }]
   expenseColumns = [{
     title: this.msg('expenseItem'),
     dataIndex: 'item',
+    width: 80,
   }, {
     title: this.msg('chargeRate'),
     dataIndex: 'rate',
+    width: 100,
   }, {
     title: this.msg('chargeAmount'),
     dataIndex: 'amount',
+    width: 240,
   }, {
     title: this.msg('chargeFee'),
     dataIndex: 'fee',
+    width: 180,
   }]
   assembleChargeItems(charge, outDs) {
     const { intl } = this.props;
@@ -128,34 +136,34 @@ export default class ChargePanel extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-          <Card bodyStyle={{ padding: 16 }}>
-            <Row>
-              <Col span="8">
-                <h5>营收</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
-                  intl.formatNumber(revenue.toFixed(2), { style: 'currency', currency: 'cny' })
-                }</div>
-              </Col>
-              <Col span="8">
-                <h5>成本</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
-                  intl.formatNumber(expense.toFixed(2), { style: 'currency', currency: 'cny' })
-                }</div>
-              </Col>
-              <Col span="8">
-                <h5>利润</h5>
-                <div style={{ color: profitColor, fontSize: '18px' }}>{
-                  intl.formatNumber(profit.toFixed(2), { style: 'currency', currency: 'cny' })
-                }</div>
-              </Col>
-            </Row>
-          </Card>
-          <Card bodyStyle={{ padding: 0 }}>
-            <Table size="small" columns={this.revenueColumns} pagination={false} dataSource={revenueds} />
-          </Card>
-          <Card bodyStyle={{ padding: 0 }}>
-            <Table size="small" columns={this.expenseColumns} pagination={false} dataSource={expenseds} />
-          </Card>
+        <Card bodyStyle={{ padding: 16 }}>
+          <Row>
+            <Col span="8">
+              <h5>营收</h5>
+              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                intl.formatNumber(revenue.toFixed(2), { style: 'currency', currency: 'cny' })
+              }</div>
+            </Col>
+            <Col span="8">
+              <h5>成本</h5>
+              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                intl.formatNumber(expense.toFixed(2), { style: 'currency', currency: 'cny' })
+              }</div>
+            </Col>
+            <Col span="8">
+              <h5>利润</h5>
+              <div style={{ color: profitColor, fontSize: '18px' }}>{
+                intl.formatNumber(profit.toFixed(2), { style: 'currency', currency: 'cny' })
+              }</div>
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Table size="small" columns={this.revenueColumns} pagination={false} dataSource={revenueds} />
+        </Card>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Table size="small" columns={this.expenseColumns} pagination={false} dataSource={expenseds} />
+        </Card>
       </div>
     );
   }

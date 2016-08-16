@@ -42,7 +42,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    width: 140,
+    width: 120,
     render: (o) => <TrimSpan text={o} />,
   }, {
     title: msg('departurePlace'),
@@ -61,29 +61,29 @@ export default function makeColumns(type, handlers, msg) {
       if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.undelivered) {
         if (record.sp_tenant_id === -1) {
           return (
-            <PickupDeliverUpdaterPopover
-              type="pickup"
-              shipmtNo={record.shipmt_no}
-              dispId={record.disp_id}
-              onOK={handlers.onTableLoad}
-            >
-            {msg('updatePickup')}
-            </PickupDeliverUpdaterPopover>
-          );
-        } else if (record.sp_tenant_id === 0) {
-          // 已分配给车队
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            // 线下司机
-            return (
               <PickupDeliverUpdaterPopover
                 type="pickup"
                 shipmtNo={record.shipmt_no}
                 dispId={record.disp_id}
                 onOK={handlers.onTableLoad}
               >
-              {msg('updatePickup')}
-            </PickupDeliverUpdaterPopover>
+              <Icon type="edit" />{msg('updatePickup')}
+              </PickupDeliverUpdaterPopover>
             );
+        } else if (record.sp_tenant_id === 0) {
+            // 已分配给车队
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+              // 线下司机
+            return (
+                <PickupDeliverUpdaterPopover
+                  type="pickup"
+                  shipmtNo={record.shipmt_no}
+                  dispId={record.disp_id}
+                  onOK={handlers.onTableLoad}
+                >
+                <Icon type="edit" />{msg('updatePickup')}
+              </PickupDeliverUpdaterPopover>
+              );
           }
         }
       } else {
@@ -107,27 +107,27 @@ export default function makeColumns(type, handlers, msg) {
       if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (record.sp_tenant_id === -1) {
           return (
-            <PickupDeliverUpdaterPopover
-              type="deliver"
-              shipmtNo={record.shipmt_no}
-              dispId={record.disp_id}
-              onOK={handlers.onTableLoad}
-            >
-            {msg('updateDelivery')}
-            </PickupDeliverUpdaterPopover>
-          );
-        } else if (record.sp_tenant_id === 0) {
-          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            return (
               <PickupDeliverUpdaterPopover
                 type="deliver"
                 shipmtNo={record.shipmt_no}
                 dispId={record.disp_id}
                 onOK={handlers.onTableLoad}
               >
-              {msg('updateDelivery')}
+              <Icon type="edit" />{msg('updateDelivery')}
               </PickupDeliverUpdaterPopover>
             );
+        } else if (record.sp_tenant_id === 0) {
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            return (
+                <PickupDeliverUpdaterPopover
+                  type="deliver"
+                  shipmtNo={record.shipmt_no}
+                  dispId={record.disp_id}
+                  onOK={handlers.onTableLoad}
+                >
+                <Icon type="edit" />{msg('updateDelivery')}
+                </PickupDeliverUpdaterPopover>
+              );
           }
         }
       } else {
@@ -137,7 +137,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtStatus'),
     dataIndex: 'status',
-    width: 120,
+    width: 100,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
@@ -156,33 +156,12 @@ export default function makeColumns(type, handlers, msg) {
       }
     },
   }, {
-    title: msg('shipmtPrevTrack'),
-    width: 140,
-    render: (o, record) => {
-      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return `${msg('sendAction')}
-          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-        return `${msg('acceptAction')}
-          ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-        return `${msg('dispatchAction')}
-          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        return `${msg('pickupAction')}
-          ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
-      } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        return `${msg('deliverAction')}
-          ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
-      } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-        return `${msg('podUploadAction')}
-          ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
-      }
-    },
-  }, {
     title: msg('shipmtException'),
-    width: 80,
+    width: 130,
     dataIndex: 'excp_level',
+    render: () => {
+      return (<span></span>);
+    },
   }];
 
   columns.push({
@@ -193,20 +172,20 @@ export default function makeColumns(type, handlers, msg) {
       if (record.sp_name) {
         const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
         if (record.sp_tenant_id > 0) {
-          // todo pure css circle
+            // todo pure css circle
           return (
-            <span>
-              <i className="zmdi zmdi-circle mdc-text-green" />
-              {spSpan}
-            </span>
-          );
+              <span>
+                <i className="zmdi zmdi-circle mdc-text-green" />
+                {spSpan}
+              </span>
+            );
         } else if (record.sp_tenant_id === -1) {
           return (
-            <span>
-              <i className="zmdi zmdi-circle mdc-text-grey" />
-              {spSpan}
-            </span>
-          );
+              <span>
+                <i className="zmdi zmdi-circle mdc-text-grey" />
+                {spSpan}
+              </span>
+            );
         } else {
           return spSpan;
         }
@@ -218,6 +197,20 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
     width: 120,
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+        if (record.sp_tenant_id === -1) {
+            // 线下客户手动更新
+          return (
+              <RowUpdater label={msg('updateVehicleDriver')}
+                onAnchored={handlers.onShowVehicleModal} row={record}
+              />
+            );
+        }
+      } else {
+        return (<TrimSpan text={o} maxLen={14} />);
+      }
+    },
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
@@ -239,105 +232,35 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',
     width: 80,
-  }, {
-    title: msg('proofOfDelivery'),
-    dataIndex: 'pod_type',
-    width: 40,
-    render: (text, record) => {
-      if (record.pod_type === 'qrPOD') {
-        return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
-      } else if (record.pod_type === 'ePOD') {
-        return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
-      } else {
-        return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
-      }
-    },
   });
 
-  if (type !== 'pod') {
-    if (type === 'status') {
-      columns.push({
-        title: msg('shipmtNextUpdate'),
-        width: 140,
-        fixed: 'right',
-        render: (o, record) => {
-          if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-            return msg('carrierUpdate');
-          } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
-            if (record.sp_tenant_id === -1) {
-              // 线下客户手动更新
-              return (
-                <RowUpdater label={msg('updateVehicleDriver')}
-                  onAnchored={handlers.onShowVehicleModal} row={record}
-                />
-              );
-            } else {
-              return msg('carrierUpdate');
-            }
-          } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
-            if (record.sp_tenant_id === -1) {
-              return (
-                <RowUpdater label={msg('updatePickup')}
-                  onAnchored={handlers.onShowPickModal} row={record}
-                />
-              );
-            } else if (record.sp_tenant_id === 0) {
-              // 已分配给车队
-              if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                // 线下司机
-                return (
-                  <RowUpdater label={msg('updatePickup')}
-                    onAnchored={handlers.onShowPickModal} row={record}
-                  />
-                );
-              } else {
-                return msg('driverUpdate');
-              }
-            } else {
-              return msg('carrierUpdate');
-            }
-          } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-            if (record.sp_tenant_id === -1) {
-              return handlers.renderIntransitUpdater(record);
-            } else if (record.sp_tenant_id === 0) {
-              if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                return handlers.renderIntransitUpdater(record);
-              } else {
-                return msg('driverUpdate');
-              }
-            } else {
-              return msg('carrierUpdate');
-            }
-          } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-            if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
-              return <span />;
-            } else if (record.sp_tenant_id === -1) {
-              return (
-                <RowUpdater label={msg('submitPod')}
-                  onAnchored={handlers.onShowPodModal} row={record}
-                />
-              );
-            } else if (record.sp_tenant_id === 0) {
-              if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                return (
-                  <RowUpdater label={msg('submitPod')}
-                    onAnchored={handlers.onShowPodModal} row={record}
-                  />
-                );
-              } else {
-                return msg('driverUpdate');
-              }
-            } else {
-              return msg('carrierUpdate');
-            }
-          } else {
-            return msg('carrierUpdate');
-          }
-        },
-      });
-    }
-  } else {
+  if (type === 'pod') {
+    // 回单处理
     columns.push({
+      title: msg('proofOfDelivery'),
+      dataIndex: 'pod_type',
+      fixed: 'right',
+      width: 40,
+      render: (text, record) => {
+        if (record.pod_type === 'qrPOD') {
+          return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
+        } else if (record.pod_type === 'ePOD') {
+          return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
+        } else {
+          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
+        }
+      },
+    }, {
+      title: msg('podTime'),
+      fixed: 'right',
+      width: 110,
+      render: (o, record) => {
+        if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+          return `${msg('podUploadAction')}
+            ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
+        }
+      },
+    }, {
       title: msg('shipmtNextUpdate'),
       width: 140,
       fixed: 'right',
@@ -356,7 +279,7 @@ export default function makeColumns(type, handlers, msg) {
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           return (
-            <span><Icon type="meh" /> {msg('submitToUpper')}</span>
+            <span><Icon type="clock-circle-o" /> {msg('submitToUpper')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           return (
@@ -369,6 +292,123 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <span><Icon type="smile" /> {msg('acceptByUpper')}</span>
           );
+        }
+      },
+    });
+  } else if (type === 'status') {
+    columns.push({
+      title: msg('proofOfDelivery'),
+      dataIndex: 'pod_type',
+      width: 40,
+      render: (text, record) => {
+        if (record.pod_type === 'qrPOD') {
+          return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
+        } else if (record.pod_type === 'ePOD') {
+          return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
+        } else {
+          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
+        }
+      },
+    }, {
+      title: msg('shipmtPrevTrack'),
+      width: 110,
+      render: (o, record) => {
+        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+          return `${msg('sendAction')}
+            ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+          return `${msg('acceptAction')}
+            ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
+        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+          return `${msg('dispatchAction')}
+            ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+          return `${msg('pickupAction')}
+            ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+          return `${msg('deliverAction')}
+            ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
+        } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+          return `${msg('podUploadAction')}
+            ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
+        }
+      },
+    }, {
+      title: msg('shipmtNextUpdate'),
+      width: 140,
+      fixed: 'right',
+      render: (o, record) => {
+        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+          return msg('carrierUpdate');
+        } else if (record.status === SHIPMENT_TRACK_STATUS.undispatched) {
+          if (record.sp_tenant_id === -1) {
+              // 线下客户手动更新
+            return (
+                <RowUpdater label={msg('updateVehicleDriver')}
+                  onAnchored={handlers.onShowVehicleModal} row={record}
+                />
+              );
+          } else {
+            return msg('carrierUpdate');
+          }
+        } else if (record.status === SHIPMENT_TRACK_STATUS.undelivered) {
+          if (record.sp_tenant_id === -1) {
+            return (
+                <RowUpdater label={msg('updatePickup')}
+                  onAnchored={handlers.onShowPickModal} row={record}
+                />
+              );
+          } else if (record.sp_tenant_id === 0) {
+              // 已分配给车队
+            if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+                // 线下司机
+              return (
+                  <RowUpdater label={msg('updatePickup')}
+                    onAnchored={handlers.onShowPickModal} row={record}
+                  />
+                );
+            } else {
+              return msg('driverUpdate');
+            }
+          } else {
+            return msg('carrierUpdate');
+          }
+        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+          if (record.sp_tenant_id === -1) {
+            return handlers.renderIntransitUpdater(record);
+          } else if (record.sp_tenant_id === 0) {
+            if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+              return handlers.renderIntransitUpdater(record);
+            } else {
+              return msg('driverUpdate');
+            }
+          } else {
+            return msg('carrierUpdate');
+          }
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+          if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
+            return <span />;
+          } else if (record.sp_tenant_id === -1) {
+            return (
+                <RowUpdater label={msg('submitPod')}
+                  onAnchored={handlers.onShowPodModal} row={record}
+                />
+              );
+          } else if (record.sp_tenant_id === 0) {
+            if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+              return (
+                  <RowUpdater label={msg('submitPod')}
+                    onAnchored={handlers.onShowPodModal} row={record}
+                  />
+                );
+            } else {
+              return msg('driverUpdate');
+            }
+          } else {
+            return msg('carrierUpdate');
+          }
+        } else {
+          return msg('carrierUpdate');
         }
       },
     });

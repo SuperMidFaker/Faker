@@ -81,9 +81,17 @@ export default defineMessages({
     id: 'transport.shipment.pickup.date',
     defaultMessage: '提货日期',
   },
+  pickupEstDate: {
+    id: 'transport.shipment.pickup.est.date',
+    defaultMessage: '预计提货日期',
+  },
   pickupDateMust: {
     id: 'transport.shipment.pickup.date.must',
     defaultMessage: '提货日期必填',
+  },
+  shipmtSchedule: {
+    id: 'transport.shipment.schedule',
+    defaultMessage: '运输计划',
   },
   shipmtTransit: {
     id: 'transport.shipment.transit.time',
@@ -99,7 +107,11 @@ export default defineMessages({
   },
   deliveryDate: {
     id: 'transport.shipment.delivery.date',
-    defaultMessage: '预计交货',
+    defaultMessage: '交货日期',
+  },
+  deliveryEstDate: {
+    id: 'transport.shipment.delivery.est.date',
+    defaultMessage: '预计交货日期',
   },
   deliveryDateMust: {
     id: 'transport.shipment.delivery.date.must',
@@ -307,19 +319,43 @@ export default defineMessages({
   },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',
-    defaultMessage: '详情',
+    defaultMessage: '运单',
   },
   shipmtDynamic: {
     id: 'transport.shipment.tab.dynamic',
     defaultMessage: '动态',
   },
-  shipmtOperations: {
-    id: 'transport.shipment.tab.operations',
-    defaultMessage: '操作',
+  shipmtEvents: {
+    id: 'transport.shipment.tab.events',
+    defaultMessage: '事件',
+  },
+  shipmtLogs: {
+    id: 'transport.shipment.tab.logs',
+    defaultMessage: '日志',
   },
   shipmtCharge: {
     id: 'transport.shipment.tab.charge',
-    defaultMessage: '运费',
+    defaultMessage: '费用',
+  },
+  shipmtETD: {
+    id: 'transport.shipment.pane.detail.etd',
+    defaultMessage: '预计提货日期',
+  },
+  shipmtETA: {
+    id: 'transport.shipment.pane.detail.eta',
+    defaultMessage: '预计交货日期',
+  },
+  trackingAll: {
+    id: 'transport.shipment.pane.tracking.all',
+    defaultMessage: '全部',
+  },
+  trackingProgress: {
+    id: 'transport.shipment.pane.tracking.progress',
+    defaultMessage: '进度',
+  },
+  trackingException: {
+    id: 'transport.shipment.pane.tracking.exception',
+    defaultMessage: '异常',
   },
   trackingPoistionTitle: {
     id: 'transport.shipment.pane.tracking.position.title',
@@ -400,5 +436,13 @@ export default defineMessages({
   computeCharge: {
     id: 'transport.acceptance.compute.charge',
     defaultMessage: '计算运费',
+  },
+  btnTextOk: {
+    id: 'transport.dispatch.btn.text.ok',
+    defaultMessage: '确定',
+  },
+  btnTextCancel: {
+    id: 'transport.dispatch.btn.text.cancel',
+    defaultMessage: '取消',
   },
 });

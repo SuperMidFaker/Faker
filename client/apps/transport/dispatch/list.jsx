@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Icon, message, Select, Modal, Alert, Tooltip } from 'antd';
+import { Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -16,7 +16,8 @@ import { loadTable,
          loadShipmtsGrouped,
          loadShipmtsGroupedSub,
          loadSegRq,
-         removeGroupedSubShipmt } from 'common/reducers/transportDispatch';
+         removeGroupedSubShipmt,
+         changeDockStatus } from 'common/reducers/transportDispatch';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -31,6 +32,7 @@ import { renderConsignLoc } from '../common/consignLocation';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 
@@ -66,6 +68,10 @@ function fetch({ state, dispatch, cookie }) {
     dispatched: state.transportDispatch.dispatched,
     expandList: state.transportDispatch.expandList,
     cond: state.transportDispatch.cond,
+    dispDockShow: state.transportDispatch.dispDockShow,
+    segDockShow: state.transportDispatch.segDockShow,
+    shipmts: state.transportDispatch.shipmts,
+    loaded: state.transportDispatch.loaded,
   }),
   { loadTable,
     doReturn,
@@ -76,7 +82,8 @@ function fetch({ state, dispatch, cookie }) {
     loadShipmtsGrouped,
     loadShipmtsGroupedSub,
     removeGroupedSubShipmt,
-    loadShipmtDetail })
+    loadShipmtDetail,
+    changeDockStatus })
 export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -98,19 +105,26 @@ export default class DispatchList extends React.Component {
     expandList: PropTypes.object.isRequired,
     cond: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
+    changeDockStatus: PropTypes.func.isRequired,
+    dispDockShow: PropTypes.bool.isRequired,
+    segDockShow: PropTypes.bool.isRequired,
+    shipmts: PropTypes.array.isRequired,
+    loaded: PropTypes.bool.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    show: false,
-    sshow: false,
-    shipmts: [],
     panelHeader: [],
   }
 
   componentDidMount() {
     this.handleStatusChange({ target: { value: 'waiting' } });
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.loaded === false) {
+      const { filters } = this.props;
+      this.handleStatusChange({ target: { value: filters.status } });
+    }
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTable(null, params),
     resolve: result => result.data,
@@ -139,15 +153,15 @@ export default class DispatchList extends React.Component {
   commonCols = [{
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80,
+    width: 40,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80,
+    width: 60,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80,
+    width: 60,
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
@@ -156,17 +170,17 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsigner'),
     dataIndex: 'consigner_name',
-    width: 190,
-    render: (o) => <TrimSpan text={o} />,
+    width: 120,
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignerPlace'),
-    width: 190,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />,
+    width: 120,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
-    width: 210,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    width: 140,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -175,17 +189,17 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 190,
-    render: (o) => <TrimSpan text={o} />,
+    width: 120,
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 190,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />,
+    width: 120,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 210,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    width: 140,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }];
   buildCols(sub) {
     const { status, origin } = this.props.filters;
@@ -225,7 +239,7 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
-        width: 230,
+        width: 200,
         render: (o) => <TrimSpan text={o} maxLen={15} />,
       }, {
         title: this.msg('shipMode'),
@@ -256,7 +270,7 @@ export default class DispatchList extends React.Component {
                   {this.msg('btnTextSegmentCancel')}
                   </a></span>);
             } else {
-              return (<span className="na-operation">NA</span>);
+              return (<span></span>);
             }
           }
           return (
@@ -276,7 +290,32 @@ export default class DispatchList extends React.Component {
       cols.push({
         title: this.msg('shipSp'),
         dataIndex: 'sp_name',
-        width: 220,
+        width: 180,
+        render: (o, record) => {
+          if (record.sp_name) {
+            const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
+            if (record.sp_tenant_id > 0) {
+          // todo pure css circle
+              return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-green" />
+              {spSpan}
+            </span>
+          );
+            } else if (record.sp_tenant_id === -1) {
+              return (
+            <span>
+              <i className="zmdi zmdi-circle mdc-text-grey" />
+              {spSpan}
+            </span>
+          );
+            } else {
+              return spSpan;
+            }
+          } else {
+            return this.msg('ownFleet');
+          }
+        },
       }, {
         title: this.msg('shipVehicle'),
         dataIndex: 'task_vehicle',
@@ -287,7 +326,8 @@ export default class DispatchList extends React.Component {
       if (s === 'dispatched') {
         timetitle = this.msg('shipSendTime');
       }
-      cols.push({
+      cols.push(
+        /* {
         title: this.msg('shipPod'),
         dataIndex: 'pod_type',
         width: 40,
@@ -310,25 +350,26 @@ export default class DispatchList extends React.Component {
             return (<span>{text}</span>);
           }
         },
-      }, {
-        title: timetitle,
-        dataIndex: 'disp_time',
-        width: 100,
-        render: (text, record) => (record.disp_time ?
+      }, */
+        {
+          title: timetitle,
+          dataIndex: 'disp_time',
+          width: 100,
+          render: (text, record) => (record.disp_time ?
          moment(record.disp_time).format('MM-DD HH:mm') : ' '),
-      }, {
-        title: this.msg('shipmtOP'),
-        width: 100,
-        fixed: fixedRight,
-        render: (o, record) => {
-          if (s === 'dispatched') {
-            if (record.disp_status === 2) {
-              return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
+        }, {
+          title: this.msg('shipmtOP'),
+          width: 100,
+          fixed: fixedRight,
+          render: (o, record) => {
+            if (s === 'dispatched') {
+              if (record.disp_status === 2) {
+                return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
                       {this.msg('btnTextReturn')}</a></span>);
+              }
+              return (<span></span>);
             }
-            return (<span className="na-operation">NA</span>);
-          }
-          return (
+            return (
             <span>
               <a role="button" onClick={(ev) => this.handleShipmtSend(record, ev)}>
               {this.msg('btnTextSend')}
@@ -339,8 +380,8 @@ export default class DispatchList extends React.Component {
               </a>
             </span>
           );
-        },
-      });
+          },
+        });
     }
 
     return cols;
@@ -405,7 +446,7 @@ export default class DispatchList extends React.Component {
   }
 
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp').then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -454,26 +495,26 @@ export default class DispatchList extends React.Component {
     } else if (origin) {
       panelHeader.push((<span className="ant-divider" style={{ width: '0px' }} />),
       (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>));
-    } else {
-      if (status === 'waiting') {
-        panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
+    } else if (status === 'waiting') {
+      panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
         (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>));
-      } else if (status === 'dispatched') {
-        panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
-          <Option value="0">最近七天</Option>
-          <Option value="1">最近一月</Option>
-        </Select>),
+    } else if (status === 'dispatched') {
+      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
+        <Option value="0">最近七天</Option>
+        <Option value="1">最近一月</Option>
+      </Select>),
         (<Button onClick={this.handleExportDispShipmts} icon="export"><span>{this.msg('btnTextExport')}</span></Button>));
-      }
     }
 
-    this.setState({ panelHeader, show: false, sshow: false, shipmts: [], selectedRowKeys: [] });
+    this.setState({ panelHeader, selectedRowKeys: [] });
+    this.props.changeDockStatus({ dispDockShow: false, segDockShow: false, shipmts: [] });
   }
 
   handleDispatchDockShow(shipmt, ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.setState({ show: true, shipmts: [shipmt], selectedRowKeys: [shipmt.key] });
+    this.setState({ selectedRowKeys: [shipmt.key] });
+    this.props.changeDockStatus({ dispDockShow: true, shipmts: [shipmt] });
   }
 
   handleBatchDockShow(type) {
@@ -486,9 +527,9 @@ export default class DispatchList extends React.Component {
       }
     });
     if (type === 'dispatch') {
-      this.setState({ show: true, shipmts });
+      this.props.changeDockStatus({ dispDockShow: true, shipmts });
     } else {
-      this.setState({ sshow: true, shipmts });
+      this.props.changeDockStatus({ segDockShow: true, shipmts });
     }
   }
 
@@ -496,21 +537,24 @@ export default class DispatchList extends React.Component {
     if (typeof reload === 'boolean') {
       this.handleStatusChange({ target: { value: 'waiting' } });
     } else {
-      this.setState({ show: false, shipmts: [], selectedRowKeys: [] });
+      this.setState({ selectedRowKeys: [] });
+      this.props.changeDockStatus({ dispDockShow: false, shipmts: [] });
     }
   }
 
   handleSegmentDockShow(shipmt, ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.setState({ sshow: true, shipmts: [shipmt], selectedRowKeys: [shipmt.key] });
+    this.setState({ selectedRowKeys: [shipmt.key] });
+    this.props.changeDockStatus({ segDockShow: true, shipmts: [shipmt] });
   }
 
   handleSegmentDockClose = (reload) => {
     if (typeof reload === 'boolean') {
       this.handleStatusChange({ target: { value: 'waiting' } });
     } else {
-      this.setState({ sshow: false, shipmts: [], selectedRowKeys: [] });
+      this.setState({ selectedRowKeys: [] });
+      this.props.changeDockStatus({ segDockShow: false, shipmts: [] });
     }
   }
 
@@ -819,11 +863,11 @@ export default class DispatchList extends React.Component {
         if (result.error) {
           message.error(result.error.message, 5);
         } else {
-          this.setState({ show: true, shipmts: result.data });
+          this.props.changeDockStatus({ dispDockShow: true, shipmts: result.data });
         }
       });
     } else {
-      this.setState({ show: true, shipmts: this.props.expandList[row.key] });
+      this.props.changeDockStatus({ dispDockShow: true, shipmts: this.props.expandList[row.key] });
     }
   }
 
@@ -841,11 +885,11 @@ export default class DispatchList extends React.Component {
         if (result.error) {
           message.error(result.error.message, 5);
         } else {
-          this.setState({ sshow: true, shipmts: result.data });
+          this.props.changeDockStatus({ segDockShow: true, shipmts: result.data });
         }
       });
     } else {
-      this.setState({ sshow: true, shipmts: this.props.expandList[row.key] });
+      this.props.changeDockStatus({ segDockShow: true, shipmts: this.props.expandList[row.key] });
     }
   }
 
@@ -884,17 +928,17 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 2420/* , y: 460 */ }}
+      dataSource={this.dataSource} scroll={{ x: 1900 }}
     />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2420/* , y: 460 */ }}
+        dataSource={this.dataSource} scroll={{ x: 1900 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 1900/* , y: 460 */ }}
+        dataSource={this.dataSource} scroll={{ x: 1900 }}
       />);
     }
 
@@ -944,15 +988,15 @@ export default class DispatchList extends React.Component {
         </div>
         <PreviewPanel stage="dispatch" />
         <DispatchDock key="dispDock"
-          show={this.state.show}
-          shipmts={this.state.shipmts}
+          show={this.props.dispDockShow}
+          shipmts={this.props.shipmts}
           msg={this.msgWrapper}
           onClose={this.handleDispatchDockClose}
         />
 
         <SegmentDock key="segDock"
-          show={this.state.sshow}
-          shipmts={this.state.shipmts}
+          show={this.props.segDockShow}
+          shipmts={this.props.shipmts}
           msg={this.msgWrapper}
           onClose={this.handleSegmentDockClose}
         />

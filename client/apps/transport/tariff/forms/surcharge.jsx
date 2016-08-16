@@ -59,18 +59,18 @@ export default class SurchargeForm extends React.Component {
   }
 
   handleSave = () => {
-      const formdata = {
-        ...this.props.formdata,
-        ...this.props.formhoc.getFieldsValue(),
-      };
-     const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
-     prom.then(result => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-        }
-      });
+    const formdata = {
+      ...this.props.formdata,
+      ...this.props.formhoc.getFieldsValue(),
+    };
+    const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
+    prom.then(result => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+      }
+    });
   }
 
   renderInput(selected, field, initialMode, initialValue) {
@@ -78,7 +78,7 @@ export default class SurchargeForm extends React.Component {
     return (
       <Form horizontal>
        <Row>
-         <Col span={12}>
+         <Col span={16}>
             <FormItem hasFeedback>
               <RadioGroup {...getFieldProps(selected, initialMode)}>
                 <RadioButton value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</RadioButton>
@@ -86,7 +86,7 @@ export default class SurchargeForm extends React.Component {
               </RadioGroup>
             </FormItem>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <FormItem>
             <Input addonAfter="元" placeholder="请输入金额" {
                 ...getFieldProps(field, initialValue)
@@ -102,22 +102,19 @@ export default class SurchargeForm extends React.Component {
     const { formhoc: { getFieldProps }, formdata } = this.props;
     const { disabled1, disabled2 } = this.state;
     return (
-      <div className="main-content">
-        <div className="page-body" style={{ padding: '24px' }}>
+        <div className="panel-body" style={{ padding: '0 16px' }}>
           <Row>
-            <Col span={7}>
+            <Col span={8} style={{ padding: '0 16px 0 0' }}>
               <Card title="提货费">
                 {this.renderInput('pickup.mode', 'pickup.value', { initialValue: formdata.pickup.mode }, { initialValue: formdata.pickup.value })}
               </Card>
             </Col>
-
-            <Col span={7} offset={1}>
+            <Col span={8} style={{ padding: '0 16px 0 0' }}>
               <Card title="配送费">
                 {this.renderInput('delivery.mode', 'delivery.value', { initialValue: formdata.delivery.mode }, { initialValue: formdata.delivery.value })}
               </Card>
             </Col>
-
-            <Col span={7} offset={1}>
+            <Col span={8}>
               <Card title="其他费用一"
                 extra={
                   <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
@@ -130,7 +127,7 @@ export default class SurchargeForm extends React.Component {
               >
                 <Form horizontal>
                   <Row>
-                    <Col span={12}>
+                    <Col span={16}>
                       <FormItem hasFeedback>
                         <RadioGroup disabled={disabled1} {...getFieldProps('other1.mode', { initialValue: formdata.other1.mode })}>
                           <RadioButton value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</RadioButton>
@@ -138,7 +135,7 @@ export default class SurchargeForm extends React.Component {
                         </RadioGroup>
                       </FormItem>
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                       <FormItem>
                       <Input disabled={disabled1} type="number" addonAfter="元" placeholder="请输入金额" {
                           ...getFieldProps('other1.value', { initialValue: formdata.other1.value })
@@ -151,18 +148,17 @@ export default class SurchargeForm extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col span={7}>
+            <Col span={8} style={{ padding: '0 16px 0 0' }}>
               <Card title="装货费">
                 {this.renderInput('load.mode', 'load.value', { initialValue: formdata.load.mode }, { initialValue: formdata.load.value })}
               </Card>
             </Col>
-            <Col span={7} offset={1}>
+            <Col span={8} style={{ padding: '0 16px 0 0' }}>
               <Card title="卸货费">
                 {this.renderInput('unload.mode', 'unload.value', { initialValue: formdata.unload.mode }, { initialValue: formdata.unload.value })}
               </Card>
             </Col>
-
-            <Col span={7} offset={1}>
+            <Col span={8}>
               <Card title="其他费用二"
                 extra={
                   <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
@@ -175,7 +171,7 @@ export default class SurchargeForm extends React.Component {
               >
                 <Form>
                   <Row>
-                    <Col span={12}>
+                    <Col span={16}>
                       <FormItem hasFeedback>
                         <RadioGroup disabled={disabled2} {...getFieldProps('other2.mode', { initialValue: formdata.other2.mode })}>
                           <RadioButton value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</RadioButton>
@@ -183,7 +179,7 @@ export default class SurchargeForm extends React.Component {
                         </RadioGroup>
                       </FormItem>
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                       <FormItem>
                       <Input disabled={disabled2} type="number" addonAfter="元" placeholder="请输入金额" {
                           ...getFieldProps('other2.value', { initialValue: formdata.other2.value })
@@ -195,9 +191,8 @@ export default class SurchargeForm extends React.Component {
               </Card>
             </Col>
           </Row>
-
           <Row>
-            <Col span={7}>
+            <Col span={8} style={{ padding: '0 16px 0 0' }}>
               <Card title="价格调整系数">
                 <Form>
                   <FormItem>
@@ -210,11 +205,11 @@ export default class SurchargeForm extends React.Component {
                 </Form>
               </Card>
             </Col>
-            <Col span={7} offset={1}>
+            <Col span={8} style={{ padding: '0 16px 0 0' }}>
               <Card title="税率">
                 <Form>
                   <Row>
-                    <Col span={12}>
+                    <Col span={16}>
                       <FormItem>
                         <RadioGroup {...getFieldProps('taxrate.mode', { initialValue: formdata.taxrate.mode })} >
                           <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
@@ -222,7 +217,7 @@ export default class SurchargeForm extends React.Component {
                         </RadioGroup>
                       </FormItem>
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                       <FormItem>
                         <Input type="number" addonAfter="％" placeholder="请输入税率" {
                           ...getFieldProps('taxrate.value', { initialValue: formdata.taxrate.value })
@@ -240,7 +235,6 @@ export default class SurchargeForm extends React.Component {
             </FormItem>
           </Row>
         </div>
-      </div>
     );
   }
 }

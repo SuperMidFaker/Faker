@@ -105,6 +105,7 @@ export default class AgreementForm extends React.Component {
           forms.loginName = loginName;
           promise = this.props.updateAgreement(forms);
         } else {
+          forms.id = tariffId;
           forms.tenantId = tenantId;
           forms.loginId = loginId;
           promise = this.props.submitAgreement(forms);
@@ -124,39 +125,33 @@ export default class AgreementForm extends React.Component {
     const kind = TARIFF_KINDS[value];
     if (kind.isBase) {
       this.setState({ partnerVisible: false });
-    } else {
-      if (kind.value === 'sales') {
-        this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
-          .then(result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.setState({ partnerVisible: true });
-            }
-          });
-      } else if (kind.value === 'cost') {
-        this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation)
-          .then(result => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.setState({ partnerVisible: true });
-            }
-          });
-      }
+    } else if (kind.value === 'sales') {
+      this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
+        .then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.setState({ partnerVisible: true });
+          }
+        });
+    } else if (kind.value === 'cost') {
+      this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation)
+        .then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.setState({ partnerVisible: true });
+          }
+        });
     }
   }
   handleModeSelect = (value) => {
-    if (value === PRESET_TRANSMODES.ltl) {
-      this.setState({ transMode: 'ltl' });
-    } else if (value === PRESET_TRANSMODES.ftl) {
+    if (value === PRESET_TRANSMODES.ftl) {
       this.setState({ transMode: 'ftl' });
     } else if (value === PRESET_TRANSMODES.ctn) {
       this.setState({ transMode: 'ctn' });
-    } else if (value === PRESET_TRANSMODES.exp) {
-      this.setState({ transMode: 'ltl' });
     } else {
-      this.setState({ transMode: '' });
+      this.setState({ transMode: 'ltl' });
     }
   }
   render() {
@@ -190,7 +185,7 @@ export default class AgreementForm extends React.Component {
                     ...getFieldProps('name', {
                       initialValue: formData.name,
                       rules: [{ required: true, message: '名称必填' }],
-                  })} />
+                    })} />
                 </FormItem>
               </Col>
             </Row>

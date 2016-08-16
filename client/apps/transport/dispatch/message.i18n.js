@@ -105,6 +105,10 @@ export default defineMessages({
     id: 'transport.dispatch.shipment.sendtime',
     defaultMessage: '发送时间',
   },
+  ownFleet: {
+    id: 'transport.dispatch.own.fleet',
+    defaultMessage: '我的车队',
+  },
   filterProvince: {
     id: 'transport.dispatch.filter.province',
     defaultMessage: '省',

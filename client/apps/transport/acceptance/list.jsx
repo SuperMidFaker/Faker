@@ -147,12 +147,12 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    width: 240,
+    width: 200,
     render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    width: 190,
+    width: 120,
     render: (o) => <TrimSpan text={o} />,
   }, {
     title: this.msg('shipMode'),
@@ -176,47 +176,47 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    width: 200,
-    render: (o) => <TrimSpan text={o} />,
+    width: 120,
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignorPlace'),
-    width: 200,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} />,
+    width: 120,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    width: 220,
-    render: (o) => <TrimSpan text={o} />,
+    width: 140,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    width: 200,
-    render: (o) => <TrimSpan text={o} />,
+    width: 120,
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 200,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} />,
+    width: 120,
+    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    width: 220,
-    render: (o) => <TrimSpan text={o} />,
+    width: 140,
+    render: (o) => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 80,
+    width: 40,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 80,
+    width: 60,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 80,
+    width: 60,
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
-    width: 50,
+    width: 40,
     render: (o, record) => {
       if (record.source === SHIPMENT_SOURCE.consigned) {
         return this.msg('consginSource');
@@ -316,7 +316,7 @@ export default class AcceptList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp').then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -355,7 +355,7 @@ export default class AcceptList extends React.Component {
         width: 150,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-            return (<span className="na-operation">NA</span>);
+            return (<span></span>);
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
@@ -441,7 +441,7 @@ export default class AcceptList extends React.Component {
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2800/* , y: 460 */ }}
+              dataSource={this.dataSource} scroll={{ x: 2280 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

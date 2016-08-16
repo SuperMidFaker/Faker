@@ -1,10 +1,10 @@
+import moment from 'moment';
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
-import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
@@ -46,12 +46,11 @@ const initialState = {
   previewer: {
     visible: false,
     tabKey: null,
+    row: {},
     shipmt: {
       goodslist: [],
     },
     tracking: {
-    },
-    dispatch: {
     },
     charges: {
     },
@@ -127,6 +126,7 @@ export default function reducer(state = initialState, action) {
         pod: action.result.data.pod,
         visible: true,
         tabKey: action.tabKey,
+        row: action.row,
       } };
     }
     case actionTypes.HIDE_PREVIWER: {
@@ -242,7 +242,7 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
+export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row) {
   return {
     [CLIENT_API]: {
       types: [
@@ -254,6 +254,7 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
       method: 'get',
       params: { shipmtNo, tenantId, sourceType },
       tabKey,
+      row,
     },
   };
 }
