@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, Calendar, Card, Form, Modal, Row, Col } from 'antd';
+import { Alert, Button, Calendar, Card, Modal, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
@@ -20,9 +20,6 @@ const formatMsg = format(messages);
   }),
   { closeDateModal, savePickOrDeliverDate }
 )
-@Form.create({
-  formPropName: 'formhoc',
-})
 export default class ExcpEventsModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -30,7 +27,6 @@ export default class ExcpEventsModal extends React.Component {
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    formhoc: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
     savePickOrDeliverDate: PropTypes.func.isRequired,
@@ -40,7 +36,6 @@ export default class ExcpEventsModal extends React.Component {
   }
   handleCancel = () => {
     this.props.closeDateModal();
-    this.props.formhoc.resetFields();
   }
   render() {
     return (

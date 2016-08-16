@@ -12,6 +12,9 @@ const OptGroup = Select.OptGroup;
 const formatMsg = format(messages);
 
 function getRegionProps(nextRegion) {
+  if (!nextRegion) {
+    return [];
+  }
   const [province, city, district, street] = nextRegion;
   const items = [];
   if (province) {
