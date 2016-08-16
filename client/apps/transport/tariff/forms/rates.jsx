@@ -1,21 +1,27 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Col, Button } from 'antd';
+import { Card, Col, Button, Upload, Modal, Progress } from 'antd';
 import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
+import { loadRateEnds } from 'common/reducers/transportTariff';
 
 @connect(
   state => ({
     rateId: state.transportTariff.rateId,
-  })
+  }),
+  { loadRateEnds }
 )
 export default class TariffRatesForm extends React.Component {
   static propTypes = {
     rateId: PropTypes.string,
+    loadRateEnds: PropTypes.func.isRequired,
   }
   state = {
     sourceModal: false,
     endModal: false,
+    uploadChangeCount: 0,
+    inUpload: false,
+    uploadPercent: 10,
   }
   handleSourceAdd = () => {
     this.setState({ sourceModal: true });
@@ -30,8 +36,26 @@ export default class TariffRatesForm extends React.Component {
       this.setState({ endModal: visible });
     }
   }
+  handleImport = (info) => {
+    console.log(info);
+    if (this.state.uploadChangeCount === 0) {
+      this.state.uploadChangeCount++;
+      this.setState({ inUpload: true });
+    } else if (info.event) {
+      this.state.uploadChangeCount++;
+      this.setState({ uploadPercent: info.event.percent });
+    } else if (info.file.status === 'done') {
+      this.setState({ inUpload: false });
+      this.state.uploadChangeCount = 0;
+      this.props.loadRateEnds({
+        rateId: this.props.rateId,
+        pageSize: 10,
+        current: 1,
+      });
+    }
+  }
   render() {
-    const { sourceModal, endModal } = this.state;
+    const { sourceModal, endModal, inUpload, uploadPercent } = this.state;
     return (
       <div className="panel-body">
         <Col sm={6} style={{ padding: '0 8px 0px 16px' }}>
@@ -48,12 +72,20 @@ export default class TariffRatesForm extends React.Component {
         </Col>
         <Col sm={18} style={{ padding: '0 16px 0px 8px' }}>
           <Card bodyStyle={{ padding: 0 }}>
-            <div style={{ padding: '8px 8px' }}>
+            <div style={{ padding: 8 }}>
               <Button size="small" icon="plus-circle-o"
                 onClick={this.handleEndAdd} disabled={!this.props.rateId}
               >
                 添加
               </Button>
+              <span style={{ marginLeft: 8 }}>
+                <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
+                  data={{ rateId: this.props.rateId }} onChange={this.handleImport}
+                  showUploadList={false} withCredentials
+                >
+                  <Button size="small" icon="upload" type="ghost">导入费率表</Button>
+                </Upload>
+              </span>
             </div>
             {
               this.props.rateId &&
@@ -61,6 +93,11 @@ export default class TariffRatesForm extends React.Component {
             }
           </Card>
         </Col>
+        <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
+          <Progress type="circle" percent={uploadPercent}
+            style={{ display: 'block', margin: '0 auto', width: '40%' }}
+          />
+        </Modal>
       </div>
     );
   }

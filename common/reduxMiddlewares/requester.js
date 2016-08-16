@@ -34,11 +34,6 @@ function apiRequestPromise(initialReq) {
         if (option && option.data) {
           request.send(option.data);
         }
-        /*
-        if (option && option.cookie) {
-          request.set('cookie', option.cookie);
-        }
-        */
         if (initialReq) {
           request.set('cookie', initialReq.get('cookie'));
         }

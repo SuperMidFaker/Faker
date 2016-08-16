@@ -68,9 +68,12 @@ export function ConfirmDel(props) {
   function handleConfirm() {
     onConfirm(row);
   }
+  function handleClick(ev) {
+    ev.stopPropagation();
+  }
   return (
     <Popconfirm title="确认删除?" onConfirm={handleConfirm}>
-     <a role="button">{text}</a>
+      <a role="button" onClick={handleClick}>{text}</a>
     </Popconfirm>
   );
 }
