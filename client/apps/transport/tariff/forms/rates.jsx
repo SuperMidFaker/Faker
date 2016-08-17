@@ -22,6 +22,7 @@ export default class TariffRatesForm extends React.Component {
     uploadChangeCount: 0,
     inUpload: false,
     uploadPercent: 10,
+    uploadStatus: 'active',
   }
   handleSourceAdd = () => {
     this.setState({ sourceModal: true });
@@ -39,22 +40,25 @@ export default class TariffRatesForm extends React.Component {
   handleImport = (info) => {
     if (this.state.uploadChangeCount === 0) {
       this.state.uploadChangeCount++;
-      this.setState({ inUpload: true });
+      this.setState({ inUpload: true, uploadStatus: 'active' });
     } else if (info.event) {
       this.state.uploadChangeCount++;
       this.setState({ uploadPercent: info.event.percent });
     } else if (info.file.status === 'done') {
-      this.setState({ inUpload: false });
+      this.setState({ inUpload: false, uploadStatus: 'success' });
       this.state.uploadChangeCount = 0;
       this.props.loadRateEnds({
         rateId: this.props.rateId,
         pageSize: 10,
         current: 1,
       });
+    } else if (info.file.status === 'error') {
+      this.setState({ inUpload: false, uploadStatus: 'exception' });
+      this.state.uploadChangeCount = 0;
     }
   }
   render() {
-    const { sourceModal, endModal, inUpload, uploadPercent } = this.state;
+    const { sourceModal, endModal, inUpload, uploadPercent, uploadStatus } = this.state;
     return (
       <div className="panel-body">
         <Col sm={6} style={{ padding: '0 8px 0px 16px' }}>
@@ -93,7 +97,7 @@ export default class TariffRatesForm extends React.Component {
           </Card>
         </Col>
         <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
-          <Progress type="circle" percent={uploadPercent}
+          <Progress type="circle" percent={uploadPercent} status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}
           />
         </Modal>
