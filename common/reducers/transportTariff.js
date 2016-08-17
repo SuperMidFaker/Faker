@@ -192,7 +192,7 @@ export function loadTable(params) {
   };
 }
 
-export function loadTariff(tariffId) {
+export function loadTariff({ tariffId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -202,7 +202,7 @@ export function loadTariff(tariffId) {
       ],
       endpoint: 'v1/transport/tariff',
       method: 'get',
-      params: { tariffId },
+      params: { tariffId, tenantId },
       origin: 'mongo',
     },
   };
