@@ -22,10 +22,10 @@ function getTrackStatusMsg(status, eff) {
     msg = 'trackNullified';
   } else if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
     msg = 'trackUnaccept';
-  } else if (status === SHIPMENT_TRACK_STATUS.undispatched) {
-    msg = 'trackUndispatched';
-  } else if (status === SHIPMENT_TRACK_STATUS.undelivered) {
-    msg = 'trackUndelivered';
+  } else if (status === SHIPMENT_TRACK_STATUS.accepted) {
+    msg = 'trackAccepted';
+  } else if (status === SHIPMENT_TRACK_STATUS.dispatched) {
+    msg = 'trackDispatched';
   } else if (status === SHIPMENT_TRACK_STATUS.intransit) {
     msg = 'trackIntransit';
   } else if (status === SHIPMENT_TRACK_STATUS.delivered) {
@@ -119,7 +119,7 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('trackPod')} key="pod">
             <PodPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtLogs')} key="events">
+          <TabPane tab={this.msg('shipmtEvents')} key="events">
             <TrackingPane />
           </TabPane>
         </Tabs>
@@ -139,9 +139,6 @@ export default class PreviewPanel extends React.Component {
         </Tabs>
       );
     }
-  }
-  renderButtons() {
-    return (<div></div>);
   }
   render() {
     const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;

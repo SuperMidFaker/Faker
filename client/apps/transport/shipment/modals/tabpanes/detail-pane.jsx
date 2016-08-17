@@ -103,6 +103,16 @@ export default class PreviewPanel extends React.Component {
                 field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
               />
             </Col>
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
+                field={shipmt.ref_waybill_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="12">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
+                field={shipmt.ref_entry_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
           </Panel>
           <Panel header={`${this.msg('shipmtSchedule')}  ${shipmt.transit_time || '当'}${this.msg('day')}`} key="trans_schedule">
             <Timeline>
@@ -111,6 +121,9 @@ export default class PreviewPanel extends React.Component {
                 <p><strong>{shipmt.consigner_name || ''}</strong></p>
                 <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
                 <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
+              </Timeline.Item>
+              <Timeline.Item color="blue" dot={<Icon type="retweet" style={{ fontSize: '16px' }} />}>
+                <p>中转地</p>
               </Timeline.Item>
               <Timeline.Item color="green" dot={<Icon type="circle-o-down" style={{ fontSize: '16px' }} />}>
                 <p><strong>{this.msg('deliveryEstDate')} {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}</strong></p>
@@ -149,12 +162,17 @@ export default class PreviewPanel extends React.Component {
             }
           </Panel>
           <Panel header={`${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`} key="cargo">
-            <Col span="12">
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
                 field={shipmt.goods_type} fieldCol={{ span: 16 }}
               />
             </Col>
-            <Col span="12">
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
+                field={shipmt.package} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
                 field={shipmt.insure_value} fieldCol={{ span: 16 }}
               />

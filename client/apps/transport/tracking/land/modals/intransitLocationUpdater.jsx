@@ -10,7 +10,6 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 @injectIntl
 @connect(
@@ -50,10 +49,6 @@ export default class LocationUpdater extends React.Component {
       street,
     });
   }
-  disabledDateRange = (current) => {
-    return current && (new Date(this.props.transit.pickup_act_date).getTime() - current.getTime() > ONE_DAY_MS
-      || Date.now() - current.getTime() > ONE_DAY_MS || Date.now() < current.getTime());
-  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleCancel = () => {
     this.props.closeLocModal();
@@ -87,7 +82,7 @@ export default class LocationUpdater extends React.Component {
       <Modal title={this.msg('reportTransitLoc')} onCancel={this.handleCancel}
         onOk={this.handleOk} visible={this.props.visible}
       >
-        <Form form={this.props.form} horizontal>
+        <Form horizontal>
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportTime')}
             wrapperCol={{ span: 18 }} required
           >
@@ -97,7 +92,7 @@ export default class LocationUpdater extends React.Component {
                   type: 'date',
                   required: true, message: this.msg('reportTimeMust'),
                 }],
-              })} disabledDate={this.disabledDateRange}
+              })}
             />
           </FormItem>
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportPosition')}

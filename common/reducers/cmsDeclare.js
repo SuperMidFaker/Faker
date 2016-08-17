@@ -48,7 +48,7 @@ const initialState = {
   entries: [
   ],
   params: {
-    forwarders: [],
+    trades: [],
     owners: [],
     agents: [],
     customs: [],
