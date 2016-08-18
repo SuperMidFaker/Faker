@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/exception/', [
   'LOAD_EXCPSHIPMT', 'LOAD_EXCPSHIPMT_FAIL', 'LOAD_EXCPSHIPMT_SUCCEED',
-  'CHANGE_FILTER',
+  'CHANGE_FILTER', 'SHOW_EXCPMODAL',
 ]);
 
 const initialState = {
@@ -18,6 +18,11 @@ const initialState = {
     pageSize: 10,
     current: 1,
     data: [],
+  },
+  excpModal: {
+    visible: false,
+    dispId: -1,
+    shipmtNo: '',
   },
 };
 
@@ -38,6 +43,8 @@ export default function reducer(state = initialState, action) {
       filters.push({ name: action.data.field, value: action.data.value });
       return { ...state, filters };
     }
+    case actionTypes.SHOW_EXCPMODAL:
+      return { ...state, excpModal: action.data };
     default:
       return state;
   }
@@ -65,3 +72,18 @@ export function changeExcpFilter(field, value) {
     data: { field, value },
   };
 }
+
+export function showExcpModal(dispId, shipmtNo) {
+  return {
+    type: actionTypes.SHOW_EXCPMODAL,
+    data: { visible: true, dispId, shipmtNo },
+  };
+}
+
+export function hideExcpModal() {
+  return {
+    type: actionTypes.SHOW_EXCPMODAL,
+    data: { visible: false, dispId: -1, shipmtNo: '' },
+  };
+}
+

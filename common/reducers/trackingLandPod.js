@@ -11,7 +11,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/pod/', 
 ]);
 
 const initialState = {
-  loaded: false,
+  loaded: true,
   loading: false,
   filters: [
     { name: 'type', value: 'uploaded' },
@@ -69,6 +69,10 @@ export default function reducer(state = initialState, action) {
       filters.push({ name: action.data.field, value: action.data.value });
       return { ...state, filters };
     }
+    case actionTypes.AUDIT_POD_SUCCEED:
+      return { ...state, loaded: false };
+    case actionTypes.RETURN_POD_SUCCEED:
+      return { ...state, loaded: false };
     default:
       return state;
   }

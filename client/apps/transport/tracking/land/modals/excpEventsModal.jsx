@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Alert, Button, Calendar, Card, Modal, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
+import { hideExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -13,12 +13,11 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    visible: state.trackingLandStatus.dateModal.visible,
-    type: state.trackingLandStatus.dateModal.type,
-    dispId: state.trackingLandStatus.dateModal.dispId,
-    shipmtNo: state.trackingLandStatus.dateModal.shipmtNo,
+    visible: state.trackingLandException.excpModal.visible,
+    dispId: state.trackingLandException.excpModal.dispId,
+    shipmtNo: state.trackingLandException.excpModal.shipmtNo,
   }),
-  { closeDateModal, savePickOrDeliverDate }
+  { hideExcpModal }
 )
 export default class ExcpEventsModal extends React.Component {
   static propTypes = {
@@ -26,26 +25,24 @@ export default class ExcpEventsModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    onOK: PropTypes.func,
-    closeDateModal: PropTypes.func.isRequired,
-    savePickOrDeliverDate: PropTypes.func.isRequired,
+    hideExcpModal: PropTypes.func.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
   }
   handleCancel = () => {
-    this.props.closeDateModal();
+    this.props.hideExcpModal();
   }
   render() {
+    const { shipmtNo, dispId } = this.props;
     return (
-      <Modal title={this.msg('trackingEventsModalTitle')} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal title={`${this.msg('trackingEventsModalTitle')} ${shipmtNo}`} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} width="80%" maskClosable={false}
       >
         <Row>
           <Col span="8" style={{ paddingRight: 16 }}>
             <Card bodyStyle={{ padding: 0 }}>
-              <Calendar fullscreen={false} />
+              <Calendar fullscreen />
             </Card>
           </Col>
           <Col span="16">

@@ -216,7 +216,7 @@ const TRACKING_POINT_FROM_TYPE = {
 };
 
 const SHIPMENT_POD_STATUS = {
-  unrequired: 0,
+  unsubmit: 0,
   pending: 1,
   rejectByUs: -1,
   acceptByUs: 2,

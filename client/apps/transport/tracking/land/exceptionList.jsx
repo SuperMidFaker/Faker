@@ -6,10 +6,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadExcpShipments } from 'common/reducers/trackingLandException';
+import { loadExcpShipments, showExcpModal } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import RowUpdater from './rowUpdater';
 import PreviewPanel from '../../shipment/modals/preview-panel';
+import ExcpEventsModal from './modals/excpEventsModal';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -43,7 +44,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandException.filters,
     loading: state.trackingLandException.loading,
   }),
-  { loadExcpShipments, loadShipmtDetail })
+  { loadExcpShipments, loadShipmtDetail, showExcpModal })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -57,6 +58,7 @@ export default class LandStatusList extends React.Component {
     shipmentlist: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadExcpShipments: PropTypes.func.isRequired,
+    showExcpModal: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -127,7 +129,7 @@ export default class LandStatusList extends React.Component {
     render: (o, record) => {
       return (
         <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
-          row={record.shipmt_no}
+          row={record}
         />);
     },
   }, {
@@ -312,8 +314,8 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShipmtPreview(row) {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then(result => {
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'events', row).then(result => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -328,6 +330,11 @@ export default class LandStatusList extends React.Component {
       });
     }
     return merged;
+  }
+  handleShowExcpModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.showExcpModal(row.disp_id, row.shipmt_no);
   }
 
   render() {
@@ -352,6 +359,7 @@ export default class LandStatusList extends React.Component {
           </div>
         </div>
         <PreviewPanel stage="exception" />
+        <ExcpEventsModal />
       </div>
     );
   }

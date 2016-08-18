@@ -104,8 +104,8 @@ export default class TrackingLandWrapper extends React.Component {
           </RadioGroup>
           <span />
           <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
-            <RadioButton value="uploaded">{this.msg('uploadedPOD')}</RadioButton>
-            <RadioButton value="submitted">{this.msg('submittedPOD')}</RadioButton>
+            <RadioButton value="upload">{this.msg('uploadPOD')}</RadioButton>
+            <RadioButton value="audit">{this.msg('auditPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
           <span />

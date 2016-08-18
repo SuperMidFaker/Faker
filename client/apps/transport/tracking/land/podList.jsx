@@ -7,8 +7,10 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadPodTable, loadPod, showAuditModal, resubmitPod } from
   'common/reducers/trackingLandPod';
+import { showPodModal } from 'common/reducers/trackingLandStatus';
 import PodAuditModal from './modals/pod-audit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
+import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -41,8 +43,9 @@ function fetchData({ state, dispatch, params, cookie }) {
     shipmentlist: state.trackingLandPod.shipmentlist,
     filters: state.trackingLandPod.filters,
     loading: state.trackingLandPod.loading,
+    loaded: state.trackingLandPod.loaded,
   }),
-  { loadPodTable, loadShipmtDetail, loadPod, showAuditModal, resubmitPod })
+  { loadPodTable, loadShipmtDetail, loadPod, showAuditModal, resubmitPod, showPodModal })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -53,12 +56,14 @@ export default class LandStatusList extends React.Component {
     sortOrder: PropTypes.string.isRequired,
    */
     loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     loadPod: PropTypes.func.isRequired,
     showAuditModal: PropTypes.func.isRequired,
     resubmitPod: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired,
+    showPodModal: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -66,6 +71,7 @@ export default class LandStatusList extends React.Component {
       onShipmtPreview: this.handleShipmtPreview,
       onShowAuditModal: this.handleShowAuditModal,
       onResubmit: this.handleResubmit,
+      onShowPodModal: this.handleShowPodModal,
     }, this.msg);
   }
   state = {
@@ -103,6 +109,9 @@ export default class LandStatusList extends React.Component {
            sortOrder: state.transportTracking.transit.sortOrder,
            */
       });
+    }
+    if (!nextProps.loaded) {
+      this.handleTableLoad();
     }
   }
   dataSource = new Table.DataSource({
@@ -157,6 +166,11 @@ export default class LandStatusList extends React.Component {
   }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  handleShowPodModal = (row, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowAuditModal = (row, ev) => {
     ev.preventDefault();
@@ -220,7 +234,8 @@ export default class LandStatusList extends React.Component {
           </div>
         </div>
         <PreviewPanel stage="pod" />
-        <PodAuditModal onOK={this.handleTableLoad} />
+        <PodAuditModal />
+        <PodModal onOK={this.handleTableLoad} />
       </div>
     );
   }

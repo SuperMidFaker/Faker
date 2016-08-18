@@ -236,7 +236,7 @@ export function reportLoc(tenantId, shipmtNo, parentNo, point) {
   };
 }
 
-export function saveSubmitPod(shipmtNo, dispId, parentDispId,
+export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
                               submitter, signStatus, signRemark, photos) {
   return {
     [CLIENT_API]: {
@@ -247,7 +247,7 @@ export function saveSubmitPod(shipmtNo, dispId, parentDispId,
       ],
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
-      data: { shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
+      data: { userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
     },
   };
 }

@@ -25,6 +25,10 @@ export default defineMessages({
     id: 'transport.tracking.shipmt.pod.time',
     defaultMessage: '回单时间',
   },
+  podStatus: {
+    id: 'transport.tracking.shipmt.pod.status',
+    defaultMessage: '回单状态',
+  },
   shipmtNextUpdate: {
     id: 'transport.tracking.shipmt.next.update',
     defaultMessage: '操作',
@@ -185,17 +189,21 @@ export default defineMessages({
     id: 'transport.tracking.proof.delivery',
     defaultMessage: '回单',
   },
-  uploadedPOD: {
-    id: 'transport.tracking.uploaded.pod',
+  uploadPOD: {
+    id: 'transport.tracking.pod.upload',
+    defaultMessage: '回单待处理',
+  },
+  auditPOD: {
+    id: 'transport.tracking.pod.audit',
     defaultMessage: '回单待审核',
   },
-  submittedPOD: {
-    id: 'transport.tracking.submitted.pod',
-    defaultMessage: '回单已提交',
-  },
   passedPOD: {
-    id: 'transport.tracking.passed.pod',
+    id: 'transport.tracking.pod.passed',
     defaultMessage: '回单已接受',
+  },
+  nonePOD: {
+    id: 'transport.tracking.pod.none',
+    defaultMessage: '不需回单',
   },
   exceptionWarn: {
     id: 'transport.tracking.exception.warning',
@@ -368,5 +376,9 @@ export default defineMessages({
   exportExcel: {
     id: 'transport.tracking.pod.modal.export.exportExcel',
     defaultMessage: '导出Excel',
+  },
+  exportPDF: {
+    id: 'transport.tracking.pod.modal.export.exportPDF',
+    defaultMessage: '导出PDF',
   },
 });

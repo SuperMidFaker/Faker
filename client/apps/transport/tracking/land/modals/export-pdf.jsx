@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Button, DatePicker, Modal } from 'antd';
+import { Form, Checkbox, Modal } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import moment from 'moment';
 import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const RangePicker = DatePicker.RangePicker;
+const CheckboxGroup = Checkbox.Group;
 const startDate = new Date();
 startDate.setDate(1);
 
@@ -19,23 +18,29 @@ startDate.setDate(1);
     tenantId: state.account.tenantId,
   }),
   { })
-export default class ExportExcel extends React.Component {
+export default class ExportPDF extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    visible: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
+    dispId: PropTypes.number.isRequired,
   }
   state = {
     visible: false,
-    startDate: `${moment(startDate).format('YYYY-MM-DD')} 00:00:00`,
-    endDate: `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`,
+    checkedValues: ['detail'],
   }
-  showModal = () => {
+  componentWillReceiveProps(nextProps) {
     this.setState({
-      visible: true,
+      visible: nextProps.visible || this.state.visible,
     });
   }
+  onChange = (checkedValues) => {
+    this.setState({ checkedValues });
+  }
   handleOk = () => {
-    window.open(`${API_ROOTS.default}v1/transport/tracking/export/${createFilename('tracking')}.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
+    const { shipmtNo, dispId } = this.props;
+    window.open(`${API_ROOTS.default}v1/transport/tracking/export/${createFilename('tracking')}.pdf?tenantId=${this.props.tenantId}&shipmtNo=${shipmtNo}&dispId=${dispId}`);
     this.handleClose();
   }
   handleClose = () => {
@@ -43,30 +48,30 @@ export default class ExportExcel extends React.Component {
       visible: false,
     });
   }
-  handleRangeChange = (value, dateString) => {
-    this.setState({
-      startDate: `${dateString[0]} 00:00:00`,
-      endDate: `${dateString[1]} 23:59:59`,
-    });
-  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
 
   render() {
+    const { shipmtNo } = this.props;
+    const options = [
+      { label: '运单', value: 'detail', disabled: true },
+      { label: '费用', value: 'charge' },
+      { label: '回单', value: 'pod' },
+      { label: '时间', value: 'events' },
+    ];
     return (
       <span>
-        <Button size="large" icon="export" onClick={this.showModal}>{this.msg('export')}</Button>
-        <Modal title={this.msg('exportExcel')}
+        <Modal title={`${this.msg('exportPDF')} ${shipmtNo}`}
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleClose}
         >
           <Form horizontal>
             <FormItem
-              label="创建时间"
+              label="类型"
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
-              <RangePicker style={{ width: 184 }} defaultValue={[moment(this.state.startDate).format('YYYY-MM-DD'), moment(this.state.endDate).format('YYYY-MM-DD')]} onChange={this.handleRangeChange} />
+              <CheckboxGroup options={options} defaultValue={this.state.checkedValues} onChange={this.onChange} />
             </FormItem>
           </Form>
         </Modal>

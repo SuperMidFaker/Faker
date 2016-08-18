@@ -23,7 +23,6 @@ export default class PodAuditModal extends React.Component {
     intl: intlShape.isRequired,
     auditor: PropTypes.string.isRequired,
     auditModal: PropTypes.object.isRequired,
-    onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
     returnAudit: PropTypes.func.isRequired,
     passAudit: PropTypes.func.isRequired,
@@ -80,30 +79,28 @@ export default class PodAuditModal extends React.Component {
   }
   handleAuditPass = () => {
     /*
-    const { auditor, dispId, onOK } = this.props;
+    const { auditor, dispId } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
    */
-    const { auditModal: { dispId, parentDispId, podId }, auditor, tenantId, loginId, onOK } = this.props;
+    const { auditModal: { dispId, parentDispId, podId }, auditor, tenantId, loginId } = this.props;
     this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
         } else {
           this.props.closePodModal();
-          onOK();
         }
       });
   }
   handleAuditReturn = () => {
-    const { auditModal: { dispId }, onOK } = this.props;
+    const { auditModal: { dispId } } = this.props;
     this.props.returnAudit(dispId).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
         } else {
           this.props.closePodModal();
-          onOK();
         }
       });
   }

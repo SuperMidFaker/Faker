@@ -106,8 +106,8 @@ export default class PreviewPanel extends React.Component {
     }, 500);
   }
   renderTabs() {
-    const shipmt = this.props.previewer.shipmt;
-    if (shipmt.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+    const row = this.props.previewer.row;
+    if (row.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
         <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">

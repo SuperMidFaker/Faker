@@ -245,11 +245,69 @@ export default function makeColumns(type, handlers, msg) {
         }
       },
     }, {
+      title: msg('podStatus'),
+      fixed: 'right',
+      width: 100,
+      render: (o, record) => {
+        if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+          return '未上传';
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
+          return '已上传';
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
+          return '我方拒绝';
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
+          return '我方接受';
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
+          return '客户拒绝';
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
+          return '客户接受';
+        }
+      },
+    }, {
       title: msg('shipmtNextUpdate'),
       width: 140,
       fixed: 'right',
       render: (o, record) => {
-        if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
+        if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+          if (record.sp_tenant_id === -1) {
+            return (
+              <RowUpdater label={msg('submitPod')}
+                onAnchored={handlers.onShowPodModal} row={record}
+              />
+            );
+          } else if (record.sp_tenant_id === 0) {
+            if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+              return (
+                <RowUpdater label={msg('submitPod')}
+                  onAnchored={handlers.onShowPodModal} row={record}
+                />
+              );
+            } else {
+              // 司机上传
+              return (
+                <RowUpdater label="催促回单"
+                  onAnchored={() => {}} row={record}
+                />
+              );
+            }
+          } else {
+            // 承运商上传
+            return (
+              <RowUpdater label="催促回单"
+                onAnchored={() => {}} row={record}
+              />
+            );
+          }
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
+          // 重新上传
+          return (
+            <div><Icon type="frown" /> <RowUpdater label={msg('resubmitPod')}
+              onAnchored={handlers.onResubmit} row={record}
+            />
+            </div>
+          );
+        } else if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
+          // 审核回单
           return (
             <div>
             <RowUpdater label={msg('auditPod')}
@@ -258,21 +316,17 @@ export default function makeColumns(type, handlers, msg) {
             </div>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
+          // 我方拒绝
           return (
             <span><Icon type="frown" /> {msg('rejectByUs')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
+          // 提交给上游客户
           return (
             <span><Icon type="clock-circle-o" /> {msg('submitToUpper')}</span>
           );
-        } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
-          return (
-            <div><Icon type="frown" /> <RowUpdater label={msg('resubmitPod')}
-              onAnchored={handlers.onResubmit} row={record}
-            />
-            </div>
-          );
         } else {
+          // 上游客户已接受
           return (
             <span><Icon type="smile" /> {msg('acceptByUpper')}</span>
           );
@@ -358,7 +412,7 @@ export default function makeColumns(type, handlers, msg) {
               */
           return (
                 <RowUpdater label={msg('updateEvents')}
-                  onAnchored={handlers.onShowPickModal} row={record}
+                  onAnchored={handlers.onShowExcpModal} row={record}
                 />
               );
             /*
@@ -373,13 +427,13 @@ export default function makeColumns(type, handlers, msg) {
           } else {
             return (
                 <RowUpdater label={msg('updateEvents')}
-                  onAnchored={handlers.onShowPickModal} row={record}
+                  onAnchored={handlers.onShowExcpModal} row={record}
                 />
               );
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          if (record.pod_status === SHIPMENT_POD_STATUS.unrequired) {
-            return <span />;
+          if (record.pod_type === 'none') {
+            return msg('nonePOD');
           } else if (record.sp_tenant_id === -1) {
             return (
                 <RowUpdater label={msg('submitPod')}
@@ -397,7 +451,7 @@ export default function makeColumns(type, handlers, msg) {
           } else {
             return (
                 <RowUpdater label={msg('updateEvents')}
-                  onAnchored={handlers.onShowPickModal} row={record}
+                  onAnchored={handlers.onShowExcpModal} row={record}
                 />
               );
           }

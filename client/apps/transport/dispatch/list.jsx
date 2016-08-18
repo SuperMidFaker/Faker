@@ -29,6 +29,7 @@ import ShipmtnoColumn from '../common/shipmtnoColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../common/consignLocation';
+import RevokejectModal from '../shipment/modals/revoke-reject';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -120,7 +121,7 @@ export default class DispatchList extends React.Component {
     this.handleStatusChange({ target: { value: 'waiting' } });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.loaded === false) {
+    if (!nextProps.loaded) {
       const { filters } = this.props;
       this.handleStatusChange({ target: { value: filters.status } });
     }
@@ -458,6 +459,24 @@ export default class DispatchList extends React.Component {
     const tmp = Object.assign({}, filters);
     tmp.status = ev.target.value;
     tmp.origin = 0;
+
+    this.props.loadTable(null, {
+      tenantId,
+      filters: JSON.stringify(tmp),
+      pageSize: shipmentlist.pageSize,
+      current: 1,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.handlePanelHeaderChange();
+      }
+    });
+  }
+
+  handleTableLoad = () => {
+    const { shipmentlist, tenantId, filters } = this.props;
+    const tmp = Object.assign({}, filters);
 
     this.props.loadTable(null, {
       tenantId,
@@ -1000,6 +1019,7 @@ export default class DispatchList extends React.Component {
           msg={this.msgWrapper}
           onClose={this.handleSegmentDockClose}
         />
+        <RevokejectModal reload={this.handleTableLoad} />
       </div>
     );
   }

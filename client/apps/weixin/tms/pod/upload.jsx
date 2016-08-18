@@ -66,7 +66,7 @@ export default class UploadPod extends React.Component {
     const { shipmtNo, submitter, dispId, parentDispId } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
-    this.props.saveSubmitPod(shipmtNo, dispId, parentDispId, submitter,
+    this.props.saveSubmitPod('enterprise', shipmtNo, dispId, parentDispId, submitter,
                              signStatus, remark, photos).then(
       result => {
         if (result.error) {

@@ -84,7 +84,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_VEHICLES_SUCCEED:
       return { ...state, vehicles: action.result.data, vehicleLoaded: true };
     case actionTypes.DO_DISPATCH_SUCCEED:
-      return { ...state, dispatched: true };
+      return { ...state, dispatched: true, loaded: false };
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
       return { ...state, nodeLocations: action.result.data.nodeLocations,
       transitModes: action.result.data.transitModes,
@@ -136,8 +136,6 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.CHANGE_DOCK_STATUS:
       return { ...state, ...action.data };
-    case actionTypes.DO_DISPATCH_SUCCEED:
-      return { ...state, loaded: false };
     case actionTypes.DO_SEND_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.DO_RETURN_SUCCEED:

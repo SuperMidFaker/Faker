@@ -44,9 +44,6 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       }
     });
   }
-  componentWillUnmount() {
-    window.$(document).unbind('click');
-  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     this.props.formhoc.validateFields(errors => {
@@ -105,16 +102,16 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       </Form>
     );
     return (
-      <Popover title={title}
+      <Popover title={`${title} ${shipmtNo}`}
         placement="rightTop"
         trigger="click"
         content={content}
         visible={this.state.visible}
-        onClick={this.handleShowPopover}
       >
         <a className={`pickupDeliver${shipmtNo}`} onClick={ev => {
           ev.preventDefault();
           ev.stopPropagation();
+          this.handleShowPopover();
         }}>{this.props.children}</a>
       </Popover>
     );
