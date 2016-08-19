@@ -282,7 +282,7 @@ export function CountryAttr(props) {
   const departCountryProps = {
     outercol: 12,
     col: 8,
-    field: 'dep_dest_country',
+    field: 'dept_dest_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
