@@ -68,9 +68,6 @@ export default class ShareShipmentModal extends React.Component {
       tel: shipmt.consignee_mobile,
     });
   }
-  componentWillUnmount() {
-    document.removeEventListener('copy');
-  }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleClose = () => {
     this.props.hidePreviewer();
