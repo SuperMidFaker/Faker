@@ -102,8 +102,11 @@ export default class DispatchDock extends Component {
       width: 120,
       render: (o, record, index) => {
         if (o) {
-          if (o.freight < 0) {
-            return <InputNumber min={1} onChange={(value) => this.handleChargeChange({ total_charge: value }, index)} />;
+          if (o.manual) {
+            return (
+              <InputNumber min={1} onChange={(value) =>
+                this.handleChargeChange({ ...o, total_charge: value }, index)} />
+            );
           } else {
             return (
               <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
@@ -231,7 +234,7 @@ export default class DispatchDock extends Component {
           const result = results[index];
           if (result.error || result.data.freight < 0) {
             lspsVar = update(lspsVar, { data: {
-              [index]: { charge: { $set: { freight: -1 } } } } });
+              [index]: { charge: { $set: { manual: true } } } } });
           } else {
             const { freight, pickup, deliver, meter, quantity,
               unitRatio, gradient, miles, coefficient } = result.data;
