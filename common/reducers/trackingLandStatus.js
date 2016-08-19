@@ -57,17 +57,17 @@ const initialState = {
   locReportedShipments: [],
 };
 
-export const LOAD_TRANSHIPMT_SUCCEED = actionTypes.LOAD_TRANSHIPMT_SUCCEED;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_TRANSHIPMT:
-      return { ...state, loading: true };
+      return { ...state, loading: true,
+        filters: JSON.parse(action.params.filters),
+      };
     case actionTypes.LOAD_TRANSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-        filters: JSON.parse(action.params.filters),
     };
     case actionTypes.SHOW_VEHICLE_MODAL:
       return { ...state,

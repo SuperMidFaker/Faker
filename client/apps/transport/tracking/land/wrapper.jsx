@@ -53,6 +53,46 @@ export default class TrackingLandWrapper extends React.Component {
   }
   state = {
     searchInput: '',
+    radioValue: '',
+  }
+  componentWillMount() {
+    const locName = this.props.location.pathname.split('/')[4];
+    let propFilters = [];
+    if (locName === 'status') {
+      propFilters = this.props.statusfilters;
+    } else if (locName === 'pod') {
+      propFilters = this.props.podfilters;
+    } else if (locName === 'exception') {
+      propFilters = this.props.excpfilters;
+    }
+    let radioValue;
+    let searchInput;
+    const types = propFilters.filter(flt => flt.name === 'type');
+    if (types.length === 1) {
+      radioValue = types[0].value;
+    }
+    const nos = propFilters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ radioValue, searchInput });
+  }
+  componentWillReceiveProps(nextProps) {
+    const locName = nextProps.location.pathname.split('/')[4];
+    let propFilters = [];
+    if (locName === 'status') {
+      propFilters = nextProps.statusfilters;
+    } else if (locName === 'pod') {
+      propFilters = nextProps.podfilters;
+    } else if (locName === 'exception') {
+      propFilters = nextProps.excpfilters;
+    }
+    let radioValue;
+    const types = propFilters.filter(flt => flt.name === 'type');
+    if (types.length === 1) {
+      radioValue = types[0].value;
+    }
+    this.setState({ radioValue });
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
@@ -77,20 +117,7 @@ export default class TrackingLandWrapper extends React.Component {
     this.props.changeExcpFilter('shipmt_no', value);
   }
   render() {
-    const locName = this.props.location.pathname.split('/')[4];
-    let propFilters = [];
-    if (locName === 'status') {
-      propFilters = this.props.statusfilters;
-    } else if (locName === 'pod') {
-      propFilters = this.props.podfilters;
-    } else if (locName === 'exception') {
-      propFilters = this.props.excpfilters;
-    }
-    let radioValue;
-    const types = propFilters.filter(flt => flt.name === 'type');
-    if (types.length === 1) {
-      radioValue = types[0].value;
-    }
+    const { radioValue, searchInput } = this.state;
     return (
       <div className="main-content">
         <div className="page-header">
@@ -114,7 +141,7 @@ export default class TrackingLandWrapper extends React.Component {
           </RadioGroup>
           <span />
           <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-            value={this.state.searchInput}
+            value={searchInput}
           />
           <div className="tools">
             <ExportExcel />
