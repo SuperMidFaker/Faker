@@ -1,6 +1,6 @@
 export function renderLoc(shipmt, provinceFd, cityFd, countyFd) {
   const names = [];
-  if (shipmt[cityFd] && (shipmt[cityFd] === '市辖区' || shipmt[cityFd] === '县')) {
+  if (shipmt[cityFd] && (shipmt[cityFd] === '市辖区' || shipmt[cityFd] === '县') || shipmt[cityFd] === '省直辖县市') {
     if (shipmt[provinceFd]) {
       names.push(shipmt[provinceFd]);
     }
@@ -8,7 +8,7 @@ export function renderLoc(shipmt, provinceFd, cityFd, countyFd) {
       names.push(shipmt[countyFd]);
     }
     return names.join('-');
-  } else if (shipmt[countyFd] && (shipmt[countyFd] === '市辖区' || shipmt[countyFd] === '县')) {
+  } else if (shipmt[countyFd] && (shipmt[countyFd] === '市辖区' || shipmt[countyFd] === '县' || shipmt[cityFd] === '省直辖县市')) {
     return shipmt[cityFd] || '';
   } else {
     if (shipmt[cityFd]) {
@@ -30,9 +30,9 @@ export function renderCity(shipmt, field) {
   const provinceFd = `${field}_province`;
   const cityFd = `${field}_city`;
   const countyFd = `${field}_district`;
-  if (shipmt[cityFd] && (shipmt[cityFd] === '市辖区' || shipmt[cityFd] === '县')) {
+  if (shipmt[cityFd] && (shipmt[cityFd] === '市辖区' || shipmt[cityFd] === '县' || shipmt[cityFd] === '省直辖县市')) {
     return shipmt[provinceFd].replace(/市/, '');
-  } else if (shipmt[countyFd] && (shipmt[countyFd] === '市辖区' || shipmt[countyFd] === '县')) {
+  } else if (shipmt[countyFd] && (shipmt[countyFd] === '市辖区' || shipmt[countyFd] === '县' || shipmt[cityFd] === '省直辖县市')) {
     return shipmt[cityFd].replace(/市/, '') || '';
   } else if (shipmt[cityFd]) {
     return shipmt[cityFd].replace(/市/, '') || '';
