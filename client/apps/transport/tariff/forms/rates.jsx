@@ -40,7 +40,7 @@ export default class TariffRatesForm extends React.Component {
   handleImport = (info) => {
     if (this.state.uploadChangeCount === 0) {
       this.state.uploadChangeCount++;
-      this.setState({ inUpload: true, uploadStatus: 'active' });
+      this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
     } else if (info.event) {
       this.state.uploadChangeCount++;
       this.setState({ uploadPercent: info.event.percent });

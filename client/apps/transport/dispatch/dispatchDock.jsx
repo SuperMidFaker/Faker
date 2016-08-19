@@ -408,6 +408,8 @@ export default class DispatchDock extends Component {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
+      } else if (result.data.freight === -2) {
+        message.error('未找到对应路线的价格表');
       } else {
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
