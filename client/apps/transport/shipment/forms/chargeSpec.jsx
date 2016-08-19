@@ -89,7 +89,7 @@ export default class ChargeSpecForm extends React.Component {
         >
           <Input addonAfter={this.msg('CNY')} readOnly value={charge.deliver_charge} />
         </FormItem>
-        <FormItem label={this.msg('surcharge')} labelCol={{ span: 4 }}
+        <FormItem label={this.msg('surcharge')} labelCol={{ span }}
           wrapperCol={{ span: 24 - span }}
         >
           <Input addonAfter={this.msg('CNY')} value={charge.surcharge}
