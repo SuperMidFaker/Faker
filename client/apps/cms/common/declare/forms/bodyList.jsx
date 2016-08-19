@@ -121,7 +121,7 @@ export default class BodyTable extends React.Component {
     const totalCount = bodies.length;
     const columns = [{
       title: this.msg('seqNumber'),
-      dataIndex: 'list_g_no',
+      dataIndex: 'g_no',
       width: 40,
     }];
     if (type === 'bill') {
@@ -194,21 +194,21 @@ export default class BodyTable extends React.Component {
       title: this.msg('quantity'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="qty" inEdit={index === editIndex} record={record}
+        <ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('unit'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="unit" inEdit={index === editIndex} record={record}
+        <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: ietype === 'import' ? this.msg('icountry') : this.msg('ecountry'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="country_code" inEdit={index === editIndex} record={record}
+        <ColumnSelect field="orig_dest_country" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={countries} edit={editBody}
         />,
     }, {
@@ -222,21 +222,21 @@ export default class BodyTable extends React.Component {
       title: this.msg('decTotal'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="dec_total" inEdit={index === editIndex} record={record}
+        <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('currency'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="curr" inEdit={index === editIndex} record={record}
+        <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
         />,
     }, {
       title: this.msg('exemptionWay'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="rm_mode" inEdit={index === editIndex} record={record}
+        <ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={exemptions} edit={editBody}
         />,
     }, {

@@ -117,8 +117,8 @@ export default class FreightCharge extends React.Component {
     const { formhoc } = this.props;
     const { checkPickup, checkDeliver } = this.state;
     let total = formhoc.getFieldValue('freight_charge');
-    if (ev.target.value) {
-      total += parseInt(ev.target.value, 10);
+    if (ev.target.value && !isNaN(Number(ev.target.value))) {
+      total += Number(ev.target.value);
     }
     if (checkPickup) {
       total += formhoc.getFieldValue('pickup_charge');

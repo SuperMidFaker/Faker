@@ -47,12 +47,9 @@ export default class ChargeSpecForm extends React.Component {
     const { checkPickup, checkDeliver } = this.state;
     const { charge, index } = this.props;
     let total = charge.freight_charge;
-    let surcharge = charge.surcharge;
-    if (ev.target.value) {
-      surcharge = parseInt(ev.target.value, 10);
+    if (ev.target.value && !isNaN(Number(ev.target.value))) {
+      const surcharge = Number(ev.target.value);
       total += surcharge;
-    } else {
-      surcharge = null;
     }
     if (checkPickup) {
       total += charge.pickup_charge;
@@ -61,7 +58,7 @@ export default class ChargeSpecForm extends React.Component {
       total += charge.deliver_charge;
     }
     charge.total_charge = total;
-    charge.surcharge = surcharge;
+    charge.surcharge = ev.target.value;
     this.props.onChange(charge, index);
   }
   render() {
