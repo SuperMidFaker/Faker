@@ -102,14 +102,21 @@ export default class DispatchDock extends Component {
       width: 120,
       render: (o, record, index) => {
         if (o) {
-          return (
-            <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
-              <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
-            } placement="bottom"
-            >
-              <span>{o.total_charge}</span>
-            </Popover>
-          );
+          if (o.manual) {
+            return (
+              <InputNumber min={1} onChange={(value) =>
+                this.handleChargeChange({ ...o, total_charge: value }, index)} />
+            );
+          } else {
+            return (
+              <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
+                <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
+              } placement="bottom"
+              >
+                <span>{o.total_charge}</span>
+              </Popover>
+            );
+          }
         } else if (this.props.shipmts.length > 1) {
           return <InputNumber min={1} onChange={this.handleQuotationChange} />;
         } else {
@@ -119,21 +126,11 @@ export default class DispatchDock extends Component {
     }, {
       title: this.msg('shipmtOP'),
       width: 100,
-      render: (o, record, idx) => (
+      render: (o, record) => (
         <span>
           <a role="button" onClick={() => this.showConfirm('tenant', record)}>
           {this.msg('btnTextDispatch')}
           </a>
-          {
-            this.props.shipmts.length === 1 &&
-            <span className="ant-divider" />
-          }
-          {
-            this.props.shipmts.length === 1 && (
-            <RowClick row={record} text={this.msg('btnChargeCompute')}
-              index={idx} onHit={this.handleCostCompute}
-            />)
-          }
         </span>
       ),
     }];
@@ -199,7 +196,7 @@ export default class DispatchDock extends Component {
   }
 
   state = {
-    lspsVar: null,
+    lspsVar: { data: [] },
     quotation: 0,
     podType: 'ePOD', // none, qrPOD, ePOD
     carrierSearch: '',
@@ -208,8 +205,54 @@ export default class DispatchDock extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.lsps !== this.props.lsps) {
-      this.setState({ lspsVar: nextProps.lsps });
+    if (nextProps.shipmts.length === 1
+      && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
+      || nextProps.lsps.current !== this.state.lspsVar.current
+      || nextProps.lsps.data.length !== this.state.lspsVar.data.length
+      || nextProps.lsps.data !== this.state.lspsVar.data
+      || nextProps.shipmts[0] !== this.props.shipmts[0])) {
+      let lspsVar = { ...nextProps.lsps };
+      const {
+        consigner_region_code, consignee_region_code, transport_mode_code,
+        package: ctn, created_date: created, goods_type,
+        vehicle_type, vehicle_length, total_weight, total_volume,
+      } = nextProps.shipmts[0];
+      const promises = [];
+      for (let index = 0; index < lspsVar.data.length; index++) {
+        const row = lspsVar.data[index];
+        promises.push(
+          this.props.computeCostCharge({
+            tenant_id: this.props.tenantId, created_date: created,
+            partner_id: row.partner_id, consigner_region_code, consignee_region_code,
+            goods_type, trans_mode: transport_mode_code, ctn,
+            vehicle_type, vehicle_length, total_weight, total_volume,
+          })
+        );
+      }
+      Promise.all(promises).then(results => {
+        for (let index = 0; index < results.length; index++) {
+          const result = results[index];
+          if (result.error || result.data.freight < 0) {
+            lspsVar = update(lspsVar, { data: {
+              [index]: { charge: { $set: { manual: true } } } } });
+          } else {
+            const { freight, pickup, deliver, meter, quantity,
+              unitRatio, gradient, miles, coefficient } = result.data;
+            const charge = {
+              freight_charge: freight,
+              pickup_charge: pickup,
+              deliver_charge: deliver,
+              total_charge: Number(freight) + Number(pickup) + Number(deliver),
+              charge_gradient: gradient,
+              charge_amount: getChargeAmountExpression(meter, miles, quantity,
+                unitRatio, coefficient),
+            };
+            lspsVar = update(lspsVar, { data: {
+              [index]: { charge: { $set: charge } } } });
+          }
+        }
+        this.setState({ lspsVar });
+      });
     }
   }
 
@@ -408,6 +451,8 @@ export default class DispatchDock extends Component {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
+      } else if (result.data.freight === -2) {
+        message.error('未找到对应路线的价格表');
       } else {
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;

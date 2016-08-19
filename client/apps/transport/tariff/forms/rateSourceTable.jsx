@@ -4,7 +4,7 @@ import { Form, Modal, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RegionCascader from 'client/components/region-cascade';
 import { submitRateSource, loadRatesSources, updateRateSource,
-  delRateSource, loadRateEnds, loadTariff } from 'common/reducers/transportTariff';
+  delRateSource, loadRateEnds } from 'common/reducers/transportTariff';
 import { getRowKey, renderRegion, RowClick, ConfirmDel } from './commodity';
 
 const FormItem = Form.Item;
@@ -17,7 +17,7 @@ const FormItem = Form.Item;
     ratesSourceList: state.transportTariff.ratesSourceList,
   }),
   { submitRateSource, loadRatesSources, updateRateSource,
-    delRateSource, loadRateEnds, loadTariff }
+    delRateSource, loadRateEnds }
 )
 @Form.create()
 export default class RateSourceTable extends React.Component {
@@ -33,7 +33,6 @@ export default class RateSourceTable extends React.Component {
     updateRateSource: PropTypes.func.isRequired,
     delRateSource: PropTypes.func.isRequired,
     loadRateEnds: PropTypes.func.isRequired,
-    loadTariff: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -171,8 +170,6 @@ export default class RateSourceTable extends React.Component {
     }
   }
   handleCancel = () => {
-    this.loadSources(10, 1);
-    this.props.loadTariff(this.props.tariffId);
     this.props.onChangeVisible('source', false);
     this.setState({
       regionCode: null,

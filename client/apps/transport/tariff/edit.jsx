@@ -15,8 +15,11 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
-function fetchData({ params, dispatch }) {
-  return dispatch(loadTariff(params.uid));
+function fetchData({ state, params, dispatch }) {
+  return dispatch(loadTariff({
+    tariffId: params.uid,
+    tenantId: state.account.tenantId,
+  }));
 }
 
 @connectFetch()(fetchData)
