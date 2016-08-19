@@ -17,6 +17,7 @@ const RadioGroup = Radio.Group;
     dispId: state.trackingLandStatus.podModal.dispId,
     parentDispId: state.trackingLandStatus.podModal.parentDispId,
     shipmtNo: state.trackingLandStatus.podModal.shipmtNo,
+    auditModal: state.trackingLandPod.auditModal,
   }),
   { closePodModal, saveSubmitPod })
 export default class PodSubmitter extends React.Component {
@@ -28,11 +29,29 @@ export default class PodSubmitter extends React.Component {
     onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
     saveSubmitPod: PropTypes.func.isRequired,
+    auditModal: PropTypes.object.isRequired,
   }
   state = {
     signStatus: 1,
     remark: '',
     photoList: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auditModal.dispId) {
+      const photoList = [];
+      nextProps.auditModal.photos.split(',').forEach((ph, index) => {
+        photoList.push({
+          uid: -index,
+          status: 'done',
+          url: ph,
+        });
+      });
+      this.setState({
+        signStatus: nextProps.auditModal.sign_status,
+        remark: nextProps.auditModal.sign_remark,
+        photoList,
+      });
+    }
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (ev) => {
@@ -41,20 +60,18 @@ export default class PodSubmitter extends React.Component {
   handleSignRadioChange = ev => {
     this.setState({ signStatus: ev.target.value });
   }
+  handlePhotoRemove = (file) => {
+    const photoList = [...this.state.photoList];
+    const index = photoList.findIndex(item => item.uid === file.uid);
+    photoList.splice(index, 1);
+    this.setState({ photoList });
+  }
   handlePhotoUpload = info => {
-    if (info.file.status === 'done' && info.file.response) {
-      if (info.file.response.status === 200) {
-        const photos = [...this.state.photoList];
-        photos.push({
-          uid: info.file.uid,
-          name: info.file.name,
-          status: 'done',
-          url: info.file.response.data,
-        });
-        this.setState({ photoList: photos });
-      } else {
-        message.error(info.file.response.msg);
-      }
+    const fileList = [...info.fileList];
+    const index = fileList.findIndex(item => item.uid === info.file.uid);
+    if (info.file.response) {
+      fileList[index].url = info.file.response.data;
+      this.setState({ photoList: fileList });
     }
   }
   handleOk = () => {
@@ -76,7 +93,7 @@ export default class PodSubmitter extends React.Component {
     this.props.closePodModal();
   }
   render() {
-    const { signStatus, remark } = this.state;
+    const { signStatus, remark, photoList } = this.state;
     const colSpan = 4;
     return (
       <Modal title={this.msg('podModalTitle')} onCancel={this.handleCancel}
@@ -103,7 +120,7 @@ export default class PodSubmitter extends React.Component {
             wrapperCol={{ span: 24 - colSpan }}
           >
             <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
-              onChange={this.handlePhotoUpload} withCredentials
+              onChange={this.handlePhotoUpload} defaultFileList={photoList} withCredentials
             >
               <Button icon="upload" type="ghost" />
               {this.msg('photoSubmit')}

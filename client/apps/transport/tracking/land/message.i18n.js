@@ -205,6 +205,10 @@ export default defineMessages({
     id: 'transport.tracking.pod.none',
     defaultMessage: '不需回单',
   },
+  finished: {
+    id: 'transport.tracking.pod.finished',
+    defaultMessage: '已完成',
+  },
   exceptionWarn: {
     id: 'transport.tracking.exception.warning',
     defaultMessage: '警告',

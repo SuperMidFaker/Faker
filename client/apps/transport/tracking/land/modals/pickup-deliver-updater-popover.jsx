@@ -44,6 +44,9 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       }
     });
   }
+  // componentWillUnmount() {
+  //   window.$(document).unbind('click');
+  // }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     this.props.formhoc.validateFields(errors => {

@@ -9,8 +9,6 @@ import { createFilename } from 'client/util/dataTransform';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
-const startDate = new Date();
-startDate.setDate(1);
 
 @injectIntl
 @connect(

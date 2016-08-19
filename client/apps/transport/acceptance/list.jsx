@@ -137,6 +137,7 @@ export default class AcceptList extends React.Component {
       let style;
       if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
         style = { color: '#999' };
+        return (<span style={style} >{record.shipmt_no}</span>);
       }
       return (
         <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
@@ -377,10 +378,6 @@ export default class AcceptList extends React.Component {
               <span>
                 <a role="button" onClick={(ev) => this.handleShipmtAccept(record.key, ev)}>
                 {this.msg('shipmtAccept')}
-                </a>
-                <span className="ant-divider" />
-                <a role="button" onClick={(ev) => this.handleShipmtReject(record.key, ev)}>
-                {this.msg('shipmtReject')}
                 </a>
               </span>
             );

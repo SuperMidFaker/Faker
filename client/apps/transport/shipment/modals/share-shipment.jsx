@@ -38,6 +38,15 @@ export default class ShareShipmentModal extends React.Component {
       SMSSendLoding: false,
     };
   }
+  componentDidMount() {
+    document.addEventListener('copy', ev => {
+      if (this.state.visible) {
+        ev.preventDefault();
+        ev.clipboardData.setData('text/plain', this.state.publicUrl);
+        message.info('复制成功', 3);
+      }
+    });
+  }
   componentWillReceiveProps(nextProps) {
     const { shipmt, visible } = nextProps;
     const show = visible || this.state.visible;
@@ -58,11 +67,9 @@ export default class ShareShipmentModal extends React.Component {
       publicQRcodeUrl,
       tel: shipmt.consignee_mobile,
     });
-    document.addEventListener('copy', ev => {
-      ev.preventDefault();
-      ev.clipboardData.setData('text/plain', this.state.publicUrl);
-      message.info('复制成功', 3);
-    });
+  }
+  componentWillUnmount() {
+    document.removeEventListener('copy');
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleClose = () => {

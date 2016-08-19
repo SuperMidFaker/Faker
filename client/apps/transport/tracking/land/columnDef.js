@@ -321,14 +321,14 @@ export default function makeColumns(type, handlers, msg) {
             <span><Icon type="frown" /> {msg('rejectByUs')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
+          if (record.tenant_id === handlers.tenantId) {
+            return (
+              <span> {msg('finished')}</span>
+            );
+          }
           // 提交给上游客户
           return (
             <span><Icon type="clock-circle-o" /> {msg('submitToUpper')}</span>
-          );
-        } else {
-          // 上游客户已接受
-          return (
-            <span><Icon type="smile" /> {msg('acceptByUpper')}</span>
           );
         }
       },

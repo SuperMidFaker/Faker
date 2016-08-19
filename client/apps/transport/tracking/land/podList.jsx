@@ -72,6 +72,7 @@ export default class LandStatusList extends React.Component {
       onShowAuditModal: this.handleShowAuditModal,
       onResubmit: this.handleResubmit,
       onShowPodModal: this.handleShowPodModal,
+      tenantId: this.props.tenantId,
     }, this.msg);
   }
   state = {
@@ -186,11 +187,11 @@ export default class LandStatusList extends React.Component {
   handleResubmit = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.resubmitPod(row.disp_id, row.parent_id).then(result => {
+    this.props.loadPod(row.pod_id).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.handleTableLoad();
+        this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
       }
     });
   }

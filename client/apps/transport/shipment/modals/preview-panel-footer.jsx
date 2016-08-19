@@ -17,7 +17,7 @@ import {
   showPodModal, showDateModal, showVehicleModal,
   showLocModal,
 } from 'common/reducers/trackingLandStatus';
-import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
+import { passAudit, returnAudit, loadPod } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 const formatMsg = format(messages);
 const DropdownButton = Dropdown.Button;
@@ -46,7 +46,8 @@ const DropdownButton = Dropdown.Button;
     passAudit,
     returnAudit,
     withDraw,
-    returnShipment }
+    returnShipment,
+    loadPod }
 )
 export default class Footer extends React.Component {
   static propTypes = {
@@ -73,6 +74,7 @@ export default class Footer extends React.Component {
     withDraw: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
+    loadPod: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -202,6 +204,15 @@ export default class Footer extends React.Component {
   handleShowPodModal = (row) => {
     this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
+  handleResubmit = (row) => {
+    this.props.loadPod(row.pod_id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
+      }
+    });
+  }
   handleShowTransitModal = (row) => {
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
@@ -279,19 +290,8 @@ export default class Footer extends React.Component {
               <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShipmtAccept(row.key)} >
                 接单
               </Button>
-              <Button type="default" onClick={() => this.handleShipmtReject(row.key)} >
-                退回
-              </Button>
             </div>
           );
-          if (shipmt.tenant_id === tenantId) {
-            menu = (
-              <Menu onClick={this.handleMenuClick}>
-                <Menu.Item key="shareShipment">共享运单</Menu.Item>
-                <Menu.Item key="terminateShipment">终止运单</Menu.Item>
-              </Menu>
-            );
-          }
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.accepted) {
         buttons = (
@@ -355,7 +355,7 @@ export default class Footer extends React.Component {
           );
         }
       }
-      if (shipmt.tenant_id === tenantId) {
+      if (row.status <= SHIPMENT_TRACK_STATUS.dispatched && shipmt.tenant_id === tenantId) {
         menu = (
           <Menu onClick={this.handleMenuClick}>
             <Menu.Item key="shareShipment">共享运单</Menu.Item>
@@ -608,7 +608,7 @@ export default class Footer extends React.Component {
         // 重新上传
         buttons = (
           <div>
-            <Button type="primary" style={defaultButtonStyle} >
+            <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleResubmit(row)} >
               重新上传回单
             </Button>
           </div>
