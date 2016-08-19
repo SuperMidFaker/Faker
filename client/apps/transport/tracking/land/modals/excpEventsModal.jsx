@@ -34,7 +34,7 @@ export default class ExcpEventsModal extends React.Component {
     this.props.hideExcpModal();
   }
   render() {
-    const { shipmtNo, dispId } = this.props;
+    const { shipmtNo } = this.props;
     return (
       <Modal title={`${this.msg('trackingEventsModalTitle')} ${shipmtNo}`} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} width="80%" maskClosable={false}

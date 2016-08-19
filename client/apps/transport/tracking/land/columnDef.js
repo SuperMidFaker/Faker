@@ -377,7 +377,7 @@ export default function makeColumns(type, handlers, msg) {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return (
               <RowUpdater label={msg('notifyAccept')}
-                onAnchored={handlers.onShowVehicleModal} row={record}
+                onAnchored={() => {}} row={record}
               />);
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           if (record.sp_tenant_id === -1) {
@@ -389,7 +389,7 @@ export default function makeColumns(type, handlers, msg) {
               );
           } else {
             return (<RowUpdater label={msg('notifyDispatch')}
-              onAnchored={handlers.onShowVehicleModal} row={record}
+              onAnchored={() => {}} row={record}
             />);
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {

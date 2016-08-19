@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
    'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
    'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL',
+   'WITHDRAW', 'WITHDRAW_FAIL', 'WITHDRAW_SUCCEED',
    'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS']);
 
 const initialState = {
@@ -139,6 +140,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.DO_SEND_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.DO_RETURN_SUCCEED:
+      return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
+    case actionTypes.WITHDRAW_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     default:
       return state;
@@ -363,3 +366,17 @@ export function changeDockStatus(params) {
   };
 }
 
+export function withDraw(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.WITHDRAW,
+        actionTypes.WITHDRAW_SUCCEED,
+        actionTypes.WITHDRAW_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/withdraw',
+      method: 'post',
+      data: params,
+    },
+  };
+}

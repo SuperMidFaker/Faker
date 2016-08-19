@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'REJECT_SHIPMT', 'REJECT_SHIPMT_SUCCEED', 'REJECT_SHIPMT_FAIL',
   'DEL_DRAFT', 'DEL_DRAFT_SUCCEED', 'DEL_DRAFT_FAIL',
   'SAVE_EDIT', 'SAVE_EDIT_SUCCEED', 'SAVE_EDIT_FAIL',
+  'RETURN_DISP', 'RETURN_DISP_FAIL', 'RETURN_DISP_SUCCEED',
 ]);
 
 const initialState = {
@@ -91,6 +92,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.REVOKE_SHIPMT_SUCCEED:
     case actionTypes.REJECT_SHIPMT_SUCCEED:
       return { ...state, revokejectModal: { ...state.revokejectModal, visible: false } };
+    case actionTypes.RETURN_DISP_SUCCEED: {
+      const { shipmtDispIds } = action.data;
+      const data = [...state.table.shipmentlist.data];
+      for (let i = 0; i < shipmtDispIds.length; i++) {
+        const index = data.findIndex((item) => item.key === shipmtDispIds[i]);
+        data.splice(index, 1);
+      }
+      const shipmentlist = { ...state.table.shipmentlist, data };
+      const table = { ...state.table, shipmentlist };
+      return { ...state, table };
+    }
     default:
       return state;
   }
@@ -278,6 +290,21 @@ export function rejectShipment(dispId, reason) {
       method: 'post',
       endpoint: 'v1/transport/shipment/reject',
       data: { dispId, reason },
+    },
+  };
+}
+
+export function returnShipment(shipmtDispIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RETURN_DISP,
+        actionTypes.RETURN_DISP_SUCCEED,
+        actionTypes.RETURN_DISP_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/transport/shipment/return',
+      data: { shipmtDispIds },
     },
   };
 }

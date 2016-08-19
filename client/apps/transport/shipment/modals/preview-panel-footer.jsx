@@ -2,26 +2,20 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Icon, Menu, Dropdown, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 import { hidePreviewer } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import './preview-panel.less';
-import { loadAcceptDispatchers, revokeOrReject, delDraft } from
+import { loadAcceptDispatchers, revokeOrReject, returnShipment } from
 'common/reducers/transport-acceptance';
 import { doSend,
          doReturn,
-         segmentCancelRequest,
-         segmentCancelCheckRequest,
-         loadExpandList,
-         loadShipmtsGrouped,
-         loadShipmtsGroupedSub,
-         loadSegRq,
-         removeGroupedSubShipmt,
-         changeDockStatus } from 'common/reducers/transportDispatch';
+         changeDockStatus,
+         withDraw } from 'common/reducers/transportDispatch';
 import {
-  loadTransitTable, showPodModal, showDateModal, showVehicleModal,
-  showLocModal, loadShipmtLastPoint,
+  showPodModal, showDateModal, showVehicleModal,
+  showLocModal,
 } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
@@ -50,7 +44,9 @@ const DropdownButton = Dropdown.Button;
     showPodModal,
     showLocModal,
     passAudit,
-    returnAudit }
+    returnAudit,
+    withDraw,
+    returnShipment }
 )
 export default class Footer extends React.Component {
   static propTypes = {
@@ -74,6 +70,9 @@ export default class Footer extends React.Component {
     showLocModal: PropTypes.func.isRequired,
     passAudit: PropTypes.func.isRequired,
     returnAudit: PropTypes.func.isRequired,
+    withDraw: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
+    returnShipment: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -212,34 +211,53 @@ export default class Footer extends React.Component {
   }
   handleAuditPass = (row) => {
     const { loginName, tenantId, loginId } = this.props;
-    this.props.passAudit(row.pod_id, row.disp_id, row.parent_id, loginName, tenantId, loginId).then(
-      result => {
-        if (result.error) {
-          message.error(result.error.message);
-        }
-      });
+    this.props.passAudit(row.pod_id, row.disp_id, row.parent_id, loginName, tenantId, loginId).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.hidePreviewer();
+      }
+    });
   }
   handleAuditReturn = (row) => {
-    this.props.returnAudit(row.disp_id).then(
-      result => {
-        if (result.error) {
-          message.error(result.error.message);
-        }
-      });
+    this.props.returnAudit(row.disp_id).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.hidePreviewer();
+      }
+    });
+  }
+  handleWithDraw = (row) => {
+    const { tenantId, loginId, loginName } = this.props;
+    const list = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no, parentId: row.parent_id }];
+    this.props.withDraw({ tenantId, loginId, loginName, list: JSON.stringify(list) }).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.hidePreviewer();
+      }
+    });
+  }
+  handleReturn = (row) => {
+    const shipmtDispIds = [row.key];
+    this.props.returnShipment(shipmtDispIds).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.hidePreviewer();
+      }
+    });
   }
   render() {
-    const { tenantId, stage, previewer: { tracking, row, pod } } = this.props;
+    const { tenantId, stage, previewer: { shipmt, tracking, row } } = this.props;
 
     let menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="shareShipment">共享运单</Menu.Item>
-        <Menu.Item key="terminateShipment">终止运单</Menu.Item>
       </Menu>
     );
     let buttons = (<div></div>);
-    console.log(`stage: ${stage}`);
-    console.log('row:');
-    console.log(row);
     const defaultButtonStyle = { marginRight: 30 };
     if (stage === 'acceptance') {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -261,20 +279,36 @@ export default class Footer extends React.Component {
               <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShipmtAccept(row.key)} >
                 接单
               </Button>
-              <Button type="default" onClick={() => this.handleShipmtReject(row.key)}>
+              <Button type="default" onClick={() => this.handleShipmtReject(row.key)} >
                 退回
               </Button>
             </div>
           );
+          if (shipmt.tenant_id === tenantId) {
+            menu = (
+              <Menu onClick={this.handleMenuClick}>
+                <Menu.Item key="shareShipment">共享运单</Menu.Item>
+                <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+              </Menu>
+            );
+          }
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.accepted) {
         buttons = (
           <div>
-            <Button type="default">
+            <Button type="default" onClick={() => this.handleReturn(row)}>
               退回
             </Button>
           </div>
         );
+        if (shipmt.tenant_id === tenantId) {
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <Menu.Item key="shareShipment">共享运单</Menu.Item>
+              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+            </Menu>
+          );
+        }
       }
       return (
         <div className="footer">
@@ -314,12 +348,20 @@ export default class Footer extends React.Component {
         if (tracking.downstream_status === 1 || row.status === SHIPMENT_TRACK_STATUS.dispatched) {
           buttons = (
             <div>
-              <Button type="default">
+              <Button type="default" onClick={() => this.handleWithDraw(row)} >
                 撤回
               </Button>
             </div>
           );
         }
+      }
+      if (shipmt.tenant_id === tenantId) {
+        menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <Menu.Item key="shareShipment">共享运单</Menu.Item>
+            <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+          </Menu>
+        );
       }
       return (
         <div className="footer">
@@ -341,6 +383,14 @@ export default class Footer extends React.Component {
             </Button>
           </div>
         );
+        if (shipmt.tenant_id === tenantId) {
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <Menu.Item key="shareShipment">共享运单</Menu.Item>
+              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+            </Menu>
+          );
+        }
       } else if (row.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (row.sp_tenant_id === -1) {
             // 线下客户手动更新
@@ -358,6 +408,14 @@ export default class Footer extends React.Component {
                 催促调度
               </Button>
             </div>
+          );
+        }
+        if (shipmt.tenant_id === tenantId) {
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <Menu.Item key="shareShipment">共享运单</Menu.Item>
+              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+            </Menu>
           );
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.dispatched) {
@@ -394,6 +452,14 @@ export default class Footer extends React.Component {
                 催促提货
               </Button>
             </div>
+          );
+        }
+        if (shipmt.tenant_id === tenantId) {
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <Menu.Item key="shareShipment">共享运单</Menu.Item>
+              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+            </Menu>
           );
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.intransit) {
@@ -477,11 +543,6 @@ export default class Footer extends React.Component {
             </div>
           );
         }
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <Menu.Item key="shareShipment">共享运单</Menu.Item>
-          </Menu>
-        );
       }
       return (
         <div className="footer">
@@ -495,11 +556,6 @@ export default class Footer extends React.Component {
         </div>
       );
     } else if (stage === 'pod') {
-      menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="shareShipment">共享运单</Menu.Item>
-        </Menu>
-      );
       if (row.pod_status === null || row.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
         if (row.sp_tenant_id === -1) {
           buttons = (

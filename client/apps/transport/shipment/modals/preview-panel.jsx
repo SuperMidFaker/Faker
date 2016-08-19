@@ -82,13 +82,13 @@ export default class PreviewPanel extends React.Component {
       }
     });
   }
-  componentWillUnmount() {
-    window.$(document).unbind('click');
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey !== this.state.tabKey) {
       this.setState({ tabKey: nextProps.tabKey || 'detail' });
     }
+  }
+  componentWillUnmount() {
+    window.$(document).unbind('click');
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {

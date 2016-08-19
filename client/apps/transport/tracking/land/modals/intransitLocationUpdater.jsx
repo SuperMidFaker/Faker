@@ -77,9 +77,9 @@ export default class LocationUpdater extends React.Component {
     });
   }
   render() {
-    const { form: { getFieldProps }, intl } = this.props;
+    const { form: { getFieldProps }, intl, transit } = this.props;
     return (
-      <Modal title={this.msg('reportTransitLoc')} onCancel={this.handleCancel}
+      <Modal title={`${this.msg('reportTransitLoc')} ${transit.shipmt_no}`} onCancel={this.handleCancel}
         onOk={this.handleOk} visible={this.props.visible}
       >
         <Form horizontal>
