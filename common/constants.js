@@ -231,39 +231,37 @@ const VEHICLE_STATUS = {
 };
 
 const VEHICLE_TYPES = [
-  { value: 0, text: '牵引车' },
+  { value: 0, text: '不限' },
   { value: 1, text: '厢式车' },
-  { value: 2, text: '低栏车' },
-  { value: 3, text: '高栏车' },
-  { value: 4, text: '平板车' },
-  { value: 5, text: '集装箱' },
-  { value: 6, text: '罐式车' },
-  { value: 7, text: '冷藏车' },
-  { value: 8, text: '超宽车' },
+  { value: 2, text: '敞式车' },
+  { value: 3, text: '平板车' },
+  { value: 4, text: '罐式车' },
+  { value: 5, text: '冷藏车' },
 ];
 
 const VEHICLE_LENGTH_TYPES = [
-  { value: 2, text: '2M' },
-  { value: 42, text: '4.2M|2T' },
-  { value: 52, text: '5.2M' },
-  { value: 62, text: '6.2M|5T' },
-  { value: 68, text: '6.8M' },
-  { value: 72, text: '7.2M' },
-  { value: 76, text: '7.6M' },
-  { value: 82, text: '8.2M|10T' },
-  { value: 85, text: '8.5M' },
-  { value: 96, text: '9.6M|15T' },
-  { value: 12, text: '12M' },
-  { value: 125, text: '12.5M|20T' },
-  { value: 13, text: '13M' },
-  { value: 135, text: '13.5M' },
-  { value: 16, text: '16M' },
-  { value: 175, text: '17.5M|30T' },
+  { value: 20, text: '2.0' },
+  { value: 42, text: '4.2' },
+  { value: 52, text: '5.2' },
+  { value: 62, text: '6.2' },
+  { value: 68, text: '6.8' },
+  { value: 72, text: '7.2' },
+  { value: 76, text: '7.6' },
+  { value: 82, text: '8.2' },
+  { value: 85, text: '8.5' },
+  { value: 96, text: '9.6' },
+  { value: 120, text: '12.0' },
+  { value: 125, text: '12.5' },
+  { value: 130, text: '13.0' },
+  { value: 135, text: '13.5' },
+  { value: 145, text: '14.5' },
+  { value: 160, text: '16.0' },
+  { value: 175, text: '17.5' },
 ];
 
 const VPROPROTY_TYPES = {
-  selfVehicle: { value: 0, text: '社会协作车辆' },
-  publicVehicle: { value: 1, text: '公司自有车辆' },
+  socialVehicle: { value: 0, text: '社会车辆' },
+  privateVehicle: { value: 1, text: '自有车辆' },
 };
 
 const DRIVER_STATUS = {
@@ -276,13 +274,13 @@ const GOODS_TYPES = [{
   text: '普通货物',
 }, {
   value: 1,
-  text: '冷链',
+  text: '温控货物',
 }, {
   value: 2,
   text: '危险品',
 }, {
   value: 3,
-  text: '大件',
+  text: '大件货物',
 }];
 
 const CONTAINER_PACKAGE_TYPE = [{
@@ -343,10 +341,10 @@ const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
 
 const RELATION_TYPES = [
-  { key: 'forwarder', value: '收发货人' },
-  { key: 'owner', value: '消费使用单位' },
-  { key: 'trade', value: '申报单位' },
-  { key: 'producer', value: '生产消费单位' },
+  { key: 'trade', value: '收发货人' },
+  { key: 'owner_consumer', value: '消费使用单位' },
+  { key: 'owner_producer', value: '生产销售单位' },
+  { key: 'agent', value: '申报单位' },
 ];
 
 const I_E_TYPES = [
