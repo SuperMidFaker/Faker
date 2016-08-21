@@ -2,13 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Steps, Tabs } from 'antd';
+import { Steps, Card } from 'antd';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const Step = Steps.Step;
-const TabPane = Tabs.TabPane;
 
 const timeFormat = 'YYYY-MM-DD HH:mm';
 
@@ -121,38 +120,16 @@ export default class PreviewPanel extends React.Component {
       });
     return (
       <div className="pane-content tab-pane">
-        <Tabs defaultActiveKey="all" tabPosition="left">
-          <TabPane tab={this.msg('trackingAll')} key="all">
-            <Steps current={currentStep} direction="vertical">
-              {
-                trackingSteps.map(
-                  (ts, i) =>
-                    <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
-                  )
-              }
-            </Steps>
-          </TabPane>
-          <TabPane tab={this.msg('trackingProgress')} key="progress">
-            <Steps current={currentStep} direction="vertical">
-              {
-                trackingSteps.map(
-                  (ts, i) =>
-                    <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
-                  )
-              }
-            </Steps>
-          </TabPane>
-          <TabPane tab={this.msg('trackingException')} key="exceptions">
-            <Steps current={currentStep} direction="vertical">
-              {
-                trackingSteps.map(
-                  (ts, i) =>
-                    <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
-                  )
-              }
-            </Steps>
-          </TabPane>
-        </Tabs>
+        <Card>
+          <Steps current={currentStep} direction="vertical">
+            {
+              trackingSteps.map(
+                (ts, i) =>
+                  <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
+                )
+            }
+          </Steps>
+        </Card>
       </div>
     );
   }

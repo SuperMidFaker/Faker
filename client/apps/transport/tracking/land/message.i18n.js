@@ -201,6 +201,10 @@ export default defineMessages({
     id: 'transport.tracking.pod.passed',
     defaultMessage: '回单已接受',
   },
+  waitingResubmitPOD: {
+    id: 'transport.tracking.pod.warning.resubmit',
+    defaultMessage: '待重新提交',
+  },
   nonePOD: {
     id: 'transport.tracking.pod.none',
     defaultMessage: '不需回单',
