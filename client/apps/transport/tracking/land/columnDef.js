@@ -318,12 +318,12 @@ export default function makeColumns(type, handlers, msg) {
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
           // 我方拒绝
           return (
-            <span><Icon type="frown" /> {msg('rejectByUs')}</span>
+            <span><Icon type="clock-circle-o" /> {msg('waitingResubmitPOD')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           if (record.tenant_id === handlers.tenantId) {
             return (
-              <span> {msg('finished')}</span>
+              <span><Icon type="smile" /> {msg('finished')}</span>
             );
           }
           // 提交给上游客户
@@ -393,30 +393,11 @@ export default function makeColumns(type, handlers, msg) {
             />);
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-            /*
-            if (record.sp_tenant_id === -1) {
-              return (
-                <RowUpdater label={msg('updatePickup')}
-                  onAnchored={handlers.onShowPickModal} row={record}
-                />
-              );
-            } else if (record.sp_tenant_id === 0) {
-              if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                return (
-                  <RowUpdater label={msg('updatePickup')}
-                    onAnchored={handlers.onShowPickModal} row={record}
-                  />
-                );
-              }
-            } else {
-              */
           return (
                 <RowUpdater label={msg('updateEvents')}
                   onAnchored={handlers.onShowExcpModal} row={record}
                 />
               );
-            /*
-          }*/
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
           if (record.sp_tenant_id === -1) {
             return handlers.renderIntransitUpdater(record);

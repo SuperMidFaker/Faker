@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Menu, Dropdown, Modal, message } from 'antd';
+import { Button, Icon, Menu, Dropdown, Modal, Tooltip, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 import { hidePreviewer } from 'common/reducers/shipment';
@@ -269,16 +269,16 @@ export default class Footer extends React.Component {
       </Menu>
     );
     let buttons = (<div></div>);
-    const defaultButtonStyle = { marginRight: 30 };
+    const defaultButtonStyle = { marginRight: 16 };
     if (stage === 'acceptance') {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         if (row.source === SHIPMENT_SOURCE.consigned) {
           buttons = (
             <div>
-              <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShipmtAccept(row.key)} >
+              <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShipmtAccept(row.key)} >
                 接单
               </Button>
-              <Button type="default" onClick={() => this.context.router.push(`/transport/shipment/edit/${row.shipmt_no}`)}>
+              <Button type="ghost" size="large" onClick={() => this.context.router.push(`/transport/shipment/edit/${row.shipmt_no}`)}>
                 修改
               </Button>
             </div>
@@ -287,7 +287,7 @@ export default class Footer extends React.Component {
         } else if (row.source === SHIPMENT_SOURCE.subcontracted) {
           buttons = (
             <div>
-              <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShipmtAccept(row.key)} >
+              <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShipmtAccept(row.key)} >
                 接单
               </Button>
             </div>
@@ -296,9 +296,11 @@ export default class Footer extends React.Component {
       } else if (row.status === SHIPMENT_TRACK_STATUS.accepted) {
         buttons = (
           <div>
-            <Button type="default" onClick={() => this.handleReturn(row)}>
-              退回
-            </Button>
+            <Tooltip placement="top" title="退回至未接单状态">
+              <Button type="ghost" size="large" onClick={() => this.handleReturn(row)}>
+                退回
+              </Button>
+            </Tooltip>
           </div>
         );
         if (shipmt.tenant_id === tenantId) {
@@ -314,7 +316,7 @@ export default class Footer extends React.Component {
         <div className="footer">
           {buttons}
           <div className="more-actions">
-            <DropdownButton overlay={menu} onClick={this.handleShowExportShipment}>
+            <DropdownButton size="large" overlay={menu} onClick={this.handleShowExportShipment}>
               <Icon type="export" />导出
             </DropdownButton>
           </div>
@@ -325,10 +327,10 @@ export default class Footer extends React.Component {
       if (row.child_send_status === 0 && row.status === 2 && row.disp_status === 1 && row.sp_tenant_id === tenantId) {
         buttons = (
           <div>
-            <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleDispatchDockShow(row)} >
+            <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleDispatchDockShow(row)} >
               分配
             </Button>
-            <Button type="default" onClick={() => this.handleSegmentDockShow(row)} >
+            <Button type="ghost" size="large" onClick={() => this.handleSegmentDockShow(row)} >
               分段
             </Button>
           </div>
@@ -336,10 +338,10 @@ export default class Footer extends React.Component {
       } else if (row.disp_status === 0 && row.sr_tenant_id === tenantId) {
         buttons = (
           <div>
-            <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShipmtSend(row)} >
+            <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShipmtSend(row)} >
               发送
             </Button>
-            <Button type="default" onClick={() => this.handleShipmtReturn(row)}>
+            <Button type="ghost" size="large" onClick={() => this.handleShipmtReturn(row)}>
               取消分配
             </Button>
           </div>
@@ -348,9 +350,11 @@ export default class Footer extends React.Component {
         if (tracking.downstream_status === 1 || row.status === SHIPMENT_TRACK_STATUS.dispatched) {
           buttons = (
             <div>
-              <Button type="default" onClick={() => this.handleWithDraw(row)} >
-                撤回
-              </Button>
+              <Tooltip placement="top" title="承运商尚未接单，可立即撤回">
+                <Button type="ghost" size="large" onClick={() => this.handleWithDraw(row)} >
+                  撤回
+                </Button>
+              </Tooltip>
             </div>
           );
         }
@@ -367,7 +371,7 @@ export default class Footer extends React.Component {
         <div className="footer">
           {buttons}
           <div className="more-actions">
-            <DropdownButton overlay={menu} onClick={this.handleShowExportShipment}>
+            <DropdownButton size="large" overlay={menu} onClick={this.handleShowExportShipment}>
               <Icon type="export" />导出
             </DropdownButton>
           </div>
@@ -378,7 +382,7 @@ export default class Footer extends React.Component {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         buttons = (
           <div>
-            <Button type="default">
+            <Button type="ghost" size="large">
               催促接单
             </Button>
           </div>
@@ -396,7 +400,7 @@ export default class Footer extends React.Component {
             // 线下客户手动更新
           buttons = (
             <div>
-              <Button type="default" onClick={() => this.handleShowVehicleModal(row)} >
+              <Button type="ghost" size="large" onClick={() => this.handleShowVehicleModal(row)} >
                 更新车辆司机
               </Button>
             </div>
@@ -404,7 +408,7 @@ export default class Footer extends React.Component {
         } else {
           buttons = (
             <div>
-              <Button type="default">
+              <Button type="ghost" size="large">
                 催促调度
               </Button>
             </div>
@@ -422,7 +426,7 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <div>
-              <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShowPickModal(row)} >
+              <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowPickModal(row)} >
                 更新提货
               </Button>
             </div>
@@ -433,7 +437,7 @@ export default class Footer extends React.Component {
               // 线下司机
             buttons = (
               <div>
-                <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShowPickModal(row)} >
+                <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowPickModal(row)} >
                   更新提货
                 </Button>
               </div>
@@ -448,7 +452,7 @@ export default class Footer extends React.Component {
         } else {
           buttons = (
             <div>
-              <Button type="default">
+              <Button type="ghost" size="large">
                 催促提货
               </Button>
             </div>
@@ -466,10 +470,10 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <div>
-              <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
+              <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
                 更新交货
               </Button>
-              <Button type="default" onClick={() => this.handleShowTransitModal(row)} >
+              <Button type="ghost" size="large" onClick={() => this.handleShowTransitModal(row)} >
                 上报位置
               </Button>
             </div>
@@ -478,10 +482,10 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <div>
-                <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
+                <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
                   更新交货
                 </Button>
-                <Button type="default" onClick={() => this.handleShowTransitModal(row)} >
+                <Button type="ghost" size="large" onClick={() => this.handleShowTransitModal(row)} >
                   上报位置
                 </Button>
               </div>
@@ -509,7 +513,7 @@ export default class Footer extends React.Component {
         } else if (row.sp_tenant_id === -1) {
           buttons = (
             <div>
-              <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShowPodModal(row)} >
+              <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowPodModal(row)} >
                 上传回单
               </Button>
             </div>
@@ -518,7 +522,7 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <div>
-                <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleShowPodModal(row)} >
+                <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowPodModal(row)} >
                   上传回单
                 </Button>
               </div>
@@ -527,7 +531,7 @@ export default class Footer extends React.Component {
             // 司机上传
             buttons = (
               <div>
-                <Button type="default">
+                <Button type="ghost" size="large">
                   催促回单
                 </Button>
               </div>
@@ -537,7 +541,7 @@ export default class Footer extends React.Component {
           // 承运商上传
           buttons = (
             <div>
-              <Button type="default">
+              <Button type="ghost" size="large">
                 催促回单
               </Button>
             </div>
@@ -548,7 +552,7 @@ export default class Footer extends React.Component {
         <div className="footer">
           {buttons}
           <div className="more-actions">
-            <DropdownButton overlay={menu} onClick={this.handleShowExportShipment}>
+            <DropdownButton size="large" overlay={menu} onClick={this.handleShowExportShipment}>
               <Icon type="export" />导出
             </DropdownButton>
           </div>
@@ -578,7 +582,7 @@ export default class Footer extends React.Component {
             // 司机上传
             buttons = (
               <div>
-                <Button type="default">
+                <Button type="ghost" size="large">
                   催促回单
                 </Button>
               </div>
@@ -588,7 +592,7 @@ export default class Footer extends React.Component {
           // 承运商上传
           buttons = (
             <div>
-              <Button type="default">
+              <Button type="ghost" size="large">
                 催促回单
               </Button>
             </div>
@@ -598,7 +602,7 @@ export default class Footer extends React.Component {
           <div className="footer">
             {buttons}
             <div className="more-actions">
-              <DropdownButton overlay={menu}>
+              <DropdownButton size="large" overlay={menu}>
               </DropdownButton>
             </div>
             <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
@@ -608,7 +612,7 @@ export default class Footer extends React.Component {
         // 重新上传
         buttons = (
           <div>
-            <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleResubmit(row)} >
+            <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleResubmit(row)} >
               重新上传回单
             </Button>
           </div>
@@ -617,7 +621,7 @@ export default class Footer extends React.Component {
           <div className="footer">
             {buttons}
             <div className="more-actions">
-              <DropdownButton overlay={menu}>
+              <DropdownButton size="large" overlay={menu}>
               </DropdownButton>
             </div>
             <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
@@ -627,10 +631,10 @@ export default class Footer extends React.Component {
         // 审核回单
         buttons = (
           <div>
-            <Button type="primary" style={defaultButtonStyle} onClick={() => this.handleAuditPass(row)} >
+            <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleAuditPass(row)} >
               接受
             </Button>
-            <Button type="default" onClick={() => this.handleAuditReturn(row)} >
+            <Button type="ghost" size="large" onClick={() => this.handleAuditReturn(row)} >
               拒绝
             </Button>
           </div>
@@ -649,7 +653,7 @@ export default class Footer extends React.Component {
         <div className="footer">
           {buttons}
           <div className="more-actions">
-            <DropdownButton overlay={menu} onClick={this.handleDownloadPods}>
+            <DropdownButton size="large" overlay={menu} onClick={this.handleDownloadPods}>
               <Icon type="export" />下载回单
             </DropdownButton>
           </div>
@@ -663,7 +667,7 @@ export default class Footer extends React.Component {
       <div className="footer">
         {buttons}
         <div className="more-actions">
-          <DropdownButton overlay={menu} onClick={this.handleShowExportShipment}>
+          <DropdownButton size="large" overlay={menu} onClick={this.handleShowExportShipment}>
             <Icon type="export" />导出
           </DropdownButton>
         </div>
