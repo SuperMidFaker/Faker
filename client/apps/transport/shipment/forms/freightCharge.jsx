@@ -1,7 +1,7 @@
 /* eslint camelcase: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Checkbox, message } from 'antd';
+import { Button, Card, Checkbox, message, notification } from 'antd';
 import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
@@ -42,7 +42,10 @@ export default class FreightCharge extends React.Component {
         'vehicle_length', 'total_weight', 'total_volume',
       ]);
     if (!(total_volume || total_weight || ctn || vehicle_length)) {
-      message.error('运单数量如(总体积/总重量/集装箱包装类型)未填');
+      notification.warning({
+        message: '计算运费',
+        description: '计费数量未填写，例如：总重量/总体积/集装箱类型',
+      });
       return;
     }
     const created = this.props.formData.created_date || Date.now();
@@ -55,9 +58,17 @@ export default class FreightCharge extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
-        message.error('未找到适合计算的价格协议');
+        notification.error({
+          message: '计算运费',
+          description: '未找到匹配的价格协议，请确认是否已创建与该客户关联的价格协议',
+        });
+        //  message.error('未找到适合计算的价格协议');
       } else if (result.data.freight === -2) {
-        message.error('未找到对应路线的价格表');
+        notification.error({
+          message: '计算运费',
+          description: '价格协议中未找到对应路线的报价费率',
+        });
+        //  message.error('未找到对应路线的价格表');
       } else {
         // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
