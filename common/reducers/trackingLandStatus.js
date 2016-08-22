@@ -32,6 +32,7 @@ const initialState = {
   vehicleModal: {
     visible: false,
     dispId: -1,
+    shipmtNo: '',
   },
   dateModal: {
     visible: false,
@@ -65,7 +66,7 @@ export default function reducer(state = initialState, action) {
     };
     case actionTypes.SHOW_VEHICLE_MODAL:
       return { ...state,
-        vehicleModal: { visible: true, dispId: action.data.dispId },
+        vehicleModal: { visible: true, ...action.data },
       };
     case actionTypes.HIDE_VEHICLE_MODAL:
       return { ...state, vehicleModal: initialState.vehicleModal };
@@ -136,7 +137,7 @@ export function closeVehicleModal() {
   };
 }
 
-export function saveVehicle(dispId, plate, driver, remark) {
+export function saveVehicle(shipmtNo, dispId, plate, driver, remark) {
   return {
     [CLIENT_API]: {
       types: [
@@ -146,7 +147,7 @@ export function saveVehicle(dispId, plate, driver, remark) {
       ],
       endpoint: 'v1/transport/tracking/vehicle',
       method: 'post',
-      data: { dispId, plate, driver, remark },
+      data: { shipmtNo, dispId, plate, driver, remark },
     },
   };
 }
