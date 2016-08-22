@@ -1,18 +1,18 @@
 import React, { PropTypes, Component } from 'react';
 import update from 'react/lib/update';
-import { Icon, Tag, InputNumber, Button, Popover, message, Modal, Tabs }
+import { Icon, Tag, InputNumber, Button, Popover, message, Tabs }
   from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadLsps, loadVehicles, doDispatch } from 'common/reducers/transportDispatch';
+import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend } from 'common/reducers/transportDispatch';
 import { addPartner } from 'common/reducers/partner';
 import { computeCostCharge } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../common/charge';
 import ChargeSpecForm from '../shipment/forms/chargeSpec';
 import SearchBar from 'client/components/search-bar';
-import MContent from './MContent';
+import DispatchConfirmModal from './DispatchConfirmModal';
 import partnerModal from '../../corp/cooperation/components/partnerModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';
 
@@ -46,6 +46,8 @@ function fetch({ state, dispatch, cookie }) {
 @connect(state => ({
   tenantId: state.account.tenantId,
   loginId: state.account.loginId,
+  loginName: state.account.username,
+  avatar: state.account.profile.avatar,
   lsps: state.transportDispatch.lsps,
   vehicles: state.transportDispatch.vehicles,
   vehicleLoaded: state.transportDispatch.vehicleLoaded,
@@ -53,12 +55,16 @@ function fetch({ state, dispatch, cookie }) {
   dispatched: state.transportDispatch.dispatched,
   vehicleTypes: state.transportDispatch.vehicleTypes,
   vehicleLengths: state.transportDispatch.vehicleLengths,
+  shipmts: state.transportDispatch.shipmts,
 }),
-  { loadLsps, loadVehicles, doDispatch, addPartner, computeCostCharge }
+  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge }
 )
 export default class DispatchDock extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     msg: PropTypes.func.isRequired,
@@ -71,10 +77,10 @@ export default class DispatchDock extends Component {
     lspLoaded: PropTypes.bool.isRequired,
     doDispatch: PropTypes.func.isRequired,
     dispatched: PropTypes.bool.isRequired,
-    loginId: PropTypes.number.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
     computeCostCharge: PropTypes.func.isRequired,
+    doDispatchAndSend: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -202,6 +208,11 @@ export default class DispatchDock extends Component {
     carrierSearch: '',
     plateSearch: '',
     newVehicleVisible: false,
+    dispatchConfirmModal: {
+      type: '',
+      target: {},
+      visible: false,
+    },
   }
 
   componentWillReceiveProps(nextProps) {
@@ -309,8 +320,9 @@ export default class DispatchDock extends Component {
     remotes: this.props.vehicles,
   })
 
-  handleShipmtDispatch(type, target) {
+  handleShipmtDispatch() {
     // TODO multi shipments dispatch
+    const { type, target } = this.state.dispatchConfirmModal;
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
     const shipmtNos = shipmts.map(s => {
@@ -336,6 +348,54 @@ export default class DispatchDock extends Component {
       });
     } else if (type === 'vehicle') {
       this.props.doDispatch({
+        tenantId,
+        loginId,
+        shipmtNos,
+        connectType: target.connect_type,
+        taskId: target.vehicle_id,
+        taskVehicle: target.plate_number,
+        taskDriverId: target.driver_id,
+        taskDriverName: target.name,
+        podType,
+        type,
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.onCloseWrapper(true);
+        }
+      });
+    }
+  }
+
+  handleShipmtDispatchAndSend = () => {
+    // TODO multi shipments dispatch
+    const { type, target } = this.state.dispatchConfirmModal;
+    const { tenantId, loginId, shipmts } = this.props;
+    const podType = this.state.podType;
+    const shipmtNos = shipmts.map(s => {
+      return { shipmtNo: s.shipmt_no, dispId: s.key };
+    });
+    if (type === 'tenant') {
+      this.props.doDispatchAndSend({
+        tenantId,
+        loginId,
+        shipmtNos,
+        charge: target.charge || { total_charge: this.state.quotation },
+        partnerId: target.partner_id,
+        partnerName: target.partner_name,
+        partnerTenantId: target.partner_tenant_id,
+        podType,
+        type,
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.onCloseWrapper(true);
+        }
+      });
+    } else if (type === 'vehicle') {
+      this.props.doDispatchAndSend({
         tenantId,
         loginId,
         shipmtNos,
@@ -472,20 +532,20 @@ export default class DispatchDock extends Component {
     });
   }
   showConfirm(type, target) {
-    const [shipmt] = this.props.shipmts;
-    let msg = `即将【${shipmt.shipmt_no}】分配给【${target.partner_name}】承运，请选择对回单的要求：`;
-    if (type === 'vehicle') {
-      msg = `将【${shipmt.shipmt_no}】分配给【${target.plate_number}】承运，请选择对回单的要求：`;
-    }
-    Modal.confirm({
-      title: '确认回单要求',
-      content: (<MContent msg={msg} onChange={this.handlePodTypeChange} />),
-      okText: this.msg('btnTextOk'),
-      cancelText: this.msg('btnTextCancel'),
-      onOk: () => {
-        this.handleShipmtDispatch(type, target);
+    this.setState({ dispatchConfirmModal: {
+      type,
+      target,
+      visible: true,
+    },
+    });
+    setTimeout(() => {
+      this.setState({ dispatchConfirmModal: {
+        type,
+        target,
+        visible: false,
       },
     });
+    }, 200);
   }
   handleNewCarrierClick = () => {
     const { tenantId } = this.props;
@@ -573,6 +633,13 @@ export default class DispatchDock extends Component {
                     <VehicleFormMini visible={this.state.newVehicleVisible} />
                   </TabPane>
                 </Tabs>
+                <DispatchConfirmModal visible={this.state.dispatchConfirmModal.visible}
+                  target={this.state.dispatchConfirmModal.target}
+                  type={this.state.dispatchConfirmModal.type}
+                  shipmts={this.props.shipmts} onChange={this.handlePodTypeChange}
+                  onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
+                  onDispatch={() => this.handleShipmtDispatch()}
+                />
               </div>
             </div>
           </div>
