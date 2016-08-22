@@ -4,6 +4,7 @@ import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
+import SubForm from '../delegation/SubForm';
 import UploadGroup from '../delegation/attachmentUpload';
 import { editDelegation } from 'common/reducers/cmsDelegation';
 
@@ -57,7 +58,7 @@ export default class AcceptanceEdit extends Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push(`/${type}/accept`);
+            this.context.router.push(`clearance/${type}/`);
           }
         });
       }
@@ -97,6 +98,9 @@ export default class AcceptanceEdit extends Component {
                   onFileRemove={this.handleFileRemove}
                 />
               </Col>
+            </div>
+            <div id="parent" style={{ padding: '16px' }}>
+              <SubForm form={form} />
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{ marginRight: 20 }}

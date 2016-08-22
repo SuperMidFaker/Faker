@@ -17,14 +17,10 @@ const FormItem = Form.Item;
   }),
   { submitSurcharges }
 )
-
-@Form.create({
-  formPropName: 'formhoc',
-})
-
+@Form.create()
 export default class SurchargeForm extends React.Component {
   static propTypes = {
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     formdata: PropTypes.object.isRequired,
     submitSurcharges: PropTypes.func.isRequired,
     tariffId: PropTypes.string.isRequired,
@@ -61,7 +57,7 @@ export default class SurchargeForm extends React.Component {
   handleSave = () => {
     const formdata = {
       ...this.props.formdata,
-      ...this.props.formhoc.getFieldsValue(),
+      ...this.props.form.getFieldsValue(),
     };
     const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
     prom.then(result => {
@@ -74,7 +70,7 @@ export default class SurchargeForm extends React.Component {
   }
 
   renderInput(selected, field, initialMode, initialValue) {
-    const { getFieldProps } = this.props.formhoc;
+    const { getFieldProps } = this.props.form;
     return (
       <Form horizontal>
        <Row>
@@ -99,7 +95,7 @@ export default class SurchargeForm extends React.Component {
   }
 
   render() {
-    const { formhoc: { getFieldProps }, formdata } = this.props;
+    const { form: { getFieldProps }, formdata } = this.props;
     const { disabled1, disabled2 } = this.state;
     return (
         <div className="panel-body" style={{ padding: '0 16px' }}>

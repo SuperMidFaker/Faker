@@ -28,13 +28,11 @@ const FormItem = Form.Item;
     depth: 1,
   }));
 })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class ChangePassword extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     changePassword: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -56,10 +54,10 @@ export default class ChangePassword extends React.Component {
     }, {
       validator: (rule, value, callback) => {
         if (value) {
-          if (value === this.props.formhoc.getFieldValue('oldPwd')) {
+          if (value === this.props.form.getFieldValue('oldPwd')) {
             callback(this.msg('samePwd'));
           } else {
-            this.props.formhoc.validateFields(['confirmPwd']);
+            this.props.form.validateFields(['confirmPwd']);
             callback();
           }
         } else {
@@ -74,7 +72,7 @@ export default class ChangePassword extends React.Component {
       required: true, whitespace: true, message: this.msg('pwdRequired'),
     }, {
       validator: (rule, value, callback) => {
-        if (value && value !== this.props.formhoc.getFieldValue('newPwd')) {
+        if (value && value !== this.props.form.getFieldValue('newPwd')) {
           callback(this.msg('pwdUnmatch'));
         } else {
           callback();
@@ -85,7 +83,7 @@ export default class ChangePassword extends React.Component {
 
   handlePasswordChange = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields((errors, values) => {
+    this.props.form.validateFields((errors, values) => {
       if (!errors) {
         this.props.changePassword(values.oldPwd, values.newPwd).then(result => {
           if (result.error) {
@@ -103,7 +101,7 @@ export default class ChangePassword extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, field, rules) {
-    const { formhoc: { getFieldProps, getFieldError } } = this.props;
+    const { form: { getFieldProps, getFieldError } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         help={rules && getFieldError(field)} hasFeedback required
@@ -113,7 +111,7 @@ export default class ChangePassword extends React.Component {
     );
   }
   render() {
-    const { intl, formhoc } = this.props;
+    const { intl } = this.props;
     return (
       <div className="acc-panel">
         <div className="panel-heading">
@@ -121,7 +119,7 @@ export default class ChangePassword extends React.Component {
           <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
         </div>
         <div className="panel-body">
-          <Form horizontal onSubmit={this.handlePasswordChange} form={formhoc}
+          <Form horizontal onSubmit={this.handlePasswordChange}
             className="form-edit-content offset-right-col"
           >
             {this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules)}

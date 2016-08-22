@@ -55,16 +55,14 @@ function fetchData({ state, dispatch, params, cookie }) {
     goBackFn: () => router.goBack(),
   }));
 })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class ShipmentDraftEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
     sortField: PropTypes.string.isRequired,
@@ -82,14 +80,14 @@ export default class ShipmentDraftEdit extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleDraftAccept = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields(errors => {
+    this.props.form.validateFields(errors => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
         const { loginId, loginName, tenantId } = this.props;
         const form = {
           ...this.props.formData,
-          ...this.props.formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
         };
         this.props.acceptDraft(form, loginId, loginName, tenantId)
         .then(result => {
@@ -115,7 +113,7 @@ export default class ShipmentDraftEdit extends React.Component {
     ev.preventDefault();
     const form = {
       ...this.props.formData,
-      ...this.props.formhoc.getFieldsValue(),
+      ...this.props.form.getFieldsValue(),
     };
     this.props.saveEdit(form, this.props.tenantId, this.props.loginId)
       .then(result => {
@@ -135,21 +133,21 @@ export default class ShipmentDraftEdit extends React.Component {
       });
   }
   render() {
-    const { intl, submitting, formhoc } = this.props;
+    const { intl, submitting, form } = this.props;
     return (
       <div className="main-content">
-        <Form form={formhoc} horizontal>
+        <Form horizontal>
           <div className="page-body">
             <div className="panel-header" />
             <div className="panel-body body-responsive">
               <Col span="16" className="main-col">
-                <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
-                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
-                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={formhoc} />
-                <ModeInfo intl={intl} formhoc={formhoc} />
-                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc} />
+                <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />
+                <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />
+                <ModeInfo intl={intl} formhoc={form} />
+                <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
               </Col>
-              <CorrelInfo formhoc={formhoc} intl={intl} />
+              <CorrelInfo formhoc={form} intl={intl} />
             </div>
           </div>
           <div className="bottom-fixed-row">

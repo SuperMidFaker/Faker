@@ -17,7 +17,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
   'CUS_CREATE_DELGCCB', 'CUS_CREATE_DELGCCB_SUCCEED', 'CUS_CREATE_DELGCCB_FAIL',
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
-  'HIDE_PREVIEWER',
+  'HIDE_PREVIEWER', 'LOAD_SUBDELG', 'LOAD_SUBDELG_SUCCEED', 'LOAD_SUBDELG_FAIL',
 ]);
 
 const initialState = {
@@ -48,7 +48,7 @@ const initialState = {
   delegateListFilter: {
     sortField: '',
     sortOrder: '',
-    status: 'undelg',
+    status: 'unaccepted',
   },
   sendPanel: {
     visible: false,
@@ -61,6 +61,12 @@ const initialState = {
     delegateTracking: {},
     clearanceTracking: [],
   },
+  subdelgs: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -70,16 +76,20 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ACCEPT_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, listFilter: JSON.parse(action.params.filter) };
+    case actionTypes.LOAD_ACCEPT_FAIL:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
+    case actionTypes.LOAD_SUBDELG_SUCCEED:
+      return { ...state, subdelgs: { ...state.subdelgs, loading: false, ...action.result.data } };
+    case actionTypes.LOAD_SUBDELG_FAIL:
+      return { ...state, subdelgs: { ...state.subdelgs, loading: false } };
     case actionTypes.LOAD_DELEGATE_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
-    case actionTypes.LOAD_ACCEPT_FAIL:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
     case actionTypes.LOAD_DELG:
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
       return { ...state, formData: action.result.data.delegation,
-        delgFiles: action.result.data.files, formRequire: action.result.data.formRequire,
+        delgFiles: action.result.data.files, subdelgs: action.result.data.subdelgs, formRequire: action.result.data.formRequire,
       };
     case actionTypes.SEARCH_PARAM_SUCCEED:
       return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
@@ -137,6 +147,21 @@ export function loadAcceptanceTable(cookie, params) {
   };
 }
 
+export function loadSubdelgsTable(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SUBDELG,
+        actionTypes.LOAD_SUBDELG_SUCCEED,
+        actionTypes.LOAD_SUBDELG_FAIL,
+      ],
+      endpoint: 'v1/cms/acceptance/subdelgs',
+      method: 'get',
+      params,
+      cookie,
+    },
+  };
+}
 
 export function loadDelegateTable(cookie, params) {
   return {

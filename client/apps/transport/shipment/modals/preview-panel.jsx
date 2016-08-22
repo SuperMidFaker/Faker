@@ -143,6 +143,7 @@ export default class PreviewPanel extends React.Component {
   render() {
     const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;
     return (
+      shipmtNo ?
       <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
         <div className="panel-content">
           <div className="header">
@@ -161,6 +162,7 @@ export default class PreviewPanel extends React.Component {
         </div>
         <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
       </div>
+      : null
     );
   }
 }

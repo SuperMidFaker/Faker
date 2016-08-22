@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'component.module.transport',
     defaultMessage: '国内运输',
   },
+  moduleClearance: {
+    id: 'component.module.clearance',
+    defaultMessage: '进出口清关',
+  },
   moduleForwarding: {
     id: 'component.module.forwarding',
     defaultMessage: '货代协同',

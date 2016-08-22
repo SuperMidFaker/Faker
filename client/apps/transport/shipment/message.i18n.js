@@ -445,4 +445,8 @@ export default defineMessages({
     id: 'transport.acceptance.btn.text.cancel',
     defaultMessage: '取消',
   },
+  totalChargeMustBeNumber: {
+    id: 'transport.acceptance.total.charge.be.number',
+    defaultMessage: '总运费必须为数字',
+  },
 });

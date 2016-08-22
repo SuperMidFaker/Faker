@@ -21,9 +21,7 @@ const FormItem = Form.Item;
   }),
   { closeDateModal, savePickOrDeliverDate }
 )
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class PickupDeliverUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -31,24 +29,24 @@ export default class PickupDeliverUpdater extends React.Component {
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
     savePickOrDeliverDate: PropTypes.func.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    this.props.formhoc.validateFields(errors => {
+    this.props.form.validateFields(errors => {
       if (!errors) {
-        const { formhoc, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
-        const { actDate } = formhoc.getFieldsValue();
+        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
+        const { actDate } = form.getFieldsValue();
         this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
             } else {
               this.props.closeDateModal();
-              formhoc.resetFields();
+              form.resetFields();
               onOK();
             }
           });
@@ -57,10 +55,10 @@ export default class PickupDeliverUpdater extends React.Component {
   }
   handleCancel = () => {
     this.props.closeDateModal();
-    this.props.formhoc.resetFields();
+    this.props.form.resetFields();
   }
   render() {
-    const { shipmtNo, formhoc: { getFieldProps } } = this.props;
+    const { shipmtNo, form: { getFieldProps } } = this.props;
     const colSpan = 6;
     let title;
     let ruleMsg;
