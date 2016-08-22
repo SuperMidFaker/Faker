@@ -31,7 +31,7 @@ export default class ClientInfo extends React.Component {
 
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   findClientValue = (evalue) => {
-    const clientFieldId = evalue;
+    const clientFieldId = Number(evalue);
     // console.log(typeof clientFieldId, evalue);
     if (isNaN(clientFieldId) && typeof clientFieldId !== 'number') {
       // 手工输入名称直接返回
@@ -50,7 +50,7 @@ export default class ClientInfo extends React.Component {
     const { formhoc, mode, outerColSpan, clients, customer_name: name, ref_external_no } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.partner_id}/${cl.tid}`,
-      value: cl.partner_id,
+      value: `${cl.partner_id}`,
       code: cl.partner_code,
       name: cl.name,
     }));

@@ -46,9 +46,11 @@ export default class Dashboard extends React.Component {
   static propTypes = {
     children: PropTypes.object,
   }
+  /*
   componentWillReceiveProps(nextProps) {
     this.createEcharts(nextProps.statistics);
   }
+  */
   onDateChange = (value, dateString) => {
     this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
   }
