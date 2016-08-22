@@ -36,17 +36,17 @@ img {
   z-index: 1;
 }
 
-.zmdi-import:before {
+.zmdi-clearance:before {
   content: '\f1cc';
 }
 .zmdi-manager:before {
   content: '\f1cc';
 }
-.zmdi-export:before {
-  content: '\f1a3';
+.zmdi-orders:before {
+  content: '\f222';
 }
 .zmdi-clearance:before {
-  content: '\f1a3';
+  content: '\f172';
 }
 .zmdi-transport:before {
   content: '\f1e6';
@@ -274,13 +274,13 @@ img {
       &.module-corp {
         background-color:#393c40;
       }
-      &.module-import {
+      &.module-clearance {
         background-color:#01BAD2;
       }
       &.module-manager {
         background-color:#01BAD2;
       }
-      &.module-export {
+      &.module-orders {
         background-color:#60BE29;
       }
       &.module-transport {
@@ -499,13 +499,13 @@ img {
     &.module-corp {
       background-color:#393c40;
     }
-    &.module-import {
+    &.module-clearance {
       background-color:#01BAD2;
     }
     &.module-manager {
       background-color:#01BAD2;
     }
-    &.module-export {
+    &.module-orders {
       background-color:#60BE29;
     }
     &.module-transport {
@@ -859,6 +859,14 @@ img {
     .ant-table-placeholder {
       border-bottom: none;
     }
+  }
+  &.expandable {
+    .ant-table-body {
+      height: auto;
+    }
+  }
+  .ant-table-expanded-row > td {
+    padding: 8px 8px;
   }
 }
 .pane-header {

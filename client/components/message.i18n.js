@@ -9,6 +9,10 @@ const messages = defineMessages({
     id: 'component.module.export',
     defaultMessage: '出口报关',
   },
+  moduleOrders: {
+    id: 'component.module.orders',
+    defaultMessage: '订单中心',
+  },
   moduleTransport: {
     id: 'component.module.transport',
     defaultMessage: '国内运输',
