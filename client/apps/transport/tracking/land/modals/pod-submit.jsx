@@ -41,7 +41,6 @@ export default class PodSubmitter extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     const photoList = [];
-
     if (nextProps.podModal.photos && /^http/.test(nextProps.podModal.photos)) {
       nextProps.podModal.photos.split(',').forEach((ph, index) => {
         photoList.push({
@@ -73,10 +72,8 @@ export default class PodSubmitter extends React.Component {
   handlePhotoUpload = info => {
     const fileList = [...info.fileList];
     const index = fileList.findIndex(item => item.uid === info.file.uid);
-    if (info.file.response) {
-      fileList[index].url = info.file.response.data;
-      this.setState({ photoList: fileList });
-    }
+    fileList[index].url = info.file.response ? info.file.response.data : '';
+    this.setState({ photoList: fileList });
   }
   handleOk = () => {
     const { shipmtNo, submitter, dispId, parentDispId, onOK } = this.props;
