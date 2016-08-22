@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col, Row, Icon, Button } from 'antd';
+import { Form, Select, Input, InputNumber, Card, Col, Row, Icon, Button } from 'antd';
 import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
 import { DECL_I_TYPE } from 'common/constants';
 
@@ -66,8 +66,8 @@ export default class SubForm extends Component {
     });
     const formItems = getFieldValue('keys').map((k) => {
       return (
-        <Row>
-          <Col sm={5}>
+        <Row style={{ marginBottom: 8 }}>
+          <Col sm={6}>
             <FormItem label="报关类型" {...formItemLayout}>
               <Select
                 {...getFieldProps(`decl_way_code_${k}`, {
@@ -82,7 +82,7 @@ export default class SubForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={6}>
             <FormItem label="备案号" {...formItemLayout}>
               <Input {...getFieldProps(`manual_no_${k}`, {
                 initialValue: fieldInits.manual_no,
@@ -90,31 +90,31 @@ export default class SubForm extends Component {
             </FormItem>
           </Col>
           <Col sm={5}>
-            <FormItem type="number" label="件数" {...formItemLayout}>
-              <Input {...getFieldProps(`pack_count_${k}`, {
-                initialValue: fieldInits.pack_count,
-              })} />
+            <FormItem label="件数" {...formItemLayout}>
+              <InputNumber min={1} max={100000} defaultValue={1} style={{ width: '100%' }}
+                {...getFieldProps(`pack_count_${k}`, { initialValue: fieldInits.pack_count })}
+              />
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label="毛重" {...formItemLayout}>
-              <Input type="number" {...getFieldProps(`gross_wt_${k}`, {
+              <Input addonAfter="公斤" type="number" {...getFieldProps(`gross_wt_${k}`, {
                 initialValue: fieldInits.gross_wt,
               })} />
             </FormItem>
           </Col>
-          <Col span={3} offset={1}>
-            <Button onClick={() => this.remove(k)}>删除</Button>
+          <Col span={1} offset={1}>
+            <Button type="ghost" shape="circle" onClick={() => this.remove(k)} icon="delete"></Button>
           </Col>
         </Row>
       );
     });
     return (
-      <Card>
+      <Card bodyStyle={{ padding: 16 }}>
         {formItems}
-        <div>
-          <Button type="dashed" size="large" onClick={this.handleAddRow} >
-            <Icon type="plus" />添加清关业务
+        <div style={{ marginTop: 8 }}>
+          <Button type="dashed" size="large" onClick={this.handleAddRow} icon="plus" style={{ width: '100%' }}>
+            添加清关业务
           </Button>
         </div>
       </Card>
