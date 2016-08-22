@@ -2,14 +2,13 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
-  'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL', 'SHOW_POD_MODAL',
-  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'HIDE_POD_MODAL',
+  'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
+  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
   'SAVE_VEHICLE', 'SAVE_VEHICLE_SUCCEED', 'SAVE_VEHICLE_FAIL',
   'SAVE_DATE', 'SAVE_DATE_SUCCEED', 'SAVE_DATE_FAIL',
-  'SAVE_POD', 'SAVE_POD_SUCCEED', 'SAVE_POD_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
 ]);
 
@@ -39,11 +38,6 @@ const initialState = {
     dispId: -1,
     shipmtNo: '',
     type: 'pickup',
-  },
-  podModal: {
-    visible: false,
-    shipmtNo: '',
-    dispId: -1,
   },
   locModal: {
     visible: false,
@@ -85,16 +79,6 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.HIDE_DATE_MODAL:
       return { ...state, dateModal: initialState.dateModal };
-    case actionTypes.SHOW_POD_MODAL:
-      return { ...state,
-        podModal: {
-          visible: true, dispId: action.data.dispId,
-          shipmtNo: action.data.shipmtNo,
-          parentDispId: action.data.parentDispId,
-        },
-      };
-    case actionTypes.HIDE_POD_MODAL:
-      return { ...state, podModal: initialState.podModal };
     case actionTypes.SHOW_LOC_MODAL:
       return {
         ...state, locModal: {
@@ -195,19 +179,6 @@ export function savePickOrDeliverDate(data) {
   };
 }
 
-export function showPodModal(dispId, parentDispId, shipmtNo) {
-  return {
-    type: actionTypes.SHOW_POD_MODAL,
-    data: { dispId, parentDispId, shipmtNo },
-  };
-}
-
-export function closePodModal() {
-  return {
-    type: actionTypes.HIDE_POD_MODAL,
-  };
-}
-
 export function showLocModal(transit) {
   return {
     type: actionTypes.SHOW_LOC_MODAL,
@@ -232,22 +203,6 @@ export function reportLoc(tenantId, shipmtNo, parentNo, point) {
       endpoint: 'v1/transport/tracking/point',
       method: 'post',
       data: { tenantId, shipmtNo, parentNo, point },
-    },
-  };
-}
-
-export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
-                              submitter, signStatus, signRemark, photos) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_POD,
-        actionTypes.SAVE_POD_SUCCEED,
-        actionTypes.SAVE_POD_FAIL,
-      ],
-      endpoint: 'v1/transport/tracking/pod',
-      method: 'post',
-      data: { userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
     },
   };
 }

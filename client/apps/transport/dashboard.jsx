@@ -381,14 +381,9 @@ export default class Dashboard extends React.Component {
             </Row>
           </Card>
           <Row style={{ marginTop: 24 }}>
-            <Col span={9}>
+            <Col span={24}>
               <Card title="待处理" bodyStyle={{ padding: 16 }}>
                 <Table size="small" columns={columns} dataSource={data} pagination={false} />
-              </Card>
-            </Col>
-            <Col span={15}>
-              <Card title="运输实况" style={{ marginLeft: 24 }}>
-                <div id="chart" style={{ width: '110%', height: '480px', margin: '-25px' }}></div>
               </Card>
             </Col>
           </Row>

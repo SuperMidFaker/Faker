@@ -251,7 +251,7 @@ export default defineMessages({
   },
   vehicleModalTitle: {
     id: 'transport.tracking.modal.vehicle.title',
-    defaultMessage: '更新车辆司机',
+    defaultMessage: '上报车辆信息',
   },
   vehiclePlate: {
     id: 'transport.tracking.modal.vehicle.plate',

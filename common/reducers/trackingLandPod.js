@@ -2,16 +2,20 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/pod/', [
-  'SHOW_AUDIT_MODAL', 'HIDE_AUDIT_MODAL', 'CHANGE_FILTER',
+  'SHOW_AUDIT_MODAL', 'SHOW_AUDIT_MODAL_SUCCEED', 'SHOW_AUDIT_MODAL_FAIL',
+  'HIDE_AUDIT_MODAL', 'CHANGE_FILTER',
   'AUDIT_POD', 'AUDIT_POD_SUCCEED', 'AUDIT_POD_FAIL',
   'RETURN_POD', 'RETURN_POD_SUCCEED', 'RETURN_POD_FAIL',
   'RESUBMIT_POD', 'RESUMBIT_POD_SUCCEED', 'RESUBMIT_POD_FAIL',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
   'LOAD_POD', 'LOAD_POD_SUCCEED', 'LOAD_POD_FAIL',
+  'SHOW_POD_MODAL', 'SHOW_POD_MODAL_SUCCEED', 'SHOW_POD_MODAL_FAIL',
+  'HIDE_POD_MODAL',
+  'SAVE_POD', 'SAVE_POD_SUCCEED', 'SAVE_POD_FAIL',
 ]);
 
 const initialState = {
-  loaded: true,
+  loaded: false,
   loading: false,
   filters: [
     { name: 'type', value: 'uploaded' },
@@ -37,6 +41,16 @@ const initialState = {
     sign_remark: '',
     photos: '',
   },
+  podModal: {
+    visible: false,
+    shipmtNo: '',
+    podId: -1,
+    dispId: -1,
+    parentDispId: -1,
+    sign_status: 1,
+    sign_remark: '',
+    photos: '',
+  },
 };
 
 export const LOAD_PODSHIPMT_SUCCEED = actionTypes.LOAD_PODSHIPMT_SUCCEED;
@@ -55,12 +69,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_POD_SUCCEED:
       return { ...state, auditModal: {
         ...state.auditModal, ...action.result.data,
+      }, podModal: {
+        ...state.podModal, ...action.result.data,
       } };
-    case actionTypes.SHOW_AUDIT_MODAL:
+    case actionTypes.SHOW_AUDIT_MODAL_SUCCEED:
       return { ...state,
         auditModal: {
-          ...state.auditModal, visible: true, dispId: action.data.dispId, readonly: true,
-          parentDispId: action.data.parentDispId, podId: action.data.podId,
+          ...state.auditModal, visible: true, ...action.data, readonly: true,
+          ...action.result.data,
         },
       };
     case actionTypes.HIDE_AUDIT_MODAL:
@@ -70,10 +86,35 @@ export default function reducer(state = initialState, action) {
       filters.push({ name: action.data.field, value: action.data.value });
       return { ...state, filters };
     }
-    case actionTypes.AUDIT_POD_SUCCEED:
-      return { ...state, loaded: false };
-    case actionTypes.RETURN_POD_SUCCEED:
-      return { ...state, loaded: false };
+    case actionTypes.AUDIT_POD_SUCCEED: {
+      const i = state.shipmentlist.data.findIndex(item => item.disp_id === action.data.dispId);
+      const data = [...state.shipmentlist.data];
+      data.splice(i, 1);
+      const shipmentlist = { ...state.shipmentlist, data };
+      return { ...state, shipmentlist };
+    }
+    case actionTypes.RETURN_POD_SUCCEED: {
+      const i = state.shipmentlist.data.findIndex(item => item.disp_id === action.data.dispId);
+      const data = [...state.shipmentlist.data];
+      data.splice(i, 1);
+      const shipmentlist = { ...state.shipmentlist, data };
+      return { ...state, shipmentlist };
+    }
+    case actionTypes.SHOW_POD_MODAL_SUCCEED: {
+      let data = initialState.podModal;
+      if (action.result) {
+        data = action.result.data;
+      }
+      return { ...state,
+        podModal: {
+          ...data,
+          ...action.data,
+          visible: true,
+        },
+      };
+    }
+    case actionTypes.HIDE_POD_MODAL:
+      return { ...state, podModal: initialState.podModal };
     default:
       return state;
   }
@@ -112,12 +153,21 @@ export function loadPod(podId) {
 
 export function showAuditModal(dispId, parentDispId, podId) {
   return {
-    type: actionTypes.SHOW_AUDIT_MODAL,
-    data: { dispId, parentDispId, podId },
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHOW_AUDIT_MODAL,
+        actionTypes.SHOW_AUDIT_MODAL_SUCCEED,
+        actionTypes.SHOW_AUDIT_MODAL_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/pod',
+      method: 'get',
+      params: { podId },
+      data: { dispId, parentDispId, podId },
+    },
   };
 }
 
-export function closePodModal() {
+export function closePodAuditModal() {
   return {
     type: actionTypes.HIDE_AUDIT_MODAL,
   };
@@ -172,5 +222,50 @@ export function changePodFilter(field, value) {
   return {
     type: actionTypes.CHANGE_FILTER,
     data: { field, value },
+  };
+}
+
+export function showPodModal(podId, dispId, parentDispId, shipmtNo) {
+  if (podId !== -1) {
+    return {
+      [CLIENT_API]: {
+        types: [
+          actionTypes.SHOW_POD_MODAL,
+          actionTypes.SHOW_POD_MODAL_SUCCEED,
+          actionTypes.SHOW_POD_MODAL_FAIL,
+        ],
+        endpoint: 'v1/transport/tracking/pod',
+        method: 'get',
+        params: { podId },
+        data: { podId, dispId, parentDispId, shipmtNo },
+      },
+    };
+  } else {
+    return {
+      type: actionTypes.SHOW_POD_MODAL_SUCCEED,
+      data: { podId, dispId, parentDispId, shipmtNo },
+    };
+  }
+}
+
+export function closePodModal() {
+  return {
+    type: actionTypes.HIDE_POD_MODAL,
+  };
+}
+
+export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
+                              submitter, signStatus, signRemark, photos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_POD,
+        actionTypes.SAVE_POD_SUCCEED,
+        actionTypes.SAVE_POD_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/pod',
+      method: 'post',
+      data: { userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
+    },
   };
 }

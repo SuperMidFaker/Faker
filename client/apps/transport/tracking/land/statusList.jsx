@@ -7,9 +7,10 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import {
-  loadTransitTable, showPodModal, showDateModal, showVehicleModal,
+  loadTransitTable, showDateModal, showVehicleModal,
   showLocModal, loadShipmtLastPoint,
 } from 'common/reducers/trackingLandStatus';
+import { showPodModal } from 'common/reducers/trackingLandPod';
 import { showExcpModal } from 'common/reducers/trackingLandException';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
@@ -211,7 +212,7 @@ export default class LandStatusList extends React.Component {
   handleShowPodModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
+    this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowExcpModal = (row, ev) => {
     ev.preventDefault();

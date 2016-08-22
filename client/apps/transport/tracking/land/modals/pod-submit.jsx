@@ -1,25 +1,27 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+
 import { Form, Input, Radio, Upload, Button, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closePodModal, saveSubmitPod } from 'common/reducers/trackingLandStatus';
+import { closePodModal, saveSubmitPod, loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-const formatMsg = format(messages);
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+
 @injectIntl
 @connect(
   state => ({
     submitter: state.account.username,
-    visible: state.trackingLandStatus.podModal.visible,
-    dispId: state.trackingLandStatus.podModal.dispId,
-    parentDispId: state.trackingLandStatus.podModal.parentDispId,
-    shipmtNo: state.trackingLandStatus.podModal.shipmtNo,
-    auditModal: state.trackingLandPod.auditModal,
+    visible: state.trackingLandPod.podModal.visible,
+    dispId: state.trackingLandPod.podModal.dispId,
+    parentDispId: state.trackingLandPod.podModal.parentDispId,
+    shipmtNo: state.trackingLandPod.podModal.shipmtNo,
+    podModal: state.trackingLandPod.podModal,
   }),
-  { closePodModal, saveSubmitPod })
+  { closePodModal, saveSubmitPod, loadPod })
 export default class PodSubmitter extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -29,7 +31,8 @@ export default class PodSubmitter extends React.Component {
     onOK: PropTypes.func,
     closePodModal: PropTypes.func.isRequired,
     saveSubmitPod: PropTypes.func.isRequired,
-    auditModal: PropTypes.object.isRequired,
+    podModal: PropTypes.object.isRequired,
+    loadPod: PropTypes.func.isRequired,
   }
   state = {
     signStatus: 1,
@@ -37,21 +40,22 @@ export default class PodSubmitter extends React.Component {
     photoList: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.auditModal.dispId) {
-      const photoList = [];
-      nextProps.auditModal.photos.split(',').forEach((ph, index) => {
+    const photoList = [];
+
+    if (nextProps.podModal.photos && /^http/.test(nextProps.podModal.photos)) {
+      nextProps.podModal.photos.split(',').forEach((ph, index) => {
         photoList.push({
           uid: -index,
           status: 'done',
           url: ph,
         });
       });
-      this.setState({
-        signStatus: nextProps.auditModal.sign_status,
-        remark: nextProps.auditModal.sign_remark,
-        photoList,
-      });
     }
+    this.setState({
+      signStatus: nextProps.podModal.sign_status,
+      remark: nextProps.podModal.sign_remark,
+      photoList,
+    });
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (ev) => {
@@ -120,7 +124,7 @@ export default class PodSubmitter extends React.Component {
             wrapperCol={{ span: 24 - colSpan }}
           >
             <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
-              onChange={this.handlePhotoUpload} defaultFileList={photoList} withCredentials
+              onChange={this.handlePhotoUpload} onRemove={this.handlePhotoRemove} fileList={photoList} withCredentials
             >
               <Button icon="upload" type="ghost" />
               {this.msg('photoSubmit')}

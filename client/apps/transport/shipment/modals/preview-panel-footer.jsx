@@ -13,11 +13,8 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import {
-  showPodModal, showDateModal, showVehicleModal,
-  showLocModal,
-} from 'common/reducers/trackingLandStatus';
-import { passAudit, returnAudit, loadPod } from 'common/reducers/trackingLandPod';
+import { showDateModal, showVehicleModal, showLocModal } from 'common/reducers/trackingLandStatus';
+import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 const formatMsg = format(messages);
 const DropdownButton = Dropdown.Button;
@@ -46,8 +43,7 @@ const DropdownButton = Dropdown.Button;
     passAudit,
     returnAudit,
     withDraw,
-    returnShipment,
-    loadPod }
+    returnShipment }
 )
 export default class Footer extends React.Component {
   static propTypes = {
@@ -74,7 +70,6 @@ export default class Footer extends React.Component {
     withDraw: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
-    loadPod: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -202,16 +197,10 @@ export default class Footer extends React.Component {
     this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
   }
   handleShowPodModal = (row) => {
-    this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
+    this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleResubmit = (row) => {
-    this.props.loadPod(row.pod_id).then(result => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
-      }
-    });
+    this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowTransitModal = (row) => {
     this.props.showLocModal({

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Radio, Upload, Button, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closePodModal, passAudit, returnAudit } from 'common/reducers/trackingLandPod';
+import { closePodAuditModal, passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -17,13 +17,13 @@ const RadioGroup = Radio.Group;
     loginId: state.account.loginId,
     auditModal: state.trackingLandPod.auditModal,
   }),
-  { closePodModal, passAudit, returnAudit })
+  { closePodAuditModal, passAudit, returnAudit })
 export default class PodAuditModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     auditor: PropTypes.string.isRequired,
     auditModal: PropTypes.object.isRequired,
-    closePodModal: PropTypes.func.isRequired,
+    closePodAuditModal: PropTypes.func.isRequired,
     returnAudit: PropTypes.func.isRequired,
     passAudit: PropTypes.func.isRequired,
   }
@@ -50,33 +50,6 @@ export default class PodAuditModal extends React.Component {
     }
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  handleFieldChange = (ev) => {
-    this.setState({ remark: ev.target.value });
-  }
-  handleSignRadioChange = ev => {
-    this.setState({ signStatus: ev.target.value });
-  }
-  handlePhotoRemove = (/* file */) => {
-    if (this.props.readonly) {
-      return;
-    }
-  }
-  handlePhotoUpload = info => {
-    if (info.file.status === 'done' && info.file.response) {
-      if (info.file.response.status === 200) {
-        const photos = [...this.state.photoList];
-        photos.push({
-          uid: info.file.uid,
-          name: info.file.name,
-          status: 'done',
-          url: info.file.response.data,
-        });
-        this.setState({ photoList: photos });
-      } else {
-        message.error(info.file.response.msg);
-      }
-    }
-  }
   handleAuditPass = () => {
     /*
     const { auditor, dispId } = this.props;
@@ -89,7 +62,7 @@ export default class PodAuditModal extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.props.closePodModal();
+          this.props.closePodAuditModal();
         }
       });
   }
@@ -100,12 +73,12 @@ export default class PodAuditModal extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.props.closePodModal();
+          this.props.closePodAuditModal();
         }
       });
   }
   handleAuditCancel = () => {
-    this.props.closePodModal();
+    this.props.closePodAuditModal();
   }
   render() {
     const { auditModal: { readonly, visible } } = this.props;
@@ -144,8 +117,8 @@ export default class PodAuditModal extends React.Component {
           <FormItem label={this.msg('podPhoto')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Upload action={`${API_ROOTS.default}v1/upload/img`} listType="picture" onRemove={this.handlePhotoRemove}
-              onChange={this.handlePhotoUpload} fileList={photoList} withCredentials
+            <Upload action={`${API_ROOTS.default}v1/upload/img`} listType="picture"
+              fileList={photoList} withCredentials
             >
               <Button icon="upload" type="ghost" disabled={readonly} />
               {this.msg('photoSubmit')}

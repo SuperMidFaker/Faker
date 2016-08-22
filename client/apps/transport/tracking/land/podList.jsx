@@ -5,9 +5,8 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadPodTable, loadPod, showAuditModal, resubmitPod } from
+import { loadPodTable, showAuditModal, resubmitPod, showPodModal } from
   'common/reducers/trackingLandPod';
-import { showPodModal } from 'common/reducers/trackingLandStatus';
 import PodAuditModal from './modals/pod-audit';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import PodModal from './modals/pod-submit';
@@ -45,7 +44,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     loading: state.trackingLandPod.loading,
     loaded: state.trackingLandPod.loaded,
   }),
-  { loadPodTable, loadShipmtDetail, loadPod, showAuditModal, resubmitPod, showPodModal })
+  { loadPodTable, loadShipmtDetail, showAuditModal, resubmitPod, showPodModal })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -58,7 +57,6 @@ export default class LandStatusList extends React.Component {
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
-    loadPod: PropTypes.func.isRequired,
     showAuditModal: PropTypes.func.isRequired,
     resubmitPod: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
@@ -110,9 +108,6 @@ export default class LandStatusList extends React.Component {
            sortOrder: state.transportTracking.transit.sortOrder,
            */
       });
-    }
-    if (!nextProps.loaded) {
-      this.handleTableLoad();
     }
   }
   dataSource = new Table.DataSource({
@@ -171,29 +166,17 @@ export default class LandStatusList extends React.Component {
   handleShowPodModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
+    this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowAuditModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.loadPod(row.pod_id).then(result => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.props.showAuditModal(row.disp_id, row.parent_id, row.pod_id);
-      }
-    });
+    this.props.showAuditModal(row.disp_id, row.parent_id, row.pod_id);
   }
   handleResubmit = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.loadPod(row.pod_id).then(result => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.props.showPodModal(row.disp_id, row.parent_id, row.shipmt_no);
-      }
-    });
+    this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'pod', row).then(result => {
