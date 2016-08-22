@@ -86,7 +86,7 @@ export default class SubdelgTable extends Component {
     const { subdelgs } = this.props;
     this.dataSource.remotes = subdelgs;
     return (
-      <div style={{ height: 200 }}>
+      <div>
         <Table columns={this.columns} dataSource={this.dataSource} pagination={false} size="small" scroll={{ y: 170 }} />
       </div>
   ); }

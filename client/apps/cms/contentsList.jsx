@@ -277,7 +277,8 @@ export default class AcceptanceList extends Component {
             <RadioButton value="declared">已申报</RadioButton>
             <RadioButton value="finished">已放行</RadioButton>
           </RadioGroup>
-          <SearchBar placeholder={'委托编号／发票号'}
+          <span />
+          <SearchBar placeholder={'委托编号/发票号'}
             value={this.state.searchInput}
           />
         </div>
