@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadAcceptanceTable } from 'common/reducers/cmsDelegation';
-import List from '../../common/acceptance/list';
+// import List from '../../common/acceptance/list';
+import List from '../../contentsList';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadAcceptanceTable(cookie, {

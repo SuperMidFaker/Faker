@@ -4,6 +4,7 @@ import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from '../delegation/basicForm';
+import SubForm from '../delegation/SubForm';
 import UploadGroup from '../delegation/attachmentUpload';
 import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
@@ -51,8 +52,20 @@ export default class AcceptanceCreate extends Component {
     this.props.form.validateFields(errors => {
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
+        const formdatas = this.props.form.getFieldsValue();
+        // console.log('formdatas: ', formdatas);
+        const subformArray = [];
+        for (const i of formdatas.keys) {
+          subformArray.push({
+            decl_way_code: formdatas[`decl_way_code_${i}`],
+            manual_no: formdatas[`manual_no_${i}`],
+            pack_count: formdatas[`pack_count_${i}`],
+            gross_wt: formdatas[`gross_wt_${i}`],
+          });
+        }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        if (delegation.weight === '') delegation.weight = null;
+        // console.log('delegation: ', delegation);
+        delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
           ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,
@@ -62,7 +75,7 @@ export default class AcceptanceCreate extends Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push(`/${type}/accept`);
+            this.context.router.push('/clearance/import');
           }
         });
       }
@@ -79,6 +92,7 @@ export default class AcceptanceCreate extends Component {
       attachments: fileList,
     });
   }
+
   render() {
     const { form, type, submitting } = this.props;
     return (
@@ -92,6 +106,9 @@ export default class AcceptanceCreate extends Component {
               <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
                 <UploadGroup onFileListUpdate={this.handleUploadFiles} />
               </Col>
+            </div>
+            <div id="parent" style={{ padding: '16px' }}>
+              <SubForm form={form} />
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{ marginRight: 20 }}

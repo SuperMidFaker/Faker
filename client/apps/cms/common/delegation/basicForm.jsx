@@ -1,9 +1,9 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col } from 'antd';
+import { Form, Select, Input, Card, Col, Row } from 'antd';
 import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
-import { TENANT_ASPECT } from 'common/constants';
+import { TENANT_ASPECT, GOODSTYPES } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -16,9 +16,9 @@ function getFieldInits(aspect, formData) {
   const init = {};
   if (formData) {
     [
-      'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight', 'trans_mode',
-      'voyage_no', 'trade_mode', 'decl_way_code', 'ems_no', 'customer_name',
-      'order_no', 'remark',
+      'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no', 'pieces', 'weight', 'trans_mode',
+      'voyage_no', 'trade_mode', 'decl_way_code', 'customer_name', 'goods_type',
+      'order_no', 'remark', 'manual_no',
     ].forEach(fd => {
       init[fd] = formData[fd] || '';
     });
@@ -84,18 +84,19 @@ class RemoteSearchSelect extends React.Component {
 @connect(
   state => ({
     clients: state.cmsDelegation.formRequire.clients,
-    tradeModes: state.cmsDelegation.formRequire.tradeModes.map(tm => ({
-      value: tm.value,
-      text: `${tm.value} | ${tm.text}`,
-    })),
-    transModes: state.cmsDelegation.formRequire.transModes.map(tm => ({
-      value: tm.value,
-      text: `${tm.value} | ${tm.text}`,
-    })),
-    declareWayModes: state.cmsDelegation.formRequire.declareWayModes.map(dwm => ({
-      value: dwm.value,
-      text: `${dwm.value} | ${dwm.text}`,
-    })),
+    tenantName: state.account.tenantName,
+    // tradeModes: state.cmsDelegation.formRequire.tradeModes.map(tm => ({
+    //   value: tm.value,
+    //   text: `${tm.value} | ${tm.text}`,
+    // })),
+    // transModes: state.cmsDelegation.formRequire.transModes.map(tm => ({
+    //   value: tm.value,
+    //   text: `${tm.value} | ${tm.text}`,
+    // })),
+    // declareWayModes: state.cmsDelegation.formRequire.declareWayModes.map(dwm => ({
+    //   value: dwm.value,
+    //   text: `${dwm.value} | ${dwm.text}`,
+    // })),
     fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
   }),
   { setClientForm, searchParams }
@@ -110,6 +111,7 @@ export default class BasicForm extends Component {
     declareWayModes: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
     searchParams: PropTypes.func.isRequired,
+    tenantName: PropTypes.string.isRequired,
   }
   handleClientChange = (value) => {
     if (typeof value === 'string') {
@@ -131,7 +133,7 @@ export default class BasicForm extends Component {
     }
   }
   render() {
-    const { form: { getFieldProps }, fieldInits, clients, tradeModes, transModes, declareWayModes, partnershipType } = this.props;
+    const { form: { getFieldProps }, fieldInits, clients, tenantName, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
@@ -156,98 +158,99 @@ export default class BasicForm extends Component {
         display: '',
       };
     }
-
     return (
-      <Card title="基础信息">
-        <Col sm={12}>
-          <FormItem label="客户" {...formItemLayout} style={{ display: customerName.display }}>
-            <Select size="large" combobox showArrow={false} optionFilterProp="search"
-              placeholder="输入客户代码或名称"
-              {...getFieldProps('customer_name', { rules: [{
-                required: customerName.required, message: '客户名称必填',
-              }],
-                getValueFromEvent: this.handleClientChange,
-                initialValue: fieldInits.customer_name,
-              })}
-            >
-            {
-              clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                search={`${data.partner_code}${data.name}`}
-              >{data.name}</Option>)
-            )}
-            </Select>
-          </FormItem>
-          <FormItem label="发票号" {...formItemLayout}>
-            <Input {...getFieldProps('invoice_no', {
-              initialValue: fieldInits.invoice_no,
-            })} />
-          </FormItem>
-          <FormItem label="提运单号" {...formItemLayout}>
-            <Input {...getFieldProps('bl_wb_no', {
-              initialValue: fieldInits.bl_wb_no,
-            })} />
-          </FormItem>
-          <FormItem label="备案号" {...formItemLayout}>
-            <Input {...getFieldProps('ems_no', {
-              initialValue: fieldInits.ems_no,
-            })} />
-          </FormItem>
-          <FormItem label="航名航次" {...formItemLayout}>
-            <Input {...getFieldProps('voyage_no', {
-              initialValue: fieldInits.voyage_no,
-            })} />
-          </FormItem>
-          <FormItem label="件数" {...formItemLayout}>
-            <Input {...getFieldProps('pieces', {
-              initialValue: fieldInits.pieces,
-            })} />
-          </FormItem>
-          <FormItem label="内部编号" {...formItemLayout}>
-            <Input {...getFieldProps('internal_no', {
-              initialValue: fieldInits.internal_no,
-            })} />
-          </FormItem>
-          <FormItem label="备注" {...formItemLayout} style={{ display: remarkDisplay.display }}>
-            <Input {...getFieldProps('remark', {
+      <Card title="委托信息">
+        <Row>
+          <Col sm={8}>
+            <FormItem label="委托方" {...formItemLayout} style={{ display: customerName.display }}>
+              <Select size="large" combobox showArrow={false} optionFilterProp="search"
+                placeholder="输入客户代码或名称"
+                {...getFieldProps('customer_name', { rules: [{
+                  required: customerName.required, message: '客户名称必填',
+                }],
+                  getValueFromEvent: this.handleClientChange,
+                  initialValue: fieldInits.customer_name,
+                })}
+              >
+              {
+                clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                  search={`${data.partner_code}${data.name}`}
+                >{data.name}</Option>)
+              )}
+              </Select>
+            </FormItem>
+            <FormItem label="运单号" {...formItemLayout}>
+              <Input {...getFieldProps('shipping_no', {
+                rules: [{ required: true, message: '运单号必填' }],
+              })} />
+            </FormItem>
+            <FormItem label="总件数" {...formItemLayout}>
+              <Input {...getFieldProps('pieces', {
+                initialValue: fieldInits.pieces,
+              })} />
+            </FormItem>
+            <FormItem label="申报单位" {...formItemLayout}>
+              <Input disabled {...getFieldProps('ccb_name', {
+                initialValue: tenantName,
+              })} />
+            </FormItem>
+          </Col>
+          <Col sm={8}>
+            <FormItem label="客户订单号" {...formItemLayout}>
+              <Input {...getFieldProps('order_no', {
+                initialValue: fieldInits.order_no,
+              })} />
+            </FormItem>
+            <FormItem label="航名/航次" {...formItemLayout}>
+              <Input {...getFieldProps('voyage_no', {
+                initialValue: fieldInits.voyage_no,
+              })} />
+            </FormItem>
+            <FormItem label="总毛重" {...formItemLayout}>
+              <Input {...getFieldProps('weight', {
+                initialValue: fieldInits.weight,
+              })} />
+            </FormItem>
+            <FormItem label="外部编号" {...formItemLayout}>
+              <Input {...getFieldProps('internal_no', {
+                initialValue: fieldInits.internal_no,
+              })} />
+            </FormItem>
+          </Col>
+          <Col sm={8}>
+            <FormItem label="客户发票号" {...formItemLayout}>
+              <Input {...getFieldProps('invoice_no', {
+                initialValue: fieldInits.invoice_no,
+              })} />
+            </FormItem>
+            <FormItem label="提运单号" {...formItemLayout}>
+              <Input {...getFieldProps('bl_wb_no', {
+                initialValue: fieldInits.bl_wb_no,
+              })} />
+            </FormItem>
+            <FormItem label="货物类型" {...formItemLayout}>
+              <Select {...getFieldProps('goods_type', {
+                initialValue: fieldInits.goods_type,
+                rules: [{ required: true, message: '货物类型必选', type: 'number' }],
+              })}>
+              {
+                GOODSTYPES.map(gt =>
+                  <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                )
+              }
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+          <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
+            <Input type="textarea" autosize={{ minRows: 6, maxRows: 16 }} {...getFieldProps('remark', {
               initialValue: fieldInits.remark,
             })} />
           </FormItem>
-        </Col>
-        <Col sm={12}>
-          <FormItem label="报关类型" {...formItemLayout}>
-            <LocalSearchSelect field="decl_way_code" options={declareWayModes}
-              getFieldProps={getFieldProps}
-              initialValue={fieldInits.decl_way_code}
-            />
-          </FormItem>
-          <FormItem label="合同号" {...formItemLayout}>
-            <Input {...getFieldProps('contract_no', {
-              initialValue: fieldInits.contract_no,
-            })} />
-          </FormItem>
-          <FormItem label="运输方式" {...formItemLayout}>
-            <LocalSearchSelect field="trans_mode" options={transModes}
-              getFieldProps={getFieldProps}
-              initialValue={fieldInits.trans_mode}
-            />
-          </FormItem>
-          <FormItem label="订单号" {...formItemLayout}>
-            <Input {...getFieldProps('order_no', {
-              initialValue: fieldInits.order_no,
-            })} />
-          </FormItem>
-          <FormItem label="贸易方式" {...formItemLayout}>
-            <RemoteSearchSelect field="trade_mode" options={tradeModes}
-              onSearch={this.handleTradeModeSearch} getFieldProps={getFieldProps}
-              initialValue={fieldInits.trade_mode} placeholder="输入代码查询"
-            />
-          </FormItem>
-          <FormItem label="重量" {...formItemLayout}>
-            <Input {...getFieldProps('weight', {
-              initialValue: fieldInits.weight,
-            })} />
-          </FormItem>
-        </Col>
+          </Col>
+        </Row>
       </Card>
     );
   }

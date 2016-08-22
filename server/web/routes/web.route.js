@@ -22,6 +22,7 @@ export default [
    ['get', '/transport*', renderWebPage],
    ['get', '/import*', renderWebPage],
    ['get', '/export*', renderWebPage],
+   ['get', '/clearance*', renderWebPage],
    ['get', '/account/password', renderWebPage],
    ['get', '/account/profile', renderWebPage],
    ['get', '/account/messages', renderWebPage],
