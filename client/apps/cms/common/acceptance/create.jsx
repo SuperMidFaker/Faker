@@ -99,16 +99,16 @@ export default class AcceptanceCreate extends Component {
       <div className="main-content">
         <div className="page-body">
           <Form horizontal form={form}>
-            <div className="panel-body body-responsive">
-              <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
+            <div className="panel-body">
+              <Col sm={18} style={{ padding: '16px 8px 0 16px' }}>
                 <BasicForm form={form} ieType={type} partnershipType="CCB" />
               </Col>
-              <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
+              <Col sm={6} style={{ padding: '16px 16px 0 8px' }}>
                 <UploadGroup onFileListUpdate={this.handleUploadFiles} />
               </Col>
-            </div>
-            <div id="parent" style={{ padding: '16px' }}>
-              <SubForm form={form} />
+              <Col sm={24} style={{ padding: '0 16px' }}>
+                <SubForm form={form} />
+              </Col>
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{ marginRight: 20 }}

@@ -82,7 +82,7 @@ export default class AttchmentUpload extends Component {
   }
   render() {
     return (
-      <Card title="附件">
+      <Card title="附件" bodyStyle={{ padding: 16 }}>
         <Upload listType="text" fileList={this.state.attachments}
           onRemove={this.handleRemove} onChange={this.handleChange}
           action={`${API_ROOTS.default}v1/upload/img/`} withCredentials

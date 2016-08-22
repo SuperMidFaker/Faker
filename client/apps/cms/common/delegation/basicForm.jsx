@@ -159,7 +159,7 @@ export default class BasicForm extends Component {
       };
     }
     return (
-      <Card title="委托信息">
+      <Card title="委托信息" bodyStyle={{ padding: 16 }}>
         <Row>
           <Col sm={8}>
             <FormItem label="委托方" {...formItemLayout} style={{ display: customerName.display }}>
@@ -245,7 +245,7 @@ export default class BasicForm extends Component {
         <Row>
           <Col>
           <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-            <Input type="textarea" autosize={{ minRows: 6, maxRows: 16 }} {...getFieldProps('remark', {
+            <Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} {...getFieldProps('remark', {
               initialValue: fieldInits.remark,
             })} />
           </FormItem>
