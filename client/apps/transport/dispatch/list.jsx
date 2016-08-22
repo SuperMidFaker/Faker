@@ -89,7 +89,9 @@ export default class DispatchList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
     filters: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,

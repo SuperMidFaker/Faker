@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
    'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
    'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
    'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
+   'DO_DISPATCH_SEND', 'DO_DISPATCH_SEND_FAIL', 'DO_DISPATCH_SEND_SUCCEED',
    'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
    'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
    'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
@@ -60,6 +61,7 @@ const initialState = {
   transitModes: [],
   vehicleLengths: [],
   vehicleTypes: [],
+  shipmt: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -143,6 +145,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.WITHDRAW_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
+    case actionTypes.DO_DISPATCH_SEND_SUCCEED:
+      return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatched' } };
     default:
       return state;
   }
@@ -223,6 +227,21 @@ export function doSend(cookie, params) {
       method: 'post',
       data: params,
       cookie,
+    },
+  };
+}
+
+export function doDispatchAndSend(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DO_DISPATCH_SEND,
+        actionTypes.DO_DISPATCH_SEND_SUCCEED,
+        actionTypes.DO_DISPATCH_SEND_FAIL,
+      ],
+      endpoint: 'v1/transport/dispatch/dispatcnSend',
+      method: 'post',
+      data: params,
     },
   };
 }
