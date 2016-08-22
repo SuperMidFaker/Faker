@@ -17,16 +17,14 @@ const FormItem = Form.Item;
   }),
   { savePickOrDeliverDate }
 )
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class PickupDeliverUpdaterPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     savePickOrDeliverDate: PropTypes.func.isRequired,
   }
@@ -49,16 +47,16 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   // }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    this.props.formhoc.validateFields(errors => {
+    this.props.form.validateFields(errors => {
       if (!errors) {
-        const { formhoc, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
-        const { actDate } = formhoc.getFieldsValue();
+        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
+        const { actDate } = form.getFieldsValue();
         this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
             } else {
-              formhoc.resetFields();
+              form.resetFields();
               this.setState({ visible: false });
               onOK();
             }
@@ -73,7 +71,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     this.setState({ visible: true });
   }
   render() {
-    const { shipmtNo, formhoc: { getFieldProps } } = this.props;
+    const { shipmtNo, form: { getFieldProps } } = this.props;
     const colSpan = 8;
     let title;
     let ruleMsg;

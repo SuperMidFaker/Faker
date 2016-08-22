@@ -52,16 +52,14 @@ function fetchData({ state, dispatch, cookie }) {
     goBackFn: () => router.goBack(),
   }));
 })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class ShipmentCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
     filters: PropTypes.array.isRequired,
@@ -80,13 +78,13 @@ export default class ShipmentCreate extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSavePending = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields(errors => {
+    this.props.form.validateFields(errors => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
         const form = {
           ...this.props.formData,
-          ...this.props.formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
         };
         this.props.savePending(form, {
           tid: this.props.tenantId,
@@ -113,13 +111,13 @@ export default class ShipmentCreate extends React.Component {
     });
   }
   handleSaveAndAccept = () => {
-    this.props.formhoc.validateFields(errors => {
+    this.props.form.validateFields(errors => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
         const form = {
           ...this.props.formData,
-          ...this.props.formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
         };
         this.props.saveAndAccept(form, {
           tid: this.props.tenantId,
@@ -149,7 +147,7 @@ export default class ShipmentCreate extends React.Component {
     ev.preventDefault();
     const form = {
       ...this.props.formData,
-      ...this.props.formhoc.getFieldsValue(),
+      ...this.props.form.getFieldsValue(),
     };
     this.props.saveDraft(form, {
       tid: this.props.tenantId,
@@ -174,25 +172,25 @@ export default class ShipmentCreate extends React.Component {
     });
   }
   render() {
-    const { intl, submitting, tenantName, formhoc } = this.props;
+    const { intl, submitting, tenantName, form } = this.props;
     return (
       <div className="main-content">
-        <Form form={formhoc} horizontal>
+        <Form horizontal>
           <div className="page-body">
             <div className="panel-header" />
             <div className="panel-body">
               <Col span="16" className="main-col">
-                <ClientInfo outerColSpan={16} intl={intl} formhoc={formhoc} />
+                <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
                 <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                  labelColSpan={8} formhoc={formhoc}
+                  labelColSpan={8} formhoc={form}
                 />
                 <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                  labelColSpan={8} formhoc={formhoc}
+                  labelColSpan={8} formhoc={form}
                 />
-                <ModeInfo intl={intl} formhoc={formhoc} />
-                <GoodsInfo intl={intl} labelColSpan={8} formhoc={formhoc} />
+                <ModeInfo intl={intl} formhoc={form} />
+                <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
               </Col>
-              <CorrelInfo formhoc={formhoc} intl={intl} tenantName={tenantName} />
+              <CorrelInfo formhoc={form} intl={intl} tenantName={tenantName} />
             </div>
           </div>
           <div className="bottom-fixed-row">
