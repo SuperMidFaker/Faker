@@ -18,6 +18,7 @@ import * as Cooperation from './corp/cooperation';
 import MyProfile from './account/profile';
 import Password from './account/password';
 import Module from './module';
+import Clearance from './cms/module-clearance';
 import Transport from './transport/module-transport';
 import TMSDashboard from './transport/dashboard';
 import * as TMSAcceptance from './transport/acceptance';
@@ -200,6 +201,19 @@ export default(store, cookie) => {
               <Route path="edit/:uid" component={TMSTariff.Edit} />
             </Route>
           </Route>
+
+          <Route path="clearance" component={Clearance}>
+            <Route path="import">
+              <IndexRoute component={ImportAcceptance.List} />
+              <Route path="create" component={ImportAcceptance.Create} />
+              <Route path="accept/edit/:delgNo" component={ImportAcceptance.Edit} />
+            </Route>
+            <Route path="export">
+              <IndexRoute component={ExportAcceptance.List} />
+              <Route path="edit/:delgNo" component={ExportAcceptance.Edit} />
+            </Route>
+          </Route>
+
         </Route>
       </Route>
     </Route>
