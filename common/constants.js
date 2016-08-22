@@ -29,11 +29,11 @@ const TENANT_ASPECT = {
   SP: 1, // 服务商
 };
 const DEFAULT_MODULES = {
-  import: {
-    cls: 'import',
-    url: '/import',
-    text: 'moduleImport',
-    status: 'enabled',
+  orders: {
+    cls: 'orders',
+    url: '/orders',
+    text: 'moduleOrders',
+    status: 'disabled',
   },
   // export: {
   //   cls: 'export',

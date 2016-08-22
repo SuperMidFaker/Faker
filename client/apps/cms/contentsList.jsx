@@ -282,7 +282,7 @@ export default class AcceptanceList extends Component {
           />
         </div>
         <div className="page-body">
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel expandable">
             <Table columns={columns} dataSource={this.dataSource} expandedRowRender={this.handleSubdelgsList} />
           </div>
         </div>
