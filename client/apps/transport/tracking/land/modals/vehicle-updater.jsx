@@ -33,12 +33,14 @@ const FormItem = Form.Item;
   state => ({
     visible: state.trackingLandStatus.vehicleModal.visible,
     dispId: state.trackingLandStatus.vehicleModal.dispId,
+    shipmtNo: state.trackingLandStatus.vehicleModal.shipmtNo,
   }),
   { closeVehicleModal, saveVehicle })
 export default class VehicleUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     onOK: PropTypes.func,
     closeVehicleModal: PropTypes.func.isRequired,
     saveVehicle: PropTypes.func.isRequired,
@@ -67,11 +69,11 @@ export default class VehicleUpdater extends React.Component {
     });
   }
   handleOk = () => {
-    const { dispId, onOK } = this.props;
+    const { shipmtNo, dispId, onOK } = this.props;
     const { vehiclePlate, plateDisabled, driverName, driverDisabled, remark } = this.state;
     const plate = plateDisabled ? this.msg('unknownPlate') : vehiclePlate;
     const driver = driverDisabled ? this.msg('unknownDriver') : driverName;
-    this.props.saveVehicle(dispId, plate, driver, remark).then(
+    this.props.saveVehicle(shipmtNo, dispId, plate, driver, remark).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
