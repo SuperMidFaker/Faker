@@ -438,11 +438,11 @@ export default defineMessages({
     defaultMessage: '计算运费',
   },
   btnTextOk: {
-    id: 'transport.dispatch.btn.text.ok',
+    id: 'transport.acceptance.btn.text.ok',
     defaultMessage: '确定',
   },
   btnTextCancel: {
-    id: 'transport.dispatch.btn.text.cancel',
+    id: 'transport.acceptance.btn.text.cancel',
     defaultMessage: '取消',
   },
 });

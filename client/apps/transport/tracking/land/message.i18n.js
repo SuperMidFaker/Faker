@@ -55,11 +55,11 @@ export default defineMessages({
   },
   updateEvents: {
     id: 'transport.tracking.update.events',
-    defaultMessage: '追踪记录',
+    defaultMessage: '记录异常',
   },
   updateVehicleDriver: {
     id: 'transport.tracking.update.drivervehicle',
-    defaultMessage: '更新车辆司机',
+    defaultMessage: '上报车辆信息',
   },
   updatePickup: {
     id: 'transport.tracking.update.pickup',
@@ -200,6 +200,10 @@ export default defineMessages({
   passedPOD: {
     id: 'transport.tracking.pod.passed',
     defaultMessage: '回单已接受',
+  },
+  waitingResubmitPOD: {
+    id: 'transport.tracking.pod.warning.resubmit',
+    defaultMessage: '待重新提交',
   },
   nonePOD: {
     id: 'transport.tracking.pod.none',
@@ -355,7 +359,7 @@ export default defineMessages({
   },
   submitToUpper: {
     id: 'transport.tracking.table.pod.submit.to',
-    defaultMessage: '已提交',
+    defaultMessage: '待客户审核',
   },
   resubmitPod: {
     id: 'transport.tracking.table.pod.resubmit',

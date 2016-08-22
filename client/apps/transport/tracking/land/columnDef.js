@@ -318,12 +318,12 @@ export default function makeColumns(type, handlers, msg) {
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
           // 我方拒绝
           return (
-            <span><Icon type="frown" /> {msg('rejectByUs')}</span>
+            <span><Icon type="clock-circle-o" /> {msg('waitingResubmitPOD')}</span>
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           if (record.tenant_id === handlers.tenantId) {
             return (
-              <span> {msg('finished')}</span>
+              <span><Icon type="smile" /> {msg('finished')}</span>
             );
           }
           // 提交给上游客户
@@ -374,12 +374,12 @@ export default function makeColumns(type, handlers, msg) {
       width: 140,
       fixed: 'right',
       render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {   // 待接单
           return (
               <RowUpdater label={msg('notifyAccept')}
                 onAnchored={() => {}} row={record}
               />);
-        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {  // 待调度
           if (record.sp_tenant_id === -1) {
               // 线下客户手动更新
             return (
@@ -392,32 +392,13 @@ export default function makeColumns(type, handlers, msg) {
               onAnchored={() => {}} row={record}
             />);
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-            /*
-            if (record.sp_tenant_id === -1) {
-              return (
-                <RowUpdater label={msg('updatePickup')}
-                  onAnchored={handlers.onShowPickModal} row={record}
-                />
-              );
-            } else if (record.sp_tenant_id === 0) {
-              if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                return (
-                  <RowUpdater label={msg('updatePickup')}
-                    onAnchored={handlers.onShowPickModal} row={record}
-                  />
-                );
-              }
-            } else {
-              */
+        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {  // 待提货
           return (
                 <RowUpdater label={msg('updateEvents')}
                   onAnchored={handlers.onShowExcpModal} row={record}
                 />
               );
-            /*
-          }*/
-        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) { // 运输中
           if (record.sp_tenant_id === -1) {
             return handlers.renderIntransitUpdater(record);
           } else if (record.sp_tenant_id === 0) {
@@ -431,10 +412,16 @@ export default function makeColumns(type, handlers, msg) {
                 />
               );
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          if (record.pod_type === 'none') {
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已交货
+          return (
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowExcpModal} row={record}
+                />
+              );
+              /*
+          if (record.pod_type === 'none') { // 无需电子回单
             return msg('nonePOD');
-          } else if (record.sp_tenant_id === -1) {
+          } else if (record.sp_tenant_id === -1) {  //
             return (
                 <RowUpdater label={msg('submitPod')}
                   onAnchored={handlers.onShowPodModal} row={record}
@@ -448,15 +435,8 @@ export default function makeColumns(type, handlers, msg) {
                   />
                 );
             }
-          } else {
-            return (
-                <RowUpdater label={msg('updateEvents')}
-                  onAnchored={handlers.onShowExcpModal} row={record}
-                />
-              );
           }
-        } else {
-          return msg('carrierUpdate');
+          */
         }
       },
     });

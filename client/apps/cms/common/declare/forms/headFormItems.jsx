@@ -158,7 +158,7 @@ export function Transport(props) {
   const modeProps = {
     outercol: 8,
     col: 8,
-    field: 'trans_mode',
+    field: 'traf_mode',
     options: formRequire.transModes.map(tm => ({
       value: tm.trans_code,
       text: `${tm.trans_code} | ${tm.trans_spec}`,
@@ -171,7 +171,7 @@ export function Transport(props) {
   const modeNameProps = {
     outercol: 8,
     col: 8,
-    field: 'trans_spec',
+    field: 'traf_name',
     label: msg('transModeName'),
     disabled,
     formData,
@@ -224,7 +224,7 @@ export function TradeRemission(props) {
   const remissionProps = {
     outercol: 8,
     col: 8,
-    field: 'rm_mode',
+    field: 'cut_mode',
     options: formRequire.remissionModes.map(rm => ({
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
@@ -238,7 +238,7 @@ export function TradeRemission(props) {
   const emsNoProps = {
     outercol: 8,
     col: 8,
-    field: 'ems_no',
+    field: 'manual_no',
     label: msg('emsNo'),
     disabled,
     formData,
@@ -282,7 +282,7 @@ export function CountryAttr(props) {
   const departCountryProps = {
     outercol: 12,
     col: 8,
-    field: 'depart_country',
+    field: 'dept_dest_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
@@ -306,7 +306,7 @@ export function CountryAttr(props) {
   const trxModeProps = {
     outercol: 12,
     col: 8,
-    field: 'trx_mode',
+    field: 'trxn_mode',
     options: formRequire.trxModes.map(tm => ({
       value: tm.trx_mode,
       text: tm.trx_spec,
@@ -320,7 +320,7 @@ export function CountryAttr(props) {
   const contractNoProps = {
     outercol: 12,
     col: 8,
-    field: 'contract_no',
+    field: 'contr_no',
     label: msg('contractNo'),
     disabled,
     formData,
@@ -383,7 +383,7 @@ export function DestInvoice(props) {
   const destPortProps = {
     outercol: 8,
     col: 8,
-    field: 'dest_port',
+    field: 'dept_dest_port',
     options: formRequire.ports.map(port => ({
       value: port.port_code,
       text: `${port.port_code} | ${port.port_c_cod}`,
@@ -521,7 +521,7 @@ export function PackWeight(props) {
     outercol: 8,
     col: 8,
     label: msg('packType'),
-    field: 'pack_type',
+    field: 'wrap_type',
     options: formRequire.packs,
     disabled,
     formData,
