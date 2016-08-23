@@ -123,12 +123,10 @@ export default class BodyTable extends React.Component {
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
-      width: 50,
     }];
     if (type === 'bill') {
       columns.push({
         title: this.msg('copGNo'),
-        width: 50,
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
@@ -137,105 +135,90 @@ export default class BodyTable extends React.Component {
     }
     columns.push({
       title: this.msg('emGNo'),
-      width: 50,
       render: (o, record, index) =>
         <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('codeT'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="code_t" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('codeS'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="code_s" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('gName'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="g_name" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('gModel'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('netwt'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('grosswt'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('element'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="element" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('quantity'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('unit'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: ietype === 'import' ? this.msg('icountry') : this.msg('ecountry'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="orig_dest_country" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={countries} edit={editBody}
         />,
     }, {
       title: this.msg('decPrice'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('decTotal'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('currency'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
         />,
     }, {
       title: this.msg('exemptionWay'),
-      width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={exemptions} edit={editBody}
@@ -243,6 +226,7 @@ export default class BodyTable extends React.Component {
     }, {
       title: this.msg('opColumn'),
       width: 90,
+      fixed: 'right',
       render: (o, record, index) => {
         if (readonly) {
           return <span />;
@@ -356,6 +340,8 @@ export default class BodyTable extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies} size="small" />;
+    return (<Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies}
+      size="small" scroll={{ x: 3280 }}
+    />);
   }
 }

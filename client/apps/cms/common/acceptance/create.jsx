@@ -26,7 +26,7 @@ import { DELG_SOURCE } from 'common/constants';
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: '新建报关委托',
+    text: '新建委托',
     moduleName: 'clearance',
     withModuleLayout: false,
     goBackFn: () => router.goBack(),

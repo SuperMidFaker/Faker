@@ -295,7 +295,7 @@ export default class DelegationList extends Component {
           <div className="panel-body table-panel expandable">
             <Table columns={columns} dataSource={this.dataSource}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1280 }}
+              scroll={{ x: 1480 }}
             />
           </div>
         </div>
