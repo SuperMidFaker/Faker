@@ -29,6 +29,7 @@ BillBody.propTypes = {
   readonly: PropTypes.bool,
   data: PropTypes.array.isRequired,
   headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  billSeqNo: PropTypes.string.isRequired,
   onAdd: PropTypes.func.isRequired,
   onDel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
@@ -96,8 +97,9 @@ export default class BillForm extends React.Component {
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
           </Panel>
           <Panel header={this.msg('billList')} key="bill-list">
-            <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_no}
+            <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
               onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+              billSeqNo={billHead.bill_seq_no}
             />
           </Panel>
         </Collapse>

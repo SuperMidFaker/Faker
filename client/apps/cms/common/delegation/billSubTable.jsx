@@ -55,7 +55,7 @@ export default class SubdelgTable extends Component {
     width: 160,
     dataIndex: 'entry_id',
     render: (o, record) => {
-      if (record.pre_entry_seq_no) {
+      if (record.key !== record.bill_seq_no) {
         if (o) {
           return o;
         } else {

@@ -123,6 +123,7 @@ export default class EntryForm extends React.Component {
             <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
               onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
               onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
+              billSeqNo={head.bill_seq_no}
             />
           </Panel>
         </Collapse>

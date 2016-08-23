@@ -35,7 +35,7 @@ const initialState = {
   listFilter: {
     sortField: '',
     sortOrder: '',
-    status: 'unaccepted',
+    status: 'all',
   },
   formRequire: {
     clients: [],
