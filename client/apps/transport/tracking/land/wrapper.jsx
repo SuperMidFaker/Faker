@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Radio } from 'antd';
 import SearchBar from 'client/components/search-bar';
+import AdvancedSearchBar from 'client/components/advanced-search-bar';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
 import { changePodFilter } from 'common/reducers/trackingLandPod';
 import { changeExcpFilter } from 'common/reducers/trackingLandException';
@@ -54,6 +55,7 @@ export default class TrackingLandWrapper extends React.Component {
   state = {
     searchInput: '',
     radioValue: '',
+    advancedSearchVisible: false,
   }
   componentWillMount() {
     const locName = this.props.location.pathname.split('/')[4];
@@ -116,6 +118,20 @@ export default class TrackingLandWrapper extends React.Component {
     this.props.changePodFilter('shipmt_no', value);
     this.props.changeExcpFilter('shipmt_no', value);
   }
+  handleAdvancedSearch = (searchVals) => {
+    Object.keys(searchVals).forEach(key => {
+      this.props.changeStatusFilter(key, searchVals[key]);
+      this.props.changePodFilter(key, searchVals[key]);
+      this.props.changeExcpFilter(key, searchVals[key]);
+    });
+    this.showAdvancedSearch(false);
+  }
+  toggleAdvancedSearch = () => {
+    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
+  }
+  showAdvancedSearch = (advancedSearchVisible) => {
+    this.setState({ advancedSearchVisible });
+  }
   render() {
     const { radioValue, searchInput } = this.state;
     return (
@@ -143,10 +159,13 @@ export default class TrackingLandWrapper extends React.Component {
           <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
             value={searchInput}
           />
+          <span />
+          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
           <div className="tools">
             <ExportExcel />
           </div>
         </div>
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} />
         {this.props.children}
       </div>
     );

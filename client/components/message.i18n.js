@@ -152,6 +152,46 @@ const messages = defineMessages({
     id: 'corp.messageList.detail',
     defaultMessage: '详情',
   },
+  customer_name: {
+    id: 'tms.advancedSearchBar.customer_name',
+    defaultMessage: '客户',
+  },
+  consigner_region: {
+    id: 'tms.advancedSearchBar.consigner_region',
+    defaultMessage: '发货区域',
+  },
+  pickup_est_date: {
+    id: 'tms.advancedSearchBar.pickup_est_date',
+    defaultMessage: '预计提货时间',
+  },
+  pickup_act_date: {
+    id: 'tms.advancedSearchBar.pickup_act_date',
+    defaultMessage: '实际提货时间',
+  },
+  sp_name: {
+    id: 'tms.advancedSearchBar.sp_name',
+    defaultMessage: '承运商',
+  },
+  consignee_region: {
+    id: 'tms.advancedSearchBar.consignee_region',
+    defaultMessage: '收获区域',
+  },
+  deliver_est_date: {
+    id: 'tms.advancedSearchBar.deliver_est_date',
+    defaultMessage: '预计交货时间',
+  },
+  deliver_act_date: {
+    id: 'tms.advancedSearchBar.deliver_act_date',
+    defaultMessage: '实际交货时间',
+  },
+  creater_login_id: {
+    id: 'tms.advancedSearchBar.creater_login_id',
+    defaultMessage: '与我相关',
+  },
+  transport_mode_code: {
+    id: 'tms.advancedSearchBar.transport_mode_code',
+    defaultMessage: '运输模式',
+  },
 });
 
 export default messages;

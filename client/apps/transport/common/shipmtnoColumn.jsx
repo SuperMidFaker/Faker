@@ -44,7 +44,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     }
   }
   render() {
-    const { publicKey, shipmtNo, shipment, ...extra } = this.props;
+    const { publicKey, shipmtNo, shipment } = this.props;
     const content = (
       <div>
         <TrackingTimeline tracking={this.state.tracking} />
@@ -66,7 +66,7 @@ export default class ShipmtNoColumnRender extends React.Component {
       );
     } else {
       return (
-        <a {...extra} onClick={this.handleClick}>
+        <a onClick={this.handleClick}>
           <TrimSpan text={shipmtNo} maxLen={14} />
         </a>
       );

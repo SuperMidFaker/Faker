@@ -83,7 +83,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, auditModal: initialState.auditModal };
     case actionTypes.CHANGE_FILTER: {
       const filters = state.filters.filter(flt => flt.name !== action.data.field);
-      filters.push({ name: action.data.field, value: action.data.value });
+      if (action.data.value !== '' && action.data.value !== null && action.data.value !== undefined) {
+        filters.push({ name: action.data.field, value: action.data.value });
+      }
       return { ...state, filters };
     }
     case actionTypes.AUDIT_POD_SUCCEED: {

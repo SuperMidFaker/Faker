@@ -112,12 +112,8 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
-    } else {
-      const nextShipmtno = nextProps.filters.filter(flt => flt.name === 'shipmt_no');
-      const shipmtno = this.props.filters.filter(flt => flt.name === 'shipmt_no');
-      if (nextShipmtno[0].value !== shipmtno[0].value) {
-        newfilters = nextProps.filters;
-      }
+    } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
+      newfilters = nextProps.filters;
     }
     if (newfilters) {
       this.props.loadTransitTable(null, {

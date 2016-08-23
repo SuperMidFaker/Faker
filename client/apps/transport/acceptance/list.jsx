@@ -7,6 +7,7 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
+import AdvancedSearchBar from 'client/components/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';
@@ -93,6 +94,7 @@ export default class AcceptList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    advancedSearchVisible: false,
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTable(null, params),
@@ -262,6 +264,14 @@ export default class AcceptList extends React.Component {
     const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
     this.handleTableLoad(filters, 1);
   }
+  handleAdvancedSearch = (searchVals) => {
+    let filters = this.props.filters;
+    Object.keys(searchVals).forEach(key => {
+      filters = this.mergeFilters(filters, key, searchVals[key]);
+    });
+    this.handleTableLoad(filters, 1);
+    this.showAdvancedSearch(false);
+  }
   handleShipmentFilter = (ev) => {
     const targetVal = ev.target.value;
     const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
@@ -332,6 +342,12 @@ export default class AcceptList extends React.Component {
       });
     }
     return merged;
+  }
+  toggleAdvancedSearch = () => {
+    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
+  }
+  showAdvancedSearch = (advancedSearchVisible) => {
+    this.setState({ advancedSearchVisible });
   }
   render() {
     const { shipmentlist, loading, intl } = this.props;
@@ -434,7 +450,10 @@ export default class AcceptList extends React.Component {
           </RadioGroup>
           <span />
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <span />
+          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} />
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
