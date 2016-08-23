@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CUS_CREATE_DELGCCB', 'CUS_CREATE_DELGCCB_SUCCEED', 'CUS_CREATE_DELGCCB_FAIL',
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', 'LOAD_SUBDELG', 'LOAD_SUBDELG_SUCCEED', 'LOAD_SUBDELG_FAIL',
+  'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL', 'SET_MODAL_FALSE',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
 ]);
@@ -71,6 +72,10 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
+  billMakeModal: {
+    visible: false,
+    bills: [],
+  },
   visibleEfModal: false,
   efModal: {
     entryHeadId: -1,
@@ -114,6 +119,10 @@ export default function reducer(state = initialState, action) {
       };
       return { ...state, delgBillsMap };
     }
+    case actionTypes.LOAD_BILLMAKE_SUCCEED:
+      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, loading: false, ...action.result.data } };
+    case actionTypes.SET_MODAL_FALSE:
+      return { ...state, billMakeModal: { ...state.billMakeModal, visible: false } };
     case actionTypes.LOAD_DELEGATE_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
@@ -195,6 +204,27 @@ export function loadSubdelgsTable(params) {
       method: 'get',
       params,
     },
+  };
+}
+
+export function loadBillMakeModal(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILLMAKE,
+        actionTypes.LOAD_BILLMAKE_SUCCEED,
+        actionTypes.LOAD_BILLMAKE_FAIL,
+      ],
+      endpoint: 'v1/cms/billmodal',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function setModalFalse() {
+  return {
+    type: actionTypes.SET_MODAL_FALSE,
   };
 }
 
