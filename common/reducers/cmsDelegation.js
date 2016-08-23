@@ -18,6 +18,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CUS_CREATE_DELGCCB', 'CUS_CREATE_DELGCCB_SUCCEED', 'CUS_CREATE_DELGCCB_FAIL',
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', 'LOAD_SUBDELG', 'LOAD_SUBDELG_SUCCEED', 'LOAD_SUBDELG_FAIL',
+  'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
+  'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
 ]);
 
 const initialState = {
@@ -26,6 +28,8 @@ const initialState = {
     current: 1,
     pageSize: 10,
     data: [],
+  },
+  delgBillsMap: {
   },
   listFilter: {
     sortField: '',
@@ -67,21 +71,49 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
+  visibleEfModal: false,
+  efModal: {
+    entryHeadId: -1,
+    billSeqNo: '',
+    delgNo: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_ACCEPT:
       return { ...state, delegationlist: { ...state.delegationlist, loading: true } };
-    case actionTypes.LOAD_ACCEPT_SUCCEED:
+    case actionTypes.LOAD_ACCEPT_SUCCEED: {
+      const delgBillsMap = {};
+      const delgList = action.result.data;
+      delgList.data.forEach(delg => {
+        delgBillsMap[delg.delg_no] = {
+          totalCount: 0,
+          current: 1,
+          pageSize: 10,
+          data: [],
+        };
+      });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
-        ...action.result.data }, listFilter: JSON.parse(action.params.filter) };
+        ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
+    }
     case actionTypes.LOAD_ACCEPT_FAIL:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
-    case actionTypes.LOAD_SUBDELG_SUCCEED:
-      return { ...state, subdelgs: { ...state.subdelgs, loading: false, ...action.result.data } };
-    case actionTypes.LOAD_SUBDELG_FAIL:
-      return { ...state, subdelgs: { ...state.subdelgs, loading: false } };
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
+    case actionTypes.LOAD_SUBDELG_SUCCEED: {
+      const delgBillsMap = { ...state.delgBillsMap };
+      delgBillsMap[action.params.delg_no] = action.result.data;
+      return { ...state, delgBillsMap };
+    }
+    case actionTypes.LOAD_SUBDELG_FAIL: {
+      const delgBillsMap = { ...state.delgBillsMap };
+      delgBillsMap[action.params.delg_no] = {
+        totalCount: 0,
+        current: 1,
+        pageSize: 10,
+        data: [],
+      };
+      return { ...state, delgBillsMap };
+    }
     case actionTypes.LOAD_DELEGATE_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
@@ -89,7 +121,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
       return { ...state, formData: action.result.data.delegation,
-        delgFiles: action.result.data.files, subdelgs: action.result.data.subdelgs, formRequire: action.result.data.formRequire,
+        delgFiles: action.result.data.files, formRequire: action.result.data.formRequire,
       };
     case actionTypes.SEARCH_PARAM_SUCCEED:
       return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
@@ -126,6 +158,10 @@ export default function reducer(state = initialState, action) {
         ...action.result.data } };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
+    case actionTypes.OPEN_EF_MODAL:
+      return { ...state, visibleEfModal: true, efModal: action.data };
+    case actionTypes.CLOSE_EF_MODAL:
+      return { ...state, visibleEfModal: false, efModal: initialState.efModal };
     default:
       return state;
   }
@@ -147,7 +183,7 @@ export function loadAcceptanceTable(cookie, params) {
   };
 }
 
-export function loadSubdelgsTable(cookie, params) {
+export function loadSubdelgsTable(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -155,10 +191,9 @@ export function loadSubdelgsTable(cookie, params) {
         actionTypes.LOAD_SUBDELG_SUCCEED,
         actionTypes.LOAD_SUBDELG_FAIL,
       ],
-      endpoint: 'v1/cms/acceptance/subdelgs',
+      endpoint: 'v1/cms/subdelgs',
       method: 'get',
       params,
-      cookie,
     },
   };
 }
@@ -398,5 +433,33 @@ export function hidePreviewer(delgNo) {
     type: actionTypes.HIDE_PREVIEWER,
     delgNo,
     visible: false,
+  };
+}
+
+export function openEfModal({ entryHeadId, delgNo, billSeqNo }) {
+  return {
+    type: actionTypes.OPEN_EF_MODAL,
+    data: { entryHeadId, delgNo, billSeqNo },
+  };
+}
+
+export function closeEfModal() {
+  return {
+    type: actionTypes.CLOSE_EF_MODAL,
+  };
+}
+
+export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILL_ENTRYNO,
+        actionTypes.FILL_ENTRYNO_SUCCEED,
+        actionTypes.FILL_ENTRYNO_FAIL,
+      ],
+      endpoint: 'v1/cms/fill/declno',
+      method: 'post',
+      data: { entryNo, entryHeadId, billSeqNo, delgNo },
+    },
   };
 }

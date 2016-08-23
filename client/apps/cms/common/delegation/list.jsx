@@ -9,7 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
-import { loadAcceptanceTable, loadSubdelgsTable, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
+import { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -23,7 +23,7 @@ const RadioButton = Radio.Button;
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
   }),
-  { loadAcceptanceTable, loadSubdelgsTable, acceptDelg, delDelg, showPreviewer }
+  { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -47,7 +47,6 @@ export default class DelegationList extends Component {
     delegationlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
-    loadSubdelgsTable: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
   }
@@ -189,7 +188,7 @@ export default class DelegationList extends Component {
 
   handleSubdelgsList = (record) => {
     return (
-      <BillSubTable delgNo={record.delg_no} />
+      <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype} />
     );
   }
 
@@ -214,7 +213,7 @@ export default class DelegationList extends Component {
       title: '操作',
       width: 150,
       render: (o, record) => {
-        if (listFilter.status === CMS_DELEGATION_STATUS.unaccepted) {
+        if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
             <span>
               <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
@@ -230,7 +229,7 @@ export default class DelegationList extends Component {
               </Popconfirm>
             </span>
           );
-        } else if (listFilter.status === 'undeclared') {
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
           return (
             <span>
               <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
@@ -276,7 +275,8 @@ export default class DelegationList extends Component {
         <div className="page-body">
           <div className="panel-body table-panel expandable">
             <Table columns={columns} dataSource={this.dataSource}
-              expandedRowRender={this.handleSubdelgsList} scroll={{ x: 1500 }}
+              expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
+              scroll={{ x: 1500 }}
             />
           </div>
         </div>

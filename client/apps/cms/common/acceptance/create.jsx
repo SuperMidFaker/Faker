@@ -98,7 +98,7 @@ export default class AcceptanceCreate extends Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <Form horizontal form={form}>
+          <Form horizontal>
             <div className="panel-body">
               <Col sm={18} style={{ padding: '16px 8px 0 16px' }}>
                 <BasicForm form={form} ieType={type} partnershipType="CCB" />

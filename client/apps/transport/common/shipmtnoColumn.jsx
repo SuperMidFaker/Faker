@@ -65,8 +65,9 @@ export default class ShipmtNoColumnRender extends React.Component {
         </Popover>
       );
     } else {
+      const { loadShipmtPoints: _, ...rest } = extra; // eslint-disable-line no-unused-vars
       return (
-        <a {...extra} onClick={this.handleClick}>
+        <a {...rest} onClick={this.handleClick}>
           <TrimSpan text={shipmtNo} maxLen={14} />
         </a>
       );

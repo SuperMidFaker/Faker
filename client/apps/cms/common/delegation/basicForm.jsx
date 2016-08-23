@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row } from 'antd';
-import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
+import { setClientForm } from 'common/reducers/cmsDelegation';
 import { TENANT_ASPECT, GOODSTYPES } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -34,18 +34,14 @@ function getFieldInits(aspect, formData) {
     tenantName: state.account.tenantName,
     fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
   }),
-  { setClientForm, searchParams }
+  { setClientForm }
 )
 export default class BasicForm extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     fieldInits: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
-    tradeModes: PropTypes.array.isRequired,
-    transModes: PropTypes.array.isRequired,
-    declareWayModes: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
-    searchParams: PropTypes.func.isRequired,
     tenantName: PropTypes.string.isRequired,
   }
   handleClientChange = (value) => {
@@ -60,12 +56,6 @@ export default class BasicForm extends Component {
       return client.name;
     }
     return value;
-  }
-  handleTradeModeSearch = (field, searched) => {
-    // todo else search with nonempty getFieldsValue()
-    if (searched) {
-      this.props.searchParams(field, searched);
-    }
   }
   render() {
     const { form: { getFieldProps }, fieldInits, clients, tenantName, partnershipType } = this.props;
