@@ -58,7 +58,7 @@ export default class Home extends React.Component {
         <div className="am-content">
           <div className="home-header home-header-bg">
             <div className="tenant-info">
-              <div className="tenant-logo " style={{ backgroundImage: `url("${logo || '/assets/img/home/tenant-logo.png'}")` }} />
+              <div className="tenant-logo " style={{ backgroundImage: `url("${logo}")` }} />
               <h2 className="tenant-name">{name}</h2>
             </div>
             <div className="tenant-nav">

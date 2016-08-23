@@ -31,8 +31,8 @@ const RadioButton = Radio.Button;
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: '进口',
-    moduleName: props.ietype,
+    text: props.ietype === 'import' ? '进口' : '出口',
+    moduleName: 'clearance',
     withModuleLayout: false,
     goBackFn: null,
   }));
