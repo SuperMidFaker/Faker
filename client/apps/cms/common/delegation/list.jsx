@@ -59,7 +59,7 @@ export default class DelegationList extends Component {
   columns = [{
     title: '委托编号',
     dataIndex: 'delg_no',
-    width: 180,
+    width: 150,
     render: (o) => {
       return (
         <a onClick={() => this.props.showPreviewer({
@@ -71,13 +71,12 @@ export default class DelegationList extends Component {
     },
   }, {
     title: '委托方',
-    width: 170,
     dataIndex: 'customer_name',
   }, {
-    title: '客户订单号',
+    title: '订单号',
     dataIndex: 'order_no',
   }, {
-    title: '客户发票号',
+    title: '发票号',
     dataIndex: 'invoice_no',
   }, {
     title: '外部编号',
@@ -211,7 +210,7 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 150,
+      width: 100,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
@@ -276,7 +275,7 @@ export default class DelegationList extends Component {
           <div className="panel-body table-panel expandable">
             <Table columns={columns} dataSource={this.dataSource}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1500 }}
+              scroll={{ x: 1280 }}
             />
           </div>
         </div>

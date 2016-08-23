@@ -29,7 +29,7 @@ export default class SubdelgTable extends Component {
   }
 
   columns = [{
-    title: '子委托编号',
+    title: '清单编号',
     dataIndex: 'bill_seq_no',
     width: 160,
   }, {
