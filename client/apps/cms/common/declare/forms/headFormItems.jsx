@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
-import { Col, Form, Input, Select } from 'antd';
+import { Row, Col, Form, Input, Select } from 'antd';
 import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
@@ -10,22 +10,7 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 const FormItem = Form.Item;
-const InputGroup = Input.Group;
 const Option = Select.Option;
-
-// Form.create ref 不能用stateless InputGroup, 否则saveRef会清空this.fieldMetas
-class CompositeInputGroup extends React.Component {
-  static propTypes = {
-    children: PropTypes.object.isRequired,
-  }
-  render() {
-    return (
-      <span className="ant-input-group">
-        {this.props.children}
-      </span>
-    );
-  }
-}
 
 // 进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
@@ -119,8 +104,8 @@ export class RelationAutoCompSelect extends React.Component {
     return (
       <Col span="9">
         <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
-          <CompositeInputGroup {...getFieldProps(codeField, { rules: codeRules })}>
-            <Col span="12">
+          <Row>
+            <Col span="12" style={{ paddingRight: 2 }}>
               <Select size="large" combobox showArrow={false} disabled={disabled}
                 allowClear optionFilterProp="search"
                 placeholder={this.msg('relationCodeSearch')} {
@@ -136,7 +121,7 @@ export class RelationAutoCompSelect extends React.Component {
                 }
               </Select>
             </Col>
-            <Col span="12" style={{ paddingRight: 0 }}>
+            <Col span="12">
               <Input placeholder={this.msg('relationName')} disabled={disabled}
                 {...getFieldProps(nameField, {
                   rules: nameRules,
@@ -144,7 +129,7 @@ export class RelationAutoCompSelect extends React.Component {
                 })} disabled={disabled}
               />
             </Col>
-          </CompositeInputGroup>
+          </Row>
         </FormItem>
       </Col>
     );
@@ -460,14 +445,14 @@ function FeeFormItem(props) {
   };
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
-      <InputGroup>
+      <Row>
         <Col span="12">
           <FormInput {...feeProps} />
         </Col>
-        <Col span="12" style={{ paddingRight: 0 }}>
+        <Col span="12" style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} />
         </Col>
-      </InputGroup>
+      </Row>
     </FormItem>
   );
 }

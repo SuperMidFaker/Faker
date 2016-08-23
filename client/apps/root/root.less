@@ -860,6 +860,10 @@ img {
       border-bottom: none;
     }
   }
+  &.fixed-height {
+    height: 615px;
+    overflow: scroll;
+  }
   &.expandable {
     .ant-table-body {
       height: auto;
@@ -868,6 +872,15 @@ img {
   .ant-table-expanded-row > td {
     padding: 8px 8px;
   }
+}
+.panel-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.15);
+  transition: all ease 0.4s;
+  padding: 8px 16px 8px;
 }
 .ant-advanced-search-form {
   padding: 16px 24px;
@@ -946,6 +959,14 @@ img {
 .form-compact {
   .ant-form-item-with-help {
     margin-bottom: 0;
+  }
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+  .ant-input-lg ,
+  .ant-select-lg, 
+  .ant-select-lg .ant-select-selection--single {
+    height: 28px;
   }
 }
 .subform {

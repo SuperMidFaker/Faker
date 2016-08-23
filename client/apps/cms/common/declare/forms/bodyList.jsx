@@ -123,12 +123,12 @@ export default class BodyTable extends React.Component {
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
-      width: 40,
+      width: 50,
     }];
     if (type === 'bill') {
       columns.push({
         title: this.msg('copGNo'),
-        width: 60,
+        width: 50,
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
@@ -242,7 +242,7 @@ export default class BodyTable extends React.Component {
         />,
     }, {
       title: this.msg('opColumn'),
-      width: 80,
+      width: 90,
       render: (o, record, index) => {
         if (readonly) {
           return <span />;
@@ -356,6 +356,6 @@ export default class BodyTable extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies} size="middle" />;
+    return <Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies} size="small" />;
   }
 }
