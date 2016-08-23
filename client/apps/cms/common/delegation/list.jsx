@@ -8,7 +8,7 @@ import { TENANT_ASPECT } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
-import SubdelgTable from './subdelgTable';
+import BillSubTable from './billSubTable';
 import { loadAcceptanceTable, loadSubdelgsTable, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
@@ -193,7 +193,7 @@ export default class AcceptanceList extends Component {
 
   handleSubdelgsList = (record) => {
     return (
-      <SubdelgTable delgNo={record.delg_no} />
+      <BillSubTable delgNo={record.delg_no} />
     );
   }
 
