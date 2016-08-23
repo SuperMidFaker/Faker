@@ -4,7 +4,7 @@ import { Radio, Button, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import { TENANT_ASPECT, CMS_DELEGATION_STATUS } from 'common/constants';
+import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
@@ -103,12 +103,20 @@ export default class DelegationList extends Component {
   }, {
     title: '货物性质',
     dataIndex: 'goods_type',
+    render: (o) => {
+      const decl = GOODSTYPES.filter(gd => gd.value === o)[0];
+      return decl && decl.text;
+    },
   }, {
     title: '申报企业',
     dataIndex: 'ccb_name',
   }, {
     title: '状态',
     dataIndex: 'status',
+    render: (o) => {
+      const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
+      return decl && decl.text;
+    },
   }]
 
   dataSource = new Table.DataSource({

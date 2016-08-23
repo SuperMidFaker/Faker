@@ -38,7 +38,9 @@ export default class BillModal extends Component {
       );
     });
     return (
-      <Modal title="选择清单-开始制单" visible={billMakeModal.visible} onCancel={() => this.handleCancel()} >
+      <Modal title="选择清单-开始制单" visible={billMakeModal.visible}
+        onCancel={() => this.handleCancel()} onOk={() => this.handleCancel()}
+      >
         {billPros}
       </Modal>
   ); }
