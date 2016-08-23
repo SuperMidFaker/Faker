@@ -7,7 +7,7 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import AdvancedSearchBar from 'client/components/advanced-search-bar';
+import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadShipmtDetail } from 'common/reducers/shipment';

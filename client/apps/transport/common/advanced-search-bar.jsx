@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Row, Col, Button, DatePicker, Checkbox, Select, Breadcrumb } from 'antd';
+import { Form, Input, Row, Col, Button, DatePicker, Checkbox, Select, Tag, Tooltip, Icon } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import RegionCascade from 'client/components/region-cascade';
-import './search-bar.less';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 
@@ -68,90 +67,68 @@ export default class AdvancedSearchBar extends React.Component {
     const { visible, form: { getFieldProps } } = this.props;
     return (
       <div>
-        <div style={{ paddingBottom: 10, paddingLeft: 10 }}>
-          <Breadcrumb>
-          {this.state.fieldsLabel.map(item => <Breadcrumb.Item>{item}</Breadcrumb.Item>)}
-          </Breadcrumb>
+        <div className="ant-alert ant-alert-info ant-alert-no-icon">
+          {this.state.fieldsLabel.map(item => <Tag closable color="blue">{item}</Tag>)}
         </div>
         <Form horizontal className="ant-advanced-search-form"
-          style={{ margin: '20px 100px 20px 0', display: visible ? 'block' : 'none' }}
+          style={{ display: visible ? 'block' : 'none' }}
           onSubmit={this.handleSubmit}
         >
           <Row gutter={16}>
             <Col sm={8}>
               <FormItem
                 label="客户"
-                labelCol={{ span: 10 }}
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Input placeholder="请输入搜索名称" size="default" {...getFieldProps('customer_name', { initialValue: '' })} />
+                <Input placeholder="请输入客户名称" size="default" {...getFieldProps('customer_name', { initialValue: '' })} />
               </FormItem>
               <FormItem
-                label="发货区域"
-                labelCol={{ span: 10 }}
+                label="出发地"
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
                 <RegionCascade {...getFieldProps('consigner_region', { initialValue: '' })} />
               </FormItem>
               <FormItem
-                label="预计提货时间"
-                labelCol={{ span: 10 }}
+                label="到达地"
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RangePicker style={{ width: 200 }} {...getFieldProps('pickup_est_date', { initialValue: '' })} />
-              </FormItem>
-              <FormItem
-                label="实际提货时间"
-                labelCol={{ span: 10 }}
-                wrapperCol={{ span: 14 }}
-              >
-                <RangePicker style={{ width: 200 }} {...getFieldProps('pickup_act_date', { initialValue: '' })} />
+                <RegionCascade {...getFieldProps('consignee_region', { initialValue: '' })} />
               </FormItem>
             </Col>
             <Col sm={8}>
               <FormItem
                 label="承运商"
-                labelCol={{ span: 10 }}
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Input placeholder="请输入搜索名称" size="default" {...getFieldProps('sp_name', { initialValue: '' })} />
+                <Input placeholder="请输入承运商名称" size="default" {...getFieldProps('sp_name', { initialValue: '' })} />
               </FormItem>
               <FormItem
-                label="收获区域"
-                labelCol={{ span: 10 }}
+                label="预计提货时间"
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade {...getFieldProps('consignee_region', { initialValue: '' })} />
+                <RangePicker style={{ width: '100%' }} {...getFieldProps('pickup_est_date', { initialValue: '' })} />
               </FormItem>
+
               <FormItem
                 label="预计交货时间"
-                labelCol={{ span: 10 }}
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RangePicker style={{ width: 200 }} {...getFieldProps('deliver_est_date', { initialValue: '' })} />
-              </FormItem>
-              <FormItem
-                label="实际交货时间"
-                labelCol={{ span: 10 }}
-                wrapperCol={{ span: 14 }}
-              >
-                <RangePicker style={{ width: 200 }} {...getFieldProps('deliver_act_date', { initialValue: '' })} />
-              </FormItem>
-              <FormItem
-                label="与我相关"
-                labelCol={{ span: 10 }}
-                wrapperCol={{ span: 14 }}
-              >
-                <Checkbox {...getFieldProps('creater_login_id', { initialValue: '', valuePropName: 'checked' })} />
+                <RangePicker style={{ width: '100%' }} {...getFieldProps('deliver_est_date', { initialValue: '' })} />
               </FormItem>
             </Col>
             <Col sm={8}>
               <FormItem
                 label="运输模式"
-                labelCol={{ span: 10 }}
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Select size="large" style={{ width: 200 }} {...getFieldProps('transport_mode_code', { initialValue: '' })} >
+                <Select size="large" style={{ width: '100%' }} {...getFieldProps('transport_mode_code', { initialValue: '' })} >
                   <Option value="LTL">零担</Option>
                   <Option value="FTL">整车</Option>
                   <Option value="EXP">快递快运</Option>
@@ -162,12 +139,34 @@ export default class AdvancedSearchBar extends React.Component {
                   <Option value="RWY">铁运</Option>
                 </Select>
               </FormItem>
+              <FormItem
+                label="实际提货时间"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 14 }}
+              >
+                <RangePicker style={{ width: '100%' }} {...getFieldProps('pickup_act_date', { initialValue: '' })} />
+              </FormItem>
+              <FormItem
+                label="实际交货时间"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 14 }}
+              >
+                <RangePicker style={{ width: '100%' }} {...getFieldProps('deliver_act_date', { initialValue: '' })} />
+              </FormItem>
+              <FormItem
+                label={<span>仅显示我的运单 <Tooltip title="由我新建的以及分配给我的运单"><Icon type="question-circle-o" /></Tooltip></span>}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 14 }}
+              >
+                <Checkbox {...getFieldProps('creater_login_id', { initialValue: '', valuePropName: 'checked' })} />
+              </FormItem>
             </Col>
           </Row>
           <Row>
             <Col span={12} offset={12} style={{ textAlign: 'right' }}>
-              <Button type="primary" htmlType="submit" style={{ marginRight: 30 }}>搜索</Button>
-              <Button onClick={this.handleReset}>清除条件</Button>
+              <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>搜索</Button>
+              <Button onClick={this.handleReset} style={{ marginRight: 16 }}>清除条件</Button>
+              <a>收起</a>
             </Col>
           </Row>
         </Form>
