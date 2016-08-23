@@ -388,7 +388,15 @@ const DECL_E_TYPE = [
   { key: '0203', value: '寄售维修出境备案' },
 ];
 
-const CMS_BILL_STATUS = {
+export const CMS_DELEGATION_STATUS = {
+  unaccepted: 0,
+  accepted: 1,
+  declaring: 2,
+  declared: 3,
+  passed: 4,
+};
+
+export const CMS_BILL_STATUS = {
   undeclared: 0,
   declaring: 1,
   declared: 2,
@@ -468,7 +476,6 @@ export {
   I_E_TYPES,
   DECL_I_TYPE,
   DECL_E_TYPE,
-  CMS_BILL_STATUS,
   MESSAGE_STATUS,
   TAX_MODE,
   TAX_STATUS,

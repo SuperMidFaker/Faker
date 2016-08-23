@@ -4,7 +4,7 @@ import { Radio, Button, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import { TENANT_ASPECT } from 'common/constants';
+import { TENANT_ASPECT, CMS_DELEGATION_STATUS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
@@ -22,7 +22,6 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
-    subdelgs: state.cmsDelegation.subdelgs,
   }),
   { loadAcceptanceTable, loadSubdelgsTable, acceptDelg, delDelg, showPreviewer }
 )
@@ -38,7 +37,7 @@ const RadioButton = Radio.Button;
     goBackFn: null,
   }));
 })
-export default class AcceptanceList extends Component {
+export default class DelegationList extends Component {
   static propTypes = {
     ietype: PropTypes.oneOf(['import', 'export']),
     aspect: PropTypes.number.isRequired,
@@ -47,7 +46,6 @@ export default class AcceptanceList extends Component {
     loginName: PropTypes.string.isRequired,
     delegationlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-    subdelgs: PropTypes.object.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
     loadSubdelgsTable: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
@@ -62,6 +60,7 @@ export default class AcceptanceList extends Component {
   columns = [{
     title: '委托编号',
     dataIndex: 'delg_no',
+    width: 180,
     render: (o) => {
       return (
         <a onClick={() => this.props.showPreviewer({
@@ -73,6 +72,7 @@ export default class AcceptanceList extends Component {
     },
   }, {
     title: '委托方',
+    width: 170,
     dataIndex: 'customer_name',
   }, {
     title: '客户订单号',
@@ -107,10 +107,6 @@ export default class AcceptanceList extends Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-  }, {
-    title: '委托时间',
-    dataIndex: 'delg_time',
-    render: (o, record) => moment(record.delg_time).format('YYYY.MM.DD'),
   }]
 
   dataSource = new Table.DataSource({
@@ -201,10 +197,24 @@ export default class AcceptanceList extends Component {
     const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
     const columns = [...this.columns];
-    if (listFilter.status === 'accept') {
+    if (listFilter.status === 'all') {
       columns.push({
-        title: '操作',
-        render: (o, record) => {
+        title: '接单时间',
+        dataIndex: 'acpt_time',
+        render: (o, record) =>
+          record.acpt_time && moment(record.acpt_time).format('YYYY.MM.DD'),
+      }, {
+        title: '创建时间',
+        dataIndex: 'created_date',
+        render: (o, record) =>
+          moment(record.created_date).format('YYYY.MM.DD'),
+      });
+    }
+    columns.push({
+      title: '操作',
+      width: 150,
+      render: (o, record) => {
+        if (listFilter.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
             <span>
               <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
@@ -220,16 +230,27 @@ export default class AcceptanceList extends Component {
               </Popconfirm>
             </span>
           );
-        },
-      });
-    }
-    if (listFilter.status === 'undeclared') {
-      columns.push({
-        title: '接单时间',
-        dataIndex: 'acpt_time',
-        render: (o, record) => moment(record.acpt_time).format('YYYY.MM.DD'),
-      });
-    }
+        } else if (listFilter.status === 'undeclared') {
+          return (
+            <span>
+              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
+              分配
+              </a>
+              <span className="ant-divider" />
+              <NavLink to={`/clearance/${this.props.ietype}/declare/make/${record.delg_no}`}>
+              制单
+              </NavLink>
+            </span>
+          );
+        } else {
+          return (
+            <NavLink to={`/clearance/${this.props.ietype}/declare/view/${record.delg_no}`}>
+            查看
+            </NavLink>
+          );
+        }
+      },
+    });
     return (
       <div className="main-content">
         <div className="page-header">
@@ -254,7 +275,9 @@ export default class AcceptanceList extends Component {
         </div>
         <div className="page-body">
           <div className="panel-body table-panel expandable">
-            <Table columns={columns} dataSource={this.dataSource} expandedRowRender={this.handleSubdelgsList} />
+            <Table columns={columns} dataSource={this.dataSource}
+              expandedRowRender={this.handleSubdelgsList} scroll={{ x: 1500 }}
+            />
           </div>
         </div>
       </div>
