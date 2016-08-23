@@ -67,7 +67,7 @@ export default class HeadForm extends React.Component {
       formData,
     };
     return (
-      <Form horizontal form={form} className="form-compact">
+      <Form horizontal className="form-compact">
         {type === 'entry' &&
           <FormInput field="pre_entry_id" outercol={9} col={6}
             label={this.msg('preEntryId')} {...formProps}

@@ -194,7 +194,7 @@ export function loadDelgList(cookie, params) {
   };
 }
 
-export function loadBills(cookie, delgNo) {
+export function loadBills(billSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -204,13 +204,12 @@ export function loadBills(cookie, delgNo) {
       ],
       endpoint: 'v1/cms/declare/bills',
       method: 'get',
-      params: { delgNo },
-      cookie,
+      params: { billSeqNo },
     },
   };
 }
 
-export function loadEntries(cookie, delgNo) {
+export function loadEntries(billSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -220,13 +219,12 @@ export function loadEntries(cookie, delgNo) {
       ],
       endpoint: 'v1/cms/declare/entries',
       method: 'get',
-      params: { delgNo },
-      cookie,
+      params: { billSeqNo },
     },
   };
 }
 
-export function loadCmsParams(cookie, params) {
+export function loadCmsParams(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -236,7 +234,6 @@ export function loadCmsParams(cookie, params) {
       ],
       endpoint: 'v1/cms/declare/params',
       method: 'get',
-      cookie,
       params,
     },
   };
@@ -257,7 +254,7 @@ export function loadSearchedParam({ paramType, search }) {
   };
 }
 
-export function addNewBillBody({ body, headNo, loginId }) {
+export function addNewBillBody({ body, billSeqNo, headNo, loginId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -267,7 +264,7 @@ export function addNewBillBody({ body, headNo, loginId }) {
       ],
       endpoint: 'v1/cms/declare/billbody/add',
       method: 'post',
-      data: { newBody: body, billNo: headNo, loginId },
+      data: { newBody: body, billNo: headNo, billSeqNo, loginId },
     },
   };
 }
@@ -323,7 +320,7 @@ export function addEntry() {
   };
 }
 
-export function addNewEntryBody({ body, headNo, loginId }) {
+export function addNewEntryBody({ body, headNo, billSeqNo, loginId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -333,7 +330,7 @@ export function addNewEntryBody({ body, headNo, loginId }) {
       ],
       endpoint: 'v1/cms/declare/entrybody/add',
       method: 'post',
-      data: { newBody: body, headId: headNo, loginId },
+      data: { newBody: body, headId: headNo, billSeqNo, loginId },
     },
   };
 }

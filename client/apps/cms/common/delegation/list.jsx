@@ -252,11 +252,19 @@ export default class DelegationList extends Component {
               </a>
             </span>
           );
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
+          return (
+            <span>
+              <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
+              制单
+              </a>
+            </span>
+          );
         } else {
           return (
-            <NavLink to={`/clearance/${this.props.ietype}/declare/view/${record.delg_no}`}>
+            <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
             查看
-            </NavLink>
+            </a>
           );
         }
       },

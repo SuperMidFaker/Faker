@@ -33,7 +33,7 @@ const DropdownButton = Dropdown.Button;
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: `${formatMsg(props.intl, 'cmsDelegation')}${props.params.delgNo}`,
+    text: props.params.billno,
     moduleName: props.ietype,
     withModuleLayout: false,
     // router.goBack won't work on initial login next

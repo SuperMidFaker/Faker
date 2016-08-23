@@ -36,8 +36,8 @@ MSCheckbox.propTypes = {
 @connect(
   state => ({
     visible: state.cmsDeclare.visibleMSModal,
-    isCustomRegisted: !!state.cmsDeclare.billHead.ems_no,
-    billNo: state.cmsDeclare.billHead.bill_no,
+    isCustomRegisted: !!state.cmsDeclare.billHead.manual_no,
+    billNo: state.cmsDeclare.billHead.bill_seq_no,
   }),
   { closeMergeSplitModal, submitBillMegeSplit }
 )

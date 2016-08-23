@@ -87,6 +87,7 @@ export default class BodyTable extends React.Component {
     readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
     headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    billSeqNo: PropTypes.string.isRequired,
     loginId: PropTypes.number.isRequired,
     units: PropTypes.array,
     countries: PropTypes.array,
@@ -303,8 +304,8 @@ export default class BodyTable extends React.Component {
     // todo validate
     if (!editBody.id) {
       const body = { ...editBody, list_g_no: index + 1 };
-      const { headNo, loginId } = this.props;
-      this.props.onAdd({ body, headNo, loginId }).then(result => {
+      const { billSeqNo, headNo, loginId } = this.props;
+      this.props.onAdd({ billSeqNo, body, headNo, loginId }).then(result => {
         if (result.error) {
           message.error(result.error.message);
         } else {
