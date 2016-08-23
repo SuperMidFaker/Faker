@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message } from 'antd';
+import { Radio, Button, Popconfirm, message, Modal } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -75,15 +75,19 @@ export default class DelegationList extends Component {
     },
   }, {
     title: '委托方',
+    width: 200,
     dataIndex: 'customer_name',
   }, {
     title: '订单号',
+    width: 150,
     dataIndex: 'order_no',
   }, {
     title: '发票号',
+    width: 150,
     dataIndex: 'invoice_no',
   }, {
     title: '外部编号',
+    width: 150,
     render: (o, record) => (
       this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
       : record.ref_recv_external_no
@@ -109,9 +113,11 @@ export default class DelegationList extends Component {
     },
   }, {
     title: '申报企业',
+    width: 180,
     dataIndex: 'ccb_name',
   }, {
     title: '状态',
+    width: 100,
     dataIndex: 'status',
     render: (o) => {
       const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
@@ -161,7 +167,21 @@ export default class DelegationList extends Component {
       currentPage: delegationlist.current,
     });
   }
-  handleDelegationAccept = (dispId) => {
+  acceptInfo = (delgNo) => {
+    Modal.info({
+      title: '操作成功',
+      okText: '开始制单',
+      content: (
+        <div>
+          <p>已接单</p>
+        </div>
+      ),
+      onOk() {
+        this.handleDelegationMake(delgNo);
+      },
+    });
+  }
+  handleDelegationAccept = (dispId, delgNo) => {
     const { tenantId, loginId, loginName, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
     this.props.acceptDelg(loginId, loginName, dispId).then(
@@ -179,6 +199,7 @@ export default class DelegationList extends Component {
         }
       }
     );
+    this.acceptInfo(delgNo);
   }
   handleDelegationMake = (delgNo) => {
     this.props.loadBillMakeModal({
@@ -188,6 +209,10 @@ export default class DelegationList extends Component {
         message.error(result.error.message, 5);
       }
     });
+  }
+
+  handleDelegationAssign = () => {
+
   }
   handleDelgDel = (delgNo) => {
     const { tenantId, listFilter, ietype, delegationlist: { pageSize, current } } = this.props;
@@ -235,7 +260,7 @@ export default class DelegationList extends Component {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
+              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId, record.delg_no)}>
               接单
               </a>
               <span className="ant-divider" />
@@ -251,7 +276,7 @@ export default class DelegationList extends Component {
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
+              <a role="button" onClick={() => this.handleDelegationAssign(record.dispId)}>
               分配
               </a>
               <span className="ant-divider" />
