@@ -35,7 +35,7 @@ export default class SubdelgTable extends Component {
   }, {
     title: '报关方式',
     dataIndex: 'decl_way_code',
-    width: 80,
+    width: 100,
     render: (o) => {
       const decls = this.props.ietype === 'import' ?
         DECL_I_TYPE : DECL_E_TYPE;
@@ -44,15 +44,15 @@ export default class SubdelgTable extends Component {
     },
   }, {
     title: '备案编号',
-    width: 150,
+    width: 140,
     dataIndex: 'manual_no',
   }, {
     title: '统一编号',
-    width: 170,
+    width: 160,
     dataIndex: 'pre_entry_seq_no',
   }, {
     title: '报关单号',
-    width: 140,
+    width: 160,
     dataIndex: 'entry_id',
     render: (o, record) => {
       if (record.pre_entry_seq_no) {
@@ -69,7 +69,7 @@ export default class SubdelgTable extends Component {
     },
   }, {
     title: '件数',
-    width: 80,
+    width: 60,
     dataIndex: 'pack_count',
   }, {
     title: '毛重',
@@ -77,11 +77,11 @@ export default class SubdelgTable extends Component {
     dataIndex: 'gross_wt',
   }, {
     title: '回执状态',
-    width: 150,
+    width: 160,
     dataIndex: 'status',
   }, {
     title: '回执时间',
-    width: 100,
+    width: 80,
     render: (o, record) => record.process_time && moment(record.process_time).format('YYYY.MM.DD'),
   }]
 
