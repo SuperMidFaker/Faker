@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, InputNumber, Card, Col, Row, Icon, Button } from 'antd';
+import { Form, Select, Input, InputNumber, Card, Col, Row, Button } from 'antd';
 import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
 import { DECL_I_TYPE } from 'common/constants';
 

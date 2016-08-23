@@ -206,7 +206,11 @@ export default(store, cookie) => {
             <Route path="import">
               <IndexRoute component={ImportAcceptance.List} />
               <Route path="create" component={ImportAcceptance.Create} />
-              <Route path="accept/edit/:delgNo" component={ImportAcceptance.Edit} />
+              <Route path="edit/:delgNo" component={ImportAcceptance.Edit} />
+              <Route path="declare">
+                <Route path="make/:delgNo" component={ImportDeclare.Make} />
+                <Route path="view/:delgNo" component={ImportDeclare.View} />
+              </Route>
             </Route>
             <Route path="export">
               <IndexRoute component={ExportAcceptance.List} />

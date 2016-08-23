@@ -4,6 +4,7 @@ import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import { loadSubdelgsTable } from 'common/reducers/cmsDelegation';
 import { message } from 'antd';
+
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -11,7 +12,6 @@ import { message } from 'antd';
   }),
   { loadSubdelgsTable }
 )
-
 export default class SubdelgTable extends Component {
   static propTypes = {
     listFilter: PropTypes.object.isRequired,

@@ -28,75 +28,10 @@ function getFieldInits(aspect, formData) {
   return init;
 }
 
-class LocalSearchSelect extends React.Component {
-  static propTypes = {
-    options: PropTypes.array.isRequired,
-    field: PropTypes.string.isRequired,
-    getFieldProps: PropTypes.func.isRequired,
-    searchKeyFn: PropTypes.func,
-    initialValue: PropTypes.string,
-    placeholder: PropTypes.string,
-  }
-
-  render() {
-    const { options, field, initialValue, getFieldProps, placeholder, searchKeyFn } = this.props;
-    return (
-      <Select size="large" combobox={!!searchKeyFn} {...getFieldProps(field, { initialValue })}
-        placeholder={placeholder} optionFilterProp={searchKeyFn ? 'search' : undefined}
-      >
-      {options.map(opt => (<Option key={opt.value} value={opt.value}
-        search={searchKeyFn ? searchKeyFn(opt) : undefined}
-      >{opt.text}</Option>))}
-      </Select>
-    );
-  }
-}
-
-class RemoteSearchSelect extends React.Component {
-  static propTypes = {
-    options: PropTypes.array.isRequired,
-    field: PropTypes.string.isRequired,
-    getFieldProps: PropTypes.func.isRequired,
-    onSearch: PropTypes.func,
-    initialValue: PropTypes.string,
-    placeholder: PropTypes.string,
-  }
-
-  handleSearch = (searched) => {
-    const { field, onSearch } = this.props;
-    if (onSearch) {
-      onSearch(field, searched);
-    }
-  }
-  render() {
-    const { options, field, initialValue, getFieldProps, placeholder } = this.props;
-    return (
-      <Select size="large" filterOption={false} showSearch onSearch={this.handleSearch} {
-        ...getFieldProps(field, { initialValue })}
-        placeholder={placeholder}
-      >
-      {options.map(opt => <Option key={opt.value} value={opt.value}>{opt.text}</Option>)}
-      </Select>
-    );
-  }
-}
-
 @connect(
   state => ({
     clients: state.cmsDelegation.formRequire.clients,
     tenantName: state.account.tenantName,
-    // tradeModes: state.cmsDelegation.formRequire.tradeModes.map(tm => ({
-    //   value: tm.value,
-    //   text: `${tm.value} | ${tm.text}`,
-    // })),
-    // transModes: state.cmsDelegation.formRequire.transModes.map(tm => ({
-    //   value: tm.value,
-    //   text: `${tm.value} | ${tm.text}`,
-    // })),
-    // declareWayModes: state.cmsDelegation.formRequire.declareWayModes.map(dwm => ({
-    //   value: dwm.value,
-    //   text: `${dwm.value} | ${dwm.text}`,
-    // })),
     fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
   }),
   { setClientForm, searchParams }
@@ -138,24 +73,15 @@ export default class BasicForm extends Component {
       display: '',
       required: true,
     };
-    let remarkDisplay = {
-      display: '',
-    };
     if (partnershipType === 'CCB') {
       customerName = {
         display: '',
         required: true,
       };
-      remarkDisplay = {
-        display: 'none',
-      };
     } else if (partnershipType === 'CUS') {
       customerName = {
         display: 'none',
         required: false,
-      };
-      remarkDisplay = {
-        display: '',
       };
     }
     return (

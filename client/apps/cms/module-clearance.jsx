@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import AmLeftSidebar from 'client/components/am-ant-leftbar';
 import { TENANT_ASPECT } from 'common/constants';
 
-function getLinksByAspect(aspect, intl) {
+function getLinksByAspect(aspect) {
   if (aspect === TENANT_ASPECT.SP) {
     return [{
       single: true,
@@ -61,8 +61,8 @@ export default class clearance extends React.Component {
     children: PropTypes.object.isRequired,
   };
   render() {
-    const { aspect, intl } = this.props;
-    const linkMenus = getLinksByAspect(aspect, intl);
+    const { aspect } = this.props;
+    const linkMenus = getLinksByAspect(aspect);
     return (
       <div className="am-content">
         <AmLeftSidebar links={linkMenus} location={this.props.location} />

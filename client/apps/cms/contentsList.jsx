@@ -113,36 +113,6 @@ export default class AcceptanceList extends Component {
     render: (o, record) => moment(record.delg_time).format('YYYY.MM.DD'),
   }]
 
-  ccols = [{
-    title: '子委托编号',
-    dataIndex: 'bill_seq_no',
-  }, {
-    title: '报关方式',
-    dataIndex: 'decl_way_code',
-  }, {
-    title: '备案编号',
-    dataIndex: 'manual_no',
-  }, {
-    title: '统一编号',
-    dataIndex: 'mawb_no',
-  }, {
-    title: '报关单号',
-    dataIndex: 'ra_decl_no',
-  }, {
-    title: '件数',
-    dataIndex: 'pack_count',
-  }, {
-    title: '毛重',
-    dataIndex: 'gross_wt',
-  }, {
-    title: '回执状态',
-    dataIndex: 'status',
-  }, {
-    title: '回执时间',
-    dataIndex: 'delg_time',
-    render: (o, record) => moment(record.delg_time).format('YYYY.MM.DD'),
-  }]
-
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadAcceptanceTable(null, params),
     resolve: result => result.data,
@@ -241,7 +211,7 @@ export default class AcceptanceList extends Component {
               接单
               </a>
               <span className="ant-divider" />
-              <NavLink to={`/clearance/${this.props.ietype}/accept/edit/${record.delg_no}`}>
+              <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
               修改
               </NavLink>
               <span className="ant-divider" />
