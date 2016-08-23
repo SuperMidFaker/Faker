@@ -23,7 +23,7 @@ import { editDelegation } from 'common/reducers/cmsDelegation';
   dispatch(setNavTitle({
     depth: 3,
     text: props.params.delgNo,
-    moduleName: props.type,
+    moduleName: 'clearance',
     withModuleLayout: false,
     goBackFn: () => router.goBack(),
   }));
