@@ -29,16 +29,22 @@ const TENANT_ASPECT = {
   SP: 1, // 服务商
 };
 const DEFAULT_MODULES = {
-  import: {
-    cls: 'import',
-    url: '/import',
-    text: 'moduleImport',
-    status: 'enabled',
+  orders: {
+    cls: 'orders',
+    url: '/orders',
+    text: 'moduleOrders',
+    status: 'disabled',
   },
-  export: {
-    cls: 'export',
-    url: '/export',
-    text: 'moduleExport',
+  // export: {
+  //   cls: 'export',
+  //   url: '/export',
+  //   text: 'moduleExport',
+  //   status: 'enabled',
+  // },
+  clearance: {
+    cls: 'clearance',
+    url: '/clearance/import',
+    text: 'moduleClearance',
     status: 'enabled',
   },
   tms: {
@@ -283,6 +289,17 @@ const GOODS_TYPES = [{
   text: '大件货物',
 }];
 
+const GOODSTYPES = [{
+  value: 0,
+  text: '普通货',
+}, {
+  value: 1,
+  text: '冷冻品',
+}, {
+  value: 2,
+  text: '危险品',
+}];
+
 const CONTAINER_PACKAGE_TYPE = [{
   id: 0,
   key: 'GP20',
@@ -353,7 +370,33 @@ const I_E_TYPES = [
   { key: 'A', value: '进出口' },
 ];
 
-const CMS_BILL_STATUS = {
+const DECL_I_TYPE = [
+  { key: '0000', value: '口岸进口' },
+  { key: '0002', value: '进境' },
+  { key: '0100', value: '保税区进口' },
+  { key: '0102', value: '保税区进境备案' },
+  { key: '0200', value: '寄售维修进口' },
+  { key: '0202', value: '寄售维修进境备案' },
+];
+
+const DECL_E_TYPE = [
+  { key: '0001', value: '口岸出口' },
+  { key: '0101', value: '保税区出口' },
+  { key: '0103', value: '出境' },
+  { key: '0102', value: '保税区出境备案' },
+  { key: '0201', value: '寄售维修出口' },
+  { key: '0203', value: '寄售维修出境备案' },
+];
+
+export const CMS_DELEGATION_STATUS = {
+  unaccepted: 0,
+  accepted: 1,
+  declaring: 2,
+  declared: 3,
+  passed: 4,
+};
+
+export const CMS_BILL_STATUS = {
   undeclared: 0,
   declaring: 1,
   declared: 2,
@@ -426,11 +469,13 @@ export {
   VPROPROTY_TYPES,
   DRIVER_STATUS,
   GOODS_TYPES,
+  GOODSTYPES,
   CONTAINER_PACKAGE_TYPE,
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
-  CMS_BILL_STATUS,
+  DECL_I_TYPE,
+  DECL_E_TYPE,
   MESSAGE_STATUS,
   TAX_MODE,
   TAX_STATUS,

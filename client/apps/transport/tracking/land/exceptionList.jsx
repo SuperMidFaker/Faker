@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadExcpShipments, showExcpModal } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
-import RowUpdater from './rowUpdater';
+import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import ExcpEventsModal from './modals/excpEventsModal';
 import { renderConsignLoc } from '../../common/consignLocation';
@@ -130,12 +130,9 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 130,
+    width: 150,
     render: (o, record) => {
-      return (
-        <RowUpdater label={o} onAnchored={this.handleShipmtPreview}
-          row={record}
-        />);
+      return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />;
     },
   }, {
     title: this.msg('shipmtException'),

@@ -56,14 +56,12 @@ function goBack(router) {
     withModuleLayout: false,
   }));
 })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class CorpEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     account: PropTypes.object.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     corpUsers: PropTypes.array.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -83,11 +81,11 @@ export default class CorpEdit extends React.Component {
   }
   handleSubmit = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields((errors) => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const form = {
           ...this.props.formData,
-          ...this.props.formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
         };
         if (this.props.formData.key) {
           // only with poid coid(owner id) and organization name
@@ -116,7 +114,7 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps } } = this.props;
+    const { form: { getFieldProps } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         hasFeedback required={required}
@@ -127,7 +125,7 @@ export default class CorpEdit extends React.Component {
   }
   renderOwnerForm() {
     const {
-      formhoc: { getFieldProps }, intl,
+      form: { getFieldProps }, intl,
       formData: { contact, loginName, phone, email }, account: { code, tenantId },
     } = this.props;
     return (
@@ -166,7 +164,7 @@ export default class CorpEdit extends React.Component {
     );
   }
   renderOwnerSelect() {
-    const { corpUsers, intl, formhoc: { getFieldProps } } = this.props;
+    const { corpUsers, intl, form: { getFieldProps } } = this.props;
     return (
       <FormItem label={formatMsg(intl, 'chief')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         required
@@ -187,7 +185,7 @@ export default class CorpEdit extends React.Component {
     const { formData: { name, subCode }, intl, submitting } = this.props;
     return (
       <div className="page-body">
-        <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
+        <Form horizontal onSubmit={this.handleSubmit}
           className="form-edit-content offset-right-col"
         >
           {

@@ -63,13 +63,11 @@ FormInput.propTypes = {
     depth: 1,
   }));
 })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class MyProfile extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
     code: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -86,11 +84,11 @@ export default class MyProfile extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values);
   handleSubmit = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields((errors) => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const profile = {
           ...this.props.profile,
-          ...this.props.formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
           avatar: this.state.avatar,
         };
         this.props.updateProfile(profile, this.props.code, this.props.tenantId).then(
@@ -123,7 +121,7 @@ export default class MyProfile extends React.Component {
     }
   }
   render() {
-    const { intl, profile, formhoc: { getFieldProps }, code } = this.props;
+    const { intl, profile, form: { getFieldProps }, code } = this.props;
     const cmsg = (descriptor) => formatContainerMsg(intl, descriptor);
     const uploadProps = {
       action: `${API_ROOTS.default}v1/upload/img/`,
@@ -140,7 +138,7 @@ export default class MyProfile extends React.Component {
           <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
         </div>
         <div className="panel-body">
-          <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
+          <Form horizontal onSubmit={this.handleSubmit}
             className="form-edit-content offset-right-col"
           >
             <FormItem label={cmsg('avatar')} className="acc-avatar-form" labelCol={{ span: 6 }}

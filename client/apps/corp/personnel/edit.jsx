@@ -61,16 +61,14 @@ function goBack(router) {
     withModuleLayout: false,
   }));
 })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class CorpEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     tenant: PropTypes.object.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
     edit: PropTypes.func.isRequired,
@@ -97,11 +95,11 @@ export default class CorpEdit extends React.Component {
   }
   handleSubmit = (ev) => {
     ev.preventDefault();
-    this.props.formhoc.validateFields((errors) => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const form = {
           ...this.props.formData,
-          ...this.props.formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
           role: this.state.role || this.props.formData.role,
         };
         if (this.props.formData.key) {
@@ -122,7 +120,7 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
-    const { formhoc: { getFieldProps } } = this.props;
+    const { form: { getFieldProps } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         hasFeedback required={required}
@@ -134,7 +132,7 @@ export default class CorpEdit extends React.Component {
   render() {
     const {
       formData: { name, loginName, password, phone, email, position },
-      submitting, intl, formhoc: { getFieldProps }, code,
+      submitting, intl, form: { getFieldProps }, code,
     } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
@@ -142,7 +140,7 @@ export default class CorpEdit extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <Form horizontal onSubmit={this.handleSubmit} form={this.props.formhoc}
+          <Form horizontal onSubmit={this.handleSubmit}
             className="form-edit-content offset-right-col"
           >
             {this.renderTextInput(

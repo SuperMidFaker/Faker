@@ -52,13 +52,11 @@ function fetchData({ state, dispatch, cookie }) {
     formData: state.corps.formData,
   }),
   { edit, checkCorpDomain })
-@Form.create({
-  formPropName: 'formhoc',
-})
+@Form.create()
 export default class CorpInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    formhoc: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     edit: PropTypes.func.isRequired,
     checkCorpDomain: PropTypes.func.isRequired,
@@ -103,12 +101,12 @@ export default class CorpInfo extends React.Component {
     }
   }
   handleSubmit = () => {
-    this.props.formhoc.validateFields((errors) => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { intl, formhoc, formData } = this.props;
+        const { intl, formData } = this.props;
         const form = {
           ...formData,
-          ...formhoc.getFieldsValue(),
+          ...this.props.form.getFieldsValue(),
           ...this.state,
         };
         this.props.edit(form).then(result => {
@@ -127,7 +125,7 @@ export default class CorpInfo extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { formhoc: { getFieldProps } } = this.props;
+    const { form: { getFieldProps } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
         hasFeedback required={required}
@@ -144,13 +142,13 @@ export default class CorpInfo extends React.Component {
         name, short_name, address,
         code, type, remark, website, contact, phone, email,
       },
-      formhoc: { getFieldProps }, intl,
+      form: { getFieldProps }, intl,
     } = this.props;
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
       <div className="panel-body body-responsive">
-        <Form horizontal form={this.props.formhoc} className="form-edit-content">
+        <Form horizontal className="form-edit-content">
           <Row>
             <Col span="12">
               {this.renderTextInput(

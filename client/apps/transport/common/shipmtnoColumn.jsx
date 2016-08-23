@@ -44,7 +44,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     }
   }
   render() {
-    const { publicKey, shipmtNo, shipment } = this.props;
+    const { publicKey, shipmtNo, shipment, ...extra } = this.props;
     const content = (
       <div>
         <TrackingTimeline tracking={this.state.tracking} />
@@ -65,8 +65,9 @@ export default class ShipmtNoColumnRender extends React.Component {
         </Popover>
       );
     } else {
+      const { loadShipmtPoints: _, ...rest } = extra; // eslint-disable-line no-unused-vars
       return (
-        <a onClick={this.handleClick}>
+        <a {...rest} onClick={this.handleClick}>
           <TrimSpan text={shipmtNo} maxLen={14} />
         </a>
       );
