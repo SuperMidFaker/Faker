@@ -9,7 +9,8 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
-import { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
+import BillModal from './billModal';
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -22,8 +23,9 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
+    billMakeModal: state.cmsDelegation.billMakeModal,
   }),
-  { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer }
+  { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -47,8 +49,10 @@ export default class DelegationList extends Component {
     delegationlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
+    loadBillMakeModal: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
+    billMakeModal: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -168,6 +172,15 @@ export default class DelegationList extends Component {
       }
     );
   }
+  handleDelegationMake = (delgNo) => {
+    this.props.loadBillMakeModal({
+      delg_no: delgNo,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
   handleDelgDel = (delgNo) => {
     const { tenantId, listFilter, ietype, delegationlist: { pageSize, current } } = this.props;
     this.props.delDelg(delgNo).then(result => {
@@ -184,7 +197,6 @@ export default class DelegationList extends Component {
       }
     });
   }
-
   handleSubdelgsList = (record) => {
     return (
       <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype} />
@@ -192,7 +204,7 @@ export default class DelegationList extends Component {
   }
 
   render() {
-    const { delegationlist, listFilter } = this.props;
+    const { delegationlist, listFilter, billMakeModal } = this.props;
     this.dataSource.remotes = delegationlist;
     const columns = [...this.columns];
     if (listFilter.status === 'all') {
@@ -235,9 +247,9 @@ export default class DelegationList extends Component {
               分配
               </a>
               <span className="ant-divider" />
-              <NavLink to={`/clearance/${this.props.ietype}/declare/make/${record.delg_no}`}>
+              <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
               制单
-              </NavLink>
+              </a>
             </span>
           );
         } else {
@@ -279,6 +291,7 @@ export default class DelegationList extends Component {
             />
           </div>
         </div>
+        <BillModal ietype={this.props.ietype} billMakeModal={billMakeModal} />
       </div>
     );
   }
