@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Radio } from 'antd';
 import SearchBar from 'client/components/search-bar';
-import AdvancedSearchBar from 'client/components/advanced-search-bar';
+import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
 import { changePodFilter } from 'common/reducers/trackingLandPod';
 import { changeExcpFilter } from 'common/reducers/trackingLandException';
