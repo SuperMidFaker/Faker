@@ -34,7 +34,7 @@ const DropdownButton = Dropdown.Button;
   dispatch(setNavTitle({
     depth: 3,
     text: props.params.billno,
-    moduleName: props.ietype,
+    moduleName: 'clearance',
     withModuleLayout: false,
     // router.goBack won't work on initial login next
     goBackFn: () => router.goBack(),
@@ -89,7 +89,7 @@ export default class EntryBillForm extends React.Component {
     const { readonly, ietype, entries, activeKey } = this.props;
     return (
       <div className="main-content">
-        <div className="page-body">
+        <div className="page-body fixed-height">
           <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={activeKey}
             onChange={this.handleTabChange}
           >
