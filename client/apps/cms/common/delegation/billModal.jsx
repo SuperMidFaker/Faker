@@ -39,6 +39,14 @@ export default class BillModal extends Component {
     });
     return (
       <Modal title="选择清单-开始制单" visible={billMakeModal.visible} onCancel={() => this.handleCancel()} >
+        <Row>
+          <Col span={8}>
+            清单编号
+          </Col>
+          <Col span={16}>
+            制单进度
+          </Col>
+        </Row>
         {billPros}
       </Modal>
   ); }
