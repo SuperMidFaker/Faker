@@ -166,7 +166,7 @@ export default class DelegationList extends Component {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
-    const filter = JSON.stringify({ ...this.props.listFilter, status: ev.target.value });
+    const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleDelgListLoad(filter);
   }
   handleDelegationMake = (row) => {
@@ -286,6 +286,7 @@ export default class DelegationList extends Component {
         }
       },
     });
+    // todo expandedRow close/fixed
     return (
       <div className="main-content">
         <div className="page-header">
