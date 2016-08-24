@@ -10,6 +10,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
 import BillModal from './billModal';
+import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
@@ -23,7 +24,6 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
-    billMakeModal: state.cmsDelegation.billMakeModal,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer }
 )
@@ -52,13 +52,12 @@ export default class DelegationList extends Component {
     loadBillMakeModal: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
-    billMakeModal: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    visible: false,
+    searchInput: '',
   }
   columns = [{
     title: '委托编号',
@@ -167,10 +166,19 @@ export default class DelegationList extends Component {
       currentPage: delegationlist.current,
     });
   }
-  handleDelegationMake = (delgNo) => {
+  handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
-      delg_no: delgNo,
-    }).then(result => {
+      delg_no: row.delg_no,
+    }, 'make').then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
+  handleDelegationView = (row) => {
+    this.props.loadBillMakeModal({
+      delg_no: row.delg_no,
+    }, 'view').then(result => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
@@ -189,7 +197,8 @@ export default class DelegationList extends Component {
     });
     setTimeout(() => !closed && Info.destroy(), 2000);
   }
-  handleDelegationAccept = (dispId, delgNo) => {
+  handleDelegationAccept = (row) => {
+    const { dispId, delgNo } = row;
     const { tenantId, loginId, loginName, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
     this.props.acceptDelg(loginId, loginName, dispId).then(
@@ -204,10 +213,10 @@ export default class DelegationList extends Component {
             pageSize,
             currentPage: current,
           });
+          this.acceptInfo(delgNo);
         }
       }
     );
-    this.acceptInfo(delgNo);
   }
   handleDelegationAssign = () => {
 
@@ -234,7 +243,7 @@ export default class DelegationList extends Component {
     );
   }
   render() {
-    const { delegationlist, listFilter, billMakeModal } = this.props;
+    const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
     const columns = [...this.columns];
     if (listFilter.status === 'all') {
@@ -257,9 +266,7 @@ export default class DelegationList extends Component {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId, record.delg_no)}>
-              接单
-              </a>
+              <RowUpdater onHit={this.handleDelegationAccept} label="接单" row={record} />
               <span className="ant-divider" />
               <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
               修改
@@ -273,28 +280,18 @@ export default class DelegationList extends Component {
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAssign(record.dispId)}>
-              分配
-              </a>
+              <RowUpdater onHit={this.handleDelegationAssign} label="分配" row={record} />
               <span className="ant-divider" />
-              <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
-              制单
-              </a>
+              <RowUpdater onHit={this.handleDelegationMake} label="制单" row={record} />
             </span>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
           return (
-            <span>
-              <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
-              制单
-              </a>
-            </span>
+            <RowUpdater onHit={this.handleDelegationMake} label="制单" row={record} />
           );
         } else {
           return (
-            <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
-            查看
-            </a>
+            <RowUpdater onHit={this.handleDelegationView} label="查看" row={record} />
           );
         }
       },
@@ -317,8 +314,8 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">已放行</RadioButton>
           </RadioGroup>
           <span />
-          <SearchBar placeholder={'委托编号/发票号'}
-            value={this.state.searchInput}
+          <SearchBar placeholder={'委托编号/发票号'} value={this.state.searchInput}
+            onInputSearch={() => {}}
           />
         </div>
         <div className="page-body">
@@ -329,7 +326,7 @@ export default class DelegationList extends Component {
             />
           </div>
         </div>
-        <BillModal ietype={this.props.ietype} billMakeModal={billMakeModal} />
+        <BillModal ietype={this.props.ietype} />
       </div>
     );
   }

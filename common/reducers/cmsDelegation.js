@@ -74,6 +74,7 @@ const initialState = {
   },
   billMakeModal: {
     visible: false,
+    type: 'make',
     bills: [],
   },
   visibleEfModal: false,
@@ -119,10 +120,12 @@ export default function reducer(state = initialState, action) {
       };
       return { ...state, delgBillsMap };
     }
+    case actionTypes.LOAD_BILLMAKE:
+      return { ...state, billMakeModal: { ...state.billMakeModal, type: action.modalType } };
     case actionTypes.LOAD_BILLMAKE_SUCCEED:
-      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, loading: false, ...action.result.data } };
+      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, ...action.result.data } };
     case actionTypes.SET_MODAL_FALSE:
-      return { ...state, billMakeModal: { ...state.billMakeModal, visible: false } };
+      return { ...state, billMakeModal: initialState.billMakeModal };
     case actionTypes.LOAD_DELEGATE_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
@@ -207,7 +210,7 @@ export function loadSubdelgsTable(params) {
   };
 }
 
-export function loadBillMakeModal(params) {
+export function loadBillMakeModal(params, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -218,11 +221,12 @@ export function loadBillMakeModal(params) {
       endpoint: 'v1/cms/billmodal',
       method: 'get',
       params,
+      modalType: type,
     },
   };
 }
 
-export function setModalFalse() {
+export function closeBillMakeModal() {
   return {
     type: actionTypes.SET_MODAL_FALSE,
   };
