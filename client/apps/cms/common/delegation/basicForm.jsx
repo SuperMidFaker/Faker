@@ -17,10 +17,10 @@ function getFieldInits(aspect, formData) {
   if (formData) {
     [
       'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no', 'pieces', 'weight', 'trans_mode',
-      'voyage_no', 'trade_mode', 'decl_way_code', 'customer_name', 'goods_type',
+      'voyage_no', 'trade_mode', 'decl_way_code', 'goods_type',
       'order_no', 'remark', 'manual_no',
     ].forEach(fd => {
-      init[fd] = formData[fd] || '';
+      init[fd] = formData[fd] || null;
     });
     init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no
       : formData.ref_recv_external_no;
@@ -125,6 +125,7 @@ export default class BasicForm extends Component {
             <FormItem label="总毛重" {...formItemLayout}>
               <Input {...getFieldProps('weight', {
                 initialValue: fieldInits.weight,
+
               })} />
             </FormItem>
             <FormItem label="外部编号" {...formItemLayout}>
