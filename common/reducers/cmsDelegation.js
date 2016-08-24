@@ -179,7 +179,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadAcceptanceTable(cookie, params) {
+export function loadAcceptanceTable(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -190,7 +190,6 @@ export function loadAcceptanceTable(cookie, params) {
       endpoint: 'v1/cms/acceptance/delegations',
       method: 'get',
       params,
-      cookie,
     },
   };
 }

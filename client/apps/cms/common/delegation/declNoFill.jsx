@@ -24,6 +24,8 @@ export default class DeclnoFillModal extends React.Component {
     entryHeadId: PropTypes.number.isRequired,
     billSeqNo: PropTypes.string.isRequired,
     delgNo: PropTypes.string.isRequired,
+    reload: PropTypes.func.isRequired,
+    reloadDelgs: PropTypes.func.isRequired,
   }
   state = {
     entryNo: '',
@@ -46,6 +48,9 @@ export default class DeclnoFillModal extends React.Component {
           this.setState({ entryNo: '' });
           this.props.closeEfModal();
           this.props.reload();
+          if (result.data.declared) {
+            this.props.reloadDelgs();
+          }
         }
       });
   }

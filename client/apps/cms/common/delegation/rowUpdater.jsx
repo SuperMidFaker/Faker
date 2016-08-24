@@ -15,7 +15,7 @@ export default function RowUpdater(props) {
 }
 
 RowUpdater.propTypes = {
-  label: PropTypes.element,
+  label: PropTypes.node,
   onHit: PropTypes.func,
   row: PropTypes.object,
   index: PropTypes.number,

@@ -125,7 +125,7 @@ export default class DelegationList extends Component {
   }]
 
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadAcceptanceTable(null, params),
+    fetcher: params => this.props.loadAcceptanceTable(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -151,20 +151,23 @@ export default class DelegationList extends Component {
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
   }
-
+  handleDelgListLoad = (filter) => {
+    const { tenantId, listFilter, ietype,
+      delegationlist: { pageSize, current } } = this.props;
+    this.props.loadAcceptanceTable({
+      ietype,
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: current,
+    });
+  }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = JSON.stringify({ ...this.props.listFilter, status: ev.target.value });
-    const { ietype, tenantId, delegationlist } = this.props;
-    this.props.loadAcceptanceTable(null, {
-      ietype,
-      tenantId,
-      filter,
-      pageSize: delegationlist.pageSize,
-      currentPage: delegationlist.current,
-    });
+    this.handleDelgListLoad(filter);
   }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
@@ -184,36 +187,28 @@ export default class DelegationList extends Component {
       }
     });
   }
-  acceptInfo = (delgNo) => {
+  showAcceptInfo = (row) => {
     let closed = false;
     const Info = Modal.info({
       title: '操作成功',
       okText: '开始制单',
       content: '已接受报关委托，开始制单？',
       onOk: () => {
-        this.handleDelegationMake(delgNo);
+        this.handleDelegationMake(row);
         closed = true;
       },
     });
     setTimeout(() => !closed && Info.destroy(), 2000);
   }
   handleDelegationAccept = (row) => {
-    const { dispId, delgNo } = row;
-    const { tenantId, loginId, loginName, listFilter, ietype,
-      delegationlist: { pageSize, current } } = this.props;
-    this.props.acceptDelg(loginId, loginName, dispId).then(
+    const { loginId, loginName } = this.props;
+    this.props.acceptDelg(loginId, loginName, row.dispId).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.props.loadAcceptanceTable(null, {
-            ietype,
-            tenantId,
-            filter: JSON.stringify(listFilter),
-            pageSize,
-            currentPage: current,
-          });
-          this.acceptInfo(delgNo);
+          this.handleDelgListLoad();
+          this.showAcceptInfo(row);
         }
       }
     );
@@ -222,24 +217,19 @@ export default class DelegationList extends Component {
 
   }
   handleDelgDel = (delgNo) => {
-    const { tenantId, listFilter, ietype, delegationlist: { pageSize, current } } = this.props;
     this.props.delDelg(delgNo).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.loadAcceptanceTable(null, {
-          ietype,
-          tenantId,
-          filter: JSON.stringify(listFilter),
-          pageSize,
-          currentPage: current,
-        });
+        this.handleDelgListLoad();
       }
     });
   }
   handleSubdelgsList = (record) => {
     return (
-      <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype} />
+      <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
+        reloadDelgs={this.handleDelgListLoad}
+      />
     );
   }
   render() {
