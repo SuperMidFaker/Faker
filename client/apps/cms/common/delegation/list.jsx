@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message, Modal } from 'antd';
+import { Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
@@ -62,7 +62,7 @@ export default class DelegationList extends Component {
   columns = [{
     title: '委托编号',
     dataIndex: 'delg_no',
-    width: 150,
+    width: 110,
     render: (o) => {
       return (
         <a onClick={() => this.props.showPreviewer({
@@ -74,7 +74,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: '委托方',
-    width: 200,
+    width: 180,
     dataIndex: 'customer_name',
   }, {
     title: '订单号',
@@ -120,7 +120,7 @@ export default class DelegationList extends Component {
     dataIndex: 'status',
     render: (o) => {
       const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
-      return decl && decl.text;
+      return <Tag>{decl && decl.text}</Tag>;
     },
   }]
 
@@ -251,7 +251,7 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 130,
+      width: 100,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
@@ -313,7 +313,7 @@ export default class DelegationList extends Component {
           <div className="panel-body table-panel expandable">
             <Table columns={columns} dataSource={this.dataSource}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1480 }}
+              scroll={{ x: 1600 }}
             />
           </div>
         </div>
