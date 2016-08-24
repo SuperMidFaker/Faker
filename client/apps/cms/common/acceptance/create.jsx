@@ -63,7 +63,6 @@ export default class AcceptanceCreate extends Component {
           });
         }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        if (delegation.weight === '') delegation.weight = null;
         delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,

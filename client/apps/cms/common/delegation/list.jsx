@@ -58,7 +58,7 @@ export default class DelegationList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: [],
+    visible: false,
   }
   columns = [{
     title: '委托编号',
@@ -167,19 +167,27 @@ export default class DelegationList extends Component {
       currentPage: delegationlist.current,
     });
   }
+  handleDelegationMake = (delgNo) => {
+    this.props.loadBillMakeModal({
+      delg_no: delgNo,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
   acceptInfo = (delgNo) => {
-    Modal.info({
+    let closed = false;
+    const Info = Modal.info({
       title: '操作成功',
       okText: '开始制单',
-      content: (
-        <div>
-          <p>已接单</p>
-        </div>
-      ),
-      onOk() {
+      content: '已接受报关委托，开始制单？',
+      onOk: () => {
         this.handleDelegationMake(delgNo);
+        closed = true;
       },
     });
+    setTimeout(() => !closed && Info.destroy(), 2000);
   }
   handleDelegationAccept = (dispId, delgNo) => {
     const { tenantId, loginId, loginName, listFilter, ietype,
@@ -201,16 +209,6 @@ export default class DelegationList extends Component {
     );
     this.acceptInfo(delgNo);
   }
-  handleDelegationMake = (delgNo) => {
-    this.props.loadBillMakeModal({
-      delg_no: delgNo,
-    }).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      }
-    });
-  }
-
   handleDelegationAssign = () => {
 
   }
@@ -235,7 +233,6 @@ export default class DelegationList extends Component {
       <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype} />
     );
   }
-
   render() {
     const { delegationlist, listFilter, billMakeModal } = this.props;
     this.dataSource.remotes = delegationlist;
@@ -255,7 +252,7 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 100,
+      width: 130,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (

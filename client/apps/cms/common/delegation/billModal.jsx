@@ -22,12 +22,12 @@ export default class BillModal extends Component {
 
   render() {
     const { ietype, billMakeModal } = this.props;
-    const billPros = billMakeModal.bills.map((bill) => {
+    const billPros = billMakeModal.bills.map((bill, index) => {
       const perVal = (bill.bill_status * 20);
       return (
-        <Row>
+        <Row key={index}>
           <Col span={8}>
-            <NavLink to={`/clearance/${ietype}/declare/make/${bill.bill_seq_no}`}>
+            <NavLink onChange={this.handleCancel} to={`/clearance/${ietype}/declare/make/${bill.bill_seq_no}`}>
               {bill.bill_seq_no}
             </NavLink>
           </Col>
