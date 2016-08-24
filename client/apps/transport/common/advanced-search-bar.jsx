@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Row, Col, Button, DatePicker, Checkbox, Select, Tag, Tooltip, Icon } from 'antd';
+import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import RegionCascade from 'client/components/region-cascade';
 import messages from './message.i18n';
@@ -23,12 +24,13 @@ export default class AdvancedSearchBar extends React.Component {
     visible: PropTypes.bool.isRequired,
     onSearch: PropTypes.func.isRequired,
     loginId: PropTypes.number.isRequired,
+    toggle: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = {
       value: props.value || '',
-      fieldsLabel: [],
+      fields: [],
     };
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
@@ -47,28 +49,61 @@ export default class AdvancedSearchBar extends React.Component {
         result[key] = fieldsValue[key];
       }
     });
-    this.handleShowFieldsLabel([...this.state.fieldsLabel]);
+    this.handleShowFieldsLabel();
     this.props.onSearch(result);
   }
-  handleReset = () => {
+  handleResetFields = () => {
     this.props.form.resetFields();
-    this.handleShowFieldsLabel([]);
+    this.handleShowFieldsLabel();
   }
-  handleShowFieldsLabel = (fieldsLabel) => {
+  handleCloseTag = (names) => {
+    this.props.form.resetFields(names);
+    this.handleSubmit();
+  }
+  handleShowFieldsLabel = () => {
+    const fields = [];
     const fieldsValue = this.props.form.getFieldsValue();
     Object.keys(fieldsValue).forEach(key => {
-      if (fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key] !== undefined && fieldsLabel.indexOf(this.msg(key)) < 0) {
-        fieldsLabel.push(this.msg(key));
+      if (fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key] !== undefined) {
+        fields.push({
+          key,
+          value: fieldsValue[key],
+          label: this.msg(key),
+        });
       }
     });
-    this.setState({ fieldsLabel });
+    this.setState({ fields });
+  }
+  format = (item) => {
+    if (item.key === 'customer_name' ||
+      item.key === 'sp_name' ||
+      item.key === 'transport_mode') {
+      return `${item.label}: ${item.value}`;
+    } else if (item.key === 'creater_login_id') {
+      return item.label;
+    } else if (item.key === 'pickup_est_date' ||
+      item.key === 'pickup_act_date' ||
+      item.key === 'deliver_est_date' ||
+      item.key === 'deliver_act_date') {
+      const value = item.value;
+      const startDate = `${moment(value[0]).format('YYYY-MM-DD')} 00:00:00`;
+      const endDate = `${moment(value[1]).format('YYYY-MM-DD')} 23:59:59`;
+      return `${item.label}: ${startDate}~${endDate}`;
+    } else if (item.key === 'consigner_region' ||
+      item.key === 'consignee_region') {
+      const value = [...item.value];
+      value.shift();
+      return `${item.label}: ${value.join('-')}`;
+    }
+    return item.label;
   }
   render() {
     const { visible, form: { getFieldProps } } = this.props;
+    const { fields } = this.state;
     return (
       <div>
-        <div className="ant-alert ant-alert-info ant-alert-no-icon">
-          {this.state.fieldsLabel.map(item => <Tag closable color="blue">{item}</Tag>)}
+        <div className="ant-alert ant-alert-info ant-alert-no-icon" style={{ display: fields.length === 0 ? 'none' : 'block' }}>
+          {fields.map(item => <Tag closable color="blue" onClose={() => this.handleCloseTag([item.key])}>{this.format(item)}</Tag>)}
         </div>
         <Form horizontal className="ant-advanced-search-form"
           style={{ display: visible ? 'block' : 'none' }}
@@ -128,15 +163,15 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Select size="large" style={{ width: '100%' }} {...getFieldProps('transport_mode_code', { initialValue: '' })} >
-                  <Option value="LTL">零担</Option>
-                  <Option value="FTL">整车</Option>
-                  <Option value="EXP">快递快运</Option>
-                  <Option value="CTN">集装箱</Option>
-                  <Option value="TNK">槽罐</Option>
-                  <Option value="AIR">空运</Option>
-                  <Option value="SEA">海运</Option>
-                  <Option value="RWY">铁运</Option>
+                <Select size="large" style={{ width: '100%' }} {...getFieldProps('transport_mode', { initialValue: '' })} >
+                  <Option value="零担">零担</Option>
+                  <Option value="整车">整车</Option>
+                  <Option value="快递快运">快递快运</Option>
+                  <Option value="集装箱">集装箱</Option>
+                  <Option value="槽罐">槽罐</Option>
+                  <Option value="空运">空运</Option>
+                  <Option value="海运">海运</Option>
+                  <Option value="铁运">铁运</Option>
                 </Select>
               </FormItem>
               <FormItem
@@ -165,8 +200,8 @@ export default class AdvancedSearchBar extends React.Component {
           <Row>
             <Col span={12} offset={12} style={{ textAlign: 'right' }}>
               <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>搜索</Button>
-              <Button onClick={this.handleReset} style={{ marginRight: 16 }}>清除条件</Button>
-              <a>收起</a>
+              <Button onClick={() => this.handleResetFields()} style={{ marginRight: 16 }}>清除条件</Button>
+              <a onClick={this.props.toggle}>收起</a>
             </Col>
           </Row>
         </Form>

@@ -435,7 +435,7 @@ export default class AcceptList extends React.Component {
           <span />
           <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} />
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}

@@ -165,7 +165,7 @@ export default class TrackingLandWrapper extends React.Component {
             <ExportExcel />
           </div>
         </div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} />
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         {this.props.children}
       </div>
     );
