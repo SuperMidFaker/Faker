@@ -123,18 +123,8 @@ export default class LandStatusList extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-        filters: this.props.filters,
+        filters: JSON.stringify(this.props.filters),
       };
-      params.filters = params.filters.filter(
-        flt => flt.name === 'type' || flt.name === 'shipmt_no'
-          || (flt.name in filters && filters[flt.name].length)
-      );
-      for (const key in filters) {
-        if (filters[key] && filters[key].length > 0) {
-          params.filters = this.mergeFilters(params.filters, key, filters[key][0]);
-        }
-      }
-      params.filters = JSON.stringify(params.filters);
       return params;
     },
     remotes: this.props.shipmentlist,
