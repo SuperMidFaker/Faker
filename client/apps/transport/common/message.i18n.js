@@ -37,8 +37,8 @@ const messages = defineMessages({
     id: 'tms.advancedSearchBar.creater_login_id',
     defaultMessage: '与我相关',
   },
-  transport_mode_code: {
-    id: 'tms.advancedSearchBar.transport_mode_code',
+  transport_mode: {
+    id: 'tms.advancedSearchBar.transport_mode',
     defaultMessage: '运输模式',
   },
 });

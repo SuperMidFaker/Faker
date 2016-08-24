@@ -113,17 +113,8 @@ export default class AcceptList extends React.Component {
         currentPage: pagination.current,
         sortField: sorter.field || this.props.sortField,
         sortOrder: this.props.sortOrder,
-        filters: this.props.filters,
+        filters: JSON.stringify(this.props.filters),
       };
-      params.filters = params.filters.filter(
-        flt => flt.name === 'type' || (flt.name in filters && filters[flt.name].length)
-      );
-      for (const key in filters) {
-        if (filters[key] && filters[key].length > 0) {
-          params.filters = this.mergeFilters(params.filters, key, filters[key][0]);
-        }
-      }
-      params.filters = JSON.stringify(params.filters);
       return params;
     },
     remotes: this.props.shipmentlist,
@@ -435,7 +426,7 @@ export default class AcceptList extends React.Component {
           <span />
           <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} />
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}

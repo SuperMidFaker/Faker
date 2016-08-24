@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message } from 'antd';
+import { Radio, Button, Popconfirm, message, Modal } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import { TENANT_ASPECT, CMS_DELEGATION_STATUS } from 'common/constants';
+import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
 import BillModal from './billModal';
+import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
@@ -23,7 +24,6 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
-    billMakeModal: state.cmsDelegation.billMakeModal,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer }
 )
@@ -52,13 +52,12 @@ export default class DelegationList extends Component {
     loadBillMakeModal: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
-    billMakeModal: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: [],
+    searchInput: '',
   }
   columns = [{
     title: '委托编号',
@@ -75,15 +74,19 @@ export default class DelegationList extends Component {
     },
   }, {
     title: '委托方',
+    width: 200,
     dataIndex: 'customer_name',
   }, {
     title: '订单号',
+    width: 150,
     dataIndex: 'order_no',
   }, {
     title: '发票号',
+    width: 150,
     dataIndex: 'invoice_no',
   }, {
     title: '外部编号',
+    width: 150,
     render: (o, record) => (
       this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
       : record.ref_recv_external_no
@@ -103,16 +106,26 @@ export default class DelegationList extends Component {
   }, {
     title: '货物性质',
     dataIndex: 'goods_type',
+    render: (o) => {
+      const decl = GOODSTYPES.filter(gd => gd.value === o)[0];
+      return decl && decl.text;
+    },
   }, {
     title: '申报企业',
+    width: 180,
     dataIndex: 'ccb_name',
   }, {
     title: '状态',
+    width: 100,
     dataIndex: 'status',
+    render: (o) => {
+      const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
+      return decl && decl.text;
+    },
   }]
 
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadAcceptanceTable(null, params),
+    fetcher: params => this.props.loadAcceptanceTable(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -138,73 +151,89 @@ export default class DelegationList extends Component {
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
   }
-
+  handleDelgListLoad = (filter) => {
+    const { tenantId, listFilter, ietype,
+      delegationlist: { pageSize, current } } = this.props;
+    this.props.loadAcceptanceTable({
+      ietype,
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: current,
+    });
+  }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
-    const filter = JSON.stringify({ ...this.props.listFilter, status: ev.target.value });
-    const { ietype, tenantId, delegationlist } = this.props;
-    this.props.loadAcceptanceTable(null, {
-      ietype,
-      tenantId,
-      filter,
-      pageSize: delegationlist.pageSize,
-      currentPage: delegationlist.current,
-    });
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleDelgListLoad(filter);
   }
-  handleDelegationAccept = (dispId) => {
-    const { tenantId, loginId, loginName, listFilter, ietype,
-      delegationlist: { pageSize, current } } = this.props;
-    this.props.acceptDelg(loginId, loginName, dispId).then(
-      result => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.props.loadAcceptanceTable(null, {
-            ietype,
-            tenantId,
-            filter: JSON.stringify(listFilter),
-            pageSize,
-            currentPage: current,
-          });
-        }
-      }
-    );
-  }
-  handleDelegationMake = (delgNo) => {
+  handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
-      delg_no: delgNo,
-    }).then(result => {
+      delg_no: row.delg_no,
+    }, 'make').then(result => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
     });
   }
+  handleDelegationView = (row) => {
+    this.props.loadBillMakeModal({
+      delg_no: row.delg_no,
+    }, 'view').then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
+  showAcceptInfo = (row) => {
+    let closed = false;
+    const Info = Modal.info({
+      title: '操作成功',
+      okText: '开始制单',
+      content: '已接受报关委托，开始制单？',
+      onOk: () => {
+        this.handleDelegationMake(row);
+        closed = true;
+      },
+    });
+    setTimeout(() => !closed && Info.destroy(), 2000);
+  }
+  handleDelegationAccept = (row) => {
+    const { loginId, loginName } = this.props;
+    this.props.acceptDelg(loginId, loginName, row.dispId).then(
+      result => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleDelgListLoad();
+          this.showAcceptInfo(row);
+        }
+      }
+    );
+  }
+  handleDelegationAssign = () => {
+
+  }
   handleDelgDel = (delgNo) => {
-    const { tenantId, listFilter, ietype, delegationlist: { pageSize, current } } = this.props;
     this.props.delDelg(delgNo).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.loadAcceptanceTable(null, {
-          ietype,
-          tenantId,
-          filter: JSON.stringify(listFilter),
-          pageSize,
-          currentPage: current,
-        });
+        this.handleDelgListLoad();
       }
     });
   }
   handleSubdelgsList = (record) => {
     return (
-      <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype} />
+      <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
+        reloadDelgs={this.handleDelgListLoad}
+      />
     );
   }
-
   render() {
-    const { delegationlist, listFilter, billMakeModal } = this.props;
+    const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
     const columns = [...this.columns];
     if (listFilter.status === 'all') {
@@ -222,14 +251,12 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 100,
+      width: 130,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
-              接单
-              </a>
+              <RowUpdater onHit={this.handleDelegationAccept} label="接单" row={record} />
               <span className="ant-divider" />
               <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
               修改
@@ -243,32 +270,23 @@ export default class DelegationList extends Component {
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
-              分配
-              </a>
+              <RowUpdater onHit={this.handleDelegationAssign} label="分配" row={record} />
               <span className="ant-divider" />
-              <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
-              制单
-              </a>
+              <RowUpdater onHit={this.handleDelegationMake} label="制单" row={record} />
             </span>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
           return (
-            <span>
-              <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
-              制单
-              </a>
-            </span>
+            <RowUpdater onHit={this.handleDelegationMake} label="制单" row={record} />
           );
         } else {
           return (
-            <a role="button" type="primary" onClick={() => this.handleDelegationMake(record.delg_no)}>
-            查看
-            </a>
+            <RowUpdater onHit={this.handleDelegationView} label="查看" row={record} />
           );
         }
       },
     });
+    // todo expandedRow close/fixed
     return (
       <div className="main-content">
         <div className="page-header">
@@ -287,8 +305,8 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">已放行</RadioButton>
           </RadioGroup>
           <span />
-          <SearchBar placeholder={'委托编号/发票号'}
-            value={this.state.searchInput}
+          <SearchBar placeholder={'委托编号/发票号'} value={this.state.searchInput}
+            onInputSearch={() => {}}
           />
         </div>
         <div className="page-body">
@@ -299,7 +317,7 @@ export default class DelegationList extends Component {
             />
           </div>
         </div>
-        <BillModal ietype={this.props.ietype} billMakeModal={billMakeModal} />
+        <BillModal ietype={this.props.ietype} />
       </div>
     );
   }

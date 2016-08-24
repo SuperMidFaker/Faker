@@ -388,6 +388,14 @@ const DECL_E_TYPE = [
   { key: '0203', value: '寄售维修出境备案' },
 ];
 
+const CMS_DELG_STATUS = [
+  { value: 0, text: '待接单' },
+  { value: 1, text: '已接单' },
+  { value: 2, text: '制单中' },
+  { value: 3, text: '已申报' },
+  { value: 4, text: '已放行' },
+];
+
 export const CMS_DELEGATION_STATUS = {
   unaccepted: 0,
   accepted: 1,
@@ -477,6 +485,7 @@ export {
   DECL_I_TYPE,
   DECL_E_TYPE,
   MESSAGE_STATUS,
+  CMS_DELG_STATUS,
   TAX_MODE,
   TAX_STATUS,
   WELOGIX_LOGO_URL,

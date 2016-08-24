@@ -22,6 +22,7 @@ export default class SubdelgTable extends Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     loadSubdelgsTable: PropTypes.func.isRequired,
     openEfModal: PropTypes.func.isRequired,
+    reloadDelgs: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -127,12 +128,12 @@ export default class SubdelgTable extends Component {
     });
   }
   render() {
-    const { delgBills } = this.props;
+    const { delgBills, reloadDelgs } = this.props;
     this.dataSource.remotes = delgBills;
     return (
       <div>
-        <Table columns={this.columns} dataSource={this.dataSource} pagination={false} size="small" scroll={{ y: 170 }} />
-        <DeclnoFillModal reload={this.handleTableLoad} />
+        <Table columns={this.columns} dataSource={this.dataSource} size="small" scroll={{ y: 170 }} />
+        <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
       </div>
   ); }
 }

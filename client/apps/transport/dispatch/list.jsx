@@ -30,6 +30,8 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import { renderConsignLoc } from '../common/consignLocation';
 import RevokejectModal from '../shipment/modals/revoke-reject';
+import SearchBar from 'client/components/search-bar';
+import AdvancedSearchBar from '../common/advanced-search-bar';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -117,6 +119,7 @@ export default class DispatchList extends React.Component {
   state = {
     selectedRowKeys: [],
     panelHeader: [],
+    advancedSearchVisible: false,
   }
 
   componentDidMount() {
@@ -476,13 +479,13 @@ export default class DispatchList extends React.Component {
     });
   }
 
-  handleTableLoad = () => {
+  handleTableLoad = (newFilters) => {
     const { shipmentlist, tenantId, filters } = this.props;
     const tmp = Object.assign({}, filters);
 
     this.props.loadTable(null, {
       tenantId,
-      filters: JSON.stringify(tmp),
+      filters: JSON.stringify(newFilters || tmp),
       pageSize: shipmentlist.pageSize,
       current: 1,
     }).then(result => {
@@ -529,6 +532,33 @@ export default class DispatchList extends React.Component {
 
     this.setState({ panelHeader, selectedRowKeys: [] });
     this.props.changeDockStatus({ dispDockShow: false, segDockShow: false, shipmts: [] });
+  }
+
+  handleSearch = (searchVal) => {
+    const filters = this.mergeFilters(this.props.filters, 'shipmt_no', searchVal);
+    this.handleTableLoad(filters);
+  }
+
+  handleAdvancedSearch = (searchVals) => {
+    let filters = this.props.filters;
+    Object.keys(searchVals).forEach(key => {
+      filters = this.mergeFilters(filters, key, searchVals[key]);
+    });
+    this.handleTableLoad(filters);
+    this.showAdvancedSearch(false);
+  }
+
+  mergeFilters(curFilters, name, value) {
+    const newFilters = {};
+    Object.keys(curFilters).forEach(key => {
+      if (key !== name) {
+        newFilters[key] = curFilters[key];
+      }
+    });
+    if (value !== null && value !== undefined && value !== '') {
+      newFilters[name] = value;
+    }
+    return newFilters;
   }
 
   handleDispatchDockShow(shipmt, ev) {
@@ -935,6 +965,13 @@ export default class DispatchList extends React.Component {
     />);
   }
 
+  toggleAdvancedSearch = () => {
+    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
+  }
+  showAdvancedSearch = (advancedSearchVisible) => {
+    this.setState({ advancedSearchVisible });
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -995,7 +1032,11 @@ export default class DispatchList extends React.Component {
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
           <span />
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <span />
+          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         <div className="page-body">
           <div className="panel-body table-panel">
             <div className="dispatch-table">
