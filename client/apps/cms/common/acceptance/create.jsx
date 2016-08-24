@@ -53,7 +53,6 @@ export default class AcceptanceCreate extends Component {
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
         const formdatas = this.props.form.getFieldsValue();
-        // console.log('formdatas: ', formdatas);
         const subformArray = [];
         for (const i of formdatas.keys) {
           subformArray.push({
@@ -64,7 +63,6 @@ export default class AcceptanceCreate extends Component {
           });
         }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        // console.log('delegation: ', delegation);
         delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,

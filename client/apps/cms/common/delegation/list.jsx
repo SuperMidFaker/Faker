@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message } from 'antd';
+import { Radio, Button, Popconfirm, message, Modal } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import { TENANT_ASPECT, CMS_DELEGATION_STATUS } from 'common/constants';
+import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
@@ -58,7 +58,7 @@ export default class DelegationList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: [],
+    visible: false,
   }
   columns = [{
     title: '委托编号',
@@ -75,15 +75,19 @@ export default class DelegationList extends Component {
     },
   }, {
     title: '委托方',
+    width: 200,
     dataIndex: 'customer_name',
   }, {
     title: '订单号',
+    width: 150,
     dataIndex: 'order_no',
   }, {
     title: '发票号',
+    width: 150,
     dataIndex: 'invoice_no',
   }, {
     title: '外部编号',
+    width: 150,
     render: (o, record) => (
       this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
       : record.ref_recv_external_no
@@ -103,12 +107,22 @@ export default class DelegationList extends Component {
   }, {
     title: '货物性质',
     dataIndex: 'goods_type',
+    render: (o) => {
+      const decl = GOODSTYPES.filter(gd => gd.value === o)[0];
+      return decl && decl.text;
+    },
   }, {
     title: '申报企业',
+    width: 180,
     dataIndex: 'ccb_name',
   }, {
     title: '状态',
+    width: 100,
     dataIndex: 'status',
+    render: (o) => {
+      const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
+      return decl && decl.text;
+    },
   }]
 
   dataSource = new Table.DataSource({
@@ -153,7 +167,29 @@ export default class DelegationList extends Component {
       currentPage: delegationlist.current,
     });
   }
-  handleDelegationAccept = (dispId) => {
+  handleDelegationMake = (delgNo) => {
+    this.props.loadBillMakeModal({
+      delg_no: delgNo,
+    }).then(result => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
+  acceptInfo = (delgNo) => {
+    let closed = false;
+    const Info = Modal.info({
+      title: '操作成功',
+      okText: '开始制单',
+      content: '已接受报关委托，开始制单？',
+      onOk: () => {
+        this.handleDelegationMake(delgNo);
+        closed = true;
+      },
+    });
+    setTimeout(() => !closed && Info.destroy(), 2000);
+  }
+  handleDelegationAccept = (dispId, delgNo) => {
     const { tenantId, loginId, loginName, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
     this.props.acceptDelg(loginId, loginName, dispId).then(
@@ -171,15 +207,10 @@ export default class DelegationList extends Component {
         }
       }
     );
+    this.acceptInfo(delgNo);
   }
-  handleDelegationMake = (delgNo) => {
-    this.props.loadBillMakeModal({
-      delg_no: delgNo,
-    }).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      }
-    });
+  handleDelegationAssign = () => {
+
   }
   handleDelgDel = (delgNo) => {
     const { tenantId, listFilter, ietype, delegationlist: { pageSize, current } } = this.props;
@@ -202,7 +233,6 @@ export default class DelegationList extends Component {
       <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype} />
     );
   }
-
   render() {
     const { delegationlist, listFilter, billMakeModal } = this.props;
     this.dataSource.remotes = delegationlist;
@@ -222,12 +252,12 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 100,
+      width: 130,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
+              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId, record.delg_no)}>
               接单
               </a>
               <span className="ant-divider" />
@@ -243,7 +273,7 @@ export default class DelegationList extends Component {
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleDelegationAccept(record.dispId)}>
+              <a role="button" onClick={() => this.handleDelegationAssign(record.dispId)}>
               分配
               </a>
               <span className="ant-divider" />
