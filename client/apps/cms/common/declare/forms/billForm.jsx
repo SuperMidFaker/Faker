@@ -29,7 +29,7 @@ BillBody.propTypes = {
   readonly: PropTypes.bool,
   data: PropTypes.array.isRequired,
   headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  billSeqNo: PropTypes.string.isRequired,
+  billSeqNo: PropTypes.string,
   onAdd: PropTypes.func.isRequired,
   onDel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,

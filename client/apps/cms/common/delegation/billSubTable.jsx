@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, message } from 'antd';
+import { Table, Icon, message } from 'antd';
 import moment from 'moment';
-import Table from 'client/components/remoteAntTable';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, openEfModal } from 'common/reducers/cmsDelegation';
 import RowUpdater from './rowUpdater';
@@ -22,6 +21,7 @@ export default class SubdelgTable extends Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     loadSubdelgsTable: PropTypes.func.isRequired,
     openEfModal: PropTypes.func.isRequired,
+    reloadDelgs: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -85,29 +85,6 @@ export default class SubdelgTable extends Component {
     render: (o, record) => record.process_time && moment(record.process_time).format('YYYY.MM.DD'),
   }]
 
-  dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadSubdelgsTable(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-    }),
-    getParams: (pagination, filters, sorter) => {
-      const params = {
-        delg_no: this.props.delgNo,
-        pageSize: pagination.pageSize,
-        current: pagination.current,
-      };
-      const filter = { sortField: sorter.field, sortOrder: sorter.order };
-      params.filter = JSON.stringify(filter);
-      return params;
-    },
-    remotes: this.props.delgBills,
-  })
-
   handleTableLoad = () => {
     this.props.loadSubdelgsTable({
       delg_no: this.props.delgNo,
@@ -127,12 +104,11 @@ export default class SubdelgTable extends Component {
     });
   }
   render() {
-    const { delgBills } = this.props;
-    this.dataSource.remotes = delgBills;
+    const { delgBills, reloadDelgs } = this.props;
     return (
       <div>
-        <Table columns={this.columns} dataSource={this.dataSource} pagination={false} size="small" scroll={{ y: 170 }} />
-        <DeclnoFillModal reload={this.handleTableLoad} />
+        <Table columns={this.columns} dataSource={delgBills} pagination={false} size="small" scroll={{ y: 170 }} />
+        <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
       </div>
   ); }
 }

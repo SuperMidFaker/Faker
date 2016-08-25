@@ -3,8 +3,8 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadAcceptanceTable } from 'common/reducers/cmsDelegation';
 import List from '../../common/delegation/list';
 
-function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadAcceptanceTable(cookie, {
+function fetchData({ state, dispatch }) {
+  return dispatch(loadAcceptanceTable({
     ietype: 'import',
     tenantId: state.account.tenantId,
     filter: JSON.stringify(state.cmsDelegation.listFilter),

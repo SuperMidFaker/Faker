@@ -74,6 +74,7 @@ const initialState = {
   },
   billMakeModal: {
     visible: false,
+    type: 'make',
     bills: [],
   },
   visibleEfModal: false,
@@ -92,12 +93,7 @@ export default function reducer(state = initialState, action) {
       const delgBillsMap = {};
       const delgList = action.result.data;
       delgList.data.forEach(delg => {
-        delgBillsMap[delg.delg_no] = {
-          totalCount: 0,
-          current: 1,
-          pageSize: 10,
-          data: [],
-        };
+        delgBillsMap[delg.delg_no] = [];
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
@@ -111,18 +107,15 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_SUBDELG_FAIL: {
       const delgBillsMap = { ...state.delgBillsMap };
-      delgBillsMap[action.params.delg_no] = {
-        totalCount: 0,
-        current: 1,
-        pageSize: 10,
-        data: [],
-      };
+      delgBillsMap[action.params.delg_no] = [];
       return { ...state, delgBillsMap };
     }
+    case actionTypes.LOAD_BILLMAKE:
+      return { ...state, billMakeModal: { ...state.billMakeModal, type: action.modalType } };
     case actionTypes.LOAD_BILLMAKE_SUCCEED:
-      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, loading: false, ...action.result.data } };
+      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, ...action.result.data } };
     case actionTypes.SET_MODAL_FALSE:
-      return { ...state, billMakeModal: { ...state.billMakeModal, visible: false } };
+      return { ...state, billMakeModal: initialState.billMakeModal };
     case actionTypes.LOAD_DELEGATE_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
@@ -176,7 +169,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadAcceptanceTable(cookie, params) {
+export function loadAcceptanceTable(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -187,7 +180,6 @@ export function loadAcceptanceTable(cookie, params) {
       endpoint: 'v1/cms/acceptance/delegations',
       method: 'get',
       params,
-      cookie,
     },
   };
 }
@@ -207,7 +199,7 @@ export function loadSubdelgsTable(params) {
   };
 }
 
-export function loadBillMakeModal(params) {
+export function loadBillMakeModal(params, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -218,11 +210,12 @@ export function loadBillMakeModal(params) {
       endpoint: 'v1/cms/billmodal',
       method: 'get',
       params,
+      modalType: type,
     },
   };
 }
 
-export function setModalFalse() {
+export function closeBillMakeModal() {
   return {
     type: actionTypes.SET_MODAL_FALSE,
   };
