@@ -93,12 +93,7 @@ export default function reducer(state = initialState, action) {
       const delgBillsMap = {};
       const delgList = action.result.data;
       delgList.data.forEach(delg => {
-        delgBillsMap[delg.delg_no] = {
-          totalCount: 0,
-          current: 1,
-          pageSize: 10,
-          data: [],
-        };
+        delgBillsMap[delg.delg_no] = [];
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
@@ -112,12 +107,7 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_SUBDELG_FAIL: {
       const delgBillsMap = { ...state.delgBillsMap };
-      delgBillsMap[action.params.delg_no] = {
-        totalCount: 0,
-        current: 1,
-        pageSize: 10,
-        data: [],
-      };
+      delgBillsMap[action.params.delg_no] = [];
       return { ...state, delgBillsMap };
     }
     case actionTypes.LOAD_BILLMAKE:
