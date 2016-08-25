@@ -308,7 +308,7 @@ export default class LandStatusList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'events', row).then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'logs', row).then(result => {
       if (result.error) {
         message.error(result.error.message);
       }

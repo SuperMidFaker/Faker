@@ -3,6 +3,9 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/exception/', [
   'LOAD_EXCPSHIPMT', 'LOAD_EXCPSHIPMT_FAIL', 'LOAD_EXCPSHIPMT_SUCCEED',
+  'LOAD_EXCEPTIONS', 'LOAD_EXCEPTIONS_FAIL', 'LOAD_EXCEPTIONS_SUCCEED',
+  'ADD_EXCEPTION', 'ADD_EXCEPTION_FAIL', 'ADD_EXCEPTION_SUCCEED',
+  'REMOVE_EXCEPTION', 'REMOVE_EXCEPTION_FAIL', 'REMOVE_EXCEPTION_SUCCEED',
   'CHANGE_FILTER', 'SHOW_EXCPMODAL',
 ]);
 
@@ -23,6 +26,12 @@ const initialState = {
     visible: false,
     dispId: -1,
     shipmtNo: '',
+  },
+  exceptions: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
   },
 };
 
@@ -47,6 +56,17 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SHOW_EXCPMODAL:
       return { ...state, excpModal: action.data };
+    case actionTypes.LOAD_EXCEPTIONS_SUCCEED:
+      return { ...state, exceptions: action.result.data };
+    case actionTypes.ADD_EXCEPTION_SUCCEED: {
+      return { ...state };
+    }
+    case actionTypes.REMOVE_EXCEPTION_SUCCEED: {
+      const data = [...state.exceptions.data];
+      const index = data.findIndex(item => item.excp_id === action.data.excpId);
+      data.splice(index, 1);
+      return { ...state, exceptions: { ...state.exceptions, data } };
+    }
     default:
       return state;
   }
@@ -86,6 +106,51 @@ export function hideExcpModal() {
   return {
     type: actionTypes.SHOW_EXCPMODAL,
     data: { visible: false, dispId: -1, shipmtNo: '' },
+  };
+}
+
+export function loadExceptions(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EXCEPTIONS,
+        actionTypes.LOAD_EXCEPTIONS_SUCCEED,
+        actionTypes.LOAD_EXCEPTIONS_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/exceptions',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function addException({ dispId, excpLevel, type, excpEvent, submitter }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_EXCEPTION,
+        actionTypes.ADD_EXCEPTION_SUCCEED,
+        actionTypes.ADD_EXCEPTION_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/exception',
+      method: 'post',
+      data: { dispId, excpLevel, type, excpEvent, submitter },
+    },
+  };
+}
+
+export function removeException(excpId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_EXCEPTION,
+        actionTypes.REMOVE_EXCEPTION_SUCCEED,
+        actionTypes.REMOVE_EXCEPTION_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/exception',
+      method: 'delete',
+      data: { excpId },
+    },
   };
 }
 
