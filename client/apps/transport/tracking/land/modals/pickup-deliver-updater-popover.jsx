@@ -37,7 +37,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       const pickupDeliverClicked = window.$(event.target).closest(`.pickupDeliver${shipmtNo}`).length > 0;
       const antPopoverClicked = window.$(event.target).closest('.ant-popover').length > 0;
       const calenderClicked = window.$(event.target).closest('.ant-calendar-picker-container').length > 0;
-      if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked) {
+      if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked && this.state.visible) {
         this.handleClose();
       }
     });

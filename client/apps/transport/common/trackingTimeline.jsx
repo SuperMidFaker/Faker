@@ -17,9 +17,9 @@ export default class TrackingTimeline extends React.Component {
     });
     const trackingSteps = points.map((s, i) => {
       if (i === 0) {
-        return (<Timeline.Item color="green">{s.title} {s.description}</Timeline.Item>);
+        return (<Timeline.Item key={i} color="green">{s.title} {s.description}</Timeline.Item>);
       } else {
-        return (<Timeline.Item>{s.title} {s.description}</Timeline.Item>);
+        return (<Timeline.Item key={i}>{s.title} {s.description}</Timeline.Item>);
       }
     });
     return (

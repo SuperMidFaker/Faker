@@ -33,8 +33,8 @@ const messages = defineMessages({
     id: 'tms.advancedSearchBar.deliver_act_date',
     defaultMessage: '实际交货时间',
   },
-  creater_login_id: {
-    id: 'tms.advancedSearchBar.creater_login_id',
+  relatedToMe: {
+    id: 'tms.advancedSearchBar.relatedToMe',
     defaultMessage: '与我相关',
   },
   transport_mode: {

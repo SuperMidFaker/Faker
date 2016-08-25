@@ -29,19 +29,44 @@ export default class AdvancedSearchBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value || '',
       fields: [],
+      consignerRegion: [],
+      consigneeRegion: [],
     };
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  handleSubmit = (e) => {
-    if (e) e.preventDefault();
+
+  handleResetFields = () => {
+    this.setState({ consignerRegion: [], consigneeRegion: [] });
+    this.props.form.resetFields();
+    this.handleShowFieldsLabel([], []);
+  }
+  handleCloseTag = (names) => {
+    if (names[0] === 'consigner_region') {
+      this.handleSearch([], this.state.consigneeRegion);
+    } else if (names[0] === 'consignee_region') {
+      this.handleSearch(this.state.consignerRegion, []);
+    } else {
+      this.props.form.resetFields(names);
+      this.handleSearch(this.state.consignerRegion, this.state.consigneeRegion);
+    }
+  }
+  handleSearch = (consignerRegion, consigneeRegion) => {
     const fieldsValue = this.props.form.getFieldsValue();
+    if (consignerRegion.length !== 0) {
+      fieldsValue.consigner_region = consignerRegion;
+    } else {
+      fieldsValue.consigner_region = '';
+    }
+    if (consigneeRegion.length !== 0) {
+      fieldsValue.consignee_region = consigneeRegion;
+    } else {
+      fieldsValue.consignee_region = '';
+    }
     const result = {};
     Object.keys(fieldsValue).forEach(key => {
-      if (key === 'creater_login_id' && fieldsValue[key] === true) {
+      if (key === 'relatedToMe' && fieldsValue[key] === true) {
         result[key] = this.props.loginId;
-      } else if (key === 'creater_login_id' && fieldsValue[key] === false) {
+      } else if (key === 'relatedToMe' && fieldsValue[key] === false) {
         result[key] = '';
       } else if (typeof fieldsValue[key] === 'object') {
         result[key] = JSON.stringify(fieldsValue[key]);
@@ -49,22 +74,26 @@ export default class AdvancedSearchBar extends React.Component {
         result[key] = fieldsValue[key];
       }
     });
-    this.handleShowFieldsLabel();
     this.props.onSearch(result);
+    this.setState({ consignerRegion, consigneeRegion });
+    this.handleShowFieldsLabel(consignerRegion, consigneeRegion);
   }
-  handleResetFields = () => {
-    this.props.form.resetFields();
-    this.handleShowFieldsLabel();
+  handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    this.handleSearch(this.state.consignerRegion, this.state.consigneeRegion);
   }
-  handleCloseTag = (names) => {
-    this.props.form.resetFields(names);
-    this.handleSubmit();
-  }
-  handleShowFieldsLabel = () => {
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  handleShowFieldsLabel = (consignerRegion, consigneeRegion) => {
     const fields = [];
     const fieldsValue = this.props.form.getFieldsValue();
+    if (consignerRegion.length !== 0) {
+      fieldsValue.consigner_region = consignerRegion;
+    }
+    if (consigneeRegion.length !== 0) {
+      fieldsValue.consignee_region = consigneeRegion;
+    }
     Object.keys(fieldsValue).forEach(key => {
-      if (fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key] !== undefined) {
+      if (fieldsValue[key] && fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key] !== undefined) {
         fields.push({
           key,
           value: fieldsValue[key],
@@ -74,12 +103,20 @@ export default class AdvancedSearchBar extends React.Component {
     });
     this.setState({ fields });
   }
+  handleConsignerRegionValue = (region) => {
+    region.shift();
+    this.setState({ consignerRegion: region });
+  }
+  handleConsigneeRegionValue = (region) => {
+    region.shift();
+    this.setState({ consigneeRegion: region });
+  }
   format = (item) => {
     if (item.key === 'customer_name' ||
       item.key === 'sp_name' ||
       item.key === 'transport_mode') {
       return `${item.label}: ${item.value}`;
-    } else if (item.key === 'creater_login_id') {
+    } else if (item.key === 'relatedToMe') {
       return item.label;
     } else if (item.key === 'pickup_est_date' ||
       item.key === 'pickup_act_date' ||
@@ -92,7 +129,6 @@ export default class AdvancedSearchBar extends React.Component {
     } else if (item.key === 'consigner_region' ||
       item.key === 'consignee_region') {
       const value = [...item.value];
-      value.shift();
       return `${item.label}: ${value.join('-')}`;
     }
     return item.label;
@@ -123,14 +159,14 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade {...getFieldProps('consigner_region', { initialValue: '' })} />
+                <RegionCascade region={this.state.consignerRegion} onChange={this.handleConsignerRegionValue} />
               </FormItem>
               <FormItem
                 label="到达地"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade {...getFieldProps('consignee_region', { initialValue: '' })} />
+                <RegionCascade region={this.state.consigneeRegion} onChange={this.handleConsigneeRegionValue} />
               </FormItem>
             </Col>
             <Col sm={8}>
@@ -193,7 +229,7 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Checkbox {...getFieldProps('creater_login_id', { initialValue: '', valuePropName: 'checked' })} />
+                <Checkbox {...getFieldProps('relatedToMe', { valuePropName: 'checked' })} />
               </FormItem>
             </Col>
           </Row>
