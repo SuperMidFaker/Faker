@@ -36,10 +36,10 @@ export class FormLocalSearchSelect extends React.Component {
             ...fieldProps })} optionFilterProp={searchKeyFn ? 'search' : undefined}
           >
             {
-              options.map(opt => (<Option key={opt.value}
-                search={searchKeyFn ? searchKeyFn(opt) : undefined}
-              >
-                {opt.text}</Option>))
+              options.map(opt => (
+                <Option key={opt.value} search={searchKeyFn ? searchKeyFn(opt) : undefined}>
+                  {opt.text}
+                </Option>))
             }
           </Select>
         </FormItem>

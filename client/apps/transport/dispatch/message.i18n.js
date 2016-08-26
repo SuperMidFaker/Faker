@@ -254,7 +254,7 @@ export default defineMessages({
     defaultMessage: '选择车辆',
   },
   searchPlaceholder: {
-    id: 'transport.tracking.search.placeholder',
+    id: 'transport.dispatch.search.placeholder',
     defaultMessage: '搜索运单号',
   },
 });

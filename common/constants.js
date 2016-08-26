@@ -35,12 +35,12 @@ const DEFAULT_MODULES = {
     text: 'moduleOrders',
     status: 'disabled',
   },
-  // export: {
-  //   cls: 'export',
-  //   url: '/export',
-  //   text: 'moduleExport',
-  //   status: 'enabled',
-  // },
+  forwarding: {
+    cls: 'forwarding',
+    url: '/forwarding',
+    text: 'moduleForwarding',
+    status: 'disabled',
+  },
   clearance: {
     cls: 'clearance',
     url: '/clearance/import',
@@ -52,12 +52,6 @@ const DEFAULT_MODULES = {
     url: '/transport',
     text: 'moduleTransport',
     status: 'enabled',
-  },
-  forwarding: {
-    cls: 'forwarding',
-    url: '/forwarding',
-    text: 'moduleForwarding',
-    status: 'disabled',
   },
   wms: {
     cls: 'inventory',
