@@ -149,7 +149,7 @@ export default class ExcpEventsModal extends React.Component {
           <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
         </div>
         <Table columns={this.columns}
-            dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
+          dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
         />
         <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
       </Modal>
