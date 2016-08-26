@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Cascader, Input, Modal } from 'antd';
 import { addException, loadExceptions } from 'common/reducers/trackingLandException';
 import '../../../index.less';
-
+import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
 const FormItem = Form.Item;
 
 @injectIntl
@@ -32,17 +32,27 @@ export default class CreateException extends React.Component {
   handleOk = () => {
     const { form, dispId, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
+    const type = fieldsValue.type[1];
+    let excpLevel = '';
+    for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
+      if (TRANSPORT_EXCEPTIONS[i].code === type) {
+        excpLevel = TRANSPORT_EXCEPTIONS[i].level;
+        break;
+      }
+    }
     this.props.addException({
-      dispId, excpLevel: '',
-      type: fieldsValue.type[0],
+      dispId,
+      excpLevel,
+      type,
       excpEvent: fieldsValue.excp_event,
       submitter: loginName,
     }).then(result => {
       if (result.error) {
         message.error(result.error);
       } else {
+        this.handleCancel();
         this.props.loadExceptions({
-          dispId: this.props.dispId,
+          dispId,
           pageSize: this.props.exceptions.pageSize,
           currentPage: this.props.exceptions.current,
         });
@@ -54,21 +64,42 @@ export default class CreateException extends React.Component {
   }
   render() {
     const { form: { getFieldProps } } = this.props;
-    const options = [{
-      value: 1,
-      label: '浙江',
-      children: [{
-        value: 3,
-        label: '杭州',
-      }],
-    }, {
-      value: 2,
-      label: '江苏',
-      children: [{
-        value: 4,
-        label: '南京',
-      }],
-    }];
+
+    const options = [];
+    for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
+      if (options.length === 0) {
+        options.push({
+          value: TRANSPORT_EXCEPTIONS[i].code,
+          label: TRANSPORT_EXCEPTIONS[i].category,
+          children: [{
+            value: TRANSPORT_EXCEPTIONS[i].code,
+            label: TRANSPORT_EXCEPTIONS[i].name,
+          }],
+        });
+      } else {
+        let flag = false;
+        for (let j = 0; j < options.length; j++) {
+          if (options[j].label === TRANSPORT_EXCEPTIONS[i].category) {
+            options[j].children.push({
+              value: TRANSPORT_EXCEPTIONS[i].code,
+              label: TRANSPORT_EXCEPTIONS[i].name,
+            });
+            flag = true;
+            break;
+          }
+        }
+        if (flag === false) {
+          options.push({
+            value: TRANSPORT_EXCEPTIONS[i].code,
+            label: TRANSPORT_EXCEPTIONS[i].category,
+            children: [{
+              value: TRANSPORT_EXCEPTIONS[i].code,
+              label: TRANSPORT_EXCEPTIONS[i].name,
+            }],
+          });
+        }
+      }
+    }
     const colSpan = 6;
     return (
       <Modal title="添加异常" onCancel={this.handleCancel} onOk={this.handleOk}
@@ -81,6 +112,7 @@ export default class CreateException extends React.Component {
           </FormItem>
           <FormItem label="异常描述" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('excp_event', {
+              initialValue: '',
             })} />
           </FormItem>
         </Form>

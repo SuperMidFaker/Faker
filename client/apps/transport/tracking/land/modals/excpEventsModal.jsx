@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, Modal, Icon } from 'antd';
+import { Alert, Button, Modal } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -9,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import '../../../index.less';
 import CreateException from './create-exception';
+import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
 const formatMsg = format(messages);
 
 @injectIntl
@@ -77,14 +78,12 @@ export default class ExcpEventsModal extends React.Component {
     dataIndex: 'excp_level',
     width: '8%',
     render: (o) => {
-      if (o === 'NONE') {
-        return '';
+      if (o === 'INFO') {
+        return (<Alert message="提醒" type="info" showIcon />);
       } else if (o === 'WARN') {
-        return (<Icon type="info-circle" className="alert-tag ant-alert-warning" />);
-      } else if (o === 'EXCP') {
-        return (<Icon type="exclamation-circle" className="alert-tag ant-alert-warning" />);
-      } else if (o === 'DMGD') {
-        return (<Icon type="cross-circle" className="alert-tag ant-alert-error" />);
+        return (<Alert message="警报" type="warning" showIcon />);
+      } else if (o === 'ERROR') {
+        return (<Alert message="错误" type="error" showIcon />);
       }
       return o;
     },
@@ -104,14 +103,8 @@ export default class ExcpEventsModal extends React.Component {
     title: this.msg('exceptionType'),
     dataIndex: 'type',
     render: (o, record) => {
-      if (o === 1) {
-        return `特殊费用: ${record.excp_event}`;
-      } else if (o === 2) {
-        return `信息差错: ${record.excp_event}`;
-      } else if (o === 3) {
-        return `投诉: ${record.excp_event}`;
-      }
-      return o;
+      const t = TRANSPORT_EXCEPTIONS.find(item => item.code === o);
+      return `${t ? t.name : ''}: ${record.excp_event}`;
     },
   }, {
     title: this.msg('submitter'),
@@ -147,15 +140,15 @@ export default class ExcpEventsModal extends React.Component {
         <span>{`${this.msg('trackingEventsModalTitle')} ${shipmtNo}`}</span>
         <div style={{ float: 'right', marginRight: 50 }}>
           <Button type="primary" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
-          <Button type="primary" style={buttonStyle}>添加特殊费用</Button>
+          <Button type="primary" style={{ ...buttonStyle, display: 'none' }}>添加特殊费用</Button>
         </div>
       </div>
     );
     const footer = (
       <div className="exceptionFooter">
-        <Alert message="WARN 警报" type="warning" showIcon />
-        <Alert message="ERROR 错误" type="error" showIcon />
-        <Alert message="特殊费用" type="info" showIcon />
+        <Alert message="警报" type="warning" showIcon />
+        <Alert message="错误" type="error" showIcon />
+        <Alert message="提醒" type="info" showIcon />
       </div>
     );
     return (

@@ -13,7 +13,8 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value: 'all' },
+    { name: 'type', value: 'error' },
+    { name: 'excp_level', value: 'all' },
     { name: 'shipmt_no', value: '' },
   ],
   shipmentlist: {

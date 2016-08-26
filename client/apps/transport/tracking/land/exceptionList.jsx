@@ -130,12 +130,15 @@ export default class LandStatusList extends React.Component {
     fixed: 'left',
     width: 140,
     dataIndex: 'excp_level',
-    render: () => {
-      return (<span>
-        <span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 99</span>
-        <span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 99</span>
-        <span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 99</span>
-      </span>);
+    render: (o) => {
+      if (o === 'INFO') {
+        return (<span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 提醒</span>);
+      } else if (o === 'WARN') {
+        return (<span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 警报</span>);
+      } else if (o === 'ERROR') {
+        return (<span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 错误</span>);
+      }
+      return o;
     },
   }, {
     title: this.msg('shipmtStatus'),
