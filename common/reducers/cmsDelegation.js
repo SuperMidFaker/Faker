@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', 'LOAD_SUBDELG', 'LOAD_SUBDELG_SUCCEED', 'LOAD_SUBDELG_FAIL',
   'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL', 'SET_MODAL_FALSE',
-  'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
+  'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
 ]);
 
@@ -49,6 +49,14 @@ const initialState = {
     create_time: null,
   },
   delgFiles: [],
+  delgBills: [
+    {
+      decl_way_code: '',
+      manual_no: '',
+      pack_count: null,
+      gross_wt: null,
+    },
+  ],
   submitting: false,
   delegateListFilter: {
     sortField: '',
@@ -66,12 +74,6 @@ const initialState = {
     delegateTracking: {},
     clearanceTracking: [],
   },
-  subdelgs: {
-    totalCount: 0,
-    current: 1,
-    pageSize: 10,
-    data: [],
-  },
   billMakeModal: {
     visible: false,
     type: 'make',
@@ -83,6 +85,7 @@ const initialState = {
     billSeqNo: '',
     delgNo: '',
   },
+  delgDispShow: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -123,7 +126,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
       return { ...state, formData: action.result.data.delegation,
-        delgFiles: action.result.data.files, formRequire: action.result.data.formRequire,
+        delgFiles: action.result.data.files, delgBills: action.result.data.delgBills.rows, formRequire: action.result.data.formRequire,
       };
     case actionTypes.SEARCH_PARAM_SUCCEED:
       return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
@@ -164,6 +167,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleEfModal: true, efModal: action.data };
     case actionTypes.CLOSE_EF_MODAL:
       return { ...state, visibleEfModal: false, efModal: initialState.efModal };
+    case actionTypes.SET_DISP_STATUS:
+      return { ...state, ...action.data };
     default:
       return state;
   }
@@ -218,6 +223,13 @@ export function loadBillMakeModal(params, type) {
 export function closeBillMakeModal() {
   return {
     type: actionTypes.SET_MODAL_FALSE,
+  };
+}
+
+export function setDispStatus(params) {
+  return {
+    type: actionTypes.SET_DISP_STATUS,
+    data: params,
   };
 }
 

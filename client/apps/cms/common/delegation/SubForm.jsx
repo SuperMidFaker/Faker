@@ -1,8 +1,8 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
+import update from 'react/lib/update';
 import { connect } from 'react-redux';
 import { Form, Select, Input, InputNumber, Card, Col, Row, Button } from 'antd';
-import { setClientForm, searchParams } from 'common/reducers/cmsDelegation';
 import { DECL_I_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -13,65 +13,79 @@ const formItemLayout = {
 };
 let idx = 0;
 
-function getFieldInits(aspect, subdelgs) {
-  const init = {};
-  if (subdelgs) {
-    // [
-    //   'decl_way_code', 'manual_no', 'gross_wt', 'pack_count',
-    // ].forEach(fd => {
-    //   init[fd] = subdelgs[fd] || '';
-    // });
-  }
-  return init;
-}
-
 @connect(
   state => ({
-    fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.subdelgs),
+    delgBills: state.cmsDelegation.delgBills,
   }),
-  { setClientForm, searchParams }
 )
 
 export default class SubForm extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
-    fieldInits: PropTypes.object.isRequired,
+    delgBills: PropTypes.array.isRequired,
   }
-
+  state = {
+    bills: [],
+    keys: [],
+  }
+  componentWillMount() {
+    const keys = [];
+    for (let i = 0; i < this.props.delgBills.length; i++) {
+      keys.push(i);
+    }
+    this.setState({ bills: this.props.delgBills, keys });
+    idx = this.props.delgBills.length - 1;
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.delgBills.length !== this.props.delgBills.length) {
+      const keys = [];
+      for (let i = 0; i < nextProps.delgBills.length; i++) {
+        keys.push(i);
+      }
+      this.setState({ bills: nextProps.delgBills, keys });
+      idx = nextProps.delgBills.length - 1;
+    }
+  }
   handleAddRow = () => {
+    const bill = {
+      decl_way_code: '',
+      manual_no: '',
+      pack_count: null,
+      gross_wt: null,
+    };
     idx++;
-    const { form } = this.props;
-    let keys = form.getFieldValue('keys');
-    keys = keys.concat(idx);
-    form.setFieldsValue({
-      keys,
-    });
+    const keys = this.state.keys.concat(idx);
+    const state = update(this.state, { bills: { $push: [bill] } });
+    this.setState(state);
+    this.setState({ keys });
   }
 
   remove(k) {
-    const { form } = this.props;
-    let keys = form.getFieldValue('keys');
-    keys = keys.filter((key) => {
+    const keys = this.state.keys.filter((key) => {
       return key !== k;
     });
-    form.setFieldsValue({
-      keys,
-    });
+    // const state = update(this.state, { bills: { $splice: [[k, 1]] } });
+    // this.setState(state);
+    const bills = [...this.state.bills];
+    bills[k] = {};
+    this.setState({ bills, keys });
   }
 
   render() {
-    const { form: { getFieldProps, getFieldValue }, fieldInits } = this.props;
+    const { getFieldProps } = this.props.form;
+    const bills = this.state.bills;
     getFieldProps('keys', {
-      initialValue: [0],
+      initialValue: this.state.keys,
     });
-    const formItems = getFieldValue('keys').map((k) => {
+    const formItems = this.state.keys.map((k) => {
       return (
-        <Row style={{ marginBottom: 8 }}>
+        <Row key={k} style={{ marginBottom: 8 }}>
           <Col sm={6}>
             <FormItem label="报关类型" {...formItemLayout}>
               <Select
                 {...getFieldProps(`decl_way_code_${k}`, {
                   rules: [{ required: true, message: '报关类型必选' }],
+                  initialValue: bills[k].decl_way_code,
                 })}
               >
               {
@@ -85,22 +99,24 @@ export default class SubForm extends Component {
           <Col sm={6}>
             <FormItem label="备案号" {...formItemLayout}>
               <Input {...getFieldProps(`manual_no_${k}`, {
-                initialValue: fieldInits.manual_no,
-              })} />
+                initialValue: bills[k].manual_no })} />
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label="件数" {...formItemLayout}>
               <InputNumber min={1} max={100000} defaultValue={1} style={{ width: '100%' }}
-                {...getFieldProps(`pack_count_${k}`, { initialValue: fieldInits.pack_count })}
+                {...getFieldProps(`pack_count_${k}`, {
+                  initialValue: bills[k].pack_count })}
               />
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label="毛重" {...formItemLayout}>
-              <Input addonAfter="公斤" type="number" {...getFieldProps(`gross_wt_${k}`, {
-                initialValue: fieldInits.gross_wt,
-              })} />
+              <Input addonAfter="公斤" type="number"
+                {...getFieldProps(`gross_wt_${k}`, {
+                  initialValue: bills[k].gross_wt,
+                })}
+              />
             </FormItem>
           </Col>
           <Col span={1} offset={1}>
