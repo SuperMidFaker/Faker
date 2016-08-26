@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
   moduleForwarding: {
     id: 'component.module.forwarding',
-    defaultMessage: '货代协同',
+    defaultMessage: '国际货运',
   },
   moduleInventory: {
     id: 'component.module.inventory',

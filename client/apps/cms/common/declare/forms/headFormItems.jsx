@@ -447,10 +447,10 @@ function FeeFormItem(props) {
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <Row>
         <Col span="12">
-          <FormInput {...feeProps} />
+          <FormInput {...feeProps} style={{ marginBottom: 0 }} />
         </Col>
         <Col span="12" style={{ paddingLeft: 2 }}>
-          <FormLocalSearchSelect {...currencyProps} />
+          <FormLocalSearchSelect {...currencyProps} style={{ marginBottom: 0 }} />
         </Col>
       </Row>
     </FormItem>
