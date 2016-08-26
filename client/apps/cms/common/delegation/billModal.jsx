@@ -38,7 +38,7 @@ export default class BillModal extends Component {
             </NavLink>
           </Col>
           <Col span={16}>
-            <Progress percent={perVal} status="active" />
+            <Progress percent={perVal} />
           </Col>
         </Row>
       );

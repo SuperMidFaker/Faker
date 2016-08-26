@@ -16,11 +16,11 @@ function getFieldInits(aspect, formData) {
   const init = {};
   if (formData) {
     [
-      'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no', 'pieces', 'weight', 'trans_mode',
-      'voyage_no', 'trade_mode', 'decl_way_code', 'goods_type',
-      'order_no', 'remark', 'manual_no',
+      'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no',
+      'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode', 'decl_way_code',
+      'goods_type', 'order_no', 'remark',
     ].forEach(fd => {
-      init[fd] = formData[fd] || null;
+      init[fd] = formData[fd] || '';
     });
     init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no
       : formData.ref_recv_external_no;
@@ -97,6 +97,7 @@ export default class BasicForm extends Component {
             </FormItem>
             <FormItem label="运单号" {...formItemLayout}>
               <Input {...getFieldProps('shipping_no', {
+                initialValue: fieldInits.shipping_no,
                 rules: [{ required: true, message: '运单号必填' }],
               })} />
             </FormItem>

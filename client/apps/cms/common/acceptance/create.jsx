@@ -63,6 +63,7 @@ export default class AcceptanceCreate extends Component {
           });
         }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
+        if (delegation.weight === '') delegation.weight = null;
         delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
@@ -73,7 +74,7 @@ export default class AcceptanceCreate extends Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push('/clearance/import');
+            this.context.router.push(`/clearance/${type}`);
           }
         });
       }

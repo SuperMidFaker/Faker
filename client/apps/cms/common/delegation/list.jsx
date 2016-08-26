@@ -11,7 +11,8 @@ import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
 import BillModal from './billModal';
 import RowUpdater from './rowUpdater';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
+import DelgDispatch from './delgDispatch';
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer, setDispStatus } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -24,8 +25,10 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
+    billMakeModal: state.cmsDelegation.billMakeModal,
+    delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer }
+  { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer, setDispStatus }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -52,6 +55,8 @@ export default class DelegationList extends Component {
     loadBillMakeModal: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
+    billMakeModal: PropTypes.object.isRequired,
+    delgDispShow: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -220,7 +225,10 @@ export default class DelegationList extends Component {
     );
   }
   handleDelegationAssign = () => {
-
+    this.props.setDispStatus({ delgDispShow: true });
+  }
+  closeDispDock = () => {
+    this.props.setDispStatus({ delgDispShow: false });
   }
   handleDelgDel = (delgNo) => {
     this.props.delDelg(delgNo).then(result => {
@@ -328,6 +336,7 @@ export default class DelegationList extends Component {
           </div>
         </div>
         <BillModal ietype={this.props.ietype} />
+        <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
       </div>
     );
   }
