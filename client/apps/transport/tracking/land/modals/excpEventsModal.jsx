@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, Modal } from 'antd';
+import { Icon, Button, Modal } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -74,18 +74,24 @@ export default class ExcpEventsModal extends React.Component {
     remotes: this.props.exceptions,
   })
   columns = [{
-    title: this.msg('exceptionLevel'),
     dataIndex: 'excp_level',
-    width: '8%',
+    width: '40',
     render: (o) => {
       if (o === 'INFO') {
-        return (<Alert message="提醒" type="info" showIcon />);
+        return (<Icon type="info-circle" className="sign-info" />);
       } else if (o === 'WARN') {
-        return (<Alert message="警报" type="warning" showIcon />);
+        return (<Icon type="exclamation-circle" className="sign-warning" />);
       } else if (o === 'ERROR') {
-        return (<Alert message="错误" type="error" showIcon />);
+        return (<Icon type="cross-circle" className="sign-error" />);
       }
       return o;
+    },
+  }, {
+    title: this.msg('exceptionType'),
+    dataIndex: 'type',
+    render: (o, record) => {
+      const t = TRANSPORT_EXCEPTIONS.find(item => item.code === o);
+      return `${t ? t.name : ''}: ${record.excp_event}`;
     },
   }, {
     title: this.msg('exceptionResolved'),
@@ -100,16 +106,9 @@ export default class ExcpEventsModal extends React.Component {
       return o;
     },
   }, {
-    title: this.msg('exceptionType'),
-    dataIndex: 'type',
-    render: (o, record) => {
-      const t = TRANSPORT_EXCEPTIONS.find(item => item.code === o);
-      return `${t ? t.name : ''}: ${record.excp_event}`;
-    },
-  }, {
     title: this.msg('submitter'),
     dataIndex: 'submitter',
-    width: '5%',
+    width: '10%',
   }, {
     title: this.msg('submitDate'),
     dataIndex: 'submit_date',
@@ -134,32 +133,24 @@ export default class ExcpEventsModal extends React.Component {
   render() {
     const { shipmtNo, dispId, exceptions } = this.props;
     this.dataSource.remotes = exceptions;
-    const buttonStyle = { marginLeft: 20 };
+    const buttonStyle = { marginLeft: 8 };
     const title = (
-      <div>
         <span>{`${this.msg('trackingEventsModalTitle')} ${shipmtNo}`}</span>
-        <div style={{ float: 'right', marginRight: 50 }}>
-          <Button type="primary" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
-          <Button type="primary" style={{ ...buttonStyle, display: 'none' }}>添加特殊费用</Button>
-        </div>
-      </div>
     );
     const footer = (
-      <div className="exceptionFooter">
-        <Alert message="警报" type="warning" showIcon />
-        <Alert message="错误" type="error" showIcon />
-        <Alert message="提醒" type="info" showIcon />
-      </div>
+        <Button type="ghost" size="large" onClick={this.handleCancel}>取消</Button>
     );
     return (
       <Modal title={title} footer={footer} onCancel={this.handleCancel}
-        visible={this.props.visible} width="80%" maskClosable={false}
+        visible={this.props.visible} width="75%" maskClosable={false}
       >
-        <div className="panel-body table-panel">
-          <Table columns={this.columns}
-            dataSource={this.dataSource} rowKey="id" bordered
-          />
+        <div className="modal-top-actions">
+          <Button type="ghost" size="large">添加特殊费用</Button>
+          <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
         </div>
+        <Table columns={this.columns}
+            dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
+        />
         <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
       </Modal>
     );

@@ -35,7 +35,7 @@ const messages = defineMessages({
   },
   relatedToMe: {
     id: 'tms.advancedSearchBar.relatedToMe',
-    defaultMessage: '与我相关',
+    defaultMessage: '我的运单',
   },
   transport_mode: {
     id: 'tms.advancedSearchBar.transport_mode',
