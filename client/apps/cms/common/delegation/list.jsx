@@ -58,6 +58,7 @@ export default class DelegationList extends Component {
   }
   state = {
     searchInput: '',
+    expandedKeys: [],
   }
   columns = [{
     title: '委托编号',
@@ -160,6 +161,10 @@ export default class DelegationList extends Component {
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: current,
+    }).then(result => {
+      if (!result.error) {
+        this.setState({ expandedKeys: [] });
+      }
     });
   }
   handleRadioChange = (ev) => {
@@ -232,6 +237,9 @@ export default class DelegationList extends Component {
       />
     );
   }
+  handleExpandedChange = expandedKeys => {
+    this.setState({ expandedKeys });
+  }
   render() {
     const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
@@ -286,7 +294,7 @@ export default class DelegationList extends Component {
         }
       },
     });
-    // todo expandedRow close/fixed
+    // todo expandedRow fixed
     return (
       <div className="main-content">
         <div className="page-header">
@@ -312,8 +320,9 @@ export default class DelegationList extends Component {
         <div className="page-body">
           <div className="panel-body table-panel expandable">
             <Table columns={columns} dataSource={this.dataSource}
+              expandedRowKeys={this.state.expandedKeys}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1600 }}
+              scroll={{ x: 1600 }} onExpandedRowsChange={this.handleExpandedChange}
             />
           </div>
         </div>

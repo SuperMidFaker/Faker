@@ -16,16 +16,27 @@ import DeclnoFillModal from './declNoFill';
 )
 export default class SubdelgTable extends Component {
   static propTypes = {
-    delgBills: PropTypes.object.isRequired,
+    delgBills: PropTypes.array.isRequired,
     delgNo: PropTypes.string.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     loadSubdelgsTable: PropTypes.func.isRequired,
     openEfModal: PropTypes.func.isRequired,
     reloadDelgs: PropTypes.func.isRequired,
   }
+  state = {
+    expandedRowKeys: [],
+  }
 
+  componentWillMount() {
+    this.setState({ expandedRowKeys: this.props.delgBills.map(bl => bl.key) });
+  }
   componentDidMount() {
     this.handleTableLoad();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.delgBills.length !== this.props.delgBills.length) {
+      this.setState({ expandedRowKeys: nextProps.delgBills.map(bl => bl.key) });
+    }
   }
 
   columns = [{
@@ -50,12 +61,14 @@ export default class SubdelgTable extends Component {
     title: '统一编号',
     width: 160,
     dataIndex: 'pre_entry_seq_no',
+    render: (o, record) => (record.id ? o : '/'),
   }, {
     title: '报关单号',
     width: 160,
     dataIndex: 'entry_id',
     render: (o, record) => {
-      if (record.key !== record.bill_seq_no) {
+      // 用id字段表示为children数据
+      if (record.id) {
         if (o) {
           return o;
         } else {
@@ -65,6 +78,8 @@ export default class SubdelgTable extends Component {
             />
           );
         }
+      } else {
+        return '/';
       }
     },
   }, {
@@ -79,10 +94,12 @@ export default class SubdelgTable extends Component {
     title: '回执状态',
     width: 160,
     dataIndex: 'status',
+    render: (o, record) => (record.id ? o : '/'),
   }, {
     title: '回执时间',
     width: 80,
-    render: (o, record) => record.process_time && moment(record.process_time).format('YYYY.MM.DD'),
+    render: (o, record) => (record.id ?
+    record.process_time && moment(record.process_time).format('YYYY.MM.DD') : '/'),
   }]
 
   handleTableLoad = () => {
@@ -103,11 +120,17 @@ export default class SubdelgTable extends Component {
       delgNo: this.props.delgNo,
     });
   }
+  handleExpandedChange = (expandedRowKeys) => {
+    this.setState({ expandedRowKeys });
+  }
   render() {
     const { delgBills, reloadDelgs } = this.props;
     return (
       <div>
-        <Table columns={this.columns} dataSource={delgBills} pagination={false} size="small" scroll={{ y: 170 }} />
+        <Table expandedRowKeys={this.state.expandedRowKeys} columns={this.columns}
+          dataSource={delgBills} pagination={false} size="small" scroll={{ y: 170 }}
+          onExpandedRowsChange={this.handleExpandedChange}
+        />
         <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
       </div>
   ); }
