@@ -61,7 +61,7 @@ export default class SubdelgTable extends Component {
     title: '统一编号',
     width: 160,
     dataIndex: 'pre_entry_seq_no',
-    render: (o, record) => (record.id ? o : '/'),
+    render: (o, record) => (record.id ? o : '-'),
   }, {
     title: '报关单号',
     width: 160,
@@ -79,7 +79,7 @@ export default class SubdelgTable extends Component {
           );
         }
       } else {
-        return '/';
+        return '-';
       }
     },
   }, {
@@ -94,12 +94,12 @@ export default class SubdelgTable extends Component {
     title: '回执状态',
     width: 160,
     dataIndex: 'status',
-    render: (o, record) => (record.id ? o : '/'),
+    render: (o, record) => (record.id ? o : '-'),
   }, {
     title: '回执时间',
     width: 80,
     render: (o, record) => (record.id ?
-    record.process_time && moment(record.process_time).format('YYYY.MM.DD') : '/'),
+    record.process_time && moment(record.process_time).format('YYYY.MM.DD') : '-'),
   }]
 
   handleTableLoad = () => {
@@ -128,7 +128,7 @@ export default class SubdelgTable extends Component {
     return (
       <div>
         <Table expandedRowKeys={this.state.expandedRowKeys} columns={this.columns}
-          dataSource={delgBills} pagination={false} size="small" scroll={{ y: 170 }}
+          dataSource={delgBills} pagination={false} size="middle" scroll={{ y: 200 }}
           onExpandedRowsChange={this.handleExpandedChange}
         />
         <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
