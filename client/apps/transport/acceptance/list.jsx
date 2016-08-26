@@ -43,14 +43,16 @@ function TransitTimeLabel(props) {
 }
 
 function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadTable(cookie, {
-    tenantId: state.account.tenantId,
-    filters: JSON.stringify(state.transportAcceptance.table.filters),
-    pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
-    currentPage: state.transportAcceptance.table.shipmentlist.current,
-    sortField: state.transportAcceptance.table.sortField,
-    sortOrder: state.transportAcceptance.table.sortOrder,
-  }));
+  if (!state.transportAcceptance.table.loaded) {
+    return dispatch(loadTable(cookie, {
+      tenantId: state.account.tenantId,
+      filters: JSON.stringify(state.transportAcceptance.table.filters),
+      pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
+      currentPage: state.transportAcceptance.table.shipmentlist.current,
+      sortField: state.transportAcceptance.table.sortField,
+      sortOrder: state.transportAcceptance.table.sortOrder,
+    }));
+  }
 }
 
 @connectFetch()(fetchData)

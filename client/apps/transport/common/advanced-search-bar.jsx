@@ -34,11 +34,32 @@ export default class AdvancedSearchBar extends React.Component {
       consigneeRegion: [],
     };
   }
-
+  componentDidMount() {
+    this.initializeFieldsValue();
+  }
+  initializeFieldsValue = () => {
+    let fieldsValue = {};
+    if (window.localStorage && window.localStorage.tmsAdvancedSearchFieldsValue) {
+      fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue);
+      this.handleSearch(fieldsValue.consigner_region, fieldsValue.consignee_region, fieldsValue);
+      delete fieldsValue.consigner_region;
+      delete fieldsValue.consignee_region;
+      this.props.form.setFieldsValue(fieldsValue);
+    }
+    return fieldsValue;
+  }
+  saveFieldsValue = (fieldsValue) => {
+    if (window.localStorage) {
+      window.localStorage.tmsAdvancedSearchFieldsValue = JSON.stringify(fieldsValue);
+    }
+  }
   handleResetFields = () => {
     this.setState({ consignerRegion: [], consigneeRegion: [] });
     this.props.form.resetFields();
-    this.handleShowFieldsLabel([], []);
+    const fieldsValue = this.props.form.getFieldsValue();
+    fieldsValue.consigner_region = [];
+    fieldsValue.consignee_region = [];
+    this.handleShowFieldsLabel(fieldsValue);
   }
   handleCloseTag = (names) => {
     if (names[0] === 'consigner_region') {
@@ -50,18 +71,11 @@ export default class AdvancedSearchBar extends React.Component {
       this.handleSearch(this.state.consignerRegion, this.state.consigneeRegion);
     }
   }
-  handleSearch = (consignerRegion, consigneeRegion) => {
-    const fieldsValue = this.props.form.getFieldsValue();
-    if (consignerRegion.length !== 0) {
-      fieldsValue.consigner_region = consignerRegion;
-    } else {
-      fieldsValue.consigner_region = '';
-    }
-    if (consigneeRegion.length !== 0) {
-      fieldsValue.consignee_region = consigneeRegion;
-    } else {
-      fieldsValue.consignee_region = '';
-    }
+  handleSearch = (consignerRegion, consigneeRegion, fv) => {
+    const fieldsValue = fv || this.props.form.getFieldsValue();
+    fieldsValue.consigner_region = consignerRegion;
+    fieldsValue.consignee_region = consigneeRegion;
+    this.saveFieldsValue(fieldsValue);
     const result = {};
     Object.keys(fieldsValue).forEach(key => {
       if (key === 'relatedToMe' && fieldsValue[key] === true) {
@@ -76,24 +90,17 @@ export default class AdvancedSearchBar extends React.Component {
     });
     this.props.onSearch(result);
     this.setState({ consignerRegion, consigneeRegion });
-    this.handleShowFieldsLabel(consignerRegion, consigneeRegion);
+    this.handleShowFieldsLabel(fieldsValue);
   }
   handleSubmit = (e) => {
     if (e) e.preventDefault();
     this.handleSearch(this.state.consignerRegion, this.state.consigneeRegion);
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-  handleShowFieldsLabel = (consignerRegion, consigneeRegion) => {
+  handleShowFieldsLabel = (fieldsValue) => {
     const fields = [];
-    const fieldsValue = this.props.form.getFieldsValue();
-    if (consignerRegion.length !== 0) {
-      fieldsValue.consigner_region = consignerRegion;
-    }
-    if (consigneeRegion.length !== 0) {
-      fieldsValue.consignee_region = consigneeRegion;
-    }
     Object.keys(fieldsValue).forEach(key => {
-      if (fieldsValue[key] && fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key] !== undefined) {
+      if (fieldsValue[key] && fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key].length !== 0) {
         fields.push({
           key,
           value: fieldsValue[key],

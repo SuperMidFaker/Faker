@@ -128,7 +128,7 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('shipmtException'),
     fixed: 'left',
-    width: 140,
+    width: 80,
     dataIndex: 'excp_level',
     render: (o) => {
       if (o === 'INFO') {

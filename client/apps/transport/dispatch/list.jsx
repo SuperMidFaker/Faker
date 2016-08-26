@@ -123,7 +123,8 @@ export default class DispatchList extends React.Component {
   }
 
   componentDidMount() {
-    this.handleStatusChange({ target: { value: 'waiting' } });
+    // 又advancedSearch 触发加载数据，所以暂时注释掉
+    // this.handleStatusChange({ target: { value: 'waiting' } });
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded) {

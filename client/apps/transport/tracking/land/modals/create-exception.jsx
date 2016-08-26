@@ -32,32 +32,36 @@ export default class CreateException extends React.Component {
   handleOk = () => {
     const { form, dispId, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
-    const type = fieldsValue.type[1];
-    let excpLevel = '';
-    for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
-      if (TRANSPORT_EXCEPTIONS[i].code === type) {
-        excpLevel = TRANSPORT_EXCEPTIONS[i].level;
-        break;
+    if (fieldsValue && fieldsValue.type) {
+      const type = fieldsValue.type[1];
+      let excpLevel = '';
+      for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
+        if (TRANSPORT_EXCEPTIONS[i].code === type) {
+          excpLevel = TRANSPORT_EXCEPTIONS[i].level;
+          break;
+        }
       }
+      this.props.addException({
+        dispId,
+        excpLevel,
+        type,
+        excpEvent: fieldsValue.excp_event,
+        submitter: loginName,
+      }).then(result => {
+        if (result.error) {
+          message.error(result.error);
+        } else {
+          this.handleCancel();
+          this.props.loadExceptions({
+            dispId,
+            pageSize: this.props.exceptions.pageSize,
+            currentPage: this.props.exceptions.current,
+          });
+        }
+      });
+    } else {
+      message.error('请选择异常类型');
     }
-    this.props.addException({
-      dispId,
-      excpLevel,
-      type,
-      excpEvent: fieldsValue.excp_event,
-      submitter: loginName,
-    }).then(result => {
-      if (result.error) {
-        message.error(result.error);
-      } else {
-        this.handleCancel();
-        this.props.loadExceptions({
-          dispId,
-          pageSize: this.props.exceptions.pageSize,
-          currentPage: this.props.exceptions.current,
-        });
-      }
-    });
   }
   handleCancel = () => {
     this.props.toggle();
@@ -67,28 +71,8 @@ export default class CreateException extends React.Component {
 
     const options = [];
     for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
-      if (options.length === 0) {
-        options.push({
-          value: TRANSPORT_EXCEPTIONS[i].code,
-          label: TRANSPORT_EXCEPTIONS[i].category,
-          children: [{
-            value: TRANSPORT_EXCEPTIONS[i].code,
-            label: TRANSPORT_EXCEPTIONS[i].name,
-          }],
-        });
-      } else {
-        let flag = false;
-        for (let j = 0; j < options.length; j++) {
-          if (options[j].label === TRANSPORT_EXCEPTIONS[i].category) {
-            options[j].children.push({
-              value: TRANSPORT_EXCEPTIONS[i].code,
-              label: TRANSPORT_EXCEPTIONS[i].name,
-            });
-            flag = true;
-            break;
-          }
-        }
-        if (flag === false) {
+      if (TRANSPORT_EXCEPTIONS[i].key.indexOf('_SYS_') < 0) {
+        if (options.length === 0) {
           options.push({
             value: TRANSPORT_EXCEPTIONS[i].code,
             label: TRANSPORT_EXCEPTIONS[i].category,
@@ -97,6 +81,28 @@ export default class CreateException extends React.Component {
               label: TRANSPORT_EXCEPTIONS[i].name,
             }],
           });
+        } else {
+          let flag = false;
+          for (let j = 0; j < options.length; j++) {
+            if (options[j].label === TRANSPORT_EXCEPTIONS[i].category) {
+              options[j].children.push({
+                value: TRANSPORT_EXCEPTIONS[i].code,
+                label: TRANSPORT_EXCEPTIONS[i].name,
+              });
+              flag = true;
+              break;
+            }
+          }
+          if (flag === false) {
+            options.push({
+              value: TRANSPORT_EXCEPTIONS[i].code,
+              label: TRANSPORT_EXCEPTIONS[i].category,
+              children: [{
+                value: TRANSPORT_EXCEPTIONS[i].code,
+                label: TRANSPORT_EXCEPTIONS[i].name,
+              }],
+            });
+          }
         }
       }
     }

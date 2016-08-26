@@ -20,7 +20,7 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
 const initialState = {
   submitting: false,
   table: {
-    loaded: false,
+    loaded: true,
     loading: false,
     filters: [
       { name: 'type', value: 'unaccepted' },
