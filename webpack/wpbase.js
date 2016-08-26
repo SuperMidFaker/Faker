@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const config = require('../config');
+const HappyPack = require('happypack');
 
 const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
 
@@ -26,6 +27,32 @@ const wpConfig = {
     filename: '[name]-[hash].js',  // Name of output file
   },
   plugins: [
+    new HappyPack({
+      loaders: [{
+        path: 'babel',
+        query: {
+          optional: ['runtime'],
+          stage: 0,
+          blacklist: ['regenerator'],
+          env: {
+            development: {
+              plugins: [
+                'react-transform',
+              ],
+              extra: {
+                'react-transform': {
+                  transforms: [{
+                    transform: 'react-transform-hmr',
+                    imports: ['react'],
+                    locals: ['module'],
+                  }],
+                },
+              },
+            },
+          },
+        },
+      }],
+    }),
     new webpack.IgnorePlugin(/assets\.json$/),
     new webpack.DefinePlugin({
       __CLIENT__: true,
@@ -36,39 +63,11 @@ const wpConfig = {
     }),
   ],
   module: {
-    // eslint loader
-    preLoaders: [{
-      test: /\.(js|jsx)$/,
-      loader: 'eslint-loader',
-      include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'common')],
-      exclude: [nodeModulesPath],
-    }],
     loaders: [{
       test: /\.(js|jsx)$/, // All .js and .jsx files
-      loader: 'babel', // babel loads jsx and es6-7
+      loader: 'happypack/loader', // babel loads jsx and es6-7
       include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'common')],
       exclude: [nodeModulesPath],  // exclude node_modules so that they are not all compiled
-      query: {
-        optional: ['runtime'],
-        stage: 0,
-        blacklist: ['regenerator'],
-        env: {
-          development: {
-            plugins: [
-              'react-transform',
-            ],
-            extra: {
-              'react-transform': {
-                transforms: [{
-                  transform: 'react-transform-hmr',
-                  imports: ['react'],
-                  locals: ['module'],
-                }],
-              },
-            },
-          },
-        },
-      },
     },
     { test: /\.json$/, loader: 'json-loader' },
     { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
@@ -80,12 +79,6 @@ const wpConfig = {
   },
   postcss: function postcss() {
     return [autoprefixer];
-  },
-  eslint: {
-    configFile: '.eslintrc',
-    failOnError: false,
-    emitWarning: true,
-    fix: true,
   },
 };
 

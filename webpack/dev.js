@@ -17,8 +17,14 @@ wpConfig.devServer = {
   // noInfo: true,
   inline: true,
   progress: true,
+  // lazy: true,
   stats: {
     colors: true,
+    /*
+    timings: true,
+    assets: false,
+    modules: false,
+    */
   },
   host: '0.0.0.0',
   port: config.get('webpack_port'),
