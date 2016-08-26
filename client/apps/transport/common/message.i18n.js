@@ -1,8 +1,8 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  customer_name: {
-    id: 'tms.advancedSearchBar.customer_name',
+  sr_name: {
+    id: 'tms.advancedSearchBar.sr_name',
     defaultMessage: '客户',
   },
   consigner_region: {

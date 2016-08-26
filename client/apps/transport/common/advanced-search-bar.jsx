@@ -129,7 +129,7 @@ export default class AdvancedSearchBar extends React.Component {
     this.setState({ consigneeRegion: region });
   }
   format = (item) => {
-    if (item.key === 'customer_name' ||
+    if (item.key === 'sr_name' ||
       item.key === 'sp_name' ||
       item.key === 'transport_mode') {
       return `${item.label}: ${item.value}`;
@@ -169,7 +169,7 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Input placeholder="请输入客户名称" size="default" {...getFieldProps('customer_name', { initialValue: '' })} />
+                <Input placeholder="请输入客户名称" size="default" {...getFieldProps('sr_name', { initialValue: '' })} />
               </FormItem>
               <FormItem
                 label="出发地"
