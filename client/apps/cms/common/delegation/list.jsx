@@ -124,9 +124,17 @@ export default class DelegationList extends Component {
     title: '状态',
     width: 100,
     dataIndex: 'status',
-    render: (o) => {
+    render: (o, record) => {
       const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
-      return <Tag>{decl && decl.text}</Tag>;
+      if (record.status === 1) {
+        return <Tag color="yellow">{decl && decl.text}</Tag>;
+      } else if (record.status === 2 || record.status === 3) {
+        return <Tag color="blue">{decl && decl.text}</Tag>;
+      } else if (record.status === 4) {
+        return <Tag color="green">{decl && decl.text}</Tag>;
+      } else {
+        return <Tag>{decl && decl.text}</Tag>;
+      }
     },
   }]
 
@@ -331,7 +339,7 @@ export default class DelegationList extends Component {
             <Table columns={columns} dataSource={this.dataSource}
               expandedRowKeys={this.state.expandedKeys}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1600 }} onExpandedRowsChange={this.handleExpandedChange}
+              scroll={{ x: 1800 }} onExpandedRowsChange={this.handleExpandedChange}
             />
           </div>
         </div>

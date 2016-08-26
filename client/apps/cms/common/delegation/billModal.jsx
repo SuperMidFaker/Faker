@@ -35,12 +35,12 @@ export default class BillModal extends Component {
       const perVal = (bill.bill_status * 20);
       return (
         <Row key={`make-bill${index}`}>
-          <Col span={8}>
+          <Col span={8} style={{ padding: 8 }}>
             <NavLink onChange={this.handleCancel} to={`${linkTo}${bill.bill_seq_no}`}>
               {bill.bill_seq_no}
             </NavLink>
           </Col>
-          <Col span={16}>
+          <Col span={16} style={{ padding: 8 }}>
             <Progress percent={perVal} />
           </Col>
         </Row>
@@ -49,10 +49,10 @@ export default class BillModal extends Component {
     return (
       <Modal visible={billMakeModal.visible} title={title} footer={footer}>
         <Row>
-          <Col span={8}>
+          <Col span={8} style={{ padding: 8 }}>
             清单编号
           </Col>
-          <Col span={16}>
+          <Col span={16} style={{ padding: 8 }}>
             制单进度
           </Col>
         </Row>
