@@ -155,6 +155,7 @@ export default class DelegationList extends Component {
   handleDelgListLoad = (filter) => {
     const { tenantId, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
+    this.setState({ expandedKeys: [] });
     this.props.loadAcceptanceTable({
       ietype,
       tenantId,
@@ -162,8 +163,8 @@ export default class DelegationList extends Component {
       pageSize,
       currentPage: current,
     }).then(result => {
-      if (!result.error) {
-        this.setState({ expandedKeys: [] });
+      if (result.error) {
+        message.error(result.error.message);
       }
     });
   }
