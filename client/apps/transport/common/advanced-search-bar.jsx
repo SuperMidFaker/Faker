@@ -6,15 +6,24 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import RegionCascade from 'client/components/region-cascade';
 import messages from './message.i18n';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadFormRequire } from 'common/reducers/shipment';
 const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option;
+
+function fetchData({ state, dispatch, cookie }) {
+  return dispatch(loadFormRequire(cookie, state.account.tenantId));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     loginId: state.account.loginId,
+    transitModes: state.shipment.formRequire.transitModes,
   }),
   { })
 @Form.create()
@@ -25,6 +34,7 @@ export default class AdvancedSearchBar extends React.Component {
     onSearch: PropTypes.func.isRequired,
     loginId: PropTypes.number.isRequired,
     toggle: PropTypes.func.isRequired,
+    transitModes: PropTypes.array.isRequired,
   }
   constructor(props) {
     super(props);
@@ -141,7 +151,7 @@ export default class AdvancedSearchBar extends React.Component {
     return item.label;
   }
   render() {
-    const { visible, form: { getFieldProps } } = this.props;
+    const { visible, transitModes, form: { getFieldProps } } = this.props;
     const { fields } = this.state;
     return (
       <div>
@@ -207,14 +217,9 @@ export default class AdvancedSearchBar extends React.Component {
                 wrapperCol={{ span: 14 }}
               >
                 <Select size="large" style={{ width: '100%' }} {...getFieldProps('transport_mode', { initialValue: '' })} >
-                  <Option value="零担">零担</Option>
-                  <Option value="整车">整车</Option>
-                  <Option value="快递快运">快递快运</Option>
-                  <Option value="集装箱">集装箱</Option>
-                  <Option value="槽罐">槽罐</Option>
-                  <Option value="空运">空运</Option>
-                  <Option value="海运">海运</Option>
-                  <Option value="铁运">铁运</Option>
+                  {transitModes.map(
+                    tm => <Option value={tm.mode_name} key={tm.mode_code}>{tm.mode_name}</Option>
+                  )}
                 </Select>
               </FormItem>
               <FormItem
