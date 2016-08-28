@@ -4,12 +4,13 @@ import { Icon, Button, Modal } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadExceptions, hideExcpModal, removeException } from 'common/reducers/trackingLandException';
+import { loadExceptions, hideExcpModal, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import '../../../index.less';
 import CreateException from './create-exception';
 import CreateSpecialCharge from './create-specialCharge';
+import DealException from './deal-exception';
 import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
 const formatMsg = format(messages);
 
@@ -23,7 +24,7 @@ const formatMsg = format(messages);
     shipmtNo: state.trackingLandException.excpModal.shipmtNo,
     exceptions: state.trackingLandException.exceptions,
   }),
-  { loadExceptions, hideExcpModal, removeException }
+  { loadExceptions, hideExcpModal, showDealExcpModal }
 )
 export default class ExcpEventsModal extends React.Component {
   static propTypes = {
@@ -33,14 +34,14 @@ export default class ExcpEventsModal extends React.Component {
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
-    removeException: PropTypes.func.isRequired,
+    showDealExcpModal: PropTypes.func.isRequired,
     hideExcpModal: PropTypes.func.isRequired,
     exceptions: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
     createExceptionVisible: false,
-    createSpecialCharge: false,
+    createSpecialChargeVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.dispId !== nextProps.dispId && nextProps.dispId !== -1) {
@@ -76,7 +77,7 @@ export default class ExcpEventsModal extends React.Component {
   })
   columns = [{
     dataIndex: 'excp_level',
-    width: '40',
+    width: 40,
     render: (o) => {
       if (o === 'INFO') {
         return (<Icon type="info-circle" className="sign-info" />);
@@ -102,7 +103,7 @@ export default class ExcpEventsModal extends React.Component {
       if (record.charge === null || record.charge === 0) {
         return o;
       } else {
-        return `费用金额： ${record.charge.toFixed(2)}元,${o}`;
+        return `费用金额 ${record.charge.toFixed(2)}元, ${o}`;
       }
     },
   }, {
@@ -132,8 +133,8 @@ export default class ExcpEventsModal extends React.Component {
     title: this.msg('operation'),
     dataIndex: 'id',
     width: '6%',
-    render: (o) => {
-      return (<a>处理{o}</a>);
+    render: (o, record) => {
+      return (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>);
     },
   }]
   handleCancel = () => {
@@ -143,7 +144,10 @@ export default class ExcpEventsModal extends React.Component {
     this.setState({ createExceptionVisible: !this.state.createExceptionVisible });
   }
   toggleSpecialCharge = () => {
-    this.setState({ createSpecialCharge: !this.state.createSpecialCharge });
+    this.setState({ createSpecialChargeVisible: !this.state.createSpecialChargeVisible });
+  }
+  handleShowDealExcpModal = (exception) => {
+    this.props.showDealExcpModal(true, exception);
   }
   render() {
     const { shipmtNo, dispId, exceptions } = this.props;
@@ -167,7 +171,8 @@ export default class ExcpEventsModal extends React.Component {
           dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
         />
         <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
-        <CreateSpecialCharge visible={this.state.createSpecialCharge} dispId={dispId} toggle={this.toggleSpecialCharge} />
+        <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} dispId={dispId} toggle={this.toggleSpecialCharge} />
+        <DealException dispId={dispId} />
       </Modal>
     );
   }

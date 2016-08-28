@@ -4,10 +4,10 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/exception/', [
   'LOAD_EXCPSHIPMT', 'LOAD_EXCPSHIPMT_FAIL', 'LOAD_EXCPSHIPMT_SUCCEED',
   'LOAD_EXCEPTIONS', 'LOAD_EXCEPTIONS_FAIL', 'LOAD_EXCEPTIONS_SUCCEED',
-  'ADD_EXCEPTION', 'ADD_EXCEPTION_FAIL', 'ADD_EXCEPTION_SUCCEED',
-  'REMOVE_EXCEPTION', 'REMOVE_EXCEPTION_FAIL', 'REMOVE_EXCEPTION_SUCCEED',
+  'CREATE_EXCEPTION', 'CREATE_EXCEPTION_FAIL', 'CREATE_EXCEPTION_SUCCEED',
+  'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
   'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
-  'CHANGE_FILTER', 'SHOW_EXCPMODAL',
+  'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL',
 ]);
 
 const initialState = {
@@ -28,6 +28,10 @@ const initialState = {
     visible: false,
     dispId: -1,
     shipmtNo: '',
+  },
+  dealExcpModal: {
+    visible: false,
+    exception: {},
   },
   exceptions: {
     totalCount: 0,
@@ -60,18 +64,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, excpModal: action.data };
     case actionTypes.LOAD_EXCEPTIONS_SUCCEED:
       return { ...state, exceptions: action.result.data };
-    case actionTypes.ADD_EXCEPTION_SUCCEED: {
+    case actionTypes.CREATE_EXCEPTION_SUCCEED: {
       return { ...state };
     }
-    case actionTypes.REMOVE_EXCEPTION_SUCCEED: {
-      const data = [...state.exceptions.data];
-      const index = data.findIndex(item => item.excp_id === action.data.excpId);
-      data.splice(index, 1);
-      return { ...state, exceptions: { ...state.exceptions, data } };
+    case actionTypes.DEAL_EXCEPTION_SUCCEED: {
+      return { ...state };
     }
     case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
       return { ...state };
     }
+    case actionTypes.SHOW_DEAL_EXCEPTION_MODAL:
+      return { ...state, dealExcpModal: action.data };
     default:
       return state;
   }
@@ -133,28 +136,13 @@ export function createException({ dispId, excpLevel, type, excpEvent, submitter 
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.ADD_EXCEPTION,
-        actionTypes.ADD_EXCEPTION_SUCCEED,
-        actionTypes.ADD_EXCEPTION_FAIL,
+        actionTypes.CREATE_EXCEPTION,
+        actionTypes.CREATE_EXCEPTION_SUCCEED,
+        actionTypes.CREATE_EXCEPTION_FAIL,
       ],
       endpoint: 'v1/transport/tracking/exception',
       method: 'post',
       data: { dispId, excpLevel, type, excpEvent, submitter },
-    },
-  };
-}
-
-export function removeException(excpId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.REMOVE_EXCEPTION,
-        actionTypes.REMOVE_EXCEPTION_SUCCEED,
-        actionTypes.REMOVE_EXCEPTION_FAIL,
-      ],
-      endpoint: 'v1/transport/tracking/exception',
-      method: 'delete',
-      data: { excpId },
     },
   };
 }
@@ -170,6 +158,28 @@ export function createSpecialCharge({ dispId, excpLevel, type, excpEvent, submit
       endpoint: 'v1/transport/tracking/createSpecialCharge',
       method: 'post',
       data: { dispId, excpLevel, type, excpEvent, submitter, charge },
+    },
+  };
+}
+
+export function showDealExcpModal(visible, exception) {
+  return {
+    type: actionTypes.SHOW_DEAL_EXCEPTION_MODAL,
+    data: { visible, exception },
+  };
+}
+
+export function dealException({ excpId, solution, solver }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEAL_EXCEPTION,
+        actionTypes.DEAL_EXCEPTION_SUCCEED,
+        actionTypes.DEAL_EXCEPTION_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/dealException',
+      method: 'post',
+      data: { excpId, solution, solver },
     },
   };
 }

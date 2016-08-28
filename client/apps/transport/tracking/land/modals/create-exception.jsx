@@ -71,7 +71,7 @@ export default class CreateException extends React.Component {
 
     const options = [];
     for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
-      if (TRANSPORT_EXCEPTIONS[i].key.indexOf('_SYS_') < 0) {
+      if (TRANSPORT_EXCEPTIONS[i].key.indexOf('_SYS_') < 0 && TRANSPORT_EXCEPTIONS[i].key !== 'SHIPMENT_EXCEPTION_SPECIAL_COST') {
         if (options.length === 0) {
           options.push({
             value: TRANSPORT_EXCEPTIONS[i].code,
