@@ -70,9 +70,6 @@ export default class AmNavBar extends React.Component {
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
         <div className="container-fluid">
           <div className="navbar-header">
-            <div className="page-title">
-              <span>{formatGlobalMsg(intl, 'brand')}</span>
-            </div>
             <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
               <i className="zmdi zmdi-apps" />
             </NavLink>
