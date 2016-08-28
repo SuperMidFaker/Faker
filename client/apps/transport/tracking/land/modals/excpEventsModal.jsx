@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Modal } from 'antd';
+import { Icon, Button, Modal, Tag } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -112,7 +112,7 @@ export default class ExcpEventsModal extends React.Component {
     width: '8%',
     render: (o) => {
       if (o === 1) {
-        return '已解决';
+        return (<Tag color="green">已解决</Tag>);
       } else if (o === 0) {
         return '未解决';
       }

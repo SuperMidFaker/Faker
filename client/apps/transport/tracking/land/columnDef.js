@@ -371,33 +371,44 @@ export default function makeColumns(type, handlers, msg) {
       },
     }, {
       title: msg('shipmtNextUpdate'),
-      width: 140,
+      width: 160,
       fixed: 'right',
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {   // 待接单
           return (
+            <div>
               <RowUpdater label={msg('notifyAccept')}
                 onAnchored={() => {}} row={record}
-              />);
+              />
+            </div>
+          );
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {  // 待调度
           if (record.sp_tenant_id === -1) {
               // 线下客户手动更新
             return (
+              <div>
                 <RowUpdater label={msg('updateVehicleDriver')}
                   onAnchored={handlers.onShowVehicleModal} row={record}
                 />
-              );
+              </div>
+            );
           } else {
-            return (<RowUpdater label={msg('notifyDispatch')}
-              onAnchored={() => {}} row={record}
-            />);
+            return (
+              <div>
+                <RowUpdater label={msg('notifyDispatch')}
+                  onAnchored={() => {}} row={record}
+                />
+              </div>
+            );
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {  // 待提货
           return (
-                <RowUpdater label={msg('updateEvents')}
-                  onAnchored={handlers.onShowExcpModal} row={record}
-                />
-              );
+            <div>
+              <RowUpdater label={msg('updateEvents')}
+                onAnchored={handlers.onShowExcpModal} row={record}
+              />
+            </div>
+          );
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) { // 运输中
           if (record.sp_tenant_id === -1) {
             return handlers.renderIntransitUpdater(record);
@@ -407,17 +418,21 @@ export default function makeColumns(type, handlers, msg) {
             }
           } else {
             return (
+              <div>
                 <RowUpdater label={msg('updateEvents')}
                   onAnchored={handlers.onShowExcpModal} row={record}
                 />
-              );
+              </div>
+            );
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已交货
           return (
-                <RowUpdater label={msg('updateEvents')}
-                  onAnchored={handlers.onShowExcpModal} row={record}
-                />
-              );
+            <div>
+              <RowUpdater label={msg('updateEvents')}
+                onAnchored={handlers.onShowExcpModal} row={record}
+              />
+            </div>
+          );
               /*
           if (record.pod_type === 'none') { // 无需电子回单
             return msg('nonePOD');
