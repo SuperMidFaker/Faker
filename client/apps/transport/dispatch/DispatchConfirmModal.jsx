@@ -48,11 +48,10 @@ export default class DispatchConfirmModal extends Component {
       msg = `将【${shipmt.shipmt_no}】分配给【${target.plate_number}】承运，请选择对回单的要求：`;
     }
     return (
-      <Modal title="确认回单要求" visible={this.state.visible} onCalcel={this.handleCancel}
-
+      <Modal title="确认回单要求" visible={this.state.visible} onCancel={this.handleCancel}
         footer={[
-          <Button key="calcel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-          <Button key="dispatch" type="primary" size="large" onClick={this.props.onDispatch}>
+          <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+          <Button key="dispatch" type="default" size="large" onClick={this.props.onDispatch}>
             确定
           </Button>,
           <Button key="diapatchAndSend" type="primary" size="large" onClick={this.props.onDispatchAndSend}>
@@ -63,9 +62,9 @@ export default class DispatchConfirmModal extends Component {
         <div className="dispatch-confirm">
           <div style={{ marginBottom: 10 }}>{msg}</div>
           <RadioGroup onChange={(e) => this.handlePodTypeChange(e)} value={this.state.podType}>
-            <RadioButton key="a" value={'ePOD'}><Icon type="scan" />拍摄上传</RadioButton>
-            <RadioButton key="c" value={'qrPOD'}><Icon type="qrcode" />扫码签收</RadioButton>
-            <RadioButton key="b" value={'none'}><Icon type="file-excel" />无须上传</RadioButton>
+            <RadioButton key="a" value={'ePOD'}><Icon type="scan" /> 拍摄上传</RadioButton>
+            <RadioButton key="c" value={'qrPOD'}><Icon type="qrcode" /> 扫码签收</RadioButton>
+            <RadioButton key="b" value={'none'}><Icon type="file-excel" /> 无须上传</RadioButton>
           </RadioGroup>
         </div>
       </Modal>

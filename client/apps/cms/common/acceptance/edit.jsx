@@ -22,7 +22,7 @@ import { editDelegation } from 'common/reducers/cmsDelegation';
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: props.params.delgNo,
+    text: '委托信息修改',
     moduleName: 'clearance',
     withModuleLayout: false,
     goBackFn: () => router.goBack(),
@@ -49,16 +49,26 @@ export default class AcceptanceEdit extends Component {
       if (!errors) {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
+        const formdatas = this.props.form.getFieldsValue();
+        const subformArray = [];
+        for (const i of formdatas.keys) {
+          subformArray.push({
+            decl_way_code: formdatas[`decl_way_code_${i}`],
+            manual_no: formdatas[`manual_no_${i}`],
+            pack_count: formdatas[`pack_count_${i}`],
+            gross_wt: formdatas[`gross_wt_${i}`],
+          });
+        }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        if (delegation.weight === '') delegation.weight = null;
+        delegation.subforms = subformArray;
         this.props.editDelegation({
           delegation, addedFiles, removedFiles, patnershipType: 'CCB',
-          accepted: isAccepted,
+          accepted: isAccepted, ietype: type === 'import' ? 0 : 1,
         }).then(result => {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push(`clearance/${type}/`);
+            this.context.router.push(`/clearance/${type}/`);
           }
         });
       }

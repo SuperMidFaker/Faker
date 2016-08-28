@@ -11,7 +11,8 @@ import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
 import BillModal from './billModal';
 import RowUpdater from './rowUpdater';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer } from 'common/reducers/cmsDelegation';
+import DelgDispatch from './delgDispatch';
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer, setDispStatus } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -24,8 +25,10 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
+    billMakeModal: state.cmsDelegation.billMakeModal,
+    delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer }
+  { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer, setDispStatus }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -52,6 +55,8 @@ export default class DelegationList extends Component {
     loadBillMakeModal: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
+    billMakeModal: PropTypes.object.isRequired,
+    delgDispShow: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -119,9 +124,17 @@ export default class DelegationList extends Component {
     title: '状态',
     width: 100,
     dataIndex: 'status',
-    render: (o) => {
+    render: (o, record) => {
       const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
-      return <Tag>{decl && decl.text}</Tag>;
+      if (record.status === 1) {
+        return <Tag color="yellow">{decl && decl.text}</Tag>;
+      } else if (record.status === 2 || record.status === 3) {
+        return <Tag color="blue">{decl && decl.text}</Tag>;
+      } else if (record.status === 4) {
+        return <Tag color="green">{decl && decl.text}</Tag>;
+      } else {
+        return <Tag>{decl && decl.text}</Tag>;
+      }
     },
   }]
 
@@ -155,6 +168,7 @@ export default class DelegationList extends Component {
   handleDelgListLoad = (filter) => {
     const { tenantId, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
+    this.setState({ expandedKeys: [] });
     this.props.loadAcceptanceTable({
       ietype,
       tenantId,
@@ -162,8 +176,8 @@ export default class DelegationList extends Component {
       pageSize,
       currentPage: current,
     }).then(result => {
-      if (!result.error) {
-        this.setState({ expandedKeys: [] });
+      if (result.error) {
+        message.error(result.error.message);
       }
     });
   }
@@ -219,7 +233,10 @@ export default class DelegationList extends Component {
     );
   }
   handleDelegationAssign = () => {
-
+    this.props.setDispStatus({ delgDispShow: true });
+  }
+  closeDispDock = () => {
+    this.props.setDispStatus({ delgDispShow: false });
   }
   handleDelgDel = (delgNo) => {
     this.props.delDelg(delgNo).then(result => {
@@ -322,11 +339,12 @@ export default class DelegationList extends Component {
             <Table columns={columns} dataSource={this.dataSource}
               expandedRowKeys={this.state.expandedKeys}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1600 }} onExpandedRowsChange={this.handleExpandedChange}
+              scroll={{ x: 1800 }} onExpandedRowsChange={this.handleExpandedChange}
             />
           </div>
         </div>
         <BillModal ietype={this.props.ietype} />
+        <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
       </div>
     );
   }
