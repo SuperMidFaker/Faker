@@ -7,7 +7,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'ADD_EXCEPTION', 'ADD_EXCEPTION_FAIL', 'ADD_EXCEPTION_SUCCEED',
   'REMOVE_EXCEPTION', 'REMOVE_EXCEPTION_FAIL', 'REMOVE_EXCEPTION_SUCCEED',
   'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
-  'ADD_SPECIALCHARGE', 'ADD_SPECIALCHARGE_FAIL', 'ADD_SPECIALCHARGE_SUCCEED',
   'CHANGE_FILTER', 'SHOW_EXCPMODAL',
 ]);
 
@@ -71,9 +70,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, exceptions: { ...state.exceptions, data } };
     }
     case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
-      return { ...state };
-    }
-    case actionTypes.ADD_SPECIALCHARGE_SUCCEED: {
       return { ...state };
     }
     default:
@@ -163,7 +159,7 @@ export function removeException(excpId) {
   };
 }
 
-export function createSpecialCharge({ dispId, excpLevel, type, excpEvent, submitter, specialCharge }) {
+export function createSpecialCharge({ dispId, excpLevel, type, excpEvent, submitter, charge }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -173,23 +169,7 @@ export function createSpecialCharge({ dispId, excpLevel, type, excpEvent, submit
       ],
       endpoint: 'v1/transport/tracking/createSpecialCharge',
       method: 'post',
-      data: { dispId, excpLevel, type, excpEvent, submitter, specialCharge },
-    },
-  };
-}
-
-
-export function addSpecialCharge({ dispId, excpLevel, type, excpEvent, submitter, specialCharge }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ADD_SPECIALCHARGE,
-        actionTypes.ADD_SPECIALCHARGE_SUCCEED,
-        actionTypes.ADD_SPECIALCHARGE_FAIL,
-      ],
-      endpoint: 'v1/transport/tracking/addSpecialCharge',
-      method: 'post',
-      data: { dispId, excpLevel, type, excpEvent, submitter, specialCharge },
+      data: { dispId, excpLevel, type, excpEvent, submitter, charge },
     },
   };
 }

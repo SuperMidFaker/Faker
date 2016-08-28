@@ -90,9 +90,20 @@ export default class ExcpEventsModal extends React.Component {
   }, {
     title: this.msg('exceptionType'),
     dataIndex: 'type',
-    render: (o, record) => {
+    width: '10%',
+    render: (o) => {
       const t = TRANSPORT_EXCEPTIONS.find(item => item.code === o);
-      return `${t ? t.name : ''}: ${record.excp_event}`;
+      return t ? t.name : '';
+    },
+  }, {
+    title: this.msg('exceptionDescription'),
+    dataIndex: 'excp_event',
+    render: (o, record) => {
+      if (record.charge === null || record.charge === 0) {
+        return o;
+      } else {
+        return `费用金额： ${record.charge.toFixed(2)}元,${o}`;
+      }
     },
   }, {
     title: this.msg('exceptionResolved'),
@@ -107,16 +118,16 @@ export default class ExcpEventsModal extends React.Component {
       return o;
     },
   }, {
-    title: this.msg('submitter'),
-    dataIndex: 'submitter',
-    width: '10%',
-  }, {
     title: this.msg('submitDate'),
     dataIndex: 'submit_date',
     width: '15%',
     render: (o) => {
       return moment(o).format('YYYY-MM-DD HH:mm:ss');
     },
+  }, {
+    title: this.msg('submitter'),
+    dataIndex: 'submitter',
+    width: '10%',
   }, {
     title: this.msg('operation'),
     dataIndex: 'id',
@@ -149,7 +160,7 @@ export default class ExcpEventsModal extends React.Component {
         visible={this.props.visible} width="75%" maskClosable={false}
       >
         <div className="modal-top-actions">
-          <Button type="ghost" size="large">添加特殊费用</Button>
+          <Button type="ghost" size="large" onClick={this.toggleSpecialCharge}>添加特殊费用</Button>
           <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
         </div>
         <Table columns={this.columns}

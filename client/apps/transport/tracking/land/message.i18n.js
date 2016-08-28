@@ -115,7 +115,11 @@ export default defineMessages({
   },
   exceptionType: {
     id: 'transport.tracking.shipmt.exception.exceptionType',
-    defaultMessage: '类型与描述',
+    defaultMessage: '异常类型',
+  },
+  exceptionDescription: {
+    id: 'transport.tracking.shipmt.exception.exceptionDescription',
+    defaultMessage: '描述',
   },
   submitter: {
     id: 'transport.tracking.shipmt.exception.submitter',

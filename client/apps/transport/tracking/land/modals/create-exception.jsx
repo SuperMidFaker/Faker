@@ -32,7 +32,7 @@ export default class CreateException extends React.Component {
   handleOk = () => {
     const { form, dispId, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
-    if (fieldsValue && fieldsValue.type) {
+    if (fieldsValue && fieldsValue.type && fieldsValue.type[1]) {
       const type = fieldsValue.type[1];
       let excpLevel = '';
       for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
