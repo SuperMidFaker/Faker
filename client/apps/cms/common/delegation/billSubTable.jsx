@@ -91,15 +91,15 @@ export default class SubdelgTable extends Component {
     width: 80,
     dataIndex: 'gross_wt',
   }, {
-    title: '回执状态',
+    title: '通关状态',
     width: 160,
-    dataIndex: 'status',
+    dataIndex: 'note',
     render: (o, record) => (record.id ? o : '-'),
   }, {
-    title: '回执时间',
+    title: '更新时间',
     width: 80,
     render: (o, record) => (record.id ?
-    record.process_time && moment(record.process_time).format('YYYY.MM.DD') : '-'),
+    record.process_date && moment(record.process_date).format('YYYY.MM.DD') : '-'),
   }]
 
   handleTableLoad = () => {
