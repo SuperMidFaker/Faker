@@ -163,16 +163,18 @@ export default class ExcpEventsModal extends React.Component {
       <Modal title={title} footer={footer} onCancel={this.handleCancel}
         visible={this.props.visible} width="75%" maskClosable={false}
       >
-        <div className="modal-top-actions">
-          <Button type="ghost" size="large" onClick={this.toggleSpecialCharge}>添加特殊费用</Button>
-          <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
+        <div style={{ minHeight: 500 }}>
+          <div className="modal-top-actions">
+            <Button type="ghost" size="large" onClick={this.toggleSpecialCharge}>添加特殊费用</Button>
+            <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
+          </div>
+          <Table columns={this.columns}
+            dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
+          />
+          <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
+          <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} dispId={dispId} toggle={this.toggleSpecialCharge} />
+          <DealException dispId={dispId} />
         </div>
-        <Table columns={this.columns}
-          dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
-        />
-        <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
-        <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} dispId={dispId} toggle={this.toggleSpecialCharge} />
-        <DealException dispId={dispId} />
       </Modal>
     );
   }
