@@ -36,7 +36,6 @@ const RadioButton = Radio.Button;
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: props.ietype === 'import' ? '进口' : '出口',
     moduleName: 'clearance',
     withModuleLayout: false,
     goBackFn: null,
@@ -314,7 +313,7 @@ export default class DelegationList extends Component {
     // todo expandedRow fixed
     return (
       <div className="main-content">
-        <div className="page-header">
+      <div className="page-title">
           <div className="tools">
             <Button type="primary" size="large" onClick={this.handleCreateBtnClick}
               icon="plus-circle-o"
@@ -322,17 +321,21 @@ export default class DelegationList extends Component {
             新建委托
             </Button>
           </div>
-          <RadioGroup value={listFilter.status} size="large" onChange={this.handleRadioChange}>
+          <h2>{this.props.ietype === 'import' ? '进口' : '出口'}</h2>
+        </div>
+        <div className="page-header">
+          <div className="tools">
+            <SearchBar placeholder={'委托编号/发票号'} value={this.state.searchInput}
+              onInputSearch={() => {}}
+            />
+          </div>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="accept">接单</RadioButton>
             <RadioButton value="undeclared">制单</RadioButton>
             <RadioButton value="declared">已申报</RadioButton>
             <RadioButton value="finished">已放行</RadioButton>
           </RadioGroup>
-          <span />
-          <SearchBar placeholder={'委托编号/发票号'} value={this.state.searchInput}
-            onInputSearch={() => {}}
-          />
         </div>
         <div className="page-body">
           <div className="panel-body table-panel expandable">

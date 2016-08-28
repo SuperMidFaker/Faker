@@ -5,17 +5,16 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
-import containerMessages from 'client/apps/message.i18n';
 import { Card, DatePicker, Row, Col, Table } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
 import './index.less';
+import messages from './message.i18n';
 import echarts from 'echarts';
 import chinaJson from './china.json';
 import { renderCity } from './common/consignLocation';
-
+const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
-const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch, cookie }) {
   const { startDate, endDate } = state.shipment.statistics;
@@ -35,7 +34,6 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportDashboard'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null,
@@ -51,6 +49,7 @@ export default class Dashboard extends React.Component {
     this.createEcharts(nextProps.statistics);
   }
   */
+  
   onDateChange = (value, dateString) => {
     this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
   }
@@ -243,6 +242,7 @@ export default class Dashboard extends React.Component {
       }
     });
   }
+  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   render() {
     const { count, startDate, endDate } = this.props.statistics;
     const datePicker = (
@@ -322,6 +322,9 @@ export default class Dashboard extends React.Component {
 
     return (
       <div className="main-content">
+        <div className="page-title">
+          <h2>{this.msg('transportDashboard')}</h2>
+        </div>
         <div className="page-body" style={{ padding: '24px' }}>
           <Card title="活动简报" extra={datePicker}>
             <Row type="flex" justify="space-around" align="middle">

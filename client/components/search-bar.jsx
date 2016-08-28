@@ -30,7 +30,7 @@ export default class SearchBar extends React.Component {
     const { placeholder } = this.props;
     return (
       <div className="search-bar">
-        <input placeholder={placeholder} className="ant-input ant-input-lg"
+        <input placeholder={placeholder} className="ant-input"
           onChange={this.handleChange} value={this.state.value}
         />
         <Icon type="search" />

@@ -21,7 +21,6 @@ import { loadTable,
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import containerMessages from 'client/apps/message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
@@ -37,7 +36,6 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const formatMsg = format(messages);
-const formatContainerMsg = format(containerMessages);
 
 function fetch({ state, dispatch, cookie }) {
   return dispatch(loadSegRq(cookie, {
@@ -53,7 +51,6 @@ function fetch({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportDispatch'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null,
@@ -1026,16 +1023,20 @@ export default class DispatchList extends React.Component {
 
     return (
       <div className="main-content">
+      <div className="page-title">
+          <h2>{this.msg('transportDispatch')}</h2>
+        </div>
         <div className="page-header">
-          <RadioGroup onChange={this.handleStatusChange} value={status} size="large">
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+          </div>
+          <RadioGroup onChange={this.handleStatusChange} value={status}>
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
-          <span />
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          <span />
-          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
         <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         <div className="page-body">

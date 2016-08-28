@@ -12,9 +12,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import ExportExcel from './modals/export-excel';
 import messages from './message.i18n';
-import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
-const formatContainerMsg = format(containerMessages);
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -31,7 +29,6 @@ const RadioGroup = Radio.Group;
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportTracking'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null,
@@ -136,8 +133,21 @@ export default class TrackingLandWrapper extends React.Component {
     const { radioValue, searchInput } = this.state;
     return (
       <div className="main-content">
+        <div className="page-title">
+          <div className="tools">
+            <ExportExcel />
+          </div>
+          <h2>{this.msg('transportTracking')}</h2>
+        </div>
         <div className="page-header">
-          <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+              value={searchInput}
+            />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+          </div>
+          <RadioGroup onChange={this.handleStatusNav} value={radioValue}>
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
@@ -146,24 +156,15 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
+          <RadioGroup onChange={this.handlePodNav} value={radioValue}>
             <RadioButton value="upload">{this.msg('uploadPOD')}</RadioButton>
             <RadioButton value="audit">{this.msg('auditPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
+          <RadioGroup onChange={this.handleExcpNav} value={radioValue}>
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
-          <span />
-          <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-            value={searchInput}
-          />
-          <span />
-          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-          <div className="tools">
-            <ExportExcel />
-          </div>
         </div>
         <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         {this.props.children}
