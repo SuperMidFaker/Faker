@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, Modal } from 'antd';
+import { Alert, Button, Modal, Icon } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadExceptions, hideExcpModal, addException, removeException } from 'common/reducers/trackingLandException';
+import { loadExceptions, hideExcpModal, removeException } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import '../../../index.less';
 import CreateException from './create-exception';
+import CreateSpecialCharge from './create-specialCharge';
 import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
 const formatMsg = format(messages);
 
@@ -22,7 +23,7 @@ const formatMsg = format(messages);
     shipmtNo: state.trackingLandException.excpModal.shipmtNo,
     exceptions: state.trackingLandException.exceptions,
   }),
-  { loadExceptions, hideExcpModal, addException, removeException }
+  { loadExceptions, hideExcpModal, removeException }
 )
 export default class ExcpEventsModal extends React.Component {
   static propTypes = {
@@ -32,7 +33,6 @@ export default class ExcpEventsModal extends React.Component {
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
-    addException: PropTypes.func.isRequired,
     removeException: PropTypes.func.isRequired,
     hideExcpModal: PropTypes.func.isRequired,
     exceptions: PropTypes.object.isRequired,
@@ -40,6 +40,7 @@ export default class ExcpEventsModal extends React.Component {
   state = {
     selectedRowKeys: [],
     createExceptionVisible: false,
+    createSpecialCharge: false,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.dispId !== nextProps.dispId && nextProps.dispId !== -1) {
@@ -79,11 +80,11 @@ export default class ExcpEventsModal extends React.Component {
     width: '8%',
     render: (o) => {
       if (o === 'INFO') {
-        return (<Alert message="提醒" type="info" showIcon />);
+        return (<span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 提醒</span>);
       } else if (o === 'WARN') {
-        return (<Alert message="警报" type="warning" showIcon />);
+        return (<span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 警报</span>);
       } else if (o === 'ERROR') {
-        return (<Alert message="错误" type="error" showIcon />);
+        return (<span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 错误</span>);
       }
       return o;
     },
@@ -131,6 +132,9 @@ export default class ExcpEventsModal extends React.Component {
   toggleCreateException = () => {
     this.setState({ createExceptionVisible: !this.state.createExceptionVisible });
   }
+  toggleSpecialCharge = () => {
+    this.setState({ createSpecialCharge: !this.state.createSpecialCharge });
+  }
   render() {
     const { shipmtNo, dispId, exceptions } = this.props;
     this.dataSource.remotes = exceptions;
@@ -140,7 +144,7 @@ export default class ExcpEventsModal extends React.Component {
         <span>{`${this.msg('trackingEventsModalTitle')} ${shipmtNo}`}</span>
         <div style={{ float: 'right', marginRight: 50 }}>
           <Button type="primary" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
-          <Button type="primary" style={{ ...buttonStyle, display: 'none' }}>添加特殊费用</Button>
+          <Button type="primary" style={buttonStyle} onClick={this.toggleSpecialCharge}>添加特殊费用</Button>
         </div>
       </div>
     );
@@ -161,6 +165,7 @@ export default class ExcpEventsModal extends React.Component {
           />
         </div>
         <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
+        <CreateSpecialCharge visible={this.state.createSpecialCharge} dispId={dispId} toggle={this.toggleSpecialCharge} />
       </Modal>
     );
   }

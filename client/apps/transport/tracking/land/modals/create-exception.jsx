@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Cascader, Input, Modal } from 'antd';
-import { addException, loadExceptions } from 'common/reducers/trackingLandException';
+import { createException, loadExceptions } from 'common/reducers/trackingLandException';
 import '../../../index.less';
 import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ const FormItem = Form.Item;
     loginName: state.account.username,
     exceptions: state.trackingLandException.exceptions,
   }),
-  { addException, loadExceptions }
+  { createException, loadExceptions }
 )
 @Form.create()
 export default class CreateException extends React.Component {
@@ -23,7 +23,7 @@ export default class CreateException extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
-    addException: PropTypes.func.isRequired,
+    createException: PropTypes.func.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     exceptions: PropTypes.object.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -41,7 +41,7 @@ export default class CreateException extends React.Component {
           break;
         }
       }
-      this.props.addException({
+      this.props.createException({
         dispId,
         excpLevel,
         type,
