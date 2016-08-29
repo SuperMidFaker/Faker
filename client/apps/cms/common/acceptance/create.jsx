@@ -54,6 +54,8 @@ export default class AcceptanceCreate extends Component {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
         const formdatas = this.props.form.getFieldsValue();
         const subformArray = [];
+        let weight = 0;
+        let pieces = 0;
         for (const i of formdatas.keys) {
           subformArray.push({
             decl_way_code: formdatas[`decl_way_code_${i}`],
@@ -61,9 +63,12 @@ export default class AcceptanceCreate extends Component {
             pack_count: formdatas[`pack_count_${i}`],
             gross_wt: formdatas[`gross_wt_${i}`],
           });
+          weight += Number(formdatas[`gross_wt_${i}`]);
+          pieces += Number(formdatas[`pack_count_${i}`]);
         }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        if (delegation.weight === '') delegation.weight = null;
+        delegation.weight = weight;
+        delegation.pieces = pieces;
         delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
