@@ -43,6 +43,12 @@ export default class SubdelgTable extends Component {
     title: '清单编号',
     dataIndex: 'bill_seq_no',
     width: 160,
+    render: (o) => {
+      return (
+        <a href={`/clearance/${this.props.ietype}/declare/make/${o}`}>
+          {o}
+        </a>);
+    },
   }, {
     title: '报关方式',
     dataIndex: 'decl_way_code',

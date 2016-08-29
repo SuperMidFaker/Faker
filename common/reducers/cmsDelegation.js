@@ -21,6 +21,10 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL', 'SET_MODAL_FALSE',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
+  'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
+  'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
+  'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
+  'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS',
 ]);
 
 const initialState = {
@@ -86,6 +90,10 @@ const initialState = {
     delgNo: '',
   },
   delgDispShow: false,
+  saved: false,
+  delgDisp: {},
+  dispatch: {},
+  partners: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -169,6 +177,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleEfModal: false, efModal: initialState.efModal };
     case actionTypes.SET_DISP_STATUS:
       return { ...state, ...action.data };
+    case actionTypes.LOAD_DELGDISP_SUCCEED:
+      return { ...state, delgDisp: action.result.data.delegation, saved: false,
+        dispatch: action.result.data.dispatch, partners: action.result.data.partners };
+    case actionTypes.LOAD_DISP_SUCCEED:
+      return { ...state, delgDisp: action.result.data.delegation, saved: true,
+        dispatch: action.result.data.dispatch, partners: action.result.data.partners };
+    case actionTypes.SET_SAVED_STATUS:
+      return { ...state, ...action.data };
     default:
       return state;
   }
@@ -220,16 +236,81 @@ export function loadBillMakeModal(params, type) {
   };
 }
 
-export function closeBillMakeModal() {
-  return {
-    type: actionTypes.SET_MODAL_FALSE,
-  };
-}
-
 export function setDispStatus(params) {
   return {
     type: actionTypes.SET_DISP_STATUS,
     data: params,
+  };
+}
+export function setSavedStatus(params) {
+  return {
+    type: actionTypes.SET_SAVED_STATUS,
+    data: params,
+  };
+}
+export function loadDelgDisp(delgNo, tenantId, typeCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELGDISP,
+        actionTypes.LOAD_DELGDISP_SUCCEED,
+        actionTypes.LOAD_DELGDISP_FAIL,
+      ],
+      endpoint: 'v1/cms/loadDelgDisp',
+      method: 'get',
+      params: { delgNo, tenantId, typeCode },
+    },
+  };
+}
+
+export function loadDisp(delgNo, tenantId, typeCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DISP,
+        actionTypes.LOAD_DISP_SUCCEED,
+        actionTypes.LOAD_DISP_FAIL,
+      ],
+      endpoint: 'v1/cms/loadDisp',
+      method: 'get',
+      params: { delgNo, tenantId, typeCode },
+    },
+  };
+}
+
+export function delgDispSave(delgDisp, dispatch, partner) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELG_DISP_SAVE,
+        actionTypes.DELG_DISP_SAVE_SUCCEED,
+        actionTypes.DELG_DISP_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/dispsave',
+      method: 'post',
+      data: { delgDisp, dispatch, partner },
+    },
+  };
+}
+
+export function delDisp(delgNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_DISP,
+        actionTypes.DEL_DISP_SUCCEED,
+        actionTypes.DEL_DISP_FAIL,
+      ],
+      endpoint: 'v1/cms/dispatch/del',
+      method: 'post',
+      data: { delgNo, tenantId },
+    },
+  };
+}
+
+export function closeBillMakeModal() {
+  return {
+    type: actionTypes.SET_MODAL_FALSE,
   };
 }
 

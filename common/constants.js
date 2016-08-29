@@ -390,6 +390,14 @@ const CMS_DELG_STATUS = [
   { value: 4, text: '已放行' },
 ];
 
+export const CMS_SUP_STATUS = [
+  { value: 0, text: '待供应商接单' },
+  { value: 1, text: '供应商已接单' },
+  { value: 2, text: '供应商制单中' },
+  { value: 3, text: '已申报' },
+  { value: 4, text: '已放行' },
+];
+
 export const CMS_DELEGATION_STATUS = {
   unaccepted: 0,
   accepted: 1,
