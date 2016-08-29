@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  transportTracking: {
+    id: 'transport.tracking',
+    defaultMessage: '追踪',
+  },
   shipNo: {
     id: 'transport.tracking.shipmt.no',
     defaultMessage: '运单号',

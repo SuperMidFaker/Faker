@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  transportTariff: {
+    id: 'transport.tariff',
+    defaultMessage: '价格管理',
+  },
   tariffName: {
     id: 'transport.tariff.name',
     defaultMessage: '价格协议',

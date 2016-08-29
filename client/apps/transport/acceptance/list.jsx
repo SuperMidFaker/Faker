@@ -73,7 +73,6 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportShipment'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null,
@@ -406,7 +405,7 @@ export default class AcceptList extends React.Component {
     }
     return (
       <div className="main-content">
-        <div className="page-header">
+        <div className="page-title">
           <div className="tools">
             <NavLink to="/transport/shipment/new">
               <Button type="primary" size="large" icon="plus-circle-o">
@@ -414,19 +413,23 @@ export default class AcceptList extends React.Component {
               </Button>
             </NavLink>
           </div>
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
+          <h2>{this.msg('transportShipment')}</h2>
+        </div>
+        <div className="page-header">
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+          </div>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
-          <span />
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          <span />
-          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
         <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         <div className="page-body">

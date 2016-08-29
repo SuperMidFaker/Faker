@@ -149,10 +149,6 @@ const messages = defineMessages({
     id: 'container.transport.shipment',
     defaultMessage: '运单',
   },
-  transportAcceptance: {
-    id: 'container.transport.acceptance',
-    defaultMessage: '受理',
-  },
   transportDispatch: {
     id: 'container.transport.dispatch',
     defaultMessage: '调度',

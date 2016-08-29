@@ -5,7 +5,6 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import SearchBar from 'client/components/search-bar';
 import { ConfirmDel } from './forms/commodity';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -46,7 +45,6 @@ function fetchData({ state, dispatch }) {
   }
   dispatch(setNavTitle({
     depth: 2,
-    text: formatContainerMsg(props.intl, 'transportTariff'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: null,
@@ -198,7 +196,7 @@ export default class TariffList extends React.Component {
     };
     return (
       <div className="main-content">
-        <div className="page-header">
+        <div className="page-title">
           <div className="tools">
             <NavLink to="/transport/tariff/new">
               <Button type="primary" size="large" icon="plus-circle-o">
@@ -206,7 +204,7 @@ export default class TariffList extends React.Component {
               </Button>
             </NavLink>
           </div>
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <h2>{this.msg('transportTariff')}</h2>
         </div>
         <div className="page-body">
           <div className="panel-body table-panel">
