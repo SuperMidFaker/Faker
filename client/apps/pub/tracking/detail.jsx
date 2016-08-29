@@ -48,8 +48,8 @@ export default class TrackingDetail extends React.Component {
         label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`,
       });
     });
-    const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr}`;
-    const destPointAddr = `${renderConsignLoc(shipmt, 'consignee')}${shipmt.consignee_addr}`;
+    const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr? shipmt.consigner_addr : ''}`;
+    const destPointAddr = `${renderConsignLoc(shipmt, 'consignee')}${shipmt.consignee_addr? shipmt.consignee_addr : ''}`;
     const bdPoints = [];
     const viewPoints = [];
     // 百度地图API功能
