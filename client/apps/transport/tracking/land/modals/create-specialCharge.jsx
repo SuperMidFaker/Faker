@@ -31,6 +31,8 @@ export default class CreateSpecialCharge extends React.Component {
     const { form, dispId, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
+      this.props.form.setFieldsValue({ charge: '', excp_event: '' });
+      this.handleCancel();
       const type = 12012;
       const excpLevel = 'ERROR';
       const typeName = '特殊费用';
@@ -46,7 +48,7 @@ export default class CreateSpecialCharge extends React.Component {
         if (result.error) {
           message.error(result.error);
         } else {
-          this.handleCancel();
+          message.info('添加成功');
           this.props.loadExceptions({
             dispId,
             pageSize: this.props.exceptions.pageSize,
