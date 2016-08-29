@@ -132,7 +132,7 @@ export function loadExceptions(params) {
   };
 }
 
-export function createException({ dispId, excpLevel, type, excpEvent, submitter }) {
+export function createException({ dispId, excpLevel, type, typeName, excpEvent, submitter }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -142,12 +142,12 @@ export function createException({ dispId, excpLevel, type, excpEvent, submitter 
       ],
       endpoint: 'v1/transport/tracking/exception',
       method: 'post',
-      data: { dispId, excpLevel, type, excpEvent, submitter },
+      data: { dispId, excpLevel, type, typeName, excpEvent, submitter },
     },
   };
 }
 
-export function createSpecialCharge({ dispId, excpLevel, type, excpEvent, submitter, charge }) {
+export function createSpecialCharge({ dispId, excpLevel, type, typeName, excpEvent, submitter, charge }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -157,7 +157,7 @@ export function createSpecialCharge({ dispId, excpLevel, type, excpEvent, submit
       ],
       endpoint: 'v1/transport/tracking/createSpecialCharge',
       method: 'post',
-      data: { dispId, excpLevel, type, excpEvent, submitter, charge },
+      data: { dispId, excpLevel, type, typeName, excpEvent, submitter, charge },
     },
   };
 }

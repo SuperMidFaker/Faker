@@ -294,7 +294,7 @@ export function rejectShipment(dispId, reason) {
   };
 }
 
-export function returnShipment(shipmtDispIds) {
+export function returnShipment({shipmtDispIds, tenantId, loginId, loginName}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -304,7 +304,7 @@ export function returnShipment(shipmtDispIds) {
       ],
       method: 'post',
       endpoint: 'v1/transport/shipment/return',
-      data: { shipmtDispIds },
+      data: { shipmtDispIds, tenantId, loginId, loginName },
     },
   };
 }

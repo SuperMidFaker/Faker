@@ -35,9 +35,11 @@ export default class CreateException extends React.Component {
     if (fieldsValue && fieldsValue.type && fieldsValue.type[1]) {
       const type = fieldsValue.type[1];
       let excpLevel = '';
+      let typeName = '';
       for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
         if (TRANSPORT_EXCEPTIONS[i].code === type) {
           excpLevel = TRANSPORT_EXCEPTIONS[i].level;
+          typeName = TRANSPORT_EXCEPTIONS[i].name;
           break;
         }
       }
@@ -45,6 +47,7 @@ export default class CreateException extends React.Component {
         dispId,
         excpLevel,
         type,
+        typeName, 
         excpEvent: fieldsValue.excp_event,
         submitter: loginName,
       }).then(result => {

@@ -105,6 +105,14 @@ export default defineMessages({
     id: 'transport.tracking.shipmt.exception',
     defaultMessage: '异常',
   },
+  shipmtLastException: {
+    id: 'transport.tracking.shipmt.lastException',
+    defaultMessage: '最近异常',
+  },
+  exceptionCount: {
+    id: 'transport.tracking.shipmt.exception.exceptionCount',
+    defaultMessage: '异常数量',
+  },
   exceptionLevel: {
     id: 'transport.tracking.shipmt.exception.exceptionLevel',
     defaultMessage: '异常等级',

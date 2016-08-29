@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, message } from 'antd';
+import { Button, Icon, message, Popover } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -11,6 +11,7 @@ import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import ExcpEventsModal from './modals/excpEventsModal';
+import ExceptionListPopover from './modals/exception-list-popover';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -126,19 +127,32 @@ export default class LandStatusList extends React.Component {
       return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />;
     },
   }, {
-    title: this.msg('shipmtException'),
+    title: this.msg('exceptionCount'),
     fixed: 'left',
-    width: 80,
+    dataIndex: 'excp_count',
+    render: (o, record) => {
+      return <ExceptionListPopover dispId={record.disp_id} shipmt={record} excpCount={o}/>;
+    },
+  }, {
+    title: this.msg('shipmtLastException'),
+    fixed: 'left',
+    width: 190,
     dataIndex: 'excp_level',
-    render: (o) => {
+    render: (o, record) => {
+      const excpLastEvent = record.excp_last_event.length > 12? record.excp_last_event.substr(0, 12).concat('...') : record.excp_last_event;
+      let ExcpLastEventWithIcon = '';
       if (o === 'INFO') {
-        return (<span className="alert-tag ant-alert-info"><Icon type="info-circle" /> 提醒</span>);
+        ExcpLastEventWithIcon =  (<span className="alert-tag ant-alert-info"><Icon type="info-circle" /> {excpLastEvent}</span>);
       } else if (o === 'WARN') {
-        return (<span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> 警报</span>);
+        ExcpLastEventWithIcon =  (<span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> {excpLastEvent}</span>);
       } else if (o === 'ERROR') {
-        return (<span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> 错误</span>);
+        ExcpLastEventWithIcon =  (<span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> {excpLastEvent}</span>);
       }
-      return o;
+      return (
+        <Popover placement="rightTop" title={record.shipmt_no} content={record.excp_last_event} trigger="hover">
+          {ExcpLastEventWithIcon}
+        </Popover>
+      );
     },
   }, {
     title: this.msg('shipmtStatus'),

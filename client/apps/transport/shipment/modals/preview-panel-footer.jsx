@@ -240,8 +240,9 @@ export default class Footer extends React.Component {
     });
   }
   handleReturn = (row) => {
+    const { tenantId, loginId, loginName } = this.props;
     const shipmtDispIds = [row.key];
-    this.props.returnShipment(shipmtDispIds).then(result => {
+    this.props.returnShipment({shipmtDispIds, tenantId, loginId, loginName}).then(result => {
       if (result.error) {
         message.error(result.error.message);
       } else {

@@ -33,10 +33,12 @@ export default class CreateSpecialCharge extends React.Component {
     if (fieldsValue && fieldsValue.charge) {
       const type = 12012;
       const excpLevel = 'ERROR';
+      const typeName = '特殊费用';
       this.props.createSpecialCharge({
         dispId,
         excpLevel,
         type,
+        typeName,
         excpEvent: fieldsValue.excp_event,
         submitter: loginName,
         charge: Number(fieldsValue.charge),

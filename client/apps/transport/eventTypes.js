@@ -42,7 +42,7 @@ const TRANSPORT_EXCEPTIONS = [{
   name: '退回',
 }, {
   key: 'SHIPMENT_EXCEPTION_SYS_WITHDRAW',
-  code: 11001,
+  code: 11005,
   level: 'WARN',
   category: '分配异常',
   name: '撤回',
