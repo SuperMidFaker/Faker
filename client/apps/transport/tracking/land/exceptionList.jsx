@@ -131,7 +131,7 @@ export default class LandStatusList extends React.Component {
     fixed: 'left',
     dataIndex: 'excp_count',
     render: (o, record) => {
-      return <ExceptionListPopover dispId={record.disp_id} shipmt={record} excpCount={o}/>;
+      return <ExceptionListPopover dispId={record.disp_id} shipmt={record} excpCount={o} />;
     },
   }, {
     title: this.msg('shipmtLastException'),
@@ -139,14 +139,14 @@ export default class LandStatusList extends React.Component {
     width: 190,
     dataIndex: 'excp_level',
     render: (o, record) => {
-      const excpLastEvent = record.excp_last_event.length > 12? record.excp_last_event.substr(0, 12).concat('...') : record.excp_last_event;
+      const excpLastEvent = record.excp_last_event.length > 12 ? record.excp_last_event.substr(0, 12).concat('...') : record.excp_last_event;
       let ExcpLastEventWithIcon = '';
       if (o === 'INFO') {
-        ExcpLastEventWithIcon =  (<span className="alert-tag ant-alert-info"><Icon type="info-circle" /> {excpLastEvent}</span>);
+        ExcpLastEventWithIcon = (<span className="alert-tag ant-alert-info"><Icon type="info-circle" /> {excpLastEvent}</span>);
       } else if (o === 'WARN') {
-        ExcpLastEventWithIcon =  (<span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> {excpLastEvent}</span>);
+        ExcpLastEventWithIcon = (<span className="alert-tag ant-alert-warning"><Icon type="exclamation-circle" /> {excpLastEvent}</span>);
       } else if (o === 'ERROR') {
-        ExcpLastEventWithIcon =  (<span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> {excpLastEvent}</span>);
+        ExcpLastEventWithIcon = (<span className="alert-tag ant-alert-error"><Icon type="cross-circle" /> {excpLastEvent}</span>);
       }
       return (
         <Popover placement="rightTop" title={record.shipmt_no} content={record.excp_last_event} trigger="hover">

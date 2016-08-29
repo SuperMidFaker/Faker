@@ -32,11 +32,11 @@ export default class ExceptionListPopover extends React.Component {
   handleMouseOver = () => {
     const { dispId } = this.props;
     this.props.loadExceptions({
-        dispId,
-        pageSize: 9999,
-        currentPage: 1,
-      }).then(result => {
-        this.setState({ exceptions: result.data.data });
+      dispId,
+      pageSize: 9999,
+      currentPage: 1,
+    }).then(result => {
+      this.setState({ exceptions: result.data.data });
     });
   }
   render() {
@@ -73,8 +73,7 @@ export default class ExceptionListPopover extends React.Component {
     }];
     const content = (
       <div>
-        <Table columns={columns} dataSource={this.state.exceptions} rowKey="id" size="middle" pagination={false}
-          />
+        <Table columns={columns} dataSource={this.state.exceptions} rowKey="id" size="middle" pagination={false} />
       </div>
     );
     return (

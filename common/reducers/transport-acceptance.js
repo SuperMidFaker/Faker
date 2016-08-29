@@ -294,7 +294,7 @@ export function rejectShipment(dispId, reason) {
   };
 }
 
-export function returnShipment({shipmtDispIds, tenantId, loginId, loginName}) {
+export function returnShipment({ shipmtDispIds, tenantId, loginId, loginName }) {
   return {
     [CLIENT_API]: {
       types: [

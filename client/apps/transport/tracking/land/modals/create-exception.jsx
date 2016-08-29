@@ -47,7 +47,7 @@ export default class CreateException extends React.Component {
         dispId,
         excpLevel,
         type,
-        typeName, 
+        typeName,
         excpEvent: fieldsValue.excp_event,
         submitter: loginName,
       }).then(result => {
