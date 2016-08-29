@@ -111,7 +111,7 @@ export default defineMessages({
   },
   shipmtLastException: {
     id: 'transport.tracking.shipmt.lastException',
-    defaultMessage: '最近异常',
+    defaultMessage: '最近一次异常',
   },
   exceptionCount: {
     id: 'transport.tracking.shipmt.exception.exceptionCount',
