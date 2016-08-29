@@ -103,7 +103,7 @@ export default class ExcpEventsModal extends React.Component {
       if (record.charge === null || record.charge === 0) {
         return o;
       } else {
-        return `费用金额 ${record.charge.toFixed(2)}元, ${o}`;
+        return `费用金额 ${record.charge.toFixed(2)} 元, ${o}`;
       }
     },
   }, {

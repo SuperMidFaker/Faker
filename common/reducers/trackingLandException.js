@@ -35,7 +35,7 @@ const initialState = {
   },
   exceptions: {
     totalCount: 0,
-    pageSize: 10,
+    pageSize: 9999,
     current: 1,
     data: [],
   },
