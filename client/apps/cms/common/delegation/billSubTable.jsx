@@ -6,6 +6,7 @@ import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, openEfModal } from 'common/reducers/cmsDelegation';
 import RowUpdater from './rowUpdater';
 import DeclnoFillModal from './declNoFill';
+import NavLink from 'client/components/nav-link';
 
 @connect(
   (state, props) => ({
@@ -45,9 +46,9 @@ export default class SubdelgTable extends Component {
     width: 160,
     render: (o) => {
       return (
-        <a href={`/clearance/${this.props.ietype}/declare/make/${o}`}>
+        <NavLink to={`/clearance/${this.props.ietype}/declare/make/${o}`}>
           {o}
-        </a>);
+        </NavLink>);
     },
   }, {
     title: '报关方式',
