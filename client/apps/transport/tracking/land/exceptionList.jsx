@@ -253,7 +253,6 @@ export default class LandStatusList extends React.Component {
     render: (o, record) => renderConsignLoc(record, 'consigner'),
   }, {
     title: this.msg('arrivalPlace'),
-    width: 150,
     render: (o, record) => renderConsignLoc(record, 'consignee'),
   }, {
     title: this.msg('shipmtMode'),

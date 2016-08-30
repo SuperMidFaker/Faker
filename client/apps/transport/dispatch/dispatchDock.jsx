@@ -371,7 +371,7 @@ export default class DispatchDock extends Component {
   handleShipmtDispatchAndSend = () => {
     // TODO multi shipments dispatch
     const { type, target } = this.state.dispatchConfirmModal;
-    const { tenantId, loginId, shipmts } = this.props;
+    const { tenantId, loginId, loginName, shipmts } = this.props;
     const podType = this.state.podType;
     const shipmtNos = shipmts.map(s => {
       return { shipmtNo: s.shipmt_no, dispId: s.key };
@@ -380,6 +380,7 @@ export default class DispatchDock extends Component {
       this.props.doDispatchAndSend({
         tenantId,
         loginId,
+        loginName,
         shipmtNos,
         charge: target.charge || { total_charge: this.state.quotation },
         partnerId: target.partner_id,
@@ -398,6 +399,7 @@ export default class DispatchDock extends Component {
       this.props.doDispatchAndSend({
         tenantId,
         loginId,
+        loginName,
         shipmtNos,
         connectType: target.connect_type,
         taskId: target.vehicle_id,
