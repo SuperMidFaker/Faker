@@ -135,7 +135,7 @@ export default class DelegationList extends Component {
     width: 120,
     dataIndex: 'status',
     render: (o, record) => {
-	  const CMS_STATUS = (record.source === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
+      const CMS_STATUS = (record.source === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
         return <Tag color="yellow">{decl && decl.text}</Tag>;
