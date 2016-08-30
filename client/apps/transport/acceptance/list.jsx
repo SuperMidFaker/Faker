@@ -419,7 +419,7 @@ export default class AcceptList extends React.Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+            <Button type="ghost" onClick={this.toggleAdvancedSearch}>高级搜索</Button>
           </div>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
