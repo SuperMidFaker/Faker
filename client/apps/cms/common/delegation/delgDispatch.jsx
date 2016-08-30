@@ -12,28 +12,31 @@ const formItemLayout = {
 };
 function noop() {}
 
-class ButtonSelect extends React.Component {
-  render() {
-    const { saved, onconfirm, onclick } = this.props;
-    let button = '';
-    if (saved) {
-      button = (
+function ButtonSelect(props) {
+  const { saved, onconfirm, onclick } = props;
+  let button = '';
+  if (saved) {
+    button = (
           <Popconfirm title="你确定撤回分配吗?" onConfirm={onconfirm} >
             <Button size="large">撤销</Button>
           </Popconfirm>
       );
-    } else {
-      button = (
+  } else {
+    button = (
         <Button size="large" type="primary" onClick={onclick}>
           分配
         </Button>
       );
-    }
-    return (
+  }
+  return (
       <div className="pull-right">{button}</div>
    );
-  }
 }
+ButtonSelect.PropTypes = {
+  saved: PropTypes.bool.isRequired,
+  onconfirm: PropTypes.func,
+  onclick: PropTypes.func,
+};
 
 @connect(
   state => ({
