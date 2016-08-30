@@ -66,6 +66,9 @@ server
 
 ## 全局变量
   * API_ROOTS: API地址列表,在reducer内通过origin属性指定
+      'self': 访问当前域名
+      'default': api.welogix.cn
+      'mongo': api1.welogix.cn
 
 ## API服务
    

@@ -15,8 +15,8 @@ function fetchData({ state, dispatch, cookie, location }) {
     promises.push(prom);
   }
   if (!isLoaded(state, 'intl')) {
-    // set initial locale on server render
-    const prom = dispatch(loadTranslation(cookie, state.intl.locale));
+    // set initial locale on server render FIXME
+    const prom = dispatch(loadTranslation(state.intl.locale));
     promises.push(prom);
   }
   return Promise.all(promises);

@@ -49,22 +49,20 @@ function renderAsHtml(pageCss, pageJs, content) {
 
 // https://github.com/koa-modules/locale/blob/master/index.js
 function getRequestLocale(request) {
-  let locale = request.query.locale;
-  if (!locale) {
-    const accept = request.acceptsLanguages() || '';
-    const reg = /(^|,\s*)([a-z-]+)/gi;
-    let m = reg.exec(accept);
-    while (m) {
-      if (!locale) {
-        locale = m[2];
-      }
-      m = reg.exec(accept);
+  const accept = request.acceptsLanguages() || '';
+  const reg = /(^|,\s*)([a-z-]+)/gi;
+  let m = reg.exec(accept);
+  let locale;
+  while (m) {
+    if (!locale) {
+      locale = m[2];
     }
-    locale = locale && locale.split('-')[0];
+    m = reg.exec(accept);
   }
+  locale = locale && locale.split('-')[0];
   return locale || 'zh';
 }
-export default function render(request) {
+export default function render(request, locale) {
   if (__DEV__) {
     webpackIsomorphicTools.refresh();
   }
@@ -72,7 +70,7 @@ export default function render(request) {
     const url = request.url;
     const cookie = request.get('cookie');
     const store = createStore(undefined, request);
-    const curLocale = getRequestLocale(request);
+    const curLocale = locale || getRequestLocale(request);
     store.getState().intl = { locale: curLocale };
     match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {
       if (err) {

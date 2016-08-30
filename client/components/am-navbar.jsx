@@ -4,43 +4,32 @@ import { Menu, Badge, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
-import { loadTranslation } from '../../common/reducers/intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
-// const SubMenu = Menu.SubMenu;
 
 @injectIntl
 @connect(
   state => ({
-    // curLocale: state.intl.locale,
     navTitle: state.navbar.navTitle,
     notReadMessagesNum: state.corps.notReadMessagesNum,
   }),
-  { loadTranslation }
 )
 export default class AmNavBar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    loadTranslation: PropTypes.func.isRequired,
-    curLocale: PropTypes.oneOf(['en', 'zh']),
     navTitle: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  handleClick = (ev) => {
-    this.setState({ currentLang: ev.key });
-    this.props.loadTranslation(null, ev.key);
-  }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
   render() {
-    // const MenuItem = Menu.Item;
     const { intl, navTitle, notReadMessagesNum } = this.props;
     const moduleName = navTitle.moduleName;
     let amTitleNav = null;
@@ -86,14 +75,6 @@ export default class AmNavBar extends React.Component {
             </ul>
             <ul className="nav navbar-nav navbar-right am-icons-nav">
               <Menu mode="horizontal">
-                {/* <SubMenu selectedKeys={[curLocale]} onClick={this.handleClick} title={<span className="icon s7-global"></span>}>
-                    <MenuItem key="zh">
-                      <span>{formatGlobalMsg(intl, 'chinese')}</span>
-                    </MenuItem>
-                    <MenuItem key="en">
-                      <span>{formatGlobalMsg(intl, 'english')}</span>
-                    </MenuItem>
-                </SubMenu>*/}
                 <Menu.Item key="messages">
                   <Badge count={notReadMessagesNum} overflowCount={99}>
                     <NavLink to="/account/messages">

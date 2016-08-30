@@ -9,14 +9,6 @@ const messages = defineMessages({
     id: 'root.go.home',
     defaultMessage: '返回首页',
   },
-  chinese: {
-    id: 'root.chinese',
-    defaultMessage: '中文',
-  },
-  english: {
-    id: 'root.english',
-    defaultMessage: '英文',
-  },
   helpdesk: {
     id: 'root.helpdesk',
     defaultMessage: '帮助中心',
