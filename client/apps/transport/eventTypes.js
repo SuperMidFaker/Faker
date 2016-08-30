@@ -121,7 +121,7 @@ const TRANSPORT_EXCEPTIONS = [{
 }, {
   key: 'SHIPMENT_EXCEPTION_POD_INFO_ERROR',
   code: 12010,
-  level: 'WARN',
+  level: 'ERROR',
   category: '回单异常',
   name: '回单信息错误',
 }, {
@@ -139,19 +139,19 @@ const TRANSPORT_EXCEPTIONS = [{
 }, {
   key: 'SHIPMENT_EXCEPTION_STATUS_UPDATE_ERROR',
   code: 12015,
-  level: 'ERROR',
+  level: 'WARN',
   category: '其它异常',
   name: '运单状态更新错误',
 }, {
   key: 'SHIPMENT_EXCEPTION_COMPLAINT',
   code: 12013,
-  level: 'ERROR',
+  level: 'WARN',
   category: '其它异常',
   name: '投诉',
 }, {
   key: 'SHIPMENT_EXCEPTION_OTHERS',
   code: 12014,
-  level: 'ERROR',
+  level: 'WARN',
   category: '其它异常',
   name: '其他',
 }];
