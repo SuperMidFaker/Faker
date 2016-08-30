@@ -4,7 +4,7 @@ import { Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES } from 'common/constants';
+import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES, PARTNERSHIP_TYPE_INFO, CMS_SUP_STATUS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
@@ -12,7 +12,8 @@ import BillSubTable from './billSubTable';
 import BillModal from './billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer, setDispStatus } from 'common/reducers/cmsDelegation';
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
+  showPreviewer, setDispStatus, loadDelgDisp, loadDisp } from 'common/reducers/cmsDelegation';
 // import PreviewPanel from 'common/modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -25,10 +26,12 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
+    saved: state.cmsDelegation.saved,
     billMakeModal: state.cmsDelegation.billMakeModal,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, showPreviewer, setDispStatus }
+  { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
+    delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp }
 )
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentWillReceiveProps') {
@@ -56,6 +59,9 @@ export default class DelegationList extends Component {
     delDelg: PropTypes.func.isRequired,
     billMakeModal: PropTypes.object.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
+    loadDelgDisp: PropTypes.func.isRequired,
+    loadDisp: PropTypes.func.isRequired,
+    saved: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -63,6 +69,11 @@ export default class DelegationList extends Component {
   state = {
     searchInput: '',
     expandedKeys: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.saved !== this.props.saved) {
+      this.handleDelgListLoad();
+    }
   }
   columns = [{
     title: '委托编号',
@@ -118,13 +129,14 @@ export default class DelegationList extends Component {
   }, {
     title: '申报企业',
     width: 180,
-    dataIndex: 'ccb_name',
+    dataIndex: 'recv_name',
   }, {
     title: '状态',
-    width: 100,
+    width: 120,
     dataIndex: 'status',
     render: (o, record) => {
-      const decl = CMS_DELG_STATUS.filter(st => st.value === o)[0];
+	  const CMS_STATUS = (record.source === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
+      const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
         return <Tag color="yellow">{decl && decl.text}</Tag>;
       } else if (record.status === 2 || record.status === 3) {
@@ -136,7 +148,6 @@ export default class DelegationList extends Component {
       }
     },
   }]
-
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadAcceptanceTable(params),
     resolve: result => result.data,
@@ -231,7 +242,19 @@ export default class DelegationList extends Component {
       }
     );
   }
-  handleDelegationAssign = () => {
+  handleDelegationAssign = (row) => {
+    this.props.loadDelgDisp(
+      row.delg_no,
+      this.props.tenantId,
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker
+    );
+    this.props.setDispStatus({ delgDispShow: true });
+  }
+  handleDelegationCancel = (row) => {
+    this.props.loadDisp(
+      row.delg_no,
+      this.props.tenantId,
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker);
     this.props.setDispStatus({ delgDispShow: true });
   }
   closeDispDock = () => {
@@ -277,7 +300,7 @@ export default class DelegationList extends Component {
       title: '操作',
       width: 100,
       render: (o, record) => {
-        if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
+        if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
             <span>
               <RowUpdater onHit={this.handleDelegationAccept} label="接单" row={record} />
@@ -291,7 +314,13 @@ export default class DelegationList extends Component {
               </Popconfirm>
             </span>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
+        } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 2) {
+          return (
+            <span>
+              <RowUpdater onHit={this.handleDelegationCancel} label="撤回" row={record} />
+            </span>
+          );
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.source === 1) {
           return (
             <span>
               <RowUpdater onHit={this.handleDelegationAssign} label="分配" row={record} />
@@ -299,7 +328,7 @@ export default class DelegationList extends Component {
               <RowUpdater onHit={this.handleDelegationMake} label="制单" row={record} />
             </span>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1) {
           return (
             <RowUpdater onHit={this.handleDelegationMake} label="制单" row={record} />
           );
