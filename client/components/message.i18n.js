@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   moduleClearance: {
     id: 'component.module.clearance',
-    defaultMessage: '进出口清关',
+    defaultMessage: '清关管理',
   },
   moduleForwarding: {
     id: 'component.module.forwarding',

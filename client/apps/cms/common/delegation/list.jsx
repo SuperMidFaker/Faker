@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
+import TrimSpan from 'client/components/trimSpan';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES, PARTNERSHIP_TYPE_INFO, CMS_SUP_STATUS } from 'common/constants';
@@ -124,15 +125,19 @@ export default class DelegationList extends Component {
     title: '委托方',
     width: 180,
     dataIndex: 'customer_name',
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '订单号',
-    width: 150,
+    width: 120,
     dataIndex: 'order_no',
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '发票号',
-    width: 150,
+    width: 120,
     dataIndex: 'invoice_no',
+    render: (o) => <TrimSpan text={o} maxLen={14} />,
   }, {
+    /*
     title: '外部编号',
     width: 150,
     render: (o, record) => (
@@ -140,10 +145,9 @@ export default class DelegationList extends Component {
       : record.ref_recv_external_no
     ),
   }, {
-    title: '运单号',
-    dataIndex: 'shipping_no',
-  }, {
+    */
     title: '提运单号',
+    width: 180,
     dataIndex: 'bl_wb_no',
   }, {
     title: '件数',
@@ -152,6 +156,7 @@ export default class DelegationList extends Component {
     title: '毛重',
     dataIndex: 'weight',
   }, {
+    /*
     title: '货物性质',
     dataIndex: 'goods_type',
     render: (o) => {
@@ -159,12 +164,14 @@ export default class DelegationList extends Component {
       return decl && decl.text;
     },
   }, {
+    */
     title: '申报企业',
-    width: 180,
+    width: 130,
     dataIndex: 'recv_name',
+    render: (o) => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: '状态',
-    width: 120,
+    width: 110,
     dataIndex: 'status',
     render: (o, record) => {
       const CMS_STATUS = (record.source === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
@@ -318,14 +325,10 @@ export default class DelegationList extends Component {
     if (listFilter.status === 'all') {
       columns.push({
         title: '接单时间',
+        width: 80,
         dataIndex: 'acpt_time',
         render: (o, record) =>
           record.acpt_time && moment(record.acpt_time).format('YYYY.MM.DD'),
-      }, {
-        title: '创建时间',
-        dataIndex: 'created_date',
-        render: (o, record) =>
-          moment(record.created_date).format('YYYY.MM.DD'),
       });
     }
     columns.push({
@@ -382,7 +385,7 @@ export default class DelegationList extends Component {
             新建委托
             </Button>
           </div>
-          <h2>{this.props.ietype === 'import' ? '进口' : '出口'}</h2>
+          <h2>{this.props.ietype === 'import' ? '进口报关' : '出口报关'}</h2>
         </div>
         <div className="page-header">
           <div className="tools">
@@ -403,7 +406,7 @@ export default class DelegationList extends Component {
             <Table columns={columns} dataSource={this.dataSource}
               expandedRowKeys={this.state.expandedKeys}
               expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1800 }} onExpandedRowsChange={this.handleExpandedChange}
+              scroll={{ x: 1300 }} onExpandedRowsChange={this.handleExpandedChange}
             />
           </div>
         </div>
