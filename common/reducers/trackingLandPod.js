@@ -257,7 +257,8 @@ export function closePodModal() {
 }
 
 export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
-                              submitter, signStatus, signRemark, photos) {
+                              submitter, signStatus, signRemark, photos,
+                              loginId, tenantId, tenantName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -267,7 +268,7 @@ export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
       ],
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
-      data: { userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos },
+      data: { userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos, loginId, tenantId, tenantName },
     },
   };
 }
