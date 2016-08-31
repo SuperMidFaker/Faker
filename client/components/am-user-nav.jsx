@@ -59,12 +59,12 @@ export default class AmUserNav extends React.Component {
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     const subTitle = (
       <span>
-        <img className="avatar" src={avatar || defaultAvatar} alt="avatar" />
+        <img className="navbar-avatar" src={avatar || defaultAvatar} alt="avatar" />
         <i className="angle-down s7-angle-down" />
       </span>
     );
     return (
-      <Menu mode="horizontal">
+      <Menu mode="horizontal" className="navbar-user-menu">
         <SubMenu title={subTitle}>
           <MenuItem key="profile">
             <NavLink to="/account/profile">
@@ -95,10 +95,10 @@ export default class AmUserNav extends React.Component {
         <Modal visible={this.state.visible} footer={[]}
           title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
         >
-          <div style={{ width: 300, margin: '0 auto' }}>
-            <RadioGroup onChange={this.handleLocaleChange} value={locale}>
-              <RadioButton value="zh">{formatMsg(intl, 'chinese')}</RadioButton>
-              <RadioButton value="en">{formatMsg(intl, 'english')}</RadioButton>
+          <div style={{ textAlign: 'center' }}>
+            <RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
+              <RadioButton value="zh">简体中文</RadioButton>
+              <RadioButton value="en">English</RadioButton>
             </RadioGroup>
           </div>
         </Modal>
