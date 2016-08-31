@@ -35,9 +35,9 @@ export default class AmNavBar extends React.Component {
     let amTitleNav = null;
     if (navTitle.depth === 2) {
       amTitleNav = (
-        <a role="button" aria-expanded="false" className="dropdown-toggle">
+        <span>
           {formatMsg(intl, navTitle.text)}
-        </a>
+        </span>
       );
     } else if (navTitle.depth === 3) {
       amTitleNav = (
@@ -57,23 +57,19 @@ export default class AmNavBar extends React.Component {
     }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
-        <div className="container-fluid">
           <div className="navbar-header">
-            <NavLink to="/" className="am-toggle-left-sidebar navbar-toggle collapsed">
+            <NavLink to="/" className="navbar-toggle">
               <i className="zmdi zmdi-apps" />
             </NavLink>
             {brandNav}
           </div>
-          <div id="am-navbar-collapse" className="collapse navbar-collapse">
-            <ul className="nav navbar-nav am-title-nav">
-              <li className="dropdown">
+            <div className="navbar-title">
               {amTitleNav}
-              </li>
-            </ul>
-            <ul className="nav navbar-nav navbar-right am-user-nav">
+            </div>
+            <div className="nav navbar-right">
               <AmUserNav />
-            </ul>
-            <ul className="nav navbar-nav navbar-right am-icons-nav">
+            </div>
+            <div className="nav navbar-right">
               <Menu mode="horizontal">
                 <Menu.Item key="messages">
                   <Badge count={notReadMessagesNum} overflowCount={99}>
@@ -90,9 +86,7 @@ export default class AmNavBar extends React.Component {
                   </Tooltip>
                 </Menu.Item>
               </Menu>
-            </ul>
-          </div>
-        </div>
+            </div>
         <MessagePrompt />
       </nav>);
   }
