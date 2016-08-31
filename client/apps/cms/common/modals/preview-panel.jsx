@@ -7,8 +7,8 @@ import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
 import downloadMultiple from 'client/util/multipleDownloader';
-
 import './preview-panel.less';
+
 const TabPane = Tabs.TabPane;
 
 @injectIntl
@@ -135,10 +135,10 @@ export default class PreviewPanel extends React.Component {
     } else if (previewer.status === 0 && delegation.source === 2) {
       return (
         <div>
-          <Button size="large" type="default" onClick={this.handleDispCancel}>
+          <Button size="large" type="default" style={{ marginRight: 20 }} onClick={this.handleDispCancel}>
             撤回
           </Button>
-          <Button size="large" onClick={this.handleFilesDownload}>
+          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>
         </div>
@@ -152,7 +152,7 @@ export default class PreviewPanel extends React.Component {
           <Button size="large" type="ghost" style={{ marginRight: 20 }} onClick={this.handleDisp}>
             分配
           </Button>
-          <Button size="large" onClick={this.handleFilesDownload}>
+          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>
         </div>
@@ -160,10 +160,10 @@ export default class PreviewPanel extends React.Component {
     } else {
       return (
         <div>
-          <Button size="large" type="primary" style={{ marginRight: 20 }}>
+          <Button size="large" type="primary">
           查看
           </Button>
-          <Button size="large" onClick={this.handleFilesDownload}>
+          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>
         </div>
