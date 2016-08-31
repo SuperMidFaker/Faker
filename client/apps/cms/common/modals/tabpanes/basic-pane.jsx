@@ -35,6 +35,7 @@ PaneFormItem.propTypes = {
   state => ({
     aspect: state.account.aspect,
     delegation: state.cmsDelegation.previewer.delegation,
+    files: state.cmsDelegation.previewer.files,
   })
 )
 export default class BasicPane extends React.Component {
@@ -42,13 +43,14 @@ export default class BasicPane extends React.Component {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,
     delegation: PropTypes.object.isRequired,
+    files: PropTypes.array.isRequired,
   }
 
   render() {
     const { delegation } = this.props;
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
+        <Card title="基本信息" bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
@@ -81,7 +83,7 @@ export default class BasicPane extends React.Component {
             </Col>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="件数"
-                field={delegation.pieces} fieldCol={{ span: 9 }}
+                field={`${delegation.pieces} 件`} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>

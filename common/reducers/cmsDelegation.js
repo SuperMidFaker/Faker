@@ -24,7 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
-  'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS',
+  'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS', 'SET_PREW_STATUS',
 ]);
 
 const initialState = {
@@ -75,9 +75,11 @@ const initialState = {
     visible: false,
     tabKey: 'basic',
     delegation: {},
+    files: [],
     delegateTracking: {},
     clearanceTracking: [],
   },
+  preStatus: 0,
   billMakeModal: {
     visible: false,
     type: 'make',
@@ -168,7 +170,7 @@ export default function reducer(state = initialState, action) {
         ...state.previewer,
         visible: action.visible,
         status: action.status,
-        ...action.result.data } };
+        ...action.result.data }, preStatus: 0 };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     case actionTypes.OPEN_EF_MODAL:
@@ -184,6 +186,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, delgDisp: action.result.data.delegation, saved: true,
         dispatch: action.result.data.dispatch, partners: action.result.data.partners };
     case actionTypes.SET_SAVED_STATUS:
+      return { ...state, ...action.data };
+    case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
     default:
       return state;
@@ -235,7 +239,12 @@ export function loadBillMakeModal(params, type) {
     },
   };
 }
-
+export function setPreviewStatus(status) {
+  return {
+    type: actionTypes.SET_PREW_STATUS,
+    data: status,
+  };
+}
 export function setDispStatus(params) {
   return {
     type: actionTypes.SET_DISP_STATUS,
