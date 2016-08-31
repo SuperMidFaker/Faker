@@ -119,54 +119,6 @@ export default(store, cookie) => {
           </Route>
         </Route>
         <Route component={Module}>
-          <Route path="import" component={ImportWrapper}>
-            <Route path="accept">
-              <IndexRoute component={ImportAcceptance.List} />
-              <Route path="create" component={ImportAcceptance.Create} />
-              <Route path="edit/:delgNo" component={ImportAcceptance.Edit} />
-            </Route>
-            <Route path="declare">
-              <IndexRedirect to="/import/declare/list/undeclared" />
-              <Route path="list/:status" component={ImportDeclare.List} />
-              <Route path="make/:delgNo" component={ImportDeclare.Make} />
-              <Route path="view/:delgNo" component={ImportDeclare.View} />
-            </Route>
-            <Route path="manage" component={ImportManage.Menu}>
-              <IndexRoute component={ImportManage.List} />
-              <Route path="compRelation" component={ImportManage.List} />
-              <Route path="create" component={ImportManage.Create} />
-              <Route path="edit/:id" component={ImportManage.Edit} />
-            </Route>
-            <Route path="delegate">
-              <IndexRoute component={ImportDelegate.List} />
-              <Route path="create" component={ImportDelegate.Create} />
-              <Route path="edit/:delgNo" component={ImportDelegate.Edit} />
-            </Route>
-          </Route>
-          <Route path="export" component={ExportWrapper}>
-            <Route path="accept">
-              <IndexRoute component={ExportAcceptance.List} />
-              <Route path="create" component={ExportAcceptance.Create} />
-              <Route path="edit/:delgNo" component={ExportAcceptance.Edit} />
-            </Route>
-            <Route path="declare">
-              <IndexRedirect to="/export/declare/list/undeclared" />
-              <Route path="list/:status" component={ExportDeclare.List} />
-              <Route path="make/:delgNo" component={ExportDeclare.Make} />
-              <Route path="view/:delgNo" component={ExportDeclare.View} />
-            </Route>
-            <Route path="manage" component={ExportManage.Menu}>
-              <IndexRoute component={ExportManage.List} />
-              <Route path="compRelation" component={ExportManage.List} />
-              <Route path="create" component={ExportManage.Create} />
-              <Route path="edit/:id" component={ExportManage.Edit} />
-            </Route>
-            <Route path="delegate">
-              <IndexRoute component={ExportDelegate.List} />
-              <Route path="create" component={ExportDelegate.Create} />
-              <Route path="edit/:delgNo" component={ExportDelegate.Edit} />
-            </Route>
-          </Route>
           <Route path="transport" component={Transport}>
             <IndexRoute component={TMSDashboard} />
             <Route path="shipment">
@@ -216,7 +168,6 @@ export default(store, cookie) => {
               <Route path="edit/:delgNo" component={ExportAcceptance.Edit} />
             </Route>
           </Route>
-
         </Route>
       </Route>
     </Route>
