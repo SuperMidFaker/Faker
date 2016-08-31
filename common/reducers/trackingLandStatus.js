@@ -38,6 +38,7 @@ const initialState = {
     visible: false,
     dispId: -1,
     shipmtNo: '',
+    taskVehicle: '',
     type: 'pickup',
   },
   locModal: {
@@ -76,6 +77,7 @@ export default function reducer(state = initialState, action) {
           visible: true, dispId: action.data.dispId,
           type: action.data.type,
           shipmtNo: action.data.shipmtNo,
+          taskVehicle: action.data.taskVehicle
         },
       };
     case actionTypes.HIDE_DATE_MODAL:
@@ -154,10 +156,10 @@ export function saveVehicle(shipmtNo, dispId, plate, driver, remark) {
   };
 }
 
-export function showDateModal(dispId, shipmtNo, type) {
+export function showDateModal(dispId, shipmtNo, taskVehicle, type) {
   return {
     type: actionTypes.SHOW_DATE_MODAL,
-    data: { dispId, type, shipmtNo },
+    data: { dispId, type, shipmtNo, taskVehicle },
   };
 }
 

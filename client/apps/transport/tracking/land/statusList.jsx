@@ -179,12 +179,12 @@ export default class LandStatusList extends React.Component {
   handleShowPickModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
+    this.props.showDateModal(row.disp_id, row.shipmt_no, row.task_vehicle, 'pickup');
   }
   handleShowDeliverModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
+    this.props.showDateModal(row.disp_id, row.shipmt_no, row.task_vehicle, 'deliver');
   }
   handleShowTransitModal = (row, ev) => {
     ev.preventDefault();

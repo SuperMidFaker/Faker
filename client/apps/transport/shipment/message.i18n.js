@@ -289,6 +289,58 @@ export default defineMessages({
     id: 'transport.shipment.track.pod',
     defaultMessage: '回单',
   },
+  created: {
+    id: 'transport.shipment.log.created',
+    defaultMessage: '创建',
+  },
+  accepted: {
+    id: 'transport.shipment.log.accepted',
+    defaultMessage: '接单',
+  },
+  sent: {
+    id: 'transport.shipment.log.sent',
+    defaultMessage: '发送',
+  },
+  pickedup: {
+    id: 'transport.shipment.log.pickedup',
+    defaultMessage: '提货',
+  },
+  delivered: {
+    id: 'transport.shipment.log.delivered',
+    defaultMessage: '交货',
+  },
+  completed: {
+    id: 'transport.shipment.log.completed',
+    defaultMessage: '完成',
+  },
+  revoke: {
+    id: 'transport.shipment.log.revoke',
+    defaultMessage: '终止',
+  },
+  return: {
+    id: 'transport.shipment.log.return',
+    defaultMessage: '退回',
+  },
+  withdrew: {
+    id: 'transport.shipment.log.withdrew',
+    defaultMessage: '撤回',
+  },
+  podUploaded: {
+    id: 'transport.shipment.log.podUploaded',
+    defaultMessage: '上传回单',
+  },
+  podPass: {
+    id: 'transport.shipment.log.podPass',
+    defaultMessage: '回单通过',
+  },
+  podReturned: {
+    id: 'transport.shipment.log.podReturned',
+    defaultMessage: '回单退回',
+  },
+  vehicleUpdate: {
+    id: 'transport.shipment.log.vehicleUpdate',
+    defaultMessage: '更新车辆信息',
+  },
   revenueItem: {
     id: 'transport.shipment.track.charge.revenue.item',
     defaultMessage: '收入明细项',

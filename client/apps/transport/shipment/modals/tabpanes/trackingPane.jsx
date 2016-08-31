@@ -36,6 +36,7 @@ StepDesc.propTypes = {
 @connect(
   state => ({
     tracking: state.shipment.previewer.tracking,
+    logs: state.shipment.previewer.logs,
   })
 )
 export default class PreviewPanel extends React.Component {
@@ -46,8 +47,18 @@ export default class PreviewPanel extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
 
   render() {
-    const { tracking } = this.props;
-    const trackingSteps = [{
+    const { tracking, logs } = this.props;
+    const logSteps = logs.map(item => ({
+      title: this.msg(item.type),
+      desc: (
+        <StepDesc texts={[
+          item.content,
+          item.created_date && moment(item.created_date).format(timeFormat),
+        ]} />
+      ),
+    }));
+
+    let trackingSteps = [{
       title: this.msg('trackCreate'),
       desc: (
         <StepDesc texts={[
@@ -117,9 +128,14 @@ export default class PreviewPanel extends React.Component {
           tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
         ]} />
       ),
-      });
+    });
+    // 如果运单是在记录log之后创建的的，则使用logs，否则使用原来的, 过一段时间需要完全适用logs
+    if (logs.length !== 0 && logs[0].type === 'created') {
+      currentStep = logs.length-1;
+      trackingSteps = logSteps;
+    }
     return (
-      <div className="pane-content tab-pane">
+      <div className="pane-content tab-pane" style={{ paddingBottom: 60 }}>
         <Card>
           <Steps current={currentStep} direction="vertical">
             {
