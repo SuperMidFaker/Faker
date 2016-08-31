@@ -14,7 +14,7 @@ import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp } from 'common/reducers/cmsDelegation';
-// import PreviewPanel from 'common/modals/preview-panel';
+import PreviewPanel from '../modals/preview-panel';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -29,6 +29,9 @@ const RadioButton = Radio.Button;
     saved: state.cmsDelegation.saved,
     billMakeModal: state.cmsDelegation.billMakeModal,
     delgDispShow: state.cmsDelegation.delgDispShow,
+    preStatus: state.cmsDelegation.preStatus,
+    delegateTracking: state.cmsDelegation.previewer.delegateTracking,
+    delegation: state.cmsDelegation.previewer.delegation,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp }
@@ -62,6 +65,9 @@ export default class DelegationList extends Component {
     loadDelgDisp: PropTypes.func.isRequired,
     loadDisp: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
+    preStatus: PropTypes.number.isRequired,
+    delegateTracking: PropTypes.object.isRequired,
+    delegation: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -74,17 +80,43 @@ export default class DelegationList extends Component {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
     }
+    if (nextProps.preStatus !== this.props.preStatus) {
+      if (nextProps.preStatus === 1) {
+        const { loginId, loginName, delegateTracking } = this.props;
+        this.props.acceptDelg(loginId, loginName, delegateTracking.id).then(
+          result => {
+            if (result.error) {
+              message.error(result.error.message);
+            } else {
+              this.handleDelgListLoad();
+            }
+          }
+        );
+      }
+      if (nextProps.preStatus === 2) {
+        const { delegation } = this.props;
+        this.handleDelegationMake(delegation);
+      }
+      if (nextProps.preStatus === 3) {
+        const { delegation } = this.props;
+        this.handleDelegationAssign(delegation);
+      }
+      if (nextProps.preStatus === 4) {
+        const { delegation } = this.props;
+        this.handleDelegationCancel(delegation);
+      }
+    }
   }
   columns = [{
     title: '委托编号',
     dataIndex: 'delg_no',
     width: 110,
-    render: (o) => {
+    render: (o, record) => {
       return (
         <a onClick={() => this.props.showPreviewer({
           delgNo: o,
           tenantId: this.props.tenantId,
-        }, this.props.listFilter.status)}>
+        }, record.status)}>
           {o}
         </a>);
     },
@@ -377,6 +409,7 @@ export default class DelegationList extends Component {
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
+        <PreviewPanel />
       </div>
     );
   }

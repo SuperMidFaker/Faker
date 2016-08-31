@@ -1,14 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  moduleImport: {
-    id: 'component.module.import',
-    defaultMessage: '进口报关',
-  },
-  moduleExport: {
-    id: 'component.module.export',
-    defaultMessage: '出口报关',
-  },
   moduleOrders: {
     id: 'component.module.orders',
     defaultMessage: '订单中心',
@@ -52,6 +44,18 @@ const messages = defineMessages({
   userLogout: {
     id: 'component.user.logout',
     defaultMessage: '退出登录',
+  },
+  userLanguage: {
+    id: 'component.user.language',
+    defaultMessage: '语言设置',
+  },
+  chinese: {
+    id: 'root.chinese',
+    defaultMessage: '中文',
+  },
+  english: {
+    id: 'root.english',
+    defaultMessage: '英文',
   },
   defaultCascaderRegion: {
     id: 'component.region.default.cascader.region',

@@ -7,7 +7,7 @@ const cookie = {
       expires = expires.toUTCString();
     }
 
-    document.cookie = [
+    document.cookie += [
       `${name}=${value}`,
       `path=${path}`,
       `domain=${domain}`,
