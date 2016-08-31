@@ -128,10 +128,10 @@ export default class PreviewPanel extends React.Component {
           tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
         ]} />
       ),
-    });
+      });
     // 如果运单是在记录log之后创建的的，则使用logs，否则使用原来的, 过一段时间需要完全适用logs
     if (logs.length !== 0 && logs[0].type === 'created') {
-      currentStep = logs.length-1;
+      currentStep = logs.length - 1;
       trackingSteps = logSteps;
     }
     return (

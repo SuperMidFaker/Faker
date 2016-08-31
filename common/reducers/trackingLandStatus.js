@@ -77,7 +77,7 @@ export default function reducer(state = initialState, action) {
           visible: true, dispId: action.data.dispId,
           type: action.data.type,
           shipmtNo: action.data.shipmtNo,
-          taskVehicle: action.data.taskVehicle
+          taskVehicle: action.data.taskVehicle,
         },
       };
     case actionTypes.HIDE_DATE_MODAL:
