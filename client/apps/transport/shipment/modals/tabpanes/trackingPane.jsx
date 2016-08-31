@@ -129,7 +129,7 @@ export default class PreviewPanel extends React.Component {
         ]} />
       ),
       });
-    // 如果运单是在记录log之后创建的的，则使用logs，否则使用原来的, 过一段时间需要完全适用logs
+    // 由于时间原因，之前的运单并没有log，如果运单是在记录log之后创建的的，则使用logs，否则使用原来的, 过一段时间后删除原来的代码，只使用logs
     if (logs.length !== 0 && logs[0].type === 'created') {
       currentStep = logs.length - 1;
       trackingSteps = logSteps;

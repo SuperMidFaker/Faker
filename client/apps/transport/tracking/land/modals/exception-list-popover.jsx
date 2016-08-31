@@ -23,6 +23,7 @@ export default class ExceptionListPopover extends React.Component {
     excpCount: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     loadExceptions: PropTypes.func.isRequired,
+    onShowExcpModal: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
   }
   state = {
@@ -78,7 +79,7 @@ export default class ExceptionListPopover extends React.Component {
     );
     return (
       <Popover placement="rightTop" title={`异常 ${shipmt.shipmt_no}`} content={content} trigger="hover">
-        <a onMouseOver={this.handleMouseOver}>
+        <a onMouseOver={this.handleMouseOver} style={{ textDecoration: 'underline' }} onClick={() => this.props.onShowExcpModal(shipmt)}>
         {excpCount}
         </a>
       </Popover>
