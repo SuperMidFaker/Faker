@@ -24,7 +24,7 @@ const wpConfig = {
   output: {
     path: config.get('output_path'), // Path of output file
     publicPath: config.get('webpack_public_path'),
-    filename: '[name]-[hash].js',  // Name of output file
+    filename: '[name].js',  // Name of output file
   },
   plugins: [
     new HappyPack({
