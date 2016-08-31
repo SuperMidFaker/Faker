@@ -31,8 +31,6 @@ import { isLoaded } from 'client/common/redux-actions';
 import ImportWrapper from './cms/import/wrapper';
 import * as ImportAcceptance from './cms/import/acceptance';
 import * as ImportDeclare from './cms/import/declare';
-import * as ImportManage from './cms/import/manage';
-import * as ImportDelegate from './cms/import/delegate';
 import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tracking';
 import WxLoadAccount from './weixin/loadAccount';
@@ -40,8 +38,6 @@ import WxTmsDetail from './weixin/tms/detail';
 import ExportWrapper from './cms/export/wrapper';
 import * as ExportAcceptance from './cms/export/acceptance';
 import * as ExportDeclare from './cms/export/declare';
-import * as ExportManage from './cms/export/manage';
-import * as ExportDelegate from './cms/export/delegate';
 
 // todo IndexRedirect passed nginx added subdomain
 export default(store, cookie) => {
@@ -166,6 +162,10 @@ export default(store, cookie) => {
             <Route path="export">
               <IndexRoute component={ExportAcceptance.List} />
               <Route path="edit/:delgNo" component={ExportAcceptance.Edit} />
+              <Route path="declare">
+                <Route path="make/:billno" component={ExportDeclare.Make} />
+                <Route path="view/:billno" component={ExportDeclare.View} />
+              </Route>
             </Route>
           </Route>
         </Route>
