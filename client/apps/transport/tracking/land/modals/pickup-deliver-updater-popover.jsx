@@ -14,6 +14,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    tenantName: state.account.tenantName,
   }),
   { savePickOrDeliverDate }
 )
@@ -49,9 +50,9 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   handleOk = () => {
     this.props.form.validateFields(errors => {
       if (!errors) {
-        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId } = this.props;
+        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName } = this.props;
         const { actDate } = form.getFieldsValue();
-        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName }).then(
+        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);

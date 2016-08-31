@@ -14,6 +14,9 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
+    loginId: state.account.loginId,
     submitter: state.account.username,
     visible: state.trackingLandPod.podModal.visible,
     dispId: state.trackingLandPod.podModal.dispId,
@@ -76,11 +79,11 @@ export default class PodSubmitter extends React.Component {
     this.setState({ photoList: fileList });
   }
   handleOk = () => {
-    const { shipmtNo, submitter, dispId, parentDispId, onOK } = this.props;
+    const { shipmtNo, submitter, dispId, parentDispId, onOK, loginId, tenantId, tenantName } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
     this.props.saveSubmitPod('enterprise', shipmtNo, dispId, parentDispId, submitter,
-                             signStatus, remark, photos).then(
+                             signStatus, remark, photos, loginId, tenantId, tenantName).then(
       result => {
         if (result.error) {
           message.error(result.error.message);

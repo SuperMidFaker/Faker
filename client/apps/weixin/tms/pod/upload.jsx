@@ -12,6 +12,9 @@ Button, Select } = WeUI;
 
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
+    loginId: state.account.loginId,
     submitter: state.account.username,
     dispId: state.weixin.pod.dispId,
     parentDispId: state.weixin.pod.parentDispId,
@@ -63,11 +66,11 @@ export default class UploadPod extends React.Component {
     }
   }
   handleOk = () => {
-    const { shipmtNo, submitter, dispId, parentDispId } = this.props;
+    const { shipmtNo, submitter, dispId, parentDispId, loginId, tenantId, tenantName } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
     this.props.saveSubmitPod('enterprise', shipmtNo, dispId, parentDispId, submitter,
-                             signStatus, remark, photos).then(
+                             signStatus, remark, photos, loginId, tenantId, tenantName).then(
       result => {
         if (result.error) {
           message.error(result.error.message);
