@@ -19,7 +19,6 @@ const FormItem = Form.Item;
     type: state.trackingLandStatus.dateModal.type,
     dispId: state.trackingLandStatus.dateModal.dispId,
     shipmtNo: state.trackingLandStatus.dateModal.shipmtNo,
-    taskVehicle: state.trackingLandStatus.dateModal.taskVehicle,
   }),
   { closeDateModal, savePickOrDeliverDate }
 )
@@ -30,7 +29,6 @@ export default class PickupDeliverUpdater extends React.Component {
     visible: PropTypes.bool.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
-    taskVehicle: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     onOK: PropTypes.func,
@@ -41,9 +39,9 @@ export default class PickupDeliverUpdater extends React.Component {
   handleOk = () => {
     this.props.form.validateFields(errors => {
       if (!errors) {
-        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName, taskVehicle } = this.props;
+        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName } = this.props;
         const { actDate } = form.getFieldsValue();
-        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName, taskVehicle }).then(
+        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
