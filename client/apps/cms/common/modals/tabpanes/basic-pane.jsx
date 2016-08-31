@@ -104,7 +104,7 @@ export default class BasicPane extends React.Component {
   render() {
     const { delegation, delegateTracking } = this.props;
     if (FILE.length < 1) {
-      FILE[0] = '——';
+      FILE[0] = '—';
     }
     const filenames = FILE.map((doc, index) => {
       return (

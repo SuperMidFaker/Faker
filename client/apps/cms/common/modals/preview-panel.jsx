@@ -47,18 +47,22 @@ export default class PreviewPanel extends React.Component {
     this.props.hidePreviewer();
   }
   handleAccept = () => {
-    this.props.setPreviewStatus({ preStatus: 1 });
+    this.props.setPreviewStatus({ preStatus: 'accept' });
   }
   handleMake = () => {
-    this.props.setPreviewStatus({ preStatus: 2 });
+    this.props.setPreviewStatus({ preStatus: 'make' });
     this.props.hidePreviewer();
   }
   handleDisp = () => {
-    this.props.setPreviewStatus({ preStatus: 3 });
+    this.props.setPreviewStatus({ preStatus: 'dispatch' });
     this.props.hidePreviewer();
   }
   handleDispCancel = () => {
-    this.props.setPreviewStatus({ preStatus: 4 });
+    this.props.setPreviewStatus({ preStatus: 'dispCancel' });
+    this.props.hidePreviewer();
+  }
+  handleView = () => {
+    this.props.setPreviewStatus({ preStatus: 'view' });
     this.props.hidePreviewer();
   }
   handleFilesDownload = () => {
@@ -160,7 +164,7 @@ export default class PreviewPanel extends React.Component {
     } else {
       return (
         <div>
-          <Button size="large" type="primary">
+          <Button size="large" type="primary" onClick={this.handleView}>
           查看
           </Button>
           <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
