@@ -47,7 +47,7 @@ export default class BillModal extends Component {
       );
     });
     return (
-      <Modal visible={billMakeModal.visible} title={title} footer={footer}>
+      <Modal visible={billMakeModal.visible} title={title} footer={footer} onCancel={this.handleCancel}>
         <Row>
           <Col span={8} style={{ padding: 8 }}>
             清单编号

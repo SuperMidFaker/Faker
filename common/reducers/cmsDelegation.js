@@ -79,7 +79,7 @@ const initialState = {
     delegateTracking: {},
     clearanceTracking: [],
   },
-  preStatus: 0,
+  preStatus: '',
   billMakeModal: {
     visible: false,
     type: 'make',
@@ -170,7 +170,7 @@ export default function reducer(state = initialState, action) {
         ...state.previewer,
         visible: action.visible,
         status: action.status,
-        ...action.result.data }, preStatus: 0 };
+        ...action.result.data }, preStatus: '' };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     case actionTypes.OPEN_EF_MODAL:

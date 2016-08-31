@@ -66,7 +66,7 @@ export default class DelegationList extends Component {
     loadDelgDisp: PropTypes.func.isRequired,
     loadDisp: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
-    preStatus: PropTypes.number.isRequired,
+    preStatus: PropTypes.string.isRequired,
     delegateTracking: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
   }
@@ -82,7 +82,7 @@ export default class DelegationList extends Component {
       this.handleDelgListLoad();
     }
     if (nextProps.preStatus !== this.props.preStatus) {
-      if (nextProps.preStatus === 1) {
+      if (nextProps.preStatus === 'accept') {
         const { loginId, loginName, delegateTracking } = this.props;
         this.props.acceptDelg(loginId, loginName, delegateTracking.id).then(
           result => {
@@ -90,21 +90,29 @@ export default class DelegationList extends Component {
               message.error(result.error.message);
             } else {
               this.handleDelgListLoad();
+              this.props.showPreviewer({
+                delgNo: delegateTracking.delg_no,
+                tenantId: this.props.tenantId,
+              }, 1);
             }
           }
         );
       }
-      if (nextProps.preStatus === 2) {
+      if (nextProps.preStatus === 'make') {
         const { delegation } = this.props;
         this.handleDelegationMake(delegation);
       }
-      if (nextProps.preStatus === 3) {
+      if (nextProps.preStatus === 'dispatch') {
         const { delegation } = this.props;
         this.handleDelegationAssign(delegation);
       }
-      if (nextProps.preStatus === 4) {
+      if (nextProps.preStatus === 'dispCancel') {
         const { delegation } = this.props;
         this.handleDelegationCancel(delegation);
+      }
+      if (nextProps.preStatus === 'view') {
+        const { delegation } = this.props;
+        this.handleDelegationView(delegation);
       }
     }
   }
@@ -333,7 +341,7 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 100,
+      width: 130,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
