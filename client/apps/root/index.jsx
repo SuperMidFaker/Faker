@@ -52,7 +52,7 @@ export default class Root extends React.Component {
   render() {
     const { locale, messages } = this.props;
     return (
-      <IntlProvider key={locale}
+      <IntlProvider
         locale={locale}
         messages={messages}
       >
