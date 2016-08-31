@@ -186,26 +186,6 @@ export default class BasicPane extends React.Component {
           </Row>
         </Card>
         <Card title="附件" bodyStyle={{ padding: 16 }}>
-          <a onClick={this.handleXlsClick}>
-            <img id="img" role="presentation"
-              src="http://pd.welogix.cn/cms/v2/images/%E8%BF%9B%E5%8F%A3%E5%88%97%E8%A1%A8/u2203.png"
-            />
-          </a>
-          <a onClick={this.handlePdfClick}>
-            <img id="img" role="presentation"
-              src="http://pd.welogix.cn/cms/v2/images/%E8%BF%9B%E5%8F%A3%E5%88%97%E8%A1%A8/u2208.png"
-            />
-          </a>
-          <a onClick={this.handleZipClick}>
-            <img id="img" role="presentation"
-              src="http://pd.welogix.cn/cms/v2/images/%E8%BF%9B%E5%8F%A3%E5%88%97%E8%A1%A8/u2213.png"
-            />
-          </a>
-          <a onClick={this.handleDocClick}>
-            <img id="img" role="presentation"
-              src="http://pd.welogix.cn/cms/v2/images/%E8%BF%9B%E5%8F%A3%E5%88%97%E8%A1%A8/u2218.png"
-            />
-          </a>
           <Modal title="详情" wrapClassName="vertical-center-modal" visible={this.state.imgModalShow} footer={''} onCancel={this.handleClose}>
             {filenames}
           </Modal>
