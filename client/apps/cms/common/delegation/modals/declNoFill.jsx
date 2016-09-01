@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Input, message } from 'antd';
 import { closeEfModal, fillEntryId } from 'common/reducers/cmsDelegation';
-
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+const formatMsg = format(messages);
 
 @injectIntl
 @connect(
