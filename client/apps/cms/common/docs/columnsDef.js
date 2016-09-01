@@ -111,7 +111,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
               disabled={record.files.length === 0} row={record}
             />
             <span className="ant-divider" />
-            <NavLink to={`/${ietype}/declare/make/${record.delg_no}`}>
+            <NavLink to={`/${ietype}/docs/make/${record.delg_no}`}>
             {msg('declareMake')}
             </NavLink>
           </span>
@@ -127,7 +127,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
       render: (o, record) => {
         return (
           <span>
-            <NavLink to={`/${ietype}/declare/make/${record.delg_no}`}>
+            <NavLink to={`/${ietype}/docs/make/${record.delg_no}`}>
             {msg('declareMake')}
             </NavLink>
             <span className="ant-divider" />
@@ -147,7 +147,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
       render: (o, record) => {
         return (
           <span>
-            <NavLink to={`/${ietype}/declare/view/${record.delg_no}`}>
+            <NavLink to={`/${ietype}/docs/view/${record.delg_no}`}>
             {msg('declareView')}
             </NavLink>
           </span>

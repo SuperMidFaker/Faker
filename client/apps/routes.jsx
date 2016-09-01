@@ -18,7 +18,6 @@ import * as Cooperation from './corp/cooperation';
 import MyProfile from './account/profile';
 import Password from './account/password';
 import Module from './module';
-import Clearance from './cms/module-clearance';
 import Transport from './transport/module-transport';
 import TMSDashboard from './transport/dashboard';
 import * as TMSAcceptance from './transport/acceptance';
@@ -26,18 +25,17 @@ import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
 import * as TMSResources from './transport/resources';
 import * as TMSTariff from './transport/tariff';
-import { loadAccount } from 'common/reducers/account';
-import { isLoaded } from 'client/common/redux-actions';
-import ImportWrapper from './cms/import/wrapper';
-import * as ImportAcceptance from './cms/import/acceptance';
-import * as ImportDeclare from './cms/import/declare';
 import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tracking';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
-import ExportWrapper from './cms/export/wrapper';
-import * as ExportAcceptance from './cms/export/acceptance';
-import * as ExportDeclare from './cms/export/declare';
+import Clearance from './cms/module-clearance';
+import * as ImportDelegation from './cms/import/delegation';
+import * as ImportDocs from './cms/import/docs';
+import * as ExportDelegation from './cms/export/delegation';
+import * as ExportDocs from './cms/export/docs';
+import { loadAccount } from 'common/reducers/account';
+import { isLoaded } from 'client/common/redux-actions';
 
 // todo IndexRedirect passed nginx added subdomain
 export default(store, cookie) => {
@@ -151,20 +149,21 @@ export default(store, cookie) => {
           </Route>
           <Route path="clearance" component={Clearance}>
             <Route path="import">
-              <IndexRoute component={ImportAcceptance.List} />
-              <Route path="create" component={ImportAcceptance.Create} />
-              <Route path="edit/:delgNo" component={ImportAcceptance.Edit} />
-              <Route path="declare">
-                <Route path="make/:billno" component={ImportDeclare.Make} />
-                <Route path="view/:billno" component={ImportDeclare.View} />
+              <IndexRoute component={ImportDelegation.List} />
+              <Route path="create" component={ImportDelegation.Create} />
+              <Route path="edit/:delgNo" component={ImportDelegation.Edit} />
+              <Route path="docs">
+                <Route path="make/:billno" component={ImportDocs.Make} />
+                <Route path="view/:billno" component={ImportDocs.View} />
               </Route>
             </Route>
             <Route path="export">
-              <IndexRoute component={ExportAcceptance.List} />
-              <Route path="edit/:delgNo" component={ExportAcceptance.Edit} />
-              <Route path="declare">
-                <Route path="make/:billno" component={ExportDeclare.Make} />
-                <Route path="view/:billno" component={ExportDeclare.View} />
+              <IndexRoute component={ExportDelegation.List} />
+              <Route path="create" component={ExportDelegation.Create} />
+              <Route path="edit/:delgNo" component={ExportDelegation.Edit} />
+              <Route path="docs">
+                <Route path="make/:billno" component={ExportDocs.Make} />
+                <Route path="view/:billno" component={ExportDocs.View} />
               </Route>
             </Route>
           </Route>

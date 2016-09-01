@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import BasicForm from '../delegation/basicForm';
-import SubForm from '../delegation/SubForm';
-import UploadGroup from '../delegation/attachmentUpload';
+import BasicForm from './forms/basicForm';
+import SubForm from './forms/SubForm';
+import UploadGroup from './forms/attachmentUpload';
 import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
 

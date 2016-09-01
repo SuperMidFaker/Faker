@@ -10,7 +10,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
-import BillModal from './billModal';
+import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
@@ -133,7 +133,7 @@ export default class DelegationList extends Component {
     title: '委托方',
     width: 180,
     dataIndex: 'customer_name',
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    render: (o) => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '订单号',
     width: 120,
@@ -341,7 +341,7 @@ export default class DelegationList extends Component {
     }
     columns.push({
       title: '操作',
-      width: 130,
+      width: 120,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (

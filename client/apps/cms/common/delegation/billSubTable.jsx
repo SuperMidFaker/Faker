@@ -5,7 +5,7 @@ import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, openEfModal } from 'common/reducers/cmsDelegation';
 import RowUpdater from './rowUpdater';
-import DeclnoFillModal from './declNoFill';
+import DeclnoFillModal from './modals/declNoFill';
 import NavLink from 'client/components/nav-link';
 
 @connect(
@@ -46,7 +46,7 @@ export default class SubdelgTable extends Component {
     width: 160,
     render: (o) => {
       return (
-        <NavLink to={`/clearance/${this.props.ietype}/declare/make/${o}`}>
+        <NavLink to={`/clearance/${this.props.ietype}/docs/make/${o}`}>
           {o}
         </NavLink>);
     },

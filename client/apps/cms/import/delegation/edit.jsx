@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import Edit from '../../common/acceptance/edit';
+import Edit from '../../common/delegation/edit';
 import { loadDelg } from 'common/reducers/cmsDelegation';
 
 function fetchData({ cookie, params, dispatch, state }) {
