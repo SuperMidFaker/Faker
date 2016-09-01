@@ -53,7 +53,7 @@ function getLinksByAspect(aspect) {
     aspect: state.account.aspect,
   })
 )
-export default class clearance extends React.Component {
+export default class Clearance extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,

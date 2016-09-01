@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import BasicForm from '../delegation/basicForm';
-import SubForm from '../delegation/SubForm';
-import UploadGroup from '../delegation/attachmentUpload';
+import BasicForm from './forms/basicForm';
+import SubForm from './forms/SubForm';
+import UploadGroup from './forms/attachmentUpload';
 import { editDelegation } from 'common/reducers/cmsDelegation';
 
 @connect(
@@ -99,7 +99,7 @@ export default class AcceptanceEdit extends Component {
       <div className="main-content">
         <div className="page-body">
           <Form horizontal form={form}>
-            <div className="panel-body body-responsive">
+            <div className="panel-body">
               <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
                 <BasicForm form={form} ieType={type} partnershipType="CCB" />
               </Col>

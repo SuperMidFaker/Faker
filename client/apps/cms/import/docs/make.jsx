@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadBills, loadEntries, loadCmsParams } from 'common/reducers/cmsDeclare';
-import DeclareMake from '../../common/declare/make';
+import DeclareMake from '../../common/docs/make';
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];
