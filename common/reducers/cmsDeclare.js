@@ -177,7 +177,7 @@ export default function reducer(state = initialState, action) {
       return state;
   }
 }
-
+/*
 export function loadDelgList(cookie, params) {
   return {
     [CLIENT_API]: {
@@ -193,6 +193,7 @@ export function loadDelgList(cookie, params) {
     },
   };
 }
+*/
 
 export function loadBills(billSeqNo) {
   return {
