@@ -100,28 +100,28 @@ export default class PreviewPanel extends React.Component {
     if (previewer.status === 3 || previewer.status === 4) {
       return (
         <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="基础信息" key="basic">
+          <TabPane tab="委托" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
           <TabPane tab="费用" key="expenses">
           </TabPane>
-          <TabPane tab="委托追踪" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
-          </TabPane>
           <TabPane tab="通关追踪" key="clearanceTracking">
             <ClearanceTrackingPane />
+          </TabPane>
+          <TabPane tab="日志" key="delegateTracking">
+            <DelegateTrackingPane delegateTracking={delegateTracking} />
           </TabPane>
         </Tabs>
       );
     }
     return (
       <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-        <TabPane tab="基础信息" key="basic">
+        <TabPane tab="委托" key="basic">
           <BasicPane delegation={delegation} files={files} />
         </TabPane>
         <TabPane tab="费用" key="expenses">
         </TabPane>
-        <TabPane tab="委托追踪" key="delegateTracking">
+        <TabPane tab="日志" key="delegateTracking">
           <DelegateTrackingPane delegateTracking={delegateTracking} />
         </TabPane>
       </Tabs>
