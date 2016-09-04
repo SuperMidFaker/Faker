@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { submit, setValue, systemLoading } from '../../../common/reducers/auth';
@@ -58,6 +58,7 @@ export default class Login extends React.Component {
   render() {
     const { auth: { error, username, remember }, intl } = this.props;
     return (
+      <Spin spinning={this.props.loading}>
       <div className="panel-body">
         {error ? <div>{
           `C${error.code}:
@@ -87,7 +88,7 @@ export default class Login extends React.Component {
               </div>
             </div>
             <div className="form-group login-submit">
-              <Button type="primary" loading={this.props.loading} className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
+              <Button type="primary" className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
             </div>
             <div className="form-group footer row">
               <div className="col-xs-6">
@@ -108,6 +109,7 @@ export default class Login extends React.Component {
           </div>
         </form>
       </div>
+      </Spin>
     );
   }
 }
