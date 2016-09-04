@@ -42,7 +42,7 @@
     "lint"
   ],
   "dependencies": {
-    "antd": "^1.10.0",
+    "antd": "^1.11.0",
     "babel": "^5.8.38",
     "classnames": "^2.2.5",
     "co-body": "^4.2.0",
