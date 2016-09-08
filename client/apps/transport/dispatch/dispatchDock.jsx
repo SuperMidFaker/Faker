@@ -117,8 +117,7 @@ export default class DispatchDock extends Component {
             return (
               <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
                 <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
-              } placement="bottom"
-              >
+              }>
                 <span>{o.total_charge}</span>
               </Popover>
             );
