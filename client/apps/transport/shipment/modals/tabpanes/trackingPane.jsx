@@ -50,8 +50,8 @@ export default class PreviewPanel extends React.Component {
       case 'created': return 'check-circle-o';
       case 'accepted': return 'check-circle-o';
       case 'sent': return 'check-circle-o';
-      case 'pickedup': return 'check-circle-o';
-      case 'delivered': return 'check-circle-o';
+      case 'pickedup': return 'info-circle-o';
+      case 'delivered': return 'info-circle-o';
       case 'completed': return 'check-circle-o';
       case 'revoked': return 'cross-circle-o';
       case 'returned': return 'exclamation-circle-o';
