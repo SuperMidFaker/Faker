@@ -45,10 +45,28 @@ export default class PreviewPanel extends React.Component {
     tracking: PropTypes.object.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
-
+  stepIcon = (step) => {
+    switch (step.type) {
+      case 'created': return '';
+      case 'accepted': return '';
+      case 'sent': return '';
+      case 'pickedup': return '';
+      case 'delivered': return '';
+      case 'completed': return 'check-circle-o';
+      case 'revoked': return 'cross-circle-o';
+      case 'returned': return '';
+      case 'withdrew': return '';
+      case 'podUploaded': return '';
+      case 'podPassed': return '';
+      case 'podReturned': return 'exclamation-circle-o';
+      case 'vehicleUpdated': return 'info-circle-o';
+      default : return '';
+    }
+  }
   render() {
     const { tracking, logs } = this.props;
     const logSteps = logs.map(item => ({
+      ...item,
       title: this.msg(item.type),
       desc: (
         <StepDesc texts={[
@@ -141,7 +159,7 @@ export default class PreviewPanel extends React.Component {
             {
               trackingSteps.map(
                 (ts, i) =>
-                  <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} />
+                  <Step key={`${ts.title}${i}`} title={ts.title} description={ts.desc} icon={this.stepIcon(ts)} />
                 )
             }
           </Steps>

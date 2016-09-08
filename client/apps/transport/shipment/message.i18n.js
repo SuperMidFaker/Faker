@@ -313,12 +313,12 @@ export default defineMessages({
     id: 'transport.shipment.log.completed',
     defaultMessage: '完成',
   },
-  revoke: {
-    id: 'transport.shipment.log.revoke',
+  revoked: {
+    id: 'transport.shipment.log.revoked',
     defaultMessage: '终止',
   },
-  return: {
-    id: 'transport.shipment.log.return',
+  returned: {
+    id: 'transport.shipment.log.returned',
     defaultMessage: '退回',
   },
   withdrew: {
@@ -329,16 +329,16 @@ export default defineMessages({
     id: 'transport.shipment.log.podUploaded',
     defaultMessage: '上传回单',
   },
-  podPass: {
-    id: 'transport.shipment.log.podPass',
+  podPassed: {
+    id: 'transport.shipment.log.podPassed',
     defaultMessage: '回单通过',
   },
   podReturned: {
     id: 'transport.shipment.log.podReturned',
     defaultMessage: '回单退回',
   },
-  vehicleUpdate: {
-    id: 'transport.shipment.log.vehicleUpdate',
+  vehicleUpdated: {
+    id: 'transport.shipment.log.vehicleUpdated',
     defaultMessage: '更新车辆信息',
   },
   revenueItem: {
