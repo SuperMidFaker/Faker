@@ -47,17 +47,17 @@ export default class PreviewPanel extends React.Component {
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   stepIcon = (step) => {
     switch (step.type) {
-      case 'created': return '';
-      case 'accepted': return '';
-      case 'sent': return '';
-      case 'pickedup': return '';
-      case 'delivered': return '';
+      case 'created': return 'check-circle-o';
+      case 'accepted': return 'check-circle-o';
+      case 'sent': return 'check-circle-o';
+      case 'pickedup': return 'check-circle-o';
+      case 'delivered': return 'check-circle-o';
       case 'completed': return 'check-circle-o';
       case 'revoked': return 'cross-circle-o';
-      case 'returned': return '';
-      case 'withdrew': return '';
-      case 'podUploaded': return '';
-      case 'podPassed': return '';
+      case 'returned': return 'exclamation-circle-o';
+      case 'withdrew': return 'exclamation-circle-o';
+      case 'podUploaded': return 'check-circle-o';
+      case 'podPassed': return 'check-circle-o';
       case 'podReturned': return 'exclamation-circle-o';
       case 'vehicleUpdated': return 'info-circle-o';
       default : return '';
@@ -71,6 +71,7 @@ export default class PreviewPanel extends React.Component {
       desc: (
         <StepDesc texts={[
           item.content,
+          `操作人员: ${item.login_name}`,
           item.created_date && moment(item.created_date).format(timeFormat),
         ]} />
       ),
