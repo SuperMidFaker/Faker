@@ -224,7 +224,7 @@ export default class DelegationList extends Component {
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
   }
-  handleDelgListLoad = (filter) => {
+  handleDelgListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, ietype,
       delegationlist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
@@ -233,7 +233,7 @@ export default class DelegationList extends Component {
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
-      currentPage: current,
+      currentPage: currentPage || current,
     }).then(result => {
       if (result.error) {
         message.error(result.error.message);
@@ -245,7 +245,7 @@ export default class DelegationList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleDelgListLoad(filter);
+    this.handleDelgListLoad(1, filter);
   }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({

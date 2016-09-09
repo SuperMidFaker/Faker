@@ -1,8 +1,4 @@
 /* eslint no-console:0 no-undef:0 */
-if (process.env.NODE_ENV === 'production') {
-  require('oneapm');
-}
-
 const path = require('path');
 process.env.NODE_PATH = path.resolve(__dirname, '..');
 require('module').Module._initPaths();
