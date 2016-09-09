@@ -22,6 +22,7 @@ import PreviewPanel from '../../shipment/modals/preview-panel';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import ExportExcel from './modals/export-excel';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
 
 const formatMsg = format(messages);
@@ -322,9 +323,12 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
+          <div className="panel-header">
+            <ExportExcel />
+          </div>
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2250 }}
+              dataSource={this.dataSource} scroll={{ x: 2000 }}
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

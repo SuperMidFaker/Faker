@@ -984,17 +984,17 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 1900 }}
+      dataSource={this.dataSource} scroll={{ x: 2000 }}
     />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 1900 }}
+        dataSource={this.dataSource} scroll={{ x: 2000 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 1900 }}
+        dataSource={this.dataSource} scroll={{ x: 2000 }}
       />);
     }
 
@@ -1022,49 +1022,49 @@ export default class DispatchList extends React.Component {
     }
 
     return (
-      <div className="main-content">
-      <div className="page-title">
-          <h2>{this.msg('transportDispatch')}</h2>
-        </div>
-        <div className="page-header">
+      <div>
+        <header className="top-bar">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <span />
-            <Button type="ghost" onClick={this.toggleAdvancedSearch}>高级搜索</Button>
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
           </div>
+          <span>{this.msg('transportDispatch')}</span>
           <RadioGroup onChange={this.handleStatusChange} value={status}>
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
-        </div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        <div className="page-body">
-          <div className="panel-body table-panel">
-            <div className="dispatch-table">
-              {tb}
+        </header>
+        <div className="main-content">
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          <div className="page-body">
+            <div className="panel-body table-panel">
+              <div className="dispatch-table">
+                {tb}
+              </div>
+            </div>
+            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              {btns}
+              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
             </div>
           </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            {btns}
-            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
-          </div>
-        </div>
-        <PreviewPanel stage="dispatch" />
-        <DispatchDock key="dispDock"
-          show={this.props.dispDockShow}
-          shipmts={this.props.shipmts}
-          msg={this.msgWrapper}
-          onClose={this.handleDispatchDockClose}
-        />
+          <PreviewPanel stage="dispatch" />
+          <DispatchDock key="dispDock"
+            show={this.props.dispDockShow}
+            shipmts={this.props.shipmts}
+            msg={this.msgWrapper}
+            onClose={this.handleDispatchDockClose}
+          />
 
-        <SegmentDock key="segDock"
-          show={this.props.segDockShow}
-          shipmts={this.props.shipmts}
-          msg={this.msgWrapper}
-          onClose={this.handleSegmentDockClose}
-        />
-        <RevokejectModal reload={this.handleTableLoad} />
+          <SegmentDock key="segDock"
+            show={this.props.segDockShow}
+            shipmts={this.props.shipmts}
+            msg={this.msgWrapper}
+            onClose={this.handleSegmentDockClose}
+          />
+          <RevokejectModal reload={this.handleTableLoad} />
+        </div>
       </div>
     );
   }

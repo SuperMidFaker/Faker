@@ -386,23 +386,14 @@ export default class DelegationList extends Component {
     });
     // todo expandedRow fixed
     return (
-      <div className="main-content">
-      <div className="page-title">
-          <div className="tools">
-            <Button type="primary" size="large" onClick={this.handleCreateBtnClick}
-              icon="plus-circle-o"
-            >
-            新建委托
-            </Button>
-          </div>
-          <h2>{this.props.ietype === 'import' ? '进口报关' : '出口报关'}</h2>
-        </div>
-        <div className="page-header">
+      <div>
+        <header className="top-bar">
           <div className="tools">
             <SearchBar placeholder={'委托编号/发票号'} value={this.state.searchInput}
               onInputSearch={() => {}}
             />
           </div>
+          <span>{this.props.ietype === 'import' ? '进口报关' : '出口报关'}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="accept">接单</RadioButton>
@@ -410,19 +401,28 @@ export default class DelegationList extends Component {
             <RadioButton value="declared">已申报</RadioButton>
             <RadioButton value="finished">已放行</RadioButton>
           </RadioGroup>
-        </div>
-        <div className="page-body">
-          <div className="panel-body table-panel expandable">
-            <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-              expandedRowKeys={this.state.expandedKeys}
-              expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-              scroll={{ x: 1300 }} onExpandedRowsChange={this.handleExpandedChange}
-            />
+        </header>
+        <div className="main-content">
+          <div className="page-body">
+            <div className="panel-header">
+              <Button type="primary" onClick={this.handleCreateBtnClick}
+                icon="plus-circle-o"
+              >
+              新建委托
+              </Button>
+            </div>
+            <div className="panel-body table-panel expandable">
+              <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
+                expandedRowKeys={this.state.expandedKeys}
+                expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
+                scroll={{ x: 1300 }} onExpandedRowsChange={this.handleExpandedChange}
+              />
+            </div>
           </div>
+          <BillModal ietype={this.props.ietype} />
+          <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
+          <PreviewPanel />
         </div>
-        <BillModal ietype={this.props.ietype} />
-        <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-        <PreviewPanel />
       </div>
     );
   }
