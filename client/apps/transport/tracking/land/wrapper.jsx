@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio, Button } from 'antd';
+import { Radio } from 'antd';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
@@ -10,7 +10,7 @@ import { changeExcpFilter } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import ExportExcel from './modals/export-excel';
+
 import messages from './message.i18n';
 const formatMsg = format(messages);
 
@@ -132,21 +132,16 @@ export default class TrackingLandWrapper extends React.Component {
   render() {
     const { radioValue, searchInput } = this.state;
     return (
-      <div className="main-content">
-        <div className="page-title">
-          <div className="tools">
-            <ExportExcel />
-          </div>
-          <h2>{this.msg('transportTracking')}</h2>
-        </div>
-        <div className="page-header">
+      <div>
+        <header className="top-bar">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
               value={searchInput}
             />
             <span />
-            <Button type="default" onClick={this.toggleAdvancedSearch}>高级搜索</Button>
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
           </div>
+          <span>{this.msg('transportTracking')}</span>
           <RadioGroup onChange={this.handleStatusNav} value={radioValue}>
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
@@ -165,9 +160,11 @@ export default class TrackingLandWrapper extends React.Component {
           <RadioGroup onChange={this.handleExcpNav} value={radioValue}>
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
+        </header>
+        <div className="main-content">
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          {this.props.children}
         </div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        {this.props.children}
       </div>
     );
   }
