@@ -17,7 +17,7 @@ function getFieldInits(aspect, formData) {
   if (formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no',
-      'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode', 'decl_way_code',
+      'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
       'goods_type', 'order_no', 'remark',
     ].forEach(fd => {
       init[fd] = formData[fd] || '';

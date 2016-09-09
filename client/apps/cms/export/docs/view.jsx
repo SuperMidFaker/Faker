@@ -5,8 +5,8 @@ import DeclareView from '../../common/docs/view';
 
 function fetchData({ dispatch, params, cookie }) {
   const promises = [];
-  promises.push(dispatch(loadBills(cookie, params.delgNo)));
-  promises.push(dispatch(loadEntries(cookie, params.delgNo)));
+  promises.push(dispatch(loadBills(cookie, params.billno)));
+  promises.push(dispatch(loadEntries(cookie, params.billno)));
   return Promise.all(promises);
 }
 

@@ -111,7 +111,7 @@ export default class AcceptanceCreate extends Component {
                 <UploadGroup onFileListUpdate={this.handleUploadFiles} />
               </Col>
               <Col sm={24} style={{ padding: '0 16px' }}>
-                <SubForm form={form} />
+                <SubForm form={form} ietype={type} />
               </Col>
             </div>
             <div style={{ padding: '16px' }}>
