@@ -20,7 +20,7 @@ const formatMsg = format(messages);
 export default class ExceptionListPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    excpCount: PropTypes.string.isRequired,
+    excpCount: PropTypes.number.isRequired,
     dispId: PropTypes.number.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     onShowExcpModal: PropTypes.func.isRequired,

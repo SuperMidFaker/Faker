@@ -112,6 +112,7 @@ export default class LandStatusList extends React.Component {
           return flt;
         }
       });
+      this.handleSelectionClear();
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
       newfilters = nextProps.filters;
     }
@@ -153,6 +154,7 @@ export default class LandStatusList extends React.Component {
   })
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
+    this.handleSelectionClear();
     this.props.loadTransitTable(null, {
       tenantId: this.props.tenantId,
       filters: JSON.stringify(filters || this.props.filters),
@@ -179,12 +181,42 @@ export default class LandStatusList extends React.Component {
   handleShowPickModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'pickup');
+    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no }];
+    this.props.showDateModal(shipments, 'pickup');
   }
   handleShowDeliverModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showDateModal(row.disp_id, row.shipmt_no, 'deliver');
+    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no }];
+    this.props.showDateModal(shipments, 'deliver');
+  }
+  handleShowBatchPickModal = () => {
+    const listData = this.props.shipmentlist.data;
+    const shipments = this.state.selectedRowKeys.map(item => {
+      let shipment = {};
+      for (let i = 0; i < listData.length; i++) {
+        if (listData[i].shipmt_no === item) {
+          shipment = { shipmtNo: item, dispId: listData[i].disp_id };
+          break;
+        }
+      }
+      return shipment;
+    });
+    this.props.showDateModal(shipments, 'pickup');
+  }
+  handleShowBatchDeliverModal = () => {
+    const listData = this.props.shipmentlist.data;
+    const shipments = this.state.selectedRowKeys.map(item => {
+      let shipment = {};
+      for (let i = 0; i < listData.length; i++) {
+        if (listData[i].shipmt_no === item) {
+          shipment = { shipmtNo: item, dispId: listData[i].disp_id };
+          break;
+        }
+      }
+      return shipment;
+    });
+    this.props.showDateModal(shipments, 'deliver');
   }
   handleShowTransitModal = (row, ev) => {
     ev.preventDefault();
@@ -255,6 +287,29 @@ export default class LandStatusList extends React.Component {
     );
   }
 
+  renderBatchOperationButtons() {
+    let type = '';
+    const types = this.props.filters.filter(flt => flt.name === 'type');
+    if (types.length === 1) {
+      type = types[0].value;
+    }
+    let buttons = null;
+    if (type === 'dispatched') {
+      buttons = (
+        <div style={{ display: 'inline-block' }}>
+          <Button type="primary" onClick={this.handleShowBatchPickModal}>批量提货</Button>
+        </div>
+      );
+    } else if (type === 'intransit') {
+      buttons = (
+        <div style={{ display: 'inline-block' }}>
+          <Button type="primary" onClick={this.handleShowBatchDeliverModal}>批量交货</Button>
+        </div>
+      );
+    }
+    return buttons;
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -273,6 +328,7 @@ export default class LandStatusList extends React.Component {
             />
           </div>
           <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            {this.renderBatchOperationButtons()}
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>

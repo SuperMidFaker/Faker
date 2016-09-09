@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
   'SAVE_VEHICLE', 'SAVE_VEHICLE_SUCCEED', 'SAVE_VEHICLE_FAIL',
   'SAVE_DATE', 'SAVE_DATE_SUCCEED', 'SAVE_DATE_FAIL',
+  'SAVE_BATCH_DATE', 'SAVE_BATCH_DATE_SUCCEED', 'SAVE_BATCH_DATE_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
 ]);
 
@@ -36,8 +37,7 @@ const initialState = {
   },
   dateModal: {
     visible: false,
-    dispId: -1,
-    shipmtNo: '',
+    shipments: [],
     type: 'pickup',
   },
   locModal: {
@@ -73,9 +73,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_DATE_MODAL:
       return { ...state,
         dateModal: {
-          visible: true, dispId: action.data.dispId,
+          visible: true,
+          shipments: action.data.shipments,
           type: action.data.type,
-          shipmtNo: action.data.shipmtNo,
         },
       };
     case actionTypes.HIDE_DATE_MODAL:
@@ -154,10 +154,10 @@ export function saveVehicle(shipmtNo, dispId, plate, driver, remark) {
   };
 }
 
-export function showDateModal(dispId, shipmtNo, type) {
+export function showDateModal(shipments, type) {
   return {
     type: actionTypes.SHOW_DATE_MODAL,
-    data: { dispId, type, shipmtNo },
+    data: { shipments, type },
   };
 }
 
@@ -176,6 +176,21 @@ export function savePickOrDeliverDate(data) {
         actionTypes.SAVE_DATE_FAIL,
       ],
       endpoint: 'v1/transport/tracking/pickordeliverdate',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function saveBatchPickOrDeliverDate(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_BATCH_DATE,
+        actionTypes.SAVE_BATCH_DATE_SUCCEED,
+        actionTypes.SAVE_BATCH_DATE_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/pickordeliverdate_multiple',
       method: 'post',
       data,
     },

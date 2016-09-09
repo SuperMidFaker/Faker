@@ -375,8 +375,8 @@ export default class AcceptList extends React.Component {
         },
       }];
       btns = (
-        <div style={{ float: 'left' }}>
-          <Button type="primary" size="large" onClick={(ev) => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+        <div style={{ display: 'inline-block' }}>
+          <Button type="primary" onClick={(ev) => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
           批量接单
           </Button>
         </div>

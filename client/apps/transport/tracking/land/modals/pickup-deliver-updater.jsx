@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, DatePicker, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeDateModal, savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
+import { closeDateModal, saveBatchPickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -17,31 +17,29 @@ const FormItem = Form.Item;
     loginName: state.account.username,
     visible: state.trackingLandStatus.dateModal.visible,
     type: state.trackingLandStatus.dateModal.type,
-    dispId: state.trackingLandStatus.dateModal.dispId,
-    shipmtNo: state.trackingLandStatus.dateModal.shipmtNo,
+    shipments: state.trackingLandStatus.dateModal.shipments,
   }),
-  { closeDateModal, savePickOrDeliverDate }
+  { closeDateModal, saveBatchPickOrDeliverDate }
 )
 @Form.create()
 export default class PickupDeliverUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    dispId: PropTypes.number.isRequired,
-    shipmtNo: PropTypes.string.isRequired,
+    shipments: PropTypes.array.isRequired,
     type: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
-    savePickOrDeliverDate: PropTypes.func.isRequired,
+    saveBatchPickOrDeliverDate: PropTypes.func.isRequired,
   }
   msg = (descriptor) => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     this.props.form.validateFields(errors => {
       if (!errors) {
-        const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName } = this.props;
+        const { form, type, shipments, onOK, loginId, loginName, tenantId, tenantName } = this.props;
         const { actDate } = form.getFieldsValue();
-        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName }).then(
+        this.props.saveBatchPickOrDeliverDate({ type, shipments: JSON.stringify(shipments), actDate, loginId, tenantId, loginName, tenantName }).then(
           result => {
             if (result.error) {
               message.error(result.error.message);
@@ -59,7 +57,7 @@ export default class PickupDeliverUpdater extends React.Component {
     this.props.form.resetFields();
   }
   render() {
-    const { shipmtNo, form: { getFieldProps } } = this.props;
+    const { form: { getFieldProps } } = this.props;
     const colSpan = 6;
     let title;
     let ruleMsg;
@@ -70,8 +68,9 @@ export default class PickupDeliverUpdater extends React.Component {
       title = this.msg('deliverModalTitle');
       ruleMsg = this.msg('deliverTimeMust');
     }
+
     return (
-      <Modal title={`${title} ${shipmtNo}`} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
         <Form className="row">
