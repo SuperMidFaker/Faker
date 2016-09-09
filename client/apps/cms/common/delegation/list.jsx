@@ -5,7 +5,7 @@ import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
-import { TENANT_ASPECT, CMS_DELEGATION_STATUS, CMS_DELG_STATUS, GOODSTYPES, PARTNERSHIP_TYPE_INFO, CMS_SUP_STATUS } from 'common/constants';
+import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, PARTNERSHIP_TYPE_INFO, CMS_SUP_STATUS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import SearchBar from 'client/components/search-bar';
@@ -185,9 +185,11 @@ export default class DelegationList extends Component {
       const CMS_STATUS = (record.source === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
-        return <Tag color="yellow">{decl && decl.text}</Tag>;
-      } else if (record.status === 2 || record.status === 3) {
+        return <Tag>{decl && decl.text}</Tag>;
+      } else if (record.status === 2) {
         return <Tag color="blue">{decl && decl.text}</Tag>;
+      } else if (record.status === 3) {
+        return <Tag color="yellow">{decl && decl.text}</Tag>;
       } else if (record.status === 4) {
         return <Tag color="green">{decl && decl.text}</Tag>;
       } else {
