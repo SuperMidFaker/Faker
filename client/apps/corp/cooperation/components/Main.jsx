@@ -13,12 +13,14 @@ export default function Main(props) {
     .map((container, index) => <div style={{ display: index === parseInt(selectedMenuItemKey, 10) ? 'block' : 'none' }} key={index}>{container}</div>);
   return (
     <div>
-      <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuItemClick}>
-        <MenuItem key="0">客户</MenuItem>
-        <MenuItem key="1">供应商</MenuItem>
-        <MenuItem key="3">物流提供商</MenuItem>
-        <MenuItem key="4">邀请伙伴</MenuItem>
-      </Menu>
+      <header className="top-bar">
+        <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuItemClick}>
+          <MenuItem key="0">客户</MenuItem>
+          <MenuItem key="1">供应商</MenuItem>
+          <MenuItem key="3">物流提供商</MenuItem>
+          <MenuItem key="4">邀请伙伴</MenuItem>
+        </Menu>
+      </header>
       {content}
     </div>
   );

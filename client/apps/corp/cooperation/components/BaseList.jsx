@@ -188,13 +188,13 @@ export default class BaseList extends Component {
     const header = this.setHeader();
     return (
       <div className="main-content">
-        <div className="page-header">
-          <div className="tools">
-            <Button type="primary" size="large" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
-          </div>
-          {header}
-        </div>
         <div className="page-body">
+          <div className="panel-header">
+            <div className="tools">
+              {header}
+            </div>
+            <Button type="primary" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
+          </div>
           <div className="panel-body table-panel">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
           </div>

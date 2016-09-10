@@ -315,30 +315,35 @@ export default class PersonnelSetting extends React.Component {
       },
     }];
     return (
-      <div className="main-content">
-        <div className="page-header">
+      <div>
+        <header className="top-bar">
           <div className="tools">
-            <Button type="primary" size="large" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
-              {msg('newUser')}
-            </Button>
+            <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span>{msg('affiliatedOrganizations')}</span>
-          <Select style={{ width: 200 }} size="large" value={`${tenant.id}`}
-            onChange={(value) => this.handleTenantSwitch(value)}
-          >
-            {
-              branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
-            }
-          </Select>
-          <span style={{ marginLeft: '8px' }} />
-          <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="page-body">
-          <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+          <span></span>
+        </header>
+        <div className="main-content">
+          <div className="page-body">
+            <div className="panel-header">
+              <div className="tools">
+                <Select style={{ width: 200 }} value={`${tenant.id}`}
+                  onChange={(value) => this.handleTenantSwitch(value)}
+                >
+                  {
+                    branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
+                  }
+                </Select>
+              </div>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
+                {msg('newUser')}
+              </Button>
+            </div>
+            <div className="panel-body table-panel">
+              <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
+            </div>
+            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+            </div>
           </div>
         </div>
       </div>
