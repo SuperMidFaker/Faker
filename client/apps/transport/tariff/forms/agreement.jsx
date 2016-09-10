@@ -150,9 +150,17 @@ export default class AgreementForm extends React.Component {
     }
   }
   handleModeSelect = (value) => {
-    if (value === PRESET_TRANSMODES.ftl) {
+    if (isNaN(value)) {
+      return;
+    }
+    const tms = this.props.formParams.transModes.filter(tm => tm.id === Number(value));
+    if (tms.length !== 1) {
+      return;
+    }
+    const code = tms[0].mode_code;
+    if (code === PRESET_TRANSMODES.ftl) {
       this.setState({ transMode: 'ftl' });
-    } else if (value === PRESET_TRANSMODES.ctn) {
+    } else if (code === PRESET_TRANSMODES.ctn) {
       this.setState({ transMode: 'ctn' });
     } else {
       this.setState({ transMode: 'ltl' });
@@ -260,13 +268,14 @@ export default class AgreementForm extends React.Component {
               <Col sm={6}>
                 <FormItem label="运输模式" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
                   <Select onSelect={this.handleModeSelect} {...getFieldProps('transModeCode', {
-                    initialValue: formData.transModeCode,
-                    rules: [{ required: true, message: '运输模式必选' }],
+                    initialValue: isNaN(formData.transModeCode) ? undefined :
+                      parseInt(formData.transModeCode, 10),
+                    rules: [{ required: true, type: 'number', message: '运输模式必选' }],
                   })} disabled={readonly}
                   >
                   {
                     formParams.transModes.map(tm =>
-                      <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
+                      <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
                     )
                   }
                   </Select>

@@ -223,7 +223,7 @@ export default class DispatchDock extends Component {
       || nextProps.shipmts[0] !== this.props.shipmts[0])) {
       let lspsVar = { ...nextProps.lsps };
       const {
-        consigner_region_code, consignee_region_code, transport_mode_code,
+        consigner_region_code, consignee_region_code, transport_mode_id,
         package: ctn, created_date: created, goods_type,
         vehicle_type, vehicle_length, total_weight, total_volume,
       } = nextProps.shipmts[0];
@@ -234,7 +234,7 @@ export default class DispatchDock extends Component {
           this.props.computeCostCharge({
             tenant_id: this.props.tenantId, created_date: created,
             partner_id: row.partner_id, consigner_region_code, consignee_region_code,
-            goods_type, trans_mode: transport_mode_code, ctn,
+            goods_type, trans_mode: transport_mode_id, ctn,
             vehicle_type, vehicle_length, total_weight, total_volume,
           })
         );
@@ -498,14 +498,14 @@ export default class DispatchDock extends Component {
   }
   handleCostCompute = (ev, row, index) => {
     const {
-      consigner_region_code, consignee_region_code, transport_mode_code,
+      consigner_region_code, consignee_region_code, transport_mode_id,
       package: ctn, created_date: created, goods_type,
       vehicle_type, vehicle_length, total_weight, total_volume,
     } = this.props.shipmts[0];
     this.props.computeCostCharge({
       tenant_id: this.props.tenantId, created_date: created,
       partner_id: row.partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_code, ctn,
+      goods_type, trans_mode: transport_mode_id, ctn,
       vehicle_type, vehicle_length, total_weight, total_volume,
     }).then(result => {
       if (result.error) {

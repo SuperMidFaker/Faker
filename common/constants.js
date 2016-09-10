@@ -229,11 +229,6 @@ const VEHICLE_LENGTH_TYPES = [
   { value: 175, text: '17.5' },
 ];
 
-const VPROPROTY_TYPES = {
-  socialVehicle: { value: 0, text: '社会车辆' },
-  privateVehicle: { value: 1, text: '自有车辆' },
-};
-
 const DRIVER_STATUS = {
   notUse: { value: 0, text: '不可用' },
   inUse: { value: 1, text: '可用' },
@@ -419,8 +414,6 @@ const TAX_STATUS = {
   },
 };
 
-
-const WELOGIX_LOGO_URL = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/welogix-badge.png';
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -446,7 +439,6 @@ export {
   VEHICLE_STATUS,
   VEHICLE_TYPES,
   VEHICLE_LENGTH_TYPES,
-  VPROPROTY_TYPES,
   DRIVER_STATUS,
   GOODS_TYPES,
   GOODSTYPES,
@@ -460,6 +452,5 @@ export {
   CMS_DELG_STATUS,
   TAX_MODE,
   TAX_STATUS,
-  WELOGIX_LOGO_URL,
   DELG_STATUS,
 };

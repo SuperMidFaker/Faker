@@ -2,9 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Select, InputNumber, DatePicker, Card } from 'antd';
-import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import { setConsignFields } from 'common/reducers/shipment';
+import { PRESET_TRANSMODES } from 'common/constants';
+import InputItem from './input-item';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -23,6 +24,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
       vehicle_type: state.shipment.formData.vehicle_type,
       vehicle_length: state.shipment.formData.vehicle_length,
       container_no: state.shipment.formData.container_no,
+      transport_mode_id: state.shipment.formData.transport_mode_id,
       transport_mode_code: state.shipment.formData.transport_mode_code,
       package: state.shipment.formData.package,
     },
@@ -73,16 +75,20 @@ export default class ModeInfo extends React.Component {
       pickup_est_date: pickupDt,
     });
   }
-  handleModeChange = (code) => {
-    const modes = this.props.transitModes.filter(tm => tm.mode_code === code);
+  handleModeChange = (id) => {
+    const modes = this.props.transitModes.filter(tm => tm.id === id);
+    if (modes.length !== 1) {
+      return;
+    }
     let pack = this.props.fieldDefaults.package;
-    if (code === 'CTN') {
+    if (modes[0].mode_code === PRESET_TRANSMODES.ctn) {
       // 集装箱去除原来包装方式
       pack = '';
     }
     this.props.setConsignFields({
-      transport_mode_code: code,
-      transport_mode: modes.length > 0 ? modes[0].mode_name : '',
+      transport_mode_id: id,
+      transport_mode_code: modes[0].mode_code,
+      transport_mode: modes[0].mode_name,
       package: pack,
     });
   }
@@ -90,13 +96,16 @@ export default class ModeInfo extends React.Component {
     const {
       transitModes, vehicleTypes, vehicleLengths,
       formhoc: { getFieldProps },
-      fieldDefaults: { pickup_est_date, transit_time, deliver_est_date, vehicle_type, vehicle_length, container_no, transport_mode_code: tmc },
+      fieldDefaults: {
+        pickup_est_date, transit_time, deliver_est_date, vehicle_type,
+        vehicle_length, container_no, transport_mode_code: modeCode,
+        transport_mode_id: modeId,
+      },
     } = this.props;
     let outerColSpan = 24;
     let labelColSpan = 2;
-    const modeCode = tmc;
     const modeEditCols = [];
-    if (modeCode === 'FTL') {
+    if (modeCode === PRESET_TRANSMODES.ftl) {
       // 整车,修改车型,车长
       outerColSpan = 8;
       labelColSpan = 8;
@@ -124,7 +133,7 @@ export default class ModeInfo extends React.Component {
           </FormItem>
         </Col>
       );
-    } else if (modeCode === 'CTN') {
+    } else if (modeCode === PRESET_TRANSMODES.ctn) {
       // 集装箱,修改箱号
       outerColSpan = 8;
       labelColSpan = 8;
@@ -147,77 +156,78 @@ export default class ModeInfo extends React.Component {
     }
     return (
       <Card title={this.msg('scheduleInfo')} bodyStyle={{ padding: 16 }}>
-      <Row>
-        <Col span={`${outerColSpan}`} >
-          <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }} required
-          >
-            <DatePicker style={{ width: '100%' }} {...getFieldProps(
-              'pickup_est_date', {
-                onChange: this.handlePickupChange,
-                rules: [{
-                  required: true, message: this.msg('deliveryDateMust'), type: 'date',
-                }],
-                initialValue: pickup_est_date,
-              }
-            )} />
-          </FormItem>
-        </Col>
-        <Col span={`${outerColSpan}`}>
-          <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }} required
-          >
-            <InputNumber style={{ width: '100%' }} min={0} {...getFieldProps(
-              'transit_time', {
-                onChange: this.handleTransitChange,
-                rules: [{
-                  required: true, message: this.msg('tranistTimeMust'), type: 'number',
-                }],
-                initialValue: transit_time,
-              })
-            } />
-          </FormItem>
-        </Col>
-        <Col span={`${outerColSpan}`}>
-          <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }} required
-          >
-            <DatePicker style={{ width: '100%' }} {...getFieldProps(
-              'deliver_est_date', {
-                onChange: this.handleDeliveryChange,
-                rules: [{
-                  required: true, message: this.msg('deliveryDateMust'), type: 'date',
-                }],
-                initialValue: deliver_est_date,
-              }
-            )} />
-          </FormItem>
-        </Col>
-       </Row>
-       <Row>
-        <Col span={16}>
-          <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }} required
-          >
-            <Select {...getFieldProps(
-              'transport_mode_code', {
-                rules: [{
-                  required: true, message: this.msg('transitModeMust'),
-                }],
-                initialValue: tmc,
-                onChange: this.handleModeChange,
-              }
-            )}>
-            {transitModes.map(
-              tm => <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
-            )}
-            </Select>
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        {modeEditCols}
-      </Row>
+        <Row>
+          <Col span={`${outerColSpan}`} >
+            <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
+              wrapperCol={{ span: 24 - labelColSpan }} required
+            >
+              <DatePicker style={{ width: '100%' }} {...getFieldProps(
+                'pickup_est_date', {
+                  onChange: this.handlePickupChange,
+                  rules: [{
+                    required: true, message: this.msg('deliveryDateMust'), type: 'date',
+                  }],
+                  initialValue: pickup_est_date,
+                }
+              )} />
+            </FormItem>
+          </Col>
+          <Col span={`${outerColSpan}`}>
+            <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
+              wrapperCol={{ span: 24 - labelColSpan }} required
+            >
+              <InputNumber style={{ width: '100%' }} min={0} {...getFieldProps(
+                'transit_time', {
+                  onChange: this.handleTransitChange,
+                  rules: [{
+                    required: true, message: this.msg('tranistTimeMust'), type: 'number',
+                  }],
+                  initialValue: transit_time,
+                })
+              } />
+            </FormItem>
+          </Col>
+          <Col span={`${outerColSpan}`}>
+            <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
+              wrapperCol={{ span: 24 - labelColSpan }} required
+            >
+              <DatePicker style={{ width: '100%' }} {...getFieldProps(
+                'deliver_est_date', {
+                  onChange: this.handleDeliveryChange,
+                  rules: [{
+                    required: true, message: this.msg('deliveryDateMust'), type: 'date',
+                  }],
+                  initialValue: deliver_est_date,
+                }
+              )} />
+            </FormItem>
+          </Col>
+         </Row>
+         <Row>
+          <Col span={16}>
+            <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }} required
+            >
+              <Select {...getFieldProps(
+                'transport_mode_id', {
+                  rules: [{
+                    type: 'number',
+                    required: true, message: this.msg('transitModeMust'),
+                  }],
+                  initialValue: modeId,
+                  onChange: this.handleModeChange,
+                }
+              )}>
+              {transitModes.map(
+                tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
+              )}
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          {modeEditCols}
+        </Row>
       </Card>
     );
   }
