@@ -26,7 +26,7 @@ export default class ModuleLayout extends React.Component {
       <Row>
         {
           this.props.enabledmods.map((mod, idx) => (
-            <Col span="6" key={`mod-${idx}`}>
+            <Col span="8" key={`mod-${idx}`}>
               <NavLink to={mod.url}>
                 <div className={containerCls}>
                   <div className={`module-icon-bg ${mod.cls} ${mod.status}`}>

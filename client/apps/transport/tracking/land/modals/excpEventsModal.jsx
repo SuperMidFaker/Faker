@@ -163,7 +163,7 @@ export default class ExcpEventsModal extends React.Component {
       <Modal title={title} footer={footer} onCancel={this.handleCancel}
         visible={this.props.visible} width="75%" maskClosable={false}
       >
-        <div style={{ minHeight: 500 }}>
+        <div style={{ minHeight: 300 }}>
           <div className="modal-top-actions">
             <Button type="ghost" size="large" onClick={this.toggleSpecialCharge}>添加特殊费用</Button>
             <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
