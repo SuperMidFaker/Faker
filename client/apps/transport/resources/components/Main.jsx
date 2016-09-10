@@ -22,11 +22,13 @@ export default function Main(props) {
      .map((container, index) => <div style={parseInt(selectedKey, 10) === index ? styles.show : styles.hidden} key={index}>{container}</div>);
   return (
     <div>
-      <Menu mode="horizontal" selectedKeys={selectedKeys} onClick={onClick}>
-        <MenuItem key="0">车辆管理</MenuItem>
-        <MenuItem key="1">司机管理</MenuItem>
-        <MenuItem key="2">地点管理</MenuItem>
-      </Menu>
+      <header className="top-bar">
+        <Menu mode="horizontal" selectedKeys={selectedKeys} onClick={onClick}>
+          <MenuItem key="0">车辆管理</MenuItem>
+          <MenuItem key="1">司机管理</MenuItem>
+          <MenuItem key="2">地点管理</MenuItem>
+        </Menu>
+      </header>
       <Spin spinning={loading}>
         {content}
       </Spin>

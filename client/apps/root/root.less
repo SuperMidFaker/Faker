@@ -42,8 +42,8 @@ img {
 .zmdi-manager:before {
   content: '\f1cc';
 }
-.zmdi-orders:before {
-  content: '\f222';
+.zmdi-customer:before {
+  content: '\f29c';
 }
 .zmdi-clearance:before {
   content: '\f172';
@@ -442,7 +442,8 @@ img {
 }
 .top-bar {
   background: #fcfcfc;
-  padding: 8px 16px;
+  padding: 0 16px;
+  line-height: 46px;
   >span {
     font-size: 14px;
     font-weight: bold;
@@ -455,6 +456,13 @@ img {
     >span {
       margin-right: 8px;
     }
+  }
+  .ant-menu {
+    background: none;
+    line-height: 44px;
+  }
+  .ant-menu-horizontal {
+    border-bottom: 0;
   }
 }
 .main-content {
@@ -699,10 +707,6 @@ img {
     padding: 0 16px 16px;
   }
   &.table-panel {
-    min-height: 565px;
-    .ant-table-body {
-      height: 506px;
-    }
     .ant-table-placeholder {
       border-bottom: none;
     }

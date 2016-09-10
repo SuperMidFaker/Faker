@@ -29,16 +29,10 @@ const TENANT_ASPECT = {
   SP: 1, // 服务商
 };
 const DEFAULT_MODULES = {
-  orders: {
-    cls: 'orders',
-    url: '/orders',
-    text: 'moduleOrders',
-    status: 'disabled',
-  },
-  forwarding: {
-    cls: 'forwarding',
-    url: '/forwarding',
-    text: 'moduleForwarding',
+  customer: {
+    cls: 'customer',
+    url: '/customer',
+    text: 'moduleCustomerCenter',
     status: 'disabled',
   },
   clearance: {
@@ -52,30 +46,6 @@ const DEFAULT_MODULES = {
     url: '/transport',
     text: 'moduleTransport',
     status: 'enabled',
-  },
-  wms: {
-    cls: 'inventory',
-    url: '/inventory',
-    text: 'moduleInventory',
-    status: 'disabled',
-  },
-  tracking: {
-    cls: 'tracking',
-    url: '/tracking',
-    text: 'moduleTracking',
-    status: 'disabled',
-  },
-  datacenter: {
-    cls: 'datacenter',
-    url: '/datacenter',
-    text: 'moduleDatacenter',
-    status: 'disabled',
-  },
-  integration: {
-    cls: 'integration',
-    url: '/integration',
-    text: 'moduleIntegration',
-    status: 'disabled',
   },
 };
 const APP_ENTITY_META_INFO = {

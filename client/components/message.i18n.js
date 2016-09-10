@@ -1,9 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  moduleOrders: {
-    id: 'component.module.orders',
-    defaultMessage: '订单中心',
+  moduleCustomerCenter: {
+    id: 'component.module.customer.center',
+    defaultMessage: '客户中心',
   },
   moduleTransport: {
     id: 'component.module.transport',

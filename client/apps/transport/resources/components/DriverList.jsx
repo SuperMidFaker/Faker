@@ -101,12 +101,10 @@ function DriverList(props) {
   ];
   return (
     <div className="main-content">
-      <div className="page-header">
-        <div className="tools">
-          <Button size="large" type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
-        </div>
-      </div>
       <div className="page-body">
+        <div className="panel-header">
+          <Button type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+        </div>
         <div className="panel-body table-panel">
           <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
         </div>
