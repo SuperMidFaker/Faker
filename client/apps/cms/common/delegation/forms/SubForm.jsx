@@ -4,6 +4,10 @@ import update from 'react/lib/update';
 import { connect } from 'react-redux';
 import { Form, Select, Input, InputNumber, Card, Col, Row, Button } from 'antd';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { intlShape, injectIntl } from 'react-intl';
+import messages from '../message.i18n.js';
+import { format } from 'client/common/i18n/helpers';
+const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -13,6 +17,7 @@ const formItemLayout = {
 };
 let idx = 0;
 
+@injectIntl
 @connect(
   state => ({
     delgBills: state.cmsDelegation.delgBills,
@@ -21,6 +26,7 @@ let idx = 0;
 
 export default class SubForm extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     delgBills: PropTypes.array.isRequired,
     ietype: PropTypes.string.isRequired,
@@ -47,6 +53,7 @@ export default class SubForm extends Component {
       idx = nextProps.delgBills.length - 1;
     }
   }
+  msg = (key) => formatMsg(this.props.intl, key);
   handleAddRow = () => {
     const bill = {
       decl_way_code: '',
@@ -65,8 +72,6 @@ export default class SubForm extends Component {
     const keys = this.state.keys.filter((key) => {
       return key !== k;
     });
-    // const state = update(this.state, { bills: { $splice: [[k, 1]] } });
-    // this.setState(state);
     const bills = [...this.state.bills];
     bills[k] = {};
     this.setState({ bills, keys });
@@ -83,7 +88,7 @@ export default class SubForm extends Component {
       return (
         <Row key={k} style={{ marginBottom: 8 }}>
           <Col sm={6}>
-            <FormItem label="报关类型" {...formItemLayout}>
+            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
               <Select
                 {...getFieldProps(`decl_way_code_${k}`, {
                   rules: [{ required: true, message: '报关类型必选' }],
@@ -99,13 +104,13 @@ export default class SubForm extends Component {
             </FormItem>
           </Col>
           <Col sm={6}>
-            <FormItem label="备案号" {...formItemLayout}>
+            <FormItem label={this.msg('manualNo')} {...formItemLayout}>
               <Input {...getFieldProps(`manual_no_${k}`, {
                 initialValue: bills[k].manual_no })} />
             </FormItem>
           </Col>
           <Col sm={5}>
-            <FormItem label="件数" {...formItemLayout}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputNumber min={1} max={100000} defaultValue={1} style={{ width: '100%' }}
                 {...getFieldProps(`pack_count_${k}`, {
                   initialValue: bills[k].pack_count })}
@@ -113,7 +118,7 @@ export default class SubForm extends Component {
             </FormItem>
           </Col>
           <Col sm={5}>
-            <FormItem label="毛重" {...formItemLayout}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               <Input addonAfter="公斤" type="number"
                 {...getFieldProps(`gross_wt_${k}`, {
                   initialValue: bills[k].gross_wt,
@@ -132,7 +137,7 @@ export default class SubForm extends Component {
         {formItems}
         <div style={{ marginTop: 8 }}>
           <Button type="dashed" size="large" onClick={this.handleAddRow} icon="plus" style={{ width: '100%' }}>
-            添加清关业务
+            {this.msg('addMore')}
           </Button>
         </div>
       </Card>

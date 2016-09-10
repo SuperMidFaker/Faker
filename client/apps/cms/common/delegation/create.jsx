@@ -8,7 +8,12 @@ import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
 import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
+import { intlShape, injectIntl } from 'react-intl';
+import messages from './message.i18n.js';
+import { format } from 'client/common/i18n/helpers';
+const formatMsg = format(messages);
 
+@injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -35,6 +40,7 @@ import { DELG_SOURCE } from 'common/constants';
 @Form.create()
 export default class AcceptanceCreate extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
@@ -48,6 +54,7 @@ export default class AcceptanceCreate extends Component {
   state = {
     attachments: [],
   }
+  msg = (key) => formatMsg(this.props.intl, key);
   handleSave = ({ accepted }) => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -118,10 +125,10 @@ export default class AcceptanceCreate extends Component {
               <Button size="large" type="primary" style={{ marginRight: 20 }}
                 loading={submitting} onClick={this.handleSaveBtnClick}
               >
-              保存
+              {this.msg('createSave')}
               </Button>
-              <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
-                <Button size="large" loading={submitting}>一键接单</Button>
+              <Popconfirm title={this.msg('delgSaveConfirm')} onConfirm={this.handleSaveAccept}>
+                <Button size="large" loading={submitting}>{this.msg('acceptNow')}</Button>
               </Popconfirm>
             </div>
           </Form>
