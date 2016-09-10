@@ -253,21 +253,20 @@ export default class CorpList extends React.Component {
       },
     }];
     return (
-      <div>
-      <div className="page-header">
-        <div className="tools">
-          <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary" size="large"
+      <div className="page-body">
+        <div className="panel-header">
+          <div className="tools">
+            <span>{formatMsg(intl, 'quotas')}{' '}</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: '#51C23A' }}>{corplist.totalCount}</span>
+            <span style={{ fontSize: 20, fontWeight: 400, color: '#333' }}>/</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: '#333' }}>10</span>
+          </div>
+          <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
             onClick={() => this.handleNavigationTo('/corp/organization/new')} icon="plus-circle-o"
           >
               {formatGlobalMsg(intl, 'createNew')}
           </Button>
         </div>
-        <span>{formatMsg(intl, 'quotas')}{' '}</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: '#51C23A' }}>{corplist.totalCount}</span>
-            <span style={{ fontSize: 20, fontWeight: 400, color: '#333' }}>/</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: '#333' }}>10</span>
-      </div>
-      <div className="page-body">
         <div className="panel-body table-panel">
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
         </div>
@@ -277,7 +276,6 @@ export default class CorpList extends React.Component {
         <AppEditor {...this.props.appEditor} switchTenantApp={this.props.switchTenantApp}
           appPackage={this.props.corplist.tenantAppPackage} onCancel={this.handleEditorHide}
         />
-      </div>
       </div>);
   }
 }

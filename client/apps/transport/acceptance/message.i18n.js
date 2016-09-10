@@ -99,7 +99,7 @@ export default defineMessages({
   },
   draftShipmt: {
     id: 'transport.acceptance.shipment.draft',
-    defaultMessage: '草稿',
+    defaultMessage: '运输计划',
   },
   archivedShipmt: {
     id: 'transport.acceptance.shipment.archived',
