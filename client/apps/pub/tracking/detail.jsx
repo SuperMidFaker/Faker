@@ -264,7 +264,7 @@ export default class TrackingDetail extends React.Component {
           <Row>
             <Col lg={15} sm={24}>
               <div className="main-content">
-                <Card title="运输进度" extra={<a href="#"></a>} style={{ width: '100%' }}>
+                <Card title="运输进度" style={{ width: '100%' }}>
                   <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
                 </Card>
                 <Row>
@@ -290,7 +290,7 @@ export default class TrackingDetail extends React.Component {
                     </Card>
                   </Col>
                   <Col lg={12} sm={24}>
-                    <Card id="tracing-timeline" title="追踪详情" extra={<a href="#"></a>}>
+                    <Card id="tracing-timeline" title="追踪详情">
                       <TrackingTimeline tracking={tracking} />
                     </Card>
                   </Col>

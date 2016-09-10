@@ -126,7 +126,7 @@ export class RelationAutoCompSelect extends React.Component {
                 {...getFieldProps(nameField, {
                   rules: nameRules,
                   initialValue: formData && formData[nameField],
-                })} disabled={disabled}
+                })}
               />
             </Col>
           </Row>

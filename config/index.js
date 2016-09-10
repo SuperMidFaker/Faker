@@ -1,8 +1,5 @@
-import makeConfig from './makeConfig';
-let port = 3022;
-if (!isNaN(process.env.PORT)) {
-  port = parseInt(process.env.PORT, 10);
-}
+const makeConfig = require('./makeConfig');
+const port = !isNaN(process.env.PORT) ? parseInt(process.env.PORT, 10) : 3022;
 
 const config = makeConfig(port, __dirname, 'welogix');
 config.set('vendor_dependencies', [
@@ -15,7 +12,7 @@ config.set('vendor_dependencies', [
   'react-router',
   'redux',
   'serialize-javascript',
-  'superagent'
+  'superagent',
 ]);
 
-export default config;
+module.exports = config;

@@ -1,5 +1,3 @@
-require('babel/register');
-
 const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
@@ -31,23 +29,18 @@ const wpConfig = {
       loaders: [{
         path: 'babel',
         query: {
-          optional: ['runtime'],
-          stage: 0,
-          blacklist: ['regenerator'],
+          plugins: ['transform-decorators-legacy'],
+          presets: ['es2015', 'react', 'stage-0'],
           env: {
             development: {
+              presets: ['react-hmre'],
+            },
+            production: {
               plugins: [
-                'react-transform',
+                'transform-react-remove-prop-types',
+                'transform-react-inline-elements',
+                'transform-react-constant-elements',
               ],
-              extra: {
-                'react-transform': {
-                  transforms: [{
-                    transform: 'react-transform-hmr',
-                    imports: ['react'],
-                    locals: ['module'],
-                  }],
-                },
-              },
             },
           },
         },

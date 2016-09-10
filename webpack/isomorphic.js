@@ -1,6 +1,6 @@
-import WebpackIsomorphicPlugin from 'webpack-isomorphic-tools/plugin';
+const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
 
-export default {
+module.exports = {
   webpack_assets_file_path: 'public/assets.json',
   webpack_stats_file_path: 'public/wpstats.json',
   assets: {

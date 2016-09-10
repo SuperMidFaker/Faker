@@ -1,6 +1,6 @@
-import path from 'path';
+const path = require('path');
 const env = process.env.NODE_ENV = (process.env.NODE_ENV || 'development').trim();
-export default (serverPort, dirName, appName) => {
+module.exports = (serverPort, dirName, appName) => {
   const config = new Map();
 
   const __DEV__ = env === 'development' || env === 'home';
