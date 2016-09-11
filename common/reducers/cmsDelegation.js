@@ -113,14 +113,22 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
+    case actionTypes.LOAD_SUBDELG: {
+      const delgBillsMap = { ...state.delgBillsMap };
+      delgBillsMap[action.params.delg_no] = [];
+      delgBillsMap[action.params.delg_no].loading = true;
+      return { ...state, delgBillsMap };
+    }
     case actionTypes.LOAD_SUBDELG_SUCCEED: {
       const delgBillsMap = { ...state.delgBillsMap };
       delgBillsMap[action.params.delg_no] = action.result.data;
+      delgBillsMap[action.params.delg_no].loading = false;
       return { ...state, delgBillsMap };
     }
     case actionTypes.LOAD_SUBDELG_FAIL: {
       const delgBillsMap = { ...state.delgBillsMap };
       delgBillsMap[action.params.delg_no] = [];
+      delgBillsMap[action.params.delg_no].loading = false;
       return { ...state, delgBillsMap };
     }
     case actionTypes.LOAD_BILLMAKE:
