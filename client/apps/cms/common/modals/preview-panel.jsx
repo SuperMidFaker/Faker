@@ -161,6 +161,17 @@ export default class PreviewPanel extends React.Component {
           </Button>
         </div>
       );
+    } else if (previewer.status === 2 && delegation.source === 1) {
+      return (
+        <div>
+          <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
+            制单
+          </Button>
+          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
+            <Icon type="download" />
+          </Button>
+        </div>
+      );
     } else {
       return (
         <div>
