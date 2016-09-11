@@ -139,7 +139,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('delgClient'),
-    width: 180,
+    width: 200,
     dataIndex: 'customer_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
@@ -182,7 +182,7 @@ export default class DelegationList extends Component {
   }, {
     */
     title: this.msg('enterprise'),
-    width: 130,
+    width: 200,
     dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
@@ -204,6 +204,12 @@ export default class DelegationList extends Component {
         return <Tag>{decl && decl.text}</Tag>;
       }
     },
+  }, {
+    title: this.msg('lastActTime'),
+    width: 120,
+    dataIndex: 'last_act_time',
+    render: (o, record) =>
+      record.last_act_time && moment(record.last_act_time).format('YYYY.MM.DD'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadAcceptanceTable(params),
@@ -344,12 +350,12 @@ export default class DelegationList extends Component {
   mergeFilters(curFilters, value) {
     const newFilters = {};
     Object.keys(curFilters).forEach(key => {
-      if (key !== 'filter_no') {
+      if (key !== 'filterNo') {
         newFilters[key] = curFilters[key];
       }
     });
     if (value !== null && value !== undefined && value !== '') {
-      newFilters.filter_no = value;
+      newFilters.filterNo = value;
     }
     return newFilters;
   }
@@ -358,10 +364,10 @@ export default class DelegationList extends Component {
     const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
     const columns = [...this.columns];
-    if (listFilter.status === 'all') {
+    if (listFilter.status === 'all' || listFilter.status === 'accept') {
       columns.push({
         title: this.msg('acptTime'),
-        width: 80,
+        width: 120,
         dataIndex: 'acpt_time',
         render: (o, record) =>
           record.acpt_time && moment(record.acpt_time).format('YYYY.MM.DD'),

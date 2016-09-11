@@ -241,4 +241,8 @@ export default defineMessages({
     id: 'cms.delegation.addMore',
     defaultMessage: '添加清关业务',
   },
+  lastActTime: {
+    id: 'cms.delegation.last.act.time',
+    defaultMessage: '最后活动时间',
+  },
 });
