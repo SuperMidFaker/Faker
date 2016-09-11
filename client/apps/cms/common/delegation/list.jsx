@@ -336,6 +336,24 @@ export default class DelegationList extends Component {
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
   }
+  handleSearch = (searchVal) => {
+    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    this.handleDelgListLoad(1, filters);
+  }
+
+  mergeFilters(curFilters, value) {
+    const newFilters = {};
+    Object.keys(curFilters).forEach(key => {
+      if (key !== 'filter_no') {
+        newFilters[key] = curFilters[key];
+      }
+    });
+    if (value !== null && value !== undefined && value !== '') {
+      newFilters.filter_no = value;
+    }
+    return newFilters;
+  }
+
   render() {
     const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
@@ -397,9 +415,7 @@ export default class DelegationList extends Component {
       <div>
         <header className="top-bar">
           <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} value={this.state.searchInput}
-              onInputSearch={() => {}}
-            />
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>

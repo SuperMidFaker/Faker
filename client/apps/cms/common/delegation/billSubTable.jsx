@@ -46,7 +46,7 @@ export default class SubdelgTable extends Component {
     width: 160,
     render: (o) => {
       return (
-        <NavLink to={`/clearance/${this.props.ietype}/docs/make/${o}`}>
+        <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
           {o}
         </NavLink>);
     },
