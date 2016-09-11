@@ -21,8 +21,8 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
       transit_time: state.shipment.formData.transit_time,
       pickup_est_date: state.shipment.formData.pickup_est_date,
       deliver_est_date: state.shipment.formData.deliver_est_date,
-      vehicle_type: state.shipment.formData.vehicle_type,
-      vehicle_length: state.shipment.formData.vehicle_length,
+      vehicle_type_id: state.shipment.formData.vehicle_type_id,
+      vehicle_length_id: state.shipment.formData.vehicle_length_id,
       container_no: state.shipment.formData.container_no,
       transport_mode_id: state.shipment.formData.transport_mode_id,
       transport_mode_code: state.shipment.formData.transport_mode_code,
@@ -97,8 +97,8 @@ export default class ModeInfo extends React.Component {
       transitModes, vehicleTypes, vehicleLengths,
       formhoc: { getFieldProps },
       fieldDefaults: {
-        pickup_est_date, transit_time, deliver_est_date, vehicle_type,
-        vehicle_length, container_no, transport_mode_code: modeCode,
+        pickup_est_date, transit_time, deliver_est_date, vehicle_type_id,
+        vehicle_length_id, container_no, transport_mode_code: modeCode,
         transport_mode_id: modeId,
       },
     } = this.props;
@@ -114,7 +114,7 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleType')} labelCol={{ span: labelColSpan }}
             wrapperCol={{ span: 24 - labelColSpan }}
           >
-            <Select {...getFieldProps('vehicle_type', { initialValue: vehicle_type })}>
+            <Select {...getFieldProps('vehicle_type_id', { initialValue: vehicle_type_id })}>
             {vehicleTypes.map(
               vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
             )}
@@ -125,7 +125,7 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleLength')} labelCol={{ span: labelColSpan }}
             wrapperCol={{ span: 24 - labelColSpan }}
           >
-            <Select {...getFieldProps('vehicle_length', { initialValue: vehicle_length })}>
+            <Select {...getFieldProps('vehicle_length_id', { initialValue: vehicle_length_id })}>
             {vehicleLengths.map(
               vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
             )}

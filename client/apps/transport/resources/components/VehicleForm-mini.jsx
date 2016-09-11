@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Form, Select, Input, Modal, message } from 'antd';
-import { VEHICLE_TYPES, VEHICLE_LENGTH_TYPES } from 'common/constants';
 import { connect } from 'react-redux';
-import { addVehicle, validateVehicle } from 'common/reducers/transportResources';
+import { addVehicle, validateVehicle, loadVehicleParams } from 'common/reducers/transportResources';
 import { loadVehicles } from 'common/reducers/transportDispatch';
 
 const FormItem = Form.Item;
@@ -13,13 +12,15 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-@connect(state => ({
-  tenantId: state.account.tenantId,
-  vehicles: state.transportDispatch.vehicles,
-  vehicleValidate: state.transportResources.vehicleValidate,
-
-}), { addVehicle, validateVehicle, loadVehicles })
-
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    vehicles: state.transportDispatch.vehicles,
+    vehicleValidate: state.transportResources.vehicleValidate,
+    vehicleParams: state.transportResources.vehicleParams,
+  }),
+  { addVehicle, validateVehicle, loadVehicles, loadVehicleParams }
+)
 class VehicleFormMini extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,              // 对应于antd中的form对象
@@ -27,12 +28,13 @@ class VehicleFormMini extends Component {
     onVehicleNumberBlur: PropTypes.func,            // 车牌号改变执行的回调函数
     vehicles: PropTypes.object.isRequired,              // 对应于antd中的form对象
     car: PropTypes.object,                          // 编辑的车辆信息, 只有在mode='edit'时才需要
+    loadVehicleParams: PropTypes.func.isRequired,
   };
   state = {
     visible: false,
   }
   componentDidMount() {
-
+    this.props.loadVehicleParams(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ visible: nextProps.visible });
@@ -66,7 +68,7 @@ class VehicleFormMini extends Component {
     this.props.validateVehicle(tenantId, vehicleNumber);
   }
   render() {
-    const { form, vehicleValidate } = this.props;
+    const { form, vehicleValidate, vehicleParams } = this.props;
     const getFieldProps = form.getFieldProps;
     return (
       <Modal visible={this.state.visible} title="新增车辆"
@@ -82,14 +84,14 @@ class VehicleFormMini extends Component {
           <FormItem label="车型:" required {...formItemLayout}>
             <Select {...getFieldProps('type')} required>
             {
-              VEHICLE_TYPES.map(vt => <Option value={vt.value} key={vt.value}>{vt.text}</Option>)
+              vehicleParams.types.map(vt => <Option value={vt.value} key={vt.value}>{vt.text}</Option>)
             }
             </Select>
           </FormItem>
           <FormItem label="车长:" required {...formItemLayout}>
             <Select {...getFieldProps('length')} required>
             {
-              VEHICLE_LENGTH_TYPES.map(vlt => <Option value={vlt.value} key={vlt.value}>{vlt.text}</Option>)
+              vehicleParams.lengths.map(vlt => <Option value={vlt.value} key={vlt.value}>{vlt.text}</Option>)
             }
             </Select>
           </FormItem>
