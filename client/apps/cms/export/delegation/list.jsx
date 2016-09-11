@@ -7,7 +7,7 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadAcceptanceTable({
     ietype: 'export',
     tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.cmsDelegation.listFilter),
+    filter: JSON.stringify({ status: 'all' }),
     pageSize: state.cmsDelegation.delegationlist.pageSize,
     currentPage: state.cmsDelegation.delegationlist.current,
   }));
