@@ -35,7 +35,7 @@ export default class ExportExcel extends React.Component {
     });
   }
   handleOk = () => {
-    window.open(`${API_ROOTS.default}v1/transport/tracking/export/${createFilename('tracking')}.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
+    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentExcel/${createFilename('tracking')}.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
     this.handleClose();
   }
   handleClose = () => {

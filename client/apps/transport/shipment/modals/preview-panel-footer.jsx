@@ -13,9 +13,10 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showDateModal, showVehicleModal, showLocModal } from 'common/reducers/trackingLandStatus';
+import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
+import { createFilename } from 'client/util/dataTransform';
 const formatMsg = format(messages);
 const DropdownButton = Dropdown.Button;
 
@@ -43,7 +44,9 @@ const DropdownButton = Dropdown.Button;
     passAudit,
     returnAudit,
     withDraw,
-    returnShipment }
+    returnShipment,
+    showShipmentAdvanceModal,
+  }
 )
 export default class Footer extends React.Component {
   static propTypes = {
@@ -70,6 +73,7 @@ export default class Footer extends React.Component {
     withDraw: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
+    showShipmentAdvanceModal: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -97,11 +101,9 @@ export default class Footer extends React.Component {
       this.setState({ exportPDFvisible: false });
     }, 200);
   }
-  handleDownloadPods = () => {
-    const { previewer: { pod } } = this.props;
-    pod.photos.split(',').forEach((item, i) => {
-      window.frames[`savePodImage${pod.id}${i}`].document.execCommand('SaveAs');
-    });
+  handleDownloadPod = () => {
+    const { previewer: { row } } = this.props;
+    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPodPDF/${createFilename('pod')}.pdf?shipmtNo=${row.shipmt_no}&podId=${row.pod_id}&publickKey=${row.public_key}`);
   }
   handleShipmtAccept = (dispId) => {
     this.props.loadAcceptDispatchers(
@@ -201,6 +203,9 @@ export default class Footer extends React.Component {
   handleShowPodModal = (row) => {
     this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
   }
+  handleShowShipmentAdvanceModal = (row) => {
+    this.props.showShipmentAdvanceModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no });
+  }
   handleResubmit = (row) => {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
   }
@@ -254,7 +259,6 @@ export default class Footer extends React.Component {
   }
   render() {
     const { tenantId, stage, previewer: { shipmt, tracking, row } } = this.props;
-
     let menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="shareShipment">共享运单</Menu.Item>
@@ -312,7 +316,7 @@ export default class Footer extends React.Component {
               <Icon type="export" />导出
             </DropdownButton>
           </div>
-          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
     } else if (stage === 'dispatch') {
@@ -367,7 +371,7 @@ export default class Footer extends React.Component {
               <Icon type="export" />导出
             </DropdownButton>
           </div>
-          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
     } else if (stage === 'tracking') {
@@ -465,8 +469,11 @@ export default class Footer extends React.Component {
               <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
                 更新交货
               </Button>
-              <Button type="ghost" size="large" onClick={() => this.handleShowTransitModal(row)} >
+              <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowTransitModal(row)} >
                 上报位置
+              </Button>
+              <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                添加垫付费用
               </Button>
             </div>
           );
@@ -477,8 +484,11 @@ export default class Footer extends React.Component {
                 <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
                   更新交货
                 </Button>
-                <Button type="ghost" size="large" onClick={() => this.handleShowTransitModal(row)} >
+                <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowTransitModal(row)} >
                   上报位置
+                </Button>
+                <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                  添加垫付费用
                 </Button>
               </div>
             );
@@ -486,6 +496,9 @@ export default class Footer extends React.Component {
             // 司机更新
             buttons = (
               <div>
+                <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                  添加垫付费用
+                </Button>
               </div>
             );
           }
@@ -493,6 +506,9 @@ export default class Footer extends React.Component {
           // 承运商更新
           buttons = (
             <div>
+              <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                添加垫付费用
+              </Button>
             </div>
           );
         }
@@ -548,7 +564,7 @@ export default class Footer extends React.Component {
               <Icon type="export" />导出
             </DropdownButton>
           </div>
-          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
     } else if (stage === 'pod') {
@@ -597,7 +613,7 @@ export default class Footer extends React.Component {
               <DropdownButton size="large" overlay={menu}>
               </DropdownButton>
             </div>
-            <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+            <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
           </div>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
@@ -616,7 +632,7 @@ export default class Footer extends React.Component {
               <DropdownButton size="large" overlay={menu}>
               </DropdownButton>
             </div>
-            <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+            <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
           </div>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.pending) {
@@ -645,11 +661,11 @@ export default class Footer extends React.Component {
         <div className="footer">
           {buttons}
           <div className="more-actions">
-            <DropdownButton size="large" overlay={menu} onClick={this.handleDownloadPods}>
+            <DropdownButton size="large" overlay={menu} onClick={this.handleDownloadPod}>
               <Icon type="export" />下载回单
             </DropdownButton>
           </div>
-          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+          <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
     } else if (stage === 'exception') {
@@ -663,7 +679,7 @@ export default class Footer extends React.Component {
             <Icon type="export" />导出
           </DropdownButton>
         </div>
-        <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} dispId={row.disp_id} />
+        <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
       </div>
     );
   }

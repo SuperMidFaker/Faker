@@ -18,7 +18,7 @@ const initialState = {
   loaded: false,
   loading: false,
   filters: [
-    { name: 'type', value: 'uploaded' },
+    { name: 'type', value: 'upload' },
     { name: 'shipmt_no', value: '' },
   ],
   /*

@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
-  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL',
+  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
@@ -39,6 +39,11 @@ const initialState = {
     visible: false,
     shipments: [],
     type: 'pickup',
+  },
+  shipmentAdvanceModal: {
+    visible: false,
+    dispId: -1,
+    shipmtNo: '',
   },
   locModal: {
     visible: false,
@@ -105,6 +110,10 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, filters };
     }
+    case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL:
+      return {
+        ...state, shipmentAdvanceModal: action.data,
+      };
     default:
       return state;
   }
@@ -244,5 +253,12 @@ export function changeStatusFilter(field, value) {
   return {
     type: actionTypes.CHANGE_FILTER,
     data: { field, value },
+  };
+}
+
+export function showShipmentAdvanceModal({ visible, dispId, shipmtNo }) {
+  return {
+    type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
+    data: { visible, dispId, shipmtNo },
   };
 }

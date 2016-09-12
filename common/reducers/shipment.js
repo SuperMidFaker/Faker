@@ -63,6 +63,7 @@ const initialState = {
     tracking: {
       points: [],
     },
+    pod: {},
   },
   statistics: {
     points: [],
@@ -278,6 +279,21 @@ export function loadPubShipmtDetail(shipmtNo, key) {
       endpoint: 'public/v1/transport/shipment/detail',
       method: 'get',
       params: { shipmtNo, key },
+    },
+  };
+}
+
+export function loadPubShipmtPod(shipmtNo, podId, key) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PUB_DETAIL,
+        actionTypes.LOAD_PUB_DETAIL_SUCCEED,
+        actionTypes.LOAD_PUB_DETAIL_FAIL,
+      ],
+      endpoint: 'public/v1/transport/shipment/pod',
+      method: 'get',
+      params: { shipmtNo, podId, key },
     },
   };
 }

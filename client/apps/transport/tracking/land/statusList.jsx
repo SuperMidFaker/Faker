@@ -23,6 +23,7 @@ import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
+import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 
 const formatMsg = format(messages);
 
@@ -339,6 +340,7 @@ export default class LandStatusList extends React.Component {
         <PodModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
         <ExcpEventsModal />
+        <ShipmentAdvanceModal />
       </div>
     );
   }
