@@ -84,7 +84,7 @@ export default class BillForm extends React.Component {
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
     return (<div>
-      <div className="panel-body padding fixed-height">
+      <div className="panel-body collapse fixed-height">
         <Collapse accordion defaultActiveKey="bill-head" style={{ marginBottom: 46 }}>
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
@@ -99,7 +99,7 @@ export default class BillForm extends React.Component {
       </div>
       <div className="panel-footer">
         {!readonly &&
-          <Button type="primary" onClick={this.handleBillSave} icon="save" size="small">
+          <Button type="primary" onClick={this.handleBillSave} icon="save">
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>
         }

@@ -89,7 +89,7 @@ export default class EntryBillForm extends React.Component {
     const { readonly, ietype, entries, activeKey } = this.props;
     return (
       <div className="main-content">
-        <div className="page-body fixed-height">
+        <div className="page-body tabbed fixed-height">
           <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={activeKey}
             onChange={this.handleTabChange}
           >

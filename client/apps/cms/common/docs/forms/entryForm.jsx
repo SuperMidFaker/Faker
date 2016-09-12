@@ -104,7 +104,7 @@ export default class EntryForm extends React.Component {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
     return (<div>
-      <div className="panel-body padding fixed-height">
+      <div className="panel-body collapse fixed-height">
         <Collapse accordion defaultActiveKey="entry-head" style={{ marginBottom: 46 }}>
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
@@ -120,12 +120,13 @@ export default class EntryForm extends React.Component {
       </div>
       <div className="panel-footer">
         {!readonly &&
-          <Button type="primary" onClick={this.handleEntryHeadSave} icon="save" size="small">
+          <Button type="primary" onClick={this.handleEntryHeadSave} icon="save">
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>
         }
+        <span />
         {!readonly &&
-          <Button type="ghost" icon="delete" size="small" onClick={this.handleEntryDel} />
+          <Button type="ghost" icon="delete" onClick={this.handleEntryDel} />
         }
       </div>
     </div>);
