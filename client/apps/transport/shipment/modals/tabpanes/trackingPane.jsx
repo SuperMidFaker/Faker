@@ -158,6 +158,7 @@ export default class PreviewPanel extends React.Component {
       currentStep = logs.length - 1;
       trackingSteps = logSteps;
     }
+    trackingSteps = logSteps;
     return (
       <div className="pane-content tab-pane" style={{ paddingBottom: 60 }}>
         <Card>
