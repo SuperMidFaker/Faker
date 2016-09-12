@@ -80,7 +80,7 @@ export default class ShipmentDraftEdit extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleDraftAccept = (ev) => {
     ev.preventDefault();
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
@@ -90,7 +90,7 @@ export default class ShipmentDraftEdit extends React.Component {
           ...this.props.form.getFieldsValue(),
         };
         this.props.acceptDraft(form, loginId, loginName, tenantId)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -116,7 +116,7 @@ export default class ShipmentDraftEdit extends React.Component {
       ...this.props.form.getFieldsValue(),
     };
     this.props.saveEdit(form, this.props.tenantId, this.props.loginId)
-      .then(result => {
+      .then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

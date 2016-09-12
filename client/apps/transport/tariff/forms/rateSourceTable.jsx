@@ -108,7 +108,7 @@ export default class RateSourceTable extends React.Component {
     this.props.onChangeVisible('source', true);
   }
   handleDel = (row) => {
-    this.props.delRateSource(row._id).then(result => {
+    this.props.delRateSource(row._id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -137,7 +137,7 @@ export default class RateSourceTable extends React.Component {
             this.state.regionCode,
             this.state.modalRegion);
       }
-      prom.then(result => {
+      prom.then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -189,7 +189,7 @@ export default class RateSourceTable extends React.Component {
       rateId: row._id,
       pageSize: 10,
       current: 1,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }

@@ -78,7 +78,7 @@ export default class ShipmentCreate extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSavePending = (ev) => {
     ev.preventDefault();
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
@@ -91,7 +91,7 @@ export default class ShipmentCreate extends React.Component {
           name: this.props.tenantName,
           login_id: this.props.loginId,
           login_name: this.props.loginName,
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -111,7 +111,7 @@ export default class ShipmentCreate extends React.Component {
     });
   }
   handleSaveAndAccept = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
@@ -124,7 +124,7 @@ export default class ShipmentCreate extends React.Component {
           name: this.props.tenantName,
           login_id: this.props.loginId,
           login_name: this.props.loginName,
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -154,7 +154,7 @@ export default class ShipmentCreate extends React.Component {
       name: this.props.tenantName,
       login_id: this.props.loginId,
       login_name: this.props.loginName,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {

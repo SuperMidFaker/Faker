@@ -8,7 +8,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 import AgreementForm from './forms/agreement';
 import RatesForm from './forms/rates';
 import SurchargeForm from './forms/surcharge';
-import { loadTariff } from 'common/reducers/transportTariff';
+import { loadTariff, loadFormParams } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -16,10 +16,13 @@ const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
 function fetchData({ state, params, dispatch }) {
-  return dispatch(loadTariff({
+  const proms = [];
+  proms.push(dispatch(loadFormParams(state.account.tenantId)));
+  proms.push(dispatch(loadTariff({
     tariffId: params.uid,
     tenantId: state.account.tenantId,
-  }));
+  })));
+  return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)

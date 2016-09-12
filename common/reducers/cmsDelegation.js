@@ -105,7 +105,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ACCEPT_SUCCEED: {
       const delgBillsMap = {};
       const delgList = action.result.data;
-      delgList.data.forEach(delg => {
+      delgList.data.forEach((delg) => {
         delgBillsMap[delg.delg_no] = [];
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,

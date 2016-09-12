@@ -96,12 +96,12 @@ export default class PersonnelSetting extends React.Component {
       pageSize: personnelist.pageSize,
       filters: JSON.stringify(filters),
       currentPage: 1,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         let tenant;
-        this.props.branches.forEach(br => {
+        this.props.branches.forEach((br) => {
           if (`${br.key}` === val) {
             tenant = {
               id: br.key,
@@ -127,7 +127,7 @@ export default class PersonnelSetting extends React.Component {
   }
   handlePersonnelDel(record) {
     const { tenant, filters, personnelist: { totalCount, current, pageSize } } = this.props;
-    this.props.delPersonnel(record.key, record.loginId, tenant).then(result => {
+    this.props.delPersonnel(record.key, record.loginId, tenant).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -176,7 +176,7 @@ export default class PersonnelSetting extends React.Component {
   }
   render() {
     const { intl, code, tenant, personnelist, branches, loading } = this.props;
-    const msg = (descriptor) => formatMsg(intl, descriptor);
+    const msg = descriptor => formatMsg(intl, descriptor);
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPersonnel(null, params),
       resolve: result => result.data,
@@ -327,7 +327,7 @@ export default class PersonnelSetting extends React.Component {
             <div className="panel-header">
               <div className="tools">
                 <Select style={{ width: 200 }} value={`${tenant.id}`}
-                  onChange={(value) => this.handleTenantSwitch(value)}
+                  onChange={value => this.handleTenantSwitch(value)}
                 >
                   {
                     branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)

@@ -6,6 +6,9 @@ import { Col, Table, Collapse, Timeline, Icon } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
 import { PRESET_TRANSMODES } from 'common/constants';
+import ChangeShipment from '../change-shipment';
+import { showChangeShipmentModal }
+  from 'common/reducers/shipment';
 import messages from '../../message.i18n';
 import './pane.less';
 const formatMsg = format(messages);
@@ -41,14 +44,16 @@ PaneFormItem.propTypes = {
 @connect(
   state => ({
     shipmt: state.shipment.previewer.shipmt,
-  })
+  }),
+  { showChangeShipmentModal }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmt: PropTypes.object.isRequired,
+    showChangeShipmentModal: PropTypes.func.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('goodsCode'),
     dataIndex: 'goods_no',
@@ -80,6 +85,27 @@ export default class PreviewPanel extends React.Component {
     title: this.msg('goodsRemark'),
     dataIndex: 'remark',
   }]
+
+  handleChangeTransitMode = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'transitModeChanged' });
+  }
+  handleChangeTransitTime = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'timeInfoChanged' });
+  }
+  handleChangeTransitConsigner = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consignerInfoChanged' });
+  }
+  handleChangeTransitConsignee = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consigneeInfoChanged' });
+  }
+  handleChangeTransitGoodsInfo = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'goodsInfoChanged' });
+  }
   renderConsignPort(province, city, district) {
     if (city === '市辖区' || city === '县') {
       return `${province},${district}`;
@@ -89,6 +115,22 @@ export default class PreviewPanel extends React.Component {
   }
   render() {
     const { shipmt } = this.props;
+    let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
+    let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
+    let goodsInfo = `${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`;
+    if (shipmt.status <= 3) {
+      shipmtSchedule = (<div>{this.msg('shipmtSchedule')} {shipmt.transit_time || '当'}{this.msg('day')}
+        <a onClick={this.handleChangeTransitConsigner}>修改发货信息</a>
+        <span className="ant-divider" />
+        <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
+        <span className="ant-divider" />
+        <a onClick={this.handleChangeTransitTime}>修改时间信息</a>
+        </div>);
+      transitModeInfo = (<div>{this.msg('transitModeInfo')} {shipmt.transport_mode} <a onClick={this.handleChangeTransitMode}>修改</a></div>);
+      goodsInfo = (<div>{this.msg('goodsInfo')} {this.msg('totalCount')}: {shipmt.total_count || ''} / {this.msg('totalWeight')}: {shipmt.total_weight || ''}{this.msg('kilogram')} / {this.msg('totalVolume')}: {shipmt.total_volume || ''}{this.msg('cubicMeter')}
+        <a onClick={this.handleChangeTransitGoodsInfo}>修改</a></div>);
+    }
+
     return (
       <div className="pane-content tab-pane">
         <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
@@ -114,7 +156,7 @@ export default class PreviewPanel extends React.Component {
               />
             </Col>
           </Panel>
-          <Panel header={`${this.msg('shipmtSchedule')}  ${shipmt.transit_time || '当'}${this.msg('day')}`} key="trans_schedule">
+          <Panel header={shipmtSchedule} key="trans_schedule">
             <Timeline>
               <Timeline.Item color="blue" dot={<Icon type="circle-o-up" style={{ fontSize: '16px' }} />}>
                 <p><strong>{this.msg('pickupEstDate')} {moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}</strong></p>
@@ -133,7 +175,7 @@ export default class PreviewPanel extends React.Component {
               </Timeline.Item>
             </Timeline>
           </Panel>
-          <Panel header={`${this.msg('transitModeInfo')} ${shipmt.transport_mode}`} key="trans_mode">
+          <Panel header={transitModeInfo} key="trans_mode">
             <Col span="24">
               <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
                 field={shipmt.remark} fieldCol={{ span: 21 }}
@@ -161,7 +203,7 @@ export default class PreviewPanel extends React.Component {
             </Col>
             }
           </Panel>
-          <Panel header={`${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`} key="cargo">
+          <Panel header={goodsInfo} key="cargo">
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
                 field={shipmt.goods_type} fieldCol={{ span: 16 }}
@@ -184,6 +226,7 @@ export default class PreviewPanel extends React.Component {
             </Col>
           </Panel>
         </Collapse>
+        <ChangeShipment />
       </div>
     );
   }

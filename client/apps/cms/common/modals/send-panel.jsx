@@ -58,7 +58,7 @@ export default class SendPanel extends React.Component {
       message.error('请选择报关行', 5);
     } else {
       this.props.sendDelegate({ delegations: sendPanel.delegations, receiver: this.state.receiver, tenantId, loginId, loginName, tenantName }).then(
-        result => {
+        (result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -121,7 +121,7 @@ export default class SendPanel extends React.Component {
              <Collapse defaultActiveKey={['1']} onChange={this.handleCollapseChange}>
                 <Panel header="选择报关行" key="1">
                   <Select size="large" defaultValue="" style={{ width: '100%' }} onChange={this.handleCCBChange}>
-                  {formRequire.clients.map((item) => <Option value={item.tid}>{item.name}</Option>)}
+                  {formRequire.clients.map(item => <Option value={item.tid}>{item.name}</Option>)}
                   </Select>
                   <Table columns={columns} dataSource={delegations} rowKey={record => record.delg_no} pagination="false" style={{ marginTop: '10px' }} />
                   <div>

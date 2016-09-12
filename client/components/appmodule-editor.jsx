@@ -33,7 +33,7 @@ export default class ModuleEditor extends React.Component {
     }
     if ('tenantApps' in nextProps) {
       const enMods = {};
-      nextProps.tenantApps.forEach(mod => {
+      nextProps.tenantApps.forEach((mod) => {
         enMods[mod.id] = true;
       });
       this.setState({ enabledApps: enMods });
@@ -92,7 +92,7 @@ export default class ModuleEditor extends React.Component {
               <Col span="8">
                 <div className="pull-right">
                   <Switch checked={!!this.state.enabledApps[ap.id]}
-                    onChange={(checked) => this.handleAppCheck(ap, checked)}
+                    onChange={checked => this.handleAppCheck(ap, checked)}
                   />
                 </div>
               </Col>

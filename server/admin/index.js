@@ -15,7 +15,7 @@ import webRoutes from './routes/web.route';
 function loadRoutes(routes) {
   const kroute = koaRoute();
   if (routes.length > 0) {
-    routes.forEach(r => {
+    routes.forEach((r) => {
       if (r.length === 4) {
         kroute[r[0].toLowerCase()](r[3], r[1], r[2]);
       } else {

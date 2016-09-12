@@ -12,7 +12,7 @@ import { DEFAULT_MODULES } from 'common/constants';
   const moduleUrl = pathname.split('/')[1];
   let text;
   let moduleName;
-  Object.keys(DEFAULT_MODULES).forEach(mod => {
+  Object.keys(DEFAULT_MODULES).forEach((mod) => {
     if (DEFAULT_MODULES[mod].url.indexOf(moduleUrl) > 0) {
       moduleName = DEFAULT_MODULES[mod].cls;
       text = DEFAULT_MODULES[mod].text;

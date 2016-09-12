@@ -91,7 +91,7 @@ export default class CorpList extends React.Component {
     showWarningModal({
       title: formatMsg(intl, 'deleteTip'),
       content: formatMsg(intl, 'deleteWarn'),
-      onOk: () => this.props.delCorp(id, tenantId).then(result => {
+      onOk: () => this.props.delCorp(id, tenantId).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -129,8 +129,8 @@ export default class CorpList extends React.Component {
   render() {
     const { intl, corplist, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => this.props.loadOrgans(null, params),
-      resolve: (result) => result.data,
+      fetcher: params => this.props.loadOrgans(null, params),
+      resolve: result => result.data,
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),

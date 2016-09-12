@@ -4,10 +4,8 @@ import { loadPodTable, loadUploadedPodTable, toUploadPod } from 'common/reducers
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 
-import WeUI from 'react-weui';
+import { Cells, CellsTitle, Cell, CellBody, CellFooter, Icon } from 'react-weui';
 import '../../weui.less';
-
-const { Cells, CellsTitle, Cell, CellBody, CellFooter, Icon } = WeUI;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];
@@ -59,7 +57,7 @@ export default class List extends React.Component {
         <section>
           <CellsTitle>待上传回单</CellsTitle>
             <Cells access>
-            {shipmentlist.data.map(item => {
+            {shipmentlist.data.map((item) => {
               return (
                   <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
                     <CellBody>
@@ -74,7 +72,7 @@ export default class List extends React.Component {
             </Cells>
           <CellsTitle>已提交回单</CellsTitle>
           <Cells>
-            {uploadedShipmentlist.data.map(item => {
+            {uploadedShipmentlist.data.map((item) => {
               return (
                 <Cell style={{ color: '#CCCCCC' }}>
                   <CellBody>

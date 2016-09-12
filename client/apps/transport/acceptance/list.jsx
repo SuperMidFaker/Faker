@@ -121,7 +121,7 @@ export default class AcceptList extends React.Component {
     remotes: this.props.shipmentlist,
   })
 
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
@@ -142,11 +142,11 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    render: (o) => <TrimSpan text={o} />,
+    render: o => <TrimSpan text={o} />,
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
@@ -165,25 +165,25 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
-    render: (o) => <TrimSpan text={o} maxLen={8} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignorPlace'),
     render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
-    render: (o) => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
-    render: (o) => <TrimSpan text={o} maxLen={8} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
     render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
-    render: (o) => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
@@ -225,7 +225,7 @@ export default class AcceptList extends React.Component {
       currentPage: current || this.props.shipmentlist.current,
       sortField: sortField || this.props.sortField,
       sortOrder: sortOrder || this.props.sortOrder,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -240,7 +240,7 @@ export default class AcceptList extends React.Component {
   }
   handleAdvancedSearch = (searchVals) => {
     let filters = this.props.filters;
-    Object.keys(searchVals).forEach(key => {
+    Object.keys(searchVals).forEach((key) => {
       filters = this.mergeFilters(filters, key, searchVals[key]);
     });
     this.handleTableLoad(filters, 1);
@@ -261,7 +261,7 @@ export default class AcceptList extends React.Component {
     ev.stopPropagation();
     this.props.loadAcceptDispatchers(
       this.props.tenantId, [dispId]
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -273,7 +273,7 @@ export default class AcceptList extends React.Component {
     ev.stopPropagation();
     this.props.loadAcceptDispatchers(
       this.props.tenantId, dispIds
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -292,7 +292,7 @@ export default class AcceptList extends React.Component {
   handleShipmtDraftDel(shipmtNo, ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.delDraft(shipmtNo).then(result => {
+    this.props.delDraft(shipmtNo).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -301,7 +301,7 @@ export default class AcceptList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -328,7 +328,7 @@ export default class AcceptList extends React.Component {
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: selectedRowKeys => {
+      onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
@@ -350,7 +350,7 @@ export default class AcceptList extends React.Component {
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
               <span>
-              <a role="button" onClick={(ev) => this.handleShipmtAccept(record.key, ev)}>
+              <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
               {this.msg('shipmtAccept')}
               </a>
               <span className="ant-divider" />
@@ -358,7 +358,7 @@ export default class AcceptList extends React.Component {
                 {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a role="button" onClick={(ev) => this.handleShipmtRevoke(record.key, ev)}>
+                <a role="button" onClick={ev => this.handleShipmtRevoke(record.key, ev)}>
                 {this.msg('shipmtRevoke')}
                 </a>
               </span>
@@ -366,7 +366,7 @@ export default class AcceptList extends React.Component {
           } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
             return (
               <span>
-                <a role="button" onClick={(ev) => this.handleShipmtAccept(record.key, ev)}>
+                <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
                 {this.msg('shipmtAccept')}
                 </a>
               </span>
@@ -376,7 +376,7 @@ export default class AcceptList extends React.Component {
       }];
       btns = (
         <div style={{ display: 'inline-block' }}>
-          <Button type="primary" onClick={(ev) => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+          <Button type="primary" onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
           批量接单
           </Button>
         </div>
@@ -393,7 +393,7 @@ export default class AcceptList extends React.Component {
               {formatGlobalMsg(intl, 'modify')}
               </NavLink>
               <span className="ant-divider" />
-              <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={(ev) => this.handleShipmtDraftDel(record.shipmt_no, ev)}>
+              <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}>
                 <a role="button">
                 {formatGlobalMsg(intl, 'delete')}
                 </a>

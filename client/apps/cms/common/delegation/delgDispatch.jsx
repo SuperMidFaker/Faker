@@ -79,7 +79,7 @@ export default class DelgDispatch extends Component {
     const { dispatch, tenantId } = this.props;
     this.props.delDisp(dispatch.delg_no, tenantId
     ).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -98,7 +98,7 @@ export default class DelgDispatch extends Component {
     }
     this.props.delgDispSave(delgDisp, dispatch, partner
     ).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

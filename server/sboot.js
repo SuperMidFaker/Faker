@@ -2,10 +2,8 @@
 const path = require('path');
 process.env.NODE_PATH = path.resolve(__dirname, '..');
 require('module').Module._initPaths();
-require('babel/register')({
-  stage: 0,
-  blacklist: ['regenerator'],
-});
+require('babel-core/register');
+require('babel-polyfill');
 console.time('starting web server');
 
 const argv = require('./util/minimist')(process.argv.slice(2));

@@ -29,7 +29,7 @@ export function PortDate(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const ieDateProps = {
     outercol: 8,
@@ -126,7 +126,7 @@ export class RelationAutoCompSelect extends React.Component {
                 {...getFieldProps(nameField, {
                   rules: nameRules,
                   initialValue: formData && formData[nameField],
-                })} disabled={disabled}
+                })}
               />
             </Col>
           </Row>
@@ -204,7 +204,7 @@ export function TradeRemission(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const remissionProps = {
     outercol: 8,
@@ -218,7 +218,7 @@ export function TradeRemission(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const emsNoProps = {
     outercol: 8,
@@ -262,7 +262,7 @@ export function CountryAttr(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const departCountryProps = {
     outercol: 12,
@@ -277,7 +277,7 @@ export function CountryAttr(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const licenseNoProps = {
     outercol: 12,
@@ -300,7 +300,7 @@ export function CountryAttr(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const contractNoProps = {
     outercol: 12,
@@ -393,7 +393,7 @@ export function DestInvoice(props) {
     disabled,
     formData,
     getFieldProps,
-    searchKeyFn: (opt) => opt.value,
+    searchKeyFn: opt => opt.value,
   };
   const invoiceNoProps = {
     outercol: 8,

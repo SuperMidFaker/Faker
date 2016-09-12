@@ -57,7 +57,7 @@ export default class PartnerInviteDialog extends React.Component {
     }
     this.props.sendInvitation(
       this.state.contact, this.props.tenantId, this.props.partnerCode, this.props.partnerName
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

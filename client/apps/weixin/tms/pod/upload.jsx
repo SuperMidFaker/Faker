@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { Upload, Icon, message } from 'antd';
 import { saveSubmitPod } from 'common/reducers/trackingLandStatus';
 
-import WeUI from 'react-weui';
+import { Cells, CellsTitle, Cell, CellBody, CellFooter,
+  TextArea, Button, Select } from 'react-weui';
 import '../../weui.less';
-
-const { Cells, CellsTitle, Cell, CellBody, CellFooter, TextArea,
-Button, Select } = WeUI;
 
 @connect(
   state => ({
@@ -46,10 +44,10 @@ export default class UploadPod extends React.Component {
   handleFieldChange = (ev) => {
     this.setState({ remark: ev.target.value });
   }
-  handleSignSelectChange = ev => {
+  handleSignSelectChange = (ev) => {
     this.setState({ signStatus: ev.target.value });
   }
-  handlePhotoUpload = info => {
+  handlePhotoUpload = (info) => {
     if (info.file.status === 'done' && info.file.response) {
       if (info.file.response.status === 200) {
         const photos = [...this.state.photoList];
@@ -71,7 +69,7 @@ export default class UploadPod extends React.Component {
     const photos = photoList.map(ph => ph.url).join(',');
     this.props.saveSubmitPod('enterprise', shipmtNo, dispId, parentDispId, submitter,
                              signStatus, remark, photos, loginId, tenantId, tenantName).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

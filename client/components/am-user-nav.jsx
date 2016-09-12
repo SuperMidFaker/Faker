@@ -47,7 +47,7 @@ export default class AmUserNav extends React.Component {
     this.setState({ visible: false });
   }
   handleLogout = () => {
-    this.props.logout().then(result => {
+    this.props.logout().then((result) => {
       if (!result.error) {
         window.location.href = '/login';
       }

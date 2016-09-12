@@ -15,6 +15,8 @@ const FormItem = Form.Item;
     loading: state.transportTariff.ratesEndLoading,
     ratesEndList: state.transportTariff.ratesEndList,
     agreementRef: state.transportTariff.ratesRefAgreement,
+    vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
+    vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
   }),
   { submitRateEnd, updateRateEnd, delRateEnd, loadRateEnds }
 )
@@ -27,6 +29,14 @@ export default class RateEndTable extends React.Component {
     agreementRef: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     form: PropTypes.object.isRequired,
+    vehicleTypeParams: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
+    vehicleLengthParams: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
     onChangeVisible: PropTypes.func.isRequired,
     submitRateEnd: PropTypes.func.isRequired,
     updateRateEnd: PropTypes.func.isRequired,
@@ -94,7 +104,7 @@ export default class RateEndTable extends React.Component {
   }
   handleSave = () => {
     if (this.state.editRegionCode) {
-      this.props.form.validateFields(errors => {
+      this.props.form.validateFields((errors) => {
         if (errors) {
           message.error('表单错误');
         } else {
@@ -122,7 +132,7 @@ export default class RateEndTable extends React.Component {
               gradients: this.state.editEnd.gradients,
             });
           }
-          prom.then(result => {
+          prom.then((result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {
@@ -140,7 +150,7 @@ export default class RateEndTable extends React.Component {
                 editRegion: [],
               });
               this.props.form.resetFields();
-              this.loadEnds().then(leres => {
+              this.loadEnds().then((leres) => {
                 if (leres.error) {
                   message.error(leres.error.message);
                 }
@@ -184,7 +194,7 @@ export default class RateEndTable extends React.Component {
     this.props.onChangeVisible('end', true);
   }
   handleDel = (row) => {
-    this.props.delRateEnd(this.props.rateId, row._id).then(result => {
+    this.props.delRateEnd(this.props.rateId, row._id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -200,12 +210,12 @@ export default class RateEndTable extends React.Component {
   }
   render() {
     const { ratesEndList, loading, visibleModal, form: { getFieldProps },
-      agreementRef } = this.props;
+      agreementRef, vehicleTypeParams, vehicleLengthParams } = this.props;
     const { editEnd, editRegion } = this.state;
     this.dataSource.remotes = ratesEndList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: selectedRowKeys => {
+      onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
@@ -222,8 +232,8 @@ export default class RateEndTable extends React.Component {
         dataIndex: 'flare',
       });
     }
-    const varColumns = getEndTableVarColumns(agreementRef);
-    varColumns.forEach(vc => {
+    const varColumns = getEndTableVarColumns(agreementRef, vehicleTypeParams, vehicleLengthParams);
+    varColumns.forEach((vc) => {
       columns.push({
         title: vc.title,
         render: (o, record) => record.gradients[vc.index],
@@ -287,7 +297,7 @@ export default class RateEndTable extends React.Component {
                 <FormItem key={vc.title} label={vc.title} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 <Input {...getFieldProps(`gradient${idx}`, {
                   initialValue: editEnd.gradients[vc.index] || '',
-                  onChange: (ev) => this.handleGradientChange(idx, ev.target.value),
+                  onChange: ev => this.handleGradientChange(idx, ev.target.value),
                   rules: [{ required: true, message: '梯度费率必填',
                     type: 'number', transform: v => Number(v) }],
                 })} />

@@ -61,7 +61,7 @@ export default function render(request) {
             const content = ReactDom.renderToString(component);
             const assets = webpackIsomorphicTools.assets();
             let pageCss = '';
-            Object.keys(assets.styles).forEach(style => {
+            Object.keys(assets.styles).forEach((style) => {
               pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
             });
             // manifest could be inline script
@@ -72,12 +72,12 @@ export default function render(request) {
             pageJs += assets.javascript.manifest ? `<script src=${assets.javascript.manifest}></script>` : '';
             pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
             Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'manifest')
-            .forEach(script => {
+            .forEach((script) => {
               pageJs += `<script src=${assets.javascript[script]}></script>`;
             });
             const htmls = renderAsHtml(pageCss, pageJs, content);
             resolve(htmls);
-          }).catch(e => {
+          }).catch((e) => {
             reject(e);
           });
       }

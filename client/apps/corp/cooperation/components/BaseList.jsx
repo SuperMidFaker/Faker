@@ -127,7 +127,7 @@ export default class BaseList extends Component {
     partnerModal({
       onOk: (ename, ecode) => {
         this.props.editPartner(key, ename, ecode).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             }

@@ -59,11 +59,11 @@ export default class PodSubmitter extends React.Component {
       photoList,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (ev) => {
     this.setState({ remark: ev.target.value });
   }
-  handleSignRadioChange = ev => {
+  handleSignRadioChange = (ev) => {
     this.setState({ signStatus: ev.target.value });
   }
   handlePhotoRemove = (file) => {
@@ -72,7 +72,7 @@ export default class PodSubmitter extends React.Component {
     photoList.splice(index, 1);
     this.setState({ photoList });
   }
-  handlePhotoUpload = info => {
+  handlePhotoUpload = (info) => {
     const fileList = [...info.fileList];
     const index = fileList.findIndex(item => item.uid === info.file.uid);
     fileList[index].url = info.file.response ? info.file.response.data : '';
@@ -84,7 +84,7 @@ export default class PodSubmitter extends React.Component {
     const photos = photoList.map(ph => ph.url).join(',');
     this.props.saveSubmitPod('enterprise', shipmtNo, dispId, parentDispId, submitter,
                              signStatus, remark, photos, loginId, tenantId, tenantName).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

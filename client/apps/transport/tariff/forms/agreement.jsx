@@ -84,7 +84,7 @@ export default class AgreementForm extends React.Component {
     // console.log(this.price);
   }
   handleSubmit = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error('表单信息错误');
       } else {
@@ -114,7 +114,7 @@ export default class AgreementForm extends React.Component {
           forms.loginId = loginId;
           promise = this.props.submitAgreement(forms);
         }
-        promise.then(result => {
+        promise.then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -131,7 +131,7 @@ export default class AgreementForm extends React.Component {
       this.setState({ partnerVisible: false });
     } else if (kind.value === 'sales') {
       this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -140,7 +140,7 @@ export default class AgreementForm extends React.Component {
         });
     } else if (kind.value === 'cost') {
       this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -150,9 +150,17 @@ export default class AgreementForm extends React.Component {
     }
   }
   handleModeSelect = (value) => {
-    if (value === PRESET_TRANSMODES.ftl) {
+    if (isNaN(value)) {
+      return;
+    }
+    const tms = this.props.formParams.transModes.filter(tm => tm.id === Number(value));
+    if (tms.length !== 1) {
+      return;
+    }
+    const code = tms[0].mode_code;
+    if (code === PRESET_TRANSMODES.ftl) {
       this.setState({ transMode: 'ftl' });
-    } else if (value === PRESET_TRANSMODES.ctn) {
+    } else if (code === PRESET_TRANSMODES.ctn) {
       this.setState({ transMode: 'ctn' });
     } else {
       this.setState({ transMode: 'ltl' });
@@ -260,13 +268,14 @@ export default class AgreementForm extends React.Component {
               <Col sm={6}>
                 <FormItem label="运输模式" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
                   <Select onSelect={this.handleModeSelect} {...getFieldProps('transModeCode', {
-                    initialValue: formData.transModeCode,
-                    rules: [{ required: true, message: '运输模式必选' }],
+                    initialValue: isNaN(formData.transModeCode) ? undefined :
+                      parseInt(formData.transModeCode, 10),
+                    rules: [{ required: true, type: 'number', message: '运输模式必选' }],
                   })} disabled={readonly}
                   >
                   {
                     formParams.transModes.map(tm =>
-                      <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
+                      <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
                     )
                   }
                   </Select>

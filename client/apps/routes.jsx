@@ -27,6 +27,7 @@ import * as TMSResources from './transport/resources';
 import * as TMSTariff from './transport/tariff';
 import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tracking';
+import * as Template from './pub/template';
 import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
 import Clearance from './cms/module-clearance';
@@ -70,6 +71,12 @@ export default(store, cookie) => {
       <Route path="pub">
         <Route path="tracking" component={PublicTMS.TrackingSearch} />
         <Route path="tms/tracking/detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail} />
+        <Route path="template">
+          <Route path="shipment">
+            <Route path="detail/:shipmtNo/:key" component={Template.ShipmentDetail} />
+            <Route path="pod/:shipmtNo/:podId/:key" component={Template.ShipmentPod} />
+          </Route>
+        </Route>
       </Route>
       <Route path="weixin">
         <Route path="bind" component={WeixinBinder} />

@@ -44,7 +44,7 @@ export default class PreviewPanel extends React.Component {
     intl: intlShape.isRequired,
     tracking: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   stepIcon = (step) => {
     switch (step.type) {
       case 'created': return 'check-circle-o';
@@ -60,6 +60,11 @@ export default class PreviewPanel extends React.Component {
       case 'podPassed': return 'check-circle-o';
       case 'podReturned': return 'exclamation-circle-o';
       case 'vehicleUpdated': return 'info-circle-o';
+      case 'transitModeChanged': return 'info-circle-o';
+      case 'consignerInfoChanged': return 'info-circle-o';
+      case 'consigneeInfoChanged': return 'info-circle-o';
+      case 'goodsInfoChanged': return 'info-circle-o';
+      case 'timeInfoChanged': return 'info-circle-o';
       default : return '';
     }
   }
@@ -153,6 +158,7 @@ export default class PreviewPanel extends React.Component {
       currentStep = logs.length - 1;
       trackingSteps = logSteps;
     }
+    trackingSteps = logSteps;
     return (
       <div className="pane-content tab-pane" style={{ paddingBottom: 60 }}>
         <Card>

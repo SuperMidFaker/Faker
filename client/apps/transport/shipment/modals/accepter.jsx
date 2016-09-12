@@ -41,7 +41,7 @@ export default class AccepterModal extends React.Component {
       this.props.shipmtDispIds,
       this.props.acpterId, this.props.acpterName,
       this.state.disperId, this.state.disperName
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -60,7 +60,7 @@ export default class AccepterModal extends React.Component {
       disperName: label,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible, dispatchers } = this.props;
     return (

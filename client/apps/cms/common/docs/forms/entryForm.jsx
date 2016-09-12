@@ -68,7 +68,7 @@ export default class EntryForm extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEntryHeadSave = (ev) => {
     ev.preventDefault();
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { entry, totalCount, ietype, tenantId, loginId } = this.props;
         const head = {
@@ -76,7 +76,7 @@ export default class EntryForm extends React.Component {
           id: entry.head.id || this.state.head_id,
         };
         this.props.saveEntryHead({ head, totalCount, loginId, ietype, tenantId }).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {
@@ -93,7 +93,7 @@ export default class EntryForm extends React.Component {
   handleEntryDel = () => {
     const headId = this.props.entry.head.id || this.state.head_id;
     if (headId) {
-      this.props.delEntry(headId, this.props.index).then(result => {
+      this.props.delEntry(headId, this.props.index).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }

@@ -41,7 +41,7 @@ function getRenderFields(type) {
 function getFieldDefaults(state, type) {
   const defaults = {};
   const fields = getRenderFields(type);
-  Object.keys(fields).forEach(fd => {
+  Object.keys(fields).forEach((fd) => {
     defaults[fields[fd]] = state.shipment.formData[fields[fd]];
   });
   return defaults;
@@ -74,7 +74,7 @@ export default class ConsignInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleItemSelect = (name) => {
     let selectConsignLoc;
-    this.props.consignLocations.forEach(cl => {
+    this.props.consignLocations.forEach((cl) => {
       if (cl.name === name) {
         selectConsignLoc = cl;
         return;

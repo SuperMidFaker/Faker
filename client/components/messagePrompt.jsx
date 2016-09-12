@@ -21,7 +21,7 @@ function fetchData({ state, dispatch, cookie }) {
 
 @injectIntl
 @connect(
-  state => {
+  (state) => {
     return {
       tenantId: state.account.tenantId,
       loginId: state.account.loginId,

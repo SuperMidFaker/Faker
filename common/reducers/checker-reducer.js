@@ -24,7 +24,7 @@ export function isLoginNameExist(name, code, loginId, tenantId, callback, messag
     return callback(new Error(formatFn(messages, 'userNameNoSymbolAt')));
   }
   // 判断主租户下用户名是否重复
-  checkerDispatchFn(`${name}@${code}`, loginId, tenantId).then(result => {
+  checkerDispatchFn(`${name}@${code}`, loginId, tenantId).then((result) => {
     if (result.error) {
       message.error(result.error.message, 10);
       callback();

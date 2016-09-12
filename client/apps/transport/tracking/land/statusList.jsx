@@ -24,11 +24,12 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import ExportExcel from './modals/export-excel';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
+import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, params, cookie }) {
-  const newfilters = state.trackingLandStatus.filters.map(flt => {
+  const newfilters = state.trackingLandStatus.filters.map((flt) => {
     if (flt.name === 'type') {
       return {
         name: 'type',
@@ -103,7 +104,7 @@ export default class LandStatusList extends React.Component {
   componentWillReceiveProps(nextProps) {
     let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
-      newfilters = nextProps.filters.map(flt => {
+      newfilters = nextProps.filters.map((flt) => {
         if (flt.name === 'type') {
           return {
             name: 'type',
@@ -165,7 +166,7 @@ export default class LandStatusList extends React.Component {
       sortField: sortField || this.props.sortField,
       sortOrder: sortOrder || this.props.sortOrder,
      */
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -193,7 +194,7 @@ export default class LandStatusList extends React.Component {
   }
   handleShowBatchPickModal = () => {
     const listData = this.props.shipmentlist.data;
-    const shipments = this.state.selectedRowKeys.map(item => {
+    const shipments = this.state.selectedRowKeys.map((item) => {
       let shipment = {};
       for (let i = 0; i < listData.length; i++) {
         if (listData[i].shipmt_no === item) {
@@ -207,7 +208,7 @@ export default class LandStatusList extends React.Component {
   }
   handleShowBatchDeliverModal = () => {
     const listData = this.props.shipmentlist.data;
-    const shipments = this.state.selectedRowKeys.map(item => {
+    const shipments = this.state.selectedRowKeys.map((item) => {
       let shipment = {};
       for (let i = 0; i < listData.length; i++) {
         if (listData[i].shipmt_no === item) {
@@ -238,15 +239,15 @@ export default class LandStatusList extends React.Component {
     ev.stopPropagation();
     this.props.showExcpModal(row.disp_id, row.shipmt_no);
   }
-  handleShipmtPreview = row => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then(result => {
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
     });
   }
   handleReportLocHover = (row) => {
-    this.props.loadShipmtLastPoint(row.shipmt_no).then(result => {
+    this.props.loadShipmtLastPoint(row.shipmt_no).then((result) => {
       if (!result.error) {
         this.setState({ lastLocReportTime: result.data.location_time });
       }
@@ -316,7 +317,7 @@ export default class LandStatusList extends React.Component {
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: selectedRowKeys => {
+      onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
@@ -343,6 +344,7 @@ export default class LandStatusList extends React.Component {
         <PodModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
         <ExcpEventsModal />
+        <ShipmentAdvanceModal />
       </div>
     );
   }

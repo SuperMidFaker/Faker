@@ -60,7 +60,7 @@ export default class SurchargeForm extends React.Component {
       ...this.props.form.getFieldsValue(),
     };
     const prom = this.props.submitSurcharges(this.props.tariffId, formdata);
-    prom.then(result => {
+    prom.then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

@@ -18,7 +18,7 @@ export default class PodPanel extends React.Component {
     intl: intlShape.isRequired,
     pod: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   renderPhotos() {
     const pod = this.props.pod;
     if (pod.photos && pod.photos !== '') {
@@ -27,7 +27,6 @@ export default class PodPanel extends React.Component {
           <Carousel>
           {pod.photos.split(',').map((item, index) => (<div key={index}><img style={{ width: '100%' }} src={item} alt="照片加载中..." /></div>))}
           </Carousel>
-          {pod.photos.split(',').map((item, i) => (<iframe height="0" width="0" src={item} id={`savePodImage${pod.id}${i}`} name={`savePodImage${pod.id}${i}`}></iframe>))}
         </div>
       );
     } else {

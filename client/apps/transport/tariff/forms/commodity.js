@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Popconfirm } from 'antd';
-import { PRESET_TRANSMODES, VEHICLE_TYPES, VEHICLE_LENGTH_TYPES, CONTAINER_PACKAGE_TYPE } from 'common/constants';
+import { PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE } from 'common/constants';
+
 export function renderRegion(region) {
   const rgs = [];
   if (region.province) {
@@ -22,7 +23,7 @@ export function getRowKey(row) {
   return row._id;
 }
 
-export function getEndTableVarColumns(agreement) {
+export function getEndTableVarColumns(agreement, VEHICLE_TYPES, VEHICLE_LENGTH_TYPES) {
   const columns = [];
   if (agreement.transModeCode === PRESET_TRANSMODES.ftl) {
     for (let i = 0; i < agreement.intervals.length; i++) {

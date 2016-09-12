@@ -114,7 +114,7 @@ export default class SubdelgTable extends Component {
       delg_no: this.props.delgNo,
       pageSize: this.props.delgBills.pageSize,
       current: this.props.delgBills.current,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }

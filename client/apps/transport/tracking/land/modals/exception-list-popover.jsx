@@ -29,14 +29,14 @@ export default class ExceptionListPopover extends React.Component {
   state = {
     exceptions: [],
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleMouseOver = () => {
     const { dispId } = this.props;
     this.props.loadExceptions({
       dispId,
       pageSize: 9999,
       currentPage: 1,
-    }).then(result => {
+    }).then((result) => {
       this.setState({ exceptions: result.data.data });
     });
   }

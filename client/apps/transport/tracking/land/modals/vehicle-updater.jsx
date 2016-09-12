@@ -52,7 +52,7 @@ export default class VehicleUpdater extends React.Component {
     driverDisabled: false,
     remark: '',
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleFieldChange = (field, value) => {
     this.setState({ [field]: value });
   }
@@ -74,7 +74,7 @@ export default class VehicleUpdater extends React.Component {
     const plate = plateDisabled ? this.msg('unknownPlate') : vehiclePlate;
     const driver = driverDisabled ? this.msg('unknownDriver') : driverName;
     this.props.saveVehicle(shipmtNo, dispId, plate, driver, remark).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

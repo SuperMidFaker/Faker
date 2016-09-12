@@ -22,7 +22,7 @@ export default class ExportPDF extends React.Component {
     visible: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
-    dispId: PropTypes.number.isRequired,
+    publickKey: PropTypes.string.isRequired,
   }
   state = {
     visible: false,
@@ -37,8 +37,8 @@ export default class ExportPDF extends React.Component {
     this.setState({ checkedValues });
   }
   handleOk = () => {
-    const { shipmtNo, dispId } = this.props;
-    window.open(`${API_ROOTS.default}v1/transport/tracking/export/${createFilename('tracking')}.pdf?tenantId=${this.props.tenantId}&shipmtNo=${shipmtNo}&dispId=${dispId}`);
+    const { shipmtNo, publickKey } = this.props;
+    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPDF/${createFilename('shipment')}.pdf?shipmtNo=${shipmtNo}&publickKey=${publickKey}`);
     this.handleClose();
   }
   handleClose = () => {
@@ -46,15 +46,12 @@ export default class ExportPDF extends React.Component {
       visible: false,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   render() {
     const { shipmtNo } = this.props;
     const options = [
       { label: '运单', value: 'detail', disabled: true },
-      { label: '费用', value: 'charge' },
-      { label: '回单', value: 'pod' },
-      { label: '时间', value: 'events' },
     ];
     return (
       <span>

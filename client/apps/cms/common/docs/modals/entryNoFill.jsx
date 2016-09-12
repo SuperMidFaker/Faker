@@ -27,7 +27,7 @@ export default class EntryNoFillModal extends React.Component {
   state = {
     entryNo: '',
   }
-  handleEntryNoChange = ev => {
+  handleEntryNoChange = (ev) => {
     this.setState({ entryNo: ev.target.value });
   }
   handleCancel = () => {
@@ -38,7 +38,7 @@ export default class EntryNoFillModal extends React.Component {
       entryHeadId: this.props.entryHeadId, entryNo: this.state.entryNo,
       delgNo: this.props.delgNo,
     }).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -50,7 +50,7 @@ export default class EntryNoFillModal extends React.Component {
         }
       });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible } = this.props;
     return (

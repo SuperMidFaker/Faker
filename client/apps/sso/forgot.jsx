@@ -38,7 +38,7 @@ export default class Forgot extends React.Component {
   }
   handleSmsRequest(ev) {
     ev.preventDefault();
-    this.props.requestSms(this.state.phone).then(result => {
+    this.props.requestSms(this.state.phone).then((result) => {
       if (result.error) {
         this.setState({ error: result.error });
       }
@@ -53,7 +53,7 @@ export default class Forgot extends React.Component {
     this.props.verifySms(
       this.props.smsId, this.props.userId,
       this.state.smsCode, this.state.newPwd
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         this.setState({ error: result.error });
       } else {
@@ -76,15 +76,15 @@ export default class Forgot extends React.Component {
               <input name="phone" required="required" autoComplete="off" maxlenght="11"
                 placeholder={formatMsg(intl, 'phonePlaceholder')}
                 className="form-control" type="text" value={this.state.phone}
-                onChange={(ev) => this.handleTextChange(ev, 'phone')}
+                onChange={ev => this.handleTextChange(ev, 'phone')}
               />
             </div>
           </div>
           <div className="form-group login-submit">
-            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={(ev) => this.handleSmsRequest(ev)}>
+            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsRequest(ev)}>
             {formatMsg(intl, 'verifyObtatin')}
             </Button>
-            <Button type="ghost" className="btn btn-block" size="large" onClick={(ev) => this.handleSmsCancel(ev)}>
+            <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
             {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </div>
@@ -103,7 +103,7 @@ export default class Forgot extends React.Component {
               <span className="input-group-addon"><i className="icon s7-phone" /></span>
               <input name="phone" required="required" autoComplete="off" type="text" maxlenght="7"
                 placeholder={formatMsg(intl, 'smsCode')} className="form-control"
-                value={this.state.smsCode} onChange={(ev) => this.handleTextChange(ev, 'smsCode')}
+                value={this.state.smsCode} onChange={ev => this.handleTextChange(ev, 'smsCode')}
               />
             </div>
           </div>
@@ -112,15 +112,15 @@ export default class Forgot extends React.Component {
               <span className="input-group-addon"><i className="icon s7-lock"></i></span>
               <input name="phone" required="required" autoComplete="off" type="password"
                 placeholder={formatMsg(intl, 'newPwdPlaceholder')} className="form-control"
-                value={this.state.newPwd} onChange={(ev) => this.handleTextChange(ev, 'newPwd')}
+                value={this.state.newPwd} onChange={ev => this.handleTextChange(ev, 'newPwd')}
               />
             </div>
           </div>
           <div className="form-group login-submit">
-            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={(ev) => this.handleSmsVerify(ev)}>
+            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsVerify(ev)}>
             {formatMsg(intl, 'finishVerify')}
             </Button>
-            <Button type="ghost" className="btn btn-block" size="large" onClick={(ev) => this.handleSmsCancel(ev)}>
+            <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
             {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </div>

@@ -65,7 +65,7 @@ export const CLIENT_API = Symbol('client');
 export default function thunkOrClientApiMiddleware(initialReq) {
   const requests = apiRequestPromise(initialReq);
   return ({ dispatch, getState }) => {
-    return next => action => {
+    return next => (action) => {
       if (typeof action === 'function') {
         return action(dispatch, getState);
       }
@@ -89,11 +89,11 @@ export default function thunkOrClientApiMiddleware(initialReq) {
       const [REQUEST, SUCCESS, FAILURE] = types;
       next({ ...rest, type: REQUEST });
       return requests[method](endpoint, { ...rest }).then(
-        result => {
+        (result) => {
           next({ ...rest, result, type: SUCCESS });
           return { error: null, data: result.data };
         }
-      ).catch(error => {
+      ).catch((error) => {
         next({ ...rest, error, type: FAILURE });
         return { error: { message: error.message || error.msg } };
       });

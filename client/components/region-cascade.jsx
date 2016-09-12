@@ -34,7 +34,7 @@ function getRegionProps(nextRegion) {
 
 function getNextChinaRegions(nextRegion, props, resolve) {
   const [province, city, district] = nextRegion;
-  props.loadNextRegionList(province, city, district).then(result => {
+  props.loadNextRegionList(province, city, district).then((result) => {
     const chinaRegions = props.provinces.map(prov => ({
       value: prov.name,
       label: prov.name,
@@ -114,7 +114,7 @@ export default class RegionCascade extends React.Component {
     if (this.props.region) {
       const areaItems = getRegionProps(this.props.region);
       if (areaItems.length > 0) {
-        getNextChinaRegions(areaItems, this.props, chinaRegions => {
+        getNextChinaRegions(areaItems, this.props, (chinaRegions) => {
           this.setState({ chinaRegions });
         });
         this.setState({ cascadeRegion: areaItems });
@@ -123,7 +123,7 @@ export default class RegionCascade extends React.Component {
   }
   componentDidMount() {
     if (!this.props.provLoaded) {
-      this.props.loadProvinces().then(result => {
+      this.props.loadProvinces().then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }
@@ -139,7 +139,7 @@ export default class RegionCascade extends React.Component {
     if (nextProps.provinces.length !== this.props.provinces.length) {
       const areaItems = getRegionProps(nextProps.region);
       if (areaItems.length > 0) {
-        getNextChinaRegions(areaItems, nextProps, chinaRegions => {
+        getNextChinaRegions(areaItems, nextProps, (chinaRegions) => {
           this.setState({ chinaRegions });
         });
         this.setState({ cascadeRegion: areaItems });
@@ -156,7 +156,7 @@ export default class RegionCascade extends React.Component {
       if (isEmptyRegionProp(this.props.region)) {
         const areaItems = getRegionProps(nextProps.region);
         getNextChinaRegions(areaItems, nextProps,
-          chinaRegions => {
+          (chinaRegions) => {
             this.setState({ chinaRegions });
           });
         this.setState({ cascadeRegion: areaItems });
@@ -180,7 +180,7 @@ export default class RegionCascade extends React.Component {
   }
   handleRegionLoad = (selOpts) => {
     const targetOption = selOpts[selOpts.length - 1];
-    this.props.loadRegionChildren(targetOption.code).then(result => {
+    this.props.loadRegionChildren(targetOption.code).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {

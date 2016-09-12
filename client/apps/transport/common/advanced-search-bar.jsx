@@ -87,7 +87,7 @@ export default class AdvancedSearchBar extends React.Component {
     fieldsValue.consignee_region = consigneeRegion;
     this.saveFieldsValue(fieldsValue);
     const result = {};
-    Object.keys(fieldsValue).forEach(key => {
+    Object.keys(fieldsValue).forEach((key) => {
       if (key === 'relatedToMe' && fieldsValue[key] === true) {
         result[key] = this.props.loginId;
       } else if (key === 'relatedToMe' && fieldsValue[key] === false) {
@@ -106,10 +106,10 @@ export default class AdvancedSearchBar extends React.Component {
     if (e) e.preventDefault();
     this.handleSearch(this.state.consignerRegion, this.state.consigneeRegion);
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleShowFieldsLabel = (fieldsValue) => {
     const fields = [];
-    Object.keys(fieldsValue).forEach(key => {
+    Object.keys(fieldsValue).forEach((key) => {
       if (fieldsValue[key] && fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key].length !== 0) {
         fields.push({
           key,
