@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
   'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
   'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
+  'SHOW_CHANGE_SHIPMENT_MODAL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -70,6 +71,11 @@ const initialState = {
     count: [0, 0, 0, 0, 0],
     startDate,
     endDate,
+  },
+  changeShipmentModal: {
+    visible: false,
+    shipmtNo: '',
+    type: '',
   },
 };
 
@@ -146,6 +152,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SHIPMENT_SEARCH_SUCCEED: {
       return { ...state, searchResult: action.result.data };
+    }
+    case actionTypes.SHOW_CHANGE_SHIPMENT_MODAL: {
+      return { ...state, changeShipmentModal: action.data };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -390,5 +399,12 @@ export function computeCostCharge(data) {
       data,
       origin: 'mongo',
     },
+  };
+}
+
+export function showChangeShipmentModal({ visible, shipmtNo, type }) {
+  return {
+    type: actionTypes.SHOW_CHANGE_SHIPMENT_MODAL,
+    data: { visible, shipmtNo, type },
   };
 }

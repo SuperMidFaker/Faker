@@ -60,6 +60,11 @@ export default class PreviewPanel extends React.Component {
       case 'podPassed': return 'check-circle-o';
       case 'podReturned': return 'exclamation-circle-o';
       case 'vehicleUpdated': return 'info-circle-o';
+      case 'transitModeChanged': return 'info-circle-o';
+      case 'consignerInfoChanged': return 'info-circle-o';
+      case 'consigneeInfoChanged': return 'info-circle-o';
+      case 'goodsInfoChanged': return 'info-circle-o';
+      case 'timeInfoChanged': return 'info-circle-o';
       default : return '';
     }
   }

@@ -22,7 +22,7 @@ export default class ExportPDF extends React.Component {
     visible: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
-    publickKey: PropTypes.number.isRequired,
+    publickKey: PropTypes.string.isRequired,
   }
   state = {
     visible: false,

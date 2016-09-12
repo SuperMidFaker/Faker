@@ -341,6 +341,26 @@ export default defineMessages({
     id: 'transport.shipment.log.vehicleUpdated',
     defaultMessage: '更新车辆信息',
   },
+  transitModeChanged: {
+    id: 'transport.shipment.log.transitModeChanged',
+    defaultMessage: '运输模式变更',
+  },
+  consignerInfoChanged: {
+    id: 'transport.shipment.log.consignerInfoChanged',
+    defaultMessage: '发货信息变更',
+  },
+  consigneeInfoChanged: {
+    id: 'transport.shipment.log.consigneeInfoChanged',
+    defaultMessage: '收货信息变更',
+  },
+  goodsInfoChanged: {
+    id: 'transport.shipment.log.goodsInfoChanged',
+    defaultMessage: '货物信息变更',
+  },
+  timeInfoChanged: {
+    id: 'transport.shipment.log.timeInfoChanged',
+    defaultMessage: '时间计划变更',
+  },
   revenueItem: {
     id: 'transport.shipment.track.charge.revenue.item',
     defaultMessage: '收入明细项',
@@ -500,5 +520,17 @@ export default defineMessages({
   totalChargeMustBeNumber: {
     id: 'transport.acceptance.total.charge.be.number',
     defaultMessage: '总运费必须为数字',
+  },
+  changeShipment: {
+    id: 'transport.shipment.changeShipment',
+    defaultMessage: '修改运单',
+  },
+  changeShipmentSuccess: {
+    id: 'transport.shipment.changeShipmentSuccess',
+    defaultMessage: '修改成功',
+  },
+  formError: {
+    id: 'transport.shipment.changeShipment.formError',
+    defaultMessage: '表单信息有误',
   },
 });
