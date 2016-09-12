@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { loadWelogixProfile, unbindAccount } from 'common/reducers/weixin';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
-import WeUI from 'react-weui';
+import { Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input } from 'react-weui';
 import './weui.less';
-
-const { Form, FormCell, CellHeader, CellFooter, Label, CellBody, Button, Input } = WeUI;
 
 function fetchData({ state, dispatch, cookie }) {
   if (!state.weixin.profile.loaded) {

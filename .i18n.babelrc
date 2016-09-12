@@ -1,9 +1,0 @@
-{
-  "presets": ["es2015", "react", "stage-0"],
-  "ignore": ['./node_modules/*', './server/*', 'not working, why, todo'],
-  "plugins": [
-    ["react-intl", {
-      'messagesDir': "./public/dist/messages/"
-    }]
-  ]
-}

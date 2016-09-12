@@ -298,9 +298,8 @@ export default class GoodsInfo extends React.Component {
       title: this.msg('goodsOp'),
       width: 80,
       render: (text, record, index) => {
-        let rendered;
         if (this.state.editGoodsIndex === index) {
-          rendered = (
+          return (
             <span>
               <a onClick={this.handleGoodsSave}>
               {formatGlobalMsg(this.props.intl, 'save')}
@@ -329,9 +328,9 @@ export default class GoodsInfo extends React.Component {
               }
             }
           );
-          rendered = (<span>{opRendered}</span>);
+          return (<span>{opRendered}</span>);
         } else {
-          rendered = (
+          return (
             <span>
               <a onClick={() => this.handleGoodsEdit(record, index)}>
               {formatGlobalMsg(this.props.intl, 'edit')}
@@ -343,7 +342,6 @@ export default class GoodsInfo extends React.Component {
             </span>
           );
         }
-        return rendered;
       },
     }];
     return (

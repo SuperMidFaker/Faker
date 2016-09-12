@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
-import WeUI from 'react-weui';
+import { Msg, Button } from 'react-weui';
 import '../../weui.less';
-
-const { Msg, Button } = WeUI;
 
 export default class UploadSucceed extends React.Component {
   static contextTypes = {

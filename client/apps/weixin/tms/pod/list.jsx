@@ -4,10 +4,8 @@ import { loadPodTable, loadUploadedPodTable, toUploadPod } from 'common/reducers
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 
-import WeUI from 'react-weui';
+import { Cells, CellsTitle, Cell, CellBody, CellFooter, Icon } from 'react-weui';
 import '../../weui.less';
-
-const { Cells, CellsTitle, Cell, CellBody, CellFooter, Icon } = WeUI;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];

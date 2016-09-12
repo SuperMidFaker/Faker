@@ -1,10 +1,17 @@
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
-const config = require('../config');
 const HappyPack = require('happypack');
+const config = require('../config');
 
 const nodeModulesPath = path.resolve(__dirname, '..', 'node_modules');
+const reactBabelProd = {
+  plugins: [
+    'transform-react-remove-prop-types',
+    // 'transform-react-inline-elements', // https://github.com/babel/babel/issues/3728 Menu.Item
+    // 'transform-react-constant-elements',  // https://github.com/babel/babel/issues/4458 error const {} = WeUI goods-info const opRendered
+  ],
+};
 
 const wpConfig = {
   // Entry point to the project
@@ -28,20 +35,14 @@ const wpConfig = {
     new HappyPack({
       loaders: [{
         path: 'babel',
+        cacheDirectory: true,
         query: {
-          plugins: ['transform-decorators-legacy'],
-          presets: ['es2015', 'react', 'stage-0'],
           env: {
             development: {
               presets: ['react-hmre'],
             },
-            production: {
-              plugins: [
-                'transform-react-remove-prop-types',
-                'transform-react-inline-elements',
-                'transform-react-constant-elements',
-              ],
-            },
+            test: reactBabelProd,
+            production: reactBabelProd,
           },
         },
       }],

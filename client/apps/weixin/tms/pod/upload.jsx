@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { Upload, Icon, message } from 'antd';
 import { saveSubmitPod } from 'common/reducers/trackingLandStatus';
 
-import WeUI from 'react-weui';
+import { Cells, CellsTitle, Cell, CellBody, CellFooter,
+  TextArea, Button, Select } from 'react-weui';
 import '../../weui.less';
-
-const { Cells, CellsTitle, Cell, CellBody, CellFooter, TextArea,
-Button, Select } = WeUI;
 
 @connect(
   state => ({
