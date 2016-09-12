@@ -45,7 +45,7 @@ export default class VehicleForm extends Component {
             help={numberValidate ? '' : '该车辆已存在'}
             {...formItemLayout}
           >
-            <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'} onBlur={(e) => onVehicleNumberBlur(e)} />
+            <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'} onBlur={e => onVehicleNumberBlur(e)} />
           </FormItem>
           <FormItem label="挂车牌号" {...formItemLayout}>
             <Input {...getFieldProps('trailer_number')} />

@@ -10,7 +10,6 @@ import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
 import './index.less';
 import messages from './message.i18n';
-import echarts from 'echarts';
 import chinaJson from './china.json';
 import { renderCity } from './common/consignLocation';
 const formatMsg = format(messages);
@@ -82,14 +81,14 @@ export default class Dashboard extends React.Component {
       });
     }
     const promises = [];
-    Object.keys(geoCoordMap).forEach(geo => {
+    Object.keys(geoCoordMap).forEach((geo) => {
       const p = queryGeoLocation(geo);
       promises.push(p);
     });
     const result = Promise.all(promises);
     result.then((arr) => {
       let j = 0;
-      Object.keys(geoCoordMap).forEach(geo => {
+      Object.keys(geoCoordMap).forEach((geo) => {
         if (arr[j].result && arr[j].result.location) {
           geoCoordMap[geo][0] = arr[j].result.location.lng;
           geoCoordMap[geo][1] = arr[j].result.location.lat;
@@ -236,13 +235,14 @@ export default class Dashboard extends React.Component {
         series,
       };
       if (document) {
+        const echarts = require('echarts');
         echarts.registerMap('china', chinaJson);
         const chart = echarts.init(document.getElementById('chart'));
         chart.setOption(option);
       }
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { count, startDate, endDate } = this.props.statistics;
     const datePicker = (

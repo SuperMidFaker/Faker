@@ -85,7 +85,7 @@ export default class DelegationList extends Component {
       if (nextProps.preStatus === 'accept') {
         const { loginId, loginName, delegateTracking } = this.props;
         this.props.acceptDelg(loginId, loginName, delegateTracking.id).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {
@@ -133,17 +133,17 @@ export default class DelegationList extends Component {
     title: '委托方',
     width: 180,
     dataIndex: 'customer_name',
-    render: (o) => <TrimSpan text={o} maxLen={12} />,
+    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '订单号',
     width: 120,
     dataIndex: 'order_no',
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '发票号',
     width: 120,
     dataIndex: 'invoice_no',
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     /*
     title: '外部编号',
@@ -176,7 +176,7 @@ export default class DelegationList extends Component {
     title: '申报企业',
     width: 130,
     dataIndex: 'recv_name',
-    render: (o) => <TrimSpan text={o} maxLen={8} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: '状态',
     width: 110,
@@ -234,7 +234,7 @@ export default class DelegationList extends Component {
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -250,7 +250,7 @@ export default class DelegationList extends Component {
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
       delg_no: row.delg_no,
-    }, 'make').then(result => {
+    }, 'make').then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
@@ -259,7 +259,7 @@ export default class DelegationList extends Component {
   handleDelegationView = (row) => {
     this.props.loadBillMakeModal({
       delg_no: row.delg_no,
-    }, 'view').then(result => {
+    }, 'view').then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
@@ -281,7 +281,7 @@ export default class DelegationList extends Component {
   handleDelegationAccept = (row) => {
     const { loginId, loginName } = this.props;
     this.props.acceptDelg(loginId, loginName, row.dispId).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -310,7 +310,7 @@ export default class DelegationList extends Component {
     this.props.setDispStatus({ delgDispShow: false });
   }
   handleDelgDel = (delgNo) => {
-    this.props.delDelg(delgNo).then(result => {
+    this.props.delDelg(delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -325,7 +325,7 @@ export default class DelegationList extends Component {
       />
     );
   }
-  handleExpandedChange = expandedKeys => {
+  handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
   }
   render() {

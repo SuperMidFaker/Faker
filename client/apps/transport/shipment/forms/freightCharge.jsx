@@ -54,7 +54,7 @@ export default class FreightCharge extends React.Component {
       goods_type, trans_mode: transport_mode_id, ctn,
       tenant_id: this.props.tenantId, created_date: created,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {

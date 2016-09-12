@@ -9,7 +9,7 @@
     "lint": "eslint --fix --ext .js --ext .jsx client server common webpack",
     "admin-hot": "webpack-dev-server --config webpack/adminDev.js",
     "admin-dev": "nodemon server/sboot.js -- --admin=true --port=3026",
-    "hot": "npm run build-i18n & webpack-dev-server --config webpack/dev.js",
+    "hot": "webpack-dev-server --config webpack/dev.js",
     "dev": "nodemon",
     "start": "npm run clean & npm run hot &  npm run dev",
     "test-build": "NODE_ENV=test webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",

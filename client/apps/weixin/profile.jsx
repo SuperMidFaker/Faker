@@ -32,7 +32,7 @@ export default class WxProfile extends React.Component {
   }
   handleSubmit = (ev) => {
     ev.preventDefault();
-    this.props.unbindAccount().then(result => {
+    this.props.unbindAccount().then((result) => {
       if (result.error) {
         this.setState({ error: result.error.msg });
       } else {

@@ -105,7 +105,7 @@ export default class PricingLTL extends React.Component {
       }
     }
   }
-  handleMeterSelect = value => {
+  handleMeterSelect = (value) => {
     if (value === 't') {
       this.setState({ unit: '吨' });
     } else if (value === 'm3') {

@@ -36,7 +36,7 @@ export default class ShipmentDetail extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   render() {
     const { shipmt } = this.props.shipmtDetail;

@@ -78,7 +78,7 @@ export default class Manage extends Component {
   }
   render() {
     const { list, intl, type, tenantId } = this.props;
-    const msg = (descriptor) => formatMsg(this.props.intl, descriptor);
+    const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
         title: msg('comp_code'),
@@ -149,7 +149,7 @@ export default class Manage extends Component {
       },
     ];
     const dataSource = new Table.DataSource({
-      fetcher: params => { return this.props.loadCompRelations(null, params); },
+      fetcher: (params) => { return this.props.loadCompRelations(null, params); },
       resolve: (result) => { return result.rows; },
       getPagination: (result, resolve) => {
         const pagination = {

@@ -90,7 +90,7 @@ export default class PreviewPanel extends React.Component {
   componentWillUnmount() {
     window.$(document).unbind('click');
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }

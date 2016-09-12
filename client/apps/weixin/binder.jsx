@@ -30,7 +30,7 @@ export default class Binder extends React.Component {
     ev.preventDefault();
     const { username, password } = this.state;
     const form = { username, password };
-    this.props.loginBind(form).then(result => {
+    this.props.loginBind(form).then((result) => {
       if (!result.error) {
         this.context.router.replace(
           this.props.location.query.next || '/weixin/account'
@@ -50,7 +50,7 @@ export default class Binder extends React.Component {
               <Label>手机号</Label>
             </CellHeader>
             <CellBody>
-              <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={(ev) => this.handleTextChange(ev, 'username')} />
+              <Input type="tel" placeholder="请输入手机号" defaultValue={username} onChange={ev => this.handleTextChange(ev, 'username')} />
             </CellBody>
           </FormCell>
           <FormCell vcode>
@@ -59,7 +59,7 @@ export default class Binder extends React.Component {
             </CellHeader>
             <CellBody>
               <Input type="password" placeholder="请输入密码" defaultValue={password}
-                onChange={(ev) => this.handleTextChange(ev, 'password')}
+                onChange={ev => this.handleTextChange(ev, 'password')}
               />
             </CellBody>
             <CellFooter>

@@ -38,7 +38,7 @@ export default class ShipmtNoColumnRender extends React.Component {
   handleMouseOver = () => {
     const { shipmtNo, shipment } = this.props;
     if (shipment.status >= SHIPMENT_TRACK_STATUS.intransit) {
-      this.props.loadShipmtPoints(shipmtNo).then(result => {
+      this.props.loadShipmtPoints(shipmtNo).then((result) => {
         this.setState({ tracking: result.data });
       });
     }

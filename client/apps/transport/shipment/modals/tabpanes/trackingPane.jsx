@@ -44,7 +44,7 @@ export default class PreviewPanel extends React.Component {
     intl: intlShape.isRequired,
     tracking: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   stepIcon = (step) => {
     switch (step.type) {
       case 'created': return 'check-circle-o';

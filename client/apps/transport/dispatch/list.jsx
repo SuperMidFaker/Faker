@@ -175,7 +175,7 @@ export default class DispatchList extends React.Component {
     title: this.msg('shipConsigner'),
     dataIndex: 'consigner_name',
     width: 120,
-    render: (o) => <TrimSpan text={o} maxLen={8} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignerPlace'),
     width: 120,
@@ -184,7 +184,7 @@ export default class DispatchList extends React.Component {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
     width: 140,
-    render: (o) => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -194,7 +194,7 @@ export default class DispatchList extends React.Component {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
     width: 120,
-    render: (o) => <TrimSpan text={o} maxLen={8} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
     width: 120,
@@ -203,7 +203,7 @@ export default class DispatchList extends React.Component {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
     width: 140,
-    render: (o) => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }];
   buildCols(sub) {
     const { status, origin } = this.props.filters;
@@ -244,7 +244,7 @@ export default class DispatchList extends React.Component {
         title: this.msg('shipRequirement'),
         dataIndex: 'sr_name',
         width: 200,
-        render: (o) => <TrimSpan text={o} maxLen={15} />,
+        render: o => <TrimSpan text={o} maxLen={15} />,
       }, {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',
@@ -270,7 +270,7 @@ export default class DispatchList extends React.Component {
           if (origin) {
             if (record.segmented === 1 && sub !== 'sub') {
               return (<span>
-                  <a role="button" onClick={(ev) => this.handleSegmentCancelConfirm(record, ev)}>
+                  <a role="button" onClick={ev => this.handleSegmentCancelConfirm(record, ev)}>
                   {this.msg('btnTextSegmentCancel')}
                   </a></span>);
             } else {
@@ -279,11 +279,11 @@ export default class DispatchList extends React.Component {
           }
           return (
             <span>
-              <a role="button" onClick={(ev) => this.handleDispatchDockShow(record, ev)}>
+              <a role="button" onClick={ev => this.handleDispatchDockShow(record, ev)}>
               {this.msg('btnTextDispatch')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={(ev) => this.handleSegmentDockShow(record, ev)}>
+              <a role="button" onClick={ev => this.handleSegmentDockShow(record, ev)}>
               {this.msg('btnTextSegment')}
               </a>
             </span>
@@ -368,18 +368,18 @@ export default class DispatchList extends React.Component {
           render: (o, record) => {
             if (s === 'dispatched') {
               if (record.disp_status === 2) {
-                return (<span><a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
+                return (<span><a role="button" onClick={ev => this.handleShipmtReturn(record, ev)}>
                       {this.msg('btnTextReturn')}</a></span>);
               }
               return (<span></span>);
             }
             return (
             <span>
-              <a role="button" onClick={(ev) => this.handleShipmtSend(record, ev)}>
+              <a role="button" onClick={ev => this.handleShipmtSend(record, ev)}>
               {this.msg('btnTextSend')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={(ev) => this.handleShipmtReturn(record, ev)}>
+              <a role="button" onClick={ev => this.handleShipmtReturn(record, ev)}>
               {this.msg('btnTextReturn')}
               </a>
             </span>
@@ -426,11 +426,11 @@ export default class DispatchList extends React.Component {
       render: (o, record) => {
         return (
             <span>
-              <a role="button" onClick={(ev) => this.handleCondDispatchDockShow(record, ev)}>
+              <a role="button" onClick={ev => this.handleCondDispatchDockShow(record, ev)}>
               {this.msg('btnTextDispatch')}
               </a>
               <span className="ant-divider" />
-              <a role="button" onClick={(ev) => this.handleCondSegmentDockShow(record, ev)}>
+              <a role="button" onClick={ev => this.handleCondSegmentDockShow(record, ev)}>
               {this.msg('btnTextSegment')}
               </a>
             </span>
@@ -450,7 +450,7 @@ export default class DispatchList extends React.Component {
   }
 
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -468,7 +468,7 @@ export default class DispatchList extends React.Component {
       filters: JSON.stringify(tmp),
       pageSize: shipmentlist.pageSize,
       current: 1,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -486,7 +486,7 @@ export default class DispatchList extends React.Component {
       filters: JSON.stringify(newFilters || tmp),
       pageSize: shipmentlist.pageSize,
       current: 1,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -539,7 +539,7 @@ export default class DispatchList extends React.Component {
 
   handleAdvancedSearch = (searchVals) => {
     let filters = this.props.filters;
-    Object.keys(searchVals).forEach(key => {
+    Object.keys(searchVals).forEach((key) => {
       filters = this.mergeFilters(filters, key, searchVals[key]);
     });
     this.handleTableLoad(filters);
@@ -548,7 +548,7 @@ export default class DispatchList extends React.Component {
 
   mergeFilters(curFilters, name, value) {
     const newFilters = {};
-    Object.keys(curFilters).forEach(key => {
+    Object.keys(curFilters).forEach((key) => {
       if (key !== name) {
         newFilters[key] = curFilters[key];
       }
@@ -570,7 +570,7 @@ export default class DispatchList extends React.Component {
     const { shipmentlist } = this.props;
     const { selectedRowKeys } = this.state;
     const shipmts = [];
-    shipmentlist.data.forEach(s => {
+    shipmentlist.data.forEach((s) => {
       if (selectedRowKeys.indexOf(s.key) > -1) {
         shipmts.push(s);
       }
@@ -614,7 +614,7 @@ export default class DispatchList extends React.Component {
     this.props.segmentCancelCheckRequest(null, {
       tenantId,
       shipmtNo: shipmt.shipmt_no,
-    }).then(rs => {
+    }).then((rs) => {
       if (!rs.data) {
         message.error(`${shipmt.shipmt_no}-分段运单中已存在预分配，不能取消分段，必须分配退回后才能操作！`, 5);
       } else {
@@ -626,7 +626,7 @@ export default class DispatchList extends React.Component {
             this.props.segmentCancelRequest(null, {
               tenantId,
               shipmtNo: shipmt.shipmt_no,
-            }).then(result => {
+            }).then((result) => {
               if (result.error) {
                 message.error(result.error.message, 5);
               } else {
@@ -644,7 +644,7 @@ export default class DispatchList extends React.Component {
     const { selectedRowKeys } = this.state;
     const count = selectedRowKeys.length;
     const list = [];
-    shipmentlist.data.forEach(s => {
+    shipmentlist.data.forEach((s) => {
       if (selectedRowKeys.indexOf(s.key) > -1) {
         list.push({
           dispId: s.key,
@@ -679,7 +679,7 @@ export default class DispatchList extends React.Component {
           avatar,
           loginName,
           list: JSON.stringify(list),
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);
           } else {
@@ -721,7 +721,7 @@ export default class DispatchList extends React.Component {
           consignee_city: shipmt.consignee_city,
           consignee_district: shipmt.consignee_district,
           parentId: shipmt.parent_id }]),
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);
           } else {
@@ -753,7 +753,7 @@ export default class DispatchList extends React.Component {
           dispId: shipmt.key,
           parentId: shipmt.parent_id,
           shipmtNo: shipmt.shipmt_no,
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);
           } else {
@@ -779,7 +779,7 @@ export default class DispatchList extends React.Component {
       filters: JSON.stringify(condition),
       pageSize: shipmentlist.pageSize,
       current: 1,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -802,7 +802,7 @@ export default class DispatchList extends React.Component {
       filters: JSON.stringify(tmp),
       pageSize: shipmentlist.pageSize,
       current: 1,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -811,7 +811,7 @@ export default class DispatchList extends React.Component {
     });
   }
 
-  handleExpandList = row => {
+  handleExpandList = (row) => {
     const { tenantId } = this.props;
     if (!this.props.expandList[row.shipmt_no]) {
       this.props.loadExpandList(null, {
@@ -819,7 +819,7 @@ export default class DispatchList extends React.Component {
         shipmtNo: row.shipmt_no,
         srTenantId: row.sr_tenant_id,
         spTenantId: row.sp_tenant_id,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         }
@@ -832,7 +832,7 @@ export default class DispatchList extends React.Component {
     />);
   }
 
-  handleRemoveShipmt = row => {
+  handleRemoveShipmt = (row) => {
     this.props.removeGroupedSubShipmt(row.parentKey, row.shipmt_no);
   }
 
@@ -908,7 +908,7 @@ export default class DispatchList extends React.Component {
         tenantId,
         filters: JSON.stringify(filters),
         shipmtNo: row.key,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else {
@@ -930,7 +930,7 @@ export default class DispatchList extends React.Component {
         tenantId,
         filters: JSON.stringify(filters),
         shipmtNo: row.key,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else {
@@ -942,7 +942,7 @@ export default class DispatchList extends React.Component {
     }
   }
 
-  handleConditionExpandList = row => {
+  handleConditionExpandList = (row) => {
     const filters = this.genFilters(row);
     const { tenantId } = this.props;
     if (!this.props.expandList[row.key]) {
@@ -950,7 +950,7 @@ export default class DispatchList extends React.Component {
         tenantId,
         filters: JSON.stringify(filters),
         shipmtNo: row.key,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         }
@@ -975,7 +975,7 @@ export default class DispatchList extends React.Component {
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: selectedRowKeys => {
+      onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };

@@ -6,7 +6,7 @@ import { argumentContainer } from '../util';
  * componentWillReceiveProps在客户端设置props变化后导航信息
  */
 export default function connectNav(navCallback) {
-  return Wrapped => {
+  return (Wrapped) => {
     class WrappedComponent extends Component {
       static contextTypes = {
         router: React.PropTypes.object.isRequired,

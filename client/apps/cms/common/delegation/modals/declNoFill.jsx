@@ -30,7 +30,7 @@ export default class DeclnoFillModal extends React.Component {
   state = {
     entryNo: '',
   }
-  handleEntryNoChange = ev => {
+  handleEntryNoChange = (ev) => {
     this.setState({ entryNo: ev.target.value });
   }
   handleCancel = () => {
@@ -41,7 +41,7 @@ export default class DeclnoFillModal extends React.Component {
       entryHeadId: this.props.entryHeadId, entryNo: this.state.entryNo,
       billSeqNo: this.props.billSeqNo, delgNo: this.props.delgNo,
     }).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -54,7 +54,7 @@ export default class DeclnoFillModal extends React.Component {
         }
       });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible } = this.props;
     return (

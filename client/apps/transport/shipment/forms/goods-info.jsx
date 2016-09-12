@@ -53,7 +53,7 @@ function ColumnSelect(props) {
   const selectedIndex = state.editGoodsIndex;
   let value = '';
   if (selectedIndex !== index && record[field]) {
-    options.forEach(opt => {
+    options.forEach((opt) => {
       if (opt.value === record[field]) {
         value = opt.name;
         return;
@@ -141,7 +141,7 @@ export default class GoodsInfo extends React.Component {
     let totalCount = 0;
     let totalWeight = 0;
     let totalVolume = 0;
-    this.props.goods.forEach(gd => {
+    this.props.goods.forEach((gd) => {
       totalCount += asNumber(gd.count);
       totalWeight += asNumber(gd.weight);
       totalVolume += asNumber(gd.volume);

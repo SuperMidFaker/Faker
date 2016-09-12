@@ -70,7 +70,7 @@ export default class MergeSplitModal extends React.Component {
     },
     sortSelectValue: '',
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   mergeConditions = [{
     label: this.msg('codeT'),
     value: 'byHsCode',
@@ -100,7 +100,7 @@ export default class MergeSplitModal extends React.Component {
       checked: this.state.mergeOpt.checked, byHsCode: false, byGName: false,
       byCurr: false, byCountry: false, byCopGNo: false, byEmGNo: false,
     };
-    checkeds.forEach(chk => {
+    checkeds.forEach((chk) => {
       opt[chk] = true;
     });
     this.setState({
@@ -131,7 +131,7 @@ export default class MergeSplitModal extends React.Component {
   handleOk = () => {
     const { billNo } = this.props;
     const { splitOpt, mergeOpt, sortOpt } = this.state;
-    this.props.submitBillMegeSplit({ billNo, splitOpt, mergeOpt, sortOpt }).then(result => {
+    this.props.submitBillMegeSplit({ billNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {

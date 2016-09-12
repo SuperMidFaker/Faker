@@ -31,7 +31,7 @@ export default class DriverListContainer extends Component {
     this.props.editDriver({ driverId, driverInfo: { status: 1 } });
   }
   handleEditDriverLogin = (driver) => {
-    this.props.editDriverLogin(driver).then(result => {
+    this.props.editDriverLogin(driver).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

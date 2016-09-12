@@ -96,7 +96,7 @@ export default function reducer(state = initialState, action) {
       const { shipmtDispIds } = action.data;
       const data = [...state.table.shipmentlist.data];
       for (let i = 0; i < shipmtDispIds.length; i++) {
-        const index = data.findIndex((item) => item.key === shipmtDispIds[i]);
+        const index = data.findIndex(item => item.key === shipmtDispIds[i]);
         data.splice(index, 1);
       }
       const shipmentlist = { ...state.table.shipmentlist, data };

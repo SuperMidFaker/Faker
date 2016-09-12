@@ -49,7 +49,7 @@ export default class ExportExcel extends React.Component {
       endDate: `${dateString[1]} 23:59:59`,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   render() {
     return (

@@ -65,12 +65,12 @@ export default class BillForm extends React.Component {
   handleBillSave = (ev) => {
     ev.preventDefault();
     // todo bill head save sync with entry head, vice verse
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { billHead, ietype, loginId, tenantId } = this.props;
         const head = { ...billHead, ...this.props.form.getFieldsValue() };
         this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {

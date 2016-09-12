@@ -77,7 +77,7 @@ export default class BasicPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.files.length !== this.props.files.length) {
       DOC = []; XLS = []; PDF = []; ZIP = [];
-      nextProps.files.forEach(fl => {
+      nextProps.files.forEach((fl) => {
         fileSort(fl.name);
       });
     }

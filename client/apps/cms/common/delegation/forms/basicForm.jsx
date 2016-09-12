@@ -19,7 +19,7 @@ function getFieldInits(aspect, formData) {
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no',
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
       'goods_type', 'order_no', 'remark',
-    ].forEach(fd => {
+    ].forEach((fd) => {
       init[fd] = formData[fd] || '';
     });
     init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no

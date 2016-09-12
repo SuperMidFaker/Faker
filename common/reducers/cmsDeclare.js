@@ -109,7 +109,7 @@ export default function reducer(state = initialState, action) {
       const retPorts = retParams.ports;
       const newPorts = [...retPorts];
       const originPorts = state.params.ports;
-      originPorts.forEach(op => {
+      originPorts.forEach((op) => {
         if (retPorts.filter(rp => rp.port_code === op.port_code).length === 0) {
           newPorts.push(op);
         }
@@ -124,7 +124,7 @@ export default function reducer(state = initialState, action) {
         const retPorts = retParam.ports;
         const newPorts = [...retPorts];
         const originPorts = state.params.ports;
-        originPorts.forEach(op => {
+        originPorts.forEach((op) => {
           if (retPorts.filter(rp => rp.port_code === op.port_code).length === 0) {
             newPorts.push(op);
           }

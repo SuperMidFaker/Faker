@@ -49,7 +49,7 @@ export default class AcceptanceCreate extends Component {
     attachments: [],
   }
   handleSave = ({ accepted }) => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
         const formdatas = this.props.form.getFieldsValue();
@@ -75,7 +75,7 @@ export default class AcceptanceCreate extends Component {
           ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,
           attachments: this.state.attachments, tenantName,
           accepted,
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {

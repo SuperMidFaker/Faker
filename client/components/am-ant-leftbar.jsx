@@ -110,7 +110,7 @@ export default class AmLeftSidebar extends React.Component {
           onClick={this.handleClick} mode="vertical" theme="dark"
         >
         {
-          links.map(link => {
+          links.map((link) => {
             if (link.single) {
               return (<MenuItem key={link.key}>
                 <NavLink to={link.path}>
@@ -124,7 +124,7 @@ export default class AmLeftSidebar extends React.Component {
                   title={<div><i className={`icon  ${link.icon}`} /><span>{link.text}</span></div>}
                 >
                   {
-                    link.sublinks.map(sub => {
+                    link.sublinks.map((sub) => {
                       return (<MenuItem key={sub.key}>
                         <NavLink to={sub.path}>
                           {sub.text}

@@ -81,14 +81,14 @@ export default class ShipmentEdit extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleEdit = (ev) => {
     ev.preventDefault();
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
         const { formData, tenantId, loginId } = this.props;
         const form = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.saveEdit(form, tenantId, loginId)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {

@@ -8,7 +8,7 @@ import { argumentContainer } from '../util';
 */
 export default function connectFetch(conn = { deferred: false }) {
   return (...fetchers) => {
-    return Wrapped => {
+    return (Wrapped) => {
       class WrappedComponent extends Component {
         static propTypes = {
           location: PropTypes.object,

@@ -126,7 +126,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CORP_SUBMIT:
       return { ...state, submitting: true };
     case actionTypes.ORGAN_EDIT_SUCCEED: {
-      const corps = state.corplist.data.map(corp => {
+      const corps = state.corplist.data.map((corp) => {
         return corp.key === action.data.corp.key ?
         { ...corp, ...action.result.data } : corp;
       });

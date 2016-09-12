@@ -67,7 +67,7 @@ export default class List extends React.Component {
   }
   handleTenantDel(id, loginId) {
     const { corplist: { totalCount, current, pageSize } } = this.props;
-    this.props.delTenant(id, loginId).then(result => {
+    this.props.delTenant(id, loginId).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

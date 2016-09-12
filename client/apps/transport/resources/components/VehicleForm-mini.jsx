@@ -45,7 +45,7 @@ class VehicleFormMini extends Component {
   handleCarSave = () => {
     const { form, tenantId, vehicles } = this.props;
     const newCarInfo = form.getFieldsValue();
-    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId }).then(result => {
+    this.props.addVehicle({ ...newCarInfo, tenant_id: tenantId }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -53,7 +53,7 @@ class VehicleFormMini extends Component {
           tenantId,
           pageSize: vehicles.pageSize,
           current: 1,
-        }).then(addResult => {
+        }).then((addResult) => {
           this.setState({ visible: false });
           if (addResult.error) {
             message.error(addResult.error.message, 5);

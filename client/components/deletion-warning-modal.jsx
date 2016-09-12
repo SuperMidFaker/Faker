@@ -98,7 +98,7 @@ class WarningModal extends React.Component {
             <span className="ant-confirm-title">{title}</span>
             <div className="ant-confirm-content">
               <Form.Item>
-                <Input type="text" placeholder="请记住权力越大,责任越大" onChange={(ev) => this.handleInputChange(ev)} />
+                <Input type="text" placeholder="请记住权力越大,责任越大" onChange={ev => this.handleInputChange(ev)} />
               </Form.Item>
               <h3>{content}</h3>
             </div>

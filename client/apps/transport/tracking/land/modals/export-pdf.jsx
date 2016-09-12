@@ -46,7 +46,7 @@ export default class ExportPDF extends React.Component {
       visible: false,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   render() {
     const { shipmtNo } = this.props;

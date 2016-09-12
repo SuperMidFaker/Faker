@@ -31,7 +31,7 @@ export default class RevokejectModal extends React.Component {
   state = {
     reason: '',
   }
-  handleReasonChange = ev => {
+  handleReasonChange = (ev) => {
     this.setState({ reason: ev.target.value });
   }
   handleCancel = () => {
@@ -40,7 +40,7 @@ export default class RevokejectModal extends React.Component {
   handleOk = () => {
     if (this.props.modalType === 'revoke') {
       this.props.revokeShipment(this.props.shipmtDispId, this.state.reason).then(
-        result => {
+        (result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -49,7 +49,7 @@ export default class RevokejectModal extends React.Component {
         });
     } else {
       this.props.rejectShipment(this.props.shipmtDispId, this.state.reason).then(
-        result => {
+        (result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -58,7 +58,7 @@ export default class RevokejectModal extends React.Component {
         });
     }
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible } = this.props;
     return (

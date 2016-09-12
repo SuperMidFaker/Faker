@@ -36,7 +36,7 @@ export default class ShipmentAdvanceModal extends React.Component {
   state = {
     photoList: [],
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     // const { form, dispId, loginId, tenantId, loginName } = this.props;
     // const fieldsValue = form.getFieldsValue();
@@ -59,7 +59,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     photoList.splice(index, 1);
     this.setState({ photoList });
   }
-  handlePhotoUpload = info => {
+  handlePhotoUpload = (info) => {
     const fileList = [...info.fileList];
     const index = fileList.findIndex(item => item.uid === info.file.uid);
     fileList[index].url = info.file.response ? info.file.response.data : '';

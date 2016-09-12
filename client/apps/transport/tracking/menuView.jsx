@@ -38,7 +38,7 @@ export default class TrackingMenu extends React.Component {
       this.setState({ currentKey: [paths[3]] });
     }
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleMenuChange = (ev) => {
     const key = ev.key;
     if (key === 'land') {

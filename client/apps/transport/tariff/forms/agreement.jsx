@@ -84,7 +84,7 @@ export default class AgreementForm extends React.Component {
     // console.log(this.price);
   }
   handleSubmit = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error('表单信息错误');
       } else {
@@ -114,7 +114,7 @@ export default class AgreementForm extends React.Component {
           forms.loginId = loginId;
           promise = this.props.submitAgreement(forms);
         }
-        promise.then(result => {
+        promise.then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -131,7 +131,7 @@ export default class AgreementForm extends React.Component {
       this.setState({ partnerVisible: false });
     } else if (kind.value === 'sales') {
       this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -140,7 +140,7 @@ export default class AgreementForm extends React.Component {
         });
     } else if (kind.value === 'cost') {
       this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {

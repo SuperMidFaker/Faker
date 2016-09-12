@@ -73,7 +73,7 @@ export default class Login extends React.Component {
                 </span>
                 <input type="text" placeholder={formatMsg(intl, 'userPlaceholder')}
                   autoComplete="off" className="form-control" value={username}
-                  onChange={(ev) => this.handleTextChange(ev, 'username')}
+                  onChange={ev => this.handleTextChange(ev, 'username')}
                 />
               </div>
             </div>
@@ -83,7 +83,7 @@ export default class Login extends React.Component {
                   <i className="icon s7-lock" />
                 </span>
                 <input type="password" placeholder={formatMsg(intl, 'pwdPlaceholder')}
-                  className="form-control" onChange={(ev) => this.handleTextChange(ev, 'password')}
+                  className="form-control" onChange={ev => this.handleTextChange(ev, 'password')}
                 />
               </div>
             </div>
@@ -100,7 +100,7 @@ export default class Login extends React.Component {
                 <label htmlFor="remember">{formatMsg(intl, 'remembered')}</label>
                 <div className="am-checkbox">
                   <input type="checkbox" id="remember" checked={remember}
-                    onChange={(ev) => this.handleCheckboxChange(ev, 'remember')}
+                    onChange={ev => this.handleCheckboxChange(ev, 'remember')}
                   />
                   <label htmlFor="remember"></label>
                 </div>

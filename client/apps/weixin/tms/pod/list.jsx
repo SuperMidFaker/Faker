@@ -57,7 +57,7 @@ export default class List extends React.Component {
         <section>
           <CellsTitle>待上传回单</CellsTitle>
             <Cells access>
-            {shipmentlist.data.map(item => {
+            {shipmentlist.data.map((item) => {
               return (
                   <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
                     <CellBody>
@@ -72,7 +72,7 @@ export default class List extends React.Component {
             </Cells>
           <CellsTitle>已提交回单</CellsTitle>
           <Cells>
-            {uploadedShipmentlist.data.map(item => {
+            {uploadedShipmentlist.data.map((item) => {
               return (
                 <Cell style={{ color: '#CCCCCC' }}>
                   <CellBody>

@@ -136,7 +136,7 @@ export default class CorpEdit extends React.Component {
     } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
-    const msg = (descriptor) => formatMsg(intl, descriptor);
+    const msg = descriptor => formatMsg(intl, descriptor);
     return (
       <div className="main-content">
         <div className="page-body">

@@ -93,7 +93,7 @@ export default class TrackingLandWrapper extends React.Component {
     }
     this.setState({ radioValue });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
     this.context.router.push(
       `/transport/tracking/road/status/${ev.target.value}`
@@ -109,14 +109,14 @@ export default class TrackingLandWrapper extends React.Component {
       `/transport/tracking/road/exception/${ev.target.value}`
     );
   }
-  handleSearchInput = value => {
+  handleSearchInput = (value) => {
     this.setState({ searchInput: value });
     this.props.changeStatusFilter('shipmt_no', value);
     this.props.changePodFilter('shipmt_no', value);
     this.props.changeExcpFilter('shipmt_no', value);
   }
   handleAdvancedSearch = (searchVals) => {
-    Object.keys(searchVals).forEach(key => {
+    Object.keys(searchVals).forEach((key) => {
       this.props.changeStatusFilter(key, searchVals[key]);
       this.props.changePodFilter(key, searchVals[key]);
       this.props.changeExcpFilter(key, searchVals[key]);
