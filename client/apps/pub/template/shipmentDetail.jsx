@@ -9,18 +9,20 @@ import { renderConsignLoc } from '../../transport/common/consignLocation';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { VEHICLE_TYPES, VEHICLE_LENGTH_TYPES } from 'common/constants';
+import { loadVehicleParams } from 'common/reducers/transportResources';
 
 const formatMsg = format(messages);
 
-function fetchData({ dispatch, params }) {
-  return dispatch(loadPubShipmtDetail(params.shipmtNo, params.key));
+function fetchData({ dispatch, params, state }) {
+  return Promise.all([dispatch(loadPubShipmtDetail(params.shipmtNo, params.key)),
+    dispatch(loadVehicleParams(state.account.tenantId))]);
 }
 
 @connectFetch()(fetchData)
 @connect(
   state => ({
     shipmtDetail: state.shipment.shipmtDetail,
+    vehicleParams: state.transportResources.vehicleParams,
   }),
   { }
 )
@@ -29,6 +31,7 @@ export default class ShipmentDetail extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: PropTypes.object.isRequired,
+    vehicleParams: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -37,6 +40,7 @@ export default class ShipmentDetail extends React.Component {
 
   render() {
     const { shipmt } = this.props.shipmtDetail;
+    const { vehicleParams } = this.props;
     const date = new Date();
     const weekDay = date.getDay();
     let week = '';
@@ -120,8 +124,8 @@ export default class ShipmentDetail extends React.Component {
       title: this.msg('goodsRemark'),
       dataIndex: 'remark',
     }];
-    const vehicleType = VEHICLE_TYPES.find(item => item.value === shipmt.vehicle_type);
-    const vehicleLength = VEHICLE_LENGTH_TYPES.find(item => item.value === shipmt.vehicle_length);
+    const vehicleType = vehicleParams.types.find(item => item.value === shipmt.vehicle_type);
+    const vehicleLength = vehicleParams.lengths.find(item => item.value === shipmt.vehicle_length);
     return (
       <div className="panel-body" style={{ backgroundColor: '#fff', width: 800, height: 1080, padding: 50 }}>
         <Row >
