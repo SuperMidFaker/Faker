@@ -572,6 +572,11 @@ img {
       left: 76px;
     }
   }
+  &.tabbed {
+    .ant-tabs-bar {
+      margin-bottom: 0;
+    }
+  }
 }
 .ant-table,
 .ant-table-header,
@@ -718,6 +723,15 @@ img {
   &.expandable {
     .ant-table-body {
       height: auto;
+    }
+  }
+  &.collapse {
+    .ant-collapse {
+        border-radius: 0;
+        border: none;
+    }
+    .ant-collapse-header {
+      font-size: 14px;
     }
   }
   .ant-table-expanded-row > td {
