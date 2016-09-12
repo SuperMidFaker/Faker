@@ -85,17 +85,17 @@ export default function NodeList(props) {
   ];
   return (
     <div className="main-content">
-      <div className="page-header">
-        <div className="tools">
-          <Button size="large" type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
-        </div>
-        <RadioGroup defaultValue={nodeType} size="large" onChange={(e) => onRadioButtonChange(e.target.value)}>
-          <RadioButton value={0}>发货地</RadioButton>
-          <RadioButton value={1}>收货地</RadioButton>
-          <RadioButton value={2}>中转地</RadioButton>
-        </RadioGroup>
-      </div>
       <div className="page-body">
+        <div className="panel-header">
+          <div className="tools">
+            <RadioGroup defaultValue={nodeType} onChange={(e) => onRadioButtonChange(e.target.value)}>
+              <RadioButton value={0}>发货地</RadioButton>
+              <RadioButton value={1}>收货地</RadioButton>
+              <RadioButton value={2}>中转地</RadioButton>
+            </RadioGroup>
+          </div>
+          <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+        </div>
         <div className="panel-body table-panel">
           <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
         </div>

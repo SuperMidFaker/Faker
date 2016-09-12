@@ -321,77 +321,79 @@ export default class Dashboard extends React.Component {
     }];
 
     return (
-      <div className="main-content">
-        <div className="page-title">
-          <h2>{this.msg('transportDashboard')}</h2>
-        </div>
-        <div className="page-body" style={{ padding: '24px' }}>
-          <Card title="活动简报" extra={datePicker}>
-            <Row type="flex" justify="space-around" align="middle">
-              <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
-                  <div style={right}>
-                    <div style={rightTop}>
-                      <NavLink to={'/transport/shipment'}>
-                      {count[0]}
-                      </NavLink>
+      <div>
+        <header className="top-bar">
+          <span>{this.msg('transportDashboard')}</span>
+        </header>
+        <div className="main-content">
+          <div className="page-body" style={{ padding: '24px' }}>
+            <Card title="活动简报" extra={datePicker}>
+              <Row type="flex" justify="space-around" align="middle">
+                <Col span={4} className="stats-data">
+                    <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
+                    <div style={right}>
+                      <div style={rightTop}>
+                        <NavLink to={'/transport/shipment'}>
+                        {count[0]}
+                        </NavLink>
+                      </div>
+                      <div style={rightBottom}>已受理运单</div>
                     </div>
-                    <div style={rightBottom}>已受理运单</div>
-                  </div>
-              </Col>
-              <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
-                  <div style={right}>
-                    <div style={rightTop}>
-                      <NavLink to={'/transport/dispatch'}>
-                      {count[1]}
-                      </NavLink>
+                </Col>
+                <Col span={4} className="stats-data">
+                    <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
+                    <div style={right}>
+                      <div style={rightTop}>
+                        <NavLink to={'/transport/dispatch'}>
+                        {count[1]}
+                        </NavLink>
+                      </div>
+                      <div style={rightBottom}>已调度运单</div>
                     </div>
-                    <div style={rightBottom}>已调度运单</div>
-                  </div>
-              </Col>
-              <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
-                  <div style={right}>
-                    <div style={rightTop}>
-                      <NavLink to={'/transport/tracking/road/status/intransit'}>
-                      {count[2]}
-                      </NavLink>
+                </Col>
+                <Col span={4} className="stats-data">
+                    <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
+                    <div style={right}>
+                      <div style={rightTop}>
+                        <NavLink to={'/transport/tracking/road/status/intransit'}>
+                        {count[2]}
+                        </NavLink>
+                      </div>
+                      <div style={rightBottom}>已提货运单</div>
                     </div>
-                    <div style={rightBottom}>已提货运单</div>
-                  </div>
-              </Col>
-              <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
-                  <div style={right}>
-                    <div style={rightTop}>
-                      <NavLink to={'/transport/tracking/road/status/delivered'}>
-                      {count[3]}
-                      </NavLink>
+                </Col>
+                <Col span={4} className="stats-data">
+                    <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
+                    <div style={right}>
+                      <div style={rightTop}>
+                        <NavLink to={'/transport/tracking/road/status/delivered'}>
+                        {count[3]}
+                        </NavLink>
+                      </div>
+                      <div style={rightBottom}>已交货运单</div>
                     </div>
-                    <div style={rightBottom}>已交货运单</div>
-                  </div>
-              </Col>
-              <Col span={4} className="stats-data">
-                  <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
-                  <div style={right}>
-                    <div style={rightTop}>
-                      <NavLink to={'/transport/tracking/road/pod/passed'}>
-                      {count[4]}
-                      </NavLink>
+                </Col>
+                <Col span={4} className="stats-data">
+                    <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
+                    <div style={right}>
+                      <div style={rightTop}>
+                        <NavLink to={'/transport/tracking/road/pod/passed'}>
+                        {count[4]}
+                        </NavLink>
+                      </div>
+                      <div style={rightBottom}>已完成运单</div>
                     </div>
-                    <div style={rightBottom}>已完成运单</div>
-                  </div>
+                </Col>
+              </Row>
+            </Card>
+            <Row style={{ marginTop: 24 }}>
+              <Col span={24}>
+                <Card title="待处理" bodyStyle={{ padding: 16 }}>
+                  <Table size="small" columns={columns} dataSource={data} pagination={false} />
+                </Card>
               </Col>
             </Row>
-          </Card>
-          <Row style={{ marginTop: 24 }}>
-            <Col span={24}>
-              <Card title="待处理" bodyStyle={{ padding: 16 }}>
-                <Table size="small" columns={columns} dataSource={data} pagination={false} />
-              </Card>
-            </Col>
-          </Row>
+          </div>
         </div>
       </div>
     );

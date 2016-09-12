@@ -404,23 +404,14 @@ export default class AcceptList extends React.Component {
       }];
     }
     return (
-      <div className="main-content">
-        <div className="page-title">
-          <div className="tools">
-            <NavLink to="/transport/shipment/new">
-              <Button type="primary" size="large" icon="plus-circle-o">
-                {this.msg('shipmtCreate')}
-              </Button>
-            </NavLink>
-          </div>
-          <h2>{this.msg('transportShipment')}</h2>
-        </div>
-        <div className="page-header">
+      <div>
+        <header className="top-bar">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <span />
-            <Button type="ghost" onClick={this.toggleAdvancedSearch}>高级搜索</Button>
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
           </div>
+          <span>{this.msg('transportShipment')}</span>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
@@ -430,9 +421,17 @@ export default class AcceptList extends React.Component {
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
-        </div>
+        </header>
+      <div className="main-content">
         <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
         <div className="page-body">
+          <div className="panel-header">
+            <NavLink to="/transport/shipment/new">
+              <Button type="primary" icon="plus-circle-o">
+                {this.msg('shipmtCreate')}
+              </Button>
+            </NavLink>
+          </div>
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2280 }}
@@ -446,6 +445,7 @@ export default class AcceptList extends React.Component {
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
         <PreviewPanel stage="acceptance" />
+      </div>
       </div>
     );
   }

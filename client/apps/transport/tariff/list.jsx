@@ -11,6 +11,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadTable, delTariff } from 'common/reducers/transportTariff';
 import { setNavTitle } from 'common/reducers/navbar';
 import { TARIFF_KINDS } from 'common/constants';
+import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -195,25 +196,30 @@ export default class TariffList extends React.Component {
       },
     };
     return (
-      <div className="main-content">
-        <div className="page-title">
+      <div>
+        <header className="top-bar">
           <div className="tools">
-            <NavLink to="/transport/tariff/new">
-              <Button type="primary" size="large" icon="plus-circle-o">
-                {this.msg('tariffCreate')}
-              </Button>
-            </NavLink>
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <h2>{this.msg('transportTariff')}</h2>
-        </div>
-        <div className="page-body">
-          <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
-            />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+          <span>{this.msg('transportTariff')}</span>
+        </header>
+        <div className="main-content">
+          <div className="page-body">
+            <div className="panel-header">
+              <NavLink to="/transport/tariff/new">
+                <Button type="primary" icon="plus-circle-o">
+                  {this.msg('tariffCreate')}
+                </Button>
+              </NavLink>
+            </div>
+            <div className="panel-body table-panel">
+              <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+                dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
+              />
+            </div>
+            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+            </div>
           </div>
         </div>
       </div>

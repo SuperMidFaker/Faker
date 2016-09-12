@@ -15,6 +15,8 @@ const FormItem = Form.Item;
     loading: state.transportTariff.ratesEndLoading,
     ratesEndList: state.transportTariff.ratesEndList,
     agreementRef: state.transportTariff.ratesRefAgreement,
+    vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
+    vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
   }),
   { submitRateEnd, updateRateEnd, delRateEnd, loadRateEnds }
 )
@@ -27,6 +29,14 @@ export default class RateEndTable extends React.Component {
     agreementRef: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     form: PropTypes.object.isRequired,
+    vehicleTypeParams: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
+    vehicleLengthParams: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
     onChangeVisible: PropTypes.func.isRequired,
     submitRateEnd: PropTypes.func.isRequired,
     updateRateEnd: PropTypes.func.isRequired,
@@ -200,7 +210,7 @@ export default class RateEndTable extends React.Component {
   }
   render() {
     const { ratesEndList, loading, visibleModal, form: { getFieldProps },
-      agreementRef } = this.props;
+      agreementRef, vehicleTypeParams, vehicleLengthParams } = this.props;
     const { editEnd, editRegion } = this.state;
     this.dataSource.remotes = ratesEndList;
     const rowSelection = {
@@ -222,7 +232,7 @@ export default class RateEndTable extends React.Component {
         dataIndex: 'flare',
       });
     }
-    const varColumns = getEndTableVarColumns(agreementRef);
+    const varColumns = getEndTableVarColumns(agreementRef, vehicleTypeParams, vehicleLengthParams);
     varColumns.forEach(vc => {
       columns.push({
         title: vc.title,

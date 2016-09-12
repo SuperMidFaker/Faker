@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'EDIT_NODE_USER', 'EDIT_NODE_USER_SUCCEED', 'EDIT_NODE_USER_FAIL',
   'REMOVE_NODE_USER', 'REMOVE_NODE_USER_SUCCEED', 'REMOVE_NODE_USER_FAIL',
   'UPDATE_USER_STATUS', 'UPDATE_USER_STATUS_SUCCEED', 'UPDATE_USER_STATUS_FAIL',
+  'LOAD_VEHICLEPARAM', 'LOAD_VEHICLEPARAM_SUCCEED', 'LOAD_VEHICLEPARAM_FAIL',
 ]);
 
 const initialState = {
@@ -39,6 +40,10 @@ const initialState = {
     region_code: '',
   },
   nodeUsers: [],
+  vehicleParams: {
+    types: [],
+    lengths: [],
+  },
 };
 
 /**
@@ -128,6 +133,8 @@ export default function reducer(state = initialState, action) {
       state.nodeUsers.splice(i, 1, { ...state.nodeUsers[i], disabled: action.data.disabled });
       return { ...state };
     }
+    case actionTypes.LOAD_VEHICLEPARAM_SUCCEED:
+      return { ...state, vehicleParams: action.result.data };
     default:
       return state;
   }
@@ -406,6 +413,21 @@ export function updateUserStatus(loginId, disabled) {
       endpoint: 'v1/user/status',
       method: 'put',
       data: { loginId, disabled },
+    },
+  };
+}
+
+export function loadVehicleParams(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_VEHICLEPARAM,
+        actionTypes.LOAD_VEHICLEPARAM_SUCCEED,
+        actionTypes.LOAD_VEHICLEPARAM_FAIL,
+      ],
+      endpoint: 'v1/transport/vehicle/params',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }

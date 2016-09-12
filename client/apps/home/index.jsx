@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Button, Tooltip } from 'antd';
+import { Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import NavLink from 'client/components/nav-link';
@@ -70,12 +70,6 @@ export default class Home extends React.Component {
           <div className="home-body">
             <div className="home-body-wrapper">
               <div className="apps-handler-set">
-                <Tooltip placement="top" title="应用市场">
-                  <Button type="ghost" shape="circle-outline" icon="appstore-o" />
-                </Tooltip>
-                <Tooltip placement="top" title="应用管理">
-                  <Button type="ghost" shape="circle-outline" icon="setting" />
-                </Tooltip>
               </div>
               <ModuleLayout size="large" />
             </div>

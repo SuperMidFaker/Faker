@@ -56,6 +56,8 @@ const initialState = {
   partners: [],
   formParams: {
     transModes: [],
+    vehicleTypeParams: [],
+    vehicleLengthParams: [],
   },
   surcharge: {
     pickup: { mode: 0, value: 0 },

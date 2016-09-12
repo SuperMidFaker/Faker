@@ -29,16 +29,10 @@ const TENANT_ASPECT = {
   SP: 1, // 服务商
 };
 const DEFAULT_MODULES = {
-  orders: {
-    cls: 'orders',
-    url: '/orders',
-    text: 'moduleOrders',
-    status: 'disabled',
-  },
-  forwarding: {
-    cls: 'forwarding',
-    url: '/forwarding',
-    text: 'moduleForwarding',
+  customer: {
+    cls: 'customer',
+    url: '/customer',
+    text: 'moduleCustomerCenter',
     status: 'disabled',
   },
   clearance: {
@@ -52,30 +46,6 @@ const DEFAULT_MODULES = {
     url: '/transport',
     text: 'moduleTransport',
     status: 'enabled',
-  },
-  wms: {
-    cls: 'inventory',
-    url: '/inventory',
-    text: 'moduleInventory',
-    status: 'disabled',
-  },
-  tracking: {
-    cls: 'tracking',
-    url: '/tracking',
-    text: 'moduleTracking',
-    status: 'disabled',
-  },
-  datacenter: {
-    cls: 'datacenter',
-    url: '/datacenter',
-    text: 'moduleDatacenter',
-    status: 'disabled',
-  },
-  integration: {
-    cls: 'integration',
-    url: '/integration',
-    text: 'moduleIntegration',
-    status: 'disabled',
   },
 };
 const APP_ENTITY_META_INFO = {
@@ -228,40 +198,6 @@ const VEHICLE_STATUS = {
   disabled: { value: -1, text: '停用' },
   notUse: { value: 0, text: '不在途' },
   inUse: { value: 1, text: '在途' },
-};
-
-const VEHICLE_TYPES = [
-  { value: 0, text: '不限' },
-  { value: 1, text: '厢式车' },
-  { value: 2, text: '敞式车' },
-  { value: 3, text: '平板车' },
-  { value: 4, text: '罐式车' },
-  { value: 5, text: '冷藏车' },
-];
-
-const VEHICLE_LENGTH_TYPES = [
-  { value: 20, text: '2.0' },
-  { value: 42, text: '4.2' },
-  { value: 52, text: '5.2' },
-  { value: 62, text: '6.2' },
-  { value: 68, text: '6.8' },
-  { value: 72, text: '7.2' },
-  { value: 76, text: '7.6' },
-  { value: 82, text: '8.2' },
-  { value: 85, text: '8.5' },
-  { value: 96, text: '9.6' },
-  { value: 120, text: '12.0' },
-  { value: 125, text: '12.5' },
-  { value: 130, text: '13.0' },
-  { value: 135, text: '13.5' },
-  { value: 145, text: '14.5' },
-  { value: 160, text: '16.0' },
-  { value: 175, text: '17.5' },
-];
-
-const VPROPROTY_TYPES = {
-  socialVehicle: { value: 0, text: '社会车辆' },
-  privateVehicle: { value: 1, text: '自有车辆' },
 };
 
 const DRIVER_STATUS = {
@@ -449,8 +385,6 @@ const TAX_STATUS = {
   },
 };
 
-
-const WELOGIX_LOGO_URL = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/welogix-badge.png';
 export {
   DEFAULT_MODULES,
   APP_ENTITY_META_INFO,
@@ -474,9 +408,6 @@ export {
   SHIPMENT_VEHICLE_CONNECT,
   TRACKING_POINT_FROM_TYPE,
   VEHICLE_STATUS,
-  VEHICLE_TYPES,
-  VEHICLE_LENGTH_TYPES,
-  VPROPROTY_TYPES,
   DRIVER_STATUS,
   GOODS_TYPES,
   GOODSTYPES,
@@ -490,6 +421,5 @@ export {
   CMS_DELG_STATUS,
   TAX_MODE,
   TAX_STATUS,
-  WELOGIX_LOGO_URL,
   DELG_STATUS,
 };

@@ -2,13 +2,15 @@ import React, { PropTypes } from 'react';
 import update from 'react/lib/update';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Button } from 'antd';
-import { VEHICLE_TYPES, VEHICLE_LENGTH_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 function IntervalSelect(props) {
-  const { readonly, index, vt, vl, onRemove, onVtChange, onVlChange } = props;
+  const {
+    readonly, index, vt, vl, VEHICLE_LENGTH_TYPES, VEHICLE_TYPES,
+    onRemove, onVtChange, onVlChange,
+  } = props;
   function handleRemove() {
     onRemove(index);
   }
@@ -52,6 +54,14 @@ IntervalSelect.propTypes = {
   readonly: PropTypes.bool,
   vt: PropTypes.number,
   vl: PropTypes.number,
+  VEHICLE_LENGTH_TYPES: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+  })),
+  VEHICLE_TYPES: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+  })),
   index: PropTypes.number.isRequired,
   onRemove: PropTypes.func.isRequired,
   onVtChange: PropTypes.func.isRequired,
@@ -62,14 +72,24 @@ IntervalSelect.propTypes = {
   state => ({
     vehicleTypes: state.transportTariff.agreement.vehicleTypes,
     vehicleLengths: state.transportTariff.agreement.intervals,
+    vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
+    vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
   })
 )
 export default class PricingLTL extends React.Component {
   static propTypes = {
     readonly: PropTypes.bool,
-    vehicleTypes: PropTypes.array,
-    vehicleLengths: PropTypes.array,
+    vehicleTypes: PropTypes.arrayOf(PropTypes.number),
+    vehicleLengths: PropTypes.arrayOf(PropTypes.number),
     formItemLayout: PropTypes.object.isRequired,
+    vehicleTypeParams: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
+    vehicleLengthParams: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
   }
   state = {
     vehicleTypes: [null],
@@ -123,7 +143,7 @@ export default class PricingLTL extends React.Component {
   render() {
     const items = [];
     const { vehicleTypes, vehicleLengths } = this.state;
-    const { readonly, formItemLayout } = this.props;
+    const { readonly, formItemLayout, vehicleTypeParams, vehicleLengthParams } = this.props;
     for (let i = 0; i < vehicleTypes.length; i++) {
       items.push(
         <IntervalSelect index={i} vt={vehicleTypes[i]} vl={vehicleLengths[i]}
@@ -131,6 +151,8 @@ export default class PricingLTL extends React.Component {
           onRemove={this.handleLimitRemove}
           onVtChange={this.handleVtChange}
           onVlChange={this.handleVlChange}
+          VEHICLE_TYPES={vehicleTypeParams}
+          VEHICLE_LENGTH_TYPES={vehicleLengthParams}
           key={`vehicle-length-type-${i}`}
         />);
     }

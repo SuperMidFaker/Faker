@@ -110,7 +110,7 @@ export default class AcceptanceEdit extends Component {
               </Col>
             </div>
             <div id="parent" style={{ padding: '16px' }}>
-              <SubForm form={form} />
+              <SubForm form={form} ietype={type} />
             </div>
             <div style={{ padding: '16px' }}>
               <Button size="large" type="primary" style={{ marginRight: 20 }}

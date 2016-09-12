@@ -1,5 +1,5 @@
 {
-  "component.module.orders": "Order Center",
+  "component.module.customer.center": "Customer Center",
   "component.module.transport": "Transporation Management",
   "component.module.clearance": "Clearance Management",
   "component.module.forwarding": "Forwarding",

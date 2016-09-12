@@ -34,14 +34,14 @@ export default class FreightCharge extends React.Component {
   handleCompute = () => {
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
-      transport_mode_code,
+      transport_mode_id,
     } = this.props.formData;
-    const { goods_type, package: ctn, vehicle_type, vehicle_length, total_weight, total_volume } =
+    const { goods_type, package: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume } =
       this.props.formhoc.getFieldsValue([
-        'goods_type', 'package', 'vehicle_type',
-        'vehicle_length', 'total_weight', 'total_volume',
+        'goods_type', 'package', 'vehicle_type_id',
+        'vehicle_length_id', 'total_weight', 'total_volume',
       ]);
-    if (!(total_volume || total_weight || ctn || vehicle_length)) {
+    if (!(total_volume || total_weight || ctn || vehicle_length_id === undefined)) {
       notification.warning({
         message: '计算运费',
         description: '计费数量未填写，例如：总重量/总体积/集装箱类型',
@@ -51,9 +51,9 @@ export default class FreightCharge extends React.Component {
     const created = this.props.formData.created_date || Date.now();
     this.props.computeSaleCharge({
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_code, ctn,
+      goods_type, trans_mode: transport_mode_id, ctn,
       tenant_id: this.props.tenantId, created_date: created,
-      vehicle_type, vehicle_length, total_weight, total_volume,
+      vehicle_type_id, vehicle_length_id, total_weight, total_volume,
     }).then(result => {
       if (result.error) {
         message.error(result.error.message);

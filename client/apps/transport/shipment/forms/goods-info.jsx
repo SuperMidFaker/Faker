@@ -88,6 +88,7 @@ ColumnSelect.propTypes = {
       insure_value: state.shipment.formData.insure_value,
       total_volume: state.shipment.formData.total_volume,
     },
+    modeCode: state.shipment.formData.transport_mode_code,
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
     containerPackagings: state.shipment.formRequire.containerPackagings,
@@ -100,6 +101,7 @@ export default class GoodsInfo extends React.Component {
     goods: PropTypes.array.isRequired,
     fieldDefaults: PropTypes.object.isRequired,
     labelColSpan: PropTypes.number.isRequired,
+    modeCode: PropTypes.string,
     goodsTypes: PropTypes.array.isRequired,
     packagings: PropTypes.array.isRequired,
     containerPackagings: PropTypes.array.isRequired,
@@ -201,15 +203,14 @@ export default class GoodsInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const {
-      labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldProps, getFieldValue },
+      labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldProps },
       packagings, containerPackagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
     } = this.props;
-    const apackagings = getFieldValue('transport_mode_code') === 'CTN' ? containerPackagings
-      : packagings.map(pk => ({
-        key: pk.package_code,
-        value: pk.package_name,
-      }));
+    const apackagings = this.props.modeCode === 'CTN' ? containerPackagings : packagings.map(pk => ({
+      key: pk.package_code,
+      value: pk.package_name,
+    }));
     const outerColSpan = 8;
     const columns = [{
       title: this.msg('goodsCode'),

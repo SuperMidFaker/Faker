@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import update from 'react/lib/update';
 import { connect } from 'react-redux';
 import { Form, Select, Input, InputNumber, Card, Col, Row, Button } from 'antd';
-import { DECL_I_TYPE } from 'common/constants';
+import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,6 +23,7 @@ export default class SubForm extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     delgBills: PropTypes.array.isRequired,
+    ietype: PropTypes.string.isRequired,
   }
   state = {
     bills: [],
@@ -72,8 +73,9 @@ export default class SubForm extends Component {
   }
 
   render() {
-    const { getFieldProps } = this.props.form;
+    const { form: { getFieldProps }, ietype } = this.props;
     const bills = this.state.bills;
+    const DECL_TYPE = ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     getFieldProps('keys', {
       initialValue: this.state.keys,
     });
@@ -89,7 +91,7 @@ export default class SubForm extends Component {
                 })}
               >
               {
-                DECL_I_TYPE.map(dw =>
+                DECL_TYPE.map(dw =>
                   <Option value={dw.key} key={dw.key}>{dw.value}</Option>
                 )
               }
