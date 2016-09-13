@@ -1,16 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Modal } from 'antd';
+import { Row, Col, Card } from 'antd';
 import { TENANT_ASPECT } from 'common/constants';
 import './pane.less';
 
-let DOC = [];
-let XLS = [];
-let PDF = [];
-let ZIP = [];
 let FILE = [];
-
 function getColCls(col) {
   if (col) {
     const { span, offset } = col;
@@ -40,15 +35,16 @@ function fileSort(filename) {
   const ext = getExtension(filename);
   const type = ext.toLowerCase();
   if (type === 'doc' || type === 'pages' || type === 'docx') {
-    DOC.push(filename);
+    FILE.push({ type: 'doc', name: filename });
   } else if (type === 'xls' || type === 'numbers') {
-    XLS.push(filename);
+    FILE.push({ type: 'xls', name: filename });
   } else if (type === 'zip' || type === 'rar') {
-    ZIP.push(filename);
+    FILE.push({ type: 'zip', name: filename });
   } else {
-    PDF.push(filename);
+    FILE.push({ type: 'pdf', name: filename });
   }
 }
+
 PaneFormItem.propTypes = {
   label: PropTypes.string.isRequired,
   labelCol: PropTypes.object,
@@ -71,44 +67,36 @@ export default class BasicPane extends React.Component {
     files: PropTypes.array.isRequired,
     delegateTracking: PropTypes.object.isRequired,
   }
-  state = {
-    imgModalShow: false,
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.files.length !== this.props.files.length) {
-      DOC = []; XLS = []; PDF = []; ZIP = [];
-      nextProps.files.forEach((fl) => {
+      FILE = [];
+      nextProps.files.forEach(fl => {
         fileSort(fl.name);
       });
     }
   }
-  handleDocClick = () => {
-    FILE = DOC;
-    this.setState({ imgModalShow: true });
-  }
-  handleXlsClick = () => {
-    FILE = XLS;
-    this.setState({ imgModalShow: true });
-  }
-  handlePdfClick = () => {
-    FILE = PDF;
-    this.setState({ imgModalShow: true });
-  }
-  handleZipClick = () => {
-    FILE = ZIP;
-    this.setState({ imgModalShow: true });
-  }
-  handleClose = () => {
-    this.setState({ imgModalShow: false });
-  }
   render() {
     const { delegation, delegateTracking } = this.props;
-    if (FILE.length < 1) {
-      FILE[0] = '—';
-    }
-    const filenames = FILE.map((doc, index) => {
+    let img = '';
+    const filenames = FILE.map((fl, index) => {
+      if (fl.type === 'doc') {
+        img = 'word.png';
+      }
+      if (fl.type === 'xls') {
+        img = 'excl.png';
+      }
+      if (fl.type === 'zip') {
+        img = 'zip.png';
+      }
+      if (fl.type === 'pdf') {
+        img = 'pdf.png';
+      }
       return (
-        <div key={index}>{doc}</div>
+        <div key={index} className="filebox">
+          <img id="img" role="presentation"
+            src={`${__CDN__}/assets/img/${img}`}
+          />{fl.name}
+        </div>
       );
     });
     return (
@@ -186,29 +174,7 @@ export default class BasicPane extends React.Component {
           </Row>
         </Card>
         <Card title="附件" bodyStyle={{ padding: 16 }}>
-          <a onClick={this.handleXlsClick}>
-            <img id="img" role="presentation"
-              src={`${__CDN__}/assets/img/excl.png`}
-            />
-          </a>
-          <a onClick={this.handlePdfClick}>
-            <img id="img" role="presentation"
-              src={`${__CDN__}/assets/img/pdf.png`}
-            />
-          </a>
-          <a onClick={this.handleZipClick}>
-            <img id="img" role="presentation"
-              src={`${__CDN__}/assets/img/zip.png`}
-            />
-          </a>
-          <a onClick={this.handleDocClick}>
-            <img id="img" role="presentation"
-              src={`${__CDN__}/assets/img/word.png`}
-            />
-          </a>
-          <Modal title="详情" wrapClassName="vertical-center-modal" visible={this.state.imgModalShow} footer={''} onCancel={this.handleClose}>
-            {filenames}
-          </Modal>
+          {filenames}
         </Card>
       </div>
     );

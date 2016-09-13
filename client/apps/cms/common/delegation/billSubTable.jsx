@@ -46,7 +46,7 @@ export default class SubdelgTable extends Component {
     width: 160,
     render: (o) => {
       return (
-        <NavLink to={`/clearance/${this.props.ietype}/docs/make/${o}`}>
+        <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
           {o}
         </NavLink>);
     },
@@ -136,7 +136,7 @@ export default class SubdelgTable extends Component {
       <div>
         <Table expandedRowKeys={this.state.expandedRowKeys} columns={this.columns}
           dataSource={delgBills} pagination={false} size="middle" scroll={{ y: 200 }}
-          onExpandedRowsChange={this.handleExpandedChange}
+          onExpandedRowsChange={this.handleExpandedChange} loading={delgBills.loading}
         />
         <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
       </div>
