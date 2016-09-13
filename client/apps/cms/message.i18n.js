@@ -37,28 +37,32 @@ const messages = defineMessages({
     id: 'cms.manage.relation',
     defaultMessage: '关联单位',
   },
+  priceManage: {
+    id: 'cms.manage.price',
+    defaultMessage: '报价管理',
+  },
   new: {
     id: 'cms.manage.new',
     defaultMessage: '新建',
   },
   import: {
-    id: 'cms.module.clearance.import',
+    id: 'cms.moduleClearance.import',
     defaultMessage: '进口',
   },
   export: {
-    id: 'cms.module.clearance.export',
+    id: 'cms.moduleClearance.export',
     defaultMessage: '出口',
   },
   expense: {
-    id: 'cms.module.clearance.expense',
+    id: 'cms.moduleClearance.expense',
     defaultMessage: '费用',
   },
   manage: {
-    id: 'cms.module.clearance.manage',
+    id: 'cms.moduleClearance.manage',
     defaultMessage: '管理',
   },
   settings: {
-    id: 'cms.module.clearance.settings',
+    id: 'cms.moduleClearance.settings',
     defaultMessage: '设置',
   },
 });

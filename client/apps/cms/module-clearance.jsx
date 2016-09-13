@@ -28,11 +28,20 @@ function getLinksByAspect(aspect, intl) {
       icon: 'zmdi zmdi-money-box',
       text: formatMsg(intl, 'expense'),
     }, {
-      single: true,
+      single: false,
       key: 'cms-3',
-      path: '/clearance/manage',
+      path: '/clearance/relation',
       icon: 'zmdi zmdi-case',
       text: formatMsg(intl, 'manage'),
+      sublinks: [{
+        key: 'cms-3-1',
+        path: '/clearance/relation',
+        text: formatMsg(intl, 'relation'),
+      }, {
+        key: 'cms-3-2',
+        path: '/clearance/price',
+        text: formatMsg(intl, 'priceManage'),
+      }],
     }, {
       single: true,
       key: 'cms-4',

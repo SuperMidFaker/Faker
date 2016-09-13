@@ -247,7 +247,7 @@ export default defineMessages({
   },
   lastActTime: {
     id: 'cms.delegation.last.act.time',
-    defaultMessage: '最后活动时间',
+    defaultMessage: '最后更新时间',
   },
   clrStatus: {
     id: 'cms.delegation.clr.status',
