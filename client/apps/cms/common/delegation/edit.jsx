@@ -45,7 +45,7 @@ export default class AcceptanceEdit extends Component {
     removedFiles: [],
   }
   handleSave = ({ isAccepted }) => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
@@ -64,7 +64,7 @@ export default class AcceptanceEdit extends Component {
         this.props.editDelegation({
           delegation, addedFiles, removedFiles, patnershipType: 'CCB',
           accepted: isAccepted, ietype: type === 'import' ? 0 : 1,
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {

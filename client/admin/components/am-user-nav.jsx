@@ -23,7 +23,7 @@ export default class AmUserNav extends React.Component {
     logout: PropTypes.func.isRequired,
   }
   handleLogout = () => {
-    this.props.logout().then(result => {
+    this.props.logout().then((result) => {
       if (!result.error) {
         window.location.href = '/login';
       }
@@ -33,9 +33,15 @@ export default class AmUserNav extends React.Component {
     const MenuItem = Menu.Item;
     const { intl, avatar } = this.props;
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
+    const subTitle = (
+      <span>
+        <img className="navbar-avatar" src={avatar || defaultAvatar} alt="avatar" />
+        <i className="angle-down s7-angle-down" />
+      </span>
+    );
     return (
-      <Menu mode="horizontal">
-        <SubMenu title={<span><img className="avatar" src={avatar || defaultAvatar} alt="avatar" /><i className="angle-down s7-angle-down" /></span>}>
+      <Menu mode="horizontal" className="navbar-user-menu">
+        <SubMenu title={subTitle}>
           <MenuItem key="corps">
             <NavLink to="">
               <Icon type="solution" />

@@ -5,23 +5,6 @@ const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 import './am-ant-leftbar.less';
 
-function hoverAmSubmenu() {
-  // hacky: make the submenu ul visible at the bottom of page
-  /* eslint-disable */
-  $('.am-sidebar-submenu').hover(function () {
-    const submenu = $(this);
-    const submenuUL = submenu.find('ul');
-    if (submenu[0].offsetTop < window.innerHeight/2) {
-      submenuUL.css('top', 0);
-    } else {
-      submenuUL.css('bottom', 0);
-    }
-  });
-  /* eslint-enable */
-}
-function updateDimensions() {
-  hoverAmSubmenu();
-}
 function isEqualPath(pathA, pathB) {
   /* eslint-disable */
   if (pathA.charAt(pathA.length - 1) !== '/') {
@@ -38,19 +21,6 @@ export default class AmLeftSidebar extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     links: PropTypes.array.isRequired,
-    /* {
-     *   single:
-     *   key:
-     *   path:
-     *   icon:
-     *   text:
-     *   sublinks: [{
-     *     key:
-     *     path:
-     *     text:
-     *   }]
-     * }
-     */
   }
   state = {
     selectedKeys: [],
@@ -58,15 +28,10 @@ export default class AmLeftSidebar extends React.Component {
   };
 
   componentDidMount() {
-    hoverAmSubmenu();
-    window.addEventListener('resize', updateDimensions);
     this.setOpenSelectedKeys(this.props.location.pathname);
   }
   componentWillReceiveProps(nextProps) {
     this.setOpenSelectedKeys(nextProps.location.pathname);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('resize', updateDimensions);
   }
   setOpenSelectedKeys(path) {
     for (let i = 0; i < this.props.links.length; i++) {
@@ -110,7 +75,7 @@ export default class AmLeftSidebar extends React.Component {
           onClick={this.handleClick} mode="vertical" theme="dark"
         >
         {
-          links.map(link => {
+          links.map((link) => {
             if (link.single) {
               return (<MenuItem key={link.key}>
                 <NavLink to={link.path}>
@@ -124,7 +89,7 @@ export default class AmLeftSidebar extends React.Component {
                   title={<div><i className={`icon  ${link.icon}`} /><span>{link.text}</span></div>}
                 >
                   {
-                    link.sublinks.map(sub => {
+                    link.sublinks.map((sub) => {
                       return (<MenuItem key={sub.key}>
                         <NavLink to={sub.path}>
                           {sub.text}

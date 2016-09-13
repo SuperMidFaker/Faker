@@ -65,12 +65,12 @@ export default class BillForm extends React.Component {
   handleBillSave = (ev) => {
     ev.preventDefault();
     // todo bill head save sync with entry head, vice verse
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { billHead, ietype, loginId, tenantId } = this.props;
         const head = { ...billHead, ...this.props.form.getFieldsValue() };
         this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {
@@ -84,7 +84,7 @@ export default class BillForm extends React.Component {
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
     return (<div>
-      <div className="panel-body padding fixed-height">
+      <div className="panel-body collapse fixed-height">
         <Collapse accordion defaultActiveKey="bill-head" style={{ marginBottom: 46 }}>
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
@@ -99,7 +99,7 @@ export default class BillForm extends React.Component {
       </div>
       <div className="panel-footer">
         {!readonly &&
-          <Button type="primary" onClick={this.handleBillSave} icon="save" size="small">
+          <Button type="primary" onClick={this.handleBillSave} icon="save">
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>
         }

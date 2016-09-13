@@ -53,7 +53,7 @@ export default class PreviewPanel extends React.Component {
     shipmt: PropTypes.object.isRequired,
     showChangeShipmentModal: PropTypes.func.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('goodsCode'),
     dataIndex: 'goods_no',

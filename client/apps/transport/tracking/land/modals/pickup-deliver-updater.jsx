@@ -33,14 +33,14 @@ export default class PickupDeliverUpdater extends React.Component {
     closeDateModal: PropTypes.func.isRequired,
     saveBatchPickOrDeliverDate: PropTypes.func.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { form, type, shipments, onOK, loginId, loginName, tenantId, tenantName } = this.props;
         const { actDate } = form.getFieldsValue();
         this.props.saveBatchPickOrDeliverDate({ type, shipments: JSON.stringify(shipments), actDate, loginId, tenantId, loginName, tenantName }).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {

@@ -42,7 +42,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    render: (o) => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('departurePlace'),
     render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
@@ -212,7 +212,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',
-    render: (o) => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',

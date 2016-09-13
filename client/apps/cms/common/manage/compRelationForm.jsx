@@ -29,7 +29,7 @@ class CompRelationForm extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleSubmit = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -37,7 +37,7 @@ class CompRelationForm extends Component {
         formData.status = 1;
         formData.id = this.props.formData.id;
         formData.tenant_id = this.props.tenant_id;
-        this.props.submitCompRelation(formData).then(result => {
+        this.props.submitCompRelation(formData).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -82,7 +82,7 @@ class CompRelationForm extends Component {
                   min: 10,
                   max: 18,
                   whitespace: false,
-                }], { transform: (value) => (value.trim()), initialValue: formData.comp_code }
+                }], { transform: value => (value.trim()), initialValue: formData.comp_code }
               )}
             </Col>
           </Row>
@@ -94,7 +94,7 @@ class CompRelationForm extends Component {
                   message: this.msg('comp_name_placeholder'),
                   type: 'string',
                   whitespace: true,
-                }], { transform: (value) => (value.trim()), initialValue: formData.comp_name }
+                }], { transform: value => (value.trim()), initialValue: formData.comp_name }
               )}
             </Col>
           </Row>

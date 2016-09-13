@@ -1,0 +1,13 @@
+{
+  "plugins": ["transform-decorators-legacy", "add-module-exports"],
+  "presets": ["es2015-without-regenerator", "react", "stage-0"],
+  "env": {
+    "i18n": {
+      "plugins": [
+        ["react-intl", {
+          "messagesDir": "./public/dist/messages/"
+        }]
+      ]
+    }
+  }
+}

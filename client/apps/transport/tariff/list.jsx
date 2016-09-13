@@ -87,7 +87,7 @@ export default class TariffList extends React.Component {
     remotes: this.props.tarifflist,
   })
 
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('tariffName'),
     dataIndex: 'name',
@@ -100,7 +100,7 @@ export default class TariffList extends React.Component {
     title: this.msg('tariffType'),
     dataIndex: 'kind',
     width: 80,
-    render: (o) => typeof o === 'number' && TARIFF_KINDS[o].text,
+    render: o => typeof o === 'number' && TARIFF_KINDS[o].text,
   }, {
     title: this.msg('effectiveDate'),
     dataIndex: 'effectiveDate',
@@ -153,14 +153,14 @@ export default class TariffList extends React.Component {
       currentPage: current || this.props.tarifflist.current,
       sortField: sortField || this.props.sortField,
       sortOrder: sortOrder || this.props.sortOrder,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
     });
   }
   handleDel = (row) => {
-    this.props.delTariff(row._id).then(result => {
+    this.props.delTariff(row._id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -178,7 +178,7 @@ export default class TariffList extends React.Component {
   handleShipmtDraftDel(shipmtNo, ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.delDraft(shipmtNo).then(result => {
+    this.props.delDraft(shipmtNo).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -191,7 +191,7 @@ export default class TariffList extends React.Component {
     this.dataSource.remotes = tarifflist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: selectedRowKeys => {
+      onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };

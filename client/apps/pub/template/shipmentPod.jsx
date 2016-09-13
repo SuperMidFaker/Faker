@@ -31,7 +31,7 @@ export default class ShipmentPod extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   render() {
     const { shipmt, pod } = this.props.shipmtDetail;

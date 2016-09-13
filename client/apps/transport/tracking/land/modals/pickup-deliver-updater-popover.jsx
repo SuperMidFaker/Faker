@@ -43,14 +43,14 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       }
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { form, type, shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName } = this.props;
         const { actDate } = form.getFieldsValue();
         this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName }).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {
@@ -107,7 +107,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
         content={content}
         visible={this.state.visible}
       >
-        <a className={`pickupDeliver${shipmtNo}`} onClick={ev => {
+        <a className={`pickupDeliver${shipmtNo}`} onClick={(ev) => {
           ev.preventDefault();
           ev.stopPropagation();
           this.handleShowPopover();

@@ -18,7 +18,7 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, params, cookie }) {
-  const newfilters = state.trackingLandException.filters.map(flt => {
+  const newfilters = state.trackingLandException.filters.map((flt) => {
     if (flt.name === 'type') {
       return {
         name: 'type',
@@ -68,7 +68,7 @@ export default class LandStatusList extends React.Component {
   componentWillReceiveProps(nextProps) {
     let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
-      newfilters = nextProps.filters.map(flt => {
+      newfilters = nextProps.filters.map((flt) => {
         if (flt.name === 'type') {
           return {
             name: 'type',
@@ -117,7 +117,7 @@ export default class LandStatusList extends React.Component {
     },
     remotes: this.props.shipmentlist,
   })
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
@@ -314,7 +314,7 @@ export default class LandStatusList extends React.Component {
       sortField: sortField || this.props.sortField,
       sortOrder: sortOrder || this.props.sortOrder,
      */
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -324,7 +324,7 @@ export default class LandStatusList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'logs', row).then(result => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'logs', row).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -349,7 +349,7 @@ export default class LandStatusList extends React.Component {
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: selectedRowKeys => {
+      onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };

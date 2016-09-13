@@ -52,7 +52,7 @@ export default class ExcpEventsModal extends React.Component {
       });
     }
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadExceptions(params),
     resolve: result => result.data,

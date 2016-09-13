@@ -89,7 +89,7 @@ export default class CorpEdit extends React.Component {
         };
         if (this.props.formData.key) {
           // only with poid coid(owner id) and organization name
-          this.props.editOrganization(form).then(result => {
+          this.props.editOrganization(form).then((result) => {
             this.onSubmitReturn(result.error);
           });
         } else {
@@ -101,7 +101,7 @@ export default class CorpEdit extends React.Component {
             category_id,
             subdomain,
           };
-          this.props.submit(form, tenant).then(result => {
+          this.props.submit(form, tenant).then((result) => {
             this.onSubmitReturn(result.error);
           });
         }

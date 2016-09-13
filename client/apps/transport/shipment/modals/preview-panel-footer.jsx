@@ -82,7 +82,7 @@ export default class Footer extends React.Component {
   state = {
     exportPDFvisible: false,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
@@ -108,7 +108,7 @@ export default class Footer extends React.Component {
   handleShipmtAccept = (dispId) => {
     this.props.loadAcceptDispatchers(
       this.props.tenantId, [dispId]
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -149,7 +149,7 @@ export default class Footer extends React.Component {
           consignee_city: shipmt.consignee_city,
           consignee_district: shipmt.consignee_district,
           parentId: shipmt.parent_id }]),
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);
           }
@@ -175,7 +175,7 @@ export default class Footer extends React.Component {
           dispId: shipmt.key,
           parentId: shipmt.parent_id,
           shipmtNo: shipmt.shipmt_no,
-        }).then(result => {
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);
           }
@@ -218,7 +218,7 @@ export default class Footer extends React.Component {
   }
   handleAuditPass = (row) => {
     const { loginName, tenantId, loginId } = this.props;
-    this.props.passAudit(row.pod_id, row.disp_id, row.parent_id, loginName, tenantId, loginId).then(result => {
+    this.props.passAudit(row.pod_id, row.disp_id, row.parent_id, loginName, tenantId, loginId).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -227,7 +227,7 @@ export default class Footer extends React.Component {
     });
   }
   handleAuditReturn = (row) => {
-    this.props.returnAudit(row.disp_id).then(result => {
+    this.props.returnAudit(row.disp_id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -238,7 +238,7 @@ export default class Footer extends React.Component {
   handleWithDraw = (row) => {
     const { tenantId, loginId, loginName } = this.props;
     const list = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no, parentId: row.parent_id }];
-    this.props.withDraw({ tenantId, loginId, loginName, list: JSON.stringify(list) }).then(result => {
+    this.props.withDraw({ tenantId, loginId, loginName, list: JSON.stringify(list) }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -249,7 +249,7 @@ export default class Footer extends React.Component {
   handleReturn = (row) => {
     const { tenantId, loginId, loginName } = this.props;
     const shipmtDispIds = [row.key];
-    this.props.returnShipment({ shipmtDispIds, tenantId, loginId, loginName }).then(result => {
+    this.props.returnShipment({ shipmtDispIds, tenantId, loginId, loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {

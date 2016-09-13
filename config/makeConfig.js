@@ -1,6 +1,6 @@
-import path from 'path';
+const path = require('path');
 const env = process.env.NODE_ENV = (process.env.NODE_ENV || 'development').trim();
-export default (serverPort, dirName, appName) => {
+module.exports = (serverPort, dirName, appName) => {
   const config = new Map();
 
   const __DEV__ = env === 'development' || env === 'home';
@@ -44,7 +44,8 @@ export default (serverPort, dirName, appName) => {
   if (__TEST_PROD__) {
     config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
     config.set('API_ROOTS', {
-      default: `http://192.168.0.200:${config.get('server_port')}/`,
+      default: 'http://localhost:3030/',
+      mongo: 'http://localhost:3032/',
       self: '/',
     });
   }

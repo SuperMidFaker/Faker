@@ -195,7 +195,7 @@ export default class SegmentDock extends React.Component {
   }
 
   handleSegment= () => {
-    const shipmtNos = this.props.shipmts.map(s => {
+    const shipmtNos = this.props.shipmts.map((s) => {
       return { shipmtNo: s.shipmt_no, dispId: s.key };
     });
 
@@ -212,7 +212,7 @@ export default class SegmentDock extends React.Component {
       shipmtNos,
       segGroupFirst,
       segGroupSecond,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -233,7 +233,7 @@ export default class SegmentDock extends React.Component {
       if (shipmts.length === 1) {
         close = false;
       }
-      shipmts.forEach(v => {
+      shipmts.forEach((v) => {
         arr.push((<Tag closable={close} color="blue">{v.shipmt_no}</Tag>));
         if (!isNaN(v.total_count)) {
           totalCount += v.total_count;

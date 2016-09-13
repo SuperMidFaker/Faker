@@ -71,7 +71,7 @@ export default class CorpInfo extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     const newState = this.state;
-    ['country', 'province', 'city', 'district', 'logo'].forEach(fld => {
+    ['country', 'province', 'city', 'district', 'logo'].forEach((fld) => {
       if (nextProps.formData[fld] !== this.props.formData[fld]) {
         newState[fld] = nextProps.formData[fld];
       }
@@ -109,7 +109,7 @@ export default class CorpInfo extends React.Component {
           ...this.props.form.getFieldsValue(),
           ...this.state,
         };
-        this.props.edit(form).then(result => {
+        this.props.edit(form).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -206,7 +206,7 @@ export default class CorpInfo extends React.Component {
                   type: 'string',
                   whitespace: true,
                 }], {
-                  transform: (value) => (value.trim()),
+                  transform: value => (value.trim()),
                   initialValue: contact,
                 }
               )}
@@ -240,7 +240,7 @@ export default class CorpInfo extends React.Component {
   }
   renderEnterpriseForm() {
     const { formData: { subdomain }, intl } = this.props;
-    const msg = (descriptor) => formatMsg(intl, descriptor);
+    const msg = descriptor => formatMsg(intl, descriptor);
     return (
       <div className="panel-body body-responsive">
         <Form horizontal className="form-edit-content">
@@ -285,7 +285,7 @@ export default class CorpInfo extends React.Component {
       </div>);
   }
   render() {
-    const msg = (descriptor) => formatMsg(this.props.intl, descriptor);
+    const msg = descriptor => formatMsg(this.props.intl, descriptor);
     return (
       <div className="main-content">
         <div className="page-body">

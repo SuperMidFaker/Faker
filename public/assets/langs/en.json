@@ -223,5 +223,7 @@
   "reusable.checker.username.nosymbol.at": "username should not include '@'",
   "reusable.checker.username.exist": "Username exist.",
   "reusable.checker.phone.required": "Phone is required.",
-  "reusable.checker.invalid.phone": "Invalid phone."
+  "reusable.checker.invalid.phone": "Invalid phone.",
+  "cms.delegation.readall": "All",
+  "cms.delegation.delg.no": "Delegate Num"
 }

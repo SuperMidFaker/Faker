@@ -49,12 +49,12 @@ export default class LocationUpdater extends React.Component {
       street,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleCancel = () => {
     this.props.closeLocModal();
   }
   handleOk = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { province, city, district } = this.state;
         const { tenantId, transit } = this.props;
@@ -65,7 +65,7 @@ export default class LocationUpdater extends React.Component {
             province, city, district,
             location_time, address,
             from: TRACKING_POINT_FROM_TYPE.manual,
-          }).then(result => {
+          }).then((result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {

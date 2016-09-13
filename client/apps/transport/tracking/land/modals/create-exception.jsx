@@ -52,7 +52,7 @@ export default class CreateException extends React.Component {
         typeName,
         excpEvent: fieldsValue.excp_event,
         submitter: loginName,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error);
         } else {

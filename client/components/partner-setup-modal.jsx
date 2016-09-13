@@ -125,7 +125,7 @@ export default class PartnerSetupDialog extends React.Component {
       this.props.inviteOnlPartner(
         this.props.tenantId, selectedTenantId, this.state.tenantCode,
         partnerships, 'invite-sent'
-      ).then(result => {
+      ).then((result) => {
         if (result.error) {
           message.error(getFormatMsg(result.error.message, this.msg), 10);
         }
@@ -145,7 +145,7 @@ export default class PartnerSetupDialog extends React.Component {
     this.props.inviteOfflPartner(
       this.props.tenantId, this.state.tenantInput, this.state.tenantCode,
       partnerships, this.state.offlineContact, 'invite-sent'
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         message.error(getFormatMsg(result.error.message, this.msg), 10);
       }

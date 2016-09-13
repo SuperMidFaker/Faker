@@ -71,11 +71,17 @@ server
       'mongo': api1.welogix.cn
 
 ## API服务
-   
+
   git clone git@git.welogix.cn:saas/welogix-api-mysql.git
 
+## 多语言国际化
+
+  * [react-intl](https://github.com/yahoo/react-intl)) defineMessages定义对应文本的描述键(descriptor key), 全局唯一id和defaultMessage,示例见message.i18n.js文件
+  * react-intl的injectIntl装饰翻译组件, client/common/i18n/helpers.js的format关联定义的message和组件
+  * intl对应的message格式见[官方文档](http://formatjs.io/guides/message-syntax/)
+
 ## Caveats
-  
+
   * 使用HTTP-only cookie保存用户授权token, 因此要求API域名必须为welogix.cn下面的子域名
   * API服务与站点Web服务端口必须固定, Saas: 3022, ADMIN:3024, api-mysql: 3030, openapi-mysql: 3031, api-mongo: 3032
-  * 顶层Route可用connect-fetch在服务端获取数据
+  * 只有顶层Route可用connect-fetch在服务端获取数据,其他地方装饰均只有在客户端加载

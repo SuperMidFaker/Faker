@@ -43,7 +43,7 @@ export default class ModeInfo extends React.Component {
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handlePickupChange = pickupDt => {
+  handlePickupChange = (pickupDt) => {
     const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
     const deliverDate = new Date(
       pickupDt.getTime() + transitTime * ONE_DAY_MS
@@ -52,7 +52,7 @@ export default class ModeInfo extends React.Component {
       deliver_est_date: deliverDate,
     });
   }
-  handleTransitChange = value => {
+  handleTransitChange = (value) => {
     let pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
     if (pickupDt && typeof value === 'number') {
       if (typeof pickupDt === 'string') {
@@ -66,7 +66,7 @@ export default class ModeInfo extends React.Component {
       });
     }
   }
-  handleDeliveryChange = deliverDt => {
+  handleDeliveryChange = (deliverDt) => {
     const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
     const pickupDt = new Date(
       deliverDt.getTime() - transitTime * ONE_DAY_MS

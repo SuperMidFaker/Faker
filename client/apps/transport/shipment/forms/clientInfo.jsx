@@ -29,7 +29,7 @@ export default class ClientInfo extends React.Component {
     setConsignFields: PropTypes.func.isRequired,
   }
 
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   findClientValue = (evalue) => {
     const clientFieldId = Number(evalue);
     // console.log(typeof clientFieldId, evalue);

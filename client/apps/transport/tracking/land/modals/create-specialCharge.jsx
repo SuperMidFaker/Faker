@@ -44,7 +44,7 @@ export default class CreateSpecialCharge extends React.Component {
         excpEvent: fieldsValue.excp_event,
         submitter: loginName,
         charge: Number(fieldsValue.charge),
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error);
         } else {

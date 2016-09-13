@@ -53,7 +53,7 @@ function ColumnSelect(props) {
   const selectedIndex = state.editGoodsIndex;
   let value = '';
   if (selectedIndex !== index && record[field]) {
-    options.forEach(opt => {
+    options.forEach((opt) => {
       if (opt.value === record[field]) {
         value = opt.name;
         return;
@@ -141,7 +141,7 @@ export default class GoodsInfo extends React.Component {
     let totalCount = 0;
     let totalWeight = 0;
     let totalVolume = 0;
-    this.props.goods.forEach(gd => {
+    this.props.goods.forEach((gd) => {
       totalCount += asNumber(gd.count);
       totalWeight += asNumber(gd.weight);
       totalVolume += asNumber(gd.volume);
@@ -298,9 +298,8 @@ export default class GoodsInfo extends React.Component {
       title: this.msg('goodsOp'),
       width: 80,
       render: (text, record, index) => {
-        let rendered;
         if (this.state.editGoodsIndex === index) {
-          rendered = (
+          return (
             <span>
               <a onClick={this.handleGoodsSave}>
               {formatGlobalMsg(this.props.intl, 'save')}
@@ -329,9 +328,9 @@ export default class GoodsInfo extends React.Component {
               }
             }
           );
-          rendered = (<span>{opRendered}</span>);
+          return (<span>{opRendered}</span>);
         } else {
-          rendered = (
+          return (
             <span>
               <a onClick={() => this.handleGoodsEdit(record, index)}>
               {formatGlobalMsg(this.props.intl, 'edit')}
@@ -343,7 +342,6 @@ export default class GoodsInfo extends React.Component {
             </span>
           );
         }
-        return rendered;
       },
     }];
     return (

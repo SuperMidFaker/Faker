@@ -49,7 +49,7 @@ export default class PodAuditModal extends React.Component {
       });
     }
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleAuditPass = () => {
     /*
     const { auditor, dispId } = this.props;
@@ -58,7 +58,7 @@ export default class PodAuditModal extends React.Component {
    */
     const { auditModal: { dispId, parentDispId, podId }, auditor, tenantId, loginId } = this.props;
     this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -69,7 +69,7 @@ export default class PodAuditModal extends React.Component {
   handleAuditReturn = () => {
     const { auditModal: { dispId } } = this.props;
     this.props.returnAudit(dispId).then(
-      result => {
+      (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

@@ -18,7 +18,7 @@ export default class PodPanel extends React.Component {
     intl: intlShape.isRequired,
     pod: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   renderPhotos() {
     const pod = this.props.pod;
     if (pod.photos && pod.photos !== '') {

@@ -289,7 +289,7 @@ export default class BodyTable extends React.Component {
     if (!editBody.id) {
       const body = { ...editBody, list_g_no: index + 1 };
       const { billSeqNo, headNo, loginId } = this.props;
-      this.props.onAdd({ billSeqNo, body, headNo, loginId }).then(result => {
+      this.props.onAdd({ billSeqNo, body, headNo, loginId }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -304,7 +304,7 @@ export default class BodyTable extends React.Component {
         }
       });
     } else {
-      this.props.onEdit(editBody).then(result => {
+      this.props.onEdit(editBody).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -320,7 +320,7 @@ export default class BodyTable extends React.Component {
     }
   }
   handleDel = (row, index) => {
-    this.props.onDel(row.id).then(result => {
+    this.props.onDel(row.id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {

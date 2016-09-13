@@ -92,7 +92,7 @@ export default class MyProfile extends React.Component {
           avatar: this.state.avatar,
         };
         this.props.updateProfile(profile, this.props.code, this.props.tenantId).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(getFormatMsg(result.error.message, this.msg), 10);
             } else {
@@ -122,7 +122,7 @@ export default class MyProfile extends React.Component {
   }
   render() {
     const { intl, profile, form: { getFieldProps }, code } = this.props;
-    const cmsg = (descriptor) => formatContainerMsg(intl, descriptor);
+    const cmsg = descriptor => formatContainerMsg(intl, descriptor);
     const uploadProps = {
       action: `${API_ROOTS.default}v1/upload/img/`,
       multiple: false,

@@ -126,7 +126,7 @@ export default class MessageList extends React.Component {
   }
   render() {
     const { intl } = this.props;
-    const msg = (descriptor) => formatMsg(intl, descriptor);
+    const msg = descriptor => formatMsg(intl, descriptor);
     const columns = [
       {
         title: msg('content'),
@@ -148,7 +148,7 @@ export default class MessageList extends React.Component {
       },
     ];
     const dataSource = new Table.DataSource({
-      fetcher: params => { return this.props.loadMessages(null, params); },
+      fetcher: (params) => { return this.props.loadMessages(null, params); },
       resolve: (result) => { return result.data; },
       getPagination: (result, resolve) => {
         const pagination = {

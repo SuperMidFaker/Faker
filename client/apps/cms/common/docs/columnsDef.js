@@ -26,12 +26,12 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
       title: msg('billNo'),
       dataIndex: 'bill_no',
       width: 170,
-      render: (o) => <TrimSpan text={o} />,
+      render: o => <TrimSpan text={o} />,
     }, {
       title: msg('compEntryId'),
       dataIndex: 'comp_entry_id',
       width: 170,
-      render: (o) => <TrimSpan text={o} />,
+      render: o => <TrimSpan text={o} />,
     });
     totalWidth += 340;
     if (type === 'declared') {
@@ -39,7 +39,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
         title: msg('entryId'),
         dataIndex: 'entry_id',
         width: 160,
-        render: (o) => <TrimSpan text={o} />,
+        render: o => <TrimSpan text={o} />,
       });
       totalWidth += 160;
     }
@@ -48,27 +48,27 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
     title: msg('delgClient'),
     dataIndex: 'customer_name',
     width: 240,
-    render: (o) => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: msg('contractNo'),
     dataIndex: 'contract_no',
     width: 200,
-    render: (o) => <TrimSpan text={o} />,
+    render: o => <TrimSpan text={o} />,
   }, {
     title: msg('deliveryNo'),
     dataIndex: 'bl_wb_no',
     width: 200,
-    render: (o) => <TrimSpan text={o} />,
+    render: o => <TrimSpan text={o} />,
   }, {
     title: msg('invoiceNo'),
     dataIndex: 'invoice_no',
     width: 200,
-    render: (o) => <TrimSpan text={o} />,
+    render: o => <TrimSpan text={o} />,
   }, {
     title: msg('voyageNo'),
     width: 200,
     dataIndex: 'voyage_no',
-    render: (o) => <TrimSpan text={o} />,
+    render: o => <TrimSpan text={o} />,
   }, {
     title: msg('delgInternalNo'),
     width: 200,

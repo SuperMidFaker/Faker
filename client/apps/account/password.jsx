@@ -38,7 +38,7 @@ export default class ChangePassword extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (key) => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key);
   oldPwdRules = {
     validate: [{
       rules: [
@@ -85,7 +85,7 @@ export default class ChangePassword extends React.Component {
     ev.preventDefault();
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        this.props.changePassword(values.oldPwd, values.newPwd).then(result => {
+        this.props.changePassword(values.oldPwd, values.newPwd).then((result) => {
           if (result.error) {
             message.error(getFormatMsg(result.error.message, this.msg));
           } else {

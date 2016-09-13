@@ -7,7 +7,7 @@ export function polyfill(runAppFn) {
         'intl',
         'intl/locale-data/jsonp/zh.js',
         'intl/locale-data/jsonp/en.js',
-      ], require => {
+      ], (require) => {
         require('intl');
         require('intl/locale-data/jsonp/zh');
         require('intl/locale-data/jsonp/en');

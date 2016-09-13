@@ -68,7 +68,7 @@ export default class EntryForm extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEntryHeadSave = (ev) => {
     ev.preventDefault();
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (!errors) {
         const { entry, totalCount, ietype, tenantId, loginId } = this.props;
         const head = {
@@ -76,7 +76,7 @@ export default class EntryForm extends React.Component {
           id: entry.head.id || this.state.head_id,
         };
         this.props.saveEntryHead({ head, totalCount, loginId, ietype, tenantId }).then(
-          result => {
+          (result) => {
             if (result.error) {
               message.error(result.error.message);
             } else {
@@ -93,7 +93,7 @@ export default class EntryForm extends React.Component {
   handleEntryDel = () => {
     const headId = this.props.entry.head.id || this.state.head_id;
     if (headId) {
-      this.props.delEntry(headId, this.props.index).then(result => {
+      this.props.delEntry(headId, this.props.index).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }
@@ -104,7 +104,7 @@ export default class EntryForm extends React.Component {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
     return (<div>
-      <div className="panel-body padding fixed-height">
+      <div className="panel-body collapse fixed-height">
         <Collapse accordion defaultActiveKey="entry-head" style={{ marginBottom: 46 }}>
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
@@ -120,12 +120,13 @@ export default class EntryForm extends React.Component {
       </div>
       <div className="panel-footer">
         {!readonly &&
-          <Button type="primary" onClick={this.handleEntryHeadSave} icon="save" size="small">
+          <Button type="primary" onClick={this.handleEntryHeadSave} icon="save">
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>
         }
+        <span />
         {!readonly &&
-          <Button type="ghost" icon="delete" size="small" onClick={this.handleEntryDel} />
+          <Button type="ghost" icon="delete" onClick={this.handleEntryDel} />
         }
       </div>
     </div>);

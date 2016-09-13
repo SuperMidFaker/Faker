@@ -4,10 +4,8 @@ import { getShipmentDispatch } from 'common/reducers/weixin';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 import { renderConsignLoc } from '../../transport/common/consignLocation';
-import WeUI from 'react-weui';
+import { Cells, CellsTitle, Cell, CellBody, CellHeader, Input, Label } from 'react-weui';
 import '../weui.less';
-
-const { Cells, CellsTitle, Cell, CellBody, CellHeader, Input, Label } = WeUI;
 
 function fetchData({ state, dispatch, cookie, params }) {
   const p = {

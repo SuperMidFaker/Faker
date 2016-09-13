@@ -39,7 +39,7 @@ export default class ShareShipmentModal extends React.Component {
     };
   }
   componentDidMount() {
-    document.addEventListener('copy', ev => {
+    document.addEventListener('copy', (ev) => {
       if (this.state.visible) {
         ev.preventDefault();
         ev.clipboardData.setData('text/plain', this.state.publicUrl);
@@ -68,7 +68,7 @@ export default class ShareShipmentModal extends React.Component {
       tel: shipmt.consignee_mobile,
     });
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleClose = () => {
     this.props.hidePreviewer();
   }

@@ -110,7 +110,7 @@ export default class DispatchDock extends Component {
         if (o) {
           if (o.manual) {
             return (
-              <InputNumber min={1} onChange={(value) =>
+              <InputNumber min={1} onChange={value =>
                 this.handleChargeChange({ ...o, total_charge: value }, index)} />
             );
           } else {
@@ -239,7 +239,7 @@ export default class DispatchDock extends Component {
           })
         );
       }
-      Promise.all(promises).then(results => {
+      Promise.all(promises).then((results) => {
         for (let index = 0; index < results.length; index++) {
           const result = results[index];
           if (result.error || result.data.freight < 0) {
@@ -291,7 +291,7 @@ export default class DispatchDock extends Component {
   })
 
   vesds = new Table.DataSource({
-    fetcher: params => {
+    fetcher: (params) => {
       this.setState({
         newVehicleVisible: false,
       });
@@ -324,7 +324,7 @@ export default class DispatchDock extends Component {
     const { type, target } = this.state.dispatchConfirmModal;
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
-    const shipmtNos = shipmts.map(s => {
+    const shipmtNos = shipmts.map((s) => {
       return { shipmtNo: s.shipmt_no, dispId: s.key };
     });
     if (type === 'tenant') {
@@ -338,7 +338,7 @@ export default class DispatchDock extends Component {
         partnerTenantId: target.partner_tenant_id,
         podType,
         type,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -357,7 +357,7 @@ export default class DispatchDock extends Component {
         taskDriverName: target.name,
         podType,
         type,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -372,7 +372,7 @@ export default class DispatchDock extends Component {
     const { type, target } = this.state.dispatchConfirmModal;
     const { tenantId, loginId, loginName, shipmts } = this.props;
     const podType = this.state.podType;
-    const shipmtNos = shipmts.map(s => {
+    const shipmtNos = shipmts.map((s) => {
       return { shipmtNo: s.shipmt_no, dispId: s.key };
     });
     if (type === 'tenant') {
@@ -387,7 +387,7 @@ export default class DispatchDock extends Component {
         partnerTenantId: target.partner_tenant_id,
         podType,
         type,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -407,7 +407,7 @@ export default class DispatchDock extends Component {
         taskDriverName: target.name,
         podType,
         type,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -417,14 +417,14 @@ export default class DispatchDock extends Component {
     }
   }
 
-  handleQuotationChange = val => {
+  handleQuotationChange = (val) => {
     this.setState({
       quotation: val,
       newVehicleVisible: false,
     });
   }
 
-  handleTabChange = key => {
+  handleTabChange = (key) => {
     this.setState({
       newVehicleVisible: false,
     });
@@ -434,7 +434,7 @@ export default class DispatchDock extends Component {
         tenantId,
         pageSize: vehicles.pageSize,
         current: 1,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
@@ -446,7 +446,7 @@ export default class DispatchDock extends Component {
         tenantId,
         pageSize: lsps.pageSize,
         current: 1,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
@@ -454,17 +454,17 @@ export default class DispatchDock extends Component {
     }
   }
 
-  handlePodTypeChange = podType => {
+  handlePodTypeChange = (podType) => {
     this.setState({ podType, newVehicleVisible: false });
   }
-  handleCarrierSearch = value => {
+  handleCarrierSearch = (value) => {
     const { lsps, tenantId } = this.props;
     this.props.loadLsps(null, {
       tenantId,
       pageSize: lsps.pageSize,
       current: 1,
       carrier: value,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -474,14 +474,14 @@ export default class DispatchDock extends Component {
       newVehicleVisible: false,
     });
   }
-  handlePlateSearch = value => {
+  handlePlateSearch = (value) => {
     const { vehicles, tenantId } = this.props;
     this.props.loadVehicles(null, {
       tenantId,
       pageSize: vehicles.pageSize,
       current: 1,
       plate: value,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -507,7 +507,7 @@ export default class DispatchDock extends Component {
       partner_id: row.partner_id, consigner_region_code, consignee_region_code,
       goods_type, trans_mode: transport_mode_id, ctn,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-    }).then(result => {
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
@@ -584,7 +584,7 @@ export default class DispatchDock extends Component {
       if (shipmts.length === 1) {
         close = false;
       }
-      shipmts.forEach(v => {
+      shipmts.forEach((v) => {
         arr.push((<Tag closable={close} color="blue">{v.shipmt_no}</Tag>));
         if (!isNaN(v.total_count)) {
           totalCount += v.total_count;

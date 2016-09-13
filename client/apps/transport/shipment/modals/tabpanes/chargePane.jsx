@@ -17,7 +17,7 @@ export default class ChargePanel extends React.Component {
     intl: intlShape.isRequired,
     charges: PropTypes.object.isRequired,
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   revenueColumns = [{
     title: this.msg('revenueItem'),
     dataIndex: 'item',
