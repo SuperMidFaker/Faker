@@ -44,9 +44,13 @@ export default class SubdelgTable extends Component {
     title: '清单编号',
     dataIndex: 'bill_seq_no',
     width: 160,
-    render: (o) => {
+    render: (o, record) => {
+      let linkTo = `/clearance/${this.props.ietype}/docs/make/`;
+      if (record.bill_status > 4) {
+        linkTo = `/clearance/${this.props.ietype}/docs/view/`;
+      }
       return (
-        <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
+        <NavLink to={`${linkTo}${o}`}>
           {o}
         </NavLink>);
     },
