@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
   'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
   'COUNT_MESSAGES', 'COUNT_MESSAGES_SUCCEED', 'COUNT_MESSAGES_FAIL',
-  'ADD_MESSAGE_BADGE',
+  'ADD_MESSAGE_BADGE', 'SEND_MESSAGE_SUCCEED',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -61,6 +61,9 @@ const initialState = {
     data: [],
   },
   notReadMessagesNum: 0,
+  newMessage: {
+    count: 0,
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -166,6 +169,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ADD_MESSAGE_BADGE: {
       return { ...state, ...action.data };
     }
+    case actionTypes.SEND_MESSAGE_SUCCEED: {
+      return { ...state, newMessage: { count: state.newMessage.count + 1, ...action.data } };
+    }
+
     default:
       return formReducer(actionTypes, state, action, { key: null, country: CHINA_CODE }, 'corplist')
              || state;
@@ -355,6 +362,13 @@ export function countMessages(cookie, params) {
       params,
       cookie,
     },
+  };
+}
+
+export function sendMessage(data) {
+  return {
+    type: actionTypes.SEND_MESSAGE_SUCCEED,
+    data,
   };
 }
 

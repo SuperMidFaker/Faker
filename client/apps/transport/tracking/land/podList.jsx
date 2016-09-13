@@ -13,6 +13,7 @@ import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import { sendMessage } from 'common/reducers/corps';
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, params, cookie }) {
@@ -44,7 +45,8 @@ function fetchData({ state, dispatch, params, cookie }) {
     loading: state.trackingLandPod.loading,
     loaded: state.trackingLandPod.loaded,
   }),
-  { loadPodTable, loadShipmtDetail, showAuditModal, resubmitPod, showPodModal })
+  { loadPodTable, loadShipmtDetail, showAuditModal, resubmitPod, showPodModal,
+  sendMessage })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -62,6 +64,7 @@ export default class LandStatusList extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired,
     showPodModal: PropTypes.func.isRequired,
+    sendMessage: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -71,6 +74,7 @@ export default class LandStatusList extends React.Component {
       onResubmit: this.handleResubmit,
       onShowPodModal: this.handleShowPodModal,
       tenantId: this.props.tenantId,
+      sendMessage: this.props.sendMessage,
     }, this.msg);
   }
   state = {

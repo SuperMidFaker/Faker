@@ -57,6 +57,10 @@ export default defineMessages({
     id: 'transport.tracking.notify.pod',
     defaultMessage: '催促回单',
   },
+  notifyPickup: {
+    id: 'transport.tracking.notify.pickup',
+    defaultMessage: '催促提货',
+  },
   updateEvents: {
     id: 'transport.tracking.update.events',
     defaultMessage: '记录异常',

@@ -25,6 +25,7 @@ import messages from './message.i18n';
 import ExportExcel from './modals/export-excel';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
 import ShipmentAdvanceModal from './modals/shipment-advance-modal';
+import { sendMessage } from 'common/reducers/corps';
 
 const formatMsg = format(messages);
 
@@ -60,6 +61,7 @@ function fetchData({ state, dispatch, params, cookie }) {
   {
     loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
     showVehicleModal, showLocModal, loadShipmtLastPoint, showExcpModal,
+    sendMessage,
   }
 )
 export default class LandStatusList extends React.Component {
@@ -82,6 +84,7 @@ export default class LandStatusList extends React.Component {
     loadTransitTable: PropTypes.func.isRequired,
     loadShipmtLastPoint: PropTypes.func.isRequired,
     showExcpModal: PropTypes.func.isRequired,
+    sendMessage: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -94,6 +97,7 @@ export default class LandStatusList extends React.Component {
       onShowDeliverModal: this.handleShowDeliverModal,
       onTableLoad: this.handleTableLoad,
       onShowExcpModal: this.handleShowExcpModal,
+      sendMessage: this.props.sendMessage,
     }, this.msg);
   }
   state = {

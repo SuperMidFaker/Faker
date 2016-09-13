@@ -285,16 +285,16 @@ export default function makeColumns(type, handlers, msg) {
             } else {
               // 司机上传
               return (
-                <RowUpdater label="催促回单"
-                  onAnchored={() => {}} row={record}
+                <RowUpdater label={msg('notifyPOD')}
+                  onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDriverPod', shipment: record }); }} row={record}
                 />
               );
             }
           } else {
             // 承运商上传
             return (
-              <RowUpdater label="催促回单"
-                onAnchored={() => {}} row={record}
+              <RowUpdater label={msg('notifyPOD')}
+                onAnchored={() => { handlers.sendMessage({ notifyType: 'notifySpPod', shipment: record }); }} row={record}
               />
             );
           }
@@ -378,7 +378,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
               <RowUpdater label={msg('notifyAccept')}
-                onAnchored={() => {}} row={record}
+                onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyAccept', shipment: record }); }} row={record}
               />
             </div>
           );
@@ -396,19 +396,62 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <div>
                 <RowUpdater label={msg('notifyDispatch')}
-                  onAnchored={() => {}} row={record}
+                  onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDispatch', shipment: record }); }} row={record}
                 />
               </div>
             );
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {  // 待提货
-          return (
-            <div>
-              <RowUpdater label={msg('updateEvents')}
-                onAnchored={handlers.onShowExcpModal} row={record}
-              />
-            </div>
-          );
+        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
+  // 待提货
+
+
+          if (record.sp_tenant_id === -1) {
+            return (
+              <div>
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowExcpModal} row={record}
+                />
+              </div>
+            );
+          } else if (record.sp_tenant_id === 0) {
+              // 已分配给车队
+            if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+                // 线下司机
+              return (
+                <div>
+                  <RowUpdater label={msg('updateEvents')}
+                    onAnchored={handlers.onShowExcpModal} row={record}
+                  />
+                </div>
+              );
+            } else {
+              // 催促司机提货
+              return (
+                <div>
+                  <RowUpdater label={msg('notifyPickup')}
+                    onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDriverPickup', shipment: record }); }} row={record}
+                  />
+                  <span className="ant-divider" />
+                  <RowUpdater label={msg('updateEvents')}
+                    onAnchored={handlers.onShowExcpModal} row={record}
+                  />
+                </div>
+              );
+            }
+          } else {
+            // 催促承运商提货
+            return (
+              <div>
+                <RowUpdater label={msg('notifyPickup')}
+                  onAnchored={() => { handlers.sendMessage({ notifyType: 'notifySpPickup', shipment: record }); }} row={record}
+                />
+                <span className="ant-divider" />
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowExcpModal} row={record}
+                />
+              </div>
+            );
+          }
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) { // 运输中
           if (record.sp_tenant_id === -1) {
             return handlers.renderIntransitUpdater(record);
