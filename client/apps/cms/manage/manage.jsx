@@ -6,11 +6,11 @@ import { setNavTitle } from 'common/reducers/navbar';
 import { Button, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import NavLink from '../../../../components/nav-link';
+import NavLink from 'client/components/nav-link';
 import { loadCompRelations, switchStatus } from 'common/reducers/cmsCompRelation';
 import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -30,8 +30,8 @@ function fetchData({ state, dispatch, cookie }) {
   }
 }
 
-@injectIntl
 @connectFetch()(fetchData)
+@injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -53,7 +53,6 @@ export default class Manage extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     loadCompRelations: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -77,7 +76,7 @@ export default class Manage extends Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { list, intl, type, tenantId } = this.props;
+    const { list, intl, tenantId } = this.props;
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
@@ -127,7 +126,7 @@ export default class Manage extends Component {
           if (record.status === 1) {
             return (
               <span>
-                <NavLink to={`/${type}/manage/edit/${record.id}`}>
+                <NavLink to={`/clearance/manage/edit/${record.id}`}>
                 {formatContainerMsg(intl, 'fixOp')}
                 </NavLink>
                 <span className="ant-divider"></span>
@@ -178,7 +177,7 @@ export default class Manage extends Component {
     return (
       <div className="main-content">
         <div className="page-body" style={{ padding: 16 }}>
-          <Button size="large" type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo(`/${type}/manage/create`)}>
+          <Button size="large" type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/manage/create')}>
           {msg('new')}
           </Button>
           <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />

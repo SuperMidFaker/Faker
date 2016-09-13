@@ -5,7 +5,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import CompRelationForm from './compRelationForm';
 import { initialState } from 'common/reducers/cmsCompRelation';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 function goBack(router) {

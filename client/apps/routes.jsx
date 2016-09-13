@@ -35,6 +35,7 @@ import * as ImportDelegation from './cms/import/delegation';
 import * as ImportDocs from './cms/import/docs';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
+import * as CMSManage from './cms/manage';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 
@@ -172,6 +173,11 @@ export default(store, cookie) => {
                 <Route path="make/:billno" component={ExportDocs.Make} />
                 <Route path="view/:billno" component={ExportDocs.View} />
               </Route>
+            </Route>
+            <Route path="manage">
+              <IndexRoute component={CMSManage.Manage} />
+              <Route path="create" component={CMSManage.Create} />
+              <Route path="edit/:id" component={CMSManage.Edit} />
             </Route>
           </Route>
         </Route>

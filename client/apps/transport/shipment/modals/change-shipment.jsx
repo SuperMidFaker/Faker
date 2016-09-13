@@ -45,16 +45,16 @@ export default class ChangeShipment extends React.Component {
       });
     }
   }
-  msg = (descriptor) => formatMsg(this.props.intl, descriptor)
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    this.props.form.validateFields(errors => {
+    this.props.form.validateFields((errors) => {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
         const { formData, tenantId, loginId, type } = this.props;
         const form = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.saveEdit(form, tenantId, loginId, type)
-        .then(result => {
+        .then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
