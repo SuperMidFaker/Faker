@@ -44,7 +44,6 @@ function goBack(router) {
 export default class EditCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     loadCompRelation: PropTypes.func.isRequired,
   }
   static contextTypes = {

@@ -41,5 +41,25 @@ const messages = defineMessages({
     id: 'cms.manage.new',
     defaultMessage: '新建',
   },
+  import: {
+    id: 'cms.module.clearance.import',
+    defaultMessage: '进口',
+  },
+  export: {
+    id: 'cms.module.clearance.export',
+    defaultMessage: '出口',
+  },
+  expense: {
+    id: 'cms.module.clearance.expense',
+    defaultMessage: '费用',
+  },
+  manage: {
+    id: 'cms.module.clearance.manage',
+    defaultMessage: '管理',
+  },
+  settings: {
+    id: 'cms.module.clearance.settings',
+    defaultMessage: '设置',
+  },
 });
 export default messages;

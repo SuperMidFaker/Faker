@@ -7,7 +7,12 @@ import { loadSubdelgsTable, openEfModal } from 'common/reducers/cmsDelegation';
 import RowUpdater from './rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import NavLink from 'client/components/nav-link';
+import { intlShape, injectIntl } from 'react-intl';
+import messages from './message.i18n.js';
+import { format } from 'client/common/i18n/helpers';
+const formatMsg = format(messages);
 
+@injectIntl
 @connect(
   (state, props) => ({
     tenantId: state.account.tenantId,
@@ -17,6 +22,7 @@ import NavLink from 'client/components/nav-link';
 )
 export default class SubdelgTable extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     delgBills: PropTypes.array.isRequired,
     delgNo: PropTypes.string.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -39,9 +45,9 @@ export default class SubdelgTable extends Component {
       this.setState({ expandedRowKeys: nextProps.delgBills.map(bl => bl.key) });
     }
   }
-
+  msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '清单编号',
+    title: this.msg('delgNo'),
     dataIndex: 'bill_seq_no',
     width: 160,
     render: (o, record) => {
@@ -55,7 +61,7 @@ export default class SubdelgTable extends Component {
         </NavLink>);
     },
   }, {
-    title: '报关方式',
+    title: this.msg('declareWay'),
     dataIndex: 'decl_way_code',
     width: 100,
     render: (o) => {
@@ -65,16 +71,16 @@ export default class SubdelgTable extends Component {
       return decl && decl.value;
     },
   }, {
-    title: '备案编号',
+    title: this.msg('manualNo'),
     width: 140,
     dataIndex: 'manual_no',
   }, {
-    title: '统一编号',
+    title: this.msg('preEntryNo'),
     width: 160,
     dataIndex: 'pre_entry_seq_no',
     render: (o, record) => (record.id ? o : '-'),
   }, {
-    title: '报关单号',
+    title: this.msg('entryId'),
     width: 160,
     dataIndex: 'entry_id',
     render: (o, record) => {
@@ -94,20 +100,20 @@ export default class SubdelgTable extends Component {
       }
     },
   }, {
-    title: '件数',
+    title: this.msg('packageNum'),
     width: 60,
     dataIndex: 'pack_count',
   }, {
-    title: '毛重',
+    title: this.msg('delgGrossWt'),
     width: 80,
     dataIndex: 'gross_wt',
   }, {
-    title: '通关状态',
+    title: this.msg('clrStatus'),
     width: 160,
     dataIndex: 'note',
     render: (o, record) => (record.id ? o : '-'),
   }, {
-    title: '更新时间',
+    title: 'processDate',
     width: 80,
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('YYYY.MM.DD') : '-'),

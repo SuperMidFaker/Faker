@@ -125,7 +125,7 @@ export default class AcceptanceCreate extends Component {
               <Button size="large" type="primary" style={{ marginRight: 20 }}
                 loading={submitting} onClick={this.handleSaveBtnClick}
               >
-              {this.msg('createSave')}
+              {this.msg('save')}
               </Button>
               <Popconfirm title={this.msg('delgSaveConfirm')} onConfirm={this.handleSaveAccept}>
                 <Button size="large" loading={submitting}>{this.msg('acceptNow')}</Button>

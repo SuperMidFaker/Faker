@@ -28,7 +28,6 @@ function goBack(router) {
 export default class CreateCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     loadCompRelations: PropTypes.func.isRequired,
   }
   static contextTypes = {
