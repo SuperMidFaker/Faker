@@ -3,6 +3,10 @@ import QueueAnim from 'rc-queue-anim';
 import { connect } from 'react-redux';
 import { Icon, Button, Select, Form, Popconfirm, message, Card, Table } from 'antd';
 import { delgDispSave, delDisp, setSavedStatus } from 'common/reducers/cmsDelegation';
+import { intlShape, injectIntl } from 'react-intl';
+import messages from './message.i18n.js';
+import { format } from 'client/common/i18n/helpers';
+const formatMsg = format(messages);
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -38,6 +42,7 @@ ButtonSelect.PropTypes = {
   onclick: PropTypes.func,
 };
 
+@injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -51,6 +56,7 @@ ButtonSelect.PropTypes = {
 @Form.create()
 export default class DelgDispatch extends Component {
   static PropTypes = {
+    intl: intlShape.isRequired,
     onClose: PropTypes.func.isRequired,
     delgDisp: PropTypes.object.isRequired,
     dispatch: PropTypes.object.isRequired,
@@ -65,14 +71,15 @@ export default class DelgDispatch extends Component {
     super(props);
     this.onClose = this.props.onClose || noop;
   }
+  msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '委托编号',
+    title: this.msg('delgNo'),
     dataIndex: 'delg_no',
   }, {
-    title: '委托方',
+    title: this.msg('delgClient'),
     dataIndex: 'customer_name',
   }, {
-    title: '提运单号',
+    title: this.msg('deliveryNo'),
     dataIndex: 'bl_wb_no',
   }]
   handleConfirm = () => {
@@ -115,7 +122,7 @@ export default class DelgDispatch extends Component {
       dock = (
         <div className="dock-panel inside">
           <div className="panel-heading">
-            <span className="title">分配报关委托</span>
+            <span className="title">{this.msg('delgDispatch')}</span>
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline" onClick={this.onClose}>
                 <Icon type="cross" />
@@ -124,9 +131,9 @@ export default class DelgDispatch extends Component {
           </div>
           <Card>
             <Form>
-              <FormItem label="分配给：" {...formItemLayout}>
+              <FormItem label={this.msg('dispatchTO')} {...formItemLayout}>
                 <Select showSearch showArrow optionFilterProp="searched"
-                  placeholder="请选择报关供应商" style={{ width: '80%' }}
+                  placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
                   {...getFieldProps('recv_name', { initialValue: dispatch.recv_name }
                   )}
                 >

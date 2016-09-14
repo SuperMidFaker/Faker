@@ -5,7 +5,7 @@ import { Button, Input, Form, Row, Col, Select, message } from 'antd';
 import { submitCompRelation } from 'common/reducers/cmsCompRelation';
 import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -42,7 +42,7 @@ class CompRelationForm extends Component {
             message.error(result.error.message, 10);
           } else {
             message.info('保存成功', 5);
-            this.handleNavigationTo('/import/manage');
+            this.handleNavigationTo('/clearance/manage');
           }
         });
       } else {
