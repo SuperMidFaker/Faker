@@ -191,7 +191,7 @@ export default defineMessages({
   },
   declareBill: {
     id: 'cms.delegation.bill',
-    defaultMessage: '委托清单',
+    defaultMessage: '报关清单',
   },
   newDeclaration: {
     id: 'cms.delegation.new.declaration',
