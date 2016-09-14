@@ -163,7 +163,7 @@ export default function reducer(state = initialState, action) {
       return state;
     }
     case actionTypes.MARK_MESSAGES_SUCCEED: {
-      return state;
+      return { ...state, notReadMessagesNum: 0, messages: initialState.messages };
     }
     case actionTypes.COUNT_MESSAGES_SUCCEED: {
       return { ...state, ...action.result.data };
@@ -325,7 +325,7 @@ export function recordMessages({ loginId, tenantId, loginName, messages }) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.RECORD_MESSAGES, actionTypes.RECORD_MESSAGES_SUCCEED, actionTypes.RECORD_MESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages/record',
+      endpoint: 'v1/user/messages/record',
       method: 'post',
       data: { loginId, tenantId, loginName, messages },
     },
@@ -336,7 +336,7 @@ export function loadMessages(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.LOADCORPMESSAGES, actionTypes.LOADCORPMESSAGES_SUCCEED, actionTypes.LOADCORPMESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages',
+      endpoint: 'v1/user/messages',
       method: 'get',
       params,
       cookie,
@@ -348,7 +348,7 @@ export function markMessages(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.MARK_MESSAGES, actionTypes.MARK_MESSAGES_SUCCEED, actionTypes.MARK_MESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages/status',
+      endpoint: 'v1/user/messages/status',
       method: 'post',
       data: params,
     },
@@ -359,7 +359,7 @@ export function markMessage(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],
-      endpoint: 'v1/user/account/message/status',
+      endpoint: 'v1/user/message/status',
       method: 'post',
       data: params,
     },
@@ -370,7 +370,7 @@ export function countMessages(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.COUNT_MESSAGES, actionTypes.COUNT_MESSAGES_SUCCEED, actionTypes.COUNT_MESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages/count',
+      endpoint: 'v1/user/messages/count',
       method: 'get',
       params,
       cookie,
