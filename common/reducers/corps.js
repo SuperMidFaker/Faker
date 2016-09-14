@@ -18,8 +18,10 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
   'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
   'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
+  'RECORD_MESSAGES', 'RECORD_MESSAGES_SUCCEED', 'RECORD_MESSAGES_FAIL',
   'COUNT_MESSAGES', 'COUNT_MESSAGES_SUCCEED', 'COUNT_MESSAGES_FAIL',
   'ADD_MESSAGE_BADGE', 'SEND_MESSAGE_SUCCEED',
+  'GET_TENANT_LOGINS', 'GET_TENANT_LOGINS_SUCCEED', 'GET_TENANT_LOGINS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -319,6 +321,17 @@ export function closeTenantAppsEditor() {
   };
 }
 
+export function recordMessages({ loginId, tenantId, loginName, messages }) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.RECORD_MESSAGES, actionTypes.RECORD_MESSAGES_SUCCEED, actionTypes.RECORD_MESSAGES_FAIL],
+      endpoint: 'v1/user/account/messages/record',
+      method: 'post',
+      data: { loginId, tenantId, loginName, messages },
+    },
+  };
+}
+
 export function loadMessages(cookie, params) {
   return {
     [CLIENT_API]: {
@@ -376,5 +389,16 @@ export function messageBadgeNum(notReadMessagesNum) {
   return {
     type: actionTypes.ADD_MESSAGE_BADGE,
     data: { notReadMessagesNum },
+  };
+}
+
+export function getTenantUsers(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.GET_TENANT_LOGINS, actionTypes.GET_TENANT_LOGINS_SUCCEED, actionTypes.GET_TENANT_LOGINS_FAIL],
+      endpoint: 'v1/user/corp/tenant/users',
+      method: 'get',
+      params: { tenantId },
+    },
   };
 }
