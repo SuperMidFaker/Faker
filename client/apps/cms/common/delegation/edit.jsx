@@ -7,7 +7,12 @@ import BasicForm from './forms/basicForm';
 import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
 import { editDelegation } from 'common/reducers/cmsDelegation';
+import { intlShape, injectIntl } from 'react-intl';
+import messages from './message.i18n.js';
+import { format } from 'client/common/i18n/helpers';
+const formatMsg = format(messages);
 
+@injectIntl
 @connect(
   state => ({
     loginId: state.account.loginId,
@@ -31,6 +36,7 @@ import { editDelegation } from 'common/reducers/cmsDelegation';
 @Form.create()
 export default class AcceptanceEdit extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
@@ -44,6 +50,7 @@ export default class AcceptanceEdit extends Component {
     addedFiles: [],
     removedFiles: [],
   }
+  msg = key => formatMsg(this.props.intl, key);
   handleSave = ({ isAccepted }) => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -116,9 +123,9 @@ export default class AcceptanceEdit extends Component {
               <Button size="large" type="primary" style={{ marginRight: 20 }}
                 onClick={this.handleSaveBtnClick} loading={submitting}
               >
-              保存
+              {this.msg('save')}
               </Button>
-              <Popconfirm title="确定保存接单?" onConfirm={this.handleSaveAccept}>
+              <Popconfirm title={this.msg('acceptSaveMessage')} onConfirm={this.handleSaveAccept}>
                 <Button size="large" loading={submitting}>一键接单</Button>
               </Popconfirm>
             </div>

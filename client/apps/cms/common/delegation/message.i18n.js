@@ -89,6 +89,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.internal.no',
     defaultMessage: '外部编号',
   },
+  preEntryNo: {
+    id: 'cms.delegation.delg.preEntry.no',
+    defaultMessage: '统一编号',
+  },
   delgPieces: {
     id: 'cms.delegation.delg.pieces',
     defaultMessage: '总件数',
@@ -233,8 +237,8 @@ export default defineMessages({
     id: 'cms.delegation.accept.now',
     defaultMessage: '一键接单',
   },
-  createSave: {
-    id: 'cms.delegation.create.save',
+  save: {
+    id: 'cms.delegation.save',
     defaultMessage: '保存',
   },
   addMore: {
@@ -243,6 +247,30 @@ export default defineMessages({
   },
   lastActTime: {
     id: 'cms.delegation.last.act.time',
-    defaultMessage: '最后活动时间',
+    defaultMessage: '最后更新时间',
+  },
+  clrStatus: {
+    id: 'cms.delegation.clr.status',
+    defaultMessage: '通关状态',
+  },
+  processDate: {
+    id: 'cms.delegation.process.date',
+    defaultMessage: '更新时间',
+  },
+  delgDispatch: {
+    id: 'cms.delegation.delg.dispatch',
+    defaultMessage: '分配报关委托',
+  },
+  dispatchTo: {
+    id: 'cms.delegation.delg.dispatchTo',
+    defaultMessage: '分配给: ',
+  },
+  dispatchMessage: {
+    id: 'cms.delegation.message.dispatch',
+    defaultMessage: '请选择报关供应商',
+  },
+  acceptSaveMessage: {
+    id: 'cms.delegation.edit.message.accept',
+    defaultMessage: '确定保存接单?',
   },
 });
