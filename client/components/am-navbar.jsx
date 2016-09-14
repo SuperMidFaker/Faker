@@ -5,10 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
-const formatMsg = format(messages);
+
 const formatGlobalMsg = format(globalMessages);
 
 @injectIntl
@@ -36,7 +35,7 @@ export default class AmNavBar extends React.Component {
     if (navTitle.depth === 2) {
       amTitleNav = (
         <span>
-          {formatMsg(intl, navTitle.text)}
+          {formatGlobalMsg(intl, navTitle.text)}
         </span>
       );
     } else if (navTitle.depth === 3) {
