@@ -273,4 +273,16 @@ export default defineMessages({
     id: 'cms.delegation.edit.message.accept',
     defaultMessage: '确定保存接单?',
   },
+  delgTo: {
+    id: 'cms.delegation.list.delgTo',
+    defaultMessage: '委托',
+  },
+  declaredStatus: {
+    id: 'cms.delegation.declaredStatus',
+    defaultMessage: '申报',
+  },
+  filishedStatus: {
+    id: 'cms.delegation.filishedStatus',
+    defaultMessage: '放行',
+  },
 });

@@ -5,6 +5,7 @@ import AmLeftSidebar from 'client/components/am-ant-leftbar';
 import { TENANT_ASPECT } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
+
 const formatMsg = format(messages);
 
 function getLinksByAspect(aspect, intl) {
@@ -36,7 +37,6 @@ function getLinksByAspect(aspect, intl) {
     }, {
       single: false,
       key: 'tms-4',
-      path: '/transport/resources',
       icon: 'zmdi zmdi-library',
       text: '管理',
       sublinks: [{

@@ -49,5 +49,61 @@ const messages = defineMessages({
     id: 'cms.price.business_model',
     defaultMessage: '业务模式',
   },
+  feeName: {
+    id: 'cms.price.fee_name',
+    defaultMessage: '费用名称',
+  },
+  feeCode: {
+    id: 'cms.price.fee_code',
+    defaultMessage: '费用代码',
+  },
+  feeStyle: {
+    id: 'cms.price.fee_style',
+    defaultMessage: '费用类型',
+  },
+  chargeMode: {
+    id: 'cms.price.charge_mode',
+    defaultMessage: '计费方式',
+  },
+  lotNum: {
+    id: 'cms.price.lot_num',
+    defaultMessage: '批次量',
+  },
+  freeNum: {
+    id: 'cms.price.free_num',
+    defaultMessage: '免计量',
+  },
+  unitPrice: {
+    id: 'cms.price.unit_price',
+    defaultMessage: '计费单价',
+  },
+  modifiedBy: {
+    id: 'cms.price.modified_by',
+    defaultMessage: '修改人',
+  },
+  modifiedTime: {
+    id: 'cms.price.modified_time',
+    defaultMessage: '修改时间',
+  },
+  enabledOp: {
+    id: 'cms.price.enabledOp',
+    defaultMessage: '是否启用',
+  },
+  operation: {
+    id: 'cms.price.operation',
+    defaultMessage: '操作',
+  },
+  save: {
+    id: 'cms.price.save',
+    defaultMessage: '保存',
+  },
+  cancel: {
+    id: 'cms.price.cancel',
+    defaultMessage: '取消',
+  },
+  addCosts: {
+    id: 'cms.price.add_costs',
+    defaultMessage: '增加费用项',
+  },
 });
 export default messages;

@@ -43,7 +43,7 @@ export default function render(request) {
   }
   return new Promise((resolve, reject) => {
     const url = request.url;
-    const store = createStore();
+    const store = createStore(undefined, request);
     const cookie = request.get('cookie');
     store.getState().intl = { locale: 'zh' };
     match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {

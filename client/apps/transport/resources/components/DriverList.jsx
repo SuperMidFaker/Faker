@@ -12,11 +12,11 @@ function DriverList(props) {
   const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick, handleEditDriverLogin } = props;
 
   function phoneLogin(record) {
-    if (record.login_id === -1) {
+    if (record.login_disabled === 1 || record.login_disabled === null) {
       return (
         <span>
           <span className="ant-divider"></span>
-          <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, phone: record.phone } })}>
+          <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, login_disabled: record.login_disabled, phone: record.phone } })}>
             开启手机登录
           </a>
         </span>
@@ -25,7 +25,7 @@ function DriverList(props) {
       return (
         <span>
           <span className="ant-divider"></span>
-          <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, phone: record.phone } })}>
+          <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, login_disabled: record.login_disabled, phone: record.phone } })}>
             关闭手机登录
           </a>
         </span>

@@ -6,7 +6,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { countMessages, messageBadgeNum } from 'common/reducers/corps';
+import { countMessages, messageBadgeNum, getTenantUsers, recordMessages } from 'common/reducers/corps';
+import { getDriver } from 'common/reducers/transportResources';
 const formatMsg = format(messages);
 let conn;
 let WebIM;
@@ -32,7 +33,7 @@ function fetchData({ state, dispatch, cookie }) {
       corps: state.corps,
       newMessage: state.corps.newMessage,
     };
-  }, { messageBadgeNum })
+  }, { messageBadgeNum, getTenantUsers, recordMessages })
 export default class MessagePrompt extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -42,66 +43,58 @@ export default class MessagePrompt extends React.Component {
     tenantName: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
     newMessage: PropTypes.object.isRequired,
+    getTenantUsers: PropTypes.func.isRequired,
+    recordMessages: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   componentDidMount() {
     const { tenantId, loginId, loginName } = this.props;
-    WebIM = window.WebIM;
-    WebIM.config = {
-      xmppURL: 'im-api.easemob.com',
-      apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
-      appkey: 'jiaojiao123#test',
-      https: true,
-      isMultiLoginSessions: true,
-      isAutoLogin: true,
-    };
-    conn = new WebIM.connection({
-      https: WebIM.config.https,
-      url: WebIM.config.xmppURL,
-      isAutoLogin: WebIM.config.isAutoLogin,
-      isMultiLoginSessions: WebIM.config.isMultiLoginSessions,
-    });
-    conn.listen({
-      onOpened: () => {          // 连接成功回调
-        // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
-        conn.setPresence();
-      },
-      onClosed: () => {},         // 连接关闭回调
-      onTextMessage: (msg) => {
-        const data = JSON.parse(msg.data);
-        this.notif(data.tenantName, {
-          body: data.msg,
-          icon: data.logo,
-          url: '',
-        });
-        // this.props.messageBadgeNum(this.props.corps.notReadMessagesNum + 1);
-      },
-      onError: (msg) => { },           // 失败回调
-    });
-    const options = {
-      username: `tenantId_${tenantId}`,
-      password: `${loginId}`,
-      nickname: loginName,
-      appKey: WebIM.config.appkey,
-      success: () => { },
-      error: () => { },
-      apiUrl: WebIM.config.apiURL,
-    };
-    try {
-      WebIM.utils.registerUser(options);
-    } catch (e) {
+    if (!conn) {
+      WebIM = window.WebIM;
+      WebIM.config = {
+        xmppURL: 'im-api.easemob.com',
+        apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
+        appkey: 'jiaojiao123#test',
+        https: true,
+        isMultiLoginSessions: true,
+        isAutoLogin: true,
+      };
+      conn = new WebIM.connection({
+        https: WebIM.config.https,
+        url: WebIM.config.xmppURL,
+        isAutoLogin: WebIM.config.isAutoLogin,
+        isMultiLoginSessions: WebIM.config.isMultiLoginSessions,
+      });
+      conn.listen({
+        onOpened: () => {          // 连接成功回调
+          // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
+          conn.setPresence();
+        },
+        onClosed: () => {},         // 连接关闭回调
+        onTextMessage: (msg) => {
+          const data = JSON.parse(msg.data);
+          this.notif(data.tenantName, {
+            body: data.msg,
+            icon: data.logo,
+            url: '',
+          });
+          this.props.messageBadgeNum(this.props.corps.notReadMessagesNum + 1);
+        },
+        onError: (msg) => { },           // 失败回调
+      });
 
+      const user = {
+        apiUrl: WebIM.config.apiURL,
+        user: `L_${loginId}`,
+        pwd: `L_${loginId}`,
+        appKey: WebIM.config.appkey,
+      };
+
+      conn.open(user);
     }
-    const user = {
-      apiUrl: WebIM.config.apiURL,
-      user: options.username,
-      pwd: options.password,
-      appKey: WebIM.config.appkey,
-    };
-
-    conn.open(user);
+    
     if (Notification && Notification.permission !== 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
@@ -123,28 +116,68 @@ export default class MessagePrompt extends React.Component {
         tenantName,
         logo,
         msg: '',
+        url: '',
       };
       if (notifyType === 'notifyAccept') {
-        to = `tenantId_${shipment.sp_tenant_id}`;
-        content.msg = '请尽快接单';
+        content.msg = `请尽快接单`;
       } else if (notifyType === 'notifyDispatch') {
-        to = `tenantId_${shipment.sp_tenant_id}`;
-        content.msg = '请尽快调度';
+        content.msg = `请尽快调度`;
       } else if (notifyType === 'notifyDriverPickup') {
-        to = `driverId_${shipment.task_driver_id}`;
-        content.msg = '请尽快提货';
+        content.msg = `请尽快提货`;
       } else if (notifyType === 'notifySpPickup') {
-        to = `tenantId_${shipment.sp_tenant_id}`;
-        content.msg = '请尽快提货';
+        content.msg = `请尽快提货`;
       } else if (notifyType === 'notifyDriverPod') {
-        to = `driverId_${shipment.task_driver_id}`;
-        content.msg = '请尽快上传回单';
+        content.msg = `请尽快上传回单`;
       } else if (notifyType === 'notifySpPod') {
-        to = `tenantId_${shipment.sp_tenant_id}`;
-        content.msg = '请尽快上传回单';
+        content.msg = `请尽快上传回单`;
       }
-      this.handleSendMessage({ to, content: JSON.stringify(content) });
+      content.msg = `${tenantName}催促 ${content.msg} 运单号: ${shipment.shipmt_no}`;
+      const msgs = [];
+      if (notifyType === 'notifyAccept' || notifyType === 'notifyDispatch' || notifyType === 'notifySpPickup' || notifyType === 'notifySpPod') {
+        this.props.getTenantUsers(shipment.sp_tenant_id).then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            result.data.users.forEach(item => {
+              this.handleSendMessage({ to: `L_${item.login_id}`, content: JSON.stringify(content) });
+              msgs.push({
+                tenantId: shipment.sp_tenant_id,
+                loginId: item.login_id,
+                content: content.msg,
+                url: content.url,
+              });
+            });
+            this.handleRecordMessage({ loginId, tenantId, loginName, messages: msgs });
+          }
+        });
+      } else if (notifyType === 'notifyDriverPod' || notifyType === 'notifyDriverPickup') {
+        this.props.getDriver(shipment.task_driver_id).then(result => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            const driver = result.data;
+            this.handleSendMessage({ to: `L_${driver.login_id}`, content: JSON.stringify(content) });
+            msgs.push({
+              tenantId: driver.tenant_id,
+              loginId: driver.login_id,
+              content: content.msg,
+              url: content.url,
+            });
+            this.handleRecordMessage({ loginId, tenantId, loginName, messages: msgs });
+          }
+        });
+      }
+      
     }
+  }
+  handleRecordMessage({ loginId, tenantId, loginName, messages }) {
+    this.props.recordMessages({ loginId, tenantId, loginName, messages }).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('催促成功');
+      }
+    });
   }
   handleSendMessage(data) {
     const id = conn.getUniqueId();// 生成本地消息id
@@ -154,7 +187,7 @@ export default class MessagePrompt extends React.Component {
       msg: data.content,
       to: data.to,
       success() {
-        message.info('催促成功');
+        
       },
     });
 

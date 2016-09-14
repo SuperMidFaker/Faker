@@ -9,7 +9,6 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
   'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
-  'GET_TENANTAPP', 'GET_TENANTAPP_SUCCEED', 'GET_TENANTAPP_FAIL',
   'TENANTS_LOAD', 'TENANTS_LOAD_SUCCEED', 'TENANTS_LOAD_FAIL',
   'TENANT_FORM_LOAD', 'TENANT_FORM_LOAD_SUCCEED', 'TENANT_FORM_LOAD_FAIL',
   'TENANT_NEW', 'TENANT_NEW_SUCCEED', 'TENANT_NEW_FAIL',
@@ -33,7 +32,6 @@ const initialState = {
     email: '',
     logo: '',
   },
-  tenantAppList: [],
   corplist: {
     totalCount: 0,
     pageSize: INITIAL_LIST_PAGE_SIZE,
@@ -77,15 +75,6 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, corplist, appEditor: { ...state.appEditor, tenantApps:
         corplist.data[action.index].apps } };
-    }
-    case actionTypes.GET_TENANTAPP: {
-      return { ...state };
-    }
-    case actionTypes.GET_TENANTAPP_SUCCEED: {
-      return { ...state, tenantAppList: action.result.data };
-    }
-    case actionTypes.GET_TENANTAPP_FAIL: {
-      return { ...state };
     }
     case actionTypes.TENANT_NEW: {
       return { ...state };
@@ -156,15 +145,6 @@ export function switchStatus(index, tenantId, status) {
   };
 }
 
-export function getTenantAppList() {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.GET_TENANTAPP, actionTypes.GET_TENANTAPP_SUCCEED, actionTypes.GET_TENANTAPP_FAIL],
-      endpoint: 'v1/user/corp/tenant/getTenantAppList',
-      method: 'get',
-    },
-  };
-}
 export function loadTenants(cookie, params) {
   return {
     [CLIENT_API]: {

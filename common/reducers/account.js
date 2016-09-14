@@ -1,5 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
+
 const initialState = {
   loaded: false, // used by isLoad action
   loginId: -1,
@@ -9,13 +10,13 @@ const initialState = {
   tenantId: 0,
   aspect: 0,
   categoryId: 0,
-  modules: 0,
   type: '', // user type ADMIN PERSONNEL ENTERP BRANCH
   tenantName: '',
   logo: '',
   profile: {
     // name(same as outter username), username(loginName without @), phone, email, role
   },
+  modules: [],
 };
 
 const actions = [

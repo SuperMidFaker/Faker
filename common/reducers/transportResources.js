@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'EDIT_DRIVER', 'EDIT_DRIVER_SUCCEED', 'EDIT_DRIVER_FAIL',
   'EDIT_DRIVER_LOGIN', 'EDIT_DRIVER_LOGIN_SUCCEED', 'EDIT_DRIVER_LOGIN_FAIL',
   'LOAD_DRIVERLIST', 'LOAD_DRIVERLIST_SUCCEED', 'LOAD_DRIVERLIST_FAIL',
+  'GET_DRIVER', 'GET_DRIVER_SUCCEED', 'GET_DRIVER_FAIL',
   'SET_MENU_ITEM_KEY', 'SET_NODE_TYPE',
   'LOAD_NODELIST', 'LOAD_NODELIST_SUCCEED', 'LOAD_NODELIST_FAIL',
   'LOAD_NODE_USERLIST', 'LOAD_NODE_USERLIST_SUCCEED', 'LOAD_NODE_USERLIST_FAIL',
@@ -262,6 +263,21 @@ export function loadDriverList(tenantId) {
       endpoint: 'v1/transport/resources/driver_list',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function getDriver(driverId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_DRIVER,
+        actionTypes.GET_DRIVER_SUCCEED,
+        actionTypes.GET_DRIVER_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/driver',
+      method: 'get',
+      params: { driverId },
     },
   };
 }

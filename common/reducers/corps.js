@@ -18,8 +18,10 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
   'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
   'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
+  'RECORD_MESSAGES', 'RECORD_MESSAGES_SUCCEED', 'RECORD_MESSAGES_FAIL',
   'COUNT_MESSAGES', 'COUNT_MESSAGES_SUCCEED', 'COUNT_MESSAGES_FAIL',
   'ADD_MESSAGE_BADGE', 'SEND_MESSAGE_SUCCEED',
+  'GET_TENANT_LOGINS', 'GET_TENANT_LOGINS_SUCCEED', 'GET_TENANT_LOGINS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -161,7 +163,7 @@ export default function reducer(state = initialState, action) {
       return state;
     }
     case actionTypes.MARK_MESSAGES_SUCCEED: {
-      return state;
+      return { ...state, notReadMessagesNum: 0, messages: initialState.messages };
     }
     case actionTypes.COUNT_MESSAGES_SUCCEED: {
       return { ...state, ...action.result.data };
@@ -319,11 +321,22 @@ export function closeTenantAppsEditor() {
   };
 }
 
+export function recordMessages({ loginId, tenantId, loginName, messages }) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.RECORD_MESSAGES, actionTypes.RECORD_MESSAGES_SUCCEED, actionTypes.RECORD_MESSAGES_FAIL],
+      endpoint: 'v1/user/messages/record',
+      method: 'post',
+      data: { loginId, tenantId, loginName, messages },
+    },
+  };
+}
+
 export function loadMessages(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.LOADCORPMESSAGES, actionTypes.LOADCORPMESSAGES_SUCCEED, actionTypes.LOADCORPMESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages',
+      endpoint: 'v1/user/messages',
       method: 'get',
       params,
       cookie,
@@ -335,7 +348,7 @@ export function markMessages(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.MARK_MESSAGES, actionTypes.MARK_MESSAGES_SUCCEED, actionTypes.MARK_MESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages/status',
+      endpoint: 'v1/user/messages/status',
       method: 'post',
       data: params,
     },
@@ -346,7 +359,7 @@ export function markMessage(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],
-      endpoint: 'v1/user/account/message/status',
+      endpoint: 'v1/user/message/status',
       method: 'post',
       data: params,
     },
@@ -357,7 +370,7 @@ export function countMessages(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.COUNT_MESSAGES, actionTypes.COUNT_MESSAGES_SUCCEED, actionTypes.COUNT_MESSAGES_FAIL],
-      endpoint: 'v1/user/account/messages/count',
+      endpoint: 'v1/user/messages/count',
       method: 'get',
       params,
       cookie,
@@ -376,5 +389,16 @@ export function messageBadgeNum(notReadMessagesNum) {
   return {
     type: actionTypes.ADD_MESSAGE_BADGE,
     data: { notReadMessagesNum },
+  };
+}
+
+export function getTenantUsers(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.GET_TENANT_LOGINS, actionTypes.GET_TENANT_LOGINS_SUCCEED, actionTypes.GET_TENANT_LOGINS_FAIL],
+      endpoint: 'v1/user/corp/tenant/users',
+      method: 'get',
+      params: { tenantId },
+    },
   };
 }

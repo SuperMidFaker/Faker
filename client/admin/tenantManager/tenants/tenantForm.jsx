@@ -1,25 +1,26 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Icon, Button, Form, Input, Row, Col, message, Checkbox, Radio } from 'antd';
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { setFormValue, uploadImg, submitTenant, clearForm, loadTenantForm, getTenantAppList } from
+import { setFormValue, uploadImg, submitTenant, clearForm, loadTenantForm } from
   'common/reducers/tenants';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
-const Dropzone = require('react-dropzone');
 import { validatePhone } from 'common/validater';
+import { DEFAULT_MODULES } from 'common/constants/module';
 import './tenant.less';
 
+const Dropzone = require('react-dropzone');
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 function fetchData({ dispatch, cookie, params }) {
   if (params.id) {
     const tenantId = params.id;
-    return Promise.all([dispatch(getTenantAppList()), dispatch(loadTenantForm(cookie, tenantId))]);
+    return dispatch(loadTenantForm(cookie, tenantId));
   } else {
-    return Promise.all([dispatch(getTenantAppList()), dispatch(clearForm())]);
+    return dispatch(clearForm());
   }
 }
 
@@ -27,10 +28,9 @@ function fetchData({ dispatch, cookie, params }) {
 @connect(
   state => ({
     formData: state.tenants.formData,
-    tenantAppList: state.tenants.tenantAppList,
   }),
-  { uploadImg, setFormValue, submitTenant, checkCorpDomain })
-
+  { uploadImg, setFormValue, submitTenant, checkCorpDomain }
+)
 class TenantForm extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
@@ -39,7 +39,8 @@ class TenantForm extends React.Component {
     setFormValue: PropTypes.func.isRequired,
     checkCorpDomain: PropTypes.func.isRequired,
     uploadImg: PropTypes.func.isRequired,
-    tenantAppList: PropTypes.array.isRequired,
+  }
+  static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   handleSubmit = () => {
@@ -47,6 +48,10 @@ class TenantForm extends React.Component {
       if (!errors) {
         const formData = { ...this.props.form.getFieldsValue() };
         formData.tenant_id = this.props.formData.tenant_id;
+        formData.tenantAppList = formData.tenantAppList.map(id => ({
+          id,
+          index: DEFAULT_MODULES[id].index,
+        }));
         this.props.submitTenant(formData).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -62,10 +67,10 @@ class TenantForm extends React.Component {
     });
   }
   handleNavigationTo(to, query) {
-    this.props.router.push({ pathname: to, query });
+    this.context.router.push({ pathname: to, query });
   }
   handleCancel = () => {
-    this.props.router.goBack();
+    this.context.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const { form: { getFieldProps, getFieldError } } = this.props;
@@ -78,7 +83,7 @@ class TenantForm extends React.Component {
     );
   }
   render() {
-    const { formData: { logo: logoPng }, formData, form: { getFieldProps, getFieldError }, tenantAppList }
+    const { formData: { logo: logoPng }, formData, form: { getFieldProps, getFieldError } }
       = this.props;
     const tenantAppValueList = this.props.formData.tenantAppValueList || [];
     return (
@@ -157,8 +162,11 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="租户应用列表" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
-                    <CheckboxGroup options={tenantAppList}
-                      {...getFieldProps('tenantAppList', { initialValue: tenantAppValueList.map((item) => { return item.value; }) })}
+                    <CheckboxGroup options={Object.keys(DEFAULT_MODULES).map(mod => ({
+                      value: DEFAULT_MODULES[mod].id,
+                      label: DEFAULT_MODULES[mod].defaultText,
+                    }))}
+                      {...getFieldProps('tenantAppList', { initialValue: tenantAppValueList.map((item) => { return item.id; }) })}
                     />
                   </FormItem>
                 </Col>
@@ -166,7 +174,7 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="租户视角" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
-                    <RadioGroup onChange={() => {}} {...getFieldProps('aspect', { initialValue: formData.aspect })} >
+                    <RadioGroup {...getFieldProps('aspect', { initialValue: formData.aspect })} >
                       <RadioButton value={0}>进出口企业</RadioButton>
                       <RadioButton value={1}>物流服务商</RadioButton>
                     </RadioGroup>

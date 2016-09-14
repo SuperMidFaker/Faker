@@ -17,6 +17,7 @@ import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
+import { sendMessage } from 'common/reducers/corps';
 const formatMsg = format(messages);
 const DropdownButton = Dropdown.Button;
 
@@ -46,6 +47,7 @@ const DropdownButton = Dropdown.Button;
     withDraw,
     returnShipment,
     showShipmentAdvanceModal,
+    sendMessage,
   }
 )
 export default class Footer extends React.Component {
@@ -74,6 +76,7 @@ export default class Footer extends React.Component {
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
     showShipmentAdvanceModal: PropTypes.func.isRequired,
+    sendMessage: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -378,7 +381,7 @@ export default class Footer extends React.Component {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         buttons = (
           <div>
-            <Button type="ghost" size="large">
+            <Button type="ghost" size="large" onClick={() => this.props.sendMessage({ notifyType: 'notifyAccept', shipment: row })} >
               催促接单
             </Button>
           </div>
@@ -404,7 +407,7 @@ export default class Footer extends React.Component {
         } else {
           buttons = (
             <div>
-              <Button type="ghost" size="large">
+              <Button type="ghost" size="large" onClick={() => this.props.sendMessage({ notifyType: 'notifyDispatch', shipment: row })} >
                 催促调度
               </Button>
             </div>
@@ -442,13 +445,16 @@ export default class Footer extends React.Component {
             // 司机更新
             buttons = (
               <div>
+                <Button type="ghost" size="large" onClick={() => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })} >
+                  催促提货
+                </Button>
               </div>
             );
           }
         } else {
           buttons = (
             <div>
-              <Button type="ghost" size="large">
+              <Button type="ghost" size="large" onClick={() => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })} >
                 催促提货
               </Button>
             </div>
@@ -539,9 +545,6 @@ export default class Footer extends React.Component {
             // 司机上传
             buttons = (
               <div>
-                <Button type="ghost" size="large">
-                  催促回单
-                </Button>
               </div>
             );
           }
@@ -549,9 +552,6 @@ export default class Footer extends React.Component {
           // 承运商上传
           buttons = (
             <div>
-              <Button type="ghost" size="large">
-                催促回单
-              </Button>
             </div>
           );
         }
@@ -590,7 +590,7 @@ export default class Footer extends React.Component {
             // 司机上传
             buttons = (
               <div>
-                <Button type="ghost" size="large">
+                <Button type="ghost" size="large" onClick={() => this.props.sendMessage({ notifyType: 'notifyDriverPod', shipment: row })} >
                   催促回单
                 </Button>
               </div>
@@ -600,7 +600,7 @@ export default class Footer extends React.Component {
           // 承运商上传
           buttons = (
             <div>
-              <Button type="ghost" size="large">
+              <Button type="ghost" size="large" onClick={() => this.props.sendMessage({ notifyType: 'notifySpPod', shipment: row })} >
                 催促回单
               </Button>
             </div>

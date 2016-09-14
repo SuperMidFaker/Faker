@@ -28,49 +28,13 @@ const TENANT_ASPECT = {
   BO: 0, // 企业主
   SP: 1, // 服务商
 };
-const DEFAULT_MODULES = {
-  customer: {
-    cls: 'customer',
-    url: '/customer',
-    text: 'moduleCustomerCenter',
-    status: 'disabled',
-  },
-  clearance: {
-    cls: 'clearance',
-    url: '/clearance/import',
-    text: 'moduleClearance',
-    status: 'enabled',
-  },
-  tms: {
-    cls: 'transport',
-    url: '/transport',
-    text: 'moduleTransport',
-    status: 'enabled',
-  },
-};
-const APP_ENTITY_META_INFO = {
-  import: {
-    name: 'importApp',
-    desc: 'importAppDesc',
-  },
-  export: {
-    name: 'exportApp',
-    desc: 'exportAppDesc',
-  },
-  tms: {
-    name: 'tmsApp',
-    desc: 'tmsAppDesc',
-  },
-  wms: {
-    name: 'wmsApp',
-    desc: 'wmsAppDesc',
-  },
-};
 const TENANT_LEVEL = {
   STANDARD: 0,
   ENTERPRISE: 1,
   PLATFORM: 2,
 };
+const PARTNER_TENANT_TYPE = ['TENANT_BRANCH', 'TENANT_ENTERPRISE', 'TENANT_EXT', 'TENANT_OFFLINE'];
+
 const INVITATION_STATUS = {
   NEW_SENT: 0,
   ACCEPTED: 1,
@@ -84,8 +48,6 @@ const PARTNERSHIP_TYPE_INFO = {
   transportation: 'TRS',
   warehouse: 'WHS',
 };
-
-const PARTNER_TENANT_TYPE = ['TENANT_ENTERPRISE', 'TENANT_BRANCH', 'TENANT_EXT', 'TENANT_OFFLINE'];
 
 const WRAP_TYPE = [{
   text: '木箱',
@@ -386,8 +348,6 @@ const TAX_STATUS = {
 };
 
 export {
-  DEFAULT_MODULES,
-  APP_ENTITY_META_INFO,
   TENANT_ROLE,
   TENANT_LEVEL,
   TENANT_ASPECT,
@@ -423,3 +383,5 @@ export {
   TAX_STATUS,
   DELG_STATUS,
 };
+
+export * from './module';
