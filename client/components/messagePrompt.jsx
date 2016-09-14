@@ -113,7 +113,7 @@ export default class MessagePrompt extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { tenantId, loginId, loginName, tenantName, logo } = this.props;
-    if (nextProps.newMessage.count > 0) {
+    if (nextProps.newMessage.count !== this.props.newMessage.count) {
       const { notifyType, shipment } = nextProps.newMessage;
       let to = '';
       const content = {
