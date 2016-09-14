@@ -384,4 +384,4 @@ export {
   DELG_STATUS,
 };
 
-export * from './constants/module';
+export * from './module';

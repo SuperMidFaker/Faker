@@ -158,6 +158,7 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
+            <IndexRedirect to={`/${DEFAULT_MODULES.clearance.id}/import`} />
             <Route path="import">
               <IndexRoute component={ImportDelegation.List} />
               <Route path="create" component={ImportDelegation.Create} />
