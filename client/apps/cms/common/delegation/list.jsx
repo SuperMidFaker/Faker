@@ -123,7 +123,7 @@ export default class DelegationList extends Component {
       }
     }
   }
-  msg = (key) => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -349,7 +349,7 @@ export default class DelegationList extends Component {
 
   mergeFilters(curFilters, value) {
     const newFilters = {};
-    Object.keys(curFilters).forEach(key => {
+    Object.keys(curFilters).forEach((key) => {
       if (key !== 'filterNo') {
         newFilters[key] = curFilters[key];
       }

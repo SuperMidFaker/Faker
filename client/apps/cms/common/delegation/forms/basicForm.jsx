@@ -49,7 +49,7 @@ export default class BasicForm extends Component {
     setClientForm: PropTypes.func.isRequired,
     tenantName: PropTypes.string.isRequired,
   }
-  msg = (key) => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key);
   handleClientChange = (value) => {
     if (typeof value === 'string') {
       return value;

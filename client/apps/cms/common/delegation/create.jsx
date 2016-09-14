@@ -54,7 +54,7 @@ export default class AcceptanceCreate extends Component {
   state = {
     attachments: [],
   }
-  msg = (key) => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key);
   handleSave = ({ accepted }) => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
