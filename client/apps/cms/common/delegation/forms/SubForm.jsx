@@ -53,7 +53,7 @@ export default class SubForm extends Component {
       idx = nextProps.delgBills.length - 1;
     }
   }
-  msg = (key) => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key);
   handleAddRow = () => {
     const bill = {
       decl_way_code: '',

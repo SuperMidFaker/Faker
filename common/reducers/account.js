@@ -12,6 +12,7 @@ const initialState = {
   modules: 0,
   type: '', // user type ADMIN PERSONNEL ENTERP BRANCH
   tenantName: '',
+  logo: '',
   profile: {
     // name(same as outter username), username(loginName without @), phone, email, role
   },

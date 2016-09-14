@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import CompRelationForm from './compRelationForm';
 import { loadCompRelation } from 'common/reducers/cmsCompRelation';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -44,7 +44,6 @@ function goBack(router) {
 export default class EditCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     loadCompRelation: PropTypes.func.isRequired,
   }
   static contextTypes = {
