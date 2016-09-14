@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { APP_ENTITY_META_INFO } from 'common/constants';
+import { DEFAULT_MODULES, MODULE_INDEX } from 'common/constants/module';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -45,8 +45,7 @@ export default class ModuleEditor extends React.Component {
   handleAppCheck(ap, checked) {
     const app = {
       id: ap.id,
-      name: formatGlobalMsg(this.props.intl, APP_ENTITY_META_INFO[ap.id].name),
-      desc: formatGlobalMsg(this.props.intl, APP_ENTITY_META_INFO[ap.id].desc),
+      index: MODULE_INDEX[ap.id],
       package: ap.package,
     };
     this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then(
@@ -82,11 +81,11 @@ export default class ModuleEditor extends React.Component {
           this.props.appPackage.map((ap, idx) => (
             <div className="form-group clearfix" key={`modeditor${idx}`}>
               <Col span="8">
-                <h4>{formatGlobalMsg(intl, APP_ENTITY_META_INFO[ap.id].name)}</h4>
+                <h4>{formatGlobalMsg(intl, DEFAULT_MODULES[ap.id].text)}</h4>
               </Col>
               <Col span="8">
                 <p className="type-label">
-                {formatGlobalMsg(intl, APP_ENTITY_META_INFO[ap.id].desc)}
+                  {formatGlobalMsg(intl, DEFAULT_MODULES[ap.id].text)}
                 </p>
               </Col>
               <Col span="8">

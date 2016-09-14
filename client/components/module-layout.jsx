@@ -1,23 +1,26 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from './nav-link';
 import { Row, Col } from 'antd';
-import { DEFAULT_MODULES } from '../../common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import NavLink from './nav-link';
+import { DEFAULT_MODULES } from '../../common/constants';
+import messages from '../common/root.i18n';
 import './module-layout.less';
+
 const formatMsg = format(messages);
 
 @injectIntl
+@connect(
+  state => ({
+    enabledmods: state.account.modules.map(mod => mod.id),
+  })
+)
 export default class ModuleLayout extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    enabledmods: PropTypes.array.isRequired, // todo get from state.account
+    enabledmods: PropTypes.arrayOf(PropTypes.string).isRequired,
     size: PropTypes.oneOf(['', 'large']),
-  };
-
-  static defaultProps = {
-    enabledmods: Object.keys(DEFAULT_MODULES).map(mod => DEFAULT_MODULES[mod]),
   };
 
   render() {
@@ -25,19 +28,24 @@ export default class ModuleLayout extends React.Component {
     return (
       <Row>
         {
-          this.props.enabledmods.map((mod, idx) => (
-            <Col span="8" key={`mod-${idx}`}>
-              <NavLink to={mod.url}>
-                <div className={containerCls}>
-                  <div className={`module-icon-bg ${mod.cls} ${mod.status}`}>
-                    <div className="module-icon">
-                      <i className={`zmdi zmdi-${mod.cls}`} />
+          this.props.enabledmods.map((mod, idx) => {
+            const emod = DEFAULT_MODULES[mod];
+            return (
+              <Col span="8" key={`mod-${idx}`}>
+                <NavLink to={emod.url}>
+                  <div className={containerCls}>
+                    <div className={`module-icon-bg ${emod.cls}`}>
+                      <div className="module-icon">
+                        <i className={`zmdi zmdi-${emod.cls}`} />
+                      </div>
                     </div>
+                    <span className="module-text">
+                      {formatMsg(this.props.intl, emod.text)}
+                    </span>
                   </div>
-                  <span className="module-text">{formatMsg(this.props.intl, mod.text)}</span>
-                </div>
-              </NavLink>
-            </Col>))
+                </NavLink>
+              </Col>);
+          })
         }
       </Row>);
   }

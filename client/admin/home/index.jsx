@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import AmNavBar from '../components/am-navbar';
-import ModuleLayout from 'client/components/module-layout';
 import { setNavTitle } from 'common/reducers/navbar';
+import AmNavBar from '../components/am-navbar';
+import ModuleLayout from '../components/module-layout';
 import './home.less';
 
 const mods = [{
