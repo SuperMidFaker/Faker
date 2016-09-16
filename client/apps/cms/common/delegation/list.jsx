@@ -385,7 +385,7 @@ export default class DelegationList extends Component {
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 130,
+      width: 100,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
@@ -435,11 +435,11 @@ export default class DelegationList extends Component {
           </div>
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
-            <RadioButton value="all">{this.msg('allDelg')}</RadioButton>
-            <RadioButton value="accept">{this.msg('acceptDelg')}</RadioButton>
-            <RadioButton value="undeclared">{this.msg('undeclaredDelg')}</RadioButton>
-            <RadioButton value="declared">{this.msg('declaredDelg')}</RadioButton>
-            <RadioButton value="finished">{this.msg('filishedDelg')}</RadioButton>
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="accept">{this.msg('acceptance')}</RadioButton>
+            <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
+            <RadioButton value="declared">{this.msg('declared')}</RadioButton>
+            <RadioButton value="finished">{this.msg('released')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="main-content">
@@ -455,7 +455,7 @@ export default class DelegationList extends Component {
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
                 expandedRowKeys={this.state.expandedKeys}
                 expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                scroll={{ x: 1300 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1328 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>
