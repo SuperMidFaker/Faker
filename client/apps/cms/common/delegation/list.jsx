@@ -127,7 +127,7 @@ export default class DelegationList extends Component {
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 140,
+    width: 120,
     render: (o, record) => {
       return (
         <a onClick={() => this.props.showPreviewer({
@@ -167,7 +167,7 @@ export default class DelegationList extends Component {
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('packageNum'),
-    width: 100,
+    width: 80,
     dataIndex: 'pieces',
   }, {
     title: this.msg('delgWeight'),
@@ -184,7 +184,7 @@ export default class DelegationList extends Component {
   }, {
     */
     title: this.msg('broker'),
-    width: 200,
+    width: 180,
     dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
@@ -455,7 +455,7 @@ export default class DelegationList extends Component {
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
                 expandedRowKeys={this.state.expandedKeys}
                 expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                scroll={{ x: 1328 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1380 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>

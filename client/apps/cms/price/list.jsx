@@ -40,7 +40,6 @@ function fetchData({ state, dispatch, cookie }) {
 @connectNav((props, dispatch) => {
   dispatch(setNavTitle({
     depth: 2,
-    text: '报价管理',
     moduleName: props.ietype,
     withModuleLayout: false,
     goBackFn: null,
@@ -122,12 +121,21 @@ export default class Manage extends Component {
       },
     ];
     return (
-      <div className="main-content">
-        <div className="page-body" style={{ padding: 16 }}>
-          <Button size="large" type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/price/create')}>
-          新建报价
-          </Button>
-          <Table columns={columns} rowSelection={rowSelection} />
+      <div>
+        <header className="top-bar">
+          <span></span>
+        </header>
+        <div className="main-content">
+          <div className="page-body">
+            <div className="panel-header">
+              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/price/create')}>
+                新建报价
+              </Button>
+            </div>
+            <div className="panel-body table-panel">
+              <Table columns={columns} rowSelection={rowSelection} />
+            </div>
+          </div>
         </div>
       </div>
     );
