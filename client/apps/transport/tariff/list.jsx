@@ -94,7 +94,7 @@ export default class TariffList extends React.Component {
     width: 160,
   }, {
     title: this.msg('partnerName'),
-    width: 140,
+    width: 180,
     dataIndex: 'partnerName',
   }, {
     title: this.msg('tariffType'),
@@ -104,12 +104,12 @@ export default class TariffList extends React.Component {
   }, {
     title: this.msg('effectiveDate'),
     dataIndex: 'effectiveDate',
-    width: 120,
+    width: 100,
     render: (o, record) => moment(record.effectiveDate).format('YYYY.MM.DD'),
   }, {
     title: this.msg('expiryDate'),
     dataIndex: 'expiryDate',
-    width: 120,
+    width: 100,
     render: (o, record) => moment(record.expiryDate).format('YYYY.MM.DD'),
   }, {
     title: this.msg('tariffStatus'),
@@ -129,10 +129,10 @@ export default class TariffList extends React.Component {
   }, {
     title: this.msg('tariffReviser'),
     dataIndex: 'reviser',
-    width: 110,
+    width: 100,
   }, {
     title: formatContainerMsg(this.props.intl, 'opColumn'),
-    width: 130,
+    width: 100,
     render: (o, record) => {
       return (
         <span>
