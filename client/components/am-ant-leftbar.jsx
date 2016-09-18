@@ -1,33 +1,47 @@
 import React, { PropTypes } from 'react';
-import NavLink from './nav-link';
 import { Menu } from 'antd';
-const SubMenu = Menu.SubMenu;
-const MenuItem = Menu.Item;
+import NavLink from './nav-link';
 import './am-ant-leftbar.less';
 
-function isEqualPath(pathA, pathB) {
-  /* eslint-disable */
+const SubMenu = Menu.SubMenu;
+const MenuItem = Menu.Item;
+
+function isInclusivePath(pathTarget, pathSource) {
+  let pathA = pathSource;
   if (pathA.charAt(pathA.length - 1) !== '/') {
     pathA = `${pathA}/`;
   }
+  let pathB = pathTarget;
   if (pathB.charAt(pathB.length - 1) !== '/') {
     pathB = `${pathB}/`;
   }
-
-  /* eslint-enable */
-  return pathA === pathB;
+  // '/a/' 只判断相等情况
+  return pathA === pathB ||
+    (pathA.split('/').length > 3 && pathB.indexOf(pathA) === 0);
 }
+
 export default class AmLeftSidebar extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    links: PropTypes.array.isRequired,
+    links: PropTypes.arrayOf(PropTypes.shape({
+      single: PropTypes.bool,
+      key: PropTypes.string.isRequired,
+      path: PropTypes.string,
+      icon: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+      sublinks: PropTypes.arrayOf(PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        path: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+      })),
+    })).isRequired,
   }
   state = {
     selectedKeys: [],
     openedKey: [],
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.setOpenSelectedKeys(this.props.location.pathname);
   }
   componentWillReceiveProps(nextProps) {
@@ -37,7 +51,7 @@ export default class AmLeftSidebar extends React.Component {
     for (let i = 0; i < this.props.links.length; i++) {
       const link = this.props.links[i];
       if (link.single) {
-        if (isEqualPath(link.path, path)) {
+        if (isInclusivePath(path, link.path)) {
           this.setState({
             openedKey: [],
             selectedKeys: [link.key],
@@ -47,7 +61,7 @@ export default class AmLeftSidebar extends React.Component {
       } else {
         for (let j = 0; j < link.sublinks.length; j++) {
           const sublink = link.sublinks[j];
-          if (isEqualPath(sublink.path, path)) {
+          if (isInclusivePath(path, sublink.path)) {
             this.setState({
               openedKey: [link.key],
               selectedKeys: [sublink.key],

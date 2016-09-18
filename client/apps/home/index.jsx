@@ -10,6 +10,7 @@ import { PERSONNEL } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import './home.less';
+
 const formatMsg = format(messages);
 
 @injectIntl
@@ -38,7 +39,7 @@ export default class Home extends React.Component {
     const { intl, logo, name, accountType } = this.props;
     const tenantMenus = [
       <Menu.Item key="apps">
-        <i className="zmdi zmdi-apps"></i>
+        <i className="zmdi zmdi-apps" />
         {formatMsg(intl, 'applications')}
       </Menu.Item>,
     ];
@@ -46,7 +47,7 @@ export default class Home extends React.Component {
       tenantMenus.push(
         <Menu.Item key="corp">
           <NavLink to="/corp/info">
-            <i className="zmdi zmdi-city-alt"></i>
+            <i className="zmdi zmdi-city-alt" />
             {formatMsg(intl, 'corp')}
           </NavLink>
         </Menu.Item>
@@ -69,8 +70,7 @@ export default class Home extends React.Component {
           </div>
           <div className="home-body">
             <div className="home-body-wrapper">
-              <div className="apps-handler-set">
-              </div>
+              <div className="apps-handler-set" />
               <ModuleLayout size="large" />
             </div>
           </div>

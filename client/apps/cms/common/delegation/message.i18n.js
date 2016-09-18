@@ -17,24 +17,24 @@ export default defineMessages({
     id: 'cms.delegation.export.declaration',
     defaultMessage: '出口清关',
   },
-  allDelg: {
-    id: 'cms.delegation.readall',
+  all: {
+    id: 'cms.delegation.status.all',
     defaultMessage: '全部',
   },
-  acceptDelg: {
-    id: 'cms.delegation.accept',
+  acceptance: {
+    id: 'cms.delegation.status.acceptance',
     defaultMessage: '接单',
   },
-  undeclaredDelg: {
-    id: 'cms.delegation.undeclared',
+  processing: {
+    id: 'cms.delegation.status.processing',
     defaultMessage: '制单',
   },
-  declaredDelg: {
-    id: 'cms.delegation.declared',
+  declared: {
+    id: 'cms.delegation.status.declared',
     defaultMessage: '已申报',
   },
-  filishedDelg: {
-    id: 'cms.delegation.filished',
+  released: {
+    id: 'cms.delegation.status.released',
     defaultMessage: '已放行',
   },
   declaringDelg: {
@@ -195,7 +195,7 @@ export default defineMessages({
   },
   declareBill: {
     id: 'cms.delegation.bill',
-    defaultMessage: '委托清单',
+    defaultMessage: '报关清单',
   },
   newDeclaration: {
     id: 'cms.delegation.new.declaration',
@@ -272,5 +272,29 @@ export default defineMessages({
   acceptSaveMessage: {
     id: 'cms.delegation.edit.message.accept',
     defaultMessage: '确定保存接单?',
+  },
+  delgTo: {
+    id: 'cms.delegation.list.delgTo',
+    defaultMessage: '委托',
+  },
+  createdStatus: {
+    id: 'cms.delegation.createdStatus',
+    defaultMessage: '创建',
+  },
+  acceptedStatus: {
+    id: 'cms.delegation.acceptedStatus',
+    defaultMessage: '接单',
+  },
+  processedStatus: {
+    id: 'cms.delegation.processedStatus',
+    defaultMessage: '制单',
+  },
+  declaredStatus: {
+    id: 'cms.delegation.declaredStatus',
+    defaultMessage: '申报',
+  },
+  releasedStatus: {
+    id: 'cms.delegation.releasedStatus',
+    defaultMessage: '放行',
   },
 });

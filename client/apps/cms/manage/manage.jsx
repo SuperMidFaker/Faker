@@ -126,7 +126,7 @@ export default class Manage extends Component {
           if (record.status === 1) {
             return (
               <span>
-                <NavLink to={`/clearance/manage/edit/${record.id}`}>
+                <NavLink to={`/clearance/relation/edit/${record.id}`}>
                 {formatContainerMsg(intl, 'fixOp')}
                 </NavLink>
                 <span className="ant-divider"></span>
@@ -177,7 +177,7 @@ export default class Manage extends Component {
     return (
       <div className="main-content">
         <div className="page-body" style={{ padding: 16 }}>
-          <Button size="large" type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/manage/create')}>
+          <Button size="large" type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/relation/create')}>
           {msg('new')}
           </Button>
           <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />

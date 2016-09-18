@@ -65,38 +65,6 @@ const messages = defineMessages({
     id: 'root.nextStep',
     defaultMessage: '下一步',
   },
-  importApp: {
-    id: 'root.app.import',
-    defaultMessage: '进口',
-  },
-  importAppDesc: {
-    id: 'root.app.import.desc',
-    defaultMessage: '进口报关',
-  },
-  exportApp: {
-    id: 'root.app.export',
-    defaultMessage: '出口',
-  },
-  exportAppDesc: {
-    id: 'root.app.export.desc',
-    defaultMessage: '出口报关',
-  },
-  tmsApp: {
-    id: 'root.app.tms',
-    defaultMessage: '运管+',
-  },
-  tmsAppDesc: {
-    id: 'root.app.tms.desc',
-    defaultMessage: '运输管理系统',
-  },
-  wmsApp: {
-    id: 'root.app.wms',
-    defaultMessage: '仓管+',
-  },
-  wmsAppDesc: {
-    id: 'root.app.wms.desc',
-    defaultMessage: '仓库管理系统',
-  },
   CUS: {
     id: 'root.partnership.customer',
     defaultMessage: '客户',
@@ -116,6 +84,18 @@ const messages = defineMessages({
   WHS: {
     id: 'root.partnership.warehouse',
     defaultMessage: '仓储',
+  },
+  moduleCustomerCenter: {
+    id: 'component.module.customer.center',
+    defaultMessage: '客户中心',
+  },
+  moduleTransport: {
+    id: 'component.module.transport',
+    defaultMessage: '国内运输',
+  },
+  moduleClearance: {
+    id: 'component.module.clearance',
+    defaultMessage: '清关管理',
   },
 });
 export default messages;

@@ -15,7 +15,7 @@ import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES, APP_ENTITY_META_INFO }
+import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES }
   from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -196,10 +196,10 @@ export default class CorpList extends React.Component {
         (record.apps || []).forEach((mod, idx) => {
           modComp.push(
             <NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
-            {formatGlobalMsg(intl, APP_ENTITY_META_INFO[mod.id].name)}
+            {formatGlobalMsg(intl, DEFAULT_MODULES[mod.id].text)}
             </NavLink>
           );
-          modComp.push(<span className="ant-divider" key={`divider${idx}`}></span>);
+          modComp.push(<span className="ant-divider" key={`divider${idx}`} />);
         });
         return (
           <span>

@@ -39,6 +39,7 @@ import * as CMSManage from './cms/manage';
 import * as CMSPrice from './cms/price';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
+import { DEFAULT_MODULES } from 'common/constants/module';
 
 // todo IndexRedirect passed nginx added subdomain
 export default(store, cookie) => {
@@ -122,7 +123,7 @@ export default(store, cookie) => {
           </Route>
         </Route>
         <Route component={Module}>
-          <Route path="transport" component={Transport}>
+          <Route path={DEFAULT_MODULES.transport.id} component={Transport}>
             <IndexRoute component={TMSDashboard} />
             <Route path="shipment">
               <IndexRoute component={TMSAcceptance.List} />
@@ -156,7 +157,8 @@ export default(store, cookie) => {
               <Route path="edit/:uid" component={TMSTariff.Edit} />
             </Route>
           </Route>
-          <Route path="clearance" component={Clearance}>
+          <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
+            <IndexRedirect to={`/${DEFAULT_MODULES.clearance.id}/import`} />
             <Route path="import">
               <IndexRoute component={ImportDelegation.List} />
               <Route path="create" component={ImportDelegation.Create} />
