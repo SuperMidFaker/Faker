@@ -183,7 +183,7 @@ export default class DelegationList extends Component {
     },
   }, {
     */
-    title: this.msg('enterprise'),
+    title: this.msg('broker'),
     width: 200,
     dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
@@ -212,19 +212,19 @@ export default class DelegationList extends Component {
     dataIndex: 'last_act_time',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
-        return `${this.msg('createdStatus')}
+        return `${this.msg('createdEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-        return `${this.msg('acceptedStatus')}
+        return `${this.msg('acceptedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
-        return `${this.msg('processedStatus')}
+        return `${this.msg('processedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declared) {
-        return `${this.msg('declaredStatus')}
+        return `${this.msg('declaredEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.passed) {
-        return `${this.msg('releasedStatus')}
+        return `${this.msg('releasedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       }
       return '';
@@ -436,10 +436,10 @@ export default class DelegationList extends Component {
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="accept">{this.msg('acceptance')}</RadioButton>
+            <RadioButton value="accept">{this.msg('accepting')}</RadioButton>
             <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
-            <RadioButton value="declared">{this.msg('declared')}</RadioButton>
-            <RadioButton value="finished">{this.msg('released')}</RadioButton>
+            <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
+            <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="main-content">
