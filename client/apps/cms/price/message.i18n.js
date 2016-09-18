@@ -45,9 +45,13 @@ const messages = defineMessages({
     id: 'cms.price.partners',
     defaultMessage: '客户/供应商',
   },
-  businessModel: {
-    id: 'cms.price.business_model',
-    defaultMessage: '业务模式',
+  transMode: {
+    id: 'cms.price.trans_mode',
+    defaultMessage: '运输方式',
+  },
+  declareWay: {
+    id: 'cms.price.declare_way',
+    defaultMessage: '报关类型',
   },
   feeName: {
     id: 'cms.price.fee_name',
@@ -104,6 +108,10 @@ const messages = defineMessages({
   addCosts: {
     id: 'cms.price.add_costs',
     defaultMessage: '增加费用项',
+  },
+  requested: {
+    id: 'cms.price.requested',
+    defaultMessage: '必选',
   },
 });
 export default messages;
