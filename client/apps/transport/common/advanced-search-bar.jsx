@@ -49,8 +49,8 @@ export default class AdvancedSearchBar extends React.Component {
   }
   initializeFieldsValue = () => {
     let fieldsValue = {};
-    if (window.localStorage && window.localStorage.tmsAdvancedSearchFieldsValue) {
-      fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue);
+    if (window.localStorage) {
+      fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{}');
       this.handleSearch(fieldsValue.consigner_region, fieldsValue.consignee_region, fieldsValue);
       delete fieldsValue.consigner_region;
       delete fieldsValue.consignee_region;
