@@ -111,7 +111,7 @@ export default class AmLeftSidebar extends React.Component {
                       </MenuItem>);
                     })
                   }
-                  </SubMenu>
+                </SubMenu>
               );
             }
           })

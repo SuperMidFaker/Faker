@@ -24,6 +24,10 @@ const TENANT_ROLE = {
     text: 'tenantMember',
   },
 };
+const ENTERPRISE = 'enterprise';
+const BRANCH = 'branch';
+const PERSONNEL = 'personnel';
+
 const TENANT_ASPECT = {
   BO: 0, // 企业主
   SP: 1, // 服务商
@@ -243,9 +247,6 @@ export const PRESET_TRANSMODES = {
   ctn: 'CTN', // 集装箱
 };
 
-const ENTERPRISE = 'enterprise';
-const BRANCH = 'branch';
-const PERSONNEL = 'personnel';
 const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
 

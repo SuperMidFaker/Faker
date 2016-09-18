@@ -50,7 +50,6 @@ class TenantForm extends React.Component {
         formData.tenant_id = this.props.formData.tenant_id;
         formData.tenantAppList = formData.tenantAppList.map(id => ({
           id,
-          index: DEFAULT_MODULES[id].index,
         }));
         this.props.submitTenant(formData).then((result) => {
           if (result.error) {

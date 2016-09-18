@@ -17,7 +17,7 @@ export default [
    ['get', '/home', renderWebPage],
    ['get', '/login', renderWebPage],
    ['get', '/forgot', renderWebPage],
-   ['get', '/corp/*', renderWebPage],
+   ['get', '/corp*', renderWebPage],
    ['get', '/inventory*', renderWebPage],
    ['get', '/transport*', renderWebPage],
    ['get', '/import*', renderWebPage],
