@@ -212,19 +212,19 @@ export default class DelegationList extends Component {
     dataIndex: 'last_act_time',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
-        return `${this.msg('delgTo')}
+        return `${this.msg('createdStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-        return `${this.msg('acceptDelg')}
+        return `${this.msg('acceptedStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
-        return `${this.msg('undeclaredDelg')}
+        return `${this.msg('processedStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declared) {
         return `${this.msg('declaredStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.passed) {
-        return `${this.msg('filishedStatus')}
+        return `${this.msg('releasedStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       }
       return '';
