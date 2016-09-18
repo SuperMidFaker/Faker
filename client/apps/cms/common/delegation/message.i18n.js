@@ -277,12 +277,24 @@ export default defineMessages({
     id: 'cms.delegation.list.delgTo',
     defaultMessage: '委托',
   },
+  createdStatus: {
+    id: 'cms.delegation.createdStatus',
+    defaultMessage: '创建',
+  },
+  acceptedStatus: {
+    id: 'cms.delegation.acceptedStatus',
+    defaultMessage: '接单',
+  },
+  processedStatus: {
+    id: 'cms.delegation.processedStatus',
+    defaultMessage: '制单',
+  },
   declaredStatus: {
     id: 'cms.delegation.declaredStatus',
     defaultMessage: '申报',
   },
-  filishedStatus: {
-    id: 'cms.delegation.filishedStatus',
+  releasedStatus: {
+    id: 'cms.delegation.releasedStatus',
     defaultMessage: '放行',
   },
 });
