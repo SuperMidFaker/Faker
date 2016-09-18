@@ -139,7 +139,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('delgClient'),
-    width: 220,
+    width: 200,
     dataIndex: 'customer_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
@@ -163,11 +163,11 @@ export default class DelegationList extends Component {
   }, {
     */
     title: this.msg('deliveryNo'),
-    width: 140,
+    width: 180,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('packageNum'),
-    width: 120,
+    width: 100,
     dataIndex: 'pieces',
   }, {
     title: this.msg('delgWeight'),
@@ -184,7 +184,7 @@ export default class DelegationList extends Component {
   }, {
     */
     title: this.msg('enterprise'),
-    width: 220,
+    width: 200,
     dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
