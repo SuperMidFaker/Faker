@@ -201,12 +201,12 @@ export default class DelegationList extends Component {
       } else if (record.status === 3) {
         if (record.sub_status === 0) {
           return <Tag color="yellow">{decl && decl.text}</Tag>;
-        } else { return <Tag color="orange">this.msg('declaredPart')</Tag>; }
+        } else { return <Tag color="orange">{this.msg('declaredPart')}</Tag>; }
       } else if (record.status === 4) {
         if (record.sub_status === 0) {
           return <Tag color="green">{decl && decl.text}</Tag>;
         } else {
-          return <Tag color="orange">this.msg('releasedPart')</Tag>;
+          return <Tag color="orange">{this.msg('releasedPart')}</Tag>;
         }
       } else {
         return <Tag>{decl && decl.text}</Tag>;
