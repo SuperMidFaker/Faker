@@ -131,7 +131,7 @@ export default class DelgDispatch extends Component {
           </div>
           <Card>
             <Form>
-              <FormItem label={this.msg('dispatchTO')} {...formItemLayout}>
+              <FormItem label={this.msg('dispatchTo')} {...formItemLayout}>
                 <Select showSearch showArrow optionFilterProp="searched"
                   placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
                   {...getFieldProps('recv_name', { initialValue: dispatch.recv_name }

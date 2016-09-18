@@ -248,20 +248,14 @@ const I_E_TYPES = [
 
 const DECL_I_TYPE = [
   { key: '0000', value: '口岸进口' },
-  { key: '0002', value: '进境' },
   { key: '0100', value: '保税区进口' },
   { key: '0102', value: '保税区进境备案' },
-  { key: '0200', value: '寄售维修进口' },
-  { key: '0202', value: '寄售维修进境备案' },
 ];
 
 const DECL_E_TYPE = [
   { key: '0001', value: '口岸出口' },
   { key: '0101', value: '保税区出口' },
-  { key: '0103', value: '出境' },
-  { key: '0102', value: '保税区出境备案' },
-  { key: '0201', value: '寄售维修出口' },
-  { key: '0203', value: '寄售维修出境备案' },
+  { key: '0103', value: '保税区出境备案' },
 ];
 
 const CMS_DELG_STATUS = [
@@ -270,6 +264,17 @@ const CMS_DELG_STATUS = [
   { value: 2, text: '制单中' },
   { value: 3, text: '已申报' },
   { value: 4, text: '已放行' },
+];
+
+export const TRANS_MODE = [
+  { value: 2, text: '海运' },
+  { value: 5, text: '空运' },
+  { value: 9, text: '其他运输' },
+];
+
+export const QUOTE_TYPE = [
+  { key: 0, text: '销售价' },
+  { key: 1, text: '成本价' },
 ];
 
 export const CMS_SUP_STATUS = [

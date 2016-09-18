@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { TENANT_ASPECT, GOODSTYPES } from 'common/constants';
+import { TENANT_ASPECT, GOODSTYPES, TRANS_MODE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n.js';
 import { format } from 'client/common/i18n/helpers';
@@ -20,7 +20,7 @@ function getFieldInits(aspect, formData) {
   const init = {};
   if (formData) {
     [
-      'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'shipping_no',
+      'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no',
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
       'goods_type', 'order_no', 'remark',
     ].forEach((fd) => {
@@ -101,11 +101,17 @@ export default class BasicForm extends Component {
               )}
               </Select>
             </FormItem>
-            <FormItem label={this.msg('shippingNo')} {...formItemLayout}>
-              <Input {...getFieldProps('shipping_no', {
-                initialValue: fieldInits.shipping_no,
-                rules: [{ required: true, message: '运单号必填' }],
-              })} />
+            <FormItem label={this.msg('transMode')} {...formItemLayout}>
+              <Select {...getFieldProps('trans_mode', {
+                initialValue: fieldInits.trans_mode,
+                rules: [{ required: true, message: '运输方式必选', type: 'number' }],
+              })}>
+              {
+                TRANS_MODE.map(tr =>
+                  <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                )
+              }
+              </Select>
             </FormItem>
             <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
               <Input {...getFieldProps('pieces', {

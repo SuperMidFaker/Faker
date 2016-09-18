@@ -65,9 +65,9 @@ export default defineMessages({
     id: 'cms.delegation.delg.contract.no',
     defaultMessage: '合同号',
   },
-  shippingNo: {
-    id: 'cms.delegation.delg.shipping.no',
-    defaultMessage: '运单号',
+  transMode: {
+    id: 'cms.delegation.delg.trans_mode',
+    defaultMessage: '运输方式',
   },
   deliveryNo: {
     id: 'cms.delegation.delg.delivery.no',
