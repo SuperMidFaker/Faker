@@ -113,7 +113,7 @@ export default class SubdelgTable extends Component {
     dataIndex: 'note',
     render: (o, record) => (record.id ? o : '-'),
   }, {
-    title: 'processDate',
+    title: this.msg('processDate'),
     width: 80,
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('YYYY.MM.DD') : '-'),
