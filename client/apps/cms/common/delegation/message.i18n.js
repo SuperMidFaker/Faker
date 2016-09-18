@@ -7,7 +7,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
-    defaultMessage: '订单号/发票号/提运单号',
+    defaultMessage: '提运单号/订单号/发票号',
   },
   importDeclaration: {
     id: 'cms.delegation.import.declaration',
@@ -18,24 +18,24 @@ export default defineMessages({
     defaultMessage: '出口清关',
   },
   all: {
-    id: 'cms.delegation.status.all',
+    id: 'cms.delegation.stage.all',
     defaultMessage: '全部',
   },
-  acceptance: {
-    id: 'cms.delegation.status.acceptance',
+  accepting: {
+    id: 'cms.delegation.stage.accepting',
     defaultMessage: '接单',
   },
   processing: {
-    id: 'cms.delegation.status.processing',
+    id: 'cms.delegation.stage.processing',
     defaultMessage: '制单',
   },
-  declared: {
-    id: 'cms.delegation.status.declared',
-    defaultMessage: '已申报',
+  declaring: {
+    id: 'cms.delegation.stage.declaring',
+    defaultMessage: '申报',
   },
-  released: {
-    id: 'cms.delegation.status.released',
-    defaultMessage: '已放行',
+  releasing: {
+    id: 'cms.delegation.stage.releasing',
+    defaultMessage: '放行',
   },
   declaringDelg: {
     id: 'cms.delegation.declaring',
@@ -83,7 +83,7 @@ export default defineMessages({
   },
   voyageNo: {
     id: 'cms.delegation.delg.voyage.no',
-    defaultMessage: '航名/航次',
+    defaultMessage: '船名/航次',
   },
   delgInternalNo: {
     id: 'cms.delegation.delg.internal.no',
@@ -109,8 +109,8 @@ export default defineMessages({
     id: 'cms.delegation.delg.grosswt',
     defaultMessage: '毛重',
   },
-  enterprise: {
-    id: 'cms.delegation.delg.enterprise',
+  broker: {
+    id: 'cms.delegation.delg.broker',
     defaultMessage: '申报企业',
   },
   goodsType: {
@@ -277,24 +277,24 @@ export default defineMessages({
     id: 'cms.delegation.list.delgTo',
     defaultMessage: '委托',
   },
-  createdStatus: {
-    id: 'cms.delegation.createdStatus',
+  createdEvent: {
+    id: 'cms.delegation.event.created',
     defaultMessage: '创建',
   },
-  acceptedStatus: {
-    id: 'cms.delegation.acceptedStatus',
+  acceptedEvent: {
+    id: 'cms.delegation.event.accepted',
     defaultMessage: '接单',
   },
-  processedStatus: {
-    id: 'cms.delegation.processedStatus',
+  processedEvent: {
+    id: 'cms.delegation.event.processed',
     defaultMessage: '制单',
   },
-  declaredStatus: {
-    id: 'cms.delegation.declaredStatus',
+  declaredEvent: {
+    id: 'cms.delegation.event.declared',
     defaultMessage: '申报',
   },
-  releasedStatus: {
-    id: 'cms.delegation.releasedStatus',
+  releasedEvent: {
+    id: 'cms.delegation.event.released',
     defaultMessage: '放行',
   },
 });
