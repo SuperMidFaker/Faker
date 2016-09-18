@@ -297,4 +297,12 @@ export default defineMessages({
     id: 'cms.delegation.event.released',
     defaultMessage: '放行',
   },
+  declaredPart: {
+    id: 'cms.delegation.declaredPart',
+    defaultMessage: '部分申报',
+  },
+  releasedPart: {
+    id: 'cms.delegation.releasedPart',
+    defaultMessage: '部分放行',
+  },
 });

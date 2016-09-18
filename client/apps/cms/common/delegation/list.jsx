@@ -199,9 +199,15 @@ export default class DelegationList extends Component {
       } else if (record.status === 2) {
         return <Tag color="blue">{decl && decl.text}</Tag>;
       } else if (record.status === 3) {
-        return <Tag color="yellow">{decl && decl.text}</Tag>;
+        if (record.sub_status === 0) {
+          return <Tag color="yellow">{decl && decl.text}</Tag>;
+        } else { return <Tag color="orange">this.msg('declaredPart')</Tag>; }
       } else if (record.status === 4) {
-        return <Tag color="green">{decl && decl.text}</Tag>;
+        if (record.sub_status === 0) {
+          return <Tag color="green">{decl && decl.text}</Tag>;
+        } else {
+          return <Tag color="orange">this.msg('releasedPart')</Tag>;
+        }
       } else {
         return <Tag>{decl && decl.text}</Tag>;
       }
@@ -416,7 +422,11 @@ export default class DelegationList extends Component {
               <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
             </span>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1 && record.sub_status > 0) {
+          return (
+            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+          );
+        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.source === 1 && record.sub_status > 0) {
           return (
             <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
           );
