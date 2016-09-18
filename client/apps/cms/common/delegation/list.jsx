@@ -211,23 +211,24 @@ export default class DelegationList extends Component {
     width: 150,
     dataIndex: 'last_act_time',
     render: (o, record) => {
-      if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
-        return `${this.msg('createdEvent')}
+      if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.last_act_time) {
+        return `${this.msg('createdStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-        return `${this.msg('acceptedEvent')}
+      } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.last_act_time) {
+        return `${this.msg('acceptedStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
-        return `${this.msg('processedEvent')}
+      } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.last_act_time) {
+        return `${this.msg('processedStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.declared) {
-        return `${this.msg('declaredEvent')}
+      } else if (record.status === CMS_DELEGATION_STATUS.declared && record.last_act_time) {
+        return `${this.msg('declaredStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.passed) {
-        return `${this.msg('releasedEvent')}
+      } else if (record.status === CMS_DELEGATION_STATUS.passed && record.last_act_time) {
+        return `${this.msg('releasedStatus')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
+      } else {
+        return '--';
       }
-      return '';
     },
   }]
   dataSource = new Table.DataSource({
@@ -390,7 +391,7 @@ export default class DelegationList extends Component {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
             <span>
-              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('acceptDelg')} row={record} />
+              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('acceptance')} row={record} />
               <span className="ant-divider" />
               <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
               {this.msg('modify')}
