@@ -68,7 +68,7 @@ export default class BasicForm extends Component {
     transMode = value;
   }
   render() {
-    const { form: { getFieldProps, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
+    const { form: { getFieldProps }, fieldInits, clients, tenantName, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
