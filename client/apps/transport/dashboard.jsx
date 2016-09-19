@@ -10,8 +10,6 @@ import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
 import './index.less';
 import messages from './message.i18n';
-import chinaJson from './china.json';
-import { renderCity } from './common/consignLocation';
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
@@ -43,206 +41,15 @@ export default class Dashboard extends React.Component {
   static propTypes = {
     children: PropTypes.object,
   }
-  /*
-  componentWillReceiveProps(nextProps) {
-    this.createEcharts(nextProps.statistics);
-  }
-  */
 
   onDateChange = (value, dateString) => {
     this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
   }
-  createEcharts(statistics) {
-    const { points } = statistics;
-    const geoCoordMap = {};
-    const SHData = [];
-    for (let i = 0; i < points.length; i++) {
-      const consignerCity = renderCity(points[i], 'consigner');
-      const consigneeCity = renderCity(points[i], 'consignee');
-      SHData.push([{ name: consignerCity }, { name: consigneeCity, value: points[i].value * 10 }]);
-      geoCoordMap[consignerCity] = [0, 0];
-      geoCoordMap[consigneeCity] = [0, 0];
-    }
-    function queryGeoLocation(item) {
-      return new Promise((resolve) => {
-        window.$.ajax({
-          type: 'get',
-          url: 'https://api.map.baidu.com/geocoder/v2/',
-          data: {
-            output: 'json',
-            ak: 'A4749739227af1618f7b0d1b588c0e85',
-            address: item,
-          },
-          dataType: 'jsonp',
-          success: (data) => {
-            resolve(data);
-          },
-        });
-      });
-    }
-    const promises = [];
-    Object.keys(geoCoordMap).forEach((geo) => {
-      const p = queryGeoLocation(geo);
-      promises.push(p);
-    });
-    const result = Promise.all(promises);
-    result.then((arr) => {
-      let j = 0;
-      Object.keys(geoCoordMap).forEach((geo) => {
-        if (arr[j].result && arr[j].result.location) {
-          geoCoordMap[geo][0] = arr[j].result.location.lng;
-          geoCoordMap[geo][1] = arr[j].result.location.lat;
-        } else {
-          for (let k = 0; k < SHData.length; k++) {
-            if (geo === SHData[k][1].name) {
-              SHData.splice(k, 1);
-              break;
-            }
-          }
-        }
-        j++;
-      });
-
-      const convertData = (data) => {
-        const res = [];
-        for (let i = 0; i < data.length; i++) {
-          const dataItem = data[i];
-          const fromCoord = geoCoordMap[dataItem[0].name];
-          const toCoord = geoCoordMap[dataItem[1].name];
-          if (fromCoord && toCoord && fromCoord[0] !== 0 && fromCoord[1] !== 0 && toCoord[0] !== 0 && toCoord[1] !== 0) {
-            res.push({
-              fromName: dataItem[0].name,
-              toName: dataItem[1].name,
-              coords: [fromCoord, toCoord],
-            });
-          }
-        }
-        return res;
-      };
-      const color = '#ffa022';
-      const series = [];
-      [['', SHData]].forEach((item) => {
-        series.push({
-          name: '',
-          type: 'lines',
-          zlevel: 1,
-          effect: {
-            show: true,
-            period: 6,
-            trailLength: 0.7,
-            color: '#fff',
-            symbolSize: 3,
-          },
-          lineStyle: {
-            normal: {
-              color,
-              width: 0,
-              curveness: 0.2,
-            },
-          },
-          data: convertData(item[1]),
-        }, {
-          name: '',
-          type: 'lines',
-          zlevel: 2,
-          effect: {
-            show: true,
-            period: 6,
-            trailLength: 0,
-          },
-          lineStyle: {
-            normal: {
-              color,
-              width: 1,
-              opacity: 0.4,
-              curveness: 0.2,
-            },
-          },
-          data: convertData(item[1]),
-        }, {
-          name: '',
-          type: 'effectScatter',
-          coordinateSystem: 'geo',
-          zlevel: 2,
-          rippleEffect: {
-            brushType: 'stroke',
-          },
-          label: {
-            normal: {
-              show: true,
-              position: 'right',
-              formatter: '{b}',
-            },
-          },
-          symbolSize: (val) => {
-            return val[2] / 8;
-          },
-          itemStyle: {
-            normal: {
-              color,
-            },
-          },
-          data: item[1].map((dataItem) => {
-            return {
-              name: dataItem[1].name,
-              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value]),
-            };
-          }),
-        });
-      });
-
-      const option = {
-        backgroundColor: '#f0f0f0',
-        title: {
-          text: '',
-          subtext: '',
-          left: 'center',
-          textStyle: {
-            color: '#fff',
-          },
-        },
-        tooltip: {
-          trigger: 'item',
-        },
-        legend: {
-          orient: 'vertical',
-          top: 'bottom',
-          left: 'left',
-          data: [],
-          textStyle: {
-            color: '#fff',
-          },
-          selectedMode: 'single',
-        },
-        geo: {
-          map: 'china',
-          label: {
-            emphasis: {
-              show: false,
-            },
-          },
-          roam: true,
-          itemStyle: {
-            normal: {
-              areaColor: '#323c48',
-              borderColor: '#404a59',
-            },
-            emphasis: {
-              areaColor: '#2a333d',
-            },
-          },
-        },
-        series,
-      };
-      if (document) {
-        const echarts = require('echarts');
-        echarts.registerMap('china', chinaJson);
-        const chart = echarts.init(document.getElementById('chart'));
-        chart.setOption(option);
-      }
-    });
-  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
+  logsLocation = (type) => {
+    const { startDate, endDate } = this.props.statistics;
+    return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
+  }
   render() {
     const { count, startDate, endDate } = this.props.statistics;
     const datePicker = (
@@ -333,55 +140,55 @@ export default class Dashboard extends React.Component {
                     <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
-                        <NavLink to={'/transport/shipment'}>
+                        <NavLink to={this.logsLocation('accepted')}>
                         {count[0]}
                         </NavLink>
                       </div>
-                      <div style={rightBottom}>已受理运单</div>
+                      <div style={rightBottom}>{this.msg('accepted')}</div>
                     </div>
                 </Col>
                 <Col span={4} className="stats-data">
                     <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
-                        <NavLink to={'/transport/dispatch'}>
+                        <NavLink to={this.logsLocation('sent')}>
                         {count[1]}
                         </NavLink>
                       </div>
-                      <div style={rightBottom}>已调度运单</div>
+                      <div style={rightBottom}>{this.msg('sent')}</div>
                     </div>
                 </Col>
                 <Col span={4} className="stats-data">
                     <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
-                        <NavLink to={'/transport/tracking/road/status/intransit'}>
+                        <NavLink to={this.logsLocation('pickedup')}>
                         {count[2]}
                         </NavLink>
                       </div>
-                      <div style={rightBottom}>已提货运单</div>
+                      <div style={rightBottom}>{this.msg('pickedup')}</div>
                     </div>
                 </Col>
                 <Col span={4} className="stats-data">
                     <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
-                        <NavLink to={'/transport/tracking/road/status/delivered'}>
+                        <NavLink to={this.logsLocation('delivered')}>
                         {count[3]}
                         </NavLink>
                       </div>
-                      <div style={rightBottom}>已交货运单</div>
+                      <div style={rightBottom}>{this.msg('delivered')}</div>
                     </div>
                 </Col>
                 <Col span={4} className="stats-data">
                     <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
-                        <NavLink to={'/transport/tracking/road/pod/passed'}>
+                        <NavLink to={this.logsLocation('completed')}>
                         {count[4]}
                         </NavLink>
                       </div>
-                      <div style={rightBottom}>已完成运单</div>
+                      <div style={rightBottom}>{this.msg('completed')}</div>
                     </div>
                 </Col>
               </Row>

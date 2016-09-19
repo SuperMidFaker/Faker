@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import {
   loadTransitTable, showDateModal, showVehicleModal,
-  showLocModal, loadShipmtLastPoint,
+  showLocModal, loadShipmtLastPoint, deliverConfirm,
 } from 'common/reducers/trackingLandStatus';
 import { showPodModal } from 'common/reducers/trackingLandPod';
 import { showExcpModal } from 'common/reducers/trackingLandException';
@@ -61,7 +61,7 @@ function fetchData({ state, dispatch, params, cookie }) {
   {
     loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
     showVehicleModal, showLocModal, loadShipmtLastPoint, showExcpModal,
-    sendMessage,
+    sendMessage, deliverConfirm,
   }
 )
 export default class LandStatusList extends React.Component {
@@ -85,6 +85,7 @@ export default class LandStatusList extends React.Component {
     loadShipmtLastPoint: PropTypes.func.isRequired,
     showExcpModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
+    deliverConfirm: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -98,6 +99,8 @@ export default class LandStatusList extends React.Component {
       onTableLoad: this.handleTableLoad,
       onShowExcpModal: this.handleShowExcpModal,
       sendMessage: this.props.sendMessage,
+      deliverConfirm: this.handleDeliverConfirm,
+      tenantId: this.props.tenantId,
     }, this.msg);
   }
   state = {
@@ -254,6 +257,15 @@ export default class LandStatusList extends React.Component {
     this.props.loadShipmtLastPoint(row.shipmt_no).then((result) => {
       if (!result.error) {
         this.setState({ lastLocReportTime: result.data.location_time });
+      }
+    });
+  }
+  handleDeliverConfirm = (shipmtNo) => {
+    this.props.deliverConfirm(shipmtNo).then((result) => {
+      if (!result.error) {
+        this.handleTableLoad();
+      } else {
+        message.error(result.error.message);
       }
     });
   }

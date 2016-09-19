@@ -69,6 +69,7 @@ const initialState = {
     adjustCoefficient: 1,
     taxrate: { mode: 0, value: 0 },
   },
+  advanceChargeList: [],
 };
 
 export default function reducer(state = initialState, action) {

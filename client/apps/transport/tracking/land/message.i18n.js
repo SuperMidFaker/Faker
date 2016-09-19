@@ -21,6 +21,10 @@ export default defineMessages({
     id: 'transport.tracking.shipmt.status',
     defaultMessage: '当前状态',
   },
+  deliverConfirm: {
+    id: 'transport.tracking.shipmt.deliverConfirm',
+    defaultMessage: '交货确认',
+  },
   shipmtPrevTrack: {
     id: 'transport.tracking.shipmt.prev.track',
     defaultMessage: '上一节点时间',

@@ -505,6 +505,14 @@ export default defineMessages({
     id: 'transport.acceptance.total.charge',
     defaultMessage: '总运费',
   },
+  distance: {
+    id: 'transport.acceptance.distance',
+    defaultMessage: '路程',
+  },
+  kilometer: {
+    id: 'transport.acceptance.distance.kilometer',
+    defaultMessage: '公里',
+  },
   computeCharge: {
     id: 'transport.acceptance.compute.charge',
     defaultMessage: '计算运费',

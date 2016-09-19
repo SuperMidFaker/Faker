@@ -65,7 +65,7 @@ export default class TariffEdit extends React.Component {
               <TabPane tab={<span>基础费率</span>} key="rates">
                 <RatesForm />
               </TabPane>
-              <TabPane tab={<span>附加费税</span>} key="surcharges">
+              <TabPane tab={<span>服务费税</span>} key="surcharges">
                 <SurchargeForm />
               </TabPane>
             </Tabs>
