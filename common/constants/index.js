@@ -266,15 +266,24 @@ const CMS_DELG_STATUS = [
   { value: 4, text: '已放行' },
 ];
 
+export const FEE_STYLE = [
+  { value: 0, text: '服务费' },
+  { value: 1, text: '代垫费' },
+];
+
+export const CHARGE_MODE = [
+  { value: 0, text: '按Shipment' },
+  { value: 1, text: '按报关单' },
+  { value: 2, text: '按品名' },
+  { value: 3, text: '按料号' },
+  { value: 4, text: '按货值' },
+  { value: 5, text: '按实收取' },
+];
+
 export const TRANS_MODE = [
   { value: '2', text: '海运' },
   { value: '5', text: '空运' },
   { value: '9', text: '其他' },
-];
-
-export const QUOTE_TYPE = [
-  { key: 0, text: '销售价' },
-  { key: 1, text: '成本价' },
 ];
 
 export const CMS_SUP_STATUS = [

@@ -75,8 +75,8 @@ export default class Manage extends Component {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
-        title: msg('priceNo'),
-        dataIndex: 'price_no',
+        title: msg('quoteNo'),
+        dataIndex: 'quote_no',
         render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: msg('delgClient'),
