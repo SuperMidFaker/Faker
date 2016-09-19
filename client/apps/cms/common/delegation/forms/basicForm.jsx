@@ -15,6 +15,7 @@ const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
+let transMode = '';
 
 function getFieldInits(aspect, formData) {
   const init = {};
@@ -63,8 +64,11 @@ export default class BasicForm extends Component {
     }
     return value;
   }
+  handleModeSelect = (value) => {
+    transMode = value;
+  }
   render() {
-    const { form: { getFieldProps }, fieldInits, clients, tenantName, partnershipType } = this.props;
+    const { form: { getFieldProps, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
@@ -101,63 +105,6 @@ export default class BasicForm extends Component {
               )}
               </Select>
             </FormItem>
-            <FormItem label={this.msg('transMode')} {...formItemLayout}>
-              <Select {...getFieldProps('trans_mode', {
-                initialValue: fieldInits.trans_mode,
-                rules: [{ required: true, message: '运输方式必选', type: 'number' }],
-              })}>
-              {
-                TRANS_MODE.map(tr =>
-                  <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                )
-              }
-              </Select>
-            </FormItem>
-            <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
-              <Input {...getFieldProps('pieces', {
-                initialValue: fieldInits.pieces,
-              })} />
-            </FormItem>
-            <FormItem label={this.msg('enterprise')} {...formItemLayout}>
-              <Input disabled {...getFieldProps('ccb_name', {
-                initialValue: tenantName,
-              })} />
-            </FormItem>
-          </Col>
-          <Col sm={8}>
-            <FormItem label={this.msg('orderNo')} {...formItemLayout}>
-              <Input {...getFieldProps('order_no', {
-                initialValue: fieldInits.order_no,
-              })} />
-            </FormItem>
-            <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
-              <Input {...getFieldProps('voyage_no', {
-                initialValue: fieldInits.voyage_no,
-              })} />
-            </FormItem>
-            <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
-              <Input {...getFieldProps('weight', {
-                initialValue: fieldInits.weight,
-
-              })} />
-            </FormItem>
-            <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
-              <Input {...getFieldProps('internal_no', {
-                initialValue: fieldInits.internal_no,
-              })} />
-            </FormItem>
-          </Col>
-          <Col sm={8}>
-            <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
-              <Input {...getFieldProps('invoice_no', {
-                initialValue: fieldInits.invoice_no,
-              })} />
-            </FormItem>
-            <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
-              <Input {...getFieldProps('bl_wb_no', {
-                initialValue: fieldInits.bl_wb_no,
-              })} />
-            </FormItem>
             <FormItem label={this.msg('goodsType')} {...formItemLayout}>
               <Select {...getFieldProps('goods_type', {
                 initialValue: fieldInits.goods_type,
@@ -170,6 +117,81 @@ export default class BasicForm extends Component {
               }
               </Select>
             </FormItem>
+            <FormItem label={this.msg('transMode')} {...formItemLayout}>
+              <Select onSelect={this.handleModeSelect} {...getFieldProps('trans_mode', {
+                initialValue: fieldInits.trans_mode,
+                rules: [{ required: true, message: '运输方式必选' }],
+              })}>
+              {
+                TRANS_MODE.map(tr =>
+                  <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                )
+              }
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={8}>
+            <FormItem label={this.msg('orderNo')} {...formItemLayout}>
+              <Input {...getFieldProps('order_no', {
+                initialValue: fieldInits.order_no,
+              })} />
+            </FormItem>
+            <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
+              <Input {...getFieldProps('pieces', {
+                initialValue: fieldInits.pieces,
+              })} />
+            </FormItem>
+            <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
+              <Input {...getFieldProps('internal_no', {
+                initialValue: fieldInits.internal_no,
+              })} />
+            </FormItem>
+            { transMode === '2' &&
+              <FormItem label={this.msg('bLNo')} {...formItemLayout}>
+                <Input {...getFieldProps('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })} />
+              </FormItem>
+            }
+            { transMode === '5' &&
+              <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
+                <Input {...getFieldProps('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })} />
+              </FormItem>
+            }
+          </Col>
+          <Col sm={8}>
+            <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
+              <Input {...getFieldProps('invoice_no', {
+                initialValue: fieldInits.invoice_no,
+              })} />
+            </FormItem>
+            <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
+              <Input {...getFieldProps('weight', {
+                initialValue: fieldInits.weight,
+
+              })} />
+            </FormItem>
+            <FormItem label={this.msg('broker')} {...formItemLayout}>
+              <Input disabled {...getFieldProps('ccb_name', {
+                initialValue: tenantName,
+              })} />
+            </FormItem>
+            { transMode === '2' &&
+              <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
+                <Input {...getFieldProps('voyage_no', {
+                  initialValue: fieldInits.voyage_no,
+                })} />
+              </FormItem>
+            }
+            { transMode === '5' &&
+              <FormItem label={this.msg('flightNo')} {...formItemLayout}>
+                <Input {...getFieldProps('voyage_no', {
+                  initialValue: fieldInits.voyage_no,
+                })} />
+              </FormItem>
+            }
           </Col>
         </Row>
         <Row>

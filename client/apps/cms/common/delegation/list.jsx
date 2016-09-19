@@ -218,19 +218,19 @@ export default class DelegationList extends Component {
     dataIndex: 'last_act_time',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.last_act_time) {
-        return `${this.msg('createdStatus')}
+        return `${this.msg('createdEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.last_act_time) {
-        return `${this.msg('acceptedStatus')}
+        return `${this.msg('acceptedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.last_act_time) {
-        return `${this.msg('processedStatus')}
+        return `${this.msg('processedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declared && record.last_act_time) {
-        return `${this.msg('declaredStatus')}
+        return `${this.msg('declaredEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.passed && record.last_act_time) {
-        return `${this.msg('releasedStatus')}
+        return `${this.msg('releasedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else {
         return '--';
@@ -397,7 +397,7 @@ export default class DelegationList extends Component {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
             <span>
-              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('acceptance')} row={record} />
+              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
               <span className="ant-divider" />
               <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
               {this.msg('modify')}

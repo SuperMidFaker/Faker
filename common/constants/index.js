@@ -267,9 +267,9 @@ const CMS_DELG_STATUS = [
 ];
 
 export const TRANS_MODE = [
-  { value: 2, text: '海运' },
-  { value: 5, text: '空运' },
-  { value: 9, text: '其他运输' },
+  { value: '2', text: '海运' },
+  { value: '5', text: '空运' },
+  { value: '9', text: '其他' },
 ];
 
 export const QUOTE_TYPE = [

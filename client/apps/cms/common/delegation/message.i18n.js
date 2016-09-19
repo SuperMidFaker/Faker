@@ -71,7 +71,11 @@ export default defineMessages({
   },
   deliveryNo: {
     id: 'cms.delegation.delg.delivery.no',
-    defaultMessage: '提运单号',
+    defaultMessage: '运单号',
+  },
+  bLNo: {
+    id: 'cms.delegation.delg.bill.lading.no',
+    defaultMessage: '提单号',
   },
   invoiceNo: {
     id: 'cms.delegation.delg.invoice.no',
@@ -84,6 +88,10 @@ export default defineMessages({
   voyageNo: {
     id: 'cms.delegation.delg.voyage.no',
     defaultMessage: '船名/航次',
+  },
+  flightNo: {
+    id: 'cms.delegation.delg.flight.no',
+    defaultMessage: '航班号',
   },
   delgInternalNo: {
     id: 'cms.delegation.delg.internal.no',
