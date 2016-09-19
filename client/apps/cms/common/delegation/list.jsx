@@ -127,7 +127,7 @@ export default class DelegationList extends Component {
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 140,
+    width: 120,
     render: (o, record) => {
       return (
         <a onClick={() => this.props.showPreviewer({
@@ -139,7 +139,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('delgClient'),
-    width: 220,
+    width: 200,
     dataIndex: 'customer_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
@@ -163,11 +163,11 @@ export default class DelegationList extends Component {
   }, {
     */
     title: this.msg('deliveryNo'),
-    width: 140,
+    width: 180,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('packageNum'),
-    width: 120,
+    width: 80,
     dataIndex: 'pieces',
   }, {
     title: this.msg('delgWeight'),
@@ -183,8 +183,8 @@ export default class DelegationList extends Component {
     },
   }, {
     */
-    title: this.msg('enterprise'),
-    width: 220,
+    title: this.msg('broker'),
+    width: 180,
     dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
@@ -212,19 +212,19 @@ export default class DelegationList extends Component {
     dataIndex: 'last_act_time',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
-        return `${this.msg('createdStatus')}
+        return `${this.msg('createdEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-        return `${this.msg('acceptedStatus')}
+        return `${this.msg('acceptedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
-        return `${this.msg('processedStatus')}
+        return `${this.msg('processedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.declared) {
-        return `${this.msg('declaredStatus')}
+        return `${this.msg('declaredEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       } else if (record.status === CMS_DELEGATION_STATUS.passed) {
-        return `${this.msg('releasedStatus')}
+        return `${this.msg('releasedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
       }
       return '';
@@ -436,10 +436,10 @@ export default class DelegationList extends Component {
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="accept">{this.msg('acceptance')}</RadioButton>
+            <RadioButton value="accept">{this.msg('accepting')}</RadioButton>
             <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
-            <RadioButton value="declared">{this.msg('declared')}</RadioButton>
-            <RadioButton value="finished">{this.msg('released')}</RadioButton>
+            <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
+            <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="main-content">
@@ -455,7 +455,7 @@ export default class DelegationList extends Component {
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
                 expandedRowKeys={this.state.expandedKeys}
                 expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                scroll={{ x: 1328 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1380 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>
