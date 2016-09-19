@@ -65,13 +65,17 @@ export default defineMessages({
     id: 'cms.delegation.delg.contract.no',
     defaultMessage: '合同号',
   },
-  shippingNo: {
-    id: 'cms.delegation.delg.shipping.no',
-    defaultMessage: '运单号',
+  transMode: {
+    id: 'cms.delegation.delg.trans_mode',
+    defaultMessage: '运输方式',
   },
   deliveryNo: {
     id: 'cms.delegation.delg.delivery.no',
-    defaultMessage: '提运单号',
+    defaultMessage: '运单号',
+  },
+  bLNo: {
+    id: 'cms.delegation.delg.bill.lading.no',
+    defaultMessage: '提单号',
   },
   invoiceNo: {
     id: 'cms.delegation.delg.invoice.no',
@@ -84,6 +88,10 @@ export default defineMessages({
   voyageNo: {
     id: 'cms.delegation.delg.voyage.no',
     defaultMessage: '船名/航次',
+  },
+  flightNo: {
+    id: 'cms.delegation.delg.flight.no',
+    defaultMessage: '航班号',
   },
   delgInternalNo: {
     id: 'cms.delegation.delg.internal.no',
@@ -296,5 +304,13 @@ export default defineMessages({
   releasedEvent: {
     id: 'cms.delegation.event.released',
     defaultMessage: '放行',
+  },
+  declaredPart: {
+    id: 'cms.delegation.declaredPart',
+    defaultMessage: '部分申报',
+  },
+  releasedPart: {
+    id: 'cms.delegation.releasedPart',
+    defaultMessage: '部分放行',
   },
 });

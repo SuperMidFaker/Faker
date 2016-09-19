@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { DEFAULT_MODULES, MODULE_INDEX } from 'common/constants/module';
+import { DEFAULT_MODULES } from 'common/constants/module';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -45,7 +45,6 @@ export default class ModuleEditor extends React.Component {
   handleAppCheck(ap, checked) {
     const app = {
       id: ap.id,
-      index: MODULE_INDEX[ap.id],
       package: ap.package,
     };
     this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then(

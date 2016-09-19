@@ -22,7 +22,7 @@ function getLinks(intl) {
   }, {
     single: true,
     key: 'cms-5',
-    path: '/clearance/price',
+    path: '/clearance/quote',
     icon: 'zmdi zmdi-case',
     text: formatMsg(intl, 'quote'),
   }, {

@@ -5,8 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import NavLink from 'client/components/nav-link';
 import ModuleLayout from 'client/components/module-layout';
+import { hasPermission } from 'client/common/decorators/withPrivilege';
 import { setNavTitle } from 'common/reducers/navbar';
-import { PERSONNEL } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import './home.less';
@@ -16,7 +16,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    accountType: state.account.type,
+    privileges: state.account.privileges,
     logo: state.corpDomain.logo,
     name: state.corpDomain.name,
   }),
@@ -25,28 +25,40 @@ const formatMsg = format(messages);
 export default class Home extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    setNavTitle: PropTypes.func.isRequired,
-    accountType: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    privileges: PropTypes.object.isRequired,
+    setNavTitle: PropTypes.func.isRequired,
   };
+  state = {
+    corpMenuLink: null,
+  }
   componentWillMount() {
     this.props.setNavTitle({
       depth: 1,
     });
+    const corpMenus = ['info', 'personnel', 'organization', 'partners'];
+    for (let i = 0; i < corpMenus.length; i++) {
+      if (hasPermission(this.props.privileges, {
+        module: 'corp', features: corpMenus[i],
+      })) {
+        this.setState({ corpMenuLink: `/corp/${corpMenus[i]}` });
+        break;
+      }
+    }
   }
   render() {
-    const { intl, logo, name, accountType } = this.props;
+    const { intl, logo, name } = this.props;
     const tenantMenus = [
       <Menu.Item key="apps">
         <i className="zmdi zmdi-apps" />
         {formatMsg(intl, 'applications')}
       </Menu.Item>,
     ];
-    if (accountType !== PERSONNEL) {
+    if (this.state.corpMenuLink) {
       tenantMenus.push(
         <Menu.Item key="corp">
-          <NavLink to="/corp/info">
+          <NavLink to={`${this.state.corpMenuLink}`}>
             <i className="zmdi zmdi-city-alt" />
             {formatMsg(intl, 'corp')}
           </NavLink>

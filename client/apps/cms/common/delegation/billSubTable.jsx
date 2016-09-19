@@ -47,7 +47,7 @@ export default class SubdelgTable extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('delgNo'),
+    title: this.msg('billNo'),
     dataIndex: 'bill_seq_no',
     width: 160,
     render: (o, record) => {

@@ -6,8 +6,9 @@ import {
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { setNavTitle } from 'common/reducers/navbar';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import { setNavTitle } from 'common/reducers/navbar';
 import { isFormDataLoaded, loadForm, edit } from
   'common/reducers/corps';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
@@ -47,6 +48,7 @@ function fetchData({ state, dispatch, cookie }) {
     goBackFn: '',
   }));
 })
+@withPrivilege({ module: 'corp', feature: 'info' })
 @connect(
   state => ({
     formData: state.corps.formData,
@@ -228,13 +230,15 @@ export default class CorpInfo extends React.Component {
               )}
             </Col>
           </Row>
-          <Row>
-            <Col span="21" offset="3">
-              <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
-              {formatGlobalMsg(intl, 'save')}
-              </Button>
-            </Col>
-          </Row>
+          <PrivilegeCover module="corp" feature="info" action="save">
+            <Row>
+              <Col span="21" offset="3">
+                <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
+                {formatGlobalMsg(intl, 'save')}
+                </Button>
+              </Col>
+            </Row>
+          </PrivilegeCover>
         </Form>
       </div>);
   }
@@ -272,15 +276,17 @@ export default class CorpInfo extends React.Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col span="21" offset="3">
-              <Button type="primary" size="large" htmlType="submit"
-                onClick={this.handleSubmit}
-              >
-              {formatGlobalMsg(intl, 'save')}
-              </Button>
-            </Col>
-          </Row>
+          <PrivilegeCover module="corp" feature="info" action="save">
+            <Row>
+              <Col span="21" offset="3">
+                <Button type="primary" size="large" htmlType="submit"
+                  onClick={this.handleSubmit}
+                >
+                {formatGlobalMsg(intl, 'save')}
+                </Button>
+              </Col>
+            </Row>
+          </PrivilegeCover>
         </Form>
       </div>);
   }
