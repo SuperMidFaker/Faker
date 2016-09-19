@@ -62,6 +62,9 @@ export default class Dashboard extends React.Component {
         return text;
       },
     }, {
+      title: '操作人员',
+      dataIndex: 'login_name',
+    }, {
       title: '操作时间',
       dataIndex: 'created_date',
       render(o) {
