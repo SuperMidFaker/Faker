@@ -47,7 +47,6 @@
     "babel-runtime": "^6.11.6",
     "classnames": "^2.2.5",
     "co-body": "^4.2.0",
-    "echarts": "^3.2.1",
     "glob": "^7.0.5",
     "intl": "^1.2.4",
     "koa": "^1.2.4",

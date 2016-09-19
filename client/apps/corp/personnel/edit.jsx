@@ -9,7 +9,7 @@ import { isFormDataLoaded, loadForm, assignForm, clearForm, edit, submit } from
 import { setNavTitle } from 'common/reducers/navbar';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
 import { validatePhone } from 'common/validater';
-import { TENANT_ROLE } from 'common/constants';
+import { PRESET_TENANT_ROLE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -90,7 +90,7 @@ export default class CorpEdit extends React.Component {
   }
   handleAdminCheck = (checked) => {
     this.setState({
-      role: checked ? TENANT_ROLE.manager.name : TENANT_ROLE.member.name,
+      role: checked ? PRESET_TENANT_ROLE.manager.name : PRESET_TENANT_ROLE.member.name,
     });
   }
   handleSubmit = (ev) => {
@@ -186,13 +186,13 @@ export default class CorpEdit extends React.Component {
                 { initialValue: position }
               )
             }
-            {this.props.formData.role !== TENANT_ROLE.owner.name &&
+            {this.props.formData.role !== PRESET_TENANT_ROLE.owner.name &&
             <FormItem label={msg('isAdmin')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
                 {...getFieldProps(
                   'adminChecked', {
                     valuePropName: 'checked',
-                    initialValue: this.props.formData.role === TENANT_ROLE.manager.name,
+                    initialValue: this.props.formData.role === PRESET_TENANT_ROLE.manager.name,
                     onChange: this.handleAdminCheck,
                   })
                 }

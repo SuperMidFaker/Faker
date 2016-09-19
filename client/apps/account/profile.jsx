@@ -13,6 +13,7 @@ import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
 import './acc.less';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
@@ -49,6 +50,7 @@ FormInput.propTypes = {
 @connect(
   state => ({
     profile: state.account.profile,
+    role: state.account.role_name,
     tenantId: state.account.tenantId,
     parentTenantId: state.account.parentTenantId,
     code: state.account.code,
@@ -68,7 +70,13 @@ export default class MyProfile extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired,
+    profile: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+      email: PropTypes.string,
+    }).isRequired,
+    role: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     parentTenantId: PropTypes.number.isRequired,
@@ -90,6 +98,7 @@ export default class MyProfile extends React.Component {
           ...this.props.profile,
           ...this.props.form.getFieldsValue(),
           avatar: this.state.avatar,
+          role: this.props.role,
         };
         this.props.updateProfile(profile, this.props.code, this.props.tenantId).then(
           (result) => {

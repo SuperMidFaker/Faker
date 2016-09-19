@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
   clearFormC } from './form-common';
-import { TENANT_ROLE } from '../constants';
+import { PRESET_TENANT_ROLE } from '../constants';
 import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
 import { PROFILE_UPDATE_SUCCEED } from './account';
 
@@ -97,7 +97,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, personnelist, submitting: false };
     }
     default:
-      return formReducer(actionTypes, state, action, { key: null, role: TENANT_ROLE.member.name },
+      return formReducer(actionTypes, state, action, { key: null, role: PRESET_TENANT_ROLE.member.name },
                          'personnelist') || state;
   }
 }

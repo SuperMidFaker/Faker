@@ -17,7 +17,7 @@ const initialState = {
   role_id: '',
   role_name: '',
   profile: {
-    // name(same as outter username), username(loginName without @), phone, email, role
+    // name(same as outter username), username(loginName without @), phone, email,
   },
   modules: [],
   privileges: {}, // module_id: true(全部功能) || { feature_id: true || { action_id: true }}

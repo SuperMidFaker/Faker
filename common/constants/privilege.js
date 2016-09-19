@@ -1,4 +1,4 @@
-export const PRESET_ROLE = {
+export const PRESET_TENANT_ROLE = {
   owner: {
     name: 'Owner',
     text: 'tenantOwner',
@@ -10,5 +10,13 @@ export const PRESET_ROLE = {
   member: {
     name: 'Member',
     text: 'tenantMember',
+  },
+  analyst: {
+    name: 'Analyst',
+    text: 'tenantAnalyst',
+  },
+  billing: {
+    name: 'Billing',
+    text: 'tenantBilling',
   },
 };

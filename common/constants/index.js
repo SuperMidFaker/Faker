@@ -10,23 +10,6 @@ const ACCOUNT_STATUS = {
     text: 'accountDisabled',
   },
 };
-const TENANT_ROLE = {
-  owner: {
-    name: 'owner',
-    text: 'tenantOwner',
-  },
-  manager: {
-    name: 'manager',
-    text: 'tenantManager',
-  },
-  member: {
-    name: 'member',
-    text: 'tenantMember',
-  },
-};
-const ENTERPRISE = 'enterprise';
-const BRANCH = 'branch';
-const PERSONNEL = 'personnel';
 
 const TENANT_ASPECT = {
   BO: 0, // 企业主
@@ -349,7 +332,6 @@ const TAX_STATUS = {
 };
 
 export {
-  TENANT_ROLE,
   TENANT_LEVEL,
   TENANT_ASPECT,
   INVITATION_STATUS,
@@ -358,9 +340,6 @@ export {
   PARTNER_TENANT_TYPE,
   CHINA_CODE,
   ACCOUNT_STATUS,
-  ENTERPRISE,
-  BRANCH,
-  PERSONNEL,
   WRAP_TYPE,
   SHIPMENT_EFFECTIVES,
   SHIPMENT_SOURCE,
@@ -386,3 +365,4 @@ export {
 };
 
 export * from './module';
+export * from './privilege';
