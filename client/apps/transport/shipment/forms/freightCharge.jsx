@@ -80,6 +80,7 @@ export default class FreightCharge extends React.Component {
           total_charge: Number(freight) + Number(pickup) + Number(deliver) + (
             this.props.formhoc.getFieldValue('surcharge') || this.props.formData.surcharge || 0
           ),
+          distance: miles,
         });
         this.setState({
           computed: true,
@@ -148,6 +149,7 @@ export default class FreightCharge extends React.Component {
       deliver_charge: undefined,
       surcharge: undefined,
       total_charge: undefined,
+      distance: undefined,
     });
     this.props.setConsignFields({
       charge_gradient: undefined,
@@ -207,6 +209,10 @@ export default class FreightCharge extends React.Component {
           field="total_charge" fieldProps={{ initialValue: formData.total_charge }}
           rules={[{ type: 'number', transform: v => Number(v),
             message: this.msg('totalChargeMustBeNumber') }]}
+          colSpan={8} readOnly={computed}
+        />
+        <InputItem formhoc={formhoc} labelName={this.msg('distance')} addonAfter={this.msg('kilometer')}
+          field="distance" fieldProps={{ initialValue: formData.distance }} type="number"
           colSpan={8} readOnly={computed}
         />
       </Card>

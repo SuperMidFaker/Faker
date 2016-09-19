@@ -9,6 +9,7 @@ import { loadNewForm, loadFormParams } from 'common/reducers/transportTariff';
 import AgreementForm from './forms/agreement';
 import SurchargeForm from './forms/surcharge';
 import RatesForm from './forms/rates';
+import AdvanceChargeForm from './forms/advanceCharge';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -65,8 +66,16 @@ export default class TariffCreate extends React.Component {
 
     if (tariffId) {
       panes.push(
-        <TabPane tab={<span>附加费税</span>} key="surcharges">
+        <TabPane tab={<span>服务费税</span>} key="surcharges">
           <SurchargeForm />
+        </TabPane>
+      );
+    }
+
+    if (tariffId) {
+      panes.push(
+        <TabPane tab={<span>垫付费用</span>} key="advanceCharge">
+          <AdvanceChargeForm />
         </TabPane>
       );
     }

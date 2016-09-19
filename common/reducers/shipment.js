@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_PUB_DETAIL', 'LOAD_PUB_DETAIL_SUCCEED', 'LOAD_PUB_DETAIL_FAIL',
   'SEND_SMS_MESSAGE', 'SEND_SMS_MESSAGE_SUCCEED', 'SEND_SMS_MESSAGE_FAIL',
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
+  'SHIPMENT_LOGS', 'SHIPMENT_LOGS_SUCCEED', 'SHIPMENT_LOGS_FAIL',
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
   'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
   'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
@@ -67,10 +68,15 @@ const initialState = {
     pod: {},
   },
   statistics: {
-    points: [],
     count: [0, 0, 0, 0, 0],
     startDate,
     endDate,
+    logs: {
+      totalCount: 0,
+      data: [],
+      pageSize: 10,
+      currentPage: 1,
+    },
   },
   changeShipmentModal: {
     visible: false,
@@ -148,13 +154,16 @@ export default function reducer(state = initialState, action) {
       return { ...state };
     }
     case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
-      return { ...state, statistics: action.result.data };
+      return { ...state, statistics: { ...state.statistics, ...action.result.data } };
     }
     case actionTypes.SHIPMENT_SEARCH_SUCCEED: {
       return { ...state, searchResult: action.result.data };
     }
     case actionTypes.SHOW_CHANGE_SHIPMENT_MODAL: {
       return { ...state, changeShipmentModal: action.data };
+    }
+    case actionTypes.SHIPMENT_LOGS_SUCCEED: {
+      return { ...state, statistics: { ...state.statistics, logs: action.result.data } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -332,6 +341,22 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
         actionTypes.SHIPMENT_STATISTICS_FAIL,
       ],
       endpoint: 'v1/transport/shipment/statistics',
+      method: 'get',
+      cookie,
+      params,
+    },
+  };
+}
+
+export function loadShipmentLogs(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHIPMENT_LOGS,
+        actionTypes.SHIPMENT_LOGS_SUCCEED,
+        actionTypes.SHIPMENT_LOGS_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/logs',
       method: 'get',
       cookie,
       params,

@@ -20,6 +20,7 @@ import Password from './account/password';
 import Module from './module';
 import Transport from './transport/module-transport';
 import TMSDashboard from './transport/dashboard';
+import TMSOperationLogs from './transport/operationLogs';
 import * as TMSAcceptance from './transport/acceptance';
 import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
@@ -125,6 +126,9 @@ export default(store, cookie) => {
         <Route component={Module}>
           <Route path={DEFAULT_MODULES.transport.id} component={Transport}>
             <IndexRoute component={TMSDashboard} />
+            <Route path="dashboard">
+              <Route path="operationLogs" component={TMSOperationLogs} />
+            </Route>
             <Route path="shipment">
               <IndexRoute component={TMSAcceptance.List} />
               <Route path="new" component={TMSAcceptance.CreateNew} />

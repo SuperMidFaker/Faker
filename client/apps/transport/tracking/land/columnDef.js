@@ -469,6 +469,19 @@ export default function makeColumns(type, handlers, msg) {
             );
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已交货
+          if (record.pod_type === 'none' && record.deliver_confirmed === 0 && handlers.tenantId === record.tenant_id) {
+            return (
+              <div>
+                <RowUpdater label={msg('deliverConfirm')}
+                  onAnchored={() => { handlers.deliverConfirm(record.shipmt_no); }} row={record}
+                />
+                <span className="ant-divider" />
+                <RowUpdater label={msg('updateEvents')}
+                  onAnchored={handlers.onShowExcpModal} row={record}
+                />
+              </div>
+            );
+          }
           return (
             <div>
               <RowUpdater label={msg('updateEvents')}

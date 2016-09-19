@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SAVE_DATE', 'SAVE_DATE_SUCCEED', 'SAVE_DATE_FAIL',
   'SAVE_BATCH_DATE', 'SAVE_BATCH_DATE_SUCCEED', 'SAVE_BATCH_DATE_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
+  'DELIVER_CONFIRM', 'DELIVER_CONFIRM_SUCCEED', 'DELIVER_CONFIRM_FAIL',
 ]);
 
 const initialState = {
@@ -113,6 +114,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL:
       return {
         ...state, shipmentAdvanceModal: action.data,
+      };
+    case actionTypes.DELIVER_CONFIRM_SUCCEED:
+      return {
+        ...state,
       };
     default:
       return state;
@@ -260,5 +265,20 @@ export function showShipmentAdvanceModal({ visible, dispId, shipmtNo }) {
   return {
     type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
     data: { visible, dispId, shipmtNo },
+  };
+}
+
+export function deliverConfirm(shipmtNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELIVER_CONFIRM,
+        actionTypes.DELIVER_CONFIRM_SUCCEED,
+        actionTypes.DELIVER_CONFIRM_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/deliverConfirm',
+      method: 'post',
+      data: { shipmtNo },
+    },
   };
 }
