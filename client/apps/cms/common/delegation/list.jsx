@@ -199,9 +199,15 @@ export default class DelegationList extends Component {
       } else if (record.status === 2) {
         return <Tag color="blue">{decl && decl.text}</Tag>;
       } else if (record.status === 3) {
-        return <Tag color="yellow">{decl && decl.text}</Tag>;
+        if (record.sub_status === 0) {
+          return <Tag color="yellow">{decl && decl.text}</Tag>;
+        } else { return <Tag color="orange">{this.msg('declaredPart')}</Tag>; }
       } else if (record.status === 4) {
-        return <Tag color="green">{decl && decl.text}</Tag>;
+        if (record.sub_status === 0) {
+          return <Tag color="green">{decl && decl.text}</Tag>;
+        } else {
+          return <Tag color="orange">{this.msg('releasedPart')}</Tag>;
+        }
       } else {
         return <Tag>{decl && decl.text}</Tag>;
       }
@@ -211,23 +217,24 @@ export default class DelegationList extends Component {
     width: 150,
     dataIndex: 'last_act_time',
     render: (o, record) => {
-      if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
+      if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.last_act_time) {
         return `${this.msg('createdEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
+      } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.last_act_time) {
         return `${this.msg('acceptedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
+      } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.last_act_time) {
         return `${this.msg('processedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.declared) {
+      } else if (record.status === CMS_DELEGATION_STATUS.declared && record.last_act_time) {
         return `${this.msg('declaredEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.passed) {
+      } else if (record.status === CMS_DELEGATION_STATUS.passed && record.last_act_time) {
         return `${this.msg('releasedEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
+      } else {
+        return '--';
       }
-      return '';
     },
   }]
   dataSource = new Table.DataSource({
@@ -390,7 +397,7 @@ export default class DelegationList extends Component {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
             <span>
-              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('acceptDelg')} row={record} />
+              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
               <span className="ant-divider" />
               <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
               {this.msg('modify')}
@@ -415,7 +422,11 @@ export default class DelegationList extends Component {
               <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
             </span>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1 && record.sub_status > 0) {
+          return (
+            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+          );
+        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.source === 1 && record.sub_status > 0) {
           return (
             <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
           );

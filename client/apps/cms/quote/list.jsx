@@ -75,8 +75,8 @@ export default class Manage extends Component {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const columns = [
       {
-        title: msg('priceNo'),
-        dataIndex: 'price_no',
+        title: msg('quoteNo'),
+        dataIndex: 'quote_no',
         render: (text, record) => this.renderColumnText(record.status, text),
       }, {
         title: msg('delgClient'),
@@ -128,7 +128,7 @@ export default class Manage extends Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/price/create')}>
+              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
                 新建报价
               </Button>
             </div>

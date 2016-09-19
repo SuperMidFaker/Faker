@@ -36,7 +36,7 @@ function getLinks(intl) {
       text: formatMsg(intl, 'relation'),
     }, {
       key: 'cms-3-2',
-      path: '/clearance/price',
+      path: '/clearance/quote',
       text: formatMsg(intl, 'priceManage'),
     }],
   }, {
