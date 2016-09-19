@@ -8,6 +8,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 import AgreementForm from './forms/agreement';
 import RatesForm from './forms/rates';
 import SurchargeForm from './forms/surcharge';
+import AdvanceChargeForm from './forms/advanceCharge';
 import { loadTariff, loadFormParams } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -67,6 +68,9 @@ export default class TariffEdit extends React.Component {
               </TabPane>
               <TabPane tab={<span>服务费税</span>} key="surcharges">
                 <SurchargeForm />
+              </TabPane>
+              <TabPane tab={<span>垫付费用</span>} key="advanceCharge">
+                <AdvanceChargeForm />
               </TabPane>
             </Tabs>
           </div>
