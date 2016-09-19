@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Button, message, Popconfirm } from 'antd';
+import { Col, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -46,7 +46,7 @@ function fetchData({ state, dispatch, cookie }) {
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: formatMsg(props.intl, 'shipmtCreate'),
+    text: formatMsg(props.intl, 'transportShipment'),
     moduleName: 'transport',
     withModuleLayout: false,
     goBackFn: () => router.goBack(),
@@ -174,36 +174,36 @@ export default class ShipmentCreate extends React.Component {
   render() {
     const { intl, submitting, tenantName, form } = this.props;
     return (
-      <div className="main-content">
-        <Form horizontal>
-          <div className="page-body">
-            <div className="panel-header" />
-            <div className="panel-body">
-              <Col span="16" className="main-col">
-                <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
-                <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                  labelColSpan={8} formhoc={form}
-                />
-                <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                  labelColSpan={8} formhoc={form}
-                />
-                <ModeInfo intl={intl} formhoc={form} />
-                <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
-              </Col>
-              <CorrelInfo formhoc={form} intl={intl} tenantName={tenantName} />
-            </div>
-          </div>
-          <div className="bottom-fixed-row">
+      <div>
+       <header className="top-bar">
+          <div className="tools">
             <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
-            {formatGlobalMsg(intl, 'save')}
+              {formatGlobalMsg(intl, 'save')}
             </Button>
-            <Popconfirm placement="top" title={this.msg('saveAndAcceptConfirm')} onConfirm={this.handleSaveAndAccept}>
-              <Button size="large" type="ghost" loading={submitting}>
-              {this.msg('saveAndAccept')}
-              </Button>
-            </Popconfirm>
           </div>
-        </Form>
+          <span>{this.msg('shipmtCreate')}</span>
+        </header>
+        <div className="main-content">
+          <Form horizontal>
+            <div className="page-body">
+              <div className="panel-header" />
+              <div className="panel-body">
+                <Col span="16" className="main-col">
+                  <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                  <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
+                    labelColSpan={8} formhoc={form}
+                  />
+                  <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
+                    labelColSpan={8} formhoc={form}
+                  />
+                  <ModeInfo intl={intl} formhoc={form} />
+                  <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                </Col>
+                <CorrelInfo formhoc={form} intl={intl} tenantName={tenantName} />
+              </div>
+            </div>
+          </Form>
+        </div>
       </div>
     );
   }

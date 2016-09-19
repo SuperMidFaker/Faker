@@ -37,10 +37,6 @@ const messages = defineMessages({
     id: 'cms.manage.relation',
     defaultMessage: '关联单位',
   },
-  priceManage: {
-    id: 'cms.manage.price',
-    defaultMessage: '报价管理',
-  },
   new: {
     id: 'cms.manage.new',
     defaultMessage: '新建',
@@ -56,6 +52,14 @@ const messages = defineMessages({
   expense: {
     id: 'cms.moduleClearance.expense',
     defaultMessage: '费用',
+  },
+  billing: {
+    id: 'cms.moduleClearance.billing',
+    defaultMessage: '账单',
+  },
+  quote: {
+    id: 'cms.moduleClearance.quote',
+    defaultMessage: '报价',
   },
   manage: {
     id: 'cms.moduleClearance.manage',
