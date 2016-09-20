@@ -8,7 +8,6 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadPodTable, showAuditModal, resubmitPod, showPodModal } from
   'common/reducers/trackingLandPod';
 import PodAuditModal from './modals/pod-audit';
-import PreviewPanel from '../../shipment/modals/preview-panel';
 import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
@@ -207,7 +206,6 @@ export default class LandStatusList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel stage="pod" />
         <PodAuditModal />
         <PodModal onOK={this.handleTableLoad} />
       </div>

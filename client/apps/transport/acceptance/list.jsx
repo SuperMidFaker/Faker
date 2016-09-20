@@ -423,30 +423,30 @@ export default class AcceptList extends React.Component {
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </header>
-      <div className="main-content" key="main">
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        <div className="page-body">
-          <div className="panel-header">
-            <NavLink to="/transport/shipment/new">
-              <Button type="primary" icon="plus-circle-o">
-                {this.msg('shipmtCreate')}
-              </Button>
-            </NavLink>
-          </div>
-          <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2280 }}
-            />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            {btns}
-            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+        <div className="main-content" key="main">
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          <div className="page-body">
+            <div className="panel-header">
+              <NavLink to="/transport/shipment/new">
+                <Button type="primary" icon="plus-circle-o">
+                  {this.msg('shipmtCreate')}
+                </Button>
+              </NavLink>
+            </div>
+            <div className="panel-body table-panel">
+              <Table rowSelection={rowSelection} columns={columns} loading={loading}
+                dataSource={this.dataSource} scroll={{ x: 2280 }}
+              />
+            </div>
+            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              {btns}
+              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+            </div>
           </div>
         </div>
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
         <PreviewPanel stage="acceptance" />
-      </div>
       </QueueAnim>
     );
   }

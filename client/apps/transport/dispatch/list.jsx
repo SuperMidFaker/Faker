@@ -1050,7 +1050,8 @@ export default class DispatchList extends React.Component {
               <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
             </div>
           </div>
-          <PreviewPanel stage="dispatch" />
+        </div>
+        <PreviewPanel stage="dispatch" />
           <DispatchDock key="dispDock"
             show={this.props.dispDockShow}
             shipmts={this.props.shipmts}
@@ -1065,7 +1066,6 @@ export default class DispatchList extends React.Component {
             onClose={this.handleSegmentDockClose}
           />
           <RevokejectModal reload={this.handleTableLoad} />
-        </div>
       </QueueAnim>
     );
   }

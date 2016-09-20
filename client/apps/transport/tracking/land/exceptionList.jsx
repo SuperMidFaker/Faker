@@ -9,7 +9,6 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadExcpShipments, showExcpModal } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
-import PreviewPanel from '../../shipment/modals/preview-panel';
 import ExcpEventsModal from './modals/excpEventsModal';
 import ExceptionListPopover from './modals/exception-list-popover';
 import { renderConsignLoc } from '../../common/consignLocation';
@@ -365,7 +364,6 @@ export default class LandStatusList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel stage="exception" />
         <ExcpEventsModal />
       </div>
     );
