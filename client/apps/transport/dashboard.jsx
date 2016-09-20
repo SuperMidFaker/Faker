@@ -5,7 +5,8 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
-import { Card, DatePicker, Row, Col, Table } from 'antd';
+import { Card, DatePicker, Col, Table } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
 import './index.less';
@@ -128,15 +129,15 @@ export default class Dashboard extends React.Component {
     }];
 
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <span>{this.msg('transportDashboard')}</span>
         </header>
-        <div className="main-content">
-          <div className="page-body" style={{ padding: '24px' }}>
+        <div className="main-content" key="main">
+          <div className="page-body" style={{ padding: 16 }} delay={500}>
             <Card title="活动简报" extra={datePicker}>
-              <Row type="flex" justify="space-around" align="middle">
-                <Col span={4} className="stats-data">
+              <QueueAnim type={['right', 'left']} delay={500} className="ant-row-flex ant-row-flex-space-around ant-row-flex-middle">
+                <Col span={4} className="stats-data" key="a">
                     <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
@@ -147,7 +148,7 @@ export default class Dashboard extends React.Component {
                       <div style={rightBottom}>{this.msg('accepted')}</div>
                     </div>
                 </Col>
-                <Col span={4} className="stats-data">
+                <Col span={4} className="stats-data" key="b">
                     <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
@@ -158,7 +159,7 @@ export default class Dashboard extends React.Component {
                       <div style={rightBottom}>{this.msg('sent')}</div>
                     </div>
                 </Col>
-                <Col span={4} className="stats-data">
+                <Col span={4} className="stats-data" key="c">
                     <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
@@ -169,7 +170,7 @@ export default class Dashboard extends React.Component {
                       <div style={rightBottom}>{this.msg('pickedup')}</div>
                     </div>
                 </Col>
-                <Col span={4} className="stats-data">
+                <Col span={4} className="stats-data" key="d">
                     <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
@@ -180,7 +181,7 @@ export default class Dashboard extends React.Component {
                       <div style={rightBottom}>{this.msg('delivered')}</div>
                     </div>
                 </Col>
-                <Col span={4} className="stats-data">
+                <Col span={4} className="stats-data" key="e">
                     <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
                     <div style={right}>
                       <div style={rightTop}>
@@ -191,18 +192,14 @@ export default class Dashboard extends React.Component {
                       <div style={rightBottom}>{this.msg('completed')}</div>
                     </div>
                 </Col>
-              </Row>
+                </QueueAnim>
             </Card>
-            <Row style={{ marginTop: 24 }}>
-              <Col span={24}>
-                <Card title="待处理" bodyStyle={{ padding: 16 }}>
-                  <Table size="small" columns={columns} dataSource={data} pagination={false} />
-                </Card>
-              </Col>
-            </Row>
+            <Card title="待处理" bodyStyle={{ marginTop: 16 }}>
+              <Table size="small" columns={columns} dataSource={data} pagination={false} />
+            </Card>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

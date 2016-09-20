@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import moment from 'moment';
@@ -439,8 +440,8 @@ export default class DelegationList extends Component {
     });
     // todo expandedRow fixed
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
@@ -453,7 +454,7 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
         </header>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
               <Button type="primary" onClick={this.handleCreateBtnClick}
@@ -474,7 +475,7 @@ export default class DelegationList extends Component {
           <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
           <PreviewPanel />
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

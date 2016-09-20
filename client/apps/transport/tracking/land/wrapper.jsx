@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Radio } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
@@ -132,8 +133,9 @@ export default class TrackingLandWrapper extends React.Component {
   render() {
     const { radioValue, searchInput } = this.state;
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
+            { opacity: [1, 0], translateY: [0, -50] }]}>
+        <header className="top-bar" key="header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
               value={searchInput}
@@ -161,11 +163,11 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
         </header>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           {this.props.children}
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }
