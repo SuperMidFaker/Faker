@@ -12,7 +12,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { isLoaded } from 'client/common/redux-actions';
-import { ACCOUNT_STATUS, TENANT_ROLE } from 'common/constants';
+import { ACCOUNT_STATUS, PRESET_TENANT_ROLE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -252,14 +252,16 @@ export default class PersonnelSetting extends React.Component {
       width: 100,
       filters: [{
         text: formatContainerMsg(intl, 'tenantManager'),
-        value: TENANT_ROLE.manager.name,
+        value: PRESET_TENANT_ROLE.manager.name,
       }, {
         text: formatContainerMsg(intl, 'tenantMember'),
-        value: TENANT_ROLE.member.name,
+        value: PRESET_TENANT_ROLE.member.name,
       }],
       render: (o, record) => this.renderColumnText(
         record.status,
-        formatContainerMsg(intl, TENANT_ROLE[record.role].text)
+        PRESET_TENANT_ROLE[record.role] ?
+        formatContainerMsg(intl, PRESET_TENANT_ROLE[record.role].text)
+        : record.role
       ),
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
@@ -277,7 +279,7 @@ export default class PersonnelSetting extends React.Component {
       title: formatContainerMsg(intl, 'opColumn'),
       width: 150,
       render: (text, record, index) => {
-        if (record.role === TENANT_ROLE.owner.name) {
+        if (record.role === PRESET_TENANT_ROLE.owner.name) {
           return (
             <span>
               <NavLink to={`/corp/personnel/edit/${record.key}`}>

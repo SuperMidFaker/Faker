@@ -1,6 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
-import { CHINA_CODE, TENANT_ROLE } from '../constants';
+import { CHINA_CODE, PRESET_TENANT_ROLE } from '../constants';
 import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValueC } from
 './form-common';
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
@@ -81,7 +81,7 @@ export default function reducer(state = initialState, action) {
     }
     // organization
     case PERSONNEL_EDIT_SUCCEED:
-      if (action.data.personnel.role === TENANT_ROLE.owner.name) {
+      if (action.data.personnel.role === PRESET_TENANT_ROLE.owner.name) {
         // 修改租户拥有者需重新加载租户列表
         return { ...state, loaded: false, formData: initialState.formData };
       } else {

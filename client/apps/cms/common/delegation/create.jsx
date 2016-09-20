@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Popconfirm, message } from 'antd';
+import { Form, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from './forms/basicForm';
@@ -31,7 +31,7 @@ const formatMsg = format(messages);
   }
   dispatch(setNavTitle({
     depth: 3,
-    text: '新建委托',
+    text: '',
     moduleName: 'clearance',
     withModuleLayout: false,
     goBackFn: () => router.goBack(),
@@ -107,31 +107,31 @@ export default class AcceptanceCreate extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <div className="main-content">
-        <div className="page-body">
-          <Form horizontal>
-            <div className="panel-body">
-              <Col sm={18} style={{ padding: '16px 8px 0 16px' }}>
-                <BasicForm form={form} ieType={type} partnershipType="CCB" />
-              </Col>
-              <Col sm={6} style={{ padding: '16px 16px 0 8px' }}>
-                <UploadGroup onFileListUpdate={this.handleUploadFiles} />
-              </Col>
-              <Col sm={24} style={{ padding: '0 16px' }}>
-                <SubForm form={form} ietype={type} />
-              </Col>
-            </div>
-            <div style={{ padding: '16px' }}>
-              <Button size="large" type="primary" style={{ marginRight: 20 }}
-                loading={submitting} onClick={this.handleSaveBtnClick}
-              >
+      <div>
+        <header className="top-bar">
+          <div className="tools">
+            <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
-              </Button>
-              <Popconfirm title={this.msg('delgSaveConfirm')} onConfirm={this.handleSaveAccept}>
-                <Button size="large" loading={submitting}>{this.msg('acceptNow')}</Button>
-              </Popconfirm>
-            </div>
-          </Form>
+            </Button>
+          </div>
+          <span>新建委托</span>
+        </header>
+        <div className="main-content">
+          <div className="page-body">
+            <Form horizontal>
+              <div className="panel-body">
+                <Col sm={18} style={{ padding: '16px 8px 0 16px' }}>
+                  <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                </Col>
+                <Col sm={6} style={{ padding: '16px 16px 0 8px' }}>
+                  <UploadGroup onFileListUpdate={this.handleUploadFiles} />
+                </Col>
+                <Col sm={24} style={{ padding: '0 16px' }}>
+                  <SubForm form={form} ietype={type} />
+                </Col>
+              </div>
+            </Form>
+          </div>
         </div>
       </div>
     );

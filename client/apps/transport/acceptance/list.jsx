@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Radio, message, Popconfirm } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -376,7 +377,7 @@ export default class AcceptList extends React.Component {
       }];
       btns = (
         <div style={{ display: 'inline-block' }}>
-          <Button type="primary" onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+          <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
           批量接单
           </Button>
         </div>
@@ -404,8 +405,8 @@ export default class AcceptList extends React.Component {
       }];
     }
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <span />
@@ -422,31 +423,30 @@ export default class AcceptList extends React.Component {
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </header>
-      <div className="main-content">
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        <div className="page-body">
-          <div className="panel-header">
-            <NavLink to="/transport/shipment/new">
-              <Button type="primary" icon="plus-circle-o">
-                {this.msg('shipmtCreate')}
-              </Button>
-            </NavLink>
-          </div>
-          <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2280 }}
-            />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            {btns}
-            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
+        <div className="main-content" key="main">
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          <div className="page-body">
+            <div className="panel-header">
+              <NavLink to="/transport/shipment/new">
+                <Button type="primary" icon="plus-circle-o">
+                  {this.msg('shipmtCreate')}
+                </Button>
+              </NavLink>
+              <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                {btns}
+              </span>
+            </div>
+            <div className="panel-body table-panel">
+              <Table rowSelection={rowSelection} columns={columns} loading={loading}
+                dataSource={this.dataSource} scroll={{ x: 2280 }}
+              />
+            </div>
           </div>
         </div>
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
         <PreviewPanel stage="acceptance" />
-      </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

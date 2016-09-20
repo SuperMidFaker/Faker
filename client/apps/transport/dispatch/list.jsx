@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -1001,20 +1002,20 @@ export default class DispatchList extends React.Component {
     let btns = '';
     if (status === 'waiting') {
       btns = (
-        <div style={{ float: 'left' }}>
-          <Button type="primary" size="large" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
+        <div style={{ display: 'inline-block' }}>
+          <Button onClick={() => { this.handleBatchDockShow('dispatch'); }}>
           {this.msg('btnTextBatchDispatch')}
           </Button>
-          <span className="ant-divider" style={{ width: '0px' }} />
-          <Button type="ghost" size="large" onClick={() => this.handleBatchDockShow()}>
+          <span />
+          <Button onClick={() => this.handleBatchDockShow()}>
           {this.msg('btnTextBatchSegment')}
           </Button>
         </div>
       );
     } else if (status === 'dispatching') {
       btns = (
-        <div style={{ float: 'left' }}>
-          <Button type="primary" size="large" onClick={() => this.handleShipmtBatchSend()}>
+        <div style={{ display: 'inline-block' }}>
+          <Button onClick={() => this.handleShipmtBatchSend()}>
           {this.msg('btnTextBatchSend')}
           </Button>
         </div>
@@ -1022,8 +1023,8 @@ export default class DispatchList extends React.Component {
     }
 
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             <span />
@@ -1036,36 +1037,37 @@ export default class DispatchList extends React.Component {
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
         </header>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">
+            <div className="panel-header">
+              <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                {btns}
+              </span>
+            </div>
             <div className="panel-body table-panel">
               <div className="dispatch-table">
                 {tb}
               </div>
             </div>
-            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              {btns}
-              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
-            </div>
           </div>
-          <PreviewPanel stage="dispatch" />
-          <DispatchDock key="dispDock"
+        </div>
+        <PreviewPanel stage="dispatch" />
+          <DispatchDock
             show={this.props.dispDockShow}
             shipmts={this.props.shipmts}
             msg={this.msgWrapper}
             onClose={this.handleDispatchDockClose}
           />
 
-          <SegmentDock key="segDock"
+          <SegmentDock
             show={this.props.segDockShow}
             shipmts={this.props.shipmts}
             msg={this.msgWrapper}
             onClose={this.handleSegmentDockClose}
           />
           <RevokejectModal reload={this.handleTableLoad} />
-        </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

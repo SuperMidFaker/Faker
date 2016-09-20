@@ -37,7 +37,7 @@ import * as ImportDocs from './cms/import/docs';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
 import * as CMSManage from './cms/manage';
-import * as CMSPrice from './cms/price';
+import * as CMSQuote from './cms/quote';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -183,9 +183,9 @@ export default(store, cookie) => {
             </Route>
             <Route path="expense">
             </Route>
-            <Route path="price">
-              <IndexRoute component={CMSPrice.List} />
-              <Route path="create" component={CMSPrice.Create} />
+            <Route path="quote">
+              <IndexRoute component={CMSQuote.List} />
+              <Route path="create" component={CMSQuote.Create} />
             </Route>
             <Route path="relation">
               <IndexRoute component={CMSManage.Manage} />

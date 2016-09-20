@@ -10,20 +10,7 @@ const ACCOUNT_STATUS = {
     text: 'accountDisabled',
   },
 };
-const TENANT_ROLE = {
-  owner: {
-    name: 'owner',
-    text: 'tenantOwner',
-  },
-  manager: {
-    name: 'manager',
-    text: 'tenantManager',
-  },
-  member: {
-    name: 'member',
-    text: 'tenantMember',
-  },
-};
+
 const TENANT_ASPECT = {
   BO: 0, // 企业主
   SP: 1, // 服务商
@@ -243,9 +230,6 @@ export const PRESET_TRANSMODES = {
   ctn: 'CTN', // 集装箱
 };
 
-const ENTERPRISE = 'enterprise';
-const BRANCH = 'branch';
-const PERSONNEL = 'personnel';
 const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
 
@@ -264,20 +248,14 @@ const I_E_TYPES = [
 
 const DECL_I_TYPE = [
   { key: '0000', value: '口岸进口' },
-  { key: '0002', value: '进境' },
   { key: '0100', value: '保税区进口' },
   { key: '0102', value: '保税区进境备案' },
-  { key: '0200', value: '寄售维修进口' },
-  { key: '0202', value: '寄售维修进境备案' },
 ];
 
 const DECL_E_TYPE = [
   { key: '0001', value: '口岸出口' },
   { key: '0101', value: '保税区出口' },
-  { key: '0103', value: '出境' },
-  { key: '0102', value: '保税区出境备案' },
-  { key: '0201', value: '寄售维修出口' },
-  { key: '0203', value: '寄售维修出境备案' },
+  { key: '0103', value: '保税区出境备案' },
 ];
 
 const CMS_DELG_STATUS = [
@@ -286,6 +264,26 @@ const CMS_DELG_STATUS = [
   { value: 2, text: '制单中' },
   { value: 3, text: '已申报' },
   { value: 4, text: '已放行' },
+];
+
+export const FEE_STYLE = [
+  { value: 0, text: '服务费' },
+  { value: 1, text: '代垫费' },
+];
+
+export const CHARGE_MODE = [
+  { value: 0, text: '按Shipment' },
+  { value: 1, text: '按报关单' },
+  { value: 2, text: '按品名' },
+  { value: 3, text: '按料号' },
+  { value: 4, text: '按货值' },
+  { value: 5, text: '按实收取' },
+];
+
+export const TRANS_MODE = [
+  { value: '2', text: '海运' },
+  { value: '5', text: '空运' },
+  { value: '9', text: '其他' },
 ];
 
 export const CMS_SUP_STATUS = [
@@ -348,7 +346,6 @@ const TAX_STATUS = {
 };
 
 export {
-  TENANT_ROLE,
   TENANT_LEVEL,
   TENANT_ASPECT,
   INVITATION_STATUS,
@@ -357,9 +354,6 @@ export {
   PARTNER_TENANT_TYPE,
   CHINA_CODE,
   ACCOUNT_STATUS,
-  ENTERPRISE,
-  BRANCH,
-  PERSONNEL,
   WRAP_TYPE,
   SHIPMENT_EFFECTIVES,
   SHIPMENT_SOURCE,
@@ -385,3 +379,4 @@ export {
 };
 
 export * from './module';
+export * from './privilege';

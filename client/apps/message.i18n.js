@@ -21,6 +21,14 @@ const messages = defineMessages({
     id: 'container.tenant.role.member',
     defaultMessage: '成员',
   },
+  tenantAnalyst: {
+    id: 'container.tenant.role.analyst',
+    defaultMessage: '分析师',
+  },
+  tenantBilling: {
+    id: 'container.tenant.role.billing',
+    defaultMessage: '结算人员',
+  },
   opColumn: {
     id: 'container.table.opColumn',
     defaultMessage: '操作',
