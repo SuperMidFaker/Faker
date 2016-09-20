@@ -18,7 +18,6 @@ import ExcpEventsModal from './modals/excpEventsModal';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
 import PodModal from './modals/pod-submit';
-import PreviewPanel from '../../shipment/modals/preview-panel';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -353,7 +352,6 @@ export default class LandStatusList extends React.Component {
             <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
-        <PreviewPanel stage="tracking" />
         <VehicleModal onOK={this.handleTableLoad} />
         <PickupDeliverModal onOK={this.handleTableLoad} />
         <LocationModal onOK={this.handleTableLoad} />

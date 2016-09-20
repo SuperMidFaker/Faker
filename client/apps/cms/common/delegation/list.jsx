@@ -471,10 +471,10 @@ export default class DelegationList extends Component {
               />
             </div>
           </div>
-          <BillModal ietype={this.props.ietype} />
+        </div>
+        <BillModal ietype={this.props.ietype} />
           <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
           <PreviewPanel />
-        </div>
       </QueueAnim>
     );
   }

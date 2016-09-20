@@ -5,6 +5,7 @@ import { Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
+import PreviewPanel from '../../shipment/modals/preview-panel';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
 import { changePodFilter } from 'common/reducers/trackingLandPod';
 import { changeExcpFilter } from 'common/reducers/trackingLandException';
@@ -167,6 +168,7 @@ export default class TrackingLandWrapper extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           {this.props.children}
         </div>
+        <PreviewPanel stage="tracking" />
       </QueueAnim>
     );
   }
