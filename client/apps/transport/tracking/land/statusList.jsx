@@ -314,13 +314,13 @@ export default class LandStatusList extends React.Component {
     if (type === 'dispatched') {
       buttons = (
         <div style={{ display: 'inline-block' }}>
-          <Button type="primary" onClick={this.handleShowBatchPickModal}>批量提货</Button>
+          <Button onClick={this.handleShowBatchPickModal}>批量提货</Button>
         </div>
       );
     } else if (type === 'intransit') {
       buttons = (
         <div style={{ display: 'inline-block' }}>
-          <Button type="primary" onClick={this.handleShowBatchDeliverModal}>批量交货</Button>
+          <Button onClick={this.handleShowBatchDeliverModal}>批量交货</Button>
         </div>
       );
     }
@@ -341,15 +341,14 @@ export default class LandStatusList extends React.Component {
         <div className="page-body">
           <div className="panel-header">
             <ExportExcel />
+            <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            {this.renderBatchOperationButtons()}
+            </span>
           </div>
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2000 }}
             />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            {this.renderBatchOperationButtons()}
-            <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
           </div>
         </div>
         <VehicleModal onOK={this.handleTableLoad} />
