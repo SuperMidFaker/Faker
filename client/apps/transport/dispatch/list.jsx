@@ -1052,14 +1052,14 @@ export default class DispatchList extends React.Component {
           </div>
         </div>
         <PreviewPanel stage="dispatch" />
-          <DispatchDock key="dispDock"
+          <DispatchDock
             show={this.props.dispDockShow}
             shipmts={this.props.shipmts}
             msg={this.msgWrapper}
             onClose={this.handleDispatchDockClose}
           />
 
-          <SegmentDock key="segDock"
+          <SegmentDock
             show={this.props.segDockShow}
             shipmts={this.props.shipmts}
             msg={this.msgWrapper}
