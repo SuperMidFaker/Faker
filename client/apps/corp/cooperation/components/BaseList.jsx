@@ -4,6 +4,7 @@ import moment from 'moment';
 import { partnerTypes, tenantTypes } from '../util/dataMapping';
 import partnerModal from './partnerModal';
 import inviteModal from './inviteModal';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 
 const rowSelection = {
   onChange() {},
@@ -52,7 +53,9 @@ export default class BaseList extends Component {
               partnerId: record.id,
             };
             return (
-              <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
+              <PrivilegeCover module="corp" feature="partners" action="edit">
+                <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
+              </PrivilegeCover>
             );
           }
         } else {
@@ -160,22 +163,28 @@ export default class BaseList extends Component {
   renderEditAndStopOperations(itemInfo) {
     const { id, name, partnerCode } = itemInfo;
     return (
-      <span>
-        <a onClick={() => this.handleEditBtnClick(id, name, partnerCode)}>修改</a>
-        <span className="ant-divider"></span>
-        <a onClick={() => this.handleStopBtnClick(id)}>停用</a>
-      </span>
+      <PrivilegeCover module="corp" feature="partners" action="edit">
+        <span>
+          <a onClick={() => this.handleEditBtnClick(id, name, partnerCode)}>修改</a>
+          <span className="ant-divider" />
+          <a onClick={() => this.handleStopBtnClick(id)}>停用</a>
+        </span>
+      </PrivilegeCover>
     );
   }
   renderDeleteAndResumeOperations(itemInfo) {
     const { id } = itemInfo;
     return (
       <span>
-        <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(id)}>
-          <a>删除</a>
-        </Popconfirm>
-        <span className="ant-divider"></span>
-        <a onClick={() => this.handleResumeBtnClick(id)}>启用</a>
+        <PrivilegeCover module="corp" feature="partners" action="delete">
+          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(id)}>
+            <a>删除</a>
+          </Popconfirm>
+        </PrivilegeCover>
+        <span className="ant-divider" />
+        <PrivilegeCover module="corp" feature="partners" action="edit">
+          <a onClick={() => this.handleResumeBtnClick(id)}>启用</a>
+        </PrivilegeCover>
       </span>
     );
   }
@@ -193,7 +202,9 @@ export default class BaseList extends Component {
             <div className="tools">
               {header}
             </div>
-            <Button type="primary" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
+            <PrivilegeCover module="corp" feature="partners" action="create">
+              <Button type="primary" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
+            </PrivilegeCover>
           </div>
           <div className="panel-body table-panel">
             <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />

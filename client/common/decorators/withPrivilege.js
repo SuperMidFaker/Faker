@@ -22,7 +22,7 @@ export function hasPermission(privileges, { module, feature, action }) {
   }
 }
 
-export default function withPrivilege({ module, feature }) {
+export default function withPrivilege({ module, feature, actionFn }) {
   return (Wrapped) => {
     class WrappedComponent extends Component {
       static contextTypes = {
@@ -30,16 +30,18 @@ export default function withPrivilege({ module, feature }) {
         store: PropTypes.object.isRequired,
       }
       componentWillMount() {
+        const action = actionFn ? actionFn(this.props) : undefined;
         if (!hasPermission(
           this.context.store.getState().account.privileges,
-          { module, feature })) {
+          { module, feature, action })) {
           this.context.router.replace('/login');
         }
       }
       componentWillReceiveProps() {
+        const action = actionFn ? actionFn(this.props) : undefined;
         if (!hasPermission(
           this.context.store.getState().account.privileges,
-          { module, feature })) {
+          { module, feature, action })) {
           this.context.router.replace('/login');
         }
       }

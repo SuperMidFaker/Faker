@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { setNavTitle } from 'common/reducers/navbar';
 import { argumentContainer } from '../util';
 
 /**
@@ -14,16 +15,35 @@ export default function connectNav(navCallback) {
       }
       componentDidMount() {
         // todo change to object parameter
-        navCallback(
-          this.props, this.context.store.dispatch,
-          this.context.router, 'componentDidMount'
-        );
+        if (typeof navCallback === 'function') {
+          navCallback(
+            this.props, this.context.store.dispatch,
+            this.context.router, 'componentDidMount'
+          );
+        } else {
+          this.fireUpon(this.props, 'componentDidMount');
+        }
       }
       componentWillReceiveProps(nextProps) {
-        navCallback(
-          nextProps, this.context.store.dispatch,
-          this.context.router, 'componentWillReceiveProps'
-        );
+        if (typeof navCallback === 'function') {
+          navCallback(
+            nextProps, this.context.store.dispatch,
+            this.context.router, 'componentWillReceiveProps'
+          );
+        } else {
+          this.fireUpon(nextProps, 'componentWillReceiveProps');
+        }
+      }
+      fireUpon(props, cycle) {
+        const { depth, text, moduleName, lifecycle = 'componentDidMount' } = navCallback;
+        if (lifecycle === cycle) {
+          this.context.store.dispatch(setNavTitle({
+            depth,
+            text: typeof text === 'function' ? text(props) : text,
+            moduleName,
+            goBackFn: depth === 3 ? () => this.context.router.goBack() : undefined,
+          }));
+        }
       }
       render() {
         return <Wrapped {...this.props} />;

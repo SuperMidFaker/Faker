@@ -133,7 +133,6 @@
   "personnel.edit.password.message": "at least 6 characters",
   "personnel.edit.phone.placeholder": "used as login account",
   "personnel.edit.email.placeholder": "can be used as login account after binding",
-  "personnel.edit.label.isAdmin": "Administrator",
   "personnel.edit.nonTenant": "No tenant is selected,unable to edit",
   "container.slogan": "Logistics Cloud Platform For Global Trade",
   "container.applications": "Apps",

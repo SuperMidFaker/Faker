@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { loadPartners, setMenuItemKey } from 'common/reducers/partner';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadPartners(cookie, {
@@ -13,16 +13,16 @@ function fetchData({ state, dispatch, cookie }) {
 }
 
 @connectFetch()(fetchData)
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    text: '协作网络',
-    muduleName: 'corp',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connect(state => ({
+  selectedMenuItemKey: state.partner.selectedMenuItemKey,
+}),
+  { setMenuItemKey })
+@connectNav({
+  depth: 2,
+  text: '协作网络',
+  muduleName: 'corp',
 })
-@connect(state => ({ selectedMenuItemKey: state.partner.selectedMenuItemKey }), { setMenuItemKey })
+@withPrivilege({ module: 'corp', feature: 'partners' })
 export default class MainContainer extends Component {
   static propsTypes = {
     selectedMenuItemKey: PropTypes.string.isRequired,   // 当前选中的Menu Item Key

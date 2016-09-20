@@ -15,6 +15,7 @@ import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES }
   from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -60,6 +61,7 @@ function fetchData({ state, dispatch, cookie }) {
     goBackFn: '',
   }));
 })
+@withPrivilege({ module: 'corp', feature: 'organization' })
 export default class CorpList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -204,11 +206,13 @@ export default class CorpList extends React.Component {
         return (
           <span>
             {modComp}
-            <Button shape="circle" type="primary" title={formatGlobalMsg(intl, 'edit')}
-              onClick={() => this.handleEnabledAppEdit(record, index)} size="small"
-            >
-              <Icon type="edit" />
-            </Button>
+            <PrivilegeCover module="corp" feature="organization" action="edit">
+              <Button shape="circle" type="primary" title={formatGlobalMsg(intl, 'edit')}
+                onClick={() => this.handleEnabledAppEdit(record, index)} size="small"
+              >
+                <Icon type="edit" />
+              </Button>
+            </PrivilegeCover>
           </span>);
       },
     }, {
@@ -227,25 +231,31 @@ export default class CorpList extends React.Component {
       render: (text, record, index) => {
         if (record.status === ACCOUNT_STATUS.normal.name) {
           return (
-            <span>
-              <NavLink to={`/corp/organization/edit/${record.key}`}>
-              {formatGlobalMsg(intl, 'modify')}
-              </NavLink>
-              <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-              {formatContainerMsg(intl, 'disableOp')}
-              </a>
-            </span>);
+            <PrivilegeCover module="corp" feature="organization" action="edit">
+              <span>
+                <NavLink to={`/corp/organization/edit/${record.key}`}>
+                {formatGlobalMsg(intl, 'modify')}
+                </NavLink>
+                <span className="ant-divider" />
+                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                {formatContainerMsg(intl, 'disableOp')}
+                </a>
+              </span>
+            </PrivilegeCover>);
         } else if (record.status === ACCOUNT_STATUS.blocked.name) {
           return (
             <span>
-              <a role="button" onClick={() => this.handleCorpDel(record.key)}>
-              {formatGlobalMsg(intl, 'delete')}
-              </a>
-              <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-              {formatContainerMsg(intl, 'enableOp')}
-              </a>
+              <PrivilegeCover module="corp" feature="organization" action="delete">
+                <a role="button" onClick={() => this.handleCorpDel(record.key)}>
+                {formatGlobalMsg(intl, 'delete')}
+                </a>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="corp" feature="organization" action="edit">
+                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                {formatContainerMsg(intl, 'enableOp')}
+                </a>
+              </PrivilegeCover>
             </span>);
         } else {
           return <span />;
@@ -261,11 +271,13 @@ export default class CorpList extends React.Component {
             <span style={{ fontSize: 20, fontWeight: 400, color: '#333' }}>/</span>
             <span style={{ fontSize: 20, fontWeight: 700, color: '#333' }}>10</span>
           </div>
-          <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
-            onClick={() => this.handleNavigationTo('/corp/organization/new')} icon="plus-circle-o"
-          >
+          <PrivilegeCover module="corp" feature="organization" action="create">
+            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
+              onClick={() => this.handleNavigationTo('/corp/organization/new')} icon="plus-circle-o"
+            >
               {formatGlobalMsg(intl, 'createNew')}
-          </Button>
+            </Button>
+          </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />

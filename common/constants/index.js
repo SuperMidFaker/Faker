@@ -379,4 +379,4 @@ export {
 };
 
 export * from './module';
-export * from './privilege';
+export * from './role';

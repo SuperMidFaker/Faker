@@ -69,10 +69,6 @@ const messages = defineMessages({
     id: 'personnel.edit.email.placeholder',
     defaultMessage: '绑定后可作登录帐号使用',
   },
-  isAdmin: {
-    id: 'personnel.edit.label.isAdmin',
-    defaultMessage: '是否管理员',
-  },
   nonTenantEdit: {
     id: 'personnel.edit.nonTenant',
     defaultMessage: '未选择所属租户,无法修改',

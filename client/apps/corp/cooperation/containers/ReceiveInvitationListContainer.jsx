@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { mapPartnerships } from '../util/dataMapping';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'common/reducers/invitation';
@@ -79,11 +80,13 @@ export default class ReceiveInvitationList extends Component {
       render: (_, record) => {
         if (record.status === 0) {
           return (
-            <span>
-              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}>接受</a>
-              <span className="ant-divider"></span>
-              <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}>拒绝</a>
-            </span>
+            <PrivilegeCover module="corp" feature="partners" action="edit">
+              <span>
+                <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}>接受</a>
+                <span className="ant-divider"></span>
+                <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}>拒绝</a>
+              </span>
+            </PrivilegeCover>
           );
         } else {
           return null;

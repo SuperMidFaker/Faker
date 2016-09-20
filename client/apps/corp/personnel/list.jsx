@@ -9,7 +9,7 @@ import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { isLoaded } from 'client/common/redux-actions';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE } from 'common/constants';
@@ -17,6 +17,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
@@ -41,18 +42,6 @@ function fetchData({ state, dispatch, cookie }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    text: formatContainerMsg(props.intl, 'personnelUser'),
-    moduleName: 'corp',
-    withModuleLayout: false,
-    goBackFn: '',
-  }));
-})
 @connect(
   state => ({
     code: state.account.code,
@@ -63,6 +52,13 @@ function fetchData({ state, dispatch, cookie }) {
     loading: state.personnel.loading,
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
+@connectNav({
+  depth: 2,
+  text: props => formatContainerMsg(props.intl, 'personnelUser'),
+  moduleName: 'corp',
+  lifecycle: 'componentDidMount',
+})
+@withPrivilege({ module: 'corp', feature: 'personnel' })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -259,8 +255,10 @@ export default class PersonnelSetting extends React.Component {
       }],
       render: (o, record) => this.renderColumnText(
         record.status,
-        PRESET_TENANT_ROLE[record.role] ?
-        formatContainerMsg(intl, PRESET_TENANT_ROLE[record.role].text)
+        Object.keys(PRESET_TENANT_ROLE).filter(
+          trk => PRESET_TENANT_ROLE[trk].name === record.role
+        ).length > 0 ?
+        formatContainerMsg(intl, record.role)
         : record.role
       ),
     }, {
@@ -282,33 +280,41 @@ export default class PersonnelSetting extends React.Component {
         if (record.role === PRESET_TENANT_ROLE.owner.name) {
           return (
             <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>
-              {formatGlobalMsg(intl, 'modify')}
-              </NavLink>
+              <PrivilegeCover module="corp" feature="personnel" action="edit">
+                <NavLink to={`/corp/personnel/edit/${record.key}`}>
+                {formatGlobalMsg(intl, 'modify')}
+                </NavLink>
+              </PrivilegeCover>
             </span>
           );
         } else if (record.status === ACCOUNT_STATUS.normal.id) {
           return (
-            <span>
-              <NavLink to={`/corp/personnel/edit/${record.key}`}>
-              {formatGlobalMsg(intl, 'modify')}
-              </NavLink>
-              <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-              {formatContainerMsg(intl, 'disableOp')}
-              </a>
-            </span>
+            <PrivilegeCover module="corp" feature="personnel" action="edit">
+              <span>
+                <NavLink to={`/corp/personnel/edit/${record.key}`}>
+                {formatGlobalMsg(intl, 'modify')}
+                </NavLink>
+                <span className="ant-divider" />
+                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                {formatContainerMsg(intl, 'disableOp')}
+                </a>
+              </span>
+            </PrivilegeCover>
           );
         } else if (record.status === ACCOUNT_STATUS.blocked.id) {
           return (
             <span>
-              <a role="button" onClick={() => this.handlePersonnelDel(record)}>
-              {formatGlobalMsg(intl, 'delete')}
-              </a>
-              <span className="ant-divider"></span>
-              <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-              {formatContainerMsg(intl, 'enableOp')}
-              </a>
+              <PrivilegeCover module="corp" feature="personnel" action="delete">
+                <a role="button" onClick={() => this.handlePersonnelDel(record)}>
+                {formatGlobalMsg(intl, 'delete')}
+                </a>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="corp" feature="personnel" action="edit">
+                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                {formatContainerMsg(intl, 'enableOp')}
+                </a>
+              </PrivilegeCover>
             </span>
           );
         } else {
@@ -322,7 +328,6 @@ export default class PersonnelSetting extends React.Component {
           <div className="tools">
             <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span></span>
         </header>
         <div className="main-content">
           <div className="page-body">
@@ -336,9 +341,11 @@ export default class PersonnelSetting extends React.Component {
                   }
                 </Select>
               </div>
-              <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
-                {msg('newUser')}
-              </Button>
+              <PrivilegeCover module="corp" feature="personnel" action="create">
+                <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
+                  {msg('newUser')}
+                </Button>
+              </PrivilegeCover>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />

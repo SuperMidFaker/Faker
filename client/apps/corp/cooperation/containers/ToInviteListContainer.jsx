@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import inviteModal from '../components/inviteModal';
 import { mapPartnerships } from '../util/dataMapping';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -70,7 +71,9 @@ export default class ToInviteList extends Component {
           partnerId: record.partner_id,
         };
         return (
-          <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
+          <PrivilegeCover module="corp" feature="partners" action="edit">
+            <a onClick={() => this.handleInviteBtnClick(inviteeInfo)}>邀请加入</a>
+          </PrivilegeCover>
         );
       },
     },

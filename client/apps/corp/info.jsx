@@ -36,6 +36,12 @@ function fetchData({ state, dispatch, cookie }) {
 
 @connectFetch()(fetchData)
 @injectIntl
+@withPrivilege({ module: 'corp', feature: 'info' })
+@connect(
+  state => ({
+    formData: state.corps.formData,
+  }),
+  { edit, checkCorpDomain })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
@@ -48,12 +54,6 @@ function fetchData({ state, dispatch, cookie }) {
     goBackFn: '',
   }));
 })
-@withPrivilege({ module: 'corp', feature: 'info' })
-@connect(
-  state => ({
-    formData: state.corps.formData,
-  }),
-  { edit, checkCorpDomain })
 @Form.create()
 export default class CorpInfo extends React.Component {
   static propTypes = {
@@ -230,7 +230,7 @@ export default class CorpInfo extends React.Component {
               )}
             </Col>
           </Row>
-          <PrivilegeCover module="corp" feature="info" action="save">
+          <PrivilegeCover module="corp" feature="info" action="edit">
             <Row>
               <Col span="21" offset="3">
                 <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
@@ -276,7 +276,7 @@ export default class CorpInfo extends React.Component {
               </FormItem>
             </Col>
           </Row>
-          <PrivilegeCover module="corp" feature="info" action="save">
+          <PrivilegeCover module="corp" feature="info" action="edit">
             <Row>
               <Col span="21" offset="3">
                 <Button type="primary" size="large" htmlType="submit"
