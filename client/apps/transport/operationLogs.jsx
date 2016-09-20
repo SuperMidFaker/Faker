@@ -6,7 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
-import { Card, Tag } from 'antd';
+import { Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { loadShipmentLogs } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
@@ -42,10 +42,11 @@ function fetchData({ state, dispatch, cookie, location }) {
     return;
   }
   dispatch(setNavTitle({
-    depth: 2,
+    depth: 3,
+    text: formatMsg(props.intl, 'transportDashboard'),
     moduleName: 'transport',
     withModuleLayout: false,
-    goBackFn: null,
+    goBackFn: () => router.goBack(),
   }));
 })
 
@@ -175,11 +176,14 @@ export default class Dashboard extends React.Component {
 
     return (
       <div>
+        <header className="top-bar" key="header">
+          <span>{this.msg(type)}</span>
+        </header>
         <div className="main-content">
           <div className="page-body">
-            <Card title={this.msg(type)}>
-              <Table size="small" columns={columns} dataSource={dataSource} rowKey="id" />
-            </Card>
+            <div className="panel-body table-panel">
+              <Table columns={columns} dataSource={dataSource} rowKey="id" />
+            </div>
           </div>
         </div>
       </div>

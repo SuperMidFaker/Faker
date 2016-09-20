@@ -1002,20 +1002,20 @@ export default class DispatchList extends React.Component {
     let btns = '';
     if (status === 'waiting') {
       btns = (
-        <div style={{ float: 'left' }}>
-          <Button type="primary" size="large" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
+        <div style={{ display: 'inline-block' }}>
+          <Button onClick={() => { this.handleBatchDockShow('dispatch'); }}>
           {this.msg('btnTextBatchDispatch')}
           </Button>
-          <span className="ant-divider" style={{ width: '0px' }} />
-          <Button type="ghost" size="large" onClick={() => this.handleBatchDockShow()}>
+          <span />
+          <Button onClick={() => this.handleBatchDockShow()}>
           {this.msg('btnTextBatchSegment')}
           </Button>
         </div>
       );
     } else if (status === 'dispatching') {
       btns = (
-        <div style={{ float: 'left' }}>
-          <Button type="primary" size="large" onClick={() => this.handleShipmtBatchSend()}>
+        <div style={{ display: 'inline-block' }}>
+          <Button onClick={() => this.handleShipmtBatchSend()}>
           {this.msg('btnTextBatchSend')}
           </Button>
         </div>
@@ -1040,14 +1040,15 @@ export default class DispatchList extends React.Component {
         <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">
+            <div className="panel-header">
+              <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                {btns}
+              </span>
+            </div>
             <div className="panel-body table-panel">
               <div className="dispatch-table">
                 {tb}
               </div>
-            </div>
-            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              {btns}
-              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
             </div>
           </div>
         </div>

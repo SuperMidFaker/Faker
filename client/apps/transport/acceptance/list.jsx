@@ -377,7 +377,7 @@ export default class AcceptList extends React.Component {
       }];
       btns = (
         <div style={{ display: 'inline-block' }}>
-          <Button type="primary" onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+          <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
           批量接单
           </Button>
         </div>
@@ -432,15 +432,14 @@ export default class AcceptList extends React.Component {
                   {this.msg('shipmtCreate')}
                 </Button>
               </NavLink>
+              <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                {btns}
+              </span>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
                 dataSource={this.dataSource} scroll={{ x: 2280 }}
               />
-            </div>
-            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              {btns}
-              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
             </div>
           </div>
         </div>
