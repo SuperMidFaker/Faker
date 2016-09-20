@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   corp: {
     id: 'container.corp',
-    defaultMessage: '企业',
+    defaultMessage: '管理',
   },
 });
 
