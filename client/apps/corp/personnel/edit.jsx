@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Form, Input, Row, Col, Switch, message } from 'antd';
+import { Button, Form, Input, Row, Col, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { isFormDataLoaded, loadForm, assignForm, clearForm, edit, submit } from
+import withPrivilege from 'client/common/decorators/withPrivilege';
+import { isFormDataLoaded, loadForm, assignForm, clearForm, edit, submit, loadRoles } from
 'common/reducers/personnel';
-import { setNavTitle } from 'common/reducers/navbar';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
 import { validatePhone } from 'common/validater';
 import { PRESET_TENANT_ROLE } from 'common/constants';
@@ -14,13 +14,16 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 function fetchData({ state, dispatch, cookie, params }) {
   const pid = parseInt(params.id, 10);
+  dispatch(loadRoles());
   if (pid) {
     if (!isFormDataLoaded(state.personnel, pid)) {
       return dispatch(loadForm(cookie, pid));
@@ -45,27 +48,33 @@ function goBack(router) {
     submitting: state.personnel.submitting,
     code: state.account.code,
     tenant: state.personnel.tenant,
+    roles: state.personnel.roles, // .filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name),
   }),
   { edit, submit, checkLoginName })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle === 'componentDidMount') {
-    return;
-  }
-  const isCreating = props.formData.key === null;
-  dispatch(setNavTitle({
-    depth: 3,
-    text: isCreating ? formatMsg(props.intl, 'newUser') :
-      `${formatMsg(props.intl, 'user')}${props.formData.name}`,
-    moduleName: 'corp',
-    goBackFn: () => goBack(router),
-    withModuleLayout: false,
-  }));
+@connectNav({
+  depth: 3,
+  text: (props) => {
+    return props.formData.key === null ?
+    formatMsg(props.intl, 'newUser') : props.formData.name;
+  },
+  moduleName: 'corp',
+  lifecycle: 'componentWillReceiveProps',
+})
+@withPrivilege({
+  module: 'corp', feature: 'personnel',
+  action: (props) => {
+    return props.formData.key === null ? 'create' : 'edit';
+  },
 })
 @Form.create()
 export default class CorpEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     selectedIndex: PropTypes.number.isRequired,
+    roles: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    })).isRequired,
     code: PropTypes.string.isRequired,
     tenant: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
@@ -88,9 +97,10 @@ export default class CorpEdit extends React.Component {
       goBack(this.context.router);
     }
   }
-  handleAdminCheck = (checked) => {
+  handleRoleSelect = (value) => {
+    const role = this.props.roles.filter(rl => rl.id === value)[0];
     this.setState({
-      role: checked ? PRESET_TENANT_ROLE.manager.name : PRESET_TENANT_ROLE.member.name,
+      role: role.name,
     });
   }
   handleSubmit = (ev) => {
@@ -132,7 +142,7 @@ export default class CorpEdit extends React.Component {
   render() {
     const {
       formData: { name, loginName, password, phone, email, position },
-      submitting, intl, form: { getFieldProps }, code,
+      submitting, intl, form: { getFieldProps }, code, roles,
     } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
@@ -187,16 +197,17 @@ export default class CorpEdit extends React.Component {
               )
             }
             {this.props.formData.role !== PRESET_TENANT_ROLE.owner.name &&
-            <FormItem label={msg('isAdmin')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />}
-                {...getFieldProps(
-                  'adminChecked', {
-                    valuePropName: 'checked',
-                    initialValue: this.props.formData.role === PRESET_TENANT_ROLE.manager.name,
-                    onChange: this.handleAdminCheck,
-                  })
-                }
-              />
+            <FormItem label={msg('role')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              <Select onSelect={this.handleRoleSelect} {...getFieldProps('role_id', {
+                initialValue: this.props.formData.role_id,
+                rules: [{ required: true, message: ' ', type: 'number' }],
+              })}>
+              {
+                roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
+                  role => <Option value={role.id} key={role.id}>{role.name}</Option>
+                )
+              }
+              </Select>
             </FormItem>}
             <Row>
               <Col span="18" offset="6">

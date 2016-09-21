@@ -88,18 +88,6 @@ export const DELG_EXEMPTIONWAY = [{
   text: '全额退税',
 }];
 
-const SHIPMENT_EFFECTIVES = {
-  cancelled: -1,
-  draft: 0,
-  effected: 1,
-  archived: 2,
-};
-
-const SHIPMENT_SOURCE = {
-  consigned: 1,       // 委托
-  subcontracted: 2,   // 分包
-};
-
 const DELG_SOURCE = {
   consigned: 1,       // 委托
   subcontracted: 2,   // 分包
@@ -113,61 +101,6 @@ const DELG_STATUS = {
   finished: 4,
 };
 
-const SHIPMENT_TRACK_STATUS = {
-  unaccepted: 1,
-  accepted: 2,
-  dispatched: 3,
-  intransit: 4,
-  delivered: 5,
-  podsubmit: 6,
-  podaccept: 7,
-};
-const SHIPMENT_VEHICLE_CONNECT = {
-  disconnected: 0,
-  app: 1,
-  g7: 2,
-};
-
-const TRACKING_POINT_FROM_TYPE = {
-  manual: 0,
-  app: 1,
-  gps: 2,
-};
-
-const SHIPMENT_POD_STATUS = {
-  unsubmit: 0,
-  pending: 1,
-  rejectByUs: -1,
-  acceptByUs: 2,
-  rejectByClient: -2,
-  acceptByClient: 3,
-};
-
-const VEHICLE_STATUS = {
-  disabled: { value: -1, text: '停用' },
-  notUse: { value: 0, text: '不在途' },
-  inUse: { value: 1, text: '在途' },
-};
-
-const DRIVER_STATUS = {
-  notUse: { value: 0, text: '不可用' },
-  inUse: { value: 1, text: '可用' },
-};
-
-const GOODS_TYPES = [{
-  value: 0,
-  text: '普通货物',
-}, {
-  value: 1,
-  text: '温控货物',
-}, {
-  value: 2,
-  text: '危险品',
-}, {
-  value: 3,
-  text: '大件货物',
-}];
-
 const GOODSTYPES = [{
   value: 0,
   text: '普通货',
@@ -178,57 +111,6 @@ const GOODSTYPES = [{
   value: 2,
   text: '危险品',
 }];
-
-const CONTAINER_PACKAGE_TYPE = [{
-  id: 0,
-  key: 'GP20',
-  value: 'GP20',
-}, {
-  id: 1,
-  key: 'GP40',
-  value: 'GP40',
-}, {
-  id: 2,
-  key: 'HQ40',
-  value: 'HQ40',
-}];
-
-export const TARIFF_KINDS = [{
-  value: 'sales',
-  text: '销售价',
-}, {
-  value: 'cost',
-  text: '成本价',
-}, {
-  value: 'salesBase',
-  text: '销售基准价',
-  isBase: true,
-}, {
-  value: 'costBase',
-  text: '成本基准价',
-  isBase: true,
-}];
-
-export const TARIFF_METER_METHODS = [{
-  value: 'kg',
-  text: '公斤单价',
-}, {
-  value: 't',
-  text: '吨单价',
-}, {
-  value: 'm3',
-  text: '立方米单价',
-}, {
-  value: 't*km',
-  text: '吨*公里系数',
-}];
-
-export const PRESET_TRANSMODES = {
-  ftl: 'FTL', // 整车
-  exp: 'EXP', // 快递
-  ltl: 'LTL', // 零担
-  ctn: 'CTN', // 集装箱
-};
 
 const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
@@ -323,27 +205,6 @@ const MESSAGE_STATUS = {
   },
 };
 
-const TAX_MODE = {
-  eachwaybill: {
-    key: 0,
-    value: '按照每运单',
-  },
-  chargeunit: {
-    key: 1,
-    value: '按运单计费单位',
-  },
-};
-
-const TAX_STATUS = {
-  exctax: {
-    key: 0,
-    value: '运费含税',
-  },
-  inctax: {
-    key: 1,
-    value: '运费不含税',
-  },
-};
 
 export {
   TENANT_LEVEL,
@@ -355,17 +216,7 @@ export {
   CHINA_CODE,
   ACCOUNT_STATUS,
   WRAP_TYPE,
-  SHIPMENT_EFFECTIVES,
-  SHIPMENT_SOURCE,
-  SHIPMENT_TRACK_STATUS,
-  SHIPMENT_POD_STATUS,
-  SHIPMENT_VEHICLE_CONNECT,
-  TRACKING_POINT_FROM_TYPE,
-  VEHICLE_STATUS,
-  DRIVER_STATUS,
-  GOODS_TYPES,
   GOODSTYPES,
-  CONTAINER_PACKAGE_TYPE,
   DELG_SOURCE,
   RELATION_TYPES,
   I_E_TYPES,
@@ -373,10 +224,10 @@ export {
   DECL_E_TYPE,
   MESSAGE_STATUS,
   CMS_DELG_STATUS,
-  TAX_MODE,
-  TAX_STATUS,
   DELG_STATUS,
 };
 
 export * from './module';
-export * from './privilege';
+export * from './role';
+export * from './transport';
+export * from './tariff';

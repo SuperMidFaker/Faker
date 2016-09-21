@@ -85,3 +85,11 @@ server
   * 使用HTTP-only cookie保存用户授权token, 因此要求API域名必须为welogix.cn下面的子域名
   * API服务与站点Web服务端口必须固定, Saas: 3022, ADMIN:3024, api-mysql: 3030, openapi-mysql: 3031, api-mongo: 3032
   * 只有顶层Route可用connect-fetch在服务端获取数据,其他地方装饰均只有在客户端加载
+  * connectNav/withPrivilege需要通过connect props变化调用componentWillReceiveProps,故要求置于connect内
+
+## TODO
+  test istanbul-cov
+  connect-nav willreceive may fire multiple
+  login Link onClick
+  RemoteTable better interface
+  webpack-dev-middleware + server

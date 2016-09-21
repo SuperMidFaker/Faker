@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Form, message, Card, Input, Modal, Icon } from 'antd';
 import { showDealExcpModal, loadExceptions, dealException } from 'common/reducers/trackingLandException';
+import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import '../../../index.less';
-import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
-import moment from 'moment';
 
 @injectIntl
 @connect(

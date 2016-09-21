@@ -2,7 +2,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
   clearFormC } from './form-common';
-import { PRESET_TENANT_ROLE } from '../constants';
 import { CORP_EDIT_SUCCEED, CORP_SUBMIT_SUCCEED, CORP_DELETE_SUCCEED, ORGAN_EDIT_SUCCEED } from './corps';
 import { PROFILE_UPDATE_SUCCEED } from './account';
 
@@ -13,7 +12,9 @@ const actionTypes = createActionTypes('@@welogix/personnel/', [
   'PERSONNEL_SUBMIT', 'PERSONNEL_SUBMIT_SUCCEED', 'PERSONNEL_SUBMIT_FAIL',
   'PERSONNEL_DELETE', 'PERSONNEL_DELETE_SUCCEED', 'PERSONNEL_DELETE_FAIL',
   'PERSONNEL_EDIT', 'PERSONNEL_EDIT_SUCCEED', 'PERSONNEL_EDIT_FAIL',
-  'PERSONNEL_LOAD', 'PERSONNEL_LOAD_SUCCEED', 'PERSONNEL_LOAD_FAIL']);
+  'PERSONNEL_LOAD', 'PERSONNEL_LOAD_SUCCEED', 'PERSONNEL_LOAD_FAIL',
+  'LOAD_ROLES', 'LOAD_ROLES_SUCCEED', 'LOAD_ROLES_FAIL',
+]);
 appendFormAcitonTypes('@@welogix/personnel/', actionTypes);
 
 export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
@@ -37,6 +38,7 @@ const initialState = {
     current: 1,
     data: [],
   },
+  roles: [],
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -96,8 +98,10 @@ export default function reducer(state = initialState, action) {
       personnelist.totalCount++;
       return { ...state, personnelist, submitting: false };
     }
+    case actionTypes.LOAD_ROLES_SUCCEED:
+      return { ...state, roles: action.result.data };
     default:
-      return formReducer(actionTypes, state, action, { key: null, role: PRESET_TENANT_ROLE.member.name },
+      return formReducer(actionTypes, state, action, { key: null },
                          'personnelist') || state;
   }
 }
@@ -188,6 +192,16 @@ export function switchStatus(index, pid, status) {
       method: 'put',
       index,
       data: { status, pid },
+    },
+  };
+}
+
+export function loadRoles() {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.LOAD_ROLES, actionTypes.LOAD_ROLES_SUCCEED, actionTypes.LOAD_ROLES_FAIL],
+      endpoint: 'v1/user/roles',
+      method: 'get',
     },
   };
 }

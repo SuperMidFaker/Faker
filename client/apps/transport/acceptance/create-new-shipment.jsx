@@ -4,7 +4,7 @@ import { Col, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadFormRequire } from 'common/reducers/shipment';
 import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
@@ -40,18 +40,13 @@ function fetchData({ state, dispatch, cookie }) {
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
   { loadTable, savePending, saveAndAccept, saveDraft })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: formatMsg(props.intl, 'transportShipment'),
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => formatMsg(props.intl, 'shipmtCreate'),
+  moduleName: 'transport',
+  lifecycle: 'componentWillReceiveProps',
 })
+@withPrivilege({ module: 'transport', feature: 'shipment', action: 'create' })
 @Form.create()
 export default class ShipmentCreate extends React.Component {
   static propTypes = {

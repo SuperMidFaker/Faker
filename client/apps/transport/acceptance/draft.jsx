@@ -4,7 +4,7 @@ import { Col, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadDraftForm, loadFormRequire } from 'common/reducers/shipment';
 import { acceptDraft, loadTable, saveEdit } from 'common/reducers/transport-acceptance';
 import ClientInfo from '../shipment/forms/clientInfo';
@@ -14,6 +14,7 @@ import ModeInfo from '../shipment/forms/mode-info';
 import CorrelInfo from '../shipment/forms/correlInfo';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, params, cookie }) {
@@ -43,18 +44,14 @@ function fetchData({ state, dispatch, params, cookie }) {
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
   { acceptDraft, loadTable, saveEdit })
-@connectNav((props, dispatch, router) => {
-  if (!props.formData.shipmt_no) {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: `${formatMsg(props.intl, 'draftShipmt')} ${props.formData.shipmt_no}`,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => `${formatMsg(props.intl, 'draftShipmt')} ${props.formData.shipmt_no}`,
+  moduleName: 'transport',
+  lifecycle: 'componentWillReceiveProps',
+  until: props => props.formData.shipmt_no,
 })
+@withPrivilege({ module: 'transport', feature: 'shipment', action: 'edit' })
 @Form.create()
 export default class ShipmentDraftEdit extends React.Component {
   static propTypes = {

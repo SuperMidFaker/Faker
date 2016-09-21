@@ -7,11 +7,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { loadExceptions, hideExcpModal, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import '../../../index.less';
 import CreateException from './create-exception';
 import CreateSpecialCharge from './create-specialCharge';
 import DealException from './deal-exception';
-import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
+import { TRANSPORT_EXCEPTIONS } from 'common/constants';
+import '../../../index.less';
+
 const formatMsg = format(messages);
 
 @injectIntl

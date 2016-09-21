@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Cascader, Input, Modal } from 'antd';
 import { createException, loadExceptions } from 'common/reducers/trackingLandException';
+import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import '../../../index.less';
-import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
+
 const FormItem = Form.Item;
 
 @injectIntl

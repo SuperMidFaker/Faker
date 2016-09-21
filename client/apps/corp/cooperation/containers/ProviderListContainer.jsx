@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Radio, Icon, message } from 'antd';
-import BaseList from '../components/BaseList';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { setProviderType, editProviderTypes, addPartner, editPartner, changePartnerStatus, deletePartner, invitePartner } from 'common/reducers/partner';
 import { inviteOfflinePartner } from 'common/reducers/invitation';
 import { providerShorthandTypes } from '../util/dataMapping';
 import partnerModal from '../components/partnerModal';
+import BaseList from '../components/BaseList';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -44,9 +45,11 @@ export default class ProviderListContainer extends BaseList {
       key: 'providerTypes',
       render: (_, record) => {
         return (
-          <span>
-            {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record)}><Icon type="edit" /></a>
-          </span>
+          <PrivilegeCover module="corp" feature="partners" action="edit">
+            <span>
+              {record.providerTypes.join(',')}<a onClick={() => this.handleEditProvider(record)}><Icon type="edit" /></a>
+            </span>
+          </PrivilegeCover>
         );
       },
     };

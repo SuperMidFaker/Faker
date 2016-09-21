@@ -23,16 +23,18 @@ export function getRowKey(row) {
   return row._id;
 }
 
-export function getEndTableVarColumns(agreement, VEHICLE_TYPES, VEHICLE_LENGTH_TYPES) {
+export function getEndTableVarColumns(agreement, transModes, VEHICLE_TYPES, VEHICLE_LENGTH_TYPES) {
   const columns = [];
-  if (agreement.transModeCode === PRESET_TRANSMODES.ftl) {
+  const tms = transModes.filter(tm => tm.id === parseInt(agreement.transModeCode, 10));
+  const tmCode = tms.length === 1 ? tms[0].mode_code : null;
+  if (tmCode === PRESET_TRANSMODES.ftl) {
     for (let i = 0; i < agreement.intervals.length; i++) {
       const vlts = VEHICLE_LENGTH_TYPES.filter(vlt => vlt.value === agreement.intervals[i]);
       const vts = VEHICLE_TYPES.filter(vt => vt.value === agreement.vehicleTypes[i]);
       const title = `${vlts[0].text}/${vts[0].text}`;
       columns.push({ title, index: i });
     }
-  } else if (agreement.transModeCode === PRESET_TRANSMODES.ctn) {
+  } else if (tmCode === PRESET_TRANSMODES.ctn) {
     for (let i = 0; i < agreement.intervals.length; i++) {
       const ctn = agreement.intervals[i];
       const cpts = CONTAINER_PACKAGE_TYPE.filter(cpt => cpt.id === ctn);

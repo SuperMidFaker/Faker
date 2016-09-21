@@ -33,14 +33,12 @@ export default function reducer(state = initialState, action = {}) {
         loggingIn: true,
       };
     case LOGIN_SUCCEED: {
-      const userType = action.result.data && action.result.data.userType;
       return {
         ...state,
         loggingIn: false,
         error: null,
         password: '',
         isAuthed: true,
-        userType,
       };
     }
     case LOGIN_FAIL:

@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import NavLink from 'client/components/nav-link';
 import ModuleLayout from 'client/components/module-layout';
-import { hasPermission } from 'client/common/decorators/withPrivilege';
+import { findForemostRoute } from 'client/common/decorators/withPrivilege';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -37,14 +37,21 @@ export default class Home extends React.Component {
     this.props.setNavTitle({
       depth: 1,
     });
-    const corpMenus = ['info', 'personnel', 'organization', 'partners'];
-    for (let i = 0; i < corpMenus.length; i++) {
-      if (hasPermission(this.props.privileges, {
-        module: 'corp', features: corpMenus[i],
-      })) {
-        this.setState({ corpMenuLink: `/corp/${corpMenus[i]}` });
-        break;
-      }
+    const link = findForemostRoute(this.props.privileges, 'corp', [{
+      feat: 'info',
+      route: 'info',
+    }, {
+      feat: 'personnel',
+      route: 'personnel',
+    }, {
+      feat: 'organization',
+      route: 'organization',
+    }, {
+      feat: 'partners',
+      route: 'partners',
+    }]);
+    if (link) {
+      this.setState({ corpMenuLink: `/corp/${link}` });
     }
   }
   render() {

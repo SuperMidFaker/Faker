@@ -4,11 +4,11 @@ import { Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadOrganizationForm, clearForm, editOrganization, submit } from
   'common/reducers/corps';
 import { isLoginNameExist, checkLoginName } from
   'common/reducers/checker-reducer';
-import { setNavTitle } from 'common/reducers/navbar';
 import { validatePhone } from 'common/validater';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -43,18 +43,20 @@ function goBack(router) {
     account: state.account,
   }),
   { editOrganization, submit, checkLoginName })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle === 'componentDidMount') {
-    return;
-  }
-  const isCreating = props.formData.key === null;
-  dispatch(setNavTitle({
-    depth: 3,
-    text: isCreating ? formatMsg(props.intl, 'editTitle') : props.formData.name,
-    moduleName: 'corp',
-    goBackFn: () => goBack(router),
-    withModuleLayout: false,
-  }));
+@connectNav({
+  depth: 3,
+  text: (props) => {
+    return props.formData.key === null ? formatMsg(props.intl, 'editTitle')
+      : props.formData.name;
+  },
+  moduleName: 'corp',
+  lifecycle: 'componentDidMount',
+})
+@withPrivilege({
+  module: 'corp', feature: 'organization',
+  action: (props) => {
+    return props.formData.key === null ? 'create' : 'edit';
+  },
 })
 @Form.create()
 export default class CorpEdit extends React.Component {

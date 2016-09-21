@@ -10,7 +10,6 @@ const initialState = {
   tenantId: 0,
   aspect: 0,
   categoryId: 0,
-  type: '', // user type ADMIN PERSONNEL ENTERP BRANCH
   tenantName: '',
   tenantLevel: -1,
   logo: '',

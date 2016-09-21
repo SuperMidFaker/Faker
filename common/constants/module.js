@@ -19,6 +19,70 @@ const MODULE_TRANSPORT = {
   text: 'moduleTransport',
   defaultText: '国内运输',
   features: [
+    {
+      id: 'dashboard',
+      text: 'featTransportDashboard',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        },
+      ],
+    },
+    {
+      id: 'shipment',
+      text: 'featTransportShipment',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'dispatch',
+      text: 'featTransportDispatch',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'tracking',
+      text: 'featTransportTracking',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        },
+      ],
+    },
   ],
 };
 
@@ -34,8 +98,65 @@ const MODULE_CORPORATION = {
           id: 'view',
           text: 'featActionView',
         }, {
-          id: 'save',
-          text: 'featActionSave',
+          id: 'edit',
+          text: 'featActionEdit',
+        },
+      ],
+    },
+    {
+      id: 'personnel',
+      text: 'featCorpPersonnel',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'organization',
+      text: 'featCorpOrganization',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'partners',
+      text: 'featCorpPartners',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
         },
       ],
     },
@@ -63,14 +184,3 @@ export const INTRINSIC_MODULE_FEATURES = [
   ...appModules,
   MODULE_CORPORATION,
 ];
-
-export const MODULE_INDEX = {};
-INTRINSIC_MODULE_FEATURES.forEach((im, midx) => {
-  MODULE_INDEX[im.id] = midx;
-  im.features.forEach((imf, fidx) => {
-    MODULE_INDEX[`${im.id}.${imf.id}`] = fidx;
-    imf.actions.forEach((imfa, aidx) => {
-      MODULE_INDEX[`${im.id}.${imf.id}.${imfa.id}`] = aidx;
-    });
-  });
-});
