@@ -40,7 +40,6 @@ import * as CMSQuote from './cms/quote';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
-import { findForemostRoute } from '../common/decorators/withPrivilege';
 
 // todo IndexRedirect passed nginx added subdomain
 export default(store, cookie) => {
@@ -125,28 +124,6 @@ export default(store, cookie) => {
         </Route>
         <Route component={Module}>
           <Route path={DEFAULT_MODULES.transport.id} component={Transport}>
-            {/*
-            <IndexRedirect to={`/transport/${findForemostRoute(
-              store.getState().account.privileges, 'transport', [{
-                feat: 'dashboard',
-                route: 'dashboard',
-              }, {
-                feat: 'shipment',
-                route: 'shipment',
-              }, {
-                feat: 'dispatch',
-                route: 'dispatch',
-              }, {
-                feat: 'tracking',
-                route: 'tracking',
-              }, {
-                feat: 'resources',
-                route: 'resources',
-              }, {
-                feat: 'tariff',
-                route: 'tariff',
-              }])}`} />
-*/}
             <Route path="dashboard" component={TMSDashboard}>
               <Route path="operationLogs" component={TMSOperationLogs} />
             </Route>
