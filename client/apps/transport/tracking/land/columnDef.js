@@ -473,7 +473,7 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <div>
                 <RowUpdater label={msg('deliverConfirm')}
-                  onAnchored={() => { handlers.deliverConfirm(record.shipmt_no); }} row={record}
+                  onAnchored={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }} row={record}
                 />
                 <span className="ant-divider" />
                 <RowUpdater label={msg('updateEvents')}

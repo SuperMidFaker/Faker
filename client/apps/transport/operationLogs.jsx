@@ -8,7 +8,7 @@ import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import { Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import { loadShipmentLogs } from 'common/reducers/shipment';
+import { loadShipmentEvents } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from './common/consignLocation';
 import { SHIPMENT_TRACK_STATUS } from
@@ -20,7 +20,7 @@ const formatMsg = format(messages);
 function fetchData({ state, dispatch, cookie, location }) {
   const { startDate, endDate, type } = location.query;
   const { pageSize, currentPage } = state.shipment.statistics.logs;
-  return dispatch(loadShipmentLogs(cookie, {
+  return dispatch(loadShipmentEvents(cookie, {
     tenantId: state.account.tenantId,
     startDate,
     endDate,
@@ -36,7 +36,7 @@ function fetchData({ state, dispatch, cookie, location }) {
     tenantId: state.account.tenantId,
     statistics: state.shipment.statistics,
   }),
-  { loadShipmentLogs })
+  { loadShipmentEvents })
 @connectNav((props, dispatch, router, lifecycle) => {
   if (lifecycle !== 'componentDidMount') {
     return;
@@ -151,7 +151,7 @@ export default class Dashboard extends React.Component {
       },
     }];
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadShipmentLogs(null, params),
+      fetcher: params => this.props.loadShipmentEvents(null, params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,

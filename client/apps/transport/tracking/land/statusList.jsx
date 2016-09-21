@@ -259,8 +259,8 @@ export default class LandStatusList extends React.Component {
       }
     });
   }
-  handleDeliverConfirm = (shipmtNo) => {
-    this.props.deliverConfirm(shipmtNo).then((result) => {
+  handleDeliverConfirm = (shipmtNo, dispId) => {
+    this.props.deliverConfirm(shipmtNo, dispId).then((result) => {
       if (!result.error) {
         this.handleTableLoad();
       } else {

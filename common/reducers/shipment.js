@@ -348,7 +348,7 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
   };
 }
 
-export function loadShipmentLogs(cookie, params) {
+export function loadShipmentEvents(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -356,7 +356,7 @@ export function loadShipmentLogs(cookie, params) {
         actionTypes.SHIPMENT_LOGS_SUCCEED,
         actionTypes.SHIPMENT_LOGS_FAIL,
       ],
-      endpoint: 'v1/transport/shipment/logs',
+      endpoint: 'v1/transport/shipment/events',
       method: 'get',
       cookie,
       params,
