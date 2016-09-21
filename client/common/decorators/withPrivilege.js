@@ -22,7 +22,15 @@ export function hasPermission(privileges, { module, feature, action }) {
   }
 }
 
-export default function withPrivilege({ module, feature }) {
+export function findForemostRoute(privileges, module, features) {
+  for (let i = 0; i < features.length; i++) {
+    if (hasPermission(privileges, { module, feature: features[i].feat })) {
+      return features[i].route;
+    }
+  }
+}
+
+export default function withPrivilege({ module, feature, action }) {
   return (Wrapped) => {
     class WrappedComponent extends Component {
       static contextTypes = {
@@ -30,16 +38,16 @@ export default function withPrivilege({ module, feature }) {
         store: PropTypes.object.isRequired,
       }
       componentWillMount() {
-        if (!hasPermission(
-          this.context.store.getState().account.privileges,
-          { module, feature })) {
-          this.context.router.replace('/login');
-        }
+        this.redirectWhenDisallowed();
       }
       componentWillReceiveProps() {
+        this.redirectWhenDisallowed();
+      }
+      redirectWhenDisallowed() {
+        const actionName = typeof action === 'function' ? action(this.props) : action;
         if (!hasPermission(
           this.context.store.getState().account.privileges,
-          { module, feature })) {
+          { module, feature, action: actionName })) {
           this.context.router.replace('/login');
         }
       }

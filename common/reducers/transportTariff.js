@@ -69,7 +69,12 @@ const initialState = {
     adjustCoefficient: 1,
     taxrate: { mode: 0, value: 0 },
   },
-  advanceChargeList: [],
+  advanceChargeList: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -140,7 +145,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
-      return { ...state, tariffId: '', formParams: action.result.data };
+      return { ...state, formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
       return { ...state, tariffId: action.result.data,
         ratesRefAgreement: action.data };

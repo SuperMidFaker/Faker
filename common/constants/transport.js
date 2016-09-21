@@ -1,4 +1,4 @@
-const TRANSPORT_EXCEPTIONS = [{
+export const TRANSPORT_EXCEPTIONS = [{
   key: 'SHIPMENT_EXCEPTION_SYS_CHANGE_CONSIGN',
   code: 11006,
   level: 'INFO',
@@ -155,6 +155,92 @@ const TRANSPORT_EXCEPTIONS = [{
   category: '其它异常',
   name: '其他',
 }];
-export {
-  TRANSPORT_EXCEPTIONS,
+
+export const SHIPMENT_EFFECTIVES = {
+  cancelled: -1,
+  draft: 0,
+  effected: 1,
+  archived: 2,
+};
+
+export const SHIPMENT_SOURCE = {
+  consigned: 1,       // 委托
+  subcontracted: 2,   // 分包
+};
+
+export const SHIPMENT_TRACK_STATUS = {
+  unaccepted: 1,
+  accepted: 2,
+  dispatched: 3,
+  intransit: 4,
+  delivered: 5,
+  podsubmit: 6,
+  podaccept: 7,
+};
+
+export const SHIPMENT_VEHICLE_CONNECT = {
+  disconnected: 0,
+  app: 1,
+  g7: 2,
+};
+
+export const TRACKING_POINT_FROM_TYPE = {
+  manual: 0,
+  app: 1,
+  gps: 2,
+};
+
+export const SHIPMENT_POD_STATUS = {
+  unsubmit: 0,
+  pending: 1,
+  rejectByUs: -1,
+  acceptByUs: 2,
+  rejectByClient: -2,
+  acceptByClient: 3,
+};
+
+export const VEHICLE_STATUS = {
+  disabled: { value: -1, text: '停用' },
+  notUse: { value: 0, text: '不在途' },
+  inUse: { value: 1, text: '在途' },
+};
+
+export const DRIVER_STATUS = {
+  notUse: { value: 0, text: '不可用' },
+  inUse: { value: 1, text: '可用' },
+};
+
+export const GOODS_TYPES = [{
+  value: 0,
+  text: '普通货物',
+}, {
+  value: 1,
+  text: '温控货物',
+}, {
+  value: 2,
+  text: '危险品',
+}, {
+  value: 3,
+  text: '大件货物',
+}];
+
+export const CONTAINER_PACKAGE_TYPE = [{
+  id: 0,
+  key: 'GP20',
+  value: 'GP20',
+}, {
+  id: 1,
+  key: 'GP40',
+  value: 'GP40',
+}, {
+  id: 2,
+  key: 'HQ40',
+  value: 'HQ40',
+}];
+
+export const PRESET_TRANSMODES = {
+  ftl: 'FTL', // 整车
+  exp: 'EXP', // 快递
+  ltl: 'LTL', // 零担
+  ctn: 'CTN', // 集装箱
 };

@@ -11,7 +11,6 @@ import PackAccount from './account/pack-account';
 import Corp from './corp/pack-corp';
 import CorpInfo from './corp/info';
 import MessageList from './account/messageList';
-import PackOrganization from './corp/pack-organization';
 import * as Organization from './corp/organization';
 import * as Personnel from './corp/personnel';
 import * as Cooperation from './corp/cooperation';
@@ -108,7 +107,7 @@ export default(store, cookie) => {
         </Route>
         <Route path="corp" component={Corp}>
           <Route path="info" component={CorpInfo} />
-          <Route path="organization" component={PackOrganization}>
+          <Route path="organization" component={Organization.Wrapper}>
             <IndexRoute component={Organization.List} />
             <Route path="new" component={Organization.Edit} />
             <Route path="edit/:id" component={Organization.Edit} />
@@ -126,8 +125,7 @@ export default(store, cookie) => {
         </Route>
         <Route component={Module}>
           <Route path={DEFAULT_MODULES.transport.id} component={Transport}>
-            <IndexRoute component={TMSDashboard} />
-            <Route path="dashboard">
+            <Route path="dashboard" component={TMSDashboard}>
               <Route path="operationLogs" component={TMSOperationLogs} />
             </Route>
             <Route path="shipment">

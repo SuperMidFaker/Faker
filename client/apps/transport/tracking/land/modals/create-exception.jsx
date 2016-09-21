@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Cascader, Input, Modal } from 'antd';
 import { createException, loadExceptions } from 'common/reducers/trackingLandException';
+import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import '../../../index.less';
-import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
+
 const FormItem = Form.Item;
 
 @injectIntl
@@ -23,6 +24,7 @@ export default class CreateException extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     createException: PropTypes.func.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     exceptions: PropTypes.object.isRequired,
@@ -30,7 +32,7 @@ export default class CreateException extends React.Component {
     toggle: PropTypes.func.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, loginName } = this.props;
+    const { form, dispId, shipmtNo, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.type && fieldsValue.type[1]) {
       this.props.form.setFieldsValue({ type: '', excp_event: '' });
@@ -58,7 +60,7 @@ export default class CreateException extends React.Component {
         } else {
           message.info('添加成功');
           this.props.loadExceptions({
-            dispId,
+            shipmtNo,
             pageSize: this.props.exceptions.pageSize,
             currentPage: this.props.exceptions.current,
           });

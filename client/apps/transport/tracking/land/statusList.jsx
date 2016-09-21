@@ -5,6 +5,7 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import {
   loadTransitTable, showDateModal, showVehicleModal,
@@ -259,8 +260,8 @@ export default class LandStatusList extends React.Component {
       }
     });
   }
-  handleDeliverConfirm = (shipmtNo) => {
-    this.props.deliverConfirm(shipmtNo).then((result) => {
+  handleDeliverConfirm = (shipmtNo, dispId) => {
+    this.props.deliverConfirm(shipmtNo, dispId).then((result) => {
       if (!result.error) {
         this.handleTableLoad();
       } else {
@@ -314,13 +315,17 @@ export default class LandStatusList extends React.Component {
     if (type === 'dispatched') {
       buttons = (
         <div style={{ display: 'inline-block' }}>
-          <Button onClick={this.handleShowBatchPickModal}>批量提货</Button>
+          <PrivilegeCover module="transport" feature="tracking" action="edit">
+            <Button onClick={this.handleShowBatchPickModal}>批量提货</Button>
+          </PrivilegeCover>
         </div>
       );
     } else if (type === 'intransit') {
       buttons = (
         <div style={{ display: 'inline-block' }}>
-          <Button onClick={this.handleShowBatchDeliverModal}>批量交货</Button>
+          <PrivilegeCover module="transport" feature="tracking" action="edit">
+            <Button onClick={this.handleShowBatchDeliverModal}>批量交货</Button>
+          </PrivilegeCover>
         </div>
       );
     }
@@ -340,7 +345,9 @@ export default class LandStatusList extends React.Component {
       <div>
         <div className="page-body">
           <div className="panel-header">
-            <ExportExcel />
+            <PrivilegeCover module="transport" feature="tracking" action="create">
+              <ExportExcel />
+            </PrivilegeCover>
             <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             {this.renderBatchOperationButtons()}
             </span>

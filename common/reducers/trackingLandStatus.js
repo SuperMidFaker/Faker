@@ -268,7 +268,7 @@ export function showShipmentAdvanceModal({ visible, dispId, shipmtNo }) {
   };
 }
 
-export function deliverConfirm(shipmtNo) {
+export function deliverConfirm(shipmtNo, dispId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -278,7 +278,7 @@ export function deliverConfirm(shipmtNo) {
       ],
       endpoint: 'v1/transport/tracking/deliverConfirm',
       method: 'post',
-      data: { shipmtNo },
+      data: { shipmtNo, dispId },
     },
   };
 }

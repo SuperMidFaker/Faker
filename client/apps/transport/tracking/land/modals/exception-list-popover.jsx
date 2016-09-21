@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Popover, Table, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadExceptions } from 'common/reducers/trackingLandException';
-import { TRANSPORT_EXCEPTIONS } from '../../../eventTypes';
+import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
@@ -22,6 +22,7 @@ export default class ExceptionListPopover extends React.Component {
     intl: intlShape.isRequired,
     excpCount: PropTypes.number.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     onShowExcpModal: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
@@ -31,9 +32,9 @@ export default class ExceptionListPopover extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleMouseOver = () => {
-    const { dispId } = this.props;
+    const { shipmtNo } = this.props;
     this.props.loadExceptions({
-      dispId,
+      shipmtNo,
       pageSize: 9999,
       currentPage: 1,
     }).then((result) => {
