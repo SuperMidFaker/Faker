@@ -52,16 +52,21 @@ export default class TrackingLandWrapper extends React.Component {
     searchInput: '',
     radioValue: '',
     advancedSearchVisible: false,
+    stage: '',
   }
   componentWillMount() {
     const locName = this.props.location.pathname.split('/')[4];
     let propFilters = [];
+    let stage = '';
     if (locName === 'status') {
       propFilters = this.props.statusfilters;
+      stage = 'tracking';
     } else if (locName === 'pod') {
       propFilters = this.props.podfilters;
+      stage = 'pod';
     } else if (locName === 'exception') {
       propFilters = this.props.excpfilters;
+      stage = 'exception';
     }
     let radioValue;
     let searchInput;
@@ -73,7 +78,7 @@ export default class TrackingLandWrapper extends React.Component {
     if (nos.length === 1) {
       searchInput = nos[0].value;
     }
-    this.setState({ radioValue, searchInput });
+    this.setState({ radioValue, searchInput, stage });
   }
   componentWillReceiveProps(nextProps) {
     const locName = nextProps.location.pathname.split('/')[4];
@@ -128,8 +133,9 @@ export default class TrackingLandWrapper extends React.Component {
   showAdvancedSearch = (advancedSearchVisible) => {
     this.setState({ advancedSearchVisible });
   }
+
   render() {
-    const { radioValue, searchInput } = this.state;
+    const { radioValue, searchInput, stage } = this.state;
     return (
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}>
@@ -165,7 +171,7 @@ export default class TrackingLandWrapper extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           {this.props.children}
         </div>
-        <PreviewPanel stage="tracking" />
+        <PreviewPanel stage={stage} />
       </QueueAnim>
     );
   }
