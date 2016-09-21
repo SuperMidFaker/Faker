@@ -11,11 +11,11 @@ import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft } from
 'common/reducers/transport-acceptance';
-import { setNavTitle } from 'common/reducers/navbar';
-import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES } from 'common/constants';
+import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
 import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import PreviewPanel from '../shipment/modals/preview-panel';
@@ -25,6 +25,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 import globalMessages from 'client/common/root.i18n';
+
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
@@ -68,17 +69,12 @@ function fetchData({ state, dispatch, cookie }) {
     sortOrder: state.transportAcceptance.table.sortOrder,
   }),
   { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail, delDraft })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  text: DEFAULT_MODULES.transport.text,
+  moduleName: 'transport',
 })
+@withPrivilege({ module: 'transport', feature: 'shipment' })
 export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -347,29 +343,33 @@ export default class AcceptList extends React.Component {
         width: 150,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-            return (<span></span>);
+            return (<span />);
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
             return (
-              <span>
-              <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
-              {this.msg('shipmtAccept')}
-              </a>
-              <span className="ant-divider" />
-              <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
-                {formatGlobalMsg(intl, 'modify')}
-                </NavLink>
-                <span className="ant-divider" />
-                <a role="button" onClick={ev => this.handleShipmtRevoke(record.key, ev)}>
-                {this.msg('shipmtRevoke')}
-                </a>
-              </span>
+              <PrivilegeCover module="transport" feature="shipment" action="edit">
+                <span>
+                  <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
+                  {this.msg('shipmtAccept')}
+                  </a>
+                  <span className="ant-divider" />
+                  <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
+                    {formatGlobalMsg(intl, 'modify')}
+                  </NavLink>
+                  <span className="ant-divider" />
+                  <a role="button" onClick={ev => this.handleShipmtRevoke(record.key, ev)}>
+                  {this.msg('shipmtRevoke')}
+                  </a>
+                </span>
+              </PrivilegeCover>
             );
           } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
             return (
               <span>
-                <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
-                {this.msg('shipmtAccept')}
-                </a>
+                <PrivilegeCover module="transport" feature="shipment" action="edit">
+                  <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
+                  {this.msg('shipmtAccept')}
+                  </a>
+                </PrivilegeCover>
               </span>
             );
           }
@@ -377,9 +377,11 @@ export default class AcceptList extends React.Component {
       }];
       btns = (
         <div style={{ display: 'inline-block' }}>
-          <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
-          批量接单
-          </Button>
+          <PrivilegeCover module="transport" feature="shipment" action="edit">
+            <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+            批量接单
+            </Button>
+          </PrivilegeCover>
         </div>
       );
     } else if (radioValue === 'draft') {
@@ -390,15 +392,21 @@ export default class AcceptList extends React.Component {
         render: (o, record) => {
           return (
             <span>
-              <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
-              {formatGlobalMsg(intl, 'modify')}
-              </NavLink>
+              <PrivilegeCover module="transport" feature="shipment" action="edit">
+                <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
+                {formatGlobalMsg(intl, 'modify')}
+                </NavLink>
+              </PrivilegeCover>
               <span className="ant-divider" />
-              <Popconfirm placement="topRight" title="确定要删除吗？" onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}>
-                <a role="button">
-                {formatGlobalMsg(intl, 'delete')}
-                </a>
-              </Popconfirm>
+              <PrivilegeCover module="transport" feature="shipment" action="delete">
+                <Popconfirm placement="topRight" title="确定要删除吗？"
+                  onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}
+                >
+                  <a role="button">
+                  {formatGlobalMsg(intl, 'delete')}
+                  </a>
+                </Popconfirm>
+              </PrivilegeCover>
             </span>
           );
         },
@@ -424,14 +432,18 @@ export default class AcceptList extends React.Component {
           </RadioGroup>
         </header>
         <div className="main-content" key="main">
-          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch}
+            toggle={this.toggleAdvancedSearch}
+          />
           <div className="page-body">
             <div className="panel-header">
-              <NavLink to="/transport/shipment/new">
-                <Button type="primary" icon="plus-circle-o">
-                  {this.msg('shipmtCreate')}
-                </Button>
-              </NavLink>
+              <PrivilegeCover module="transport" feature="shipment" action="create">
+                <NavLink to="/transport/shipment/new">
+                  <Button type="primary" icon="plus-circle-o">
+                    {this.msg('shipmtCreate')}
+                  </Button>
+                </NavLink>
+              </PrivilegeCover>
               <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 {btns}
               </span>

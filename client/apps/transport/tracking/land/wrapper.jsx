@@ -11,7 +11,7 @@ import { changePodFilter } from 'common/reducers/trackingLandPod';
 import { changeExcpFilter } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 
 import messages from './message.i18n';
 const formatMsg = format(messages);
@@ -28,14 +28,11 @@ const RadioGroup = Radio.Group;
   }),
   { changeStatusFilter, changePodFilter, changeExcpFilter }
 )
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'transport',
 })
+@withPrivilege({ module: 'transport', feature: 'tracking' })
 export default class TrackingLandWrapper extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

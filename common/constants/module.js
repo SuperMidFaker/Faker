@@ -19,6 +19,70 @@ const MODULE_TRANSPORT = {
   text: 'moduleTransport',
   defaultText: '国内运输',
   features: [
+    {
+      id: 'dashboard',
+      text: 'featTransportDashboard',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        },
+      ],
+    },
+    {
+      id: 'shipment',
+      text: 'featTransportShipment',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'dispatch',
+      text: 'featTransportDispatch',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'tracking',
+      text: 'featTransportTracking',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        },
+      ],
+    },
   ],
 };
 

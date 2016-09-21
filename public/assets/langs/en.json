@@ -1,6 +1,6 @@
 {
   "component.module.customer.center": "Customer Center",
-  "component.module.transport": "Transporation Management",
+  "component.module.transport": "Transportation Management",
   "component.module.clearance": "Clearance Management",
   "component.module.forwarding": "Forwarding",
   "component.module.inventory": "Inventory Management",
