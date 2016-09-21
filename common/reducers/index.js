@@ -21,6 +21,7 @@ import transportTariff from './transportTariff';
 import cmsDelegation from './cmsDelegation';
 import cmsDeclare from './cmsDeclare';
 import cmsCompRelation from './cmsCompRelation';
+import cmsQuote from './cmsQuote';
 
 export default combineReducers({
   intl,
@@ -45,4 +46,5 @@ export default combineReducers({
   cmsDelegation,
   cmsDeclare,
   cmsCompRelation,
+  cmsQuote,
 });
