@@ -30,6 +30,7 @@ export default class DealException extends React.Component {
     dealException: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     exceptions: PropTypes.object.isRequired,
   }
   componentWillReceiveProps(nextProps) {
@@ -38,7 +39,7 @@ export default class DealException extends React.Component {
     }
   }
   handleOk = () => {
-    const { dispId, form, loginName, dealExcpModal: { exception } } = this.props;
+    const { shipmtNo, form, loginName, dealExcpModal: { exception } } = this.props;
     const fieldsValue = form.getFieldsValue();
     const solution = fieldsValue.solution;
     const excpId = exception.id;
@@ -48,7 +49,7 @@ export default class DealException extends React.Component {
       } else {
         this.handleCancel();
         this.props.loadExceptions({
-          dispId,
+          shipmtNo,
           pageSize: this.props.exceptions.pageSize,
           currentPage: this.props.exceptions.current,
         });

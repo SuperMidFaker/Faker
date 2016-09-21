@@ -44,9 +44,9 @@ export default class ExcpEventsModal extends React.Component {
     createSpecialChargeVisible: false,
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.dispId !== nextProps.dispId && nextProps.dispId !== -1) {
+    if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
       this.props.loadExceptions({
-        dispId: nextProps.dispId,
+        shipmtNo: nextProps.shipmtNo,
         pageSize: nextProps.exceptions.pageSize,
         currentPage: nextProps.exceptions.current,
       });
@@ -65,7 +65,7 @@ export default class ExcpEventsModal extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        dispId: this.props.dispId,
+        shipmtNo: this.props.shipmtNo,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         sortField: sorter.field,
@@ -171,9 +171,9 @@ export default class ExcpEventsModal extends React.Component {
           <Table columns={this.columns}
             dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
           />
-          <CreateException visible={this.state.createExceptionVisible} dispId={dispId} toggle={this.toggleCreateException} />
-          <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} dispId={dispId} toggle={this.toggleSpecialCharge} />
-          <DealException dispId={dispId} />
+          <CreateException visible={this.state.createExceptionVisible} shipmtNo={shipmtNo} dispId={dispId} toggle={this.toggleCreateException} />
+          <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} shipmtNo={shipmtNo} dispId={dispId} toggle={this.toggleSpecialCharge} />
+          <DealException shipmtNo={shipmtNo} dispId={dispId} />
         </div>
       </Modal>
     );

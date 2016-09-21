@@ -21,6 +21,7 @@ export default class CreateSpecialCharge extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     createSpecialCharge: PropTypes.func.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     exceptions: PropTypes.object.isRequired,
@@ -28,7 +29,7 @@ export default class CreateSpecialCharge extends React.Component {
     toggle: PropTypes.func.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, loginName } = this.props;
+    const { form, dispId, shipmtNo, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
       this.props.form.setFieldsValue({ charge: '', excp_event: '' });
@@ -50,7 +51,7 @@ export default class CreateSpecialCharge extends React.Component {
         } else {
           message.info('添加成功');
           this.props.loadExceptions({
-            dispId,
+            shipmtNo,
             pageSize: this.props.exceptions.pageSize,
             currentPage: this.props.exceptions.current,
           });
