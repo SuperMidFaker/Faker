@@ -18,9 +18,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
   'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
-  'ADD_ADVANCECHARGE', 'ADD_ADVANCECHARGE_SUCCEED', 'ADD_ADVANCECHARGE_FAIL',
-  'REMOVE_ADVANCECHARGE', 'REMOVE_ADVANCECHARGE_SUCCEED', 'REMOVE_ADVANCECHARGE_FAIL',
-  'GET_ADVANCECHARGES', 'GET_ADVANCECHARGES_SUCCEED', 'GET_ADVANCECHARGES_FAIL',
 ]);
 
 const initialState = {
@@ -170,13 +167,6 @@ export default function reducer(state = initialState, action) {
         ratesEndList: action.result.data };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };
-    case actionTypes.GET_ADVANCECHARGES_SUCCEED:
-      return { ...state, advanceChargeList: action.result.data };
-    case actionTypes.ADD_ADVANCECHARGE_SUCCEED: {
-      const list = [...state.advanceChargeList.data];
-      list.unshift(action.result.data);
-      return { ...state, advanceChargeList: { ...state.advanceChargeList, data: list } };
-    }
     default:
       return state;
   }
@@ -433,54 +423,6 @@ export function delRateEnd(rateId, id) {
       endpoint: 'v1/transport/tariff/del/ratend',
       method: 'post',
       data: { rateId, id },
-      origin: 'mongo',
-    },
-  };
-}
-
-export function addAdvanceCharge(tariffId, advanceCharge) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ADD_ADVANCECHARGE,
-        actionTypes.ADD_ADVANCECHARGE_SUCCEED,
-        actionTypes.ADD_ADVANCECHARGE_FAIL,
-      ],
-      endpoint: 'v1/transport/tariff/advanceCharge',
-      method: 'post',
-      data: { tariffId, advanceCharge },
-      origin: 'mongo',
-    },
-  };
-}
-
-export function removeAdvanceCharge(advanceChargeId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.REMOVE_ADVANCECHARGE,
-        actionTypes.REMOVE_ADVANCECHARGE_SUCCEED,
-        actionTypes.REMOVE_ADVANCECHARGE_FAIL,
-      ],
-      endpoint: 'v1/transport/tariff/advanceCharge',
-      method: 'del',
-      data: { advanceChargeId },
-      origin: 'mongo',
-    },
-  };
-}
-
-export function loadAdvanceCharges(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.GET_ADVANCECHARGES,
-        actionTypes.GET_ADVANCECHARGES_SUCCEED,
-        actionTypes.GET_ADVANCECHARGES_FAIL,
-      ],
-      endpoint: 'v1/transport/tariff/advanceCharges',
-      method: 'get',
-      params,
       origin: 'mongo',
     },
   };
