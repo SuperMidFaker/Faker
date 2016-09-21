@@ -38,16 +38,11 @@ function getLinks(intl) {
     icon: 'icon-ikons-credit-card',
     text: formatMsg(intl, 'billing'),
   }, {
-    single: false,
+    single: true,
     key: 'cms-6',
     path: '/clearance/settings',
     icon: 'zmdi zmdi-settings',
     text: formatMsg(intl, 'settings'),
-    sublinks: [{
-      key: 'cms-3-1',
-      path: '/clearance/relation',
-      text: formatMsg(intl, 'relation'),
-    }],
   }];
 }
 
