@@ -4,17 +4,17 @@ import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
-import { format } from 'client/common/i18n/helpers';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { loadShipmentEvents } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
-import { renderConsignLoc } from './common/consignLocation';
-import { SHIPMENT_TRACK_STATUS } from
-  'common/constants';
-import './index.less';
-import messages from './message.i18n';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { renderConsignLoc } from '../common/consignLocation';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+import '../index.less';
+
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, cookie, location }) {
@@ -37,19 +37,12 @@ function fetchData({ state, dispatch, cookie, location }) {
     statistics: state.shipment.statistics,
   }),
   { loadShipmentEvents })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: formatMsg(props.intl, 'transportDashboard'),
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => formatMsg(props.intl, 'transportDashboard'),
+  moduleName: 'transport',
 })
-
+@withPrivilege({ module: 'transport', feature: 'dashboard' })
 export default class Dashboard extends React.Component {
   static propTypes = {
     children: PropTypes.object,

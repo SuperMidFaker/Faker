@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Col, Button, Popconfirm, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import BasicForm from './forms/basicForm';
 import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
@@ -21,17 +20,10 @@ const formatMsg = format(messages);
   }),
   { editDelegation }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: '委托信息修改',
-    moduleName: 'clearance',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: '委托信息修改',
+  moduleName: 'clearance',
 })
 @Form.create()
 export default class AcceptanceEdit extends Component {

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Table, Icon, message } from 'antd';
 import moment from 'moment';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, openEfModal } from 'common/reducers/cmsDelegation';
 import RowUpdater from './rowUpdater';
@@ -51,14 +52,21 @@ export default class SubdelgTable extends Component {
     dataIndex: 'bill_seq_no',
     width: 160,
     render: (o, record) => {
-      let linkTo = `/clearance/${this.props.ietype}/docs/make/`;
       if (record.bill_status > 4) {
-        linkTo = `/clearance/${this.props.ietype}/docs/view/`;
+        return (
+          <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
+            {o}
+          </NavLink>
+        );
+      } else {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <NavLink to={`/clearance/${this.props.ietype}/docs/make/${o}`}>
+            {o}
+            </NavLink>
+          </PrivilegeCover>
+        );
       }
-      return (
-        <NavLink to={`${linkTo}${o}`}>
-          {o}
-        </NavLink>);
     },
   }, {
     title: this.msg('declareWay'),
@@ -90,9 +98,11 @@ export default class SubdelgTable extends Component {
           return o;
         } else {
           return (
-            <RowUpdater onHit={this.handleDeclNoFill}
-              label={<Icon type="edit" />} row={record}
-            />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+              <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                label={<Icon type="edit" />}
+              />
+            </PrivilegeCover>
           );
         }
       } else {

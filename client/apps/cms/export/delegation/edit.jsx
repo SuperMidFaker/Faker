@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import Edit from '../../common/delegation/edit';
 import { loadDelg } from 'common/reducers/cmsDelegation';
 
@@ -13,6 +14,7 @@ function fetchData({ cookie, params, dispatch, state }) {
 }
 
 @connectFetch()(fetchData)
+@withPrivilege({ module: 'clearance', feature: 'export', action: 'edit' })
 export default class ExportAcceptanceEdit extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,

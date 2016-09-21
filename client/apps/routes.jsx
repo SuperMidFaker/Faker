@@ -18,8 +18,7 @@ import MyProfile from './account/profile';
 import Password from './account/password';
 import Module from './module';
 import Transport from './transport/module-transport';
-import TMSDashboard from './transport/dashboard';
-import TMSOperationLogs from './transport/operationLogs';
+import * as TMSDashboard from './transport/dashboard';
 import * as TMSAcceptance from './transport/acceptance';
 import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
@@ -124,8 +123,8 @@ export default(store, cookie) => {
         </Route>
         <Route component={Module}>
           <Route path={DEFAULT_MODULES.transport.id} component={Transport}>
-            <Route path="dashboard" component={TMSDashboard}>
-              <Route path="operationLogs" component={TMSOperationLogs} />
+            <Route path="dashboard" component={TMSDashboard.Index}>
+              <Route path="operationLogs" component={TMSDashboard.Log} />
             </Route>
             <Route path="shipment">
               <IndexRoute component={TMSAcceptance.List} />

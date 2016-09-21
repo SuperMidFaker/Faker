@@ -11,6 +11,44 @@ const MODULE_CLEARANCE = {
   text: 'moduleClearance',
   defaultText: '清关管理',
   features: [
+    {
+      id: 'import',
+      text: 'featClearanceImport',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'export',
+      text: 'featClearanceExport',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
   ],
 };
 
@@ -80,6 +118,44 @@ const MODULE_TRANSPORT = {
         }, {
           id: 'create',
           text: 'featActionCreate',
+        },
+      ],
+    },
+    {
+      id: 'resources',
+      text: 'featTransportResources',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'tariff',
+      text: 'featTransportTariff',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
         },
       ],
     },

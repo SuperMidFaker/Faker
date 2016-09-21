@@ -10,7 +10,6 @@ import NavLink from '../../../components/nav-link';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { ACCOUNT_STATUS }
   from 'common/constants';
 
@@ -32,17 +31,10 @@ function fetchData({ state, dispatch, cookie }) {
     loadTenants, delTenant, switchStatus,
   }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    text: '租户管理',
-    moduleName: 'tenants',
-    withModuleLayout: false,
-    goBackFn: '',
-  }));
+@connectNav({
+  depth: 2,
+  text: '租户管理',
+  moduleName: 'tenants',
 })
 export default class List extends React.Component {
   static propTypes = {

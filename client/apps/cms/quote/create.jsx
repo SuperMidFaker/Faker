@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { setNavTitle } from 'common/reducers/navbar';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -15,9 +14,6 @@ const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
-function goBack(router) {
-  router.goBack();
-}
 
 function getRowKey(row) {
   return row.id;
@@ -30,20 +26,13 @@ function getRowKey(row) {
     clients: state.cmsDelegation.formRequire.clients,
   }),
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: `${formatMsg(props.intl, 'newPrice')}`,
-    moduleName: 'cmsCompRelation_create',
-    withModuleLayout: false,
-    goBackFn: () => goBack(router),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => formatMsg(props.intl, 'newPrice'),
+  moduleName: 'clearance',
 })
 @Form.create()
-export default class CreateCompRelation extends Component {
+export default class QuotingCreate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     clients: PropTypes.array.isRequired,

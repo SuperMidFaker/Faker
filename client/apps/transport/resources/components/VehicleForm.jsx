@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Button, Select, Input } from 'antd';
 import { loadVehicleParams } from 'common/reducers/transportResources';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import ContentWrapper from './ContentWrapper';
 
 const FormItem = Form.Item;
@@ -19,6 +20,10 @@ const formItemLayout = {
   }),
   { loadVehicleParams }
 )
+@withPrivilege({
+  module: 'transport', feature: 'resources',
+  action: (props) => { return props.mode === 'edit' ? 'edit' : 'create'; },
+})
 export default class VehicleForm extends Component {
   componentDidMount() {
     const { car, form, mode } = this.props;

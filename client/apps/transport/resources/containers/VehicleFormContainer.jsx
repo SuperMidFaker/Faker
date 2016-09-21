@@ -4,23 +4,18 @@ import { connect } from 'react-redux';
 import VehicleForm from '../components/VehicleForm.jsx';
 import { addVehicle, editVehicle, validateVehicle } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 
-@connectNav((props, dispatch, router) => {
-  dispatch(setNavTitle({
-    depth: 3,
-    text: '车辆信息',
-    muduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
-})
 @connect(state => ({
   drivers: state.transportResources.drivers,
   cars: state.transportResources.cars,
   vehicleValidate: state.transportResources.vehicleValidate,
   tenantId: state.account.tenantId,
 }), { addVehicle, editVehicle, validateVehicle })
+@connectNav({
+  depth: 3,
+  text: '车辆信息',
+  muduleName: 'transport',
+})
 @Form.create()
 export default class VehicleFormContainer extends Component {
   static propTypes = {

@@ -10,9 +10,10 @@ import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import './preview-panel.less';
 import Footer from './preview-panel-footer';
 import ShareShipmentModal from './share-shipment';
+import './preview-panel.less';
+
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
@@ -35,6 +36,7 @@ function getTrackStatusMsg(status, eff) {
   }
   return msg;
 }
+
 @injectIntl
 @connect(
   state => ({
@@ -63,9 +65,6 @@ export default class PreviewPanel extends React.Component {
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
-  }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);

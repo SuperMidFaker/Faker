@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Form, Button, Input } from 'antd';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import Cascader from 'client/components/region-cascade';
 
 const FormItem = Form.Item;
@@ -9,6 +10,10 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
+@withPrivilege({
+  module: 'transport', feature: 'resources',
+  action: (props) => { return props.mode === 'edit' ? 'edit' : 'create'; },
+})
 export default class CarForm extends Component {
   componentDidMount() {
     const { node, form, mode, region, changeRegion } = this.props;
