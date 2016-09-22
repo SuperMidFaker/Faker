@@ -52,6 +52,7 @@ export default function connectNav(navCallback) {
             text: typeof text === 'function' ? text(props) : text || DEFAULT_MODULES[moduleName].text,
             moduleName,
             goBackFn: depth === 3 ? () => this.context.router.goBack() : undefined,
+            // router.goBack won't work on initial login next
           }));
         }
       }

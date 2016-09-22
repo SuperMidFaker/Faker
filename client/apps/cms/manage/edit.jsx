@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { setNavTitle } from 'common/reducers/navbar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import CompRelationForm from './compRelationForm';
@@ -16,10 +15,6 @@ function fetchData({ dispatch, cookie, params }) {
   return dispatch(loadCompRelation(cookie, params));
 }
 
-function goBack(router) {
-  router.goBack();
-}
-
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
@@ -29,17 +24,10 @@ function goBack(router) {
     formData: state.cmsCompRelation.formData,
   }),
   { loadCompRelation })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: formatContainerMsg(props.intl, 'fixOp') + formatMsg(props.intl, 'relation'),
-    moduleName: 'cmsCompRelation_edit',
-    withModuleLayout: false,
-    goBackFn: () => goBack(router),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => formatContainerMsg(props.intl, 'fixOp') + formatMsg(props.intl, 'relation'),
+  moduleName: 'clearance',
 })
 export default class EditCompRelation extends Component {
   static propTypes = {

@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadNewForm, loadFormParams } from 'common/reducers/transportTariff';
 import AgreementForm from './forms/agreement';
 import SurchargeForm from './forms/surcharge';
@@ -27,18 +27,12 @@ function fetchData({ dispatch, state }) {
     tariffId: state.transportTariff.tariffId,
   })
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: formatMsg(props.intl, 'tariffCreate'),
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => formatMsg(props.intl, 'tariffCreate'),
+  moduleName: 'transport',
 })
+@withPrivilege({ module: 'transport', feature: 'tariff', action: 'create' })
 export default class TariffCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

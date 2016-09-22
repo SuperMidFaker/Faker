@@ -3,21 +3,18 @@ import { connect } from 'react-redux';
 import Main from '../components/Main';
 import { setMenuItemKey } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    text: '资源',
-    muduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
-})
 @connect(state => ({
   selectedKey: state.transportResources.selectedMenuItemKey,
   loading: state.transportResources.loading,
 }), { setMenuItemKey })
+@connectNav({
+  depth: 2,
+  text: '资源管理',
+  muduleName: 'transport',
+})
+@withPrivilege({ module: 'transport', feature: 'resources' })
 export default class MainContainer extends Component {
   static propTypes = {
     selectedKey: PropTypes.string.isRequired,  // 当前选中的MenuItem key

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadBills, loadEntries, loadCmsParams } from 'common/reducers/cmsDeclare';
 import DeclareMake from '../../common/docs/make';
 
@@ -15,6 +16,7 @@ function fetchData({ dispatch, params, state }) {
 }
 
 @connectFetch()(fetchData)
+@withPrivilege({ module: 'clearance', feature: 'import', aciton: 'create' })
 export default class ImportDeclareMake extends React.Component {
   static propTypes = {
     params: PropTypes.object,

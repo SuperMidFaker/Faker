@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Button, Table } from 'antd';
 import { Link } from 'react-router';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
 const rowSelection = {
@@ -13,27 +14,29 @@ export default function VehicleList(props) {
 
   function editAndStopCarOperations(record) {
     return (
-      <span>
-        <Link to={`/transport/resources/edit_car/${record.vehicle_id}`}>修改</Link>
-        <span className="ant-divider" />
-        <a onClick={() => onStopCarBtnClick(record.vehicle_id)}
-          disabled={record.status === '在途中'}
-        >
-          停用
-        </a>
-      </span>
+      <PrivilegeCover module="transport" feature="resources" action="edit">
+        <span>
+          <Link to={`/transport/resources/edit_car/${record.vehicle_id}`}>修改</Link>
+          <span className="ant-divider" />
+          <a onClick={() => onStopCarBtnClick(record.vehicle_id)} disabled={
+            record.status === '在途中'
+          }>
+            停用
+          </a>
+        </span>
+      </PrivilegeCover>
     );
   }
 
   function resumeCarOperaions(record) {
     return (
-      <span>
-        <a
-          onClick={() => onResumeCarBtnClick(record.vehicle_id)}
-        >
-          启用
-        </a>
-      </span>
+      <PrivilegeCover module="transport" feature="resources" action="edit">
+        <span>
+          <a onClick={() => onResumeCarBtnClick(record.vehicle_id)}>
+            启用
+          </a>
+        </span>
+      </PrivilegeCover>
     );
   }
 
@@ -95,7 +98,9 @@ export default function VehicleList(props) {
     <div className="main-content">
       <div className="page-body">
         <div className="panel-header">
-          <Button type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
+          <PrivilegeCover module="transport" feature="resources" action="create">
+            <Button type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
+          </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
           <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />

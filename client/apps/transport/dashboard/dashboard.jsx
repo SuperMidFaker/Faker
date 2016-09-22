@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { Card, DatePicker, Col, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics } from 'common/reducers/shipment';
-import './index.less';
-import messages from './message.i18n';
+import messages from '../message.i18n';
+import '../index.less';
+
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
@@ -26,18 +27,11 @@ function fetchData({ state, dispatch, cookie }) {
     statistics: state.shipment.statistics,
   }),
   { loadShipmentStatistics })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'transport',
 })
-
+@withPrivilege({ module: 'transport', feature: 'dashboard' })
 export default class Dashboard extends React.Component {
   static propTypes = {
     children: PropTypes.object,
@@ -138,59 +132,59 @@ export default class Dashboard extends React.Component {
             <Card title="活动简报" extra={datePicker}>
               <QueueAnim type={['right', 'left']} delay={500} className="ant-row-flex ant-row-flex-space-around ant-row-flex-middle">
                 <Col span={4} className="stats-data" key="a">
-                    <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
-                    <div style={right}>
-                      <div style={rightTop}>
-                        <NavLink to={this.logsLocation('accepted')}>
-                        {count[0]}
-                        </NavLink>
-                      </div>
-                      <div style={rightBottom}>{this.msg('accepted')}</div>
+                  <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)', ...iconStyle }} />
+                  <div style={right}>
+                    <div style={rightTop}>
+                      <NavLink to={this.logsLocation('accepted')}>
+                      {count[0]}
+                      </NavLink>
                     </div>
+                    <div style={rightBottom}>{this.msg('accepted')}</div>
+                  </div>
                 </Col>
                 <Col span={4} className="stats-data" key="b">
-                    <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
-                    <div style={right}>
-                      <div style={rightTop}>
-                        <NavLink to={this.logsLocation('sent')}>
-                        {count[1]}
-                        </NavLink>
-                      </div>
-                      <div style={rightBottom}>{this.msg('sent')}</div>
+                  <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)', ...iconStyle }} />
+                  <div style={right}>
+                    <div style={rightTop}>
+                      <NavLink to={this.logsLocation('sent')}>
+                      {count[1]}
+                      </NavLink>
                     </div>
+                    <div style={rightBottom}>{this.msg('sent')}</div>
+                  </div>
                 </Col>
                 <Col span={4} className="stats-data" key="c">
-                    <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
-                    <div style={right}>
-                      <div style={rightTop}>
-                        <NavLink to={this.logsLocation('pickedup')}>
-                        {count[2]}
-                        </NavLink>
-                      </div>
-                      <div style={rightBottom}>{this.msg('pickedup')}</div>
+                  <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)', ...iconStyle }} />
+                  <div style={right}>
+                    <div style={rightTop}>
+                      <NavLink to={this.logsLocation('pickedup')}>
+                      {count[2]}
+                      </NavLink>
                     </div>
+                    <div style={rightBottom}>{this.msg('pickedup')}</div>
+                  </div>
                 </Col>
                 <Col span={4} className="stats-data" key="d">
-                    <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
-                    <div style={right}>
-                      <div style={rightTop}>
-                        <NavLink to={this.logsLocation('delivered')}>
-                        {count[3]}
-                        </NavLink>
-                      </div>
-                      <div style={rightBottom}>{this.msg('delivered')}</div>
+                  <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)', ...iconStyle }} />
+                  <div style={right}>
+                    <div style={rightTop}>
+                      <NavLink to={this.logsLocation('delivered')}>
+                      {count[3]}
+                      </NavLink>
                     </div>
+                    <div style={rightBottom}>{this.msg('delivered')}</div>
+                  </div>
                 </Col>
                 <Col span={4} className="stats-data" key="e">
-                    <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
-                    <div style={right}>
-                      <div style={rightTop}>
-                        <NavLink to={this.logsLocation('completed')}>
-                        {count[4]}
-                        </NavLink>
-                      </div>
-                      <div style={rightBottom}>{this.msg('completed')}</div>
+                  <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)', ...iconStyle }} />
+                  <div style={right}>
+                    <div style={rightTop}>
+                      <NavLink to={this.logsLocation('completed')}>
+                      {count[4]}
+                      </NavLink>
                     </div>
+                    <div style={rightBottom}>{this.msg('completed')}</div>
+                  </div>
                 </Col>
                 </QueueAnim>
             </Card>

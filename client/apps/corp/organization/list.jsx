@@ -14,7 +14,6 @@ import { isLoaded } from 'client/common/redux-actions';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES }
   from 'common/constants';
@@ -49,17 +48,10 @@ function fetchData({ state, dispatch, cookie }) {
     closeTenantAppsEditor,
   }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    text: formatContainerMsg(props.intl, 'organTitle'),
-    moduleName: 'corp',
-    withModuleLayout: false,
-    goBackFn: '',
-  }));
+@connectNav({
+  depth: 2,
+  text: props => formatContainerMsg(props.intl, 'organTitle'),
+  moduleName: 'corp',
 })
 @withPrivilege({ module: 'corp', feature: 'organization' })
 export default class CorpList extends React.Component {

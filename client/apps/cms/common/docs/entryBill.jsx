@@ -4,13 +4,13 @@ import { Tabs, Dropdown, Menu, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
-import { setNavTitle } from 'common/reducers/navbar';
 import BillForm from './forms/billForm';
 import EntryForm from './forms/entryForm';
 import MergeSplitModal from './modals/mergeSplit';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import './entryBill.less';
+
 const formatMsg = format(messages);
 
 const TabPane = Tabs.TabPane;
@@ -27,18 +27,12 @@ const DropdownButton = Dropdown.Button;
   }),
   { addEntry, setTabKey, openMergeSplitModal }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: props.params.billno,
-    moduleName: 'clearance',
-    withModuleLayout: false,
-    // router.goBack won't work on initial login next
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => props.params.billno,
+  moduleName: 'clearance',
+  lifecycle: 'componentWillReceiveProps',
+  until: true,
 })
 export default class EntryBillForm extends React.Component {
   static propTypes = {

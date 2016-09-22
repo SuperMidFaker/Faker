@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { Button, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -11,6 +9,7 @@ import messages from './message.i18n';
 import { MESSAGE_STATUS } from 'common/constants';
 import { loadMessages, markMessages, markMessage } from 'common/reducers/corps';
 import './acc.less';
+
 const formatMsg = format(messages);
 
 const RadioButton = Radio.Button;
@@ -26,7 +25,6 @@ function fetchData({ state, dispatch, cookie }) {
 }
 
 @connectFetch()(fetchData)
-
 @injectIntl
 @connect(
   state => ({
@@ -35,15 +33,6 @@ function fetchData({ state, dispatch, cookie }) {
   }),
   { loadMessages, markMessages, markMessage }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 1,
-  }));
-})
-
 export default class MessageList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

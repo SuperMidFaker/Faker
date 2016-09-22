@@ -6,7 +6,6 @@ import NodeForm from '../components/NodeForm';
 import ContentWrapper from '../components/ContentWrapper';
 import { addNode, editNode, changeRegion, loadNodeUserList, addNodeUser, editNodeUser, removeNodeUser, updateUserStatus } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import NodeUserList from '../components/NodeUserList';
 
 function fetchData({ dispatch, params }) {
@@ -14,22 +13,21 @@ function fetchData({ dispatch, params }) {
 }
 
 @connectFetch()(fetchData)
-@connectNav((props, dispatch, router) => {
-  dispatch(setNavTitle({
-    depth: 3,
-    text: '地点信息',
-    muduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
-})
 @connect(state => ({
   nodes: state.transportResources.nodes,
   nodeType: state.transportResources.nodeType,
   region: state.transportResources.region,
   tenantId: state.account.tenantId,
   nodeUsers: state.transportResources.nodeUsers,
-}), { addNode, editNode, changeRegion, addNodeUser, editNodeUser, removeNodeUser, updateUserStatus })
+}), {
+  addNode, editNode, changeRegion, addNodeUser,
+  editNodeUser, removeNodeUser, updateUserStatus,
+})
+@connectNav({
+  depth: 3,
+  text: '地点信息',
+  muduleName: 'transport',
+})
 @Form.create()
 export default class NodeFormConainer extends Component {
   static propTypes = {

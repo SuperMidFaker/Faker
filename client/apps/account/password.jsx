@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { Button, Form, Input, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'common/reducers/account';
-import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -20,14 +18,6 @@ const FormItem = Form.Item;
   }),
   { changePassword }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 1,
-  }));
-})
 @Form.create()
 export default class ChangePassword extends React.Component {
   static propTypes = {
