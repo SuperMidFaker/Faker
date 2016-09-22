@@ -6,6 +6,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CREATE_QUOTE', 'CREATE_QUOTE_SUCCEED', 'CREATE_QUOTE_FAIL',
   'SUBMIT_QUOTE', 'SUBMIT_QUOTE_SUCCEED', 'SUBMIT_QUOTE_FAIL',
   'QUOTES_LOAD', 'QUOTES_LOAD_SUCCEED', 'QUOTES_LOAD_FAIL',
+  'EDITQUOTE_LOAD', 'EDITQUOTE_LOAD_SUCCEED', 'EDITQUOTE_LOAD_FAIL',
 ]);
 
 const initialState = {
@@ -14,9 +15,12 @@ const initialState = {
   quoteData: {
     quote_no: '',
     tariff_kind: '',
-    partners: {},
+    partners: '',
     decl_way_code: [],
-    trans_mode: '',
+    trans_mode: [],
+    remarks: [],
+    modify_by: '',
+    valid: true,
     fees: [],
   },
   quotes: [],
@@ -35,6 +39,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, quotesLoading: true };
     case actionTypes.QUOTES_LOAD_SUCCEED:
       return { ...state, quotes: action.result.data, quotesLoading: false };
+    case actionTypes.EDITQUOTE_LOAD:
+      return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
+    case actionTypes.EDITQUOTE_LOAD_SUCCEED:
+      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     default:
       return state;
   }
@@ -90,6 +98,17 @@ export function loadQuoteTable(tenantId) {
       endpoint: 'v1/cms/quote/load',
       method: 'get',
       params: { tenantId },
+      origin: 'mongo',
+    },
+  };
+}
+export function loadEditQuote(quoteNo) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.EDITQUOTE_LOAD, actionTypes.EDITQUOTE_LOAD_SUCCEED, actionTypes.EDITQUOTE_LOAD_FAIL],
+      endpoint: 'v1/cms/quote/loadquote',
+      method: 'get',
+      params: { quoteNo },
       origin: 'mongo',
     },
   };

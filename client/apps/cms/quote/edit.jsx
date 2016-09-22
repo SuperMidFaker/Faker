@@ -2,15 +2,20 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { submitQuotes } from 'common/reducers/cmsQuote';
-import { Button, message, Form } from 'antd';
+import { submitQuotes, loadEditQuote } from 'common/reducers/cmsQuote';
+import { Button, message, Form, Popconfirm } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
+import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
 
+function fetchData({ params, dispatch }) {
+  return dispatch(loadEditQuote(params.quoteno));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -25,11 +30,11 @@ const formatMsg = format(messages);
   text: props => formatMsg(props.intl, 'quoteManage'),
   moduleName: 'clearance',
 })
-@withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 @Form.create()
-export default class QuotingCreate extends Component {
+export default class QuotingEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     quoteData: PropTypes.object.isRequired,
     submitQuotes: PropTypes.func.isRequired,
   }
@@ -54,15 +59,25 @@ export default class QuotingCreate extends Component {
       }
     });
   }
+  handleCopy = () => {
+
+  }
+  handleConfirm = () => {
+
+  }
   render() {
     const { form } = this.props;
     const msg = key => formatMsg(this.props.intl, key);
     return (
       <div>
         <header className="top-bar">
-          <span>{msg('newQuote')}</span>
+          <span>{msg('editQuote')}</span>
           <div className="tools">
-            <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
+            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleSave} >{msg('save')}</Button>
+            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
+            <Popconfirm title="确认删除？" onConfirm={this.handleConfirm} >
+              <Button>删除</Button>
+            </Popconfirm>
           </div>
         </header>
         <div className="main-content">

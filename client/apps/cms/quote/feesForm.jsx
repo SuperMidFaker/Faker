@@ -13,14 +13,29 @@ const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
-
+function getFieldInits(quoteData) {
+  const init = {};
+  if (quoteData) {
+    [
+      'tariff_kind', 'partners',
+    ].forEach((qd) => {
+      init[qd] = quoteData[qd] || '';
+    });
+    [
+      'decl_way_code', 'trans_mode', 'remarks',
+    ].forEach((qd) => {
+      init[qd] = quoteData[qd] || [];
+    });
+  }
+  return init;
+}
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     partners: state.cmsQuote.partners,
     clients: state.cmsQuote.clients,
-    quoteData: state.cmsQuote.quoteData,
+    fieldInits: getFieldInits(state.cmsQuote.quoteData),
   }),
 )
 export default class FeesForm extends Component {
@@ -29,7 +44,7 @@ export default class FeesForm extends Component {
     tenantId: PropTypes.number.isRequired,
     partners: PropTypes.array.isRequired,
     clients: PropTypes.array.isRequired,
-    quoteData: PropTypes.object.isRequired,
+    fieldInits: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -64,7 +79,7 @@ export default class FeesForm extends Component {
     }
   }
   render() {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldProps }, fieldInits } = this.props;
     const { coops, disBase } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
@@ -76,6 +91,7 @@ export default class FeesForm extends Component {
               <Select style={{ width: '80%' }} onSelect={this.handleKindSelect}
                 {...getFieldProps('tariff_kind', {
                   rules: [{ required: true, message: '报价类型必选' }],
+                  initialValue: fieldInits.tariff_kind,
                 })}
               >
               {
@@ -93,6 +109,7 @@ export default class FeesForm extends Component {
                 {...getFieldProps('partners', {
                   rules: [{ required: true, message: '必选' }],
                   getValueFromEvent: this.handleClientChange,
+                  initialValue: fieldInits.partners,
                 })}
               >
               {
@@ -110,6 +127,7 @@ export default class FeesForm extends Component {
               <Select multiple style={{ width: '80%' }} placeholder="不限"
                 {...getFieldProps('decl_way_code', {
                   rules: [{ required: true, message: '报关类型必选', type: 'array' }],
+                  initialValue: fieldInits.decl_way_code,
                 })}
               >
               {
@@ -125,6 +143,7 @@ export default class FeesForm extends Component {
               <Select multiple style={{ width: '80%' }} placeholder="不限"
                 {...getFieldProps('trans_mode', {
                   rules: [{ required: true, message: '运输方式必选', type: 'array' }],
+                  initialValue: fieldInits.trans_mode,
                 })}
               >
               {
@@ -138,7 +157,9 @@ export default class FeesForm extends Component {
           <Col sm={4}>
             <FormItem label={msg('remark')} {...formItemLayout}>
               <Select tags style={{ width: '80%' }}
-                {...getFieldProps('remarks')}
+                {...getFieldProps('remarks', {
+                  initialValue: fieldInits.remarks,
+                })}
               >
               </Select>
             </FormItem>

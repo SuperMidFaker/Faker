@@ -19,7 +19,7 @@ function ColumnInput(props) {
       onChange(record, field, ev.target.value);
     }
   }
-  if (record.fee_style === 1) {
+  if (record.fee_style === 'cushion') {
     return <span></span>;
   } else {
     return inEdit ? <Input value={record[field] || ''} onChange={handleChange} />

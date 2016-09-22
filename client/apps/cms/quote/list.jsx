@@ -11,6 +11,7 @@ import { TARIFF_KINDS, TRANS_MODE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from 'client/components/nav-link';
+import moment from 'moment';
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch }) {
@@ -24,7 +25,8 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     quotes: state.cmsQuote.quotes,
   }),
-  { switchStatus, loadPartners, createQuote })
+  { switchStatus, loadPartners, createQuote }
+)
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
@@ -107,20 +109,30 @@ export default class QuoteList extends Component {
         },
       }, {
         title: msg('status'),
-        dataIndex: 'end_status',
+        dataIndex: 'valid',
         width: 150,
+        render: (o) => {
+          if (!o) {
+            return '无效';
+          } else {
+            return '有效';
+          }
+        },
       }, {
         title: msg('modifiedCount'),
-        dataIndex: 'modified_count',
+        dataIndex: 'modify_count',
         width: 150,
       }, {
         title: msg('modifiedBy'),
-        dataIndex: 'modified_by',
+        dataIndex: 'modify_by',
         width: 150,
       }, {
         title: msg('modifiedTime'),
-        dataIndex: 'modified_time',
+        dataIndex: 'modify_time',
         width: 150,
+        render: (o, record) => {
+          return `${moment(record.modify_time).format('MM.DD HH:mm')}`;
+        },
       }, {
         title: msg('operation'),
         width: 100,
@@ -138,18 +150,14 @@ export default class QuoteList extends Component {
     return (
       <div>
         <header className="top-bar">
-          <span></span>
+          <span>{msg('quoteManage')}</span>
         </header>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <PrivilegeCover module="clearance" feature="quote" action="create">
-                <Button type="primary" style={{ marginBottom: 8 }}
-                  onClick={() => this.handleNavigationTo('/clearance/quote/create')}
-                >
-                  新建报价
-                </Button>
-              </PrivilegeCover>
+              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
+                新建报价
+              </Button>
             </div>
             <div className="panel-body table-panel">
               <Table columns={columns} dataSource={quotes} />

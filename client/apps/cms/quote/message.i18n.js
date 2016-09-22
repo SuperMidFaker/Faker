@@ -5,9 +5,17 @@ const messages = defineMessages({
     id: 'cms.quote.quote_no',
     defaultMessage: '报价编号',
   },
-  newPrice: {
+  quoteManage: {
+    id: 'cms.quote.quote_manage',
+    defaultMessage: '报价管理',
+  },
+  newQuote: {
     id: 'cms.quote.new_quote',
     defaultMessage: '新建报价',
+  },
+  editQuote: {
+    id: 'cms.quote.edit_quote',
+    defaultMessage: '修订报价',
   },
   tariffKinds: {
     id: 'cms.quote.tariff_kinds',
@@ -80,6 +88,10 @@ const messages = defineMessages({
   save: {
     id: 'cms.quote.save',
     defaultMessage: '保存',
+  },
+  copy: {
+    id: 'cms.quote.copy',
+    defaultMessage: '复制',
   },
   cancel: {
     id: 'cms.quote.cancel',
