@@ -3,6 +3,7 @@ import { Timeline } from 'antd';
 import moment from 'moment';
 import { renderLoc } from './consignLocation';
 
+const TimelineItem = Timeline.Item;
 export default class TrackingTimeline extends React.Component {
   static propTypes = {
     tracking: PropTypes.object.isRequired,
@@ -17,9 +18,9 @@ export default class TrackingTimeline extends React.Component {
     });
     const trackingSteps = points.map((s, i) => {
       if (i === 0) {
-        return (<Timeline.Item key={i} color="green">{s.title} {s.description}</Timeline.Item>);
+        return (<TimelineItem key={i} color="green">{s.title} {s.description}</TimelineItem>);
       } else {
-        return (<Timeline.Item key={i}>{s.title} {s.description}</Timeline.Item>);
+        return (<TimelineItem key={i}>{s.title} {s.description}</TimelineItem>);
       }
     });
     return (

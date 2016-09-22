@@ -12,7 +12,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { isLoaded } from 'client/common/redux-actions';
-import { ACCOUNT_STATUS, PRESET_TENANT_ROLE } from 'common/constants';
+import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -21,6 +21,7 @@ import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
+const Option = Select.Option;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];
@@ -255,11 +256,9 @@ export default class PersonnelSetting extends React.Component {
       }],
       render: (o, record) => this.renderColumnText(
         record.status,
-        Object.keys(PRESET_TENANT_ROLE).filter(
-          trk => PRESET_TENANT_ROLE[trk].name === record.role
-        ).length > 0 ?
-        formatContainerMsg(intl, record.role)
-        : record.role
+        PRESET_ROLE_NAME_KEYS[record.role] ?
+        formatContainerMsg(intl, PRESET_ROLE_NAME_KEYS[record.role].text)
+        : record.role,
       ),
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
@@ -337,7 +336,7 @@ export default class PersonnelSetting extends React.Component {
                   onChange={value => this.handleTenantSwitch(value)}
                 >
                   {
-                    branches.map(br => <Select.Option key={br.key} value={`${br.key}`}>{br.name}</Select.Option>)
+                    branches.map(br => <Option key={br.key} value={`${br.key}`}>{br.name}</Option>)
                   }
                 </Select>
               </div>
