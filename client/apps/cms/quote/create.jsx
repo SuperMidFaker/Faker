@@ -160,7 +160,7 @@ export default class QuotingCreate extends Component {
       return value;
     }
     const selPartnerId = Number(value);
-    const partners = this.props.partners.filter(cl => cl.partner_id === selPartnerId);
+    const partners = this.state.coops.filter(cl => cl.partner_id === selPartnerId);
     if (partners.length === 1) {
       const partner = partners[0];
       return partner.name;
@@ -168,7 +168,7 @@ export default class QuotingCreate extends Component {
     return value;
   }
   handleEditChange = (record, field, value) => {
-    record[field] = value;
+    record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
   }
   handleAddFees = () => {

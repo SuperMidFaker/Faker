@@ -28,13 +28,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.PARTNERS_LOAD_SUCCEED:
       return { ...state, partners: action.result.data.partners, clients: action.result.data.clients };
     case actionTypes.CREATE_QUOTE:
-      return { ...state, quoteData: { ...initialState.quoteData, loading: true }};
+      return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
     case actionTypes.CREATE_QUOTE_SUCCEED:
-      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false }};
+      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     case actionTypes.QUOTES_LOAD:
       return { ...state, quotesLoading: true };
     case actionTypes.QUOTES_LOAD_SUCCEED:
-      return { ...state, quotes: action.result.data, quotesLoading: false }
+      return { ...state, quotes: action.result.data, quotesLoading: false };
     default:
       return state;
   }
@@ -51,7 +51,7 @@ export function loadPartners(tenantId) {
   };
 }
 
-export function createQuote(params) {
+export function createQuote(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -61,7 +61,7 @@ export function createQuote(params) {
       ],
       endpoint: 'v1/cms/quote/createQuote',
       method: 'post',
-      data: params,
+      data: { tenantId },
       origin: 'mongo',
     },
   };

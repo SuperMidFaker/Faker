@@ -24,7 +24,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     quotes: state.cmsQuote.quotes,
   }),
-  { loadCompRelations, switchStatus })
+  { switchStatus, loadPartners, createQuote })
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
@@ -70,10 +70,10 @@ export default class QuoteList extends Component {
         width: 150,
         render: (o) => {
           let text = '';
-          if(o) {
+          if (o) {
             o.forEach((d) => {
               const decl = DECL_TYPE.filter(dl => dl.key === d)[0];
-              text = decl && decl.value + '|' + text;
+              text = `${decl && decl.value}|${text}`;
             });
           }
           return text;
@@ -84,10 +84,10 @@ export default class QuoteList extends Component {
         width: 150,
         render: (o) => {
           let text = '';
-          if(o) {
+          if (o) {
             o.forEach((d) => {
-            const decl = TRANS_MODE.filter(dl => dl.value === d)[0];
-              text = decl && decl.text + '|' + text;
+              const decl = TRANS_MODE.filter(dl => dl.value === d)[0];
+              text = `${decl && decl.text}|${text}`;
             });
           }
           return text;
@@ -98,9 +98,9 @@ export default class QuoteList extends Component {
         width: 150,
         render: (o) => {
           let text = '';
-          if(o) {
+          if (o) {
             o.forEach((d) => {
-              text = d + '|' + text;
+              text = `${d}|${text}`;
             });
           }
           return text;
@@ -132,7 +132,7 @@ export default class QuoteList extends Component {
               </NavLink>
             </span>
           );
-        }
+        },
       },
     ];
     return (
@@ -152,7 +152,7 @@ export default class QuoteList extends Component {
               </PrivilegeCover>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={quotes}/>
+              <Table columns={columns} dataSource={quotes} />
             </div>
           </div>
         </div>
