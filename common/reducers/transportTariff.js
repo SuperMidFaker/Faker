@@ -36,6 +36,8 @@ const initialState = {
   agreement: {
     name: '',
     intervals: [],
+    adjustCoefficient: 1,
+    taxrate: { mode: 0, value: 0 },
   },
   ratesRefAgreement: {},
   ratesSourceLoading: false,
@@ -62,12 +64,8 @@ const initialState = {
   surcharge: {
     pickup: { mode: 0, value: 0 },
     delivery: { mode: 0, value: 0 },
-    other1: { enabled: false, mode: 0, value: 0 },
-    other2: { enabled: false, mode: 0, value: 0 },
     load: { mode: 0, value: 0 },
     unload: { mode: 0, value: 0 },
-    adjustCoefficient: 1,
-    taxrate: { mode: 0, value: 0 },
   },
   advanceChargeList: {
     totalCount: 0,
@@ -114,19 +112,17 @@ export default function reducer(state = initialState, action) {
         meter: res.meter,
         intervals: res.intervals,
         vehicleTypes: res.vehicleTypes,
+        adjustCoefficient: res.adjustCoefficient,
+        taxrate: res.taxrate,
       };
       const sur = action.result.data.tariff.surcharge;
       let surcharge = initialState.surcharge;
       if (sur) {
         surcharge = {
-          adjustCoefficient: sur.adjustCoefficient,
           pickup: sur.pickup,
           delivery: sur.delivery,
           load: sur.load,
           unload: sur.unload,
-          other1: sur.other1,
-          other2: sur.other2,
-          taxrate: sur.taxrate,
         };
       }
       const partners = res.partner ? [{ partner_code: res.partner.name,

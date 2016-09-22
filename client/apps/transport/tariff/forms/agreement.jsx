@@ -1,16 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Row, Col, Form, Input, Select, DatePicker, Button, message } from 'antd';
+import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Radio, message } from 'antd';
 import PricingLTL from './pricingLTL';
 import PricingFTL from './pricingFTL';
 import PricingCTN from './pricingCTN';
 import { loadPartners, submitAgreement,
   updateAgreement } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, GOODS_TYPES, PARTNERSHIP_TYPE_INFO,
-  PRESET_TRANSMODES } from 'common/constants';
+  PRESET_TRANSMODES, TAX_STATUS } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 24 - 4 },
@@ -294,6 +296,32 @@ export default class AgreementForm extends React.Component {
                     )
                   }
                   </Select>
+                </FormItem>
+              </Col>
+              <Col sm={12} style={{ paddingLeft: '8px' }}>
+                <FormItem label="价格调整系数" {...formItemLayout}>
+                  <Input placeholder="不输入默认为1" {
+                    ...getFieldProps('adjustCoefficient', {
+                      rules: [{ required: false, type: 'number', transform: v => Number(v) }],
+                      initialValue: formData.adjustCoefficient,
+                    })} />
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12}>
+                <FormItem label="税率" {...formItemLayout}>
+                  <RadioGroup {...getFieldProps('taxrate.mode', { initialValue: formData.taxrate.mode })} >
+                    <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
+                    <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
+                  </RadioGroup>
+                </FormItem>
+              </Col>
+              <Col sm={12} style={{ paddingLeft: '8px' }}>
+                <FormItem label="税率值" {...formItemLayout}>
+                  <Input type="number" addonAfter="％" placeholder="请输入税率" {
+                    ...getFieldProps('taxrate.value', { initialValue: formData.taxrate.value })
+                    } />
                 </FormItem>
               </Col>
             </Row>
