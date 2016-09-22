@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Card, Row, Col, Form, Button, Input, Radio, message } from 'antd';
 import { TAX_MODE } from 'common/constants';
 import { submitSurcharges } from 'common/reducers/transportTariff';
+import ContentWrapper from '../../resources/components/ContentWrapper';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -69,6 +70,7 @@ export default class SurchargeForm extends React.Component {
   render() {
     const { formdata } = this.props;
     return (
+      <ContentWrapper>
         <div className="panel-body" style={{ padding: '0 16px' }}>
           <Row>
             <Col span={8} style={{ padding: '0 16px 0 0' }}>
@@ -100,6 +102,7 @@ export default class SurchargeForm extends React.Component {
             </FormItem>
           </Row>
         </div>
+      </ContentWrapper>
     );
   }
 }

@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
   'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
+  'SET_MENU_ITEM_KEY',
 ]);
 
 const initialState = {
@@ -67,12 +68,7 @@ const initialState = {
     load: { mode: 0, value: 0 },
     unload: { mode: 0, value: 0 },
   },
-  advanceChargeList: {
-    totalCount: 0,
-    pageSize: 10,
-    current: 1,
-    data: [],
-  },
+  selectedMenuItemKey: 0,
 };
 
 export default function reducer(state = initialState, action) {
@@ -163,6 +159,8 @@ export default function reducer(state = initialState, action) {
         ratesEndList: action.result.data };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey: action.key };
     default:
       return state;
   }
@@ -422,4 +420,8 @@ export function delRateEnd(rateId, id) {
       origin: 'mongo',
     },
   };
+}
+
+export function setMenuItemKey(key) {
+  return { type: actionTypes.SET_MENU_ITEM_KEY, key };
 }
