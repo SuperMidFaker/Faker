@@ -49,6 +49,82 @@ const MODULE_CLEARANCE = {
         },
       ],
     },
+    {
+      id: 'quote',
+      text: 'featClearanceQuote',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'expense',
+      text: 'featClearanceExpense',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'billing',
+      text: 'featClearanceBilling',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'relation',
+      text: 'featClearanceRelation',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
   ],
 };
 

@@ -48,7 +48,7 @@ PaneFormItem.propTypes = {
   }),
   { showChangeShipmentModal }
 )
-export default class PreviewPanel extends React.Component {
+export default class DetailPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmt: PropTypes.object.isRequired,

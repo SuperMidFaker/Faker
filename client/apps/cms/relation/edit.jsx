@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import CompRelationForm from './compRelationForm';
 import { loadCompRelation } from 'common/reducers/cmsCompRelation';
 import { format } from 'client/common/i18n/helpers';
@@ -29,6 +30,7 @@ function fetchData({ dispatch, cookie, params }) {
   text: props => formatContainerMsg(props.intl, 'fixOp') + formatMsg(props.intl, 'relation'),
   moduleName: 'clearance',
 })
+@withPrivilege({ module: 'clearance', feature: 'relation', action: 'edit' })
 export default class EditCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

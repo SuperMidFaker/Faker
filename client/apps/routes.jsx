@@ -34,7 +34,7 @@ import * as ImportDelegation from './cms/import/delegation';
 import * as ImportDocs from './cms/import/docs';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
-import * as CMSManage from './cms/manage';
+import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
@@ -160,7 +160,6 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
-            <IndexRedirect to={`/${DEFAULT_MODULES.clearance.id}/import`} />
             <Route path="import">
               <IndexRoute component={ImportDelegation.List} />
               <Route path="create" component={ImportDelegation.Create} />
@@ -186,10 +185,10 @@ export default(store, cookie) => {
               <Route path="create" component={CMSQuote.Create} />
             </Route>
             <Route path="relation">
-              <IndexRoute component={CMSManage.Manage} />
-              <Route path="create" component={CMSManage.Create} />
-              <Route path="edit/:id" component={CMSManage.Edit} />
-              <Route path="create/price" component={CMSManage.Price} />
+              <IndexRoute component={CMSRelation.Manage} />
+              <Route path="create" component={CMSRelation.Create} />
+              <Route path="edit/:id" component={CMSRelation.Edit} />
+              <Route path="create/price" component={CMSRelation.Price} />
             </Route>
           </Route>
         </Route>

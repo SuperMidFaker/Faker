@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Icon, Tabs, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BasicPane from './tabpanes/basic-pane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
@@ -23,6 +24,7 @@ const TabPane = Tabs.TabPane;
 export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    ietype: PropTypes.oneOf(['import', 'export']),
     tabKey: PropTypes.string,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
@@ -132,16 +134,22 @@ export default class PreviewPanel extends React.Component {
     const { delegation } = previewer;
     if (previewer.status === 0 && delegation.source === 1) {
       return (
-        <Button size="large" type="primary" onClick={this.handleAccept}>
-          接单
-        </Button>
+        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <Button size="large" type="primary" onClick={this.handleAccept}>
+            接单
+          </Button>
+        </PrivilegeCover>
       );
     } else if (previewer.status === 0 && delegation.source === 2) {
       return (
         <div>
-          <Button size="large" type="default" style={{ marginRight: 20 }} onClick={this.handleDispCancel}>
-            撤回
-          </Button>
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <Button size="large" type="default" style={{ marginRight: 20 }}
+              onClick={this.handleDispCancel}
+            >
+              撤回
+            </Button>
+          </PrivilegeCover>
           <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>
@@ -150,12 +158,16 @@ export default class PreviewPanel extends React.Component {
     } else if (previewer.status === 1 && delegation.source === 1) {
       return (
         <div>
-          <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
-            制单
-          </Button>
-          <Button size="large" type="ghost" style={{ marginRight: 20 }} onClick={this.handleDisp}>
-            分配
-          </Button>
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
+              制单
+            </Button>
+          </PrivilegeCover>
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <Button size="large" type="ghost" style={{ marginRight: 20 }} onClick={this.handleDisp}>
+              分配
+            </Button>
+          </PrivilegeCover>
           <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>
@@ -164,9 +176,11 @@ export default class PreviewPanel extends React.Component {
     } else if (previewer.status === 2 && delegation.source === 1) {
       return (
         <div>
-          <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
-            制单
-          </Button>
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
+              制单
+            </Button>
+          </PrivilegeCover>
           <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, QUOTE_TYPE } from 'common/constants';
@@ -31,6 +32,7 @@ function getRowKey(row) {
   text: props => formatMsg(props.intl, 'newPrice'),
   moduleName: 'clearance',
 })
+@withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 @Form.create()
 export default class QuotingCreate extends Component {
   static propTypes = {

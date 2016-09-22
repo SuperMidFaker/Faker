@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import CompRelationForm from './compRelationForm';
 import { initialState } from 'common/reducers/cmsCompRelation';
 import { format } from 'client/common/i18n/helpers';
@@ -14,6 +15,7 @@ const formatMsg = format(messages);
   text: props => `${formatMsg(props.intl, 'new')}${formatMsg(props.intl, 'relation')}`,
   moduleName: 'clearance',
 })
+@withPrivilege({ module: 'clearance', feature: 'relation', action: 'create' })
 export default class CreateCompRelation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

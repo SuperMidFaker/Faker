@@ -465,11 +465,11 @@ export default class DelegationList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={this.handleCreateBtnClick}
-                icon="plus-circle-o"
-              >
-              {this.msg('delgNew')}
-              </Button>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus-circle-o">
+                {this.msg('delgNew')}
+                </Button>
+              </PrivilegeCover>
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
@@ -481,8 +481,8 @@ export default class DelegationList extends Component {
           </div>
         </div>
         <BillModal ietype={this.props.ietype} />
-          <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-          <PreviewPanel />
+        <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
+        <PreviewPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
   }
