@@ -4,6 +4,7 @@ import VehicleList from '../components/VehicleList.jsx';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadVehicleList, editVehicle } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
 
 function fetchData({ dispatch, state }) {
   return dispatch(loadVehicleList(state.account.tenantId));
@@ -13,6 +14,11 @@ function fetchData({ dispatch, state }) {
 @connect(state => ({
   cars: state.transportResources.cars,
 }), { editVehicle })
+@connectNav({
+  depth: 3,
+  text: '车辆管理',
+  muduleName: 'transport',
+})
 export default class VehicleListContainer extends Component {
   static propTypes = {
     cars: PropTypes.array.isRequired,                 // 服务器返回的车辆数组
@@ -22,7 +28,7 @@ export default class VehicleListContainer extends Component {
     router: PropTypes.object.isRequired,
   }
   handleAddCarBtnClick = () => {
-    this.context.router.push('/transport/resources/add_car');
+    this.context.router.push('/transport/resources/vehicle/add');
   }
   handleStopCarBtnClick = (carId) => {
     this.props.editVehicle({ carId, carInfo: { status: -1 } });

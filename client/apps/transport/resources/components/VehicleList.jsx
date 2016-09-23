@@ -16,7 +16,7 @@ export default function VehicleList(props) {
     return (
       <PrivilegeCover module="transport" feature="resources" action="edit">
         <span>
-          <Link to={`/transport/resources/edit_car/${record.vehicle_id}`}>修改</Link>
+          <Link to={`/transport/resources/vehicle/edit/${record.vehicle_id}`}>修改</Link>
           <span className="ant-divider" />
           <a onClick={() => onStopCarBtnClick(record.vehicle_id)} disabled={
             record.status === '在途中'

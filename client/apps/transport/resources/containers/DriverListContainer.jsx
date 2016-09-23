@@ -5,6 +5,7 @@ import DriverList from '../components/DriverList.jsx';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadDriverList, editDriver, editDriverLogin } from 'common/reducers/transportResources';
 import { transformRawDriverDataToDisplayData } from '../utils/dataMapping';
+import connectNav from 'client/common/decorators/connect-nav';
 
 function fetchData({ dispatch, state }) {
   return dispatch(loadDriverList(state.account.tenantId));
@@ -14,6 +15,11 @@ function fetchData({ dispatch, state }) {
 @connect(state => ({
   drivers: state.transportResources.drivers,
 }), { editDriver, editDriverLogin })
+@connectNav({
+  depth: 3,
+  text: '司机管理',
+  muduleName: 'transport',
+})
 export default class DriverListContainer extends Component {
   static propTypes = {
     drivers: PropTypes.array.isRequired,              // 服务器返回的司机数组
@@ -22,7 +28,7 @@ export default class DriverListContainer extends Component {
     router: PropTypes.object.isRequired,
   }
   handleAddDriverBtnClicked = () => {
-    this.context.router.push('/transport/resources/add_driver');
+    this.context.router.push('/transport/resources/driver/add');
   }
   handleStopDriverBtnClick = (driverId) => {
     this.props.editDriver({ driverId, driverInfo: { status: 0 } });

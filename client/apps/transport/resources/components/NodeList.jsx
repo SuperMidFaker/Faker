@@ -75,7 +75,7 @@ export default function NodeList(props) {
         return (
           <span>
             <PrivilegeCover module="transport" feature="resources" action="edit">
-              <Link to={`/transport/resources/edit_node/${record.node_id}`}>修改</Link>
+              <Link to={`/transport/resources/node/edit/${record.node_id}`}>修改</Link>
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="transport" feature="resources" action="delete">
