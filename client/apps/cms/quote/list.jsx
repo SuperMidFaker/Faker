@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { switchStatus } from 'common/reducers/cmsCompRelation';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadPartners, createQuote, loadQuoteTable } from 'common/reducers/cmsQuote';
-import { TARIFF_KINDS, TRANS_MODE } from 'common/constants';
+import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from 'client/components/nav-link';
@@ -50,6 +50,7 @@ export default class QuoteList extends Component {
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const { quotes } = this.props;
+    const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     const columns = [
       {
         title: msg('quoteNo'),

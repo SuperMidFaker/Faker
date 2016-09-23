@@ -146,7 +146,7 @@ export function copyQuote(params) {
 }
 
 export function deleteQuote(quoteId, valid, modifyBy) {
-    return {
+  return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTE_DELETE, actionTypes.QUOTE_DELETE_SUCCEED, actionTypes.QUOTE_DELETE_FAIL],
       endpoint: 'v1/cms/quote/quoteDelete',
