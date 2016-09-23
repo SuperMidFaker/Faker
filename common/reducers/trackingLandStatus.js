@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SAVE_BATCH_DATE', 'SAVE_BATCH_DATE_SUCCEED', 'SAVE_BATCH_DATE_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'DELIVER_CONFIRM', 'DELIVER_CONFIRM_SUCCEED', 'DELIVER_CONFIRM_FAIL',
+  'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
 ]);
 
 const initialState = {
@@ -279,6 +280,23 @@ export function deliverConfirm(shipmtNo, dispId) {
       endpoint: 'v1/transport/tracking/deliverConfirm',
       method: 'post',
       data: { shipmtNo, dispId },
+    },
+  };
+}
+
+export function createAdvance({ shipmtNo, dispId, type, name, code, amount, remark,
+        photos, submitter: loginName, loginId, tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_ADVANCE,
+        actionTypes.CREATE_ADVANCE_SUCCEED,
+        actionTypes.CREATE_ADVANCE_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/advance',
+      method: 'post',
+      data: { shipmtNo, dispId, type, name, code, amount, remark,
+        photos, submitter: loginName, loginId, tenantId },
     },
   };
 }

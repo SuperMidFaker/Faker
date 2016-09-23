@@ -59,6 +59,7 @@ const initialState = {
     pod: {
     },
     logs: [],
+    advances: [],
   },
   shipmtDetail: {
     shipmt: {},
@@ -139,6 +140,7 @@ export default function reducer(state = initialState, action) {
         charges: action.result.data.charges,
         pod: action.result.data.pod,
         logs: action.result.data.logs,
+        advances: action.result.data.advances,
         visible: true,
         tabKey: action.tabKey,
         row: action.row,

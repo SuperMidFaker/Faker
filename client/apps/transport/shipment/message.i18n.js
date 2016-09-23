@@ -541,4 +541,20 @@ export default defineMessages({
     id: 'transport.shipment.changeShipment.formError',
     defaultMessage: '表单信息有误',
   },
+  advanceName: {
+    id: 'transport.shipment.advance.name',
+    defaultMessage: '垫付类型',
+  },
+  advanceAmount: {
+    id: 'transport.shipment.advance.amount',
+    defaultMessage: '金额',
+  },
+  advanceSubmitter: {
+    id: 'transport.shipment.advance.submitter',
+    defaultMessage: '提交者',
+  },
+  advanceRemark: {
+    id: 'transport.shipment.advance.remark',
+    defaultMessage: '备注',
+  },
 });
