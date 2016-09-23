@@ -37,7 +37,7 @@ function DriverList(props) {
     return (
       <PrivilegeCover module="transport" feature="resources" action="edit">
         <span>
-          <Link to={`/transport/resources/edit_driver/${record.driver_id}`}>修改</Link>
+          <Link to={`/transport/resources/driver/edit/${record.driver_id}`}>修改</Link>
           <span className="ant-divider" />
           <a onClick={() => onStopDriverBtnClick(record.driver_id)}
             disabled={record.status === '不可用'}

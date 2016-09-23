@@ -146,13 +146,21 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="resources">
-              <IndexRoute component={TMSResources.MainContainer} />
-              <Route path="add_car" component={TMSResources.VehicleFormContainer} />
-              <Route path="edit_car/:car_id" component={TMSResources.VehicleFormContainer} />
-              <Route path="add_driver" component={TMSResources.DriverFormContainer} />
-              <Route path="edit_driver/:driver_id" component={TMSResources.DriverFormContainer} />
-              <Route path="add_node" component={TMSResources.NodeFormContainer} />
-              <Route path="edit_node/:node_id" component={TMSResources.NodeFormContainer} />
+              <Route path="vehicle">
+                <IndexRoute component={TMSResources.VehicleListContainer} />
+                <Route path="add" component={TMSResources.VehicleFormContainer} />
+                <Route path="edit/:car_id" component={TMSResources.VehicleFormContainer} />
+              </Route>
+              <Route path="driver">
+                <IndexRoute component={TMSResources.DriverListContainer} />
+                <Route path="add" component={TMSResources.DriverFormContainer} />
+                <Route path="edit/:driver_id" component={TMSResources.DriverFormContainer} />
+              </Route>
+              <Route path="node">
+                <IndexRoute component={TMSResources.NodeListContainer} />
+                <Route path="add" component={TMSResources.NodeFormContainer} />
+                <Route path="edit/:node_id" component={TMSResources.NodeFormContainer} />
+              </Route>
             </Route>
             <Route path="tariff">
               <IndexRoute component={TMSTariff.List} />

@@ -77,10 +77,18 @@ export default class Transport extends React.Component {
         text: '管理',
         sublinks: [{
           key: 'tms-4-1',
-          path: '/transport/resources',
-          text: '资源管理',
+          path: '/transport/resources/vehicle',
+          text: '车辆管理',
         }, {
           key: 'tms-4-2',
+          path: '/transport/resources/driver',
+          text: '司机管理',
+        }, {
+          key: 'tms-4-3',
+          path: '/transport/resources/node',
+          text: '地点管理',
+        }, {
+          key: 'tms-4-4',
           path: '/transport/tariff',
           text: '价格管理',
         }],
@@ -90,8 +98,20 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-4',
         icon: 'zmdi zmdi-library',
-        path: '/transport/resources',
         text: '资源管理',
+        sublinks: [{
+          key: 'tms-4-1',
+          path: '/transport/resources/vehicle',
+          text: '车辆管理',
+        }, {
+          key: 'tms-4-2',
+          path: '/transport/resources/driver',
+          text: '司机管理',
+        }, {
+          key: 'tms-4-3',
+          path: '/transport/resources/node',
+          text: '地点管理',
+        }],
       });
     } else if (hasPermission(privileges, { module: 'transport', feature: 'tariff' })) {
       linkMenus.push({
