@@ -5,37 +5,17 @@ const messages = defineMessages({
     id: 'cms.quote.quote_no',
     defaultMessage: '报价编号',
   },
-  delgClient: {
-    id: 'cms.quote.delg.client',
-    defaultMessage: '委托方',
+  quoteManage: {
+    id: 'cms.quote.quote_manage',
+    defaultMessage: '报价管理',
   },
-  invoiceNo: {
-    id: 'cms.quote.invoice_no',
-    defaultMessage: '发票号',
-  },
-  deliveryNo: {
-    id: 'cms.quote.delivery_no',
-    defaultMessage: '提运单号',
-  },
-  entryId: {
-    id: 'cms.quote.entry_id',
-    defaultMessage: '报关单号',
-  },
-  delgEnterprise: {
-    id: 'cms.quote.delg_enterquote',
-    defaultMessage: '申报企业',
-  },
-  endConfirm: {
-    id: 'cms.quote.end_confirm',
-    defaultMessage: '是否结单',
-  },
-  lastActTime: {
-    id: 'cms.quote.last_act_time',
-    defaultMessage: '最后更新时间',
-  },
-  newPrice: {
+  newQuote: {
     id: 'cms.quote.new_quote',
     defaultMessage: '新建报价',
+  },
+  editQuote: {
+    id: 'cms.quote.edit_quote',
+    defaultMessage: '修订报价',
   },
   tariffKinds: {
     id: 'cms.quote.tariff_kinds',
@@ -51,7 +31,7 @@ const messages = defineMessages({
   },
   declareWay: {
     id: 'cms.quote.declare_way',
-    defaultMessage: '报关类型',
+    defaultMessage: '清关类型',
   },
   serialNo: {
     id: 'cms.quote.serial_no',
@@ -85,13 +65,17 @@ const messages = defineMessages({
     id: 'cms.quote.unit_quote',
     defaultMessage: '计费单价',
   },
+  modifiedCount: {
+    id: 'cms.quote.modified_count',
+    defaultMessage: '修订次数',
+  },
   modifiedBy: {
     id: 'cms.quote.modified_by',
-    defaultMessage: '修改人',
+    defaultMessage: '最后修订人',
   },
   modifiedTime: {
     id: 'cms.quote.modified_time',
-    defaultMessage: '修改时间',
+    defaultMessage: '最后修订时间',
   },
   enabledOp: {
     id: 'cms.quote.enabledOp',
@@ -105,9 +89,17 @@ const messages = defineMessages({
     id: 'cms.quote.save',
     defaultMessage: '保存',
   },
+  copy: {
+    id: 'cms.quote.copy',
+    defaultMessage: '复制',
+  },
   cancel: {
     id: 'cms.quote.cancel',
     defaultMessage: '取消',
+  },
+  delete: {
+    id: 'cms.quote.delete',
+    defaultMessage: '删除',
   },
   addCosts: {
     id: 'cms.quote.add_costs',
@@ -119,7 +111,7 @@ const messages = defineMessages({
   },
   remark: {
     id: 'cms.quote.remark',
-    defaultMessage: '加注',
+    defaultMessage: '加注标签',
   },
   invoiceEn: {
     id: 'cms.quote.invoiceEn',
@@ -128,6 +120,14 @@ const messages = defineMessages({
   taxRate: {
     id: 'cms.quote.tax.rate',
     defaultMessage: '开票税率',
+  },
+  status: {
+    id: 'cms.quote.status',
+    defaultMessage: '状态',
+  },
+  modify: {
+    id: 'cms.quote.modify',
+    defaultMessage: '修改',
   },
 });
 export default messages;

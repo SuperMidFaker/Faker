@@ -149,17 +149,19 @@ const CMS_DELG_STATUS = [
 ];
 
 export const FEE_STYLE = [
-  { value: 0, text: '服务费' },
-  { value: 1, text: '代垫费' },
+  { value: 'service', text: '服务费' },
+  { value: 'cushion', text: '代垫费' },
 ];
 
 export const CHARGE_MODE = [
-  { value: 0, text: '按Shipment' },
-  { value: 1, text: '按报关单' },
-  { value: 2, text: '按品名' },
-  { value: 3, text: '按料号' },
-  { value: 4, text: '按货值' },
-  { value: 5, text: '按实收取' },
+  { value: '0', text: '按Shipment' },
+  { value: '1', text: '按报关单量' },
+  { value: '2', text: '按品名量' },
+  { value: '3', text: '按料号' },
+  { value: '4', text: '按货值' },
+  { value: '5', text: '按实收取' },
+  { value: '6', text: '型号' },
+  { value: '7', text: '证书' },
 ];
 
 export const TRANS_MODE = [

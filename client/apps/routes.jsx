@@ -191,6 +191,7 @@ export default(store, cookie) => {
             <Route path="quote">
               <IndexRoute component={CMSQuote.List} />
               <Route path="create" component={CMSQuote.Create} />
+              <Route path="edit/:quoteno" component={CMSQuote.Edit} />
             </Route>
             <Route path="relation">
               <IndexRoute component={CMSRelation.Manage} />
