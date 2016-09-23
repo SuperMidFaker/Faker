@@ -104,7 +104,6 @@ export default class QuotingEdit extends Component {
         <header className="top-bar">
           <span>{msg('editQuote')}</span>
           <div className="tools">
-            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleSave} >{msg('save')}</Button>
             <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
             <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
               <Button>删除</Button>
@@ -113,7 +112,7 @@ export default class QuotingEdit extends Component {
         </header>
         <div className="main-content">
           <FeesForm form={form} />
-          <FeesTable />
+          <FeesTable action="edit" editable={false} />
         </div>
       </div>
     );

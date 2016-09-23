@@ -97,6 +97,10 @@ const messages = defineMessages({
     id: 'cms.quote.cancel',
     defaultMessage: '取消',
   },
+  delete: {
+    id: 'cms.quote.delete',
+    defaultMessage: '删除',
+  },
   addCosts: {
     id: 'cms.quote.add_costs',
     defaultMessage: '增加费用项',

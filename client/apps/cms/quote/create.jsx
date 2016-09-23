@@ -77,7 +77,7 @@ export default class QuotingCreate extends Component {
         </header>
         <div className="main-content">
           <FeesForm form={form} />
-          <FeesTable />
+          <FeesTable action="create" editable />
         </div>
       </div>
     );

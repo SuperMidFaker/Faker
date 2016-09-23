@@ -2,9 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
+import { feeUpdate, feeAdd, feeDelete } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
+import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
 import { CHARGE_MODE, FEE_STYLE } from 'common/constants';
-import { Select, Table, Button, Input, Switch } from 'antd';
+import { Select, Table, Button, Input, Switch, message } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -33,14 +35,14 @@ ColumnInput.propTypes = {
   onChange: PropTypes.func,
 };
 function CustomInput(props) {
-  const { record, field, onChange, placeholder } = props;
+  const { Edit, record, field, onChange, placeholder } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(record, field, ev.target.value);
     }
   }
   let inEdit = false;
-  if (record.category === 'custom') {
+  if (record.category === 'custom' && Edit) {
     inEdit = true;
   }
   return inEdit ? <Input value={record[field] || ''} placeholder={placeholder} onChange={handleChange} />
@@ -117,20 +119,25 @@ ColumnSelect.proptypes = {
   state => ({
     quoteData: state.cmsQuote.quoteData,
   }),
+  { feeUpdate, feeAdd, feeDelete }
 )
 export default class FeesTable extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     quoteData: PropTypes.object.isRequired,
+    action: PropTypes.string.isRequired,
+    editable: PropTypes.bool.isRequired,
+    feeUpdate: PropTypes.func.isRequired,
+    feeAdd: PropTypes.func.isRequired,
+    feeDelete: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    addFee: {},
     addedit: false,
     coops: [],
-    disBase: false,
+    editIndex: -1,
   };
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
@@ -140,8 +147,8 @@ export default class FeesTable extends Component {
     const addFee = {
       fee_name: '',
       fee_code: '',
-      fee_style: 0,
-      charge_mode: 0,
+      fee_style: 'service',
+      charge_mode: '0',
       lot_num: 1,
       free_num: 0,
       invoice_en: true,
@@ -149,87 +156,163 @@ export default class FeesTable extends Component {
       enabled: true,
       category: 'custom',
     };
-    this.setState({ addFee, addedit: true });
+    this.setState({
+      editIndex: this.props.quoteData.fees.length,
+      addedit: true,
+    });
     this.props.quoteData.fees.push(addFee);
     this.forceUpdate();
   }
+  handleModify = (row, index) => {
+    this.setState({
+      editIndex: index,
+    });
+  }
+  handleSave = (row) => {
+    this.setState({
+      editIndex: -1,
+      addedit: false,
+    });
+    if (row._id) {
+      this.props.feeUpdate(
+        this.props.quoteData._id,
+        row,
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
+    } else {
+      this.props.feeAdd(
+        this.props.quoteData._id,
+        row,
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
+    }
+  }
+  handleDelete = (row, index) => {
+    this.setState({
+      editIndex: -1,
+    });
+    this.props.feeDelete(
+      this.props.quoteData._id,
+      row._id,
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+    this.props.quoteData.fees.splice(index, 1);
+  }
   render() {
-    const { quoteData } = this.props;
+    const { quoteData, action, editable } = this.props;
+    const { editIndex, addedit } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
     const dataSource = this.props.quoteData.fees;
     const columns = [
       {
         title: msg('serialNo'),
-        dataIndex: 'key',
-        width: 60,
+        width: 50,
+        render: (o, record, index) => {
+          return <span>{index}</span>;
+        },
       }, {
         title: msg('feeName'),
         dataIndex: 'fee_name',
-        width: 100,
-        render: (o, record) =>
-          <CustomInput field="fee_name" placeholder="自定义费用名称" record={record} onChange={this.handleEditChange} />,
+        width: 150,
+        render: (o, record, index) =>
+          <CustomInput field="fee_name" Edit={addedit && (index === editIndex)} placeholder="自定义费用名称" record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('feeCode'),
         dataIndex: 'fee_code',
-        width: 100,
-        render: (o, record) =>
-          <CustomInput field="fee_code" placeholder="自定义费用代码" record={record} onChange={this.handleEditChange} />,
+        width: 150,
+        render: (o, record, index) =>
+          <CustomInput field="fee_code" Edit={addedit && (index === editIndex)} placeholder="自定义费用代码" record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('feeStyle'),
         dataIndex: 'fee_style',
         width: 150,
-        render: (o, record) =>
-        <ColumnSelect field="fee_style" inEdit record={record}
+        render: (o, record, index) =>
+        <ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
           onChange={this.handleEditChange} options={FEE_STYLE}
         />,
       }, {
         title: msg('chargeMode'),
         dataIndex: 'charge_mode',
         width: 150,
-        render: (o, record) =>
-        <ColumnSelect field="charge_mode" inEdit record={record}
+        render: (o, record, index) =>
+        <ColumnSelect field="charge_mode" inEdit={editable || (index === editIndex)} record={record}
           onChange={this.handleEditChange} options={CHARGE_MODE}
         />,
       }, {
         title: msg('lotNum'),
         dataIndex: 'lot_num',
         width: 150,
-        render: (o, record) =>
-          <ColumnInput field="lot_num" inEdit record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) =>
+          <ColumnInput field="lot_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('freeNum'),
         dataIndex: 'free_num',
         width: 150,
-        render: (o, record) =>
-          <ColumnInput field="free_num" inEdit record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) =>
+          <ColumnInput field="free_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('unitPrice'),
         dataIndex: 'unit_price',
         width: 150,
-        render: (o, record) =>
-          <ColumnInput field="unit_price" inEdit record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) =>
+          <ColumnInput field="unit_price" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('invoiceEn'),
         dataIndex: 'invoice_en',
-        width: 60,
+        width: 80,
         render: (o, record) =>
           <ColumnSwitch field="invoice_en" record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('taxRate'),
         dataIndex: 'tax_rate',
         width: 150,
-        render: (o, record) =>
-          <TaxInput field="tax_rate" inEdit record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) =>
+          <TaxInput field="tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('enabledOp'),
         dataIndex: 'enabled',
-        width: 60,
+        width: 80,
         render: (o, record) =>
           <ColumnSwitch field="enabled" record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('operation'),
-        dataIndex: 'operation',
-        width: 60,
+        width: 80,
+        render: (o, record, index) => {
+          if (record.category === 'custom' && action === 'create') {
+            return (
+              <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
+            );
+          } else if (action === 'edit') {
+            if (index === editIndex) {
+              return (
+                <RowUpdater onHit={this.handleSave} label={msg('save')} row={record} index={index} />
+              );
+            } else if (record.category === 'custom') {
+              return (
+                <span>
+                  <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                </span>
+              );
+            } else if (record.category !== 'custom') {
+              return (
+                <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
+              );
+            }
+          } else {
+            return <span />;
+          }
+        },
       },
     ];
     return (

@@ -10,6 +10,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EDITQUOTE_LOAD', 'EDITQUOTE_LOAD_SUCCEED', 'EDITQUOTE_LOAD_FAIL',
   'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
   'QUOTE_DELETE', 'QUOTE_DELETE_SUCCEED', 'QUOTE_DELETE_FAIL',
+  'FEE_ADD', 'FEE_ADD_SUCCEED', 'FEE_ADD_FAIL',
+  'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
+  'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
 ]);
 
 const initialState = {
@@ -152,6 +155,42 @@ export function deleteQuote(quoteId, valid, modifyBy) {
       endpoint: 'v1/cms/quote/quoteDelete',
       method: 'post',
       data: { quoteId, valid, modifyBy },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function feeUpdate(quoteId, row) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.FEE_UPDATE, actionTypes.FEE_UPDATE_SUCCEED, actionTypes.FEE_UPDATE_FAIL],
+      endpoint: 'v1/cms/quote/feeupdate',
+      method: 'post',
+      data: { quoteId, row },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function feeAdd(quoteId, row) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.FEE_ADD, actionTypes.FEE_ADD_SUCCEED, actionTypes.FEE_ADD_FAIL],
+      endpoint: 'v1/cms/quote/feeadd',
+      method: 'post',
+      data: { quoteId, row },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function feeDelete(quoteId, feeId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.FEE_DELETE, actionTypes.FEE_DELETE_SUCCEED, actionTypes.FEE_DELETE_FAIL],
+      endpoint: 'v1/cms/quote/feedelete',
+      method: 'post',
+      data: { quoteId, feeId },
       origin: 'mongo',
     },
   };
