@@ -22,7 +22,10 @@ function fetchData({ params, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     quoteData: state.cmsQuote.quoteData,
+    partners: state.cmsQuote.partners,
+    clients: state.cmsQuote.clients,
   }),
   { submitQuotes, copyQuote, deleteQuote }
 )
@@ -41,6 +44,8 @@ export default class QuotingEdit extends Component {
     submitQuotes: PropTypes.func.isRequired,
     copyQuote: PropTypes.func.isRequired,
     deleteQuote: PropTypes.func.isRequired,
+    partners: PropTypes.array.isRequired,
+    clients: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -50,9 +55,16 @@ export default class QuotingEdit extends Component {
       ...this.props.quoteData,
       ...this.props.form.getFieldsValue(),
     };
+    if (quoteData.partner.name) {
+      const coops = Object.assign(this.props.partners, this.props.clients);
+      const selpartners = coops.filter(
+        pt => pt.name === quoteData.partner.name);
+      quoteData.partner.id = selpartners[0].partner_id;
+    }
     quoteData.tenantId = this.props.tenantId;
     quoteData.valid = true;
-    quoteData.modifyBy = this.props.loginId;
+    quoteData.modifyById = this.props.loginId;
+    quoteData.modifyBy = this.props.loginName;
     const prom = this.props.submitQuotes(quoteData);
     prom.then((result) => {
       if (result.error) {
@@ -104,6 +116,7 @@ export default class QuotingEdit extends Component {
         <header className="top-bar">
           <span>{msg('editQuote')}</span>
           <div className="tools">
+            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleSave} >{msg('save')}</Button>
             <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
             <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
               <Button>删除</Button>

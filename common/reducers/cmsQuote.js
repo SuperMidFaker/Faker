@@ -21,11 +21,14 @@ const initialState = {
   quoteData: {
     quote_no: '',
     tariff_kind: '',
-    partners: '',
+    partner: {
+      name: '',
+    },
     decl_way_code: [],
     trans_mode: [],
     remarks: [],
-    modify_by: '',
+    modify_name: '',
+    modify_id: '',
     valid: true,
     fees: [],
   },

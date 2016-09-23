@@ -16,11 +16,8 @@ const formItemLayout = {
 function getFieldInits(quoteData) {
   const init = {};
   if (quoteData) {
-    [
-      'tariff_kind', 'partners',
-    ].forEach((qd) => {
-      init[qd] = quoteData[qd] || '';
-    });
+    init.tariff_kind = quoteData.tariff_kind || '';
+    init.partner = quoteData.partner || {};
     [
       'decl_way_code', 'trans_mode', 'remarks',
     ].forEach((qd) => {
@@ -106,10 +103,10 @@ export default class FeesForm extends Component {
             <FormItem label={msg('partners')} {...formItemLayout}>
               <Select showSearch showArrow optionFilterProp="searched"
                 style={{ width: '80%' }} disabled={disBase}
-                {...getFieldProps('partners', {
+                {...getFieldProps('partner.name', {
                   rules: [{ required: true, message: '必选' }],
                   getValueFromEvent: this.handleClientChange,
-                  initialValue: fieldInits.partners,
+                  initialValue: fieldInits.partner.name,
                 })}
               >
               {

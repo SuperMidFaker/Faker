@@ -25,7 +25,10 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     quoteData: state.cmsQuote.quoteData,
+    partners: state.cmsQuote.partners,
+    clients: state.cmsQuote.clients,
   }),
   { createQuote }
 )
@@ -42,6 +45,8 @@ export default class QuotingCreate extends Component {
     intl: intlShape.isRequired,
     quoteData: PropTypes.object.isRequired,
     createQuote: PropTypes.func.isRequired,
+    partners: PropTypes.array.isRequired,
+    clients: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -51,9 +56,16 @@ export default class QuotingCreate extends Component {
       ...this.props.quoteData,
       ...this.props.form.getFieldsValue(),
     };
+    if (quoteData.partner.name) {
+      const coops = Object.assign(this.props.partners, this.props.clients);
+      const selpartners = coops.filter(
+        pt => pt.name === quoteData.partner.name);
+      quoteData.partner.id = selpartners[0].partner_id;
+    }
     quoteData.tenantId = this.props.tenantId;
     quoteData.valid = true;
-    quoteData.modifyBy = this.props.loginId;
+    quoteData.modifyById = this.props.loginId;
+    quoteData.modifyBy = this.props.loginName;
     const prom = this.props.createQuote(quoteData);
     prom.then((result) => {
       if (result.error) {

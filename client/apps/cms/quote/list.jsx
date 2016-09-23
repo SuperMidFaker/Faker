@@ -5,9 +5,8 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { switchStatus } from 'common/reducers/cmsCompRelation';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadPartners, createQuote, loadQuoteTable } from 'common/reducers/cmsQuote';
+import { loadQuoteTable } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -26,7 +25,6 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     quotes: state.cmsQuote.quotes,
   }),
-  { switchStatus, loadPartners, createQuote }
 )
 @connectNav({
   depth: 2,
@@ -38,8 +36,6 @@ export default class QuoteList extends Component {
     tenantId: PropTypes.number.isRequired,
     quotes: PropTypes.array.isRequired,
     intl: intlShape.isRequired,
-    loadPartners: PropTypes.func.isRequired,
-    createQuote: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -58,7 +54,7 @@ export default class QuoteList extends Component {
         width: 150,
       }, {
         title: msg('partners'),
-        dataIndex: 'partners',
+        dataIndex: 'partner.name',
         width: 150,
       }, {
         title: msg('tariffKinds'),
@@ -126,7 +122,7 @@ export default class QuoteList extends Component {
         width: 150,
       }, {
         title: msg('modifiedBy'),
-        dataIndex: 'modify_by',
+        dataIndex: 'modify_name',
         width: 150,
       }, {
         title: msg('modifiedTime'),
