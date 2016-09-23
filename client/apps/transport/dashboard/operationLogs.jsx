@@ -19,14 +19,14 @@ const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, cookie, location }) {
   const { startDate, endDate, type } = location.query;
-  const { pageSize, currentPage } = state.shipment.statistics.logs;
+  const { pageSize } = state.shipment.statistics.logs;
   return dispatch(loadShipmentEvents(cookie, {
     tenantId: state.account.tenantId,
     startDate,
     endDate,
     type,
     pageSize,
-    currentPage,
+    currentPage: 1,
   }));
 }
 @connectFetch()(fetchData)
