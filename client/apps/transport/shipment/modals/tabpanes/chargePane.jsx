@@ -77,6 +77,10 @@ export default class ChargePanel extends React.Component {
     title: this.msg('advanceAmount'),
     dataIndex: 'amount',
     width: 180,
+    render: o => this.props.intl.formatNumber(o, {
+        style: 'currency',
+        currency: 'CNY',
+      })
   }]
   assembleChargeItems(charge, outDs) {
     const { intl } = this.props;
