@@ -5,7 +5,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
-import { submitQuotes, loadEditQuote, copyQuote } from 'common/reducers/cmsQuote';
+import { submitQuotes, loadEditQuote, copyQuote, deleteQuote } from 'common/reducers/cmsQuote';
 import { Button, message, Form, Popconfirm } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
@@ -24,7 +24,7 @@ function fetchData({ params, dispatch }) {
     loginId: state.account.loginId,
     quoteData: state.cmsQuote.quoteData,
   }),
-  { submitQuotes, copyQuote }
+  { submitQuotes, copyQuote, deleteQuote }
 )
 @connectNav({
   depth: 3,
@@ -40,6 +40,7 @@ export default class QuotingEdit extends Component {
     quoteData: PropTypes.object.isRequired,
     submitQuotes: PropTypes.func.isRequired,
     copyQuote: PropTypes.func.isRequired,
+    deleteQuote: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -80,8 +81,20 @@ export default class QuotingEdit extends Component {
       }
     });
   }
-  handleConfirm = () => {
-
+  handleDeleteConfirm = () => {
+    const prom = this.props.deleteQuote(
+      this.props.quoteData._id,
+      false,
+      this.props.loginId,
+    );
+    prom.then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('已删除', 5);
+        this.context.router.push('/clearance/quote');
+      }
+    });
   }
   render() {
     const { form } = this.props;
@@ -93,7 +106,7 @@ export default class QuotingEdit extends Component {
           <div className="tools">
             <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleSave} >{msg('save')}</Button>
             <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
-            <Popconfirm title="确认删除？" onConfirm={this.handleConfirm} >
+            <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
               <Button>删除</Button>
             </Popconfirm>
           </div>

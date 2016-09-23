@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'QUOTES_LOAD', 'QUOTES_LOAD_SUCCEED', 'QUOTES_LOAD_FAIL',
   'EDITQUOTE_LOAD', 'EDITQUOTE_LOAD_SUCCEED', 'EDITQUOTE_LOAD_FAIL',
   'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
+  'QUOTE_DELETE', 'QUOTE_DELETE_SUCCEED', 'QUOTE_DELETE_FAIL',
 ]);
 
 const initialState = {
@@ -139,6 +140,18 @@ export function copyQuote(params) {
       endpoint: 'v1/cms/quote/quoteCopy',
       method: 'post',
       data: params,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function deleteQuote(quoteId, valid, modifyBy) {
+    return {
+    [CLIENT_API]: {
+      types: [actionTypes.QUOTE_DELETE, actionTypes.QUOTE_DELETE_SUCCEED, actionTypes.QUOTE_DELETE_FAIL],
+      endpoint: 'v1/cms/quote/quoteDelete',
+      method: 'post',
+      data: { quoteId, valid, modifyBy },
       origin: 'mongo',
     },
   };
