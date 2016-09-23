@@ -3,10 +3,12 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'PARTNERS_LOAD', 'PARTNERS_LOAD_SUCCEED', 'PARTNERS_LOAD_FAIL',
+  'QUOTE_MODEL_LOAD', 'QUOTE_MODEL_LOAD_SUCCEED', 'QUOTE_MODEL_LOAD_FAIL',
   'CREATE_QUOTE', 'CREATE_QUOTE_SUCCEED', 'CREATE_QUOTE_FAIL',
   'SUBMIT_QUOTE', 'SUBMIT_QUOTE_SUCCEED', 'SUBMIT_QUOTE_FAIL',
   'QUOTES_LOAD', 'QUOTES_LOAD_SUCCEED', 'QUOTES_LOAD_FAIL',
   'EDITQUOTE_LOAD', 'EDITQUOTE_LOAD_SUCCEED', 'EDITQUOTE_LOAD_FAIL',
+  'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
 ]);
 
 const initialState = {
@@ -31,17 +33,23 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.PARTNERS_LOAD_SUCCEED:
       return { ...state, partners: action.result.data.partners, clients: action.result.data.clients };
+    case actionTypes.QUOTE_MODEL_LOAD:
+      return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
+    case actionTypes.QUOTE_MODEL_LOAD_SUCCEED:
+      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     case actionTypes.CREATE_QUOTE:
       return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
-    case actionTypes.CREATE_QUOTE_SUCCEED:
-      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     case actionTypes.QUOTES_LOAD:
       return { ...state, quotesLoading: true };
     case actionTypes.QUOTES_LOAD_SUCCEED:
       return { ...state, quotes: action.result.data, quotesLoading: false };
     case actionTypes.EDITQUOTE_LOAD:
-      return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
+      return { ...state, quoteData: { ...state.quoteData, loading: true } };
     case actionTypes.EDITQUOTE_LOAD_SUCCEED:
+      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
+    case actionTypes.QUOTE_COPY:
+      return { ...state, quoteData: { ...state.quoteData, loading: true } };
+    case actionTypes.QUOTE_COPY_SUCCEED:
       return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     default:
       return state;
@@ -58,8 +66,18 @@ export function loadPartners(tenantId) {
     },
   };
 }
+export function loadQuoteModel() {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.QUOTE_MODEL_LOAD, actionTypes.QUOTE_MODEL_LOAD_SUCCEED, actionTypes.QUOTE_MODEL_LOAD_FAIL],
+      endpoint: 'v1/cms/quote/loadModel',
+      method: 'get',
+      origin: 'mongo',
+    },
+  };
+}
 
-export function createQuote(tenantId) {
+export function createQuote(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -69,7 +87,7 @@ export function createQuote(tenantId) {
       ],
       endpoint: 'v1/cms/quote/createQuote',
       method: 'post',
-      data: { tenantId },
+      data: params,
       origin: 'mongo',
     },
   };
@@ -109,6 +127,18 @@ export function loadEditQuote(quoteNo) {
       endpoint: 'v1/cms/quote/loadquote',
       method: 'get',
       params: { quoteNo },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function copyQuote(params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.QUOTE_COPY, actionTypes.QUOTE_COPY_SUCCEED, actionTypes.QUOTE_COPY_FAIL],
+      endpoint: 'v1/cms/quote/quoteCopy',
+      method: 'post',
+      data: params,
       origin: 'mongo',
     },
   };

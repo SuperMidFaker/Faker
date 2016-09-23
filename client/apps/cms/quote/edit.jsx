@@ -3,8 +3,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
-import { submitQuotes, loadEditQuote } from 'common/reducers/cmsQuote';
+import { submitQuotes, loadEditQuote, copyQuote } from 'common/reducers/cmsQuote';
 import { Button, message, Form, Popconfirm } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
@@ -23,7 +24,7 @@ function fetchData({ params, dispatch }) {
     loginId: state.account.loginId,
     quoteData: state.cmsQuote.quoteData,
   }),
-  { submitQuotes }
+  { submitQuotes, copyQuote }
 )
 @connectNav({
   depth: 3,
@@ -31,12 +32,14 @@ function fetchData({ params, dispatch }) {
   moduleName: 'clearance',
 })
 @Form.create()
+@withPrivilege({ module: 'clearance', feature: 'quote', action: 'edit' })
 export default class QuotingEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     quoteData: PropTypes.object.isRequired,
     submitQuotes: PropTypes.func.isRequired,
+    copyQuote: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -60,7 +63,22 @@ export default class QuotingEdit extends Component {
     });
   }
   handleCopy = () => {
-
+    const quoteData = {
+      ...this.props.quoteData,
+      ...this.props.form.getFieldsValue(),
+    };
+    quoteData.tenantId = this.props.tenantId;
+    quoteData.valid = true;
+    quoteData.modifyBy = this.props.loginId;
+    const prom = this.props.copyQuote(quoteData);
+    prom.then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('复制成功', 5);
+        this.context.router.push('/clearance/quote/create');
+      }
+    });
   }
   handleConfirm = () => {
 
