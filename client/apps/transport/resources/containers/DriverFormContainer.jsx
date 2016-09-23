@@ -4,18 +4,16 @@ import { connect } from 'react-redux';
 import DriverForm from '../components/DriverForm.jsx';
 import { addDriver, editDriver } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 
-@connectNav((props, dispatch, router) => {
-  dispatch(setNavTitle({
-    depth: 3,
-    text: '司机信息',
-    muduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connect(state => ({
+  drivers: state.transportResources.drivers,
+  tenantId: state.account.tenantId,
+}), { addDriver, editDriver })
+@connectNav({
+  depth: 3,
+  text: '司机信息',
+  muduleName: 'transport',
 })
-@connect(state => ({ drivers: state.transportResources.drivers, tenantId: state.account.tenantId }), { addDriver, editDriver })
 @Form.create()
 export default class DriverFormContainer extends Component {
   static propTypes = {

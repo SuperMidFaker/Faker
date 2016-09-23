@@ -5,17 +5,18 @@ import { intlShape, injectIntl } from 'react-intl';
 import { sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import './preview-panel.less';
 import qrcode from 'client/common/qrcode';
 import { validatePhone } from 'common/validater';
+import './preview-panel.less';
+
 const formatMsg = format(messages);
 
 const InputGroup = Input.Group;
 
 @injectIntl
 @connect(
-  () => ({
-  }),
+  () => {
+  },
   { sendTrackingDetailSMSMessage }
 )
 export default class ShareShipmentModal extends React.Component {

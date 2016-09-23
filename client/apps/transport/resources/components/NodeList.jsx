@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Table, Button, Radio, Popconfirm } from 'antd';
 import { Link } from 'react-router';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
 
@@ -73,11 +74,15 @@ export default function NodeList(props) {
       render: (_, record) => {
         return (
           <span>
-            <Link to={`/transport/resources/edit_node/${record.node_id}`}>修改</Link>
-            <span className="ant-divider"></span>
-            <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
-              <a>删除</a>
-            </Popconfirm>
+            <PrivilegeCover module="transport" feature="resources" action="edit">
+              <Link to={`/transport/resources/edit_node/${record.node_id}`}>修改</Link>
+            </PrivilegeCover>
+            <span className="ant-divider" />
+            <PrivilegeCover module="transport" feature="resources" action="delete">
+              <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
+                <a>删除</a>
+              </Popconfirm>
+            </PrivilegeCover>
           </span>
         );
       },
@@ -94,7 +99,9 @@ export default function NodeList(props) {
               <RadioButton value={2}>中转地</RadioButton>
             </RadioGroup>
           </div>
-          <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+          <PrivilegeCover module="transport" feature="resources" action="create">
+            <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+          </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
           <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />

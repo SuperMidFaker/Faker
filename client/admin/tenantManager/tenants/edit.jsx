@@ -1,23 +1,11 @@
 import React, { PropTypes } from 'react';
-import { setNavTitle } from 'common/reducers/navbar';
 import connectNav from 'client/common/decorators/connect-nav';
 import TenantForm from './tenantForm';
 
-function goBack(router) {
-  router.goBack();
-}
-
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: '修改租户',
-    moduleName: 'tenants',
-    withModuleLayout: false,
-    goBackFn: () => goBack(router),
-  }));
+@connectNav({
+  depth: 3,
+  text: '修改租户',
+  moduleName: 'tenants',
 })
 export default class Edit extends React.Component {
   static propTypes = {

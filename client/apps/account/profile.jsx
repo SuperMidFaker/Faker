@@ -5,8 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
 import { validatePhone } from 'common/validater';
-import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -46,6 +44,7 @@ FormInput.propTypes = {
   getFieldProps: PropTypes.func,
   fieldProps: PropTypes.object,
 };
+
 @injectIntl
 @connect(
   state => ({
@@ -57,14 +56,6 @@ FormInput.propTypes = {
   }),
   { updateProfile, checkLoginName }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentDidMount') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 1,
-  }));
-})
 @Form.create()
 export default class MyProfile extends React.Component {
   static propTypes = {

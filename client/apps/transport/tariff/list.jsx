@@ -8,8 +8,8 @@ import NavLink from 'client/components/nav-link';
 import { ConfirmDel } from './forms/commodity';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadTable, delTariff } from 'common/reducers/transportTariff';
-import { setNavTitle } from 'common/reducers/navbar';
 import { TARIFF_KINDS } from 'common/constants';
 import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
@@ -40,17 +40,11 @@ function fetchData({ state, dispatch }) {
     loading: state.transportTariff.loading,
   }),
   { loadTable, delTariff })
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'transport',
 })
+@withPrivilege({ module: 'transport', feature: 'tariff' })
 export default class TariffList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -136,11 +130,15 @@ export default class TariffList extends React.Component {
     render: (o, record) => {
       return (
         <span>
-          <NavLink to={`/transport/tariff/edit/${record._id}`}>
-          {this.msg('revise')}
-          </NavLink>
+          <PrivilegeCover module="transport" feature="tariff" action="edit">
+            <NavLink to={`/transport/tariff/edit/${record._id}`}>
+            {this.msg('revise')}
+            </NavLink>
+          </PrivilegeCover>
           <span className="ant-divider" />
-          <ConfirmDel row={record} text="删除" onConfirm={this.handleDel} />
+          <PrivilegeCover module="transport" feature="tariff" action="delete">
+            <ConfirmDel row={record} text="删除" onConfirm={this.handleDel} />
+          </PrivilegeCover>
         </span>
       );
     },
@@ -206,11 +204,13 @@ export default class TariffList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <NavLink to="/transport/tariff/new">
-                <Button type="primary" icon="plus-circle-o">
+              <PrivilegeCover module="transport" feature="tariff" action="create">
+                <NavLink to="/transport/tariff/new">
+                  <Button type="primary" icon="plus-circle-o">
                   {this.msg('tariffCreate')}
-                </Button>
-              </NavLink>
+                  </Button>
+                </NavLink>
+              </PrivilegeCover>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={this.columns} loading={loading}

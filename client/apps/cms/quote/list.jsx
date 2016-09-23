@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { Button, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCompRelations, switchStatus } from 'common/reducers/cmsCompRelation';
 import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 
 const rowSelection = {
@@ -37,15 +38,12 @@ function fetchData({ state, dispatch, cookie }) {
     list: state.cmsCompRelation.list,
   }),
   { loadCompRelations, switchStatus })
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: props.ietype,
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
 })
-export default class Manage extends Component {
+@withPrivilege({ module: 'clearance', feature: 'quote' })
+export default class QuoteList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     intl: intlShape.isRequired,
@@ -128,9 +126,13 @@ export default class Manage extends Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
-                新建报价
-              </Button>
+              <PrivilegeCover module="clearance" feature="quote" action="create">
+                <Button type="primary" style={{ marginBottom: 8 }}
+                  onClick={() => this.handleNavigationTo('/clearance/quote/create')}
+                >
+                  新建报价
+                </Button>
+              </PrivilegeCover>
             </div>
             <div className="panel-body table-panel">
               <Table columns={columns} rowSelection={rowSelection} />

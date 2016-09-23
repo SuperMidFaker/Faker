@@ -18,8 +18,7 @@ import MyProfile from './account/profile';
 import Password from './account/password';
 import Module from './module';
 import Transport from './transport/module-transport';
-import TMSDashboard from './transport/dashboard';
-import TMSOperationLogs from './transport/operationLogs';
+import * as TMSDashboard from './transport/dashboard';
 import * as TMSAcceptance from './transport/acceptance';
 import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
@@ -35,7 +34,7 @@ import * as ImportDelegation from './cms/import/delegation';
 import * as ImportDocs from './cms/import/docs';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
-import * as CMSManage from './cms/manage';
+import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSSettings from './cms/settings';
 import { loadAccount } from 'common/reducers/account';
@@ -125,8 +124,9 @@ export default(store, cookie) => {
         </Route>
         <Route component={Module}>
           <Route path={DEFAULT_MODULES.transport.id} component={Transport}>
-            <Route path="dashboard" component={TMSDashboard}>
-              <Route path="operationLogs" component={TMSOperationLogs} />
+            <Route path="dashboard">
+              <IndexRoute component={TMSDashboard.Index} />
+              <Route path="operationLogs" component={TMSDashboard.Log} />
             </Route>
             <Route path="shipment">
               <IndexRoute component={TMSAcceptance.List} />
@@ -161,7 +161,6 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
-            <IndexRedirect to={`/${DEFAULT_MODULES.clearance.id}/import`} />
             <Route path="import">
               <IndexRoute component={ImportDelegation.List} />
               <Route path="create" component={ImportDelegation.Create} />
@@ -187,9 +186,9 @@ export default(store, cookie) => {
               <Route path="create" component={CMSQuote.Create} />
             </Route>
             <Route path="relation">
-              <IndexRoute component={CMSManage.Manage} />
-              <Route path="create" component={CMSManage.Create} />
-              <Route path="edit/:id" component={CMSManage.Edit} />
+              <IndexRoute component={CMSRelation.Manage} />
+              <Route path="create" component={CMSRelation.Create} />
+              <Route path="edit/:id" component={CMSRelation.Edit} />
             </Route>
             <Route path="settings">
               <IndexRoute component={CMSSettings.List} />

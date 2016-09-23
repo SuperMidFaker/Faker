@@ -8,9 +8,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { countMessages, messageBadgeNum, getTenantUsers, recordMessages } from 'common/reducers/corps';
 import { getDriver } from 'common/reducers/transportResources';
+
 const formatMsg = format(messages);
-let conn;
-let WebIM;
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(countMessages(cookie, {
@@ -20,20 +19,18 @@ function fetchData({ state, dispatch, cookie }) {
 }
 
 @connectFetch()(fetchData)
-
 @injectIntl
-@connect(
-  (state) => {
-    return {
-      tenantId: state.account.tenantId,
-      loginId: state.account.loginId,
-      loginName: state.account.username,
-      tenantName: state.account.tenantName,
-      logo: state.account.logo,
-      corps: state.corps,
-      newMessage: state.corps.newMessage,
-    };
-  }, { messageBadgeNum, getTenantUsers, recordMessages })
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  loginName: state.account.username,
+  tenantName: state.account.tenantName,
+  logo: state.account.logo,
+  corps: state.corps,
+  newMessage: state.corps.newMessage,
+}), {
+  messageBadgeNum, getTenantUsers, recordMessages,
+})
 export default class MessagePrompt extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -49,11 +46,15 @@ export default class MessagePrompt extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  easemob = {
+    conn: null,
+    WebIM: null,
+  }
   componentDidMount() {
     const { tenantId, loginId, loginName } = this.props;
-    if (!conn) {
-      WebIM = window.WebIM;
-      WebIM.config = {
+    if (!this.easemob.conn) {
+      const WebIM = this.easemob.WebIM = window.WebIM;
+      this.easemob.WebIM.config = {
         xmppURL: 'im-api.easemob.com',
         apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
         appkey: 'jiaojiao123#test',
@@ -61,7 +62,7 @@ export default class MessagePrompt extends React.Component {
         isMultiLoginSessions: true,
         isAutoLogin: true,
       };
-      conn = new WebIM.connection({
+      const conn = this.easemob.conn = new this.easemob.WebIM.connection({
         https: WebIM.config.https,
         url: WebIM.config.xmppURL,
         isAutoLogin: WebIM.config.isAutoLogin,
@@ -94,7 +95,7 @@ export default class MessagePrompt extends React.Component {
 
       conn.open(user);
     }
-    
+
     if (Notification && Notification.permission !== 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
@@ -167,7 +168,7 @@ export default class MessagePrompt extends React.Component {
           }
         });
       }
-      
+
     }
   }
   handleRecordMessage({ loginId, tenantId, loginName, messages }) {
@@ -180,18 +181,15 @@ export default class MessagePrompt extends React.Component {
     });
   }
   handleSendMessage(data) {
-    const id = conn.getUniqueId();// 生成本地消息id
-    const msg = new WebIM.message('txt', id);// 创建文本消息
+    const id = this.easemob.conn.getUniqueId();// 生成本地消息id
+    const msg = new this.easemob.WebIM.message('txt', id);// 创建文本消息
 
     msg.set({
       msg: data.content,
       to: data.to,
-      success() {
-        
-      },
     });
 
-    conn.send(msg.body);
+    this.easemob.conn.send(msg.body);
   }
   notif(title, data) {
     if (Notification && Notification.permission === 'granted') {
@@ -223,11 +221,6 @@ export default class MessagePrompt extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   render() {
-    return (
-      <div>
-        <script src="/assets/lib/easemob/strophe.js" type="text/javascript"></script>
-        <script src="/assets/lib/easemob/websdk-1.1.2.js" type="text/javascript"></script>
-      </div>
-    );
+    return null;
   }
 }

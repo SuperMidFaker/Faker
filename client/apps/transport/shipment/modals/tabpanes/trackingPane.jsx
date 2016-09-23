@@ -39,7 +39,7 @@ StepDesc.propTypes = {
     logs: state.shipment.previewer.logs,
   })
 )
-export default class PreviewPanel extends React.Component {
+export default class TrackingPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tracking: PropTypes.object.isRequired,

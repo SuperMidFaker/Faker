@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
   'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
+  'SET_MENU_ITEM_KEY',
 ]);
 
 const initialState = {
@@ -36,6 +37,8 @@ const initialState = {
   agreement: {
     name: '',
     intervals: [],
+    adjustCoefficient: 1,
+    taxrate: { mode: 0, value: 0 },
   },
   ratesRefAgreement: {},
   ratesSourceLoading: false,
@@ -62,19 +65,10 @@ const initialState = {
   surcharge: {
     pickup: { mode: 0, value: 0 },
     delivery: { mode: 0, value: 0 },
-    other1: { enabled: false, mode: 0, value: 0 },
-    other2: { enabled: false, mode: 0, value: 0 },
     load: { mode: 0, value: 0 },
     unload: { mode: 0, value: 0 },
-    adjustCoefficient: 1,
-    taxrate: { mode: 0, value: 0 },
   },
-  advanceChargeList: {
-    totalCount: 0,
-    pageSize: 10,
-    current: 1,
-    data: [],
-  },
+  selectedMenuItemKey: 0,
 };
 
 export default function reducer(state = initialState, action) {
@@ -114,19 +108,17 @@ export default function reducer(state = initialState, action) {
         meter: res.meter,
         intervals: res.intervals,
         vehicleTypes: res.vehicleTypes,
+        adjustCoefficient: res.adjustCoefficient,
+        taxrate: res.taxrate,
       };
       const sur = action.result.data.tariff.surcharge;
       let surcharge = initialState.surcharge;
       if (sur) {
         surcharge = {
-          adjustCoefficient: sur.adjustCoefficient,
           pickup: sur.pickup,
           delivery: sur.delivery,
           load: sur.load,
           unload: sur.unload,
-          other1: sur.other1,
-          other2: sur.other2,
-          taxrate: sur.taxrate,
         };
       }
       const partners = res.partner ? [{ partner_code: res.partner.name,
@@ -167,6 +159,8 @@ export default function reducer(state = initialState, action) {
         ratesEndList: action.result.data };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey: action.key };
     default:
       return state;
   }
@@ -426,4 +420,8 @@ export function delRateEnd(rateId, id) {
       origin: 'mongo',
     },
   };
+}
+
+export function setMenuItemKey(key) {
+  return { type: actionTypes.SET_MENU_ITEM_KEY, key };
 }

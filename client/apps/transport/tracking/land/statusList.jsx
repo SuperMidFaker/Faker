@@ -292,16 +292,18 @@ export default class LandStatusList extends React.Component {
       </Tooltip>
     );
     return (
-      <span>
-        <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
-          onAnchored={this.handleShowTransitModal} row={record}
-          className={reported ? 'mdc-text-grey' : ''}
-        />
-        <span className="ant-divider" />
-        <RowUpdater label={this.msg('updateEvents')}
-          onAnchored={this.handleShowExcpModal} row={record}
-        />
-      </span>
+      <PrivilegeCover module="transport" feature="tracking" action="edit">
+        <span>
+          <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
+            onAnchored={this.handleShowTransitModal} row={record}
+            className={reported ? 'mdc-text-grey' : ''}
+          />
+          <span className="ant-divider" />
+          <RowUpdater label={this.msg('updateEvents')}
+            onAnchored={this.handleShowExcpModal} row={record}
+          />
+        </span>
+      </PrivilegeCover>
     );
   }
 

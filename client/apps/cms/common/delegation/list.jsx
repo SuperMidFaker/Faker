@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
-import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, PARTNERSHIP_TYPE_INFO, CMS_SUP_STATUS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
@@ -20,6 +20,7 @@ import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n.js';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
 
 const RadioGroup = Radio.Group;
@@ -44,16 +45,9 @@ const RadioButton = Radio.Button;
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp }
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: 'clearance',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
 })
 export default class DelegationList extends Component {
   static propTypes = {
@@ -398,38 +392,52 @@ export default class DelegationList extends Component {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
           return (
             <span>
-              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+              </PrivilegeCover>
               <span className="ant-divider" />
-              <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
-              {this.msg('modify')}
-              </NavLink>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
+                {this.msg('modify')}
+                </NavLink>
+              </PrivilegeCover>
               <span className="ant-divider" />
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                <a role="button">{this.msg('delete')}</a>
-              </Popconfirm>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="delete">
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                  <a role="button">{this.msg('delete')}</a>
+                </Popconfirm>
+              </PrivilegeCover>
             </span>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 2) {
           return (
-            <span>
-              <RowUpdater onHit={this.handleDelegationCancel} label={this.msg('delgRecall')} row={record} />
-            </span>
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+              <span>
+                <RowUpdater onHit={this.handleDelegationCancel} label={this.msg('delgRecall')} row={record} />
+              </span>
+            </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.source === 1) {
           return (
-            <span>
-              <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('delgDistribute')} row={record} />
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-            </span>
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <span>
+                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('delgDistribute')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              </span>
+            </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1 && record.sub_status > 0) {
           return (
-            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+            </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declared && record.source === 1 && record.sub_status > 0) {
           return (
-            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+            </PrivilegeCover>
           );
         } else {
           return (
@@ -457,11 +465,11 @@ export default class DelegationList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={this.handleCreateBtnClick}
-                icon="plus-circle-o"
-              >
-              {this.msg('delgNew')}
-              </Button>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus-circle-o">
+                {this.msg('delgNew')}
+                </Button>
+              </PrivilegeCover>
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
@@ -473,8 +481,8 @@ export default class DelegationList extends Component {
           </div>
         </div>
         <BillModal ietype={this.props.ietype} />
-          <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-          <PreviewPanel />
+        <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
+        <PreviewPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
   }

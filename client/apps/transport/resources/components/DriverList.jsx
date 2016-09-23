@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Table, Button } from 'antd';
 import { Link } from 'react-router';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
 const rowSelection = {
-  onSelect() {
-  },
+  onSelect() {},
 };
 
 function DriverList(props) {
@@ -35,28 +35,30 @@ function DriverList(props) {
 
   function editAndStopDriverOperations(record) {
     return (
-      <span>
-        <Link to={`/transport/resources/edit_driver/${record.driver_id}`}>修改</Link>
-        <span className="ant-divider"></span>
-        <a onClick={() => onStopDriverBtnClick(record.driver_id)}
-          disabled={record.status === '不可用'}
-        >
-          停用
-        </a>
-        {phoneLogin(record)}
-      </span>
+      <PrivilegeCover module="transport" feature="resources" action="edit">
+        <span>
+          <Link to={`/transport/resources/edit_driver/${record.driver_id}`}>修改</Link>
+          <span className="ant-divider" />
+          <a onClick={() => onStopDriverBtnClick(record.driver_id)}
+            disabled={record.status === '不可用'}
+          >
+            停用
+          </a>
+          {phoneLogin(record)}
+        </span>
+      </PrivilegeCover>
     );
   }
 
   function resumeDriverOperaions(record) {
     return (
-      <span>
-        <a
-          onClick={() => onResumeDriverBtnClick(record.driver_id)}
-        >
-          启用
-        </a>
-      </span>
+      <PrivilegeCover module="transport" feature="resources" action="edit">
+        <span>
+          <a onClick={() => onResumeDriverBtnClick(record.driver_id)}>
+            启用
+          </a>
+        </span>
+      </PrivilegeCover>
     );
   }
 
@@ -103,7 +105,9 @@ function DriverList(props) {
     <div className="main-content">
       <div className="page-body">
         <div className="panel-header">
-          <Button type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+          <PrivilegeCover module="transport" feature="resources" action="create">
+            <Button type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+          </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
           <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />

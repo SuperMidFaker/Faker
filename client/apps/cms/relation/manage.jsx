@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { Button, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import NavLink from 'client/components/nav-link';
 import { loadCompRelations, switchStatus } from 'common/reducers/cmsCompRelation';
 import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
@@ -40,14 +40,11 @@ function fetchData({ state, dispatch, cookie }) {
     list: state.cmsCompRelation.list,
   }),
   { loadCompRelations, switchStatus })
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: props.ietype,
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
 })
+@withPrivilege({ module: 'clearance', feature: 'relation' })
 export default class Manage extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
@@ -124,21 +121,26 @@ export default class Manage extends Component {
         render: (text, record, index) => {
           if (record.status === 1) {
             return (
-              <span>
-                <NavLink to={`/clearance/relation/edit/${record.id}`}>
-                {formatContainerMsg(intl, 'fixOp')}
-                </NavLink>
-                <span className="ant-divider"></span>
-                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(intl, 'disableOp')}
-                </a>
-              </span>);
+              <PrivilegeCover module="clearance" feature="relation" action="edit">
+                <span>
+                  <NavLink to={`/clearance/relation/edit/${record.id}`}>
+                  {formatContainerMsg(intl, 'fixOp')}
+                  </NavLink>
+                  <span className="ant-divider"></span>
+                  <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                  {formatContainerMsg(intl, 'disableOp')}
+                  </a>
+                </span>
+              </PrivilegeCover>
+            );
           } else if (record.status === 0) {
             return (
               <span>
-                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(intl, 'enableOp')}
-                </a>
+                <PrivilegeCover module="clearance" feature="relation" action="edit">
+                  <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                  {formatContainerMsg(intl, 'enableOp')}
+                  </a>
+                </PrivilegeCover>
               </span>);
           } else {
             return <span />;
@@ -181,9 +183,13 @@ export default class Manage extends Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/relation/create')}>
-                {msg('new')}
-              </Button>
+              <PrivilegeCover module="clearance" feature="relation" action="create">
+                <Button type="primary" style={{ marginBottom: 8 }} onClick={
+                  () => this.handleNavigationTo('/clearance/relation/create')
+                }>
+                  {msg('new')}
+                </Button>
+              </PrivilegeCover>
             </div>
             <div className="panel-body table-panel">
               <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />

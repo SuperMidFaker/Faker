@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Form, Input, Button } from 'antd';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import ContentWrapper from './ContentWrapper';
 
 const FormItem = Form.Item;
@@ -9,7 +10,10 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-
+@withPrivilege({
+  module: 'transport', feature: 'resources',
+  action: (props) => { return props.mode === 'edit' ? 'edit' : 'create'; },
+})
 export default class DriverForm extends Component {
   componentDidMount() {
     const { mode, form } = this.props;

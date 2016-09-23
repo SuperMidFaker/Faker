@@ -1,19 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { setNavTitle } from 'common/reducers/navbar';
-import AgreementForm from './forms/agreement';
-import RatesForm from './forms/rates';
-import SurchargeForm from './forms/surcharge';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadTariff, loadFormParams } from 'common/reducers/transportTariff';
+import Main from './Main';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
 
 function fetchData({ state, params, dispatch }) {
   const proms = [];
@@ -32,18 +28,14 @@ function fetchData({ state, params, dispatch }) {
     name: state.transportTariff.agreement.name,
   })
 )
-@connectNav((props, dispatch, router, lifecycle) => {
-  if (lifecycle !== 'componentWillReceiveProps') {
-    return;
-  }
-  dispatch(setNavTitle({
-    depth: 3,
-    text: props.name,
-    moduleName: 'transport',
-    withModuleLayout: false,
-    goBackFn: () => router.goBack(),
-  }));
+@connectNav({
+  depth: 3,
+  text: props => props.name,
+  moduleName: 'transport',
+  lifecycle: 'componentWillReceiveProps',
+  until: props => props.name,
 })
+@withPrivilege({ module: 'transport', feature: 'tariff', action: 'edit' })
 export default class TariffEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -55,23 +47,7 @@ export default class TariffEdit extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     return (
-      <div className="main-content">
-        <div className="page-body">
-          <div className="panel-body">
-            <Tabs defaultActiveKey="agreement">
-              <TabPane tab={<span>协议概况</span>} key="agreement">
-                <AgreementForm readonly />
-              </TabPane>
-              <TabPane tab={<span>基础费率</span>} key="rates">
-                <RatesForm />
-              </TabPane>
-              <TabPane tab={<span>服务费税</span>} key="surcharges">
-                <SurchargeForm />
-              </TabPane>
-            </Tabs>
-          </div>
-        </div>
-      </div>
+      <Main type="edit" />
     );
   }
 }

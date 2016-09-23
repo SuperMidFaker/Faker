@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Col, Table, Collapse, Timeline, Icon } from 'antd';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
 import { PRESET_TRANSMODES } from 'common/constants';
 import ChangeShipment from '../change-shipment';
-import { showChangeShipmentModal }
-  from 'common/reducers/shipment';
+import { showChangeShipmentModal } from 'common/reducers/shipment';
 import messages from '../../message.i18n';
 import './pane.less';
+
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 
@@ -47,7 +48,7 @@ PaneFormItem.propTypes = {
   }),
   { showChangeShipmentModal }
 )
-export default class PreviewPanel extends React.Component {
+export default class DetailPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmt: PropTypes.object.isRequired,
@@ -226,7 +227,9 @@ export default class PreviewPanel extends React.Component {
             </Col>
           </Panel>
         </Collapse>
-        <ChangeShipment />
+        <PrivilegeCover module="transport" feature="shipment" action="edit">
+          <ChangeShipment />
+        </PrivilegeCover>
       </div>
     );
   }
