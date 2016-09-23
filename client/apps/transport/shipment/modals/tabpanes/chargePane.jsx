@@ -10,12 +10,14 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     charges: state.shipment.previewer.charges,
+    advances: state.shipment.previewer.advances,
   })
 )
 export default class ChargePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     charges: PropTypes.object.isRequired,
+    advances: PropTypes.array.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   revenueColumns = [{
@@ -51,6 +53,34 @@ export default class ChargePanel extends React.Component {
     title: this.msg('chargeFee'),
     dataIndex: 'fee',
     width: 180,
+  }]
+  advancesColumns = [{
+    title: this.msg('advanceName'),
+    dataIndex: 'name',
+    width: 80,
+    render: (o, record) => {
+      if (record.photos !== '') {
+        return (<a href={record.photos.split(',')} target="_blank" rel="noopener noreferrer">{o}</a>);
+      } else {
+        return o;
+      }
+    },
+  }, {
+    title: this.msg('advanceSubmitter'),
+    dataIndex: 'submitter',
+    width: 100,
+  }, {
+    title: this.msg('advanceRemark'),
+    dataIndex: 'remark',
+    width: 240,
+  }, {
+    title: this.msg('advanceAmount'),
+    dataIndex: 'amount',
+    width: 180,
+    render: o => this.props.intl.formatNumber(o, {
+      style: 'currency',
+      currency: 'CNY',
+    }),
   }]
   assembleChargeItems(charge, outDs) {
     const { intl } = this.props;
@@ -114,7 +144,7 @@ export default class ChargePanel extends React.Component {
     });
   }
   render() {
-    const { charges, intl } = this.props;
+    const { charges, advances, intl } = this.props;
     const revenueds = [];
     const expenseds = [];
     let revenue = 0;
@@ -135,7 +165,7 @@ export default class ChargePanel extends React.Component {
       profitColor = '#f50';
     }
     return (
-      <div className="pane-content tab-pane">
+      <div className="pane-content tab-pane" style={{ paddingBottom: 60 }}>
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
@@ -163,6 +193,9 @@ export default class ChargePanel extends React.Component {
         </Card>
         <Card bodyStyle={{ padding: 0 }}>
           <Table size="small" columns={this.expenseColumns} pagination={false} dataSource={expenseds} />
+        </Card>
+        <Card bodyStyle={{ padding: 0 }} title="代垫费用">
+          <Table size="small" columns={this.advancesColumns} pagination={false} dataSource={advances} />
         </Card>
       </div>
     );

@@ -50,7 +50,9 @@ export default class SurchargeForm extends React.Component {
       }
     });
   }
-
+  isDefaultAdvanceCharge(value) {
+    return ['CCF', 'GZF', 'GJF', 'SGF', 'CQF', 'HWX', 'DJCDF', 'PZCYCDF', 'KDF', 'QIFY'].indexOf(value) >= 0;
+  }
   renderInput(selected, field, initialMode, initialValue) {
     const { getFieldProps } = this.props.form;
     return (
@@ -116,42 +118,47 @@ export default class SurchargeForm extends React.Component {
 
 // const columns = [{
 //       title: '序号',
-//       dataIndex: 'shipmt_no',
+//       dataIndex: 'no',
+//       render(o, index) {
+//         return index+1;
+//       },
+//     }, {
+//       title: '费用类别',
+//       dataIndex: 'category',
 //     }, {
 //       title: '费用名称',
-//       dataIndex: 'sr_name',
+//       dataIndex: 'fee_name',
 
 //     }, {
 //       title: '费用代码',
-//       dataIndex: 'ref_external_no',
+//       dataIndex: 'fee_code',
 
 //     }, {
 //       title: '费用类型',
-//       dataIndex: 'transport_mode',
+//       dataIndex: 'fee_style',
 //     }, {
 //       title: '计费方式',
-//       dataIndex: 'total_count',
+//       dataIndex: 'charge_mode',
 //     }, {
 //       title: '批次量',
-//       dataIndex: 'total_weight',
+//       dataIndex: 'lot_num',
 //     }, {
 //       title: '免计量',
-//       dataIndex: 'total_volume',
+//       dataIndex: 'free_num',
 //     }, {
 //       title: '计费单价',
-//       dataIndex: 'total_volume',
+//       dataIndex: 'unit_price',
 //     }, {
 //       title: '是否开票',
-//       dataIndex: 'total_volume',
+//       dataIndex: 'invoice_en',
 //     }, {
 //       title: '开票税率',
-//       dataIndex: 'total_volume',
+//       dataIndex: 'tax_rate',
 //     }, {
 //       title: '是否启用',
-//       dataIndex: 'total_volume',
+//       dataIndex: 'enabled',
 //     }, {
 //       title: '操作',
-//       dataIndex: 'total_volume',
 //     }];
 
 //     const formItemLayout = {

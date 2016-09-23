@@ -1,22 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
-import { createQuote, loadQuoteModel, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, message, Form } from 'antd';
+import { submitQuotes, loadEditQuote, copyQuote, deleteQuote } from 'common/reducers/cmsQuote';
+import { Button, message, Form, Popconfirm } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
+import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
 
-function fetchData({ state, dispatch }) {
-  const promises = [];
-  promises.push(dispatch(loadPartners(state.account.tenantId)));
-  promises.push(dispatch(loadQuoteModel()));
-  return Promise.all(promises);
+function fetchData({ params, dispatch }) {
+  return dispatch(loadEditQuote(params.quoteno));
 }
 
 @connectFetch()(fetchData)
@@ -30,21 +27,23 @@ function fetchData({ state, dispatch }) {
     partners: state.cmsQuote.partners,
     clients: state.cmsQuote.clients,
   }),
-  { createQuote }
+  { submitQuotes, copyQuote, deleteQuote }
 )
 @connectNav({
   depth: 3,
   text: props => formatMsg(props.intl, 'quoteManage'),
   moduleName: 'clearance',
 })
-@withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 @Form.create()
-@withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
-export default class QuotingCreate extends Component {
+@withPrivilege({ module: 'clearance', feature: 'quote', action: 'edit' })
+export default class QuotingEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     quoteData: PropTypes.object.isRequired,
-    createQuote: PropTypes.func.isRequired,
+    submitQuotes: PropTypes.func.isRequired,
+    copyQuote: PropTypes.func.isRequired,
+    deleteQuote: PropTypes.func.isRequired,
     partners: PropTypes.array.isRequired,
     clients: PropTypes.array.isRequired,
   }
@@ -66,12 +65,45 @@ export default class QuotingCreate extends Component {
     quoteData.valid = true;
     quoteData.modifyById = this.props.loginId;
     quoteData.modifyBy = this.props.loginName;
-    const prom = this.props.createQuote(quoteData);
+    const prom = this.props.submitQuotes(quoteData);
     prom.then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         message.info('保存成功', 5);
+        this.context.router.push('/clearance/quote');
+      }
+    });
+  }
+  handleCopy = () => {
+    const quoteData = {
+      ...this.props.quoteData,
+      ...this.props.form.getFieldsValue(),
+    };
+    quoteData.tenantId = this.props.tenantId;
+    quoteData.valid = true;
+    quoteData.modifyBy = this.props.loginId;
+    const prom = this.props.copyQuote(quoteData);
+    prom.then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('复制成功', 5);
+        this.context.router.push('/clearance/quote/create');
+      }
+    });
+  }
+  handleDeleteConfirm = () => {
+    const prom = this.props.deleteQuote(
+      this.props.quoteData._id,
+      false,
+      this.props.loginId,
+    );
+    prom.then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('已删除', 5);
         this.context.router.push('/clearance/quote');
       }
     });
@@ -82,14 +114,18 @@ export default class QuotingCreate extends Component {
     return (
       <div>
         <header className="top-bar">
-          <span>{msg('newQuote')}</span>
+          <span>{msg('editQuote')}</span>
           <div className="tools">
-            <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
+            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleSave} >{msg('save')}</Button>
+            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
+            <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
+              <Button>删除</Button>
+            </Popconfirm>
           </div>
         </header>
         <div className="main-content">
           <FeesForm form={form} />
-          <FeesTable action="create" editable />
+          <FeesTable action="edit" editable={false} />
         </div>
       </div>
     );
