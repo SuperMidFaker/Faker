@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadRoles } from 'common/reducers/role';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
-import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import { loadRoles, switchEnable } from 'common/reducers/role';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -19,7 +18,7 @@ const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 
 function fetchData({ state, dispatch }) {
-  if (!isLoaded(state, 'role')) {
+  if (!state.role.loaded) {
     return dispatch(loadRoles({
       tenantId: state.account.tenantId,
       pageSize: state.role.list.pageSize,
@@ -36,7 +35,7 @@ function fetchData({ state, dispatch }) {
     loading: state.role.loading,
     tenantId: state.account.tenantId,
   }),
-  { loadRoles }
+  { loadRoles, switchEnable }
 )
 @connectNav({
   depth: 2,
@@ -56,15 +55,11 @@ export default class RoleList extends React.Component {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         desc: PropTypes.string.isRequired,
-        enabled: PropTypes.string.isRequired,
+        status: PropTypes.number.isRequired,
       })),
     }).isRequired,
     loading: PropTypes.bool.isRequired,
-    switchStatus: PropTypes.func.isRequired,
-    switchTenantApp: PropTypes.func.isRequired,
-    openTenantAppsEditor: PropTypes.func.isRequired,
-    closeTenantAppsEditor: PropTypes.func.isRequired,
-    delCorp: PropTypes.func.isRequired,
+    switchEnable: PropTypes.func.isRequired,
     loadRoles: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -76,11 +71,14 @@ export default class RoleList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleCreate() {
+  handleCreate = () => {
     this.context.router.push('/corp/role/new');
   }
-  handleStatusSwitch() {
-    message.info('');
+  handleEnable(role, index) {
+    this.props.switchEnable(role, index, true);
+  }
+  handleDisable(role, index) {
+    this.props.switchEnable(role, index, false);
   }
   renderColumnText(status, text) {
     let style = {};
@@ -129,16 +127,16 @@ export default class RoleList extends React.Component {
       title: formatMsg(intl, 'descColumn'),
       dataIndex: 'desc',
       width: 100,
-      render: (o, record) => this.renderColumnText(record.status, record.subCode),
+      render: (o, record) => this.renderColumnText(record.status, record.desc),
     }, {
       title: formatContainerMsg(intl, 'statusColumn'),
       width: 100,
       render: (o, record) => {
         let style = { color: '#51C23A' };
-        let text = 'normal';
+        let text = 'accountNormal';
         if (record.status === 0) {
           style = { color: '#CCC' };
-          text = 'blocked';
+          text = 'accountDisabled';
         }
         return <span style={style}>{formatContainerMsg(intl, text)}</span>;
       },
@@ -148,13 +146,13 @@ export default class RoleList extends React.Component {
       render: (text, record, index) => {
         if (record.status === 1) {
           return (
-            <PrivilegeCover module="corp" feature="organization" action="edit">
+            <PrivilegeCover module="corp" feature="role" action="edit">
               <span>
-                <NavLink to={`/corp/organization/edit/${record.key}`}>
+                <NavLink to={`/corp/role/edit/${record.id}`}>
                 {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                <a role="button" onClick={() => this.handleDisable(record, index)}>
                 {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
@@ -162,14 +160,8 @@ export default class RoleList extends React.Component {
         } else {
           return (
             <span>
-              <PrivilegeCover module="corp" feature="organization" action="delete">
-                <a role="button" onClick={() => this.handleCorpDel(record.key)}>
-                {formatGlobalMsg(intl, 'delete')}
-                </a>
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="corp" feature="organization" action="edit">
-                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+              <PrivilegeCover module="corp" feature="role" action="edit">
+                <a role="button" onClick={() => this.handleEnable(record, index)}>
                 {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>
@@ -187,7 +179,9 @@ export default class RoleList extends React.Component {
           </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
-          <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
+          <Table rowSelection={rowSelection} columns={columns} loading={loading}
+            dataSource={dataSource} useFixedHeader
+          />
         </div>
       </div>);
   }

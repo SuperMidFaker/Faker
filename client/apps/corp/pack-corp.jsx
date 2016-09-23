@@ -78,6 +78,15 @@ export default class CorpPack extends React.Component {
         text: formatMsg(intl, 'partnership'),
       });
     }
+    if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
+      linkMenus.push({
+        single: true,
+        key: 'corpsetting-5',
+        path: '/corp/role',
+        icon: 'zmdi zmdi-share',
+        text: formatMsg(intl, 'roleTitle'),
+      });
+    }
     this.setState({ linkMenus });
   }
 

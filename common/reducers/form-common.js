@@ -1,4 +1,5 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
+
 /* eslint-disable no-param-reassign */
 export function appendFormAcitonTypes(domain, actypes) {
   ['FORM_LOAD', 'FORM_LOAD_SUCCEED', 'FORM_LOAD_FAIL',
@@ -10,6 +11,12 @@ export function appendFormAcitonTypes(domain, actypes) {
 /* eslint-enable no-param-reassign */
 
 export function formReducer(actionTypes, state, action, defaultForm, stateFormName) {
+  if (__DEV__) {
+    const excepts = ['idlist', 'shipmentlist', 'personnelist', 'corplist'];
+    if (excepts.indexOf(stateFormName) === -1) {
+      console.warn('formReducer DEPRECATED, write form action directly'); // eslint-disable-line no-console
+    }
+  }
   switch (action.type) {
     case actionTypes.FORM_ASSIGN: {
       if (action.index !== -1) {

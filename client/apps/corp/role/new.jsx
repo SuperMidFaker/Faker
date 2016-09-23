@@ -5,12 +5,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { edit, loadRole } from 'common/reducers/role';
+import { clearForm, submit } from 'common/reducers/role';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 import RoleForm from './editForm';
 
-function fetchData({ dispatch, params }) {
-  const roleId = parseInt(params.id, 10);
-  return dispatch(loadRole(roleId));
+const formatMsg = format(messages);
+function fetchData({ dispatch }) {
+  return dispatch(clearForm());
 }
 
 @connectFetch()(fetchData)
@@ -18,38 +20,32 @@ function fetchData({ dispatch, params }) {
 @connect(state => ({
   formData: state.role.formData,
 }),
-  { edit }
+  { submit }
 )
 @connectNav({
   depth: 3,
-  text: props => props.formData.name,
+  text: props => formatMsg(props.intl, 'createTitle'),
   moduleName: 'corp',
-  lifecycle: 'componentWillReceiveProps',
-  until: props => props.formData.name,
 })
 @withPrivilege({
-  module: 'corp', feature: 'role', action: 'edit',
+  module: 'corp', feature: 'role', action: 'create',
 })
-export default class RoleEdit extends React.Component {
+export default class RoleCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     formData: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      desc: PropTypes.string,
-      privilege: PropTypes.object,
     }).isRequired,
-    edit: PropTypes.func.isRequired,
+    submit: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: routerShape.isRequired,
   }
-  handleSubmit = form => this.props.edit(form)
+  handleSubmit = form => this.props.submit(form)
   render() {
     const { formData } = this.props;
     return (
       <RoleForm formData={formData} onSubmit={this.handleSubmit}
-        mode="edit"
+        mode="new"
       />
     );
   }
