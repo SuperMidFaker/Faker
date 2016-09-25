@@ -31,6 +31,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-144x144-precomposed.png" sizes="144x144" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/stroke-7/style.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/ikons/style.css" />
+  <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/fontello/style.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/md-iconic-font/css/material-design-iconic-font.min.css">
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/jquery.nanoscroller/css/nanoscroller.css" />
   ${pageCss}

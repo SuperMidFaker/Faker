@@ -30,12 +30,21 @@ export default class CorpPack extends React.Component {
   componentWillMount() {
     const linkMenus = [];
     const { intl, privileges, level } = this.props;
+    if (hasPermission(privileges, { module: 'corp', feature: 'overview' })) {
+      linkMenus.push({
+        single: true,
+        key: 'corpsetting-0',
+        path: '/corp/overview',
+        icon: 'icon-ikons-timer',
+        text: formatMsg(intl, 'corpOverview'),
+      });
+    }
     if (hasPermission(privileges, { module: 'corp', feature: 'info' })) {
       linkMenus.push({
         single: true,
         key: 'corpsetting-1',
         path: '/corp/info',
-        icon: 'zmdi zmdi-info-outline',
+        icon: 'icon-ikons-presentation',
         text: formatMsg(intl, 'corpInfo'),
       });
     }
@@ -44,7 +53,7 @@ export default class CorpPack extends React.Component {
         single: true,
         key: 'corpsetting-2',
         path: '/corp/personnel',
-        icon: 'zmdi zmdi-accounts-alt',
+        icon: 'icon-ikons-users',
         text: formatMsg(intl, 'personnelUser'),
       });
     }

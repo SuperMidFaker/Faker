@@ -49,15 +49,6 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'quote' })) {
-      linkMenus.push({
-        single: true,
-        key: 'cms-5',
-        path: '/clearance/quote',
-        icon: 'zmdi zmdi-case',
-        text: formatMsg(intl, 'quote'),
-      });
-    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'expense' })) {
       linkMenus.push({
         single: true,
@@ -76,17 +67,22 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'billing'),
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'relation' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'quote' })) {
       linkMenus.push({
-        single: false,
+        single: true,
+        key: 'cms-5',
+        path: '/clearance/quote',
+        icon: 'zmdi zmdi-case',
+        text: formatMsg(intl, 'quote'),
+      });
+    }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
+      linkMenus.push({
+        single: true,
         key: 'cms-6',
+        path: '/clearance/settings',
         icon: 'zmdi zmdi-settings',
         text: formatMsg(intl, 'settings'),
-        sublinks: [{
-          key: 'cms-3-1',
-          path: '/clearance/relation',
-          text: formatMsg(intl, 'relation'),
-        }],
       });
     }
     this.setState({ linkMenus });
@@ -108,8 +104,8 @@ export default class Clearance extends React.Component {
         feat: 'billing',
         route: 'billing',
       }, {
-        feat: 'relation',
-        route: 'relation',
+        feat: 'settings',
+        route: 'settings',
       }]);
       if (route) {
         this.context.router.replace(`/clearance/${route}`);

@@ -9,6 +9,7 @@ import WeixinBinder from './weixin/binder';
 import WxProfile from './weixin/profile';
 import PackAccount from './account/pack-account';
 import Corp from './corp/pack-corp';
+import CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
 import MessageList from './account/messageList';
 import * as Organization from './corp/organization';
@@ -36,6 +37,7 @@ import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
+import * as CMSSettings from './cms/settings';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -98,12 +100,15 @@ export default(store, cookie) => {
       </Route>
       <Route onEnter={requireAuth}>
         <IndexRoute component={Home} />
-        <Route path="account" component={PackAccount}>
+        <Route path="my" component={PackAccount}>
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
           <Route path="messages" component={MessageList} />
         </Route>
         <Route path="corp" component={Corp}>
+          <Route path="overview">
+            <IndexRoute component={CorpOverview} />
+          </Route>
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={Organization.Wrapper}>
             <IndexRoute component={Organization.List} />
@@ -197,7 +202,9 @@ export default(store, cookie) => {
               <IndexRoute component={CMSRelation.Manage} />
               <Route path="create" component={CMSRelation.Create} />
               <Route path="edit/:id" component={CMSRelation.Edit} />
-              <Route path="create/price" component={CMSRelation.Price} />
+            </Route>
+            <Route path="settings">
+              <IndexRoute component={CMSSettings.List} />
             </Route>
           </Route>
         </Route>

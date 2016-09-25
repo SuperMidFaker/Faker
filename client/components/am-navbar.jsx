@@ -72,7 +72,7 @@ export default class AmNavBar extends React.Component {
               <Menu mode="horizontal">
                 <Menu.Item key="messages">
                   <Badge count={notReadMessagesNum} overflowCount={99}>
-                    <NavLink to="/account/messages">
+                    <NavLink to="/my/messages">
                     <span className="icon s7-bell" />
                     </NavLink>
                   </Badge>
