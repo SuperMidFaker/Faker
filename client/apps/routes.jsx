@@ -9,6 +9,7 @@ import WeixinBinder from './weixin/binder';
 import WxProfile from './weixin/profile';
 import PackAccount from './account/pack-account';
 import Corp from './corp/pack-corp';
+import CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
 import MessageList from './account/messageList';
 import * as Organization from './corp/organization';
@@ -99,12 +100,15 @@ export default(store, cookie) => {
       </Route>
       <Route onEnter={requireAuth}>
         <IndexRoute component={Home} />
-        <Route path="account" component={PackAccount}>
+        <Route path="my" component={PackAccount}>
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
           <Route path="messages" component={MessageList} />
         </Route>
         <Route path="corp" component={Corp}>
+          <Route path="overview">
+            <IndexRoute component={CorpOverview} />
+          </Route>
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={Organization.Wrapper}>
             <IndexRoute component={Organization.List} />

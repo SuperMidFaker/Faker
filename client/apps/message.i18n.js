@@ -109,6 +109,10 @@ const messages = defineMessages({
     id: 'container.partner.type.offline',
     defaultMessage: '线下',
   },
+  corpOverview: {
+    id: 'container.corpOverview',
+    defaultMessage: '概况',
+  },
   corpInfo: {
     id: 'container.corpInfo',
     defaultMessage: '企业信息',

@@ -18,6 +18,6 @@ export default [
    ['get', '/login', renderWebPage],
    ['get', '/forgot', renderWebPage],
    ['get', '/manager*', renderWebPage],
-   ['get', '/account/password', renderWebPage],
-   ['get', '/account/profile', renderWebPage],
+   ['get', '/my/password', renderWebPage],
+   ['get', '/my/profile', renderWebPage],
 ];

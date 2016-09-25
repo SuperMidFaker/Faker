@@ -67,7 +67,7 @@ export default class AmUserNav extends React.Component {
       <Menu mode="horizontal" className="navbar-user-menu">
         <SubMenu title={subTitle}>
           <MenuItem key="profile">
-            <NavLink to="/account/profile">
+            <NavLink to="/my/profile">
               <i className="zmdi zmdi-account-box zmdi-hc-fw" />
               <span>{formatMsg(intl, 'userSetting')}</span>
             </NavLink>
@@ -79,7 +79,7 @@ export default class AmUserNav extends React.Component {
             </a>
           </MenuItem>
           <MenuItem key="password">
-            <NavLink to="/account/password">
+            <NavLink to="/my/password">
               <i className="zmdi zmdi-lock zmdi-hc-fw" />
               <span>{formatMsg(intl, 'pwdSetting')}</span>
             </NavLink>

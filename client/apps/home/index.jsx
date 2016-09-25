@@ -38,6 +38,9 @@ export default class Home extends React.Component {
       depth: 1,
     });
     const link = findForemostRoute(this.props.privileges, 'corp', [{
+      feat: 'overview',
+      route: 'overview',
+    }, {
       feat: 'info',
       route: 'info',
     }, {

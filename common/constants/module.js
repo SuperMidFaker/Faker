@@ -243,6 +243,19 @@ const MODULE_CORPORATION = {
   text: 'moduleCorporation',
   features: [
     {
+      id: 'overview',
+      text: 'featCorpOverview',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        },
+      ],
+    },
+    {
       id: 'info',
       text: 'featCorpInfo',
       actions: [
