@@ -77,7 +77,7 @@ function ColumnSwitch(props) {
       onChange(record, field, value);
     }
   }
-  return <Switch size="small" defaultChecked={record[field]} value={record[field] || true} onChange={handleChange} />;
+  return <Switch size="small" checked={record[field]} value={record[field] || true} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
   record: PropTypes.object.isRequired,
@@ -113,7 +113,6 @@ ColumnSelect.proptypes = {
   onChange: PropTypes.func,
   options: PropTypes.array.isRequired,
 };
-
 @injectIntl
 @connect(
   state => ({
@@ -139,8 +138,23 @@ export default class FeesTable extends Component {
     coops: [],
     editIndex: -1,
   };
+
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
+    if (record.fee_code === 'ALL_IN' && record[field] === true) {
+      this.props.quoteData.fees.forEach((fs) => {
+        if (fs.fee_code === 'BGF' || fs.fee_code === 'PDF' || fs.fee_code === 'LDF') {
+          fs.enabled = false; // eslint-disable-line no-param-reassign
+        }
+      });
+    }
+    if (record.fee_code === 'ALL_IN' && record[field] === false) {
+      this.props.quoteData.fees.forEach((fs) => {
+        if (fs.fee_code === 'BGF' || fs.fee_code === 'PDF' || fs.fee_code === 'LDF') {
+          fs.enabled = true; // eslint-disable-line no-param-reassign
+        }
+      });
+    }
     this.forceUpdate();
   }
   handleAddFees = () => {
