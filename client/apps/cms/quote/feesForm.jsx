@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, TARIFF_KINDS } from 'common/constants';
-import { Form, Select, Col, Row, Card } from 'antd';
+import { Form, Select, Col, Row } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -81,11 +81,11 @@ export default class FeesForm extends Component {
     const msg = key => formatMsg(this.props.intl, key);
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     return (
-      <Card bodyStyle={{ padding: 16 }}>
+      <div className="panel-container" >
         <Row>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('tariffKinds')} {...formItemLayout}>
-              <Select style={{ width: '80%' }} onSelect={this.handleKindSelect}
+              <Select style={{ width: '90%' }} onSelect={this.handleKindSelect}
                 {...getFieldProps('tariff_kind', {
                   rules: [{ required: true, message: '报价类型必选' }],
                   initialValue: fieldInits.tariff_kind,
@@ -99,10 +99,10 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('partners')} {...formItemLayout}>
               <Select showSearch showArrow optionFilterProp="searched"
-                style={{ width: '80%' }} disabled={disBase}
+                style={{ width: '90%' }} disabled={disBase}
                 {...getFieldProps('partner.name', {
                   rules: [{ required: true, message: '必选' }],
                   getValueFromEvent: this.handleClientChange,
@@ -119,9 +119,9 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('declareWay')} {...formItemLayout}>
-              <Select multiple style={{ width: '80%' }} placeholder="不限"
+              <Select multiple style={{ width: '90%' }} placeholder="不限"
                 {...getFieldProps('decl_way_code', {
                   rules: [{ required: true, message: '报关类型必选', type: 'array' }],
                   initialValue: fieldInits.decl_way_code,
@@ -135,9 +135,9 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('transMode')} {...formItemLayout}>
-              <Select multiple style={{ width: '80%' }} placeholder="不限"
+              <Select multiple style={{ width: '90%' }} placeholder="不限"
                 {...getFieldProps('trans_mode', {
                   rules: [{ required: true, message: '运输方式必选', type: 'array' }],
                   initialValue: fieldInits.trans_mode,
@@ -151,9 +151,9 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={4}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('remark')} {...formItemLayout}>
-              <Select tags style={{ width: '80%' }}
+              <Select tags style={{ width: '90%' }}
                 {...getFieldProps('remarks', {
                   initialValue: fieldInits.remarks,
                 })}
@@ -162,7 +162,7 @@ export default class FeesForm extends Component {
             </FormItem>
           </Col>
         </Row>
-      </Card>
+      </div>
     );
   }
 }

@@ -469,6 +469,18 @@ img {
     padding-top:15px
   }
 }
+.ant-card{
+  margin-bottom: 16px;
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
+  .ant-collapse {
+    border: none;
+  }
+  .ant-table-small {
+    border: none;
+  }
+}
 .ant-form-item > label {
   padding-right: 10px;
 }
@@ -557,18 +569,10 @@ img {
       margin-bottom: 0;
     }
   }
-  .ant-card{
-    margin-bottom: 24px;
-    .ant-form-item {
-      margin-bottom: 8px;
-    }
-    .ant-collapse {
-      border: none;
-    }
-    .ant-table-small {
-      border: none;
-    }
-  } 
+  &.card-wrapper {
+    padding: 24px 24px 8px 24px;
+  }
+   
 }
 .ant-table,
 .ant-table-header,
@@ -587,9 +591,11 @@ img {
   height: 50px;
 }
 .panel-container {
+  padding: 16px;
   background: #fff;
   box-shadow: 0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);
   border-radius: 2px;
+  margin-bottom: 16px;
 }
 .main-col {
   padding: 0 8px 24px 24px;

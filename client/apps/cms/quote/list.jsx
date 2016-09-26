@@ -153,7 +153,7 @@ export default class QuoteList extends Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" style={{ marginBottom: 8 }} onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
                 新建报价
               </Button>
             </div>
