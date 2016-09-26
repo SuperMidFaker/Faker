@@ -57,7 +57,7 @@ export default class QuotingCreate extends Component {
       ...this.props.form.getFieldsValue(),
     };
     if (quoteData.partner.name) {
-      const coops = Object.assign(this.props.partners, this.props.clients);
+      const coops = this.props.partners.concat(this.props.clients);
       const selpartners = coops.filter(
         pt => pt.name === quoteData.partner.name);
       quoteData.partner.id = selpartners[0].partner_id;
@@ -88,7 +88,7 @@ export default class QuotingCreate extends Component {
           </div>
         </header>
         <div className="main-content">
-          <FeesForm form={form} />
+          <FeesForm form={form} action="create" />
           <FeesTable action="create" editable />
         </div>
       </div>
