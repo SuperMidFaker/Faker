@@ -59,7 +59,8 @@ export default class QuotingEdit extends Component {
     };
     quoteData.tenantId = this.props.tenantId;
     quoteData.valid = true;
-    quoteData.modifyBy = this.props.loginId;
+    quoteData.modifyBy = this.props.loginName;
+    quoteData.modifyById = this.props.loginId;
     const prom = this.props.copyQuote(quoteData);
     prom.then((result) => {
       if (result.error) {
@@ -74,6 +75,7 @@ export default class QuotingEdit extends Component {
     const prom = this.props.deleteQuote(
       this.props.quoteData._id,
       false,
+      this.props.loginName,
       this.props.loginId,
     );
     prom.then((result) => {

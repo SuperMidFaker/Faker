@@ -151,13 +151,13 @@ export function copyQuote(params) {
   };
 }
 
-export function deleteQuote(quoteId, valid, modifyBy) {
+export function deleteQuote(quoteId, valid, modifyBy, modifyById) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTE_DELETE, actionTypes.QUOTE_DELETE_SUCCEED, actionTypes.QUOTE_DELETE_FAIL],
       endpoint: 'v1/cms/quote/quoteDelete',
       method: 'post',
-      data: { quoteId, valid, modifyBy },
+      data: { quoteId, valid, modifyBy, modifyById },
       origin: 'mongo',
     },
   };
