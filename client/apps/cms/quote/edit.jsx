@@ -116,8 +116,10 @@ export default class QuotingEdit extends Component {
         <header className="top-bar">
           <span>{msg('editQuote')}</span>
           <div className="tools">
-            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleSave} >{msg('save')}</Button>
-            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
+            <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
+            <span />
+            <Button onClick={this.handleCopy} >{msg('copy')}</Button>
+            <span />
             <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
               <Button>删除</Button>
             </Popconfirm>
