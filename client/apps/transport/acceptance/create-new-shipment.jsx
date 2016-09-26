@@ -30,7 +30,7 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    tenantName: state.corpDomain.name,
+    tenantName: state.account.tenantName,
     formData: state.shipment.formData,
     submitting: state.transportAcceptance.submitting,
     filters: state.transportAcceptance.table.filters,
@@ -167,7 +167,7 @@ export default class ShipmentCreate extends React.Component {
     });
   }
   render() {
-    const { intl, submitting, tenantName, form } = this.props;
+    const { intl, submitting, form } = this.props;
     return (
       <div>
        <header className="top-bar">
@@ -194,7 +194,7 @@ export default class ShipmentCreate extends React.Component {
                   <ModeInfo intl={intl} formhoc={form} />
                   <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
                 </Col>
-                <CorrelInfo formhoc={form} intl={intl} tenantName={tenantName} />
+                <CorrelInfo formhoc={form} intl={intl} />
               </div>
             </div>
           </Form>

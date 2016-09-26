@@ -52,7 +52,9 @@ export default class SubdelgTable extends Component {
     dataIndex: 'bill_seq_no',
     width: 160,
     render: (o, record) => {
-      if (record.bill_status > 4) {
+      if (record.bill_status === undefined) {
+        return o;
+      } else if (record.bill_status > 4) {
         return (
           <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
             {o}

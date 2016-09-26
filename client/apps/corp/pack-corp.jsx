@@ -83,7 +83,7 @@ export default class CorpPack extends React.Component {
         single: true,
         key: 'corpsetting-5',
         path: '/corp/role',
-        icon: 'zmdi zmdi-share',
+        icon: 'icon-fontello-anchor',
         text: formatMsg(intl, 'roleTitle'),
       });
     }
