@@ -60,11 +60,20 @@ export default class Clearance extends React.Component {
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
       linkMenus.push({
-        single: true,
+        single: false,
         key: 'cms-4',
         path: '/clearance/billing',
         icon: 'icon-ikons-credit-card',
         text: formatMsg(intl, 'billing'),
+        sublinks: [{
+          key: 'tms-4-0',
+          path: '/transport/billing/recievable',
+          text: '应收账单',
+        }, {
+          key: 'tms-4-1',
+          path: '/transport/billing/payable',
+          text: '应付账单',
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'quote' })) {
