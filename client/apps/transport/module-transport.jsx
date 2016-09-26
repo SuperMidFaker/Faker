@@ -63,63 +63,60 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-3',
         path: '/transport/tracking',
-        icon: 'zmdi zmdi-assignment-check',
+        icon: 'icon-fontello-truck',
         text: '追踪',
       });
     }
-    if (hasPermission(privileges, { module: 'transport', feature: 'resources' })
-      && hasPermission(privileges, { module: 'transport', feature: 'tariff' })
-    ) {
+    if (hasPermission(privileges, { module: 'transport', feature: 'billing' })) {
       linkMenus.push({
         single: false,
         key: 'tms-4',
-        icon: 'zmdi zmdi-library',
-        text: '管理',
+        path: '/transport/billing',
+        icon: 'icon-fontello-credit-card-2',
+        text: '账单',
         sublinks: [{
+          key: 'tms-4-0',
+          path: '/transport/billing/recievable',
+          text: '应收账单',
+        }, {
           key: 'tms-4-1',
-          path: '/transport/resources/vehicle',
-          text: '车辆管理',
-        }, {
-          key: 'tms-4-2',
-          path: '/transport/resources/driver',
-          text: '司机管理',
-        }, {
-          key: 'tms-4-3',
-          path: '/transport/resources/node',
-          text: '地点管理',
-        }, {
-          key: 'tms-4-4',
-          path: '/transport/tariff',
-          text: '价格管理',
+          path: '/transport/billing/payable',
+          text: '应付账单',
         }],
       });
-    } else if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
+    }
+    if (hasPermission(privileges, { module: 'transport', feature: 'tariff' })) {
       linkMenus.push({
         single: true,
-        key: 'tms-4',
-        icon: 'zmdi zmdi-library',
-        text: '资源管理',
-        sublinks: [{
-          key: 'tms-4-1',
-          path: '/transport/resources/vehicle',
-          text: '车辆管理',
-        }, {
-          key: 'tms-4-2',
-          path: '/transport/resources/driver',
-          text: '司机管理',
-        }, {
-          key: 'tms-4-3',
-          path: '/transport/resources/node',
-          text: '地点管理',
-        }],
-      });
-    } else if (hasPermission(privileges, { module: 'transport', feature: 'tariff' })) {
-      linkMenus.push({
-        single: true,
-        key: 'tms-4',
-        icon: 'zmdi zmdi-library',
+        key: 'tms-5',
+        icon: 'icon-fontello-briefcase',
         path: '/transport/tariff',
-        text: '价格管理',
+        text: '报价',
+      });
+    }
+    if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
+      linkMenus.push({
+        single: false,
+        key: 'tms-6',
+        icon: 'zmdi zmdi-library',
+        text: '资源',
+        sublinks: [{
+          key: 'tms-6-0',
+          path: '/transport/resources/carrier',
+          text: '承运商管理',
+        }, {
+          key: 'tms-6-1',
+          path: '/transport/resources/vehicle',
+          text: '车辆管理',
+        }, {
+          key: 'tms-6-2',
+          path: '/transport/resources/driver',
+          text: '司机管理',
+        }, {
+          key: 'tms-5-3',
+          path: '/transport/resources/node',
+          text: '地点管理',
+        }],
       });
     }
     this.setState({ linkMenus });
