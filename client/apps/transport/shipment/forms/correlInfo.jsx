@@ -13,13 +13,13 @@ const formatMsg = format(messages);
       ref_waybill_no: state.shipment.formData.ref_waybill_no,
       ref_entry_no: state.shipment.formData.ref_entry_no,
       remark: state.shipment.formData.remark,
-      lsp_name: state.shipment.formData.lsp_name,
     },
+    tenantName: state.account.tenantName,
   })
 )
 export default class CorrelInfo extends React.Component {
   static propTypes = {
-    tenantName: PropTypes.string,
+    tenantName: PropTypes.string.isRequired,
     fieldDefaults: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     intl: PropTypes.object.isRequired,
@@ -27,13 +27,13 @@ export default class CorrelInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const { tenantName, formhoc, fieldDefaults: {
-      ref_waybill_no, ref_entry_no, remark, lsp_name: lsp,
+      ref_waybill_no, ref_entry_no, remark,
     } } = this.props;
     return (
       <Col span="8" className="right-side-col">
         <Card bodyStyle={{ padding: 16 }}>
           <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
-            fieldProps={{ initialValue: tenantName || lsp }} disabled rules={[{
+            fieldProps={{ initialValue: tenantName }} disabled rules={[{
               required: true, message: this.msg('lspNameMust'),
             }]} field="lsp"
           />

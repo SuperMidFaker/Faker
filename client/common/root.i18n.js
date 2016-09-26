@@ -97,5 +97,97 @@ const messages = defineMessages({
     id: 'component.module.clearance',
     defaultMessage: '清关管理',
   },
+  moduleCorporation: {
+    id: 'component.module.corporation',
+    defaultMessage: '企业管理',
+  },
+  featCorpOverview: {
+    id: 'component.feature.corp.overview',
+    defaultMessage: '概况',
+  },
+  featCorpInfo: {
+    id: 'component.feature.corp.info',
+    defaultMessage: '企业信息',
+  },
+  featCorpPersonnel: {
+    id: 'component.feature.corp.personnel',
+    defaultMessage: '用户管理',
+  },
+  featCorpOrganization: {
+    id: 'component.feature.corp.organization',
+    defaultMessage: '组织机构',
+  },
+  featCorpRole: {
+    id: 'component.feature.corp.role',
+    defaultMessage: '角色设置',
+  },
+  featCorpPartners: {
+    id: 'component.feature.corp.partners',
+    defaultMessage: '协作网络',
+  },
+  featClearanceImport: {
+    id: 'component.feature.clearance.import',
+    defaultMessage: '进口',
+  },
+  featClearanceExport: {
+    id: 'component.feature.clearance.export',
+    defaultMessage: '出口',
+  },
+  featClearanceQuote: {
+    id: 'component.feature.clearance.quote',
+    defaultMessage: '报价',
+  },
+  featClearanceExpense: {
+    id: 'component.feature.clearance.expense',
+    defaultMessage: '费用',
+  },
+  featClearanceBilling: {
+    id: 'component.feature.clearance.billing',
+    defaultMessage: '账单',
+  },
+  featClearanceSettings: {
+    id: 'component.feature.clearance.setting',
+    defaultMessage: '设置',
+  },
+  featTransportDashboard: {
+    id: 'component.feature.transport.dashboard',
+    defaultMessage: '工作台',
+  },
+  featTransportShipment: {
+    id: 'component.feature.transport.shipment',
+    defaultMessage: '运单',
+  },
+  featTransportDispatch: {
+    id: 'component.feature.transport.dispatch',
+    defaultMessage: '调度',
+  },
+  featTransportTracking: {
+    id: 'component.feature.transport.tracking',
+    defaultMessage: '追踪',
+  },
+  featTransportResources: {
+    id: 'component.feature.transport.resources',
+    defaultMessage: '资源',
+  },
+  featTransportTariff: {
+    id: 'component.feature.transport.tariff',
+    defaultMessage: '价格管理',
+  },
+  featActionView: {
+    id: 'component.action.view',
+    defaultMessage: '查看',
+  },
+  featActionEdit: {
+    id: 'component.action.edit',
+    defaultMessage: '编辑',
+  },
+  featActionCreate: {
+    id: 'component.action.create',
+    defaultMessage: '创建',
+  },
+  featActionDelete: {
+    id: 'component.action.delete',
+    defaultMessage: '删除',
+  },
 });
 export default messages;

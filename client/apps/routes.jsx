@@ -8,15 +8,16 @@ import Forgot from './sso/forgot';
 import WeixinBinder from './weixin/binder';
 import WxProfile from './weixin/profile';
 import PackAccount from './account/pack-account';
+import MessageList from './account/messageList';
+import MyProfile from './account/profile';
+import Password from './account/password';
 import Corp from './corp/pack-corp';
 import CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
-import MessageList from './account/messageList';
 import * as Organization from './corp/organization';
 import * as Personnel from './corp/personnel';
 import * as Cooperation from './corp/cooperation';
-import MyProfile from './account/profile';
-import Password from './account/password';
+import * as Role from './corp/role';
 import Module from './module';
 import Transport from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -124,6 +125,11 @@ export default(store, cookie) => {
             <IndexRoute component={Cooperation.Partners} />
             <Route path="invitations/in" component={Cooperation.Received} />
             <Route path="invitations/out" component={Cooperation.Sent} />
+          </Route>
+          <Route path="role" component={Role.Wrapper}>
+            <IndexRoute component={Role.List} />
+            <Route path="new" component={Role.Create} />
+            <Route path="edit/:id" component={Role.Edit} />
           </Route>
         </Route>
         <Route component={Module}>

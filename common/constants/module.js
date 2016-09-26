@@ -107,8 +107,8 @@ const MODULE_CLEARANCE = {
       ],
     },
     {
-      id: 'relation',
-      text: 'featClearanceRelation',
+      id: 'settings',
+      text: 'featClearanceSettings',
       actions: [
         {
           id: 'view',
@@ -249,9 +249,6 @@ const MODULE_CORPORATION = {
         {
           id: 'view',
           text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
         },
       ],
     },
@@ -290,6 +287,25 @@ const MODULE_CORPORATION = {
     {
       id: 'organization',
       text: 'featCorpOrganization',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'role',
+      text: 'featCorpRole',
       actions: [
         {
           id: 'view',

@@ -9,6 +9,7 @@ import corpDomain from './corp-domain';
 import corps from './corps';
 import personnel from './personnel';
 import partner from './partner';
+import role from './role';
 import invitation from './invitation';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
@@ -34,6 +35,7 @@ export default combineReducers({
   corps,
   personnel,
   partner,
+  role,
   invitation,
   shipment,
   transportAcceptance,

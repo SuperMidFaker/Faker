@@ -12,6 +12,7 @@ import messages from './message.i18n';
 import './home.less';
 
 const formatMsg = format(messages);
+const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -60,19 +61,19 @@ export default class Home extends React.Component {
   render() {
     const { intl, logo, name } = this.props;
     const tenantMenus = [
-      <Menu.Item key="apps">
+      <MenuItem key="apps">
         <i className="zmdi zmdi-apps" />
         {formatMsg(intl, 'applications')}
-      </Menu.Item>,
+      </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
       tenantMenus.push(
-        <Menu.Item key="corp">
+        <MenuItem key="corp">
           <NavLink to={`${this.state.corpMenuLink}`}>
             <i className="zmdi zmdi-city-alt" />
             {formatMsg(intl, 'corp')}
           </NavLink>
-        </Menu.Item>
+        </MenuItem>
       );
     }
     return (

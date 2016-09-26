@@ -14,6 +14,7 @@ import './pane.less';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
+const TimelineItem = Timeline.Item;
 
 function getColCls(col) {
   if (col) {
@@ -159,21 +160,21 @@ export default class DetailPane extends React.Component {
           </Panel>
           <Panel header={shipmtSchedule} key="trans_schedule">
             <Timeline>
-              <Timeline.Item color="blue" dot={<Icon type="circle-o-up" style={{ fontSize: '16px' }} />}>
+              <TimelineItem color="blue" dot={<Icon type="circle-o-up" style={{ fontSize: '16px' }} />}>
                 <p><strong>{this.msg('pickupEstDate')} {moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}</strong></p>
                 <p><strong>{shipmt.consigner_name || ''}</strong></p>
                 <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
                 <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
-              </Timeline.Item>
-              <Timeline.Item color="blue" dot={<Icon type="retweet" style={{ fontSize: '16px' }} />}>
+              </TimelineItem>
+              <TimelineItem color="blue" dot={<Icon type="retweet" style={{ fontSize: '16px' }} />}>
                 <p>中转地</p>
-              </Timeline.Item>
-              <Timeline.Item color="green" dot={<Icon type="circle-o-down" style={{ fontSize: '16px' }} />}>
+              </TimelineItem>
+              <TimelineItem color="green" dot={<Icon type="circle-o-down" style={{ fontSize: '16px' }} />}>
                 <p><strong>{this.msg('deliveryEstDate')} {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}</strong></p>
                 <p><strong>{shipmt.consignee_name}</strong></p>
                 <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
                 <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
-              </Timeline.Item>
+              </TimelineItem>
             </Timeline>
           </Panel>
           <Panel header={transitModeInfo} key="trans_mode">

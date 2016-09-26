@@ -9,7 +9,7 @@ const reactBabelProd = {
   plugins: [
     'transform-react-remove-prop-types',
     // 'transform-react-inline-elements', // https://github.com/babel/babel/issues/3728 Menu.Item
-    // 'transform-react-constant-elements',  // https://github.com/babel/babel/issues/4458 error const {} = WeUI goods-info const opRendered
+    // 'transform-react-constant-elements',  // https://github.com/babel/babel/issues/4458 error const {} = WeUI https://github.com/babel/babel/issues/4223 goods-info const opRendered
   ],
 };
 

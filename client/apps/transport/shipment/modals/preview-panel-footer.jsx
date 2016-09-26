@@ -21,6 +21,7 @@ import './preview-panel.less';
 
 const formatMsg = format(messages);
 const DropdownButton = Dropdown.Button;
+const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -265,7 +266,7 @@ export default class Footer extends React.Component {
     const { tenantId, stage, previewer: { shipmt, tracking, row } } = this.props;
     let menu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="shareShipment">共享运单</Menu.Item>
+        <MenuItem key="shareShipment">共享运单</MenuItem>
       </Menu>
     );
     let buttons = <div />;
@@ -312,8 +313,8 @@ export default class Footer extends React.Component {
         if (shipmt.tenant_id === tenantId) {
           menu = (
             <Menu onClick={this.handleMenuClick}>
-              <Menu.Item key="shareShipment">共享运单</Menu.Item>
-              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
             </Menu>
           );
         }
@@ -376,8 +377,8 @@ export default class Footer extends React.Component {
       if (row.status <= SHIPMENT_TRACK_STATUS.dispatched && shipmt.tenant_id === tenantId) {
         menu = (
           <Menu onClick={this.handleMenuClick}>
-            <Menu.Item key="shareShipment">共享运单</Menu.Item>
-            <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+            <MenuItem key="shareShipment">共享运单</MenuItem>
+            <MenuItem key="terminateShipment">终止运单</MenuItem>
           </Menu>
         );
       }
@@ -410,8 +411,8 @@ export default class Footer extends React.Component {
         if (shipmt.tenant_id === tenantId) {
           menu = (
             <Menu onClick={this.handleMenuClick}>
-              <Menu.Item key="shareShipment">共享运单</Menu.Item>
-              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
             </Menu>
           );
         }
@@ -441,8 +442,8 @@ export default class Footer extends React.Component {
         if (shipmt.tenant_id === tenantId) {
           menu = (
             <Menu onClick={this.handleMenuClick}>
-              <Menu.Item key="shareShipment">共享运单</Menu.Item>
-              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
             </Menu>
           );
         }
@@ -502,8 +503,8 @@ export default class Footer extends React.Component {
         if (shipmt.tenant_id === tenantId) {
           menu = (
             <Menu onClick={this.handleMenuClick}>
-              <Menu.Item key="shareShipment">共享运单</Menu.Item>
-              <Menu.Item key="terminateShipment">终止运单</Menu.Item>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
             </Menu>
           );
         }
