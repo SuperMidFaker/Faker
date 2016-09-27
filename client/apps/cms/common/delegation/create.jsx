@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, message } from 'antd';
+import { Form, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SubForm from './forms/SubForm';
@@ -109,19 +109,19 @@ export default class AcceptanceCreate extends Component {
           <span>新建委托</span>
         </header>
         <div className="main-content">
-          <div className="page-body">
+          <div className="page-body card-wrapper">
             <Form horizontal>
-              <div className="panel-body">
-                <Col sm={18} style={{ padding: '16px 8px 0 16px' }}>
+              <Row gutter={16}>
+                <Col sm={18}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
                 </Col>
-                <Col sm={6} style={{ padding: '16px 16px 0 8px' }}>
+                <Col sm={6}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
                 </Col>
-                <Col sm={24} style={{ padding: '0 16px' }}>
+                <Col sm={24}>
                   <SubForm form={form} ietype={type} />
                 </Col>
-              </div>
+              </Row>
             </Form>
           </div>
         </div>
