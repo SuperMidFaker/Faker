@@ -238,6 +238,13 @@ const MODULE_TRANSPORT = {
   ],
 };
 
+const MODULE_SCV = {
+  id: 'scv',
+  text: 'moduleSCV',
+  defaultText: 'SCV',
+  features: [],
+};
+
 const MODULE_CORPORATION = {
   id: 'corp',
   text: 'moduleCorporation',
@@ -348,6 +355,7 @@ const appModules = [
   MODULE_CUSTOMER,
   MODULE_CLEARANCE,
   MODULE_TRANSPORT,
+  MODULE_SCV,
 ];
 
 export const DEFAULT_MODULES = {};
