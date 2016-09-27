@@ -21,11 +21,15 @@ function ColumnInput(props) {
       onChange(record, field, ev.target.value);
     }
   }
+  let style = {};
+  if (!record.enabled) {
+    style = { color: '#CCCCCC' };
+  }
   if (record.fee_style === 'cushion') {
     return <span></span>;
   } else {
-    return inEdit ? <Input value={record[field] || ''} onChange={handleChange} />
-    : <span>{record[field] || ''}</span>;
+    return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
+    : <span style={style}>{record[field] || ''}</span>;
   }
 }
 ColumnInput.propTypes = {
@@ -45,8 +49,12 @@ function CustomInput(props) {
   if (record.category === 'custom' && Edit) {
     inEdit = true;
   }
-  return inEdit ? <Input value={record[field] || ''} placeholder={placeholder} onChange={handleChange} />
-    : <span>{record[field] || ''}</span>;
+  let style = {};
+  if (!record.enabled) {
+    style = { color: '#CCCCCC' };
+  }
+  return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} placeholder={placeholder} onChange={handleChange} />
+    : <span style={style}>{record[field] || ''}</span>;
 }
 CustomInput.propTypes = {
   record: PropTypes.object.isRequired,
@@ -61,8 +69,12 @@ function TaxInput(props) {
       onChange(record, field, ev.target.value);
     }
   }
-  return inEdit ? <Input disabled={!record.invoice_en} value={record[field] || ''} onChange={handleChange} addonAfter="%" />
-  : <span>{record[field] || ''}</span>;
+  let style = {};
+  if (!(record.invoice_en && record.enabled)) {
+    style = { color: '#CCCCCC' };
+  }
+  return inEdit ? <Input disabled={!(record.invoice_en && record.enabled)} value={record[field] || ''} onChange={handleChange} addonAfter="%" />
+  : <span style={style}>{record[field] || ''}%</span>;
 }
 TaxInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -77,7 +89,7 @@ function ColumnSwitch(props) {
       onChange(record, field, value);
     }
   }
-  return <Switch size="small" defaultChecked={record[field]} value={record[field] || true} onChange={handleChange} />;
+  return <Switch size="small" disabled={!record.enabled && field !== 'enabled'} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
   record: PropTypes.object.isRequired,
@@ -93,16 +105,20 @@ function ColumnSelect(props) {
   }
   if (inEdit) {
     return (
-      <Select value={record[field]} onChange={handleChange} style={{ width: '100%' }}>
+      <Select value={record[field]} disabled={!record.enabled} onChange={handleChange} style={{ width: '100%' }}>
         {
           options.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
         }
       </Select>
     );
   } else {
+    let style = {};
+    if (!record.enabled) {
+      style = { color: '#CCCCCC' };
+    }
     const foundOpts = options.filter(opt => opt.value === record[field]);
     const label = foundOpts.length === 1 ? foundOpts[0].text : '';
-    return <span>{label}</span>;
+    return <span style={style}>{label}</span>;
   }
 }
 
@@ -113,11 +129,13 @@ ColumnSelect.proptypes = {
   onChange: PropTypes.func,
   options: PropTypes.array.isRequired,
 };
-
 @injectIntl
 @connect(
   state => ({
     quoteData: state.cmsQuote.quoteData,
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
   }),
   { feeUpdate, feeAdd, feeDelete }
 )
@@ -138,9 +156,25 @@ export default class FeesTable extends Component {
     addedit: false,
     coops: [],
     editIndex: -1,
+    count: 0,
   };
+
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
+    if (record.fee_code === 'ALL_IN' && record[field] === true) {
+      this.props.quoteData.fees.forEach((fs) => {
+        if (fs.fee_code === 'BGF' || fs.fee_code === 'PDF' || fs.fee_code === 'LDF') {
+          fs.enabled = false; // eslint-disable-line no-param-reassign
+        }
+      });
+    }
+    if (record.fee_code === 'ALL_IN' && record[field] === false) {
+      this.props.quoteData.fees.forEach((fs) => {
+        if (fs.fee_code === 'BGF' || fs.fee_code === 'PDF' || fs.fee_code === 'LDF') {
+          fs.enabled = true; // eslint-disable-line no-param-reassign
+        }
+      });
+    }
     this.forceUpdate();
   }
   handleAddFees = () => {
@@ -169,40 +203,62 @@ export default class FeesTable extends Component {
     });
   }
   handleSave = (row) => {
+    const count = this.state.count + 1;
+    const param = {};
+    param.quoteId = this.props.quoteData._id;
+    param.tenantId = this.props.tenantId;
+    param.modifyById = this.props.loginId;
+    param.modifyBy = this.props.loginName;
+    param.modifyCount = this.props.quoteData.modify_count + count;
     this.setState({
       editIndex: -1,
       addedit: false,
+      count,
     });
     if (row._id) {
       this.props.feeUpdate(
-        this.props.quoteData._id,
+        param,
         row,
       ).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
+        } else {
+          message.info('保存成功', 5);
         }
       });
     } else {
       this.props.feeAdd(
-        this.props.quoteData._id,
+        param,
         row,
       ).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
+        } else {
+          message.info('保存成功', 5);
         }
       });
     }
   }
   handleDelete = (row, index) => {
+    const count = this.state.count + 1;
+    const param = {};
+    param.quoteId = this.props.quoteData._id;
+    param.tenantId = this.props.tenantId;
+    param.modifyById = this.props.loginId;
+    param.modifyBy = this.props.loginName;
+    param.modifyCount = this.props.quoteData.modify_count + count;
     this.setState({
       editIndex: -1,
+      count,
     });
     this.props.feeDelete(
-      this.props.quoteData._id,
+      param,
       row._id,
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
+      } else {
+        message.info('删除成功', 5);
       }
     });
     this.props.quoteData.fees.splice(index, 1);

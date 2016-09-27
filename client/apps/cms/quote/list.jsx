@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button } from 'antd';
+import { Button, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -111,9 +111,9 @@ export default class QuoteList extends Component {
         width: 150,
         render: (o) => {
           if (!o) {
-            return '无效';
+            return <Tag color="#CCCCCC">{msg('invalid')}</Tag>;
           } else {
-            return '有效';
+            return <Tag color="green">{msg('valid')}</Tag>;
           }
         },
       }, {
