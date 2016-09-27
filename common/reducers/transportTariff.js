@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
   'SET_MENU_ITEM_KEY',
   'CREATE_QUOTES', 'CREATE_QUOTES_SUCCEED', 'CREATE_QUOTES_FAIL',
+  'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
 ]);
 
 const initialState = {
@@ -168,6 +169,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, selectedMenuItemKey: action.key };
     case actionTypes.CREATE_QUOTES_SUCCEED:
       return { ...state, quotes: action.result.data };
+    case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED:
+      return { ...state, quotes: action.result.data.quotes};
     default:
       return state;
   }
@@ -444,6 +447,22 @@ export function createQuotes(tariffId, transMode, fee) {
       endpoint: 'v1/transport/tariff/quotes/create',
       method: 'post',
       data: { tariffId, transMode, fee },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function getTariffByTransportInfo({ transModeCode, partnerId, goodsType }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO,
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED,
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/byTransportInfo',
+      method: 'get',
+      params: { transModeCode, partnerId, goodsType },
       origin: 'mongo',
     },
   };
