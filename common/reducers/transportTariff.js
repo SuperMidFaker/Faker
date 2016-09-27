@@ -144,7 +144,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
       return { ...state, formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
-      return { ...state, tariffId: action.result.data,
+      return { ...state, tariffId: action.result.data.tariffId, quotes: action.result.data.quotes,
         ratesRefAgreement: action.data };
     case actionTypes.LOAD_RATESRC:
       return { ...state, ratesSourceLoading: true };
