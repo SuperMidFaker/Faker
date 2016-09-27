@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Modal, Cascader, Upload, Button, message } from 'antd';
+import { Form, Input, Modal, Select, Upload, Button, message } from 'antd';
 import { showShipmentAdvanceModal, createAdvance } from 'common/reducers/trackingLandStatus';
+import { getTariffByTransportInfo } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-
+const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
@@ -18,8 +19,12 @@ const FormItem = Form.Item;
     visible: state.trackingLandStatus.shipmentAdvanceModal.visible,
     dispId: state.trackingLandStatus.shipmentAdvanceModal.dispId,
     shipmtNo: state.trackingLandStatus.shipmentAdvanceModal.shipmtNo,
+    transportModeId: state.trackingLandStatus.shipmentAdvanceModal.transportModeId,
+    customerPartnerId: state.trackingLandStatus.shipmentAdvanceModal.customerPartnerId,
+    goodsType: state.trackingLandStatus.shipmentAdvanceModal.goodsType,
+    quotes: state.transportTariff.quotes,
   }),
-  { showShipmentAdvanceModal, createAdvance }
+  { showShipmentAdvanceModal, createAdvance, getTariffByTransportInfo }
 )
 @Form.create()
 export default class ShipmentAdvanceModal extends React.Component {
@@ -33,66 +38,35 @@ export default class ShipmentAdvanceModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     showShipmentAdvanceModal: PropTypes.func.isRequired,
     createAdvance: PropTypes.func.isRequired,
+    transportModeId: PropTypes.number.isRequired,
+    customerPartnerId: PropTypes.number.isRequired,
+    goodsType: PropTypes.number.isRequired,
+    quotes: PropTypes.object.isRequired,
+    getTariffByTransportInfo: PropTypes.func.isRequired,
   }
   state = {
     photoList: [],
   }
-  DEFAULT_ADVANCECHARGES = [
-    {
-      category: '散货',
-      fee_name: '仓储费',
-      fee_code: 'CCF',
-    }, {
-      category: '集装箱',
-      fee_name: '港杂费',
-      fee_code: 'GZF',
-    }, {
-      category: '集装箱',
-      fee_name: '港建费',
-      fee_code: 'GJF',
-    }, {
-      category: '集装箱',
-      fee_name: '疏港费',
-      fee_code: 'SGF',
-    }, {
-      category: '集装箱',
-      fee_name: '超期费',
-      fee_code: 'CQF',
-    }, {
-      category: '集装箱',
-      fee_name: '坏污箱',
-      fee_code: 'HWX',
-    }, {
-      category: '运输通用',
-      fee_name: '动检场地费-运输环节',
-      fee_code: 'DJCDF',
-    }, {
-      category: '运输通用',
-      fee_name: '品质查验场地费-运输环节',
-      fee_code: 'PZCYCDF',
-    }, {
-      category: '运输通用',
-      fee_name: '快递费',
-      fee_code: 'KDF',
-    }, {
-      category: '运输通用',
-      fee_name: '运输其他费用',
-      fee_code: 'QIFY',
-    }]
+  componentWillReceiveProps(nextProps) {
+    if (this.props.shipmtNo !== nextProps.shipmtNo) {
+      const { transportModeId, customerPartnerId, goodsType } = nextProps;
+      this.props.getTariffByTransportInfo({ transModeCode: transportModeId, partnerId: customerPartnerId, goodsType });
+    }
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     const { form, shipmtNo, dispId, loginId, tenantId, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
     fieldsValue.photos = this.state.photoList.map(ph => ph.url).join(',');
-    if (!fieldsValue.types) {
+    if (!fieldsValue.type) {
       message.error('请选择垫付类型');
     } else if (fieldsValue.amount === '') {
       message.error('请输入垫付金额');
     } else {
-      const { types, amount, remark, photos } = fieldsValue;
-      const advance = this.DEFAULT_ADVANCECHARGES.find(item => item.category === types[0] && item.fee_name === types[1]);
+      const { type, amount, remark, photos } = fieldsValue;
+      const advance = this.props.quotes.fees.find(item => item.fee_code === type);
       const uploadData = {
-        shipmtNo, dispId, type: types[0], name: types[1], code: advance.fee_code, amount: Number(amount),
+        shipmtNo, dispId, name: advance.fee_name, code: type, amount: Number(amount),
         remark, photos, submitter: loginName, loginId, tenantId,
       };
       this.props.createAdvance(uploadData).then((result) => {
@@ -124,49 +98,19 @@ export default class ShipmentAdvanceModal extends React.Component {
     const { form: { getFieldProps } } = this.props;
     const { photoList } = this.state;
     const colSpan = 6;
-    const options = [];
-    for (let i = 0; i < this.DEFAULT_ADVANCECHARGES.length; i++) {
-      if (options.length === 0) {
-        options.push({
-          value: this.DEFAULT_ADVANCECHARGES[i].category,
-          label: this.DEFAULT_ADVANCECHARGES[i].category,
-          children: [{
-            value: this.DEFAULT_ADVANCECHARGES[i].fee_name,
-            label: this.DEFAULT_ADVANCECHARGES[i].fee_name,
-          }],
-        });
-      } else {
-        let flag = false;
-        for (let j = 0; j < options.length; j++) {
-          if (options[j].label === this.DEFAULT_ADVANCECHARGES[i].category) {
-            options[j].children.push({
-              value: this.DEFAULT_ADVANCECHARGES[i].fee_name,
-              label: this.DEFAULT_ADVANCECHARGES[i].fee_name,
-            });
-            flag = true;
-            break;
-          }
-        }
-        if (flag === false) {
-          options.push({
-            value: this.DEFAULT_ADVANCECHARGES[i].category,
-            label: this.DEFAULT_ADVANCECHARGES[i].category,
-            children: [{
-              value: this.DEFAULT_ADVANCECHARGES[i].fee_name,
-              label: this.DEFAULT_ADVANCECHARGES[i].fee_name,
-            }],
-          });
-        }
-      }
-    }
+
     return (
       <Modal title="添加垫付费用" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
         <Form className="row" style={{ width: '400px' }}>
           <FormItem label="垫付类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Cascader options={options} placeholder="请选择垫付类型" {...getFieldProps('types', {
-            })} />
+            <Select placeholder="请选择垫付类型" {...getFieldProps('type', {
+            })} >
+            {
+              this.props.quotes.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
+            }
+            </Select>
           </FormItem>
           <FormItem label="费用金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="number" placeholder="请输入金额" addonAfter="元" {...getFieldProps('amount', {

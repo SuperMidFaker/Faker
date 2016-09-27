@@ -209,7 +209,8 @@ export default class Footer extends React.Component {
     this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowShipmentAdvanceModal = (row) => {
-    this.props.showShipmentAdvanceModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no });
+    this.props.showShipmentAdvanceModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
+      transportModeId: row.transport_mode_id, customerPartnerId: row.customer_partner_id, goodsType: row.goods_type });
   }
   handleResubmit = (row) => {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);

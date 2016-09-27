@@ -19,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
   'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
   'SET_MENU_ITEM_KEY',
+  'CREATE_QUOTES', 'CREATE_QUOTES_SUCCEED', 'CREATE_QUOTES_FAIL',
+  'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
 ]);
 
 const initialState = {
@@ -68,7 +70,10 @@ const initialState = {
     load: { mode: 0, value: 0 },
     unload: { mode: 0, value: 0 },
   },
-  selectedMenuItemKey: 0,
+  quotes: {
+    fees: [],
+  },
+  selectedMenuItemKey: '0',
 };
 
 export default function reducer(state = initialState, action) {
@@ -132,6 +137,7 @@ export default function reducer(state = initialState, action) {
           && action.result.data.ratesSourceList.data[0]._id,
         ratesEndList: { ...state.ratesEndList,
           ...action.result.data.ratesEndList },
+          quotes: action.result.data.tariff.quotes,
       };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
@@ -139,7 +145,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
       return { ...state, formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
-      return { ...state, tariffId: action.result.data,
+      return { ...state, tariffId: action.result.data.tariffId, quotes: action.result.data.quotes,
         ratesRefAgreement: action.data };
     case actionTypes.LOAD_RATESRC:
       return { ...state, ratesSourceLoading: true };
@@ -161,6 +167,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, ratesEndLoading: false };
     case actionTypes.SET_MENU_ITEM_KEY:
       return { ...state, selectedMenuItemKey: action.key };
+    case actionTypes.CREATE_QUOTES_SUCCEED:
+      return { ...state, quotes: action.result.data };
+    case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED:
+      return { ...state, quotes: action.result.data.quotes };
     default:
       return state;
   }
@@ -424,4 +434,36 @@ export function delRateEnd(rateId, id) {
 
 export function setMenuItemKey(key) {
   return { type: actionTypes.SET_MENU_ITEM_KEY, key };
+}
+
+export function createQuotes(tariffId, transMode, fee) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_QUOTES,
+        actionTypes.CREATE_QUOTES_SUCCEED,
+        actionTypes.CREATE_QUOTES_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/quotes/create',
+      method: 'post',
+      data: { tariffId, transMode, fee },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function getTariffByTransportInfo({ transModeCode, partnerId, goodsType }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO,
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED,
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/byTransportInfo',
+      method: 'get',
+      params: { transModeCode, partnerId, goodsType },
+      origin: 'mongo',
+    },
+  };
 }
