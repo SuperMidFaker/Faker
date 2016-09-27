@@ -22,7 +22,7 @@ const Option = Select.Option;
     transportModeId: state.trackingLandStatus.shipmentAdvanceModal.transportModeId,
     customerPartnerId: state.trackingLandStatus.shipmentAdvanceModal.customerPartnerId,
     goodsType: state.trackingLandStatus.shipmentAdvanceModal.goodsType,
-    quotes:  state.transportTariff.quotes,
+    quotes: state.transportTariff.quotes,
   }),
   { showShipmentAdvanceModal, createAdvance, getTariffByTransportInfo }
 )
@@ -50,7 +50,7 @@ export default class ShipmentAdvanceModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo) {
       const { transportModeId, customerPartnerId, goodsType } = nextProps;
-      this.props.getTariffByTransportInfo({transModeCode: transportModeId, partnerId: customerPartnerId, goodsType});
+      this.props.getTariffByTransportInfo({ transModeCode: transportModeId, partnerId: customerPartnerId, goodsType });
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)

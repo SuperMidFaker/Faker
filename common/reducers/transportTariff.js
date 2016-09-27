@@ -170,7 +170,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CREATE_QUOTES_SUCCEED:
       return { ...state, quotes: action.result.data };
     case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED:
-      return { ...state, quotes: action.result.data.quotes};
+      return { ...state, quotes: action.result.data.quotes };
     default:
       return state;
   }
