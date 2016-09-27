@@ -22,4 +22,5 @@ export default [
    ['get', '/clearance*', renderWebPage],
    ['get', '/my*', renderWebPage],
    ['get', '/pub/*', renderWebPage],
+   ['get', '/scv/*', renderWebPage],
 ];

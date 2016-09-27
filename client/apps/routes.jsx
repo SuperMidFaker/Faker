@@ -39,6 +39,8 @@ import * as ExportDocs from './cms/export/docs';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSSettings from './cms/settings';
+import Scv from './scv/module-scv';
+import * as ScvInbound from './scv/inbounds';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -212,6 +214,10 @@ export default(store, cookie) => {
             <Route path="settings">
               <IndexRoute component={CMSSettings.List} />
             </Route>
+          </Route>
+          <Route path={DEFAULT_MODULES.scv.id} component={Scv}>
+            <IndexRoute component={ScvInbound.List} />
+            <Route path="inbound" component={ScvInbound.List} />
           </Route>
         </Route>
       </Route>
