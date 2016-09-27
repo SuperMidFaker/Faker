@@ -35,7 +35,7 @@ export default class CorpPack extends React.Component {
         single: true,
         key: 'corpsetting-0',
         path: '/corp/overview',
-        icon: 'icon-ikons-timer',
+        icon: 'icon-fontello-gauge',
         text: formatMsg(intl, 'corpOverview'),
       });
     }
@@ -44,7 +44,7 @@ export default class CorpPack extends React.Component {
         single: true,
         key: 'corpsetting-1',
         path: '/corp/info',
-        icon: 'icon-ikons-presentation',
+        icon: 'icon-fontello-building',
         text: formatMsg(intl, 'corpInfo'),
       });
     }
@@ -65,7 +65,7 @@ export default class CorpPack extends React.Component {
         single: true,
         key: 'corpsetting-3',
         path: '/corp/organization',
-        icon: 'zmdi zmdi-group',
+        icon: 'icon-fontello-sitemap',
         text: formatMsg(intl, 'organTitle'),
       });
     }
@@ -74,8 +74,17 @@ export default class CorpPack extends React.Component {
         single: true,
         key: 'corpsetting-4',
         path: '/corp/partners',
-        icon: 'zmdi zmdi-share',
+        icon: 'icon-fontello-network',
         text: formatMsg(intl, 'partnership'),
+      });
+    }
+    if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
+      linkMenus.push({
+        single: true,
+        key: 'corpsetting-5',
+        path: '/corp/role',
+        icon: 'icon-fontello-anchor',
+        text: formatMsg(intl, 'roleTitle'),
       });
     }
     this.setState({ linkMenus });

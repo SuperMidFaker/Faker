@@ -20,3 +20,21 @@ export const PRESET_TENANT_ROLE = {
     text: 'tenantBilling',
   },
 };
+
+export const PRESET_ROLE_NAME_KEYS = {
+  Owner: {
+    text: 'tenantOwner',
+  },
+  Manager: {
+    text: 'tenantManager',
+  },
+  Member: {
+    text: 'tenantMember',
+  },
+  Analyst: {
+    text: 'tenantAnalyst',
+  },
+  Billing: {
+    text: 'tenantBilling',
+  },
+};

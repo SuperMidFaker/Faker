@@ -9,6 +9,7 @@ import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
 
 const formatGlobalMsg = format(globalMessages);
+const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -70,20 +71,20 @@ export default class AmNavBar extends React.Component {
             </div>
             <div className="nav navbar-right">
               <Menu mode="horizontal">
-                <Menu.Item key="messages">
+                <MenuItem key="messages">
                   <Badge count={notReadMessagesNum} overflowCount={99}>
                     <NavLink to="/my/messages">
                     <span className="icon s7-bell" />
                     </NavLink>
                   </Badge>
-                </Menu.Item>
-                <Menu.Item key="helpdesk">
+                </MenuItem>
+                <MenuItem key="helpdesk">
                   <Tooltip placement="bottom" title="帮助中心">
                     <a rel="noopener noreferrer" href="https://welogix.kf5.com/hc/" target="_blank">
                       <span className="icon s7-help1" />
                     </a>
                   </Tooltip>
-                </Menu.Item>
+                </MenuItem>
               </Menu>
             </div>
         <MessagePrompt />

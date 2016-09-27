@@ -103,7 +103,7 @@ export default class Dashboard extends React.Component {
           <span>{this.msg('transportDashboard')}</span>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body" style={{ padding: 24 }} delay={500}>
+          <div className="page-body card-wrapper" delay={500}>
             <Card title="活动简报" extra={datePicker}>
               <ul className="statistics-columns">
                 <li className="col-4">

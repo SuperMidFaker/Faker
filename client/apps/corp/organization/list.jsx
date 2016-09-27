@@ -73,7 +73,7 @@ export default class CorpList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-  };
+  }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }

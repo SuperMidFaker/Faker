@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Modal, Icon, Button, Form, Input } from 'antd';
 
+const FormItem = Form.Item;
 class WarningModal extends React.Component {
   static propTypes = {
     width: PropTypes.number.isRequired,
@@ -97,9 +98,9 @@ class WarningModal extends React.Component {
             <Icon type={iconClassType} />
             <span className="ant-confirm-title">{title}</span>
             <div className="ant-confirm-content">
-              <Form.Item>
+              <FormItem>
                 <Input type="text" placeholder="请记住权力越大,责任越大" onChange={ev => this.handleInputChange(ev)} />
-              </Form.Item>
+              </FormItem>
               <h3>{content}</h3>
             </div>
           </div>

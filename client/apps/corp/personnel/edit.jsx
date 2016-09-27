@@ -23,7 +23,7 @@ const Option = Select.Option;
 
 function fetchData({ state, dispatch, cookie, params }) {
   const pid = parseInt(params.id, 10);
-  dispatch(loadRoles());
+  dispatch(loadRoles(state.account.tenantId));
   if (pid) {
     if (!isFormDataLoaded(state.personnel, pid)) {
       return dispatch(loadForm(cookie, pid));

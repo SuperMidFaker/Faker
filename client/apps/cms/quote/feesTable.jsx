@@ -318,7 +318,7 @@ export default class FeesTable extends Component {
     return (
       <div className="page-body">
         <div className="panel-body table-panel">
-          <Table bordered pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} />
+          <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} />
           <div style={{ padding: 20 }}>
             <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>
           </div>

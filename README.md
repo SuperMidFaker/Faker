@@ -90,6 +90,5 @@ server
 ## TODO
   test istanbul-cov
   connect-nav willreceive may fire multiple
-  login Link onClick
   RemoteTable better interface
   webpack-dev-middleware + server

@@ -12,6 +12,7 @@ const formatMsg = format(messages);
 const SubMenu = Menu.SubMenu;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const MenuDivider = Menu.Divider;
 
 @injectIntl
 @connect(
@@ -84,7 +85,7 @@ export default class AmUserNav extends React.Component {
               <span>{formatMsg(intl, 'pwdSetting')}</span>
             </NavLink>
           </MenuItem>
-          <Menu.Divider />
+          <MenuDivider />
           <MenuItem key="logout">
             <a role="button" onClick={this.handleLogout}>
               <i className="zmdi zmdi-sign-in zmdi-hc-fw" />

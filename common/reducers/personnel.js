@@ -196,12 +196,13 @@ export function switchStatus(index, pid, status) {
   };
 }
 
-export function loadRoles() {
+export function loadRoles(tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.LOAD_ROLES, actionTypes.LOAD_ROLES_SUCCEED, actionTypes.LOAD_ROLES_FAIL],
       endpoint: 'v1/user/roles',
       method: 'get',
+      params: { tenantId },
     },
   };
 }

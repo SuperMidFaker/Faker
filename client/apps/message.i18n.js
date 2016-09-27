@@ -125,6 +125,10 @@ const messages = defineMessages({
     id: 'container.organization',
     defaultMessage: '组织机构',
   },
+  roleTitle: {
+    id: 'container.role',
+    defaultMessage: '角色设置',
+  },
   partnership: {
     id: 'container.partnership',
     defaultMessage: '协作网络',
