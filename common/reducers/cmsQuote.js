@@ -54,6 +54,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, quoteData: { ...state.quoteData, loading: true } };
     case actionTypes.EDITQUOTE_LOAD_SUCCEED:
       return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
+    case actionTypes.SUBMIT_QUOTE_SUCCEED:
+      return { ...state, quoteData: { ...action.result.data.quoteData } };
     case actionTypes.QUOTE_COPY:
       return { ...state, quoteData: { ...state.quoteData, loading: true } };
     case actionTypes.QUOTE_COPY_SUCCEED:
@@ -151,49 +153,49 @@ export function copyQuote(params) {
   };
 }
 
-export function deleteQuote(quoteId, valid, modifyBy, modifyById) {
+export function deleteQuote(quoteId, valid, tenantId, modifyBy, modifyById) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTE_DELETE, actionTypes.QUOTE_DELETE_SUCCEED, actionTypes.QUOTE_DELETE_FAIL],
       endpoint: 'v1/cms/quote/quoteDelete',
       method: 'post',
-      data: { quoteId, valid, modifyBy, modifyById },
+      data: { quoteId, valid, tenantId, modifyBy, modifyById },
       origin: 'mongo',
     },
   };
 }
 
-export function feeUpdate(quoteId, row) {
+export function feeUpdate(params, row) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.FEE_UPDATE, actionTypes.FEE_UPDATE_SUCCEED, actionTypes.FEE_UPDATE_FAIL],
       endpoint: 'v1/cms/quote/feeupdate',
       method: 'post',
-      data: { quoteId, row },
+      data: { params, row },
       origin: 'mongo',
     },
   };
 }
 
-export function feeAdd(quoteId, row) {
+export function feeAdd(params, row) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.FEE_ADD, actionTypes.FEE_ADD_SUCCEED, actionTypes.FEE_ADD_FAIL],
       endpoint: 'v1/cms/quote/feeadd',
       method: 'post',
-      data: { quoteId, row },
+      data: { params, row },
       origin: 'mongo',
     },
   };
 }
 
-export function feeDelete(quoteId, feeId) {
+export function feeDelete(params, feeId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.FEE_DELETE, actionTypes.FEE_DELETE_SUCCEED, actionTypes.FEE_DELETE_FAIL],
       endpoint: 'v1/cms/quote/feedelete',
       method: 'post',
-      data: { quoteId, feeId },
+      data: { params, feeId },
       origin: 'mongo',
     },
   };

@@ -75,6 +75,7 @@ export default class QuotingEdit extends Component {
     const prom = this.props.deleteQuote(
       this.props.quoteData._id,
       false,
+      this.props.tenantId,
       this.props.loginName,
       this.props.loginId,
     );
@@ -97,7 +98,7 @@ export default class QuotingEdit extends Component {
           <div className="tools">
             <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
             <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
-              <Button>删除</Button>
+              <Button>{msg('delete')}</Button>
             </Popconfirm>
           </div>
         </header>

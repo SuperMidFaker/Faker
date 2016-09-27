@@ -133,6 +133,9 @@ ColumnSelect.proptypes = {
 @connect(
   state => ({
     quoteData: state.cmsQuote.quoteData,
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
   }),
   { feeUpdate, feeAdd, feeDelete }
 )
@@ -153,6 +156,7 @@ export default class FeesTable extends Component {
     addedit: false,
     coops: [],
     editIndex: -1,
+    count: 0,
   };
 
   handleEditChange = (record, field, value) => {
@@ -199,40 +203,62 @@ export default class FeesTable extends Component {
     });
   }
   handleSave = (row) => {
+    const count = this.state.count + 1;
+    const param = {};
+    param.quoteId = this.props.quoteData._id;
+    param.tenantId = this.props.tenantId;
+    param.modifyById = this.props.loginId;
+    param.modifyBy = this.props.loginName;
+    param.modifyCount = this.props.quoteData.modify_count + count;
     this.setState({
       editIndex: -1,
       addedit: false,
+      count,
     });
     if (row._id) {
       this.props.feeUpdate(
-        this.props.quoteData._id,
+        param,
         row,
       ).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
+        } else {
+          message.info('保存成功', 5);
         }
       });
     } else {
       this.props.feeAdd(
-        this.props.quoteData._id,
+        param,
         row,
       ).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
+        } else {
+          message.info('保存成功', 5);
         }
       });
     }
   }
   handleDelete = (row, index) => {
+    const count = this.state.count + 1;
+    const param = {};
+    param.quoteId = this.props.quoteData._id;
+    param.tenantId = this.props.tenantId;
+    param.modifyById = this.props.loginId;
+    param.modifyBy = this.props.loginName;
+    param.modifyCount = this.props.quoteData.modify_count + count;
     this.setState({
       editIndex: -1,
+      count,
     });
     this.props.feeDelete(
-      this.props.quoteData._id,
+      param,
       row._id,
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
+      } else {
+        message.info('删除成功', 5);
       }
     });
     this.props.quoteData.fees.splice(index, 1);

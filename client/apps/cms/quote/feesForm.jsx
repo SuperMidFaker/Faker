@@ -97,6 +97,7 @@ export default class FeesForm extends Component {
     quoteData.valid = true;
     quoteData.modifyById = this.props.loginId;
     quoteData.modifyBy = this.props.loginName;
+    quoteData.modify_count = (this.props.quoteData.modify_count || 0) + 1;
     const prom = this.props.submitQuotes(quoteData);
     prom.then((result) => {
       if (result.error) {
