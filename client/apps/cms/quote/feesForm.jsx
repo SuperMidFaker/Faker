@@ -5,7 +5,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { submitQuotes } from 'common/reducers/cmsQuote';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, TARIFF_KINDS } from 'common/constants';
-import { Form, Select, Col, Row, Card, Button, message } from 'antd';
+import { Form, Select, Col, Row, Button, message } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -196,8 +196,8 @@ export default class FeesForm extends Component {
         </Row>
           {
             (action === 'edit') &&
-            <Button type="primary" style={{ marginLeft: 20 }} onClick={this.handleSave} >{msg('save')}</Button>}
-      </Card>
+            <Button type="primary" style={{ marginLeft: 40 }} onClick={this.handleSave} >{msg('save')}</Button>}
+      </div>
     );
   }
 }
