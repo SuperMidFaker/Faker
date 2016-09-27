@@ -182,8 +182,10 @@ export default class RoleForm extends React.Component {
       submitting, form: { getFieldProps } } = this.props;
     const { editPrivilegeMap: privileges } = this.state;
     return (
-      <div className="page-body">
-        <Form horizontal onSubmit={this.handleSubmit} className="form-edit-content offset-right-col">
+      <div className="page-body card-wrapper">
+        <Form horizontal onSubmit={this.handleSubmit}>
+          <Row gutter={16}>
+            <Col span={12}>
           <FormInputItem labelName={formatMsg(intl, 'nameColumn')} labelSpan={8} field="name" options={{
             getFieldProps,
             rules: [{
@@ -202,19 +204,22 @@ export default class RoleForm extends React.Component {
           <FormInputItem labelName={formatMsg(intl, 'descColumn')} labelSpan={8} field="desc"
             options={{ getFieldProps, initialValue: desc }}
           />
+            </Col>
+          </Row>
+          <Row gutter={16}>
           {
             tenantModules.map((tnm) => {
               return (
-                <Row key={tnm.text}>
+                <Col md={24} lg={12} key={tnm.text}>
                   <Card title={formatGlobalMsg(intl, tnm.text)}>
                     <Row style={{ paddingBottom: 10 }}>
                       <Col span={4} offset={2}>
                         {formatMsg(intl, 'featureName')}
                       </Col>
-                      <Col span={4} offset={2}>
+                      <Col span={2} offset={2}>
                         {formatMsg(intl, 'allFull')}
                       </Col>
-                      <Col span={10} offset={2}>
+                      <Col span={12} offset={2}>
                         {formatMsg(intl, 'actionName')}
                       </Col>
                     </Row>
@@ -224,12 +229,12 @@ export default class RoleForm extends React.Component {
                           <Col span={4} offset={2}>
                             {formatGlobalMsg(intl, feat.text)}
                           </Col>
-                          <Col span={4} offset={2}>
+                          <Col span={2} offset={2}>
                             <Switch checked={this.isFullFeature(privileges, tnm.id, feat.id)}
                               onChange={checked => this.handleFeatureFullCheck(tnm.id, feat.id, checked)}
                             />
                           </Col>
-                          <Col span={10} offset={2}>
+                          <Col span={12} offset={2}>
                             <CheckboxGroup options={feat.actions.map(
                               act => ({
                                 label: formatGlobalMsg(intl, act.text),
@@ -244,10 +249,11 @@ export default class RoleForm extends React.Component {
                       )
                     }
                   </Card>
-                </Row>
+                </Col>
               );
             })
           }
+          </Row>
           <Row>
             <Col span="18" offset="6">
               <Button htmlType="submit" type="primary" loading={submitting}>{formatGlobalMsg(intl, 'ok')}</Button>

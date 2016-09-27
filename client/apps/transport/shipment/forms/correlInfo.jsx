@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Card } from 'antd';
+import { Card } from 'antd';
 import InputItem from './input-item';
-import FreightCharge from './freightCharge';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -30,7 +29,6 @@ export default class CorrelInfo extends React.Component {
       ref_waybill_no, ref_entry_no, remark,
     } } = this.props;
     return (
-      <Col span="8" className="right-side-col">
         <Card bodyStyle={{ padding: 16 }}>
           <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
             fieldProps={{ initialValue: tenantName }} disabled rules={[{
@@ -50,8 +48,6 @@ export default class CorrelInfo extends React.Component {
             fieldProps={{ initialValue: remark }}
           />
         </Card>
-        <FreightCharge formhoc={formhoc} intl={this.props.intl} />
-      </Col>
     );
   }
 }
