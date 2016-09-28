@@ -40,14 +40,12 @@ export default class CreateSpecialCharge extends React.Component {
       this.handleCancel();
       const type = 12012;
       const excpLevel = 'ERROR';
-      const typeName = '特殊费用';
       this.props.createSpecialCharge({
         shipmtNo,
         dispId,
         chargeType: Number(fieldsValue.chargeType),
         excpLevel,
         type,
-        typeName,
         remark: fieldsValue.remark,
         submitter: loginName,
         charge: Number(fieldsValue.charge),
