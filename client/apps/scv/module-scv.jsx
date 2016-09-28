@@ -24,34 +24,34 @@ export default class ModuleSCV extends React.Component {
       single: true,
       key: 'scv-1',
       path: '/scv/dashboard',
-      icon: 'icon-ikons-login',
+      icon: 'icon-fontello-gauge',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
       key: 'scv-2',
       path: '/scv/order',
-      icon: 'icon-ikons-logout',
+      icon: 'icon-fontello-doc-text',
       text: formatMsg(intl, 'order'),
     });
     linkMenus.push({
       single: true,
       key: 'scv-3',
       path: '/scv/inbound',
-      icon: 'zmdi zmdi-money-box',
+      icon: 'icon-ikons-login',
       text: formatMsg(intl, 'inbound'),
     });
     linkMenus.push({
       single: true,
       key: 'scv-4',
       path: '/scv/outbound',
-      icon: 'zmdi zmdi-money-box',
+      icon: 'icon-ikons-logout',
       text: formatMsg(intl, 'outbound'),
     });
     linkMenus.push({
       single: false,
       key: 'scv-5',
-      icon: 'icon-ikons-credit-card',
+      icon: 'zmdi zmdi-money-box',
       text: formatMsg(intl, 'payment'),
       sublinks: [{
         key: 'scv-5-0',
@@ -66,7 +66,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-6',
-      icon: 'icon-ikons-credit-card',
+      icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{
         key: 'scv-6-0',
@@ -81,7 +81,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: true,
       key: 'scv-7',
-      path: '/clearance/settings',
+      path: '/scv/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
     });

@@ -11,11 +11,11 @@ const messages = defineMessages({
   },
   inbound: {
     id: 'scv.module.inbound',
-    defaultMessage: 'InboundShipments',
+    defaultMessage: 'Inbound Shipments',
   },
   outbound: {
     id: 'scv.module.outbound',
-    defaultMessage: 'OutboundShipments',
+    defaultMessage: 'Outbound Shipments',
   },
   payment: {
     id: 'scv.module.payment',
