@@ -156,6 +156,9 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="resources">
+              <Route path="carrier">
+                <IndexRoute component={TMSResources.CarrierListContainer} />
+              </Route>
               <Route path="vehicle">
                 <IndexRoute component={TMSResources.VehicleListContainer} />
                 <Route path="add" component={TMSResources.VehicleFormContainer} />

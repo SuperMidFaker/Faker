@@ -431,7 +431,7 @@ export default class SurchargeForm extends React.Component {
     ];
     return (
       <ContentWrapper>
-        <div className="panel-body" style={{ padding: '0 16px' }}>
+        <div className="panel-body">
           <Table columns={columns} bordered dataSource={dataSource} rowKey="_id" pagination={false} size="middle"
             footer={() => <Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>}
           />
@@ -440,54 +440,3 @@ export default class SurchargeForm extends React.Component {
     );
   }
 }
-
-// const columns = [{
-//       title: '序号',
-//       dataIndex: 'no',
-//       render(o, index) {
-//         return index+1;
-//       },
-//     }, {
-//       title: '费用类别',
-//       dataIndex: 'category',
-//     }, {
-//       title: '费用名称',
-//       dataIndex: 'fee_name',
-
-//     }, {
-//       title: '费用代码',
-//       dataIndex: 'fee_code',
-
-//     }, {
-//       title: '费用类型',
-//       dataIndex: 'fee_style',
-//     }, {
-//       title: '计费方式',
-//       dataIndex: 'charge_mode',
-//     }, {
-//       title: '批次量',
-//       dataIndex: 'lot_num',
-//     }, {
-//       title: '免计量',
-//       dataIndex: 'free_num',
-//     }, {
-//       title: '计费单价',
-//       dataIndex: 'unit_price',
-//     }, {
-//       title: '是否开票',
-//       dataIndex: 'invoice_en',
-//     }, {
-//       title: '开票税率',
-//       dataIndex: 'tax_rate',
-//     }, {
-//       title: '是否启用',
-//       dataIndex: 'enabled',
-//     }, {
-//       title: '操作',
-//     }];
-
-//     const formItemLayout = {
-//       labelCol: { span: 4 },
-//       wrapperCol: { span: 24 - 4 },
-//     };
-

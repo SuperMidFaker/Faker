@@ -38,7 +38,7 @@ export default class MessagePrompt extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
-    logo: PropTypes.string.isRequired,
+    logo: PropTypes.string,
     newMessage: PropTypes.object.isRequired,
     getTenantUsers: PropTypes.func.isRequired,
     recordMessages: PropTypes.func.isRequired,
