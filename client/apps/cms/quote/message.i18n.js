@@ -129,5 +129,13 @@ const messages = defineMessages({
     id: 'cms.quote.modify',
     defaultMessage: '修改',
   },
+  valid: {
+    id: 'cms.quote.valid',
+    defaultMessage: '有效',
+  },
+  invalid: {
+    id: 'cms.quote.invalid',
+    defaultMessage: '无效',
+  },
 });
 export default messages;
