@@ -147,7 +147,7 @@ export function createException({ dispId, excpLevel, type, typeName, excpEvent, 
   };
 }
 
-export function createSpecialCharge({ dispId, excpLevel, type, typeName, excpEvent, submitter, charge }) {
+export function createSpecialCharge({ shipmtNo, dispId, excpLevel, type, typeName, remark, submitter, charge, tenantId, loginId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -157,7 +157,7 @@ export function createSpecialCharge({ dispId, excpLevel, type, typeName, excpEve
       ],
       endpoint: 'v1/transport/tracking/createSpecialCharge',
       method: 'post',
-      data: { dispId, excpLevel, type, typeName, excpEvent, submitter, charge },
+      data: { shipmtNo, dispId, excpLevel, type, typeName, remark, submitter, charge, tenantId, loginId },
     },
   };
 }

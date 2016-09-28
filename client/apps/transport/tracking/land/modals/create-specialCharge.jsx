@@ -9,6 +9,7 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     loginId: state.account.loginId,
+    tenantId: state.account.tenantId,
     loginName: state.account.username,
     exceptions: state.trackingLandException.exceptions,
   }),
@@ -19,6 +20,7 @@ export default class CreateSpecialCharge extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
+    tenantId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
@@ -29,22 +31,25 @@ export default class CreateSpecialCharge extends React.Component {
     toggle: PropTypes.func.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, shipmtNo, loginName } = this.props;
+    const { form, dispId, shipmtNo, loginName, loginId, tenantId } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
-      this.props.form.setFieldsValue({ charge: '', excp_event: '' });
+      this.props.form.setFieldsValue({ charge: '', remark: '' });
       this.handleCancel();
       const type = 12012;
       const excpLevel = 'ERROR';
       const typeName = '特殊费用';
       this.props.createSpecialCharge({
+        shipmtNo,
         dispId,
         excpLevel,
         type,
         typeName,
-        excpEvent: fieldsValue.excp_event,
+        remark: fieldsValue.remark,
         submitter: loginName,
         charge: Number(fieldsValue.charge),
+        loginId,
+        tenantId,
       }).then((result) => {
         if (result.error) {
           message.error(result.error);
@@ -79,7 +84,7 @@ export default class CreateSpecialCharge extends React.Component {
             })} />
           </FormItem>
           <FormItem label="异常描述" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('excp_event', {
+            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('remark', {
               initialValue: '',
             })} />
           </FormItem>

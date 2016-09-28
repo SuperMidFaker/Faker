@@ -93,7 +93,7 @@ export default class DealException extends React.Component {
             initialValue: '',
           })} />
         </Form>
-        {exception.resolved === 1 ? (<div style={{ marginTop: 15 }}>上次处时间：<span>{moment(exception.solve_date).format('YYYY-MM-DD HH:mm')}</span> 处理人: <span>{exception.solver}</span></div>) : (<span />)}
+        {exception.resolved === 1 ? (<div style={{ marginTop: 15 }}>上次处理时间：<span>{moment(exception.solve_date).format('YYYY-MM-DD HH:mm')}</span> 处理人: <span>{exception.solver}</span></div>) : (<span />)}
       </Modal>
 
     );
