@@ -3,8 +3,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import { submitQuotes } from 'common/reducers/cmsQuote';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, TARIFF_KINDS } from 'common/constants';
-import { Form, Select, Col, Row, Card } from 'antd';
+import { Form, Select, Col, Row, Button, message } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -32,8 +33,12 @@ function getFieldInits(quoteData) {
     tenantId: state.account.tenantId,
     partners: state.cmsQuote.partners,
     clients: state.cmsQuote.clients,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
+    quoteData: state.cmsQuote.quoteData,
     fieldInits: getFieldInits(state.cmsQuote.quoteData),
   }),
+  { submitQuotes }
 )
 export default class FeesForm extends Component {
   static propTypes = {
@@ -43,6 +48,8 @@ export default class FeesForm extends Component {
     clients: PropTypes.array.isRequired,
     fieldInits: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
+    action: PropTypes.string.isRequired,
+    submitQuotes: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -75,17 +82,42 @@ export default class FeesForm extends Component {
       this.setState({ disBase: true });
     }
   }
+  handleSave = () => {
+    const quoteData = {
+      ...this.props.quoteData,
+      ...this.props.form.getFieldsValue(),
+    };
+    if (quoteData.partner.name) {
+      const coops = this.props.partners.concat(this.props.clients);
+      const selpartners = coops.filter(
+        pt => pt.name === quoteData.partner.name);
+      quoteData.partner.id = selpartners[0].partner_id;
+    }
+    quoteData.tenantId = this.props.tenantId;
+    quoteData.valid = true;
+    quoteData.modifyById = this.props.loginId;
+    quoteData.modifyBy = this.props.loginName;
+    quoteData.modify_count = (this.props.quoteData.modify_count || 0) + 1;
+    const prom = this.props.submitQuotes(quoteData);
+    prom.then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+      }
+    });
+  }
   render() {
-    const { form: { getFieldProps }, fieldInits } = this.props;
+    const { form: { getFieldProps }, fieldInits, action } = this.props;
     const { coops, disBase } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     return (
-      <Card bodyStyle={{ padding: 16 }}>
+      <div className="panel-container" >
         <Row>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('tariffKinds')} {...formItemLayout}>
-              <Select style={{ width: '80%' }} onSelect={this.handleKindSelect}
+              <Select style={{ width: '90%' }} onSelect={this.handleKindSelect}
                 {...getFieldProps('tariff_kind', {
                   rules: [{ required: true, message: '报价类型必选' }],
                   initialValue: fieldInits.tariff_kind,
@@ -99,10 +131,10 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('partners')} {...formItemLayout}>
               <Select showSearch showArrow optionFilterProp="searched"
-                style={{ width: '80%' }} disabled={disBase}
+                style={{ width: '90%' }} disabled={disBase}
                 {...getFieldProps('partner.name', {
                   rules: [{ required: true, message: '必选' }],
                   getValueFromEvent: this.handleClientChange,
@@ -119,9 +151,9 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('declareWay')} {...formItemLayout}>
-              <Select multiple style={{ width: '80%' }} placeholder="不限"
+              <Select multiple style={{ width: '90%' }} placeholder="不限"
                 {...getFieldProps('decl_way_code', {
                   rules: [{ required: true, message: '报关类型必选', type: 'array' }],
                   initialValue: fieldInits.decl_way_code,
@@ -135,9 +167,9 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('transMode')} {...formItemLayout}>
-              <Select multiple style={{ width: '80%' }} placeholder="不限"
+              <Select multiple style={{ width: '90%' }} placeholder="不限"
                 {...getFieldProps('trans_mode', {
                   rules: [{ required: true, message: '运输方式必选', type: 'array' }],
                   initialValue: fieldInits.trans_mode,
@@ -151,9 +183,9 @@ export default class FeesForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={4}>
+          <Col sm={8} md={6}>
             <FormItem label={msg('remark')} {...formItemLayout}>
-              <Select tags style={{ width: '80%' }}
+              <Select tags style={{ width: '90%' }}
                 {...getFieldProps('remarks', {
                   initialValue: fieldInits.remarks,
                 })}
@@ -162,7 +194,10 @@ export default class FeesForm extends Component {
             </FormItem>
           </Col>
         </Row>
-      </Card>
+          {
+            (action === 'edit') &&
+            <Button type="primary" style={{ marginLeft: 40 }} onClick={this.handleSave} >{msg('save')}</Button>}
+      </div>
     );
   }
 }

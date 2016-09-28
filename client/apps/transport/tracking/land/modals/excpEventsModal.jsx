@@ -100,13 +100,6 @@ export default class ExcpEventsModal extends React.Component {
   }, {
     title: this.msg('exceptionDescription'),
     dataIndex: 'excp_event',
-    render: (o, record) => {
-      if (record.charge === null || record.charge === 0) {
-        return o;
-      } else {
-        return `费用金额 ${record.charge.toFixed(2)} 元, ${o}`;
-      }
-    },
   }, {
     title: this.msg('exceptionResolved'),
     dataIndex: 'resolved',

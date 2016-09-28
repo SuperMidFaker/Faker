@@ -22,7 +22,7 @@ const styles = {
 }), { setMenuItemKey })
 export default class Main extends Component {
   static propTyps = {
-    selectedKey: PropTypes.number.isRequired,  // 选中的menuItem keys
+    selectedKey: PropTypes.string.isRequired,  // 选中的menuItem keys
     setMenuItemKey: PropTypes.func.isRequired,        // itemItem点击后执行的回调函数,
     type: PropTypes.oneOf(['create', 'edit']),
     tariffId: PropTypes.string,
@@ -33,6 +33,7 @@ export default class Main extends Component {
 
   render() {
     const { selectedKey, type, tariffId } = this.props;
+    let slk = selectedKey;
     let contents = [<AgreementForm />, <RatesForm />, <SurchargeForm />];
     let menu = (
       <Menu mode="horizontal" selectedKeys={[selectedKey]} onClick={this.handleMenuItemClick}>
@@ -43,8 +44,9 @@ export default class Main extends Component {
     );
     if (type === 'create') {
       if (!tariffId) {
+        slk = '0';
         menu = (
-          <Menu mode="horizontal" selectedKeys={[selectedKey]} onClick={this.handleMenuItemClick}>
+          <Menu mode="horizontal" selectedKeys={[slk]} onClick={this.handleMenuItemClick}>
             <MenuItem key="0">协议概况</MenuItem>
           </Menu>
         );
@@ -52,7 +54,7 @@ export default class Main extends Component {
     } else if (type === 'edit') {
       contents = [<AgreementForm readonly />, <RatesForm />, <SurchargeForm />];
     }
-    const content = contents.map((container, index) => <div style={parseInt(selectedKey, 10) === index ? styles.show : styles.hidden} key={index}>{container}</div>);
+    const content = contents.map((container, index) => <div style={parseInt(slk, 10) === index ? styles.show : styles.hidden} key={index}>{container}</div>);
     return (
       <div>
         <header className="top-bar">

@@ -105,6 +105,7 @@ export default class AgreementForm extends React.Component {
           effectiveDate: effDate.setHours(0, 0, 0, 0),
           // 取下一天0点
           expiryDate: new Date(expDate.setDate(expDate.getDate() + 1)).setHours(0, 0, 0, 0),
+          transMode: this.state.transMode.toUpperCase(),
         };
         let promise;
         if (this.props.tariffId) {

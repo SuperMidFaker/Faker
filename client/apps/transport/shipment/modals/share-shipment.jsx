@@ -16,6 +16,7 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   () => {
+    return {};
   },
   { sendTrackingDetailSMSMessage }
 )

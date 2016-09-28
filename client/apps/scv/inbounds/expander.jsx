@@ -32,7 +32,7 @@ export default class Expander extends Component {
       dataIndex: 'carrier',
       width: 100,
     }];
-    if (row.trans_mode === 'Air') {
+    if (row.trans_mode === 'AIR') {
       columns.push({
         title: this.msg('mawb'),
         dataIndex: 'mawb',
@@ -67,7 +67,7 @@ export default class Expander extends Component {
       width: 100,
     }, {
       title: this.msg('containerSizeHeight'),
-      width: 100,
+      width: 120,
       render: (o, record) =>
         `${record.container_size}/${record.container_height}`,
     }, {
@@ -81,6 +81,10 @@ export default class Expander extends Component {
     }, {
       title: this.msg('ctnQty'),
       dataIndex: 'ctn_qty',
+      width: 100,
+    }, {
+      title: this.msg('grossWeight'),
+      dataIndex: 'gross_weight',
       width: 100,
     }, {
       title: this.msg('broker'),

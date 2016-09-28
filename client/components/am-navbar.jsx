@@ -7,6 +7,7 @@ import AmUserNav from './am-user-nav';
 import { format } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
+import ModuleMenu from './module-menu';
 
 const formatGlobalMsg = format(globalMessages);
 const MenuItem = Menu.Item;
@@ -35,9 +36,7 @@ export default class AmNavBar extends React.Component {
     let amTitleNav = null;
     if (navTitle.depth === 2) {
       amTitleNav = (
-        <span>
-          {formatGlobalMsg(intl, navTitle.text)}
-        </span>
+        <ModuleMenu />
       );
     } else if (navTitle.depth === 3) {
       amTitleNav = (

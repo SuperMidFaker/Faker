@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, message, Input, Modal } from 'antd';
+import { Form, message, Input, Modal, Radio } from 'antd';
 import { createSpecialCharge, loadExceptions } from 'common/reducers/trackingLandException';
 const FormItem = Form.Item;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
   state => ({
     loginId: state.account.loginId,
+    tenantId: state.account.tenantId,
     loginName: state.account.username,
     exceptions: state.trackingLandException.exceptions,
   }),
@@ -19,6 +22,7 @@ export default class CreateSpecialCharge extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
+    tenantId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
@@ -29,22 +33,24 @@ export default class CreateSpecialCharge extends React.Component {
     toggle: PropTypes.func.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, shipmtNo, loginName } = this.props;
+    const { form, dispId, shipmtNo, loginName, loginId, tenantId } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
-      this.props.form.setFieldsValue({ charge: '', excp_event: '' });
+      this.props.form.setFieldsValue({ charge: '', remark: '', chargeType: '1' });
       this.handleCancel();
       const type = 12012;
       const excpLevel = 'ERROR';
-      const typeName = '特殊费用';
       this.props.createSpecialCharge({
+        shipmtNo,
         dispId,
+        chargeType: Number(fieldsValue.chargeType),
         excpLevel,
         type,
-        typeName,
-        excpEvent: fieldsValue.excp_event,
+        remark: fieldsValue.remark,
         submitter: loginName,
         charge: Number(fieldsValue.charge),
+        loginId,
+        tenantId,
       }).then((result) => {
         if (result.error) {
           message.error(result.error);
@@ -73,13 +79,21 @@ export default class CreateSpecialCharge extends React.Component {
         visible={this.props.visible} maskClosable={false}
       >
         <Form className="row" style={{ width: '400px' }}>
-          <FormItem label="特殊费用" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+          <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+            <RadioGroup {...getFieldProps('chargeType', {
+              initialValue: '1',
+            })}>
+              <RadioButton value="1">应收</RadioButton>
+              <RadioButton value="-1">应付</RadioButton>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="number" placeholder="请输入金额" addonAfter="元" {...getFieldProps('charge', {
               initialValue: '',
             })} />
           </FormItem>
-          <FormItem label="异常描述" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('excp_event', {
+          <FormItem label="备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入备注信息" {...getFieldProps('remark', {
               initialValue: '',
             })} />
           </FormItem>

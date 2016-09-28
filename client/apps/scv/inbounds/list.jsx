@@ -5,7 +5,7 @@ import { Radio, Button, Progress, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadInbounds } from 'common/reducers/scvinbound';
+import { loadInbounds, loadInboundPartners, openModal } from 'common/reducers/scvinbound';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 // import TrimSpan from 'client/components/trimSpan';
@@ -13,6 +13,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from './rowUpdater';
 import InboundExpander from './expander';
+import SendModal from './senderModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -35,7 +36,7 @@ function fetchData({ state, dispatch }) {
     inboundlist: state.scvinbound.list,
     listFilter: state.scvinbound.listFilter,
   }),
-  { loadInbounds }
+  { loadInbounds, loadInboundPartners, openModal }
 )
 export default class InboundList extends React.Component {
   static propTypes = {
@@ -44,6 +45,8 @@ export default class InboundList extends React.Component {
     inboundlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     loadInbounds: PropTypes.func.isRequired,
+    loadInboundPartners: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired,
   }
   state = {
     expandedKeys: [],
@@ -76,7 +79,7 @@ export default class InboundList extends React.Component {
     width: 80,
     dataIndex: 'trans_mode',
     render: (o) => {
-      if (o === 'Air') {
+      if (o === 'AIR') {
         return <i className="zmdi zmdi-airplane zmdi-hc-2x" />;
       } else {
         return <i className="zmdi zmdi-boat zmdi-hc-2x" />;
@@ -113,7 +116,7 @@ export default class InboundList extends React.Component {
   }, {
     title: this.msg('declarationFinished'),
     width: 100,
-    dataIndex: 'declaration_finished_time',
+    dataIndex: 'decl_finished_time',
     render: (o) => {
       return o ? moment(o).format('YYYY/MM/DD') : '';
     },
@@ -189,7 +192,7 @@ export default class InboundList extends React.Component {
       if (record.status === 3) {
         return (
           <span>
-            <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('sendAtDest')} row={record} />
+            <RowUpdater onHit={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
             <span className="ant-divider" />
           </span>
         );
@@ -226,6 +229,26 @@ export default class InboundList extends React.Component {
   })
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
+  }
+  handleSendAtDest = (row) => {
+    this.props.loadInboundPartners(this.props.tenantId).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.props.openModal(row);
+        }
+      });
+  }
+  handleShipmentLoad = () => {
+    const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;
+    this.setState({ expandedKeys: [] });
+    this.props.loadInbounds({
+      tenantId,
+      filter: JSON.stringify(listFilter),
+      pageSize,
+      current,
+    });
   }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
@@ -281,6 +304,7 @@ export default class InboundList extends React.Component {
               />
             </div>
           </div>
+          <SendModal reload={this.handleShipmentLoad} />
         </div>
       </QueueAnim>
     );

@@ -105,6 +105,86 @@ const messages = defineMessages({
     id: 'scv.shipment.import',
     defaultMessage: 'Import',
   },
+  forwarder: {
+    id: 'scv.shipment.forwarder',
+    defaultMessage: 'Forwarder',
+  },
+  carrier: {
+    id: 'scv.shipment.carrier',
+    defaultMessage: 'Carrier',
+  },
+  mawb: {
+    id: 'scv.shipment.mawb',
+    defaultMessage: 'MAWB',
+  },
+  hawb: {
+    id: 'scv.shipment.hawb',
+    defaultMessage: 'HAWB',
+  },
+  flightNo: {
+    id: 'scv.shipment.flight.no',
+    defaultMessage: 'Flight No.',
+  },
+  vessel: {
+    id: 'scv.shipment.vessel',
+    defaultMessage: 'Vessel',
+  },
+  billlading: {
+    id: 'scv.shipment.billlading',
+    defaultMessage: 'B/L',
+  },
+  voyage: {
+    id: 'scv.shipment.voyage',
+    defaultMessage: 'Voyage',
+  },
+  containerNo: {
+    id: 'scv.shipment.container.no',
+    defaultMessage: 'Container No.',
+  },
+  containerSizeHeight: {
+    id: 'scv.shipment.container.size.height',
+    defaultMessage: 'Contn. Size/Height',
+  },
+  moveType: {
+    id: 'scv.shipment.movement.type',
+    defaultMessage: 'Movement Type',
+  },
+  pickupQty: {
+    id: 'scv.shipment.pickup.qty',
+    defaultMessage: 'Pickup Qty',
+  },
+  ctnQty: {
+    id: 'scv.shipment.ctn.qty',
+    defaultMessage: 'CTN Qty',
+  },
+  grossWeight: {
+    id: 'scv.shipment.gross.weight',
+    defaultMessage: 'Gross Weight',
+  },
+  broker: {
+    id: 'scv.shipment.broker',
+    defaultMessage: 'Broker',
+  },
+  cdSheetNo: {
+    id: 'scv.shipment.cd.sheetno',
+    defaultMessage: 'CD Sheets No.',
+  },
+  sendShipment: {
+    id: 'scv.shipment.sendto',
+    defaultMessage: 'Send To',
+  },
+  sendClearance: {
+    id: 'scv.shipment.send.clearance',
+    defaultMessage: 'Clearance',
+  },
+  sendTransportat: {
+    id: 'scv.shipment.send.transportation',
+    defaultMessage: 'Transportation',
+  },
+  transportDest: {
+    id: 'scv.shipment.send.transport.dest',
+    defaultMessage: 'Destination',
+  },
 });
 
 export default messages;

@@ -46,6 +46,9 @@ const initialState = {
     visible: false,
     dispId: -1,
     shipmtNo: '',
+    transportModeId: -1,
+    customerPartnerId: -1,
+    goodsType: -1,
   },
   locModal: {
     visible: false,
@@ -262,10 +265,10 @@ export function changeStatusFilter(field, value) {
   };
 }
 
-export function showShipmentAdvanceModal({ visible, dispId, shipmtNo }) {
+export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType }) {
   return {
     type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
-    data: { visible, dispId, shipmtNo },
+    data: { visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType },
   };
 }
 
@@ -284,7 +287,7 @@ export function deliverConfirm(shipmtNo, dispId) {
   };
 }
 
-export function createAdvance({ shipmtNo, dispId, type, name, code, amount, remark,
+export function createAdvance({ shipmtNo, dispId, name, code, amount, remark,
         photos, submitter: loginName, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
@@ -295,7 +298,7 @@ export function createAdvance({ shipmtNo, dispId, type, name, code, amount, rema
       ],
       endpoint: 'v1/transport/tracking/advance',
       method: 'post',
-      data: { shipmtNo, dispId, type, name, code, amount, remark,
+      data: { shipmtNo, dispId, name, code, amount, remark,
         photos, submitter: loginName, loginId, tenantId },
     },
   };
