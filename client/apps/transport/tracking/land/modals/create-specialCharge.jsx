@@ -81,7 +81,7 @@ export default class CreateSpecialCharge extends React.Component {
         visible={this.props.visible} maskClosable={false}
       >
         <Form className="row" style={{ width: '400px' }}>
-          <FormItem label="特殊费用" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+          <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <RadioGroup {...getFieldProps('chargeType', {
               initialValue: '1',
             })}>
@@ -89,13 +89,13 @@ export default class CreateSpecialCharge extends React.Component {
               <RadioButton value="-1">应付</RadioButton>
             </RadioGroup>
           </FormItem>
-          <FormItem label="特殊费用" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+          <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="number" placeholder="请输入金额" addonAfter="元" {...getFieldProps('charge', {
               initialValue: '',
             })} />
           </FormItem>
-          <FormItem label="异常描述" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('remark', {
+          <FormItem label="备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入备注信息" {...getFieldProps('remark', {
               initialValue: '',
             })} />
           </FormItem>
