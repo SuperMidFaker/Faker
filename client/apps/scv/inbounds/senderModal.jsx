@@ -110,7 +110,7 @@ export default class SendModal extends React.Component {
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form horizontal>
-          <FormItem label={this.msg('sendClearance')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+          <FormItem label={this.msg('broker')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             <Select showSearch optionFilterProp="searched"
               {...getFieldProps('brkPartnerId', {
                 rules: [{ required: true, message: 'broker must be select', type: 'number' }],
@@ -127,10 +127,10 @@ export default class SendModal extends React.Component {
               }
             </Select>
           </FormItem>
-          <FormItem label={this.msg('sendTransport')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+          <FormItem label={this.msg('sendTrucking')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             <Select showSearch optionFilterProp="searched"
               {...getFieldProps('trsPartnerId', {
-                rules: [{ required: true, message: 'transportation must be select', type: 'number' }],
+                rules: [{ required: true, message: 'Trucking provider must be selected', type: 'number' }],
               })} allowClear
             >
               {

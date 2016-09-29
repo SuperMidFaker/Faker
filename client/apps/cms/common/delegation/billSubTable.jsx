@@ -56,7 +56,7 @@ export default class SubdelgTable extends Component {
     render: (o, record) => {
       if (record.bill_status === undefined
         || this.props.delgStatus === CMS_DELEGATION_STATUS.unaccepted) {
-        return o;
+        return <span />;
       } else if (record.bill_status > 4) {
         return (
           <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
@@ -88,11 +88,6 @@ export default class SubdelgTable extends Component {
     width: 140,
     dataIndex: 'manual_no',
   }, {
-    title: this.msg('preEntryNo'),
-    width: 160,
-    dataIndex: 'pre_entry_seq_no',
-    render: (o, record) => (record.id ? o : '-'),
-  }, {
     title: this.msg('entryId'),
     width: 160,
     dataIndex: 'entry_id',
@@ -114,6 +109,11 @@ export default class SubdelgTable extends Component {
         return '-';
       }
     },
+  }, {
+    title: this.msg('preEntryNo'),
+    width: 160,
+    dataIndex: 'pre_entry_seq_no',
+    render: (o, record) => (record.id ? o : '-'),
   }, {
     title: this.msg('packageNum'),
     width: 60,
