@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import update from 'react/lib/update';
 import { connect } from 'react-redux';
@@ -7,8 +6,8 @@ import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n.js';
 import { format } from 'client/common/i18n/helpers';
-const formatMsg = format(messages);
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -43,7 +42,7 @@ export default class SubForm extends Component {
     idx = this.props.delgBills.length - 1;
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgBills.length !== this.props.delgBills.length) {
+    if (nextProps.delgBills !== this.props.delgBills) {
       const keys = [];
       for (let i = 0; i < nextProps.delgBills.length; i++) {
         keys.push(i);

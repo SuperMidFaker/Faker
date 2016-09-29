@@ -29,7 +29,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect,
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -53,7 +52,6 @@ export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    aspect: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
@@ -347,7 +345,7 @@ export default class DelegationList extends Component {
   handleSubdelgsList = (record) => {
     return (
       <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
-        reloadDelgs={this.handleDelgListLoad}
+        reloadDelgs={this.handleDelgListLoad} delgStatus={record.status}
       />
     );
   }

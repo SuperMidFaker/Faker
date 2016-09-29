@@ -41,6 +41,10 @@ const messages = defineMessages({
     id: 'scv.shipment.ata',
     defaultMessage: 'ATA',
   },
+  status: {
+    id: 'scv.shipment.status',
+    defaultMessage: 'Status',
+  },
   declarationFinished: {
     id: 'scv.shipment.declaration.finished',
     defaultMessage: 'Declaration Finished',
@@ -171,13 +175,13 @@ const messages = defineMessages({
   },
   sendShipment: {
     id: 'scv.shipment.sendto',
-    defaultMessage: 'Send To',
+    defaultMessage: 'Send Shipment',
   },
   sendClearance: {
     id: 'scv.shipment.send.clearance',
     defaultMessage: 'Clearance',
   },
-  sendTransportat: {
+  sendTransport: {
     id: 'scv.shipment.send.transportation',
     defaultMessage: 'Transportation',
   },

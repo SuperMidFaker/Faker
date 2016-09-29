@@ -51,6 +51,11 @@ export default class InboundList extends React.Component {
   state = {
     expandedKeys: [],
   }
+  componentDidMount() {
+    setInterval(() => {
+      this.handleShipmentLoad();
+    }, 20 * 1000);
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('shipmentNo'),
@@ -61,17 +66,81 @@ export default class InboundList extends React.Component {
     dataIndex: 'order_no',
     width: 120,
   }, {
+    title: this.msg('status'),
+    width: 200,
+    dataIndex: 'status',
+    render: (o, record) => {
+      if (record.status === 1) {
+        return (
+          <div>
+            {this.msg('atorigin')}
+            <Progress percent={16} showInfo={false} />
+          </div>
+        );
+      } else if (record.status === 2) {
+        return (
+          <div>
+            {this.msg('intransit')}
+            <Progress percent={32} showInfo={false} />
+          </div>
+        );
+      } else if (record.status === 3) {
+        return (
+          <div>
+            {this.msg('atdest')}
+            <Progress percent={48} showInfo={false} />
+          </div>
+        );
+      } else if (record.status === 4) {
+        let subMsg;
+        if (record.sub_status === 'unaccepted') {
+          subMsg = 'Unaccepted';
+        } else if (record.sub_status === 'accepted') {
+          subMsg = 'Accepted';
+        } else if (record.sub_status === 'declaring') {
+          subMsg = 'Declaring';
+        } else if (record.sub_status === 'declared') {
+          subMsg = 'Declared';
+        } else if (record.sub_status === 'cleared') {
+          subMsg = 'Cleared';
+        }
+        return (
+          <div>
+            {this.msg('atclearance')}
+            {subMsg && <span style={{ float: 'right', color: '#87D068' }}>{subMsg}</span>}
+            <Progress percent={64} showInfo={false} />
+          </div>
+        );
+      } else if (record.status === 5) {
+        return (
+          <div>
+            {this.msg('atdelivering')}
+            <Progress percent={80} showInfo={false} />
+          </div>
+        );
+      } else if (record.status === 6) {
+        return (
+          <div>
+            {this.msg('atreceived')}
+            <Progress percent={100} showInfo={false} />
+          </div>
+        );
+      } else {
+        return <span />;
+      }
+    },
+  }, {
     title: this.msg('originCountry'),
-    width: 120,
+    width: 100,
     dataIndex: 'origin_country',
   }, {
     title: this.msg('originPort'),
-    width: 140,
+    width: 160,
     dataIndex: 'origin_port_code',
     render: (o, row) => `${row.origin_port_code},${row.origin_port_city}`,
   }, {
     title: this.msg('destPort'),
-    width: 140,
+    width: 160,
     dataIndex: 'dest_port_code',
     render: (o, row) => `${row.dest_port_code},${row.dest_port_city}`,
   }, {
@@ -133,57 +202,6 @@ export default class InboundList extends React.Component {
     dataIndex: 'delivery_ata',
     render: (o) => {
       return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
-  }, {
-    title: this.msg('status'),
-    width: 160,
-    dataIndex: 'status',
-    render: (o, record) => {
-      if (record.status === 1) {
-        return (
-          <div>
-            {this.msg('atorigin')}
-            <Progress percent={16} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 2) {
-        return (
-          <div>
-            {this.msg('intransit')}
-            <Progress percent={32} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 3) {
-        return (
-          <div>
-            {this.msg('atdest')}
-            <Progress percent={48} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 4) {
-        return (
-          <div>
-            {this.msg('atclearance')}
-            <Progress percent={64} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 5) {
-        return (
-          <div>
-            {this.msg('atdelivering')}
-            <Progress percent={80} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 6) {
-        return (
-          <div>
-            {this.msg('atreceived')}
-            <Progress percent={100} showInfo={false} />
-          </div>
-        );
-      } else {
-        return <span />;
-      }
     },
   }, {
     title: this.msg('opColumn'),

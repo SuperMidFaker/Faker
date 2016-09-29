@@ -15,7 +15,6 @@ const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
-let transMode = '';
 
 function getFieldInits(aspect, formData) {
   const init = {};
@@ -25,7 +24,7 @@ function getFieldInits(aspect, formData) {
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
       'goods_type', 'order_no', 'remark',
     ].forEach((fd) => {
-      init[fd] = formData[fd] || '';
+      init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
     init.internal_no = formData.ref_external_no;
   }
@@ -63,11 +62,8 @@ export default class BasicForm extends Component {
     }
     return value;
   }
-  handleModeSelect = (value) => {
-    transMode = value;
-  }
   render() {
-    const { form: { getFieldProps }, fieldInits, clients, tenantName, partnershipType } = this.props;
+    const { form: { getFieldProps, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
@@ -123,7 +119,7 @@ export default class BasicForm extends Component {
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('transMode')} {...formItemLayout}>
-              <Select onSelect={this.handleModeSelect} {...getFieldProps('trans_mode', {
+              <Select {...getFieldProps('trans_mode', {
                 initialValue: fieldInits.trans_mode,
                 rules: [{ required: true, message: '运输方式必选' }],
               })}>
@@ -136,14 +132,14 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-          { transMode === '2' &&
+          { getFieldValue('trans_mode') === '2' &&
             <FormItem label={this.msg('bLNo')} {...formItemLayout}>
               <Input {...getFieldProps('bl_wb_no', {
                 initialValue: fieldInits.bl_wb_no,
               })} />
             </FormItem>
           }
-          { transMode === '5' &&
+          { getFieldValue('trans_mode') === '5' &&
             <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
               <Input {...getFieldProps('bl_wb_no', {
                 initialValue: fieldInits.bl_wb_no,
@@ -152,14 +148,14 @@ export default class BasicForm extends Component {
           }
           </Col>
           <Col sm={8}>
-          { transMode === '2' &&
+          { getFieldValue('trans_mode') === '2' &&
             <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
               <Input {...getFieldProps('voyage_no', {
                 initialValue: fieldInits.voyage_no,
               })} />
             </FormItem>
           }
-          { transMode === '5' &&
+          { getFieldValue('trans_mode') === '5' &&
             <FormItem label={this.msg('flightNo')} {...formItemLayout}>
               <Input {...getFieldProps('voyage_no', {
                 initialValue: fieldInits.voyage_no,
