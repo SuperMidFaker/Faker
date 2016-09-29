@@ -177,9 +177,9 @@ const messages = defineMessages({
     id: 'scv.shipment.send.clearance',
     defaultMessage: 'Clearance',
   },
-  sendTransportat: {
-    id: 'scv.shipment.send.transportation',
-    defaultMessage: 'Transportation',
+  sendTrucking: {
+    id: 'scv.shipment.send.trucking',
+    defaultMessage: 'Trucking',
   },
   transportDest: {
     id: 'scv.shipment.send.transport.dest',
