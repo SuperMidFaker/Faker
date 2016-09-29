@@ -29,7 +29,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect,
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -53,7 +52,6 @@ export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    aspect: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
@@ -148,15 +146,6 @@ export default class DelegationList extends Component {
     dataIndex: 'invoice_no',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    /*
-    title: '外部编号',
-    width: 150,
-    render: (o, record) => (
-      this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
-      : record.ref_recv_external_no
-    ),
-  }, {
-    */
     title: this.msg('deliveryNo'),
     width: 180,
     dataIndex: 'bl_wb_no',
@@ -356,7 +345,7 @@ export default class DelegationList extends Component {
   handleSubdelgsList = (record) => {
     return (
       <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
-        reloadDelgs={this.handleDelgListLoad}
+        reloadDelgs={this.handleDelgListLoad} delgStatus={record.status}
       />
     );
   }
