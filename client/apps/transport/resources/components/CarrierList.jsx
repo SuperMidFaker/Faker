@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Button, Popconfirm } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 
@@ -79,18 +80,23 @@ export default class DriverList extends Component {
       },
     ];
     return (
-      <div className="main-content">
-        <div className="page-body">
-          <div className="panel-header">
-            <PrivilegeCover module="transport" feature="resources" action="create">
-              <Button type="primary" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
-            </PrivilegeCover>
-          </div>
-          <div className="panel-body table-panel">
-            <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
+          <span>承运商管理</span>
+        </header>
+        <div className="main-content" key="main">
+          <div className="page-body">
+            <div className="panel-header">
+              <PrivilegeCover module="transport" feature="resources" action="create">
+                <Button type="primary" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
+              </PrivilegeCover>
+            </div>
+            <div className="panel-body table-panel">
+              <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
+            </div>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

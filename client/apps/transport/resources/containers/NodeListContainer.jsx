@@ -15,8 +15,7 @@ function fetchData({ dispatch, state }) {
   nodeType: state.transportResources.nodeType,
 }), { setNodeType, removeNode })
 @connectNav({
-  depth: 3,
-  text: '地点管理',
+  depth: 2,
   muduleName: 'transport',
 })
 export default class NodeListContainer extends Component {
