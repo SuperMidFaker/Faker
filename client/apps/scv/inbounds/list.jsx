@@ -9,6 +9,7 @@ import { loadInbounds, loadInboundPartners, openModal } from 'common/reducers/sc
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 // import TrimSpan from 'client/components/trimSpan';
+import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from './rowUpdater';
@@ -38,6 +39,10 @@ function fetchData({ state, dispatch }) {
   }),
   { loadInbounds, loadInboundPartners, openModal }
 )
+@connectNav({
+  depth: 2,
+  moduleName: 'scv',
+})
 export default class InboundList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -74,21 +79,21 @@ export default class InboundList extends React.Component {
         return (
           <div>
             {this.msg('atorigin')}
-            <Progress percent={16} showInfo={false} />
+            <Progress percent={10} strokeWidth={5} showInfo={false} />
           </div>
         );
       } else if (record.status === 2) {
         return (
           <div>
             {this.msg('intransit')}
-            <Progress percent={32} showInfo={false} />
+            <Progress percent={30} strokeWidth={5} showInfo={false} />
           </div>
         );
       } else if (record.status === 3) {
         return (
           <div>
             {this.msg('atdest')}
-            <Progress percent={48} showInfo={false} />
+            <Progress percent={60} strokeWidth={5} showInfo={false} />
           </div>
         );
       } else if (record.status === 4) {
@@ -108,21 +113,21 @@ export default class InboundList extends React.Component {
           <div>
             {this.msg('atclearance')}
             {subMsg && <span style={{ float: 'right', color: '#87D068' }}>{subMsg}</span>}
-            <Progress percent={64} showInfo={false} />
+            <Progress percent={70} strokeWidth={5} showInfo={false} />
           </div>
         );
       } else if (record.status === 5) {
         return (
           <div>
             {this.msg('atdelivering')}
-            <Progress percent={80} showInfo={false} />
+            <Progress percent={80} strokeWidth={5} showInfo={false} />
           </div>
         );
       } else if (record.status === 6) {
         return (
           <div>
             {this.msg('atreceived')}
-            <Progress percent={100} showInfo={false} />
+            <Progress percent={100} strokeWidth={5} showInfo={false} />
           </div>
         );
       } else {
@@ -131,7 +136,7 @@ export default class InboundList extends React.Component {
     },
   }, {
     title: this.msg('originCountry'),
-    width: 100,
+    width: 70,
     dataIndex: 'origin_country',
   }, {
     title: this.msg('originPort'),
@@ -183,7 +188,7 @@ export default class InboundList extends React.Component {
       return o ? moment(o).format('YYYY/MM/DD') : '';
     },
   }, {
-    title: this.msg('declarationFinished'),
+    title: this.msg('customsCleared'),
     width: 100,
     dataIndex: 'decl_finished_time',
     render: (o) => {
@@ -191,14 +196,14 @@ export default class InboundList extends React.Component {
     },
   }, {
     title: this.msg('etaDelivery'),
-    width: 130,
+    width: 100,
     dataIndex: 'delivery_eta',
     render: (o) => {
       return o ? moment(o).format('YYYY/MM/DD') : '';
     },
   }, {
     title: this.msg('ataDelivery'),
-    width: 130,
+    width: 100,
     dataIndex: 'delivery_ata',
     render: (o) => {
       return o ? moment(o).format('YYYY/MM/DD') : '';
@@ -318,7 +323,7 @@ export default class InboundList extends React.Component {
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
                 expandedRowKeys={this.state.expandedKeys} rowKey="id"
                 expandedRowRender={this.handleExpandDetail}
-                scroll={{ x: 1380 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1420 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>

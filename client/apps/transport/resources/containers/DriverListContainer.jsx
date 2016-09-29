@@ -16,8 +16,7 @@ function fetchData({ dispatch, state }) {
   drivers: state.transportResources.drivers,
 }), { editDriver, editDriverLogin })
 @connectNav({
-  depth: 3,
-  text: '司机管理',
+  depth: 2,
   muduleName: 'transport',
 })
 export default class DriverListContainer extends Component {

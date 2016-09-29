@@ -25,7 +25,7 @@ function fetchData({ dispatch, params }) {
 })
 @connectNav({
   depth: 3,
-  text: '地点信息',
+  text: '地点管理',
   muduleName: 'transport',
 })
 @Form.create()

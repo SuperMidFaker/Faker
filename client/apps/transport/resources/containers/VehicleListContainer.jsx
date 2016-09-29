@@ -15,8 +15,7 @@ function fetchData({ dispatch, state }) {
   cars: state.transportResources.cars,
 }), { editVehicle })
 @connectNav({
-  depth: 3,
-  text: '车辆管理',
+  depth: 2,
   muduleName: 'transport',
 })
 export default class VehicleListContainer extends Component {

@@ -11,7 +11,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 }), { addDriver, editDriver })
 @connectNav({
   depth: 3,
-  text: '司机信息',
+  text: '司机管理',
   muduleName: 'transport',
 })
 @Form.create()
