@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card } from 'antd';
-import { TENANT_ASPECT } from 'common/constants';
 import './pane.less';
 
 let FILE = [];
@@ -147,7 +146,7 @@ export default class BasicPane extends React.Component {
 
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="外部编号"
-                field={this.props.aspect === TENANT_ASPECT.BO ? delegation.ref_delg_external_no : delegation.ref_recv_external_no}
+                field={delegation.ref_external_no}
                 fieldCol={{ span: 9 }}
               />
             </Col>

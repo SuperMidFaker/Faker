@@ -38,8 +38,10 @@ function TransitTimeLabel(props) {
   let msg;
   if (time === 0) {
     msg = tformat('transitTimeToday');
-  } else {
+  } else if (time) {
     msg = `${time}${tformat('day')}`;
+  } else {
+    msg = '';
   }
   return <span>{msg}</span>;
 }
@@ -150,7 +152,9 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
-    render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD'),
+    render: (o, record) => {
+      return o ? moment(record.pickup_est_date).format('YYYY.MM.DD') : '';
+    },
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
@@ -158,7 +162,9 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
+    render: (o, record) => {
+      return o ? moment(record.deliver_est_date).format('YYYY.MM.DD') : '';
+    },
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',

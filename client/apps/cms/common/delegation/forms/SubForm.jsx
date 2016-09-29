@@ -23,7 +23,6 @@ let idx = 0;
     delgBills: state.cmsDelegation.delgBills,
   }),
 )
-
 export default class SubForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

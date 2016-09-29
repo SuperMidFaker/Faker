@@ -3,12 +3,12 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { TENANT_ASPECT, GOODSTYPES, TRANS_MODE } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n.js';
 import { format } from 'client/common/i18n/helpers';
-const formatMsg = format(messages);
+import messages from '../message.i18n.js';
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
@@ -27,8 +27,7 @@ function getFieldInits(aspect, formData) {
     ].forEach((fd) => {
       init[fd] = formData[fd] || '';
     });
-    init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no
-      : formData.ref_recv_external_no;
+    init.internal_no = formData.ref_external_no;
   }
   return init;
 }

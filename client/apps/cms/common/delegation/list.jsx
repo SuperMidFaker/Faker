@@ -148,15 +148,6 @@ export default class DelegationList extends Component {
     dataIndex: 'invoice_no',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    /*
-    title: '外部编号',
-    width: 150,
-    render: (o, record) => (
-      this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
-      : record.ref_recv_external_no
-    ),
-  }, {
-    */
     title: this.msg('deliveryNo'),
     width: 180,
     dataIndex: 'bl_wb_no',
