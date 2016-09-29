@@ -4,6 +4,7 @@ import { Button, Icon, Tabs, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BasicPane from './tabpanes/basic-pane';
+import ExpensePane from './tabpanes/expensePane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
@@ -106,6 +107,7 @@ export default class PreviewPanel extends React.Component {
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
           <TabPane tab="费用" key="expenses">
+            <ExpensePane />
           </TabPane>
           <TabPane tab="通关追踪" key="clearanceTracking">
             <ClearanceTrackingPane />
@@ -122,6 +124,7 @@ export default class PreviewPanel extends React.Component {
           <BasicPane delegation={delegation} files={files} />
         </TabPane>
         <TabPane tab="费用" key="expenses">
+          <ExpensePane />
         </TabPane>
         <TabPane tab="日志" key="delegateTracking">
           <DelegateTrackingPane delegateTracking={delegateTracking} />
@@ -217,9 +220,11 @@ export default class PreviewPanel extends React.Component {
           <div className="body">
             {this.tablePan()}
           </div>
-          <div className="footer">
-            {this.button()}
-          </div>
+          {this.state.tabKey === 'basic' &&
+            <div className="footer">
+              {this.button()}
+            </div>
+          }
         </div>
       </div>
     );
