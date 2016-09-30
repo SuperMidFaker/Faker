@@ -123,7 +123,7 @@ const messages = defineMessages({
   },
   featCorpRole: {
     id: 'component.feature.corp.role',
-    defaultMessage: '角色设置',
+    defaultMessage: '角色权限',
   },
   featCorpPartners: {
     id: 'component.feature.corp.partners',

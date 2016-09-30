@@ -2,7 +2,6 @@
 @import "~antd/lib/style/components.less";
 @import "../variable.less";
 body {
-  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
   background-color: #F0F0F0;
 }
 ol, ul {
@@ -17,7 +16,6 @@ hr, img {
 img {
   vertical-align: middle;
 }
-
 .ant-menu-root {
   font-size: 14px;
 }
@@ -102,6 +100,7 @@ img {
     padding-top:@am-header-height;
   }
 }
+
 .nav {
   margin-bottom: 0px;
   padding-left: 0px;
@@ -120,10 +119,10 @@ img {
   }
   .ant-menu-horizontal > .ant-menu-item > .ant-badge >a {
     display: block;
-    color: #666;
+    color: #fcfcfc;
   }
   .ant-menu-horizontal > .ant-menu-item > .ant-badge >a:hover {
-    color: #2db7f5;
+    color: #fff;
   }
   .ant-menu-item, .ant-menu-submenu-title {
     padding: 0 12px;
@@ -157,6 +156,45 @@ img {
   margin-bottom: 18px;
   border: 1px solid transparent;
   border-radius: 0px;
+  &.module-corp {
+    background-color:#f08519;
+  }
+  &.module-clearance {
+    background-color:#01BAD2;
+  }
+  &.module-customer {
+    background-color:#60BE29;
+  }
+  &.module-transport {
+    background-color:#00A0E8;
+  }
+  &.module-scv {
+    background-color:#FF9900;
+  }
+  .ant-menu {
+    color: #fcfcfc;
+    background: transparent;
+  }
+  .ant-menu-horizontal .ant-menu-item-selected > a, 
+  .ant-menu-horizontal .ant-menu-item-selected > a:hover {
+    color: #fff;
+  }
+  .ant-menu-horizontal > .ant-menu-item:hover,
+  .ant-menu-horizontal > .ant-menu-item-selected,
+  .ant-menu-horizontal > .ant-menu-submenu:hover {
+    border-bottom: 2px solid #fff;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .ant-menu-horizontal > .ant-menu-item > a, .ant-menu-horizontal > .ant-menu-submenu > a {
+    color: #fcfcfc;
+  }
+  .ant-menu-submenu-horizontal > .ant-menu-sub {
+    background: #fff;
+    .ant-menu-horizontal .ant-menu-item-selected > a {
+      color: #666;
+    }
+  }
 }
 
 // 不显示select mirror input
@@ -224,21 +262,7 @@ img {
       @media (max-width:767px) {
         display:none;
       }
-      &.module-corp {
-        background-color:#393c40;
-      }
-      &.module-clearance {
-        background-color:#01BAD2;
-      }
-      &.module-customer {
-        background-color:#60BE29;
-      }
-      &.module-transport {
-        background-color:#00A0E8;
-      }
-      &.module-scv {
-        background-color:#FF9900;
-      }
+      
     }
     .navbar-toggle {
       border-radius:0;
@@ -246,13 +270,13 @@ img {
       left:0;
       top:0;
       margin:0;
-      font-size: 24px;
-      color: #aaa;
+      font-size: 30px;
+      color: #fcfcfc;
       text-align:center;
-      display:none;
       padding:0 16px;
       border-width:0;
       line-height:48px;
+      width: @am-leftbar-width;
       @media (max-width:767px) {
         width: 60px;
         display:block;
@@ -462,6 +486,9 @@ img {
   min-height:100%;
   &.with-side-bar {
     margin-left: @side-bar-width;
+  }
+  &.no-top-bar {
+    padding: 24px 16px 0;
   }
   @media (max-width:767px) {
     height:100%;

@@ -76,6 +76,15 @@ export default class CorpPack extends React.Component {
         text: formatMsg(intl, 'organTitle'),
       });
     }
+    if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
+      linkMenus.push({
+        single: true,
+        key: 'corpsetting-5',
+        path: '/corp/role',
+        icon: 'zmdi zmdi-shield-check',
+        text: formatMsg(intl, 'roleTitle'),
+      });
+    }
     if (hasPermission(privileges, { module: 'corp', feature: 'partners' })) {
       linkMenus.push({
         single: true,
@@ -83,15 +92,6 @@ export default class CorpPack extends React.Component {
         path: '/corp/partners',
         icon: 'icon-fontello-network',
         text: formatMsg(intl, 'partnership'),
-      });
-    }
-    if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
-      linkMenus.push({
-        single: true,
-        key: 'corpsetting-5',
-        path: '/corp/role',
-        icon: 'icon-fontello-anchor',
-        text: formatMsg(intl, 'roleTitle'),
       });
     }
     this.setState({ linkMenus });

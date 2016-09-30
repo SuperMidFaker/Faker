@@ -4,12 +4,9 @@ import { Menu, Badge, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import AmUserNav from './am-user-nav';
-import { format } from 'client/common/i18n/helpers';
-import globalMessages from 'client/common/root.i18n';
 import MessagePrompt from './messagePrompt';
 import ModuleMenu from './module-menu';
 
-const formatGlobalMsg = format(globalMessages);
 const MenuItem = Menu.Item;
 
 @injectIntl
@@ -31,10 +28,12 @@ export default class AmNavBar extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   render() {
-    const { intl, navTitle, notReadMessagesNum } = this.props;
-    const moduleName = navTitle.moduleName;
+    const { navTitle, notReadMessagesNum } = this.props;
+    let moduleName = navTitle.moduleName;
     let amTitleNav = null;
-    if (navTitle.depth === 2) {
+    if (navTitle.depth === 1) {
+      moduleName = '';
+    } else if (navTitle.depth === 2) {
       amTitleNav = (
         <ModuleMenu />
       );
@@ -49,17 +48,14 @@ export default class AmNavBar extends React.Component {
     let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
     if (navTitle.depth !== 1) {
       brandNav = (
-        <Tooltip placement="right" title={formatGlobalMsg(intl, 'goHome')}>
-          <span><NavLink to="/" className={`navbar-brand module-${moduleName}`} /></span>
-        </Tooltip>
+        <NavLink to="/" className="navbar-toggle">
+          <i className="zmdi zmdi-apps" />
+        </NavLink>
       );
     }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
           <div className="navbar-header">
-            <NavLink to="/" className="navbar-toggle">
-              <i className="zmdi zmdi-apps" />
-            </NavLink>
             {brandNav}
           </div>
             <div className="navbar-title">

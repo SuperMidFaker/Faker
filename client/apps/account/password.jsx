@@ -103,7 +103,7 @@ export default class ChangePassword extends React.Component {
   render() {
     const { intl } = this.props;
     return (
-      <div className="acc-panel">
+      <div className="page-body-center">
         <div className="panel-heading">
           <h3>{this.msg('pwdTitle')}</h3>
           <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>

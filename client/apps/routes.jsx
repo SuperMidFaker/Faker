@@ -39,8 +39,8 @@ import * as ExportDocs from './cms/export/docs';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSSettings from './cms/settings';
-import Scv from './scv/module-scv';
-import * as ScvInbound from './scv/inbounds';
+import SCV from './scv/module-scv';
+import * as SCVInbound from './scv/inbounds';
 import CRM from './crm/module-crm';
 import * as CRMOrders from './crm/orders';
 import { loadAccount } from 'common/reducers/account';
@@ -220,14 +220,13 @@ export default(store, cookie) => {
               <IndexRoute component={CMSSettings.List} />
             </Route>
           </Route>
-          <Route path={DEFAULT_MODULES.scv.id} component={Scv}>
-            <IndexRoute component={ScvInbound.List} />
-            <Route path="inbound" component={ScvInbound.List} />
+          <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
+            <IndexRoute component={SCVInbound.List} />
+            <Route path="inbound" component={SCVInbound.List} />
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
-            <Route path="orders">
-              <IndexRoute component={CRMOrders.List} />
-            </Route>
+            <IndexRoute component={CRMOrders.List} />
+            <Route path="orders" omponent={CRMOrders.List} />
           </Route>
         </Route>
       </Route>
