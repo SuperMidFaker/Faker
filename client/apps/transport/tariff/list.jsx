@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, message } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -194,14 +195,14 @@ export default class TariffList extends React.Component {
       },
     };
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <span>{this.msg('transportTariff')}</span>
         </header>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
               <PrivilegeCover module="transport" feature="tariff" action="create">
@@ -222,7 +223,7 @@ export default class TariffList extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

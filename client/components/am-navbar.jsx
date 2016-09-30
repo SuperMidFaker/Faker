@@ -31,26 +31,23 @@ export default class AmNavBar extends React.Component {
     const { navTitle, notReadMessagesNum } = this.props;
     let moduleName = navTitle.moduleName;
     let amTitleNav = null;
+    let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
     if (navTitle.depth === 1) {
       moduleName = '';
     } else if (navTitle.depth === 2) {
-      amTitleNav = (
-        <ModuleMenu />
-      );
-    } else if (navTitle.depth === 3) {
-      amTitleNav = (
-        <a role="button" onClick={navTitle.goBackFn}>
-          <i className="zmdi zmdi-arrow-left" />
-          {navTitle.text}
-        </a>
-      );
-    }
-    let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
-    if (navTitle.depth !== 1) {
       brandNav = (
         <NavLink to="/" className="navbar-toggle">
           <i className="zmdi zmdi-apps" />
         </NavLink>
+      );
+      amTitleNav = (
+        <ModuleMenu />
+      );
+    } else if (navTitle.depth === 3) {
+      brandNav = (
+        <a role="button" className="navbar-toggle" onClick={navTitle.goBackFn}>
+          <i className="zmdi zmdi-arrow-left" />
+        </a>
       );
     }
     return (
