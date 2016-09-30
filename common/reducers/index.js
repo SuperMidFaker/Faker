@@ -19,6 +19,7 @@ import shipment from './shipment';
 import transportDispatch from './transportDispatch';
 import transportResources from './transportResources';
 import transportTariff from './transportTariff';
+import transportBilling from './transportBilling';
 import cmsDelegation from './cmsDelegation';
 import cmsDeclare from './cmsDeclare';
 import cmsCompRelation from './cmsCompRelation';
@@ -45,6 +46,7 @@ export default combineReducers({
   transportDispatch,
   transportResources,
   transportTariff,
+  transportBilling,
   cmsDelegation,
   cmsDeclare,
   cmsCompRelation,

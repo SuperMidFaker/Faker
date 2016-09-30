@@ -25,6 +25,7 @@ import * as TMSAcceptance from './transport/acceptance';
 import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
 import * as TMSResources from './transport/resources';
+import * as TMSBilling from './transport/billing';
 import * as TMSTariff from './transport/tariff';
 import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tracking';
@@ -179,6 +180,19 @@ export default(store, cookie) => {
               <IndexRoute component={TMSTariff.List} />
               <Route path="new" component={TMSTariff.CreateNew} />
               <Route path="edit/:uid" component={TMSTariff.Edit} />
+            </Route>
+            <Route path="billing">
+              <IndexRedirect to="/transport/billing/receivable" />
+              <Route path="receivable">
+                <IndexRoute component={TMSBilling.ReceivableList} />
+                <Route path="create" component={TMSBilling.CreateReceivableBilling} />
+              </Route>
+              <Route path="payable">
+                <IndexRoute component={TMSBilling.PayableList} />
+                <Route path="create" component={TMSBilling.CreatePayableBilling} />
+              </Route>
+              <Route path="checkBilling/:billingId" component={TMSBilling.CheckBilling} />
+              <Route path="fee" component={TMSBilling.FeeList} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>

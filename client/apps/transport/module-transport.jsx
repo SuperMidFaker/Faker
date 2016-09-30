@@ -76,10 +76,14 @@ export default class Transport extends React.Component {
         text: '账单',
         sublinks: [{
           key: 'tms-4-0',
-          path: '/transport/billing/recievable',
-          text: '应收账单',
+          path: '/transport/billing/fee',
+          text: '费用',
         }, {
           key: 'tms-4-1',
+          path: '/transport/billing/receivable',
+          text: '应收账单',
+        }, {
+          key: 'tms-4-2',
           path: '/transport/billing/payable',
           text: '应付账单',
         }],
