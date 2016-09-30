@@ -67,26 +67,26 @@ export default class AmUserNav extends React.Component {
     return (
       <Menu mode="horizontal" className="navbar-user-menu">
         <SubMenu title={subTitle}>
-          <MenuItem key="profile">
+          <MenuItem>
             <NavLink to="/my/profile">
               <i className="zmdi zmdi-account-box zmdi-hc-fw" />
               <span>{formatMsg(intl, 'userSetting')}</span>
             </NavLink>
           </MenuItem>
-          <MenuItem key="lang">
+          <MenuItem>
             <a role="button" onClick={this.handleLanguageSetting}>
               <i className="zmdi zmdi-globe zmdi-hc-fw" />
               <span>{formatMsg(intl, 'userLanguage')}</span>
             </a>
           </MenuItem>
-          <MenuItem key="password">
+          <MenuItem>
             <NavLink to="/my/password">
               <i className="zmdi zmdi-lock zmdi-hc-fw" />
               <span>{formatMsg(intl, 'pwdSetting')}</span>
             </NavLink>
           </MenuItem>
           <MenuDivider />
-          <MenuItem key="logout">
+          <MenuItem>
             <a role="button" onClick={this.handleLogout}>
               <i className="zmdi zmdi-sign-in zmdi-hc-fw" />
               <span>{formatMsg(intl, 'userLogout')}</span>

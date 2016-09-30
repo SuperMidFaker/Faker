@@ -132,7 +132,7 @@ export default class MyProfile extends React.Component {
     };
     const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (
-      <div className="acc-panel">
+      <div className="page-body-center">
         <div className="panel-heading">
           <h3>{this.msg('profileTitle')}</h3>
           <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>

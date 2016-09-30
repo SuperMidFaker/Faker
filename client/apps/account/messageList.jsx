@@ -166,7 +166,7 @@ export default class MessageList extends React.Component {
       remotes: this.props.messages,
     });
     return (
-      <div className="acc-panel">
+      <div className="page-body-center">
         <div className="panel-heading">
           <h3>{msg('messageCenter')}</h3>
           <Button size="large" onClick={() => { this.context.router.goBack(); }} style={{ float: 'right' }} icon="left">{msg('goBack')}</Button>

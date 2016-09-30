@@ -59,7 +59,7 @@ export default class ModuleMenu extends React.Component {
             const emod = DEFAULT_MODULES[mod.id];
             return (
               <MenuItem key={mod.id}>
-                <NavLink to={emod.url}>
+                <NavLink to={`${emod.url}/`}>
                   {formatMsg(this.props.intl, emod.text)}
                 </NavLink>
               </MenuItem>

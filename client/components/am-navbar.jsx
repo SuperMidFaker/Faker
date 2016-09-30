@@ -32,9 +32,11 @@ export default class AmNavBar extends React.Component {
   }
   render() {
     const { intl, navTitle, notReadMessagesNum } = this.props;
-    const moduleName = navTitle.moduleName;
+    let moduleName = navTitle.moduleName;
     let amTitleNav = null;
-    if (navTitle.depth === 2) {
+    if (navTitle.depth === 1) {
+      moduleName = '';
+    } else if (navTitle.depth === 2) {
       amTitleNav = (
         <ModuleMenu />
       );
@@ -49,17 +51,14 @@ export default class AmNavBar extends React.Component {
     let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
     if (navTitle.depth !== 1) {
       brandNav = (
-        <Tooltip placement="right" title={formatGlobalMsg(intl, 'goHome')}>
-          <span><NavLink to="/" className={`navbar-brand module-${moduleName}`} /></span>
-        </Tooltip>
+        <NavLink to="/" className="navbar-toggle">
+          <i className="zmdi zmdi-apps" />
+        </NavLink>
       );
     }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
           <div className="navbar-header">
-            <NavLink to="/" className="navbar-toggle">
-              <i className="zmdi zmdi-apps" />
-            </NavLink>
             {brandNav}
           </div>
             <div className="navbar-title">
