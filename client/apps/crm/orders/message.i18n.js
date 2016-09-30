@@ -2,195 +2,195 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   shipmentNo: {
-    id: 'scv.shipment.shipmentno',
+    id: 'crm.shipment.shipmentno',
     defaultMessage: 'Shipment No.',
   },
   orderNo: {
-    id: 'scv.shipment.orderno',
+    id: 'crm.shipment.orderno',
     defaultMessage: 'Order No.',
   },
   originCountry: {
-    id: 'scv.shipment.origin.country',
+    id: 'crm.shipment.origin.country',
     defaultMessage: 'Origin Cntry',
   },
   originPort: {
-    id: 'scv.shipment.origin.port',
+    id: 'crm.shipment.origin.port',
     defaultMessage: 'Origin Port',
   },
   destPort: {
-    id: 'scv.shipment.dest.port',
+    id: 'crm.shipment.dest.port',
     defaultMessage: 'Dest. Port',
   },
   mode: {
-    id: 'scv.shipment.mode',
+    id: 'crm.shipment.mode',
     defaultMessage: 'Mode',
   },
   etd: {
-    id: 'scv.shipment.etd',
+    id: 'crm.shipment.etd',
     defaultMessage: 'ETD',
   },
   atd: {
-    id: 'scv.shipment.atd',
+    id: 'crm.shipment.atd',
     defaultMessage: 'ATD',
   },
   eta: {
-    id: 'scv.shipment.eta',
+    id: 'crm.shipment.eta',
     defaultMessage: 'ETA',
   },
   ata: {
-    id: 'scv.shipment.ata',
+    id: 'crm.shipment.ata',
     defaultMessage: 'ATA',
   },
   status: {
-    id: 'scv.shipment.status',
+    id: 'crm.shipment.status',
     defaultMessage: 'Status',
   },
   customsCleared: {
-    id: 'scv.shipment.customs.cleared',
+    id: 'crm.shipment.customs.cleared',
     defaultMessage: 'Customs Cleared',
   },
   etaDelivery: {
-    id: 'scv.shipment.delivery.eta',
+    id: 'crm.shipment.delivery.eta',
     defaultMessage: 'ETA of DLV',
   },
   ataDelivery: {
-    id: 'scv.shipment.delivery.ata',
+    id: 'crm.shipment.delivery.ata',
     defaultMessage: 'ATA of DLV',
   },
   atorigin: {
-    id: 'scv.shipment.at.origin',
+    id: 'crm.shipment.at.origin',
     defaultMessage: 'At Origin',
   },
   intransit: {
-    id: 'scv.shipment.in.transit',
+    id: 'crm.shipment.in.transit',
     defaultMessage: 'In Transit',
   },
   atdest: {
-    id: 'scv.shipment.at.dest',
+    id: 'crm.shipment.at.dest',
     defaultMessage: 'At Dest.',
   },
   atclearance: {
-    id: 'scv.shipment.at.clearance',
+    id: 'crm.shipment.at.clearance',
     defaultMessage: 'Clearance',
   },
   atdelivering: {
-    id: 'scv.shipment.at.delivering',
+    id: 'crm.shipment.at.delivering',
     defaultMessage: 'Delivering',
   },
   atreceived: {
-    id: 'scv.shipment.at.received',
+    id: 'crm.shipment.at.received',
     defaultMessage: 'Received',
   },
   opColumn: {
-    id: 'scv.shipment.column.operation',
+    id: 'crm.shipment.column.operation',
     defaultMessage: 'Operation',
   },
   sendAtDest: {
-    id: 'scv.shipment.operation.send',
+    id: 'crm.shipment.operation.send',
     defaultMessage: 'Send',
   },
   viewTrack: {
-    id: 'scv.shipment.operation.viewtrack',
+    id: 'crm.shipment.operation.viewtrack',
     defaultMessage: 'View',
   },
   searchPlaceholder: {
-    id: 'scv.shipment.search.placeholder',
+    id: 'crm.shipment.search.placeholder',
     defaultMessage: 'Search No',
   },
   inboundShipments: {
-    id: 'scv.shipment.inbounds',
+    id: 'crm.shipment.inbounds',
     defaultMessage: 'Inbound Shipments',
   },
   all: {
-    id: 'scv.shipment.radio.all',
+    id: 'crm.shipment.radio.all',
     defaultMessage: 'All',
   },
   importShipments: {
-    id: 'scv.shipment.import',
+    id: 'crm.shipment.import',
     defaultMessage: 'Import',
   },
   forwarder: {
-    id: 'scv.shipment.forwarder',
+    id: 'crm.shipment.forwarder',
     defaultMessage: 'Forwarder',
   },
   carrier: {
-    id: 'scv.shipment.carrier',
+    id: 'crm.shipment.carrier',
     defaultMessage: 'Carrier',
   },
   mawb: {
-    id: 'scv.shipment.mawb',
+    id: 'crm.shipment.mawb',
     defaultMessage: 'MAWB',
   },
   hawb: {
-    id: 'scv.shipment.hawb',
+    id: 'crm.shipment.hawb',
     defaultMessage: 'HAWB',
   },
   flightNo: {
-    id: 'scv.shipment.flight.no',
+    id: 'crm.shipment.flight.no',
     defaultMessage: 'Flight No.',
   },
   vessel: {
-    id: 'scv.shipment.vessel',
+    id: 'crm.shipment.vessel',
     defaultMessage: 'Vessel',
   },
   billlading: {
-    id: 'scv.shipment.billlading',
+    id: 'crm.shipment.billlading',
     defaultMessage: 'B/L',
   },
   voyage: {
-    id: 'scv.shipment.voyage',
+    id: 'crm.shipment.voyage',
     defaultMessage: 'Voyage',
   },
   containerNo: {
-    id: 'scv.shipment.container.no',
+    id: 'crm.shipment.container.no',
     defaultMessage: 'Container No.',
   },
   containerSizeHeight: {
-    id: 'scv.shipment.container.size.height',
+    id: 'crm.shipment.container.size.height',
     defaultMessage: 'Contn. Size/Height',
   },
   moveType: {
-    id: 'scv.shipment.movement.type',
+    id: 'crm.shipment.movement.type',
     defaultMessage: 'Movement Type',
   },
   pickupQty: {
-    id: 'scv.shipment.pickup.qty',
+    id: 'crm.shipment.pickup.qty',
     defaultMessage: 'Pickup Qty',
   },
   ctnQty: {
-    id: 'scv.shipment.ctn.qty',
+    id: 'crm.shipment.ctn.qty',
     defaultMessage: 'CTN Qty',
   },
   grossWeight: {
-    id: 'scv.shipment.gross.weight',
+    id: 'crm.shipment.gross.weight',
     defaultMessage: 'Gross Weight',
   },
   broker: {
-    id: 'scv.shipment.broker',
+    id: 'crm.shipment.broker',
     defaultMessage: 'Broker',
   },
   cdSheetNo: {
-    id: 'scv.shipment.cd.sheetno',
+    id: 'crm.shipment.cd.sheetno',
     defaultMessage: 'CD Sheets No.',
   },
   sendShipment: {
-    id: 'scv.shipment.sendto',
+    id: 'crm.shipment.sendto',
     defaultMessage: 'Send Shipment',
   },
   sendClearance: {
-    id: 'scv.shipment.send.clearance',
+    id: 'crm.shipment.send.clearance',
     defaultMessage: 'Clearance',
   },
   sendTrucking: {
-    id: 'scv.shipment.send.trucking',
+    id: 'crm.shipment.send.trucking',
     defaultMessage: 'Trucking',
   },
   sendTransport: {
-    id: 'scv.shipment.send.transportation',
+    id: 'crm.shipment.send.transportation',
     defaultMessage: 'Transportation',
   },
   transportDest: {
-    id: 'scv.shipment.send.transport.dest',
+    id: 'crm.shipment.send.transport.dest',
     defaultMessage: 'Destination',
   },
 });

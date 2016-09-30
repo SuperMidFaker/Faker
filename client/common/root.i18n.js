@@ -91,7 +91,7 @@ const messages = defineMessages({
   },
   moduleTransport: {
     id: 'component.module.transport',
-    defaultMessage: '国内运输',
+    defaultMessage: '运输管理',
   },
   moduleClearance: {
     id: 'component.module.clearance',
@@ -99,7 +99,7 @@ const messages = defineMessages({
   },
   moduleSCV: {
     id: 'component.module.scv',
-    defaultMessage: 'Supply Chain Visibility',
+    defaultMessage: '供应链可视',
   },
   moduleCorporation: {
     id: 'component.module.corporation',

@@ -3,35 +3,35 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   dashboard: {
     id: 'scv.module.dashboard',
-    defaultMessage: 'Dashboard',
+    defaultMessage: '概况',
   },
   order: {
     id: 'scv.module.order',
-    defaultMessage: 'Orders',
+    defaultMessage: '订单',
   },
   inbound: {
     id: 'scv.module.inbound',
-    defaultMessage: 'Inbound Shipments',
+    defaultMessage: '进口追踪',
   },
   outbound: {
     id: 'scv.module.outbound',
-    defaultMessage: 'Outbound Shipments',
+    defaultMessage: '出口追踪',
   },
   payment: {
     id: 'scv.module.payment',
-    defaultMessage: 'Payments',
+    defaultMessage: '结算中心',
   },
   taxPayment: {
     id: 'scv.module.taxPayment',
-    defaultMessage: 'Tax Payments',
+    defaultMessage: '税费',
   },
   freightBillPayment: {
     id: 'scv.module.payment.freightBill',
-    defaultMessage: 'Freight Bills',
+    defaultMessage: '账单',
   },
   analytics: {
     id: 'scv.module.analytics',
-    defaultMessage: 'Analytics',
+    defaultMessage: '统计分析',
   },
   kpiAnalytic: {
     id: 'scv.module.analytic.kpi',
@@ -39,11 +39,11 @@ const messages = defineMessages({
   },
   costAnalytic: {
     id: 'scv.module.analytic.cost',
-    defaultMessage: 'Cost Allocation',
+    defaultMessage: '成本分析',
   },
   settings: {
     id: 'scv.module.settings',
-    defaultMessage: 'Settings',
+    defaultMessage: '设置',
   },
 });
 

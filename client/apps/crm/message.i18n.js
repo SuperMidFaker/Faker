@@ -2,27 +2,27 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   dashboard: {
-    id: 'customer.module.dashboard',
+    id: 'crm.module.dashboard',
     defaultMessage: '概况',
   },
   orders: {
-    id: 'customer.module.orders',
+    id: 'crm.module.orders',
     defaultMessage: '订单',
   },
   bills: {
-    id: 'customer.module.bills',
+    id: 'crm.module.bills',
     defaultMessage: '账单',
   },
   customers: {
-    id: 'customer.module.customers',
+    id: 'crm.module.customers',
     defaultMessage: '客户',
   },
   reports: {
-    id: 'customer.module.reports',
+    id: 'crm.module.reports',
     defaultMessage: '报表',
   },
   settings: {
-    id: 'customer.module.settings',
+    id: 'crm.module.settings',
     defaultMessage: '设置',
   },
 });
