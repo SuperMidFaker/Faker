@@ -8,7 +8,6 @@ import { loadPartners, submitAgreement,
   updateAgreement } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, GOODS_TYPES, PARTNERSHIP_TYPE_INFO,
   PRESET_TRANSMODES, TAX_STATUS } from 'common/constants';
-import ContentWrapper from '../../resources/components/ContentWrapper';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -195,165 +194,165 @@ export default class AgreementForm extends React.Component {
       form: { getFieldProps } } = this.props;
     const { partnerVisible, readonly, transMode } = this.state;
     return (
-      <ContentWrapper>
-        <Form horizontal>
-          <div className="panel-body">
-            <Card style={{ margin: '0 16px' }}>
-              <Row>
-                <Col sm={12}>
-                  <FormItem label="价格类型" {...formItemLayout}>
-                    <Select disabled={readonly} {...getFieldProps('kind', {
-                      initialValue: formData.kind,
-                      rules: [{ required: true, message: '价格类型必选', type: 'number' }],
-                    })} onSelect={this.handleTariffKindSelect}
-                    >
-                    {
-                      TARIFF_KINDS.map(
-                        (tk, idx) =>
-                        <Option value={idx} key={tk.value}>{TARIFF_KINDS[idx].text}</Option>
-                      )
-                    }
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col sm={12} style={{ paddingLeft: '8px' }}>
-                  <FormItem label="协议名称" {...formItemLayout}>
-                    <Input placeholder="合作伙伴-运输模式-货物类型-价格类型-计价单位" {
-                      ...getFieldProps('name', {
-                        initialValue: formData.name,
-                        rules: [{ required: true, message: '名称必填' }],
-                      })} />
-                  </FormItem>
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={12}>
-                {
-                  partnerVisible &&
-                  <FormItem label="合作伙伴" {...formItemLayout}>
-                    <Select showSearch optionFilterProp="searched" disabled={readonly}
-                      {...getFieldProps('partnerId', {
-                        initialValue: formData.partnerId,
-                        rules: [{ required: true, message: '合作伙伴必选', type: 'number' }],
-                      })} allowClear
-                    >
-                    {
-                      partners.map(pt => (
-                        <Option searched={`${pt.partner_code}${pt.name}`}
-                          value={pt.partner_id} key={pt.partner_id}
-                        >
-                        {pt.name}
-                        </Option>)
-                      )
-                    }
-                    </Select>
-                  </FormItem>
+      <div className="main-content">
+        <div className="page-body card-wrapper">
+          <Form horizontal>
+              <Card>
+                <Row>
+                  <Col sm={12}>
+                    <FormItem label="价格类型" {...formItemLayout}>
+                      <Select disabled={readonly} {...getFieldProps('kind', {
+                        initialValue: formData.kind,
+                        rules: [{ required: true, message: '价格类型必选', type: 'number' }],
+                      })} onSelect={this.handleTariffKindSelect}
+                      >
+                      {
+                        TARIFF_KINDS.map(
+                          (tk, idx) =>
+                          <Option value={idx} key={tk.value}>{TARIFF_KINDS[idx].text}</Option>
+                        )
+                      }
+                      </Select>
+                    </FormItem>
+                  </Col>
+                  <Col sm={12} style={{ paddingLeft: '8px' }}>
+                    <FormItem label="协议名称" {...formItemLayout}>
+                      <Input placeholder="合作伙伴-运输模式-货物类型-价格类型-计价单位" {
+                        ...getFieldProps('name', {
+                          initialValue: formData.name,
+                          rules: [{ required: true, message: '名称必填' }],
+                        })} />
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={12}>
+                  {
+                    partnerVisible &&
+                    <FormItem label="合作伙伴" {...formItemLayout}>
+                      <Select showSearch optionFilterProp="searched" disabled={readonly}
+                        {...getFieldProps('partnerId', {
+                          initialValue: formData.partnerId,
+                          rules: [{ required: true, message: '合作伙伴必选', type: 'number' }],
+                        })} allowClear
+                      >
+                      {
+                        partners.map(pt => (
+                          <Option searched={`${pt.partner_code}${pt.name}`}
+                            value={pt.partner_id} key={pt.partner_id}
+                          >
+                          {pt.name}
+                          </Option>)
+                        )
+                      }
+                      </Select>
+                    </FormItem>
+                  }
+                  </Col>
+                  <Col sm={6} style={{ paddingLeft: '8px' }}>
+                    <FormItem label="有效期起始" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                      <DatePicker style={{ width: '100%' }} {...getFieldProps('effectiveDate', {
+                        initialValue: formData.effectiveDate,
+                        rules: [{ required: true, message: '起始时间必填', type: 'date' }],
+                      })} disabledDate={this.isEffectiveDateDisabled}
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col sm={6} style={{ paddingLeft: '8px' }}>
+                    <FormItem label="有效期截止" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                      <DatePicker style={{ width: '100%' }} {...getFieldProps('expiryDate', {
+                        initialValue: formData.expiryDate,
+                        rules: [{ required: true, message: '截止时间必填', type: 'date' }],
+                      })} disabledDate={this.isExpiryDateDisabled}
+                      />
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={6}>
+                    <FormItem label="运输模式" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                      <Select onSelect={this.handleModeSelect} {...getFieldProps('transModeCode', {
+                        initialValue: isNaN(formData.transModeCode) ? undefined :
+                          parseInt(formData.transModeCode, 10),
+                        rules: [{ required: true, type: 'number', message: '运输模式必选' }],
+                      })} disabled={readonly}
+                      >
+                      {
+                        formParams.transModes.map(tm =>
+                          <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
+                        )
+                      }
+                      </Select>
+                    </FormItem>
+                  </Col>
+                  <Col sm={6} style={{ paddingLeft: '8px' }}>
+                    <FormItem label="货物类型" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                      <Select {...getFieldProps('goodsType', {
+                        initialValue: formData.goodsType,
+                        rules: [{ required: true, message: '货物类型必选', type: 'number' }],
+                      })} disabled={readonly}
+                      >
+                      {
+                        GOODS_TYPES.map(gt =>
+                          <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                        )
+                      }
+                      </Select>
+                    </FormItem>
+                  </Col>
+                  <Col sm={12} style={{ paddingLeft: '8px' }}>
+                    <FormItem label="价格调整系数" {...formItemLayout}>
+                      <Input placeholder="不输入默认为1" {
+                        ...getFieldProps('adjustCoefficient', {
+                          rules: [{ required: false, type: 'number', transform: v => Number(v) }],
+                          initialValue: formData.adjustCoefficient,
+                        })} />
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={12}>
+                    <FormItem label="税率" {...formItemLayout}>
+                      <RadioGroup {...getFieldProps('taxrate.mode', { initialValue: formData.taxrate.mode })} >
+                        <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
+                        <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col sm={12} style={{ paddingLeft: '8px' }}>
+                    <FormItem label="税率值" {...formItemLayout}>
+                      <Input type="number" addonAfter="％" placeholder="请输入税率" {
+                        ...getFieldProps('taxrate.value', { initialValue: formData.taxrate.value })
+                        } />
+                    </FormItem>
+                  </Col>
+                </Row>
+                {transMode === 'ltl' &&
+                  <PricingLTL form={form} formItemLayout={formItemLayout} onChange={this.handlePriceChange}
+                    readonly={readonly}
+                  />
                 }
-                </Col>
-                <Col sm={6} style={{ paddingLeft: '8px' }}>
-                  <FormItem label="有效期起始" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                    <DatePicker style={{ width: '100%' }} {...getFieldProps('effectiveDate', {
-                      initialValue: formData.effectiveDate,
-                      rules: [{ required: true, message: '起始时间必填', type: 'date' }],
-                    })} disabledDate={this.isEffectiveDateDisabled}
-                    />
-                  </FormItem>
-                </Col>
-                <Col sm={6} style={{ paddingLeft: '8px' }}>
-                  <FormItem label="有效期截止" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                    <DatePicker style={{ width: '100%' }} {...getFieldProps('expiryDate', {
-                      initialValue: formData.expiryDate,
-                      rules: [{ required: true, message: '截止时间必填', type: 'date' }],
-                    })} disabledDate={this.isExpiryDateDisabled}
-                    />
-                  </FormItem>
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={6}>
-                  <FormItem label="运输模式" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                    <Select onSelect={this.handleModeSelect} {...getFieldProps('transModeCode', {
-                      initialValue: isNaN(formData.transModeCode) ? undefined :
-                        parseInt(formData.transModeCode, 10),
-                      rules: [{ required: true, type: 'number', message: '运输模式必选' }],
-                    })} disabled={readonly}
-                    >
-                    {
-                      formParams.transModes.map(tm =>
-                        <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
-                      )
-                    }
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col sm={6} style={{ paddingLeft: '8px' }}>
-                  <FormItem label="货物类型" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                    <Select {...getFieldProps('goodsType', {
-                      initialValue: formData.goodsType,
-                      rules: [{ required: true, message: '货物类型必选', type: 'number' }],
-                    })} disabled={readonly}
-                    >
-                    {
-                      GOODS_TYPES.map(gt =>
-                        <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                      )
-                    }
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col sm={12} style={{ paddingLeft: '8px' }}>
-                  <FormItem label="价格调整系数" {...formItemLayout}>
-                    <Input placeholder="不输入默认为1" {
-                      ...getFieldProps('adjustCoefficient', {
-                        rules: [{ required: false, type: 'number', transform: v => Number(v) }],
-                        initialValue: formData.adjustCoefficient,
-                      })} />
-                  </FormItem>
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={12}>
-                  <FormItem label="税率" {...formItemLayout}>
-                    <RadioGroup {...getFieldProps('taxrate.mode', { initialValue: formData.taxrate.mode })} >
-                      <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
-                      <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col sm={12} style={{ paddingLeft: '8px' }}>
-                  <FormItem label="税率值" {...formItemLayout}>
-                    <Input type="number" addonAfter="％" placeholder="请输入税率" {
-                      ...getFieldProps('taxrate.value', { initialValue: formData.taxrate.value })
-                      } />
-                  </FormItem>
-                </Col>
-              </Row>
-              {transMode === 'ltl' &&
-                <PricingLTL form={form} formItemLayout={formItemLayout} onChange={this.handlePriceChange}
-                  readonly={readonly}
-                />
-              }
-              {transMode === 'ftl' &&
-                <PricingFTL formItemLayout={formItemLayout} onChange={this.handlePriceChange}
-                  readonly={readonly}
-                />
-              }
-              {transMode === 'ctn' &&
-                <PricingCTN formItemLayout={formItemLayout} onChange={this.handlePriceChange}
-                  readonly={readonly}
-                />
-              }
-            </Card>
-            <Col style={{ padding: '16px' }}>
-              <Button size="large" type="primary"
-                loading={submitting} onClick={this.handleSubmit}
-              >
-              保存
-              </Button>
-            </Col>
-          </div>
-        </Form>
-      </ContentWrapper>
+                {transMode === 'ftl' &&
+                  <PricingFTL formItemLayout={formItemLayout} onChange={this.handlePriceChange}
+                    readonly={readonly}
+                  />
+                }
+                {transMode === 'ctn' &&
+                  <PricingCTN formItemLayout={formItemLayout} onChange={this.handlePriceChange}
+                    readonly={readonly}
+                  />
+                }
+              </Card>
+              <Col style={{ padding: '16px' }}>
+                <Button size="large" type="primary"
+                  loading={submitting} onClick={this.handleSubmit}
+                >
+                保存
+                </Button>
+              </Col>
+          </Form>
+        </div>
+      </div>
       );
   }
 }

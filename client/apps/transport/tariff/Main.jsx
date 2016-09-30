@@ -39,7 +39,7 @@ export default class Main extends Component {
       <Menu mode="horizontal" selectedKeys={[selectedKey]} onClick={this.handleMenuItemClick}>
         <MenuItem key="0">协议概况</MenuItem>
         <MenuItem key="1">基础费率</MenuItem>
-        <MenuItem key="2">服务费税</MenuItem>
+        <MenuItem key="2">附加费用</MenuItem>
       </Menu>
     );
     if (type === 'create') {

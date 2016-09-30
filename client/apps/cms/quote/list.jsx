@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Tag } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -146,11 +147,11 @@ export default class QuoteList extends Component {
       },
     ];
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <span>{msg('quoteManage')}</span>
         </header>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
               <Button type="primary" onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
@@ -162,7 +163,7 @@ export default class QuoteList extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }
