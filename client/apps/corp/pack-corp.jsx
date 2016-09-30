@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import AmLeftSidebar from 'client/components/am-ant-leftbar';
@@ -19,13 +20,19 @@ const formatMsg = format(messages);
 export default class CorpPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    location: PropTypes.object.isRequired,
+    location: locationShape.isRequired,
     level: PropTypes.number.isRequired,
     privileges: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
   }
+  static childContextTypes = {
+    location: locationShape.isRequired,
+  }
   state = {
     linkMenus: [],
+  }
+  getChildContext() {
+    return { location: this.props.location };
   }
   componentWillMount() {
     const linkMenus = [];
