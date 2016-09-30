@@ -47,7 +47,9 @@ export default class ExpensePane extends React.Component {
       key: 'tax_fee',
       width: '16.7%',
       render: (o) => {
-        return o.toFixed(2);
+        if (o) {
+          return o.toFixed(2);
+        }
       },
     }, {
       title: this.msg('totalFee'),
@@ -55,7 +57,9 @@ export default class ExpensePane extends React.Component {
       key: 'total_fee',
       width: '16.7%',
       render: (o) => {
-        return o.toFixed(2);
+        if (o) {
+          return o.toFixed(2);
+        }
       },
     }];
     const cushColumns = [{
@@ -70,7 +74,7 @@ export default class ExpensePane extends React.Component {
       width: '60%',
     }];
     const servDataSource = expenses.server_charges;
-    if (expenses.tot_sercharges) {
+    if (expenses.tot_sercharges.fee_name) {
       servDataSource.push(expenses.tot_sercharges);
     }
     const cushDataSource = expenses.cush_charges;

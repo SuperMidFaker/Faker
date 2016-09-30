@@ -9,15 +9,16 @@ const initialState = {
   expenses: {
     server_charges: [],
     cush_charges: [],
+    tot_sercharges: {},
   },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.EXP_PANE_LOAD:
-      return { ...state, expenses: initialState.expenses };
+      return { ...state, expenses: state.expenses };
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
-      return { ...state, expenses: action.result.data };
+      return { ...state, expenses: { ...state.expenses, ...action.result.data } };
     default:
       return state;
   }
