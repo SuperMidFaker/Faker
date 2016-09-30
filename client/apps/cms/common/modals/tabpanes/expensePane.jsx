@@ -41,11 +41,17 @@ export default class ExpensePane extends React.Component {
       dataIndex: 'tax_fee',
       key: 'tax_fee',
       width: '16.7%',
+      render: (o) => {
+        return o.toFixed(2);
+      },
     }, {
       title: '应收金额',
       dataIndex: 'total_fee',
       key: 'total_fee',
       width: '16.7%',
+      render: (o) => {
+        return o.toFixed(2);
+      },
     }];
     const cushColumns = [{
       title: '费用名称',
@@ -59,6 +65,9 @@ export default class ExpensePane extends React.Component {
       width: '60%',
     }];
     const servDataSource = expenses.server_charges;
+    if(expenses.tot_sercharges) {
+      servDataSource.push(expenses.tot_sercharges);
+    }
     const cushDataSource = expenses.cush_charges;
     return (
       <div className="pane-content tab-pane">
