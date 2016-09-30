@@ -121,29 +121,37 @@ export default class Transport extends React.Component {
     }
     this.setState({ linkMenus });
     if (this.props.children === null) {
-      // 首页跳转第一个有权限页面
-      const route = findForemostRoute(privileges, 'transport', [{
-        feat: 'dashboard',
-        route: 'dashboard',
-      }, {
-        feat: 'shipment',
-        route: 'shipment',
-      }, {
-        feat: 'dispatch',
-        route: 'dispatch',
-      }, {
-        feat: 'tracking',
-        route: 'tracking',
-      }, {
-        feat: 'resources',
-        route: 'resources',
-      }, {
-        feat: 'tariff',
-        route: 'tariff',
-      }]);
-      if (route) {
-        this.context.router.replace(`/transport/${route}`);
-      }
+      this.redirectInitialRoute(this.props.privileges);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.children === null && this.props.children !== nextProps.children) {
+      this.redirectInitialRoute(nextProps.privileges);
+    }
+  }
+  redirectInitialRoute(privileges) {
+    // 首页跳转第一个有权限页面
+    const route = findForemostRoute(privileges, 'transport', [{
+      feat: 'dashboard',
+      route: 'dashboard',
+    }, {
+      feat: 'shipment',
+      route: 'shipment',
+    }, {
+      feat: 'dispatch',
+      route: 'dispatch',
+    }, {
+      feat: 'tracking',
+      route: 'tracking',
+    }, {
+      feat: 'resources',
+      route: 'resources',
+    }, {
+      feat: 'tariff',
+      route: 'tariff',
+    }]);
+    if (route) {
+      this.context.router.replace(`/transport/${route}`);
     }
   }
   render() {

@@ -96,29 +96,37 @@ export default class Clearance extends React.Component {
     }
     this.setState({ linkMenus });
     if (this.props.children === null) {
-      // 首页跳转第一个有权限页面
-      const route = findForemostRoute(privileges, 'clearance', [{
-        feat: 'import',
-        route: 'import',
-      }, {
-        feat: 'export',
-        route: 'export',
-      }, {
-        feat: 'quote',
-        route: 'quote',
-      }, {
-        feat: 'expense',
-        route: 'expense',
-      }, {
-        feat: 'billing',
-        route: 'billing',
-      }, {
-        feat: 'settings',
-        route: 'settings',
-      }]);
-      if (route) {
-        this.context.router.replace(`/clearance/${route}`);
-      }
+      this.redirectInitialRoute(this.props.privileges);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.children === null && this.props.children !== nextProps.children) {
+      this.redirectInitialRoute(nextProps.privileges);
+    }
+  }
+  redirectInitialRoute(privileges) {
+    // 首页跳转第一个有权限页面
+    const route = findForemostRoute(privileges, 'clearance', [{
+      feat: 'import',
+      route: 'import',
+    }, {
+      feat: 'export',
+      route: 'export',
+    }, {
+      feat: 'quote',
+      route: 'quote',
+    }, {
+      feat: 'expense',
+      route: 'expense',
+    }, {
+      feat: 'billing',
+      route: 'billing',
+    }, {
+      feat: 'settings',
+      route: 'settings',
+    }]);
+    if (route) {
+      this.context.router.replace(`/clearance/${route}`);
     }
   }
   render() {

@@ -21,7 +21,7 @@ export default [
    ['get', '/transport*', renderWebPage],
    ['get', '/clearance*', renderWebPage],
    ['get', '/customer/*', renderWebPage],
+   ['get', '/scv*', renderWebPage],
    ['get', '/my*', renderWebPage],
    ['get', '/pub/*', renderWebPage],
-   ['get', '/scv/*', renderWebPage],
 ];
