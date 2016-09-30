@@ -267,7 +267,7 @@ export default class FeesTable extends Component {
     const { quoteData, action, editable } = this.props;
     const { editIndex, addedit } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
-    const dataSource = this.props.quoteData.fees;
+    const dataSource = quoteData.fees;
     const columns = [
       {
         title: msg('serialNo'),
