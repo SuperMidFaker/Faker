@@ -57,10 +57,22 @@ export default class InboundList extends React.Component {
     expandedKeys: [],
   }
   componentDidMount() {
-    setInterval(() => {
-      this.handleShipmentLoad();
+    this.inboundPoll = setInterval(() => {
+      const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;
+      this.props.loadInbounds({
+        tenantId,
+        filter: JSON.stringify(listFilter),
+        pageSize,
+        current,
+      });
     }, 20 * 1000);
   }
+  componentWillUnmount() {
+    if (this.inboundPoll) {
+      clearInterval(this.inboundPoll);
+    }
+  }
+  inboundPoll = undefined
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('shipmentNo'),
