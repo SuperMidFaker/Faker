@@ -40,8 +40,10 @@ import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSSettings from './cms/settings';
 import SCV from './scv/module-scv';
+import * as SCVDashboard from './scv/dashboard';
 import * as SCVInbound from './scv/inbounds';
 import CRM from './crm/module-crm';
+import * as CRMDashboard from './crm/dashboard';
 import * as CRMOrders from './crm/orders';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
@@ -221,11 +223,13 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
-            <IndexRoute component={SCVInbound.List} />
+            <IndexRedirect to="/scv/dashboard" />
+            <Route path="dashboard" component={SCVDashboard.Index} />
             <Route path="inbound" component={SCVInbound.List} />
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
-            <IndexRoute component={CRMOrders.List} />
+            <IndexRedirect to="/customer/dashboard" />
+            <Route path="dashboard" component={CRMDashboard.Index} />
             <Route path="orders" component={CRMOrders.List} />
           </Route>
         </Route>

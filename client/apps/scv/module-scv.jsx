@@ -30,7 +30,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: true,
       key: 'scv-2',
-      path: '/scv/order',
+      path: '/scv/orders',
       icon: 'icon-fontello-doc-text',
       text: formatMsg(intl, 'order'),
     });
@@ -59,7 +59,7 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'taxPayment'),
       }, {
         key: 'scv-5-1',
-        path: '/scv/payment/frightbill',
+        path: '/scv/payment/billing',
         text: formatMsg(intl, 'freightBillPayment'),
       }],
     });
@@ -70,11 +70,11 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'analytics'),
       sublinks: [{
         key: 'scv-6-0',
-        path: '/scv/analytic/kpi',
+        path: '/scv/analytics/kpi',
         text: formatMsg(intl, 'kpiAnalytic'),
       }, {
         key: 'scv-6-1',
-        path: '/scv/analytic/cost',
+        path: '/scv/analytics/cost',
         text: formatMsg(intl, 'costAnalytic'),
       }],
     });

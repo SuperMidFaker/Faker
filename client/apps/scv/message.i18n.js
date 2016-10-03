@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   dashboard: {
     id: 'scv.module.dashboard',
-    defaultMessage: '概况',
+    defaultMessage: '看板',
   },
   order: {
     id: 'scv.module.order',

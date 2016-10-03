@@ -37,9 +37,9 @@ export default class ModuleCRM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'customer-3',
-      path: '/customer/bills',
+      path: '/customer/billing',
       icon: 'zmdi zmdi-money-box',
-      text: formatMsg(intl, 'bills'),
+      text: formatMsg(intl, 'billing'),
     });
     linkMenus.push({
       single: true,
