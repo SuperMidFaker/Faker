@@ -226,7 +226,7 @@ export default(store, cookie) => {
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
             <IndexRoute component={CRMOrders.List} />
-            <Route path="orders" omponent={CRMOrders.List} />
+            <Route path="orders" component={CRMOrders.List} />
           </Route>
         </Route>
       </Route>
