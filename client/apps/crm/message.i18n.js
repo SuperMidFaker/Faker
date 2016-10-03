@@ -9,8 +9,8 @@ const messages = defineMessages({
     id: 'crm.module.orders',
     defaultMessage: '订单',
   },
-  bills: {
-    id: 'crm.module.bills',
+  billing: {
+    id: 'crm.module.billing',
     defaultMessage: '账单',
   },
   customers: {

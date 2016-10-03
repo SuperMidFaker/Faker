@@ -20,7 +20,7 @@ export default [
    ['get', '/corp*', renderWebPage],
    ['get', '/transport*', renderWebPage],
    ['get', '/clearance*', renderWebPage],
-   ['get', '/customer/*', renderWebPage],
+   ['get', '/customer*', renderWebPage],
    ['get', '/scv*', renderWebPage],
    ['get', '/my*', renderWebPage],
    ['get', '/pub/*', renderWebPage],
