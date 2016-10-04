@@ -1,6 +1,6 @@
 @import "~antd/lib/style/index.less";
 @import "~antd/lib/style/components.less";
-@import "../variable.less";
+@import "../../variable.less";
 body {
   background-color: #F0F0F0;
 }
@@ -101,118 +101,6 @@ img {
   }
 }
 
-.nav {
-  margin-bottom: 0px;
-  padding-left: 0px;
-  list-style: outside none none;
-  >li, >li a {
-    display: block;
-    position: relative;
-  }
-  .angle-down {
-    font-size: 27px;
-    vertical-align: middle;
-  }
-  .ant-menu-horizontal > .ant-menu-item-selected,
-  .ant-menu {
-    border-bottom: none;
-  }
-  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a {
-    display: block;
-    color: #fcfcfc;
-  }
-  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a:hover {
-    color: #fff;
-  }
-  .ant-menu-item, .ant-menu-submenu-title {
-    padding: 0 12px;
-  }
-  .ant-menu-item, 
-  .ant-menu-submenu-title  {
-    .icon {
-      font-size: 24px;
-      vertical-align: middle;
-      line-height: 18px;
-    }
-  }
-  .ant-menu-sub {
-    width: 100px;
-  }
-}
-.navbar-nav {
-  margin: 8px -15px;
-  float: left;
-  margin: 0px;
-  >li {
-    float: left;
-  }
-}
-.navbar {
-  position: relative;
-  min-height: @am-header-height;
-  margin-bottom: 18px;
-  border: 1px solid transparent;
-  border-radius: 0px;
-  &.module-corp {
-    background-color:#546E7A;
-  }
-  &.module-clearance {
-    background-color:#00897B;
-  }
-  &.module-customer {
-    background-color:#43A047;
-  }
-  &.module-transport {
-    background-color:#1E88E5;
-  }
-  &.module-scv {
-    background-color:#3949AB;
-  }
-  .ant-menu {
-    color: #fcfcfc;
-    background: transparent;
-  }
-  .ant-menu-horizontal .ant-menu-item-selected > a, 
-  .ant-menu-horizontal .ant-menu-item-selected > a:hover {
-    color: #fff;
-  }
-  .ant-menu-horizontal > .ant-menu-item:hover,
-  .ant-menu-horizontal > .ant-menu-item-selected,
-  .ant-menu-horizontal > .ant-menu-submenu:hover {
-    border-bottom: 2px solid #fff;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.1);
-  }
-  .ant-menu-horizontal > .ant-menu-item > a, .ant-menu-horizontal > .ant-menu-submenu > a {
-    color: #fcfcfc;
-  }
-  .ant-menu-submenu-horizontal > .ant-menu-sub {
-    background: #fff;
-    .ant-menu-horizontal .ant-menu-item-selected > a {
-      color: #666;
-    }
-  }
-}
-.navbar-right {
-  float: right !important;
-  .ant-menu-horizontal > .ant-menu-item-selected {
-    border-bottom: none;
-    background: transparent;
-  }
-  .ant-menu-horizontal > .ant-menu-item{
-    margin-right: 8px;
-  }
-  .ant-menu-horizontal > .ant-menu-submenu {
-    margin-right: 24px;
-  }
-  .ant-menu-horizontal .ant-menu-item-selected > a, 
-  .ant-menu-horizontal .ant-menu-item-selected > a:hover {
-    color: #666;
-  }
-  .ant-menu-vertical > .ant-menu-item {
-    font-size: 14px;
-  }
-}
 // 不显示select mirror input
 .@{select-prefix-cls} {
   &-search--inline {
@@ -223,13 +111,6 @@ img {
 }
 .collapsing, .dropdown {
   position: relative;
-}
-.navbar-brand {
-  float: left;
-  padding: 16px 15px;
-  font-size: 15px;
-  line-height: 18px;
-  height: 48px;
 }
 .btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
   content: " ";
@@ -242,15 +123,7 @@ img {
 .btn-group-vertical>.btn-group:after, .btn-toolbar:after, .clearfix:after, .container:after, .dl-horizontal dd:after, .dropdown-menu>li>a, .form-horizontal .form-group:after, .fuelux .wizard:after, .modal-footer:after, .nav:after, .navbar-header:after, .navbar:after, .pager:after, .panel-body:after, .row:after {
   clear: both;
 }
-.navbar-fixed-top {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 1000;
-  border-radius: 0px;
 
-}
 
 .am-top-header {
   background-color:@am-theme-color;

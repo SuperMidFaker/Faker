@@ -120,9 +120,8 @@ export default(store, cookie) => {
           <Route path="messages" component={MessageList} />
         </Route>
         <Route path="corp" component={Corp}>
-          <Route path="overview">
-            <IndexRoute component={CorpOverview} />
-          </Route>
+          <IndexRedirect to="/corp/overview" />
+          <Route path="overview" component={CorpOverview} />
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={Organization.Wrapper}>
             <IndexRoute component={Organization.List} />

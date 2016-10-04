@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
-import withPrivilege from 'client/common/decorators/withPrivilege';
-import { format } from 'client/common/i18n/helpers';
-import { Card } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { Card, Row, Col } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import messages from '../message.i18n';
+import connectNav from 'client/common/decorators/connect-nav';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 
@@ -14,25 +13,57 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-  }))
+  }),
+)
 @connectNav({
   depth: 2,
   moduleName: 'corp',
 })
-@withPrivilege({ module: 'corp', feature: 'overview' })
-export default class Overview extends React.Component {
+export default class CorpOverview extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
+  }
+  msg = key => formatMsg(this.props.intl, key);
 
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
-
+  handleRadioChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+  }
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <span>{this.msg('corpOverview')}</span>
+          <div className="tools">
+          </div>
+          <span>{this.msg('overviewTitle')}</span>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body" style={{ padding: 16 }} delay={500}>
-            <Card></Card>
+          <div className="page-body card-wrapper">
+            <Row gutter={16}>
+              <Col span={16}>
+                <Card title="Order">
+                  hello
+                </Card>
+                <Card title="Shipment">
+                  hello
+                </Card>
+                <Card title="Payment">
+                  hello
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card title="Alerts" style={{ height: '100%' }}>
+                  hello
+                </Card>
+              </Col>
+              <Col span={24}>
+                <Card title="Statistics">
+                    hello
+                </Card>
+              </Col>
+            </Row>
           </div>
         </div>
       </QueueAnim>

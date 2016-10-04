@@ -20,7 +20,7 @@ const formatMsg = format(messages);
   depth: 2,
   moduleName: 'scv',
 })
-export default class ShipmentOrderList extends React.Component {
+export default class PaymentsTaxList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

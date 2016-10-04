@@ -9,10 +9,10 @@ import MessagePrompt from './messagePrompt';
 import ModuleMenu from './module-menu';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import './am-navbar.less';
 
 const formatMsg = format(messages);
 const MenuItem = Menu.Item;
-const SubMenu = Menu.SubMenu;
 const MenuDivider = Menu.Divider;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -70,11 +70,34 @@ export default class AmNavBar extends React.Component {
     const { navTitle, notReadMessagesNum } = this.props;
     const { intl, avatar, locale } = this.props;
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
-    const subTitle = (
-      <span>
-        <img className="navbar-avatar" src={avatar || defaultAvatar} alt="avatar" />
-        <i className="angle-down s7-angle-down" />
-      </span>
+    const userPopoverContent = (
+            <Menu>
+              <MenuItem>
+                <NavLink to="/my/profile">
+                  <i className="zmdi zmdi-account-box zmdi-hc-fw" />
+                  <span>{formatMsg(intl, 'userSetting')}</span>
+                </NavLink>
+              </MenuItem>
+              <MenuItem>
+                <a role="button" onClick={this.handleLanguageSetting}>
+                  <i className="zmdi zmdi-globe zmdi-hc-fw" />
+                  <span>{formatMsg(intl, 'userLanguage')}</span>
+                </a>
+              </MenuItem>
+              <MenuItem>
+                <NavLink to="/my/password">
+                  <i className="zmdi zmdi-lock zmdi-hc-fw" />
+                  <span>{formatMsg(intl, 'pwdSetting')}</span>
+                </NavLink>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem>
+                <a role="button" onClick={this.handleLogout}>
+                  <i className="zmdi zmdi-sign-in zmdi-hc-fw" />
+                  <span>{formatMsg(intl, 'userLogout')}</span>
+                </a>
+              </MenuItem>
+            </Menu>
     );
 
     let moduleName = navTitle.moduleName;
@@ -109,47 +132,33 @@ export default class AmNavBar extends React.Component {
         <div className="nav navbar-right">
           <Menu mode="horizontal">
             <MenuItem>
-              <Popover content="{content}" title="Title" placement="bottom" trigger="hover"
+              <Popover content="{content}" title="Title" placement="bottom" trigger="click"
                 onVisibleChange={this.handleVisibleChange}
               >
                 <div><Badge count={notReadMessagesNum} overflowCount={99}><i className="icon s7-bell" /></Badge></div>
               </Popover>
             </MenuItem>
             <MenuItem>
-              <Popover content="{content}" title="Title" placement="bottom" trigger="hover"
+              <Popover content="{content}" title="Title" placement="bottom" trigger="click"
                 onVisibleChange={this.handleVisibleChange}
               >
                 <div><i className="icon s7-help1" /></div>
               </Popover>
             </MenuItem>
-            <SubMenu title={subTitle}>
-              <MenuItem>
-                <NavLink to="/my/profile">
-                  <i className="zmdi zmdi-account-box zmdi-hc-fw" />
-                  <span>{formatMsg(intl, 'userSetting')}</span>
-                </NavLink>
-              </MenuItem>
-              <MenuItem>
-                <a role="button" onClick={this.handleLanguageSetting}>
-                  <i className="zmdi zmdi-globe zmdi-hc-fw" />
-                  <span>{formatMsg(intl, 'userLanguage')}</span>
-                </a>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to="/my/password">
-                  <i className="zmdi zmdi-lock zmdi-hc-fw" />
-                  <span>{formatMsg(intl, 'pwdSetting')}</span>
-                </NavLink>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem>
-                <a role="button" onClick={this.handleLogout}>
-                  <i className="zmdi zmdi-sign-in zmdi-hc-fw" />
-                  <span>{formatMsg(intl, 'userLogout')}</span>
-                </a>
-              </MenuItem>
-            </SubMenu>
+            <MenuItem>
+              <Popover content={userPopoverContent} placement="bottomRight" trigger="click"
+                onVisibleChange={this.handleVisibleChange}
+              >
+                <div>
+                  <img className="navbar-avatar" src={avatar || defaultAvatar} alt="avatar" />
+                  <i className="angle-down s7-angle-down" />
+                </div>
+              </Popover>
+            </MenuItem>
           </Menu>
+        </div>
+        <div className="navbar-search">
+          <input type="search" placeholder="Search" />
         </div>
         <MessagePrompt />
         <Modal visible={this.state.visible} footer={[]}
