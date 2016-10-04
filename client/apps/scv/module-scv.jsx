@@ -55,11 +55,11 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'payment'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/scv/payment/tax',
+        path: '/scv/payments/tax',
         text: formatMsg(intl, 'taxPayment'),
       }, {
         key: 'scv-5-1',
-        path: '/scv/payment/billing',
+        path: '/scv/payments/billing',
         text: formatMsg(intl, 'freightBillPayment'),
       }],
     });

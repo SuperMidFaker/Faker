@@ -147,9 +147,6 @@ img {
     float: left;
   }
 }
-.navbar-right {
-  float: right !important;
-}
 .navbar {
   position: relative;
   min-height: @am-header-height;
@@ -196,7 +193,26 @@ img {
     }
   }
 }
-
+.navbar-right {
+  float: right !important;
+  .ant-menu-horizontal > .ant-menu-item-selected {
+    border-bottom: none;
+    background: transparent;
+  }
+  .ant-menu-horizontal > .ant-menu-item{
+    margin-right: 8px;
+  }
+  .ant-menu-horizontal > .ant-menu-submenu {
+    margin-right: 24px;
+  }
+  .ant-menu-horizontal .ant-menu-item-selected > a, 
+  .ant-menu-horizontal .ant-menu-item-selected > a:hover {
+    color: #666;
+  }
+  .ant-menu-vertical > .ant-menu-item {
+    font-size: 14px;
+  }
+}
 // 不显示select mirror input
 .@{select-prefix-cls} {
   &-search--inline {

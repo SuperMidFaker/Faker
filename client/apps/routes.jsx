@@ -41,7 +41,14 @@ import * as CMSQuote from './cms/quote';
 import * as CMSSettings from './cms/settings';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
+import * as SCVOrders from './scv/orders';
 import * as SCVInbound from './scv/inbounds';
+import * as SCVOutbound from './scv/outbounds';
+import * as SCVPaymentsTax from './scv/payments/tax';
+import * as SCVPaymentsBilling from './scv/payments/billing';
+import * as SCVAnalyticsKpi from './scv/analytics/kpi';
+import * as SCVAnalyticsCost from './scv/analytics/cost';
+import * as SCVSettings from './scv/settings';
 import CRM from './crm/module-crm';
 import * as CRMDashboard from './crm/dashboard';
 import * as CRMOrders from './crm/orders';
@@ -225,7 +232,18 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
+            <Route path="orders" component={SCVOrders.List} />
             <Route path="inbound" component={SCVInbound.List} />
+            <Route path="outbound" component={SCVOutbound.List} />
+            <Route path="payments">
+              <Route path="tax" component={SCVPaymentsTax.List} />
+              <Route path="billing" component={SCVPaymentsBilling.List} />
+            </Route>
+            <Route path="analytics">
+              <Route path="kpi" component={SCVAnalyticsKpi.List} />
+              <Route path="cost" component={SCVAnalyticsCost.List} />
+            </Route>
+            <Route path="settings" component={SCVSettings.List} />
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
             <IndexRedirect to="/customer/dashboard" />
