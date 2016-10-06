@@ -71,10 +71,6 @@ export default class Expander extends Component {
       render: (o, record) =>
         `${record.container_size}/${record.container_height}`,
     }, {
-      title: this.msg('moveType'),
-      dataIndex: 'movement_type',
-      width: 100,
-    }, {
       title: this.msg('pickupQty'),
       dataIndex: 'pick_qty',
       width: 100,

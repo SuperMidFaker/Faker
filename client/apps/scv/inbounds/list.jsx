@@ -43,7 +43,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'scv',
 })
-export default class InboundList extends React.Component {
+export default class InboundShipmentsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

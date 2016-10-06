@@ -5,16 +5,16 @@ const messages = defineMessages({
     id: 'scv.module.dashboard',
     defaultMessage: '看板',
   },
-  order: {
-    id: 'scv.module.order',
+  orders: {
+    id: 'scv.module.orders',
     defaultMessage: '订单',
   },
-  inbound: {
-    id: 'scv.module.inbound',
+  inboundShipments: {
+    id: 'scv.module.shipments.inbound',
     defaultMessage: '进口追踪',
   },
-  outbound: {
-    id: 'scv.module.outbound',
+  outboundShipments: {
+    id: 'scv.module.shipments.outbound',
     defaultMessage: '出口追踪',
   },
   payment: {
@@ -22,23 +22,23 @@ const messages = defineMessages({
     defaultMessage: '结算中心',
   },
   taxPayment: {
-    id: 'scv.module.taxPayment',
-    defaultMessage: '税费',
+    id: 'scv.module.payment.tax',
+    defaultMessage: '税费支付',
   },
-  freightBillPayment: {
-    id: 'scv.module.payment.freightBill',
-    defaultMessage: '账单',
+  billingPayment: {
+    id: 'scv.module.payment.billing',
+    defaultMessage: '账单支付',
   },
   analytics: {
     id: 'scv.module.analytics',
-    defaultMessage: '统计分析',
+    defaultMessage: '统计',
   },
-  kpiAnalytic: {
-    id: 'scv.module.analytic.kpi',
-    defaultMessage: 'KPI',
+  kpiAnalytics: {
+    id: 'scv.module.analytics.kpi',
+    defaultMessage: '绩效分析',
   },
-  costAnalytic: {
-    id: 'scv.module.analytic.cost',
+  costAnalytics: {
+    id: 'scv.module.analytics.cost',
     defaultMessage: '成本分析',
   },
   settings: {

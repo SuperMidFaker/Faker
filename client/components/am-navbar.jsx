@@ -1,34 +1,108 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Badge, Tooltip } from 'antd';
+import { Menu, Badge, Radio, Modal, Popover, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
-import AmUserNav from './am-user-nav';
-import MessagePrompt from './messagePrompt';
+import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
+import { logout } from 'common/reducers/account';
+import NotificationPopover from './notification-popover';
+import HelpcenterPopover from './helpcenter-popover';
 import ModuleMenu from './module-menu';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
+import './am-navbar.less';
 
+const formatMsg = format(messages);
 const MenuItem = Menu.Item;
+const MenuDivider = Menu.Divider;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
   state => ({
     navTitle: state.navbar.navTitle,
     notReadMessagesNum: state.corps.notReadMessagesNum,
+    avatar: state.account.profile.avatar,
+    loginId: state.account.loginId,
+    locale: state.intl.locale,
   }),
+  { logout, loadTranslation, changeUserLocale }
 )
 export default class AmNavBar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     navTitle: PropTypes.object.isRequired,
+    avatar: PropTypes.string,
+    loginId: PropTypes.number.isRequired,
+    locale: PropTypes.oneOf(['en', 'zh']),
+    changeUserLocale: PropTypes.func.isRequired,
+    loadTranslation: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    visible: false,
+  }
+  handleLanguageSetting = () => {
+    this.setState({ visible: true });
+  }
+  handleCancel = () => {
+    this.setState({ visible: false });
+  }
+  handleLocaleChange = (ev) => {
+    this.props.loadTranslation(ev.target.value);
+    this.props.changeUserLocale(this.props.loginId, ev.target.value);
+    this.setState({ visible: false });
+  }
+  handleLogout = () => {
+    this.props.logout().then((result) => {
+      if (!result.error) {
+        window.location.href = '/login';
+      }
+    });
   }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
   render() {
     const { navTitle, notReadMessagesNum } = this.props;
+    const { intl, avatar, locale } = this.props;
+    const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
+    const userPopoverContent = (
+            <Menu>
+              <MenuItem>
+                <NavLink to="/my/profile">
+                  <Icon type="user" />
+                  <span>{formatMsg(intl, 'userSetting')}</span>
+                </NavLink>
+              </MenuItem>
+              <MenuItem>
+                <a role="button" onClick={this.handleLanguageSetting}>
+                  <i className="zmdi zmdi-globe zmdi-hc-fw" />
+                  <span>{formatMsg(intl, 'userLanguage')}</span>
+                </a>
+              </MenuItem>
+              <MenuItem>
+                <NavLink to="/my/password">
+                  <Icon type="lock" />
+                  <span>{formatMsg(intl, 'pwdSetting')}</span>
+                </NavLink>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem>
+                <a role="button" onClick={this.handleLogout}>
+                  <Icon type="logout" />
+                  <span>{formatMsg(intl, 'userLogout')}</span>
+                </a>
+              </MenuItem>
+            </Menu>
+    );
+    const notificationContent = (<NotificationPopover />);
+    const helpcenterContent = (<HelpcenterPopover />);
+
     let moduleName = navTitle.moduleName;
     let amTitleNav = null;
     let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
@@ -52,34 +126,53 @@ export default class AmNavBar extends React.Component {
     }
     return (
       <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
-          <div className="navbar-header">
-            {brandNav}
+        <div className="navbar-header">
+          {brandNav}
+        </div>
+        <div className="navbar-title">
+          {amTitleNav}
+        </div>
+        <div className="nav navbar-right">
+          <Menu mode="horizontal">
+            <MenuItem>
+              <Popover content={notificationContent} placement="bottomLeft" trigger="click"
+                onVisibleChange={this.handleVisibleChange}
+              >
+                <div><Badge count={notReadMessagesNum} overflowCount={99}><i className="icon s7-bell" /></Badge></div>
+              </Popover>
+            </MenuItem>
+            <MenuItem>
+              <Popover content={helpcenterContent} placement="bottomRight" trigger="click"
+                onVisibleChange={this.handleVisibleChange}
+              >
+                <div><i className="icon s7-help1" /></div>
+              </Popover>
+            </MenuItem>
+            <MenuItem>
+              <Popover content={userPopoverContent} placement="bottomRight" trigger="click"
+                onVisibleChange={this.handleVisibleChange}
+              >
+                <div>
+                  <img className="navbar-avatar" src={avatar || defaultAvatar} alt="avatar" />
+                  <i className="angle-down s7-angle-down" />
+                </div>
+              </Popover>
+            </MenuItem>
+          </Menu>
+        </div>
+        <div className="navbar-search">
+          <input type="search" placeholder="Search" />
+        </div>
+        <Modal visible={this.state.visible} footer={[]}
+          title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
+              <RadioButton value="zh">简体中文</RadioButton>
+              <RadioButton value="en">English</RadioButton>
+            </RadioGroup>
           </div>
-            <div className="navbar-title">
-              {amTitleNav}
-            </div>
-            <div className="nav navbar-right">
-              <AmUserNav />
-            </div>
-            <div className="nav navbar-right">
-              <Menu mode="horizontal">
-                <MenuItem key="messages">
-                  <Badge count={notReadMessagesNum} overflowCount={99}>
-                    <NavLink to="/my/messages">
-                    <span className="icon s7-bell" />
-                    </NavLink>
-                  </Badge>
-                </MenuItem>
-                <MenuItem key="helpdesk">
-                  <Tooltip placement="bottom" title="帮助中心">
-                    <a rel="noopener noreferrer" href="https://welogix.kf5.com/hc/" target="_blank">
-                      <span className="icon s7-help1" />
-                    </a>
-                  </Tooltip>
-                </MenuItem>
-              </Menu>
-            </div>
-        <MessagePrompt />
+        </Modal>
       </nav>);
   }
 }

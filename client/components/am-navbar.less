@@ -1,0 +1,220 @@
+@import "../variable.less";
+.nav {
+  margin-bottom: 0px;
+  padding-left: 0px;
+  list-style: outside none none;
+  >li, >li a {
+    display: block;
+    position: relative;
+  }
+  .angle-down {
+    font-size: 27px;
+    vertical-align: middle;
+  }
+  .ant-menu-horizontal > .ant-menu-item-selected,
+  .ant-menu {
+    border-bottom: none;
+  }
+  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a {
+    display: block;
+    color: #fcfcfc;
+  }
+  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a:hover {
+    color: #fff;
+  }
+  .ant-menu-item, .ant-menu-submenu-title {
+    padding: 0 12px;
+  }
+  .ant-menu-item, 
+  .ant-menu-submenu-title  {
+    .icon {
+      font-size: 24px;
+      vertical-align: middle;
+      line-height: 18px;
+    }
+  }
+  .ant-menu-sub {
+    width: 100px;
+  }
+}
+.navbar-nav {
+  margin: 8px -15px;
+  float: left;
+  margin: 0px;
+  >li {
+    float: left;
+  }
+}
+.navbar {
+  position: relative;
+  min-height: @am-header-height;
+  margin-bottom: 18px;
+  border: 1px solid transparent;
+  border-radius: 0px;
+  &.module-corp {
+    background-color:#546E7A;
+  }
+  &.module-clearance {
+    background-color:#00897B;
+  }
+  &.module-customer {
+    background-color:#43A047;
+  }
+  &.module-transport {
+    background-color:#1E88E5;
+  }
+  &.module-scv {
+    background-color:#3949AB;
+  }
+  .ant-menu {
+    color: #fcfcfc;
+    background: transparent;
+  }
+  .ant-menu-horizontal .ant-menu-item-selected > a, 
+  .ant-menu-horizontal .ant-menu-item-selected > a:hover {
+    color: #fff;
+  }
+  .ant-menu-horizontal > .ant-menu-item:hover,
+  .ant-menu-horizontal > .ant-menu-item-selected,
+  .ant-menu-horizontal > .ant-menu-submenu:hover {
+    border-bottom: 2px solid #fff;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .ant-menu-horizontal > .ant-menu-item > a, .ant-menu-horizontal > .ant-menu-submenu > a {
+    color: #fcfcfc;
+  }
+  .ant-menu-submenu-horizontal > .ant-menu-sub {
+    background: #fff;
+    .ant-menu-horizontal .ant-menu-item-selected > a {
+      color: #666;
+    }
+  }
+}
+
+.navbar-brand {
+  float: left;
+  padding: 16px 15px;
+  font-size: 15px;
+  line-height: 18px;
+  height: 48px;
+}
+.navbar-toggle {
+  border-radius:0;
+  position:absolute;
+  left:0;
+  top:0;
+  margin:0;
+  font-size: 30px;
+  color: #fcfcfc;
+  text-align:center;
+  padding:0 16px;
+  border-width:0;
+  line-height:48px;
+  width: @am-leftbar-width;
+  @media (max-width:767px) {
+    width: 60px;
+    display:block;
+  }
+}
+.navbar-title {
+  float: left;
+  line-height: @am-header-height;
+  color:#373737;
+  font-size:16px;
+  padding:0 18px;
+  outline:0;
+  span {
+    font-size: 16px;
+    line-height: 44px;
+    vertical-align: middle;
+  }
+  a {
+    color:#373737;
+    padding: 0;
+    >i {
+      width: 30px;
+      font-size: 24px;
+      line-height: 44px;
+      vertical-align: middle;
+    }
+  }
+  @media (max-width:767px) {
+    display: none;
+  }
+}
+
+.navbar-search {
+  float: right !important;
+  padding: 7px 16px;
+  input[type=search] {
+    width: 100px;
+    padding: 6px 7px;
+    height: 32px;
+    color: #ccc;
+    background: rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    box-shadow: inset 0px 1px 0 rgba(0, 0, 0, .1);
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    float: right;
+    -webkit-transition: all ease-in-out .3s;
+  }
+  input[type=search]:focus {
+    width: 165px; 
+    outline: none;  
+    background: white;
+    box-shadow: none;
+    border-bottom-color: transparent;
+    color: #666;
+  }
+  @media (max-width:767px) {
+    display: none;
+  }
+}
+.navbar-right {
+  float: right !important;
+  .ant-menu-horizontal > .ant-menu-item-selected {
+    border-bottom: none;
+    background: transparent;
+  }
+  .ant-menu-horizontal > .ant-menu-item{
+    margin-right: 8px;
+  }
+  .ant-menu-horizontal > .ant-menu-submenu {
+    margin-right: 24px;
+  }
+  .ant-menu-horizontal .ant-menu-item-selected > a, 
+  .ant-menu-horizontal .ant-menu-item-selected > a:hover {
+    color: #666;
+  }
+}
+.navbar-avatar {
+  max-width:32px;
+  max-height:32px;
+  border-radius:50%;
+}
+.navbar-fixed-top {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 1000;
+  border-radius: 0px;
+
+}
+
+.ant-popover-inner-content {
+  padding: 2px 2px;
+  .ant-menu-vertical > .ant-menu-item {
+    font-size: 14px;
+  }
+  .ant-menu-item-selected > a {
+    color: #666;
+  }
+  .ant-menu-item .zmdi {
+    width: 14px;
+    margin-right: 8px;
+  }
+}

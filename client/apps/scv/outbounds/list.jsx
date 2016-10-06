@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col } from 'antd';
+import { Button } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -17,9 +18,9 @@ const formatMsg = format(messages);
 )
 @connectNav({
   depth: 2,
-  moduleName: 'corp',
+  moduleName: 'scv',
 })
-export default class CorpOverview extends React.Component {
+export default class OutboundShipmentsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -36,34 +37,19 @@ export default class CorpOverview extends React.Component {
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
           <div className="tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span>{this.msg('overviewTitle')}</span>
+          <span>{this.msg('outboundShipments')}</span>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body card-wrapper">
-            <Row gutter={16}>
-              <Col span={16}>
-                <Card title="Order">
-                  hello
-                </Card>
-                <Card title="Shipment">
-                  hello
-                </Card>
-                <Card title="Payment">
-                  hello
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card title="Alerts" style={{ height: '100%' }}>
-                  hello
-                </Card>
-              </Col>
-              <Col span={24}>
-                <Card title="Statistics">
-                    hello
-                </Card>
-              </Col>
-            </Row>
+          <div className="page-body">
+            <div className="panel-header">
+              <Button type="primary" icon="plus-circle-o">
+              {this.msg('importShipments')}
+              </Button>
+            </div>
+            <div className="panel-body table-panel expandable">
+            </div>
           </div>
         </div>
       </QueueAnim>

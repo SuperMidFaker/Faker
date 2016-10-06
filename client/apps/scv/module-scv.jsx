@@ -24,7 +24,7 @@ export default class ModuleSCV extends React.Component {
       single: true,
       key: 'scv-1',
       path: '/scv/dashboard',
-      icon: 'icon-fontello-gauge',
+      icon: 'icon-fontello-gauge-1',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
@@ -32,21 +32,21 @@ export default class ModuleSCV extends React.Component {
       key: 'scv-2',
       path: '/scv/orders',
       icon: 'icon-fontello-doc-text',
-      text: formatMsg(intl, 'order'),
+      text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
       single: true,
       key: 'scv-3',
       path: '/scv/inbound',
       icon: 'icon-ikons-login',
-      text: formatMsg(intl, 'inbound'),
+      text: formatMsg(intl, 'inboundShipments'),
     });
     linkMenus.push({
       single: true,
       key: 'scv-4',
       path: '/scv/outbound',
       icon: 'icon-ikons-logout',
-      text: formatMsg(intl, 'outbound'),
+      text: formatMsg(intl, 'outboundShipments'),
     });
     linkMenus.push({
       single: false,
@@ -55,12 +55,12 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'payment'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/scv/payment/tax',
+        path: '/scv/payments/tax',
         text: formatMsg(intl, 'taxPayment'),
       }, {
         key: 'scv-5-1',
-        path: '/scv/payment/billing',
-        text: formatMsg(intl, 'freightBillPayment'),
+        path: '/scv/payments/billing',
+        text: formatMsg(intl, 'billingPayment'),
       }],
     });
     linkMenus.push({
@@ -71,11 +71,11 @@ export default class ModuleSCV extends React.Component {
       sublinks: [{
         key: 'scv-6-0',
         path: '/scv/analytics/kpi',
-        text: formatMsg(intl, 'kpiAnalytic'),
+        text: formatMsg(intl, 'kpiAnalytics'),
       }, {
         key: 'scv-6-1',
         path: '/scv/analytics/cost',
-        text: formatMsg(intl, 'costAnalytic'),
+        text: formatMsg(intl, 'costAnalytics'),
       }],
     });
     linkMenus.push({

@@ -12,7 +12,7 @@ const SubMenu = Menu.SubMenu;
 @injectIntl
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 export default class Settings extends Component {
   static propTypes = {
