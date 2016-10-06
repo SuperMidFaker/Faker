@@ -29,7 +29,6 @@ img {
 .ant-menu-item a {
   display: block;
 }
-
 .ant-cascader-picker-label {
   z-index: 1;
 }
@@ -150,84 +149,11 @@ img {
       background-position:center center;
       @media (max-width:767px) {
         display:none;
-      }
-      
-    }
-    .navbar-toggle {
-      border-radius:0;
-      position:absolute;
-      left:0;
-      top:0;
-      margin:0;
-      font-size: 30px;
-      color: #fcfcfc;
-      text-align:center;
-      padding:0 16px;
-      border-width:0;
-      line-height:48px;
-      width: @am-leftbar-width;
-      @media (max-width:767px) {
-        width: 60px;
-        display:block;
-        background: #3d3c3c;
-      }
-      .icon-bar {
-        display:inline-block;
-        background-color:transparent;
-        height:auto;
-        width:auto;
-        vertical-align:middle;
-        span {
-          display:block;
-          width:25px;
-          height:1px;
-          margin-top:6px;
-          background-color:#fff;
-          &:first-child {
-            margin-top:0;
-          }
-        }
-      }
+      } 
     }
   }
 }
-.navbar-title {
-  float: left;
-  line-height: @am-header-height;
-  color:#373737;
-  font-size:16px;
-  padding:0 18px;
-  outline:0;
-  span {
-    font-size: 16px;
-    line-height: 44px;
-    vertical-align: middle;
-  }
-  a {
-    color:#373737;
-    padding: 0;
-    >i {
-      width: 30px;
-      font-size: 24px;
-      line-height: 44px;
-      vertical-align: middle;
-    }
-  }
-  @media (max-width:767px) {
-    margin-left: 60px;
-  }
-}
-.navbar-avatar {
-  max-width:32px;
-  max-height:32px;
-  border-radius:50%;
-}
-.navbar-user-menu {
-  .ant-menu-submenu-horizontal > .ant-menu {
-    left: -50px;
-    width: 120px;
-  }
-}
+
 .am-nosidebar-left {
   .am-left-sidebar {
     display: none;
@@ -648,6 +574,24 @@ img {
   box-shadow: 0 -1px 3px rgba(0,0,0,0.15);
   transition: all ease 0.4s;
   padding: 8px 16px 8px;
+}
+.popover-header{
+  position: relative;
+  padding: 8px 16px;
+  .tools {
+    float: right;
+  }
+  > span {
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+}
+.popover-body {
+  padding: 8px 16px;
+}
+.popover-footer {
+  padding: 8px 16px;
 }
 .ant-advanced-search-form {
   padding: 16px 60px 16px 0px;

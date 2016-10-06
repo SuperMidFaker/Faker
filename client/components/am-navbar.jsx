@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Badge, Radio, Modal, Popover } from 'antd';
+import { Menu, Badge, Radio, Modal, Popover, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
 import { logout } from 'common/reducers/account';
-import MessagePrompt from './messagePrompt';
+import NotificationPopover from './notification-popover';
+import HelpcenterPopover from './helpcenter-popover';
 import ModuleMenu from './module-menu';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -74,7 +75,7 @@ export default class AmNavBar extends React.Component {
             <Menu>
               <MenuItem>
                 <NavLink to="/my/profile">
-                  <i className="zmdi zmdi-account-box zmdi-hc-fw" />
+                  <Icon type="user" />
                   <span>{formatMsg(intl, 'userSetting')}</span>
                 </NavLink>
               </MenuItem>
@@ -86,19 +87,21 @@ export default class AmNavBar extends React.Component {
               </MenuItem>
               <MenuItem>
                 <NavLink to="/my/password">
-                  <i className="zmdi zmdi-lock zmdi-hc-fw" />
+                  <Icon type="lock" />
                   <span>{formatMsg(intl, 'pwdSetting')}</span>
                 </NavLink>
               </MenuItem>
               <MenuDivider />
               <MenuItem>
                 <a role="button" onClick={this.handleLogout}>
-                  <i className="zmdi zmdi-sign-in zmdi-hc-fw" />
+                  <Icon type="logout" />
                   <span>{formatMsg(intl, 'userLogout')}</span>
                 </a>
               </MenuItem>
             </Menu>
     );
+    const notificationContent = (<NotificationPopover />);
+    const helpcenterContent = (<HelpcenterPopover />);
 
     let moduleName = navTitle.moduleName;
     let amTitleNav = null;
@@ -132,14 +135,14 @@ export default class AmNavBar extends React.Component {
         <div className="nav navbar-right">
           <Menu mode="horizontal">
             <MenuItem>
-              <Popover content="{content}" title="Title" placement="bottom" trigger="click"
+              <Popover content={notificationContent} placement="bottomLeft" trigger="click"
                 onVisibleChange={this.handleVisibleChange}
               >
                 <div><Badge count={notReadMessagesNum} overflowCount={99}><i className="icon s7-bell" /></Badge></div>
               </Popover>
             </MenuItem>
             <MenuItem>
-              <Popover content="{content}" title="Title" placement="bottom" trigger="click"
+              <Popover content={helpcenterContent} placement="bottomRight" trigger="click"
                 onVisibleChange={this.handleVisibleChange}
               >
                 <div><i className="icon s7-help1" /></div>
@@ -160,7 +163,6 @@ export default class AmNavBar extends React.Component {
         <div className="navbar-search">
           <input type="search" placeholder="Search" />
         </div>
-        <MessagePrompt />
         <Modal visible={this.state.visible} footer={[]}
           title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
         >

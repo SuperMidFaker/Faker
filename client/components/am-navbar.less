@@ -91,6 +91,7 @@
     }
   }
 }
+
 .navbar-brand {
   float: left;
   padding: 16px 15px;
@@ -98,6 +99,51 @@
   line-height: 18px;
   height: 48px;
 }
+.navbar-toggle {
+  border-radius:0;
+  position:absolute;
+  left:0;
+  top:0;
+  margin:0;
+  font-size: 30px;
+  color: #fcfcfc;
+  text-align:center;
+  padding:0 16px;
+  border-width:0;
+  line-height:48px;
+  width: @am-leftbar-width;
+  @media (max-width:767px) {
+    width: 60px;
+    display:block;
+  }
+}
+.navbar-title {
+  float: left;
+  line-height: @am-header-height;
+  color:#373737;
+  font-size:16px;
+  padding:0 18px;
+  outline:0;
+  span {
+    font-size: 16px;
+    line-height: 44px;
+    vertical-align: middle;
+  }
+  a {
+    color:#373737;
+    padding: 0;
+    >i {
+      width: 30px;
+      font-size: 24px;
+      line-height: 44px;
+      vertical-align: middle;
+    }
+  }
+  @media (max-width:767px) {
+    display: none;
+  }
+}
+
 .navbar-search {
   float: right !important;
   padding: 7px 16px;
@@ -114,16 +160,18 @@
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     float: right;
     -webkit-transition: all ease-in-out .3s;
-}
-
-input[type=search]:focus {
+  }
+  input[type=search]:focus {
     width: 165px; 
     outline: none;  
     background: white;
     box-shadow: none;
     border-bottom-color: transparent;
     color: #666;
-}
+  }
+  @media (max-width:767px) {
+    display: none;
+  }
 }
 .navbar-right {
   float: right !important;
@@ -141,11 +189,12 @@ input[type=search]:focus {
   .ant-menu-horizontal .ant-menu-item-selected > a:hover {
     color: #666;
   }
-  .ant-menu-vertical > .ant-menu-item {
-    font-size: 14px;
-  }
 }
-
+.navbar-avatar {
+  max-width:32px;
+  max-height:32px;
+  border-radius:50%;
+}
 .navbar-fixed-top {
   position: fixed;
   top: 0px;
@@ -155,6 +204,17 @@ input[type=search]:focus {
   border-radius: 0px;
 
 }
+
 .ant-popover-inner-content {
   padding: 2px 2px;
+  .ant-menu-vertical > .ant-menu-item {
+    font-size: 14px;
+  }
+  .ant-menu-item-selected > a {
+    color: #666;
+  }
+  .ant-menu-item .zmdi {
+    width: 14px;
+    margin-right: 8px;
+  }
 }

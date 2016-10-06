@@ -152,6 +152,26 @@ const messages = defineMessages({
     id: 'corp.messageList.detail',
     defaultMessage: '详情',
   },
+  notification: {
+    id: 'component.popover.notification',
+    defaultMessage: '通知提醒',
+  },
+  helpcenter: {
+    id: 'component.popover.helpcenter',
+    defaultMessage: '帮助中心',
+  },
+  online: {
+    id: 'component.popover.helpcenter.online',
+    defaultMessage: '在线客服',
+  },
+  feedback: {
+    id: 'component.popover.helpcenter.feedback',
+    defaultMessage: '意见反馈',
+  },
+  guide: {
+    id: 'component.popover.helpcenter.guide',
+    defaultMessage: '快速上手',
+  },
 });
 
 export default messages;
