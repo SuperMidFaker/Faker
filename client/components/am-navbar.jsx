@@ -67,6 +67,7 @@ export default class AmNavBar extends React.Component {
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
     const { navTitle, notReadMessagesNum } = this.props;
     const { intl, avatar, locale } = this.props;
@@ -161,7 +162,7 @@ export default class AmNavBar extends React.Component {
           </Menu>
         </div>
         <div className="navbar-search">
-          <input type="search" placeholder="Search" />
+          <input type="search" placeholder={this.msg('search')} />
         </div>
         <Modal visible={this.state.visible} footer={[]}
           title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
