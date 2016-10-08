@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Table } from 'antd';
+import { Card, Table, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -11,12 +11,26 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     expenses: state.cmsExpense.expenses,
+    delegation: state.cmsDelegation.previewer.delegation,
   })
 )
 export default class ExpensePane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     expenses: PropTypes.object.isRequired,
+    delegation: PropTypes.object.isRequired,
+  }
+  componentWillMount() {
+    if (this.props.delegation.sub_status === 3) {
+      message.info(formatMsg(this.props.intl, 'info'), 3);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.delegation !== this.props.delegation) {
+      if (nextProps.delegation.sub_status === 3) {
+        message.info(formatMsg(this.props.intl, 'info'), 3);
+      }
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {

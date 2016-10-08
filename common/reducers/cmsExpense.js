@@ -16,7 +16,7 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.EXP_PANE_LOAD:
-      return { ...state, expenses: state.expenses };
+      return { ...state, expenses: initialState.expenses };
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
       return { ...state, expenses: { ...state.expenses, ...action.result.data } };
     default:
@@ -35,4 +35,3 @@ export function loadPaneExp(delgNo) {
     },
   };
 }
-
