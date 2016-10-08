@@ -73,33 +73,33 @@ export default class AmNavBar extends React.Component {
     const { intl, avatar, locale } = this.props;
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     const userPopoverContent = (
-            <Menu>
-              <MenuItem>
-                <NavLink to="/my/profile">
-                  <Icon type="user" />
-                  <span>{formatMsg(intl, 'userSetting')}</span>
-                </NavLink>
-              </MenuItem>
-              <MenuItem>
-                <a role="button" onClick={this.handleLanguageSetting}>
-                  <i className="zmdi zmdi-globe zmdi-hc-fw" />
-                  <span>{formatMsg(intl, 'userLanguage')}</span>
-                </a>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to="/my/password">
-                  <Icon type="lock" />
-                  <span>{formatMsg(intl, 'pwdSetting')}</span>
-                </NavLink>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem>
-                <a role="button" onClick={this.handleLogout}>
-                  <Icon type="logout" />
-                  <span>{formatMsg(intl, 'userLogout')}</span>
-                </a>
-              </MenuItem>
-            </Menu>
+      <Menu>
+        <MenuItem>
+          <NavLink to="/my/profile">
+            <Icon type="user" />
+            <span>{formatMsg(intl, 'userSetting')}</span>
+          </NavLink>
+        </MenuItem>
+        <MenuItem>
+          <a role="button" onClick={this.handleLanguageSetting}>
+            <i className="zmdi zmdi-globe zmdi-hc-fw" />
+            <span>{formatMsg(intl, 'userLanguage')}</span>
+          </a>
+        </MenuItem>
+        <MenuItem>
+          <NavLink to="/my/password">
+            <Icon type="lock" />
+            <span>{formatMsg(intl, 'pwdSetting')}</span>
+          </NavLink>
+        </MenuItem>
+        <MenuDivider />
+        <MenuItem>
+          <a role="button" onClick={this.handleLogout}>
+            <Icon type="logout" />
+            <span>{formatMsg(intl, 'userLogout')}</span>
+          </a>
+        </MenuItem>
+      </Menu>
     );
     const notificationContent = (<NotificationPopover />);
     const helpcenterContent = (<HelpcenterPopover />);

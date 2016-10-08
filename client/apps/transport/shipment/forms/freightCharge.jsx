@@ -32,7 +32,7 @@ export default class FreightCharge extends React.Component {
   handleCompute = () => {
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
-      transport_mode_id,
+      transport_mode_id, transport_mode_code,
     } = this.props.formData;
     const { goods_type, package: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume } =
       this.props.formhoc.getFieldsValue([
@@ -49,7 +49,7 @@ export default class FreightCharge extends React.Component {
     const created = this.props.formData.created_date || Date.now();
     this.props.computeSaleCharge({
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_id, ctn,
+      goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
       tenant_id: this.props.tenantId, created_date: created,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
     }).then((result) => {
@@ -66,7 +66,7 @@ export default class FreightCharge extends React.Component {
           description: '价格协议中未找到对应路线的报价费率',
         });
       } else {
-        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量?
+        // todo 起步价运费公式? pickup未勾选列表中如何不显示? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
