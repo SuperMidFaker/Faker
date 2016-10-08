@@ -13,7 +13,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 }), { addVehicle, editVehicle, validateVehicle })
 @connectNav({
   depth: 3,
-  text: '车辆信息',
+  text: '车辆管理',
   muduleName: 'transport',
 })
 @Form.create()

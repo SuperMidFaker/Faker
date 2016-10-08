@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Button, Table } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
@@ -95,18 +96,23 @@ export default function VehicleList(props) {
     },
   ];
   return (
-    <div className="main-content">
-      <div className="page-body">
-        <div className="panel-header">
-          <PrivilegeCover module="transport" feature="resources" action="create">
-            <Button type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
-          </PrivilegeCover>
-        </div>
-        <div className="panel-body table-panel">
-          <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
+    <QueueAnim type={['bottom', 'up']}>
+      <header className="top-bar" key="header">
+        <span>车辆管理</span>
+      </header>
+      <div className="main-content" key="main">
+        <div className="page-body">
+          <div className="panel-header">
+            <PrivilegeCover module="transport" feature="resources" action="create">
+              <Button type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
+            </PrivilegeCover>
+          </div>
+          <div className="panel-body table-panel">
+            <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
+          </div>
         </div>
       </div>
-    </div>
+    </QueueAnim>
   );
 }
 

@@ -19,8 +19,7 @@ function fetchData({ dispatch, state, cookie }) {
   tenantId: state.account.tenantId,
 }), { addPartner, editPartner, changePartnerStatus, deletePartner })
 @connectNav({
-  depth: 3,
-  text: '承运商管理',
+  depth: 2,
   muduleName: 'transport',
 })
 export default class DriverListContainer extends Component {

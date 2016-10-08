@@ -53,14 +53,12 @@ const initialState = {
     create_time: null,
   },
   delgFiles: [],
-  delgBills: [
-    {
-      decl_way_code: '',
-      manual_no: '',
-      pack_count: null,
-      gross_wt: null,
-    },
-  ],
+  delgBills: [{
+    decl_way_code: '',
+    manual_no: '',
+    pack_count: null,
+    gross_wt: null,
+  }],
   submitting: false,
   delegateListFilter: {
     sortField: '',

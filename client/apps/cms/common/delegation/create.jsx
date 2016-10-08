@@ -26,7 +26,7 @@ const formatMsg = format(messages);
 )
 @connectNav({
   depth: 3,
-  text: '新建委托',
+  text: '进出口清关',
   moduleName: 'clearance',
 })
 @Form.create()

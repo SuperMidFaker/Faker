@@ -32,7 +32,7 @@ export default class ModuleLayout extends React.Component {
             const emod = DEFAULT_MODULES[mod];
             return (
               <Col span="8" key={`mod-${idx}`}>
-                <NavLink to={emod.url}>
+                <NavLink to={`${emod.url}/`}>
                   <div className={containerCls}>
                     <div className={`module-icon-bg ${emod.cls}`}>
                       <div className="module-icon">

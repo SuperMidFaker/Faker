@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Dropdown, Menu, Icon } from 'antd';
+import { Tabs, Dropdown, Menu, Icon, Progress } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
@@ -29,7 +30,7 @@ const DropdownButton = Dropdown.Button;
 )
 @connectNav({
   depth: 3,
-  text: props => props.params.billno,
+  text: '返回',
   moduleName: 'clearance',
   lifecycle: 'componentWillReceiveProps',
   until: true,
@@ -82,30 +83,36 @@ export default class EntryBillForm extends React.Component {
   render() {
     const { readonly, ietype, entries, activeKey } = this.props;
     return (
-      <div className="main-content">
-        <div className="page-body tabbed fixed-height">
-          <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={activeKey}
-            onChange={this.handleTabChange}
-          >
-            <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
-              <BillForm readonly={readonly} ietype={ietype} />
-            </TabPane>
-            {
-              entries.map((entry, idx) => (
-                <TabPane tab={
-                  <span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>
-                  } key={`entry${idx}`}
-                >
-                  <EntryForm readonly={readonly} ietype={ietype} entry={entry}
-                    totalCount={entries.length} index={idx}
-                  />
-                </TabPane>
-              ))
-            }
-          </Tabs>
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
+          <div className="tools" style={{ width: '20%' }}><Progress percent={30} /></div>
+          <span>清单编号 {this.props.params.billno}</span>
+        </header>
+        <div className="main-content">
+          <div className="page-body tabbed fixed-height">
+            <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={activeKey}
+              onChange={this.handleTabChange}
+            >
+              <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
+                <BillForm readonly={readonly} ietype={ietype} />
+              </TabPane>
+              {
+                entries.map((entry, idx) => (
+                  <TabPane tab={
+                    <span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>
+                    } key={`entry${idx}`}
+                  >
+                    <EntryForm readonly={readonly} ietype={ietype} entry={entry}
+                      totalCount={entries.length} index={idx}
+                    />
+                  </TabPane>
+                ))
+              }
+            </Tabs>
+          </div>
+          <MergeSplitModal />
         </div>
-        <MergeSplitModal />
-      </div>
+      </QueueAnim>
     );
   }
 }

@@ -40,6 +40,19 @@ import * as ExportDocs from './cms/export/docs';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSSettings from './cms/settings';
+import SCV from './scv/module-scv';
+import * as SCVDashboard from './scv/dashboard';
+import * as SCVOrders from './scv/orders';
+import * as SCVInbound from './scv/inbounds';
+import * as SCVOutbound from './scv/outbounds';
+import * as SCVPaymentsTax from './scv/payments/tax';
+import * as SCVPaymentsBilling from './scv/payments/billing';
+import * as SCVAnalyticsKpi from './scv/analytics/kpi';
+import * as SCVAnalyticsCost from './scv/analytics/cost';
+import * as SCVSettings from './scv/settings';
+import CRM from './crm/module-crm';
+import * as CRMDashboard from './crm/dashboard';
+import * as CRMOrders from './crm/orders';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -108,9 +121,8 @@ export default(store, cookie) => {
           <Route path="messages" component={MessageList} />
         </Route>
         <Route path="corp" component={Corp}>
-          <Route path="overview">
-            <IndexRoute component={CorpOverview} />
-          </Route>
+          <IndexRedirect to="/corp/overview" />
+          <Route path="overview" component={CorpOverview} />
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={Organization.Wrapper}>
             <IndexRoute component={Organization.List} />
@@ -229,6 +241,27 @@ export default(store, cookie) => {
             <Route path="settings">
               <IndexRoute component={CMSSettings.List} />
             </Route>
+          </Route>
+          <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
+            <IndexRedirect to="/scv/dashboard" />
+            <Route path="dashboard" component={SCVDashboard.Index} />
+            <Route path="orders" component={SCVOrders.List} />
+            <Route path="inbound" component={SCVInbound.List} />
+            <Route path="outbound" component={SCVOutbound.List} />
+            <Route path="payments">
+              <Route path="tax" component={SCVPaymentsTax.List} />
+              <Route path="billing" component={SCVPaymentsBilling.List} />
+            </Route>
+            <Route path="analytics">
+              <Route path="kpi" component={SCVAnalyticsKpi.List} />
+              <Route path="cost" component={SCVAnalyticsCost.List} />
+            </Route>
+            <Route path="settings" component={SCVSettings.List} />
+          </Route>
+          <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
+            <IndexRedirect to="/customer/dashboard" />
+            <Route path="dashboard" component={CRMDashboard.Index} />
+            <Route path="orders" component={CRMOrders.List} />
           </Route>
         </Route>
       </Route>

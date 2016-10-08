@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Table, Button, Radio, Popconfirm } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
@@ -89,25 +90,28 @@ export default function NodeList(props) {
     },
   ];
   return (
-    <div className="main-content">
-      <div className="page-body">
-        <div className="panel-header">
-          <div className="tools">
-            <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)}>
-              <RadioButton value={0}>发货地</RadioButton>
-              <RadioButton value={1}>收货地</RadioButton>
-              <RadioButton value={2}>中转地</RadioButton>
-            </RadioGroup>
+    <QueueAnim type={['bottom', 'up']}>
+      <header className="top-bar" key="header">
+        <span>地点管理</span>
+        <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)}>
+          <RadioButton value={0}>发货地</RadioButton>
+          <RadioButton value={1}>收货地</RadioButton>
+          <RadioButton value={2}>中转地</RadioButton>
+        </RadioGroup>
+      </header>
+      <div className="main-content" key="main">
+        <div className="page-body">
+          <div className="panel-header">
+            <PrivilegeCover module="transport" feature="resources" action="create">
+              <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+            </PrivilegeCover>
           </div>
-          <PrivilegeCover module="transport" feature="resources" action="create">
-            <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
-          </PrivilegeCover>
-        </div>
-        <div className="panel-body table-panel">
-          <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
+          <div className="panel-body table-panel">
+            <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
+          </div>
         </div>
       </div>
-    </div>
+    </QueueAnim>
   );
 }
 

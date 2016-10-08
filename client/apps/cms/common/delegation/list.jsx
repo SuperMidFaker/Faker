@@ -16,6 +16,7 @@ import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp } from 'common/reducers/cmsDelegation';
+import { loadPaneExp } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n.js';
@@ -29,7 +30,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect,
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -43,7 +43,8 @@ const RadioButton = Radio.Button;
     delegation: state.cmsDelegation.previewer.delegation,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
-    delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp }
+    delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
+    loadPaneExp }
 )
 @connectNav({
   depth: 2,
@@ -53,7 +54,6 @@ export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    aspect: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
@@ -71,6 +71,7 @@ export default class DelegationList extends Component {
     preStatus: PropTypes.string.isRequired,
     delegateTracking: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
+    loadPaneExp: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -125,10 +126,7 @@ export default class DelegationList extends Component {
     width: 120,
     render: (o, record) => {
       return (
-        <a onClick={() => this.props.showPreviewer({
-          delgNo: o,
-          tenantId: this.props.tenantId,
-        }, record.status)}>
+        <a onClick={() => this.handlePreview(o, record)}>
           {o}
         </a>);
     },
@@ -148,15 +146,6 @@ export default class DelegationList extends Component {
     dataIndex: 'invoice_no',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    /*
-    title: '外部编号',
-    width: 150,
-    render: (o, record) => (
-      this.props.aspect === TENANT_ASPECT.BO ? record.ref_delg_external_no
-      : record.ref_recv_external_no
-    ),
-  }, {
-    */
     title: this.msg('deliveryNo'),
     width: 180,
     dataIndex: 'bl_wb_no',
@@ -194,9 +183,9 @@ export default class DelegationList extends Component {
       } else if (record.status === 2) {
         return <Tag color="blue">{decl && decl.text}</Tag>;
       } else if (record.status === 3) {
-        if (record.sub_status === 0) {
-          return <Tag color="yellow">{decl && decl.text}</Tag>;
-        } else { return <Tag color="orange">{this.msg('declaredPart')}</Tag>; }
+        if (record.sub_status === 1) {
+          return <Tag color="orange">{this.msg('declaredPart')}</Tag>;
+        } else { return <Tag color="yellow">{decl && decl.text}</Tag>; }
       } else if (record.status === 4) {
         if (record.sub_status === 0) {
           return <Tag color="green">{decl && decl.text}</Tag>;
@@ -256,6 +245,13 @@ export default class DelegationList extends Component {
     remotes: this.props.delegationlist,
   })
 
+  handlePreview = (o, record) => {
+    this.props.showPreviewer({
+      delgNo: o,
+      tenantId: this.props.tenantId,
+    }, record.status);
+    this.props.loadPaneExp(o);
+  }
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
   }
@@ -356,7 +352,7 @@ export default class DelegationList extends Component {
   handleSubdelgsList = (record) => {
     return (
       <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
-        reloadDelgs={this.handleDelgListLoad}
+        reloadDelgs={this.handleDelgListLoad} delgStatus={record.status}
       />
     );
   }

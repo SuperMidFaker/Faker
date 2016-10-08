@@ -40,7 +40,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <![endif]-->
   ${trackJs}
 </head>
-<body class="vertical-scroll" style="min-height: 680px;">
+<body style="min-height: 680px;">
   <div id="mount" class="full-container">${content}</div>
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js" type="text/javascript"></script>

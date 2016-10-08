@@ -91,11 +91,15 @@ const messages = defineMessages({
   },
   moduleTransport: {
     id: 'component.module.transport',
-    defaultMessage: '国内运输',
+    defaultMessage: '运输管理',
   },
   moduleClearance: {
     id: 'component.module.clearance',
     defaultMessage: '清关管理',
+  },
+  moduleSCV: {
+    id: 'component.module.scv',
+    defaultMessage: '供应链可视',
   },
   moduleCorporation: {
     id: 'component.module.corporation',
@@ -119,7 +123,7 @@ const messages = defineMessages({
   },
   featCorpRole: {
     id: 'component.feature.corp.role',
-    defaultMessage: '角色设置',
+    defaultMessage: '角色权限',
   },
   featCorpPartners: {
     id: 'component.feature.corp.partners',

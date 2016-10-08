@@ -1,8 +1,7 @@
 @import "~antd/lib/style/index.less";
 @import "~antd/lib/style/components.less";
-@import "../variable.less";
+@import "../../variable.less";
 body {
-  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
   background-color: #F0F0F0;
 }
 ol, ul {
@@ -17,7 +16,6 @@ hr, img {
 img {
   vertical-align: middle;
 }
-
 .ant-menu-root {
   font-size: 14px;
 }
@@ -31,13 +29,12 @@ img {
 .ant-menu-item a {
   display: block;
 }
-
 .ant-cascader-picker-label {
   z-index: 1;
 }
 
-.zmdi-clearance:before {
-  content: '\f1cc';
+.zmdi-scv:before {
+  content: '\f171';
 }
 .zmdi-customer:before {
   content: '\f29c';
@@ -102,62 +99,6 @@ img {
     padding-top:@am-header-height;
   }
 }
-.nav {
-  margin-bottom: 0px;
-  padding-left: 0px;
-  list-style: outside none none;
-  >li, >li a {
-    display: block;
-    position: relative;
-  }
-  .angle-down {
-    font-size: 27px;
-    vertical-align: middle;
-  }
-  .ant-menu-horizontal > .ant-menu-item-selected,
-  .ant-menu {
-    border-bottom: none;
-  }
-  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a {
-    display: block;
-    color: #666;
-  }
-  .ant-menu-horizontal > .ant-menu-item > .ant-badge >a:hover {
-    color: #2db7f5;
-  }
-  .ant-menu-item, .ant-menu-submenu-title {
-    padding: 0 12px;
-  }
-  .ant-menu-item, 
-  .ant-menu-submenu-title  {
-    .icon {
-      font-size: 24px;
-      vertical-align: middle;
-      line-height: 18px;
-    }
-  }
-  .ant-menu-sub {
-    width: 100px;
-  }
-}
-.navbar-nav {
-  margin: 8px -15px;
-  float: left;
-  margin: 0px;
-  >li {
-    float: left;
-  }
-}
-.navbar-right {
-  float: right !important;
-}
-.navbar {
-  position: relative;
-  min-height: @am-header-height;
-  margin-bottom: 18px;
-  border: 1px solid transparent;
-  border-radius: 0px;
-}
 
 // 不显示select mirror input
 .@{select-prefix-cls} {
@@ -170,13 +111,6 @@ img {
 .collapsing, .dropdown {
   position: relative;
 }
-.navbar-brand {
-  float: left;
-  padding: 16px 15px;
-  font-size: 15px;
-  line-height: 18px;
-  height: 48px;
-}
 .btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
   content: " ";
   display: table;
@@ -188,15 +122,7 @@ img {
 .btn-group-vertical>.btn-group:after, .btn-toolbar:after, .clearfix:after, .container:after, .dl-horizontal dd:after, .dropdown-menu>li>a, .form-horizontal .form-group:after, .fuelux .wizard:after, .modal-footer:after, .nav:after, .navbar-header:after, .navbar:after, .pager:after, .panel-body:after, .row:after {
   clear: both;
 }
-.navbar-fixed-top {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 1000;
-  border-radius: 0px;
 
-}
 
 .am-top-header {
   background-color:@am-theme-color;
@@ -223,95 +149,11 @@ img {
       background-position:center center;
       @media (max-width:767px) {
         display:none;
-      }
-      &.module-corp {
-        background-color:#393c40;
-      }
-      &.module-clearance {
-        background-color:#01BAD2;
-      }
-      &.module-orders {
-        background-color:#60BE29;
-      }
-      &.module-transport {
-        background-color:#00A0E8;
-      }
-    }
-    .navbar-toggle {
-      border-radius:0;
-      position:absolute;
-      left:0;
-      top:0;
-      margin:0;
-      font-size: 24px;
-      color: #aaa;
-      text-align:center;
-      display:none;
-      padding:0 16px;
-      border-width:0;
-      line-height:48px;
-      @media (max-width:767px) {
-        width: 60px;
-        display:block;
-        background: #3d3c3c;
-      }
-      .icon-bar {
-        display:inline-block;
-        background-color:transparent;
-        height:auto;
-        width:auto;
-        vertical-align:middle;
-        span {
-          display:block;
-          width:25px;
-          height:1px;
-          margin-top:6px;
-          background-color:#fff;
-          &:first-child {
-            margin-top:0;
-          }
-        }
-      }
+      } 
     }
   }
 }
-.navbar-title {
-  float: left;
-  line-height: @am-header-height;
-  color:#373737;
-  font-size:16px;
-  padding:0 18px;
-  outline:0;
-  span {
-    font-size: 16px;
-    line-height: 44px;
-    vertical-align: middle;
-  }
-  a {
-    color:#373737;
-    padding: 0;
-    >i {
-      width: 30px;
-      font-size: 24px;
-      line-height: 44px;
-      vertical-align: middle;
-    }
-  }
-  @media (max-width:767px) {
-    margin-left: 60px;
-  }
-}
-.navbar-avatar {
-  max-width:32px;
-  max-height:32px;
-  border-radius:50%;
-}
-.navbar-user-menu {
-  .ant-menu-submenu-horizontal > .ant-menu {
-    left: -50px;
-    width: 120px;
-  }
-}
+
 .am-nosidebar-left {
   .am-left-sidebar {
     display: none;
@@ -459,6 +301,9 @@ img {
   min-height:100%;
   &.with-side-bar {
     margin-left: @side-bar-width;
+  }
+  &.no-top-bar {
+    padding: 24px 16px 0;
   }
   @media (max-width:767px) {
     height:100%;
@@ -692,9 +537,15 @@ img {
     .ant-table-tbody > tr > td {
       padding: 12px 8px;
     }
+    .ant-table, .ant-table-header, .ant-table table {
+      border-radius: 2px;
+    }
+    .ant-table-footer {
+      border-radius: 0 0 2px 2px;
+    }
   }
   &.fixed-height {
-    height: 615px;
+    height: 580px;
     overflow: scroll;
   }
   &.expandable {
@@ -723,6 +574,24 @@ img {
   box-shadow: 0 -1px 3px rgba(0,0,0,0.15);
   transition: all ease 0.4s;
   padding: 8px 16px 8px;
+}
+.popover-header{
+  position: relative;
+  padding: 8px 16px;
+  .tools {
+    float: right;
+  }
+  > span {
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+}
+.popover-body {
+  padding: 8px 16px;
+}
+.popover-footer {
+  padding: 8px 16px;
 }
 .ant-advanced-search-form {
   padding: 16px 60px 16px 0px;

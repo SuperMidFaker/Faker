@@ -3,19 +3,18 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { TENANT_ASPECT, GOODSTYPES, TRANS_MODE } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n.js';
 import { format } from 'client/common/i18n/helpers';
-const formatMsg = format(messages);
+import messages from '../message.i18n.js';
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
-let transMode = '';
 
 function getFieldInits(aspect, formData) {
   const init = {};
@@ -25,10 +24,9 @@ function getFieldInits(aspect, formData) {
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
       'goods_type', 'order_no', 'remark',
     ].forEach((fd) => {
-      init[fd] = formData[fd] || '';
+      init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
-    init.internal_no = aspect === TENANT_ASPECT.BO ? formData.ref_delg_external_no
-      : formData.ref_recv_external_no;
+    init.internal_no = formData.ref_external_no;
   }
   return init;
 }
@@ -64,11 +62,8 @@ export default class BasicForm extends Component {
     }
     return value;
   }
-  handleModeSelect = (value) => {
-    transMode = value;
-  }
   render() {
-    const { form: { getFieldProps }, fieldInits, clients, tenantName, partnershipType } = this.props;
+    const { form: { getFieldProps, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
@@ -124,7 +119,7 @@ export default class BasicForm extends Component {
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('transMode')} {...formItemLayout}>
-              <Select onSelect={this.handleModeSelect} {...getFieldProps('trans_mode', {
+              <Select {...getFieldProps('trans_mode', {
                 initialValue: fieldInits.trans_mode,
                 rules: [{ required: true, message: '运输方式必选' }],
               })}>
@@ -137,14 +132,14 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-          { transMode === '2' &&
+          { getFieldValue('trans_mode') === '2' &&
             <FormItem label={this.msg('bLNo')} {...formItemLayout}>
               <Input {...getFieldProps('bl_wb_no', {
                 initialValue: fieldInits.bl_wb_no,
               })} />
             </FormItem>
           }
-          { transMode === '5' &&
+          { getFieldValue('trans_mode') === '5' &&
             <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
               <Input {...getFieldProps('bl_wb_no', {
                 initialValue: fieldInits.bl_wb_no,
@@ -153,14 +148,14 @@ export default class BasicForm extends Component {
           }
           </Col>
           <Col sm={8}>
-          { transMode === '2' &&
+          { getFieldValue('trans_mode') === '2' &&
             <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
               <Input {...getFieldProps('voyage_no', {
                 initialValue: fieldInits.voyage_no,
               })} />
             </FormItem>
           }
-          { transMode === '5' &&
+          { getFieldValue('trans_mode') === '5' &&
             <FormItem label={this.msg('flightNo')} {...formItemLayout}>
               <Input {...getFieldProps('voyage_no', {
                 initialValue: fieldInits.voyage_no,

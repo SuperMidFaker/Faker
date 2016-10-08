@@ -267,7 +267,7 @@ export default class FeesTable extends Component {
     const { quoteData, action, editable } = this.props;
     const { editIndex, addedit } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
-    const dataSource = this.props.quoteData.fees;
+    const dataSource = quoteData.fees;
     const columns = [
       {
         title: msg('serialNo'),
@@ -375,7 +375,7 @@ export default class FeesTable extends Component {
       <div className="page-body">
         <div className="panel-body table-panel">
           <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} />
-          <div style={{ padding: 20 }}>
+          <div style={{ padding: 16 }}>
             <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>
           </div>
         </div>

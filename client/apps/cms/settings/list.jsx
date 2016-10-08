@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setNavTitle } from 'common/reducers/navbar';
 import { Menu, Icon, Dropdown, Button } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
@@ -10,13 +10,9 @@ const SubMenu = Menu.SubMenu;
 
 
 @injectIntl
-@connectNav((props, dispatch) => {
-  dispatch(setNavTitle({
-    depth: 2,
-    moduleName: 'clearance',
-    withModuleLayout: false,
-    goBackFn: null,
-  }));
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
 })
 export default class Settings extends Component {
   static propTypes = {
@@ -42,8 +38,8 @@ export default class Settings extends Component {
     );
 
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <div className="pull-right">
             <Dropdown overlay={menu}>
               <Button type="ghost" style={{ marginLeft: 8 }}>
@@ -53,7 +49,7 @@ export default class Settings extends Component {
           </div>
           <span>设置</span>
         </header>
-        <aside className="side-bar">
+        <aside className="side-bar" key="aside">
           <Menu
             defaultOpenKeys={['sub1']}
             mode="inline"
@@ -71,7 +67,7 @@ export default class Settings extends Component {
             </SubMenu>
           </Menu>
         </aside>
-        <div className="main-content with-side-bar">
+        <div className="main-content with-side-bar" key="main">
           <div className="page-body">
             <div className="panel-header">
             </div>
@@ -79,7 +75,7 @@ export default class Settings extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

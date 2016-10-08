@@ -1,11 +1,12 @@
 /* eslint-disable */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, notification, message } from 'antd';
+import { Alert, Button, notification, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import NavLink from './nav-link';
 import { countMessages, messageBadgeNum, getTenantUsers, recordMessages } from 'common/reducers/corps';
 import { getDriver } from 'common/reducers/transportResources';
 
@@ -31,7 +32,7 @@ function fetchData({ state, dispatch, cookie }) {
 }), {
   messageBadgeNum, getTenantUsers, recordMessages,
 })
-export default class MessagePrompt extends React.Component {
+export default class NotificationPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -220,7 +221,39 @@ export default class MessagePrompt extends React.Component {
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    return null;
+    return (<div style={{ width: 360 }}>
+      <div className="popover-header">
+        <div className="tools"><a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a></div>
+        <span>{this.msg('notification')}</span>
+      </div>
+      <div className="popover-body">
+      <Alert
+        message="Informational Notes"
+        description="Additional description and informations."
+        type="info"
+        showIcon
+        closable
+      />
+      <Alert
+        message="Warning"
+        description="This is a warning notice about copywriting."
+        type="warning"
+        showIcon
+        closable
+      />
+      <Alert
+        message="Error"
+        description="This is an error message about copywriting."
+        type="error"
+        showIcon
+        closable
+      />
+      </div>
+      <div className="popover-footer">
+        <NavLink to="/my/messages">{this.msg('seeAll')}</NavLink>
+      </div>
+    </div>);
   }
 }

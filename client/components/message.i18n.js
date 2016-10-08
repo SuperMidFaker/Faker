@@ -1,25 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  moduleForwarding: {
-    id: 'component.module.forwarding',
-    defaultMessage: '国际货运',
-  },
-  moduleInventory: {
-    id: 'component.module.inventory',
-    defaultMessage: '库存管理',
-  },
-  moduleTracking: {
-    id: 'component.module.tracking',
-    defaultMessage: '全程追踪',
-  },
-  moduleDatacenter: {
-    id: 'component.module.datacenter',
-    defaultMessage: '数据中心',
-  },
-  moduleIntegration: {
-    id: 'component.module.integration',
-    defaultMessage: '整合中心',
+  search: {
+    id: 'component.navbar.search',
+    defaultMessage: '搜索',
   },
   userSetting: {
     id: 'component.user.setting',
@@ -151,6 +135,30 @@ const messages = defineMessages({
   detail: {
     id: 'corp.messageList.detail',
     defaultMessage: '详情',
+  },
+  notification: {
+    id: 'component.popover.notification',
+    defaultMessage: '通知提醒',
+  },
+  seeAll: {
+    id: 'component.popover.notification.seeall',
+    defaultMessage: '查看所有通知',
+  },
+  helpcenter: {
+    id: 'component.popover.helpcenter',
+    defaultMessage: '帮助中心',
+  },
+  online: {
+    id: 'component.popover.helpcenter.online',
+    defaultMessage: '在线客服',
+  },
+  feedback: {
+    id: 'component.popover.helpcenter.feedback',
+    defaultMessage: '意见反馈',
+  },
+  guide: {
+    id: 'component.popover.helpcenter.guide',
+    defaultMessage: '快速上手',
   },
 });
 

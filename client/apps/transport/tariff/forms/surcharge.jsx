@@ -4,7 +4,6 @@ import { injectIntl } from 'react-intl';
 import { Button, Input, Table, Select, Switch, message } from 'antd';
 import { TAX_MODE, FEE_STYLE } from 'common/constants';
 import { submitSurcharges, createQuotes } from 'common/reducers/transportTariff';
-import ContentWrapper from '../../resources/components/ContentWrapper';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { feeUpdate, feeAdd, feeDelete } from 'common/reducers/cmsQuote';
@@ -430,13 +429,15 @@ export default class SurchargeForm extends React.Component {
       },
     ];
     return (
-      <ContentWrapper>
-        <div className="panel-body">
-          <Table columns={columns} bordered dataSource={dataSource} rowKey="_id" pagination={false} size="middle"
-            footer={() => <Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>}
-          />
+      <div className="main-content">
+        <div className="page-body">
+          <div className="panel-body table-panel">
+            <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false}
+              footer={() => <Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>}
+            />
+          </div>
         </div>
-      </ContentWrapper>
+      </div>
     );
   }
 }

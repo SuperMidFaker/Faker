@@ -1,16 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Table, Icon, message } from 'antd';
 import moment from 'moment';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { CMS_DELEGATION_STATUS, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, openEfModal } from 'common/reducers/cmsDelegation';
 import RowUpdater from './rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import NavLink from 'client/components/nav-link';
-import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n.js';
 import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n.js';
+
 const formatMsg = format(messages);
 
 @injectIntl
@@ -26,6 +27,7 @@ export default class SubdelgTable extends Component {
     intl: intlShape.isRequired,
     delgBills: PropTypes.array.isRequired,
     delgNo: PropTypes.string.isRequired,
+    delgStatus: PropTypes.number.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     loadSubdelgsTable: PropTypes.func.isRequired,
     openEfModal: PropTypes.func.isRequired,
@@ -52,8 +54,9 @@ export default class SubdelgTable extends Component {
     dataIndex: 'bill_seq_no',
     width: 160,
     render: (o, record) => {
-      if (record.bill_status === undefined) {
-        return o;
+      if (record.bill_status === undefined
+        || this.props.delgStatus === CMS_DELEGATION_STATUS.unaccepted) {
+        return <span />;
       } else if (record.bill_status > 4) {
         return (
           <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
@@ -85,11 +88,6 @@ export default class SubdelgTable extends Component {
     width: 140,
     dataIndex: 'manual_no',
   }, {
-    title: this.msg('preEntryNo'),
-    width: 160,
-    dataIndex: 'pre_entry_seq_no',
-    render: (o, record) => (record.id ? o : '-'),
-  }, {
     title: this.msg('entryId'),
     width: 160,
     dataIndex: 'entry_id',
@@ -111,6 +109,11 @@ export default class SubdelgTable extends Component {
         return '-';
       }
     },
+  }, {
+    title: this.msg('preEntryNo'),
+    width: 160,
+    dataIndex: 'pre_entry_seq_no',
+    render: (o, record) => (record.id ? o : '-'),
   }, {
     title: this.msg('packageNum'),
     width: 60,

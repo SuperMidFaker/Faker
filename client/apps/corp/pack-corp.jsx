@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import AmLeftSidebar from 'client/components/am-ant-leftbar';
@@ -19,13 +20,19 @@ const formatMsg = format(messages);
 export default class CorpPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    location: PropTypes.object.isRequired,
+    location: locationShape.isRequired,
     level: PropTypes.number.isRequired,
     privileges: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
   }
+  static childContextTypes = {
+    location: locationShape.isRequired,
+  }
   state = {
     linkMenus: [],
+  }
+  getChildContext() {
+    return { location: this.props.location };
   }
   componentWillMount() {
     const linkMenus = [];
@@ -69,6 +76,15 @@ export default class CorpPack extends React.Component {
         text: formatMsg(intl, 'organTitle'),
       });
     }
+    if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
+      linkMenus.push({
+        single: true,
+        key: 'corpsetting-5',
+        path: '/corp/role',
+        icon: 'zmdi zmdi-shield-check',
+        text: formatMsg(intl, 'roleTitle'),
+      });
+    }
     if (hasPermission(privileges, { module: 'corp', feature: 'partners' })) {
       linkMenus.push({
         single: true,
@@ -76,15 +92,6 @@ export default class CorpPack extends React.Component {
         path: '/corp/partners',
         icon: 'icon-fontello-network',
         text: formatMsg(intl, 'partnership'),
-      });
-    }
-    if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
-      linkMenus.push({
-        single: true,
-        key: 'corpsetting-5',
-        path: '/corp/role',
-        icon: 'icon-fontello-anchor',
-        text: formatMsg(intl, 'roleTitle'),
       });
     }
     this.setState({ linkMenus });
