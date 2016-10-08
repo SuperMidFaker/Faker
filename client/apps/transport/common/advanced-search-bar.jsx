@@ -203,7 +203,7 @@ export default class AdvancedSearchBar extends React.Component {
               </FormItem>
 
               <FormItem
-                label="预计交货时间"
+                label="预计送达时间"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
@@ -230,7 +230,7 @@ export default class AdvancedSearchBar extends React.Component {
                 <RangePicker style={{ width: '100%' }} {...getFieldProps('pickup_act_date', { initialValue: '' })} />
               </FormItem>
               <FormItem
-                label="实际交货时间"
+                label="实际送货时间"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >

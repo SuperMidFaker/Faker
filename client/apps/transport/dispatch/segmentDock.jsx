@@ -270,7 +270,7 @@ export default class SegmentDock extends React.Component {
                           <h3>时间计划</h3>
                           <Row type="flex" justify="start">
                             <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
-                            <Col span="12">交货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
+                            <Col span="12">送货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
                           </Row>
                           <h3>分段中转</h3>
                           {err}
@@ -307,7 +307,7 @@ export default class SegmentDock extends React.Component {
                   </div>
                   <Row className="pane-section" type="flex" justify="start">
                     <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
-                    <Col span="12">交货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
+                    <Col span="12">送货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
                   </Row>
                   <div className="subform-heading">
                     <h3 className="subform-title">分段中转</h3>

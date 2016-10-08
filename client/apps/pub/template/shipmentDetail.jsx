@@ -86,7 +86,7 @@ export default class ShipmentDetail extends React.Component {
       contact: `${shipmt.consigner_contact ? shipmt.consigner_contact : ''} / ${shipmt.consigner_mobile ? shipmt.consigner_mobile : ''}`,
     }, {
       key: '2',
-      addressType: '交货点',
+      addressType: '送货点',
       storage: '',
       address: destPointAddr,
       est_date: shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : '',

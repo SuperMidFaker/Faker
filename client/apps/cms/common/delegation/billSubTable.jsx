@@ -84,10 +84,6 @@ export default class SubdelgTable extends Component {
       return decl && decl.value;
     },
   }, {
-    title: this.msg('manualNo'),
-    width: 140,
-    dataIndex: 'manual_no',
-  }, {
     title: this.msg('entryId'),
     width: 160,
     dataIndex: 'entry_id',

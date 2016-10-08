@@ -326,7 +326,7 @@ export default class LandStatusList extends React.Component {
       buttons = (
         <div style={{ display: 'inline-block' }}>
           <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <Button onClick={this.handleShowBatchDeliverModal}>批量交货</Button>
+            <Button onClick={this.handleShowBatchDeliverModal}>批量送货</Button>
           </PrivilegeCover>
         </div>
       );
