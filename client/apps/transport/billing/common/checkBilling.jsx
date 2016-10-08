@@ -93,7 +93,7 @@ export default class CheckBilling extends React.Component {
       title: '调整金额',
       dataIndex: 'adjust_charges',
       render: (o, record) => {
-        return (<InputNumber defaultValue={o} step={0.01} onChange={(value) => this.handleChangeAdjustCharges(record.id, value)} />);
+        return (<InputNumber defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
       },
     }, {
       title: '最终费用',
@@ -148,7 +148,7 @@ export default class CheckBilling extends React.Component {
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>
             <div className="panel-body">
-              <Table dataSource={dataSource} columns={columns} rowKey="id"/>
+              <Table dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
           </div>
         </div>

@@ -98,7 +98,7 @@ export default class BillingList extends React.Component {
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body">
-              <Table dataSource={dataSource} columns={columns} rowKey="billingId"/>
+              <Table dataSource={dataSource} columns={columns} rowKey="billingId" />
             </div>
           </div>
         </div>

@@ -48,14 +48,8 @@ export default class FeesList extends React.Component {
     loadFees: PropTypes.func.isRequired,
     fees: PropTypes.object.isRequired,
   }
-
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleSave = () => {
-
-  }
-
   render() {
-
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
@@ -79,7 +73,7 @@ export default class FeesList extends React.Component {
       dataIndex: 'freight_charge',
     }, {
       title: '特殊费用',
-      dataIndex: '  special_charge',
+      dataIndex: 'special_charge',
     }, {
       title: '代垫费用',
       dataIndex: 'advance_charge',
@@ -97,13 +91,13 @@ export default class FeesList extends React.Component {
       dataIndex: 'consigner_province',
       render(o, record) {
         return (<TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />);
-      }
+      },
     }, {
       title: '目的地',
       dataIndex: 'consignee_province',
       render(o, record) {
         return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
-      }
+      },
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
@@ -122,6 +116,16 @@ export default class FeesList extends React.Component {
     }, {
       title: '是否入账',
       dataIndex: 'fee_status',
+      render(o) {
+        if (o === 0) {
+          return '未入账';
+        } else if (o === 1) {
+          return '已入账';
+        } else if (o === 2) {
+          return '已结单';
+        }
+        return '';
+      },
     }];
 
     const dataSource = new Table.DataSource({
@@ -156,7 +160,7 @@ export default class FeesList extends React.Component {
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body">
-              <Table dataSource={dataSource} columns={columns} rowKey="id"/>
+              <Table dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
           </div>
         </div>

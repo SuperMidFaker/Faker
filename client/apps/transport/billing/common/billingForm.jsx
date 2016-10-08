@@ -91,7 +91,7 @@ export default class BillingForm extends React.Component {
             </div>
             <div className="panel-body">
               <Form style={{ padding: '70px 20%' }}>
-                
+
 
                 <FormItem
                   id="select"
