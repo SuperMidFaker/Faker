@@ -59,26 +59,26 @@ const messages = defineMessages({
   },
   atorigin: {
     id: 'scv.shipment.inbound.at.origin',
-    defaultMessage: '起运',
+    defaultMessage: '启运地',
   },
   intransit: {
     id: 'scv.shipment.inbound.in.transit',
     defaultMessage: '运输中',
   },
   atdest: {
-    id: 'scv.shipment.inbound.at.dest',
+    id: 'scv.shipment.inbound.arrived',
     defaultMessage: '到港',
   },
   atclearance: {
-    id: 'scv.shipment.inbound.at.clearance',
+    id: 'scv.shipment.inbound.clearance',
     defaultMessage: '清关',
   },
   atdelivering: {
-    id: 'scv.shipment.inbound.at.delivering',
+    id: 'scv.shipment.inbound.inland',
     defaultMessage: '转运',
   },
   atreceived: {
-    id: 'scv.shipment.inbound.at.received',
+    id: 'scv.shipment.inbound.delivered',
     defaultMessage: '收货',
   },
   opColumn: {

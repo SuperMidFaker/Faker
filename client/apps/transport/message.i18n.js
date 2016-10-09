@@ -19,7 +19,7 @@ export default defineMessages({
   },
   delivered: {
     id: 'transport.dashboard.log.type.delivered',
-    defaultMessage: '已交货运单',
+    defaultMessage: '已送货运单',
   },
   completed: {
     id: 'transport.dashboard.log.type.completed',
@@ -79,7 +79,7 @@ export default defineMessages({
   },
   deliveredShipmt: {
     id: 'transport.dashboard.log.delivered.shipment',
-    defaultMessage: '已交货',
+    defaultMessage: '已送货',
   },
   proofOfDelivery: {
     id: 'transport.dashboard.log.proof.delivery',

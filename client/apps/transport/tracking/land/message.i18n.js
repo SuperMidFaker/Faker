@@ -23,7 +23,7 @@ export default defineMessages({
   },
   deliverConfirm: {
     id: 'transport.tracking.shipmt.deliverConfirm',
-    defaultMessage: '交货确认',
+    defaultMessage: '送货确认',
   },
   shipmtPrevTrack: {
     id: 'transport.tracking.shipmt.prev.track',
@@ -79,7 +79,7 @@ export default defineMessages({
   },
   updateDelivery: {
     id: 'transport.tracking.update.delivery',
-    defaultMessage: '更新交货',
+    defaultMessage: '更新送货',
   },
   reportTransitLoc: {
     id: 'transport.tracking.report.transit.loc',
@@ -231,7 +231,7 @@ export default defineMessages({
   },
   deliveredShipmt: {
     id: 'transport.tracking.delivered.shipment',
-    defaultMessage: '已交货',
+    defaultMessage: '已送货',
   },
   proofOfDelivery: {
     id: 'transport.tracking.proof.delivery',
@@ -291,7 +291,7 @@ export default defineMessages({
   },
   deliverAction: {
     id: 'transport.tracking.action.deliver',
-    defaultMessage: '交货',
+    defaultMessage: '送货',
   },
   podUploadAction: {
     id: 'transport.tracking.action.pod.upload',
@@ -339,7 +339,7 @@ export default defineMessages({
   },
   deliverModalTitle: {
     id: 'transport.tracking.modal.deliver.title',
-    defaultMessage: '更新交货',
+    defaultMessage: '更新送货',
   },
   pickupActDate: {
     id: 'transport.tracking.pickup.act.date',
@@ -347,7 +347,7 @@ export default defineMessages({
   },
   deliverActDate: {
     id: 'transport.tracking.delivery.act.date',
-    defaultMessage: '实际交货日期',
+    defaultMessage: '实际送货日期',
   },
   chooseActualTime: {
     id: 'transport.tracking.act.date',
@@ -359,7 +359,7 @@ export default defineMessages({
   },
   deliverTimeMust: {
     id: 'transport.tracking.modal.deliver.time.must',
-    defaultMessage: '交货时间必选',
+    defaultMessage: '送货时间必选',
   },
   podModalTitle: {
     id: 'transport.tracking.modal.pod.title',

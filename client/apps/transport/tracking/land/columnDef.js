@@ -511,7 +511,7 @@ export default function makeColumns(type, handlers, msg) {
               </div>
             );
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已交货
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已送货
           if (record.pod_type === 'none' && record.deliver_confirmed === 0 && handlers.tenantId === record.tenant_id) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">

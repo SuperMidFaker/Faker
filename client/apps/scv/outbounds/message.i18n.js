@@ -59,7 +59,7 @@ const messages = defineMessages({
   },
   atorigin: {
     id: 'scv.shipment.outbound.at.origin',
-    defaultMessage: '起运',
+    defaultMessage: '启运地',
   },
   intransit: {
     id: 'scv.shipment.outbound.in.transit',
@@ -67,7 +67,7 @@ const messages = defineMessages({
   },
   atdest: {
     id: 'scv.shipment.outbound.at.dest',
-    defaultMessage: '到港',
+    defaultMessage: '目的地',
   },
   atclearance: {
     id: 'scv.shipment.outbound.at.clearance',

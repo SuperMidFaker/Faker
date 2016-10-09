@@ -209,7 +209,7 @@ export default class TrackingDetail extends React.Component {
         description: '',
       }, {
         status: 'wait',
-        title: '未交货',
+        title: '未送货',
         description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${
           shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
       }];
@@ -228,7 +228,7 @@ export default class TrackingDetail extends React.Component {
           moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
         status: 'wait',
-        title: '未交货',
+        title: '未送货',
         description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 预计时间:${
           shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
       }];
@@ -247,7 +247,7 @@ export default class TrackingDetail extends React.Component {
           moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}`,
       }, {
         status: 'finish',
-        title: '已交货',
+        title: '已送货',
         description: `目的地: ${renderConsignLoc(shipmt, 'consignee')} 实际时间:${
           shipmt.deliver_act_date ? moment(shipmt.deliver_act_date).format('YYYY-MM-DD') : ''}`,
       }];
