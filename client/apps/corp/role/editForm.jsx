@@ -152,7 +152,7 @@ export default class RoleForm extends React.Component {
         state = update(this.state, { editPrivilegeMap: { [moduleId]: { $merge: { [featId]: actionObj } } } });
       }
     } else {
-      state = update(this.state, { editPrivilegeMap: { $set: { [moduleId]: { [featId]: actionObj } } } });
+      state = update(this.state, { editPrivilegeMap: { $merge: { [moduleId]: { [featId]: actionObj } } } });
     }
     this.setState(state);
   }
