@@ -476,7 +476,7 @@ export default class DelegationList extends Component {
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
                 expandedRowKeys={this.state.expandedKeys}
                 expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                scroll={{ x: 1380 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>
