@@ -27,6 +27,7 @@ const initialState = {
   excpModal: {
     visible: false,
     dispId: -1,
+    parentDispId: -1,
     shipmtNo: '',
   },
   dealExcpModal: {
@@ -103,17 +104,17 @@ export function changeExcpFilter(field, value) {
   };
 }
 
-export function showExcpModal(dispId, shipmtNo) {
+export function showExcpModal(dispId, parentDispId, shipmtNo) {
   return {
     type: actionTypes.SHOW_EXCPMODAL,
-    data: { visible: true, dispId, shipmtNo },
+    data: { visible: true, dispId, parentDispId, shipmtNo },
   };
 }
 
 export function hideExcpModal() {
   return {
     type: actionTypes.SHOW_EXCPMODAL,
-    data: { visible: false, dispId: -1, shipmtNo: '' },
+    data: { visible: false, dispId: -1, parentDispId: -1, shipmtNo: '' },
   };
 }
 

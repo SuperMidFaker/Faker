@@ -25,6 +25,7 @@ export default class CreateSpecialCharge extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
+    parentDispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     createSpecialCharge: PropTypes.func.isRequired,
     loadExceptions: PropTypes.func.isRequired,
@@ -33,17 +34,18 @@ export default class CreateSpecialCharge extends React.Component {
     toggle: PropTypes.func.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, shipmtNo, loginName, loginId, tenantId } = this.props;
+    const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
       this.props.form.setFieldsValue({ charge: '', remark: '', chargeType: '1' });
       this.handleCancel();
       const type = 12012;
       const excpLevel = 'ERROR';
+      const chargeType = Number(fieldsValue.chargeType);
       this.props.createSpecialCharge({
         shipmtNo,
-        dispId,
-        chargeType: Number(fieldsValue.chargeType),
+        dispId: chargeType === 1 ? parentDispId : dispId,
+        chargeType,
         excpLevel,
         type,
         remark: fieldsValue.remark,
@@ -72,7 +74,6 @@ export default class CreateSpecialCharge extends React.Component {
   }
   render() {
     const { form: { getFieldProps } } = this.props;
-
     const colSpan = 6;
     return (
       <Modal title="添加特殊费用" onCancel={this.handleCancel} onOk={this.handleOk}

@@ -244,7 +244,7 @@ export default class LandStatusList extends React.Component {
   handleShowExcpModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.showExcpModal(row.disp_id, row.shipmt_no);
+    this.props.showExcpModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then((result) => {

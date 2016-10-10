@@ -22,6 +22,7 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     visible: state.trackingLandException.excpModal.visible,
     dispId: state.trackingLandException.excpModal.dispId,
+    parentDispId: state.trackingLandException.excpModal.parentDispId,
     shipmtNo: state.trackingLandException.excpModal.shipmtNo,
     exceptions: state.trackingLandException.exceptions,
   }),
@@ -33,6 +34,7 @@ export default class ExcpEventsModal extends React.Component {
     loginId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     dispId: PropTypes.number.isRequired,
+    parentDispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     showDealExcpModal: PropTypes.func.isRequired,
@@ -144,7 +146,7 @@ export default class ExcpEventsModal extends React.Component {
     this.props.showDealExcpModal(true, exception);
   }
   render() {
-    const { shipmtNo, dispId, exceptions } = this.props;
+    const { shipmtNo, dispId, parentDispId, exceptions } = this.props;
     this.dataSource.remotes = exceptions;
     const buttonStyle = { marginLeft: 8 };
     const title = (
@@ -166,7 +168,7 @@ export default class ExcpEventsModal extends React.Component {
             dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
           />
           <CreateException visible={this.state.createExceptionVisible} shipmtNo={shipmtNo} dispId={dispId} toggle={this.toggleCreateException} />
-          <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} shipmtNo={shipmtNo} dispId={dispId} toggle={this.toggleSpecialCharge} />
+          <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} shipmtNo={shipmtNo} dispId={dispId} parentDispId={parentDispId} toggle={this.toggleSpecialCharge} />
           <DealException shipmtNo={shipmtNo} dispId={dispId} />
         </div>
       </Modal>
