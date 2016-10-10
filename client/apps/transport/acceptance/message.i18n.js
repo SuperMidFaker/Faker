@@ -111,7 +111,7 @@ export default defineMessages({
   },
   shipmtDraft: {
     id: 'transport.acceptance.shipment.draft',
-    defaultMessage: '运输计划',
+    defaultMessage: '运单草稿',
   },
   shipmtEdit: {
     id: 'transport.acceptance.shipment.edit',
