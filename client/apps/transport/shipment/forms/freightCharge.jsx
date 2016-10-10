@@ -2,10 +2,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Card, Checkbox, message, notification } from 'antd';
-import InputItem from './input-item';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../../common/charge';
+import InputItem from './input-item';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -27,14 +27,12 @@ export default class FreightCharge extends React.Component {
   }
   state = {
     computed: false,
-    checkPickup: false,
-    checkDeliver: false,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleCompute = () => {
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
-      transport_mode_id,
+      transport_mode_id, transport_mode_code,
     } = this.props.formData;
     const { goods_type, package: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume } =
       this.props.formhoc.getFieldsValue([
@@ -51,7 +49,7 @@ export default class FreightCharge extends React.Component {
     const created = this.props.formData.created_date || Date.now();
     this.props.computeSaleCharge({
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_id, ctn,
+      goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
       tenant_id: this.props.tenantId, created_date: created,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
     }).then((result) => {
@@ -62,15 +60,13 @@ export default class FreightCharge extends React.Component {
           message: '计算运费',
           description: '未找到匹配的价格协议，请确认是否已创建与该客户关联的价格协议',
         });
-        //  message.error('未找到适合计算的价格协议');
       } else if (result.data.freight === -2) {
         notification.error({
           message: '计算运费',
           description: '价格协议中未找到对应路线的报价费率',
         });
-        //  message.error('未找到对应路线的价格表');
       } else {
-        // todo 起步价运费公式? pickup未勾选列表中如何不显示? 位数? pickup mode=1 x数量?
+        // todo 起步价运费公式? pickup未勾选列表中如何不显示? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
@@ -84,19 +80,18 @@ export default class FreightCharge extends React.Component {
         });
         this.setState({
           computed: true,
-          checkPickup: true,
-          checkDeliver: true,
         });
         this.props.setConsignFields({
           charge_gradient: gradient,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,
               unitRatio, coefficient),
+          pickup_checked: true,
+          deliver_checked: true,
         });
       }
     });
   }
   handlePickupCheck = (ev) => {
-    this.setState({ checkPickup: ev.target.checked });
     const { formhoc } = this.props;
     if (ev.target.checked) {
       formhoc.setFieldsValue({
@@ -109,9 +104,11 @@ export default class FreightCharge extends React.Component {
           - formhoc.getFieldValue('pickup_charge'),
       });
     }
+    this.props.setConsignFields({
+      pickup_checked: ev.target.checked,
+    });
   }
   handleDeliverCheck = (ev) => {
-    this.setState({ checkDeliver: ev.target.checked });
     const { formhoc } = this.props;
     if (ev.target.checked) {
       formhoc.setFieldsValue({
@@ -124,18 +121,20 @@ export default class FreightCharge extends React.Component {
           - formhoc.getFieldValue('deliver_charge'),
       });
     }
+    this.props.setConsignFields({
+      deliver_checked: ev.target.checked,
+    });
   }
   handleSurchargeChange = (ev) => {
-    const { formhoc } = this.props;
-    const { checkPickup, checkDeliver } = this.state;
+    const { formhoc, formData } = this.props;
     let total = formhoc.getFieldValue('freight_charge');
     if (ev.target.value && !isNaN(Number(ev.target.value))) {
       total += Number(ev.target.value);
     }
-    if (checkPickup) {
+    if (formData.pickup_checked) {
       total += formhoc.getFieldValue('pickup_charge');
     }
-    if (checkDeliver) {
+    if (formData.deliver_checked) {
       total += formhoc.getFieldValue('deliver_charge');
     }
     formhoc.setFieldsValue({ total_charge: total });
@@ -154,11 +153,13 @@ export default class FreightCharge extends React.Component {
     this.props.setConsignFields({
       charge_gradient: undefined,
       charge_amount: undefined,
+      pickup_checked: false,
+      deliver_checked: false,
     });
   }
   render() {
     const { formhoc, formData } = this.props;
-    const { computed, checkPickup, checkDeliver } = this.state;
+    const { computed } = this.state;
     return (
       <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}
         extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : null}
@@ -179,7 +180,7 @@ export default class FreightCharge extends React.Component {
           computed &&
           <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
             labelName={<span>
-              <Checkbox checked={checkPickup} onChange={this.handlePickupCheck} />
+              <Checkbox checked={formData.pickup_checked} onChange={this.handlePickupCheck} />
               {this.msg('pickupCharge')}
             </span>}
             field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
@@ -190,7 +191,7 @@ export default class FreightCharge extends React.Component {
           computed &&
           <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
             labelName={<span>
-              <Checkbox checked={checkDeliver} onChange={this.handleDeliverCheck} />
+              <Checkbox checked={formData.deliver_checked} onChange={this.handleDeliverCheck} />
               {this.msg('deliverCharge')}
             </span>}
             field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}

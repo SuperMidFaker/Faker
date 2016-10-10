@@ -63,7 +63,7 @@ export default defineMessages({
   },
   deliveryAddr: {
     id: 'transport.shipment.delivery.addr',
-    defaultMessage: '交货地址',
+    defaultMessage: '送货地址',
   },
   consignerNameMessage: {
     id: 'transport.shipment.consigner.name.message',
@@ -107,15 +107,15 @@ export default defineMessages({
   },
   deliveryDate: {
     id: 'transport.shipment.delivery.date',
-    defaultMessage: '交货日期',
+    defaultMessage: '送货日期',
   },
   deliveryEstDate: {
     id: 'transport.shipment.delivery.est.date',
-    defaultMessage: '预计交货日期',
+    defaultMessage: '预计送货日期',
   },
   deliveryDateMust: {
     id: 'transport.shipment.delivery.date.must',
-    defaultMessage: '交货日期必填',
+    defaultMessage: '送货日期必填',
   },
   transitModeInfo: {
     id: 'transport.shipment.transit.mode.info',
@@ -255,11 +255,11 @@ export default defineMessages({
   },
   trackIntransit: {
     id: 'transport.shipment.track.intransit',
-    defaultMessage: '待交货',
+    defaultMessage: '待送货',
   },
   trackDelivered: {
     id: 'transport.shipment.track.delivered',
-    defaultMessage: '已交货',
+    defaultMessage: '已送货',
   },
   trackingStepTitle: {
     id: 'transport.shipment.track.step.title',
@@ -283,7 +283,7 @@ export default defineMessages({
   },
   trackDeliver: {
     id: 'transport.shipment.track.deliver',
-    defaultMessage: '交货',
+    defaultMessage: '送货',
   },
   trackPod: {
     id: 'transport.shipment.track.pod',
@@ -307,7 +307,7 @@ export default defineMessages({
   },
   delivered: {
     id: 'transport.shipment.log.delivered',
-    defaultMessage: '交货',
+    defaultMessage: '送货',
   },
   completed: {
     id: 'transport.shipment.log.completed',
@@ -415,7 +415,7 @@ export default defineMessages({
   },
   shipmtETA: {
     id: 'transport.shipment.pane.detail.eta',
-    defaultMessage: '预计交货日期',
+    defaultMessage: '预计送货日期',
   },
   trackingAll: {
     id: 'transport.shipment.pane.tracking.all',

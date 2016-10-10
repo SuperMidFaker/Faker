@@ -4,7 +4,6 @@ import TenantForm from './tenantForm';
 
 @connectNav({
   depth: 3,
-  text: '修改租户',
   moduleName: 'tenants',
 })
 export default class Edit extends React.Component {

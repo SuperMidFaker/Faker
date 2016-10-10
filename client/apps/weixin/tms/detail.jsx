@@ -53,7 +53,7 @@ export default class Detail extends React.Component {
           {this.renderFormCell('运单号', shipmt.shipmt_no)}
           {this.renderFormCell('运输模式', transportMode)}
           {this.renderFormCell('提货日期', moment(shipmt.pickup_est_date).format('YYYY-MM-DD'))}
-          {this.renderFormCell('交货日期', moment(shipmt.deliver_est_date).format('YYYY-MM-DD'))}
+          {this.renderFormCell('送货日期', moment(shipmt.deliver_est_date).format('YYYY-MM-DD'))}
         </Cells>
         <CellsTitle>发货方</CellsTitle>
         <Cells access>

@@ -515,7 +515,7 @@ export default class Footer extends React.Component {
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <div>
                 <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
-                  更新交货
+                  更新送货
                 </Button>
                 <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowTransitModal(row)} >
                   上报位置
@@ -532,7 +532,7 @@ export default class Footer extends React.Component {
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <div>
                   <Button type="primary" size="large" style={defaultButtonStyle} onClick={() => this.handleShowDeliverModal(row)} >
-                    更新交货
+                    更新送货
                   </Button>
                   <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowTransitModal(row)} >
                     上报位置

@@ -43,9 +43,7 @@ function fetchData({ state, dispatch, cookie }) {
   { loadTable, savePending, saveAndAccept, saveDraft })
 @connectNav({
   depth: 3,
-  text: props => formatMsg(props.intl, 'shipmtCreate'),
   moduleName: 'transport',
-  lifecycle: 'componentWillReceiveProps',
 })
 @withPrivilege({ module: 'transport', feature: 'shipment', action: 'create' })
 @Form.create()

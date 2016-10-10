@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Menu } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import NavLink from './nav-link';
 import './am-ant-leftbar.less';
 
@@ -84,7 +85,8 @@ export default class AmLeftSidebar extends React.Component {
   render() {
     const links = this.props.links.filter(l => !l.invisible);
     return (
-      <div className="am-left-sidebar">
+      <QueueAnim type={['left', 'right']} duration={600}>
+      <div className="am-left-sidebar" key="sidebar">
         <Menu onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
           onClick={this.handleClick} mode="vertical" theme="dark"
         >
@@ -118,6 +120,7 @@ export default class AmLeftSidebar extends React.Component {
         }
         </Menu>
       </div>
+      </QueueAnim>
     );
   }
 }
