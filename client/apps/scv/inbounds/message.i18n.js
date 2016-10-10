@@ -75,7 +75,7 @@ const messages = defineMessages({
   },
   atdelivering: {
     id: 'scv.shipment.inbound.inland',
-    defaultMessage: '转运',
+    defaultMessage: '分拨',
   },
   atreceived: {
     id: 'scv.shipment.inbound.delivered',
