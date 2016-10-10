@@ -109,6 +109,14 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.create',
     defaultMessage: '新建运单',
   },
+  shipmtDraft: {
+    id: 'transport.acceptance.shipment.draft',
+    defaultMessage: '运输计划',
+  },
+  shipmtEdit: {
+    id: 'transport.acceptance.shipment.edit',
+    defaultMessage: '编辑运单',
+  },
   saveAndAccept: {
     id: 'transport.acceptance.save.accept',
     defaultMessage: '一键接单',

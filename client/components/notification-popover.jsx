@@ -223,7 +223,7 @@ export default class NotificationPopover extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    return (<div style={{ width: 360 }}>
+    return (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
         <div className="tools"><a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a></div>
         <span>{this.msg('notification')}</span>
