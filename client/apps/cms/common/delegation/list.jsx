@@ -316,7 +316,7 @@ export default class DelegationList extends Component {
   }
   handleDelegationAccept = (row) => {
     const { loginId, loginName } = this.props;
-    this.props.acceptDelg(loginId, loginName, row.dispId).then(
+    this.props.acceptDelg(loginId, loginName, row.id).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -428,13 +428,13 @@ export default class DelegationList extends Component {
               </span>
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1 && record.sub_status > 0) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status > 0) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
