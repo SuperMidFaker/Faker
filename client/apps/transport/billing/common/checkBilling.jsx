@@ -5,16 +5,28 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { updateBilling } from 'common/reducers/transportBilling';
+import { updateBilling, loadFeesByBillingId } from 'common/reducers/transportBilling';
+import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
 
 const rowSelection = {
   onSelect() {},
 };
+
+function fetchData({ state, dispatch, params, cookie }) {
+  return dispatch(loadFeesByBillingId({
+    billingId: params.billingId,
+    pageSize: state.transportBilling.billingFees.pageSize,
+    currentPage: state.transportBilling.billingFees.currentPage,
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connectNav({
   depth: 2,
@@ -26,16 +38,19 @@ const rowSelection = {
     loginId: state.account.loginId,
     loginName: state.account.username,
     billing: state.transportBilling.billing,
+    billingFees: state.transportBilling.billingFees,
   }),
-  { updateBilling }
+  { updateBilling, loadFeesByBillingId }
 )
 
 export default class CheckBilling extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['receivable', 'payable']),
+    tenantId: PropTypes.number.isRequired,
     billing: PropTypes.object.isRequired,
+    billingFees: PropTypes.object.isRequired,
     updateBilling: PropTypes.func.isRequired,
+    loadFeesByBillingId: PropTypes.func.isRequired,
   }
   state = {
     changed: false,
@@ -45,35 +60,47 @@ export default class CheckBilling extends React.Component {
 
   }
   render() {
-    const { billing } = this.props;
-    console.log(this.props.billing);
+    const { billing, tenantId } = this.props;
+    let partnerName = '';
+    if (tenantId === billing.srTenantId) {
+      partnerName = billing.spName;
+    } else if (tenantId === billing.spTenantId) {
+      partnerName = billing.srName;
+    }
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
       fontSize: 14,
     };
-    const dataSource = [{
-      id: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
-      adjust_charges: 0,
-      fee_status: 0,
-    }, {
-      id: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-      adjust_charges: 99.99,
-      fee_status: 1,
-    }];
-
+    const dataSource = new Table.DataSource({
+      fetcher: params => this.props.loadFeesByBillingId(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: resolve(result.totalCount, result.currentPage, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: result.pageSize,
+      }),
+      getParams: (pagination) => {
+        const { pageSize, currentPage } = this.props.billingFees;
+        const params = {
+          billingId: billing.id,
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current,
+        };
+        return params;
+      },
+      remotes: this.props.billingFees,
+    });
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
     }, {
       title: '客户',
-      dataIndex: 'customer_name',
+      render() {
+        return <TrimSpan text={partnerName} maxLen={10} />;
+      }
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',
@@ -136,14 +163,14 @@ export default class CheckBilling extends React.Component {
       <div>
         <header className="top-bar">
           <div className="tools">
-            <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
+            <Button type="primary" onClick={this.handleSave}>{this.msg('accept')}</Button>
           </div>
-          <span>{this.msg('createBilling')}</span>
+          <span>{this.msg('checkBilling')}</span>
         </header>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{this.msg('partner')}: <strong>{billing.partnerName}</strong></span>
+              <span style={handleLableStyle}>{this.msg('partner')}: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>

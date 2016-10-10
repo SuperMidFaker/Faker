@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber } from 'antd';
+import { Button, Tag, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -60,32 +60,70 @@ export default class FeesList extends React.Component {
       title: '运单号',
       dataIndex: 'shipmt_no',
     }, {
-      title: '客户',
+      title: '托运客户',
       dataIndex: 'customer_name',
+      render(o) {
+        return <TrimSpan text={o} maxLen={10} />;
+      },
     }, {
-      title: '费率',
-      dataIndex: 'charge_gradient',
+      title: '运输费用',
+      dataIndex: 'p_freight_charge',
     }, {
-      title: '计费量',
-      dataIndex: 'charg_amount',
+      title: '代垫收款',
+      dataIndex: 'p_advance_charge',
     }, {
-      title: '运费',
+      title: '特殊费用收款',
+      dataIndex: 'p_special_charge',
+    }, {
+      title: '收款合计',
+      dataIndex: 'p_total_charge',
+    }, {
+      title: '入账状态',
+      dataIndex: 'receivable_status',
+      render(o) {
+        if (o === 0) {
+          return <Tag>未入账</Tag>;
+        } else if (o === 1) {
+          return <Tag color="yellow">已入账</Tag>;
+        } else if (o === 2) {
+          return <Tag color="green">已结单</Tag>;
+        }
+        return '';
+      },
+    }, {
+      title: '承运商',
+      dataIndex: 'sp_name',
+      render(o) {
+        return <TrimSpan text={o} maxLen={10} />;
+      },
+    }, {
+      title: '运输成本',
       dataIndex: 'freight_charge',
     }, {
-      title: '特殊费用',
-      dataIndex: 'special_charge',
-    }, {
-      title: '代垫费用',
+      title: '代垫付款',
       dataIndex: 'advance_charge',
     }, {
-      title: '调整金额',
-      dataIndex: 'adjust_charge',
+      title: '特殊费用付款',
+      dataIndex: 'special_charge',
     }, {
-      title: '最终费用',
+      title: '付款合计',
       dataIndex: 'total_charge',
     }, {
-      title: '异常',
-      dataIndex: 'excp_count',
+      title: '入账状态',
+      dataIndex: 'payable_status',
+      render(o) {
+        if (o === 0) {
+          return <Tag>未入账</Tag>;
+        } else if (o === 1) {
+          return <Tag color="yellow">已入账</Tag>;
+        } else if (o === 2) {
+          return <Tag color="green">已结单</Tag>;
+        }
+        return '';
+      },
+    }, {
+      title: '利润',
+
     }, {
       title: '始发地',
       dataIndex: 'consigner_province',
@@ -99,32 +137,22 @@ export default class FeesList extends React.Component {
         return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
       },
     }, {
-      title: '实际提货时间',
-      dataIndex: 'pickup_act_date',
+      title: '异常',
+      dataIndex: 'excp_count',
       render(o) {
-        return moment(o).format('YYYY.MM.DD');
-      },
-    }, {
-      title: '实际交货时间',
-      dataIndex: 'deliver_act_date',
-      render(o) {
-        return moment(o).format('YYYY.MM.DD');
+        if (o === 0) {
+          return '';
+        }
+        return o;
       },
     }, {
       title: '回单',
-      dataIndex: 'pod_status',
-    }, {
-      title: '是否入账',
-      dataIndex: 'fee_status',
+      dataIndex: 'pod_id',
       render(o) {
-        if (o === 0) {
-          return '未入账';
-        } else if (o === 1) {
-          return '已入账';
-        } else if (o === 2) {
-          return '已结单';
+        if (!o || o === 0) {
+          return '';
         }
-        return '';
+        return <Icon type="link" />;
       },
     }];
 

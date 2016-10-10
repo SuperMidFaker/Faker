@@ -1,12 +1,17 @@
 import React, { PropTypes } from 'react';
-import { Table, Button } from 'antd';
 import { Link } from 'react-router';
+import { Button } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import BillingForm from './billingForm';
+import { loadBillings, updateBilling } from 'common/reducers/transportBilling';
+import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 const rowSelection = {
@@ -19,34 +24,68 @@ const rowSelection = {
 })
 @connect(
   state => ({
-    billing: state.transportBilling.billing,
+    tenantId: state.account.tenantId,
+    billings: state.transportBilling.billings,
   }),
-  { }
+  { loadBillings, updateBilling }
 )
 export default class BillingList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    loadBillings: PropTypes.func.isRequired,
+    updateBilling: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    billingFormVisible: false,
+  }
+  componentDidMount() {
+    const { tenantId, type } = this.props;
+    const { pageSize, currentPage } = this.props.billings;
+    this.props.loadBillings({
+      type,
+      tenantId,
+      pageSize,
+      currentPage,
+    });
+  }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAddBtnClicked = () => {
-    this.context.router.push(`/transport/billing/${this.props.type}/create`);
+    this.setState({
+      billingFormVisible: true,
+    });
+  }
+  toggleBillingForm = () => {
+    this.setState({billingFormVisible: !this.state.billingFormVisible});
   }
   render() {
-    const dataSource = [{
-      billingId: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    }, {
-      billingId: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }];
+    const { tenantId, type } = this.props;
+    const dataSource = new Table.DataSource({
+      fetcher: params => this.props.loadBillings(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: resolve(result.totalCount, result.currentPage, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: result.pageSize,
+      }),
+      getParams: (pagination) => {
+        const { pageSize, currentPage } = this.props.billings;
+        const params = {
+          type,
+          tenantId,
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current,
+        };
+        return params;
+      },
+      remotes: this.props.billings,
+    });
 
     const columns = [{
       title: '账单名称',
@@ -54,15 +93,21 @@ export default class BillingList extends React.Component {
     }, {
       title: '开始日期',
       dataIndex: 'begin_date',
+      render(o) {
+        return moment(o).format('YYYY.MM.DD');
+      },
     }, {
       title: '结束日期',
       dataIndex: 'end_date',
+      render(o) {
+        return moment(o).format('YYYY.MM.DD');
+      },
     }, {
-      title: '客户',
-      dataIndex: 'customer',
+      title: type === 'receivable' ? '客户' : '承运商',
+      dataIndex: type === 'receivable' ? 'sr_name' : 'sp_name',
     }, {
-      title: '订单数量',
-      dataIndex: 'num',
+      title: '运单数量',
+      dataIndex: 'shipmt_count',
     }, {
       title: '运单总费用',
       dataIndex: 'total_charge',
@@ -71,18 +116,21 @@ export default class BillingList extends React.Component {
       dataIndex: 'adjust_charge',
     }, {
       title: '账单总金额',
-      dataIndex: 'bill_amount',
+      dataIndex: '',
     }, {
       title: '核销金额',
       dataIndex: 'cancel_charge',
     }, {
       title: '账单状态',
       dataIndex: 'status',
+      render(o) {
+        return SHIPMENT_BILLING_STATUS[o];
+      },
     }, {
       title: '操作',
-      dataIndex: 'billingId',
-      render: (o, record) => {
-        return <Link to={`/transport/billing/checkBilling/${record.billingId}`}>{this.msg('checkBilling')}</Link>;
+      dataIndex: 'id',
+      render: (o) => {
+        return <Link to={`/transport/billing/checkBilling/${o}`}>{this.msg('checkBilling')}</Link>;
       },
     }];
 
@@ -98,8 +146,9 @@ export default class BillingList extends React.Component {
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body">
-              <Table dataSource={dataSource} columns={columns} rowKey="billingId" />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
+            <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm}/>
           </div>
         </div>
       </div>

@@ -244,3 +244,11 @@ export const PRESET_TRANSMODES = {
   ltl: 'LTL', // 零担
   ctn: 'CTN', // 集装箱
 };
+
+export const SHIPMENT_BILLING_STATUS = {
+  '1': '创建未发送',
+  '2': '接受已发送',
+  '3': '待对账',
+  '4': '双方都接受',
+  '5': '已核销',
+};

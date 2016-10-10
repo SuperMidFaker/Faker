@@ -77,6 +77,10 @@ export default defineMessages({
     id: 'transport.billing.checkBilling',
     defaultMessage: '对账',
   },
+  accept: {
+    id: 'transport.billing.accept',
+    defaultMessage: '接受',
+  },
   export: {
     id: 'transport.billing.export',
     defaultMessage: '导出',

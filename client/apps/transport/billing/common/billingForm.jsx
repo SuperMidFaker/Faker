@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Form, Input, Button, Select, DatePicker, message } from 'antd';
+import { Form, Input, Button, Select, DatePicker, message, Modal } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -26,11 +26,15 @@ firstDay.setDate(1);
 export default class BillingForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    visible: PropTypes.bool.isRequired,
+    toggle: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
-    nextStep: PropTypes.func.isRequired,
     updateBilling: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
     partners: PropTypes.array.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   state = {
     beginDate: firstDay,
@@ -50,12 +54,12 @@ export default class BillingForm extends React.Component {
     this.props.loadPartners(this.props.tenantId, partnerShipType);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  nextStep = () => {
+  handleOk = () => {
     const fieldsValue = this.props.form.getFieldsValue();
     const { beginDate, endDate } = this.state;
     if (!fieldsValue.name) {
       message.error(this.msg('namePlaceholder'));
-    } else if (!fieldsValue.partnerId) {
+    } else if (fieldsValue.partnerId === undefined) {
       message.error(this.msg('partnerPlaceholder'));
     } else if (!fieldsValue.chooseModel) {
       message.error(this.msg('chooseModelPlaceholder'));
@@ -64,9 +68,13 @@ export default class BillingForm extends React.Component {
     } else {
       const partner = this.props.partners.find(item => item.partner_id === fieldsValue.partnerId);
       const partnerName = partner.name;
-      this.props.updateBilling({ ...fieldsValue, partnerName, beginDate, endDate });
-      this.props.nextStep();
+      const partnerTenantId = partner.tid;
+      this.props.updateBilling({ ...fieldsValue, partnerName, partnerTenantId, beginDate, endDate });
+      this.context.router.push(`/transport/billing/${this.props.type}/create`);
     }
+  }
+  handleCancel = () => {
+    this.props.toggle();
   }
   handleDateChange = (dates) => {
     this.setState({
@@ -75,84 +83,69 @@ export default class BillingForm extends React.Component {
     });
   }
   render() {
-    const { form: { getFieldProps }, partners } = this.props;
+    const { form: { getFieldProps }, partners, visible } = this.props;
     const { beginDate, endDate, name, chooseModel, partnerId } = this.state;
     return (
-      <div>
-        <header className="top-bar">
-          <div className="tools">
-            <Button type="primary" onClick={this.nextStep}>{this.msg('nextStep')}</Button>
-          </div>
-          <span>{this.msg('createBilling')}</span>
-        </header>
-        <div className="main-content">
-          <div className="page-body">
-            <div className="panel-header">
-            </div>
-            <div className="panel-body">
-              <Form style={{ padding: '70px 20%' }}>
-
-
-                <FormItem
-                  id="select"
-                  label={this.msg('partner')}
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 14 }}
-                >
-                  <Select id="select" size="large"
-                    {...getFieldProps('partnerId')}
+      <Modal visible={visible} title={`${this.msg(this.props.type)}${this.msg('billing')}`}
+      onOk={this.handleOk} onCancel={this.handleCancel}>
+        <Form>
+          <FormItem
+            id="select"
+            label={this.msg('partner')}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 14 }}
+          >
+            <Select id="select" size="large"
+              {...getFieldProps('partnerId')}
+            >
+              {
+                partners.map(pt => (
+                  <Option searched={`${pt.partner_code}${pt.name}`}
+                    value={pt.partner_id} key={pt.partner_id}
                   >
-                    {
-                      partners.map(pt => (
-                        <Option searched={`${pt.partner_code}${pt.name}`}
-                          value={pt.partner_id} key={pt.partner_id}
-                        >
-                        {pt.name}
-                        </Option>)
-                      )
-                    }
-                  </Select>
-                </FormItem>
-                <FormItem
-                  id="select"
-                  label={this.msg('chooseModel')}
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 14 }}
-                >
-                  <Select id="select" size="large"
-                    {...getFieldProps('chooseModel')}
-                  >
-                    <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
-                    <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
-                    <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
-                    <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
-                  </Select>
-                </FormItem>
-                <FormItem
-                  id="control-input"
-                  label={this.msg('range')}
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 14 }}
-                >
-                  <RangePicker value={[beginDate, endDate]} onChange={this.handleDateChange} />
-                </FormItem>
-                <FormItem
-                  id="control-input"
-                  label={this.msg('billingName')}
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 14 }}
-                >
-                  <Input id="control-input" placeholder={this.msg('namePlaceholder')}
-                    {...getFieldProps('name', {
-                      initialValue: name,
-                    })}
-                  />
-                </FormItem>
-              </Form>
-            </div>
-          </div>
-        </div>
-      </div>
+                  {pt.name}
+                  </Option>)
+                )
+              }
+            </Select>
+          </FormItem>
+          <FormItem
+            id="select"
+            label={this.msg('chooseModel')}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 14 }}
+          >
+            <Select id="select" size="large"
+              {...getFieldProps('chooseModel')}
+            >
+              <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
+              <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
+              <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
+              <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
+            </Select>
+          </FormItem>
+          <FormItem
+            id="control-input"
+            label={this.msg('range')}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 14 }}
+          >
+            <RangePicker value={[beginDate, endDate]} onChange={this.handleDateChange} />
+          </FormItem>
+          <FormItem
+            id="control-input"
+            label={this.msg('billingName')}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 14 }}
+          >
+            <Input id="control-input" placeholder={this.msg('namePlaceholder')}
+              {...getFieldProps('name', {
+                initialValue: name,
+              })}
+            />
+          </FormItem>
+        </Form>
+      </Modal>
     );
   }
 }
