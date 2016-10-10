@@ -165,7 +165,6 @@ export default class ExpenseList extends Component {
             </div>
           </div>
         </div>
-        // <InputModal />
       </QueueAnim>
     );
   }

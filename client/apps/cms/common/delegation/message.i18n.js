@@ -119,7 +119,11 @@ export default defineMessages({
   },
   broker: {
     id: 'cms.delegation.delg.broker',
-    defaultMessage: '申报企业',
+    defaultMessage: '报关企业',
+  },
+  inspbroker: {
+    id: 'cms.delegation.delg.inspbroker',
+    defaultMessage: '报检企业',
   },
   goodsType: {
     id: 'cms.delegation.delg.goodstype',
