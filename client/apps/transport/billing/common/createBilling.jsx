@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByChooseModal, createBilling } from 'common/reducers/transportBilling';
@@ -13,10 +12,6 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
-
-const rowSelection = {
-  onSelect() {},
-};
 
 @injectIntl
 @connectNav({
@@ -52,7 +47,7 @@ export default class CreateBilling extends React.Component {
     changed: false,
   }
   componentDidMount() {
-    const { tenantId, loginId, type } = this.props;
+    const { tenantId, type } = this.props;
     const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
     const { pageSize, currentPage } = this.props.billingFees;
     this.props.loadFeesByChooseModal({
@@ -73,8 +68,8 @@ export default class CreateBilling extends React.Component {
     const { beginDate, endDate, chooseModel, partnerTenantId, name, cancelCharge, freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
     if (this.props.billingFees.data.length > 0) {
-      const fees = this.props.billingFees.data.filter((item) => {
-        return true; //item[`${type}_status`] === 1;
+      const fees = this.props.billingFees.data.filter((/* item*/) => {
+        return true; // item[`${type}_status`] === 1;
       });
       const fee = fees[0];
       this.props.createBilling({
@@ -83,7 +78,7 @@ export default class CreateBilling extends React.Component {
         advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
         spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
         shipmtCount: fees.length, fees,
-      }).then(result => {
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -93,13 +88,12 @@ export default class CreateBilling extends React.Component {
     } else {
       message.error('此条件下没有运单');
     }
-    
   }
-  handleChangeAdjustCharges = (feeId, adjustCharges) => {
-    console.log(feeId, adjustCharges);
+  handleChangeAdjustCharges = (/* feeId, adjustCharges */) => {
+    // console.log(feeId, adjustCharges);
   }
   render() {
-    const { tenantId, loginId, type, billing } = this.props;
+    const { tenantId, type, billing } = this.props;
     const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
 
     const handleLableStyle = {
@@ -133,13 +127,10 @@ export default class CreateBilling extends React.Component {
       },
       remotes: this.props.billingFees,
     });
-    let sourceType = 'sr';
     let partnerSourceType = 'sp';
     if (type === 'payable') {
-      sourceType = 'sr';
       partnerSourceType = 'sp';
     } else if (type === 'receivable') {
-      sourceType = 'sp';
       partnerSourceType = 'sr';
     }
     const columns = [{

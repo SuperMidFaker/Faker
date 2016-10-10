@@ -63,8 +63,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, fees: action.result.data };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED:
       return { ...state, billingFees: action.result.data };
-    case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED:
-    console.log(action.result.data);
+    case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
       return { ...state, billingFees: action.result.data, billing: {
         id: billing.id,
@@ -83,10 +82,11 @@ export default function reducer(state = initialState, action) {
         adjustCharge: billing.adjust_charge,
         totalCharge: billing.total_charge,
       } };
+    }
     case actionTypes.LOAD_BILLINGS_SUCCEED:
       return { ...state, billings: action.result.data };
     case actionTypes.CREATE_BILLING_SUCCEED:
-      return { ...state, billingFees: initialState.billingFees};
+      return { ...state, billingFees: initialState.billingFees };
     default:
       return state;
   }

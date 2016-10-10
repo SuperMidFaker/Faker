@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
-import { Form, Input, Button, Select, DatePicker, message, Modal } from 'antd';
+import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { updateBilling, loadPartners } from 'common/reducers/transportBilling';
@@ -84,10 +83,11 @@ export default class BillingForm extends React.Component {
   }
   render() {
     const { form: { getFieldProps }, partners, visible } = this.props;
-    const { beginDate, endDate, name, chooseModel, partnerId } = this.state;
+    const { beginDate, endDate, name } = this.state;
     return (
       <Modal visible={visible} title={`${this.msg(this.props.type)}${this.msg('billing')}`}
-      onOk={this.handleOk} onCancel={this.handleCancel}>
+        onOk={this.handleOk} onCancel={this.handleCancel}
+      >
         <Form>
           <FormItem
             id="select"

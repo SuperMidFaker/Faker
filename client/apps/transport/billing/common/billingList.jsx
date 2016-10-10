@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
@@ -14,9 +13,7 @@ import { loadBillings, updateBilling } from 'common/reducers/transportBilling';
 import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
-const rowSelection = {
-  onSelect() {},
-};
+
 @injectIntl
 @connectNav({
   depth: 2,
@@ -60,7 +57,7 @@ export default class BillingList extends React.Component {
     });
   }
   toggleBillingForm = () => {
-    this.setState({billingFormVisible: !this.state.billingFormVisible});
+    this.setState({ billingFormVisible: !this.state.billingFormVisible });
   }
   render() {
     const { tenantId, type } = this.props;
@@ -75,7 +72,6 @@ export default class BillingList extends React.Component {
         pageSize: result.pageSize,
       }),
       getParams: (pagination) => {
-        const { pageSize, currentPage } = this.props.billings;
         const params = {
           type,
           tenantId,
@@ -142,13 +138,13 @@ export default class BillingList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="default" type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
+              <Button type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body">
               <Table dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
-            <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm}/>
+            <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
           </div>
         </div>
       </div>

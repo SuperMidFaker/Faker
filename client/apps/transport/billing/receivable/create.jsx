@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import connectNav from 'client/common/decorators/connect-nav';
 import CreateBilling from '../common/createBilling';
 

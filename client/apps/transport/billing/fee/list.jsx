@@ -4,9 +4,7 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFees } from 'common/reducers/transportBilling';
@@ -14,10 +12,6 @@ import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 
 const formatMsg = format(messages);
-
-const rowSelection = {
-  onSelect() {},
-};
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadFees({
@@ -50,18 +44,12 @@ export default class FeesList extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
-    const handleLableStyle = {
-      marginRight: 30,
-      lineHeight: 2,
-      fontSize: 14,
-    };
-
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
     }, {
       title: '托运客户',
-      dataIndex: 'customer_name',
+      dataIndex: 'p_sr_name',
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },

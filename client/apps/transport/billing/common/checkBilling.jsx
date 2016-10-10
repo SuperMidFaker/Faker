@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { updateBilling, loadFeesByBillingId } from 'common/reducers/transportBilling';
@@ -14,11 +13,7 @@ import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
 
-const rowSelection = {
-  onSelect() {},
-};
-
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({ state, dispatch, params }) {
   return dispatch(loadFeesByBillingId({
     billingId: params.billingId,
     pageSize: state.transportBilling.billingFees.pageSize,
@@ -83,7 +78,6 @@ export default class CheckBilling extends React.Component {
         pageSize: result.pageSize,
       }),
       getParams: (pagination) => {
-        const { pageSize, currentPage } = this.props.billingFees;
         const params = {
           billingId: billing.id,
           pageSize: pagination.pageSize,
@@ -100,7 +94,7 @@ export default class CheckBilling extends React.Component {
       title: '客户',
       render() {
         return <TrimSpan text={partnerName} maxLen={10} />;
-      }
+      },
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',
@@ -137,9 +131,15 @@ export default class CheckBilling extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
+      render(o) {
+        return moment(o).format('YYYY.MM.DD');
+      },
     }, {
       title: '实际交货时间',
       dataIndex: 'deliver_act_date',
+      render(o) {
+        return moment(o).format('YYYY.MM.DD');
+      },
     }, {
       title: '回单',
       dataIndex: 'pod_status',
