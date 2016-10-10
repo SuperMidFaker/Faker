@@ -273,9 +273,17 @@ export default defineMessages({
     id: 'cms.delegation.delg.dispatch',
     defaultMessage: '分配报关委托',
   },
-  dispatchTo: {
-    id: 'cms.delegation.delg.dispatchTo',
-    defaultMessage: '分配给: ',
+  dispDecl: {
+    id: 'cms.delegation.delg.dispDecl',
+    defaultMessage: '报关分配: ',
+  },
+  dispInspect: {
+    id: 'cms.delegation.delg.dispInspect',
+    defaultMessage: '报检分配: ',
+  },
+  dispCert: {
+    id: 'cms.delegation.delg.dispCert',
+    defaultMessage: '鉴定办证分配: ',
   },
   dispatchMessage: {
     id: 'cms.delegation.message.dispatch',
