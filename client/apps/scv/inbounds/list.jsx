@@ -152,16 +152,16 @@ export default class InboundShipmentsList extends React.Component {
     },
   }, {
     title: this.msg('originCountry'),
-    width: 70,
+    width: 100,
     dataIndex: 'origin_country',
   }, {
     title: this.msg('originPort'),
-    width: 160,
+    width: 80,
     dataIndex: 'origin_port_code',
     render: (o, row) => [row.origin_port_code || '', row.origin_port_city || ''].filter(orig => orig).join(','),
   }, {
     title: this.msg('destPort'),
-    width: 160,
+    width: 80,
     dataIndex: 'dest_port_code',
     render: (o, row) => [row.dest_port_code || '', row.dest_port_city || ''].filter(orig => orig).join(','),
   }, {
