@@ -69,7 +69,7 @@ export default class Expander extends Component {
       title: this.msg('containerSizeHeight'),
       width: 120,
       render: (o, record) =>
-        `${record.container_size}/${record.container_height}`,
+        [record.container_size || '', record.container_height || ''].filter(cont => cont).join('/'),
     }, {
       title: this.msg('pickupQty'),
       dataIndex: 'pick_qty',

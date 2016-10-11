@@ -25,8 +25,8 @@ export default class AnalyticsKpiList extends React.Component {
     tenantId: PropTypes.number.isRequired,
   }
   componentDidMount() {
-    $('<div style="position: absolute;width: 100px;top: 160px;left: 100px;text-align: center;color: #444;"><p>Ontime Shipments</p><p style="font-size:18px;font-weight:bold;">90.2%</p>').appendTo('#c1');
-    $('<div style="position: absolute;width: 100px;top: 160px;left: 400px;text-align: center;color: #444;"><p>Ontime Orders</p><p style="font-size:18px;font-weight:bold;">87.9%</p>').appendTo('#c1');
+    window.$('<div style="position: absolute;width: 100px;top: 160px;left: 100px;text-align: center;color: #444;"><p>Ontime Shipments</p><p style="font-size:18px;font-weight:bold;">90.2%</p>').appendTo('#c1');
+    window.$('<div style="position: absolute;width: 100px;top: 160px;left: 400px;text-align: center;color: #444;"><p>Ontime Orders</p><p style="font-size:18px;font-weight:bold;">87.9%</p>').appendTo('#c1');
 
     const data = [
         { year: 2007, area: 'Ontime', profit: 7860 * 0.902 },
@@ -43,8 +43,8 @@ export default class AnalyticsKpiList extends React.Component {
         { year: 2011, area: 'Delay 4 Days', profit: 7620 * 0.013 },
         { year: 2011, area: 'Delay 5+Days', profit: 7620 * 0.004 },
     ];
-    const Stat = G2.Stat;
-    const chart = new G2.Chart({
+    const Stat = window.G2.Stat;
+    const chart = new window.G2.Chart({
       id: 'c1',
       width: 600,
       height: 225,

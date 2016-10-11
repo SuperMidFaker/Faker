@@ -40,10 +40,10 @@ export default class SCVDashboard extends React.Component {
         { name: 'Nov', Import: 0, Export: 0 },
         { name: 'Dec', Import: 0, Export: 0 },
     ];
-    const Frame = G2.Frame;
+    const Frame = window.G2.Frame;
     let frame = new Frame(data);
     frame = Frame.combinColumns(frame, ['Import', 'Export'], 'Revenue', 'I/E', 'name');
-    const chart = new G2.Chart({
+    const chart = new window.G2.Chart({
       id: 'c1',
       width: 1000,
       height: 300,
