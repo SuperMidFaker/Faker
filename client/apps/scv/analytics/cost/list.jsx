@@ -170,7 +170,6 @@ export default class AnalyticsCostList extends React.Component {
                   <ul className="statistics-columns">
                     <li className="col-6">
                       <div className="statistics-cell">
-                        <h6></h6>
                         <p className="data-num">￥12,578.95</p>
                       </div>
                     </li>

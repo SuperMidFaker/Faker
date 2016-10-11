@@ -39,6 +39,7 @@ import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
+import * as CMSExpense from './cms/expense';
 import * as CMSSettings from './cms/settings';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
@@ -232,6 +233,7 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="expense">
+              <IndexRoute component={CMSExpense.List} />
             </Route>
             <Route path="quote">
               <IndexRoute component={CMSQuote.List} />

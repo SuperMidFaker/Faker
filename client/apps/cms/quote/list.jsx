@@ -70,41 +70,41 @@ export default class QuoteList extends Component {
         dataIndex: 'decl_way_code',
         width: 150,
         render: (o) => {
-          let text = '';
+          const text = [];
           if (o) {
             o.forEach((d) => {
               const decl = DECL_TYPE.filter(dl => dl.key === d)[0];
-              text = `${decl && decl.value}|${text}`;
+              text.push(`${decl && decl.value}`);
             });
           }
-          return text;
+          return text.join('|');
         },
       }, {
         title: msg('transMode'),
         dataIndex: 'trans_mode',
         width: 150,
         render: (o) => {
-          let text = '';
+          const text = [];
           if (o) {
             o.forEach((d) => {
               const decl = TRANS_MODE.filter(dl => dl.value === d)[0];
-              text = `${decl && decl.text}|${text}`;
+              text.push(`${decl && decl.text}`);
             });
           }
-          return text;
+          return text.join('|');
         },
       }, {
         title: msg('remark'),
         dataIndex: 'remarks',
         width: 150,
         render: (o) => {
-          let text = '';
+          const text = [];
           if (o) {
             o.forEach((d) => {
-              text = `${d}|${text}`;
+              text.push(`${d}`);
             });
           }
-          return text;
+          return text.join('|');
         },
       }, {
         title: msg('status'),

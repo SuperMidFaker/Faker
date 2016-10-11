@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio, Button, Progress, message } from 'antd';
+import { Radio, Button, Progress, Upload, Modal, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -55,6 +55,10 @@ export default class InboundShipmentsList extends React.Component {
   }
   state = {
     expandedKeys: [],
+    uploadChangeCount: 0,
+    inUpload: false,
+    uploadPercent: 10,
+    uploadStatus: 'active',
   }
   componentDidMount() {
     this.inboundPoll = setInterval(() => {
@@ -148,18 +152,18 @@ export default class InboundShipmentsList extends React.Component {
     },
   }, {
     title: this.msg('originCountry'),
-    width: 70,
+    width: 100,
     dataIndex: 'origin_country',
   }, {
     title: this.msg('originPort'),
-    width: 160,
+    width: 80,
     dataIndex: 'origin_port_code',
-    render: (o, row) => `${row.origin_port_code},${row.origin_port_city}`,
+    render: (o, row) => [row.origin_port_code || '', row.origin_port_city || ''].filter(orig => orig).join(','),
   }, {
     title: this.msg('destPort'),
-    width: 160,
+    width: 80,
     dataIndex: 'dest_port_code',
-    render: (o, row) => `${row.dest_port_code},${row.dest_port_city}`,
+    render: (o, row) => [row.dest_port_code || '', row.dest_port_city || ''].filter(orig => orig).join(','),
   }, {
     title: this.msg('mode'),
     width: 80,
@@ -262,6 +266,27 @@ export default class InboundShipmentsList extends React.Component {
     },
     remotes: this.props.inboundlist,
   })
+  handleImport = (info) => {
+    if (this.state.uploadChangeCount === 0) {
+      this.state.uploadChangeCount++;
+      this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
+    } else if (info.event) {
+      this.state.uploadChangeCount++;
+      this.setState({ uploadPercent: info.event.percent });
+    } else if (info.file.status === 'done') {
+      this.setState({ inUpload: false, uploadStatus: 'success' });
+      this.state.uploadChangeCount = 0;
+      const { tenantId, pageSize } = this.state;
+      this.props.loadInbounds({
+        tenantId,
+        pageSize,
+        current: 1,
+      });
+    } else if (info.file.status === 'error') {
+      this.setState({ inUpload: false, uploadStatus: 'exception' });
+      this.state.uploadChangeCount = 0;
+    }
+  }
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
   }
@@ -290,13 +315,13 @@ export default class InboundShipmentsList extends React.Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    const { tenantId, inboundlist: { pageSize, current } } = this.props;
+    const { tenantId, inboundlist: { pageSize } } = this.props;
     this.setState({ expandedKeys: [] });
     this.props.loadInbounds({
       tenantId,
       filter: JSON.stringify(filter),
       pageSize,
-      current,
+      current: 1,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -307,6 +332,7 @@ export default class InboundShipmentsList extends React.Component {
   render() {
     const { inboundlist, listFilter } = this.props;
     this.dataSource.remotes = inboundlist;
+    const { inUpload, uploadPercent, uploadStatus } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -327,9 +353,14 @@ export default class InboundShipmentsList extends React.Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
+              <Upload accept=".xls,.xlsx" action={`${API_ROOTS.default}v1/scv/inbound/import/shipments`}
+                data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
+                showUploadList={false} withCredentials
+              >
               <Button type="primary" icon="plus-circle-o">
               {this.msg('importShipments')}
               </Button>
+                    </Upload>
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
@@ -341,6 +372,11 @@ export default class InboundShipmentsList extends React.Component {
           </div>
           <SendModal reload={this.handleShipmentLoad} />
         </div>
+        <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
+          <Progress type="circle" percent={uploadPercent} status={uploadStatus}
+            style={{ display: 'block', margin: '0 auto', width: '40%' }}
+          />
+        </Modal>
       </QueueAnim>
     );
   }

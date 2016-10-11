@@ -169,14 +169,19 @@ export default class DelegationList extends Component {
     */
     title: this.msg('broker'),
     width: 180,
-    dataIndex: 'recv_name',
+    dataIndex: 'decl_name',
+    render: o => <TrimSpan text={o} maxLen={8} />,
+  }, {
+    title: this.msg('inspbroker'),
+    width: 180,
+    dataIndex: 'insp_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('status'),
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
-      const CMS_STATUS = (record.source === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
+      const CMS_STATUS = (record.type === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
         return <Tag>{decl && decl.text}</Tag>;
@@ -311,7 +316,7 @@ export default class DelegationList extends Component {
   }
   handleDelegationAccept = (row) => {
     const { loginId, loginName } = this.props;
-    this.props.acceptDelg(loginId, loginName, row.dispId).then(
+    this.props.acceptDelg(loginId, loginName, row.id).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -385,7 +390,7 @@ export default class DelegationList extends Component {
       title: this.msg('opColumn'),
       width: 100,
       render: (o, record) => {
-        if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
+        if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
           return (
             <span>
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -405,7 +410,7 @@ export default class DelegationList extends Component {
               </PrivilegeCover>
             </span>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 2) {
+        } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 2) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <span>
@@ -413,7 +418,7 @@ export default class DelegationList extends Component {
               </span>
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.source === 1) {
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
@@ -423,13 +428,13 @@ export default class DelegationList extends Component {
               </span>
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.source === 1 && record.sub_status > 0) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.source === 1 && record.sub_status > 0) {
+        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
@@ -471,7 +476,7 @@ export default class DelegationList extends Component {
               <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
                 expandedRowKeys={this.state.expandedKeys}
                 expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                scroll={{ x: 1380 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>

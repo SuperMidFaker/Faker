@@ -30,7 +30,9 @@ export default class HelpcenterPopover extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    return (<Menu>
+    return (
+          <div className="navbar-popover">
+            <Menu>
               <MenuItem>
                 <a role="button" onClick={this.handleOnlineService}>
                   <Icon type="customerservice" />
@@ -49,6 +51,7 @@ export default class HelpcenterPopover extends React.Component {
                   <span>{this.msg('guide')}</span>
                 </a>
               </MenuItem>
-            </Menu>);
+            </Menu>
+          </div>);
   }
 }

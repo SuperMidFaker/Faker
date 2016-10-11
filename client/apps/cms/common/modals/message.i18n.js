@@ -33,4 +33,8 @@ export default defineMessages({
     id: 'cms.modals.tabpanes.total.fee',
     defaultMessage: '应收金额',
   },
+  info: {
+    id: 'cms.modals.tabpanes.expense,info',
+    defaultMessage: '无匹配报价规则',
+  },
 });
