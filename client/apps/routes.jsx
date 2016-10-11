@@ -198,12 +198,17 @@ export default(store, cookie) => {
               <Route path="receivable">
                 <IndexRoute component={TMSBilling.ReceivableList} />
                 <Route path="create" component={TMSBilling.CreateReceivableBilling} />
+                <Route path="check/:billingId" component={TMSBilling.CheckReceivableBilling} />
+                <Route path="edit/:billingId" component={TMSBilling.EditReceivableBilling} />
+                <Route path="view/:billingId" component={TMSBilling.ViewReceivableBilling} />
               </Route>
               <Route path="payable">
                 <IndexRoute component={TMSBilling.PayableList} />
                 <Route path="create" component={TMSBilling.CreatePayableBilling} />
+                <Route path="check/:billingId" component={TMSBilling.CheckPayableBilling} />
+                <Route path="edit/:billingId" component={TMSBilling.EditPayableBilling} />
+                <Route path="view/:billingId" component={TMSBilling.ViewPayableBilling} />
               </Route>
-              <Route path="checkBilling/:billingId" component={TMSBilling.CheckBilling} />
               <Route path="fee" component={TMSBilling.FeeList} />
             </Route>
           </Route>

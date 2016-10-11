@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber, Icon, Checkbox, Table, message } from 'antd';
+import { Button, InputNumber, Checkbox, message, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
+
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/reducers/transportBilling';
-import { renderConsignLoc } from '../../common/consignLocation';
+import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
@@ -25,67 +25,78 @@ const formatMsg = format(messages);
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
   }),
-  { loadFeesByChooseModal, createBilling, updateBillingFees }
+  { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling }
 )
 
-export default class CreateBilling extends React.Component {
+export default class BillingFeeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    type: PropTypes.oneOf(['receivable', 'payable']),
+    loginName: PropTypes.string.isRequired,
     billing: PropTypes.object.isRequired,
     billingFees: PropTypes.object.isRequired,
-    loadFeesByChooseModal: PropTypes.func.isRequired,
-    createBilling: PropTypes.func.isRequired,
+    loadFeesByBillingId: PropTypes.func.isRequired,
     updateBillingFees: PropTypes.func.isRequired,
+    checkBilling: PropTypes.func.isRequired,
+    acceptBilling: PropTypes.func.isRequired,
+    editBilling: PropTypes.func.isRequired,
+    type: PropTypes.oneOf(['receivable', 'payable']),
+    operation: PropTypes.oneOf(['check', 'edit', 'view']),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentDidMount() {
-    const { tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
-    this.props.loadFeesByChooseModal({
-      type,
-      beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-      endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
-      chooseModel,
-      partnerId,
-      partnerTenantId,
-      tenantId,
-    });
+  state = {
+    changed: false,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleSave = () => {
-    const { loginId, tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerTenantId, name, freightCharge,
-    advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
+  handleAccept = () => {
+    const { loginId, tenantId, loginName, type, billing } = this.props;
+    const { id: billingId, adjustCharge, totalCharge } = billing;
+    const fees = this.props.billingFees.data;
+    const modifyTimes = billing.modifyTimes + 1;
+    const shipmtCount = fees.filter(item => item.status === 1).length;
+    if (this.state.changed) {
+      this.props.checkBilling({
+        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
+        modifyTimes, shipmtCount, fees,
+      }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.push(`/transport/billing/${type}`);
+        }
+      });
+    } else {
+      this.props.acceptBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.push(`/transport/billing/${type}`);
+        }
+      });
+    }
+  }
+  handleEdit = () => {
+    const { loginId, tenantId, loginName, type, billing } = this.props;
+    const { id: billingId, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const shipmtCount = fees.filter(item => item.status === 1).length;
-    const fee = fees[0];
-    this.props.createBilling({
-      tenantId, loginId, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-      endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), freightCharge,
-      advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
-      spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
-      shipmtCount, fees,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.context.router.push(`/transport/billing/${type}`);
-      }
-    });
-  }
-  handleChangeAdjustCharges = (feeId, adjustCharges) => {
-    this.props.updateBillingFees(feeId, 'adjust_charge', adjustCharges);
-  }
-  handleChangeStatus = (feeId, status) => {
-    let s = 0;
-    if (status) s = 1;
-    else s = 0;
-    this.props.updateBillingFees(feeId, 'status', s);
+    if (this.state.changed) {
+      this.props.editBilling({
+        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
+        shipmtCount, fees,
+      }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.push(`/transport/billing/${type}`);
+        }
+      });
+    } else {
+      message.info('没有任何修改');
+    }
   }
   handleTableFooter = () => {
     const { billing } = this.props;
@@ -99,29 +110,57 @@ export default class CreateBilling extends React.Component {
       </div>
     );
   }
+  handleChangeAdjustCharges = (feeId, adjustCharges) => {
+    this.setState({ changed: true });
+    this.props.updateBillingFees(feeId, 'adjust_charge', adjustCharges);
+  }
+  handleChangeStatus = (feeId, status) => {
+    this.setState({ changed: true });
+    let s = 0;
+    if (status) s = 1;
+    else s = 0;
+    this.props.updateBillingFees(feeId, 'status', s);
+  }
+  renderOperation() {
+    const { operation } = this.props;
+    if (operation === 'check') {
+      return (
+        <div className="tools">
+          <Button type="primary" onClick={this.handleAccept}>{this.msg('accept')}</Button>
+        </div>
+      );
+    } else if (operation === 'edit') {
+      return (
+        <div className="tools">
+          <Button type="primary" onClick={this.handleEdit}>{this.msg('save')}</Button>
+        </div>
+      );
+    }
+    return '';
+  }
   render() {
-    const { type, billing } = this.props;
-
+    const { billing, tenantId, operation } = this.props;
+    let partnerName = '';
+    if (tenantId === billing.srTenantId) {
+      partnerName = billing.spName;
+    } else if (tenantId === billing.spTenantId) {
+      partnerName = billing.srName;
+    }
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
       fontSize: 14,
     };
     const dataSource = this.props.billingFees.data;
-    let partnerSourceType = 'sp';
-    if (type === 'payable') {
-      partnerSourceType = 'sp';
-    } else if (type === 'receivable') {
-      partnerSourceType = 'sr';
-    }
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
+      fixed: 'left',
+      width: 150,
     }, {
       title: '客户',
-      dataIndex: `${partnerSourceType}_name`,
-      render(o) {
-        return <TrimSpan text={o} maxLen={10} />;
+      render() {
+        return <TrimSpan text={partnerName} maxLen={10} />;
       },
     }, {
       title: '费率',
@@ -142,6 +181,9 @@ export default class CreateBilling extends React.Component {
       title: '调整金额',
       dataIndex: 'adjust_charge',
       render: (o, record) => {
+        if (operation === 'view') {
+          return o ? o.toFixed(2) : '';
+        }
         return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
       },
     }, {
@@ -169,15 +211,9 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '始发地',
       dataIndex: 'consigner_province',
-      render(o, record) {
-        return (<TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />);
-      },
     }, {
       title: '目的地',
       dataIndex: 'consignee_province',
-      render(o, record) {
-        return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
-      },
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
@@ -193,36 +229,49 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '回单',
       dataIndex: 'pod_status',
-      render(o) {
-        if (!o || o === 0) {
-          return '';
-        }
-        return <Icon type="link" />;
-      },
     }, {
       title: '是否入账',
       dataIndex: 'status',
+      fixed: 'right',
+      width: 80,
       render: (o, record) => {
+        if (operation === 'view') {
+          return (<Checkbox disabled defaultChecked={o === 1} />);
+        }
         return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />);
+      },
+    }, {
+      title: '更新',
+      dataIndex: 'last_updated_tenant_name',
+      fixed: 'right',
+      width: 150,
+      render(o) {
+        return <TrimSpan text={o} maxLen={10} />;
+      },
+    }, {
+      title: '更新时间',
+      dataIndex: 'last_updated_date',
+      fixed: 'right',
+      width: 150,
+      render(o) {
+        return o ? moment(o).format('YYYY.MM.DD HH:mm:ss') : '';
       },
     }];
     return (
       <div>
         <header className="top-bar">
-          <div className="tools">
-            <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
-          </div>
-          <span>{this.msg('createBilling')}</span>
+          {this.renderOperation()}
+          <span>{this.msg(`${operation}Billing`)}</span>
         </header>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{this.msg('partner')}: <strong>{billing.partnerName}</strong></span>
+              <span style={handleLableStyle}>{this.msg('partner')}: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} scroll={{ x: 2000 }} />
             </div>
           </div>
         </div>

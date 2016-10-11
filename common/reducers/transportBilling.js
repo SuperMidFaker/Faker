@@ -3,12 +3,18 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'UPDATE_BILLING',
+  'UPDATE_BILLINGFEES',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FEES', 'LOAD_FEES_SUCCEED', 'LOAD_FEES_FAIL',
   'LOAD_FEES_BYCHOOSEMODAL', 'LOAD_FEES_BYCHOOSEMODAL_SUCCEED', 'LOAD_FEES_BYCHOOSEMODAL_FAIL',
   'LOAD_FEES_BYBILLINGID', 'LOAD_FEES_BYBILLINGID_SUCCEED', 'LOAD_FEES_BYBILLINGID_FAIL',
   'LOAD_BILLINGS', 'LOAD_BILLINGS_SUCCEED', 'LOAD_BILLINGS_FAIL',
   'CREATE_BILLING', 'CREATE_BILLING_SUCCEED', 'CREATE_BILLING_FAIL',
+  'SEND_BILLING', 'SEND_BILLING_SUCCEED', 'SEND_BILLING_FAIL',
+  'CHECK_BILLING', 'CHECK_BILLING_SUCCEED', 'CHECK_BILLING_FAIL',
+  'EDIT_BILLING', 'EDIT_BILLING_SUCCEED', 'EDIT_BILLING_FAIL',
+  'ACCEPT_BILLING', 'ACCEPT_BILLING_SUCCEED', 'ACCEPT_BILLING_FAIL',
+  'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
 ]);
 
 const initialState = {
@@ -36,33 +42,94 @@ const initialState = {
     spTenantId: -1,
     srName: '',
     srTenantId: -1,
-    cancelCharge: 0,
     freightCharge: 0,
     advanceCharge: 0,
     excpCharge: 0,
     adjustCharge: 0,
     totalCharge: 0,
+    modifyTimes: 0,
   },
   billingFees: {
-    pageSize: 10,
-    currentPage: 1,
-    totalCount: 0,
     data: [],
   },
   partners: [],
 };
 
+function calculateBillingCharges(fees) {
+  const billing = {
+    freightCharge: 0,
+    advanceCharge: 0,
+    excpCharge: 0,
+    adjustCharge: 0,
+    totalCharge: 0,
+  };
+  fees.forEach((item) => {
+    if (item.freight_charge !== null) {
+      billing.freightCharge += item.freight_charge;
+    }
+    if (item.advance_charge !== null) {
+      billing.advanceCharge += item.advance_charge;
+    }
+    if (item.excp_charge !== null) {
+      billing.excpCharge += item.excp_charge;
+    }
+    if (item.adjust_charge !== null) {
+      billing.adjustCharge += item.adjust_charge;
+    }
+    if (item.total_charge !== null) {
+      billing.totalCharge += item.total_charge;
+    }
+  });
+  return {
+    freightCharge: Number(billing.freightCharge.toFixed(2)),
+    advanceCharge: Number(billing.advanceCharge.toFixed(2)),
+    excpCharge: Number(billing.excpCharge.toFixed(2)),
+    adjustCharge: Number(billing.adjustCharge.toFixed(2)),
+    totalCharge: Number(billing.totalCharge.toFixed(2)),
+  };
+}
+
+function calculateFeeTotalCharge(fee) {
+  let totalCharge = 0;
+
+  if (fee.advance_charge !== null) {
+    totalCharge += fee.advance_charge;
+  }
+  if (fee.excp_charge !== null) {
+    totalCharge += fee.excp_charge;
+  }
+  if (fee.adjust_charge !== null) {
+    totalCharge += fee.adjust_charge;
+  }
+  if (fee.total_charge !== null) {
+    totalCharge += fee.total_charge;
+  }
+  return Number(totalCharge.toFixed(2));
+}
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPDATE_BILLING:
       return { ...state, billing: { ...state.billing, ...action.billing } };
+    case actionTypes.UPDATE_BILLINGFEES: {
+      const billingFees = state.billingFees.data.map((item) => {
+        if (item.id === action.data.feeId) {
+          const fee = { ...item, [action.data.field]: action.data.value };
+          return { ...fee, total_charge: calculateFeeTotalCharge(fee) };
+        }
+        return item;
+      });
+      const billing = calculateBillingCharges(billingFees.filter(item => item.status === 1));
+      return { ...state, billingFees: { ...state.billingFees, data: billingFees }, billing: { ...state.billing, ...billing } };
+    }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FEES_SUCCEED:
       return { ...state, fees: action.result.data };
-    case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED:
-      return { ...state, billingFees: action.result.data };
+    case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
+      const billing = calculateBillingCharges(action.result.data.data);
+      return { ...state, billingFees: action.result.data, billing: { ...state.billing, ...billing } };
+    }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
       return { ...state, billingFees: action.result.data, billing: {
@@ -75,17 +142,19 @@ export default function reducer(state = initialState, action) {
         spTenantId: billing.sp_tenant_id,
         srName: billing.sr_name,
         srTenantId: billing.sr_tenant_id,
-        cancelCharge: billing.cancel_charge,
         freightCharge: billing.freight_charge,
         advanceCharge: billing.advance_charge,
         excpCharge: billing.excp_charge,
         adjustCharge: billing.adjust_charge,
         totalCharge: billing.total_charge,
+        modifyTimes: billing.modify_times,
       } };
     }
     case actionTypes.LOAD_BILLINGS_SUCCEED:
-      return { ...state, billings: action.result.data };
+      return { ...state, billings: action.result.data, billingFees: initialState.billingFees };
     case actionTypes.CREATE_BILLING_SUCCEED:
+      return { ...state, billingFees: initialState.billingFees };
+    case actionTypes.CHECK_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
     default:
       return state;
@@ -94,6 +163,10 @@ export default function reducer(state = initialState, action) {
 
 export function updateBilling(billing) {
   return { type: actionTypes.UPDATE_BILLING, billing };
+}
+
+export function updateBillingFees(feeId, field, value) {
+  return { type: actionTypes.UPDATE_BILLINGFEES, data: { feeId, field, value } };
 }
 
 export function loadPartners(tenantId, typeCode) {
@@ -171,7 +244,7 @@ export function loadBillings({ type, tenantId, pageSize, currentPage }) {
   };
 }
 
-export function createBilling({ type, tenantId, loginId, name, chooseModel, beginDate, endDate, cancelCharge, freightCharge,
+export function createBilling({ tenantId, loginId, name, chooseModel, beginDate, endDate, freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srName, spTenantId, spName, toTenantId,
     shipmtCount, fees }) {
   return {
@@ -183,9 +256,84 @@ export function createBilling({ type, tenantId, loginId, name, chooseModel, begi
       ],
       endpoint: 'v1/transport/billing',
       method: 'post',
-      data: { type, tenantId, loginId, name, chooseModel, beginDate, endDate, cancelCharge, freightCharge,
+      data: { tenantId, loginId, name, chooseModel, beginDate, endDate, freightCharge,
         advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srName, spTenantId, spName, toTenantId,
         shipmtCount, fees },
+    },
+  };
+}
+
+export function sendBilling({ tenantId, loginId, loginName, billingId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_BILLING,
+        actionTypes.SEND_BILLING_SUCCEED,
+        actionTypes.SEND_BILLING_FAIL,
+      ],
+      endpoint: 'v1/transport/sendBilling',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId },
+    },
+  };
+}
+
+export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHECK_BILLING,
+        actionTypes.CHECK_BILLING_SUCCEED,
+        actionTypes.CHECK_BILLING_FAIL,
+      ],
+      endpoint: 'v1/transport/checkBilling',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
+    },
+  };
+}
+
+export function editBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, shipmtCount, fees }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_BILLING,
+        actionTypes.EDIT_BILLING_SUCCEED,
+        actionTypes.EDIT_BILLING_FAIL,
+      ],
+      endpoint: 'v1/transport/editBilling',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, shipmtCount, fees },
+    },
+  };
+}
+
+export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCEPT_BILLING,
+        actionTypes.ACCEPT_BILLING_SUCCEED,
+        actionTypes.ACCEPT_BILLING_FAIL,
+      ],
+      endpoint: 'v1/transport/acceptBilling',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId },
+    },
+  };
+}
+
+export function changeCancelCharge({ tenantId, loginId, loginName, billingId, cancelCharge }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_CHARGE,
+        actionTypes.CANCEL_CHARGE_SUCCEED,
+        actionTypes.CANCEL_CHARGE_FAIL,
+      ],
+      endpoint: 'v1/transport/billing/changeCancelCharge',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId, cancelCharge },
     },
   };
 }

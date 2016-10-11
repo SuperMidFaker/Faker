@@ -61,13 +61,16 @@ export default class FeesList extends React.Component {
       dataIndex: 'p_advance_charge',
     }, {
       title: '特殊费用收款',
-      dataIndex: 'p_special_charge',
+      dataIndex: 'p_excp_charge',
     }, {
       title: '收款合计',
       dataIndex: 'p_total_charge',
+      render(o) {
+        return <span style={{ color: '#339966' }}>{o}</span>;
+      },
     }, {
       title: '入账状态',
-      dataIndex: 'receivable_status',
+      dataIndex: 'p_status',
       render(o) {
         if (o === 0) {
           return <Tag>未入账</Tag>;
@@ -92,13 +95,16 @@ export default class FeesList extends React.Component {
       dataIndex: 'advance_charge',
     }, {
       title: '特殊费用付款',
-      dataIndex: 'special_charge',
+      dataIndex: 'excp_charge',
     }, {
       title: '付款合计',
       dataIndex: 'total_charge',
+      render(o) {
+        return <span style={{ color: '#FF0000' }}>{o}</span>;
+      },
     }, {
       title: '入账状态',
-      dataIndex: 'payable_status',
+      dataIndex: 'status',
       render(o) {
         if (o === 0) {
           return <Tag>未入账</Tag>;
@@ -111,7 +117,9 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '利润',
-
+      render(_, record) {
+        return <span style={{ color: '#FF9900' }}>{(record.p_total_charge - record.total_charge).toFixed(2)}</span>;
+      },
     }, {
       title: '始发地',
       dataIndex: 'consigner_province',
@@ -175,7 +183,7 @@ export default class FeesList extends React.Component {
               <Button type="primary">{this.msg('importAdvanceCharge')}</Button>
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
-            <div className="panel-body">
+            <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
           </div>

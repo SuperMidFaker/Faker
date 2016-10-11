@@ -74,8 +74,16 @@ export default defineMessages({
     defaultMessage: '账单周期',
   },
   checkBilling: {
-    id: 'transport.billing.checkBilling',
+    id: 'transport.billing.check',
     defaultMessage: '对账',
+  },
+  editBilling: {
+    id: 'transport.billing.edit',
+    defaultMessage: '修改账单',
+  },
+  viewBilling: {
+    id: 'transport.billin.view',
+    defaultMessage: '查看账单',
   },
   accept: {
     id: 'transport.billing.accept',
