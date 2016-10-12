@@ -111,15 +111,17 @@ export default class BillingFeeList extends React.Component {
     );
   }
   handleChangeAdjustCharges = (feeId, adjustCharges) => {
+    const { tenantId } = this.props;
     this.setState({ changed: true });
-    this.props.updateBillingFees(feeId, 'adjust_charge', adjustCharges);
+    this.props.updateBillingFees(tenantId, feeId, 'adjust_charge', adjustCharges);
   }
   handleChangeStatus = (feeId, status) => {
+    const { tenantId } = this.props;
     this.setState({ changed: true });
     let s = 0;
     if (status) s = 1;
     else s = 0;
-    this.props.updateBillingFees(feeId, 'status', s);
+    this.props.updateBillingFees(tenantId, feeId, 'status', s);
   }
   renderOperation() {
     const { operation } = this.props;

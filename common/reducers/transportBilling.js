@@ -70,12 +70,15 @@ function calculateBillingCharges(fees) {
     }
     if (item.advance_charge !== null) {
       billing.advanceCharge += item.advance_charge;
+      billing.totalCharge += item.advance_charge;
     }
     if (item.excp_charge !== null) {
       billing.excpCharge += item.excp_charge;
+      billing.totalCharge += item.excp_charge;
     }
     if (item.adjust_charge !== null) {
       billing.adjustCharge += item.adjust_charge;
+      billing.totalCharge += item.adjust_charge;
     }
     if (item.total_charge !== null) {
       billing.totalCharge += item.total_charge;
@@ -90,24 +93,6 @@ function calculateBillingCharges(fees) {
   };
 }
 
-function calculateFeeTotalCharge(fee) {
-  let totalCharge = 0;
-
-  if (fee.advance_charge !== null) {
-    totalCharge += fee.advance_charge;
-  }
-  if (fee.excp_charge !== null) {
-    totalCharge += fee.excp_charge;
-  }
-  if (fee.adjust_charge !== null) {
-    totalCharge += fee.adjust_charge;
-  }
-  if (fee.total_charge !== null) {
-    totalCharge += fee.total_charge;
-  }
-  return Number(totalCharge.toFixed(2));
-}
-
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPDATE_BILLING:
@@ -115,8 +100,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_BILLINGFEES: {
       const billingFees = state.billingFees.data.map((item) => {
         if (item.id === action.data.feeId) {
-          const fee = { ...item, [action.data.field]: action.data.value };
-          return { ...fee, total_charge: calculateFeeTotalCharge(fee) };
+          const fee = { ...item, [action.data.field]: action.data.value, last_updated_tenant_id: action.data.tenantId };
+          return fee;
         }
         return item;
       });
@@ -166,8 +151,8 @@ export function updateBilling(billing) {
   return { type: actionTypes.UPDATE_BILLING, billing };
 }
 
-export function updateBillingFees(feeId, field, value) {
-  return { type: actionTypes.UPDATE_BILLINGFEES, data: { feeId, field, value } };
+export function updateBillingFees(tenantId, feeId, field, value) {
+  return { type: actionTypes.UPDATE_BILLINGFEES, data: { tenantId, feeId, field, value } };
 }
 
 export function loadPartners(tenantId, typeCode) {
