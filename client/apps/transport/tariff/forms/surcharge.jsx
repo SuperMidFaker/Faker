@@ -19,6 +19,9 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     surcharge: state.transportTariff.surcharge,
     tariffId: state.transportTariff.tariffId,
     quotes: state.transportTariff.quotes,
@@ -30,6 +33,9 @@ const Option = Select.Option;
 
 export default class SurchargeForm extends React.Component {
   static propTypes = {
+    tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     surcharge: PropTypes.object.isRequired,
     submitSurcharges: PropTypes.func.isRequired,
     tariffId: PropTypes.string.isRequired,
@@ -93,9 +99,17 @@ export default class SurchargeForm extends React.Component {
     });
     const row = this.props.quotes.fees[index - 4];
     if (this.props.quotes._id) {
+      const params = {
+        quoteId: this.props.quotes._id,
+        tenantId: this.props.tenantId,
+        modifyById: this.props.loginId,
+        modifyBy: this.props.loginName,
+        modifyCount: 1,
+      };
+      
       if (row._id) {
         this.props.feeUpdate(
-          this.props.quotes._id,
+          params,
           row,
         ).then((result) => {
           if (result.error) {
@@ -104,7 +118,7 @@ export default class SurchargeForm extends React.Component {
         });
       } else {
         this.props.feeAdd(
-          this.props.quotes._id,
+          params,
           row,
         ).then((result) => {
           if (result.error) {
@@ -126,8 +140,15 @@ export default class SurchargeForm extends React.Component {
     this.setState({
       editIndex: -1,
     });
+    const params = {
+      quoteId: this.props.quotes._id,
+      tenantId: this.props.tenantId,
+      modifyById: this.props.loginId,
+      modifyBy: this.props.loginName,
+      modifyCount: 1,
+    };
     this.props.feeDelete(
-      this.props.quotes._id,
+      params,
       row._id,
     ).then((result) => {
       if (result.error) {
