@@ -65,6 +65,18 @@ export function loadExpense(tenantId) {
   };
 }
 
+export function loadCushInputSave(tenantId, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.EXP_LOAD, actionTypes.EXP_LOAD_SUCCEED, actionTypes.EXP_LOAD_FAIL],
+      endpoint: 'v1/cms/expense/cushion/inputsave',
+      method: 'post',
+      data: { tenantId, params },
+      origin: 'mongo',
+    },
+  };
+}
+
 export function closeInModal() {
   return {
     type: actionTypes.CLOSE_IN_MODAL,

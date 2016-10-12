@@ -13,7 +13,7 @@ import messages from './message.i18n';
 import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
-// import InputModal from './modals/inputModal';
+import InputModal from './modals/inputModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -165,6 +165,7 @@ export default class ExpenseList extends Component {
             </div>
           </div>
         </div>
+        <InputModal data={expslist.data} />
       </QueueAnim>
     );
   }
