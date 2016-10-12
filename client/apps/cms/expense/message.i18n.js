@@ -89,8 +89,8 @@ const messages = defineMessages({
     id: 'cms.expense.modal.fee.value',
     defaultMessage: '金额',
   },
-  curSty: {
-    id: 'cms.expense.modal.cur',
+  currency: {
+    id: 'cms.expense.modal.currency',
     defaultMessage: '币制',
   },
   remark: {

@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, openInModal } from 'common/reducers/cmsExpense';
+import { loadExpense, openInModal, loadCurrencies } from 'common/reducers/cmsExpense';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';
@@ -44,7 +44,7 @@ ColumnSwitch.propTypes = {
     tenantId: state.account.tenantId,
     expslist: state.cmsExpense.expslist,
   }),
-  { openInModal }
+  { openInModal, loadCurrencies }
 )
 @connectNav({
   depth: 2,
@@ -56,6 +56,8 @@ export default class ExpenseList extends Component {
     tenantId: PropTypes.number.isRequired,
     expslist: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
+    openInModal: PropTypes.func.isRequired,
+    loadCurrencies: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -71,6 +73,7 @@ export default class ExpenseList extends Component {
     this.forceUpdate();
   }
   handleCushInput = () => {
+    this.props.loadCurrencies();
     this.props.openInModal();
   }
   render() {

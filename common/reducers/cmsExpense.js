@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_PANE_LOAD', 'EXP_PANE_LOAD_SUCCEED', 'EXP_PANE_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
+  'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
 ]);
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
     data: [],
   },
   showInputModal: false,
+  currencies: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -32,6 +34,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, expslist: { ...state.expslist, loading: true } };
     case actionTypes.EXP_LOAD_SUCCEED:
       return { ...state, expslist: { ...state.expslist, ...action.result.data, loading: false } };
+    case actionTypes.CURRENCY_LOAD_SUCCEED:
+      return { ...state, currencies: action.result.data };
     case actionTypes.CLOSE_IN_MODAL:
       return { ...state, showInputModal: false };
     case actionTypes.OPEN_IN_MODAL:
@@ -61,6 +65,16 @@ export function loadExpense(tenantId) {
       method: 'get',
       params: { tenantId },
       origin: 'mongo',
+    },
+  };
+}
+
+export function loadCurrencies() {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CURRENCY_LOAD, actionTypes.CURRENCY_LOAD_SUCCEED, actionTypes.CURRENCY_LOAD_FAIL],
+      endpoint: 'v1/cms/expense/currencies',
+      method: 'get',
     },
   };
 }
