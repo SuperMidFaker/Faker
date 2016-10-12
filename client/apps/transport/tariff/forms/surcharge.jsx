@@ -106,7 +106,7 @@ export default class SurchargeForm extends React.Component {
         modifyBy: this.props.loginName,
         modifyCount: 1,
       };
-      
+
       if (row._id) {
         this.props.feeUpdate(
           params,
