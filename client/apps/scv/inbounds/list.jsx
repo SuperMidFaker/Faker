@@ -276,7 +276,7 @@ export default class InboundShipmentsList extends React.Component {
     } else if (info.file.status === 'done') {
       this.setState({ inUpload: false, uploadStatus: 'success' });
       this.state.uploadChangeCount = 0;
-      const { tenantId, pageSize } = this.state;
+      const { tenantId, pageSize } = this.props;
       this.props.loadInbounds({
         tenantId,
         pageSize,
@@ -357,10 +357,10 @@ export default class InboundShipmentsList extends React.Component {
                 data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
                 showUploadList={false} withCredentials
               >
-              <Button type="primary" icon="plus-circle-o">
-              {this.msg('importShipments')}
-              </Button>
-                    </Upload>
+                <Button type="primary" icon="plus-circle-o">
+                {this.msg('importShipments')}
+                </Button>
+              </Upload>
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}

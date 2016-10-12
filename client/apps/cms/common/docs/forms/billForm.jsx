@@ -4,10 +4,12 @@ import { Collapse, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
-import { addNewBillBody, delBillBody, editBillBody, saveBillHead } from 'common/reducers/cmsDeclare';
+import ExcelUpload from 'client/components/excelUploader';
+import { addNewBillBody, delBillBody, editBillBody, saveBillHead, loadBillBodyList } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import globalMessage from 'client/common/root.i18n';
+import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);
 
@@ -44,7 +46,7 @@ const Panel = Collapse.Panel;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead }
+  { addNewBillBody, delBillBody, editBillBody, saveBillHead, loadBillBodyList }
 )
 @Form.create()
 export default class BillForm extends React.Component {
@@ -60,8 +62,25 @@ export default class BillForm extends React.Component {
     delBillBody: PropTypes.func.isRequired,
     editBillBody: PropTypes.func.isRequired,
     saveBillHead: PropTypes.func.isRequired,
+    loadBillBodyList: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  billListPanelHeader = (
+    <span>
+      {this.msg('billList')}
+      <ExcelUpload endpoint={''} formData={{
+        bill_seq_no: this.props.billHead.bill_seq_no,
+        tenant_id: this.props.tenantId,
+        creater_login_id: this.props.loginId,
+      }} onUploaded={this.handleUploaded}
+      >
+        <Button type="primary" style={{ marginLeft: 5, paddingTop: -2 }}>Import</Button>
+      </ExcelUpload>
+    </span>
+  )
+  handleUploaded = () => {
+    this.props.loadBillBodyList({ billSeqNo: this.props.billHead.bill_seq_no });
+  }
   handleBillSave = (ev) => {
     ev.preventDefault();
     // todo bill head save sync with entry head, vice verse
@@ -89,7 +108,7 @@ export default class BillForm extends React.Component {
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
           </Panel>
-          <Panel header={this.msg('billList')} key="bill-list">
+          <Panel header={/* this.msg('billList') */this.billListPanelHeader} key="bill-list">
             <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
               onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
               billSeqNo={billHead.bill_seq_no}

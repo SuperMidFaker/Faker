@@ -157,6 +157,12 @@ export default class FreightCharge extends React.Component {
       deliver_checked: false,
     });
   }
+  handleTotalChange = (ev) => {
+    ev.preventDefault();
+    this.props.setConsignFields({
+      freight_charge: ev.target.value,
+    });
+  }
   render() {
     const { formhoc, formData } = this.props;
     const { computed } = this.state;
@@ -207,7 +213,9 @@ export default class FreightCharge extends React.Component {
           />
         }
         <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
-          field="total_charge" fieldProps={{ initialValue: formData.total_charge }}
+          field="total_charge" fieldProps={{ initialValue: formData.total_charge,
+            onChange: this.handleTotalChange,
+          }}
           rules={[{ type: 'number', transform: v => Number(v),
             message: this.msg('totalChargeMustBeNumber') }]}
           colSpan={8} readOnly={computed}
