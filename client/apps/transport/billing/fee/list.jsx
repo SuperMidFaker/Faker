@@ -184,7 +184,7 @@ export default class FeesList extends React.Component {
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{x: 1600}}/>
             </div>
           </div>
         </div>
