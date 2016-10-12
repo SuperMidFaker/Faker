@@ -83,13 +83,13 @@ export default class CreateBilling extends React.Component {
     }
   }
   handleChangeAdjustCharges = (feeId, adjustCharges) => {
-    this.props.updateBillingFees(feeId, 'adjust_charge', adjustCharges);
+    this.props.updateBillingFees(null, feeId, 'adjust_charge', adjustCharges);
   }
   handleChangeStatus = (feeId, status) => {
     let s = 0;
     if (status) s = 1;
     else s = 0;
-    this.props.updateBillingFees(feeId, 'status', s);
+    this.props.updateBillingFees(null, feeId, 'status', s);
   }
   handleTableFooter = () => {
     const { billing } = this.props;
