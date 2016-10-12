@@ -62,21 +62,26 @@ export default class CreateBilling extends React.Component {
     const { beginDate, endDate, chooseModel, partnerTenantId, name, freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
     const fees = this.props.billingFees.data;
-    const shipmtCount = fees.filter(item => item.status === 1).length;
-    const fee = fees[0];
-    this.props.createBilling({
-      tenantId, loginId, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-      endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), freightCharge,
-      advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
-      spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
-      shipmtCount, fees,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.context.router.push(`/transport/billing/${type}`);
-      }
-    });
+    if (fees.length === 0) {
+      message.error('没有运单');
+    } else {
+      const shipmtCount = fees.filter(item => item.status === 1).length;
+      const fee = fees[0];
+      this.props.createBilling({
+        tenantId, loginId, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
+        endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), freightCharge,
+        advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
+        spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
+        shipmtCount, fees,
+      }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.push(`/transport/billing/${type}`);
+        }
+      });
+    }
+    
   }
   handleChangeAdjustCharges = (feeId, adjustCharges) => {
     this.props.updateBillingFees(feeId, 'adjust_charge', adjustCharges);

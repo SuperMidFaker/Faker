@@ -67,6 +67,8 @@ export default class FeesList extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
+      fixed: 'left',
+      width: 150,
     }, {
       title: '托运客户',
       dataIndex: 'p_sr_name',
@@ -105,7 +107,7 @@ export default class FeesList extends React.Component {
         if (record.p_total_charge !== null) {
           pTotalCharge += record.p_total_charge;
         }
-        return <span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>;
+        return record.p_status ? (<span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>) : '';
       },
     }, {
       title: '入账状态',
