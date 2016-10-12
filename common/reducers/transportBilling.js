@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'EDIT_BILLING', 'EDIT_BILLING_SUCCEED', 'EDIT_BILLING_FAIL',
   'ACCEPT_BILLING', 'ACCEPT_BILLING_SUCCEED', 'ACCEPT_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
+  'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
 ]);
 
 const initialState = {
@@ -334,6 +335,21 @@ export function changeCancelCharge({ tenantId, loginId, loginName, billingId, ca
       endpoint: 'v1/transport/billing/changeCancelCharge',
       method: 'post',
       data: { tenantId, loginId, loginName, billingId, cancelCharge },
+    },
+  };
+}
+
+export function importAdvanceCharge({ tenantId, loginId, loginName }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.IMPORT_ADVANCECHARGE,
+        actionTypes.IMPORT_ADVANCECHARGE_SUCCEED,
+        actionTypes.IMPORT_ADVANCECHARGE_FAIL,
+      ],
+      endpoint: 'v1/transport/billing/importAdvanceCharge',
+      method: 'post',
+      data: { tenantId, loginId, loginName },
     },
   };
 }

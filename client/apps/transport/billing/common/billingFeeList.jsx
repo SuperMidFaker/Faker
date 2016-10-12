@@ -171,12 +171,21 @@ export default class BillingFeeList extends React.Component {
     }, {
       title: '运费',
       dataIndex: 'freight_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '特殊费用',
       dataIndex: 'excp_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '代垫费用',
       dataIndex: 'advance_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '调整金额',
       dataIndex: 'adjust_charge',

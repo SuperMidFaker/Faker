@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Tag, Icon } from 'antd';
+import { Button, Tag, Icon, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFees } from 'common/reducers/transportBilling';
+import { loadFees, importAdvanceCharge } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 
@@ -30,19 +30,39 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     fees: state.transportBilling.fees,
   }),
-  { loadFees }
+  { loadFees, importAdvanceCharge }
 )
 
 export default class FeesList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     loadFees: PropTypes.func.isRequired,
     fees: PropTypes.object.isRequired,
+    importAdvanceCharge: PropTypes.func.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
+  handleImportAdvanceCharge = () => {
+    const { tenantId, loginId, loginName, fees } = this.props;
+    this.props.importAdvanceCharge({ tenantId, loginId, loginName }).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('导入成功');
+        this.props.loadFees({
+          tenantId,
+          pageSize: fees.pageSize,
+          currentPage: fees.currentPage,
+        });
+      }
+    });
+  }
   render() {
     const columns = [{
       title: '运单号',
@@ -56,17 +76,36 @@ export default class FeesList extends React.Component {
     }, {
       title: '运输费用',
       dataIndex: 'p_freight_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '代垫收款',
       dataIndex: 'p_advance_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '特殊费用收款',
       dataIndex: 'p_excp_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '收款合计',
       dataIndex: 'p_total_charge',
-      render(o) {
-        return <span style={{ color: '#339966' }}>{o}</span>;
+      render(o, record) {
+        let pTotalCharge = 0;
+        if (record.p_advance_charge !== null) {
+          pTotalCharge += record.p_advance_charge;
+        }
+        if (record.p_excp_charge !== null) {
+          pTotalCharge += record.p_excp_charge;
+        }
+        if (record.p_total_charge !== null) {
+          pTotalCharge += record.p_total_charge;
+        }
+        return <span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>;
       },
     }, {
       title: '入账状态',
@@ -90,17 +129,36 @@ export default class FeesList extends React.Component {
     }, {
       title: '运输成本',
       dataIndex: 'freight_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '代垫付款',
       dataIndex: 'advance_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '特殊费用付款',
       dataIndex: 'excp_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '付款合计',
       dataIndex: 'total_charge',
-      render(o) {
-        return <span style={{ color: '#FF0000' }}>{o}</span>;
+      render(o, record) {
+        let totalCharge = 0;
+        if (record.advance_charge !== null) {
+          totalCharge += record.advance_charge;
+        }
+        if (record.excp_charge !== null) {
+          totalCharge += record.excp_charge;
+        }
+        if (record.total_charge !== null) {
+          totalCharge += record.total_charge;
+        }
+        return <span style={{ color: '#FF0000' }}>{totalCharge.toFixed(2)}</span>;
       },
     }, {
       title: '入账状态',
@@ -118,7 +176,27 @@ export default class FeesList extends React.Component {
     }, {
       title: '利润',
       render(_, record) {
-        return <span style={{ color: '#FF9900' }}>{(record.p_total_charge - record.total_charge).toFixed(2)}</span>;
+        let pTotalCharge = 0;
+        if (record.p_advance_charge !== null) {
+          pTotalCharge += record.p_advance_charge;
+        }
+        if (record.p_excp_charge !== null) {
+          pTotalCharge += record.p_excp_charge;
+        }
+        if (record.p_total_charge !== null) {
+          pTotalCharge += record.p_total_charge;
+        }
+        let totalCharge = 0;
+        if (record.advance_charge !== null) {
+          totalCharge += record.advance_charge;
+        }
+        if (record.excp_charge !== null) {
+          totalCharge += record.excp_charge;
+        }
+        if (record.total_charge !== null) {
+          totalCharge += record.total_charge;
+        }
+        return <span style={{ color: '#FF9900' }}>{(pTotalCharge - totalCharge).toFixed(2)}</span>;
       },
     }, {
       title: '始发地',
@@ -180,7 +258,7 @@ export default class FeesList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary">{this.msg('importAdvanceCharge')}</Button>
+              <Button type="primary" onClick={this.handleImportAdvanceCharge}>{this.msg('importAdvanceCharge')}</Button>
               <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
