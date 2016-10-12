@@ -86,7 +86,7 @@ export default class ExpenseList extends Component {
         width: 100,
       }, {
         title: msg('custName'),
-        dataIndex: 'partner.name',
+        dataIndex: 'send_name',
         width: 150,
         render: o => <TrimSpan text={o} maxLen={12} />,
       }, {
@@ -99,7 +99,7 @@ export default class ExpenseList extends Component {
         width: 100,
       }, {
         title: msg('servBill'),
-        dataIndex: 'tot_sercharges.total_fee',
+        dataIndex: 'serv_bill',
         width: 100,
         render: (o) => {
           if (o) {
@@ -108,23 +108,49 @@ export default class ExpenseList extends Component {
         },
       }, {
         title: msg('cushBill'),
+        dataIndex: 'cush_bill',
         width: 100,
+        render: (o) => {
+          if (o) {
+            return o.toFixed(2);
+          }
+        },
       }, {
         title: msg('allBill'),
         width: 100,
-        render: (record) => {
-          const allbill = (record.tot_sercharges.total_fee || 0) + (record.tot_cushcharges || 0);
-          return allbill.toFixed(2);
+        dataIndex: 'all_bill',
+        render: (o) => {
+          if (o) {
+            return o.toFixed(2);
+          }
         },
       }, {
         title: msg('servCost'),
+        dataIndex: 'serv_cost',
         width: 100,
+        render: (o) => {
+          if (o) {
+            return o.toFixed(2);
+          }
+        },
       }, {
         title: msg('cushCost'),
+        dataIndex: 'cush_cost',
         width: 100,
+        render: (o) => {
+          if (o) {
+            return o.toFixed(2);
+          }
+        },
       }, {
         title: msg('allCost'),
+        dataIndex: 'all_cost',
         width: 100,
+        render: (o) => {
+          if (o) {
+            return o.toFixed(2);
+          }
+        },
       }, {
         title: msg('statementEn'),
         width: 100,
