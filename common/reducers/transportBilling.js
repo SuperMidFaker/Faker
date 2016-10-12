@@ -100,7 +100,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_BILLINGFEES: {
       const billingFees = state.billingFees.data.map((item) => {
         if (item.id === action.data.feeId) {
-          const fee = { ...item, [action.data.field]: action.data.value, last_updated_tenant_id: action.data.tenantId };
+          const fee = { ...item,
+            [action.data.field]: action.data.value,
+            last_updated_tenant_id: action.data.tenantId,
+            last_updated_date: new Date(),
+          };
           return fee;
         }
         return item;
