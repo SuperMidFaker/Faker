@@ -97,5 +97,13 @@ const messages = defineMessages({
     id: 'cms.expense.modal.remark',
     defaultMessage: '备注',
   },
+  custBroker: {
+    id: 'cms.expense.modal.cust.broker',
+    defaultMessage: '报关供应商',
+  },
+  ciqBroker: {
+    id: 'cms.expense.modal.ciq.broker',
+    defaultMessage: '报检供应商',
+  },
 });
 export default messages;

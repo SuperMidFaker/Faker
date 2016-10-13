@@ -6,6 +6,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
+  'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
 ]);
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   },
   showInputModal: false,
   currencies: [],
+  expFeesMap: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -40,6 +42,24 @@ export default function reducer(state = initialState, action) {
       return { ...state, showInputModal: false };
     case actionTypes.OPEN_IN_MODAL:
       return { ...state, showInputModal: true };
+    case actionTypes.LOAD_SUBTABLE: {
+      const expFeesMap = { ...state.expFeesMap };
+      expFeesMap[action.params.delgNo] = [];
+      expFeesMap[action.params.delgNo].loading = true;
+      return { ...state, expFeesMap };
+    }
+    case actionTypes.LOAD_SUBTABLE_SUCCEED: {
+      const expFeesMap = { ...state.expFeesMap };
+      expFeesMap[action.params.delgNo] = action.result.data;
+      expFeesMap[action.params.delgNo].loading = false;
+      return { ...state, expFeesMap };
+    }
+    case actionTypes.LOAD_SUBTABLE_FAIL: {
+      const expFeesMap = { ...state.expFeesMap };
+      expFeesMap[action.params.delgNo] = [];
+      expFeesMap[action.params.delgNo].loading = false;
+      return { ...state, expFeesMap };
+    }
     default:
       return state;
   }
@@ -86,6 +106,22 @@ export function loadCushInputSave(tenantId, params) {
       endpoint: 'v1/cms/expense/cushion/inputsave',
       method: 'post',
       data: { tenantId, params },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadSubTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SUBTABLE,
+        actionTypes.LOAD_SUBTABLE_SUCCEED,
+        actionTypes.LOAD_SUBTABLE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/subtable/load',
+      method: 'get',
+      params,
       origin: 'mongo',
     },
   };

@@ -13,6 +13,7 @@ import messages from './message.i18n';
 import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
+import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
 
 const formatMsg = format(messages);
@@ -189,8 +190,12 @@ export default class ExpenseList extends Component {
                 {msg('markState')}
               </Button>
             </div>
-            <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={expslist.data} loading={expslist.loading} />
+            <div className="panel-body table-panel expandable">
+              <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
+                expandedRowKeys={this.state.expandedKeys}
+                expandedRowRender={expslist.data.length > 0 && this.handleSubexpsList}
+                scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
+              />
             </div>
           </div>
         </div>
