@@ -10,6 +10,7 @@ import messages from '../message.i18n';
 import { loadFees, importAdvanceCharge } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
+import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 
@@ -62,6 +63,10 @@ export default class FeesList extends React.Component {
         });
       }
     });
+  }
+  handleExportExcel = () => {
+    window.open(`${API_ROOTS.default}v1/transport/billing/exportFeesExcel/${createFilename('fees')}.xlsx?tenantId=${this.props.tenantId}`);
+    this.handleClose();
   }
   render() {
     const columns = [{
@@ -261,7 +266,7 @@ export default class FeesList extends React.Component {
           <div className="page-body">
             <div className="panel-header">
               <Button type="primary" onClick={this.handleImportAdvanceCharge}>{this.msg('importAdvanceCharge')}</Button>
-              <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
+              <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1600 }} />

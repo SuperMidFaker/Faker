@@ -13,6 +13,7 @@ import { loadBillings, updateBilling, sendBilling } from 'common/reducers/transp
 import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
+import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 
@@ -89,6 +90,11 @@ export default class BillingList extends React.Component {
   handleShowCancelChargeModal = (billingId, fromId) => {
     this.setState({ billingId, fromId });
     this.setState({ cancelChargeModalVisible: true });
+  }
+  handleExportExcel = () => {
+    const { tenantId, type } = this.props;
+    window.open(`${API_ROOTS.default}v1/transport/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
+    this.handleClose();
   }
   render() {
     const { tenantId, type } = this.props;
@@ -224,7 +230,7 @@ export default class BillingList extends React.Component {
           <div className="page-body">
             <div className="panel-header">
               <Button type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
-              <Button style={{ marginLeft: 16 }}>{this.msg('export')}</Button>
+              <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowKey="id" />
