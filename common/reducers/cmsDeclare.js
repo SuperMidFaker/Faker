@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
+  'LOAD_BILLBODY', 'LOAD_BILLBODY_SUCCEED', 'LOAD_BILLBODY_FAIL',
 ]);
 
 const initialState = {
@@ -173,6 +174,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleEfModal: true, efModal: action.data };
     case actionTypes.CLOSE_EF_MODAL:
       return { ...state, visibleEfModal: false, efModal: initialState.efModal };
+    case actionTypes.LOAD_BILLBODY_SUCCEED:
+      return { ...state, billBody: action.result.data };
     default:
       return state;
   }
@@ -455,6 +458,21 @@ export function fillEntryNo({ entryNo, entryHeadId, delgNo }) {
       endpoint: 'v1/cms/declare/entry/fillno',
       method: 'post',
       data: { entryNo, entryHeadId, delgNo },
+    },
+  };
+}
+
+export function loadBillBodyList({ billSeqNo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILLBODY,
+        actionTypes.LOAD_BILLBODY_SUCCEED,
+        actionTypes.LOAD_BILLBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/billbody/list',
+      method: 'get',
+      params: { billSeqNo },
     },
   };
 }

@@ -30,10 +30,7 @@ const DropdownButton = Dropdown.Button;
 )
 @connectNav({
   depth: 3,
-  text: '返回',
   moduleName: 'clearance',
-  lifecycle: 'componentWillReceiveProps',
-  until: true,
 })
 export default class EntryBillForm extends React.Component {
   static propTypes = {

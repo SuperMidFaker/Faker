@@ -56,7 +56,7 @@ export default class SubdelgTable extends Component {
     render: (o, record) => {
       if (record.bill_status === undefined
         || this.props.delgStatus === CMS_DELEGATION_STATUS.unaccepted) {
-        return <span />;
+        return o || '';
       } else if (record.bill_status > 4) {
         return (
           <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
