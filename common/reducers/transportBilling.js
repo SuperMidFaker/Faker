@@ -104,6 +104,7 @@ export default function reducer(state = initialState, action) {
             [action.data.field]: action.data.value,
             last_updated_tenant_id: action.data.tenantId,
             last_updated_date: new Date(),
+            updated_field: action.data.field,
           };
           return fee;
         }
