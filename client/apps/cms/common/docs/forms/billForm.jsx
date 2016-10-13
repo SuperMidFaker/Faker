@@ -64,20 +64,28 @@ export default class BillForm extends React.Component {
     saveBillHead: PropTypes.func.isRequired,
     loadBillBodyList: PropTypes.func.isRequired,
   }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.readonly && nextProps.billHead !== this.props.billHead) {
+      this.billListPanelHeader = (
+        <span>
+          {this.msg('billList')}
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
+            formData={{
+              data: JSON.stringify({
+                bill_seq_no: this.props.billHead.bill_seq_no,
+                tenant_id: this.props.tenantId,
+                creater_login_id: this.props.loginId,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Button type="primary" style={{ marginLeft: 5, paddingTop: -2 }}>Import</Button>
+          </ExcelUpload>
+        </span>
+      );
+    }
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  billListPanelHeader = (
-    <span>
-      {this.msg('billList')}
-      <ExcelUpload endpoint={''} formData={{
-        bill_seq_no: this.props.billHead.bill_seq_no,
-        tenant_id: this.props.tenantId,
-        creater_login_id: this.props.loginId,
-      }} onUploaded={this.handleUploaded}
-      >
-        <Button type="primary" style={{ marginLeft: 5, paddingTop: -2 }}>Import</Button>
-      </ExcelUpload>
-    </span>
-  )
+  billListPanelHeader = this.msg('billList')
   handleUploaded = () => {
     this.props.loadBillBodyList({ billSeqNo: this.props.billHead.bill_seq_no });
   }
