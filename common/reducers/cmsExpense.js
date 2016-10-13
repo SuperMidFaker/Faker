@@ -6,6 +6,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
+  'CUSH_SAVE', 'CUSH_SAVE_SUCCEED', 'CUSH_SAVE_FAIL',
   'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
 ]);
 
@@ -21,6 +22,9 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
+  listFilter: {
+    status: 'all',
+  },
   showInputModal: false,
   currencies: [],
   expFeesMap: {},
@@ -34,8 +38,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, expenses: { ...state.expenses, ...action.result.data } };
     case actionTypes.EXP_LOAD:
       return { ...state, expslist: { ...state.expslist, loading: true } };
-    case actionTypes.EXP_LOAD_SUCCEED:
-      return { ...state, expslist: { ...state.expslist, ...action.result.data, loading: false } };
+    case actionTypes.EXP_LOAD_SUCCEED: {
+      const expFeesMap = {};
+      const exps = action.result.data;
+      exps.data.forEach((exp) => {
+        expFeesMap[exp.delg_no] = [];
+      });
+      return { ...state, expslist: { ...state.expslist, ...exps, loading: false },
+        expFeesMap, listFilter: JSON.parse(action.params.filter) };
+    }
     case actionTypes.CURRENCY_LOAD_SUCCEED:
       return { ...state, currencies: action.result.data };
     case actionTypes.CLOSE_IN_MODAL:
@@ -68,7 +79,11 @@ export default function reducer(state = initialState, action) {
 export function loadPaneExp(delgNo) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.EXP_PANE_LOAD, actionTypes.EXP_PANE_LOAD_SUCCEED, actionTypes.EXP_PANE_LOAD_FAIL],
+      types: [
+        actionTypes.EXP_PANE_LOAD,
+        actionTypes.EXP_PANE_LOAD_SUCCEED,
+        actionTypes.EXP_PANE_LOAD_FAIL,
+      ],
       endpoint: 'v1/cms/expense/paneload',
       method: 'get',
       params: { delgNo },
@@ -77,13 +92,17 @@ export function loadPaneExp(delgNo) {
   };
 }
 
-export function loadExpense(tenantId) {
+export function loadExpense(params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.EXP_LOAD, actionTypes.EXP_LOAD_SUCCEED, actionTypes.EXP_LOAD_FAIL],
+      types: [
+        actionTypes.EXP_LOAD,
+        actionTypes.EXP_LOAD_SUCCEED,
+        actionTypes.EXP_LOAD_FAIL,
+      ],
       endpoint: 'v1/cms/expense/load',
       method: 'get',
-      params: { tenantId },
+      params,
       origin: 'mongo',
     },
   };
@@ -92,17 +111,25 @@ export function loadExpense(tenantId) {
 export function loadCurrencies() {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CURRENCY_LOAD, actionTypes.CURRENCY_LOAD_SUCCEED, actionTypes.CURRENCY_LOAD_FAIL],
+      types: [
+        actionTypes.CURRENCY_LOAD,
+        actionTypes.CURRENCY_LOAD_SUCCEED,
+        actionTypes.CURRENCY_LOAD_FAIL,
+      ],
       endpoint: 'v1/cms/expense/currencies',
       method: 'get',
     },
   };
 }
 
-export function loadCushInputSave(tenantId, params) {
+export function saveCushInput(tenantId, params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.EXP_LOAD, actionTypes.EXP_LOAD_SUCCEED, actionTypes.EXP_LOAD_FAIL],
+      types: [
+        actionTypes.CUSH_SAVE,
+        actionTypes.CUSH_SAVE_SUCCEED,
+        actionTypes.CUSH_SAVE_FAIL,
+      ],
       endpoint: 'v1/cms/expense/cushion/inputsave',
       method: 'post',
       data: { tenantId, params },
