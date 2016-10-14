@@ -78,6 +78,14 @@ const initialState = {
       pageSize: 10,
       currentPage: 1,
     },
+    todos: {
+      unaccepted: [],
+      undispatched: [],
+      undelivered: [],
+      intransit: [],
+      delivered: [],
+      podsubmit: [],
+    },
   },
   changeShipmentModal: {
     visible: false,
