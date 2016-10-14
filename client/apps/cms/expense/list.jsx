@@ -7,7 +7,8 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, openInModal, loadCurrencies } from 'common/reducers/cmsExpense';
+import { loadExpense, openInModal, loadCurrencies, openMarkModal } from 'common/reducers/cmsExpense';
+import { EXP_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';
@@ -15,6 +16,7 @@ import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
 import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
+import MarkModal from './modals/markModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -36,8 +38,9 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     expslist: state.cmsExpense.expslist,
     listFilter: state.cmsExpense.listFilter,
+    saved: state.cmsExpense.saved,
   }),
-  { openInModal, loadCurrencies, loadExpense }
+  { openInModal, loadCurrencies, loadExpense, openMarkModal }
 )
 @connectNav({
   depth: 2,
@@ -51,14 +54,21 @@ export default class ExpenseList extends Component {
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
     openInModal: PropTypes.func.isRequired,
+    openMarkModal: PropTypes.func.isRequired,
     loadCurrencies: PropTypes.func.isRequired,
     loadExpense: PropTypes.func.isRequired,
+    saved: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     expandedKeys: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.saved !== this.props.saved) {
+      this.handleExpListLoad();
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor);
   columns = [
@@ -197,7 +207,7 @@ export default class ExpenseList extends Component {
     this.props.openInModal();
   }
   handleMarkStatement = () => {
-
+    this.props.openMarkModal();
   }
   handleSubexpsList = (record) => {
     return (
@@ -210,6 +220,7 @@ export default class ExpenseList extends Component {
   render() {
     const { expslist, listFilter } = this.props;
     this.dataSource.remotes = expslist;
+    const unstateData = expslist.data.filter(dt => dt.status === 0);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -243,7 +254,8 @@ export default class ExpenseList extends Component {
             </div>
           </div>
         </div>
-        <InputModal data={expslist.data} />
+        <InputModal data={unstateData} />
+        <MarkModal data={unstateData} />
       </QueueAnim>
     );
   }

@@ -8,6 +8,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
   'CUSH_SAVE', 'CUSH_SAVE_SUCCEED', 'CUSH_SAVE_FAIL',
   'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
+  'CLOSE_MARK_MODAL', 'OPEN_MARK_MODAL',
+  'MARK_SAVE', 'MARK_SAVE_SUCCEED', 'MARK_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -28,6 +30,8 @@ const initialState = {
   showInputModal: false,
   currencies: [],
   expFeesMap: {},
+  showMarkModal: false,
+  saved: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -37,7 +41,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
       return { ...state, expenses: { ...state.expenses, ...action.result.data } };
     case actionTypes.EXP_LOAD:
-      return { ...state, expslist: { ...state.expslist, loading: true } };
+      return { ...state, expslist: { ...state.expslist, loading: true }, saved: false };
     case actionTypes.EXP_LOAD_SUCCEED: {
       const expFeesMap = {};
       const exps = action.result.data;
@@ -53,6 +57,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, showInputModal: false };
     case actionTypes.OPEN_IN_MODAL:
       return { ...state, showInputModal: true };
+    case actionTypes.CLOSE_MARK_MODAL:
+      return { ...state, showMarkModal: false };
+    case actionTypes.OPEN_MARK_MODAL:
+      return { ...state, showMarkModal: true };
     case actionTypes.LOAD_SUBTABLE: {
       const expFeesMap = { ...state.expFeesMap };
       expFeesMap[action.params.delgNo] = {};
@@ -71,6 +79,10 @@ export default function reducer(state = initialState, action) {
       expFeesMap[action.params.delgNo].loading = false;
       return { ...state, expFeesMap };
     }
+    case actionTypes.CUSH_SAVE_SUCCEED:
+      return { ...state, saved: true };
+    case actionTypes.MARK_SAVE_SUCCEED:
+      return { ...state, saved: true };
     default:
       return state;
   }
@@ -154,6 +166,22 @@ export function loadSubTable(params) {
   };
 }
 
+export function saveMarkstate(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MARK_SAVE,
+        actionTypes.MARK_SAVE_SUCCEED,
+        actionTypes.MARK_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/statement/mark',
+      method: 'post',
+      data: { params },
+      origin: 'mongo',
+    },
+  };
+}
+
 export function closeInModal() {
   return {
     type: actionTypes.CLOSE_IN_MODAL,
@@ -163,5 +191,17 @@ export function closeInModal() {
 export function openInModal() {
   return {
     type: actionTypes.OPEN_IN_MODAL,
+  };
+}
+
+export function closeMarkModal() {
+  return {
+    type: actionTypes.CLOSE_MARK_MODAL,
+  };
+}
+
+export function openMarkModal() {
+  return {
+    type: actionTypes.OPEN_MARK_MODAL,
   };
 }
