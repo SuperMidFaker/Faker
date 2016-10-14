@@ -31,7 +31,6 @@ const isomorphic = argv.admin ?
   require('../webpack/adminIsomorphic')
     : require('../webpack/isomorphic');
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
-  .development(__DEV__)
   .server(rootDir, () => {
     if (argv.admin) {
       require('./admin');

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
+import moment from 'moment';
 import { Row, Col, Form, Select, InputNumber, DatePicker, Card } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -46,33 +47,30 @@ export default class ModeInfo extends React.Component {
   handlePickupChange = (pickupDt) => {
     const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
     const deliverDate = new Date(
-      pickupDt.getTime() + transitTime * ONE_DAY_MS
+      pickupDt.valueOf() + transitTime * ONE_DAY_MS
     );
     this.props.formhoc.setFieldsValue({
-      deliver_est_date: deliverDate,
+      deliver_est_date: moment(deliverDate),
     });
   }
   handleTransitChange = (value) => {
-    let pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
+    const pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
     if (pickupDt && typeof value === 'number') {
-      if (typeof pickupDt === 'string') {
-        pickupDt = new Date(pickupDt);
-      }
       const deliverDate = new Date(
-        pickupDt.getTime() + value * ONE_DAY_MS
+        pickupDt.valueOf() + value * ONE_DAY_MS
       );
       this.props.formhoc.setFieldsValue({
-        deliver_est_date: deliverDate,
+        deliver_est_date: moment(deliverDate),
       });
     }
   }
   handleDeliveryChange = (deliverDt) => {
     const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
     const pickupDt = new Date(
-      deliverDt.getTime() - transitTime * ONE_DAY_MS
+      deliverDt.valueOf() - transitTime * ONE_DAY_MS
     );
     this.props.formhoc.setFieldsValue({
-      pickup_est_date: pickupDt,
+      pickup_est_date: moment(pickupDt, 'YYYY-MM-DD'),
     });
   }
   handleModeChange = (id) => {
@@ -97,7 +95,8 @@ export default class ModeInfo extends React.Component {
       transitModes, vehicleTypes, vehicleLengths,
       formhoc: { getFieldProps },
       fieldDefaults: {
-        pickup_est_date, transit_time, deliver_est_date, vehicle_type_id,
+        pickup_est_date: pickupDt, transit_time,
+        deliver_est_date: deliverDt, vehicle_type_id,
         vehicle_length_id, container_no, transport_mode_code: modeCode,
         transport_mode_id: modeId,
       },
@@ -165,9 +164,9 @@ export default class ModeInfo extends React.Component {
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
                   rules: [{
-                    required: true, message: this.msg('deliveryDateMust'), type: 'date',
+                    required: true, message: this.msg('deliveryDateMust'), type: 'object',
                   }],
-                  initialValue: pickup_est_date,
+                  initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
                 }
               )}
               />
@@ -197,9 +196,9 @@ export default class ModeInfo extends React.Component {
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,
                   rules: [{
-                    required: true, message: this.msg('deliveryDateMust'), type: 'date',
+                    required: true, message: this.msg('deliveryDateMust'), type: 'object',
                   }],
-                  initialValue: deliver_est_date,
+                  initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
                 }
               )}
               />

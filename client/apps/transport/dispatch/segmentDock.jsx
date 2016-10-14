@@ -94,7 +94,9 @@ export default class SegmentDock extends React.Component {
           <Col span="12">运输模式：</Col>
         </Row>
         <Row type="flex" justify="start">
-          <Col span="12"><DatePicker format="yyyy.MM.dd" onChange={this.handleDayChange.bind(this, od, 'deliver')} /></Col>
+          <Col span="12">
+            <DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'deliver')} />
+          </Col>
           <Col span="12">
             <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'deliver')}>
               {mds}
@@ -106,7 +108,7 @@ export default class SegmentDock extends React.Component {
           <Col span="12">运输模式：</Col>
         </Row>
         <Row type="flex" justify="start">
-          <Col span="12"><DatePicker format="yyyy.MM.dd" onChange={this.handleDayChange.bind(this, od, 'pickup')} /></Col>
+          <Col span="12"><DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'pickup')} /></Col>
           <Col span="12">
             <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'pickup')}>
               {mds}
@@ -125,20 +127,21 @@ export default class SegmentDock extends React.Component {
   }
 
   handleDayChange(order, type, date) {
+    const inDate = date.toDate();
     if (order === 1) {
       const { segGroupFirst } = this.state;
       if (type === 'deliver') {
-        segGroupFirst.deliverEstDate = date;
+        segGroupFirst.deliverEstDate = inDate;
       } else if (type === 'pickup') {
-        segGroupFirst.pickupEstDate = date;
+        segGroupFirst.pickupEstDate = inDate;
       }
       this.setState(segGroupFirst);
     } else {
       const { segGroupSecond } = this.state;
       if (type === 'deliver') {
-        segGroupSecond.deliverEstDate = date;
+        segGroupSecond.deliverEstDate = inDate;
       } else if (type === 'pickup') {
-        segGroupSecond.pickupEstDate = date;
+        segGroupSecond.pickupEstDate = inDate;
       }
       this.setState(segGroupSecond);
     }

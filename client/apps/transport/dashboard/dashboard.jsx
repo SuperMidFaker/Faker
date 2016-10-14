@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -54,7 +55,9 @@ export default class Dashboard extends React.Component {
     const { count, startDate, endDate, todos } = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} defaultValue={[startDate, endDate]} onChange={this.onDateChange} />
+        <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate), moment(endDate)]}
+          onChange={this.onDateChange}
+        />
       </div>);
 
     const columns = [{

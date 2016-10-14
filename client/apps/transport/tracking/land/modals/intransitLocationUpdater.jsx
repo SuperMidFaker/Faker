@@ -86,10 +86,10 @@ export default class LocationUpdater extends React.Component {
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportTime')}
             wrapperCol={{ span: 18 }} required
           >
-            <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
+            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
               {...getFieldProps('location_time', {
                 rules: [{
-                  type: 'date',
+                  type: 'object',
                   required: true, message: this.msg('reportTimeMust'),
                 }],
               })}
