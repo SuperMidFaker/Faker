@@ -377,6 +377,10 @@ export default defineMessages({
     id: 'transport.shipment.track.charge.fee',
     defaultMessage: '金额',
   },
+  chargeChecked: {
+    id: 'transport.shipment.track.charge.checked',
+    defaultMessage: '计入',
+  },
   expenseItem: {
     id: 'transport.shipment.track.charge.expense.item',
     defaultMessage: '成本明细项',
