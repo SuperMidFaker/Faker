@@ -24,7 +24,7 @@ function getFieldInits(aspect, formData) {
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
       'goods_type', 'order_no', 'remark',
     ].forEach((fd) => {
-      init[fd] = formData[fd] === undefined ? null : formData[fd];
+      init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
     init.internal_no = formData.ref_external_no;
   }
