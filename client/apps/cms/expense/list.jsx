@@ -202,8 +202,22 @@ export default class ExpenseList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleExpListLoad(1, filter);
   }
-  handleSearch = () => {
+  handleSearch = (searchVal) => {
+    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    this.handleExpListLoad(1, filters);
+  }
 
+  mergeFilters(curFilters, value) {
+    const newFilters = {};
+    Object.keys(curFilters).forEach((key) => {
+      if (key !== 'filterNo') {
+        newFilters[key] = curFilters[key];
+      }
+    });
+    if (value !== null && value !== undefined && value !== '') {
+      newFilters.filterNo = value;
+    }
+    return newFilters;
   }
   handleCushInput = () => {
     this.props.loadCurrencies();

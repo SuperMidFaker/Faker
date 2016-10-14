@@ -90,7 +90,7 @@ export default class ExpSubTable extends Component {
         col[`${ct.fee_code}`] = ct.total_fee.toFixed(2);
         column.push({ title: ct.fee_name, dataIndex: ct.fee_code, width: 80 });
       });
-      col.broker = expFees.cust.broker;
+      col.broker = expFees.ciq.broker;
       ciqColumns = ciqColumns.concat(column);
       ciqSource.push(col);
     }

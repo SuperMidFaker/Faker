@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   searchPlaceholder: {
     id: 'cms.expense.search',
-    defaultMessage: '委托编号/发票号',
+    defaultMessage: '委托编号/发票号/提运单号',
   },
   expense: {
     id: 'cms.expense.title',
