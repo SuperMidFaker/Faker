@@ -18,7 +18,7 @@ function MSCheckbox(props) {
   return (
     <div>
       <Checkbox onChange={handleChange} checked={state[fieldOpt][field]}>
-      {text}
+        {text}
       </Checkbox>
     </div>
   );
@@ -155,7 +155,7 @@ export default class MergeSplitModal extends React.Component {
               <Row>
                 <Col span="3">
                   <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                  {this.msg('conditionalMerge')}
+                    {this.msg('conditionalMerge')}
                   </Radio>
                 </Col>
                 <Col offset="2" span="19">
@@ -167,7 +167,7 @@ export default class MergeSplitModal extends React.Component {
               <Row>
                 <Col span="3">
                   <Radio checked={!mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                  {this.msg('nonMerge')}
+                    {this.msg('nonMerge')}
                   </Radio>
                 </Col>
                 <Col offset="2" span="19">

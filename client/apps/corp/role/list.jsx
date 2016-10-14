@@ -149,11 +149,11 @@ export default class RoleList extends React.Component {
             <PrivilegeCover module="corp" feature="role" action="edit">
               <span>
                 <NavLink to={`/corp/role/edit/${record.id}`}>
-                {formatGlobalMsg(intl, 'modify')}
+                  {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
                 <a role="button" onClick={() => this.handleDisable(record, index)}>
-                {formatContainerMsg(intl, 'disableOp')}
+                  {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
             </PrivilegeCover>);
@@ -162,7 +162,7 @@ export default class RoleList extends React.Component {
             <span>
               <PrivilegeCover module="corp" feature="role" action="edit">
                 <a role="button" onClick={() => this.handleEnable(record, index)}>
-                {formatContainerMsg(intl, 'enableOp')}
+                  {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>
             </span>);
@@ -174,7 +174,7 @@ export default class RoleList extends React.Component {
         <div className="panel-header">
           <PrivilegeCover module="corp" feature="role" action="create">
             <Button type="primary" onClick={this.handleCreate} icon="plus-circle-o">
-            {formatGlobalMsg(intl, 'createNew')}
+              {formatGlobalMsg(intl, 'createNew')}
             </Button>
           </PrivilegeCover>
         </div>

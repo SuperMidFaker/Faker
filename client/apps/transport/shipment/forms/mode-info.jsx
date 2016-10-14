@@ -115,7 +115,7 @@ export default class ModeInfo extends React.Component {
             wrapperCol={{ span: 24 - labelColSpan }}
           >
             <Select {...getFieldProps('vehicle_type_id', { initialValue: vehicle_type_id })}>
-            {vehicleTypes.map(
+              {vehicleTypes.map(
               vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
             )}
             </Select>
@@ -126,7 +126,7 @@ export default class ModeInfo extends React.Component {
             wrapperCol={{ span: 24 - labelColSpan }}
           >
             <Select {...getFieldProps('vehicle_length_id', { initialValue: vehicle_length_id })}>
-            {vehicleLengths.map(
+              {vehicleLengths.map(
               vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
             )}
             </Select>
@@ -169,7 +169,8 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: pickup_est_date,
                 }
-              )} />
+              )}
+              />
             </FormItem>
           </Col>
           <Col span={`${outerColSpan}`}>
@@ -184,7 +185,8 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: transit_time,
                 })
-              } />
+              }
+              />
             </FormItem>
           </Col>
           <Col span={`${outerColSpan}`}>
@@ -199,11 +201,12 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: deliver_est_date,
                 }
-              )} />
+              )}
+              />
             </FormItem>
           </Col>
-         </Row>
-         <Row>
+        </Row>
+        <Row>
           <Col span={16}>
             <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }} required
@@ -217,8 +220,9 @@ export default class ModeInfo extends React.Component {
                   initialValue: modeId,
                   onChange: this.handleModeChange,
                 }
-              )}>
-              {transitModes.map(
+              )}
+              >
+                {transitModes.map(
                 tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
               )}
               </Select>

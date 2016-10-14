@@ -35,8 +35,7 @@ export default class CRMDashboard extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-          </div>
+          <div className="tools" />
           <span>{this.msg('dashboardTitle')}</span>
         </header>
         <div className="main-content" key="main">

@@ -69,10 +69,8 @@ export default class Settings extends Component {
         </aside>
         <div className="main-content with-side-bar" key="main">
           <div className="page-body">
-            <div className="panel-header">
-            </div>
-            <div className="panel-body table-panel">
-            </div>
+            <div className="panel-header" />
+            <div className="panel-body table-panel" />
           </div>
         </div>
       </QueueAnim>

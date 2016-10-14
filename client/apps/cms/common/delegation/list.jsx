@@ -19,7 +19,7 @@ import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n.js';
+import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
@@ -399,7 +399,7 @@ export default class DelegationList extends Component {
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                 <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
-                {this.msg('modify')}
+                  {this.msg('modify')}
                 </NavLink>
               </PrivilegeCover>
               <span className="ant-divider" />
@@ -468,7 +468,7 @@ export default class DelegationList extends Component {
             <div className="panel-header">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus-circle-o">
-                {this.msg('delgNew')}
+                  {this.msg('delgNew')}
                 </Button>
               </PrivilegeCover>
             </div>

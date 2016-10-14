@@ -31,11 +31,11 @@ export default class FormInput extends React.Component {
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           hasFeedback={hasFeedback} required={required}
         >
-            <Input type={type} disabled={disabled} placeholder={placeholder}
-              {...getFieldProps(field, { rules, initialValue:
+          <Input type={type} disabled={disabled} placeholder={placeholder}
+            {...getFieldProps(field, { rules, initialValue:
                 formData && formData[field] && String(formData[field]),
               ...fieldProps })}
-            />
+          />
         </FormItem>
       </Col>
     );

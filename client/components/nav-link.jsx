@@ -20,7 +20,7 @@ export default class NavLink extends React.Component {
     const NavComp = component || Link;
     return (
       <NavComp to={to} className={className} onChange={ev => onChange(ev)} onClick={onChange}>
-      {children}
+        {children}
       </NavComp>);
   }
 }

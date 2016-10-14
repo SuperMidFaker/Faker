@@ -220,7 +220,7 @@ export default class RegionCascade extends React.Component {
           this.props.country !== undefined &&
           <Select size="large" value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
             <OptGroup label={formatMsg(intl, 'selectCountry')}>
-            {
+              {
               world.countries.map(ctry => <Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>)
             }
             </OptGroup>

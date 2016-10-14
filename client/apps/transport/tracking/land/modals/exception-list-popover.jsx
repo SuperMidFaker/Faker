@@ -81,7 +81,7 @@ export default class ExceptionListPopover extends React.Component {
     return (
       <Popover placement="rightTop" title={`异常 ${shipmt.shipmt_no}`} content={content} trigger="hover">
         <a onMouseOver={this.handleMouseOver} style={{ textDecoration: 'underline' }} onClick={() => this.props.onShowExcpModal(shipmt)}>
-        {excpCount}
+          {excpCount}
         </a>
       </Popover>
     );

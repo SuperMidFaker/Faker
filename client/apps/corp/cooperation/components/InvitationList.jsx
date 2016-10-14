@@ -24,11 +24,11 @@ export default function InvitationList(props) {
     <div className="main-content">
       <div className="page-body">
         <div className="panel-header">
-            <RadioGroup defaultValue={invitationType} onChange={handleInvitationTypeChange}>
-              <RadioButton value="0">待邀请</RadioButton>
-              <RadioButton value="1">收到的邀请</RadioButton>
-              <RadioButton value="2">发出的邀请</RadioButton>
-            </RadioGroup>
+          <RadioGroup defaultValue={invitationType} onChange={handleInvitationTypeChange}>
+            <RadioButton value="0">待邀请</RadioButton>
+            <RadioButton value="1">收到的邀请</RadioButton>
+            <RadioButton value="2">发出的邀请</RadioButton>
+          </RadioGroup>
         </div>
         <div className="panel-body table-panel">
           {content}

@@ -9,7 +9,7 @@ const MenuItem = Menu.Item;
 
 export default function Main(props) {
   const { selectedMenuItemKey, onMenuItemClick } = props;
-  const content = [<CustomerListContainer />, <SupplierListContainer />, <div></div>, <ProviderListContainer />, <InvitationListContainer />]
+  const content = [<CustomerListContainer />, <SupplierListContainer />, <div />, <ProviderListContainer />, <InvitationListContainer />]
     .map((container, index) => <div style={{ display: index === parseInt(selectedMenuItemKey, 10) ? 'block' : 'none' }} key={index}>{container}</div>);
   return (
     <div>

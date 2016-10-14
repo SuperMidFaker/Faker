@@ -11,14 +11,14 @@ export default class AmLeftSidebar extends React.Component {
     return (
       <div className="am-left-sidebar">
         <div className="content">
-          <div className="am-logo"></div>
+          <div className="am-logo" />
           <ul className="sidebar-elements">
-          {
+            {
             links.map((link) => {
               if (link.single) {
                 return (<li className={navPath.indexOf(link.path) >= 0 ? 'active' : ''} key={link.key}>
                   <NavLink to={link.path}>
-                    <i className={`icon ${link.icon}`}></i>
+                    <i className={`icon ${link.icon}`} />
                     <span>{link.text}</span>
                   </NavLink>
                 </li>);
@@ -26,12 +26,12 @@ export default class AmLeftSidebar extends React.Component {
                 return (<li className={`parent${(navPath.indexOf(link.path) >= 0 ? ' active' : '')}`} key={link.key}>
                   <a href="#"><i className={`icon ${link.icon}`} /><span>{link.text}</span></a>
                   <ul className="sub-menu">
-                  {
+                    {
                     link.subLinks.map((sublink) => {
                       return (<li className={navPath.indexOf(sublink.path) >= 0 ? 'active' : ''} key={sublink.key}>
-                                <NavLink to={sublink.path}>
-                                {sublink.text}
-                                </NavLink></li>);
+                        <NavLink to={sublink.path}>
+                          {sublink.text}
+                        </NavLink></li>);
                     })
                   }
                   </ul>

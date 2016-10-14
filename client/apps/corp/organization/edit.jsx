@@ -150,7 +150,8 @@ export default class CorpEdit extends React.Component {
               ),
             }],
             initialValue: loginName,
-          })} />
+          })}
+          />
         </FormItem>
         {this.renderTextInput(formatMsg(intl, 'phone'), '', 'phone', true, [{
           validator: (rule, value, callback) => validatePhone(
@@ -175,7 +176,8 @@ export default class CorpEdit extends React.Component {
           'coid', {
             rules: [{ required: true, message: formatMsg(intl, 'chiefRequired') }],
             initialValue: this.props.formData.coid,
-          })}>
+          })}
+        >
           {
             corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{u.name}</Option>)
           }

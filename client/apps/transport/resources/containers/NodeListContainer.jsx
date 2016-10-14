@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import NodeList from '../components/NodeList.jsx';
+import NodeList from '../components/NodeList';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadNodeList, setNodeType, removeNode } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';

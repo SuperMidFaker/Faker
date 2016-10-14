@@ -72,7 +72,7 @@ export default class Forgot extends React.Component {
           <p className="text-center">{formatMsg(intl, 'verifyCodeGuide')}</p>
           <div className="form-group">
             <div className="input-group">
-              <span className="input-group-addon"><i className="icon s7-phone"></i></span>
+              <span className="input-group-addon"><i className="icon s7-phone" /></span>
               <input name="phone" required="required" autoComplete="off" maxlenght="11"
                 placeholder={formatMsg(intl, 'phonePlaceholder')}
                 className="form-control" type="text" value={this.state.phone}
@@ -82,10 +82,10 @@ export default class Forgot extends React.Component {
           </div>
           <div className="form-group login-submit">
             <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsRequest(ev)}>
-            {formatMsg(intl, 'verifyObtatin')}
+              {formatMsg(intl, 'verifyObtatin')}
             </Button>
             <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
-            {formatGlobalMsg(intl, 'cancel')}
+              {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </div>
           {
@@ -109,7 +109,7 @@ export default class Forgot extends React.Component {
           </div>
           <div className="form-group">
             <div className="input-group">
-              <span className="input-group-addon"><i className="icon s7-lock"></i></span>
+              <span className="input-group-addon"><i className="icon s7-lock" /></span>
               <input name="phone" required="required" autoComplete="off" type="password"
                 placeholder={formatMsg(intl, 'newPwdPlaceholder')} className="form-control"
                 value={this.state.newPwd} onChange={ev => this.handleTextChange(ev, 'newPwd')}
@@ -118,10 +118,10 @@ export default class Forgot extends React.Component {
           </div>
           <div className="form-group login-submit">
             <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsVerify(ev)}>
-            {formatMsg(intl, 'finishVerify')}
+              {formatMsg(intl, 'finishVerify')}
             </Button>
             <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
-            {formatGlobalMsg(intl, 'cancel')}
+              {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </div>
           {

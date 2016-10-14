@@ -190,7 +190,7 @@ export default class CorpList extends React.Component {
         (record.apps || []).forEach((mod, idx) => {
           modComp.push(
             <NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
-            {formatGlobalMsg(intl, DEFAULT_MODULES[mod.id].text)}
+              {formatGlobalMsg(intl, DEFAULT_MODULES[mod.id].text)}
             </NavLink>
           );
           modComp.push(<span className="ant-divider" key={`divider${idx}`} />);
@@ -226,11 +226,11 @@ export default class CorpList extends React.Component {
             <PrivilegeCover module="corp" feature="organization" action="edit">
               <span>
                 <NavLink to={`/corp/organization/edit/${record.key}`}>
-                {formatGlobalMsg(intl, 'modify')}
+                  {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(intl, 'disableOp')}
+                  {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
             </PrivilegeCover>);
@@ -239,13 +239,13 @@ export default class CorpList extends React.Component {
             <span>
               <PrivilegeCover module="corp" feature="organization" action="delete">
                 <a role="button" onClick={() => this.handleCorpDel(record.key)}>
-                {formatGlobalMsg(intl, 'delete')}
+                  {formatGlobalMsg(intl, 'delete')}
                 </a>
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="corp" feature="organization" action="edit">
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(intl, 'enableOp')}
+                  {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>
             </span>);

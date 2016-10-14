@@ -76,7 +76,8 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
       <TrimSpan text={
         aspect === TENANT_ASPECT.BO ?
           record.ref_delg_external_no : record.ref_recv_external_no
-      } />,
+      }
+      />,
   }, {
     title: msg('packageNum'),
     dataIndex: 'pieces',
@@ -112,7 +113,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
             />
             <span className="ant-divider" />
             <NavLink to={`/${ietype}/docs/make/${record.delg_no}`}>
-            {msg('declareMake')}
+              {msg('declareMake')}
             </NavLink>
           </span>
         );
@@ -128,7 +129,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
         return (
           <span>
             <NavLink to={`/${ietype}/docs/make/${record.delg_no}`}>
-            {msg('declareMake')}
+              {msg('declareMake')}
             </NavLink>
             <span className="ant-divider" />
             <RowUpdater onHit={handlers.onWriteEntryId} label={msg('writeEntryId')}
@@ -148,7 +149,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
         return (
           <span>
             <NavLink to={`/${ietype}/docs/view/${record.delg_no}`}>
-            {msg('declareView')}
+              {msg('declareView')}
             </NavLink>
           </span>
         );

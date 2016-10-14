@@ -259,15 +259,15 @@ export default class DispatchList extends React.Component {
         render: (o, record) => {
           if (sub === 'merge') {
             return (<span><a role="button" onClick={() => this.handleRemoveShipmt(record)}>
-                  {this.msg('btnTextRemove')}
-                  </a></span>);
+              {this.msg('btnTextRemove')}
+            </a></span>);
           }
           if (origin) {
             if (record.segmented === 1 && sub !== 'sub') {
               return (<span>
-                  <a role="button" onClick={ev => this.handleSegmentCancelConfirm(record, ev)}>
+                <a role="button" onClick={ev => this.handleSegmentCancelConfirm(record, ev)}>
                   {this.msg('btnTextSegmentCancel')}
-                  </a></span>);
+                </a></span>);
             } else {
               return (<span />);
             }
@@ -276,11 +276,11 @@ export default class DispatchList extends React.Component {
             <PrivilegeCover module="transport" feature="dispatch" action="create">
               <span>
                 <a role="button" onClick={ev => this.handleDispatchDockShow(record, ev)}>
-                {this.msg('btnTextDispatch')}
+                  {this.msg('btnTextDispatch')}
                 </a>
                 <span className="ant-divider" />
                 <a role="button" onClick={ev => this.handleSegmentDockShow(record, ev)}>
-                {this.msg('btnTextSegment')}
+                  {this.msg('btnTextSegment')}
                 </a>
               </span>
             </PrivilegeCover>
@@ -298,17 +298,17 @@ export default class DispatchList extends React.Component {
             if (record.sp_tenant_id > 0) {
           // todo pure css circle
               return (
-            <span>
-              <i className="zmdi zmdi-circle mdc-text-green" />
-              {spSpan}
-            </span>
+                <span>
+                  <i className="zmdi zmdi-circle mdc-text-green" />
+                  {spSpan}
+                </span>
           );
             } else if (record.sp_tenant_id === -1) {
               return (
-            <span>
-              <i className="zmdi zmdi-circle mdc-text-grey" />
-              {spSpan}
-            </span>
+                <span>
+                  <i className="zmdi zmdi-circle mdc-text-grey" />
+                  {spSpan}
+                </span>
           );
             } else {
               return spSpan;
@@ -381,11 +381,11 @@ export default class DispatchList extends React.Component {
               <PrivilegeCover module="transport" feature="dispatch" action="edit">
                 <span>
                   <a role="button" onClick={ev => this.handleShipmtSend(record, ev)}>
-                  {this.msg('btnTextSend')}
+                    {this.msg('btnTextSend')}
                   </a>
                   <span className="ant-divider" />
                   <a role="button" onClick={ev => this.handleShipmtReturn(record, ev)}>
-                  {this.msg('btnTextReturn')}
+                    {this.msg('btnTextReturn')}
                   </a>
                 </span>
               </PrivilegeCover>
@@ -434,11 +434,11 @@ export default class DispatchList extends React.Component {
           <PrivilegeCover module="transport" feature="dispatch" action="create">
             <span>
               <a role="button" onClick={ev => this.handleCondDispatchDockShow(record, ev)}>
-              {this.msg('btnTextDispatch')}
+                {this.msg('btnTextDispatch')}
               </a>
               <span className="ant-divider" />
               <a role="button" onClick={ev => this.handleCondSegmentDockShow(record, ev)}>
-              {this.msg('btnTextSegment')}
+                {this.msg('btnTextSegment')}
               </a>
             </span>
           </PrivilegeCover>
@@ -520,7 +520,7 @@ export default class DispatchList extends React.Component {
           <Icon type="eye-o" />
         </Button>
         <Alert message={str} type="info" showIcon />
-        </div>);
+      </div>);
       panelHeader.push(tmp);
     } else if (origin) {
       panelHeader.push((<span className="ant-divider" style={{ width: '0px' }} />),
@@ -1011,11 +1011,11 @@ export default class DispatchList extends React.Component {
       btns = (
         <div style={{ display: 'inline-block' }}>
           <Button onClick={() => { this.handleBatchDockShow('dispatch'); }}>
-          {this.msg('btnTextBatchDispatch')}
+            {this.msg('btnTextBatchDispatch')}
           </Button>
           <span />
           <Button onClick={() => this.handleBatchDockShow()}>
-          {this.msg('btnTextBatchSegment')}
+            {this.msg('btnTextBatchSegment')}
           </Button>
         </div>
       );
@@ -1023,7 +1023,7 @@ export default class DispatchList extends React.Component {
       btns = (
         <div style={{ display: 'inline-block' }}>
           <Button onClick={() => this.handleShipmtBatchSend()}>
-          {this.msg('btnTextBatchSend')}
+            {this.msg('btnTextBatchSend')}
           </Button>
         </div>
       );
@@ -1060,20 +1060,20 @@ export default class DispatchList extends React.Component {
           </div>
         </div>
         <PreviewPanel stage="dispatch" />
-          <DispatchDock
-            show={this.props.dispDockShow}
-            shipmts={this.props.shipmts}
-            msg={this.msgWrapper}
-            onClose={this.handleDispatchDockClose}
-          />
+        <DispatchDock
+          show={this.props.dispDockShow}
+          shipmts={this.props.shipmts}
+          msg={this.msgWrapper}
+          onClose={this.handleDispatchDockClose}
+        />
 
-          <SegmentDock
-            show={this.props.segDockShow}
-            shipmts={this.props.shipmts}
-            msg={this.msgWrapper}
-            onClose={this.handleSegmentDockClose}
-          />
-          <RevokejectModal reload={this.handleTableLoad} />
+        <SegmentDock
+          show={this.props.segDockShow}
+          shipmts={this.props.shipmts}
+          msg={this.msgWrapper}
+          onClose={this.handleSegmentDockClose}
+        />
+        <RevokejectModal reload={this.handleTableLoad} />
       </QueueAnim>
     );
   }

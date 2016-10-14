@@ -127,7 +127,7 @@ export default class DetailPane extends React.Component {
         <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
         <span className="ant-divider" />
         <a onClick={this.handleChangeTransitTime}>修改时间信息</a>
-        </div>);
+      </div>);
       transitModeInfo = (<div>{this.msg('transitModeInfo')} {shipmt.transport_mode} <a onClick={this.handleChangeTransitMode}>修改</a></div>);
       goodsInfo = (<div>{this.msg('goodsInfo')} {this.msg('totalCount')}: {shipmt.total_count || ''} / {this.msg('totalWeight')}: {shipmt.total_weight || ''}{this.msg('kilogram')} / {this.msg('totalVolume')}: {shipmt.total_volume || ''}{this.msg('cubicMeter')}
         <a onClick={this.handleChangeTransitGoodsInfo}>修改</a></div>);

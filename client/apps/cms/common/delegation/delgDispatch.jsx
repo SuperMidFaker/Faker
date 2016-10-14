@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Icon, Button, Select, Form, Popconfirm, message, Card, Table } from 'antd';
 import { delgDispSave, delDisp, setSavedStatus } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n.js';
+import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
@@ -31,19 +31,19 @@ function ButtonSelect(props) {
   let button = '';
   if (saved) {
     button = (
-          <Popconfirm title="你确定撤回分配吗?" onConfirm={onconfirm} >
-            <Button size="large">撤销</Button>
-          </Popconfirm>
+      <Popconfirm title="你确定撤回分配吗?" onConfirm={onconfirm} >
+        <Button size="large">撤销</Button>
+      </Popconfirm>
       );
   } else {
     button = (
-        <Button size="large" type="primary" onClick={onclick}>
+      <Button size="large" type="primary" onClick={onclick}>
           分配
-        </Button>
+      </Button>
       );
   }
   return (
-      <div className="pull-right">{button}</div>
+    <div className="pull-right">{button}</div>
    );
 }
 ButtonSelect.PropTypes = {
@@ -251,12 +251,12 @@ export default class DelgDispatch extends Component {
                   {...getFieldProps('decl_name', { initialValue: fieldInits.decl_name }
                   )}
                 >
-                {
+                  {
                   partners.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
-                    {pt.name}
+                      {pt.name}
                     </Option>)
                   )
                 }
@@ -268,12 +268,12 @@ export default class DelgDispatch extends Component {
                   {...getFieldProps('insp_name', { initialValue: fieldInits.insp_name }
                   )}
                 >
-                {
+                  {
                   partners.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
-                    {pt.name}
+                      {pt.name}
                     </Option>)
                   )
                 }
@@ -285,12 +285,12 @@ export default class DelgDispatch extends Component {
                   {...getFieldProps('cert_name', { initialValue: fieldInits.cert_name }
                   )}
                 >
-                {
+                  {
                   partners.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
-                    {pt.name}
+                      {pt.name}
                     </Option>)
                   )
                 }

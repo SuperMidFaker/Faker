@@ -164,25 +164,25 @@ export default class PartnerSetupDialog extends React.Component {
     if (stepView === 'invite-initial') {
       footer = [
         <Button key="form-invite" type="primary" size="large" onClick={this.handlePartnerForm}>
-        {formatGlobalMsg(intl, 'nextStep')}
+          {formatGlobalMsg(intl, 'nextStep')}
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
-        {formatGlobalMsg(intl, 'cancel')}
+          {formatGlobalMsg(intl, 'cancel')}
         </Button>,
       ];
     } else if (stepView === 'invite-offline') {
       footer = [
         <Button key="offline-invite" type="primary" size="large" onClick={this.handleOfflineInvite}>
-        {this.msg('sendInvitation')}
+          {this.msg('sendInvitation')}
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
-        {formatGlobalMsg(intl, 'cancel')}
+          {formatGlobalMsg(intl, 'cancel')}
         </Button>,
       ];
     } else if (stepView === 'invite-sent') {
       footer = [
         <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
-        {this.msg('iknow')}
+          {this.msg('iknow')}
         </Button>,
       ];
     }
@@ -196,7 +196,7 @@ export default class PartnerSetupDialog extends React.Component {
               searchPlaceholder={this.msg('companyNamePlaceholder')}
               onChange={this.handleTenantInputChange} value={tenantInput}
             >
-            {this.getTenantOptions()}
+              {this.getTenantOptions()}
             </Select>
           </Form.Item>
           <Form.Item label={this.msg('partnerCode')} labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
@@ -218,7 +218,7 @@ export default class PartnerSetupDialog extends React.Component {
             isProviderPartner &&
             <Form.Item wrapperCol={{ span: 12, offset: 7 }}>
               <div className="ant-checkbox-group">
-              {
+                {
                 partnershipTypes.filter(pst => pst.code !== PARTNERSHIP_TYPE_INFO.customer)
                 .map(pst =>
                   <label htmlFor="checkbox" className="ant-checkbox-group-item" key={pst.code}>
@@ -234,10 +234,11 @@ export default class PartnerSetupDialog extends React.Component {
           }
         </Form>
         <div className={`partner-modal-offline-body
-          ${stepView === 'invite-offline' ? '' : ' hide'}`}>
+          ${stepView === 'invite-offline' ? '' : ' hide'}`}
+        >
           <i className="anticon anticon-info-circle" />
           <span>
-          {this.msg('invitationForOffline')}
+            {this.msg('invitationForOffline')}
           </span>
           <div className="partner-modal-content">
             <Input placeholder={this.msg('contactPlaceholder')} onChange={this.handleContactInputChange}
@@ -246,7 +247,8 @@ export default class PartnerSetupDialog extends React.Component {
           </div>
         </div>
         <div className={`partner-modal-confirm-body
-          ${stepView === 'invite-sent' ? '' : ' hide'}`}>
+          ${stepView === 'invite-sent' ? '' : ' hide'}`}
+        >
           <i className="anticon anticon-info-circle" />
           <span className="partner-modal-title">{this.msg('invitationSent')}</span>
           <div className="partner-modal-content">

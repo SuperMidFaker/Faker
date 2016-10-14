@@ -302,11 +302,11 @@ export default class GoodsInfo extends React.Component {
           return (
             <span>
               <a onClick={this.handleGoodsSave}>
-              {formatGlobalMsg(this.props.intl, 'save')}
+                {formatGlobalMsg(this.props.intl, 'save')}
               </a>
               <span className="ant-divider" />
               <a onClick={this.handleGoodsCancel}>
-              {formatGlobalMsg(this.props.intl, 'cancel')}
+                {formatGlobalMsg(this.props.intl, 'cancel')}
               </a>
             </span>
           );
@@ -333,11 +333,11 @@ export default class GoodsInfo extends React.Component {
           return (
             <span>
               <a onClick={() => this.handleGoodsEdit(record, index)}>
-              {formatGlobalMsg(this.props.intl, 'edit')}
+                {formatGlobalMsg(this.props.intl, 'edit')}
               </a>
               <span className="ant-divider" />
               <a onClick={() => this.handleGoodsRemove(index)}>
-              {formatGlobalMsg(this.props.intl, 'delete')}
+                {formatGlobalMsg(this.props.intl, 'delete')}
               </a>
             </span>
           );
@@ -356,8 +356,9 @@ export default class GoodsInfo extends React.Component {
                   required: true, type: 'number', message: this.msg('goodsTypeMust'),
                 }],
                 initialValue: goods_type,
-              })}>
-              {goodsTypes.map(
+              })}
+              >
+                {goodsTypes.map(
                 gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
               )}
               </Select>
@@ -372,7 +373,7 @@ export default class GoodsInfo extends React.Component {
               wrapperCol={{ span: 24 - labelColSpan }}
             >
               <Select {...getFieldProps('package', { initialValue: packageform })}>
-              {apackagings.map(
+                {apackagings.map(
                 pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
               )}
               </Select>

@@ -121,7 +121,7 @@ export default class SendModal extends React.Component {
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
                   >
-                  {pt.name}
+                    {pt.name}
                   </Option>
                 ))
               }
@@ -138,7 +138,7 @@ export default class SendModal extends React.Component {
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
                   >
-                  {pt.name}
+                    {pt.name}
                   </Option>
                 ))
               }

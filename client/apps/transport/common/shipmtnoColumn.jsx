@@ -48,12 +48,12 @@ export default class ShipmtNoColumnRender extends React.Component {
     const content = (
       <div>
         <TrackingTimeline tracking={this.state.tracking} />
-          <a href={this.makeShipmtPublicUrl(shipmtNo, publicKey)}
-            target="_blank" rel="noopener noreferrer"
-            style={{ marginLeft: '60%' }}
-          >
-            <Button type="primary" size="small" >查看详情</Button>
-          </a>
+        <a href={this.makeShipmtPublicUrl(shipmtNo, publicKey)}
+          target="_blank" rel="noopener noreferrer"
+          style={{ marginLeft: '60%' }}
+        >
+          <Button type="primary" size="small" >查看详情</Button>
+        </a>
       </div>
     );
     if (shipment.status >= SHIPMENT_TRACK_STATUS.intransit) {

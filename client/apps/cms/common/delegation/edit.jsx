@@ -7,7 +7,7 @@ import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
 import { editDelegation } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n.js';
+import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
@@ -115,7 +115,7 @@ export default class AcceptanceEdit extends Component {
               <Button size="large" type="primary" style={{ marginRight: 20 }}
                 onClick={this.handleSaveBtnClick} loading={submitting}
               >
-              {this.msg('save')}
+                {this.msg('save')}
               </Button>
               <Popconfirm title={this.msg('acceptSaveMessage')} onConfirm={this.handleSaveAccept}>
                 <Button size="large" loading={submitting}>一键接单</Button>

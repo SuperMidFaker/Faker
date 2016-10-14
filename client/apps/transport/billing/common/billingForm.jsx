@@ -103,7 +103,7 @@ export default class BillingForm extends React.Component {
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
                   >
-                  {pt.name}
+                    {pt.name}
                   </Option>)
                 )
               }

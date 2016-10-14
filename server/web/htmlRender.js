@@ -85,7 +85,12 @@ export default function render(request, locale) {
       } else if (!props) {
         reject([404]);
       } else {
-        addLocaleData(require(`react-intl/locale-data/${curLocale}`));
+        if (curLocale === 'zh') {
+          // no--dynamic-require
+          addLocaleData(require('react-intl/locale-data/zh'));
+        } else if (curLocale === 'en') {
+          addLocaleData(require('react-intl/locale-data/en'));
+        }
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
             const component = (<App routingContext={props} store={store} />);

@@ -197,9 +197,8 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
-        <div className="panel-header">
-            <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            </span>
+          <div className="panel-header">
+            <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`} />
           </div>
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}

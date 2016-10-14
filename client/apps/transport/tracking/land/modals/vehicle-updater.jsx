@@ -104,7 +104,7 @@ export default class VehicleUpdater extends React.Component {
             </Col>
             <Col offset="1" span="6">
               <Checkbox checked={plateDisabled} onChange={this.handlePlateCheck}>
-              {this.msg('unknownPlate')}
+                {this.msg('unknownPlate')}
               </Checkbox>
             </Col>
           </FormItem>
@@ -118,7 +118,7 @@ export default class VehicleUpdater extends React.Component {
             </Col>
             <Col offset="1" span="6">
               <Checkbox checked={driverDisabled} onChange={this.handleDriverCheck}>
-              {this.msg('unknownDriver')}
+                {this.msg('unknownDriver')}
               </Checkbox>
             </Col>
           </FormItem>
