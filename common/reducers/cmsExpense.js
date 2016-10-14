@@ -42,7 +42,7 @@ export default function reducer(state = initialState, action) {
       const expFeesMap = {};
       const exps = action.result.data;
       exps.data.forEach((exp) => {
-        expFeesMap[exp.delg_no] = [];
+        expFeesMap[exp.delg_no] = {};
       });
       return { ...state, expslist: { ...state.expslist, ...exps, loading: false },
         expFeesMap, listFilter: JSON.parse(action.params.filter) };
@@ -55,7 +55,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, showInputModal: true };
     case actionTypes.LOAD_SUBTABLE: {
       const expFeesMap = { ...state.expFeesMap };
-      expFeesMap[action.params.delgNo] = [];
+      expFeesMap[action.params.delgNo] = {};
       expFeesMap[action.params.delgNo].loading = true;
       return { ...state, expFeesMap };
     }
@@ -67,7 +67,7 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_SUBTABLE_FAIL: {
       const expFeesMap = { ...state.expFeesMap };
-      expFeesMap[action.params.delgNo] = [];
+      expFeesMap[action.params.delgNo] = {};
       expFeesMap[action.params.delgNo].loading = false;
       return { ...state, expFeesMap };
     }

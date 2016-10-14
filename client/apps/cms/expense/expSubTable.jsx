@@ -33,12 +33,12 @@ export default class ExpSubTable extends Component {
   msg = key => formatMsg(this.props.intl, key);
   custColumns = [{
     title: this.msg('custBroker'),
-    width: 160,
+    width: 120,
     dataIndex: 'broker',
   }]
   ciqColumns = [{
     title: this.msg('ciqBroker'),
-    width: 160,
+    width: 120,
     dataIndex: 'broker',
   }]
   handleTableLoad = () => {
@@ -50,10 +50,11 @@ export default class ExpSubTable extends Component {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        if (this.props.expFees.cust.column) {
+        const { expFees } = this.props;
+        if (expFees.cust && expFees.cust.data) {
           this.setState({ CUST: true });
         }
-        if (this.props.expFees.ciq.column) {
+        if (expFees.ciq && expFees.ciq.data) {
           this.setState({ CIQ: true });
         }
       }
@@ -67,15 +68,31 @@ export default class ExpSubTable extends Component {
     const { CUST, CIQ } = this.state;
     let custColumns = [...this.custColumns];
     let ciqColumns = [...this.ciqColumns];
-    let custSource = [];
-    let ciqSource = [];
+    const custSource = [];
+    const ciqSource = [];
     if (CUST) {
-      custColumns = custColumns.concat(expFees.cust.column);
-      custSource = expFees.cust.source;
+      const custExps = expFees.cust.data;
+      const column = [];
+      const col = {};
+      custExps.forEach((ct) => {
+        col[`${ct.fee_code}`] = ct.total_fee.toFixed(2);
+        column.push({ title: ct.fee_name, dataIndex: ct.fee_code, width: 80 });
+      });
+      col.broker = expFees.cust.broker;
+      custColumns = custColumns.concat(column);
+      custSource.push(col);
     }
     if (CIQ) {
-      ciqColumns = ciqColumns.concat(expFees.ciq.column);
-      ciqSource = expFees.ciq.source;
+      const ciqExps = expFees.ciq.data;
+      const column = [];
+      const col = {};
+      ciqExps.forEach((ct) => {
+        col[`${ct.fee_code}`] = ct.total_fee.toFixed(2);
+        column.push({ title: ct.fee_name, dataIndex: ct.fee_code, width: 80 });
+      });
+      col.broker = expFees.cust.broker;
+      ciqColumns = ciqColumns.concat(column);
+      ciqSource.push(col);
     }
     return (
       <div>
