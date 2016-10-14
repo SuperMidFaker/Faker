@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { closeInModal, saveCushInput } from 'common/reducers/cmsExpense';
 import ReactDataGrid from '@welogix/react-data-grid';
 import { Editors } from '@welogix/react-data-grid/addons';
@@ -59,7 +59,13 @@ export default class InputModal extends Component {
   handleSave = () => {
     const rows = this.state.rows;
     const params = rows.filter(row => row.delg_no !== '');
-    this.props.saveCushInput(this.props.tenantId, params);
+    this.props.saveCushInput(this.props.tenantId, params).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.closeInModal();
+      }
+    });
   }
 
   render() {

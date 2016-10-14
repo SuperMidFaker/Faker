@@ -147,6 +147,9 @@ export default class ExpenseList extends Component {
       title: this.msg('statementEn'),
       width: 100,
       dataIndex: 'status',
+      render: (o) => {
+        return EXP_STATUS.filter(st => st.value === o)[0].text;
+      },
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_act_time',
