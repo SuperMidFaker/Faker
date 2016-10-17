@@ -5,6 +5,11 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_PANE_LOAD', 'EXP_PANE_LOAD_SUCCEED', 'EXP_PANE_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
+  'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
+  'CUSH_SAVE', 'CUSH_SAVE_SUCCEED', 'CUSH_SAVE_FAIL',
+  'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
+  'CLOSE_MARK_MODAL', 'OPEN_MARK_MODAL',
+  'MARK_SAVE', 'MARK_SAVE_SUCCEED', 'MARK_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -19,7 +24,14 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
+  listFilter: {
+    status: 'all',
+  },
   showInputModal: false,
+  currencies: [],
+  expFeesMap: {},
+  showMarkModal: false,
+  saved: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -29,13 +41,48 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
       return { ...state, expenses: { ...state.expenses, ...action.result.data } };
     case actionTypes.EXP_LOAD:
-      return { ...state, expslist: { ...state.expslist, loading: true } };
-    case actionTypes.EXP_LOAD_SUCCEED:
-      return { ...state, expslist: { ...state.expslist, ...action.result.data, loading: false } };
+      return { ...state, expslist: { ...state.expslist, loading: true }, saved: false };
+    case actionTypes.EXP_LOAD_SUCCEED: {
+      const expFeesMap = {};
+      const exps = action.result.data;
+      exps.data.forEach((exp) => {
+        expFeesMap[exp.delg_no] = {};
+      });
+      return { ...state, expslist: { ...state.expslist, ...exps, loading: false },
+        expFeesMap, listFilter: JSON.parse(action.params.filter) };
+    }
+    case actionTypes.CURRENCY_LOAD_SUCCEED:
+      return { ...state, currencies: action.result.data };
     case actionTypes.CLOSE_IN_MODAL:
       return { ...state, showInputModal: false };
     case actionTypes.OPEN_IN_MODAL:
       return { ...state, showInputModal: true };
+    case actionTypes.CLOSE_MARK_MODAL:
+      return { ...state, showMarkModal: false };
+    case actionTypes.OPEN_MARK_MODAL:
+      return { ...state, showMarkModal: true };
+    case actionTypes.LOAD_SUBTABLE: {
+      const expFeesMap = { ...state.expFeesMap };
+      expFeesMap[action.params.delgNo] = {};
+      expFeesMap[action.params.delgNo].loading = true;
+      return { ...state, expFeesMap };
+    }
+    case actionTypes.LOAD_SUBTABLE_SUCCEED: {
+      const expFeesMap = { ...state.expFeesMap };
+      expFeesMap[action.params.delgNo] = action.result.data;
+      expFeesMap[action.params.delgNo].loading = false;
+      return { ...state, expFeesMap };
+    }
+    case actionTypes.LOAD_SUBTABLE_FAIL: {
+      const expFeesMap = { ...state.expFeesMap };
+      expFeesMap[action.params.delgNo] = {};
+      expFeesMap[action.params.delgNo].loading = false;
+      return { ...state, expFeesMap };
+    }
+    case actionTypes.CUSH_SAVE_SUCCEED:
+      return { ...state, saved: true };
+    case actionTypes.MARK_SAVE_SUCCEED:
+      return { ...state, saved: true };
     default:
       return state;
   }
@@ -44,7 +91,11 @@ export default function reducer(state = initialState, action) {
 export function loadPaneExp(delgNo) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.EXP_PANE_LOAD, actionTypes.EXP_PANE_LOAD_SUCCEED, actionTypes.EXP_PANE_LOAD_FAIL],
+      types: [
+        actionTypes.EXP_PANE_LOAD,
+        actionTypes.EXP_PANE_LOAD_SUCCEED,
+        actionTypes.EXP_PANE_LOAD_FAIL,
+      ],
       endpoint: 'v1/cms/expense/paneload',
       method: 'get',
       params: { delgNo },
@@ -53,13 +104,79 @@ export function loadPaneExp(delgNo) {
   };
 }
 
-export function loadExpense(tenantId) {
+export function loadExpense(params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.EXP_LOAD, actionTypes.EXP_LOAD_SUCCEED, actionTypes.EXP_LOAD_FAIL],
+      types: [
+        actionTypes.EXP_LOAD,
+        actionTypes.EXP_LOAD_SUCCEED,
+        actionTypes.EXP_LOAD_FAIL,
+      ],
       endpoint: 'v1/cms/expense/load',
       method: 'get',
-      params: { tenantId },
+      params,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadCurrencies() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CURRENCY_LOAD,
+        actionTypes.CURRENCY_LOAD_SUCCEED,
+        actionTypes.CURRENCY_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/currencies',
+      method: 'get',
+    },
+  };
+}
+
+export function saveCushInput(tenantId, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CUSH_SAVE,
+        actionTypes.CUSH_SAVE_SUCCEED,
+        actionTypes.CUSH_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/cushion/inputsave',
+      method: 'post',
+      data: { tenantId, params },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadSubTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SUBTABLE,
+        actionTypes.LOAD_SUBTABLE_SUCCEED,
+        actionTypes.LOAD_SUBTABLE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/subtable/load',
+      method: 'get',
+      params,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function saveMarkstate(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MARK_SAVE,
+        actionTypes.MARK_SAVE_SUCCEED,
+        actionTypes.MARK_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/statement/mark',
+      method: 'post',
+      data: { params },
       origin: 'mongo',
     },
   };
@@ -74,5 +191,17 @@ export function closeInModal() {
 export function openInModal() {
   return {
     type: actionTypes.OPEN_IN_MODAL,
+  };
+}
+
+export function closeMarkModal() {
+  return {
+    type: actionTypes.CLOSE_MARK_MODAL,
+  };
+}
+
+export function openMarkModal() {
+  return {
+    type: actionTypes.OPEN_MARK_MODAL,
   };
 }

@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   searchPlaceholder: {
     id: 'cms.expense.search',
-    defaultMessage: '委托编号/发票号',
+    defaultMessage: '委托编号/发票号/提运单号',
   },
   expense: {
     id: 'cms.expense.title',
@@ -89,13 +89,21 @@ const messages = defineMessages({
     id: 'cms.expense.modal.fee.value',
     defaultMessage: '金额',
   },
-  curSty: {
-    id: 'cms.expense.modal.cur',
+  currency: {
+    id: 'cms.expense.modal.currency',
     defaultMessage: '币制',
   },
   remark: {
     id: 'cms.expense.modal.remark',
     defaultMessage: '备注',
+  },
+  custBroker: {
+    id: 'cms.expense.modal.cust.broker',
+    defaultMessage: '报关供应商',
+  },
+  ciqBroker: {
+    id: 'cms.expense.modal.ciq.broker',
+    defaultMessage: '报检供应商',
   },
 });
 export default messages;

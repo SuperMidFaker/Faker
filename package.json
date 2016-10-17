@@ -41,6 +41,7 @@
     "lint"
   ],
   "dependencies": {
+    "@welogix/react-data-grid": "^1.0.51",
     "antd": "^1.11.1",
     "babel-core": "^6.14.0",
     "babel-runtime": "^6.11.6",
