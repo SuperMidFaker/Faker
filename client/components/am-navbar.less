@@ -48,9 +48,6 @@
 .navbar {
   position: relative;
   min-height: @am-header-height;
-  margin-bottom: 18px;
-  border: 1px solid transparent;
-  border-radius: 0px;
   &.module-corp {
     background-color:#546E7A;
   }
@@ -91,7 +88,12 @@
     }
   }
 }
-
+.navbar-header {
+  a,
+  a:hover {
+    color: #fcfcfc;
+  }
+}
 .navbar-brand {
   float: left;
   padding: 16px 15px;
@@ -115,6 +117,9 @@
   @media (max-width:767px) {
     width: 60px;
     display:block;
+  }
+  :hover {
+    color: #fcfcfc;
   }
 }
 .navbar-title {
