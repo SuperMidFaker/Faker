@@ -82,7 +82,7 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '运输费用',
-      dataIndex: 'p_freight_charge',
+      dataIndex: 'p_total_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
       },
@@ -100,7 +100,6 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '收款合计',
-      dataIndex: 'p_total_charge',
       render(o, record) {
         let pTotalCharge = 0;
         if (record.p_advance_charge !== null) {
@@ -135,7 +134,7 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '运输成本',
-      dataIndex: 'freight_charge',
+      dataIndex: 'total_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
       },
@@ -153,7 +152,6 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '付款合计',
-      dataIndex: 'total_charge',
       render(o, record) {
         let totalCharge = 0;
         if (record.advance_charge !== null) {

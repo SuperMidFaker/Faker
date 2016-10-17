@@ -172,7 +172,7 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'charg_amount',
     }, {
       title: '运费',
-      dataIndex: 'freight_charge',
+      dataIndex: 'total_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
       },
@@ -199,7 +199,6 @@ export default class BillingFeeList extends React.Component {
       },
     }, {
       title: '最终费用',
-      dataIndex: 'total_charge',
       render(o, record) {
         let totalCharge = 0;
         if (record.advance_charge !== null) {

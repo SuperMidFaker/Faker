@@ -65,9 +65,6 @@ function calculateBillingCharges(fees) {
     totalCharge: 0,
   };
   fees.forEach((item) => {
-    if (item.freight_charge !== null) {
-      billing.freightCharge += item.freight_charge;
-    }
     if (item.advance_charge !== null) {
       billing.advanceCharge += item.advance_charge;
       billing.totalCharge += item.advance_charge;
@@ -81,6 +78,7 @@ function calculateBillingCharges(fees) {
       billing.totalCharge += item.adjust_charge;
     }
     if (item.total_charge !== null) {
+      billing.freightCharge += item.total_charge;
       billing.totalCharge += item.total_charge;
     }
   });
