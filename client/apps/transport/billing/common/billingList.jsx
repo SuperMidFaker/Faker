@@ -123,8 +123,8 @@ export default class BillingList extends React.Component {
     const columns = [{
       title: '账单名称',
       dataIndex: 'name',
-      render(o) {
-        return <TrimSpan text={o} maxLen={10} />;
+      render(o, record) {
+        return <Link to={`/transport/billing/${type}/view/${record.id}`}>{o}</Link>;
       },
     }, {
       title: '开始日期',

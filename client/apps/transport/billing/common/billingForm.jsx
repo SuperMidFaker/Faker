@@ -96,6 +96,10 @@ export default class BillingForm extends React.Component {
             wrapperCol={{ span: 14 }}
           >
             <Select id="select" size="large"
+            showSearch
+            placeholder=""
+            optionFilterProp="children"
+            notFoundContent=""
               {...getFieldProps('partnerId')}
             >
               {

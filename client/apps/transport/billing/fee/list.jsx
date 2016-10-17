@@ -3,6 +3,7 @@ import { Button, Tag, Icon, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -216,6 +217,18 @@ export default class FeesList extends React.Component {
         return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
       },
     }, {
+      title: '实际提货时间',
+      dataIndex: 'pickup_act_date',
+      render(o) {
+        return moment(o).format('YYYY.MM.DD');
+      },
+    }, {
+      title: '实际交货时间',
+      dataIndex: 'deliver_act_date',
+      render(o) {
+        return moment(o).format('YYYY.MM.DD');
+      },
+    }, {
       title: '异常',
       dataIndex: 'excp_count',
       render(o) {
@@ -263,11 +276,11 @@ export default class FeesList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={this.handleImportAdvanceCharge}>{this.msg('importAdvanceCharge')}</Button>
+              <Button type="primary" >{this.msg('importAdvanceCharge')}</Button>
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1600 }} />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 2000 }} />
             </div>
           </div>
         </div>

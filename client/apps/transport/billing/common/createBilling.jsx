@@ -33,6 +33,7 @@ export default class CreateBilling extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
     billing: PropTypes.object.isRequired,
     billingFees: PropTypes.object.isRequired,
@@ -58,7 +59,7 @@ export default class CreateBilling extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSave = () => {
-    const { loginId, tenantId, type } = this.props;
+    const { loginId, tenantId, loginName, type } = this.props;
     const { beginDate, endDate, chooseModel, partnerTenantId, name, freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
     const fees = this.props.billingFees.data;
@@ -68,7 +69,7 @@ export default class CreateBilling extends React.Component {
       const shipmtCount = fees.filter(item => item.status === 1).length;
       const fee = fees[0];
       this.props.createBilling({
-        tenantId, loginId, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
+        tenantId, loginId, loginName, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
         endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), freightCharge,
         advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
         spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
@@ -83,13 +84,19 @@ export default class CreateBilling extends React.Component {
     }
   }
   handleChangeAdjustCharges = (feeId, adjustCharges) => {
-    this.props.updateBillingFees(null, feeId, 'adjust_charge', adjustCharges);
+    const { tenantId } = this.props;
+    let charge = adjustCharges;
+    if (adjustCharges === undefined) {
+      charge = 0;
+    }
+    this.props.updateBillingFees(tenantId, feeId, 'adjust_charge', charge);
   }
   handleChangeStatus = (feeId, status) => {
+    const { tenantId } = this.props;
     let s = 0;
     if (status) s = 1;
     else s = 0;
-    this.props.updateBillingFees(null, feeId, 'status', s);
+    this.props.updateBillingFees(tenantId, feeId, 'status', s);
   }
   handleTableFooter = () => {
     const { billing } = this.props;
@@ -190,6 +197,9 @@ export default class CreateBilling extends React.Component {
       render(o, record) {
         return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
       },
+    }, {
+      title: '运输模式',
+      dataIndex: 'transport_mode',
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',

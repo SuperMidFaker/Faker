@@ -69,12 +69,12 @@ export default class ShipmentAdvanceModal extends React.Component {
         shipmtNo, dispId, name: advance.fee_name, code: type, amount: Number(amount),
         remark, photos, submitter: loginName, loginId, tenantId,
       };
+      this.handleCancel();
       this.props.createAdvance(uploadData).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
           message.info('添加成功');
-          this.handleCancel();
         }
       });
     }
