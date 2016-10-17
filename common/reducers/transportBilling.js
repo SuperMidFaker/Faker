@@ -117,7 +117,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, fees: action.result.data };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data.data);
-      return { ...state, billingFees: action.result.data, billing: { ...state.billing, ...billing } };
+      const fees = action.result.data.data.map((item) => {
+        return {
+          ...item,
+          last_updated_tenant_id: action.params.tenantId,
+          last_updated_date: new Date(),
+          updated_field: 'status',
+        };
+      });
+      return { ...state, billingFees: { data: fees }, billing: { ...state.billing, ...billing } };
     }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
@@ -188,7 +196,7 @@ export function loadFees({ tenantId, pageSize, currentPage }) {
   };
 }
 
-export function loadFeesByChooseModal({ type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId, pageSize, currentPage }) {
+export function loadFeesByChooseModal({ type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -198,7 +206,7 @@ export function loadFeesByChooseModal({ type, beginDate, endDate, chooseModel, p
       ],
       endpoint: 'v1/transport/feesByChooseModal',
       method: 'get',
-      params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId, pageSize, currentPage },
+      params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId },
     },
   };
 }
@@ -233,7 +241,7 @@ export function loadBillings({ type, tenantId, pageSize, currentPage }) {
   };
 }
 
-export function createBilling({ tenantId, loginId, name, chooseModel, beginDate, endDate, freightCharge,
+export function createBilling({ tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srName, spTenantId, spName, toTenantId,
     shipmtCount, fees }) {
   return {
@@ -245,7 +253,7 @@ export function createBilling({ tenantId, loginId, name, chooseModel, beginDate,
       ],
       endpoint: 'v1/transport/billing',
       method: 'post',
-      data: { tenantId, loginId, name, chooseModel, beginDate, endDate, freightCharge,
+      data: { tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, freightCharge,
         advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srName, spTenantId, spName, toTenantId,
         shipmtCount, fees },
     },

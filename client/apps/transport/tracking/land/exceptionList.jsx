@@ -130,7 +130,13 @@ export default class LandStatusList extends React.Component {
     fixed: 'left',
     dataIndex: 'excp_count',
     render: (o, record) => {
-      return <ExceptionListPopover shipmtNo={record.shipmt_no} dispId={record.disp_id} shipmt={record} excpCount={o} onShowExcpModal={this.handleShowExcpModal} />;
+      return (<ExceptionListPopover
+        shipmtNo={record.shipmt_no}
+        dispId={record.disp_id}
+        parentId={record.parent_id}
+        excpCount={o}
+        onShowExcpModal={this.handleShowExcpModal}
+      />);
     },
   }, {
     title: this.msg('shipmtLastException'),
@@ -339,8 +345,8 @@ export default class LandStatusList extends React.Component {
     }
     return merged;
   }
-  handleShowExcpModal = (row) => {
-    this.props.showExcpModal(row.disp_id, row.shipmt_no);
+  handleShowExcpModal = (dispId, parentDispId, shipmtNo) => {
+    this.props.showExcpModal(dispId, parentDispId, shipmtNo);
   }
 
   render() {

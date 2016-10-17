@@ -21,8 +21,7 @@ export default function VehicleList(props) {
           <span className="ant-divider" />
           <a onClick={() => onStopCarBtnClick(record.vehicle_id)} disabled={
             record.status === '在途中'
-          }
-          >
+          }>
             停用
           </a>
         </span>

@@ -209,7 +209,7 @@ export default class Footer extends React.Component {
     this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowShipmentAdvanceModal = (row) => {
-    this.props.showShipmentAdvanceModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
+    this.props.showShipmentAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
       transportModeId: row.transport_mode_id, customerPartnerId: row.customer_partner_id, goodsType: row.goods_type });
   }
   handleResubmit = (row) => {
@@ -403,8 +403,7 @@ export default class Footer extends React.Component {
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <Button type="ghost" size="large" onClick={
                 () => this.props.sendMessage({ notifyType: 'notifyAccept', shipment: row })
-              }
-              >
+              }>
                 催促接单
               </Button>
             </PrivilegeCover>
@@ -482,8 +481,7 @@ export default class Footer extends React.Component {
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <Button type="ghost" size="large" onClick={
                     () => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })
-                  }
-                  >
+                  }>
                     催促提货
                   </Button>
                 </PrivilegeCover>
@@ -496,8 +494,7 @@ export default class Footer extends React.Component {
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <Button type="ghost" size="large" onClick={
                   () => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })
-                }
-                >
+                }>
                   催促提货
                 </Button>
               </PrivilegeCover>
@@ -650,8 +647,7 @@ export default class Footer extends React.Component {
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <Button type="ghost" size="large" onClick={
                     () => this.props.sendMessage({ notifyType: 'notifyDriverPod', shipment: row })
-                  }
-                  >
+                  }>
                     催促回单
                   </Button>
                 </PrivilegeCover>
@@ -665,8 +661,7 @@ export default class Footer extends React.Component {
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <Button type="ghost" size="large" onClick={
                   () => this.props.sendMessage({ notifyType: 'notifySpPod', shipment: row })
-                }
-                >
+                }>
                   催促回单
                 </Button>
               </PrivilegeCover>

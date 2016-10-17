@@ -113,7 +113,11 @@ export default class BillingFeeList extends React.Component {
   handleChangeAdjustCharges = (feeId, adjustCharges) => {
     const { tenantId } = this.props;
     this.setState({ changed: true });
-    this.props.updateBillingFees(tenantId, feeId, 'adjust_charge', adjustCharges);
+    let charge = adjustCharges;
+    if (adjustCharges === undefined) {
+      charge = 0;
+    }
+    this.props.updateBillingFees(tenantId, feeId, 'adjust_charge', charge);
   }
   handleChangeStatus = (feeId, status) => {
     const { tenantId } = this.props;
@@ -225,6 +229,9 @@ export default class BillingFeeList extends React.Component {
       title: '目的地',
       dataIndex: 'consignee_province',
     }, {
+      title: '运输模式',
+      dataIndex: 'transport_mode',
+    }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
       render(o) {
@@ -246,7 +253,7 @@ export default class BillingFeeList extends React.Component {
       width: 80,
       render: (o, record) => {
         if (operation === 'view') {
-          return (<Checkbox disabled defaultChecked={o === 1} />);
+          return (<Checkbox disabled defaultChecked={o === 1 || o === 2} />);
         }
         return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />);
       },

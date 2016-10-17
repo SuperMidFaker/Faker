@@ -69,12 +69,12 @@ export default class ShipmentAdvanceModal extends React.Component {
         shipmtNo, dispId, name: advance.fee_name, code: type, amount: Number(amount),
         remark, photos, submitter: loginName, loginId, tenantId,
       };
+      this.handleCancel();
       this.props.createAdvance(uploadData).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
           message.info('添加成功');
-          this.handleCancel();
         }
       });
     }
@@ -106,8 +106,7 @@ export default class ShipmentAdvanceModal extends React.Component {
         <Form className="row" style={{ width: '400px' }}>
           <FormItem label="垫付类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Select placeholder="请选择垫付类型" {...getFieldProps('type', {
-            })}
-            >
+            })}>
               {
               this.props.quotes.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
             }
@@ -116,8 +115,7 @@ export default class ShipmentAdvanceModal extends React.Component {
           <FormItem label="费用金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="number" placeholder="请输入金额" addonAfter="元" {...getFieldProps('amount', {
               initialValue: '',
-            })}
-            />
+            })} />
           </FormItem>
           <FormItem label="垫付照片" labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
@@ -132,8 +130,7 @@ export default class ShipmentAdvanceModal extends React.Component {
           <FormItem label="垫付备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('remark', {
               initialValue: '',
-            })}
-            />
+            })} />
           </FormItem>
         </Form>
       </Modal>

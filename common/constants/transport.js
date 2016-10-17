@@ -247,9 +247,9 @@ export const PRESET_TRANSMODES = {
 
 export const SHIPMENT_BILLING_STATUS = {
   1: '创建未发送',
-  2: '已发送',
+  2: '已发送,待对方对账',
   3: '待对账',
-  4: '修改接受',
+  4: '已修改,待对方对账',
   5: '接受',
   6: '已核销',
 };

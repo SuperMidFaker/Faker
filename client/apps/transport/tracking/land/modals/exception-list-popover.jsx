@@ -21,11 +21,11 @@ export default class ExceptionListPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     excpCount: PropTypes.number.isRequired,
+    parentId: PropTypes.number.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     onShowExcpModal: PropTypes.func.isRequired,
-    shipmt: PropTypes.object.isRequired,
   }
   state = {
     exceptions: [],
@@ -42,7 +42,7 @@ export default class ExceptionListPopover extends React.Component {
     });
   }
   render() {
-    const { excpCount, shipmt } = this.props;
+    const { excpCount, dispId, parentId, shipmtNo } = this.props;
     const columns = [{
       dataIndex: 'excp_level',
       render: (o) => {
@@ -65,13 +65,6 @@ export default class ExceptionListPopover extends React.Component {
     }, {
       title: this.msg('exceptionDescription'),
       dataIndex: 'excp_event',
-      render: (o, record) => {
-        if (record.charge === null || record.charge === 0) {
-          return o;
-        } else {
-          return `费用金额 ${record.charge.toFixed(2)} 元, ${o}`;
-        }
-      },
     }];
     const content = (
       <div>
@@ -79,8 +72,8 @@ export default class ExceptionListPopover extends React.Component {
       </div>
     );
     return (
-      <Popover placement="rightTop" title={`异常 ${shipmt.shipmt_no}`} content={content} trigger="hover">
-        <a onMouseOver={this.handleMouseOver} style={{ textDecoration: 'underline' }} onClick={() => this.props.onShowExcpModal(shipmt)}>
+      <Popover placement="rightTop" title={`异常 ${shipmtNo}`} content={content} trigger="hover">
+        <a onMouseOver={this.handleMouseOver} style={{ textDecoration: 'underline' }} onClick={() => this.props.onShowExcpModal(dispId, parentId, shipmtNo)}>
           {excpCount}
         </a>
       </Popover>
