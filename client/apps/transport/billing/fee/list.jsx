@@ -112,7 +112,7 @@ export default class FeesList extends React.Component {
         if (record.p_total_charge !== null) {
           pTotalCharge += record.p_total_charge;
         }
-        return record.p_status ? (<span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>) : '';
+        return (<span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>);
       },
     }, {
       title: '入账状态',
