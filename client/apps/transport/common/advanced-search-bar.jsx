@@ -151,7 +151,7 @@ export default class AdvancedSearchBar extends React.Component {
     return item.label;
   }
   render() {
-    const { visible, transitModes, form: { getFieldProps } } = this.props;
+    const { visible, transitModes, form: { getFieldDecorator } } = this.props;
     const { fields } = this.state;
     return (
       <div>
@@ -169,7 +169,9 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Input placeholder="请输入客户名称" size="default" {...getFieldProps('sr_name', { initialValue: '' })} />
+                {getFieldDecorator('sr_name', { initialValue: '' })(
+                  <Input placeholder="请输入客户名称" size="default" />
+                )}
               </FormItem>
               <FormItem
                 label="出发地"
@@ -192,14 +194,21 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Input placeholder="请输入承运商名称" size="default" {...getFieldProps('sp_name', { initialValue: '' })} />
+                {getFieldDecorator('sp_name', { initialValue: '' })(
+                  <Input placeholder="请输入承运商名称" size="default" />
+                )
+                }
               </FormItem>
               <FormItem
                 label="预计提货时间"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RangePicker style={{ width: '100%' }} {...getFieldProps('pickup_est_date', { initialValue: '' })} />
+                {getFieldDecorator('pickup_est_date', { initialValue: '' })(
+                  <RangePicker style={{ width: '100%' }} />
+                )
+                }
+
               </FormItem>
 
               <FormItem
@@ -207,7 +216,9 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RangePicker style={{ width: '100%' }} {...getFieldProps('deliver_est_date', { initialValue: '' })} />
+                {getFieldDecorator('deliver_est_date', { initialValue: '' })(
+                  <RangePicker style={{ width: '100%' }} />
+                )}
               </FormItem>
             </Col>
             <Col sm={8}>
@@ -216,32 +227,42 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Select size="large" style={{ width: '100%' }} {...getFieldProps('transport_mode', { initialValue: '' })} >
-                  {transitModes.map(
+                {getFieldDecorator('transport_mode', { initialValue: '' })(
+                  <Select size="large" style={{ width: '100%' }} >
+                    {transitModes.map(
                     tm => <Option value={tm.mode_name} key={tm.mode_code}>{tm.mode_name}</Option>
                   )}
-                </Select>
+                  </Select>
+                )}
               </FormItem>
               <FormItem
                 label="实际提货时间"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RangePicker style={{ width: '100%' }} {...getFieldProps('pickup_act_date', { initialValue: '' })} />
+                {getFieldDecorator('pickup_act_date', { initialValue: '' })(
+                  <RangePicker style={{ width: '100%' }} />
+                )}
+
               </FormItem>
               <FormItem
                 label="实际送货时间"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RangePicker style={{ width: '100%' }} {...getFieldProps('deliver_act_date', { initialValue: '' })} />
+                {getFieldDecorator('deliver_act_date', { initialValue: '' })(
+                  <RangePicker style={{ width: '100%' }} />
+                )}
               </FormItem>
               <FormItem
                 label={<span>仅显示我的运单 <Tooltip title="由我新建的以及分配给我的运单"><Icon type="question-circle-o" /></Tooltip></span>}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <Checkbox {...getFieldProps('relatedToMe', { valuePropName: 'checked' })} />
+                {getFieldDecorator('relatedToMe', { valuePropName: 'checked' })(
+                  <Checkbox />
+                )}
+
               </FormItem>
             </Col>
           </Row>
