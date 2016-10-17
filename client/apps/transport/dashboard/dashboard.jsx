@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -45,11 +46,18 @@ export default class Dashboard extends React.Component {
     const { startDate, endDate } = this.props.statistics;
     return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
   }
+  renderTodos = (arr) => {
+    if (arr.length === 0) return '';
+    if (arr.length === 1) return arr.slice(0, 20).map(item => item.shipmt_no).join('、');
+    return `${arr.slice(0, 20).map(item => item.shipmt_no).join('、')} 等共 ${arr.length} 单`;
+  }
   render() {
-    const { count, startDate, endDate } = this.props.statistics;
+    const { count, startDate, endDate, todos } = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} defaultValue={[startDate, endDate]} onChange={this.onDateChange} />
+        <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate), moment(endDate)]}
+          onChange={this.onDateChange}
+        />
       </div>);
 
     const columns = [{
@@ -70,15 +78,15 @@ export default class Dashboard extends React.Component {
     const data = [{
       key: '1',
       name: '待接单',
-      operation: '',
+      operation: this.renderTodos(todos.unaccepted),
     }, {
       key: '2',
       name: '待调度',
-      operation: '',
+      operation: this.renderTodos(todos.undispatched),
     }, {
       key: '3',
       name: '待更新提货',
-      operation: '',
+      operation: this.renderTodos(todos.undelivered),
     }, {
       key: '4',
       name: '待更新位置',
@@ -86,15 +94,15 @@ export default class Dashboard extends React.Component {
     }, {
       key: '5',
       name: '待更新送货',
-      operation: '',
+      operation: this.renderTodos(todos.intransit),
     }, {
       key: '6',
       name: '待上传回单',
-      operation: '',
+      operation: this.renderTodos(todos.delivered),
     }, {
       key: '7',
       name: '待审核回单',
-      operation: '',
+      operation: this.renderTodos(todos.podsubmit),
     }];
 
     return (

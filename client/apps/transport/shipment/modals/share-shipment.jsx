@@ -142,7 +142,7 @@ export default class ShareShipmentModal extends React.Component {
           <div style={{ width: '90%', margin: '0 auto' }}>
             <InputGroup>
               <Col span="18">
-              <Input placeholder="" value={this.state.publicUrl} />
+                <Input placeholder="" value={this.state.publicUrl} />
               </Col>
               <Col span="6">
                 <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>
@@ -151,7 +151,7 @@ export default class ShareShipmentModal extends React.Component {
             <br />
             <InputGroup>
               <Col span="18">
-              <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput} />
+                <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput} />
               </Col>
               <Col span="6">
                 <Button type="primary" icon="message" onClick={this.handleSMSSend} loading={this.state.SMSSendLoding}>

@@ -126,7 +126,8 @@ export default class CorpInfo extends React.Component {
       >
         <Input type="text" placeholder={placeholder} {
           ...getFieldProps(field, { rules, ...fieldProps })
-        } />
+        }
+        />
       </FormItem>
     );
   }
@@ -161,7 +162,8 @@ export default class CorpInfo extends React.Component {
               <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Region onChange={this.handleRegionChange} country={country} region={[
                   province, city, district,
-                ]} />
+                ]}
+                />
               </FormItem>
               {
                 this.renderTextInput(
@@ -187,7 +189,8 @@ export default class CorpInfo extends React.Component {
               <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Input type="text" addonBefore="http://" {
                   ...getFieldProps('website', { initialValue: website })
-                } />
+                }
+                />
               </FormItem>
             </Col>
           </Row>
@@ -226,7 +229,7 @@ export default class CorpInfo extends React.Component {
             <Row>
               <Col span="21" offset="3">
                 <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
-                {formatGlobalMsg(intl, 'save')}
+                  {formatGlobalMsg(intl, 'save')}
                 </Button>
               </Col>
             </Row>
@@ -274,7 +277,7 @@ export default class CorpInfo extends React.Component {
                 <Button type="primary" size="large" htmlType="submit"
                   onClick={this.handleSubmit}
                 >
-                {formatGlobalMsg(intl, 'save')}
+                  {formatGlobalMsg(intl, 'save')}
                 </Button>
               </Col>
             </Row>
@@ -290,7 +293,7 @@ export default class CorpInfo extends React.Component {
           <Tabs defaultActiveKey="tab1">
             <TabPane tab={msg('basicInfo')} key="tab1">{this.renderBasicForm()}</TabPane>
             <TabPane tab={msg('brandInfo')} key="tab2">
-            {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
+              {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
             </TabPane>
           </Tabs>
         </div>

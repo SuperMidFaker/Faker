@@ -29,7 +29,7 @@ export default class BillModal extends Component {
       title = '选择查看清单';
     }
     const footer = (
-        <Button type="ghost" size="large" onClick={this.handleCancel}>取消</Button>
+      <Button type="ghost" size="large" onClick={this.handleCancel}>取消</Button>
     );
     const billPros = billMakeModal.bills.map((bill, index) => {
       const perVal = (bill.bill_status * 20);

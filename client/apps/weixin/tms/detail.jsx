@@ -32,10 +32,10 @@ export default class Detail extends React.Component {
     return (
       <Cell>
         <CellHeader>
-            <Label>{label}</Label>
+          <Label>{label}</Label>
         </CellHeader>
         <CellBody>
-            <Input type="text" defaultValue={text} disabled />
+          <Input type="text" defaultValue={text} disabled />
         </CellBody>
       </Cell>
     );

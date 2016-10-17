@@ -25,7 +25,7 @@ export default class PodPanel extends React.Component {
       return (
         <div style={{ margin: '-24px' }}>
           <Carousel>
-          {pod.photos.split(',').map((item, index) => (<div key={index}><img style={{ width: '100%' }} src={item} alt="照片加载中..." /></div>))}
+            {pod.photos.split(',').map((item, index) => (<div key={index}><img style={{ width: '100%' }} src={item} alt="照片加载中..." /></div>))}
           </Carousel>
         </div>
       );

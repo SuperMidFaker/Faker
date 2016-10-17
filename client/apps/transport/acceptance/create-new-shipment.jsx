@@ -169,7 +169,7 @@ export default class ShipmentCreate extends React.Component {
     const { intl, submitting, form } = this.props;
     return (
       <div>
-       <header className="top-bar">
+        <header className="top-bar">
           <div className="tools">
             <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
               {formatGlobalMsg(intl, 'save')}

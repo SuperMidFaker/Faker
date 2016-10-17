@@ -86,11 +86,11 @@ export default class AmLeftSidebar extends React.Component {
     const links = this.props.links.filter(l => !l.invisible);
     return (
       <QueueAnim type={['left', 'right']} duration={600}>
-      <div className="am-left-sidebar">
-        <Menu onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
-          onClick={this.handleClick} mode="vertical" theme="dark"
-        >
-        {
+        <div className="am-left-sidebar">
+          <Menu onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
+            onClick={this.handleClick} mode="vertical" theme="dark"
+          >
+            {
           links.map((link) => {
             if (link.single) {
               return (<MenuItem key={link.key}>
@@ -118,8 +118,8 @@ export default class AmLeftSidebar extends React.Component {
             }
           })
         }
-        </Menu>
-      </div>
+          </Menu>
+        </div>
       </QueueAnim>
     );
   }

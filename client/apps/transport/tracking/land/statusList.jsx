@@ -351,7 +351,7 @@ export default class LandStatusList extends React.Component {
               <ExportExcel />
             </PrivilegeCover>
             <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            {this.renderBatchOperationButtons()}
+              {this.renderBatchOperationButtons()}
             </span>
           </div>
           <div className="panel-body table-panel">

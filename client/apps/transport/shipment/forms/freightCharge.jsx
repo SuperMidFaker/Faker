@@ -66,7 +66,7 @@ export default class FreightCharge extends React.Component {
           description: '价格协议中未找到对应路线的报价费率',
         });
       } else {
-        // todo 起步价运费公式? pickup未勾选列表中如何不显示? pickup mode=1 x数量?
+        // todo 起步价运费公式? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
@@ -157,6 +157,12 @@ export default class FreightCharge extends React.Component {
       deliver_checked: false,
     });
   }
+  handleTotalChange = (ev) => {
+    ev.preventDefault();
+    this.props.setConsignFields({
+      freight_charge: ev.target.value,
+    });
+  }
   render() {
     const { formhoc, formData } = this.props;
     const { computed } = this.state;
@@ -207,7 +213,9 @@ export default class FreightCharge extends React.Component {
           />
         }
         <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
-          field="total_charge" fieldProps={{ initialValue: formData.total_charge }}
+          field="total_charge" fieldProps={{ initialValue: formData.total_charge,
+            onChange: this.handleTotalChange,
+          }}
           rules={[{ type: 'number', transform: v => Number(v),
             message: this.msg('totalChargeMustBeNumber') }]}
           colSpan={8} readOnly={computed}

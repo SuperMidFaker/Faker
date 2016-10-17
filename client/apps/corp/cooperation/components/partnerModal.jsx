@@ -93,7 +93,7 @@ class PartnerForm extends React.Component {
               取消
             </Button>
             <Button type="primary" size="large" htmlType="submit">
-            {inEdit ? '修改' : '添加'}
+              {inEdit ? '修改' : '添加'}
             </Button>
           </FormItem>
         </Form>

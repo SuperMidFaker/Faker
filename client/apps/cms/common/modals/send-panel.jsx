@@ -110,7 +110,7 @@ export default class SendPanel extends React.Component {
       <div className={`preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
-            <span className="title"></span>
+            <span className="title" />
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
                 <Icon type="cross" />
@@ -118,18 +118,18 @@ export default class SendPanel extends React.Component {
             </div>
           </div>
           <div className="body" style={{ padding: '10px' }}>
-             <Collapse defaultActiveKey={['1']} onChange={this.handleCollapseChange}>
-                <Panel header="选择报关行" key="1">
-                  <Select size="large" defaultValue="" style={{ width: '100%' }} onChange={this.handleCCBChange}>
+            <Collapse defaultActiveKey={['1']} onChange={this.handleCollapseChange}>
+              <Panel header="选择报关行" key="1">
+                <Select size="large" defaultValue="" style={{ width: '100%' }} onChange={this.handleCCBChange}>
                   {formRequire.clients.map(item => <Option value={item.tid}>{item.name}</Option>)}
-                  </Select>
-                  <Table columns={columns} dataSource={delegations} rowKey={record => record.delg_no} pagination="false" style={{ marginTop: '10px' }} />
-                  <div>
-                    <Button type="primary" size="large" onClick={this.handleSend}>发送</Button>
-                    <Button type="default" size="large" style={{ marginLeft: '50px' }} onClick={this.handleClose}>取消</Button>
-                  </div>
-                </Panel>
-              </Collapse>
+                </Select>
+                <Table columns={columns} dataSource={delegations} rowKey={record => record.delg_no} pagination="false" style={{ marginTop: '10px' }} />
+                <div>
+                  <Button type="primary" size="large" onClick={this.handleSend}>发送</Button>
+                  <Button type="default" size="large" style={{ marginLeft: '50px' }} onClick={this.handleClose}>取消</Button>
+                </div>
+              </Panel>
+            </Collapse>
           </div>
         </div>
       </div>

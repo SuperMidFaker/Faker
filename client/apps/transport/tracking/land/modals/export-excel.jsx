@@ -66,7 +66,10 @@ export default class ExportExcel extends React.Component {
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
-              <RangePicker style={{ width: 184 }} defaultValue={[moment(this.state.startDate).format('YYYY-MM-DD'), moment(this.state.endDate).format('YYYY-MM-DD')]} onChange={this.handleRangeChange} />
+              <RangePicker style={{ width: 184 }} defaultValue={
+                [moment(this.state.startDate).format('YYYY-MM-DD'), moment(this.state.endDate).format('YYYY-MM-DD')]
+              } onChange={this.handleRangeChange}
+              />
             </FormItem>
           </Form>
         </Modal>

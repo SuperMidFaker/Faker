@@ -35,8 +35,7 @@ export default class CorpOverview extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-          </div>
+          <div className="tools" />
           <span>{this.msg('overviewTitle')}</span>
         </header>
         <div className="main-content" key="main">

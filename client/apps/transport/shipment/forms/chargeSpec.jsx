@@ -82,7 +82,7 @@ export default class ChargeSpecForm extends React.Component {
         <FormItem label={<span>
           <Checkbox checked={checkDeliver} onChange={this.handleDeliverCheck} />
           {this.msg('deliverCharge')}
-          </span>} labelCol={{ span }} wrapperCol={{ span: 24 - span }}
+        </span>} labelCol={{ span }} wrapperCol={{ span: 24 - span }}
         >
           <Input addonAfter={this.msg('CNY')} readOnly value={charge.deliver_charge} />
         </FormItem>

@@ -94,7 +94,9 @@ export default class SegmentDock extends React.Component {
           <Col span="12">运输模式：</Col>
         </Row>
         <Row type="flex" justify="start">
-          <Col span="12"><DatePicker format="yyyy.MM.dd" onChange={this.handleDayChange.bind(this, od, 'deliver')} /></Col>
+          <Col span="12">
+            <DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'deliver')} />
+          </Col>
           <Col span="12">
             <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'deliver')}>
               {mds}
@@ -106,7 +108,7 @@ export default class SegmentDock extends React.Component {
           <Col span="12">运输模式：</Col>
         </Row>
         <Row type="flex" justify="start">
-          <Col span="12"><DatePicker format="yyyy.MM.dd" onChange={this.handleDayChange.bind(this, od, 'pickup')} /></Col>
+          <Col span="12"><DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'pickup')} /></Col>
           <Col span="12">
             <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'pickup')}>
               {mds}
@@ -125,20 +127,21 @@ export default class SegmentDock extends React.Component {
   }
 
   handleDayChange(order, type, date) {
+    const inDate = date.toDate();
     if (order === 1) {
       const { segGroupFirst } = this.state;
       if (type === 'deliver') {
-        segGroupFirst.deliverEstDate = date;
+        segGroupFirst.deliverEstDate = inDate;
       } else if (type === 'pickup') {
-        segGroupFirst.pickupEstDate = date;
+        segGroupFirst.pickupEstDate = inDate;
       }
       this.setState(segGroupFirst);
     } else {
       const { segGroupSecond } = this.state;
       if (type === 'deliver') {
-        segGroupSecond.deliverEstDate = date;
+        segGroupSecond.deliverEstDate = inDate;
       } else if (type === 'pickup') {
-        segGroupSecond.pickupEstDate = date;
+        segGroupSecond.pickupEstDate = inDate;
       }
       this.setState(segGroupSecond);
     }
@@ -289,41 +292,41 @@ export default class SegmentDock extends React.Component {
               </div>);
               */
       dock = (
-          <div className="dock-panel inside">
-            <div className="panel-content">
-              <div className="header">
-                <span className="title">分段 {shipmts.length}个运单</span>
-                <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
-                <div className="pull-right">
-                  <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
-                    <Icon type="cross" />
-                  </Button>
-                </div>
+        <div className="dock-panel inside">
+          <div className="panel-content">
+            <div className="header">
+              <span className="title">分段 {shipmts.length}个运单</span>
+              <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
+              <div className="pull-right">
+                <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
+                  <Icon type="cross" />
+                </Button>
               </div>
-              <div className="body">
-                <div className="pane-content">
-                  <div className="subform-heading">
-                    <h3 className="subform-title">时间计划</h3>
-                  </div>
-                  <Row className="pane-section" type="flex" justify="start">
-                    <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
-                    <Col span="12">送货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
-                  </Row>
-                  <div className="subform-heading">
-                    <h3 className="subform-title">分段中转</h3>
-                  </div>
-                  {err}
-                  {sg}
-                  {this.state.segments}
-                  <div style={{ marginTop: 24 }}>
-                    <Button type="ghost" onClick={this.onCloseWrapper}>{this.msg('btnTextCancel')}</Button>
-                    <span className="ant-divider" style={{ width: '0px' }} />
-                    <Button type="primary" onClick={this.handleSegment}>{this.msg('btnTextOk')}</Button>
-                  </div>
+            </div>
+            <div className="body">
+              <div className="pane-content">
+                <div className="subform-heading">
+                  <h3 className="subform-title">时间计划</h3>
+                </div>
+                <Row className="pane-section" type="flex" justify="start">
+                  <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
+                  <Col span="12">送货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
+                </Row>
+                <div className="subform-heading">
+                  <h3 className="subform-title">分段中转</h3>
+                </div>
+                {err}
+                {sg}
+                {this.state.segments}
+                <div style={{ marginTop: 24 }}>
+                  <Button type="ghost" onClick={this.onCloseWrapper}>{this.msg('btnTextCancel')}</Button>
+                  <span className="ant-divider" style={{ width: '0px' }} />
+                  <Button type="primary" onClick={this.handleSegment}>{this.msg('btnTextOk')}</Button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
         );
     }
 

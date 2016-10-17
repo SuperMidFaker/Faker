@@ -56,20 +56,20 @@ export default class List extends React.Component {
       <div className="panel-body">
         <section>
           <CellsTitle>待上传回单</CellsTitle>
-            <Cells access>
+          <Cells access>
             {shipmentlist.data.map((item) => {
               return (
-                  <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
-                    <CellBody>
-                      {item.shipmt_no}
-                    </CellBody>
-                    <CellFooter>
-                      {moment(item.deliver_act_date).format('YYYY-MM-DD HH:mm')}
-                    </CellFooter>
-                  </Cell>
+                <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
+                  <CellBody>
+                    {item.shipmt_no}
+                  </CellBody>
+                  <CellFooter>
+                    {moment(item.deliver_act_date).format('YYYY-MM-DD HH:mm')}
+                  </CellFooter>
+                </Cell>
                 );
             })}
-            </Cells>
+          </Cells>
           <CellsTitle>已提交回单</CellsTitle>
           <Cells>
             {uploadedShipmentlist.data.map((item) => {

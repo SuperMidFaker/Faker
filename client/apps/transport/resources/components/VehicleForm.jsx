@@ -57,14 +57,14 @@ export default class VehicleForm extends Component {
           </FormItem>
           <FormItem label="车型" required {...formItemLayout}>
             <Select {...getFieldProps('type')} required>
-            {
+              {
               vehicleParams.types.map(vt => <Option value={vt.value} key={vt.value}>{vt.text}</Option>)
             }
             </Select>
           </FormItem>
           <FormItem label="车长" required {...formItemLayout}>
             <Select {...getFieldProps('length')} required>
-            {
+              {
               vehicleParams.lengths.map(vlt => <Option value={vlt.value} key={vlt.value}>{vlt.text}</Option>)
             }
             </Select>

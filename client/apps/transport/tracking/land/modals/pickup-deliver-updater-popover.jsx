@@ -86,10 +86,10 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     const content = (
       <Form className="row" style={{ width: '300px' }}>
         <FormItem label={label} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-          <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
+          <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
             {...getFieldProps('actDate', {
               rules: [{
-                type: 'date', required: true, message: ruleMsg,
+                type: 'object', required: true, message: ruleMsg,
               }],
             })}
           />
@@ -111,7 +111,8 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
           ev.preventDefault();
           ev.stopPropagation();
           this.handleShowPopover();
-        }}>{this.props.children}</a>
+        }}
+        >{this.props.children}</a>
       </Popover>
     );
   }

@@ -138,23 +138,23 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} className="imgZone">
-                      <img src={logoPng || '/assets/img/wetms.png'} style={{
-                        height: 120, width: 120, margin: 10,
-                        border: '1px solid #e0e0e0', borderRadius: 60,
-                      }} alt="logo"
-                      />
-                      <Dropzone onDrop={files => this.props.uploadImg('logo', files)} className="dropzone">
-                        <div className="ant-upload ant-upload-drag" title="请拖拽或选择文"
-                          style={{ height: 140, marginTop: 20 }}
-                        >
-                          <span>
-                            <div className="ant-upload-drag-container">
-                              <Icon type="upload" />
-                              <p className="ant-upload-hint">建议使用PNG或GIF格式的透明图片</p>
-                            </div>
-                          </span>
-                        </div>
-                      </Dropzone>
+                    <img src={logoPng || '/assets/img/wetms.png'} style={{
+                      height: 120, width: 120, margin: 10,
+                      border: '1px solid #e0e0e0', borderRadius: 60,
+                    }} alt="logo"
+                    />
+                    <Dropzone onDrop={files => this.props.uploadImg('logo', files)} className="dropzone">
+                      <div className="ant-upload ant-upload-drag" title="请拖拽或选择文"
+                        style={{ height: 140, marginTop: 20 }}
+                      >
+                        <span>
+                          <div className="ant-upload-drag-container">
+                            <Icon type="upload" />
+                            <p className="ant-upload-hint">建议使用PNG或GIF格式的透明图片</p>
+                          </div>
+                        </span>
+                      </div>
+                    </Dropzone>
                   </FormItem>
                 </Col>
               </Row>
@@ -186,7 +186,8 @@ class TenantForm extends React.Component {
                     help={getFieldError('subdomain')}
                   >
                     <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain',
-                      { transform: value => (value.trim()), initialValue: formData.subdomain })} />
+                      { transform: value => (value.trim()), initialValue: formData.subdomain })}
+                    />
                   </FormItem>
                 </Col>
               </Row>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Select, Input, InputNumber, Card, Col, Row, Button } from 'antd';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n.js';
+import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
@@ -93,7 +93,7 @@ export default class SubForm extends Component {
                   initialValue: bills[k].decl_way_code,
                 })}
               >
-              {
+                {
                 DECL_TYPE.map(dw =>
                   <Option value={dw.key} key={dw.key}>{dw.value}</Option>
                 )
@@ -104,7 +104,8 @@ export default class SubForm extends Component {
           <Col sm={6}>
             <FormItem label={this.msg('manualNo')} {...formItemLayout}>
               <Input {...getFieldProps(`manual_no_${k}`, {
-                initialValue: bills[k].manual_no })} />
+                initialValue: bills[k].manual_no })}
+              />
             </FormItem>
           </Col>
           <Col sm={5}>
@@ -125,7 +126,7 @@ export default class SubForm extends Component {
             </FormItem>
           </Col>
           <Col span={1} offset={1}>
-            <Button type="ghost" shape="circle" onClick={() => this.remove(k)} icon="delete"></Button>
+            <Button type="ghost" shape="circle" onClick={() => this.remove(k)} icon="delete" />
           </Col>
         </Row>
       );

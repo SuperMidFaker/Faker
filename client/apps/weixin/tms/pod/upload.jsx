@@ -87,9 +87,9 @@ export default class UploadPod extends React.Component {
             <Cell className="">
               <CellBody>
                 <Select defaultValue={signStatus} onChange={this.handleSignSelectChange}>
-                    <option value={1}>正常签收</option>
-                    <option value={2}>异常签收</option>
-                    <option value={3}>拒绝签收</option>
+                  <option value={1}>正常签收</option>
+                  <option value={2}>异常签收</option>
+                  <option value={3}>拒绝签收</option>
                 </Select>
               </CellBody>
               <CellFooter />

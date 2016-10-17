@@ -98,7 +98,7 @@ export default defineMessages({
     defaultMessage: '已接单',
   },
   draftShipmt: {
-    id: 'transport.acceptance.shipment.draft',
+    id: 'transport.acceptance.shipment.plane',
     defaultMessage: '运输计划',
   },
   archivedShipmt: {

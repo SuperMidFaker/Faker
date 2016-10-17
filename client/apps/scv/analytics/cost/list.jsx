@@ -233,14 +233,14 @@ export default class AnalyticsCostList extends React.Component {
             </Row>
           </div>
           <div className="page-body">
-          <Tabs defaultActiveKey="allocByOrder">
-            <TabPane tab={this.msg('allocByOrder')} key="allocByOrder">
-              <Table dataSource={dataSource} columns={columns} size="middle" />
-            </TabPane>
-            <TabPane tab={this.msg('allocBySku')} key="allocBySku">
-              <Table dataSource={dataSource} columns={columns} size="middle" />
-            </TabPane>
-          </Tabs>
+            <Tabs defaultActiveKey="allocByOrder">
+              <TabPane tab={this.msg('allocByOrder')} key="allocByOrder">
+                <Table dataSource={dataSource} columns={columns} size="middle" />
+              </TabPane>
+              <TabPane tab={this.msg('allocBySku')} key="allocBySku">
+                <Table dataSource={dataSource} columns={columns} size="middle" />
+              </TabPane>
+            </Tabs>
           </div>
         </div>
       </QueueAnim>

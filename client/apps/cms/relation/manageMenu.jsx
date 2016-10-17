@@ -35,14 +35,14 @@ export default class ManageMenu extends Component {
   }
   render() {
     return (
-        <div>
-          <Menu mode="horizontal" selectedKeys={this.state.currentKey}
-            onClick={this.handleMenuChange}
-          >
-            <MenuItem key="compRelation">{formatMsg(this.props.intl, 'relation')}</MenuItem>
-          </Menu>
-          {this.props.children}
-        </div>
+      <div>
+        <Menu mode="horizontal" selectedKeys={this.state.currentKey}
+          onClick={this.handleMenuChange}
+        >
+          <MenuItem key="compRelation">{formatMsg(this.props.intl, 'relation')}</MenuItem>
+        </Menu>
+        {this.props.children}
+      </div>
     );
   }
 }

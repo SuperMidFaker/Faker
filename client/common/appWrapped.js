@@ -21,7 +21,7 @@ export default (routes, dynamic) => {
         }
         return (
           <Router history={this.props.routerHistory}>
-          {routes(this.props.store)}
+            {routes(this.props.store)}
           </Router>
         );
       }
@@ -31,9 +31,9 @@ export default (routes, dynamic) => {
       const { store } = this.props;
       return (
         <Provider store={store}>
-            <div className="full-container">
+          <div className="full-container">
             {this.renderRouter()}
-            </div>
+          </div>
         </Provider>
       );
     }

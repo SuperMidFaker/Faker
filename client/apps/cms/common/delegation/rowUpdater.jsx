@@ -9,7 +9,7 @@ export default function RowUpdater(props) {
   }
   return (
     <a onClick={handleClick} role="button">
-    {label}
+      {label}
     </a>
   );
 }

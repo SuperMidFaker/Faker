@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber, Icon, Checkbox, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import { Button, InputNumber, Icon, Checkbox, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFeesByChooseModal, createBilling } from 'common/reducers/transportBilling';
+import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/reducers/transportBilling';
 import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 
@@ -26,7 +25,7 @@ const formatMsg = format(messages);
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
   }),
-  { loadFeesByChooseModal, createBilling }
+  { loadFeesByChooseModal, createBilling, updateBillingFees }
 )
 
 export default class CreateBilling extends React.Component {
@@ -39,17 +38,14 @@ export default class CreateBilling extends React.Component {
     billingFees: PropTypes.object.isRequired,
     loadFeesByChooseModal: PropTypes.func.isRequired,
     createBilling: PropTypes.func.isRequired,
+    updateBillingFees: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    changed: false,
-  }
   componentDidMount() {
     const { tenantId, type } = this.props;
     const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
-    const { pageSize, currentPage } = this.props.billingFees;
     this.props.loadFeesByChooseModal({
       type,
       beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
@@ -58,75 +54,64 @@ export default class CreateBilling extends React.Component {
       partnerId,
       partnerTenantId,
       tenantId,
-      pageSize,
-      currentPage,
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSave = () => {
     const { loginId, tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerTenantId, name, cancelCharge, freightCharge,
+    const { beginDate, endDate, chooseModel, partnerTenantId, name, freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
-    if (this.props.billingFees.data.length > 0) {
-      const fees = this.props.billingFees.data.filter((/* item*/) => {
-        return true; // item[`${type}_status`] === 1;
-      });
+    const fees = this.props.billingFees.data;
+    if (fees.length === 0) {
+      message.error('没有运单');
+    } else {
+      const shipmtCount = fees.filter(item => item.status === 1).length;
       const fee = fees[0];
       this.props.createBilling({
-        type, tenantId, loginId, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-        endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), cancelCharge, freightCharge,
+        tenantId, loginId, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
+        endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), freightCharge,
         advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
         spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
-        shipmtCount: fees.length, fees,
+        shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push(`/transport/billing/${this.props.type}`);
+          this.context.router.push(`/transport/billing/${type}`);
         }
       });
-    } else {
-      message.error('此条件下没有运单');
     }
   }
-  handleChangeAdjustCharges = (/* feeId, adjustCharges */) => {
-    // console.log(feeId, adjustCharges);
+  handleChangeAdjustCharges = (feeId, adjustCharges) => {
+    this.props.updateBillingFees(null, feeId, 'adjust_charge', adjustCharges);
+  }
+  handleChangeStatus = (feeId, status) => {
+    let s = 0;
+    if (status) s = 1;
+    else s = 0;
+    this.props.updateBillingFees(null, feeId, 'status', s);
+  }
+  handleTableFooter = () => {
+    const { billing } = this.props;
+    return (
+      <div>
+        <span style={{ marginLeft: 10 }}>账单总金额: </span><span style={{ color: '#FF0000' }}>{billing.totalCharge}</span>
+        <span style={{ marginLeft: 10 }}>代垫总金额: </span><span style={{ color: '#FF9933' }}>{billing.advanceCharge}</span>
+        <span style={{ marginLeft: 10 }}>运费总金额: </span><span style={{ color: '#FF9933' }}>{billing.freightCharge}</span>
+        <span style={{ marginLeft: 10 }}>特殊费用总金额: </span><span style={{ color: '#FF9933' }}>{billing.excpCharge}</span>
+        <span style={{ marginLeft: 10 }}>调整总金额: </span><span style={{ color: '#FF9933' }}>{billing.adjustCharge}</span>
+      </div>
+    );
   }
   render() {
-    const { tenantId, type, billing } = this.props;
-    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
+    const { type, billing } = this.props;
 
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
       fontSize: 14,
     };
-    const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadFeesByChooseModal(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.currentPage, result.pageSize),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: result.pageSize,
-      }),
-      getParams: (pagination) => {
-        const params = {
-          type,
-          beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-          endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
-          chooseModel,
-          partnerId,
-          partnerTenantId,
-          tenantId,
-          pageSize: pagination.pageSize,
-          currentPage: pagination.current,
-        };
-        return params;
-      },
-      remotes: this.props.billingFees,
-    });
+    const dataSource = this.props.billingFees.data;
     let partnerSourceType = 'sp';
     if (type === 'payable') {
       partnerSourceType = 'sp';
@@ -150,22 +135,46 @@ export default class CreateBilling extends React.Component {
       dataIndex: 'charg_amount',
     }, {
       title: '运费',
-      dataIndex: 'freight_charge',
+      dataIndex: 'total_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '特殊费用',
       dataIndex: 'excp_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '代垫费用',
       dataIndex: 'advance_charge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }, {
       title: '调整金额',
       dataIndex: 'adjust_charge',
       render: (o, record) => {
-        return (<InputNumber defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
+        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
       },
     }, {
       title: '最终费用',
-      dataIndex: 'total_charge',
+      render(o, record) {
+        let totalCharge = 0;
+        if (record.advance_charge !== null) {
+          totalCharge += record.advance_charge;
+        }
+        if (record.excp_charge !== null) {
+          totalCharge += record.excp_charge;
+        }
+        if (record.adjust_charge !== null) {
+          totalCharge += record.adjust_charge;
+        }
+        if (record.total_charge !== null) {
+          totalCharge += record.total_charge;
+        }
+        return totalCharge.toFixed(2);
+      },
     }, {
       title: '异常',
       dataIndex: 'excp_count',
@@ -204,9 +213,9 @@ export default class CreateBilling extends React.Component {
       },
     }, {
       title: '是否入账',
-      dataIndex: `${this.props.type}_status`,
-      render(o) {
-        return (<Checkbox defaultChecked={o === 1} />);
+      dataIndex: 'status',
+      render: (o, record) => {
+        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />);
       },
     }];
     return (
@@ -224,8 +233,8 @@ export default class CreateBilling extends React.Component {
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>
-            <div className="panel-body">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" />
+            <div className="panel-body table-panel">
+              <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
             </div>
           </div>
         </div>

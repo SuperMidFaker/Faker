@@ -15,7 +15,7 @@ function StepDesc(props) {
   const texts = props.texts.filter(txt => txt);
   return texts.length > 0 ? (
     <div>
-    {
+      {
     texts.map(
       (txt, i) => (
         <div key={`${txt}${i}`}>
@@ -78,7 +78,8 @@ export default class TrackingPane extends React.Component {
           item.content,
           `操作人员: ${item.login_name}`,
           item.created_date && moment(item.created_date).format(timeFormat),
-        ]} />
+        ]}
+        />
       ),
     }));
 
@@ -88,7 +89,8 @@ export default class TrackingPane extends React.Component {
         <StepDesc texts={[
           tracking.creator,
           tracking.created_date && moment(tracking.created_date).format(timeFormat),
-        ]} />
+        ]}
+        />
       ),
     }];
     let currentStep = 0;
@@ -99,7 +101,8 @@ export default class TrackingPane extends React.Component {
           <StepDesc texts={[
             tracking.upstream_name,
             tracking.upstream_acpt_time && moment(tracking.upstream_acpt_time).format(timeFormat),
-          ]} />
+          ]}
+          />
         ),
       });
       currentStep = tracking.upstream_status - 1; // -1: Step index begin at 0;
@@ -114,7 +117,8 @@ export default class TrackingPane extends React.Component {
           <StepDesc texts={[
             tracking.downstream_name,
             tracking.downstream_acpt_time && moment(tracking.downstream_acpt_time).format(timeFormat),
-          ]} />
+          ]}
+          />
         ),
       });
       if (tracking.upstream_status < SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -131,26 +135,29 @@ export default class TrackingPane extends React.Component {
       {
         title: this.msg('trackPickup'),
         desc: (
-        <StepDesc texts={[
-          tracking.vehicle,
-          tracking.pickup_act_date && moment(tracking.pickup_act_date).format(timeFormat),
-        ]} />
+          <StepDesc texts={[
+            tracking.vehicle,
+            tracking.pickup_act_date && moment(tracking.pickup_act_date).format(timeFormat),
+          ]}
+          />
       ),
       }, {
         title: this.msg('trackDeliver'),
         desc: (
-        <StepDesc texts={[
-          tracking.vehicle,
-          tracking.deliver_act_date && moment(tracking.deliver_act_date).format(timeFormat),
-        ]} />
+          <StepDesc texts={[
+            tracking.vehicle,
+            tracking.deliver_act_date && moment(tracking.deliver_act_date).format(timeFormat),
+          ]}
+          />
       ),
       }, {
         title: this.msg('trackPod'),
         desc: (
-        <StepDesc texts={[
-          tracking.poder,
-          tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
-        ]} />
+          <StepDesc texts={[
+            tracking.poder,
+            tracking.pod_recv_date && moment(tracking.pod_recv_date).format(timeFormat),
+          ]}
+          />
       ),
       });
 

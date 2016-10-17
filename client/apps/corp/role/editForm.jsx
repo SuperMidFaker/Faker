@@ -186,28 +186,29 @@ export default class RoleForm extends React.Component {
         <Form horizontal onSubmit={this.handleSubmit}>
           <Row gutter={16}>
             <Col span={12}>
-          <FormInputItem labelName={formatMsg(intl, 'nameColumn')} labelSpan={8} field="name" options={{
-            getFieldProps,
-            rules: [{
-              required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
-            }, {
-              validator: (rule, value, callback) => {
-                if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
+              <FormInputItem labelName={formatMsg(intl, 'nameColumn')} labelSpan={8} field="name" options={{
+                getFieldProps,
+                rules: [{
+                  required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
+                }, {
+                  validator: (rule, value, callback) => {
+                    if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
                     nk.toUpperCase() === value.toUpperCase()).length > 0) {
-                  return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
-                }
-                callback();
-              },
-            }],
-            initialValue: name,
-          }} />
-          <FormInputItem labelName={formatMsg(intl, 'descColumn')} labelSpan={8} field="desc"
-            options={{ getFieldProps, initialValue: desc }}
-          />
+                      return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
+                    }
+                    callback();
+                  },
+                }],
+                initialValue: name,
+              }}
+              />
+              <FormInputItem labelName={formatMsg(intl, 'descColumn')} labelSpan={8} field="desc"
+                options={{ getFieldProps, initialValue: desc }}
+              />
             </Col>
           </Row>
           <Row gutter={16}>
-          {
+            {
             tenantModules.map((tnm) => {
               return (
                 <Col md={24} lg={12} key={tnm.text}>

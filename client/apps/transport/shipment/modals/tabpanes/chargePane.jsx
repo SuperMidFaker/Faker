@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Table } from 'antd';
+import { Row, Col, Card, Table, Checkbox } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -23,7 +23,7 @@ export default class ChargePanel extends React.Component {
   revenueColumns = [{
     title: this.msg('revenueItem'),
     dataIndex: 'item',
-    width: 80,
+    width: 100,
   }, {
     title: this.msg('chargeRate'),
     dataIndex: 'rate',
@@ -31,16 +31,27 @@ export default class ChargePanel extends React.Component {
   }, {
     title: this.msg('chargeAmount'),
     dataIndex: 'amount',
-    width: 240,
+    width: 200,
   }, {
     title: this.msg('chargeFee'),
     dataIndex: 'fee',
     width: 180,
+  }, {
+    title: this.msg('chargeChecked'),
+    dataIndex: 'checked',
+    width: 80,
+    render: (o) => {
+      if (o === true) {
+        return <Checkbox checked disabled />;
+      } else {
+        return null;
+      }
+    },
   }]
   expenseColumns = [{
     title: this.msg('expenseItem'),
     dataIndex: 'item',
-    width: 80,
+    width: 100,
   }, {
     title: this.msg('chargeRate'),
     dataIndex: 'rate',
@@ -48,11 +59,22 @@ export default class ChargePanel extends React.Component {
   }, {
     title: this.msg('chargeAmount'),
     dataIndex: 'amount',
-    width: 240,
+    width: 200,
   }, {
     title: this.msg('chargeFee'),
     dataIndex: 'fee',
     width: 180,
+  }, {
+    title: this.msg('chargeChecked'),
+    dataIndex: 'checked',
+    width: 80,
+    render: (o) => {
+      if (o === true) {
+        return <Checkbox checked disabled />;
+      } else {
+        return null;
+      }
+    },
   }]
   advancesColumns = [{
     title: this.msg('advanceName'),
@@ -94,6 +116,7 @@ export default class ChargePanel extends React.Component {
           style: 'currency',
           currency: 'CNY',
         }),
+        checked: true,
       });
     }
     if (charge.pickup_charge) {
@@ -106,6 +129,7 @@ export default class ChargePanel extends React.Component {
           style: 'currency',
           currency: 'CNY',
         }),
+        checked: !!charge.pickup_checked,
       });
     }
     if (charge.deliver_charge) {
@@ -118,6 +142,7 @@ export default class ChargePanel extends React.Component {
           style: 'currency',
           currency: 'CNY',
         }),
+        checked: !!charge.deliver_checked,
       });
     }
     if (charge.surcharge) {
@@ -130,18 +155,21 @@ export default class ChargePanel extends React.Component {
           style: 'currency',
           currency: 'CNY',
         }),
+        checked: true,
       });
     }
-    outDs.push({
-      key: 'total',
-      item: this.msg('totalCharge'),
-      rate: '',
-      amount: '',
-      fee: intl.formatNumber(charge.total_charge, {
-        style: 'currency',
-        currency: 'cny',
-      }),
-    });
+    if (charge.total_charge) {
+      outDs.push({
+        key: 'total',
+        item: this.msg('totalCharge'),
+        rate: '',
+        amount: '',
+        fee: intl.formatNumber(charge.total_charge, {
+          style: 'currency',
+          currency: 'cny',
+        }),
+      });
+    }
   }
   render() {
     const { charges, advances, intl } = this.props;

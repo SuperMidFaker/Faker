@@ -207,6 +207,11 @@ const MESSAGE_STATUS = {
   },
 };
 
+export const EXP_STATUS = [
+  { value: 0, text: '未结单' },
+  { value: 1, text: '已结单' },
+  { value: 2, text: '已开票' },
+];
 
 export {
   TENANT_LEVEL,

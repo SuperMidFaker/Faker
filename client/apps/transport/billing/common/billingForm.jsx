@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
-import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
+import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { updateBilling, loadPartners } from 'common/reducers/transportBilling';
@@ -77,8 +78,8 @@ export default class BillingForm extends React.Component {
   }
   handleDateChange = (dates) => {
     this.setState({
-      beginDate: dates[0],
-      endDate: dates[1],
+      beginDate: dates[0].toDate(),
+      endDate: dates[1].toDate(),
     });
   }
   render() {
@@ -103,7 +104,7 @@ export default class BillingForm extends React.Component {
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
                   >
-                  {pt.name}
+                    {pt.name}
                   </Option>)
                 )
               }
@@ -130,7 +131,7 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            <RangePicker value={[beginDate, endDate]} onChange={this.handleDateChange} />
+            <RangePicker value={[moment(beginDate), moment(endDate)]} onChange={this.handleDateChange} />
           </FormItem>
           <FormItem
             id="control-input"
