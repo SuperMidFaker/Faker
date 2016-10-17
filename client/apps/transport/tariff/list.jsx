@@ -133,7 +133,7 @@ export default class TariffList extends React.Component {
         <span>
           <PrivilegeCover module="transport" feature="tariff" action="edit">
             <NavLink to={`/transport/tariff/edit/${record._id}`}>
-            {this.msg('revise')}
+              {this.msg('revise')}
             </NavLink>
           </PrivilegeCover>
           <span className="ant-divider" />
@@ -208,7 +208,7 @@ export default class TariffList extends React.Component {
               <PrivilegeCover module="transport" feature="tariff" action="create">
                 <NavLink to="/transport/tariff/new">
                   <Button type="primary" icon="plus-circle-o">
-                  {this.msg('tariffCreate')}
+                    {this.msg('tariffCreate')}
                   </Button>
                 </NavLink>
               </PrivilegeCover>

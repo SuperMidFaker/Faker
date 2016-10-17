@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { message } from 'antd';
 import { connect } from 'react-redux';
-import CarrierList from '../components/CarrierList.jsx';
+import CarrierList from '../components/CarrierList';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadPartners, addPartner, editPartner, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import connectNav from 'client/common/decorators/connect-nav';

@@ -124,11 +124,11 @@ export default class Manage extends Component {
               <PrivilegeCover module="clearance" feature="relation" action="edit">
                 <span>
                   <NavLink to={`/clearance/relation/edit/${record.id}`}>
-                  {formatContainerMsg(intl, 'fixOp')}
+                    {formatContainerMsg(intl, 'fixOp')}
                   </NavLink>
-                  <span className="ant-divider"></span>
+                  <span className="ant-divider" />
                   <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                  {formatContainerMsg(intl, 'disableOp')}
+                    {formatContainerMsg(intl, 'disableOp')}
                   </a>
                 </span>
               </PrivilegeCover>
@@ -138,7 +138,7 @@ export default class Manage extends Component {
               <span>
                 <PrivilegeCover module="clearance" feature="relation" action="edit">
                   <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                  {formatContainerMsg(intl, 'enableOp')}
+                    {formatContainerMsg(intl, 'enableOp')}
                   </a>
                 </PrivilegeCover>
               </span>);
@@ -178,7 +178,7 @@ export default class Manage extends Component {
     return (
       <div>
         <header className="top-bar">
-          <span></span>
+          <span />
         </header>
         <div className="main-content">
           <div className="page-body">
@@ -186,7 +186,8 @@ export default class Manage extends Component {
               <PrivilegeCover module="clearance" feature="relation" action="create">
                 <Button type="primary" style={{ marginBottom: 8 }} onClick={
                   () => this.handleNavigationTo('/clearance/relation/create')
-                }>
+                }
+                >
                   {msg('new')}
                 </Button>
               </PrivilegeCover>

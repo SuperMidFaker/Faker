@@ -72,8 +72,7 @@ export default class SCVDashboard extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-          </div>
+          <div className="tools" />
           <span>{this.msg('dashboardTitle')}</span>
         </header>
         <div className="main-content">
@@ -103,7 +102,7 @@ export default class SCVDashboard extends React.Component {
                     <li className="col-4">
                       <div className="statistics-cell">
                         <h6>{this.msg('delivered')}</h6>
-                        <p className="data-num"></p>
+                        <p className="data-num" />
                       </div>
                     </li>
                     <li className="col-4">
@@ -185,7 +184,7 @@ export default class SCVDashboard extends React.Component {
               </Col>
               <Col span={24}>
                 <Card title={this.msg('statistics')}>
-                  <div id="c1"></div>
+                  <div id="c1" />
                 </Card>
               </Col>
             </Row>

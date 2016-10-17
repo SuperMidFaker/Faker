@@ -164,7 +164,7 @@ export default class List extends React.Component {
               <NavLink to={`/manager/tenants/edit/${record.key}`}>
               修改
               </NavLink>
-              <span className="ant-divider"></span>
+              <span className="ant-divider" />
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
               停用
               </a>
@@ -173,11 +173,11 @@ export default class List extends React.Component {
           return (
             <span>
               <Popconfirm placement="top" title={`确认删除 ${record.name}`} onConfirm={() => this.handleTenantDel(record.key, record.login_id)} onCancel={() => {}} onVisibleChange={() => {}}>
-              <a role="button" href="#">
+                <a role="button" href="#">
               删除
-              </a>
+                </a>
               </Popconfirm>
-              <span className="ant-divider"></span>
+              <span className="ant-divider" />
               <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
               启用
               </a>

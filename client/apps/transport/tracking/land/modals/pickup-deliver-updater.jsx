@@ -77,10 +77,10 @@ export default class PickupDeliverUpdater extends React.Component {
           <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }} required
           >
-            <DatePicker showTime format="yyyy-MM-dd HH:mm:ss"
+            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
               {...getFieldProps('actDate', {
                 rules: [{
-                  type: 'date', required: true, message: ruleMsg,
+                  type: 'object', required: true, message: ruleMsg,
                 }],
               })}
             />

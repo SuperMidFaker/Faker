@@ -135,9 +135,9 @@ export default class NodeUserList extends Component {
           return (
             <span>
               <a onClick={() => this.showModal(record)}>修改</a>
-              <span className="ant-divider"></span>
+              <span className="ant-divider" />
               <a onClick={() => { this.props.removeNodeUser(record.id, record.login_id); }}>删除</a>
-              <span className="ant-divider"></span>
+              <span className="ant-divider" />
               <a onClick={() => { this.handleUpdateUserStatus(record.login_id, 1); }}>
                 停用
               </a>
@@ -147,9 +147,9 @@ export default class NodeUserList extends Component {
           return (
             <span>
               <a onClick={() => this.showModal(record)}>修改</a>
-              <span className="ant-divider"></span>
+              <span className="ant-divider" />
               <a onClick={() => { this.props.removeNodeUser(record.id, record.login_id); }}>删除</a>
-              <span className="ant-divider"></span>
+              <span className="ant-divider" />
               <a onClick={() => { this.handleUpdateUserStatus(record.login_id, 0); }}>
                 启用
               </a>

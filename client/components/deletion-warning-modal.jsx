@@ -105,7 +105,7 @@ class WarningModal extends React.Component {
             </div>
           </div>
           <div className="ant-confirm-btns">
-          {
+            {
             okCancel &&
             <Button type="ghost" size="large" onClick={() => this.onCancel()}>
               {cancelText}

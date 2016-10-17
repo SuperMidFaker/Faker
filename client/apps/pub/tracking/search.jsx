@@ -62,15 +62,15 @@ export default class TrackingSearch extends React.Component {
               <h2 className="tenant-name">运单追踪</h2>
             </div>
             <center>
-            <Input size="large" placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
-              onChange={this.handleInputChange}
-            />
-            <Button type="primary" size="large" icon="search" style={{ height: '38px', width: '120px', marginTop: 24 }} onClick={this.handleSearch} >
+              <Input size="large" placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
+                onChange={this.handleInputChange}
+              />
+              <Button type="primary" size="large" icon="search" style={{ height: '38px', width: '120px', marginTop: 24 }} onClick={this.handleSearch} >
               查询
-            </Button>
-            <div style={{ width: 400, marginTop: 96 }}>
-              <Alert message="为了能够浏览追踪页面，请您设置允许浏览器弹出窗口" type="info" showIcon />
-            </div>
+              </Button>
+              <div style={{ width: 400, marginTop: 96 }}>
+                <Alert message="为了能够浏览追踪页面，请您设置允许浏览器弹出窗口" type="info" showIcon />
+              </div>
             </center>
           </div>
         </div>

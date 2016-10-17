@@ -143,7 +143,7 @@ export default class PricingLTL extends React.Component {
                 initialValue: meter || 'kg',
               })} disabled={readonly}
               >
-              {
+                {
                 TARIFF_METER_METHODS.map(tmm =>
                   <Option value={tmm.value} key={tmm.value}>{tmm.text}</Option>
                 )

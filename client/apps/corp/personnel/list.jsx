@@ -281,7 +281,7 @@ export default class PersonnelSetting extends React.Component {
             <span>
               <PrivilegeCover module="corp" feature="personnel" action="edit">
                 <NavLink to={`/corp/personnel/edit/${record.key}`}>
-                {formatGlobalMsg(intl, 'modify')}
+                  {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
               </PrivilegeCover>
             </span>
@@ -291,11 +291,11 @@ export default class PersonnelSetting extends React.Component {
             <PrivilegeCover module="corp" feature="personnel" action="edit">
               <span>
                 <NavLink to={`/corp/personnel/edit/${record.key}`}>
-                {formatGlobalMsg(intl, 'modify')}
+                  {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(intl, 'disableOp')}
+                  {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
             </PrivilegeCover>
@@ -305,13 +305,13 @@ export default class PersonnelSetting extends React.Component {
             <span>
               <PrivilegeCover module="corp" feature="personnel" action="delete">
                 <a role="button" onClick={() => this.handlePersonnelDel(record)}>
-                {formatGlobalMsg(intl, 'delete')}
+                  {formatGlobalMsg(intl, 'delete')}
                 </a>
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="corp" feature="personnel" action="edit">
                 <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(intl, 'enableOp')}
+                  {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>
             </span>

@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
+import moment from 'moment';
 import { Col, Form, DatePicker } from 'antd';
+
 const FormItem = Form.Item;
 
 export default class FormDatePicker extends React.Component {
@@ -23,11 +25,7 @@ export default class FormDatePicker extends React.Component {
     } = this.props;
     let initialValue;
     if (formData && formData[field]) {
-      if (typeof formData[field] === 'string') {
-        initialValue = new Date(formData[field]);
-      } else if (Object.prototype.toString.call(formData[field]) === '[object Date]') {
-        initialValue = formData[field];
-      }
+      initialValue = moment(formData[field]);
     }
     return (
       <Col span={outercol}>

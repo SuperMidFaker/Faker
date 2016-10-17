@@ -355,7 +355,7 @@ export default class AcceptList extends React.Component {
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <span>
                   <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
-                  {this.msg('shipmtAccept')}
+                    {this.msg('shipmtAccept')}
                   </a>
                   <span className="ant-divider" />
                   <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
@@ -363,7 +363,7 @@ export default class AcceptList extends React.Component {
                   </NavLink>
                   <span className="ant-divider" />
                   <a role="button" onClick={ev => this.handleShipmtRevoke(record.key, ev)}>
-                  {this.msg('shipmtRevoke')}
+                    {this.msg('shipmtRevoke')}
                   </a>
                 </span>
               </PrivilegeCover>
@@ -373,7 +373,7 @@ export default class AcceptList extends React.Component {
               <span>
                 <PrivilegeCover module="transport" feature="shipment" action="edit">
                   <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
-                  {this.msg('shipmtAccept')}
+                    {this.msg('shipmtAccept')}
                   </a>
                 </PrivilegeCover>
               </span>
@@ -400,7 +400,7 @@ export default class AcceptList extends React.Component {
             <span>
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
-                {formatGlobalMsg(intl, 'modify')}
+                  {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
               </PrivilegeCover>
               <span className="ant-divider" />
@@ -409,7 +409,7 @@ export default class AcceptList extends React.Component {
                   onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}
                 >
                   <a role="button">
-                  {formatGlobalMsg(intl, 'delete')}
+                    {formatGlobalMsg(intl, 'delete')}
                   </a>
                 </Popconfirm>
               </PrivilegeCover>

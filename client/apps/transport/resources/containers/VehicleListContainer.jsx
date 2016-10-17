@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import VehicleList from '../components/VehicleList.jsx';
+import VehicleList from '../components/VehicleList';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
 import { loadVehicleList, editVehicle } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';

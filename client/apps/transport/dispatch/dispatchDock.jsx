@@ -111,13 +111,15 @@ export default class DispatchDock extends Component {
           if (o.manual) {
             return (
               <InputNumber min={1} onChange={value =>
-                this.handleChargeChange({ ...o, total_charge: value }, index)} />
+                this.handleChargeChange({ ...o, total_charge: value }, index)}
+              />
             );
           } else {
             return (
               <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
                 <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
-              }>
+              }
+              >
                 <span>{o.total_charge}</span>
               </Popover>
             );
@@ -134,7 +136,7 @@ export default class DispatchDock extends Component {
       render: (o, record) => (
         <span>
           <a role="button" onClick={() => this.showConfirm('tenant', record)}>
-          {this.msg('btnTextDispatch')}
+            {this.msg('btnTextDispatch')}
           </a>
         </span>
       ),
@@ -193,7 +195,7 @@ export default class DispatchDock extends Component {
       render: (o, record) => (
         <span>
           <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
-          {this.msg('btnTextDispatch')}
+            {this.msg('btnTextDispatch')}
           </a>
         </span>
       ),
@@ -597,53 +599,53 @@ export default class DispatchDock extends Component {
         }
       });
       dock = (
-          <div className="dock-panel inside">
-            <div className="panel-content">
-              <div className="header">
-                <span className="title">分配 {shipmts.length}个运单</span>
-                <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
-                <div className="pull-right">
-                  <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
-                    <Icon type="cross" />
-                  </Button>
-                </div>
-              </div>
-              <div className="body">
-                <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
-                  <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
-                    <div className="pane-header">
-                      <div className="tools"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
-                      <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
-                        onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
-                      />
-                    </div>
-                    <div className="pane-content tab-pane">
-                      <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
-                    </div>
-                  </TabPane>
-                  <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
-                    <div className="pane-header">
-                      <div className="tools"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
-                      <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
-                        onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
-                      />
-                    </div>
-                    <div className="pane-content tab-pane">
-                      <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
-                    </div>
-                    <VehicleFormMini visible={this.state.newVehicleVisible} />
-                  </TabPane>
-                </Tabs>
-                <DispatchConfirmModal visible={this.state.dispatchConfirmModal.visible}
-                  target={this.state.dispatchConfirmModal.target}
-                  type={this.state.dispatchConfirmModal.type}
-                  shipmts={this.props.shipmts} onChange={this.handlePodTypeChange}
-                  onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
-                  onDispatch={() => this.handleShipmtDispatch()}
-                />
+        <div className="dock-panel inside">
+          <div className="panel-content">
+            <div className="header">
+              <span className="title">分配 {shipmts.length}个运单</span>
+              <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
+              <div className="pull-right">
+                <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
+                  <Icon type="cross" />
+                </Button>
               </div>
             </div>
+            <div className="body">
+              <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
+                <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
+                  <div className="pane-header">
+                    <div className="tools"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
+                    <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
+                      onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
+                    />
+                  </div>
+                  <div className="pane-content tab-pane">
+                    <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
+                  </div>
+                </TabPane>
+                <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
+                  <div className="pane-header">
+                    <div className="tools"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
+                    <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
+                      onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
+                    />
+                  </div>
+                  <div className="pane-content tab-pane">
+                    <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
+                  </div>
+                  <VehicleFormMini visible={this.state.newVehicleVisible} />
+                </TabPane>
+              </Tabs>
+              <DispatchConfirmModal visible={this.state.dispatchConfirmModal.visible}
+                target={this.state.dispatchConfirmModal.target}
+                type={this.state.dispatchConfirmModal.type}
+                shipmts={this.props.shipmts} onChange={this.handlePodTypeChange}
+                onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
+                onDispatch={() => this.handleShipmtDispatch()}
+              />
+            </div>
           </div>
+        </div>
         );
     }
 

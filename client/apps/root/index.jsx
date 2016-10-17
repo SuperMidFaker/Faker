@@ -56,7 +56,7 @@ export default class Root extends React.Component {
         locale={locale}
         messages={messages}
       >
-      {this.props.children}
+        {this.props.children}
       </IntlProvider>
     );
   }

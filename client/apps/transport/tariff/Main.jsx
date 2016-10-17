@@ -60,7 +60,7 @@ export default class Main extends Component {
         <header className="top-bar">
           {menu}
         </header>
-          {content}
+        {content}
       </div>
     );
   }

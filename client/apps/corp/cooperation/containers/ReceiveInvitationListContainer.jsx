@@ -83,7 +83,7 @@ export default class ReceiveInvitationList extends Component {
             <PrivilegeCover module="corp" feature="partners" action="edit">
               <span>
                 <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}>接受</a>
-                <span className="ant-divider"></span>
+                <span className="ant-divider" />
                 <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}>拒绝</a>
               </span>
             </PrivilegeCover>

@@ -58,24 +58,24 @@ export default class ClientInfo extends React.Component {
       <Card bodyStyle={{ padding: 16 }}>
         <Row>
           <Col span={outerColSpan}>
-          {
+            {
             mode === 'edit' ?
-            <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
-              field="customer_name" disabled fieldProps={{ initialValue: name }}
-            /> :
-            <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
-              <div>
-                <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
-                  field="customer_name"
-                  required optionData={clientOpts} filterFields={['code']}
-                  optionField="name" optionKey="key" optionValue="value"
-                  rules={[{
-                    required: true, message: this.msg('clientNameMust'),
-                  }]}
-                  initialValue={name} getValueFromEvent={this.findClientValue}
-                />
-              </div>
-            </Tooltip>
+              <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+                field="customer_name" disabled fieldProps={{ initialValue: name }}
+              /> :
+                <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
+                  <div>
+                    <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+                      field="customer_name"
+                      required optionData={clientOpts} filterFields={['code']}
+                      optionField="name" optionKey="key" optionValue="value"
+                      rules={[{
+                        required: true, message: this.msg('clientNameMust'),
+                      }]}
+                      initialValue={name} getValueFromEvent={this.findClientValue}
+                    />
+                  </div>
+                </Tooltip>
           }
           </Col>
           <Col span={24 - outerColSpan}>

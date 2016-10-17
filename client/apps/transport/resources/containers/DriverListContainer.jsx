@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { message } from 'antd';
 import { connect } from 'react-redux';
-import DriverList from '../components/DriverList.jsx';
+import DriverList from '../components/DriverList';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadDriverList, editDriver, editDriverLogin } from 'common/reducers/transportResources';
 import { transformRawDriverDataToDisplayData } from '../utils/dataMapping';

@@ -143,24 +143,24 @@ export default class PreviewPanel extends React.Component {
     const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;
     return (
       shipmtNo ?
-      <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
-        <div className="panel-content">
-          <div className="header">
-            <span className="title">{shipmtNo}</span>
-            <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
-            <div className="pull-right">
-              <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
-                <Icon type="cross" />
-              </Button>
+        <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
+          <div className="panel-content">
+            <div className="header">
+              <span className="title">{shipmtNo}</span>
+              <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
+              <div className="pull-right">
+                <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
+                  <Icon type="cross" />
+                </Button>
+              </div>
             </div>
+            <div className="body">
+              {this.renderTabs()}
+            </div>
+            <Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />
           </div>
-          <div className="body">
-            {this.renderTabs()}
-          </div>
-          <Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />
+          <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
         </div>
-        <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
-      </div>
       : null
     );
   }

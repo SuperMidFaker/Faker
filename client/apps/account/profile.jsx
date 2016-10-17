@@ -26,9 +26,11 @@ function FormInput(props) {
     <FormItem label={label} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
       hasFeedback={hasFeedback} required={required}
     >
-      <Input type="text" addonAfter={addonAfter} placeholder={placeholder}
-        {...getFieldProps(field, { rules, ...fieldProps })}
-      />
+      {
+        getFieldProps(field, { rules, ...fieldProps })(
+          <Input type="text" addonAfter={addonAfter} placeholder={placeholder} />
+        )
+      }
     </FormItem>
   );
 }
@@ -41,7 +43,7 @@ FormInput.propTypes = {
   addonAfter: PropTypes.string,
   field: PropTypes.string,
   rules: PropTypes.array,
-  getFieldProps: PropTypes.func,
+  getFieldProps: PropTypes.func.isRequired,
   fieldProps: PropTypes.object,
 };
 
@@ -121,7 +123,7 @@ export default class MyProfile extends React.Component {
     }
   }
   render() {
-    const { intl, profile, form: { getFieldProps }, code } = this.props;
+    const { intl, profile, form: { getFieldDecorator }, code } = this.props;
     const cmsg = descriptor => formatContainerMsg(intl, descriptor);
     const uploadProps = {
       action: `${API_ROOTS.default}v1/upload/img/`,
@@ -157,7 +159,7 @@ export default class MyProfile extends React.Component {
             <FormInput label={cmsg('fullName')} field="name" required rules={
               [{ required: true, min: 2, message: cmsg('fullNameMessage') }]
             } fieldProps={{ initialValue: profile.name }} hasFeedback
-              getFieldProps={getFieldProps}
+              getFieldProps={getFieldDecorator}
             />
             <FormInput label={cmsg('username')} required field="username"
               addonAfter={`@${code}`} rules={[{
@@ -168,7 +170,7 @@ export default class MyProfile extends React.Component {
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               ),
               }]} fieldProps={{ initialValue: profile.username }}
-              getFieldProps={getFieldProps}
+              getFieldProps={getFieldDecorator}
             />
             <FormInput label={cmsg('phone')} field="phone" required hasFeedback
               rules={[{
@@ -177,9 +179,9 @@ export default class MyProfile extends React.Component {
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               ) }]}
               fieldProps={{ initialValue: profile.phone }}
-              getFieldProps={getFieldProps}
+              getFieldProps={getFieldDecorator}
             />
-            <FormInput label="Email" field="email" getFieldProps={getFieldProps}
+            <FormInput label="Email" field="email" getFieldProps={getFieldDecorator}
               rules={[{ type: 'email', message: cmsg('emailError') }]}
               fieldProps={{ initialValue: profile.email }}
             />

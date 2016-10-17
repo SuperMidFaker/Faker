@@ -26,7 +26,7 @@ function ColumnInput(props) {
     style = { color: '#CCCCCC' };
   }
   if (record.fee_style === 'cushion') {
-    return <span></span>;
+    return <span />;
   } else {
     return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
     : <span style={style}>{record[field] || ''}</span>;
@@ -292,17 +292,17 @@ export default class FeesTable extends Component {
         dataIndex: 'fee_style',
         width: 150,
         render: (o, record, index) =>
-        <ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
-          onChange={this.handleEditChange} options={FEE_STYLE}
-        />,
+          <ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
+            onChange={this.handleEditChange} options={FEE_STYLE}
+          />,
       }, {
         title: msg('chargeMode'),
         dataIndex: 'charge_mode',
         width: 150,
         render: (o, record, index) =>
-        <ColumnSelect field="charge_mode" inEdit={editable || (index === editIndex)} record={record}
-          onChange={this.handleEditChange} options={CHARGE_MODE}
-        />,
+          <ColumnSelect field="charge_mode" inEdit={editable || (index === editIndex)} record={record}
+            onChange={this.handleEditChange} options={CHARGE_MODE}
+          />,
       }, {
         title: msg('lotNum'),
         dataIndex: 'lot_num',

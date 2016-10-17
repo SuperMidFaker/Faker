@@ -358,7 +358,7 @@ export default class InboundShipmentsList extends React.Component {
                 showUploadList={false} withCredentials
               >
                 <Button type="primary" icon="plus-circle-o">
-                {this.msg('importShipments')}
+                  {this.msg('importShipments')}
                 </Button>
               </Upload>
             </div>

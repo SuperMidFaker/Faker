@@ -123,7 +123,7 @@ export default class FeesForm extends Component {
                   initialValue: fieldInits.tariff_kind,
                 })}
               >
-              {
+                {
                 TARIFF_KINDS.map(qt =>
                   <Option value={qt.value} key={qt.value}>{qt.text}</Option>
                 )
@@ -141,7 +141,7 @@ export default class FeesForm extends Component {
                   initialValue: fieldInits.partner.name,
                 })}
               >
-              {
+                {
                 coops.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
@@ -159,7 +159,7 @@ export default class FeesForm extends Component {
                   initialValue: fieldInits.decl_way_code,
                 })}
               >
-              {
+                {
                 DECL_TYPE.map(dw =>
                   <Option value={dw.key} key={dw.key}>{dw.value}</Option>
                 )
@@ -175,7 +175,7 @@ export default class FeesForm extends Component {
                   initialValue: fieldInits.trans_mode,
                 })}
               >
-              {
+                {
                 TRANS_MODE.map(tr =>
                   <Option value={tr.value} key={tr.value}>{tr.text}</Option>
                 )
@@ -189,12 +189,11 @@ export default class FeesForm extends Component {
                 {...getFieldProps('remarks', {
                   initialValue: fieldInits.remarks,
                 })}
-              >
-              </Select>
+              />
             </FormItem>
           </Col>
         </Row>
-          {
+        {
             (action === 'edit') &&
             <Button type="primary" style={{ marginLeft: 40 }} onClick={this.handleSave} >{msg('save')}</Button>}
       </div>

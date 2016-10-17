@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Icon } from 'antd';
 import './search-bar.less';
+
 export default class SearchBar extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,

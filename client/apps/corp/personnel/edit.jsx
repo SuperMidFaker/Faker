@@ -169,7 +169,8 @@ export default class CorpEdit extends React.Component {
                     (msgs, descriptor) => format(msgs)(intl, descriptor)),
                 }],
                 initialValue: loginName,
-              })} />
+              })}
+              />
             </FormItem>
             {
               isCreating && this.renderTextInput(
@@ -201,8 +202,9 @@ export default class CorpEdit extends React.Component {
               <Select onSelect={this.handleRoleSelect} {...getFieldProps('role_id', {
                 initialValue: this.props.formData.role_id,
                 rules: [{ required: true, message: ' ', type: 'number' }],
-              })}>
-              {
+              })}
+              >
+                {
                 roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
                   role => <Option value={role.id} key={role.id}>{role.name}</Option>
                 )
@@ -214,10 +216,10 @@ export default class CorpEdit extends React.Component {
                 <Button disabled={disableSubmit} htmlType="submit" type="primary" loading={submitting}
                   title={disableSubmit ? msg('nonTenantEdit') : ''}
                 >
-                {formatGlobalMsg(intl, 'ok')}
+                  {formatGlobalMsg(intl, 'ok')}
                 </Button>
                 <Button onClick={this.handleCancel} disabled={submitting}>
-                {formatGlobalMsg(intl, 'cancel')}
+                  {formatGlobalMsg(intl, 'cancel')}
                 </Button>
               </Col>
             </Row>

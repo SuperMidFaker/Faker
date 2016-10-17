@@ -261,50 +261,50 @@ export default class TrackingDetail extends React.Component {
     return (
       <div className="panel-body">
         <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no} {refExternalNo}</strong></nav>
-          <Row>
-            <Col lg={15} sm={24}>
-              <div className="main-content">
-                <Card title="运输进度" style={{ width: '100%' }}>
-                  <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
-                </Card>
-                <Row>
-                  <Col lg={12} sm={24}>
-                    <Card bodyStyle={{ padding: 0 }}>
-                      <Collapse defaultActiveKey={['1', '2', '3']}>
-                        <Panel header="发货方" key="1">
-                          <p><strong>{shipmt.consigner_name || ''}</strong></p>
-                          <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
-                          <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
-                        </Panel>
-                        <Panel header="收货方" key="2">
-                          <p><strong>{shipmt.consignee_name}</strong></p>
-                          <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
-                          <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
-                        </Panel>
-                        <Panel header="运输货物" key="3">
-                          <p>运输方式：<span style={{ marginLeft: 30 }}>{shipmt.transport_mode}</span></p>
-                          <p>总件数：<span style={{ marginLeft: 45 }}>{shipmt.total_count}</span></p>
-                          <p>总重量：<span style={{ marginLeft: 45 }}>{shipmt.total_weight}公斤</span></p>
-                        </Panel>
-                      </Collapse>
-                    </Card>
-                  </Col>
-                  <Col lg={12} sm={24}>
-                    <Card id="tracing-timeline" title="追踪详情">
-                      <TrackingTimeline tracking={tracking} />
-                    </Card>
-                  </Col>
-                </Row>
-              </div>
-            </Col>
-            <Col lg={9} sm={24}>
-              <div id="map"></div>
-            </Col>
-          </Row>
-          <script type="text/javascript" src="https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1"></script>
-          <script type="text/javascript" src="https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
-          <script type="text/javascript" src="https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
-          <script type="text/javascript" src="https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
+        <Row>
+          <Col lg={15} sm={24}>
+            <div className="main-content">
+              <Card title="运输进度" style={{ width: '100%' }}>
+                <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
+              </Card>
+              <Row>
+                <Col lg={12} sm={24}>
+                  <Card bodyStyle={{ padding: 0 }}>
+                    <Collapse defaultActiveKey={['1', '2', '3']}>
+                      <Panel header="发货方" key="1">
+                        <p><strong>{shipmt.consigner_name || ''}</strong></p>
+                        <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
+                        <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
+                      </Panel>
+                      <Panel header="收货方" key="2">
+                        <p><strong>{shipmt.consignee_name}</strong></p>
+                        <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
+                        <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
+                      </Panel>
+                      <Panel header="运输货物" key="3">
+                        <p>运输方式：<span style={{ marginLeft: 30 }}>{shipmt.transport_mode}</span></p>
+                        <p>总件数：<span style={{ marginLeft: 45 }}>{shipmt.total_count}</span></p>
+                        <p>总重量：<span style={{ marginLeft: 45 }}>{shipmt.total_weight}公斤</span></p>
+                      </Panel>
+                    </Collapse>
+                  </Card>
+                </Col>
+                <Col lg={12} sm={24}>
+                  <Card id="tracing-timeline" title="追踪详情">
+                    <TrackingTimeline tracking={tracking} />
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          </Col>
+          <Col lg={9} sm={24}>
+            <div id="map" />
+          </Col>
+        </Row>
+        <script type="text/javascript" src="https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1" />
+        <script type="text/javascript" src="https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js" />
+        <script type="text/javascript" src="https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js" />
+        <script type="text/javascript" src="https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js" />
       </div>
     );
   }

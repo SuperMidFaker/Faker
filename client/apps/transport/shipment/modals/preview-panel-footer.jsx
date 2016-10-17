@@ -287,7 +287,7 @@ export default class Footer extends React.Component {
               </div>
             </PrivilegeCover>
           );
-          menu = (<div></div>);
+          menu = (<div />);
         } else if (row.source === SHIPMENT_SOURCE.subcontracted) {
           buttons = (
             <div>
@@ -403,7 +403,8 @@ export default class Footer extends React.Component {
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <Button type="ghost" size="large" onClick={
                 () => this.props.sendMessage({ notifyType: 'notifyAccept', shipment: row })
-              }>
+              }
+              >
                 催促接单
               </Button>
             </PrivilegeCover>
@@ -481,7 +482,8 @@ export default class Footer extends React.Component {
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <Button type="ghost" size="large" onClick={
                     () => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })
-                  }>
+                  }
+                  >
                     催促提货
                   </Button>
                 </PrivilegeCover>
@@ -494,7 +496,8 @@ export default class Footer extends React.Component {
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <Button type="ghost" size="large" onClick={
                   () => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })
-                }>
+                }
+                >
                   催促提货
                 </Button>
               </PrivilegeCover>
@@ -647,7 +650,8 @@ export default class Footer extends React.Component {
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <Button type="ghost" size="large" onClick={
                     () => this.props.sendMessage({ notifyType: 'notifyDriverPod', shipment: row })
-                  }>
+                  }
+                  >
                     催促回单
                   </Button>
                 </PrivilegeCover>
@@ -661,7 +665,8 @@ export default class Footer extends React.Component {
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <Button type="ghost" size="large" onClick={
                   () => this.props.sendMessage({ notifyType: 'notifySpPod', shipment: row })
-                }>
+                }
+                >
                   催促回单
                 </Button>
               </PrivilegeCover>
@@ -695,8 +700,7 @@ export default class Footer extends React.Component {
           <div className="footer">
             {buttons}
             <div className="more-actions">
-              <DropdownButton size="large" overlay={menu}>
-              </DropdownButton>
+              <DropdownButton size="large" overlay={menu} />
             </div>
           </div>
         );

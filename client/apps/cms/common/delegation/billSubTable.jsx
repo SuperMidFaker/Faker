@@ -10,7 +10,7 @@ import RowUpdater from './rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n.js';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 
@@ -67,7 +67,7 @@ export default class SubdelgTable extends Component {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <NavLink to={`/clearance/${this.props.ietype}/docs/make/${o}`}>
-            {o}
+              {o}
             </NavLink>
           </PrivilegeCover>
         );

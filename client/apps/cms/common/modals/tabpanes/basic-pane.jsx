@@ -162,7 +162,7 @@ export default class BasicPane extends React.Component {
                 field={`${delegation.pieces} 件`} fieldCol={{ span: 9 }}
               />
             </Col>
-           </Row>
+          </Row>
           <Row>
             <Col span="12">
               <PaneFormItem labelCol={{ span: 3 }} label="备注"

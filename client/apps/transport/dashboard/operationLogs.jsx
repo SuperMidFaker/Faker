@@ -59,12 +59,12 @@ export default class Dashboard extends React.Component {
       if (actDate.getTime() > estDate.getTime()) {
         return (
           <span className="mdc-text-red">
-          {moment(recordActDate).format('YYYY.MM.DD')}
+            {moment(recordActDate).format('YYYY.MM.DD')}
           </span>);
       } else {
         return (
           <span className="mdc-text-green">
-          {moment(recordActDate).format('YYYY.MM.DD')}
+            {moment(recordActDate).format('YYYY.MM.DD')}
           </span>);
       }
     } else {

@@ -55,12 +55,12 @@ export default class AutoCompletionSelectItem extends React.Component {
           getValueFromEvent })}
           onSelect={this.handleComboSelect} allowClear={allowClear}
         >
-        {
+          {
           optionData.map(
               od =>
-              <Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
-              {od[optionField]}
-              </Option>
+                <Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
+                  {od[optionField]}
+                </Option>
               )
         }
         </Select>

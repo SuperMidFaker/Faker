@@ -45,11 +45,10 @@ export default class PaymentsBillingList extends React.Component {
           <div className="page-body">
             <div className="panel-header">
               <Button type="primary" icon="plus-circle-o">
-              {this.msg('importShipments')}
+                {this.msg('importShipments')}
               </Button>
             </div>
-            <div className="panel-body table-panel expandable">
-            </div>
+            <div className="panel-body table-panel expandable" />
           </div>
         </div>
       </QueueAnim>

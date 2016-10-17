@@ -70,16 +70,16 @@ export default class PartnerInviteDialog extends React.Component {
     if (step === 1) {
       footer = [
         <Button key="offline-invite" type="primary" size="large" onClick={this.handleInvite}>
-        {this.msg('sendInvitation')}
+          {this.msg('sendInvitation')}
         </Button>,
         <Button key="cancel" onClick={this.handleCancel}>
-        {formatGlobalMsg(this.props.intl, 'cancel')}
+          {formatGlobalMsg(this.props.intl, 'cancel')}
         </Button>,
       ];
     } else if (step === 2) {
       footer = [
         <Button key="send-invite" type="primary" size="large" onClick={this.handleCancel}>
-        {this.msg('iknow')}
+          {this.msg('iknow')}
         </Button>,
       ];
     }
@@ -90,7 +90,7 @@ export default class PartnerInviteDialog extends React.Component {
         <div className={`partner-modal-offline-body${step === 1 ? '' : ' hide'}`}>
           <i className="anticon anticon-info-circle" />
           <span>
-          {this.msg('fillPartnerContact', { partnerName })}
+            {this.msg('fillPartnerContact', { partnerName })}
           </span>
           <div className="partner-modal-content">
             <Input placeholder={this.msg('contactPlaceholder')} onChange={this.handleContactInputChange}

@@ -89,10 +89,10 @@ export default class PodAuditModal extends React.Component {
         visible={visible}
         footer={[
           <Button key="return" type="ghost" size="large" onClick={this.handleAuditReturn}>
-          {this.msg('auditReturn')}
+            {this.msg('auditReturn')}
           </Button>,
           <Button key="pass" type="primary" size="large" onClick={this.handleAuditPass}>
-          {this.msg('auditPass')}
+            {this.msg('auditPass')}
           </Button>,
         ]}
       >

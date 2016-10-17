@@ -20,7 +20,7 @@ export default class AccountPack extends React.Component {
         <AmNavBar />
         <div className="am-content">
           <div className="main-content no-top-bar">
-          {this.props.children}
+            {this.props.children}
           </div>
         </div>
       </div>

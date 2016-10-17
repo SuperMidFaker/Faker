@@ -213,8 +213,7 @@ export default class AnalyticsKpiList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-          </div>
+          <div className="tools" />
           <span>{this.msg('analyticsKpi')}</span>
         </header>
         <aside className="side-bar" key="aside">
@@ -235,12 +234,12 @@ export default class AnalyticsKpiList extends React.Component {
         <div className="main-content with-side-bar">
           <div className="page-body card-wrapper">
             <Card title={this.msg('ontimeDelivery')}>
-              <div id="c1"></div>
+              <div id="c1" />
             </Card>
           </div>
           <div className="page-body">
             <div className="panel-body table-panel">
-            <Table dataSource={dataSource} columns={columns} pagination={false} size="middle" />
+              <Table dataSource={dataSource} columns={columns} pagination={false} size="middle" />
             </div>
           </div>
         </div>

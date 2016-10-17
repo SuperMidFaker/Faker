@@ -35,7 +35,7 @@ export default class Root extends React.Component {
         messages={messages}
       >
         {this.props.children}
-        </IntlProvider>
+      </IntlProvider>
       );
   }
 }

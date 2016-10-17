@@ -139,7 +139,7 @@ export default class QuoteList extends Component {
           return (
             <span>
               <NavLink to={`/clearance/quote/edit/${record.quote_no}`}>
-              {msg('modify')}
+                {msg('modify')}
               </NavLink>
             </span>
           );

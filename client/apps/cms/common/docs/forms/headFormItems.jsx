@@ -7,8 +7,8 @@ import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-const formatMsg = format(messages);
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -36,7 +36,6 @@ export function PortDate(props) {
     col: 8,
     field: 'i_e_date',
     label: ietype === 'import' ? msg('idate') : msg('edate'),
-    rules: [{ required: false, type: 'date' }],
     disabled,
     formData,
     getFieldProps,

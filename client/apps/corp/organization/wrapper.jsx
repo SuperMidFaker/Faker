@@ -8,7 +8,7 @@ export default class OrganizationWrapper extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <span></span>
+          <span />
         </header>
         <div className="main-content">
           {this.props.children}

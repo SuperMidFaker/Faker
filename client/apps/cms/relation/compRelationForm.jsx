@@ -111,7 +111,7 @@ class CompRelationForm extends Component {
                 }],
               })}
                 >
-                {
+                  {
                   RELATION_TYPES.map((item) => {
                     return (<Option value={item.key}>{item.value}</Option>);
                   })
@@ -133,7 +133,7 @@ class CompRelationForm extends Component {
                 }],
               })}
                 >
-                {
+                  {
                   I_E_TYPES.map((item) => {
                     return (<Option value={item.key}>{item.value}</Option>);
                   })
@@ -148,12 +148,12 @@ class CompRelationForm extends Component {
                 <Button type="primary" size="large" htmlType="submit"
                   onClick={this.handleSubmit}
                 >
-                {formatContainerMsg(intl, 'save')}
+                  {formatContainerMsg(intl, 'save')}
                 </Button>
                 <Button type="ghost" size="large" className="cancel" style={{ marginLeft: 50 }}
                   onClick={this.handleCancel}
                 >
-                {formatContainerMsg(intl, 'cancel')}
+                  {formatContainerMsg(intl, 'cancel')}
                 </Button>
               </FormItem>
             </Col>

@@ -70,12 +70,12 @@ export default class AccepterModal extends React.Component {
         <Row>
           <Col span="18" offset="3">
             <Select labelInValue style={{ width: '90%' }} onChange={this.handleSelect}>
-            {
+              {
               dispatchers.map(
                 disp =>
-                <Option key={`${disp.lid}${disp.name}`} value={disp.lid}>
-                {disp.name}
-                </Option>
+                  <Option key={`${disp.lid}${disp.name}`} value={disp.lid}>
+                    {disp.name}
+                  </Option>
               )
             }
             </Select>

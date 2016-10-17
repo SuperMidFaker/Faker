@@ -61,7 +61,7 @@ export default class ModuleEditor extends React.Component {
         onCancel={this.handleCancel} footer={
           [
             <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
-            {formatGlobalMsg(intl, 'ok')}
+              {formatGlobalMsg(intl, 'ok')}
             </Button>,
           ]
         }
@@ -71,12 +71,12 @@ export default class ModuleEditor extends React.Component {
           <Col span="8"><p className="type-label">{formatGlobalMsg(intl, 'desc')}</p></Col>
           <Col span="8">
             <label htmlFor="editor" className="type-label pull-right">
-            {formatMsg(intl, 'appEditorSetCol')}
+              {formatMsg(intl, 'appEditorSetCol')}
             </label>
           </Col>
         </Row>
         <Row className="module-editor">
-        {
+          {
           this.props.appPackage.map((ap, idx) => (
             <div className="form-group clearfix" key={`modeditor${idx}`}>
               <Col span="8">

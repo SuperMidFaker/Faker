@@ -29,25 +29,25 @@ export default class CorrelInfo extends React.Component {
       ref_waybill_no, ref_entry_no, remark,
     } } = this.props;
     return (
-        <Card bodyStyle={{ padding: 16 }}>
-          <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
-            fieldProps={{ initialValue: tenantName }} disabled rules={[{
-              required: true, message: this.msg('lspNameMust'),
-            }]} field="lsp"
-          />
-          <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')}
-            colSpan={0} field="ref_waybill_no"
-            fieldProps={{ initialValue: ref_waybill_no }}
-          />
-          <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')}
-            colSpan={0} field="ref_entry_no"
-            fieldProps={{ initialValue: ref_entry_no }}
-          />
-          <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')}
-            colSpan={0} field="remark"
-            fieldProps={{ initialValue: remark }}
-          />
-        </Card>
+      <Card bodyStyle={{ padding: 16 }}>
+        <InputItem formhoc={formhoc} placeholder={this.msg('lsp')} colSpan={0}
+          fieldProps={{ initialValue: tenantName }} disabled rules={[{
+            required: true, message: this.msg('lspNameMust'),
+          }]} field="lsp"
+        />
+        <InputItem formhoc={formhoc} placeholder={this.msg('refWaybillNo')}
+          colSpan={0} field="ref_waybill_no"
+          fieldProps={{ initialValue: ref_waybill_no }}
+        />
+        <InputItem formhoc={formhoc} placeholder={this.msg('refEntryNo')}
+          colSpan={0} field="ref_entry_no"
+          fieldProps={{ initialValue: ref_entry_no }}
+        />
+        <InputItem type="textarea" formhoc={formhoc} placeholder={this.msg('remark')}
+          colSpan={0} field="remark"
+          fieldProps={{ initialValue: remark }}
+        />
+      </Card>
     );
   }
 }

@@ -16,7 +16,7 @@ function DriverList(props) {
     if (record.login_disabled === 1 || record.login_disabled === null) {
       return (
         <span>
-          <span className="ant-divider"></span>
+          <span className="ant-divider" />
           <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, login_disabled: record.login_disabled, phone: record.phone } })}>
             开启手机登录
           </a>
@@ -25,7 +25,7 @@ function DriverList(props) {
     } else {
       return (
         <span>
-          <span className="ant-divider"></span>
+          <span className="ant-divider" />
           <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, login_disabled: record.login_disabled, phone: record.phone } })}>
             关闭手机登录
           </a>

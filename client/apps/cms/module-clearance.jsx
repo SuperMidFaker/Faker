@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
 import AmLeftSidebar from 'client/components/am-ant-leftbar';
-import messages from './message.i18n.js';
+import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);

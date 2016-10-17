@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Form } from 'antd';
 import { connect } from 'react-redux';
-import DriverForm from '../components/DriverForm.jsx';
+import DriverForm from '../components/DriverForm';
 import { addDriver, editDriver } from 'common/reducers/transportResources';
 import connectNav from 'client/common/decorators/connect-nav';
 
