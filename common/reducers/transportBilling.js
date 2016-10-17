@@ -117,7 +117,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, fees: action.result.data };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data.data);
-      const fees = action.result.data.data.map(item => {
+      const fees = action.result.data.data.map((item) => {
         return {
           ...item,
           last_updated_tenant_id: action.params.tenantId,
@@ -125,7 +125,7 @@ export default function reducer(state = initialState, action) {
           updated_field: 'status',
         };
       });
-      return { ...state, billingFees: {data: fees}, billing: { ...state.billing, ...billing } };
+      return { ...state, billingFees: { data: fees }, billing: { ...state.billing, ...billing } };
     }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
