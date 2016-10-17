@@ -43,7 +43,7 @@ export default class InputModal extends Component {
     data: PropTypes.array.isRequired,
   }
   state = {
-    rows: createRows(10),
+    rows: createRows(100),
   }
   rowGetter = (rowIdx) => {
     return this.state.rows[rowIdx];
@@ -67,7 +67,6 @@ export default class InputModal extends Component {
       }
     });
   }
-
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const { showInputModal, data, currencies } = this.props;
@@ -87,7 +86,7 @@ export default class InputModal extends Component {
       {
         name: msg('delgNo'),
         key: 'delg_no',
-        width: 120,
+        width: 100,
         editor: delgNoEditor,
       }, {
         name: msg('feeName'),
@@ -107,7 +106,7 @@ export default class InputModal extends Component {
       }, {
         name: msg('remark'),
         key: 'remark',
-        width: 100,
+        width: 80,
         editable: true,
       },
     ];
@@ -119,6 +118,7 @@ export default class InputModal extends Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={400}
+          minWidth={500}
           onRowUpdated={this.handleRowUpdated}
         />
       </Modal>
