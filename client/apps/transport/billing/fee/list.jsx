@@ -102,6 +102,7 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '收款合计',
+      key: 'pTotalCharge',
       render(o, record) {
         let pTotalCharge = 0;
         if (record.p_advance_charge) {
@@ -154,6 +155,7 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '付款合计',
+      key: 'totalCharge',
       render(o, record) {
         let totalCharge = 0;
         if (record.advance_charge) {
@@ -182,6 +184,7 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '利润',
+      key: 'profit',
       render(_, record) {
         let pTotalCharge = 0;
         if (record.p_advance_charge) {
