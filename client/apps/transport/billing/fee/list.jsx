@@ -12,6 +12,7 @@ import { loadFees, importAdvanceCharge } from 'common/reducers/transportBilling'
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
+import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 
 const formatMsg = format(messages);
 
@@ -231,11 +232,14 @@ export default class FeesList extends React.Component {
     }, {
       title: '异常',
       dataIndex: 'excp_count',
-      render(o) {
-        if (o === 0) {
-          return '';
-        }
-        return o;
+      render(o, record) {
+        return (<ExceptionListPopover
+          shipmtNo={record.shipmt_no}
+          dispId={record.disp_id}
+          parentId={record.parent_id}
+          excpCount={o}
+          onShowExcpModal={() => {}}
+        />);
       },
     }, {
       title: '回单',

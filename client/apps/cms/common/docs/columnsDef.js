@@ -76,8 +76,7 @@ export default function makeColumn(type, aspect, ietype, handlers, msg, tenantId
       <TrimSpan text={
         aspect === TENANT_ASPECT.BO ?
           record.ref_delg_external_no : record.ref_recv_external_no
-      }
-      />,
+      } />,
   }, {
     title: msg('packageNum'),
     dataIndex: 'pieces',
