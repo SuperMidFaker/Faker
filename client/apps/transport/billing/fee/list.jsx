@@ -102,16 +102,16 @@ export default class FeesList extends React.Component {
       title: '收款合计',
       render(o, record) {
         let pTotalCharge = 0;
-        if (record.p_advance_charge !== null) {
+        if (record.p_advance_charge) {
           pTotalCharge += record.p_advance_charge;
         }
-        if (record.p_excp_charge !== null) {
+        if (record.p_excp_charge) {
           pTotalCharge += record.p_excp_charge;
         }
-        if (record.p_total_charge !== null) {
+        if (record.p_total_charge) {
           pTotalCharge += record.p_total_charge;
         }
-        return (<span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>);
+        return record.p_status !== null ? (<span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>) : '';
       },
     }, {
       title: '入账状态',
@@ -154,16 +154,16 @@ export default class FeesList extends React.Component {
       title: '付款合计',
       render(o, record) {
         let totalCharge = 0;
-        if (record.advance_charge !== null) {
+        if (record.advance_charge) {
           totalCharge += record.advance_charge;
         }
-        if (record.excp_charge !== null) {
+        if (record.excp_charge) {
           totalCharge += record.excp_charge;
         }
-        if (record.total_charge !== null) {
+        if (record.total_charge) {
           totalCharge += record.total_charge;
         }
-        return <span style={{ color: '#FF0000' }}>{totalCharge.toFixed(2)}</span>;
+        return record.status !== null ? (<span style={{ color: '#FF0000' }}>{totalCharge.toFixed(2)}</span>) : '';
       },
     }, {
       title: '入账状态',
@@ -182,23 +182,23 @@ export default class FeesList extends React.Component {
       title: '利润',
       render(_, record) {
         let pTotalCharge = 0;
-        if (record.p_advance_charge !== null) {
+        if (record.p_advance_charge) {
           pTotalCharge += record.p_advance_charge;
         }
-        if (record.p_excp_charge !== null) {
+        if (record.p_excp_charge) {
           pTotalCharge += record.p_excp_charge;
         }
-        if (record.p_total_charge !== null) {
+        if (record.p_total_charge) {
           pTotalCharge += record.p_total_charge;
         }
         let totalCharge = 0;
-        if (record.advance_charge !== null) {
+        if (record.advance_charge) {
           totalCharge += record.advance_charge;
         }
-        if (record.excp_charge !== null) {
+        if (record.excp_charge) {
           totalCharge += record.excp_charge;
         }
-        if (record.total_charge !== null) {
+        if (record.total_charge) {
           totalCharge += record.total_charge;
         }
         return <span style={{ color: '#FF9900' }}>{(pTotalCharge - totalCharge).toFixed(2)}</span>;
