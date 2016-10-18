@@ -7,13 +7,14 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import { loadShipmentEvents } from 'common/reducers/shipment';
+import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { renderConsignLoc } from '../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import '../index.less';
+import PreviewPanel from '../shipment/modals/preview-panel';
 
 const formatMsg = format(messages);
 
@@ -36,7 +37,7 @@ function fetchData({ state, dispatch, cookie, location }) {
     tenantId: state.account.tenantId,
     statistics: state.shipment.statistics,
   }),
-  { loadShipmentEvents })
+  { loadShipmentEvents, loadShipmtDetail })
 @connectNav({
   depth: 3,
   text: props => formatMsg(props.intl, 'transportDashboard'),
@@ -47,6 +48,7 @@ export default class Dashboard extends React.Component {
   static propTypes = {
     children: PropTypes.object,
     tenantId: PropTypes.number.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
 
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -77,8 +79,8 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
-      render(text) {
-        return text;
+      render: (o, record) => {
+        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'logs', record)}>{record.shipmt_no}</a>);
       },
     }, {
       title: this.msg('departurePlace'),
@@ -179,6 +181,7 @@ export default class Dashboard extends React.Component {
             </div>
           </div>
         </div>
+        <PreviewPanel stage="dashboard" />
       </div>
     );
   }

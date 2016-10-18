@@ -4,13 +4,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
+import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 
 const formatMsg = format(messages);
 
@@ -226,9 +226,6 @@ export default class BillingFeeList extends React.Component {
         return totalCharge.toFixed(2);
       },
     }, {
-      title: '异常',
-      dataIndex: 'excp_count',
-    }, {
       title: '始发地',
       dataIndex: 'consigner_province',
     }, {
@@ -248,6 +245,17 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'deliver_act_date',
       render(o) {
         return moment(o).format('YYYY.MM.DD');
+      },
+    }, {
+      title: '异常',
+      dataIndex: 'excp_count',
+      render(o, record) {
+        return (<ExceptionListPopover
+          shipmtNo={record.shipmt_no}
+          dispId={record.disp_id}
+          excpCount={o}
+          onShowExcpModal={() => {}}
+        />);
       },
     }, {
       title: '回单',

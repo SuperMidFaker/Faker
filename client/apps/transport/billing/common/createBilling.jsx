@@ -194,17 +194,6 @@ export default class CreateBilling extends React.Component {
         return totalCharge.toFixed(2);
       },
     }, {
-      title: '异常',
-      dataIndex: 'excp_count',
-      render(o, record) {
-        return (<ExceptionListPopover
-          shipmtNo={record.shipmt_no}
-          dispId={record.disp_id}
-          excpCount={o}
-          onShowExcpModal={() => {}}
-        />);
-      },
-    }, {
       title: '始发地',
       dataIndex: 'consigner_province',
       render(o, record) {
@@ -230,6 +219,17 @@ export default class CreateBilling extends React.Component {
       dataIndex: 'deliver_act_date',
       render(o) {
         return moment(o).format('YYYY.MM.DD');
+      },
+    }, {
+      title: '异常',
+      dataIndex: 'excp_count',
+      render(o, record) {
+        return (<ExceptionListPopover
+          shipmtNo={record.shipmt_no}
+          dispId={record.disp_id}
+          excpCount={o}
+          onShowExcpModal={() => {}}
+        />);
       },
     }, {
       title: '回单',
