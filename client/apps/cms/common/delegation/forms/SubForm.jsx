@@ -76,10 +76,10 @@ export default class SubForm extends Component {
   }
 
   render() {
-    const { form: { getFieldProps }, ietype } = this.props;
+    const { form: { getFieldDecorator }, ietype } = this.props;
     const bills = this.state.bills;
     const DECL_TYPE = ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
-    getFieldProps('keys', {
+    getFieldDecorator('keys', {
       initialValue: this.state.keys,
     });
     const formItems = this.state.keys.map((k) => {
@@ -87,41 +87,42 @@ export default class SubForm extends Component {
         <Row key={k} style={{ marginBottom: 8 }}>
           <Col sm={6}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              <Select
-                {...getFieldProps(`decl_way_code_${k}`, {
-                  rules: [{ required: true, message: '报关类型必选' }],
-                  initialValue: bills[k].decl_way_code,
-                })}
-              >
-                {
-                DECL_TYPE.map(dw =>
-                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                )
-              }
-              </Select>
+              {getFieldDecorator(`decl_way_code_${k}`, {
+                rules: [{ required: true, message: '报关类型必选' }],
+                initialValue: bills[k].decl_way_code,
+              })(
+                <Select>
+                  {
+                  DECL_TYPE.map(dw =>
+                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={6}>
             <FormItem label={this.msg('manualNo')} {...formItemLayout}>
-              <Input {...getFieldProps(`manual_no_${k}`, {
-                initialValue: bills[k].manual_no })} />
+              {getFieldDecorator(`manual_no_${k}`, {
+                initialValue: bills[k].manual_no })(
+                <Input />
+              )}
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputNumber min={1} max={100000} defaultValue={1} style={{ width: '100%' }}
-                {...getFieldProps(`pack_count_${k}`, {
-                  initialValue: bills[k].pack_count })}
-              />
+              {getFieldDecorator(`pack_count_${k}`, {
+                initialValue: bills[k].pack_count })(
+                <InputNumber min={1} max={100000} style={{ width: '100%' }} />
+              )}
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input addonAfter="公斤" type="number"
-                {...getFieldProps(`gross_wt_${k}`, {
-                  initialValue: bills[k].gross_wt,
-                })}
-              />
+              {getFieldDecorator(`gross_wt_${k}`, {
+                initialValue: bills[k].gross_wt })(
+                <Input addonAfter="公斤" type="number" />
+              )}
             </FormItem>
           </Col>
           <Col span={1} offset={1}>
