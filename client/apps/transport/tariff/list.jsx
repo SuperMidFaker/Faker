@@ -218,9 +218,6 @@ export default class TariffList extends React.Component {
                 dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
               />
             </div>
-            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
-            </div>
           </div>
         </div>
       </QueueAnim>

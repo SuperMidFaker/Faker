@@ -9,6 +9,8 @@ import messages from '../message.i18n';
 import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/reducers/transportBilling';
 import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
+import BeforeFeesModal from './beforeFeesModal';
+import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 
 const formatMsg = format(messages);
 
@@ -43,10 +45,15 @@ export default class CreateBilling extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
   }
+  state = {
+    beforeFeesModalVisible: false,
+  }
+
   componentDidMount() {
     const { tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
+    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.context.location.query;
     this.props.loadFeesByChooseModal({
       type,
       beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
@@ -58,10 +65,14 @@ export default class CreateBilling extends React.Component {
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
+  toggleBeforeFeesModal = () => {
+    this.setState({ beforeFeesModalVisible: !this.state.beforeFeesModalVisible });
+  }
   handleSave = () => {
     const { loginId, tenantId, loginName, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerTenantId, name, freightCharge,
+    const { freightCharge,
     advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
+    const { beginDate, endDate, chooseModel, partnerTenantId, name } = this.context.location.query;
     const fees = this.props.billingFees.data;
     if (fees.length === 0) {
       message.error('没有运单');
@@ -111,35 +122,29 @@ export default class CreateBilling extends React.Component {
     );
   }
   render() {
-    const { type, billing } = this.props;
-
+    const { type } = this.props;
+    const { beginDate, endDate, chooseModel, partnerName } = this.context.location.query;
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
-      fontSize: 14,
+      fontSize: 12,
     };
     const dataSource = this.props.billingFees.data;
-    let partnerSourceType = 'sp';
+    let partnerSourceType = '承运商';
     if (type === 'payable') {
-      partnerSourceType = 'sp';
+      partnerSourceType = '承运商';
     } else if (type === 'receivable') {
-      partnerSourceType = 'sr';
+      partnerSourceType = '客户';
     }
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
     }, {
-      title: '客户',
-      dataIndex: `${partnerSourceType}_name`,
-      render(o) {
-        return <TrimSpan text={o} maxLen={10} />;
-      },
-    }, {
       title: '费率',
       dataIndex: 'charge_gradient',
     }, {
       title: '计费量',
-      dataIndex: 'charg_amount',
+      dataIndex: 'charge_amount',
     }, {
       title: '运费',
       dataIndex: 'total_charge',
@@ -185,6 +190,14 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '异常',
       dataIndex: 'excp_count',
+      render(o, record) {
+        return (<ExceptionListPopover
+          shipmtNo={record.shipmt_no}
+          dispId={record.disp_id}
+          excpCount={o}
+          onShowExcpModal={() => {}}
+        />);
+      },
     }, {
       title: '始发地',
       dataIndex: 'consigner_province',
@@ -239,13 +252,15 @@ export default class CreateBilling extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{this.msg('partner')}: <strong>{billing.partnerName}</strong></span>
-              <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
-              <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
+              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(beginDate).format('YYYY-MM-DD')} ~ {moment(endDate).format('YYYY-MM-DD')}</strong></span>
+              <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(chooseModel)}</strong></span>
+              <Button type="default" className="pull-right" onClick={this.toggleBeforeFeesModal}>未入账运单</Button>
             </div>
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
             </div>
+            <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
         </div>
       </div>

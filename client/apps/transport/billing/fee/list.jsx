@@ -239,7 +239,6 @@ export default class FeesList extends React.Component {
         return (<ExceptionListPopover
           shipmtNo={record.shipmt_no}
           dispId={record.disp_id}
-          parentId={record.parent_id}
           excpCount={o}
           onShowExcpModal={() => {}}
         />);

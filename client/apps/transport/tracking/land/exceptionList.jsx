@@ -133,9 +133,8 @@ export default class LandStatusList extends React.Component {
       return (<ExceptionListPopover
         shipmtNo={record.shipmt_no}
         dispId={record.disp_id}
-        parentId={record.parent_id}
         excpCount={o}
-        onShowExcpModal={this.handleShowExcpModal}
+        onShowExcpModal={() => this.handleShowExcpModal(record.disp_id, record.parent_id, record.shipmt_no)}
       />);
     },
   }, {

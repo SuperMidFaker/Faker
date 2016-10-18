@@ -4,9 +4,11 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'UPDATE_BILLING',
   'UPDATE_BILLINGFEES',
+  'ALTER_BILLINGFEES',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FEES', 'LOAD_FEES_SUCCEED', 'LOAD_FEES_FAIL',
   'LOAD_FEES_BYCHOOSEMODAL', 'LOAD_FEES_BYCHOOSEMODAL_SUCCEED', 'LOAD_FEES_BYCHOOSEMODAL_FAIL',
+  'LOAD_FEES_BEFORE_TIME', 'LOAD_FEES_BEFORE_TIME_SUCCEED', 'LOAD_FEES_BEFORE_TIME_FAIL',
   'LOAD_FEES_BYBILLINGID', 'LOAD_FEES_BYBILLINGID_SUCCEED', 'LOAD_FEES_BYBILLINGID_FAIL',
   'LOAD_BILLINGS', 'LOAD_BILLINGS_SUCCEED', 'LOAD_BILLINGS_FAIL',
   'CREATE_BILLING', 'CREATE_BILLING_SUCCEED', 'CREATE_BILLING_FAIL',
@@ -111,6 +113,11 @@ export default function reducer(state = initialState, action) {
       const billing = calculateBillingCharges(billingFees.filter(item => item.status === 1));
       return { ...state, billingFees: { ...state.billingFees, data: billingFees }, billing: { ...state.billing, ...billing } };
     }
+    case actionTypes.ALTER_BILLINGFEES: {
+      const billingFees = [...state.billingFees.data, action.data.fee];
+      const billing = calculateBillingCharges(billingFees.filter(item => item.status === 1));
+      return { ...state, billingFees: { ...state.billingFees, data: billingFees }, billing: { ...state.billing, ...billing } };
+    }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FEES_SUCCEED:
@@ -166,6 +173,10 @@ export function updateBillingFees(tenantId, feeId, field, value) {
   return { type: actionTypes.UPDATE_BILLINGFEES, data: { tenantId, feeId, field, value } };
 }
 
+export function alterBillingFees(fee) {
+  return { type: actionTypes.ALTER_BILLINGFEES, data: { fee } };
+}
+
 export function loadPartners(tenantId, typeCode) {
   return {
     [CLIENT_API]: {
@@ -205,6 +216,21 @@ export function loadFeesByChooseModal({ type, beginDate, endDate, chooseModel, p
         actionTypes.LOAD_FEES_BYCHOOSEMODAL_FAIL,
       ],
       endpoint: 'v1/transport/feesByChooseModal',
+      method: 'get',
+      params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId },
+    },
+  };
+}
+
+export function loadFeesBeforeTime({ type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FEES_BEFORE_TIME,
+        actionTypes.LOAD_FEES_BEFORE_TIME_SUCCEED,
+        actionTypes.LOAD_FEES_BEFORE_TIME_FAIL,
+      ],
+      endpoint: 'v1/transport/feesBeforeTime',
       method: 'get',
       params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId },
     },

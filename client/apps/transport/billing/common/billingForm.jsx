@@ -70,7 +70,12 @@ export default class BillingForm extends React.Component {
       const partnerName = partner.name;
       const partnerTenantId = partner.tid;
       this.props.updateBilling({ ...fieldsValue, partnerName, partnerTenantId, beginDate, endDate });
-      this.context.router.push(`/transport/billing/${this.props.type}/create`);
+      this.context.router.push({
+        pathname: `/transport/billing/${this.props.type}/create`,
+        query: {
+          ...fieldsValue, partnerName, partnerTenantId, beginDate: moment(beginDate).format('YYYY-MM-DD HH:mm:ss'), endDate: moment(endDate).format('YYYY-MM-DD HH:mm:ss'),
+        },
+      });
     }
   }
   handleCancel = () => {
