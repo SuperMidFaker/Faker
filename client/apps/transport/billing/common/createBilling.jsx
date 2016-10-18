@@ -11,6 +11,8 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
+import PreviewPanel from '../../shipment/modals/preview-panel';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 
 const formatMsg = format(messages);
 
@@ -27,7 +29,7 @@ const formatMsg = format(messages);
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
   }),
-  { loadFeesByChooseModal, createBilling, updateBillingFees }
+  { loadFeesByChooseModal, createBilling, updateBillingFees, loadShipmtDetail }
 )
 
 export default class CreateBilling extends React.Component {
@@ -42,6 +44,7 @@ export default class CreateBilling extends React.Component {
     loadFeesByChooseModal: PropTypes.func.isRequired,
     createBilling: PropTypes.func.isRequired,
     updateBillingFees: PropTypes.func.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -139,6 +142,9 @@ export default class CreateBilling extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
+      render: (o, record) => {
+        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
+      },
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',
@@ -263,6 +269,7 @@ export default class CreateBilling extends React.Component {
             <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
         </div>
+        <PreviewPanel stage="billing" />
       </div>
     );
   }

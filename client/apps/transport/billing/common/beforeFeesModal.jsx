@@ -9,6 +9,8 @@ import { loadFeesBeforeTime, alterBillingFees } from 'common/reducers/transportB
 import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
+import PreviewPanel from '../../shipment/modals/preview-panel';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 
 const formatMsg = format(messages);
 
@@ -20,7 +22,7 @@ const formatMsg = format(messages);
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
   }),
-  { loadFeesBeforeTime, alterBillingFees }
+  { loadFeesBeforeTime, alterBillingFees, loadShipmtDetail }
 )
 
 export default class BeforeFeesModal extends React.Component {
@@ -33,6 +35,7 @@ export default class BeforeFeesModal extends React.Component {
     alterBillingFees: PropTypes.func.isRequired,
     toggle: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -80,6 +83,9 @@ export default class BeforeFeesModal extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
+      render: (o, record) => {
+        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
+      },
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',
@@ -179,6 +185,7 @@ export default class BeforeFeesModal extends React.Component {
     return (
       <Modal visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>
         <Table dataSource={this.state.dataSource} columns={columns} rowKey="id" />
+        <PreviewPanel stage="billing" />
       </Modal>
     );
   }

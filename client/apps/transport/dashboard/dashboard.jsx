@@ -9,9 +9,10 @@ import { format } from 'client/common/i18n/helpers';
 import { Card, DatePicker, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
-import { loadShipmentStatistics } from 'common/reducers/shipment';
+import { loadShipmentStatistics, loadShipmtDetail } from 'common/reducers/shipment';
 import messages from '../message.i18n';
 import '../index.less';
+import PreviewPanel from '../shipment/modals/preview-panel';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
@@ -27,7 +28,7 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     statistics: state.shipment.statistics,
   }),
-  { loadShipmentStatistics })
+  { loadShipmentStatistics, loadShipmtDetail })
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -46,10 +47,21 @@ export default class Dashboard extends React.Component {
     const { startDate, endDate } = this.props.statistics;
     return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
   }
-  renderTodos = (arr) => {
+  renderTodos = (arr, stage) => {
+    let sourceType = 'sr';
+    if (stage === 'acceptance' || stage === 'dispatch') sourceType = 'sp';
+    let addonafter = '';
     if (arr.length === 0) return '';
-    if (arr.length === 1) return arr.slice(0, 20).map(item => item.shipmt_no).join('、');
-    return `${arr.slice(0, 20).map(item => item.shipmt_no).join('、')} 等共 ${arr.length} 单`;
+    if (arr.length > 1) addonafter = ` 等共 ${arr.length} 单`;
+    const newArr = arr.slice(0, 30);
+    return newArr.map((item, index) => {
+      return (
+        <span>
+          <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}>{item.shipmt_no}</a>
+          {index !== newArr.length - 1 ? '、' : addonafter}
+        </span>
+      );
+    });
   }
   render() {
     const { count, startDate, endDate, todos } = this.props.statistics;
@@ -63,14 +75,14 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '操作',
       dataIndex: 'name',
-      width: '20%',
+      width: '8%',
       render(text) {
         return text;
       },
     }, {
       title: '详情',
       dataIndex: 'operation',
-      width: '80%',
+      width: '92%',
       render: (value) => {
         return value;
       },
@@ -78,15 +90,15 @@ export default class Dashboard extends React.Component {
     const data = [{
       key: '1',
       name: '待接单',
-      operation: this.renderTodos(todos.unaccepted),
+      operation: this.renderTodos(todos.unaccepted, 'acceptance'),
     }, {
       key: '2',
       name: '待调度',
-      operation: this.renderTodos(todos.undispatched),
+      operation: this.renderTodos(todos.undispatched, 'dispatch'),
     }, {
       key: '3',
       name: '待更新提货',
-      operation: this.renderTodos(todos.undelivered),
+      operation: this.renderTodos(todos.undelivered, 'tracking'),
     }, {
       key: '4',
       name: '待更新位置',
@@ -94,15 +106,15 @@ export default class Dashboard extends React.Component {
     }, {
       key: '5',
       name: '待更新送货',
-      operation: this.renderTodos(todos.intransit),
+      operation: this.renderTodos(todos.intransit, 'tracking'),
     }, {
       key: '6',
       name: '待上传回单',
-      operation: this.renderTodos(todos.delivered),
+      operation: this.renderTodos(todos.delivered, 'pod'),
     }, {
       key: '7',
       name: '待审核回单',
-      operation: this.renderTodos(todos.podsubmit),
+      operation: this.renderTodos(todos.podsubmit, 'pod'),
     }];
 
     return (
@@ -161,6 +173,7 @@ export default class Dashboard extends React.Component {
             </Card>
           </div>
         </div>
+        <PreviewPanel stage="dashboard" />
       </QueueAnim>
     );
   }

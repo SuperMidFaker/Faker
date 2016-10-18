@@ -64,7 +64,7 @@ export default class PreviewPanel extends React.Component {
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
-    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
+    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard']),
   }
   constructor(props) {
     super(props);
@@ -73,6 +73,7 @@ export default class PreviewPanel extends React.Component {
       shareShipmentModalVisible: false,
     };
   }
+
   componentDidMount() {
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
@@ -89,6 +90,7 @@ export default class PreviewPanel extends React.Component {
   componentWillUnmount() {
     window.$(document).unbind('click');
   }
+  viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
@@ -157,9 +159,9 @@ export default class PreviewPanel extends React.Component {
             <div className="body">
               {this.renderTabs()}
             </div>
-            <Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />
+            {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
           </div>
-          <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
+          {this.viewStages.indexOf(this.props.stage) === -1 ? (<ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />) : ''}
         </div>
       : null
     );

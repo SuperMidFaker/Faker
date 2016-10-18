@@ -9,6 +9,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
+import PreviewPanel from '../../shipment/modals/preview-panel';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 
 const formatMsg = format(messages);
 
@@ -25,7 +27,7 @@ const formatMsg = format(messages);
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
   }),
-  { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling }
+  { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail }
 )
 
 export default class BillingFeeList extends React.Component {
@@ -43,6 +45,7 @@ export default class BillingFeeList extends React.Component {
     editBilling: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
     operation: PropTypes.oneOf(['check', 'edit', 'view']),
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -163,6 +166,9 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'shipmt_no',
       fixed: 'left',
       width: 150,
+      render: (o, record) => {
+        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
+      },
     }, {
       title: '客户',
       render() {
@@ -292,6 +298,7 @@ export default class BillingFeeList extends React.Component {
             </div>
           </div>
         </div>
+        <PreviewPanel stage="billing" />
       </div>
     );
   }

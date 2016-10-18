@@ -13,6 +13,8 @@ import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
+import PreviewPanel from '../../shipment/modals/preview-panel';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 
 const formatMsg = format(messages);
 
@@ -37,7 +39,7 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     fees: state.transportBilling.fees,
   }),
-  { loadFees, importAdvanceCharge }
+  { loadFees, importAdvanceCharge, loadShipmtDetail }
 )
 
 export default class FeesList extends React.Component {
@@ -49,6 +51,7 @@ export default class FeesList extends React.Component {
     loadFees: PropTypes.func.isRequired,
     fees: PropTypes.object.isRequired,
     importAdvanceCharge: PropTypes.func.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleImportAdvanceCharge = () => {
@@ -76,6 +79,9 @@ export default class FeesList extends React.Component {
       dataIndex: 'shipmt_no',
       fixed: 'left',
       width: 150,
+      render: (o, record) => {
+        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
+      },
     }, {
       title: '托运客户',
       dataIndex: 'p_sr_name',
@@ -290,6 +296,7 @@ export default class FeesList extends React.Component {
             </div>
           </div>
         </div>
+        <PreviewPanel stage="billing" />
       </div>
     );
   }
