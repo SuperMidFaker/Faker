@@ -71,6 +71,9 @@ export default class ConsignInfo extends React.Component {
     super(...args);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
+  state = {
+    consignRegion: [],
+  }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleItemSelect = (name) => {
     let selectConsignLoc;
@@ -90,12 +93,19 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.street]: selectConsignLoc.street,
         [this.renderFields.regionCode]: selectConsignLoc.region_code,
       });
+      this.setState({
+        consignRegion: [
+          selectConsignLoc.province, selectConsignLoc.city,
+          selectConsignLoc.district, selectConsignLoc.street,
+        ] });
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.contact]: selectConsignLoc.contact,
         [this.renderFields.mobile]: selectConsignLoc.mobile,
         [this.renderFields.email]: selectConsignLoc.email,
       });
+    } else {
+      this.setState({ consignRegion: [] });
     }
   }
   handleAutoInputChange = (val) => {
@@ -115,6 +125,7 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.mobile]: '',
         [this.renderFields.email]: '',
       });
+      this.setState({ consignRegion: [] });
     }
   }
   handleRegionValue = (region) => {
@@ -173,7 +184,6 @@ export default class ConsignInfo extends React.Component {
       key: `${cl.node_id}${cl.name}`,
     }));
     const { province, city, district, street, name, addr, contact, mobile, email } = this.renderFields;
-    // todo formData formOrigin
     const region = [
       fieldDefaults[province], fieldDefaults[city], fieldDefaults[district], fieldDefaults[street],
     ];
@@ -191,7 +201,9 @@ export default class ConsignInfo extends React.Component {
             <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }} {...this.renderRules.portal}
             >
-              <RegionCascade region={region} onChange={this.handleRegionValue} />
+              <RegionCascade defaultRegion={region} region={this.state.consignRegion}
+                onChange={this.handleRegionValue}
+              />
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
               field={this.renderFields.addr} colSpan={4} {...this.renderRules.addr}

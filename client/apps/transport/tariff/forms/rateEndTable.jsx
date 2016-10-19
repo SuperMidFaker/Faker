@@ -266,7 +266,7 @@ export default class RateEndTable extends React.Component {
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
           <Form horizontal>
             <FormItem label="目的地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-              <RegionCascader region={editRegion} onChange={this.handleRegionChange} />
+              <RegionCascader defaultRegion={editRegion} onChange={this.handleRegionChange} />
             </FormItem>
             <FormItem label="运输时间" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               <Input {...getFieldProps('time', {

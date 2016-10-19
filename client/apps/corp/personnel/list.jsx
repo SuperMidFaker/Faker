@@ -349,9 +349,6 @@ export default class PersonnelSetting extends React.Component {
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
             </div>
-            <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
-            </div>
           </div>
         </div>
       </div>

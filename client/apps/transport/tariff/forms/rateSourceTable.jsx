@@ -218,7 +218,7 @@ export default class RateSourceTable extends React.Component {
         >
           <Form horizontal>
             <FormItem label="起始地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} required>
-              <RegionCascader region={modalRegion} onChange={this.handleRegionChange} />
+              <RegionCascader defaultRegion={modalRegion} onChange={this.handleRegionChange} />
             </FormItem>
           </Form>
         </Modal>

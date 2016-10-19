@@ -167,9 +167,6 @@ export default class TariffList extends React.Component {
       }
     });
   }
-  handleSelectionClear = () => {
-    this.setState({ selectedRowKeys: [] });
-  }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.filters, name: searchVal };
     this.handleTableLoad(filters, 1);

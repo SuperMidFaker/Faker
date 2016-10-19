@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n.js';
+import messages from './message.i18n';
 import { loadSubTable } from 'common/reducers/cmsExpense';
 const formatMsg = format(messages);
 

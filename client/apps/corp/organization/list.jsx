@@ -274,9 +274,6 @@ export default class CorpList extends React.Component {
         <div className="panel-body table-panel">
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
         </div>
-        <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-          <Button shape="circle-outline" icon="cross" onClick={this.handleSelectionClear} className="pull-right" />
-        </div>
         <AppEditor {...this.props.appEditor} switchTenantApp={this.props.switchTenantApp}
           appPackage={this.props.corplist.tenantAppPackage} onCancel={this.handleEditorHide}
         />
