@@ -67,7 +67,7 @@ export default class ExportExcel extends React.Component {
               wrapperCol={{ span: 12 }}
             >
               <RangePicker style={{ width: 184 }} defaultValue={
-                [moment(this.state.startDate).format('YYYY-MM-DD'), moment(this.state.endDate).format('YYYY-MM-DD')]
+                [moment(this.state.startDate), moment(this.state.endDate)]
               } onChange={this.handleRangeChange}
               />
             </FormItem>
