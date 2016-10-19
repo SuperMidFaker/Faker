@@ -11,6 +11,7 @@ const formatMsg = format(messages);
   state => ({
     charges: state.shipment.previewer.charges,
     advances: state.shipment.previewer.advances,
+    specialCharges: state.shipment.previewer.specialCharges,
   })
 )
 export default class ChargePanel extends React.Component {
@@ -18,6 +19,7 @@ export default class ChargePanel extends React.Component {
     intl: intlShape.isRequired,
     charges: PropTypes.object.isRequired,
     advances: PropTypes.array.isRequired,
+    specialCharges: PropTypes.array.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   revenueColumns = [{
@@ -85,6 +87,34 @@ export default class ChargePanel extends React.Component {
         return (<a href={record.photos.split(',')} target="_blank" rel="noopener noreferrer">{o}</a>);
       } else {
         return o;
+      }
+    },
+  }, {
+    title: this.msg('advanceSubmitter'),
+    dataIndex: 'submitter',
+    width: 100,
+  }, {
+    title: this.msg('advanceRemark'),
+    dataIndex: 'remark',
+    width: 240,
+  }, {
+    title: this.msg('advanceAmount'),
+    dataIndex: 'amount',
+    width: 180,
+    render: o => this.props.intl.formatNumber(o, {
+      style: 'currency',
+      currency: 'CNY',
+    }),
+  }]
+  specialChargeColumns = [{
+    title: this.msg('收付类别'),
+    dataIndex: 'type',
+    width: 80,
+    render: (o) => {
+      if (o === 1) {
+        return '应收';
+      } else {
+        return '应付';
       }
     },
   }, {
@@ -172,7 +202,7 @@ export default class ChargePanel extends React.Component {
     }
   }
   render() {
-    const { charges, advances, intl } = this.props;
+    const { charges, advances, specialCharges, intl } = this.props;
     const revenueds = [];
     const expenseds = [];
     let revenue = 0;
@@ -224,6 +254,9 @@ export default class ChargePanel extends React.Component {
         </Card>
         <Card bodyStyle={{ padding: 0 }} title="代垫费用">
           <Table size="small" columns={this.advancesColumns} pagination={false} dataSource={advances} />
+        </Card>
+        <Card bodyStyle={{ padding: 0 }} title="特殊费用">
+          <Table size="small" columns={this.specialChargeColumns} pagination={false} dataSource={specialCharges} />
         </Card>
       </div>
     );

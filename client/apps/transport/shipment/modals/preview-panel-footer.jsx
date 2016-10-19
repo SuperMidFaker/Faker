@@ -12,7 +12,7 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal } from 'common/reducers/trackingLandStatus';
+import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal, showSpecialChargeModal } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
@@ -49,6 +49,7 @@ const MenuItem = Menu.Item;
     withDraw,
     returnShipment,
     showShipmentAdvanceModal,
+    showSpecialChargeModal,
     sendMessage,
   }
 )
@@ -78,6 +79,7 @@ export default class Footer extends React.Component {
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
     showShipmentAdvanceModal: PropTypes.func.isRequired,
+    showSpecialChargeModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
@@ -211,6 +213,10 @@ export default class Footer extends React.Component {
   handleShowShipmentAdvanceModal = (row) => {
     this.props.showShipmentAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
       transportModeId: row.transport_mode_id, customerPartnerId: row.customer_partner_id, goodsType: row.goods_type });
+  }
+  handleShowSpecialChargeModal = (row) => {
+    this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
+      parentDispId: row.parent_id });
   }
   handleResubmit = (row) => {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
@@ -520,8 +526,11 @@ export default class Footer extends React.Component {
                 <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowTransitModal(row)} >
                   上报位置
                 </Button>
-                <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowShipmentAdvanceModal(row)} >
                   添加垫付费用
+                </Button>
+                <Button type="ghost" size="large" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                  添加特殊费用
                 </Button>
               </div>
             </PrivilegeCover>
@@ -537,8 +546,11 @@ export default class Footer extends React.Component {
                   <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowTransitModal(row)} >
                     上报位置
                   </Button>
-                  <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                  <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowShipmentAdvanceModal(row)} >
                     添加垫付费用
+                  </Button>
+                  <Button type="ghost" size="large" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                    添加特殊费用
                   </Button>
                 </div>
               </PrivilegeCover>
@@ -548,9 +560,14 @@ export default class Footer extends React.Component {
             buttons = (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
-                  <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
-                    添加垫付费用
-                  </Button>
+                  <div>
+                    <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                      添加垫付费用
+                    </Button>
+                    <Button type="ghost" size="large" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                      添加特殊费用
+                    </Button>
+                  </div>
                 </PrivilegeCover>
               </div>
             );
@@ -560,9 +577,14 @@ export default class Footer extends React.Component {
           buttons = (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <Button type="ghost" size="large" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
-                  添加垫付费用
-                </Button>
+                <div>
+                  <Button type="ghost" size="large" style={defaultButtonStyle} onClick={() => this.handleShowShipmentAdvanceModal(row)} >
+                    添加垫付费用
+                  </Button>
+                  <Button type="ghost" size="large" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                    添加特殊费用
+                  </Button>
+                </div>
               </PrivilegeCover>
             </div>
           );

@@ -25,6 +25,7 @@ import messages from './message.i18n';
 import ExportExcel from './modals/export-excel';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
 import ShipmentAdvanceModal from './modals/shipment-advance-modal';
+import CreateSpecialCharge from './modals/create-specialCharge';
 import { sendMessage } from 'common/reducers/corps';
 
 const formatMsg = format(messages);
@@ -367,6 +368,7 @@ export default class LandStatusList extends React.Component {
         <RevokejectModal reload={this.handleTableLoad} />
         <ExcpEventsModal />
         <ShipmentAdvanceModal />
+        <CreateSpecialCharge />
       </div>
     );
   }

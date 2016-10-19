@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL',
+  'SHOW_SPECIAL_CHARGE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
@@ -49,6 +50,12 @@ const initialState = {
     transportModeId: -1,
     customerPartnerId: -1,
     goodsType: -1,
+  },
+  shipmentSpecialChargeModal: {
+    visible: false,
+    dispId: -1,
+    parentDispId: -1,
+    shipmtNo: '',
   },
   locModal: {
     visible: false,
@@ -118,6 +125,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL:
       return {
         ...state, shipmentAdvanceModal: action.data,
+      };
+    case actionTypes.SHOW_SPECIAL_CHARGE_MODAL:
+      return {
+        ...state, shipmentSpecialChargeModal: action.data,
       };
     case actionTypes.DELIVER_CONFIRM_SUCCEED:
       return {
@@ -269,6 +280,13 @@ export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportM
   return {
     type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
     data: { visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType },
+  };
+}
+
+export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId }) {
+  return {
+    type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
+    data: { visible, dispId, shipmtNo, parentDispId },
   };
 }
 

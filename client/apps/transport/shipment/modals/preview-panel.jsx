@@ -161,7 +161,7 @@ export default class PreviewPanel extends React.Component {
             </div>
             {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
           </div>
-          {this.viewStages.indexOf(this.props.stage) === -1 ? (<ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />) : ''}
+          <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
         </div>
       : null
     );

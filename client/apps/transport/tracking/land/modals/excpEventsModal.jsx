@@ -8,7 +8,6 @@ import { loadExceptions, hideExcpModal, showDealExcpModal } from 'common/reducer
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import CreateException from './create-exception';
-import CreateSpecialCharge from './create-specialCharge';
 import DealException from './deal-exception';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import '../../../index.less';
@@ -44,7 +43,6 @@ export default class ExcpEventsModal extends React.Component {
   state = {
     selectedRowKeys: [],
     createExceptionVisible: false,
-    createSpecialChargeVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
@@ -139,14 +137,11 @@ export default class ExcpEventsModal extends React.Component {
   toggleCreateException = () => {
     this.setState({ createExceptionVisible: !this.state.createExceptionVisible });
   }
-  toggleSpecialCharge = () => {
-    this.setState({ createSpecialChargeVisible: !this.state.createSpecialChargeVisible });
-  }
   handleShowDealExcpModal = (exception) => {
     this.props.showDealExcpModal(true, exception);
   }
   render() {
-    const { shipmtNo, dispId, parentDispId, exceptions } = this.props;
+    const { shipmtNo, dispId, exceptions } = this.props;
     this.dataSource.remotes = exceptions;
     const buttonStyle = { marginLeft: 8 };
     const title = (
@@ -161,14 +156,12 @@ export default class ExcpEventsModal extends React.Component {
       >
         <div style={{ minHeight: 300 }}>
           <div className="modal-top-actions">
-            <Button type="ghost" size="large" onClick={this.toggleSpecialCharge}>添加特殊费用</Button>
             <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
           </div>
           <Table columns={this.columns}
             dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
           />
           <CreateException visible={this.state.createExceptionVisible} shipmtNo={shipmtNo} dispId={dispId} toggle={this.toggleCreateException} />
-          <CreateSpecialCharge visible={this.state.createSpecialChargeVisible} shipmtNo={shipmtNo} dispId={dispId} parentDispId={parentDispId} toggle={this.toggleSpecialCharge} />
           <DealException shipmtNo={shipmtNo} dispId={dispId} />
         </div>
       </Modal>

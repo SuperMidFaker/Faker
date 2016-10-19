@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, Modal, Radio } from 'antd';
-import { createSpecialCharge, loadExceptions } from 'common/reducers/trackingLandException';
+import { createSpecialCharge } from 'common/reducers/trackingLandException';
+import { showSpecialChargeModal } from 'common/reducers/trackingLandStatus';
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -13,9 +14,12 @@ const RadioGroup = Radio.Group;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     loginName: state.account.username,
-    exceptions: state.trackingLandException.exceptions,
+    visible: state.trackingLandStatus.shipmentSpecialChargeModal.visible,
+    dispId: state.trackingLandStatus.shipmentSpecialChargeModal.dispId,
+    parentDispId: state.trackingLandStatus.shipmentSpecialChargeModal.parentDispId,
+    shipmtNo: state.trackingLandStatus.shipmentSpecialChargeModal.shipmtNo,
   }),
-  { createSpecialCharge, loadExceptions }
+  { createSpecialCharge, showSpecialChargeModal }
 )
 @Form.create()
 export default class CreateSpecialCharge extends React.Component {
@@ -28,25 +32,21 @@ export default class CreateSpecialCharge extends React.Component {
     parentDispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     createSpecialCharge: PropTypes.func.isRequired,
-    loadExceptions: PropTypes.func.isRequired,
-    exceptions: PropTypes.object.isRequired,
     visible: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired,
+    showSpecialChargeModal: PropTypes.func.isRequired,
+
   }
   handleOk = () => {
     const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
+    console.log(dispId, parentDispId, shipmtNo, loginName, loginId, tenantId);
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
-      this.props.form.setFieldsValue({ charge: '', remark: '', chargeType: '1' });
+      this.props.form.setFieldsValue({ charge: '', remark: '', type: '1' });
       this.handleCancel();
-      const type = 12012;
-      const excpLevel = 'ERROR';
-      const chargeType = Number(fieldsValue.chargeType);
+      const type = Number(fieldsValue.type);
       this.props.createSpecialCharge({
         shipmtNo,
-        dispId: chargeType === 1 ? parentDispId : dispId,
-        chargeType,
-        excpLevel,
+        dispId: type === 1 ? parentDispId : dispId,
         type,
         remark: fieldsValue.remark,
         submitter: loginName,
@@ -58,11 +58,6 @@ export default class CreateSpecialCharge extends React.Component {
           message.error(result.error);
         } else {
           message.info('添加成功');
-          this.props.loadExceptions({
-            shipmtNo,
-            pageSize: this.props.exceptions.pageSize,
-            currentPage: this.props.exceptions.current,
-          });
         }
       });
     } else {
@@ -70,7 +65,7 @@ export default class CreateSpecialCharge extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.toggle();
+    this.props.showSpecialChargeModal({ visible: false, dispId: -1, shipmtNo: '', parentDispId: -1 });
   }
   render() {
     const { form: { getFieldProps } } = this.props;
@@ -81,7 +76,7 @@ export default class CreateSpecialCharge extends React.Component {
       >
         <Form className="row" style={{ width: '400px' }}>
           <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <RadioGroup {...getFieldProps('chargeType', {
+            <RadioGroup {...getFieldProps('type', {
               initialValue: '1',
             })}>
               <RadioButton value="1">应收</RadioButton>
@@ -100,7 +95,6 @@ export default class CreateSpecialCharge extends React.Component {
           </FormItem>
         </Form>
       </Modal>
-
     );
   }
 }
