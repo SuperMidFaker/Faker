@@ -41,6 +41,7 @@ import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSSettings from './cms/settings';
+import * as CMSBilling from './cms/billing';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -239,6 +240,13 @@ export default(store, cookie) => {
               <IndexRoute component={CMSQuote.List} />
               <Route path="create" component={CMSQuote.Create} />
               <Route path="edit/:quoteno" component={CMSQuote.Edit} />
+            </Route>
+            <Route path="billing">
+              <IndexRedirect to="/clearance/billing/receivable" />
+              <Route path="receivable">
+                <IndexRoute component={CMSBilling.ReceivableList} />
+                <Route path="create" component={CMSBilling.CreateReceivableBilling} />
+              </Route>
             </Route>
             <Route path="relation">
               <IndexRoute component={CMSRelation.Manage} />
