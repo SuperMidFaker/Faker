@@ -13,7 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
   'EDIT_BILLBODY', 'EDIT_BILLBODY_SUCCEED', 'EDIT_BILLBODY_FAIL',
   'SAVE_BILLHEAD', 'SAVE_BILLHEAD_SUCCEED', 'SAVE_BILLHEAD_FAIL',
-  'ADD_ENTRY', 'SET_TABKEY', 'CLOSE_MS_MODAL', 'OPEN_MS_MODAL',
+  'ADD_ENTRY', 'CLOSE_MS_MODAL', 'OPEN_MS_MODAL',
   'ADD_NEW_ENTRY_BODY', 'DEL_ENTRY_BODY', 'EDIT_ENTRY_BODY',
   'SAVE_ENTRYHEAD', 'SAVE_ENTRYHEAD_SUCCEED', 'SAVE_ENTRYHEAD_FAIL',
   'DEL_ENTRY', 'DEL_ENTRY_SUCCEED', 'DEL_ENTRY_FAIL',
@@ -41,7 +41,6 @@ const initialState = {
     sortField: '',
     sortOrder: '',
   },
-  activeTabKey: 'bill',
   billHead: {
   },
   billBody: [
@@ -154,7 +153,6 @@ export default function reducer(state = initialState, action) {
       const head = copyHead(prevHead);
       return {
         ...state, entries: [...state.entries, { head, bodies: [] }],
-        activeTabKey: `entry${state.entries.length}`,
       };
     }
     case actionTypes.DEL_ENTRY_SUCCEED: {
@@ -162,8 +160,6 @@ export default function reducer(state = initialState, action) {
       entries.splice(action.index, 1);
       return { ...state, entries };
     }
-    case actionTypes.SET_TABKEY:
-      return { ...state, activeTabKey: action.data };
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
@@ -397,13 +393,6 @@ export function delEntry(headId, index) {
       data: { headId },
       index,
     },
-  };
-}
-
-export function setTabKey(activeKey) {
-  return {
-    type: actionTypes.SET_TABKEY,
-    data: activeKey,
   };
 }
 

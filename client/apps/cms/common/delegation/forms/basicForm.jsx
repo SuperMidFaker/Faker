@@ -105,14 +105,16 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('orderNo')} {...formItemLayout}>
               <Input {...getFieldProps('order_no', {
                 initialValue: fieldInits.order_no,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
               <Input {...getFieldProps('invoice_no', {
                 initialValue: fieldInits.invoice_no,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -122,7 +124,8 @@ export default class BasicForm extends Component {
               <Select {...getFieldProps('trans_mode', {
                 initialValue: fieldInits.trans_mode,
                 rules: [{ required: true, message: '运输方式必选' }],
-              })}>
+              })}
+              >
                 {
                 TRANS_MODE.map(tr =>
                   <Option value={tr.value} key={tr.value}>{tr.text}</Option>
@@ -136,14 +139,16 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('bLNo')} {...formItemLayout}>
               <Input {...getFieldProps('bl_wb_no', {
                 initialValue: fieldInits.bl_wb_no,
-              })} />
+              })}
+              />
             </FormItem>
           }
             { getFieldValue('trans_mode') === '5' &&
             <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
               <Input {...getFieldProps('bl_wb_no', {
                 initialValue: fieldInits.bl_wb_no,
-              })} />
+              })}
+              />
             </FormItem>
           }
           </Col>
@@ -152,14 +157,16 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
               <Input {...getFieldProps('voyage_no', {
                 initialValue: fieldInits.voyage_no,
-              })} />
+              })}
+              />
             </FormItem>
           }
             { getFieldValue('trans_mode') === '5' &&
             <FormItem label={this.msg('flightNo')} {...formItemLayout}>
               <Input {...getFieldProps('voyage_no', {
                 initialValue: fieldInits.voyage_no,
-              })} />
+              })}
+              />
             </FormItem>
           }
           </Col>
@@ -170,7 +177,8 @@ export default class BasicForm extends Component {
               <Select {...getFieldProps('goods_type', {
                 initialValue: fieldInits.goods_type,
                 rules: [{ required: true, message: '货物类型必选', type: 'number' }],
-              })}>
+              })}
+              >
                 {
                 GOODSTYPES.map(gt =>
                   <Option value={gt.value} key={gt.value}>{gt.text}</Option>
@@ -183,14 +191,16 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
               <Input {...getFieldProps('pieces', {
                 initialValue: fieldInits.pieces,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
               <Input {...getFieldProps('weight', {
                 initialValue: fieldInits.weight,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -199,14 +209,16 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('broker')} {...formItemLayout}>
               <Input disabled {...getFieldProps('ccb_name', {
                 initialValue: tenantName,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
               <Input {...getFieldProps('internal_no', {
                 initialValue: fieldInits.internal_no,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -215,7 +227,8 @@ export default class BasicForm extends Component {
             <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
               <Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} {...getFieldProps('remark', {
                 initialValue: fieldInits.remark,
-              })} />
+              })}
+              />
             </FormItem>
           </Col>
         </Row>

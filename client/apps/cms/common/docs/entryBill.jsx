@@ -24,7 +24,6 @@ const DropdownButton = Dropdown.Button;
     tenantId: state.account.tenantId,
     aspect: state.account.aspect,
     entries: state.cmsDeclare.entries,
-    activeKey: state.cmsDeclare.activeTabKey,
   }),
   { addEntry, setTabKey, openMergeSplitModal }
 )
@@ -40,9 +39,7 @@ export default class EntryBillForm extends React.Component {
     aspect: PropTypes.number.isRequired,
     readonly: PropTypes.bool,
     entries: PropTypes.array.isRequired,
-    activeKey: PropTypes.string.isRequired,
     addEntry: PropTypes.func.isRequired,
-    setTabKey: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -51,7 +48,15 @@ export default class EntryBillForm extends React.Component {
     readonly: false,
   }
   state = {
-    activeKey: '',
+    activeKey: 'bill',
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.entries && nextProps.entries.length !== 0 &&
+      nextProps.entries !== this.props.entries) {
+      this.setState({
+        activeKey: `entry${nextProps.entries.length - 1}`,
+      });
+    }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEntryMenuClick = (ev) => {
@@ -62,7 +67,7 @@ export default class EntryBillForm extends React.Component {
     }
   }
   handleTabChange = (activeKey) => {
-    this.props.setTabKey(activeKey);
+    this.setState({ activeKey });
   }
   renderTabButton() {
     const PopMenu = (
@@ -78,7 +83,23 @@ export default class EntryBillForm extends React.Component {
     );
   }
   render() {
-    const { readonly, ietype, entries, activeKey } = this.props;
+    const { readonly, ietype, entries } = this.props;
+    const panes = [
+      <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
+        <BillForm readonly={readonly} ietype={ietype} />
+      </TabPane>,
+    ].concat(
+      entries.map((entry, idx) => (
+        <TabPane tab={
+          <span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>
+          } key={`entry${idx}`}
+        >
+          <EntryForm readonly={readonly} ietype={ietype} entry={entry}
+            totalCount={entries.length} index={idx}
+          />
+        </TabPane>
+      ))
+    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -87,24 +108,10 @@ export default class EntryBillForm extends React.Component {
         </header>
         <div className="main-content">
           <div className="page-body tabbed fixed-height">
-            <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={activeKey}
+            <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={this.state.activeKey}
               onChange={this.handleTabChange}
             >
-              <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
-                <BillForm readonly={readonly} ietype={ietype} />
-              </TabPane>
-              {
-                entries.map((entry, idx) => (
-                  <TabPane tab={
-                    <span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>
-                    } key={`entry${idx}`}
-                  >
-                    <EntryForm readonly={readonly} ietype={ietype} entry={entry}
-                      totalCount={entries.length} index={idx}
-                    />
-                  </TabPane>
-                ))
-              }
+              { panes }
             </Tabs>
           </div>
           <MergeSplitModal />

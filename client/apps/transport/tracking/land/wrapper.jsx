@@ -138,7 +138,8 @@ export default class TrackingLandWrapper extends React.Component {
     const { radioValue, searchInput, stage } = this.state;
     return (
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
-            { opacity: [1, 0], translateY: [0, -50] }]}>
+            { opacity: [1, 0], translateY: [0, -50] }]}
+      >
         <header className="top-bar" key="header">
           <div className="tools">
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}

@@ -38,7 +38,7 @@ export default class CreateSpecialCharge extends React.Component {
   }
   handleOk = () => {
     const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
-    console.log(dispId, parentDispId, shipmtNo, loginName, loginId, tenantId);
+    // console.log(dispId, parentDispId, shipmtNo, loginName, loginId, tenantId);
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
       this.props.form.setFieldsValue({ charge: '', remark: '', type: '1' });
@@ -78,7 +78,8 @@ export default class CreateSpecialCharge extends React.Component {
           <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <RadioGroup {...getFieldProps('type', {
               initialValue: '1',
-            })}>
+            })}
+            >
               <RadioButton value="1">应收</RadioButton>
               <RadioButton value="-1">应付</RadioButton>
             </RadioGroup>
@@ -86,12 +87,14 @@ export default class CreateSpecialCharge extends React.Component {
           <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="number" placeholder="请输入金额" addonAfter="元" {...getFieldProps('charge', {
               initialValue: '',
-            })} />
+            })}
+            />
           </FormItem>
           <FormItem label="备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入备注信息" {...getFieldProps('remark', {
               initialValue: '',
-            })} />
+            })}
+            />
           </FormItem>
         </Form>
       </Modal>
