@@ -89,4 +89,12 @@ export default defineMessages({
     id: 'cms.billing.fee',
     defaultMessage: '费用',
   },
+  lastUpdate: {
+    id: 'cms.billing.last.update',
+    defaultMessage: '上一次更新',
+  },
+  lastUpdateTime: {
+    id: 'cms.billing.last.updateTime',
+    defaultMessage: '更新时间',
+  },
 });

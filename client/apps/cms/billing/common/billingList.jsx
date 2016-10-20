@@ -178,6 +178,7 @@ export default class BillingList extends React.Component {
       },
     }, {
       title: '操作',
+      dataIndex: '_id',
       render: (o, record) => {
         if (record.status === 1) {
           return (

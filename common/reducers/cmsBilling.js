@@ -9,6 +9,10 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CREATE_BILLING', 'CREATE_BILLING_SUCCEED', 'CREATE_BILLING_FAIL',
   'LOAD_BILLINGS', 'LOAD_BILLINGS_SUCCEED', 'LOAD_BILLINGS_FAIL',
   'SEND_BILLING', 'SEND_BILLING_SUCCEED', 'SEND_BILLING_FAIL',
+  'LOAD_FEES_BYBILLINGID', 'LOAD_FEES_BYBILLINGID_SUCCEED', 'LOAD_FEES_BYBILLINGID_FAIL',
+  'EDIT_BILLING', 'EDIT_BILLING_SUCCEED', 'EDIT_BILLING_FAIL',
+  'ACCEPT_BILLING', 'ACCEPT_BILLING_SUCCEED', 'ACCEPT_BILLING_FAIL',
+  'CHECK_BILLING', 'CHECK_BILLING_SUCCEED', 'CHECK_BILLING_FAIL',
 ]);
 
 const initialState = {
@@ -100,11 +104,34 @@ export default function reducer(state = initialState, action) {
         }
         return item;
       });
-      const billing = calculateBillingCharges(billingFees);
+      const billing = calculateBillingCharges(billingFees.filter(item => item.billing_status === 1));
       return { ...state, billingFees: { ...state.billingFees, data: billingFees }, billing: { ...state.billing, ...billing } };
     }
     case actionTypes.LOAD_BILLINGS_SUCCEED:
       return { ...state, billings: action.result.data, billingFees: initialState.billingFees };
+    case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
+      const billing = action.result.data.billing;
+      return { ...state, billingFees: action.result.data, billing: {
+        id: billing._id,
+        beginDate: billing.begin_date,
+        endDate: billing.end_date,
+        name: billing.name,
+        chooseModel: billing.choose_model,
+        recvName: billing.recv_name,
+        recvTenantId: billing.recv_tenant_id,
+        sendName: billing.send_name,
+        sendTenantId: billing.send_tenant_id,
+        advanceCharge: billing.advance_charge,
+        servCharge: billing.serv_charge,
+        adjustCharge: billing.adjust_charge,
+        totalCharge: billing.total_charge,
+        modifyTimes: billing.modify_times,
+        modifyTime: billing.modify_time,
+        modifyTenantId: billing.modify_tenant_id,
+      } };
+    }
+    case actionTypes.CHECK_BILLING_SUCCEED:
+      return { ...state, billingFees: initialState.billingFees };
     default:
       return state;
   }
@@ -208,6 +235,70 @@ export function sendBilling({ tenantId, billingId }) {
       endpoint: 'v1/cms/send/billing',
       method: 'post',
       data: { tenantId, billingId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadFeesByBillingId({ billingId, pageSize, currentPage }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FEES_BYBILLINGID,
+        actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED,
+        actionTypes.LOAD_FEES_BYBILLINGID_FAIL,
+      ],
+      endpoint: 'v1/cms/loadexps/byBillingId',
+      method: 'get',
+      params: { billingId, pageSize, currentPage },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, fees }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHECK_BILLING,
+        actionTypes.CHECK_BILLING_SUCCEED,
+        actionTypes.CHECK_BILLING_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/check',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, fees },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCEPT_BILLING,
+        actionTypes.ACCEPT_BILLING_SUCCEED,
+        actionTypes.ACCEPT_BILLING_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/accept',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function editBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, fees }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_BILLING,
+        actionTypes.EDIT_BILLING_SUCCEED,
+        actionTypes.EDIT_BILLING_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/edit',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, fees },
       origin: 'mongo',
     },
   };
