@@ -1,13 +1,3 @@
-/**
- * 添加partner时弹出的通用Modal组件, 参考自antd中的Model.confirm组件
- * @param {config<Object>} 配置对象, 参数如下:
- * {
- *    onOk(value){}:           确认按钮按下后执行的函数,参数是当前选中的tenant对象
- *    partnerTenants<Array>:   在mode='add'模式下的下拉选项的tenants数组, add模式下需要
- *    providerValues<Array>:   在mode='editProvider'模式下默认选中的provider types数组, editProvider模式下需要
- * }
- * @return {}
- */
 import React, { PropTypes } from 'react';
 import { Modal, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';

@@ -9,6 +9,7 @@ import RowUpdater from './rowUpdater';
 import { renderConsignLoc } from '../../common/consignLocation';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import PickupDeliverUpdaterPopover from './modals/pickup-deliver-updater-popover';
+import ExceptionListPopover from './modals/exception-list-popover';
 
 function renderActDate(recordActDate, recordEstDate) {
   if (recordActDate) {
@@ -161,9 +162,14 @@ export default function makeColumns(type, handlers, msg) {
     },
   }, {
     title: msg('shipmtException'),
-    dataIndex: 'excp_level',
-    render: () => {
-      return (<span />);
+    dataIndex: 'excp_count',
+    render(o, record) {
+      return (<ExceptionListPopover
+        shipmtNo={record.shipmt_no}
+        dispId={record.disp_id}
+        excpCount={o}
+        onShowExcpModal={() => {}}
+      />);
     },
   }];
 
