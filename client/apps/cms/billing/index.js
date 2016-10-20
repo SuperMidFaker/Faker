@@ -6,3 +6,5 @@ export CheckReceivableBilling from './receivable/check';
 export CheckPayableBilling from './payable/check';
 export ViewReceivableBilling from './receivable/view';
 export ViewPayableBilling from './payable/view';
+export EditReceivableBilling from './receivable/edit';
+export EditPayableBilling from './payable/edit';
