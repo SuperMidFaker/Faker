@@ -234,7 +234,8 @@ export default class PartnerSetupDialog extends React.Component {
           }
         </Form>
         <div className={`partner-modal-offline-body
-          ${stepView === 'invite-offline' ? '' : ' hide'}`}>
+          ${stepView === 'invite-offline' ? '' : ' hide'}`}
+        >
           <i className="anticon anticon-info-circle" />
           <span>
             {this.msg('invitationForOffline')}
@@ -246,7 +247,8 @@ export default class PartnerSetupDialog extends React.Component {
           </div>
         </div>
         <div className={`partner-modal-confirm-body
-          ${stepView === 'invite-sent' ? '' : ' hide'}`}>
+          ${stepView === 'invite-sent' ? '' : ' hide'}`}
+        >
           <i className="anticon anticon-info-circle" />
           <span className="partner-modal-title">{this.msg('invitationSent')}</span>
           <div className="partner-modal-content">

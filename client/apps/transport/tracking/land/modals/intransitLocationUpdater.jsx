@@ -77,7 +77,7 @@ export default class LocationUpdater extends React.Component {
     });
   }
   render() {
-    const { form: { getFieldProps }, intl, transit } = this.props;
+    const { form: { getFieldProps }, transit } = this.props;
     return (
       <Modal title={`${this.msg('reportTransitLoc')} ${transit.shipmt_no}`} onCancel={this.handleCancel}
         onOk={this.handleOk} visible={this.props.visible}
@@ -98,7 +98,7 @@ export default class LocationUpdater extends React.Component {
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportPosition')}
             wrapperCol={{ span: 18 }}
           >
-            <RegionCascade intl={intl} onChange={this.handleRegionChange} />
+            <RegionCascade onChange={this.handleRegionChange} />
           </FormItem>
           <InputItem colSpan={6} labelName={this.msg('reportLocAddr')}
             formhoc={this.props.form} field="address"

@@ -222,7 +222,8 @@ export default class AgreementForm extends React.Component {
                         ...getFieldProps('name', {
                           initialValue: formData.name,
                           rules: [{ required: true, message: '名称必填' }],
-                        })} />
+                        })}
+                    />
                   </FormItem>
                 </Col>
               </Row>
@@ -307,7 +308,8 @@ export default class AgreementForm extends React.Component {
                         ...getFieldProps('adjustCoefficient', {
                           rules: [{ required: false, type: 'number', transform: v => Number(v) }],
                           initialValue: formData.adjustCoefficient,
-                        })} />
+                        })}
+                    />
                   </FormItem>
                 </Col>
               </Row>
@@ -324,7 +326,8 @@ export default class AgreementForm extends React.Component {
                   <FormItem label="税率值" {...formItemLayout}>
                     <Input type="number" addonAfter="％" placeholder="请输入税率" {
                         ...getFieldProps('taxrate.value', { initialValue: formData.taxrate.value })
-                        } />
+                        }
+                    />
                   </FormItem>
                 </Col>
               </Row>

@@ -95,11 +95,6 @@ const initialState = {
   },
 };
 
-function transformJsonDate(val) {
-  // Date类型在JSON stringify/parse以后仍然是string类型,先转换
-  return typeof val === 'string' ? new Date(val) : val;
-}
-
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_FORMREQUIRE:
@@ -127,19 +122,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_FORM_SUCCEED: {
       const formData = action.result.data.formData;
-      return { ...state, formData: { ...state.formData, ...formData,
-        pickup_est_date: transformJsonDate(formData.pickup_est_date),
-        deliver_est_date: transformJsonDate(formData.deliver_est_date),
-      } };
+      return { ...state, formData: { ...state.formData, ...formData } };
     }
     case actionTypes.LOAD_DRAFTFORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_DRAFTFORM_SUCCEED:
       return { ...state, formData: {
-        ...state.formData, ...action.result.data.shipmt,
-        pickup_est_date: transformJsonDate(action.result.data.shipmt.pickup_est_date),
-        deliver_est_date: transformJsonDate(action.result.data.shipmt.deliver_est_date),
-        goodslist: action.result.data.goodslist,
+        ...state.formData, ...action.result.data.shipmt, goodslist: action.result.data.goodslist,
       } };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: {

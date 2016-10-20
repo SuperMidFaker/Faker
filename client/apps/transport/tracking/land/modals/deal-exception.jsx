@@ -91,7 +91,8 @@ export default class DealException extends React.Component {
           <strong style={{ lineHeight: 2.4, fontSize: 14 }}>解决方案:</strong>
           <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入解决方案" {...getFieldProps('solution', {
             initialValue: '',
-          })} />
+          })}
+          />
         </Form>
         {exception.resolved === 1 ? (<div style={{ marginTop: 15 }}>上次处理时间：<span>{moment(exception.solve_date).format('YYYY-MM-DD HH:mm')}</span> 处理人: <span>{exception.solver}</span></div>) : (<span />)}
       </Modal>

@@ -168,7 +168,8 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
                 }
-              )} />
+              )}
+              />
             </FormItem>
           </Col>
           <Col span={`${outerColSpan}`}>
@@ -183,7 +184,8 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: transit_time,
                 })
-              } />
+              }
+              />
             </FormItem>
           </Col>
           <Col span={`${outerColSpan}`}>
@@ -198,7 +200,8 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
                 }
-              )} />
+              )}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -216,7 +219,8 @@ export default class ModeInfo extends React.Component {
                   initialValue: modeId,
                   onChange: this.handleModeChange,
                 }
-              )}>
+              )}
+              >
                 {transitModes.map(
                 tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
               )}

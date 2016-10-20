@@ -126,7 +126,8 @@ export default class CorpInfo extends React.Component {
       >
         <Input type="text" placeholder={placeholder} {
           ...getFieldProps(field, { rules, ...fieldProps })
-        } />
+        }
+        />
       </FormItem>
     );
   }
@@ -159,9 +160,10 @@ export default class CorpInfo extends React.Component {
                 { initialValue: short_name }
               )}
               <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Region onChange={this.handleRegionChange} country={country} region={[
+                <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
                   province, city, district,
-                ]} />
+                ]}
+                />
               </FormItem>
               {
                 this.renderTextInput(
@@ -187,7 +189,8 @@ export default class CorpInfo extends React.Component {
               <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Input type="text" addonBefore="http://" {
                   ...getFieldProps('website', { initialValue: website })
-                } />
+                }
+                />
               </FormItem>
             </Col>
           </Row>

@@ -266,7 +266,7 @@ export default class RateEndTable extends React.Component {
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
           <Form horizontal>
             <FormItem label="目的地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-              <RegionCascader region={editRegion} onChange={this.handleRegionChange} />
+              <RegionCascader defaultRegion={editRegion} onChange={this.handleRegionChange} />
             </FormItem>
             <FormItem label="运输时间" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               <Input {...getFieldProps('time', {
@@ -274,7 +274,8 @@ export default class RateEndTable extends React.Component {
                 rules: [{ required: true, type: 'number',
                   message: '运输时间必填', transform: v => Number(v) }],
               })
-              } />
+              }
+              />
             </FormItem>
             {
               agreementRef.meter === 't*km' &&
@@ -284,7 +285,8 @@ export default class RateEndTable extends React.Component {
                   rules: [{ required: true, type: 'number',
                     message: '公里数必填', transform: v => Number(v) }],
                 })
-                } />
+                }
+                />
               </FormItem>
             }
             {
@@ -295,7 +297,8 @@ export default class RateEndTable extends React.Component {
                   rules: [{ required: true, type: 'number',
                     message: '起步价必填', transform: v => Number(v) }],
                 })
-                } />
+                }
+                />
               </FormItem>
             }
             {
@@ -306,7 +309,8 @@ export default class RateEndTable extends React.Component {
                     onChange: ev => this.handleGradientChange(idx, ev.target.value),
                     rules: [{ required: true, message: '梯度费率必填',
                     type: 'number', transform: v => Number(v) }],
-                  })} />
+                  })}
+                  />
                 </FormItem>
               ))
             }

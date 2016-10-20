@@ -178,14 +178,14 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade region={this.state.consignerRegion} onChange={this.handleConsignerRegionValue} />
+                <RegionCascade defaultRegion={this.state.consignerRegion} onChange={this.handleConsignerRegionValue} />
               </FormItem>
               <FormItem
                 label="到达地"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade region={this.state.consigneeRegion} onChange={this.handleConsigneeRegionValue} />
+                <RegionCascade defaultRegion={this.state.consigneeRegion} onChange={this.handleConsigneeRegionValue} />
               </FormItem>
             </Col>
             <Col sm={8}>
