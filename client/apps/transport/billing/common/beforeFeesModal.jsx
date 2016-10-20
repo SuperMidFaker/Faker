@@ -11,6 +11,7 @@ import TrimSpan from 'client/components/trimSpan';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
+import ActDate from '../../common/actDate';
 
 const formatMsg = format(messages);
 
@@ -157,14 +158,14 @@ export default class BeforeFeesModal extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render(o) {
-        return moment(o).format('YYYY.MM.DD');
+      render: (o, record) => {
+        return <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />;
       },
     }, {
       title: '实际交货时间',
       dataIndex: 'deliver_act_date',
-      render(o) {
-        return moment(o).format('YYYY.MM.DD');
+      render: (o, record) => {
+        return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
       },
     }, {
       title: '回单',

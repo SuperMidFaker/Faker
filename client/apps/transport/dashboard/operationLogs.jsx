@@ -15,6 +15,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import '../index.less';
 import PreviewPanel from '../shipment/modals/preview-panel';
+import ActDate from '../common/actDate';
 
 const formatMsg = format(messages);
 
@@ -52,27 +53,6 @@ export default class Dashboard extends React.Component {
   }
 
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  renderActDate(recordActDate, recordEstDate) {
-    if (recordActDate) {
-      const actDate = new Date(recordActDate);
-      actDate.setHours(0, 0, 0, 0);
-      const estDate = new Date(recordEstDate);
-      estDate.setHours(0, 0, 0, 0);
-      if (actDate.getTime() > estDate.getTime()) {
-        return (
-          <span className="mdc-text-red">
-            {moment(recordActDate).format('YYYY.MM.DD')}
-          </span>);
-      } else {
-        return (
-          <span className="mdc-text-green">
-            {moment(recordActDate).format('YYYY.MM.DD')}
-          </span>);
-      }
-    } else {
-      return <span />;
-    }
-  }
   render() {
     const { startDate, endDate, type } = this.props.location.query;
 
@@ -93,7 +73,7 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActPickupDate'),
       dataIndex: 'pickup_act_date',
       render: (o, record) => {
-        return this.renderActDate(record.pickup_act_date, record.pickup_est_date);
+        return <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />;
       },
     }, {
       title: this.msg('arrivalPlace'),
@@ -106,7 +86,7 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
       render: (o, record) => {
-        return this.renderActDate(record.deliver_act_date, record.deliver_est_date);
+        return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
       },
     }, {
       title: this.msg('shipmtStatus'),
