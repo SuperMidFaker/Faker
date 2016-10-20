@@ -13,6 +13,7 @@ import { loadBillings, updateBilling, sendBilling } from 'common/reducers/cmsBil
 import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
+import CancelChargeModal from '../modals/cancelChargeModal';
 
 const formatMsg = format(messages);
 
@@ -47,7 +48,7 @@ export default class BillingList extends React.Component {
   state = {
     billingFormVisible: false,
     cancelChargeModalVisible: false,
-    billingId: -1,
+    billingId: '',
     fromId: -1,
   }
   componentDidMount() {
@@ -82,6 +83,9 @@ export default class BillingList extends React.Component {
       pageSize,
       currentPage,
     });
+  }
+  toggleCancelChargeModal = () => {
+    this.setState({ cancelChargeModalVisible: !this.state.cancelChargeModalVisible });
   }
   handleShowCancelChargeModal = (billingId, fromId) => {
     this.setState({ billingId, fromId });
@@ -209,7 +213,7 @@ export default class BillingList extends React.Component {
         } else if (record.status === 5) {
           return (
             <div>
-              <a onClick={() => this.handleShowCancelChargeModal(record.id, record.from_id)}>核销</a>
+              <a onClick={() => this.handleShowCancelChargeModal(record._id, record.from_id)}>核销</a>
             </div>
           );
         } else if (record.status === 6) {
@@ -238,6 +242,9 @@ export default class BillingList extends React.Component {
               <Table dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
+            <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
+              billingId={this.state.billingId} fromId={this.state.fromId} handleOk={this.handleTableLoad}
+            />
           </div>
         </div>
       </div>

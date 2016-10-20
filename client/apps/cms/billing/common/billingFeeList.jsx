@@ -164,7 +164,7 @@ export default class BillingFeeList extends React.Component {
       fontSize: 12,
     };
     const dataSource = this.props.billingFees.data;
-    const columns = [ {
+    const columns = [{
       title: '委托编号',
       dataIndex: 'delg_no',
       width: 120,

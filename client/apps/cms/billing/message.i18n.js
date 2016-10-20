@@ -97,4 +97,16 @@ export default defineMessages({
     id: 'cms.billing.last.updateTime',
     defaultMessage: '更新时间',
   },
+  cancelCharge: {
+    id: 'cms.billing.cancelCharge',
+    defaultMessage: '核销金额',
+  },
+  cancelPlaceholder: {
+    id: 'cms.billing.cancel.placeholder',
+    defaultMessage: '请输入核销金额',
+  },
+  unit: {
+    id: 'cms.billing.unit',
+    defaultMessage: '元',
+  },
 });
