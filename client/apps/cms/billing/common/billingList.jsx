@@ -10,7 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
 import { loadBillings, updateBilling, sendBilling } from 'common/reducers/cmsBilling';
-import { SHIPMENT_BILLING_STATUS } from 'common/constants';
+import { CMS_BILLING_STATUS } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import CancelChargeModal from '../modals/cancelChargeModal';
@@ -178,7 +178,7 @@ export default class BillingList extends React.Component {
       title: '账单状态',
       dataIndex: 'status',
       render(o) {
-        return SHIPMENT_BILLING_STATUS[o];
+        return CMS_BILLING_STATUS[o];
       },
     }, {
       title: '操作',
