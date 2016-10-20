@@ -121,19 +121,19 @@ export default class BillingList extends React.Component {
     });
 
     const columns = [{
-      title: '账单名称',
+      title: this.msg('billingName'),
       dataIndex: 'name',
       render(o, record) {
         return <Link to={`/clearance/billing/${type}/view/${record.id}`}>{o}</Link>;
       },
     }, {
-      title: '开始日期',
+      title: this.msg('startDate'),
       dataIndex: 'begin_date',
       render(o) {
         return moment(o).format('YYYY.MM.DD');
       },
     }, {
-      title: '结束日期',
+      title: this.msg('endDate'),
       dataIndex: 'end_date',
       render(o) {
         return moment(o).format('YYYY.MM.DD');
@@ -145,57 +145,57 @@ export default class BillingList extends React.Component {
         return <TrimSpan text={o} maxLen={10} />;
       },
     }, {
-      title: '服务费用',
+      title: this.msg('servCharge'),
       dataIndex: 'serv_charge',
       render(o) {
         return (<span style={{ color: '#0000FF' }}>{o}</span>);
       },
     }, {
-      title: '代垫费用',
+      title: this.msg('advanceCharge'),
       dataIndex: 'advance_charge',
       render(o) {
         return (<span style={{ color: '#0000FF' }}>{o}</span>);
       },
     }, {
-      title: '调整费用',
+      title: this.msg('adjustCharge'),
       dataIndex: 'adjust_charge',
       render(o) {
         return (<span style={{ color: '#FF0000' }}>{o}</span>);
       },
     }, {
-      title: '账单总金额',
+      title: this.msg('totalCharge'),
       dataIndex: 'total_charge',
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
-      title: '核销金额',
+      title: this.msg('cancelCharge'),
       dataIndex: 'cancel_charge',
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
-      title: '账单状态',
+      title: this.msg('status'),
       dataIndex: 'status',
       render(o) {
         return CMS_BILLING_STATUS[o];
       },
     }, {
-      title: '操作',
+      title: this.msg('operation'),
       dataIndex: '_id',
       render: (o, record) => {
         if (record.status === 1) {
           return (
             <div>
-              <a onClick={() => this.handleSendBilling(record._id)}>发送</a>
+              <a onClick={() => this.handleSendBilling(record._id)}>{this.msg('send')}</a>
               <span className="ant-divider" />
-              <Link to={`/clearance/billing/${type}/edit/${o}`}>修改</Link>
+              <Link to={`/clearance/billing/${type}/edit/${o}`}>{this.msg('edit')}</Link>
             </div>
           );
         } else if (record.status === 2) {
           return (
             <div>
-              <Link to={`/clearance/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/clearance/billing/${type}/view/${o}`}>{this.msg('view')}</Link>
             </div>
           );
         } else if (record.status === 3) {
@@ -207,19 +207,19 @@ export default class BillingList extends React.Component {
         } else if (record.status === 4) {
           return (
             <div>
-              <Link to={`/clearance/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/clearance/billing/${type}/view/${o}`}>{this.msg('view')}</Link>
             </div>
           );
         } else if (record.status === 5) {
           return (
             <div>
-              <a onClick={() => this.handleShowCancelChargeModal(record._id, record.from_id)}>核销</a>
+              <a onClick={() => this.handleShowCancelChargeModal(record._id, record.from_id)}>{this.msg('chargeOff')}</a>
             </div>
           );
         } else if (record.status === 6) {
           return (
             <div>
-              <Link to={`/clearance/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/clearance/billing/${type}/view/${o}`}>{this.msg('view')}</Link>
             </div>
           );
         }

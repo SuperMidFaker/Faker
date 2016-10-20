@@ -13,8 +13,6 @@ const formatMsg = format(messages);
   (state) => {
     return {
       tenantId: state.account.tenantId,
-      loginId: state.account.loginId,
-      loginName: state.account.username,
     };
   },
   { changeCancelCharge }
@@ -23,8 +21,6 @@ export default class CancelChargeModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
     billingId: PropTypes.string.isRequired,
     fromId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -40,7 +36,7 @@ export default class CancelChargeModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    const { billingId, loginId, tenantId, loginName } = this.props;
+    const { billingId, tenantId } = this.props;
     this.props.changeCancelCharge({ tenantId, billingId, cancelCharge: this.state.cancelCharge }).then(() => {
       this.props.toggle();
       this.props.handleOk();

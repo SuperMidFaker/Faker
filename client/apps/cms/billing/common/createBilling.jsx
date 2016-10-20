@@ -132,43 +132,43 @@ export default class CreateBilling extends React.Component {
       partnerSourceType = 'send';
     }
     const columns = [{
-      title: '委托编号',
+      title: this.msg('delgNo'),
       dataIndex: 'delg_no',
       width: 120,
     }, {
-      title: '合作方',
+      title: this.msg('partner'),
       dataIndex: `${partnerSourceType}_name`,
       width: 160,
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
     }, {
-      title: '发票号',
+      title: this.msg('invoiceNo'),
       dataIndex: 'invoice_no',
       width: 120,
     }, {
-      title: '服务费用',
+      title: this.msg('servCharge'),
       dataIndex: 'serv_charge',
       width: 120,
       render(o) {
         return o ? o.toFixed(2) : '';
       },
     }, {
-      title: '代垫费用',
+      title: this.msg('advanceCharge'),
       dataIndex: 'advance_charge',
       width: 120,
       render(o) {
         return o ? o.toFixed(2) : '';
       },
     }, {
-      title: '调整金额',
+      title: this.msg('adjustCharge'),
       dataIndex: 'adjust_charge',
       width: 120,
       render: (o, record) => {
         return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id, value)} />);
       },
     }, {
-      title: '最终费用',
+      title: this.msg('finalCharge'),
       width: 120,
       render(o, record) {
         let total = 0;
@@ -184,7 +184,7 @@ export default class CreateBilling extends React.Component {
         return total.toFixed(2);
       },
     }, {
-      title: '是否入账',
+      title: this.msg('billingStatus'),
       dataIndex: 'billing_status',
       width: 120,
       render: (o, record) => {

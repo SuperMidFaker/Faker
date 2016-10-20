@@ -25,6 +25,46 @@ export default defineMessages({
     id: 'cms.billing.billingName',
     defaultMessage: '账单名称',
   },
+  startDate: {
+    id: 'cms.billing.startDate',
+    defaultMessage: '开始日期',
+  },
+  endDate: {
+    id: 'cms.billing.endDate',
+    defaultMessage: '结束日期',
+  },
+  servCharge: {
+    id: 'cms.billing.servCharge',
+    defaultMessage: '服务费用',
+  },
+  advanceCharge: {
+    id: 'cms.billing.advanceCharge',
+    defaultMessage: '代垫费用',
+  },
+  adjustCharge: {
+    id: 'cms.billing.adjustCharge',
+    defaultMessage: '调整费用',
+  },
+  finalCharge: {
+    id: 'cms.billing.finalCharge',
+    defaultMessage: '最终费用',
+  },
+  totalCharge: {
+    id: 'cms.billing.totalCharge',
+    defaultMessage: '账单总金额',
+  },
+  billingStatus: {
+    id: 'cms.billing.billingStatus',
+    defaultMessage: '是否入账',
+  },
+  delgNo: {
+    id: 'cms.billing.delgNo',
+    defaultMessage: '委托编号',
+  },
+  invoiceNo: {
+    id: 'cms.billing.invoiceNo',
+    defaultMessage: '发票号',
+  },
   save: {
     id: 'cms.billing.save',
     defaultMessage: '保存',
@@ -69,12 +109,28 @@ export default defineMessages({
     id: 'cms.billing.check',
     defaultMessage: '对账',
   },
-  editBilling: {
+  send: {
+    id: 'cms.billing.send',
+    defaultMessage: '发送',
+  },
+  edit: {
     id: 'cms.billing.edit',
+    defaultMessage: '修改',
+  },
+  view: {
+    id: 'cms.billin.view',
+    defaultMessage: '查看',
+  },
+  status: {
+    id: 'cms.billing.status',
+    defaultMessage: '账单状态',
+  },
+  editBilling: {
+    id: 'cms.billing.editbilling',
     defaultMessage: '修改账单',
   },
   viewBilling: {
-    id: 'cms.billin.view',
+    id: 'cms.billin.viewbilling',
     defaultMessage: '查看账单',
   },
   accept: {
@@ -97,6 +153,10 @@ export default defineMessages({
     id: 'cms.billing.last.updateTime',
     defaultMessage: '更新时间',
   },
+  chargeOff: {
+    id: 'cms.billing.chargeoff',
+    defaultMessage: '核销',
+  },
   cancelCharge: {
     id: 'cms.billing.cancelCharge',
     defaultMessage: '核销金额',
@@ -108,5 +168,9 @@ export default defineMessages({
   unit: {
     id: 'cms.billing.unit',
     defaultMessage: '元',
+  },
+  operation: {
+    id: 'cms.billing.operation',
+    defaultMessage: '操作',
   },
 });
