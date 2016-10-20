@@ -203,7 +203,7 @@ export default class GoodsInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const {
-      labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldProps },
+      labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
       packagings, containerPackagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
     } = this.props;
@@ -351,16 +351,16 @@ export default class GoodsInfo extends React.Component {
             <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
               wrapperCol={{ span: 24 - labelColSpan }} required
             >
-              <Select {...getFieldProps('goods_type', {
+              {getFieldDecorator('goods_type', {
                 rules: [{
                   required: true, type: 'number', message: this.msg('goodsTypeMust'),
                 }],
                 initialValue: goods_type,
-              })}>
+              })(<Select>
                 {goodsTypes.map(
                 gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
               )}
-              </Select>
+              </Select>)}
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
               field="total_count" colSpan={labelColSpan}
@@ -371,11 +371,11 @@ export default class GoodsInfo extends React.Component {
             <FormItem label={this.msg('goodsPackage')} labelCol={{ span: labelColSpan }}
               wrapperCol={{ span: 24 - labelColSpan }}
             >
-              <Select {...getFieldProps('package', { initialValue: packageform })}>
+              {getFieldDecorator('package', { initialValue: packageform })(<Select>
                 {apackagings.map(
                 pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
               )}
-              </Select>
+              </Select>)}
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
               field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}

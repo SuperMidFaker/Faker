@@ -186,7 +186,8 @@ export default class Manage extends Component {
               <PrivilegeCover module="clearance" feature="relation" action="create">
                 <Button type="primary" style={{ marginBottom: 8 }} onClick={
                   () => this.handleNavigationTo('/clearance/relation/create')
-                }>
+                }
+                >
                   {msg('new')}
                 </Button>
               </PrivilegeCover>

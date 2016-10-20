@@ -90,39 +90,34 @@ export default class SubForm extends Component {
               {getFieldDecorator(`decl_way_code_${k}`, {
                 rules: [{ required: true, message: '报关类型必选' }],
                 initialValue: bills[k].decl_way_code,
-              })(
-                <Select>
-                  {
-                  DECL_TYPE.map(dw =>
-                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                  )
-                }
-                </Select>
-              )}
+              })(<Select>
+                {
+                DECL_TYPE.map(dw =>
+                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                )
+              }
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={6}>
             <FormItem label={this.msg('manualNo')} {...formItemLayout}>
               {getFieldDecorator(`manual_no_${k}`, {
-                initialValue: bills[k].manual_no })(
-                <Input />
-              )}
+                initialValue: bills[k].manual_no })(<Input />)}
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               {getFieldDecorator(`pack_count_${k}`, {
-                initialValue: bills[k].pack_count })(
-                <InputNumber min={1} max={100000} style={{ width: '100%' }} />
+                initialValue: bills[k].pack_count || 1 })(
+                  <InputNumber min={1} max={100000} style={{ width: '100%' }} />
               )}
             </FormItem>
           </Col>
           <Col sm={5}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               {getFieldDecorator(`gross_wt_${k}`, {
-                initialValue: bills[k].gross_wt })(
-                <Input addonAfter="公斤" type="number" />
-              )}
+                initialValue: bills[k].gross_wt,
+              })(<Input addonAfter="公斤" type="number" />)}
             </FormItem>
           </Col>
           <Col span={1} offset={1}>

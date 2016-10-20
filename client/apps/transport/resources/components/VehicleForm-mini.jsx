@@ -69,7 +69,7 @@ class VehicleFormMini extends Component {
   }
   render() {
     const { form, vehicleValidate, vehicleParams } = this.props;
-    const getFieldProps = form.getFieldProps;
+    const getFieldDecorator = form.getFieldDecorator;
     return (
       <Modal visible={this.state.visible} title="新增车辆"
         onOk={this.handleCarSave} onCancel={this.handleCancel}
@@ -79,24 +79,24 @@ class VehicleFormMini extends Component {
             validateStatus={vehicleValidate ? '' : 'error'}
             help={vehicleValidate ? '' : '该车辆已存在'}
           >
-            <Input {...getFieldProps('plate_number')} required onBlur={this.handleVehicleNumberBlur} />
+            {getFieldDecorator('plate_number')(<Input required onBlur={this.handleVehicleNumberBlur} />)}
           </FormItem>
           <FormItem label="车型:" required {...formItemLayout}>
-            <Select {...getFieldProps('type')} required>
+            {getFieldDecorator('type')(<Select required>
               {
               vehicleParams.types.map(vt => <Option value={vt.value} key={vt.value}>{vt.text}</Option>)
             }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="车长:" required {...formItemLayout}>
-            <Select {...getFieldProps('length')} required>
+            {getFieldDecorator('length')(<Select required>
               {
               vehicleParams.lengths.map(vlt => <Option value={vlt.value} key={vlt.value}>{vlt.text}</Option>)
             }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="额定载重:" required {...formItemLayout}>
-            <Input type="number" {...getFieldProps('load_weight')} addonAfter="吨" required />
+            {getFieldDecorator('load_weight')(<Input type="number" addonAfter="吨" required />)}
           </FormItem>
         </Form>
       </Modal>

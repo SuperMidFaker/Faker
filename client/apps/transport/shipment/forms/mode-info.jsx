@@ -93,7 +93,7 @@ export default class ModeInfo extends React.Component {
   render() {
     const {
       transitModes, vehicleTypes, vehicleLengths,
-      formhoc: { getFieldProps },
+      formhoc: { getFieldDecorator },
       fieldDefaults: {
         pickup_est_date: pickupDt, transit_time,
         deliver_est_date: deliverDt, vehicle_type_id,
@@ -113,22 +113,22 @@ export default class ModeInfo extends React.Component {
           <FormItem label={this.msg('vehicleType')} labelCol={{ span: labelColSpan }}
             wrapperCol={{ span: 24 - labelColSpan }}
           >
-            <Select {...getFieldProps('vehicle_type_id', { initialValue: vehicle_type_id })}>
+            {getFieldDecorator('vehicle_type_id', { initialValue: vehicle_type_id })(<Select>
               {vehicleTypes.map(
               vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
             )}
-            </Select>
+            </Select>)}
           </FormItem>
         </Col>,
         <Col key="vehicle_length" span={`${outerColSpan}`}>
           <FormItem label={this.msg('vehicleLength')} labelCol={{ span: labelColSpan }}
             wrapperCol={{ span: 24 - labelColSpan }}
           >
-            <Select {...getFieldProps('vehicle_length_id', { initialValue: vehicle_length_id })}>
+            {getFieldDecorator('vehicle_length_id', { initialValue: vehicle_length_id })(<Select>
               {vehicleLengths.map(
               vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
             )}
-            </Select>
+            </Select>)}
           </FormItem>
         </Col>
       );
@@ -160,7 +160,7 @@ export default class ModeInfo extends React.Component {
             <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
               wrapperCol={{ span: 24 - labelColSpan }} required
             >
-              <DatePicker style={{ width: '100%' }} {...getFieldProps(
+              {getFieldDecorator(
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
                   rules: [{
@@ -168,29 +168,28 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
                 }
-              )} />
+              )(<DatePicker style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col span={`${outerColSpan}`}>
             <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
               wrapperCol={{ span: 24 - labelColSpan }} required
             >
-              <InputNumber style={{ width: '100%' }} min={0} {...getFieldProps(
+              {getFieldDecorator(
                 'transit_time', {
                   onChange: this.handleTransitChange,
                   rules: [{
                     required: true, message: this.msg('tranistTimeMust'), type: 'number',
                   }],
                   initialValue: transit_time,
-                })
-              } />
+                })(<InputNumber style={{ width: '100%' }} min={0} />)}
             </FormItem>
           </Col>
           <Col span={`${outerColSpan}`}>
             <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
               wrapperCol={{ span: 24 - labelColSpan }} required
             >
-              <DatePicker style={{ width: '100%' }} {...getFieldProps(
+              {getFieldDecorator(
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,
                   rules: [{
@@ -198,7 +197,7 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
                 }
-              )} />
+              )(<DatePicker style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
         </Row>
@@ -207,7 +206,7 @@ export default class ModeInfo extends React.Component {
             <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }} required
             >
-              <Select {...getFieldProps(
+              {getFieldDecorator(
                 'transport_mode_id', {
                   rules: [{
                     type: 'number',
@@ -216,11 +215,11 @@ export default class ModeInfo extends React.Component {
                   initialValue: modeId,
                   onChange: this.handleModeChange,
                 }
-              )}>
+              )(<Select>
                 {transitModes.map(
                 tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
               )}
-              </Select>
+              </Select>)}
             </FormItem>
           </Col>
         </Row>

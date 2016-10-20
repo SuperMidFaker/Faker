@@ -77,7 +77,7 @@ export default class LocationUpdater extends React.Component {
     });
   }
   render() {
-    const { form: { getFieldProps }, transit } = this.props;
+    const { form: { getFieldDecorator }, transit } = this.props;
     return (
       <Modal title={`${this.msg('reportTransitLoc')} ${transit.shipmt_no}`} onCancel={this.handleCancel}
         onOk={this.handleOk} visible={this.props.visible}
@@ -86,14 +86,12 @@ export default class LocationUpdater extends React.Component {
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportTime')}
             wrapperCol={{ span: 18 }} required
           >
-            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
-              {...getFieldProps('location_time', {
-                rules: [{
-                  type: 'object',
-                  required: true, message: this.msg('reportTimeMust'),
-                }],
-              })}
-            />
+            {getFieldDecorator('location_time', {
+              rules: [{
+                type: 'object',
+                required: true, message: this.msg('reportTimeMust'),
+              }],
+            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </FormItem>
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportPosition')}
             wrapperCol={{ span: 18 }}

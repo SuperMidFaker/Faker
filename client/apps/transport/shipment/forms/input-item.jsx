@@ -25,17 +25,20 @@ export default class InputItem extends React.Component {
     const {
       labelName, field, colSpan, placeholder, required, rules, fieldProps,
       addonBefore, addonAfter, disabled = false, hasFeedback = false,
-      type = 'text', formhoc: { getFieldProps }, readOnly, colon,
+      type = 'text', formhoc: { getFieldDecorator }, readOnly, colon,
     } = this.props;
-    const hocFieldProps = getFieldProps(field, { rules, ...fieldProps });
+    const fieldHOC = getFieldDecorator(field, { rules, ...fieldProps });
     return (
       <FormItem label={labelName} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }}
         hasFeedback={hasFeedback} required={required} colon={colon}
       >
-        <Input type={type} placeholder={placeholder} addonBefore={addonBefore}
-          disabled={disabled} addonAfter={addonAfter} readOnly={readOnly}
-          {...hocFieldProps}
-        />
+        {
+          fieldHOC(
+            <Input type={type} placeholder={placeholder} addonBefore={addonBefore}
+              disabled={disabled} addonAfter={addonAfter} readOnly={readOnly}
+            />
+          )
+        }
       </FormItem>
     );
   }

@@ -58,17 +58,17 @@ class CompRelationForm extends Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { form: { getFieldProps, getFieldError } } = this.props;
+    const { form: { getFieldDecorator, getFieldError } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
         help={rules && getFieldError(field)} hasFeedback required={required}
       >
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
+        {getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" placeholder={placeholder} />)}
       </FormItem>
     );
   }
   render() {
-    const { form: { getFieldProps }, formData, intl } = this.props;
+    const { form: { getFieldDecorator }, formData, intl } = this.props;
     return (
       <div className="main-content">
         <Form horizontal>
@@ -101,44 +101,48 @@ class CompRelationForm extends Component {
           <Row>
             <Col lg={12} >
               <FormItem label={this.msg('relation_type')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required="required">
-                <Select key="relation_type" placeholder={this.msg('relation_type_placeholder')} defaultValue={formData.relation_type}
-                  {...getFieldProps('relation_type', { initialValue: formData.relation_type,
-                rules: [{
-                  required: true,
-                  message: this.msg('relation_type_placeholder'),
-                  type: 'string',
-                  whitespace: true,
-                }],
-              })}
-                >
-                  {
+                {getFieldDecorator('relation_type', { initialValue: formData.relation_type,
+              rules: [{
+                required: true,
+                message: this.msg('relation_type_placeholder'),
+                type: 'string',
+                whitespace: true,
+              }],
+            })(<Select
+              key="relation_type"
+              placeholder={this.msg('relation_type_placeholder')}
+              defaultValue={formData.relation_type}
+            >
+              {
                   RELATION_TYPES.map((item) => {
                     return (<Option value={item.key}>{item.value}</Option>);
                   })
                 }
-                </Select>
+            </Select>)}
               </FormItem>
             </Col>
           </Row>
           <Row>
             <Col lg={12} >
               <FormItem label={this.msg('i_e_type')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required="required">
-                <Select key="i_e_type" placeholder={this.msg('i_e_type_placeholder')} defaultValue={formData.i_e_type}
-                  {...getFieldProps('i_e_type', { initialValue: formData.i_e_type,
-                rules: [{
-                  required: true,
-                  message: this.msg('i_e_type_placeholder'),
-                  type: 'string',
-                  whitespace: true,
-                }],
-              })}
-                >
-                  {
+                {getFieldDecorator('i_e_type', { initialValue: formData.i_e_type,
+              rules: [{
+                required: true,
+                message: this.msg('i_e_type_placeholder'),
+                type: 'string',
+                whitespace: true,
+              }],
+            })(<Select
+              key="i_e_type"
+              placeholder={this.msg('i_e_type_placeholder')}
+              defaultValue={formData.i_e_type}
+            >
+              {
                   I_E_TYPES.map((item) => {
                     return (<Option value={item.key}>{item.value}</Option>);
                   })
                 }
-                </Select>
+            </Select>)}
               </FormItem>
             </Col>
           </Row>

@@ -215,7 +215,7 @@ export default class RateEndTable extends React.Component {
     });
   }
   render() {
-    const { ratesEndList, loading, visibleModal, form: { getFieldProps },
+    const { ratesEndList, loading, visibleModal, form: { getFieldDecorator },
       agreementRef, transModes, vehicleTypeParams, vehicleLengthParams } = this.props;
     const { editEnd, editRegion } = this.state;
     this.dataSource.remotes = ratesEndList;
@@ -269,44 +269,41 @@ export default class RateEndTable extends React.Component {
               <RegionCascader defaultRegion={editRegion} onChange={this.handleRegionChange} />
             </FormItem>
             <FormItem label="运输时间" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-              <Input {...getFieldProps('time', {
+              {getFieldDecorator('time', {
                 initialValue: editEnd.time,
                 rules: [{ required: true, type: 'number',
                   message: '运输时间必填', transform: v => Number(v) }],
-              })
-              } />
+              })(<Input />)}
             </FormItem>
             {
               agreementRef.meter === 't*km' &&
               <FormItem label="公里数" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-                <Input {...getFieldProps('km', {
+                {getFieldDecorator('km', {
                   initialValue: editEnd.km,
                   rules: [{ required: true, type: 'number',
                     message: '公里数必填', transform: v => Number(v) }],
-                })
-                } />
+                })(<Input />)}
               </FormItem>
             }
             {
               agreementRef.meter &&
               <FormItem label="起步价" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-                <Input {...getFieldProps('flare', {
+                {getFieldDecorator('flare', {
                   initialValue: editEnd.flare,
                   rules: [{ required: true, type: 'number',
                     message: '起步价必填', transform: v => Number(v) }],
-                })
-                } />
+                })(<Input />)}
               </FormItem>
             }
             {
               varColumns.map((vc, idx) => (
                 <FormItem key={vc.title} label={vc.title} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-                  <Input {...getFieldProps(`gradient${idx}`, {
+                  {getFieldDecorator(`gradient${idx}`, {
                     initialValue: editEnd.gradients[vc.index] || '',
                     onChange: ev => this.handleGradientChange(idx, ev.target.value),
                     rules: [{ required: true, message: '梯度费率必填',
                     type: 'number', transform: v => Number(v) }],
-                  })} />
+                  })(<Input />)}
                 </FormItem>
               ))
             }

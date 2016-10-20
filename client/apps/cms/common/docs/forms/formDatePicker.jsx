@@ -14,14 +14,14 @@ export default class FormDatePicker extends React.Component {
     required: PropTypes.bool,
     rules: PropTypes.array,
     fieldProps: PropTypes.object,
-    getFieldProps: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired,
     formData: PropTypes.object,
   }
 
   render() {
     const {
       outercol, label, col, field, required, disabled,
-      getFieldProps, rules, fieldProps, formData,
+      getFieldDecorator, rules, fieldProps, formData,
     } = this.props;
     let initialValue;
     if (formData && formData[field]) {
@@ -32,9 +32,7 @@ export default class FormDatePicker extends React.Component {
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           required={required}
         >
-          <DatePicker disabled={disabled} style={{ width: '100%' }}
-            {...getFieldProps(field, { rules, initialValue, ...fieldProps })}
-          />
+          {getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<DatePicker disabled={disabled} style={{ width: '100%' }} />)}
         </FormItem>
       </Col>
     );

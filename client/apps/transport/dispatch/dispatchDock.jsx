@@ -111,13 +111,15 @@ export default class DispatchDock extends Component {
           if (o.manual) {
             return (
               <InputNumber min={1} onChange={value =>
-                this.handleChargeChange({ ...o, total_charge: value }, index)} />
+                this.handleChargeChange({ ...o, total_charge: value }, index)}
+              />
             );
           } else {
             return (
               <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
                 <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
-              }>
+              }
+              >
                 <span>{o.total_charge}</span>
               </Popover>
             );

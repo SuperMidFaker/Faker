@@ -119,14 +119,12 @@ export default class CorpInfo extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
         hasFeedback required={required}
       >
-        <Input type="text" placeholder={placeholder} {
-          ...getFieldProps(field, { rules, ...fieldProps })
-        } />
+        {getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" placeholder={placeholder} />)}
       </FormItem>
     );
   }
@@ -136,7 +134,7 @@ export default class CorpInfo extends React.Component {
         name, short_name, address,
         code, type, remark, website, contact, phone, email,
       },
-      form: { getFieldProps }, intl,
+      form: { getFieldDecorator }, intl,
     } = this.props;
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
@@ -161,7 +159,8 @@ export default class CorpInfo extends React.Component {
               <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
                 <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
                   province, city, district,
-                ]} />
+                ]}
+                />
               </FormItem>
               {
                 this.renderTextInput(
@@ -172,22 +171,18 @@ export default class CorpInfo extends React.Component {
             </Col>
             <Col span="12">
               <FormItem label={msg('enterpriseCode')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Input type="text" disabled {...getFieldProps('code', { initialValue: code })} />
+                {getFieldDecorator('code', { initialValue: code })(<Input type="text" disabled />)}
               </FormItem>
               <FormItem label={msg('tradeCategory')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Select defaultValue="lucy" style={{ width: '100%' }}
-                  {...getFieldProps('type', { initialValue: type })}
-                >
+                {getFieldDecorator('type', { initialValue: type })(<Select defaultValue="lucy" style={{ width: '100%' }}>
                   <Option value="freight">货代</Option>
-                </Select>
+                </Select>)}
               </FormItem>
               <FormItem label={msg('companyAbout')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Input type="textarea" rows="3" {...getFieldProps('remark', { initialValue: remark })} />
+                {getFieldDecorator('remark', { initialValue: remark })(<Input type="textarea" rows="3" />)}
               </FormItem>
               <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Input type="text" addonBefore="http://" {
-                  ...getFieldProps('website', { initialValue: website })
-                } />
+                {getFieldDecorator('website', { initialValue: website })(<Input type="text" addonBefore="http://" />)}
               </FormItem>
             </Col>
           </Row>
@@ -213,7 +208,7 @@ export default class CorpInfo extends React.Component {
             </Col>
             <Col span="12">
               <FormItem label={msg('position')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Input type="text" {...getFieldProps('position')} />
+                {getFieldDecorator('position')(<Input type="text" />)}
               </FormItem>
               {this.renderTextInput(
                 'Email', '', 'email', false,

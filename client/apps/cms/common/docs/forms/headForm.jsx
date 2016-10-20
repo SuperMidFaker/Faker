@@ -62,7 +62,7 @@ export default class HeadForm extends React.Component {
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
     const formProps = {
-      getFieldProps: form.getFieldProps,
+      getFieldDecorator: form.getFieldDecorator,
       disabled: readonly,
       formData,
     };

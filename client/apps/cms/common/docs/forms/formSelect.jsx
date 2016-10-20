@@ -14,7 +14,7 @@ export class FormLocalSearchSelect extends React.Component {
     required: PropTypes.bool,
     rules: PropTypes.array,
     fieldProps: PropTypes.object,
-    getFieldProps: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired,
     formData: PropTypes.object,
     options: PropTypes.array,
     searchKeyFn: PropTypes.func,
@@ -23,7 +23,7 @@ export class FormLocalSearchSelect extends React.Component {
   render() {
     const {
       outercol, label, col, field, required, disabled,
-      getFieldProps, rules, fieldProps, formData, options = [],
+      getFieldDecorator, rules, fieldProps, formData, options = [],
       searchKeyFn,
     } = this.props;
     return (
@@ -31,9 +31,12 @@ export class FormLocalSearchSelect extends React.Component {
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           required={required}
         >
-          <Select disabled={disabled} showSearch={!!searchKeyFn} showArrow
-            {...getFieldProps(field, { rules, initialValue: formData && formData[field],
-            ...fieldProps })} optionFilterProp={searchKeyFn ? 'search' : undefined}
+          {getFieldDecorator(field, { rules, initialValue: formData && formData[field],
+          ...fieldProps })(<Select
+            disabled={disabled}
+            showSearch={!!searchKeyFn}
+            showArrow
+            optionFilterProp={searchKeyFn ? 'search' : undefined}
           >
             {
               options.map(opt => (
@@ -41,7 +44,7 @@ export class FormLocalSearchSelect extends React.Component {
                   {opt.text}
                 </Option>))
             }
-          </Select>
+          </Select>)}
         </FormItem>
       </Col>
     );
@@ -58,7 +61,7 @@ export class FormRemoteSearchSelect extends React.Component {
     required: PropTypes.bool,
     rules: PropTypes.array,
     fieldProps: PropTypes.object,
-    getFieldProps: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired,
     formData: PropTypes.object,
     options: PropTypes.array,
     onSearch: PropTypes.func,
@@ -73,21 +76,19 @@ export class FormRemoteSearchSelect extends React.Component {
   render() {
     const {
       outercol, label, col, field, required, disabled,
-      getFieldProps, rules, fieldProps, formData, options = [],
+      getFieldDecorator, rules, fieldProps, formData, options = [],
     } = this.props;
     return (
       <Col span={outercol}>
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           required={required}
         >
-          <Select disabled={disabled} showSearch onSearch={this.handleSearch}
-            {...getFieldProps(field, { rules, initialValue: formData && formData[field],
-            ...fieldProps })}
-          >
+          {getFieldDecorator(field, { rules, initialValue: formData && formData[field],
+          ...fieldProps })(<Select disabled={disabled} showSearch onSearch={this.handleSearch}>
             {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }
-          </Select>
+          </Select>)}
         </FormItem>
       </Col>
     );

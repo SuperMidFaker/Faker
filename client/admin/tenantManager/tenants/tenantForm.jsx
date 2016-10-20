@@ -72,17 +72,17 @@ class TenantForm extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { form: { getFieldProps, getFieldError } } = this.props;
+    const { form: { getFieldDecorator, getFieldError } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
         help={rules && getFieldError(field)} hasFeedback required={required}
       >
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
+        {getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" placeholder={placeholder} />)}
       </FormItem>
     );
   }
   render() {
-    const { formData: { logo: logoPng }, formData, form: { getFieldProps, getFieldError } }
+    const { formData: { logo: logoPng }, formData, form: { getFieldDecorator, getFieldError } }
       = this.props;
     const tenantAppValueList = this.props.formData.tenantAppValueList || [];
     return (
@@ -102,9 +102,8 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="企业代码" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
-                    <Input type="text" {...getFieldProps('code', { transform: value => (value.trim()), initialValue: formData.code })}
-                      placeholder="请填写企业代码"
-                    />
+                    {getFieldDecorator('code', { transform: value => (value.trim()), initialValue: formData.code })(
+                      <Input type="text" placeholder="请填写企业代码" />)}
                   </FormItem>
                 </Col>
               </Row>
@@ -161,22 +160,22 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="租户应用列表" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
-                    <CheckboxGroup options={Object.keys(DEFAULT_MODULES).map(mod => ({
-                      value: DEFAULT_MODULES[mod].id,
-                      label: DEFAULT_MODULES[mod].defaultText,
-                    }))}
-                      {...getFieldProps('tenantAppList', { initialValue: tenantAppValueList.map((item) => { return item.id; }) })}
-                    />
+                    {getFieldDecorator('tenantAppList', { initialValue: tenantAppValueList.map((item) => { return item.id; }) })(<CheckboxGroup
+                      options={Object.keys(DEFAULT_MODULES).map(mod => ({
+                        value: DEFAULT_MODULES[mod].id,
+                        label: DEFAULT_MODULES[mod].defaultText,
+                      }))}
+                    />)}
                   </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
                   <FormItem label="租户视角" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
-                    <RadioGroup {...getFieldProps('aspect', { initialValue: formData.aspect })} >
+                    {getFieldDecorator('aspect', { initialValue: formData.aspect })(<RadioGroup>
                       <RadioButton value={0}>进出口企业</RadioButton>
                       <RadioButton value={1}>物流服务商</RadioButton>
-                    </RadioGroup>
+                    </RadioGroup>)}
                   </FormItem>
                 </Col>
               </Row>
@@ -185,8 +184,10 @@ class TenantForm extends React.Component {
                   <FormItem label="登录入口域" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
                     help={getFieldError('subdomain')}
                   >
-                    <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain',
-                      { transform: value => (value.trim()), initialValue: formData.subdomain })} />
+                    {getFieldDecorator('subdomain',
+                      { transform: value => (value.trim()), initialValue: formData.subdomain })(
+                        <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" />
+                      )}
                   </FormItem>
                 </Col>
               </Row>

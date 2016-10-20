@@ -69,7 +69,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     this.setState({ visible: true });
   }
   render() {
-    const { shipmtNo, form: { getFieldProps } } = this.props;
+    const { shipmtNo, form: { getFieldDecorator } } = this.props;
     const colSpan = 8;
     let title;
     let ruleMsg;
@@ -86,13 +86,11 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     const content = (
       <Form className="row" style={{ width: '300px' }}>
         <FormItem label={label} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
-            {...getFieldProps('actDate', {
-              rules: [{
-                type: 'object', required: true, message: ruleMsg,
-              }],
-            })}
-          />
+          {getFieldDecorator('actDate', {
+            rules: [{
+              type: 'object', required: true, message: ruleMsg,
+            }],
+          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
         </FormItem>
         <FormItem wrapperCol={{ span: 16, offset: 8 }}>
           <Button type="primary" htmlType="submit" onClick={this.handleOk}>确定</Button>
@@ -111,7 +109,8 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
           ev.preventDefault();
           ev.stopPropagation();
           this.handleShowPopover();
-        }}>{this.props.children}</a>
+        }}
+        >{this.props.children}</a>
       </Popover>
     );
   }

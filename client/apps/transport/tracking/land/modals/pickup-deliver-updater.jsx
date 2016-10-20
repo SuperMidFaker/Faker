@@ -57,7 +57,7 @@ export default class PickupDeliverUpdater extends React.Component {
     this.props.form.resetFields();
   }
   render() {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
     const colSpan = 6;
     let title;
     let ruleMsg;
@@ -77,13 +77,11 @@ export default class PickupDeliverUpdater extends React.Component {
           <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }} required
           >
-            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
-              {...getFieldProps('actDate', {
-                rules: [{
-                  type: 'object', required: true, message: ruleMsg,
-                }],
-              })}
-            />
+            {getFieldDecorator('actDate', {
+              rules: [{
+                type: 'object', required: true, message: ruleMsg,
+              }],
+            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </FormItem>
         </Form>
       </Modal>

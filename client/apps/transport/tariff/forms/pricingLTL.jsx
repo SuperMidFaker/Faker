@@ -132,23 +132,22 @@ export default class PricingLTL extends React.Component {
     this.props.onChange(state.intervals.slice(1));
   }
   render() {
-    const { meter, readonly, formItemLayout, form: { getFieldProps } } = this.props;
+    const { meter, readonly, formItemLayout, form: { getFieldDecorator } } = this.props;
     const { unit, intervals } = this.state;
     return (
       <div>
         <Row>
           <Col sm={12}>
             <FormItem label="计价方式" {...formItemLayout}>
-              <Select onSelect={this.handleMeterSelect} {...getFieldProps('meter', {
+              {getFieldDecorator('meter', {
                 initialValue: meter || 'kg',
-              })} disabled={readonly}
-              >
+              })(<Select onSelect={this.handleMeterSelect} disabled={readonly}>
                 {
                 TARIFF_METER_METHODS.map(tmm =>
                   <Option value={tmm.value} key={tmm.value}>{tmm.text}</Option>
                 )
               }
-              </Select>
+              </Select>)}
             </FormItem>
           </Col>
         </Row>

@@ -95,7 +95,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     this.setState({ photoList: fileList });
   }
   render() {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
     const { photoList } = this.state;
     const colSpan = 6;
 
@@ -105,17 +105,16 @@ export default class ShipmentAdvanceModal extends React.Component {
       >
         <Form className="row" style={{ width: '400px' }}>
           <FormItem label="垫付类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Select placeholder="请选择垫付类型" {...getFieldProps('type', {
-            })}>
+            {getFieldDecorator('type')(<Select placeholder="请选择垫付类型">
               {
               this.props.quotes.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
             }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="费用金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Input type="number" placeholder="请输入金额" addonAfter="元" {...getFieldProps('amount', {
+            {getFieldDecorator('amount', {
               initialValue: '',
-            })} />
+            })(<Input type="number" placeholder="请输入金额" addonAfter="元" />)}
           </FormItem>
           <FormItem label="垫付照片" labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
@@ -128,9 +127,11 @@ export default class ShipmentAdvanceModal extends React.Component {
             </Upload>
           </FormItem>
           <FormItem label="垫付备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('remark', {
+            {getFieldDecorator('remark', {
               initialValue: '',
-            })} />
+            })(
+              <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" />
+            )}
           </FormItem>
         </Form>
       </Modal>

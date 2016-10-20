@@ -104,18 +104,16 @@ export default class SendModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, brokers, transps, form: { getFieldProps } } = this.props;
+    const { visible, brokers, transps, form: { getFieldDecorator } } = this.props;
     return (
       <Modal title={this.msg('sendShipment')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form horizontal>
           <FormItem label={this.msg('broker')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            <Select showSearch optionFilterProp="searched"
-              {...getFieldProps('brkPartnerId', {
-                rules: [{ required: true, message: 'broker must be select', type: 'number' }],
-              })} allowClear
-            >
+            {getFieldDecorator('brkPartnerId', {
+              rules: [{ required: true, message: 'broker must be select', type: 'number' }],
+            })(<Select showSearch optionFilterProp="searched" allowClear>
               {
                 brokers.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
@@ -125,14 +123,12 @@ export default class SendModal extends React.Component {
                   </Option>
                 ))
               }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label={this.msg('sendTrucking')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            <Select showSearch optionFilterProp="searched"
-              {...getFieldProps('trsPartnerId', {
-                rules: [{ required: true, message: 'Trucking provider must be selected', type: 'number' }],
-              })} allowClear
-            >
+            {getFieldDecorator('trsPartnerId', {
+              rules: [{ required: true, message: 'Trucking provider must be selected', type: 'number' }],
+            })(<Select showSearch optionFilterProp="searched" allowClear>
               {
                 transps.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
@@ -142,7 +138,7 @@ export default class SendModal extends React.Component {
                   </Option>
                 ))
               }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label={this.msg('transportDest')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             <RegionCascade onChange={this.handleDestRegionChange} />

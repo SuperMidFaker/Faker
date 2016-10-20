@@ -91,12 +91,12 @@ export default class ChangePassword extends React.Component {
     this.context.router.goBack();
   }
   renderTextInput(labelName, field, rules) {
-    const { form: { getFieldProps, getFieldError } } = this.props;
+    const { form: { getFieldDecorator, getFieldError } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         help={rules && getFieldError(field)} hasFeedback required
       >
-        <Input type="password" {...getFieldProps(field, rules)} />
+        {getFieldDecorator(field, rules)(<Input type="password" />)}
       </FormItem>
     );
   }

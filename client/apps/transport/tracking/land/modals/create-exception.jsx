@@ -74,7 +74,7 @@ export default class CreateException extends React.Component {
     this.props.toggle();
   }
   render() {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
 
     const options = [];
     for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
@@ -120,13 +120,15 @@ export default class CreateException extends React.Component {
       >
         <Form className="row" style={{ width: '400px' }}>
           <FormItem label="异常类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Cascader options={options} placeholder="请选择异常类型" {...getFieldProps('type', {
-            })} />
+            {getFieldDecorator('type', {
+            })(<Cascader options={options} placeholder="请选择异常类型" />)}
           </FormItem>
           <FormItem label="异常描述" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" {...getFieldProps('excp_event', {
+            {getFieldDecorator('excp_event', {
               initialValue: '',
-            })} />
+            })(
+              <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" />
+            )}
           </FormItem>
         </Form>
       </Modal>

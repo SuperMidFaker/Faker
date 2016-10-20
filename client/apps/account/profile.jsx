@@ -20,14 +20,14 @@ const FormItem = Form.Item;
 function FormInput(props) {
   const {
     label, hasFeedback, required, placeholder,
-    addonAfter, getFieldProps, field, rules, fieldProps,
+    addonAfter, getFieldDecorator, field, rules, fieldProps,
   } = props;
   return (
     <FormItem label={label} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
       hasFeedback={hasFeedback} required={required}
     >
       {
-        getFieldProps(field, { rules, ...fieldProps })(
+        getFieldDecorator(field, { rules, ...fieldProps })(
           <Input type="text" addonAfter={addonAfter} placeholder={placeholder} />
         )
       }
@@ -43,7 +43,7 @@ FormInput.propTypes = {
   addonAfter: PropTypes.string,
   field: PropTypes.string,
   rules: PropTypes.array,
-  getFieldProps: PropTypes.func.isRequired,
+  getFieldDecorator: PropTypes.func.isRequired,
   fieldProps: PropTypes.object,
 };
 
@@ -159,7 +159,7 @@ export default class MyProfile extends React.Component {
             <FormInput label={cmsg('fullName')} field="name" required rules={
               [{ required: true, min: 2, message: cmsg('fullNameMessage') }]
             } fieldProps={{ initialValue: profile.name }} hasFeedback
-              getFieldProps={getFieldDecorator}
+              getFieldDecorator={getFieldDecorator}
             />
             <FormInput label={cmsg('username')} required field="username"
               addonAfter={`@${code}`} rules={[{
@@ -170,7 +170,7 @@ export default class MyProfile extends React.Component {
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               ),
               }]} fieldProps={{ initialValue: profile.username }}
-              getFieldProps={getFieldDecorator}
+              getFieldDecorator={getFieldDecorator}
             />
             <FormInput label={cmsg('phone')} field="phone" required hasFeedback
               rules={[{
@@ -179,9 +179,9 @@ export default class MyProfile extends React.Component {
                 (msgs, descriptor) => format(msgs)(intl, descriptor)
               ) }]}
               fieldProps={{ initialValue: profile.phone }}
-              getFieldProps={getFieldDecorator}
+              getFieldDecorator={getFieldDecorator}
             />
-            <FormInput label="Email" field="email" getFieldProps={getFieldDecorator}
+            <FormInput label="Email" field="email" getFieldDecorator={getFieldDecorator}
               rules={[{ type: 'email', message: cmsg('emailError') }]}
               fieldProps={{ initialValue: profile.email }}
             />

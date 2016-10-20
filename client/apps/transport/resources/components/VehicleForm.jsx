@@ -36,7 +36,7 @@ export default class VehicleForm extends Component {
   render() {
     const { mode, form, drivers, vehicleParams, vehicleValidate,
       onSubmitBtnClicked, onVehicleNumberBlur } = this.props;
-    const getFieldProps = form.getFieldProps;
+    const getFieldDecorator = form.getFieldDecorator;
     const driversOptions = drivers ? drivers.map(driver =>
       <Option value={driver.driver_id} key={driver.driver_id}>{driver.name}</Option>
     ) : '';
@@ -50,44 +50,46 @@ export default class VehicleForm extends Component {
             help={numberValidate ? '' : '该车辆已存在'}
             {...formItemLayout}
           >
-            <Input {...getFieldProps('plate_number')} required disabled={mode === 'edit'} onBlur={e => onVehicleNumberBlur(e)} />
+            {getFieldDecorator('plate_number')(
+              <Input required disabled={mode === 'edit'} onBlur={e => onVehicleNumberBlur(e)} />
+            )}
           </FormItem>
           <FormItem label="挂车牌号" {...formItemLayout}>
-            <Input {...getFieldProps('trailer_number')} />
+            {getFieldDecorator('trailer_number')(<Input />)}
           </FormItem>
           <FormItem label="车型" required {...formItemLayout}>
-            <Select {...getFieldProps('type')} required>
+            {getFieldDecorator('type')(<Select required>
               {
               vehicleParams.types.map(vt => <Option value={vt.value} key={vt.value}>{vt.text}</Option>)
             }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="车长" required {...formItemLayout}>
-            <Select {...getFieldProps('length')} required>
+            {getFieldDecorator('length')(<Select required>
               {
               vehicleParams.lengths.map(vlt => <Option value={vlt.value} key={vlt.value}>{vlt.text}</Option>)
             }
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="额定载重" required {...formItemLayout}>
-            <Input type="number" {...getFieldProps('load_weight')} addonAfter="吨" required />
+            {getFieldDecorator('load_weight')(<Input type="number" addonAfter="吨" required />)}
           </FormItem>
           <FormItem label="额定体积" {...formItemLayout}>
-            <Input type="number" {...getFieldProps('load_volume')} addonAfter="立方米" />
+            {getFieldDecorator('load_volume')(<Input type="number" addonAfter="立方米" />)}
           </FormItem>
           <FormItem label="车辆所有权" {...formItemLayout} required>
-            <Select {...getFieldProps('vproperty')} required>
+            {getFieldDecorator('vproperty')(<Select required>
               <Option value={0}>社会协作车辆</Option>
               <Option value={1}>公司自有车辆</Option>
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="指派司机" {...formItemLayout}>
-            <Select {...getFieldProps('driver_id')}>
+            {getFieldDecorator('driver_id')(<Select>
               {drivers && driversOptions}
-            </Select>
+            </Select>)}
           </FormItem>
           <FormItem label="备注" {...formItemLayout}>
-            <Input type="textarea" {...getFieldProps('remark')} />
+            {getFieldDecorator('remark')(<Input type="textarea" />)}
           </FormItem>
           <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
             <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>

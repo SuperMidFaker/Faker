@@ -26,33 +26,33 @@ export default class CarForm extends Component {
   }
   render() {
     const { mode, form, onSubmitBtnClick, onRegionChange, region } = this.props;
-    const getFieldProps = form.getFieldProps;
+    const getFieldDecorator = form.getFieldDecorator;
     const regionValues = region || [];
     return (
       <Form horizontal onSubmit={onSubmitBtnClick} className="form-edit-content offset-right-col" style={this.props.style}>
         <FormItem label="名称:" required {...formItemLayout}>
-          <Input {...getFieldProps('name')} required />
+          {getFieldDecorator('name')(<Input required />)}
         </FormItem>
         <FormItem label="外部代码:" {...formItemLayout}>
-          <Input {...getFieldProps('node_code')} />
+          {getFieldDecorator('node_code')(<Input />)}
         </FormItem>
         <FormItem label="区域" {...formItemLayout}>
           <Cascader defaultRegion={regionValues} onChange={onRegionChange} />
         </FormItem>
         <FormItem label="具体地址:" required {...formItemLayout}>
-          <Input {...getFieldProps('addr')} required />
+          {getFieldDecorator('addr')(<Input required />)}
         </FormItem>
         <FormItem label="联系人:" {...formItemLayout} required>
-          <Input {...getFieldProps('contact')} />
+          {getFieldDecorator('contact')(<Input />)}
         </FormItem>
         <FormItem label="手机号:" {...formItemLayout} required>
-          <Input {...getFieldProps('mobile')} required />
+          {getFieldDecorator('mobile')(<Input required />)}
         </FormItem>
         <FormItem label="邮箱:" {...formItemLayout}>
-          <Input {...getFieldProps('email')} />
+          {getFieldDecorator('email')(<Input />)}
         </FormItem>
         <FormItem label="备注:" {...formItemLayout}>
-          <Input type="textarea" {...getFieldProps('remark')} />
+          {getFieldDecorator('remark')(<Input type="textarea" />)}
         </FormItem>
         <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
           <Button type="primary" htmlType="submit">{mode === 'add' ? '创建' : '修改'}</Button>

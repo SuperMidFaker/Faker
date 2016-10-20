@@ -17,25 +17,23 @@ export default class FormInput extends React.Component {
     addonBefore: PropTypes.string,
     addonAfter: PropTypes.string,
     fieldProps: PropTypes.object,
-    getFieldProps: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired,
     formData: PropTypes.object,
   }
 
   render() {
     const {
       outercol, label, col, field, required, hasFeedback, type = 'text', disabled,
-      placeholder, getFieldProps, rules, fieldProps, formData = {},
+      placeholder, getFieldDecorator, rules, fieldProps, formData = {},
     } = this.props;
     return (
       <Col span={outercol}>
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           hasFeedback={hasFeedback} required={required}
         >
-          <Input type={type} disabled={disabled} placeholder={placeholder}
-            {...getFieldProps(field, { rules, initialValue:
-                formData && formData[field] && String(formData[field]),
-              ...fieldProps })}
-          />
+          {getFieldDecorator(field, { rules, initialValue:
+              formData && formData[field] && String(formData[field]),
+            ...fieldProps })(<Input type={type} disabled={disabled} placeholder={placeholder} />)}
         </FormItem>
       </Col>
     );

@@ -130,19 +130,19 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         hasFeedback required={required}
       >
-        <Input type={type} placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
+        {getFieldDecorator(field, { rules, ...fieldProps })(<Input type={type} placeholder={placeholder} />)}
       </FormItem>
     );
   }
   render() {
     const {
       formData: { name, loginName, password, phone, email, position },
-      submitting, intl, form: { getFieldProps }, code, roles,
+      submitting, intl, form: { getFieldDecorator }, code, roles,
     } = this.props;
     const isCreating = this.props.formData.key === null;
     const disableSubmit = this.props.tenant.id === -1;
@@ -161,7 +161,7 @@ export default class CorpEdit extends React.Component {
             <FormItem label={msg('username')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
               required
             >
-              <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
+              {getFieldDecorator('loginName', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(
                     value, code, this.props.formData.loginId,
@@ -169,7 +169,7 @@ export default class CorpEdit extends React.Component {
                     (msgs, descriptor) => format(msgs)(intl, descriptor)),
                 }],
                 initialValue: loginName,
-              })} />
+              })(<Input type="text" addonAfter={`@${code}`} />)}
             </FormItem>
             {
               isCreating && this.renderTextInput(
@@ -198,16 +198,16 @@ export default class CorpEdit extends React.Component {
             }
             {this.props.formData.role !== PRESET_TENANT_ROLE.owner.name &&
             <FormItem label={msg('role')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              <Select onSelect={this.handleRoleSelect} {...getFieldProps('role_id', {
+              {getFieldDecorator('role_id', {
                 initialValue: this.props.formData.role_id,
                 rules: [{ required: true, message: ' ', type: 'number' }],
-              })}>
+              })(<Select onSelect={this.handleRoleSelect}>
                 {
                 roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
                   role => <Option value={role.id} key={role.id}>{role.name}</Option>
                 )
               }
-              </Select>
+              </Select>)}
             </FormItem>}
             <Row>
               <Col span="18" offset="6">

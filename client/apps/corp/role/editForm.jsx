@@ -21,8 +21,8 @@ function goBack(router) {
 
 function FormInputItem(props) {
   const { type = 'text', labelName, labelSpan, required, placeholder, field, options } = props;
-  const { getFieldProps, ...fieldOptions } = options;
-  const fieldInputProps = getFieldProps ? getFieldProps(field, fieldOptions) : {};
+  const { getFieldDecorator, ...fieldOptions } = options;
+  const fieldInputProps = getFieldDecorator ? getFieldDecorator(field, fieldOptions) : {};
   return (
     <FormItem label={labelName} labelCol={{ span: labelSpan }} required={required}
       wrapperCol={{ span: 24 - labelSpan }}
@@ -39,7 +39,7 @@ FormInputItem.propTypes = {
   placeholder: PropTypes.string,
   field: PropTypes.string,
   options: PropTypes.shape({
-    getFieldProps: PropTypes.func,
+    getFieldDecorator: PropTypes.func,
     rules: PropTypes.arrayOf(PropTypes.shape({
       required: PropTypes.bool,
       message: PropTypes.string,
@@ -179,7 +179,7 @@ export default class RoleForm extends React.Component {
   }
   render() {
     const { formData: { name, desc }, tenantModules, intl,
-      submitting, form: { getFieldProps } } = this.props;
+      submitting, form: { getFieldDecorator } } = this.props;
     const { editPrivilegeMap: privileges } = this.state;
     return (
       <div className="page-body card-wrapper">
@@ -187,7 +187,7 @@ export default class RoleForm extends React.Component {
           <Row gutter={16}>
             <Col span={12}>
               <FormInputItem labelName={formatMsg(intl, 'nameColumn')} labelSpan={8} field="name" options={{
-                getFieldProps,
+                getFieldDecorator,
                 rules: [{
                   required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
                 }, {
@@ -200,9 +200,10 @@ export default class RoleForm extends React.Component {
                   },
                 }],
                 initialValue: name,
-              }} />
+              }}
+              />
               <FormInputItem labelName={formatMsg(intl, 'descColumn')} labelSpan={8} field="desc"
-                options={{ getFieldProps, initialValue: desc }}
+                options={{ getFieldDecorator, initialValue: desc }}
               />
             </Col>
           </Row>

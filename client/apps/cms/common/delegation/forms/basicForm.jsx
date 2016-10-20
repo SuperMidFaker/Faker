@@ -106,18 +106,14 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('orderNo')} {...formItemLayout}>
               {getFieldDecorator('order_no', {
                 initialValue: fieldInits.order_no,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
               {getFieldDecorator('invoice_no', {
                 initialValue: fieldInits.invoice_no,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
@@ -140,43 +136,35 @@ export default class BasicForm extends Component {
           </Col>
           <Col sm={8}>
             { getFieldValue('trans_mode') === '2' &&
-              <FormItem label={this.msg('bLNo')} {...formItemLayout}>
-                {getFieldDecorator('bl_wb_no', {
-                  initialValue: fieldInits.bl_wb_no,
-                })(
-                  <Input />
-                )}
-              </FormItem>
-            }
+            <FormItem label={this.msg('bLNo')} {...formItemLayout}>
+              {getFieldDecorator('bl_wb_no', {
+                initialValue: fieldInits.bl_wb_no,
+              })(<Input />)}
+            </FormItem>
+          }
             { getFieldValue('trans_mode') === '5' &&
-              <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
-                {getFieldDecorator('bl_wb_no', {
-                  initialValue: fieldInits.bl_wb_no,
-                })(
-                  <Input />
-                )}
-              </FormItem>
-            }
+            <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
+              {getFieldDecorator('bl_wb_no', {
+                initialValue: fieldInits.bl_wb_no,
+              })(<Input />)}
+            </FormItem>
+          }
           </Col>
           <Col sm={8}>
             { getFieldValue('trans_mode') === '2' &&
-              <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
-                {getFieldDecorator('voyage_no', {
-                  initialValue: fieldInits.voyage_no,
-                })(
-                  <Input />
-                )}
-              </FormItem>
-            }
+            <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
+              {getFieldDecorator('voyage_no', {
+                initialValue: fieldInits.voyage_no,
+              })(<Input />)}
+            </FormItem>
+          }
             { getFieldValue('trans_mode') === '5' &&
-              <FormItem label={this.msg('flightNo')} {...formItemLayout}>
-                {getFieldDecorator('voyage_no', {
-                  initialValue: fieldInits.voyage_no,
-                })(
-                  <Input />
-                )}
-              </FormItem>
-            }
+            <FormItem label={this.msg('flightNo')} {...formItemLayout}>
+              {getFieldDecorator('voyage_no', {
+                initialValue: fieldInits.voyage_no,
+              })(<Input />)}
+            </FormItem>
+          }
           </Col>
         </Row>
         <Row>
@@ -185,33 +173,27 @@ export default class BasicForm extends Component {
               {getFieldDecorator('goods_type', {
                 initialValue: fieldInits.goods_type,
                 rules: [{ required: true, message: '货物类型必选', type: 'number' }],
-              })(
-                <Select>
-                  {
-                  GOODSTYPES.map(gt =>
-                    <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                  )
-                }
-                </Select>
-              )}
+              })(<Select>
+                {
+                GOODSTYPES.map(gt =>
+                  <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                )
+              }
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
               {getFieldDecorator('pieces', {
                 initialValue: fieldInits.pieces,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
@@ -220,18 +202,14 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('broker')} {...formItemLayout}>
               {getFieldDecorator('ccb_name', {
                 initialValue: tenantName,
-              })(
-                <Input disabled />
-              )}
+              })(<Input disabled />)}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
               {getFieldDecorator('internal_no', {
                 initialValue: fieldInits.internal_no,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
@@ -240,9 +218,7 @@ export default class BasicForm extends Component {
             <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
               {getFieldDecorator('remark', {
                 initialValue: fieldInits.remark,
-              })(
-                <Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} />
-              )}
+              })(<Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} />)}
             </FormItem>
           </Col>
         </Row>

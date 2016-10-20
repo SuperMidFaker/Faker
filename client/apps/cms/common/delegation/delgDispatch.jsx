@@ -229,7 +229,7 @@ export default class DelgDispatch extends Component {
     }
   }
   render() {
-    const { form: { getFieldProps }, delgDisp, partners, show, saved, fieldInits } = this.props;
+    const { form: { getFieldDecorator }, delgDisp, partners, show, saved, fieldInits } = this.props;
     const dataSource = [delgDisp];
     let dock = '';
     if (show) {
@@ -246,10 +246,13 @@ export default class DelgDispatch extends Component {
           <Card>
             <Form>
               <FormItem label={this.msg('dispDecl')} {...formItemLayout}>
-                <Select showSearch showArrow optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
-                  {...getFieldProps('decl_name', { initialValue: fieldInits.decl_name }
-                  )}
+                {getFieldDecorator('decl_name', { initialValue: fieldInits.decl_name }
+                )(<Select
+                  showSearch
+                  showArrow
+                  optionFilterProp="searched"
+                  placeholder={this.msg('dispatchMessage')}
+                  style={{ width: '80%' }}
                 >
                   {
                   partners.map(pt => (
@@ -260,13 +263,16 @@ export default class DelgDispatch extends Component {
                     </Option>)
                   )
                 }
-                </Select>
+                </Select>)}
               </FormItem>
               <FormItem label={this.msg('dispInspect')} {...formItemLayout}>
-                <Select showSearch showArrow optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
-                  {...getFieldProps('insp_name', { initialValue: fieldInits.insp_name }
-                  )}
+                {getFieldDecorator('insp_name', { initialValue: fieldInits.insp_name }
+                )(<Select
+                  showSearch
+                  showArrow
+                  optionFilterProp="searched"
+                  placeholder={this.msg('dispatchMessage')}
+                  style={{ width: '80%' }}
                 >
                   {
                   partners.map(pt => (
@@ -277,13 +283,16 @@ export default class DelgDispatch extends Component {
                     </Option>)
                   )
                 }
-                </Select>
+                </Select>)}
               </FormItem>
               <FormItem label={this.msg('dispCert')} {...formItemLayout}>
-                <Select showSearch showArrow optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
-                  {...getFieldProps('cert_name', { initialValue: fieldInits.cert_name }
-                  )}
+                {getFieldDecorator('cert_name', { initialValue: fieldInits.cert_name }
+                )(<Select
+                  showSearch
+                  showArrow
+                  optionFilterProp="searched"
+                  placeholder={this.msg('dispatchMessage')}
+                  style={{ width: '80%' }}
                 >
                   {
                   partners.map(pt => (
@@ -294,7 +303,7 @@ export default class DelgDispatch extends Component {
                     </Option>)
                   )
                 }
-                </Select>
+                </Select>)}
               </FormItem>
             </Form>
             <Table columns={this.columns} dataSource={dataSource} pagination={false} />

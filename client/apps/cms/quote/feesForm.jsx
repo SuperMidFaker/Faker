@@ -188,9 +188,7 @@ export default class FeesForm extends Component {
             <FormItem label={msg('remark')} {...formItemLayout}>
               {getFieldDecorator('remarks', {
                 initialValue: fieldInits.remarks,
-              })(
-                <Select tags style={{ width: '90%' }} />
-              )}
+              })(<Select tags style={{ width: '90%' }} />)}
             </FormItem>
           </Col>
         </Row>

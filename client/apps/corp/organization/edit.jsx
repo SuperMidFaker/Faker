@@ -116,18 +116,18 @@ export default class CorpEdit extends React.Component {
     goBack(this.context.router);
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
-    const { form: { getFieldProps } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
     return (
       <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         hasFeedback required={required}
       >
-        <Input type="text" placeholder={placeholder} {...getFieldProps(field, { rules, ...fieldProps })} />
+        {getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" placeholder={placeholder} />)}
       </FormItem>
     );
   }
   renderOwnerForm() {
     const {
-      form: { getFieldProps }, intl,
+      form: { getFieldDecorator }, intl,
       formData: { contact, loginName, phone, email }, account: { code, tenantId },
     } = this.props;
     return (
@@ -140,7 +140,7 @@ export default class CorpEdit extends React.Component {
         <FormItem label={formatMsg(intl, 'username')} labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }} hasFeedback required
         >
-          <Input type="text" addonAfter={`@${code}`} {...getFieldProps('loginName', {
+          {getFieldDecorator('loginName', {
             rules: [{
               validator: (rule, value, callback) => isLoginNameExist(
                 value, code, this.props.formData.loginId,
@@ -150,7 +150,7 @@ export default class CorpEdit extends React.Component {
               ),
             }],
             initialValue: loginName,
-          })} />
+          })(<Input type="text" addonAfter={`@${code}`} />)}
         </FormItem>
         {this.renderTextInput(formatMsg(intl, 'phone'), '', 'phone', true, [{
           validator: (rule, value, callback) => validatePhone(
@@ -166,20 +166,20 @@ export default class CorpEdit extends React.Component {
     );
   }
   renderOwnerSelect() {
-    const { corpUsers, intl, form: { getFieldProps } } = this.props;
+    const { corpUsers, intl, form: { getFieldDecorator } } = this.props;
     return (
       <FormItem label={formatMsg(intl, 'chief')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         required
       >
-        <Select style={{ width: '100%' }} {...getFieldProps(
+        {getFieldDecorator(
           'coid', {
             rules: [{ required: true, message: formatMsg(intl, 'chiefRequired') }],
             initialValue: this.props.formData.coid,
-          })}>
-          {
+          })(<Select style={{ width: '100%' }}>
+            {
             corpUsers.map(u => <Option value={`${u.id}`} key={`coid${u.id}`}>{u.name}</Option>)
           }
-        </Select>
+          </Select>)}
       </FormItem>);
   }
   render() {

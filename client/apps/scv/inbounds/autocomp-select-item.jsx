@@ -42,7 +42,7 @@ export default class AutoCompletionSelectItem extends React.Component {
   render() {
     const {
       labelName, field, colSpan, placeholder, required, rules,
-      formhoc: { getFieldError, getFieldProps }, optionData,
+      formhoc: { getFieldError, getFieldDecorator }, optionData,
       optionField, optionKey, optionValue,
       allowClear, onChange, initialValue, getValueFromEvent,
     } = this.props;
@@ -50,10 +50,13 @@ export default class AutoCompletionSelectItem extends React.Component {
       <FormItem label={labelName} labelCol={{ span: colSpan }} required={required}
         wrapperCol={{ span: 24 - colSpan }} help={getFieldError(field)}
       >
-        <Select combobox filterOption={this.getComboFilter} placeholder={placeholder}
-          {...getFieldProps(field, { onChange, rules, initialValue: initialValue || '',
-          getValueFromEvent })}
-          onSelect={this.handleComboSelect} allowClear={allowClear}
+        {getFieldDecorator(field, { onChange, rules, initialValue: initialValue || '',
+        getValueFromEvent })(<Select
+          combobox
+          filterOption={this.getComboFilter}
+          placeholder={placeholder}
+          onSelect={this.handleComboSelect}
+          allowClear={allowClear}
         >
           {
           optionData.map(
@@ -63,7 +66,7 @@ export default class AutoCompletionSelectItem extends React.Component {
                 </Option>
               )
         }
-        </Select>
+        </Select>)}
       </FormItem>);
   }
 }
