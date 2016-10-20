@@ -197,6 +197,9 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'adjust_charge',
       width: 120,
       render: (o, record) => {
+        if (operation === 'view') {
+          return o ? o.toFixed(2) : '';
+        }
         return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id, value)} />);
       },
     }, {
@@ -220,6 +223,9 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'billing_status',
       width: 120,
       render: (o, record) => {
+        if (operation === 'view') {
+          return (<Checkbox disabled defaultChecked={o === 1 || o === 2} />);
+        }
         return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.disp_id, e.target.checked)} />);
       },
     }];

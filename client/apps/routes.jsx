@@ -247,11 +247,13 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSBilling.ReceivableList} />
                 <Route path="create" component={CMSBilling.CreateReceivableBilling} />
                 <Route path="check/:billingId" component={CMSBilling.CheckReceivableBilling} />
+                <Route path="view/:billingId" component={CMSBilling.ViewReceivableBilling} />
               </Route>
               <Route path="payable">
                 <IndexRoute component={CMSBilling.PayableList} />
                 <Route path="create" component={CMSBilling.CreatePayableBilling} />
                 <Route path="check/:billingId" component={CMSBilling.CheckPayableBilling} />
+                <Route path="view/:billingId" component={CMSBilling.ViewPayableBilling} />
               </Route>
             </Route>
             <Route path="relation">
