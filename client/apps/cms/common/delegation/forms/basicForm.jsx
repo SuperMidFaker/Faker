@@ -63,7 +63,7 @@ export default class BasicForm extends Component {
     return value;
   }
   render() {
-    const { form: { getFieldProps, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
@@ -84,138 +84,165 @@ export default class BasicForm extends Component {
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('delgClient')} {...formItemLayout} style={{ display: customerName.display }}>
-              <Select size="large" combobox showArrow={false} optionFilterProp="search"
-                placeholder="输入客户代码或名称"
-                {...getFieldProps('customer_name', { rules: [{
-                  required: customerName.required, message: '客户名称必填',
-                }],
+              {getFieldDecorator('customer_name', { rules: [{
+                required: customerName.required, message: '客户名称必填',
+              }],
                   getValueFromEvent: this.handleClientChange,
                   initialValue: fieldInits.customer_name,
-                })}
-              >
-                {
-                clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                  search={`${data.partner_code}${data.name}`}
-                >{data.name}</Option>)
+                })(
+                <Select size="large" combobox showArrow={false} optionFilterProp="search"
+                  placeholder="输入客户代码或名称"
+                >
+                  {
+                  clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                    search={`${data.partner_code}${data.name}`}
+                  >{data.name}</Option>)
+                )}
+                </Select>
               )}
-              </Select>
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('orderNo')} {...formItemLayout}>
-              <Input {...getFieldProps('order_no', {
+              {getFieldDecorator('order_no', {
                 initialValue: fieldInits.order_no,
-              })} />
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
-              <Input {...getFieldProps('invoice_no', {
+              {getFieldDecorator('invoice_no', {
                 initialValue: fieldInits.invoice_no,
-              })} />
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('transMode')} {...formItemLayout}>
-              <Select {...getFieldProps('trans_mode', {
+              {getFieldDecorator('trans_mode', {
                 initialValue: fieldInits.trans_mode,
                 rules: [{ required: true, message: '运输方式必选' }],
-              })}>
+              })(
+                <Select>
                 {
-                TRANS_MODE.map(tr =>
-                  <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                )
-              }
-              </Select>
+                  TRANS_MODE.map(tr =>
+                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={8}>
             { getFieldValue('trans_mode') === '2' &&
-            <FormItem label={this.msg('bLNo')} {...formItemLayout}>
-              <Input {...getFieldProps('bl_wb_no', {
-                initialValue: fieldInits.bl_wb_no,
-              })} />
-            </FormItem>
-          }
+              <FormItem label={this.msg('bLNo')} {...formItemLayout}>
+                {getFieldDecorator('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })(
+                  <Input />
+                )}
+              </FormItem>
+            }
             { getFieldValue('trans_mode') === '5' &&
-            <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
-              <Input {...getFieldProps('bl_wb_no', {
-                initialValue: fieldInits.bl_wb_no,
-              })} />
-            </FormItem>
-          }
+              <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
+                {getFieldDecorator('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })(
+                  <Input />
+                )}
+              </FormItem>
+            }
           </Col>
           <Col sm={8}>
             { getFieldValue('trans_mode') === '2' &&
-            <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
-              <Input {...getFieldProps('voyage_no', {
-                initialValue: fieldInits.voyage_no,
-              })} />
-            </FormItem>
-          }
+              <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
+                {getFieldDecorator('voyage_no', {
+                  initialValue: fieldInits.voyage_no,
+                })(
+                  <Input />
+                )}
+              </FormItem>
+            }
             { getFieldValue('trans_mode') === '5' &&
-            <FormItem label={this.msg('flightNo')} {...formItemLayout}>
-              <Input {...getFieldProps('voyage_no', {
-                initialValue: fieldInits.voyage_no,
-              })} />
-            </FormItem>
-          }
+              <FormItem label={this.msg('flightNo')} {...formItemLayout}>
+                {getFieldDecorator('voyage_no', {
+                  initialValue: fieldInits.voyage_no,
+                })(
+                  <Input />
+                )}
+              </FormItem>
+            }
           </Col>
         </Row>
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('goodsType')} {...formItemLayout}>
-              <Select {...getFieldProps('goods_type', {
+              {getFieldDecorator('goods_type', {
                 initialValue: fieldInits.goods_type,
                 rules: [{ required: true, message: '货物类型必选', type: 'number' }],
-              })}>
-                {
-                GOODSTYPES.map(gt =>
-                  <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                )
-              }
-              </Select>
+              })(
+                <Select>
+                  {
+                  GOODSTYPES.map(gt =>
+                    <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
-              <Input {...getFieldProps('pieces', {
+              {getFieldDecorator('pieces', {
                 initialValue: fieldInits.pieces,
-              })} />
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
-              <Input {...getFieldProps('weight', {
+              {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
-              })} />
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('broker')} {...formItemLayout}>
-              <Input disabled {...getFieldProps('ccb_name', {
+              {getFieldDecorator('ccb_name', {
                 initialValue: tenantName,
-              })} />
+              })(
+                <Input disabled />
+              )}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
-              <Input {...getFieldProps('internal_no', {
+              {getFieldDecorator('internal_no', {
                 initialValue: fieldInits.internal_no,
-              })} />
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col>
             <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-              <Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} {...getFieldProps('remark', {
+              {getFieldDecorator('remark', {
                 initialValue: fieldInits.remark,
-              })} />
+              })(
+                <Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} />
+              )}
             </FormItem>
           </Col>
         </Row>

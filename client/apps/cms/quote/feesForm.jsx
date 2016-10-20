@@ -108,7 +108,7 @@ export default class FeesForm extends Component {
     });
   }
   render() {
-    const { form: { getFieldProps }, fieldInits, action } = this.props;
+    const { form: { getFieldDecorator }, fieldInits, action } = this.props;
     const { coops, disBase } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
@@ -117,84 +117,85 @@ export default class FeesForm extends Component {
         <Row>
           <Col sm={8} md={6}>
             <FormItem label={msg('tariffKinds')} {...formItemLayout}>
-              <Select style={{ width: '90%' }} onSelect={this.handleKindSelect}
-                {...getFieldProps('tariff_kind', {
-                  rules: [{ required: true, message: '报价类型必选' }],
-                  initialValue: fieldInits.tariff_kind,
-                })}
-              >
-                {
-                TARIFF_KINDS.map(qt =>
-                  <Option value={qt.value} key={qt.value}>{qt.text}</Option>
-                )
-              }
-              </Select>
+              {getFieldDecorator('tariff_kind', {
+                rules: [{ required: true, message: '报价类型必选' }],
+                initialValue: fieldInits.tariff_kind,
+              })(
+                <Select style={{ width: '90%' }} onSelect={this.handleKindSelect} >
+                  {
+                  TARIFF_KINDS.map(qt =>
+                    <Option value={qt.value} key={qt.value}>{qt.text}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={8} md={6}>
             <FormItem label={msg('partners')} {...formItemLayout}>
-              <Select showSearch showArrow optionFilterProp="searched"
-                style={{ width: '90%' }} disabled={disBase}
-                {...getFieldProps('partner.name', {
-                  rules: [{ required: true, message: '必选' }],
-                  getValueFromEvent: this.handleClientChange,
-                  initialValue: fieldInits.partner.name,
-                })}
-              >
-                {
-                coops.map(pt => (
-                  <Option searched={`${pt.partner_code}${pt.name}`}
-                    value={pt.partner_id} key={pt.partner_id}
-                  >{pt.name}</Option>)
-                )
-              }
-              </Select>
+              {getFieldDecorator('partner.name', {
+                rules: [{ required: true, message: '必选' }],
+                getValueFromEvent: this.handleClientChange,
+                initialValue: fieldInits.partner.name,
+              })(
+                <Select showSearch showArrow optionFilterProp="searched"
+                  style={{ width: '90%' }} disabled={disBase}
+                >
+                  {
+                  coops.map(pt => (
+                    <Option searched={`${pt.partner_code}${pt.name}`}
+                      value={pt.partner_id} key={pt.partner_id}
+                    >{pt.name}</Option>)
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={8} md={6}>
             <FormItem label={msg('declareWay')} {...formItemLayout}>
-              <Select multiple style={{ width: '90%' }} placeholder="不限"
-                {...getFieldProps('decl_way_code', {
-                  rules: [{ required: true, message: '报关类型必选', type: 'array' }],
-                  initialValue: fieldInits.decl_way_code,
-                })}
-              >
-                {
-                DECL_TYPE.map(dw =>
-                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                )
-              }
-              </Select>
+              {getFieldDecorator('decl_way_code', {
+                rules: [{ required: true, message: '报关类型必选', type: 'array' }],
+                initialValue: fieldInits.decl_way_code,
+              })(
+                <Select multiple style={{ width: '90%' }} placeholder="不限" >
+                  {
+                  DECL_TYPE.map(dw =>
+                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={8} md={6}>
             <FormItem label={msg('transMode')} {...formItemLayout}>
-              <Select multiple style={{ width: '90%' }} placeholder="不限"
-                {...getFieldProps('trans_mode', {
-                  rules: [{ required: true, message: '运输方式必选', type: 'array' }],
-                  initialValue: fieldInits.trans_mode,
-                })}
-              >
-                {
-                TRANS_MODE.map(tr =>
-                  <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                )
-              }
-              </Select>
+              {getFieldDecorator('trans_mode', {
+                rules: [{ required: true, message: '运输方式必选', type: 'array' }],
+                initialValue: fieldInits.trans_mode,
+              })(
+                <Select multiple style={{ width: '90%' }} placeholder="不限" >
+                  {
+                  TRANS_MODE.map(tr =>
+                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col sm={8} md={6}>
             <FormItem label={msg('remark')} {...formItemLayout}>
-              <Select tags style={{ width: '90%' }}
-                {...getFieldProps('remarks', {
-                  initialValue: fieldInits.remarks,
-                })}
-              />
+              {getFieldDecorator('remarks', {
+                initialValue: fieldInits.remarks,
+              })(
+                <Select tags style={{ width: '90%' }} />
+              )}
             </FormItem>
           </Col>
         </Row>
         {
-            (action === 'edit') &&
+          (action === 'edit') &&
             <Button type="primary" style={{ marginLeft: 40 }} onClick={this.handleSave} >{msg('save')}</Button>}
       </div>
     );
