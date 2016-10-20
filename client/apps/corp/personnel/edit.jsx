@@ -169,8 +169,7 @@ export default class CorpEdit extends React.Component {
                     (msgs, descriptor) => format(msgs)(intl, descriptor)),
                 }],
                 initialValue: loginName,
-              })}
-              />
+              })} />
             </FormItem>
             {
               isCreating && this.renderTextInput(
@@ -202,8 +201,7 @@ export default class CorpEdit extends React.Component {
               <Select onSelect={this.handleRoleSelect} {...getFieldProps('role_id', {
                 initialValue: this.props.formData.role_id,
                 rules: [{ required: true, message: ' ', type: 'number' }],
-              })}
-              >
+              })}>
                 {
                 roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
                   role => <Option value={role.id} key={role.id}>{role.name}</Option>

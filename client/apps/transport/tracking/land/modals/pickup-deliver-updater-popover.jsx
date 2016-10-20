@@ -111,8 +111,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
           ev.preventDefault();
           ev.stopPropagation();
           this.handleShowPopover();
-        }}
-        >{this.props.children}</a>
+        }}>{this.props.children}</a>
       </Popover>
     );
   }

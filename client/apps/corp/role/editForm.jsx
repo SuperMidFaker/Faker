@@ -200,8 +200,7 @@ export default class RoleForm extends React.Component {
                   },
                 }],
                 initialValue: name,
-              }}
-              />
+              }} />
               <FormInputItem labelName={formatMsg(intl, 'descColumn')} labelSpan={8} field="desc"
                 options={{ getFieldProps, initialValue: desc }}
               />

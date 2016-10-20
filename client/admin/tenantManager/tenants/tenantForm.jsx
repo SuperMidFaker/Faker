@@ -186,8 +186,7 @@ class TenantForm extends React.Component {
                     help={getFieldError('subdomain')}
                   >
                     <Input type="text" addonAfter=".welogix.cn" placeholder="请填写企业登录入口域" {...getFieldProps('subdomain',
-                      { transform: value => (value.trim()), initialValue: formData.subdomain })}
-                    />
+                      { transform: value => (value.trim()), initialValue: formData.subdomain })} />
                   </FormItem>
                 </Col>
               </Row>

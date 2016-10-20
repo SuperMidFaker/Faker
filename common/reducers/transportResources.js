@@ -16,7 +16,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
   'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
   'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
-  'CHANGE_REGION',
+  'CHANGE_REGION', 'ALTER_CARRIER',
   'VALIDATE_VEHICLE', 'VALIDATE_VEHICLE_SUCCEED', 'VALIDATE_VEHICLE_FAIL',
   'ADD_NODE_USER', 'ADD_NODE_USER_SUCCEED', 'ADD_NODE_USER_FAIL',
   'EDIT_NODE_USER', 'EDIT_NODE_USER_SUCCEED', 'EDIT_NODE_USER_FAIL',
@@ -43,6 +43,11 @@ const initialState = {
   vehicleParams: {
     types: [],
     lengths: [],
+  },
+  carrierModal: {
+    visible: false,
+    carrier: {},
+    operation: 'add',
   },
 };
 
@@ -133,6 +138,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_VEHICLEPARAM_SUCCEED:
       return { ...state, vehicleParams: action.result.data };
+    case actionTypes.ALTER_CARRIER:
+      return { ...state, carrierModal: action.data };
     default:
       return state;
   }
@@ -438,5 +445,12 @@ export function loadVehicleParams(tenantId) {
       method: 'get',
       params: { tenantId },
     },
+  };
+}
+
+export function toggleCarrierModal(visible, operation = '', carrier = {}) {
+  return {
+    type: actionTypes.ALTER_CARRIER,
+    data: { visible, operation, carrier },
   };
 }

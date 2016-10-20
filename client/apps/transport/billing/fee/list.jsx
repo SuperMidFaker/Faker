@@ -3,7 +3,6 @@ import { Button, Tag, Icon, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';

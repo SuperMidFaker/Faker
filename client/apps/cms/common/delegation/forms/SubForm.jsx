@@ -104,8 +104,7 @@ export default class SubForm extends Component {
           <Col sm={6}>
             <FormItem label={this.msg('manualNo')} {...formItemLayout}>
               <Input {...getFieldProps(`manual_no_${k}`, {
-                initialValue: bills[k].manual_no })}
-              />
+                initialValue: bills[k].manual_no })} />
             </FormItem>
           </Col>
           <Col sm={5}>

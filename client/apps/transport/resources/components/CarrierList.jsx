@@ -3,6 +3,7 @@ import { Table, Button, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import CarrierModal from '../modals/carrierModal';
 
 const rowSelection = {
   onSelect() {},
@@ -94,6 +95,7 @@ export default class DriverList extends Component {
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
             </div>
+            <CarrierModal />
           </div>
         </div>
       </QueueAnim>

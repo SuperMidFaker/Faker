@@ -1,11 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { message } from 'antd';
 import { connect } from 'react-redux';
 import CarrierList from '../components/CarrierList';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadPartners, addPartner, editPartner, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { loadPartners, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import connectNav from 'client/common/decorators/connect-nav';
-import partnerModal from '../../../corp/cooperation/components/partnerModal';
+import { toggleCarrierModal } from 'common/reducers/transportResources';
 
 function fetchData({ dispatch, state, cookie }) {
   return dispatch(loadPartners(cookie, {
@@ -16,51 +15,26 @@ function fetchData({ dispatch, state, cookie }) {
 @connectFetch()(fetchData)
 @connect(state => ({
   partnerlist: state.partner.partnerlist,
-  tenantId: state.account.tenantId,
-}), { addPartner, editPartner, changePartnerStatus, deletePartner })
+}), { changePartnerStatus, deletePartner, toggleCarrierModal })
 @connectNav({
   depth: 2,
   muduleName: 'transport',
 })
 export default class DriverListContainer extends Component {
   static propTypes = {
-    tenantId: PropTypes.number.isRequired,
     partnerlist: PropTypes.array.isRequired,
-    addPartner: PropTypes.func.isRequired,
-    editPartner: PropTypes.func.isRequired,
     changePartnerStatus: PropTypes.func.isRequired,
     deletePartner: PropTypes.func.isRequired,
+    toggleCarrierModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  handleEditBtnClick = (key, name, code) => {
-    partnerModal({
-      onOk: (ename, ecode) => {
-        this.props.editPartner(key, ename, ecode).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            }
-          });
-      },
-      editInfo: {
-        name,
-        code,
-      },
-    });
+  handleEditBtnClick = (id, name, code) => {
+    this.props.toggleCarrierModal(true, 'edit', { id, name, code });
   }
   handleAddBtnClick = () => {
-    const { tenantId } = this.props;
-    partnerModal({
-      isProvider: true,
-      partnerships: ['TRS'],
-      onOk: (partnerInfo) => {
-        this.props.addPartner({ tenantId, partnerInfo, partnerships: partnerInfo.partnerships }).then(() => {
-          message.success('添加成功');
-        });
-      },
-    });
+    this.props.toggleCarrierModal(true, 'add');
   }
   handleStopBtnClick = (id) => {
     this.props.changePartnerStatus(id, 0);
