@@ -15,6 +15,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CHECK_BILLING', 'CHECK_BILLING_SUCCEED', 'CHECK_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
   'INVOICE', 'INVOICE_SUCCEED', 'INVOICE_FAIL',
+  'ALTER_BILLINGFEES', 'LOAD_EXPS_BEFORE_TIME',
+  'LOAD_EXPS_BEFORE_TIME_SUCCEED', 'LOAD_EXPS_BEFORE_TIME_FAIL',
+  'LOAD_DISPS_BEFORETIME', 'LOAD_DISPS_BEFORETIME_SUCCEED', 'LOAD_DISPS_BEFORETIME_FAIL',
 ]);
 
 const initialState = {
@@ -40,6 +43,7 @@ const initialState = {
     modifyTimes: 0,
   },
   dispIds: [],
+  BfdispIds: [],
   billingFees: {
     data: [],
   },
@@ -134,6 +138,13 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.CHECK_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
+    case actionTypes.LOAD_DISPS_BEFORETIME_SUCCEED:
+      return { ...state, BfdispIds: action.result.data };
+    case actionTypes.ALTER_BILLINGFEES: {
+      const billingFees = [...state.billingFees.data, action.data.fee];
+      const billing = calculateBillingCharges(billingFees.filter(item => item.status === 1));
+      return { ...state, billingFees: { ...state.billingFees, data: billingFees }, billing: { ...state.billing, ...billing } };
+    }
     default:
       return state;
   }
@@ -172,6 +183,7 @@ export function loadDispsByChooseModal({ type, beginDate, endDate, chooseModel, 
     },
   };
 }
+
 export function loadExpsByDisp(dispIds, tenantId) {
   return {
     [CLIENT_API]: {
@@ -336,4 +348,39 @@ export function billingInvoiced({ tenantId, billingId }) {
       origin: 'mongo',
     },
   };
+}
+
+export function loadDispsBeforeTime({ type, beginDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DISPS_BEFORETIME,
+        actionTypes.LOAD_DISPS_BEFORETIME_SUCCEED,
+        actionTypes.LOAD_DISPS_BEFORETIME_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/dispsBeforeTime',
+      method: 'get',
+      params: { type, beginDate, chooseModel, partnerId, partnerTenantId, tenantId },
+    },
+  };
+}
+
+export function loadExpsBeforeTime(dispIds, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EXPS_BEFORE_TIME,
+        actionTypes.LOAD_EXPS_BEFORE_TIME_SUCCEED,
+        actionTypes.LOAD_EXPS_BEFORE_TIME_FAIL,
+      ],
+      endpoint: 'v1/cms/loadexps/beforeTime',
+      method: 'post',
+      data: { dispIds, tenantId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function alterBillingFees(fee) {
+  return { type: actionTypes.ALTER_BILLINGFEES, data: { fee } };
 }
