@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'ACCEPT_BILLING', 'ACCEPT_BILLING_SUCCEED', 'ACCEPT_BILLING_FAIL',
   'CHECK_BILLING', 'CHECK_BILLING_SUCCEED', 'CHECK_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
+  'INVOICE', 'INVOICE_SUCCEED', 'INVOICE_FAIL',
 ]);
 
 const initialState = {
@@ -316,6 +317,22 @@ export function changeCancelCharge({ tenantId, billingId, cancelCharge }) {
       endpoint: 'v1/cms/billing/changeCancelCharge',
       method: 'post',
       data: { tenantId, billingId, cancelCharge },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function billingInvoiced({ tenantId, billingId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INVOICE,
+        actionTypes.INVOICE_SUCCEED,
+        actionTypes.INVOICE_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/invoiced',
+      method: 'post',
+      data: { tenantId, billingId },
       origin: 'mongo',
     },
   };

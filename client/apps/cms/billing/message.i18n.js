@@ -65,6 +65,10 @@ export default defineMessages({
     id: 'cms.billing.invoiceNo',
     defaultMessage: '发票号',
   },
+  invoiced: {
+    id: 'cms.billing.invoiced',
+    defaultMessage: '开票',
+  },
   save: {
     id: 'cms.billing.save',
     defaultMessage: '保存',
