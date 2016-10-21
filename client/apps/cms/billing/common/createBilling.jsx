@@ -8,6 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadDispsByChooseModal, loadExpsByDisp, createBilling, updateBillingFees } from 'common/reducers/cmsBilling';
 import TrimSpan from 'client/components/trimSpan';
+import BeforeFeesModal from './beforeFeesModal';
 
 const formatMsg = format(messages);
 
@@ -44,6 +45,9 @@ export default class CreateBilling extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    beforeFeesModalVisible: false,
   }
   componentDidMount() {
     const { tenantId, type } = this.props;
@@ -105,6 +109,9 @@ export default class CreateBilling extends React.Component {
     if (status) s = 1;
     else s = 0;
     this.props.updateBillingFees(tenantId, Id, 'billing_status', s);
+  }
+  toggleBeforeFeesModal = () => {
+    this.setState({ beforeFeesModalVisible: !this.state.beforeFeesModalVisible });
   }
   handleTableFooter = () => {
     const { billing } = this.props;
@@ -205,10 +212,12 @@ export default class CreateBilling extends React.Component {
               <span style={handleLableStyle}>{this.msg('partner')}: <strong>{billing.partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
+              <Button type="default" className="pull-right" onClick={this.toggleBeforeFeesModal}>未入账运单</Button>
             </div>
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
             </div>
+            <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
         </div>
       </div>
