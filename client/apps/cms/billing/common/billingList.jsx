@@ -103,8 +103,7 @@ export default class BillingList extends React.Component {
   }
   handleExportExcel = () => {
     const { tenantId, type } = this.props;
-    window.open(`${API_ROOTS.default}v1/clearance/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
-    this.handleClose();
+    window.open(`${API_ROOTS.mongo}v1/clearance/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
   }
   render() {
     const { tenantId, type } = this.props;
@@ -134,7 +133,7 @@ export default class BillingList extends React.Component {
       title: this.msg('billingName'),
       dataIndex: 'name',
       render(o, record) {
-        return <Link to={`/clearance/billing/${type}/view/${record.id}`}>{o}</Link>;
+        return <Link to={`/clearance/billing/${type}/view/${record._id}`}>{o}</Link>;
       },
     }, {
       title: this.msg('startDate'),
