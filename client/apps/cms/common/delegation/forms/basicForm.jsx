@@ -90,15 +90,15 @@ export default class BasicForm extends Component {
                   getValueFromEvent: this.handleClientChange,
                   initialValue: fieldInits.customer_name,
                 })(
-                <Select size="large" combobox showArrow={false} optionFilterProp="search"
-                  placeholder="输入客户代码或名称"
-                >
-                  {
+                  <Select size="large" combobox showArrow={false} optionFilterProp="search"
+                    placeholder="输入客户代码或名称"
+                  >
+                    {
                   clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                     search={`${data.partner_code}${data.name}`}
                   >{data.name}</Option>)
                 )}
-                </Select>
+                  </Select>
               )}
             </FormItem>
           </Col>
@@ -125,7 +125,7 @@ export default class BasicForm extends Component {
                 rules: [{ required: true, message: '运输方式必选' }],
               })(
                 <Select>
-                {
+                  {
                   TRANS_MODE.map(tr =>
                     <Option value={tr.value} key={tr.value}>{tr.text}</Option>
                   )

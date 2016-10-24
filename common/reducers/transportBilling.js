@@ -165,11 +165,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHECK_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
     case actionTypes.CHANGE_FEES_FILTER: {
-      const fees = {... state.fees, searchValue: action.data.value};
+      const fees = { ...state.fees, searchValue: action.data.value };
       return { ...state, fees };
     }
     case actionTypes.CHANGE_BILLINGS_FILTER: {
-      const billings = {... state.billings, searchValue: action.data.value};
+      const billings = { ...state.billings, searchValue: action.data.value };
       return { ...state, billings };
     }
     default:
