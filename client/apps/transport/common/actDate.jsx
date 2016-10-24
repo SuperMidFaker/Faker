@@ -3,8 +3,8 @@ import moment from 'moment';
 
 export default class ActDate extends React.Component {
   static propTypes = {
-    actDate: PropTypes.object.isRequired,
-    estDate: PropTypes.object.isRequired,
+    actDate: PropTypes.string.isRequired,
+    estDate: PropTypes.string.isRequired,
   }
 
   render() {

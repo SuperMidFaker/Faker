@@ -3,7 +3,6 @@ import { Button, InputNumber, Checkbox, message, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
@@ -16,10 +15,6 @@ import ActDate from '../../common/actDate';
 const formatMsg = format(messages);
 
 @injectIntl
-@connectNav({
-  depth: 2,
-  moduleName: 'transport',
-})
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -30,7 +25,6 @@ const formatMsg = format(messages);
   }),
   { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail }
 )
-
 export default class BillingFeeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

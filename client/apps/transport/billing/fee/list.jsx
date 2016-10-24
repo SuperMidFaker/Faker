@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFees, importAdvanceCharge } from 'common/reducers/transportBilling';
+import { loadFees, importAdvanceCharge, changeFeesFilter } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
@@ -15,6 +15,7 @@ import ExceptionListPopover from '../../tracking/land/modals/exception-list-popo
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
+import SearchBar from 'client/components/search-bar';
 
 const formatMsg = format(messages);
 
@@ -23,6 +24,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     pageSize: state.transportBilling.fees.pageSize,
     currentPage: state.transportBilling.fees.currentPage,
+    searchValue: state.transportBilling.fees.searchValue,
   }));
 }
 
@@ -39,7 +41,7 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     fees: state.transportBilling.fees,
   }),
-  { loadFees, importAdvanceCharge, loadShipmtDetail }
+  { loadFees, importAdvanceCharge, loadShipmtDetail, changeFeesFilter }
 )
 
 export default class FeesList extends React.Component {
@@ -52,6 +54,22 @@ export default class FeesList extends React.Component {
     fees: PropTypes.object.isRequired,
     importAdvanceCharge: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
+    changeFeesFilter: PropTypes.func.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
+      this.handleTableLoad(nextProps.fees.searchValue);
+    }
+  }
+  handleTableLoad = (searchValue) => {
+    const { tenantId } = this.props;
+    const { pageSize, currentPage } = this.props.fees;
+    this.props.loadFees({
+      tenantId,
+      pageSize,
+      currentPage,
+      searchValue: searchValue !== undefined ? searchValue : this.props.fees.searchValue,
+    });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleImportAdvanceCharge = () => {
@@ -71,7 +89,10 @@ export default class FeesList extends React.Component {
   }
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/transport/billing/exportFeesExcel/${createFilename('fees')}.xlsx?tenantId=${this.props.tenantId}`);
-    this.handleClose();
+    // this.handleClose();
+  }
+  handleSearchInput = (value) => {
+    this.props.changeFeesFilter('searchValue', value);
   }
   render() {
     const columns = [{
@@ -239,6 +260,9 @@ export default class FeesList extends React.Component {
         return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
       },
     }, {
+      title: '特殊费用',
+      dataIndex: 'excp_charge_count',
+    }, {
       title: '异常',
       dataIndex: 'excp_count',
       render(o, record) {
@@ -275,6 +299,7 @@ export default class FeesList extends React.Component {
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
+          searchValue: this.props.fees.searchValue,
         };
         return params;
       },
@@ -284,6 +309,11 @@ export default class FeesList extends React.Component {
       <div>
         <header className="top-bar">
           <span>{this.msg('fee')}</span>
+          <div className="tools">
+            <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
+              value={this.props.fees.searchValue}
+            />
+          </div>
         </header>
         <div className="main-content">
           <div className="page-body">

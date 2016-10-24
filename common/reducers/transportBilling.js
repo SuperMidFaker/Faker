@@ -5,6 +5,8 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'UPDATE_BILLING',
   'UPDATE_BILLINGFEES',
   'ALTER_BILLINGFEES',
+  'CHANGE_FEES_FILTER',
+  'CHANGE_BILLINGS_FILTER',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FEES', 'LOAD_FEES_SUCCEED', 'LOAD_FEES_FAIL',
   'LOAD_FEES_BYCHOOSEMODAL', 'LOAD_FEES_BYCHOOSEMODAL_SUCCEED', 'LOAD_FEES_BYCHOOSEMODAL_FAIL',
@@ -22,12 +24,14 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
 
 const initialState = {
   fees: {
+    searchValue: '',
     pageSize: 10,
     currentPage: 1,
     totalCount: 0,
     data: [],
   },
   billings: {
+    searchValue: '',
     pageSize: 10,
     currentPage: 1,
     data: [],
@@ -121,7 +125,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FEES_SUCCEED:
-      return { ...state, fees: action.result.data };
+      return { ...state, fees: { ...state.fees, ...action.result.data } };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data.data);
       const fees = action.result.data.data.map((item) => {
@@ -155,11 +159,19 @@ export default function reducer(state = initialState, action) {
       } };
     }
     case actionTypes.LOAD_BILLINGS_SUCCEED:
-      return { ...state, billings: action.result.data, billingFees: initialState.billingFees };
+      return { ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees };
     case actionTypes.CREATE_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
     case actionTypes.CHECK_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
+    case actionTypes.CHANGE_FEES_FILTER: {
+      const fees = {... state.fees, searchValue: action.data.value};
+      return { ...state, fees };
+    }
+    case actionTypes.CHANGE_BILLINGS_FILTER: {
+      const billings = {... state.billings, searchValue: action.data.value};
+      return { ...state, billings };
+    }
     default:
       return state;
   }
@@ -192,7 +204,7 @@ export function loadPartners(tenantId, typeCode) {
   };
 }
 
-export function loadFees({ tenantId, pageSize, currentPage }) {
+export function loadFees({ tenantId, pageSize, currentPage, searchValue }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -202,7 +214,7 @@ export function loadFees({ tenantId, pageSize, currentPage }) {
       ],
       endpoint: 'v1/transport/fees',
       method: 'get',
-      params: { tenantId, pageSize, currentPage },
+      params: { tenantId, pageSize, currentPage, searchValue },
     },
   };
 }
@@ -252,7 +264,7 @@ export function loadFeesByBillingId({ billingId, pageSize, currentPage }) {
   };
 }
 
-export function loadBillings({ type, tenantId, pageSize, currentPage }) {
+export function loadBillings({ type, tenantId, pageSize, currentPage, searchValue }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -262,7 +274,7 @@ export function loadBillings({ type, tenantId, pageSize, currentPage }) {
       ],
       endpoint: 'v1/transport/billings',
       method: 'get',
-      params: { type, tenantId, pageSize, currentPage },
+      params: { type, tenantId, pageSize, currentPage, searchValue },
     },
   };
 }
@@ -375,3 +387,12 @@ export function importAdvanceCharge({ tenantId, loginId, loginName }) {
     },
   };
 }
+
+export function changeFeesFilter(key, value) {
+  return { type: actionTypes.CHANGE_FEES_FILTER, data: { key, value } };
+}
+
+export function changeBillingsFilter(key, value) {
+  return { type: actionTypes.CHANGE_BILLINGS_FILTER, data: { key, value } };
+}
+

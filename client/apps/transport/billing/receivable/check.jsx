@@ -12,7 +12,7 @@ function fetchData({ dispatch, params }) {
 
 @connectFetch()(fetchData)
 @connectNav({
-  depth: 2,
+  depth: 3,
   moduleName: 'transport',
 })
 export default class CheckPayableBilling extends React.Component {
