@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag } from 'antd';
+import { Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -12,7 +12,6 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import Footer from './preview-panel-footer';
 import ShareShipmentModal from './share-shipment';
-import './preview-panel.less';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -110,7 +109,7 @@ export default class PreviewPanel extends React.Component {
     const row = this.props.previewer.row;
     if (row.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
-        <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -127,7 +126,7 @@ export default class PreviewPanel extends React.Component {
       );
     } else {
       return (
-        <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -143,23 +142,29 @@ export default class PreviewPanel extends React.Component {
   }
   render() {
     const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;
+    const closer = (
+      <button
+        onClick={this.handleClose}
+        aria-label="Close"
+        className="ant-modal-close"
+      >
+        <span className="ant-modal-close-x" />
+      </button>);
     return (
       shipmtNo ?
         <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
           <div className="panel-content">
             <div className="header">
               <span className="title">{shipmtNo}</span>
-              <Tag color="blue">{this.msg(getTrackStatusMsg(status, effective))}</Tag>
+              <Badge status="processing" text={this.msg(getTrackStatusMsg(status, effective))} />
               <div className="pull-right">
-                <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
-                  <Icon type="cross" />
-                </Button>
+                {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
+                {closer}
               </div>
             </div>
             <div className="body">
               {this.renderTabs()}
             </div>
-            {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
           </div>
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
         </div>

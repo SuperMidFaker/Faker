@@ -632,9 +632,6 @@ img {
   }
 }
 .pane-content {
-  .ant-collapse {
-    margin-bottom: 72px;
-  }
   .ant-collapse > .ant-collapse-item > .ant-collapse-header {
     font-size: 14px;
   }
@@ -749,4 +746,96 @@ img {
             vertical-align: top;
         }
     }
+}
+
+.preview-panel {
+  position: fixed;
+  width: 80%;
+  top: @am-header-height;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background-color: #fff;
+  transition: transform 358ms ease;
+  transform: translate(100%);
+  box-shadow: 0 7px 21px rgba(0,0,0,.3);
+  &.inside {
+    transform: translate(0);
+  }
+  .panel-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .header {
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+      padding: 8px 16px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      .title {
+        color: #666;
+        font-size: 18px;
+        font-weight: 500;
+        margin-right: 16px;
+      }
+      .ant-tag{
+        margin-left: 8px;
+      }
+      .toolbar {
+        float: right;
+        margin-right: 32px;
+        span {
+          margin-right: 8px;
+        }
+      }
+    }
+    .body {
+      position: absolute;
+      top: 44px;
+      width: 100%;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      z-index: 1;
+      background: #EFEFEF;
+      padding: 16px;
+      > .ant-tabs-card > .ant-tabs-content {
+        margin-top: -16px;
+      }
+
+      > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+        background: #fff;
+        padding: 16px;
+      }
+
+      > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+        border-color: transparent;
+      }
+
+      > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+        border-color: #fff;
+      }
+    }
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 64px;
+      padding: 16px 24px 16px;
+      z-index: 5;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.15);
+      .more-actions {
+        float: right;
+      }
+      * {
+        display: inline-block;
+      }
+    }
+  }
 }
