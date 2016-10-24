@@ -14,8 +14,9 @@ import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
+import CiqTable from './ciqTableList';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
-  showPreviewer, setDispStatus, loadDelgDisp, loadDisp } from 'common/reducers/cmsDelegation';
+  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable } from 'common/reducers/cmsDelegation';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
@@ -44,7 +45,7 @@ const RadioButton = Radio.Button;
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp }
+    loadPaneExp, loadCiqTable }
 )
 @connectNav({
   depth: 2,
@@ -72,6 +73,7 @@ export default class DelegationList extends Component {
     delegateTracking: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadPaneExp: PropTypes.func.isRequired,
+    loadCiqTable: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -79,6 +81,7 @@ export default class DelegationList extends Component {
   state = {
     searchInput: '',
     expandedKeys: [],
+    service: 0,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -262,12 +265,43 @@ export default class DelegationList extends Component {
       }
     });
   }
+  handleCiqListLoad = (currentPage, filter) => {
+    const { tenantId, listFilter, ietype,
+      delegationlist: { pageSize, current } } = this.props;
+    this.props.loadCiqTable({
+      ietype,
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
   handleRadioChange = (ev) => {
+    this.setState({ service: 0 });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleDelgListLoad(1, filter);
+  }
+  handleRadioChangeType = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    if (ev.target.value === 'ciq') {
+      this.setState({ service: 1 });
+      const filter = { ...this.props.listFilter, status: ev.target.value };
+      this.handleCiqListLoad(1, filter);
+    } else if (ev.target.value === 'cert') {
+      this.setState({ service: 2 });
+    }
+  }
+  handleMatchQuote = (row) => {
+    console.log('row:', row);
   }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
@@ -354,7 +388,6 @@ export default class DelegationList extends Component {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleDelgListLoad(1, filters);
   }
-
   mergeFilters(curFilters, value) {
     const newFilters = {};
     Object.keys(curFilters).forEach((key) => {
@@ -410,7 +443,7 @@ export default class DelegationList extends Component {
               <span>
                 <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('delgDistribute')} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <RowUpdater onHit={this.handleMatchQuote} label={this.msg('matchQuote')} row={record} />
               </span>
             </PrivilegeCover>
           );
@@ -448,9 +481,14 @@ export default class DelegationList extends Component {
             <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChangeType}>
+            <RadioButton value="ciq">{this.msg('ciq')}</RadioButton>
+            <RadioButton value="cert">{this.msg('cert')}</RadioButton>
+          </RadioGroup>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body">
+          {this.state.service === 0 && <div className="page-body">
             <div className="panel-header">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus-circle-o">
@@ -465,7 +503,8 @@ export default class DelegationList extends Component {
                 scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
-          </div>
+          </div>}
+          {this.state.service === 1 && <CiqTable />}
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />

@@ -25,10 +25,17 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
   'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS', 'SET_PREW_STATUS',
+  'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL',
 ]);
 
 const initialState = {
   delegationlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  ciqlist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
@@ -108,6 +115,9 @@ export default function reducer(state = initialState, action) {
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
+    }
+    case actionTypes.LOAD_CIQ_SUCCEED: {
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
@@ -209,6 +219,21 @@ export function loadAcceptanceTable(params) {
         actionTypes.LOAD_ACCEPT_FAIL,
       ],
       endpoint: 'v1/cms/acceptance/delegations',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadCiqTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQ,
+        actionTypes.LOAD_CIQ_SUCCEED,
+        actionTypes.LOAD_CIQ_FAIL,
+      ],
+      endpoint: 'v1/cms/load/ciq',
       method: 'get',
       params,
     },

@@ -197,6 +197,10 @@ export default defineMessages({
     id: 'cms.delegation.make',
     defaultMessage: '制单',
   },
+  matchQuote: {
+    id: 'cms.delegation.matchQuote',
+    defaultMessage: '匹配报价',
+  },
   declareView: {
     id: 'cms.delegation.view',
     defaultMessage: '查看',
@@ -277,13 +281,21 @@ export default defineMessages({
     id: 'cms.delegation.delg.dispDecl',
     defaultMessage: '报关分配: ',
   },
-  dispInspect: {
-    id: 'cms.delegation.delg.dispInspect',
+  dispciq: {
+    id: 'cms.delegation.delg.dispciq',
     defaultMessage: '报检分配: ',
   },
   dispCert: {
     id: 'cms.delegation.delg.dispCert',
     defaultMessage: '鉴定办证分配: ',
+  },
+  ciq: {
+    id: 'cms.delegation.delg.ciq',
+    defaultMessage: '报检',
+  },
+  cert: {
+    id: 'cms.delegation.delg.cert',
+    defaultMessage: '鉴定办证',
   },
   dispatchMessage: {
     id: 'cms.delegation.message.dispatch',
@@ -324,5 +336,9 @@ export default defineMessages({
   releasedPart: {
     id: 'cms.delegation.releasedPart',
     defaultMessage: '部分放行',
+  },
+  customsId: {
+    id: 'cms.delegation.customsId',
+    defaultMessage: '通关单号',
   },
 });
