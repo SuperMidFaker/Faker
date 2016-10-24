@@ -7,7 +7,6 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import qrcode from 'client/common/qrcode';
 import { validatePhone } from 'common/validater';
-import './preview-panel.less';
 
 const formatMsg = format(messages);
 

@@ -223,7 +223,7 @@ export default class ChargePanel extends React.Component {
       profitColor = '#f50';
     }
     return (
-      <div className="pane-content tab-pane" style={{ paddingBottom: 60 }}>
+      <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">

@@ -164,7 +164,7 @@ export default class TrackingPane extends React.Component {
     currentStep = logs.length - 1;
     trackingSteps = logSteps;
     return (
-      <div className="pane-content tab-pane" style={{ paddingBottom: 60 }}>
+      <div className="pane-content tab-pane">
         <Card>
           <Steps current={currentStep} direction="vertical">
             {

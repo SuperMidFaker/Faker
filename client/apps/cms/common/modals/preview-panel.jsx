@@ -9,7 +9,6 @@ import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
 import downloadMultiple from 'client/util/multipleDownloader';
-import './preview-panel.less';
 
 const TabPane = Tabs.TabPane;
 

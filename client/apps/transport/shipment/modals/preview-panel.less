@@ -1,5 +1,5 @@
 @import "../../../../variable.less";
-@preview-panel-width: 680px;
+@preview-panel-width: 80%;
 .preview-panel {
   position: fixed;
   width: @preview-panel-width;
@@ -9,7 +9,7 @@
   z-index: 50;
   background-color: #fff;
   transition: transform 218ms ease;
-  transform: translate(@preview-panel-width + 10px);
+  transform: translate(@preview-panel-width + 20%);
   box-shadow: 0 7px 21px rgba(0,0,0,.3);
   &.inside {
     transform: translate(0);
