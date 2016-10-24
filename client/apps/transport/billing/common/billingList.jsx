@@ -5,23 +5,20 @@ import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling } from 'common/reducers/transportBilling';
+import { loadBillings, updateBilling, sendBilling, changeBillingsFilter } from 'common/reducers/transportBilling';
 import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
+import SearchBar from 'client/components/search-bar';
 
 const formatMsg = format(messages);
 
 @injectIntl
-@connectNav({
-  depth: 2,
-  moduleName: 'transport',
-})
+
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -29,8 +26,9 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     billings: state.transportBilling.billings,
   }),
-  { loadBillings, updateBilling, sendBilling }
+  { loadBillings, updateBilling, sendBilling, changeBillingsFilter }
 )
+
 export default class BillingList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -40,6 +38,7 @@ export default class BillingList extends React.Component {
     loadBillings: PropTypes.func.isRequired,
     updateBilling: PropTypes.func.isRequired,
     sendBilling: PropTypes.func.isRequired,
+    changeBillingsFilter: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
   }
   static contextTypes = {
@@ -50,9 +49,15 @@ export default class BillingList extends React.Component {
     cancelChargeModalVisible: false,
     billingId: -1,
     fromId: -1,
+    totalCharge: 0,
   }
   componentDidMount() {
     this.handleTableLoad();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.billings.searchValue !== nextProps.billings.searchValue) {
+      this.handleTableLoad(nextProps.billings.searchValue);
+    }
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAddBtnClicked = () => {
@@ -77,7 +82,7 @@ export default class BillingList extends React.Component {
       }
     });
   }
-  handleTableLoad = () => {
+  handleTableLoad = (searchValue) => {
     const { tenantId, type } = this.props;
     const { pageSize, currentPage } = this.props.billings;
     this.props.loadBillings({
@@ -85,19 +90,24 @@ export default class BillingList extends React.Component {
       tenantId,
       pageSize,
       currentPage,
+      searchValue: searchValue !== undefined ? searchValue : this.props.billings.searchValue,
     });
   }
-  handleShowCancelChargeModal = (billingId, fromId) => {
-    this.setState({ billingId, fromId });
+  handleShowCancelChargeModal = (billingId, fromId, totalCharge) => {
+    this.setState({ billingId, fromId, totalCharge });
     this.setState({ cancelChargeModalVisible: true });
   }
   handleExportExcel = () => {
     const { tenantId, type } = this.props;
     window.open(`${API_ROOTS.default}v1/transport/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
-    this.handleClose();
+    // this.handleClose();
+  }
+  handleSearchInput = (value) => {
+    this.props.changeBillingsFilter('searchValue', value);
   }
   render() {
     const { tenantId, type } = this.props;
+    const { searchValue } = this.props.billings;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadBillings(params),
       resolve: result => result.data,
@@ -114,6 +124,7 @@ export default class BillingList extends React.Component {
           tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
+          searchValue,
         };
         return params;
       },
@@ -213,7 +224,7 @@ export default class BillingList extends React.Component {
         } else if (record.status === 5) {
           return (
             <div>
-              <a onClick={() => this.handleShowCancelChargeModal(record.id, record.from_id)}>核销</a>
+              <a onClick={() => this.handleShowCancelChargeModal(record.id, record.from_id, record.total_charge)}>核销</a>
             </div>
           );
         } else if (record.status === 6) {
@@ -231,6 +242,11 @@ export default class BillingList extends React.Component {
       <div>
         <header className="top-bar">
           <span>{this.msg(this.props.type)}{this.msg('billing')}</span>
+          <div className="tools">
+            <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+              value={this.props.billings.searchValue}
+            />
+          </div>
         </header>
         <div className="main-content">
           <div className="page-body">
@@ -243,7 +259,7 @@ export default class BillingList extends React.Component {
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
-              billingId={this.state.billingId} fromId={this.state.fromId} handleOk={this.handleTableLoad}
+              billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
             />
           </div>
         </div>

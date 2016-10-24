@@ -3,7 +3,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import CreateBilling from '../common/createBilling';
 
 @connectNav({
-  depth: 2,
+  depth: 3,
   moduleName: 'transport',
 })
 export default class CreateReceivableBilling extends React.Component {

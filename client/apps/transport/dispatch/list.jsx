@@ -241,6 +241,11 @@ export default class DispatchList extends React.Component {
         width: 200,
         render: o => <TrimSpan text={o} maxLen={15} />,
       }, {
+        title: this.msg('refCustomerNo'),
+        dataIndex: 'ref_external_no',
+        width: 100,
+        render: o => <TrimSpan text={o} />,
+      }, {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',
         width: 80,

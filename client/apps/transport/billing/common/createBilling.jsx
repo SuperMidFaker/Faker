@@ -3,7 +3,6 @@ import { Button, InputNumber, Icon, Checkbox, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/reducers/transportBilling';
@@ -18,10 +17,6 @@ import ActDate from '../../common/actDate';
 const formatMsg = format(messages);
 
 @injectIntl
-@connectNav({
-  depth: 2,
-  moduleName: 'transport',
-})
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -32,7 +27,6 @@ const formatMsg = format(messages);
   }),
   { loadFeesByChooseModal, createBilling, updateBillingFees, loadShipmtDetail }
 )
-
 export default class CreateBilling extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -146,6 +140,10 @@ export default class CreateBilling extends React.Component {
       render: (o, record) => {
         return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
       },
+    }, {
+      title: '客户单号',
+      dataIndex: 'ref_external_no',
+      render: o => <TrimSpan text={o} />,
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',

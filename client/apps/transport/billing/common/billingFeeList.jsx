@@ -3,7 +3,6 @@ import { Button, InputNumber, Checkbox, message, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
@@ -16,10 +15,6 @@ import ActDate from '../../common/actDate';
 const formatMsg = format(messages);
 
 @injectIntl
-@connectNav({
-  depth: 2,
-  moduleName: 'transport',
-})
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -30,7 +25,6 @@ const formatMsg = format(messages);
   }),
   { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail }
 )
-
 export default class BillingFeeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -149,12 +143,18 @@ export default class BillingFeeList extends React.Component {
     return '';
   }
   render() {
-    const { billing, tenantId, operation } = this.props;
+    const { billing, tenantId, operation, type } = this.props;
     let partnerName = '';
     if (tenantId === billing.srTenantId) {
       partnerName = billing.spName;
     } else if (tenantId === billing.spTenantId) {
       partnerName = billing.srName;
+    }
+    let partnerSourceType = '承运商';
+    if (type === 'payable') {
+      partnerSourceType = '承运商';
+    } else if (type === 'receivable') {
+      partnerSourceType = '客户';
     }
     const handleLableStyle = {
       marginRight: 30,
@@ -171,10 +171,9 @@ export default class BillingFeeList extends React.Component {
         return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
       },
     }, {
-      title: '客户',
-      render() {
-        return <TrimSpan text={partnerName} maxLen={10} />;
-      },
+      title: '客户单号',
+      dataIndex: 'ref_external_no',
+      render: o => <TrimSpan text={o} />,
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',
@@ -298,7 +297,7 @@ export default class BillingFeeList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{this.msg('partner')}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>
