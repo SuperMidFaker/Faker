@@ -158,23 +158,9 @@ export default class DelegationList extends Component {
     width: 120,
     dataIndex: 'weight',
   }, {
-    /*
-    title: '货物性质',
-    dataIndex: 'goods_type',
-    render: (o) => {
-      const decl = GOODSTYPES.filter(gd => gd.value === o)[0];
-      return decl && decl.text;
-    },
-  }, {
-    */
     title: this.msg('broker'),
     width: 180,
     dataIndex: 'decl_name',
-    render: o => <TrimSpan text={o} maxLen={8} />,
-  }, {
-    title: this.msg('inspbroker'),
-    width: 180,
-    dataIndex: 'insp_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('status'),
