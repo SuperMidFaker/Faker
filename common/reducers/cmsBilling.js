@@ -142,7 +142,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, BfdispIds: action.result.data };
     case actionTypes.ALTER_BILLINGFEES: {
       const billingFees = [...state.billingFees.data, action.data.fee];
-      const billing = calculateBillingCharges(billingFees.filter(item => item.status === 1));
+      const billing = calculateBillingCharges(billingFees.filter(item => item.billing_status === 1));
       return { ...state, billingFees: { ...state.billingFees, data: billingFees }, billing: { ...state.billing, ...billing } };
     }
     default:
