@@ -198,7 +198,8 @@ export const CMS_BILLING_STATUS = {
   3: '待对账',
   4: '已修改,待对方对账',
   5: '接受',
-  6: '已核销',
+  6: '已开票',
+  7: '已核销',
 };
 const MESSAGE_STATUS = {
   notRead: {

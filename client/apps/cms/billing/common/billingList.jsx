@@ -9,7 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling } from 'common/reducers/cmsBilling';
+import { loadBillings, updateBilling, sendBilling, billingInvoiced } from 'common/reducers/cmsBilling';
 import { CMS_BILLING_STATUS } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
@@ -29,7 +29,7 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     billings: state.cmsBilling.billings,
   }),
-  { loadBillings, updateBilling, sendBilling }
+  { loadBillings, updateBilling, sendBilling, billingInvoiced }
 )
 export default class BillingList extends React.Component {
   static propTypes = {
@@ -40,6 +40,7 @@ export default class BillingList extends React.Component {
     loadBillings: PropTypes.func.isRequired,
     updateBilling: PropTypes.func.isRequired,
     sendBilling: PropTypes.func.isRequired,
+    billingInvoiced: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
   }
   static contextTypes = {
@@ -91,10 +92,18 @@ export default class BillingList extends React.Component {
     this.setState({ billingId, fromId });
     this.setState({ cancelChargeModalVisible: true });
   }
+  handleInvoiced = (billingId) => {
+    this.props.billingInvoiced({ tenantId: this.props.tenantId, billingId }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
   handleExportExcel = () => {
     const { tenantId, type } = this.props;
-    window.open(`${API_ROOTS.default}v1/clearance/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
-    this.handleClose();
+    window.open(`${API_ROOTS.mongo}v1/clearance/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
   }
   render() {
     const { tenantId, type } = this.props;
@@ -124,7 +133,7 @@ export default class BillingList extends React.Component {
       title: this.msg('billingName'),
       dataIndex: 'name',
       render(o, record) {
-        return <Link to={`/clearance/billing/${type}/view/${record.id}`}>{o}</Link>;
+        return <Link to={`/clearance/billing/${type}/view/${record._id}`}>{o}</Link>;
       },
     }, {
       title: this.msg('startDate'),
@@ -213,10 +222,16 @@ export default class BillingList extends React.Component {
         } else if (record.status === 5) {
           return (
             <div>
-              <a onClick={() => this.handleShowCancelChargeModal(record._id, record.from_id)}>{this.msg('chargeOff')}</a>
+              <a onClick={() => this.handleInvoiced(record._id)}>{this.msg('invoiced')}</a>
             </div>
           );
         } else if (record.status === 6) {
+          return (
+            <div>
+              <a onClick={() => this.handleShowCancelChargeModal(record._id, record.from_id)}>{this.msg('chargeOff')}</a>
+            </div>
+          );
+        } else if (record.status === 7) {
           return (
             <div>
               <Link to={`/clearance/billing/${type}/view/${o}`}>{this.msg('view')}</Link>
