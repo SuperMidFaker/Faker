@@ -104,6 +104,10 @@ export default class FeesList extends React.Component {
         return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
       },
     }, {
+      title: '客户单号',
+      dataIndex: 'ref_external_no',
+      render: o => <TrimSpan text={o} />,
+    }, {
       title: '托运客户',
       dataIndex: 'p_sr_name',
       render(o) {

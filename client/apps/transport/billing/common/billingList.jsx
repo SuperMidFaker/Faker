@@ -49,6 +49,7 @@ export default class BillingList extends React.Component {
     cancelChargeModalVisible: false,
     billingId: -1,
     fromId: -1,
+    totalCharge: 0,
   }
   componentDidMount() {
     this.handleTableLoad();
@@ -92,8 +93,8 @@ export default class BillingList extends React.Component {
       searchValue: searchValue !== undefined ? searchValue : this.props.billings.searchValue,
     });
   }
-  handleShowCancelChargeModal = (billingId, fromId) => {
-    this.setState({ billingId, fromId });
+  handleShowCancelChargeModal = (billingId, fromId, totalCharge) => {
+    this.setState({ billingId, fromId, totalCharge });
     this.setState({ cancelChargeModalVisible: true });
   }
   handleExportExcel = () => {
@@ -223,7 +224,7 @@ export default class BillingList extends React.Component {
         } else if (record.status === 5) {
           return (
             <div>
-              <a onClick={() => this.handleShowCancelChargeModal(record.id, record.from_id)}>核销</a>
+              <a onClick={() => this.handleShowCancelChargeModal(record.id, record.from_id, record.total_charge)}>核销</a>
             </div>
           );
         } else if (record.status === 6) {
@@ -258,7 +259,7 @@ export default class BillingList extends React.Component {
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
-              billingId={this.state.billingId} fromId={this.state.fromId} handleOk={this.handleTableLoad}
+              billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
             />
           </div>
         </div>

@@ -9,6 +9,10 @@ export default defineMessages({
     id: 'transport.dispatch.ship.no',
     defaultMessage: '运单号',
   },
+  refCustomerNo: {
+    id: 'transport.acceptance.ref.customer.no',
+    defaultMessage: '客户单号',
+  },
   shipNoCount: {
     id: 'transport.dispatch.ship.no_count',
     defaultMessage: '运单数',

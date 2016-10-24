@@ -27,6 +27,7 @@ export default class CancelChargeModal extends React.Component {
     loginName: PropTypes.string.isRequired,
     billingId: PropTypes.number.isRequired,
     fromId: PropTypes.number.isRequired,
+    totalCharge: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
     handleOk: PropTypes.func.isRequired,
@@ -54,11 +55,11 @@ export default class CancelChargeModal extends React.Component {
     this.setState({ cancelCharge: e.target.value });
   }
   render() {
-    const { visible } = this.props;
+    const { visible, totalCharge } = this.props;
     return (
       <div>
         <Modal style={{ width: '680px' }} visible={visible}
-          title="核销金额" onOk={this.handleOk}
+          title={`核销金额 (账单总金额: ${totalCharge.toFixed(2)})`} onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
           <div style={{ width: 300, margin: '0 auto' }}>
