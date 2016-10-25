@@ -201,6 +201,12 @@ export const CMS_BILLING_STATUS = {
   6: '已开票',
   7: '已核销',
 };
+
+export const CMS_CIQ_STATUS = {
+  0: '未报检',
+  1: '已报检',
+};
+
 const MESSAGE_STATUS = {
   notRead: {
     key: 0,

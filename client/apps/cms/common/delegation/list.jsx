@@ -265,13 +265,12 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleCiqListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, ietype,
+  handleCiqListLoad = (currentPage) => {
+    const { tenantId, ietype,
       delegationlist: { pageSize, current } } = this.props;
     this.props.loadCiqTable({
       ietype,
       tenantId,
-      filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
     }).then((result) => {
@@ -504,7 +503,7 @@ export default class DelegationList extends Component {
               />
             </div>
           </div>}
-          {this.state.service === 1 && <CiqTable />}
+          {this.state.service === 1 && <CiqTable ietype={this.props.ietype} />}
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />

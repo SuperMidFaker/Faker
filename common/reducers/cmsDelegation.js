@@ -26,6 +26,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
   'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS', 'SET_PREW_STATUS',
   'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL',
+  'OPEN_CIQ_MODAL', 'CLOSE_CIQ_MODAL',
+  'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
 ]);
 
 const initialState = {
@@ -96,6 +98,10 @@ const initialState = {
     billSeqNo: '',
     delgNo: '',
   },
+  visibleCiqModal: false,
+  ciqModal: {
+    delgNo: '',
+  },
   delgDispShow: false,
   saved: false,
   delgDisp: {},
@@ -117,7 +123,7 @@ export default function reducer(state = initialState, action) {
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_CIQ_SUCCEED: {
-      return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
+      return { ...state, ciqlist: { ...action.result.data, loading: false } };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
@@ -193,6 +199,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleEfModal: true, efModal: action.data };
     case actionTypes.CLOSE_EF_MODAL:
       return { ...state, visibleEfModal: false, efModal: initialState.efModal };
+    case actionTypes.OPEN_CIQ_MODAL:
+      return { ...state, visibleCiqModal: true, ciqModal: action.data };
+    case actionTypes.CLOSE_CIQ_MODAL:
+      return { ...state, visibleCiqModal: false, ciqModal: initialState.ciqModal };
     case actionTypes.SET_DISP_STATUS:
       return { ...state, ...action.data };
     case actionTypes.LOAD_DELGDISP_SUCCEED:
@@ -598,13 +608,23 @@ export function openEfModal({ entryHeadId, delgNo, billSeqNo }) {
     data: { entryHeadId, delgNo, billSeqNo },
   };
 }
+export function openCiqModal({ delgNo }) {
+  return {
+    type: actionTypes.OPEN_CIQ_MODAL,
+    data: { delgNo },
+  };
+}
 
 export function closeEfModal() {
   return {
     type: actionTypes.CLOSE_EF_MODAL,
   };
 }
-
+export function closeCiqModal() {
+  return {
+    type: actionTypes.CLOSE_CIQ_MODAL,
+  };
+}
 export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
   return {
     [CLIENT_API]: {
@@ -616,6 +636,21 @@ export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
       endpoint: 'v1/cms/fill/declno',
       method: 'post',
       data: { entryNo, entryHeadId, billSeqNo, delgNo },
+    },
+  };
+}
+
+export function fillCustomsNo({ entryNo, delgNo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILL_CUSTOMSNO,
+        actionTypes.FILL_CUSTOMSNO_SUCCEED,
+        actionTypes.FILL_CUSTOMSNO_FAIL,
+      ],
+      endpoint: 'v1/cms/fill/customsno',
+      method: 'post',
+      data: { entryNo, delgNo },
     },
   };
 }

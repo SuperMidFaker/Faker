@@ -1,19 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Radio } from 'antd';
+import { message, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqTable } from 'common/reducers/cmsDelegation';
+import { loadCiqTable, openCiqModal } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
+import { CMS_CIQ_STATUS } from 'common/constants';
+import RowUpdater from './rowUpdater';
+import CiqnoFillModal from './modals/ciqNoFill';
 
 const formatMsg = format(messages);
-
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -23,7 +23,7 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     ciqlist: state.cmsDelegation.ciqlist,
   }),
-  { loadCiqTable }
+  { loadCiqTable, openCiqModal }
 )
 export default class CiqTable extends Component {
   static propTypes = {
@@ -45,26 +45,44 @@ export default class CiqTable extends Component {
   }, {
     title: this.msg('delgClient'),
     width: 200,
-    dataIndex: 'customer_name',
+    dataIndex: 'send_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('inspbroker'),
     width: 140,
-    dataIndex: 'insp_name',
+    dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('customsId'),
     width: 140,
     dataIndex: 'customs_no',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: (o, record) => {
+      if (o) {
+        return o;
+      } else {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <RowUpdater onHit={this.handleCiqNoFill} row={record}
+              label={<Icon type="edit" />}
+            />
+          </PrivilegeCover>
+        );
+      }
+    },
   }, {
     title: this.msg('status'),
     width: 130,
-    dataIndex: 'status',
+    dataIndex: 'ciq_status',
+    render(o) {
+      return CMS_CIQ_STATUS[o];
+    },
   }, {
-    title: this.msg('lastActTime'),
+    title: this.msg('ciqTime'),
     width: 150,
-    dataIndex: 'last_act_time',
+    dataIndex: 'ciq_time',
+    render: (o) => {
+      return `${moment(o).format('MM.DD HH:mm')}`;
+    },
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadCiqTable(params),
@@ -89,9 +107,25 @@ export default class CiqTable extends Component {
     },
     remotes: this.props.ciqlist,
   })
-
+  handleCiqNoFill = (row) => {
+    this.props.openCiqModal({
+      delgNo: row.delg_no,
+    });
+  }
+  handleTableLoad = () => {
+    this.props.loadCiqTable({
+      ietype: this.props.ietype,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.ciqlist.pageSize,
+      currentPage: this.props.ciqlist.current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
   render() {
-    const { ciqlist, listFilter } = this.props;
+    const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
     const columns = [...this.columns];
     return (
@@ -99,6 +133,7 @@ export default class CiqTable extends Component {
         <div className="panel-body table-panel expandable">
           <Table columns={columns} dataSource={this.dataSource} />
         </div>
+        <CiqnoFillModal reload={this.handleTableLoad} />
       </div>
     );
   }
