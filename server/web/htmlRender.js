@@ -4,16 +4,15 @@ import serialize from 'serialize-javascript';
 import { match } from 'react-router';
 import { addLocaleData } from 'react-intl';
 import createStore from 'common/webReduxStore';
-import routes from 'client/apps/routes';
 import appWrapped from 'client/common/appWrapped';
 import fetchInitialState from '../util/fetch-initial-state';
 import thirdPart from './thirdPart';
 
-const App = appWrapped(routes);
-
 let trackJs = '';
+let routes;
 if (__PROD__) {
   trackJs = thirdPart;
+  routes = require('../../client/apps/routes');
 }
 
 function renderAsHtml(pageCss, pageJs, content) {
@@ -52,6 +51,26 @@ function renderAsHtml(pageCss, pageJs, content) {
 </html>`;
 }
 
+function inlineRenderHtmls(store, content) {
+  const assets = webpackIsomorphicTools.assets();
+  let pageCss = '';
+  Object.keys(assets.styles).forEach((style) => {
+    pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
+  });
+            // manifest could be inline script
+  let pageJs = `
+            <script>
+            __INITIAL_STATE__ = ${serialize(store.getState())};
+            </script>`;
+  pageJs += assets.javascript.manifest ? `<script src=${assets.javascript.manifest}></script>` : '';
+  pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
+  Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'manifest')
+            .forEach((script) => {
+              pageJs += `<script src=${assets.javascript[script]}></script>`;
+            });
+  return renderAsHtml(pageCss, pageJs, content);
+}
+
 // https://github.com/koa-modules/locale/blob/master/index.js
 function getRequestLocale(request) {
   const accept = request.acceptsLanguages() || '';
@@ -75,6 +94,9 @@ export default function render(request, locale) {
     const url = request.url;
     const cookie = request.get('cookie');
     const store = createStore(undefined, request);
+    if (__DEV__) {
+      return resolve(inlineRenderHtmls(store, ''));
+    }
     const curLocale = locale || getRequestLocale(request);
     store.getState().intl = { locale: curLocale };
     match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {
@@ -93,25 +115,10 @@ export default function render(request, locale) {
         }
         fetchInitialState(props.components, store, cookie, props.location, props.params)
           .then(() => {
+            const App = appWrapped(routes);
             const component = (<App routingContext={props} store={store} />);
             const content = ReactDom.renderToString(component);
-            const assets = webpackIsomorphicTools.assets();
-            let pageCss = '';
-            Object.keys(assets.styles).forEach((style) => {
-              pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
-            });
-            // manifest could be inline script
-            let pageJs = `
-            <script>
-            __INITIAL_STATE__ = ${serialize(store.getState())};
-            </script>`;
-            pageJs += assets.javascript.manifest ? `<script src=${assets.javascript.manifest}></script>` : '';
-            pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
-            Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'manifest')
-            .forEach((script) => {
-              pageJs += `<script src=${assets.javascript[script]}></script>`;
-            });
-            const htmls = renderAsHtml(pageCss, pageJs, content);
+            const htmls = inlineRenderHtmls(store, content);
             resolve(htmls);
           }).catch((e) => {
             reject(e);
