@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFees, importAdvanceCharge, changeFeesFilter } from 'common/reducers/transportBilling';
+import { loadFees, importAdvanceCharge, changeFeesFilter, loadPartners } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
@@ -16,6 +16,7 @@ import PreviewPanel from '../../shipment/modals/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
+import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -25,6 +26,7 @@ function fetchData({ state, dispatch }) {
     pageSize: state.transportBilling.fees.pageSize,
     currentPage: state.transportBilling.fees.currentPage,
     searchValue: state.transportBilling.fees.searchValue,
+    filters: JSON.stringify(state.transportBilling.fees.filters),
   }));
 }
 
@@ -41,7 +43,7 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     fees: state.transportBilling.fees,
   }),
-  { loadFees, importAdvanceCharge, loadShipmtDetail, changeFeesFilter }
+  { loadFees, importAdvanceCharge, loadShipmtDetail, changeFeesFilter, loadPartners }
 )
 
 export default class FeesList extends React.Component {
@@ -55,6 +57,19 @@ export default class FeesList extends React.Component {
     importAdvanceCharge: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     changeFeesFilter: PropTypes.func.isRequired,
+    loadPartners: PropTypes.func.isRequired,
+  }
+  state = {
+    customers: [],
+    carriers: [],
+  }
+  componentWillMount() {
+    this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer).then((result) => {
+      this.setState({ customers: result.data });
+    });
+    this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation).then((result) => {
+      this.setState({ carriers: result.data });
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
@@ -63,27 +78,24 @@ export default class FeesList extends React.Component {
   }
   handleTableLoad = (searchValue) => {
     const { tenantId } = this.props;
-    const { pageSize, currentPage } = this.props.fees;
+    const { pageSize, currentPage, filters } = this.props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
       currentPage,
       searchValue: searchValue !== undefined ? searchValue : this.props.fees.searchValue,
+      filters: JSON.stringify(filters),
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleImportAdvanceCharge = () => {
-    const { tenantId, loginId, loginName, fees } = this.props;
+    const { tenantId, loginId, loginName } = this.props;
     this.props.importAdvanceCharge({ tenantId, loginId, loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
         message.info('导入成功');
-        this.props.loadFees({
-          tenantId,
-          pageSize: fees.pageSize,
-          currentPage: fees.currentPage,
-        });
+        this.handleTableLoad();
       }
     });
   }
@@ -95,6 +107,7 @@ export default class FeesList extends React.Component {
     this.props.changeFeesFilter('searchValue', value);
   }
   render() {
+    const { customers, carriers } = this.state;
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
@@ -113,6 +126,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
+      filters: customers.map(item => ({ text: item.name, value: item.name })),
     }, {
       title: '运输费用',
       dataIndex: 'p_total_charge',
@@ -166,6 +180,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
+      filters: carriers.map(item => ({ text: item.name, value: item.name })),
     }, {
       title: '运输成本',
       dataIndex: 'total_charge',
@@ -298,12 +313,13 @@ export default class FeesList extends React.Component {
         showQuickJumper: false,
         pageSize: result.pageSize,
       }),
-      getParams: (pagination) => {
+      getParams: (pagination, filters) => {
         const params = {
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           searchValue: this.props.fees.searchValue,
+          filters: JSON.stringify(filters),
         };
         return params;
       },

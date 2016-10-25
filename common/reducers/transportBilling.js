@@ -30,6 +30,10 @@ const initialState = {
     currentPage: 1,
     totalCount: 0,
     data: [],
+    filters: {
+      p_sr_name: [],
+      sp_name: [],
+    },
   },
   billings: {
     searchValue: '',
@@ -205,7 +209,7 @@ export function loadPartners(tenantId, typeCode) {
   };
 }
 
-export function loadFees({ tenantId, pageSize, currentPage, searchValue }) {
+export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -215,7 +219,7 @@ export function loadFees({ tenantId, pageSize, currentPage, searchValue }) {
       ],
       endpoint: 'v1/transport/fees',
       method: 'get',
-      params: { tenantId, pageSize, currentPage, searchValue },
+      params: { tenantId, pageSize, currentPage, searchValue, filters },
     },
   };
 }
