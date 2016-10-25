@@ -283,7 +283,7 @@ export default class Footer extends React.Component {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
               <ButtonGroup>
-                <Button type="primary" onClick={() => this.handleShipmtAccept(row.key)} >
+                <Button type="ghost" onClick={() => this.handleShipmtAccept(row.key)} >
                   接单
                 </Button>
                 <Button type="ghost" onClick={() => this.context.router.push(`/transport/shipment/edit/${row.shipmt_no}`)}>
@@ -296,7 +296,7 @@ export default class Footer extends React.Component {
         } else if (row.source === SHIPMENT_SOURCE.subcontracted) {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Button type="primary" onClick={() => this.handleShipmtAccept(row.key)} >
+              <Button type="ghost" onClick={() => this.handleShipmtAccept(row.key)} >
                 接单
               </Button>
             </PrivilegeCover>
@@ -336,7 +336,7 @@ export default class Footer extends React.Component {
         buttons = (
           <PrivilegeCover module="transport" feature="dispatch" action="create">
             <ButtonGroup>
-              <Button type="primary" onClick={() => this.handleDispatchDockShow(row)} >
+              <Button type="ghost" onClick={() => this.handleDispatchDockShow(row)} >
                 分配
               </Button>
               <Button type="ghost" onClick={() => this.handleSegmentDockShow(row)} >
@@ -349,7 +349,7 @@ export default class Footer extends React.Component {
         buttons = (
           <PrivilegeCover module="transport" feature="dispatch" action="edit">
             <ButtonGroup>
-              <Button type="primary" onClick={() => this.handleShipmtSend(row)} >
+              <Button type="ghost" onClick={() => this.handleShipmtSend(row)} >
                 发送
               </Button>
               <Button type="ghost" onClick={() => this.handleShipmtReturn(row)}>
@@ -440,7 +440,7 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <Button type="primary" onClick={() => this.handleShowPickModal(row)} >
+              <Button type="ghost" onClick={() => this.handleShowPickModal(row)} >
                 更新提货
               </Button>
             </PrivilegeCover>
@@ -451,7 +451,7 @@ export default class Footer extends React.Component {
               // 线下司机
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <Button type="primary" size="large"
+                <Button type="ghost" size="large"
                   onClick={() => this.handleShowPickModal(row)}
                 >
                   更新提货
@@ -496,7 +496,7 @@ export default class Footer extends React.Component {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <ButtonGroup>
-                <Button type="primary" onClick={() => this.handleShowDeliverModal(row)} >
+                <Button type="ghost" onClick={() => this.handleShowDeliverModal(row)} >
                   更新送货
                 </Button>
                 <Button type="ghost" onClick={() => this.handleShowTransitModal(row)} >
@@ -516,7 +516,7 @@ export default class Footer extends React.Component {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <ButtonGroup>
-                  <Button type="primary" onClick={() => this.handleShowDeliverModal(row)} >
+                  <Button type="ghost" onClick={() => this.handleShowDeliverModal(row)} >
                     更新送货
                   </Button>
                   <Button type="ghost" onClick={() => this.handleShowTransitModal(row)} >
@@ -567,7 +567,7 @@ export default class Footer extends React.Component {
         } else if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="primary" size="large"
+              <Button type="ghost" size="large"
                 onClick={() => this.handleShowPodModal(row)}
               >
                   上传回单
@@ -578,7 +578,7 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button type="primary" size="large"
+                <Button type="ghost" size="large"
                   onClick={() => this.handleShowPodModal(row)}
                 >
                     上传回单
@@ -609,7 +609,7 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="primary" onClick={() => this.handleShowPodModal(row)} >
+              <Button type="ghost" onClick={() => this.handleShowPodModal(row)} >
                   上传回单
               </Button>
             </PrivilegeCover>
@@ -618,7 +618,7 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button type="primary" onClick={() => this.handleShowPodModal(row)} >
+                <Button type="ghost" onClick={() => this.handleShowPodModal(row)} >
                     上传回单
                 </Button>
               </PrivilegeCover>
@@ -664,7 +664,7 @@ export default class Footer extends React.Component {
         // 重新上传
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <Button type="primary" size="large"
+            <Button type="ghost" size="large"
               onClick={() => this.handleResubmit(row)}
             >
                 重新上传回单
@@ -683,7 +683,7 @@ export default class Footer extends React.Component {
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="edit">
             <ButtonGroup>
-              <Button type="primary" onClick={() => this.handleAuditPass(row)} >
+              <Button type="ghost" onClick={() => this.handleAuditPass(row)} >
                 接受
               </Button>
               <Button type="ghost" onClick={() => this.handleAuditReturn(row)} >

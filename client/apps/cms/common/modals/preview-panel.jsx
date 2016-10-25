@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Tag } from 'antd';
+import { Button, Icon, Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BasicPane from './tabpanes/basic-pane';
@@ -11,6 +11,7 @@ import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
 import downloadMultiple from 'client/util/multipleDownloader';
 
 const TabPane = Tabs.TabPane;
+const ButtonGroup = Button.Group;
 
 @injectIntl
 @connect(
@@ -101,7 +102,7 @@ export default class PreviewPanel extends React.Component {
     const { delegation, files, delegateTracking } = previewer;
     if (previewer.status === 3 || previewer.status === 4) {
       return (
-        <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab="委托" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
@@ -118,7 +119,7 @@ export default class PreviewPanel extends React.Component {
       );
     }
     return (
-      <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+      <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
         <TabPane tab="委托" key="basic">
           <BasicPane delegation={delegation} files={files} />
         </TabPane>
@@ -137,93 +138,93 @@ export default class PreviewPanel extends React.Component {
     if (previewer.status === 0 && delegation.source === 1) {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-          <Button size="large" type="primary" onClick={this.handleAccept}>
+          <Button type="ghost" onClick={this.handleAccept}>
             接单
           </Button>
         </PrivilegeCover>
       );
     } else if (previewer.status === 0 && delegation.source === 2) {
       return (
-        <div>
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button size="large" type="default" style={{ marginRight: 20 }}
-              onClick={this.handleDispCancel}
-            >
+        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <ButtonGroup>
+            <Button type="default" onClick={this.handleDispCancel}>
               撤回
             </Button>
-          </PrivilegeCover>
-          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
-            <Icon type="download" />
-          </Button>
-        </div>
+            <Button type="ghost" onClick={this.handleFilesDownload}>
+              <Icon type="download" />
+            </Button>
+          </ButtonGroup>
+        </PrivilegeCover>
       );
     } else if (previewer.status === 1 && delegation.source === 1) {
       return (
-        <div>
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
+        <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+          <ButtonGroup>
+            <Button type="ghost" onClick={this.handleMake}>
               制单
             </Button>
-          </PrivilegeCover>
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <Button size="large" type="ghost" style={{ marginRight: 20 }} onClick={this.handleDisp}>
+            <Button type="ghost" onClick={this.handleDisp}>
               分配
             </Button>
-          </PrivilegeCover>
-          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
-            <Icon type="download" />
-          </Button>
-        </div>
+            <Button type="ghost" onClick={this.handleFilesDownload}>
+              <Icon type="download" />
+            </Button>
+          </ButtonGroup>
+        </PrivilegeCover>
       );
     } else if (previewer.status === 2 && delegation.source === 1) {
       return (
-        <div>
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <Button size="large" type="primary" style={{ marginRight: 20 }} onClick={this.handleMake}>
+        <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+          <ButtonGroup>
+            <Button type="ghost" onClick={this.handleMake}>
               制单
             </Button>
-          </PrivilegeCover>
-          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
-            <Icon type="download" />
-          </Button>
-        </div>
+            <Button type="ghost" onClick={this.handleFilesDownload}>
+              <Icon type="download" />
+            </Button>
+          </ButtonGroup>
+        </PrivilegeCover>
       );
     } else {
       return (
-        <div>
-          <Button size="large" type="primary" onClick={this.handleView}>
+        <ButtonGroup>
+          <Button type="ghost" onClick={this.handleView}>
           查看
           </Button>
-          <Button id="dlbutton" size="large" onClick={this.handleFilesDownload}>
+          <Button type="ghost" onClick={this.handleFilesDownload}>
             <Icon type="download" />
           </Button>
-        </div>
+        </ButtonGroup>
       );
     }
   }
   render() {
     const { visible, previewer } = this.props;
     const { delegation } = previewer;
+    const closer = (
+      <button
+        onClick={this.handleClose}
+        aria-label="Close"
+        className="ant-modal-close"
+      >
+        <span className="ant-modal-close-x" />
+      </button>);
     return (
       <div className={`preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
-            <Tag color="blue">{this.translateStatus(delegation.status, delegation.source)}</Tag>
+            <Badge status="processing" text={this.translateStatus(delegation.status, delegation.source)} />
             <div className="pull-right">
-              <Button type="ghost" shape="circle-outline" onClick={this.handleClose}>
-                <Icon type="cross" />
-              </Button>
+              <div className="toolbar">
+                {this.state.tabKey === 'basic' && this.button()}
+              </div>
+              {closer}
             </div>
           </div>
           <div className="body">
             {this.tablePan()}
           </div>
-          {this.state.tabKey === 'basic' &&
-            <div className="footer">
-              {this.button()}
-            </div>
-          }
         </div>
       </div>
     );

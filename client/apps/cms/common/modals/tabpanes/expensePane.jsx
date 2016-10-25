@@ -94,11 +94,11 @@ export default class ExpensePane extends React.Component {
     const cushDataSource = expenses.cush_charges;
     return (
       <div className="pane-content tab-pane">
-        <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 16 }}>
-          <Table columns={columns} dataSource={servDataSource} rowKey="id" bordered pagination={false} />
+        <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+          <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
         </Card>
-        <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 16 }}>
-          <Table columns={cushColumns} dataSource={cushDataSource} rowKey="id" bordered pagination={false} />
+        <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+          <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
         </Card>
       </div>
     );
