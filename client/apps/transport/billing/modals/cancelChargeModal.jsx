@@ -67,7 +67,7 @@ export default class CancelChargeModal extends React.Component {
               type="number"
               onChange={this.handleChange}
               addonAfter="元"
-              placeHolder="请输入核销金额"
+              placeholder="请输入核销金额"
             />
           </div>
 

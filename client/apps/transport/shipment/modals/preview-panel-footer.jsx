@@ -359,7 +359,7 @@ export default class Footer extends React.Component {
           </PrivilegeCover>
         );
       } else if (row.disp_status > 0 && row.sr_tenant_id === tenantId) {
-        if (tracking.downstream_status === 1 || row.status === SHIPMENT_TRACK_STATUS.dispatched) {
+        if (tracking.downstream_status === 1) {
           buttons = (
             <PrivilegeCover module="transport" feature="dispatch" action="edit">
               <Tooltip placement="top" title="承运商尚未接单，可立即撤回">

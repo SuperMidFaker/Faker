@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Button, message } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
@@ -8,7 +8,7 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling, changeBillingsFilter } from 'common/reducers/transportBilling';
+import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling} from 'common/reducers/transportBilling';
 import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
@@ -26,7 +26,7 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     billings: state.transportBilling.billings,
   }),
-  { loadBillings, updateBilling, sendBilling, changeBillingsFilter }
+  { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling }
 )
 
 export default class BillingList extends React.Component {
@@ -39,6 +39,7 @@ export default class BillingList extends React.Component {
     updateBilling: PropTypes.func.isRequired,
     sendBilling: PropTypes.func.isRequired,
     changeBillingsFilter: PropTypes.func.isRequired,
+    removeBilling: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
   }
   static contextTypes = {
@@ -78,6 +79,17 @@ export default class BillingList extends React.Component {
         message.error(result.error.message);
       } else {
         message.info('发送成功');
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleRemoveBilling = (billingId) => {
+    const { loginId, tenantId, loginName } = this.props;
+    this.props.removeBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('删除成功');
         this.handleTableLoad();
       }
     });
@@ -198,9 +210,15 @@ export default class BillingList extends React.Component {
         if (record.status === 1) {
           return (
             <div>
-              <a onClick={() => this.handleSendBilling(record.id)}>发送</a>
+              <Popconfirm title="确定发送？" onConfirm={() => this.handleSendBilling(record.id)}>
+                <a>发送</a>
+              </Popconfirm>
               <span className="ant-divider" />
               <Link to={`/transport/billing/${type}/edit/${o}`}>修改</Link>
+              <span className="ant-divider" />
+              <Popconfirm title="确定删除？" onConfirm={() => this.handleRemoveBilling(record.id)}>
+                <a>删除</a>
+              </Popconfirm>
             </div>
           );
         } else if (record.status === 2) {

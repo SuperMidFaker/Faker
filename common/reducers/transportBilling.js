@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'CHECK_BILLING', 'CHECK_BILLING_SUCCEED', 'CHECK_BILLING_FAIL',
   'EDIT_BILLING', 'EDIT_BILLING_SUCCEED', 'EDIT_BILLING_FAIL',
   'ACCEPT_BILLING', 'ACCEPT_BILLING_SUCCEED', 'ACCEPT_BILLING_FAIL',
+  'REMOVE_BILLING', 'REMOVE_BILLING_SUCCEED', 'REMOVE_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
   'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
 ]);
@@ -352,6 +353,21 @@ export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
         actionTypes.ACCEPT_BILLING_FAIL,
       ],
       endpoint: 'v1/transport/acceptBilling',
+      method: 'post',
+      data: { tenantId, loginId, loginName, billingId },
+    },
+  };
+}
+
+export function removeBilling({ tenantId, loginId, loginName, billingId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_BILLING,
+        actionTypes.REMOVE_BILLING_SUCCEED,
+        actionTypes.REMOVE_BILLING_FAIL,
+      ],
+      endpoint: 'v1/transport/removeBilling',
       method: 'post',
       data: { tenantId, loginId, loginName, billingId },
     },
