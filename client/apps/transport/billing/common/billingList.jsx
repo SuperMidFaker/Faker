@@ -8,7 +8,7 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling} from 'common/reducers/transportBilling';
+import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling } from 'common/reducers/transportBilling';
 import { SHIPMENT_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
