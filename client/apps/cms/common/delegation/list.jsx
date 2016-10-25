@@ -15,7 +15,7 @@ import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import CiqTable from './ciqTableList';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable } from 'common/reducers/cmsDelegation';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
@@ -42,10 +42,11 @@ const RadioButton = Radio.Button;
     preStatus: state.cmsDelegation.preStatus,
     delegateTracking: state.cmsDelegation.previewer.delegateTracking,
     delegation: state.cmsDelegation.previewer.delegation,
+    matchParam: state.cmsDelegation.matchParam,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp, loadCiqTable }
+    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote }
 )
 @connectNav({
   depth: 2,
@@ -74,6 +75,9 @@ export default class DelegationList extends Component {
     delegation: PropTypes.object.isRequired,
     loadPaneExp: PropTypes.func.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
+    loadDeclareWay: PropTypes.func.isRequired,
+    matchQuote: PropTypes.func.isRequired,
+    matchParam: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -86,6 +90,9 @@ export default class DelegationList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
+    }
+    if (nextProps.matchParam !== this.props.matchParam) {
+      this.handleMatchQuote(nextProps.matchParam);
     }
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accept') {
@@ -298,10 +305,24 @@ export default class DelegationList extends Component {
       this.handleCiqListLoad(1, filter);
     } else if (ev.target.value === 'cert') {
       this.setState({ service: 2 });
+      // const filter = { ...this.props.listFilter, status: ev.target.value };
     }
   }
-  handleMatchQuote = (row) => {
-    console.log('row:', row);
+  handleMQdeclWay = (row) => {
+    this.props.loadDeclareWay(row).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
+  handleMatchQuote = (matchParam) => {
+    this.props.matchQuote(matchParam).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.handleDelgListLoad();
+      }
+    });
   }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
@@ -437,13 +458,25 @@ export default class DelegationList extends Component {
               </span>
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && (record.sub_status === 3 || record.sub_status === null)) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
                 <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('delgDistribute')} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleMatchQuote} label={this.msg('matchQuote')} row={record} />
+                <RowUpdater onHit={this.handleMQdeclWay} label={this.msg('matchQuote')} row={record} />
+              </span>
+            </PrivilegeCover>
+          );
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && record.sub_status === 4) {
+          return (
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <span>
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('ciq')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('cert')} row={record} />
               </span>
             </PrivilegeCover>
           );

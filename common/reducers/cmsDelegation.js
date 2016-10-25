@@ -28,6 +28,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL',
   'OPEN_CIQ_MODAL', 'CLOSE_CIQ_MODAL',
   'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
+  'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
+  'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
 ]);
 
 const initialState = {
@@ -107,6 +109,7 @@ const initialState = {
   delgDisp: {},
   dispatch: {},
   partners: [],
+  matchParam: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -215,6 +218,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
+    case actionTypes.LOAD_DECLWAY_SUCCEED:
+      return { ...state, matchParam: action.result.data };
     default:
       return state;
   }
@@ -246,6 +251,35 @@ export function loadCiqTable(params) {
       endpoint: 'v1/cms/load/ciq',
       method: 'get',
       params,
+    },
+  };
+}
+export function loadDeclareWay(row) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECLWAY,
+        actionTypes.LOAD_DECLWAY_SUCCEED,
+        actionTypes.LOAD_DECLWAY_FAIL,
+      ],
+      endpoint: 'v1/cms/load/declareWay',
+      method: 'get',
+      params: row,
+    },
+  };
+}
+export function matchQuote(param) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MATCH_QUOTE,
+        actionTypes.MATCH_QUOTE_SUCCEED,
+        actionTypes.MATCH_QUOTE_FAIL,
+      ],
+      endpoint: 'v1/cms/match/quote',
+      method: 'post',
+      data: param,
+      origin: 'mongo',
     },
   };
 }
