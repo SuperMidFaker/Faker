@@ -22,6 +22,7 @@ const formatMsg = format(messages);
     loginId: state.account.loginId,
     loginName: state.account.username,
     ciqlist: state.cmsDelegation.ciqlist,
+    listFilter: state.cmsDelegation.listFilter,
   }),
   { loadCiqTable, openCiqModal }
 )
@@ -33,6 +34,7 @@ export default class CiqTable extends Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     ciqlist: PropTypes.object.isRequired,
+    listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -81,7 +83,9 @@ export default class CiqTable extends Component {
     width: 150,
     dataIndex: 'ciq_time',
     render: (o) => {
-      return `${moment(o).format('MM.DD HH:mm')}`;
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
     },
   }]
   dataSource = new Table.DataSource({
@@ -116,6 +120,7 @@ export default class CiqTable extends Component {
     this.props.loadCiqTable({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
+      filter: JSON.stringify(this.props.listFilter),
       pageSize: this.props.ciqlist.pageSize,
       currentPage: this.props.ciqlist.current,
     }).then((result) => {

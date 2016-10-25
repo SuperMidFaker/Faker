@@ -123,7 +123,7 @@ export default function reducer(state = initialState, action) {
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_CIQ_SUCCEED: {
-      return { ...state, ciqlist: { ...action.result.data, loading: false } };
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };

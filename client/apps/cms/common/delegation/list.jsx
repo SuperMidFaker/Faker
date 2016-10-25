@@ -265,11 +265,12 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleCiqListLoad = (currentPage) => {
-    const { tenantId, ietype,
+  handleCiqListLoad = (currentPage, filter) => {
+    const { tenantId, ietype, listFilter,
       delegationlist: { pageSize, current } } = this.props;
     this.props.loadCiqTable({
       ietype,
+      filter: JSON.stringify(filter || listFilter),
       tenantId,
       pageSize,
       currentPage: currentPage || current,
