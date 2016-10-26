@@ -55,14 +55,15 @@ module.exports = (serverPort, dirName, appName) => {
       mongo: 'https://api1.welogix.cn/',
       self: '/',
     });
+    config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
     if (env === 'aliyun') {
       config.set('API_ROOTS', {
         default: 'https://api.welogix.co/',
         mongo: 'https://api1.welogix.co/',
         self: '/',
       });
+      config.set('CDN_URL', '');
     }
-    config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }
