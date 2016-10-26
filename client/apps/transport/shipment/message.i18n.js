@@ -255,7 +255,7 @@ export default defineMessages({
   },
   trackIntransit: {
     id: 'transport.shipment.track.intransit',
-    defaultMessage: '待送货',
+    defaultMessage: '运输中',
   },
   trackDelivered: {
     id: 'transport.shipment.track.delivered',
