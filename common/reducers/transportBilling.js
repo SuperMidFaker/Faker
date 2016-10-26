@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
 ]);
 
 const initialState = {
+  loading: false,
   fees: {
     searchValue: '',
     pageSize: 10,
@@ -133,8 +134,12 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
+    case actionTypes.LOAD_FEES:
+      return { ...state, loading: true };
     case actionTypes.LOAD_FEES_SUCCEED:
-      return { ...state, fees: { ...state.fees, ...action.result.data } };
+      return { ...state, fees: { ...state.fees, ...action.result.data }, loading: false };
+    case actionTypes.LOAD_FEES_FAIL:
+      return { ...state, fees: { ...state.fees, ...action.result.data }, loading: false };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data.data);
       const fees = action.result.data.data.map((item) => {
@@ -167,8 +172,12 @@ export default function reducer(state = initialState, action) {
         modifyTimes: billing.modify_times,
       } };
     }
+    case actionTypes.LOAD_BILLINGS:
+      return { ...state, loading: true };
     case actionTypes.LOAD_BILLINGS_SUCCEED:
-      return { ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees };
+      return { ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees, loading: false };
+    case actionTypes.LOAD_BILLINGS_FAIL:
+      return { ...state, loading: false };
     case actionTypes.CREATE_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
     case actionTypes.CHECK_BILLING_SUCCEED:

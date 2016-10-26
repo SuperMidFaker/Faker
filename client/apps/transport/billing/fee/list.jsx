@@ -42,6 +42,7 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     loginName: state.account.username,
     fees: state.transportBilling.fees,
+    loading: state.transportBilling.loading,
   }),
   { loadFees, importAdvanceCharge, loadShipmtDetail, changeFeesFilter, loadPartners }
 )
@@ -58,6 +59,7 @@ export default class FeesList extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
   }
   state = {
     customers: [],
@@ -108,6 +110,7 @@ export default class FeesList extends React.Component {
   }
   render() {
     const { customers, carriers } = this.state;
+    const { loading } = this.props;
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
@@ -342,7 +345,7 @@ export default class FeesList extends React.Component {
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 2000 }} />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 2000 }} loading={loading} />
             </div>
           </div>
         </div>

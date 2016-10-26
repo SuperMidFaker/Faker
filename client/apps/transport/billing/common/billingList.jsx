@@ -25,6 +25,7 @@ const formatMsg = format(messages);
     loginId: state.account.loginId,
     loginName: state.account.username,
     billings: state.transportBilling.billings,
+    loading: state.transportBilling.loading,
   }),
   { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
 )
@@ -42,6 +43,7 @@ export default class BillingList extends React.Component {
     removeBilling: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
     loadPartners: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -131,7 +133,7 @@ export default class BillingList extends React.Component {
   }
   render() {
     const { customers, carriers } = this.state;
-    const { tenantId, type } = this.props;
+    const { tenantId, type, loading } = this.props;
     const { searchValue } = this.props.billings;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadBillings(params),
@@ -289,7 +291,7 @@ export default class BillingList extends React.Component {
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
