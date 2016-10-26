@@ -6,7 +6,7 @@ import { renderLoc } from './consignLocation';
 const TimelineItem = Timeline.Item;
 export default class TrackingTimeline extends React.Component {
   static propTypes = {
-    points: PropTypes.object.isRequired,
+    points: PropTypes.array.isRequired,
   }
   render() {
     const points = [];

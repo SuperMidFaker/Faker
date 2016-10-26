@@ -13,6 +13,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import Footer from './preview-panel-footer';
 import ShareShipmentModal from './share-shipment';
+import ShipmentSchedule from './shipmentSchedule';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -179,7 +180,9 @@ export default class PreviewPanel extends React.Component {
                 {closer}
               </div>
             </div>
+
             <div className="body">
+              <ShipmentSchedule />
               {this.renderTabs(shipmt.status)}
             </div>
           </div>

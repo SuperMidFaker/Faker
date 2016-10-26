@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHIPMENT_LOGS', 'SHIPMENT_LOGS_SUCCEED', 'SHIPMENT_LOGS_FAIL',
   'SHIPMENT_SEARCH', 'SHIPMENT_SEARCH_SUCCEED', 'SHIPMENT_SEARCH_FAIL',
   'LOAD_SHIPMENT_POINTS', 'LOAD_SHIPMENT_POINTS_SUCCEED', 'LOAD_SHIPMENT_POINTS_FAIL',
+  'REMOVE_SHIPMENT_POINT', 'REMOVE_SHIPMENT_POINT_SUCCEED', 'REMOVE_SHIPMENT_POINT_FAIL',
   'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
   'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
   'SHOW_CHANGE_SHIPMENT_MODAL',
@@ -167,6 +168,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SHIPMENT_LOGS_SUCCEED: {
       return { ...state, statistics: { ...state.statistics, logs: action.result.data } };
+    }
+    case actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, points: state.previewer.points.filter(item => item.id !== action.data.pointId) } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -394,6 +398,21 @@ export function loadShipmtPoints(shipmtNo) {
       endpoint: 'v1/transport/shipment/points',
       method: 'get',
       params: { shipmtNo },
+    },
+  };
+}
+
+export function removeShipmtPoint(pointId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_SHIPMENT_POINT,
+        actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED,
+        actionTypes.REMOVE_SHIPMENT_POINT_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/removePoint',
+      method: 'post',
+      data: { pointId },
     },
   };
 }
