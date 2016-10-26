@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Timeline, Icon, Popconfirm } from 'antd';
+import { Card, Timeline, Icon, Popconfirm } from 'antd';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -36,12 +36,14 @@ export default class TrackingPane extends React.Component {
       });
     });
     const trackingSteps = points.map((s, i) => {
-      let color = 'blue';
+      let color = 'green';
+      let dotType = (<Icon type="environment-o" style={{ fontSize: '14px' }} />);
       if (i === 0) {
-        color = 'green';
+        color = 'blue';
+        dotType = (<Icon type="environment" style={{ fontSize: '20px' }} />);
       }
       return (
-        <Timeline.Item key={i} color={color}>
+        <Timeline.Item dot={dotType} key={i} color={color}>
           {s.title} {s.description}
           <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id)}>
             <Icon type="close" className="timeline-remove" />
@@ -50,7 +52,9 @@ export default class TrackingPane extends React.Component {
       );
     });
     return (
-      <Timeline>{trackingSteps}</Timeline>
+      <Card>
+        <Timeline>{trackingSteps}</Timeline>
+      </Card>
     );
   }
 }

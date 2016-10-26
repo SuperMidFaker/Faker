@@ -122,22 +122,29 @@ export default class DetailPane extends React.Component {
     let goodsInfo = `${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`;
     if (shipmt.status <= 3) {
       shipmtSchedule = (<div>{this.msg('shipmtSchedule')} {shipmt.transit_time || '当'}{this.msg('day')}
-        <a onClick={this.handleChangeTransitConsigner}>修改发货信息</a>
-        <span className="ant-divider" />
-        <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
-        <span className="ant-divider" />
-        <a onClick={this.handleChangeTransitTime}>修改时间信息</a>
+        <div className="extra-actions">
+          <a onClick={this.handleChangeTransitConsigner}>修改发货信息</a>
+          <span className="ant-divider" />
+          <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
+          <span className="ant-divider" />
+          <a onClick={this.handleChangeTransitTime}>修改时间信息</a>
+        </div>
       </div>);
-      transitModeInfo = (<div>{this.msg('transitModeInfo')} {shipmt.transport_mode} <a onClick={this.handleChangeTransitMode}>修改</a></div>);
-      goodsInfo = (<div>{this.msg('goodsInfo')} {this.msg('totalCount')}: {shipmt.total_count || ''} / {this.msg('totalWeight')}: {shipmt.total_weight || ''}{this.msg('kilogram')} / {this.msg('totalVolume')}: {shipmt.total_volume || ''}{this.msg('cubicMeter')}
-        <a onClick={this.handleChangeTransitGoodsInfo}>修改</a></div>);
+      transitModeInfo = (
+        <div>{this.msg('transitModeInfo')} {shipmt.transport_mode}
+          <div className="extra-actions"><a onClick={this.handleChangeTransitMode}>修改</a></div>
+        </div>);
+      goodsInfo = (
+        <div>{this.msg('goodsInfo')} {this.msg('totalCount')}: {shipmt.total_count || ''} / {this.msg('totalWeight')}: {shipmt.total_weight || ''}{this.msg('kilogram')} / {this.msg('totalVolume')}: {shipmt.total_volume || ''}{this.msg('cubicMeter')}
+          <div className="extra-actions"><a onClick={this.handleChangeTransitGoodsInfo}>修改</a></div>
+        </div>);
     }
 
     return (
       <div className="pane-content tab-pane">
         <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
           <Panel header={this.msg('customerInfo')} key="customer">
-            <Col span="24">
+            <Col span="12">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
                 field={shipmt.customer_name} fieldCol={{ span: 16 }}
               />

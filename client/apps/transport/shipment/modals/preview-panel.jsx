@@ -125,6 +125,9 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
+          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
+            <TrackingPane />
+          </TabPane>
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
           </TabPane>
@@ -134,9 +137,6 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtLogs')} key="logs">
             <LogPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
-            <TrackingPane />
-          </TabPane>
         </Tabs>
       );
     } else {
@@ -145,14 +145,14 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
+          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
+            <TrackingPane />
+          </TabPane>
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
           </TabPane>
           <TabPane tab={this.msg('shipmtLogs')} key="logs">
             <LogPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
-            <TrackingPane />
           </TabPane>
         </Tabs>
       );
@@ -161,11 +161,7 @@ export default class PreviewPanel extends React.Component {
   render() {
     const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;
     const closer = (
-      <button
-        onClick={this.handleClose}
-        aria-label="Close"
-        className="ant-modal-close"
-      >
+      <button onClick={this.handleClose} aria-label="Close" className="ant-modal-close">
         <span className="ant-modal-close-x" />
       </button>);
     return (
@@ -180,7 +176,6 @@ export default class PreviewPanel extends React.Component {
                 {closer}
               </div>
             </div>
-
             <div className="body">
               <ShipmentSchedule />
               {this.renderTabs(shipmt.status)}
