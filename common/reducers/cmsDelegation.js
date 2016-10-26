@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
   'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
   'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
+  'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
 ]);
 
 const initialState = {
@@ -40,6 +41,12 @@ const initialState = {
     data: [],
   },
   ciqlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  certlist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
@@ -127,6 +134,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_CIQ_SUCCEED: {
       return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
+    }
+    case actionTypes.LOAD_CERT_SUCCEED: {
+      return { ...state, certlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
@@ -249,6 +259,20 @@ export function loadCiqTable(params) {
         actionTypes.LOAD_CIQ_FAIL,
       ],
       endpoint: 'v1/cms/load/ciq',
+      method: 'get',
+      params,
+    },
+  };
+}
+export function loadCertTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CERT,
+        actionTypes.LOAD_CERT_SUCCEED,
+        actionTypes.LOAD_CERT_FAIL,
+      ],
+      endpoint: 'v1/cms/load/cert',
       method: 'get',
       params,
     },

@@ -15,8 +15,9 @@ import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import CiqTable from './ciqTableList';
+import CertTable from './certTableList';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
-  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable } from 'common/reducers/cmsDelegation';
+  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertTable } from 'common/reducers/cmsDelegation';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
@@ -46,7 +47,7 @@ const RadioButton = Radio.Button;
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote }
+    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote, loadCertTable }
 )
 @connectNav({
   depth: 2,
@@ -287,6 +288,21 @@ export default class DelegationList extends Component {
       }
     });
   }
+  handleCertListLoad = (currentPage, filter) => {
+    const { tenantId, ietype, listFilter,
+      delegationlist: { pageSize, current } } = this.props;
+    this.props.loadCertTable({
+      ietype,
+      filter: JSON.stringify(filter || listFilter),
+      tenantId,
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
   handleRadioChange = (ev) => {
     this.setState({ service: 0 });
     if (ev.target.value === this.props.listFilter.status) {
@@ -305,7 +321,8 @@ export default class DelegationList extends Component {
       this.handleCiqListLoad(1, filter);
     } else if (ev.target.value === 'cert') {
       this.setState({ service: 2 });
-      // const filter = { ...this.props.listFilter, status: ev.target.value };
+      const filter = { ...this.props.listFilter, status: ev.target.value };
+      this.handleCertListLoad(1, filter);
     }
   }
   handleMQdeclWay = (row) => {
@@ -554,6 +571,7 @@ export default class DelegationList extends Component {
             </div>
           </div>}
           {this.state.service === 1 && <CiqTable ietype={this.props.ietype} />}
+          {this.state.service === 2 && <CertTable ietype={this.props.ietype} />}
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />

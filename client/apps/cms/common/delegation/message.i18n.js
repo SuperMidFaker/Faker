@@ -125,6 +125,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.inspbroker',
     defaultMessage: '报检企业',
   },
+  certbroker: {
+    id: 'cms.delegation.delg.inspbroker',
+    defaultMessage: '鉴定办证企业',
+  },
   goodsType: {
     id: 'cms.delegation.delg.goodstype',
     defaultMessage: '货物类型',
@@ -313,6 +317,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.cert',
     defaultMessage: '鉴定办证',
   },
+  certOp: {
+    id: 'cms.delegation.certOp',
+    defaultMessage: '办证',
+  },
   dispatchMessage: {
     id: 'cms.delegation.message.dispatch',
     defaultMessage: '请选择供应商',
@@ -356,5 +364,9 @@ export default defineMessages({
   customsId: {
     id: 'cms.delegation.customsId',
     defaultMessage: '通关单号',
+  },
+  upload: {
+    id: 'cms.delegation.upload',
+    defaultMessage: '上传',
   },
 });
