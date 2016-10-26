@@ -488,6 +488,10 @@ export default class DelegationList extends Component {
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <span>
                 <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
               </span>
             </PrivilegeCover>
           );
@@ -516,18 +520,34 @@ export default class DelegationList extends Component {
         } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              <span>
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+              </span>
             </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              <span>
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+              </span>
             </PrivilegeCover>
           );
         } else {
           return (
-            <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
+            <span>
+              <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
+              <span className="ant-divider" />
+              <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+            </span>
           );
         }
       },
