@@ -52,12 +52,14 @@ export default class Dashboard extends React.Component {
     if (stage === 'acceptance' || stage === 'dispatch') sourceType = 'sp';
     let addonafter = '';
     if (arr.length === 0) return '';
-    if (arr.length > 1) addonafter = ` 等共 ${arr.length} 单`;
+    if (arr.length > 30) addonafter = ` 等共 ${arr.length} 单`;
     const newArr = arr.slice(0, 30);
     return newArr.map((item, index) => {
       return (
         <span>
-          <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}>
+          <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}
+            title={item.shipmt_no}
+          >
             {item.ref_external_no || item.shipmt_no}
           </a>
           {index !== newArr.length - 1 ? '、' : addonafter}
