@@ -621,7 +621,7 @@ export default class DispatchDock extends Component {
                     />
                   </div>
                   <div className="pane-content tab-pane">
-                    <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading}/>
+                    <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading} />
                   </div>
                 </TabPane>
                 <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
