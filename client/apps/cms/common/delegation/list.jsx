@@ -368,19 +368,35 @@ export default class DelegationList extends Component {
       }
     );
   }
-  handleDelegationAssign = (row) => {
-    this.props.loadDelgDisp(
+  handleDelegationAssign = (row, type) => {
+    if (row.ciq_name && type === 'ciq' && row.ciq_name !== null) {
+      this.props.loadDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker
-    );
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      type);
+    } else if (row.cert_name && type === 'cert' && row.cert_name !== null) {
+      this.props.loadDisp(
+      row.delg_no,
+      this.props.tenantId,
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      type);
+    } else {
+      this.props.loadDelgDisp(
+        row.delg_no,
+        this.props.tenantId,
+        PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+        type
+      );
+    }
     this.props.setDispStatus({ delgDispShow: true });
   }
-  handleDelegationCancel = (row) => {
+  handleDelegationCancel = (row, type) => {
     this.props.loadDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker);
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      type);
     this.props.setDispStatus({ delgDispShow: true });
   }
   closeDispDock = () => {
@@ -454,7 +470,7 @@ export default class DelegationList extends Component {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <span>
-                <RowUpdater onHit={this.handleDelegationCancel} label={this.msg('delgRecall')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
               </span>
             </PrivilegeCover>
           );
@@ -462,7 +478,7 @@ export default class DelegationList extends Component {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
-                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('delgDistribute')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
                 <span className="ant-divider" />
                 <RowUpdater onHit={this.handleMQdeclWay} label={this.msg('matchQuote')} row={record} />
               </span>
@@ -474,9 +490,9 @@ export default class DelegationList extends Component {
               <span>
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('ciq')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('cert')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
               </span>
             </PrivilegeCover>
           );

@@ -332,7 +332,7 @@ export function setSavedStatus(params) {
     data: params,
   };
 }
-export function loadDelgDisp(delgNo, tenantId, typeCode) {
+export function loadDelgDisp(delgNo, tenantId, typeCode, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -342,12 +342,12 @@ export function loadDelgDisp(delgNo, tenantId, typeCode) {
       ],
       endpoint: 'v1/cms/loadDelgDisp',
       method: 'get',
-      params: { delgNo, tenantId, typeCode },
+      params: { delgNo, tenantId, typeCode, type },
     },
   };
 }
 
-export function loadDisp(delgNo, tenantId, typeCode) {
+export function loadDisp(delgNo, tenantId, typeCode, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -357,7 +357,7 @@ export function loadDisp(delgNo, tenantId, typeCode) {
       ],
       endpoint: 'v1/cms/loadDisp',
       method: 'get',
-      params: { delgNo, tenantId, typeCode },
+      params: { delgNo, tenantId, typeCode, type },
     },
   };
 }
@@ -377,7 +377,7 @@ export function delgDispSave(delgDisp, dispatch, partner) {
   };
 }
 
-export function delDisp(delgNo, tenantId) {
+export function delDisp(delgNo, tenantId, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -387,7 +387,7 @@ export function delDisp(delgNo, tenantId) {
       ],
       endpoint: 'v1/cms/dispatch/del',
       method: 'post',
-      data: { delgNo, tenantId },
+      data: { delgNo, tenantId, type },
     },
   };
 }

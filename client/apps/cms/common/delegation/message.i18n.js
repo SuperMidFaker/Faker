@@ -285,6 +285,14 @@ export default defineMessages({
     id: 'cms.delegation.delg.dispatch',
     defaultMessage: '分配报关委托',
   },
+  ciqDispatch: {
+    id: 'cms.delegation.delg.dispatch',
+    defaultMessage: '分配报检委托',
+  },
+  certDispatch: {
+    id: 'cms.delegation.delg.dispatch',
+    defaultMessage: '分配鉴定办证委托',
+  },
   dispDecl: {
     id: 'cms.delegation.delg.dispDecl',
     defaultMessage: '报关分配: ',
@@ -307,7 +315,7 @@ export default defineMessages({
   },
   dispatchMessage: {
     id: 'cms.delegation.message.dispatch',
-    defaultMessage: '请选择报关供应商',
+    defaultMessage: '请选择供应商',
   },
   acceptSaveMessage: {
     id: 'cms.delegation.edit.message.accept',

@@ -11,8 +11,8 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 const FormItem = Form.Item;
 const formItemLayout = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 21 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
 };
 function noop() {}
 
@@ -84,7 +84,7 @@ export default class DelgDispatch extends Component {
   }]
   handleConfirm = () => {
     const { dispatch, tenantId } = this.props;
-    this.props.delDisp(dispatch.delg_no, tenantId
+    this.props.delDisp(dispatch.delg_no, tenantId, dispatch.recv_server_type
     ).then(
       (result) => {
         if (result.error) {
@@ -99,11 +99,10 @@ export default class DelgDispatch extends Component {
   handleSave = () => {
     const { delgDisp, dispatch, partners } = this.props;
     const recv = this.props.form.getFieldsValue();
-    const pts = partners.filter(pt => pt.partner_id === recv.decl_name);
+    const pts = partners.filter(pt => pt.partner_id === recv.recv_name);
     let partner = {};
     if (pts.length === 1) {
       partner = pts[0];
-      partner.server_type = '1';
       this.props.delgDispSave(delgDisp, dispatch, partner
       ).then((result) => {
         if (result.error) {
@@ -117,12 +116,24 @@ export default class DelgDispatch extends Component {
   render() {
     const { form: { getFieldDecorator }, delgDisp, partners, show, saved, dispatch } = this.props;
     const dataSource = [delgDisp];
+    let title = '';
+    let label = '';
+    if (dispatch.type === 'delg') {
+      title = this.msg('delgDispatch');
+      label = this.msg('dispDecl');
+    } else if (dispatch.type === 'ciq') {
+      title = this.msg('ciqDispatch');
+      label = this.msg('dispciq');
+    } else if (dispatch.type === 'cert') {
+      title = this.msg('certDispatch');
+      label = this.msg('dispCert');
+    }
     let dock = '';
     if (show) {
       dock = (
         <div className="dock-panel inside">
           <div className="panel-heading">
-            <span className="title">{this.msg('delgDispatch')}</span>
+            <span className="title">{title}</span>
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline" onClick={this.onClose}>
                 <Icon type="cross" />
@@ -131,8 +142,8 @@ export default class DelgDispatch extends Component {
           </div>
           <Card>
             <Form>
-              <FormItem label={this.msg('dispDecl')} {...formItemLayout}>
-                {getFieldDecorator('decl_name', { initialValue: dispatch.decl_name }
+              <FormItem label={label} {...formItemLayout}>
+                {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
                 )(<Select
                   showSearch
                   showArrow
