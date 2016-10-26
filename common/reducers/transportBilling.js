@@ -40,6 +40,10 @@ const initialState = {
     pageSize: 10,
     currentPage: 1,
     data: [],
+    filters: {
+      sr_name: [],
+      sp_name: [],
+    },
   },
   billing: {
     id: -1,
@@ -269,7 +273,7 @@ export function loadFeesByBillingId({ billingId, pageSize, currentPage }) {
   };
 }
 
-export function loadBillings({ type, tenantId, pageSize, currentPage, searchValue }) {
+export function loadBillings({ type, tenantId, pageSize, currentPage, searchValue, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -279,7 +283,7 @@ export function loadBillings({ type, tenantId, pageSize, currentPage, searchValu
       ],
       endpoint: 'v1/transport/billings',
       method: 'get',
-      params: { type, tenantId, pageSize, currentPage, searchValue },
+      params: { type, tenantId, pageSize, currentPage, searchValue, filters },
     },
   };
 }

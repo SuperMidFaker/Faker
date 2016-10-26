@@ -8,8 +8,8 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling } from 'common/reducers/transportBilling';
-import { SHIPMENT_BILLING_STATUS } from 'common/constants';
+import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/transportBilling';
+import { SHIPMENT_BILLING_STATUS, PARTNERSHIP_TYPE_INFO } from 'common/constants';
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
@@ -26,7 +26,7 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     billings: state.transportBilling.billings,
   }),
-  { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling }
+  { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
 )
 
 export default class BillingList extends React.Component {
@@ -41,6 +41,7 @@ export default class BillingList extends React.Component {
     changeBillingsFilter: PropTypes.func.isRequired,
     removeBilling: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
+    loadPartners: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -51,6 +52,16 @@ export default class BillingList extends React.Component {
     billingId: -1,
     fromId: -1,
     totalCharge: 0,
+    customers: [],
+    carriers: [],
+  }
+  componentWillMount() {
+    this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer).then((result) => {
+      this.setState({ customers: result.data });
+    });
+    this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.transportation).then((result) => {
+      this.setState({ carriers: result.data });
+    });
   }
   componentDidMount() {
     this.handleTableLoad();
@@ -96,13 +107,14 @@ export default class BillingList extends React.Component {
   }
   handleTableLoad = (searchValue) => {
     const { tenantId, type } = this.props;
-    const { pageSize, currentPage } = this.props.billings;
+    const { pageSize, currentPage, filters } = this.props.billings;
     this.props.loadBillings({
       type,
       tenantId,
       pageSize,
       currentPage,
       searchValue: searchValue !== undefined ? searchValue : this.props.billings.searchValue,
+      filters: JSON.stringify(filters),
     });
   }
   handleShowCancelChargeModal = (billingId, fromId, totalCharge) => {
@@ -118,6 +130,7 @@ export default class BillingList extends React.Component {
     this.props.changeBillingsFilter('searchValue', value);
   }
   render() {
+    const { customers, carriers } = this.state;
     const { tenantId, type } = this.props;
     const { searchValue } = this.props.billings;
     const dataSource = new Table.DataSource({
@@ -130,13 +143,14 @@ export default class BillingList extends React.Component {
         showQuickJumper: false,
         pageSize: result.pageSize,
       }),
-      getParams: (pagination) => {
+      getParams: (pagination, filters) => {
         const params = {
           type,
           tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           searchValue,
+          filters: JSON.stringify(filters),
         };
         return params;
       },
@@ -167,6 +181,8 @@ export default class BillingList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
+      filters: type === 'receivable' ? customers.map(item => ({ text: item.name, value: item.name })) :
+      carriers.map(item => ({ text: item.name, value: item.name })),
     }, {
       title: '运单数量',
       dataIndex: 'shipmt_count',
