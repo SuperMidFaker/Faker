@@ -214,6 +214,7 @@ export default class DispatchDock extends Component {
       target: {},
       visible: false,
     },
+    lspLoading: true,
   }
 
   componentWillReceiveProps(nextProps) {
@@ -263,7 +264,7 @@ export default class DispatchDock extends Component {
               [index]: { charge: { $set: charge } } } });
           }
         }
-        this.setState({ lspsVar });
+        this.setState({ lspsVar, lspLoading: false });
       });
     }
   }
@@ -620,7 +621,7 @@ export default class DispatchDock extends Component {
                     />
                   </div>
                   <div className="pane-content tab-pane">
-                    <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} />
+                    <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading}/>
                   </div>
                 </TabPane>
                 <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">

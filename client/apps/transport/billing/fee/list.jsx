@@ -282,7 +282,7 @@ export default class FeesList extends React.Component {
         return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
       },
     }, {
-      title: '特殊费用',
+      title: '特殊费用项',
       dataIndex: 'excp_charge_count',
     }, {
       title: '异常',
