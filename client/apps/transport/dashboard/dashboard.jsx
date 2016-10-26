@@ -57,7 +57,9 @@ export default class Dashboard extends React.Component {
     return newArr.map((item, index) => {
       return (
         <span>
-          <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}>{item.shipmt_no}</a>
+          <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}>
+            {item.ref_external_no || item.shipmt_no}
+          </a>
           {index !== newArr.length - 1 ? '、' : addonafter}
         </span>
       );
