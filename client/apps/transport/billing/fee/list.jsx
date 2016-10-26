@@ -17,6 +17,7 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
 import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
+import SpecialChargePopover from './specialChargePopover';
 
 const formatMsg = format(messages);
 
@@ -145,8 +146,17 @@ export default class FeesList extends React.Component {
     }, {
       title: '特殊费用收款',
       dataIndex: 'p_excp_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
+      render(o, record) {
+        if (o !== undefined && o !== null) {
+          return (
+            <span>
+              <span>{o.toFixed(2)}</span>
+              <SpecialChargePopover dispId={record.parent_id} shipmtNo={record.shipmt_no}>{record.p_excp_charge_count}项</SpecialChargePopover>
+            </span>
+          );
+        } else {
+          return '';
+        }
       },
     }, {
       title: '收款合计',
@@ -199,8 +209,17 @@ export default class FeesList extends React.Component {
     }, {
       title: '特殊费用付款',
       dataIndex: 'excp_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
+      render(o, record) {
+        if (o !== undefined && o !== null) {
+          return (
+            <span>
+              <span>{o.toFixed(2)}</span>
+              <SpecialChargePopover dispId={record.disp_id} shipmtNo={record.shipmt_no}>{record.excp_charge_count}项</SpecialChargePopover>
+            </span>
+          );
+        } else {
+          return '';
+        }
       },
     }, {
       title: '付款合计',
@@ -281,9 +300,6 @@ export default class FeesList extends React.Component {
       render: (o, record) => {
         return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
       },
-    }, {
-      title: '特殊费用项',
-      dataIndex: 'excp_charge_count',
     }, {
       title: '异常',
       dataIndex: 'excp_count',

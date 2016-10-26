@@ -107,7 +107,7 @@ export default class ChargePanel extends React.Component {
     }),
   }]
   specialChargeColumns = [{
-    title: this.msg('收付类别'),
+    title: '收付类别',
     dataIndex: 'type',
     width: 80,
     render: (o) => {

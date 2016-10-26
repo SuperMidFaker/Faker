@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'REMOVE_BILLING', 'REMOVE_BILLING_SUCCEED', 'REMOVE_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
   'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
+  'LOAD_SPECIALCHARGES', 'LOAD_SPECIALCHARGES_SUCCEED', 'LOAD_SPECIALCHARGES_FAIL',
 ]);
 
 const initialState = {
@@ -417,6 +418,21 @@ export function importAdvanceCharge({ tenantId, loginId, loginName }) {
       endpoint: 'v1/transport/billing/importAdvanceCharge',
       method: 'post',
       data: { tenantId, loginId, loginName },
+    },
+  };
+}
+
+export function loadSpecialCharges(dispId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SPECIALCHARGES,
+        actionTypes.LOAD_SPECIALCHARGES_SUCCEED,
+        actionTypes.LOAD_SPECIALCHARGES_FAIL,
+      ],
+      endpoint: 'v1/transport/specialCharges',
+      method: 'get',
+      params: { dispId },
     },
   };
 }
