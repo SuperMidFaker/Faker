@@ -233,6 +233,11 @@ export default class DispatchList extends React.Component {
         }
         return (<span>{o}</span>);
       },
+    }, {
+      title: this.msg('refCustomerNo'),
+      dataIndex: 'ref_external_no',
+      width: 80,
+      render: o => <TrimSpan text={o} />,
     }];
     if (s === 'waiting') {
       cols.push({
@@ -240,11 +245,6 @@ export default class DispatchList extends React.Component {
         dataIndex: 'sr_name',
         width: 200,
         render: o => <TrimSpan text={o} maxLen={15} />,
-      }, {
-        title: this.msg('refCustomerNo'),
-        dataIndex: 'ref_external_no',
-        width: 100,
-        render: o => <TrimSpan text={o} />,
       }, {
         title: this.msg('shipMode'),
         dataIndex: 'transport_mode',

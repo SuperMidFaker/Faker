@@ -117,9 +117,8 @@ export default class PreviewPanel extends React.Component {
       default: return 'success';
     }
   }
-  renderTabs() {
-    const row = this.props.previewer.row;
-    if (row.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+  renderTabs(status) {
+    if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
         <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
@@ -181,7 +180,7 @@ export default class PreviewPanel extends React.Component {
               </div>
             </div>
             <div className="body">
-              {this.renderTabs()}
+              {this.renderTabs(shipmt.status)}
             </div>
           </div>
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
