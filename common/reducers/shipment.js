@@ -61,6 +61,7 @@ const initialState = {
     logs: [],
     advances: [],
     specialCharges: [],
+    points: [],
   },
   shipmtDetail: {
     shipmt: {},
@@ -140,6 +141,7 @@ export default function reducer(state = initialState, action) {
         logs: action.result.data.logs,
         advances: action.result.data.advances,
         specialCharges: action.result.data.specialCharges,
+        points: action.result.data.points,
         visible: true,
         tabKey: action.tabKey,
         row: action.row,

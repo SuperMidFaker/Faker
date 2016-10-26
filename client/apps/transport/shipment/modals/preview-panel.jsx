@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
-import TrackingPane from './tabpanes/trackingPane';
+import LogPane from './tabpanes/logPane';
 import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
+import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
@@ -105,6 +106,17 @@ export default class PreviewPanel extends React.Component {
       this.setState({ shareShipmentModalVisible: false });
     }, 500);
   }
+  transformBadgeColor(status) {
+    switch (status) {
+      case SHIPMENT_TRACK_STATUS.unaccepted: return 'default';
+      case SHIPMENT_TRACK_STATUS.accepted: return 'default';
+      case SHIPMENT_TRACK_STATUS.dispatched: return 'warning';
+      case SHIPMENT_TRACK_STATUS.intransit: return 'processing';
+      case SHIPMENT_TRACK_STATUS.delivered: return 'success';
+      case SHIPMENT_TRACK_STATUS.podsubmit: return 'success';
+      default: return 'success';
+    }
+  }
   renderTabs() {
     const row = this.props.previewer.row;
     if (row.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
@@ -120,6 +132,9 @@ export default class PreviewPanel extends React.Component {
             <PodPane />
           </TabPane>
           <TabPane tab={this.msg('shipmtLogs')} key="logs">
+            <LogPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
             <TrackingPane />
           </TabPane>
         </Tabs>
@@ -134,6 +149,9 @@ export default class PreviewPanel extends React.Component {
             <ChargePane />
           </TabPane>
           <TabPane tab={this.msg('shipmtLogs')} key="logs">
+            <LogPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
             <TrackingPane />
           </TabPane>
         </Tabs>
@@ -156,7 +174,7 @@ export default class PreviewPanel extends React.Component {
           <div className="panel-content">
             <div className="header">
               <span className="title">{shipmtNo}</span>
-              <Badge status="processing" text={this.msg(getTrackStatusMsg(status, effective))} />
+              <Badge status={this.transformBadgeColor(shipmt.status)} text={this.msg(getTrackStatusMsg(status, effective))} />
               <div className="pull-right">
                 {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
                 {closer}

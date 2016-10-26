@@ -291,7 +291,7 @@ export default class TrackingDetail extends React.Component {
                 </Col>
                 <Col lg={12} sm={24}>
                   <Card id="tracing-timeline" title="追踪详情">
-                    <TrackingTimeline tracking={tracking} />
+                    <TrackingTimeline points={tracking.points} />
                   </Card>
                 </Col>
               </Row>

@@ -6,11 +6,11 @@ import { renderLoc } from './consignLocation';
 const TimelineItem = Timeline.Item;
 export default class TrackingTimeline extends React.Component {
   static propTypes = {
-    tracking: PropTypes.object.isRequired,
+    points: PropTypes.object.isRequired,
   }
   render() {
     const points = [];
-    this.props.tracking.points.forEach((item) => {
+    this.props.points.forEach((item) => {
       points.push({
         title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
         description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,

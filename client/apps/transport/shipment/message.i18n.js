@@ -409,6 +409,10 @@ export default defineMessages({
     id: 'transport.shipment.tab.logs',
     defaultMessage: '日志',
   },
+  shipmtTracking: {
+    id: 'transport.shipment.tab.tracking',
+    defaultMessage: '追踪',
+  },
   shipmtCharge: {
     id: 'transport.shipment.tab.charge',
     defaultMessage: '费用',

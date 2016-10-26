@@ -23,9 +23,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     onClick: PropTypes.func.isRequired,
   }
   state = {
-    tracking: {
-      points: [],
-    },
+    points: [],
   }
   makeShipmtPublicUrl(shipmtNo, publicKey) {
     return `/pub/tms/tracking/detail/${shipmtNo}/${publicKey}`;
@@ -39,7 +37,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     const { shipmtNo, shipment } = this.props;
     if (shipment.status >= SHIPMENT_TRACK_STATUS.intransit) {
       this.props.loadShipmtPoints(shipmtNo).then((result) => {
-        this.setState({ tracking: result.data });
+        this.setState({ points: result.data.points });
       });
     }
   }
@@ -47,7 +45,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     const { publicKey, shipmtNo, shipment, ...extra } = this.props;
     const content = (
       <div>
-        <TrackingTimeline tracking={this.state.tracking} />
+        <TrackingTimeline points={this.state.points} />
         <a href={this.makeShipmtPublicUrl(shipmtNo, publicKey)}
           target="_blank" rel="noopener noreferrer"
           style={{ marginLeft: '60%' }}

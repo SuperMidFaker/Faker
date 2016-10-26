@@ -73,7 +73,7 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActPickupDate'),
       dataIndex: 'pickup_act_date',
       render: (o, record) => {
-        return <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />;
+        return o ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '';
       },
     }, {
       title: this.msg('arrivalPlace'),
@@ -86,7 +86,7 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
       render: (o, record) => {
-        return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
+        return o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '';
       },
     }, {
       title: this.msg('shipmtStatus'),
