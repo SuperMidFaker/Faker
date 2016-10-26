@@ -27,7 +27,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
     pageSize: state.cmsExpense.expslist.pageSize,
-    currentPage: state.cmsExpense.expslist.currentPage,
+    currentPage: state.cmsExpense.expslist.current,
   }));
 }
 
