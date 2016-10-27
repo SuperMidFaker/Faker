@@ -123,6 +123,10 @@ export default class List extends React.Component {
       },
     };
     const columns = [{
+      title: '租户id',
+      dataIndex: 'key',
+      render: (o, record) => this.renderColumnText(record.status, record.key),
+    }, {
       title: '公司名称',
       dataIndex: 'name',
       render: (o, record) => this.renderColumnText(record.status, record.name),
