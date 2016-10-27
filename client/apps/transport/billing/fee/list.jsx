@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Tag, Icon, message } from 'antd';
+import { Button, Tag, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFees, importAdvanceCharge, changeFeesFilter, loadPartners } from 'common/reducers/transportBilling';
+import { loadFees, changeFeesFilter, loadPartners, toggleAdvanceChargeModal } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
@@ -18,6 +18,7 @@ import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
 import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
+import AdvanceChargeModal from '../modals/advanceChargeModal';
 
 const formatMsg = format(messages);
 
@@ -45,7 +46,7 @@ function fetchData({ state, dispatch }) {
     fees: state.transportBilling.fees,
     loading: state.transportBilling.loading,
   }),
-  { loadFees, importAdvanceCharge, loadShipmtDetail, changeFeesFilter, loadPartners }
+  { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, toggleAdvanceChargeModal }
 )
 
 export default class FeesList extends React.Component {
@@ -56,11 +57,11 @@ export default class FeesList extends React.Component {
     loginName: PropTypes.string.isRequired,
     loadFees: PropTypes.func.isRequired,
     fees: PropTypes.object.isRequired,
-    importAdvanceCharge: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    toggleAdvanceChargeModal: PropTypes.func.isRequired,
   }
   state = {
     customers: [],
@@ -91,17 +92,6 @@ export default class FeesList extends React.Component {
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleImportAdvanceCharge = () => {
-    const { tenantId, loginId, loginName } = this.props;
-    this.props.importAdvanceCharge({ tenantId, loginId, loginName }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        message.info('导入成功');
-        this.handleTableLoad();
-      }
-    });
-  }
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/transport/billing/exportFeesExcel/${createFilename('fees')}.xlsx?tenantId=${this.props.tenantId}`);
     // this.handleClose();
@@ -150,8 +140,7 @@ export default class FeesList extends React.Component {
         if (o !== undefined && o !== null) {
           return (
             <span>
-              <span>{o.toFixed(2)}</span>
-              <SpecialChargePopover dispId={record.parent_id} shipmtNo={record.shipmt_no}>{record.p_excp_charge_count}项</SpecialChargePopover>
+              <SpecialChargePopover dispId={record.parent_id} shipmtNo={record.shipmt_no}>{o.toFixed(2)}</SpecialChargePopover>
             </span>
           );
         } else {
@@ -213,8 +202,7 @@ export default class FeesList extends React.Component {
         if (o !== undefined && o !== null) {
           return (
             <span>
-              <span>{o.toFixed(2)}</span>
-              <SpecialChargePopover dispId={record.disp_id} shipmtNo={record.shipmt_no}>{record.excp_charge_count}项</SpecialChargePopover>
+              <SpecialChargePopover dispId={record.disp_id} shipmtNo={record.shipmt_no}>{o.toFixed(2)}</SpecialChargePopover>
             </span>
           );
         } else {
@@ -357,7 +345,7 @@ export default class FeesList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" >{this.msg('importAdvanceCharge')}</Button>
+              <Button type="primary" onClick={() => this.props.toggleAdvanceChargeModal(true)} >{this.msg('importAdvanceCharge')}</Button>
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
@@ -366,6 +354,7 @@ export default class FeesList extends React.Component {
           </div>
         </div>
         <PreviewPanel stage="billing" />
+        <AdvanceChargeModal data={[]} onOk={this.handleTableLoad} />
       </div>
     );
   }
