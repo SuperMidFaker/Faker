@@ -369,4 +369,8 @@ export default defineMessages({
     id: 'cms.delegation.upload',
     defaultMessage: '上传',
   },
+  info: {
+    id: 'cms.modals.tabpanes.expense,info',
+    defaultMessage: '无匹配报价规则',
+  },
 });

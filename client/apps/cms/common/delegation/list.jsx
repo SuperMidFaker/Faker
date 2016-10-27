@@ -44,6 +44,7 @@ const RadioButton = Radio.Button;
     delegateTracking: state.cmsDelegation.previewer.delegateTracking,
     delegation: state.cmsDelegation.previewer.delegation,
     matchParam: state.cmsDelegation.matchParam,
+    matchStatus: state.cmsDelegation.matchStatus,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
@@ -79,6 +80,7 @@ export default class DelegationList extends Component {
     loadDeclareWay: PropTypes.func.isRequired,
     matchQuote: PropTypes.func.isRequired,
     matchParam: PropTypes.object.isRequired,
+    matchStatus: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -94,6 +96,11 @@ export default class DelegationList extends Component {
     }
     if (nextProps.matchParam !== this.props.matchParam) {
       this.handleMatchQuote(nextProps.matchParam);
+    }
+    if (nextProps.matchStatus !== this.props.matchStatus) {
+      if(nextProps.matchStatus.status === 'noquote') {
+        message.info(formatMsg(this.props.intl, 'info'), 3);
+      }
     }
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accept') {
@@ -381,6 +388,7 @@ export default class DelegationList extends Component {
         } else {
           this.handleDelgListLoad();
           this.showAcceptInfo(row);
+          this.handleMQdeclWay(row);
         }
       }
     );
@@ -461,7 +469,7 @@ export default class DelegationList extends Component {
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 100,
+      width: 140,
       render: (o, record) => {
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
           return (

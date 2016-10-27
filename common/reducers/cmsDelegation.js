@@ -117,6 +117,7 @@ const initialState = {
   dispatch: {},
   partners: [],
   matchParam: {},
+  matchStatus: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -230,6 +231,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.data };
     case actionTypes.LOAD_DECLWAY_SUCCEED:
       return { ...state, matchParam: action.result.data };
+    case actionTypes.MATCH_QUOTE_SUCCEED:
+      return { ...state, matchStatus: action.result.data};
     default:
       return state;
   }
