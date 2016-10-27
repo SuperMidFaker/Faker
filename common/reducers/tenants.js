@@ -16,7 +16,6 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
-export const INITIAL_LIST_PAGE_SIZE = 10;
 const initialState = {
   loaded: false,
   loading: false,
@@ -34,7 +33,7 @@ const initialState = {
   },
   corplist: {
     totalCount: 0,
-    pageSize: INITIAL_LIST_PAGE_SIZE,
+    pageSize: 10,
     current: 1,
     data: [],
   },
