@@ -99,19 +99,25 @@ export default class DelgDispatch extends Component {
   handleSave = () => {
     const { delgDisp, dispatch, partners } = this.props;
     const recv = this.props.form.getFieldsValue();
-    const pts = partners.filter(pt => pt.partner_id === recv.recv_name);
     let partner = {};
-    if (pts.length === 1) {
-      partner = pts[0];
-      this.props.delgDispSave(delgDisp, dispatch, partner
-      ).then((result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.props.setSavedStatus({ saved: true });
-        }
-      });
+    if (recv.recv_name === dispatch.recv_name) {
+      partner.name = dispatch.recv_name;
+      partner.tid = dispatch.recv_tenant_id;
+      partner.partner_id = dispatch.recv_partner_id;
+    } else {
+      const pts = partners.filter(pt => pt.partner_id === recv.recv_name);
+      if (pts.length === 1) {
+        partner = pts[0];
+      }
     }
+    this.props.delgDispSave(delgDisp, dispatch, partner
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.setSavedStatus({ saved: true });
+      }
+    });
   }
   render() {
     const { form: { getFieldDecorator }, delgDisp, partners, show, saved, dispatch } = this.props;
