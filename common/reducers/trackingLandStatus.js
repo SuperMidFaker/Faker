@@ -63,7 +63,6 @@ const initialState = {
       parent_no: '',
       shipmt_no: '',
       disp_id: -1,
-      transit_time: -1,
     },
   },
   locReportedShipments: [],

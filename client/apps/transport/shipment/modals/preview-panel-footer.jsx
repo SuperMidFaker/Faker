@@ -225,7 +225,6 @@ export default class Footer extends React.Component {
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
       parent_no: row.parent_no,
-      pickup_act_date: row.pickup_act_date,
     });
   }
   handleAuditPass = (row) => {
@@ -270,7 +269,7 @@ export default class Footer extends React.Component {
     });
   }
   render() {
-    const { tenantId, stage, previewer: { shipmt, tracking, row } } = this.props;
+    const { tenantId, stage, previewer: { shipmt, dispatch, row } } = this.props;
     let menu = (
       <Menu onClick={this.handleMenuClick}>
         <MenuItem key="shareShipment">共享运单</MenuItem>
@@ -359,7 +358,7 @@ export default class Footer extends React.Component {
           </PrivilegeCover>
         );
       } else if (row.disp_status > 0 && row.sr_tenant_id === tenantId) {
-        if (tracking.downstream_status === 1) {
+        if (dispatch.downstream_status === 1) {
           buttons = (
             <PrivilegeCover module="transport" feature="dispatch" action="edit">
               <Tooltip placement="top" title="承运商尚未接单，可立即撤回">

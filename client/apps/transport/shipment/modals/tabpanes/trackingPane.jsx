@@ -7,13 +7,14 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { renderLoc } from '../../../common/consignLocation';
 import { removeShipmtPoint } from 'common/reducers/shipment';
-import '../preview-panel.less';
+import './pane.less';
 const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
     points: state.shipment.previewer.points,
+    dispatch: state.shipment.previewer.dispatch,
   }),
   { removeShipmtPoint }
 )
@@ -21,16 +22,18 @@ export default class TrackingPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     removeShipmtPoint: PropTypes.func.isRequired,
+    dispatch: PropTypes.object.isRequired,
   }
+
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  handleRemovePoint = (pointId) => {
-    this.props.removeShipmtPoint(pointId);
+  handleRemovePoint = (pointId, content) => {
+    this.props.removeShipmtPoint(pointId, content, this.props.dispatch.id);
   }
   render() {
     const points = [];
     this.props.points.forEach((item) => {
       points.push({
-        id: item.id,
+        ...item,
         title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
         description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,
       });
@@ -45,12 +48,13 @@ export default class TrackingPane extends React.Component {
       return (
         <Timeline.Item dot={dotType} key={i} color={color}>
           {s.title} {s.description}
-          <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id)}>
+          <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id, s.title)}>
             <Icon type="close" className="timeline-remove" />
           </Popconfirm>
         </Timeline.Item>
       );
     });
+
     return (
       <Card>
         <Timeline>{trackingSteps}</Timeline>

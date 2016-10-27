@@ -234,7 +234,6 @@ export default class LandStatusList extends React.Component {
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
       parent_no: row.parent_no,
-      pickup_act_date: row.pickup_act_date,
     });
   }
   handleShowPodModal = (row, ev) => {

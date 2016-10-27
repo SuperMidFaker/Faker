@@ -53,7 +53,7 @@ const initialState = {
     shipmt: {
       goodslist: [],
     },
-    tracking: {
+    dispatch: {
     },
     charges: {
     },
@@ -135,7 +135,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
-        tracking: action.result.data.tracking,
         dispatch: action.result.data.dispatch,
         charges: action.result.data.charges,
         pod: action.result.data.pod,
@@ -402,7 +401,7 @@ export function loadShipmtPoints(shipmtNo) {
   };
 }
 
-export function removeShipmtPoint(pointId) {
+export function removeShipmtPoint(pointId, content, dispId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -412,7 +411,7 @@ export function removeShipmtPoint(pointId) {
       ],
       endpoint: 'v1/transport/shipment/removePoint',
       method: 'post',
-      data: { pointId },
+      data: { pointId, content, dispId },
     },
   };
 }

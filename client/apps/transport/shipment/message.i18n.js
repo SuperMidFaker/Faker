@@ -361,6 +361,10 @@ export default defineMessages({
     id: 'transport.shipment.log.timeInfoChanged',
     defaultMessage: '时间计划变更',
   },
+  removePoint: {
+    id: 'transport.shipment.log.removePoint',
+    defaultMessage: '删除位置信息',
+  },
   revenueItem: {
     id: 'transport.shipment.track.charge.revenue.item',
     defaultMessage: '收入明细项',
