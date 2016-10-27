@@ -23,7 +23,7 @@ export default defineMessages({
   },
   deliverConfirm: {
     id: 'transport.tracking.shipmt.deliverConfirm',
-    defaultMessage: '送货确认',
+    defaultMessage: '确认送达',
   },
   shipmtPrevTrack: {
     id: 'transport.tracking.shipmt.prev.track',

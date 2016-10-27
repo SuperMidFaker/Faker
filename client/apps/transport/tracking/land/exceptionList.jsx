@@ -34,6 +34,27 @@ function fetchData({ state, dispatch, params, cookie }) {
     currentPage: state.trackingLandException.shipmentlist.current,
   }));
 }
+function renderActDate(recordActDate, recordEstDate) {
+  if (recordActDate) {
+    const actDate = new Date(recordActDate);
+    actDate.setHours(0, 0, 0, 0);
+    const estDate = new Date(recordEstDate);
+    estDate.setHours(0, 0, 0, 0);
+    if (actDate.getTime() > estDate.getTime()) {
+      return (
+        <span className="mdc-text-red">
+          {moment(recordActDate).format('YYYY.MM.DD')}
+        </span>);
+    } else {
+      return (
+        <span className="mdc-text-green">
+          {moment(recordActDate).format('YYYY.MM.DD')}
+        </span>);
+    }
+  } else {
+    return <span />;
+  }
+}
 
 @connectFetch()(fetchData)
 @injectIntl
@@ -271,13 +292,7 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
     width: 100,
-    render: (o, record) => (
-      record.pickup_act_date ?
-      (<span className="mdc-text-green">
-        {moment(record.pickup_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
-    ),
+    render: (o, record) => renderActDate(record.pickup_act_date, record.pickup_est_date),
   }, {
     title: this.msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -287,13 +302,7 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => (
-      record.deliver_act_date ?
-      (<span className="mdc-text-green">
-        {moment(record.deliver_act_date).format('YYYY.MM.DD')}
-      </span>
-      ) : <span />
-    ),
+    render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
   }, {
     title: this.msg('proofOfDelivery'),
     dataIndex: 'pod_type',
