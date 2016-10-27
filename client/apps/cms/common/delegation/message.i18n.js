@@ -373,4 +373,28 @@ export default defineMessages({
     id: 'cms.modals.tabpanes.expense,info',
     defaultMessage: '无匹配报价规则',
   },
+  certFee: {
+    id: 'cms.delegation.certFee',
+    defaultMessage: '办证服务费用项',
+  },
+  certPrice: {
+    id: 'cms.delegation.certPrice',
+    defaultMessage: '单价',
+  },
+  certCount: {
+    id: 'cms.delegation.certCount',
+    defaultMessage: '数量',
+  },
+  certTax: {
+    id: 'cms.delegation.certTotal',
+    defaultMessage: '税金',
+  },
+  certCalfee: {
+    id: 'cms.delegation.certTotal',
+    defaultMessage: '费用金额',
+  },
+  certTotal: {
+    id: 'cms.delegation.certTotal',
+    defaultMessage: '总金额',
+  },
 });

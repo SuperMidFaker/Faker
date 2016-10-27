@@ -98,7 +98,7 @@ export default class DelegationList extends Component {
       this.handleMatchQuote(nextProps.matchParam);
     }
     if (nextProps.matchStatus !== this.props.matchStatus) {
-      if(nextProps.matchStatus.status === 'noquote') {
+      if (nextProps.matchStatus.status === 'noquote') {
         message.info(formatMsg(this.props.intl, 'info'), 3);
       }
     }

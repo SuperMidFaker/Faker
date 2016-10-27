@@ -1,14 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { message} from 'antd';
+import { message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCertTable } from 'common/reducers/cmsDelegation';
+import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
+import CertModal from './modals/certModal';
 
 const formatMsg = format(messages);
 
@@ -20,8 +22,10 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     certlist: state.cmsDelegation.certlist,
     listFilter: state.cmsDelegation.listFilter,
+    loadCertFees: state.cmsExpense.loadCertFees,
+    openCertModal: state.cmsExpense.openCertModal,
   }),
-  { loadCertTable }
+  { loadCertTable, loadCertFees, openCertModal }
 )
 export default class CertTable extends Component {
   static propTypes = {
@@ -32,9 +36,18 @@ export default class CertTable extends Component {
     loginName: PropTypes.string.isRequired,
     certlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+    loadCertTable: PropTypes.func.isRequired,
+    loadCertFees: PropTypes.func.isRequired,
+    openCertModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  handleCertModalLoad = (row) => {
+    this.props.loadCertFees(row.id);
+    this.props.openCertModal();
+  }
+  handleUpLoad = () => {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -54,14 +67,13 @@ export default class CertTable extends Component {
   }, {
     title: this.msg('opColumn'),
     width: 140,
-    dataIndex: 'id',
-    render: (o) => {
+    render: (record) => {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
           <span>
-            <RowUpdater onHit={this.handleTableLoad} label={this.msg('certOp')} />
+            <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleTableLoad} label={this.msg('upload')} />
+            <RowUpdater onHit={this.handleUpLoad} label={this.msg('upload')} />
           </span>
         </PrivilegeCover>
       );
@@ -112,6 +124,7 @@ export default class CertTable extends Component {
         <div className="panel-body table-panel expandable">
           <Table columns={columns} dataSource={this.dataSource} />
         </div>
+        <CertModal />
       </div>
     );
   }

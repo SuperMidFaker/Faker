@@ -10,6 +10,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
   'CLOSE_MARK_MODAL', 'OPEN_MARK_MODAL',
   'MARK_SAVE', 'MARK_SAVE_SUCCEED', 'MARK_SAVE_FAIL',
+  'CLOSE_CERT_MODAL', 'OPEN_CERT_MODAL',
+  'EXP_CERT_LOAD', 'EXP_CERT_LOAD_SUCCEED', 'EXP_CERT_LOAD_FAIL',
+  'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -32,6 +35,8 @@ const initialState = {
   expFeesMap: {},
   showMarkModal: false,
   saved: false,
+  showCertModal: false,
+  certExp: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -61,6 +66,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, showMarkModal: false };
     case actionTypes.OPEN_MARK_MODAL:
       return { ...state, showMarkModal: true };
+    case actionTypes.CLOSE_CERT_MODAL:
+      return { ...state, showCertModal: false };
+    case actionTypes.OPEN_CERT_MODAL:
+      return { ...state, showCertModal: true };
     case actionTypes.LOAD_SUBTABLE: {
       const expFeesMap = { ...state.expFeesMap };
       expFeesMap[action.params.delgNo] = {};
@@ -83,6 +92,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, saved: true };
     case actionTypes.MARK_SAVE_SUCCEED:
       return { ...state, saved: true };
+    case actionTypes.EXP_CERT_LOAD_SUCCEED:
+      return { ...state, certExp: action.result.data };
     default:
       return state;
   }
@@ -203,5 +214,49 @@ export function closeMarkModal() {
 export function openMarkModal() {
   return {
     type: actionTypes.OPEN_MARK_MODAL,
+  };
+}
+
+export function closeCertModal() {
+  return {
+    type: actionTypes.CLOSE_CERT_MODAL,
+  };
+}
+
+export function openCertModal() {
+  return {
+    type: actionTypes.OPEN_CERT_MODAL,
+  };
+}
+
+export function loadCertFees(dispId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXP_CERT_LOAD,
+        actionTypes.EXP_CERT_LOAD_SUCCEED,
+        actionTypes.EXP_CERT_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/certfees',
+      method: 'get',
+      params: { dispId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function saveCertFees(dispId, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CERT_FEES_SAVE,
+        actionTypes.CERT_FEES_SAVE_SUCCEED,
+        actionTypes.CERT_FEES_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/update/certfees',
+      method: 'post',
+      data: { dispId, params },
+      origin: 'mongo',
+    },
   };
 }

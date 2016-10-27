@@ -232,7 +232,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DECLWAY_SUCCEED:
       return { ...state, matchParam: action.result.data };
     case actionTypes.MATCH_QUOTE_SUCCEED:
-      return { ...state, matchStatus: action.result.data};
+      return { ...state, matchStatus: action.result.data };
     default:
       return state;
   }
