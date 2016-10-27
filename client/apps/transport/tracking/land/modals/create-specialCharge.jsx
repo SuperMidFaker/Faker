@@ -16,6 +16,7 @@ const RadioGroup = Radio.Group;
     loginName: state.account.username,
     visible: state.trackingLandStatus.shipmentSpecialChargeModal.visible,
     dispId: state.trackingLandStatus.shipmentSpecialChargeModal.dispId,
+    spTenantId: state.trackingLandStatus.shipmentSpecialChargeModal.spTenantId,
     parentDispId: state.trackingLandStatus.shipmentSpecialChargeModal.parentDispId,
     shipmtNo: state.trackingLandStatus.shipmentSpecialChargeModal.shipmtNo,
   }),
@@ -29,6 +30,7 @@ export default class CreateSpecialCharge extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
+    spTenantId: PropTypes.number.isRequired,
     parentDispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     createSpecialCharge: PropTypes.func.isRequired,
@@ -65,10 +67,10 @@ export default class CreateSpecialCharge extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.showSpecialChargeModal({ visible: false, dispId: -1, shipmtNo: '', parentDispId: -1 });
+    this.props.showSpecialChargeModal({ visible: false, dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
   }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, spTenantId } = this.props;
     const colSpan = 6;
     return (
       <Modal title="添加特殊费用" onCancel={this.handleCancel} onOk={this.handleOk}
@@ -80,7 +82,7 @@ export default class CreateSpecialCharge extends React.Component {
               initialValue: '1',
             })(<RadioGroup>
               <RadioButton value="1">应收</RadioButton>
-              <RadioButton value="-1">应付</RadioButton>
+              {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value="-1">应付</RadioButton>) : ''}
             </RadioGroup>)}
           </FormItem>
           <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >

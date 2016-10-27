@@ -282,10 +282,10 @@ export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportM
   };
 }
 
-export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId }) {
+export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId }) {
   return {
     type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
-    data: { visible, dispId, shipmtNo, parentDispId },
+    data: { visible, dispId, shipmtNo, parentDispId, spTenantId },
   };
 }
 

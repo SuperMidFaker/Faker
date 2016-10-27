@@ -216,7 +216,7 @@ export default class Footer extends React.Component {
   }
   handleShowSpecialChargeModal = (row) => {
     this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
-      parentDispId: row.parent_id });
+      parentDispId: row.parent_id, spTenantId: row.sp_tenant_id });
   }
   handleResubmit = (row) => {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
