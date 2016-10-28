@@ -165,11 +165,11 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('deliveryNo'),
-    width: 180,
+    width: 200,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('packageNum'),
-    width: 80,
+    width: 60,
     dataIndex: 'pieces',
   }, {
     title: this.msg('delgWeight'),

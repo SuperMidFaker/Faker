@@ -7,8 +7,9 @@ import Login from './sso/login';
 import Forgot from './sso/forgot';
 import WeixinBinder from './weixin/binder';
 import WxProfile from './weixin/profile';
+import PackMessage from './message/pack-message';
+import MessageList from './message/messageList';
 import PackAccount from './account/pack-account';
-import MessageList from './account/messageList';
 import MyProfile from './account/profile';
 import Password from './account/password';
 import Corp from './corp/pack-corp';
@@ -120,7 +121,9 @@ export default(store, cookie) => {
         <Route path="my" component={PackAccount}>
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
-          <Route path="messages" component={MessageList} />
+        </Route>
+        <Route path="message" component={PackMessage}>
+          <Route path="list" component={MessageList} />
         </Route>
         <Route path="corp" component={Corp}>
           <IndexRedirect to="/corp/overview" />
