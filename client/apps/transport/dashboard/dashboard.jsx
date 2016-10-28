@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
+import { Link } from 'react-router';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -93,15 +94,15 @@ export default class Dashboard extends React.Component {
     }];
     const data = [{
       key: '1',
-      name: '待接单',
+      name: <Link to="/transport/shipment">待接单</Link>,
       operation: this.renderTodos(todos.unaccepted, 'acceptance'),
     }, {
       key: '2',
-      name: '待调度',
+      name: <Link to="/transport/dispatch">待调度</Link>,
       operation: this.renderTodos(todos.undispatched, 'dispatch'),
     }, {
       key: '3',
-      name: '待更新提货',
+      name: <Link to="/transport/tracking/road/status/dispatched">待更新提货</Link>,
       operation: this.renderTodos(todos.undelivered, 'tracking'),
     }, {
       key: '4',
@@ -109,15 +110,15 @@ export default class Dashboard extends React.Component {
       operation: '',
     }, {
       key: '5',
-      name: '待更新送货',
+      name: <Link to="/transport/tracking/road/status/intransit">待更新送货</Link>,
       operation: this.renderTodos(todos.intransit, 'tracking'),
     }, {
       key: '6',
-      name: '待上传回单',
+      name: <Link to="/transport/tracking/road/pod/upload">待上传回单</Link>,
       operation: this.renderTodos(todos.delivered, 'pod'),
     }, {
       key: '7',
-      name: '待审核回单',
+      name: <Link to="/transport/tracking/road/pod/audit">待审核回单</Link>,
       operation: this.renderTodos(todos.podsubmit, 'pod'),
     }];
 

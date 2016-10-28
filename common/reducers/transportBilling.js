@@ -24,10 +24,15 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
   'LOAD_SPECIALCHARGES', 'LOAD_SPECIALCHARGES_SUCCEED', 'LOAD_SPECIALCHARGES_FAIL',
 ]);
+const sDate = new Date();
+sDate.setMonth(sDate.getMonth() - 3);
+const eDate = new Date();
 
 const initialState = {
   loading: false,
   fees: {
+    startDate: sDate,
+    endDate: eDate,
     searchValue: '',
     pageSize: 10,
     currentPage: 1,
@@ -188,7 +193,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHECK_BILLING_SUCCEED:
       return { ...state, billingFees: initialState.billingFees };
     case actionTypes.CHANGE_FEES_FILTER: {
-      const fees = { ...state.fees, searchValue: action.data.value };
+      const fees = { ...state.fees, [action.data.key]: action.data.value };
       return { ...state, fees };
     }
     case actionTypes.CHANGE_BILLINGS_FILTER: {
@@ -230,7 +235,7 @@ export function loadPartners(tenantId, typeCode) {
   };
 }
 
-export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters }) {
+export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters, startDate, endDate }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -240,7 +245,7 @@ export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters
       ],
       endpoint: 'v1/transport/fees',
       method: 'get',
-      params: { tenantId, pageSize, currentPage, searchValue, filters },
+      params: { tenantId, pageSize, currentPage, searchValue, filters, startDate, endDate },
     },
   };
 }

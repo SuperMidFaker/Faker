@@ -12,9 +12,9 @@ import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft } from
 'common/reducers/transport-acceptance';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
 import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
@@ -69,6 +69,7 @@ function fetchData({ state, dispatch, cookie }) {
     loading: state.transportAcceptance.table.loading,
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
+    todos: state.shipment.statistics.todos,
   }),
   { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail, delDraft })
 @connectNav({

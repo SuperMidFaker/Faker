@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Button, Tag, Icon } from 'antd';
+import { Button, Tag, Icon, DatePicker } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -21,6 +22,7 @@ import SpecialChargePopover from './specialChargePopover';
 import AdvanceChargeModal from '../modals/advanceChargeModal';
 
 const formatMsg = format(messages);
+const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadFees({
@@ -28,6 +30,8 @@ function fetchData({ state, dispatch }) {
     pageSize: state.transportBilling.fees.pageSize,
     currentPage: state.transportBilling.fees.currentPage,
     searchValue: state.transportBilling.fees.searchValue,
+    startDate: moment(state.transportBilling.fees.startDate).format('YYYY-MM-DD 00:00:00'),
+    endDate: moment(state.transportBilling.fees.endDate).format('YYYY-MM-DD 23:59:59'),
     filters: JSON.stringify(state.transportBilling.fees.filters),
   }));
 }
@@ -81,24 +85,35 @@ export default class FeesList extends React.Component {
       this.handleTableLoad(nextProps.fees.searchValue);
     }
   }
+  onDateChange = (value) => {
+    const promises = [this.props.changeFeesFilter('startDate', value[0]), this.props.changeFeesFilter('endDate', value[1])];
+    Promise.all(promises).then(() => {
+      this.handleTableLoad();
+    });
+  }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
   handleTableLoad = (searchValue) => {
     this.handleSelectionClear();
     const { tenantId } = this.props;
-    const { pageSize, currentPage, filters } = this.props.fees;
+    const { pageSize, currentPage, filters, startDate, endDate } = this.props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
       currentPage,
+      startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
+      endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
       searchValue: searchValue !== undefined ? searchValue : this.props.fees.searchValue,
       filters: JSON.stringify(filters),
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleExportExcel = () => {
-    window.open(`${API_ROOTS.default}v1/transport/billing/exportFeesExcel/${createFilename('fees')}.xlsx?tenantId=${this.props.tenantId}`);
+    const { tenantId } = this.props;
+    const { filters, startDate, endDate } = this.props.fees;
+    window.open(`${API_ROOTS.default}v1/transport/billing/exportFeesExcel/${createFilename('fees')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(filters)}&startDate=${moment(startDate).format('YYYY-MM-DD 00:00:00')}&endDate=${moment(endDate).format('YYYY-MM-DD 23:59:59')}`);
     // this.handleClose();
   }
   handleSearchInput = (value) => {
@@ -325,11 +340,14 @@ export default class FeesList extends React.Component {
         pageSize: result.pageSize,
       }),
       getParams: (pagination, filters) => {
+        const { searchValue, startDate, endDate } = this.props.fees;
         const params = {
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
-          searchValue: this.props.fees.searchValue,
+          searchValue,
+          startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
+          endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
           filters: JSON.stringify(filters),
         };
         return params;
@@ -342,6 +360,7 @@ export default class FeesList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const { startDate, endDate } = this.props.fees;
     return (
       <div>
         <header className="top-bar">
@@ -357,6 +376,11 @@ export default class FeesList extends React.Component {
             <div className="panel-header">
               <Button type="primary" onClick={() => this.props.toggleAdvanceChargeModal(true)} >{this.msg('importAdvanceCharge')}</Button>
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <div style={{ float: 'right' }}>
+                <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate), moment(endDate)]}
+                  onChange={this.onDateChange}
+                />
+              </div>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: 2000 }} loading={loading} />
