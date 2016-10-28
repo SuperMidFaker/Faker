@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCertTable, acceptCiqCert } from 'common/reducers/cmsDelegation';
+import { loadCertTable, acceptCiqCert, loadCMQParams, matchCertQuote } from 'common/reducers/cmsDelegation';
 import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -24,8 +24,9 @@ const formatMsg = format(messages);
     listFilter: state.cmsDelegation.listFilter,
     loadCertFees: state.cmsExpense.loadCertFees,
     openCertModal: state.cmsExpense.openCertModal,
+    certMQParams: state.cmsDelegation.certMQParams,
   }),
-  { loadCertTable, loadCertFees, openCertModal, acceptCiqCert }
+  { loadCertTable, loadCertFees, openCertModal, acceptCiqCert, loadCMQParams, matchCertQuote }
 )
 export default class CertTable extends Component {
   static propTypes = {
@@ -43,6 +44,11 @@ export default class CertTable extends Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.certMQParams !== this.props.certMQParams) {
+      this.handleMatchQuote(nextProps.certMQParams);
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -109,6 +115,24 @@ export default class CertTable extends Component {
   }
   handleUpLoad = () => {
   }
+  handleMQParam = (delgNo) => {
+    this.props.loadCMQParams(this.props.tenantId, delgNo, 3).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        }
+      });
+  }
+  handleMatchQuote = (params) => {
+    this.props.matchCertQuote(params).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleTableLoad();
+        }
+      });
+  }
   handleAccept = (row) => {
     const { loginId, loginName } = this.props;
     this.props.acceptCiqCert(loginId, loginName, row.delg_no, row.recv_server_type).then(
@@ -117,6 +141,7 @@ export default class CertTable extends Component {
           message.error(result.error.message);
         } else {
           this.handleTableLoad();
+          this.handleMQParam(row.delg_no);
         }
       }
     );

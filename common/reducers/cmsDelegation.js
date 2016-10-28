@@ -32,6 +32,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
   'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
+  'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
+  'MATCH_CERT_QUOTE', 'MATCH_CERT_QUOTE_SUCCEED', 'MATCH_CERT_QUOTE_FAIL',
 ]);
 
 const initialState = {
@@ -119,6 +121,7 @@ const initialState = {
   partners: [],
   matchParam: {},
   matchStatus: {},
+  certMQParams: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -234,6 +237,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, matchParam: action.result.data };
     case actionTypes.MATCH_QUOTE_SUCCEED:
       return { ...state, matchStatus: action.result.data };
+    case actionTypes.LOAD_MQPARAM_SUCCEED:
+      return { ...state, certMQParams: action.result.data };
     default:
       return state;
   }
@@ -307,6 +312,36 @@ export function matchQuote(param) {
       endpoint: 'v1/cms/match/quote',
       method: 'post',
       data: param,
+      origin: 'mongo',
+    },
+  };
+}
+export function loadCMQParams(tenantId, delgNo, type) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MQPARAM,
+        actionTypes.LOAD_MQPARAM_SUCCEED,
+        actionTypes.LOAD_MQPARAM_FAIL,
+      ],
+      endpoint: 'v1/cms/load/mqParams',
+      method: 'get',
+      params: { tenantId, delgNo, type },
+    },
+  };
+}
+
+export function matchCertQuote(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MATCH_CERT_QUOTE,
+        actionTypes.MATCH_CERT_QUOTE_SUCCEED,
+        actionTypes.MATCH_CERT_QUOTE_FAIL,
+      ],
+      endpoint: 'v1/cms/match/cert/quote',
+      method: 'post',
+      data: params,
       origin: 'mongo',
     },
   };
