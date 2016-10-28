@@ -31,6 +31,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
   'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
+  'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
 ]);
 
 const initialState = {
@@ -452,6 +453,20 @@ export function acceptDelg(loginId, loginName, dispId) {
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
       data: { loginId, loginName, dispId },
+    },
+  };
+}
+export function acceptCiqCert(loginId, loginName, delgNo, serverType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACPT_CIQCERT,
+        actionTypes.ACPT_CIQCERT_SUCCEED,
+        actionTypes.ACPT_CIQCERT_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/cms/delg/accept/ciqorcert',
+      data: { loginId, loginName, delgNo, serverType },
     },
   };
 }

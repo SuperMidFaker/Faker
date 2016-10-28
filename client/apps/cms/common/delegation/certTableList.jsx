@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCertTable } from 'common/reducers/cmsDelegation';
+import { loadCertTable, acceptCiqCert } from 'common/reducers/cmsDelegation';
 import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -25,7 +25,7 @@ const formatMsg = format(messages);
     loadCertFees: state.cmsExpense.loadCertFees,
     openCertModal: state.cmsExpense.openCertModal,
   }),
-  { loadCertTable, loadCertFees, openCertModal }
+  { loadCertTable, loadCertFees, openCertModal, acceptCiqCert }
 )
 export default class CertTable extends Component {
   static propTypes = {
@@ -39,15 +39,10 @@ export default class CertTable extends Component {
     loadCertTable: PropTypes.func.isRequired,
     loadCertFees: PropTypes.func.isRequired,
     openCertModal: PropTypes.func.isRequired,
+    acceptCiqCert: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
-  handleCertModalLoad = (row) => {
-    this.props.loadCertFees(row.id);
-    this.props.openCertModal();
-  }
-  handleUpLoad = () => {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -68,15 +63,21 @@ export default class CertTable extends Component {
     title: this.msg('opColumn'),
     width: 140,
     render: (record) => {
-      return (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-          <span>
-            <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleUpLoad} label={this.msg('upload')} />
-          </span>
-        </PrivilegeCover>
-      );
+      if (record.status === 0) {
+        return (
+          <RowUpdater onHit={this.handleAccept} label={this.msg('accepting')} row={record} />
+        );
+      } else if (record.status === 1) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <span>
+              <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
+              <span className="ant-divider" />
+              <RowUpdater onHit={this.handleUpLoad} label={this.msg('upload')} />
+            </span>
+          </PrivilegeCover>
+        );
+      }
     },
   }]
   dataSource = new Table.DataSource({
@@ -102,6 +103,24 @@ export default class CertTable extends Component {
     },
     remotes: this.props.certlist,
   })
+  handleCertModalLoad = (row) => {
+    this.props.loadCertFees(row.id);
+    this.props.openCertModal();
+  }
+  handleUpLoad = () => {
+  }
+  handleAccept = (row) => {
+    const { loginId, loginName } = this.props;
+    this.props.acceptCiqCert(loginId, loginName, row.delg_no, row.recv_server_type).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleTableLoad();
+        }
+      }
+    );
+  }
   handleTableLoad = () => {
     this.props.loadCertTable({
       ietype: this.props.ietype,

@@ -22,7 +22,7 @@ export default class CertModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     showCertModal: PropTypes.bool.isRequired,
-    certExp: PropTypes.array.isRequired,
+    certExp: PropTypes.object.isRequired,
     saveCertFees: PropTypes.func.isRequired,
   }
   state = {

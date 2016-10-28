@@ -4,7 +4,7 @@ import moment from 'moment';
 import { message, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqTable, openCiqModal } from 'common/reducers/cmsDelegation';
+import { loadCiqTable, openCiqModal, acceptCiqCert } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
@@ -24,7 +24,7 @@ const formatMsg = format(messages);
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
   }),
-  { loadCiqTable, openCiqModal }
+  { loadCiqTable, openCiqModal, acceptCiqCert }
 )
 export default class CiqTable extends Component {
   static propTypes = {
@@ -87,6 +87,20 @@ export default class CiqTable extends Component {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
+  }, {
+    title: this.msg('opColumn'),
+    width: 140,
+    render: (record) => {
+      if (record.status === 0) {
+        return (
+          <RowUpdater onHit={this.handleAccept} label={this.msg('accepting')} row={record} />
+        );
+      } else if (record.status === 1) {
+        return (
+          <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} />
+        );
+      }
+    },
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadCiqTable(params),
@@ -111,6 +125,21 @@ export default class CiqTable extends Component {
     },
     remotes: this.props.ciqlist,
   })
+  handleAccept = (row) => {
+    const { loginId, loginName } = this.props;
+    this.props.acceptCiqCert(loginId, loginName, row.delg_no, row.recv_server_type).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleTableLoad();
+        }
+      }
+    );
+  }
+  handleCiqFinish = () => {
+
+  }
   handleCiqNoFill = (row) => {
     this.props.openCiqModal({
       delgNo: row.delg_no,

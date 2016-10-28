@@ -313,6 +313,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.ciq',
     defaultMessage: '报检',
   },
+  ciqFinish: {
+    id: 'cms.delegation.ciq.finish',
+    defaultMessage: '完成',
+  },
   cert: {
     id: 'cms.delegation.delg.cert',
     defaultMessage: '鉴定办证',
