@@ -44,7 +44,6 @@ export default class CreateSpecialCharge extends React.Component {
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
       this.props.form.setFieldsValue({ charge: '', remark: '', type: '1' });
-      this.handleCancel();
       const type = Number(fieldsValue.type);
       this.props.createSpecialCharge({
         shipmtNo,
@@ -59,6 +58,7 @@ export default class CreateSpecialCharge extends React.Component {
         if (result.error) {
           message.error(result.error);
         } else {
+          this.handleCancel();
           message.info('添加成功');
         }
       });

@@ -66,6 +66,7 @@ export default class FeesList extends React.Component {
   state = {
     customers: [],
     carriers: [],
+    selectedRowKeys: [],
   }
   componentWillMount() {
     this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer).then((result) => {
@@ -80,7 +81,11 @@ export default class FeesList extends React.Component {
       this.handleTableLoad(nextProps.fees.searchValue);
     }
   }
+  handleSelectionClear = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   handleTableLoad = (searchValue) => {
+    this.handleSelectionClear();
     const { tenantId } = this.props;
     const { pageSize, currentPage, filters } = this.props.fees;
     this.props.loadFees({
@@ -331,6 +336,12 @@ export default class FeesList extends React.Component {
       },
       remotes: this.props.fees,
     });
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <div>
         <header className="top-bar">
@@ -348,7 +359,7 @@ export default class FeesList extends React.Component {
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 2000 }} loading={loading} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: 2000 }} loading={loading} />
             </div>
           </div>
         </div>

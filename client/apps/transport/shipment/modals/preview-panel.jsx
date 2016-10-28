@@ -8,7 +8,7 @@ import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
-import { hidePreviewer, sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
+import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import Footer from './preview-panel-footer';
@@ -47,6 +47,10 @@ function getTrackStatusMsg(status, eff) {
     changeShipmentModalVisible: state.shipment.changeShipmentModal.visible,
     createExcpModalVisible: state.trackingLandException.createExcpModal.visible,
     dealExcpModalVisible: state.trackingLandException.dealExcpModal.visible,
+    specialChargeModalVisible: state.trackingLandStatus.shipmentSpecialChargeModal.visible,
+    advanceChargeModalvisible: state.trackingLandStatus.shipmentAdvanceModal.visible,
+    locModalVisible: state.trackingLandStatus.locModal.visible,
+    dateModalVisible: state.trackingLandStatus.dateModal.visible,
     tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     status: state.shipment.previewer.shipmt.status,
@@ -54,7 +58,7 @@ function getTrackStatusMsg(status, eff) {
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
   }),
-  { hidePreviewer, sendTrackingDetailSMSMessage }
+  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -64,12 +68,17 @@ export default class PreviewPanel extends React.Component {
     changeShipmentModalVisible: PropTypes.bool.isRequired,
     createExcpModalVisible: PropTypes.bool.isRequired,
     dealExcpModalVisible: PropTypes.bool.isRequired,
+    specialChargeModalVisible: PropTypes.bool.isRequired,
+    advanceChargeModalvisible: PropTypes.bool.isRequired,
+    locModalVisible: PropTypes.bool.isRequired,
+    dateModalVisible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
     status: PropTypes.number,
     effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
+    changePreviewerTab: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard']),
@@ -77,7 +86,6 @@ export default class PreviewPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabKey: props.tabKey || 'detail',
       shareShipmentModalVisible: false,
     };
   }
@@ -85,15 +93,14 @@ export default class PreviewPanel extends React.Component {
   componentDidMount() {
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
-      if (!this.props.dealExcpModalVisible && !this.props.createExcpModalVisible && !this.props.changeShipmentModalVisible && !previewerClicked) {
+      if (!this.props.specialChargeModalVisible && !this.props.dealExcpModalVisible &&
+        !this.props.createExcpModalVisible && !this.props.advanceChargeModalvisible &&
+        !this.props.changeShipmentModalVisible && !this.props.locModalVisible &&
+        !this.props.dateModalVisible &&
+        !previewerClicked) {
         this.handleClose();
       }
     });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey !== this.state.tabKey) {
-      this.setState({ tabKey: nextProps.tabKey || 'detail' });
-    }
   }
   componentWillUnmount() {
     window.$(document).unbind('click');
@@ -101,7 +108,7 @@ export default class PreviewPanel extends React.Component {
   viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
+    this.props.changePreviewerTab(tabKey);
   }
   handleClose = () => {
     this.props.hidePreviewer();
@@ -128,7 +135,7 @@ export default class PreviewPanel extends React.Component {
   renderTabs(status) {
     if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
-        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -151,7 +158,7 @@ export default class PreviewPanel extends React.Component {
       );
     } else {
       return (
-        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>

@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
   'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
   'SHOW_CHANGE_SHIPMENT_MODAL',
+  'CHANGE_PREVIEWER_TAB',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -170,6 +171,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, points: state.previewer.points.filter(item => item.id !== action.data.pointId) } };
+    }
+    case actionTypes.CHANGE_PREVIEWER_TAB: {
+      return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey} };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -452,5 +456,12 @@ export function showChangeShipmentModal({ visible, shipmtNo, type = '' }) {
   return {
     type: actionTypes.SHOW_CHANGE_SHIPMENT_MODAL,
     data: { visible, shipmtNo, type },
+  };
+}
+
+export function changePreviewerTab(tabKey) {
+  return {
+    type: actionTypes.CHANGE_PREVIEWER_TAB,
+    data: { tabKey },
   };
 }
