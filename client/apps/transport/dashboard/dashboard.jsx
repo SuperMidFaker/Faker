@@ -173,7 +173,7 @@ export default class Dashboard extends React.Component {
                 </li>
               </ul>
             </Card>
-            <Card title="待处理" bodyStyle={{ marginTop: 16 }}>
+            <Card title="待处理" bodyStyle={{ padding: 0 }}>
               <Table size="small" columns={columns} dataSource={data} pagination={false} />
             </Card>
           </div>

@@ -111,7 +111,7 @@ const messages = defineMessages({
   },
   corpOverview: {
     id: 'container.corpOverview',
-    defaultMessage: '概况',
+    defaultMessage: '帐户概况',
   },
   corpInfo: {
     id: 'container.corpInfo',
@@ -127,7 +127,7 @@ const messages = defineMessages({
   },
   roleTitle: {
     id: 'container.role',
-    defaultMessage: '角色设置',
+    defaultMessage: '角色权限',
   },
   partnership: {
     id: 'container.partnership',

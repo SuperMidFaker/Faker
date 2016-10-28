@@ -18,7 +18,7 @@ function fetchData({ state, dispatch, cookie }) {
 }),
   { setMenuItemKey })
 @connectNav({
-  depth: 2,
+  depth: 1,
   text: '协作网络',
   muduleName: 'corp',
 })

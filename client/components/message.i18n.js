@@ -5,13 +5,17 @@ const messages = defineMessages({
     id: 'component.navbar.search',
     defaultMessage: '搜索',
   },
-  userSetting: {
-    id: 'component.user.setting',
-    defaultMessage: '个人设置',
+  userAccount: {
+    id: 'component.user.account',
+    defaultMessage: '个人帐号',
   },
-  pwdSetting: {
-    id: 'component.user.pwdsetting',
-    defaultMessage: '修改密码',
+  userProfile: {
+    id: 'component.user.profile',
+    defaultMessage: '个人资料',
+  },
+  securitySetting: {
+    id: 'component.user.security.setting',
+    defaultMessage: '安全设置',
   },
   userLogout: {
     id: 'component.user.logout',

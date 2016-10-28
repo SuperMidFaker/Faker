@@ -103,25 +103,21 @@ export default class ChangePassword extends React.Component {
   render() {
     const { intl } = this.props;
     return (
-      <div className="page-body-center">
-        <div className="panel-heading">
-          <h3>{this.msg('pwdTitle')}</h3>
-          <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
-        </div>
-        <div className="panel-body">
-          <Form horizontal onSubmit={this.handlePasswordChange}
-            className="form-edit-content offset-right-col"
-          >
-            {this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules)}
-            {this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules)}
-            {this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules)}
-            <Row>
-              <Col span="18" offset="6">
-                <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-              </Col>
-            </Row>
-          </Form>
-        </div>
+      <div className="page-body form-wrapper">
+        <Form horizontal onSubmit={this.handlePasswordChange}>
+          <Row>
+            <Col xs={20} sm={16} md={12} lg={8}>
+              {this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules)}
+              {this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules)}
+              {this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules)}
+            </Col>
+          </Row>
+          <Row>
+            <Col span="18" offset="2">
+              <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
+            </Col>
+          </Row>
+        </Form>
       </div>
     );
   }

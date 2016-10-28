@@ -49,7 +49,7 @@ function fetchData({ state, dispatch, cookie }) {
   }
 )
 @connectNav({
-  depth: 2,
+  depth: 1,
   text: props => formatContainerMsg(props.intl, 'organTitle'),
   moduleName: 'corp',
 })

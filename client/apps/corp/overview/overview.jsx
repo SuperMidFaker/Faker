@@ -16,7 +16,7 @@ const formatMsg = format(messages);
   }),
 )
 @connectNav({
-  depth: 2,
+  depth: 1,
   moduleName: 'corp',
 })
 export default class CorpOverview extends React.Component {
@@ -34,10 +34,6 @@ export default class CorpOverview extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
-          <div className="tools" />
-          <span>{this.msg('overviewTitle')}</span>
-        </header>
         <div className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Row gutter={16}>

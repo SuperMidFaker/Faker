@@ -38,7 +38,7 @@ function fetchData({ state, dispatch }) {
   { loadRoles, switchEnable }
 )
 @connectNav({
-  depth: 2,
+  depth: 1,
   text: props => formatContainerMsg(props.intl, 'roleTitle'),
   moduleName: 'corp',
 })

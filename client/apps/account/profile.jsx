@@ -134,64 +134,58 @@ export default class MyProfile extends React.Component {
     };
     const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (
-      <div className="page-body-center">
-        <div className="panel-heading">
-          <h3>{this.msg('profileTitle')}</h3>
-          <Button size="large" onClick={this.handleCancel} style={{ float: 'right' }} icon="left">{formatGlobalMsg(intl, 'back')}</Button>
-        </div>
-        <div className="panel-body">
-          <Form horizontal onSubmit={this.handleSubmit}
-            className="form-edit-content offset-right-col"
-          >
-            <FormItem label={cmsg('avatar')} className="acc-avatar-form" labelCol={{ span: 6 }}
-              wrapperCol={{ span: 18 }}
-            >
-              <div className="acc-avatar"
-                style={{ backgroundImage: `url(${this.state.avatar || initialAvatar})` }}
+      <div className="page-body form-wrapper">
+        <Form horizontal onSubmit={this.handleSubmit}>
+          <Row>
+            <Col xs={20} sm={16} md={12} lg={8}>
+              <FormItem label={cmsg('avatar')} className="acc-avatar-form" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
+                <div className="acc-avatar"
+                  style={{ backgroundImage: `url(${this.state.avatar || initialAvatar})` }}
+                />
+                <Upload {...uploadProps}>
+                  <Button type="ghost">
+                    <Icon type="upload" />
+                    {this.msg('avatarUpdate')}
+                  </Button>
+                </Upload>
+              </FormItem>
+              <FormInput label={cmsg('fullName')} field="name" required rules={
+                  [{ required: true, min: 2, message: cmsg('fullNameMessage') }]
+                } fieldProps={{ initialValue: profile.name }} hasFeedback
+                getFieldDecorator={getFieldDecorator}
               />
-              <Upload {...uploadProps}>
-                <Button type="ghost">
-                  <Icon type="upload" />
-                  {this.msg('avatarUpdate')}
-                </Button>
-              </Upload>
-            </FormItem>
-            <FormInput label={cmsg('fullName')} field="name" required rules={
-              [{ required: true, min: 2, message: cmsg('fullNameMessage') }]
-            } fieldProps={{ initialValue: profile.name }} hasFeedback
-              getFieldDecorator={getFieldDecorator}
-            />
-            <FormInput label={cmsg('username')} required field="username"
-              addonAfter={`@${code}`} rules={[{
-                validator: (rule, value, callback) => isLoginNameExist(
-                value, code, profile.loginId,
-                this.props.parentTenantId || this.props.tenantId,
-                callback, message, this.props.checkLoginName,
-                (msgs, descriptor) => format(msgs)(intl, descriptor)
-              ),
-              }]} fieldProps={{ initialValue: profile.username }}
-              getFieldDecorator={getFieldDecorator}
-            />
-            <FormInput label={cmsg('phone')} field="phone" required hasFeedback
-              rules={[{
-                validator: (rule, value, callback) => validatePhone(
-                value, callback,
-                (msgs, descriptor) => format(msgs)(intl, descriptor)
-              ) }]}
-              fieldProps={{ initialValue: profile.phone }}
-              getFieldDecorator={getFieldDecorator}
-            />
-            <FormInput label="Email" field="email" getFieldDecorator={getFieldDecorator}
-              rules={[{ type: 'email', message: cmsg('emailError') }]}
-              fieldProps={{ initialValue: profile.email }}
-            />
-            <Row>
-              <Col span="18" offset="6">
-                <Button size="large" htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-              </Col>
-            </Row>
-          </Form>
-        </div>
+              <FormInput label={cmsg('username')} required field="username"
+                addonAfter={`@${code}`} rules={[{
+                  validator: (rule, value, callback) => isLoginNameExist(
+                    value, code, profile.loginId,
+                    this.props.parentTenantId || this.props.tenantId,
+                    callback, message, this.props.checkLoginName,
+                    (msgs, descriptor) => format(msgs)(intl, descriptor)
+                  ),
+                }]} fieldProps={{ initialValue: profile.username }}
+                getFieldDecorator={getFieldDecorator}
+              />
+              <FormInput label={cmsg('phone')} field="phone" required hasFeedback
+                rules={[{
+                  validator: (rule, value, callback) => validatePhone(
+                    value, callback,
+                    (msgs, descriptor) => format(msgs)(intl, descriptor)
+                  ) }]}
+                fieldProps={{ initialValue: profile.phone }}
+                getFieldDecorator={getFieldDecorator}
+              />
+              <FormInput label="Email" field="email" getFieldDecorator={getFieldDecorator}
+                rules={[{ type: 'email', message: cmsg('emailError') }]}
+                fieldProps={{ initialValue: profile.email }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="18" offset="2">
+              <Button size="large" htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
+            </Col>
+          </Row>
+        </Form>
       </div>
     );
   }

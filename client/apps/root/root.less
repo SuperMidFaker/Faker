@@ -277,25 +277,38 @@ img {
   .ant-menu-horizontal {
     border-bottom: 0;
   }
+  &.no-left-menu {
+    left: 0;
+  }
 }
 .side-bar {
-    width: @side-bar-width;
-    height: 100%;
-    padding-top: 16px;
-    top: 94px;
-    left: @am-leftbar-width;
-    overflow-x: hidden;
-    overflow-y: auto;
-    position: fixed;
-    border-right: 1px solid #ddd;
-    .ant-menu {
-      width: 278px;
-      background: transparent;
-    }
-    .ant-menu-inline, 
-    .ant-menu-inline .ant-menu-item {
-      border-right: none;
-    }
+  width: @side-bar-width;
+  height: 100%;
+  padding-top: 16px;
+  top: 94px;
+  left: @am-leftbar-width;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: fixed;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  h3 {
+    padding-left: 16px;
+    line-height: 28px;
+  }
+  .ant-menu-inline, 
+  .ant-menu-inline .ant-menu-item {
+    border-right: 1px solid #fff;
+  }
+  .ant-menu-inline .ant-menu-item-selected {
+    border-right: 2px solid #2db7f5;
+  }
+  &.no-left-menu {
+    left: 0;
+  }
+  &.no-top-bar {
+    top: 48px;
+  }
 }
 .main-content {
   padding: 62px 16px 0;
@@ -418,7 +431,9 @@ img {
   &.card-wrapper {
     padding: 24px 24px 8px 24px;
   }
-   
+  &.form-wrapper {
+    padding: 24px;
+  }
 }
 .ant-table,
 .ant-table-header,
