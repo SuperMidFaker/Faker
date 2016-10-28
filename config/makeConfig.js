@@ -5,7 +5,7 @@ module.exports = (serverPort, dirName, appName) => {
 
   const __DEV__ = env === 'development' || env === 'home';
   const __TEST_PROD__ = env === 'test';
-  const __PROD__ = env === 'production' || env === 'aliyun';
+  const __PROD__ = env === 'production' || env === 'staging';
   // ------------------------------------
   // Environment
   // ------------------------------------
@@ -56,7 +56,7 @@ module.exports = (serverPort, dirName, appName) => {
       self: '/',
     });
     config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
-    if (env === 'aliyun') {
+    if (env === 'staging') {
       config.set('API_ROOTS', {
         default: 'https://api.welogix.co/',
         mongo: 'https://api1.welogix.co/',

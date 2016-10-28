@@ -6,9 +6,9 @@
     "pid_file"   : "./pm2/log/welogix-web.pid",
     "args"      : "['--port=3022']",
     "log_date_format" : "YYYY-MM-DD HH:mm Z",
-    "_build_cmd": "build-aliyun",
+    "_build_cmd": "build-staging",
     "env": {
-        "NODE_ENV": "aliyun"
+        "NODE_ENV": "staging"
     }
 },{
     "name"       : "welogix-admin",
@@ -19,6 +19,6 @@
     "args"      : "['--port=3026', '--admin=true']",
     "log_date_format" : "YYYY-MM-DD HH:mm Z",
     "env": {
-        "NODE_ENV": "aliyun"
+        "NODE_ENV": "staging"
     }
 }]
