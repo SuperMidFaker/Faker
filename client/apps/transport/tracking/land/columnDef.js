@@ -145,17 +145,17 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'status',
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return <Tag>{`1 ${msg('pendingShipmt')}`}</Tag>;
+        return <Tag>{msg('pendingShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-        return <Tag>{`2 ${msg('acceptedShipmt')}`}</Tag>;
+        return <Tag>{msg('acceptedShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-        return <Tag color="yellow">{`3 ${msg('dispatchedShipmt')}`}</Tag>;
+        return <Tag color="yellow">{msg('dispatchedShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        return <Tag color="blue">{`4 ${msg('intransitShipmt')}`}</Tag>;
+        return <Tag color="blue">{msg('intransitShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        return <Tag color="green">{`5 ${msg('deliveredShipmt')}`}</Tag>;
+        return <Tag color="green">{msg('deliveredShipmt')}</Tag>;
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-        return <Tag color="green">{`6 ${msg('proofOfDelivery')}`}</Tag>;
+        return <Tag color="green">{msg('proofOfDelivery')}</Tag>;
       } else {
         return <span />;
       }
@@ -168,7 +168,6 @@ export default function makeColumns(type, handlers, msg) {
         shipmtNo={record.shipmt_no}
         dispId={record.disp_id}
         excpCount={o}
-        onShowExcpModal={() => {}}
       />);
     },
   }];
@@ -441,28 +440,12 @@ export default function makeColumns(type, handlers, msg) {
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) { // 待提货
           if (record.sp_tenant_id === -1) {
-            return (
-              <div>
-                <PrivilegeCover module="transport" feature="tracking" action="edit">
-                  <RowUpdater label={msg('updateEvents')}
-                    onAnchored={handlers.onShowExcpModal} row={record}
-                  />
-                </PrivilegeCover>
-              </div>
-            );
+            return (<div />);
           } else if (record.sp_tenant_id === 0) {
               // 已分配给车队
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
                 // 线下司机
-              return (
-                <div>
-                  <PrivilegeCover module="transport" feature="tracking" action="edit">
-                    <RowUpdater label={msg('updateEvents')} row={record}
-                      onAnchored={handlers.onShowExcpModal}
-                    />
-                  </PrivilegeCover>
-                </div>
-              );
+              return (<div />);
             } else {
               // 催促司机提货
               return (
@@ -470,12 +453,6 @@ export default function makeColumns(type, handlers, msg) {
                   <PrivilegeCover module="transport" feature="tracking" action="create">
                     <RowUpdater label={msg('notifyPickup')} row={record}
                       onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDriverPickup', shipment: record }); }}
-                    />
-                  </PrivilegeCover>
-                  <span className="ant-divider" />
-                  <PrivilegeCover module="transport" feature="tracking" action="edit">
-                    <RowUpdater label={msg('updateEvents')}
-                      onAnchored={handlers.onShowExcpModal} row={record}
                     />
                   </PrivilegeCover>
                 </div>
@@ -490,12 +467,6 @@ export default function makeColumns(type, handlers, msg) {
                     onAnchored={() => { handlers.sendMessage({ notifyType: 'notifySpPickup', shipment: record }); }}
                   />
                 </PrivilegeCover>
-                <span className="ant-divider" />
-                <PrivilegeCover module="transport" feature="tracking" action="edit">
-                  <RowUpdater label={msg('updateEvents')} row={record}
-                    onAnchored={handlers.onShowExcpModal}
-                  />
-                </PrivilegeCover>
               </div>
             );
           }
@@ -507,15 +478,7 @@ export default function makeColumns(type, handlers, msg) {
               return handlers.renderIntransitUpdater(record);
             }
           } else {
-            return (
-              <div>
-                <PrivilegeCover module="transport" feature="tracking" action="edit">
-                  <RowUpdater label={msg('updateEvents')}
-                    onAnchored={handlers.onShowExcpModal} row={record}
-                  />
-                </PrivilegeCover>
-              </div>
-            );
+            return (<div />);
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已送货
           if (record.pod_type === 'none' && record.deliver_confirmed === 0 && handlers.tenantId === record.tenant_id) {
@@ -525,23 +488,11 @@ export default function makeColumns(type, handlers, msg) {
                   <RowUpdater label={msg('deliverConfirm')} row={record}
                     onAnchored={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                   />
-                  <span className="ant-divider" />
-                  <RowUpdater label={msg('updateEvents')} row={record}
-                    onAnchored={handlers.onShowExcpModal}
-                  />
                 </div>
               </PrivilegeCover>
             );
           }
-          return (
-            <div>
-              <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <RowUpdater label={msg('updateEvents')} onAnchored={handlers.onShowExcpModal}
-                  row={record}
-                />
-              </PrivilegeCover>
-            </div>
-          );
+          return '';
         }
       },
     });

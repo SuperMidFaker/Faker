@@ -7,7 +7,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'CREATE_EXCEPTION', 'CREATE_EXCEPTION_FAIL', 'CREATE_EXCEPTION_SUCCEED',
   'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
   'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
-  'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL',
+  'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL', 'SHOW_CREATE_EXCEPTION_MODAL',
 ]);
 
 const initialState = {
@@ -24,15 +24,15 @@ const initialState = {
     current: 1,
     data: [],
   },
-  excpModal: {
+  createExcpModal: {
     visible: false,
-    dispId: -1,
-    parentDispId: -1,
     shipmtNo: '',
+    dispId: -1,
   },
   dealExcpModal: {
     visible: false,
     exception: {},
+    shipmtNo: '',
   },
   exceptions: {
     totalCount: 0,
@@ -61,8 +61,6 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, filters };
     }
-    case actionTypes.SHOW_EXCPMODAL:
-      return { ...state, excpModal: action.data };
     case actionTypes.LOAD_EXCEPTIONS_SUCCEED:
       return { ...state, exceptions: action.result.data };
     case actionTypes.CREATE_EXCEPTION_SUCCEED: {
@@ -74,6 +72,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
       return { ...state };
     }
+    case actionTypes.SHOW_CREATE_EXCEPTION_MODAL:
+      return { ...state, createExcpModal: action.data };
     case actionTypes.SHOW_DEAL_EXCEPTION_MODAL:
       return { ...state, dealExcpModal: action.data };
     default:
@@ -101,20 +101,6 @@ export function changeExcpFilter(field, value) {
   return {
     type: actionTypes.CHANGE_FILTER,
     data: { field, value },
-  };
-}
-
-export function showExcpModal(dispId, parentDispId, shipmtNo) {
-  return {
-    type: actionTypes.SHOW_EXCPMODAL,
-    data: { visible: true, dispId, parentDispId, shipmtNo },
-  };
-}
-
-export function hideExcpModal() {
-  return {
-    type: actionTypes.SHOW_EXCPMODAL,
-    data: { visible: false, dispId: -1, parentDispId: -1, shipmtNo: '' },
   };
 }
 
@@ -163,10 +149,17 @@ export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter,
   };
 }
 
-export function showDealExcpModal(visible, exception) {
+export function showCreateExcpModal({ visible, shipmtNo, dispId }) {
+  return {
+    type: actionTypes.SHOW_CREATE_EXCEPTION_MODAL,
+    data: { visible, shipmtNo, dispId },
+  };
+}
+
+export function showDealExcpModal({ visible, shipmtNo = '', exception = {} }) {
   return {
     type: actionTypes.SHOW_DEAL_EXCEPTION_MODAL,
-    data: { visible, exception },
+    data: { visible, shipmtNo, exception },
   };
 }
 

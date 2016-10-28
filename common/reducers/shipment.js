@@ -448,7 +448,7 @@ export function computeCostCharge(data) {
   };
 }
 
-export function showChangeShipmentModal({ visible, shipmtNo, type }) {
+export function showChangeShipmentModal({ visible, shipmtNo, type = '' }) {
   return {
     type: actionTypes.SHOW_CHANGE_SHIPMENT_MODAL,
     data: { visible, shipmtNo, type },

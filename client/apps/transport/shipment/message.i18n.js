@@ -413,6 +413,34 @@ export default defineMessages({
     id: 'transport.shipment.tab.logs',
     defaultMessage: '日志',
   },
+  shipmtException: {
+    id: 'transport.shipment.tab.exception',
+    defaultMessage: '异常',
+  },
+  exceptionResolved: {
+    id: 'transport.tracking.shipmt.exception.exceptionResolved',
+    defaultMessage: '异常状态',
+  },
+  exceptionType: {
+    id: 'transport.tracking.shipmt.exception.exceptionType',
+    defaultMessage: '异常类型',
+  },
+  exceptionDescription: {
+    id: 'transport.tracking.shipmt.exception.exceptionDescription',
+    defaultMessage: '描述',
+  },
+  submitter: {
+    id: 'transport.tracking.shipmt.exception.submitter',
+    defaultMessage: '提交人',
+  },
+  submitDate: {
+    id: 'transport.tracking.shipmt.exception.submitDate',
+    defaultMessage: '时间',
+  },
+  operation: {
+    id: 'transport.tracking.shipmt.exception.operation',
+    defaultMessage: '操作',
+  },
   shipmtTracking: {
     id: 'transport.shipment.tab.tracking',
     defaultMessage: '追踪',

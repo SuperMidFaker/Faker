@@ -14,6 +14,7 @@ import messages from '../message.i18n';
 import Footer from './preview-panel-footer';
 import ShareShipmentModal from './share-shipment';
 import ShipmentSchedule from './shipmentSchedule';
+import ExceptionPane from './tabpanes/exceptionPane';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -43,6 +44,9 @@ function getTrackStatusMsg(status, eff) {
   state => ({
     tenantId: state.account.tenantId,
     visible: state.shipment.previewer.visible,
+    changeShipmentModalVisible: state.shipment.changeShipmentModal.visible,
+    createExcpModalVisible: state.trackingLandException.createExcpModal.visible,
+    dealExcpModalVisible: state.trackingLandException.dealExcpModal.visible,
     tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     status: state.shipment.previewer.shipmt.status,
@@ -57,6 +61,9 @@ export default class PreviewPanel extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
+    changeShipmentModalVisible: PropTypes.bool.isRequired,
+    createExcpModalVisible: PropTypes.bool.isRequired,
+    dealExcpModalVisible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
     status: PropTypes.number,
@@ -78,7 +85,7 @@ export default class PreviewPanel extends React.Component {
   componentDidMount() {
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
-      if (!previewerClicked) {
+      if (!this.props.dealExcpModalVisible && !this.props.createExcpModalVisible && !this.props.changeShipmentModalVisible && !previewerClicked) {
         this.handleClose();
       }
     });
@@ -137,6 +144,9 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtLogs')} key="logs">
             <LogPane />
           </TabPane>
+          <TabPane tab={this.msg('shipmtException')} key="exception">
+            <ExceptionPane />
+          </TabPane>
         </Tabs>
       );
     } else {
@@ -153,6 +163,9 @@ export default class PreviewPanel extends React.Component {
           </TabPane>
           <TabPane tab={this.msg('shipmtLogs')} key="logs">
             <LogPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtException')} key="exception">
+            <ExceptionPane />
           </TabPane>
         </Tabs>
       );

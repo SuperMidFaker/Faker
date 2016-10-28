@@ -93,17 +93,17 @@ export default class Dashboard extends React.Component {
       dataIndex: 'status',
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          return <Tag>{`1 ${this.msg('pendingShipmt')}`}</Tag>;
+          return <Tag>{this.msg('pendingShipmt')}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-          return <Tag>{`2 ${this.msg('acceptedShipmt')}`}</Tag>;
+          return <Tag>{this.msg('acceptedShipmt')}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-          return <Tag color="yellow">{`3 ${this.msg('dispatchedShipmt')}`}</Tag>;
+          return <Tag color="yellow">{this.msg('dispatchedShipmt')}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          return <Tag color="blue">{`4 ${this.msg('intransitShipmt')}`}</Tag>;
+          return <Tag color="blue">{this.msg('intransitShipmt')}</Tag>;
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          return <Tag color="green">{`5 ${this.msg('deliveredShipmt')}`}</Tag>;
+          return <Tag color="green">{this.msg('deliveredShipmt')}</Tag>;
         } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-          return <Tag color="green">{`6 ${this.msg('proofOfDelivery')}`}</Tag>;
+          return <Tag color="green">{this.msg('proofOfDelivery')}</Tag>;
         } else {
           return <span />;
         }

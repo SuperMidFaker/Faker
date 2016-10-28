@@ -55,6 +55,7 @@ const initialState = {
     visible: false,
     dispId: -1,
     parentDispId: -1,
+    spTenantId: -2,
     shipmtNo: '',
   },
   locModal: {

@@ -13,6 +13,7 @@ import { doSend,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
 import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal, showSpecialChargeModal } from 'common/reducers/trackingLandStatus';
+import { showCreateExcpModal } from 'common/reducers/trackingLandException';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
@@ -51,6 +52,7 @@ const MenuItem = Menu.Item;
     showShipmentAdvanceModal,
     showSpecialChargeModal,
     sendMessage,
+    showCreateExcpModal,
   }
 )
 export default class Footer extends React.Component {
@@ -81,6 +83,7 @@ export default class Footer extends React.Component {
     showShipmentAdvanceModal: PropTypes.func.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
+    showCreateExcpModal: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -217,6 +220,9 @@ export default class Footer extends React.Component {
   handleShowSpecialChargeModal = (row) => {
     this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
       parentDispId: row.parent_id, spTenantId: row.sp_tenant_id });
+  }
+  handleShowCreateExcpModal = (row) => {
+    this.props.showCreateExcpModal({ visible: true, shipmtNo: row.shipmt_no, dispId: row.disp_id });
   }
   handleResubmit = (row) => {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
@@ -439,9 +445,14 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <Button type="ghost" onClick={() => this.handleShowPickModal(row)} >
-                更新提货
-              </Button>
+              <ButtonGroup>
+                <Button type="ghost" onClick={() => this.handleShowPickModal(row)} >
+                  更新提货
+                </Button>
+                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                  记录异常
+                </Button>
+              </ButtonGroup>
             </PrivilegeCover>
           );
         } else if (row.sp_tenant_id === 0) {
@@ -450,35 +461,50 @@ export default class Footer extends React.Component {
               // 线下司机
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <Button type="ghost" size="large"
-                  onClick={() => this.handleShowPickModal(row)}
-                >
-                  更新提货
-                </Button>
+                <ButtonGroup>
+                  <Button type="ghost" size="large"
+                    onClick={() => this.handleShowPickModal(row)}
+                  >
+                    更新提货
+                  </Button>
+                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                    记录异常
+                  </Button>
+                </ButtonGroup>
               </PrivilegeCover>
             );
           } else {
             // 司机更新
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button type="ghost" onClick={
-                    () => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })
-                  }
-                >
-                    催促提货
-                </Button>
+                <ButtonGroup>
+                  <Button type="ghost" onClick={
+                      () => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })
+                    }
+                  >
+                      催促提货
+                  </Button>
+                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                    记录异常
+                  </Button>
+                </ButtonGroup>
               </PrivilegeCover>
             );
           }
         } else {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="ghost" onClick={
-                  () => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })
-                }
-              >
+              <ButtonGroup>
+                <Button type="ghost" onClick={
+                    () => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })
+                  }
+                >
                   催促提货
-              </Button>
+                </Button>
+                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                  记录异常
+                </Button>
+              </ButtonGroup>
             </PrivilegeCover>
           );
         }
@@ -507,6 +533,9 @@ export default class Footer extends React.Component {
                 <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                   添加特殊费用
                 </Button>
+                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                  记录异常
+                </Button>
               </ButtonGroup>
             </PrivilegeCover>
           );
@@ -527,6 +556,9 @@ export default class Footer extends React.Component {
                   <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                     添加特殊费用
                   </Button>
+                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                    记录异常
+                  </Button>
                 </ButtonGroup>
               </PrivilegeCover>
             );
@@ -541,6 +573,9 @@ export default class Footer extends React.Component {
                   <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                     添加特殊费用
                   </Button>
+                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                    记录异常
+                  </Button>
                 </ButtonGroup>
               </PrivilegeCover>
             );
@@ -551,10 +586,13 @@ export default class Footer extends React.Component {
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <ButtonGroup>
                 <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
-                    添加代垫费用
+                  添加代垫费用
                 </Button>
                 <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
-                    添加特殊费用
+                  添加特殊费用
+                </Button>
+                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
+                  记录异常
                 </Button>
               </ButtonGroup>
             </PrivilegeCover>

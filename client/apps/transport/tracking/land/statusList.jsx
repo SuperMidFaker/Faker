@@ -15,7 +15,7 @@ import { showPodModal } from 'common/reducers/trackingLandPod';
 import { showExcpModal } from 'common/reducers/trackingLandException';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
-import ExcpEventsModal from './modals/excpEventsModal';
+import CreateException from './modals/create-exception';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
 import PodModal from './modals/pod-submit';
@@ -298,10 +298,6 @@ export default class LandStatusList extends React.Component {
             onAnchored={this.handleShowTransitModal} row={record}
             className={reported ? 'mdc-text-grey' : ''}
           />
-          <span className="ant-divider" />
-          <RowUpdater label={this.msg('updateEvents')}
-            onAnchored={this.handleShowExcpModal} row={record}
-          />
         </span>
       </PrivilegeCover>
     );
@@ -365,7 +361,7 @@ export default class LandStatusList extends React.Component {
         <LocationModal onOK={this.handleTableLoad} />
         <PodModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <ExcpEventsModal />
+        <CreateException />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>

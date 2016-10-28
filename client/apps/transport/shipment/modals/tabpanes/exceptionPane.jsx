@@ -1,49 +1,32 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Modal, Tag } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { Card, Icon, Tag } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
-import { intlShape, injectIntl } from 'react-intl';
-import { loadExceptions, hideExcpModal, showDealExcpModal } from 'common/reducers/trackingLandException';
+import { loadExceptions, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-import CreateException from './create-exception';
-import DealException from './deal-exception';
+import messages from '../..//message.i18n';
+import DealException from '../../../tracking/land/modals/deal-exception';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
-import '../../../index.less';
-
 const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
-    loginName: state.account.username,
-    visible: state.trackingLandException.excpModal.visible,
-    dispId: state.trackingLandException.excpModal.dispId,
-    parentDispId: state.trackingLandException.excpModal.parentDispId,
-    shipmtNo: state.trackingLandException.excpModal.shipmtNo,
+    shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     exceptions: state.trackingLandException.exceptions,
   }),
-  { loadExceptions, hideExcpModal, showDealExcpModal }
+  { loadExceptions, showDealExcpModal }
 )
-export default class ExcpEventsModal extends React.Component {
+export default class ExceptionPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    loginId: PropTypes.number.isRequired,
-    visible: PropTypes.bool.isRequired,
-    dispId: PropTypes.number.isRequired,
-    parentDispId: PropTypes.number.isRequired,
-    shipmtNo: PropTypes.string.isRequired,
-    loadExceptions: PropTypes.func.isRequired,
-    showDealExcpModal: PropTypes.func.isRequired,
-    hideExcpModal: PropTypes.func.isRequired,
+    shipmtNo: PropTypes.string,
     exceptions: PropTypes.object.isRequired,
+    showDealExcpModal: PropTypes.func.isRequired,
   }
-  state = {
-    selectedRowKeys: [],
-    createExceptionVisible: false,
-  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
       this.props.loadExceptions({
@@ -131,40 +114,23 @@ export default class ExcpEventsModal extends React.Component {
       return (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>);
     },
   }]
-  handleCancel = () => {
-    this.props.hideExcpModal();
-  }
-  toggleCreateException = () => {
-    this.setState({ createExceptionVisible: !this.state.createExceptionVisible });
-  }
   handleShowDealExcpModal = (exception) => {
-    this.props.showDealExcpModal(true, exception);
+    const { shipmtNo } = this.props;
+    this.props.showDealExcpModal({ visible: true, shipmtNo, exception });
   }
   render() {
-    const { shipmtNo, dispId, exceptions } = this.props;
+    const { exceptions } = this.props;
     this.dataSource.remotes = exceptions;
-    const buttonStyle = { marginLeft: 8 };
-    const title = (
-      <span>{`${this.msg('trackingEventsModalTitle')} ${shipmtNo}`}</span>
-    );
-    const footer = (
-      <Button type="ghost" size="large" onClick={this.handleCancel}>取消</Button>
-    );
+
     return (
-      <Modal title={title} footer={footer} onCancel={this.handleCancel}
-        visible={this.props.visible} width="75%" maskClosable={false}
-      >
-        <div style={{ minHeight: 300 }}>
-          <div className="modal-top-actions">
-            <Button type="primary" size="large" style={buttonStyle} onClick={this.toggleCreateException}>添加异常</Button>
-          </div>
+      <div className="pane-content tab-pane">
+        <Card>
           <Table columns={this.columns}
-            dataSource={this.dataSource} rowKey="id" size="middle" pagination={false}
+            dataSource={this.dataSource} rowKey="id" size="small" pagination={false}
           />
-          <CreateException visible={this.state.createExceptionVisible} shipmtNo={shipmtNo} dispId={dispId} toggle={this.toggleCreateException} />
-          <DealException shipmtNo={shipmtNo} dispId={dispId} />
-        </div>
-      </Modal>
+          <DealException />
+        </Card>
+      </div>
     );
   }
 }

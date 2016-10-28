@@ -9,6 +9,7 @@ import GoodsInfo from '../forms/goods-info';
 import ModeInfo from '../forms/mode-info';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import './preview-panel.less';
 const formatMsg = format(messages);
 
 @injectIntl
@@ -38,7 +39,7 @@ export default class ChangeShipment extends React.Component {
     type: PropTypes.string.isRequired,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.shipmtNo !== this.props.shipmtNo) {
+    if (nextProps.shipmtNo && nextProps.shipmtNo !== this.props.shipmtNo) {
       this.props.loadForm(null, {
         tenantId: this.props.tenantId,
         shipmtNo: nextProps.shipmtNo,
