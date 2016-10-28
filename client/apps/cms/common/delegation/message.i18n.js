@@ -125,6 +125,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.inspbroker',
     defaultMessage: '报检企业',
   },
+  certbroker: {
+    id: 'cms.delegation.delg.inspbroker',
+    defaultMessage: '鉴定办证企业',
+  },
   goodsType: {
     id: 'cms.delegation.delg.goodstype',
     defaultMessage: '货物类型',
@@ -197,6 +201,10 @@ export default defineMessages({
     id: 'cms.delegation.make',
     defaultMessage: '制单',
   },
+  matchQuote: {
+    id: 'cms.delegation.matchQuote',
+    defaultMessage: '匹配报价',
+  },
   declareView: {
     id: 'cms.delegation.view',
     defaultMessage: '查看',
@@ -224,6 +232,10 @@ export default defineMessages({
   entryNoFillModalTitle: {
     id: 'cms.delegation.modal.entrynofill.title',
     defaultMessage: '填写报关单号',
+  },
+  ciqNoFillModalTitle: {
+    id: 'cms.delegation.modal.ciqnofill.title',
+    defaultMessage: '填写通关单号',
   },
   successfulOperation: {
     id: 'cms.delegation.modal.successful.operation',
@@ -261,6 +273,10 @@ export default defineMessages({
     id: 'cms.delegation.last.act.time',
     defaultMessage: '最后更新时间',
   },
+  ciqTime: {
+    id: 'cms.delegation.ciq.time',
+    defaultMessage: '报检时间',
+  },
   clrStatus: {
     id: 'cms.delegation.clr.status',
     defaultMessage: '通关状态',
@@ -273,21 +289,45 @@ export default defineMessages({
     id: 'cms.delegation.delg.dispatch',
     defaultMessage: '分配报关委托',
   },
+  ciqDispatch: {
+    id: 'cms.delegation.delg.dispatch',
+    defaultMessage: '分配报检委托',
+  },
+  certDispatch: {
+    id: 'cms.delegation.delg.dispatch',
+    defaultMessage: '分配鉴定办证委托',
+  },
   dispDecl: {
     id: 'cms.delegation.delg.dispDecl',
     defaultMessage: '报关分配: ',
   },
-  dispInspect: {
-    id: 'cms.delegation.delg.dispInspect',
+  dispciq: {
+    id: 'cms.delegation.delg.dispciq',
     defaultMessage: '报检分配: ',
   },
   dispCert: {
     id: 'cms.delegation.delg.dispCert',
     defaultMessage: '鉴定办证分配: ',
   },
+  ciq: {
+    id: 'cms.delegation.delg.ciq',
+    defaultMessage: '报检',
+  },
+  ciqFinish: {
+    id: 'cms.delegation.ciq.finish',
+    defaultMessage: '完成',
+  },
+  cert: {
+    id: 'cms.delegation.delg.cert',
+    defaultMessage: '鉴定办证',
+  },
+  certOp: {
+    id: 'cms.delegation.certOp',
+    defaultMessage: '办证',
+  },
   dispatchMessage: {
     id: 'cms.delegation.message.dispatch',
-    defaultMessage: '请选择报关供应商',
+    defaultMessage: '请选择供应商',
   },
   acceptSaveMessage: {
     id: 'cms.delegation.edit.message.accept',
@@ -324,5 +364,41 @@ export default defineMessages({
   releasedPart: {
     id: 'cms.delegation.releasedPart',
     defaultMessage: '部分放行',
+  },
+  customsId: {
+    id: 'cms.delegation.customsId',
+    defaultMessage: '通关单号',
+  },
+  upload: {
+    id: 'cms.delegation.upload',
+    defaultMessage: '上传',
+  },
+  info: {
+    id: 'cms.modals.tabpanes.expense,info',
+    defaultMessage: '无匹配报价规则',
+  },
+  certFee: {
+    id: 'cms.delegation.certFee',
+    defaultMessage: '办证服务费用项',
+  },
+  certPrice: {
+    id: 'cms.delegation.certPrice',
+    defaultMessage: '单价',
+  },
+  certCount: {
+    id: 'cms.delegation.certCount',
+    defaultMessage: '数量',
+  },
+  certTax: {
+    id: 'cms.delegation.certTotal',
+    defaultMessage: '税金',
+  },
+  certCalfee: {
+    id: 'cms.delegation.certTotal',
+    defaultMessage: '费用金额',
+  },
+  certTotal: {
+    id: 'cms.delegation.certTotal',
+    defaultMessage: '总金额',
   },
 });

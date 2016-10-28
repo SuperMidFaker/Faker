@@ -25,10 +25,31 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
   'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS', 'SET_PREW_STATUS',
+  'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL',
+  'OPEN_CIQ_MODAL', 'CLOSE_CIQ_MODAL',
+  'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
+  'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
+  'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
+  'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
+  'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
+  'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
+  'MATCH_CERT_QUOTE', 'MATCH_CERT_QUOTE_SUCCEED', 'MATCH_CERT_QUOTE_FAIL',
 ]);
 
 const initialState = {
   delegationlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  ciqlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  certlist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
@@ -89,11 +110,18 @@ const initialState = {
     billSeqNo: '',
     delgNo: '',
   },
+  visibleCiqModal: false,
+  ciqModal: {
+    delgNo: '',
+  },
   delgDispShow: false,
   saved: false,
   delgDisp: {},
   dispatch: {},
   partners: [],
+  matchParam: {},
+  matchStatus: {},
+  certMQParams: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -108,6 +136,12 @@ export default function reducer(state = initialState, action) {
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
+    }
+    case actionTypes.LOAD_CIQ_SUCCEED: {
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
+    }
+    case actionTypes.LOAD_CERT_SUCCEED: {
+      return { ...state, certlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
@@ -183,6 +217,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleEfModal: true, efModal: action.data };
     case actionTypes.CLOSE_EF_MODAL:
       return { ...state, visibleEfModal: false, efModal: initialState.efModal };
+    case actionTypes.OPEN_CIQ_MODAL:
+      return { ...state, visibleCiqModal: true, ciqModal: action.data };
+    case actionTypes.CLOSE_CIQ_MODAL:
+      return { ...state, visibleCiqModal: false, ciqModal: initialState.ciqModal };
     case actionTypes.SET_DISP_STATUS:
       return { ...state, ...action.data };
     case actionTypes.LOAD_DELGDISP_SUCCEED:
@@ -195,6 +233,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
+    case actionTypes.LOAD_DECLWAY_SUCCEED:
+      return { ...state, matchParam: action.result.data };
+    case actionTypes.MATCH_QUOTE_SUCCEED:
+      return { ...state, matchStatus: action.result.data };
+    case actionTypes.LOAD_MQPARAM_SUCCEED:
+      return { ...state, certMQParams: action.result.data };
     default:
       return state;
   }
@@ -211,6 +255,94 @@ export function loadAcceptanceTable(params) {
       endpoint: 'v1/cms/acceptance/delegations',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadCiqTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQ,
+        actionTypes.LOAD_CIQ_SUCCEED,
+        actionTypes.LOAD_CIQ_FAIL,
+      ],
+      endpoint: 'v1/cms/load/ciq',
+      method: 'get',
+      params,
+    },
+  };
+}
+export function loadCertTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CERT,
+        actionTypes.LOAD_CERT_SUCCEED,
+        actionTypes.LOAD_CERT_FAIL,
+      ],
+      endpoint: 'v1/cms/load/cert',
+      method: 'get',
+      params,
+    },
+  };
+}
+export function loadDeclareWay(row) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECLWAY,
+        actionTypes.LOAD_DECLWAY_SUCCEED,
+        actionTypes.LOAD_DECLWAY_FAIL,
+      ],
+      endpoint: 'v1/cms/load/declareWay',
+      method: 'get',
+      params: row,
+    },
+  };
+}
+export function matchQuote(param) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MATCH_QUOTE,
+        actionTypes.MATCH_QUOTE_SUCCEED,
+        actionTypes.MATCH_QUOTE_FAIL,
+      ],
+      endpoint: 'v1/cms/match/quote',
+      method: 'post',
+      data: param,
+      origin: 'mongo',
+    },
+  };
+}
+export function loadCMQParams(tenantId, delgNo, type) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MQPARAM,
+        actionTypes.LOAD_MQPARAM_SUCCEED,
+        actionTypes.LOAD_MQPARAM_FAIL,
+      ],
+      endpoint: 'v1/cms/load/mqParams',
+      method: 'get',
+      params: { tenantId, delgNo, type },
+    },
+  };
+}
+
+export function matchCertQuote(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MATCH_CERT_QUOTE,
+        actionTypes.MATCH_CERT_QUOTE_SUCCEED,
+        actionTypes.MATCH_CERT_QUOTE_FAIL,
+      ],
+      endpoint: 'v1/cms/match/cert/quote',
+      method: 'post',
+      data: params,
+      origin: 'mongo',
     },
   };
 }
@@ -263,7 +395,7 @@ export function setSavedStatus(params) {
     data: params,
   };
 }
-export function loadDelgDisp(delgNo, tenantId, typeCode) {
+export function loadDelgDisp(delgNo, tenantId, typeCode, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -273,12 +405,12 @@ export function loadDelgDisp(delgNo, tenantId, typeCode) {
       ],
       endpoint: 'v1/cms/loadDelgDisp',
       method: 'get',
-      params: { delgNo, tenantId, typeCode },
+      params: { delgNo, tenantId, typeCode, type },
     },
   };
 }
 
-export function loadDisp(delgNo, tenantId, typeCode) {
+export function loadDisp(delgNo, tenantId, typeCode, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -288,7 +420,7 @@ export function loadDisp(delgNo, tenantId, typeCode) {
       ],
       endpoint: 'v1/cms/loadDisp',
       method: 'get',
-      params: { delgNo, tenantId, typeCode },
+      params: { delgNo, tenantId, typeCode, type },
     },
   };
 }
@@ -308,7 +440,7 @@ export function delgDispSave(delgDisp, dispatch, partner) {
   };
 }
 
-export function delDisp(delgNo, tenantId) {
+export function delDisp(delgNo, tenantId, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -318,7 +450,7 @@ export function delDisp(delgNo, tenantId) {
       ],
       endpoint: 'v1/cms/dispatch/del',
       method: 'post',
-      data: { delgNo, tenantId },
+      data: { delgNo, tenantId, type },
     },
   };
 }
@@ -356,6 +488,20 @@ export function acceptDelg(loginId, loginName, dispId) {
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
       data: { loginId, loginName, dispId },
+    },
+  };
+}
+export function acceptCiqCert(loginId, loginName, delgNo, serverType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACPT_CIQCERT,
+        actionTypes.ACPT_CIQCERT_SUCCEED,
+        actionTypes.ACPT_CIQCERT_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/cms/delg/accept/ciqorcert',
+      data: { loginId, loginName, delgNo, serverType },
     },
   };
 }
@@ -573,13 +719,23 @@ export function openEfModal({ entryHeadId, delgNo, billSeqNo }) {
     data: { entryHeadId, delgNo, billSeqNo },
   };
 }
+export function openCiqModal({ delgNo }) {
+  return {
+    type: actionTypes.OPEN_CIQ_MODAL,
+    data: { delgNo },
+  };
+}
 
 export function closeEfModal() {
   return {
     type: actionTypes.CLOSE_EF_MODAL,
   };
 }
-
+export function closeCiqModal() {
+  return {
+    type: actionTypes.CLOSE_CIQ_MODAL,
+  };
+}
 export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
   return {
     [CLIENT_API]: {
@@ -591,6 +747,21 @@ export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
       endpoint: 'v1/cms/fill/declno',
       method: 'post',
       data: { entryNo, entryHeadId, billSeqNo, delgNo },
+    },
+  };
+}
+
+export function fillCustomsNo({ entryNo, delgNo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILL_CUSTOMSNO,
+        actionTypes.FILL_CUSTOMSNO_SUCCEED,
+        actionTypes.FILL_CUSTOMSNO_FAIL,
+      ],
+      endpoint: 'v1/cms/fill/customsno',
+      method: 'post',
+      data: { entryNo, delgNo },
     },
   };
 }

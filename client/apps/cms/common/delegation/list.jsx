@@ -14,8 +14,10 @@ import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
-  showPreviewer, setDispStatus, loadDelgDisp, loadDisp } from 'common/reducers/cmsDelegation';
+import CiqTable from './ciqTableList';
+import CertTable from './certTableList';
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
+  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertTable } from 'common/reducers/cmsDelegation';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
@@ -41,10 +43,12 @@ const RadioButton = Radio.Button;
     preStatus: state.cmsDelegation.preStatus,
     delegateTracking: state.cmsDelegation.previewer.delegateTracking,
     delegation: state.cmsDelegation.previewer.delegation,
+    matchParam: state.cmsDelegation.matchParam,
+    matchStatus: state.cmsDelegation.matchStatus,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp }
+    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote, loadCertTable }
 )
 @connectNav({
   depth: 2,
@@ -72,6 +76,11 @@ export default class DelegationList extends Component {
     delegateTracking: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadPaneExp: PropTypes.func.isRequired,
+    loadCiqTable: PropTypes.func.isRequired,
+    loadDeclareWay: PropTypes.func.isRequired,
+    matchQuote: PropTypes.func.isRequired,
+    matchParam: PropTypes.object.isRequired,
+    matchStatus: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -79,10 +88,19 @@ export default class DelegationList extends Component {
   state = {
     searchInput: '',
     expandedKeys: [],
+    service: 0,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
+    }
+    if (nextProps.matchParam !== this.props.matchParam) {
+      this.handleMatchQuote(nextProps.matchParam);
+    }
+    if (nextProps.matchStatus !== this.props.matchStatus) {
+      if (nextProps.matchStatus.status === 'noquote') {
+        message.info(formatMsg(this.props.intl, 'info'), 3);
+      }
     }
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accept') {
@@ -158,23 +176,9 @@ export default class DelegationList extends Component {
     width: 120,
     dataIndex: 'weight',
   }, {
-    /*
-    title: '货物性质',
-    dataIndex: 'goods_type',
-    render: (o) => {
-      const decl = GOODSTYPES.filter(gd => gd.value === o)[0];
-      return decl && decl.text;
-    },
-  }, {
-    */
     title: this.msg('broker'),
     width: 180,
     dataIndex: 'decl_name',
-    render: o => <TrimSpan text={o} maxLen={8} />,
-  }, {
-    title: this.msg('inspbroker'),
-    width: 180,
-    dataIndex: 'insp_name',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('status'),
@@ -276,12 +280,73 @@ export default class DelegationList extends Component {
       }
     });
   }
+  handleCiqListLoad = (currentPage, filter) => {
+    const { tenantId, ietype, listFilter,
+      delegationlist: { pageSize, current } } = this.props;
+    this.props.loadCiqTable({
+      ietype,
+      filter: JSON.stringify(filter || listFilter),
+      tenantId,
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleCertListLoad = (currentPage, filter) => {
+    const { tenantId, ietype, listFilter,
+      delegationlist: { pageSize, current } } = this.props;
+    this.props.loadCertTable({
+      ietype,
+      filter: JSON.stringify(filter || listFilter),
+      tenantId,
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
   handleRadioChange = (ev) => {
+    this.setState({ service: 0 });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleDelgListLoad(1, filter);
+  }
+  handleRadioChangeType = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    if (ev.target.value === 'ciq') {
+      this.setState({ service: 1 });
+      const filter = { ...this.props.listFilter, status: ev.target.value };
+      this.handleCiqListLoad(1, filter);
+    } else if (ev.target.value === 'cert') {
+      this.setState({ service: 2 });
+      const filter = { ...this.props.listFilter, status: ev.target.value };
+      this.handleCertListLoad(1, filter);
+    }
+  }
+  handleMQdeclWay = (row) => {
+    this.props.loadDeclareWay(row).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
+  handleMatchQuote = (matchParam) => {
+    this.props.matchQuote(matchParam).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.handleDelgListLoad();
+      }
+    });
   }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
@@ -323,23 +388,40 @@ export default class DelegationList extends Component {
         } else {
           this.handleDelgListLoad();
           this.showAcceptInfo(row);
+          this.handleMQdeclWay(row);
         }
       }
     );
   }
-  handleDelegationAssign = (row) => {
-    this.props.loadDelgDisp(
+  handleDelegationAssign = (row, type) => {
+    if (row.ciq_name && type === 'ciq' && row.ciq_name !== null) {
+      this.props.loadDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker
-    );
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      type);
+    } else if (row.cert_name && type === 'cert' && row.cert_name !== null) {
+      this.props.loadDisp(
+      row.delg_no,
+      this.props.tenantId,
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      type);
+    } else {
+      this.props.loadDelgDisp(
+        row.delg_no,
+        this.props.tenantId,
+        PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+        type
+      );
+    }
     this.props.setDispStatus({ delgDispShow: true });
   }
-  handleDelegationCancel = (row) => {
+  handleDelegationCancel = (row, type) => {
     this.props.loadDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker);
+      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      type);
     this.props.setDispStatus({ delgDispShow: true });
   }
   closeDispDock = () => {
@@ -368,7 +450,6 @@ export default class DelegationList extends Component {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleDelgListLoad(1, filters);
   }
-
   mergeFilters(curFilters, value) {
     const newFilters = {};
     Object.keys(curFilters).forEach((key) => {
@@ -388,8 +469,16 @@ export default class DelegationList extends Component {
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 100,
+      width: 140,
       render: (o, record) => {
+        let CIQ = true;
+        let CERT = true;
+        if (record.ciq_status && record.ciq_status === 1) {
+          CIQ = false;
+        }
+        if (record.cert_status && record.cert_status === 1) {
+          CERT = false;
+        }
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
           return (
             <span>
@@ -414,35 +503,69 @@ export default class DelegationList extends Component {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <span>
-                <RowUpdater onHit={this.handleDelegationCancel} label={this.msg('delgRecall')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
+                { CIQ && <span className="ant-divider" /> }
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} /> }
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} /> }
               </span>
             </PrivilegeCover>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && (record.sub_status === 3 || record.sub_status === null)) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
-                <RowUpdater onHit={this.handleDelegationAssign} label={this.msg('delgDistribute')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleMQdeclWay} label={this.msg('matchQuote')} row={record} />
+              </span>
+            </PrivilegeCover>
+          );
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && record.sub_status === 4) {
+          return (
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <span>
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
                 <span className="ant-divider" />
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                { CIQ && <span className="ant-divider" />}
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
               </span>
             </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              <span>
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                { CIQ && <span className="ant-divider" />}
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
+              </span>
             </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              <span>
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                { CIQ && <span className="ant-divider" />}
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
+              </span>
             </PrivilegeCover>
           );
         } else {
           return (
-            <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
+            <span>
+              <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
+              <span className="ant-divider" />
+              <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+            </span>
           );
         }
       },
@@ -462,9 +585,14 @@ export default class DelegationList extends Component {
             <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChangeType}>
+            <RadioButton value="ciq">{this.msg('ciq')}</RadioButton>
+            <RadioButton value="cert">{this.msg('cert')}</RadioButton>
+          </RadioGroup>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body">
+          {this.state.service === 0 && <div className="page-body">
             <div className="panel-header">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus-circle-o">
@@ -479,7 +607,9 @@ export default class DelegationList extends Component {
                 scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
-          </div>
+          </div>}
+          {this.state.service === 1 && <CiqTable ietype={this.props.ietype} />}
+          {this.state.service === 2 && <CertTable ietype={this.props.ietype} />}
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />

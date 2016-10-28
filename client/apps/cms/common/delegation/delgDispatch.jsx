@@ -11,20 +11,10 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 const FormItem = Form.Item;
 const formItemLayout = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 21 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
 };
 function noop() {}
-
-function getFieldInits(dispatch) {
-  const init = {};
-  if (dispatch) {
-    init.decl_name = dispatch.decl_name || '';
-    init.insp_name = dispatch.insp_name || '';
-    init.cert_name = dispatch.cert_name || '';
-  }
-  return init;
-}
 
 function ButtonSelect(props) {
   const { saved, onconfirm, onclick } = props;
@@ -60,7 +50,6 @@ ButtonSelect.PropTypes = {
     dispatch: state.cmsDelegation.dispatch,
     partners: state.cmsDelegation.partners,
     saved: state.cmsDelegation.saved,
-    fieldInits: getFieldInits(state.cmsDelegation.dispatch),
   }),
   { delgDispSave, delDisp, setSavedStatus }
 )
@@ -77,7 +66,6 @@ export default class DelgDispatch extends Component {
     delgDispSave: PropTypes.func.isRequired,
     delDisp: PropTypes.func.isRequired,
     setSavedStatus: PropTypes.func.isRequired,
-    fieldInits: PropTypes.object.isRequired,
   }
   constructor(props) {
     super(props);
@@ -96,7 +84,7 @@ export default class DelgDispatch extends Component {
   }]
   handleConfirm = () => {
     const { dispatch, tenantId } = this.props;
-    this.props.delDisp(dispatch.delg_no, tenantId
+    this.props.delDisp(dispatch.delg_no, tenantId, dispatch.recv_server_type
     ).then(
       (result) => {
         if (result.error) {
@@ -111,132 +99,47 @@ export default class DelgDispatch extends Component {
   handleSave = () => {
     const { delgDisp, dispatch, partners } = this.props;
     const recv = this.props.form.getFieldsValue();
-    if (recv.insp_name === recv.decl_name) {
-      if (recv.cert_name === recv.decl_name) {
-        const pts = partners.filter(pt => pt.partner_id === recv.decl_name);
-        let partner = {};
-        if (pts.length === 1) {
-          partner = pts[0];
-          partner.server_type = '123';
-          this.props.delgDispSave(delgDisp, dispatch, partner
-          ).then(
-            (result) => {
-              if (result.error) {
-                message.error(result.error.message);
-              } else {
-                this.props.setSavedStatus({ saved: true });
-              }
-            }
-          );
-        }
-      } else {
-        let pts = partners.filter(pt => pt.partner_id === recv.decl_name);
-        let partner = {};
-        if (pts.length === 1) {
-          partner = pts[0];
-          partner.server_type = '12';
-          this.props.delgDispSave(delgDisp, dispatch, partner
-          ).then(
-            (result) => {
-              if (result.error) {
-                message.error(result.error.message);
-              } else {
-                this.props.setSavedStatus({ saved: true });
-              }
-            });
-        }
-        pts = partners.filter(pt => pt.partner_id === recv.cert_name);
-        partner = {};
-        if (pts.length === 1) {
-          partner = pts[0];
-          partner.server_type = '3';
-          this.props.delgDispSave(delgDisp, dispatch, partner
-          ).then(
-            (result) => {
-              if (result.error) {
-                message.error(result.error.message);
-              } else {
-                this.props.setSavedStatus({ saved: true });
-              }
-            }
-          );
-        }
-      }
-    } else if (recv.cert_name === recv.decl_name) {
-      const pts = partners.filter(pt => pt.partner_id === recv.decl_name);
-      let partner = {};
-      if (pts.length === 1) {
-        partner = pts[0];
-        partner.server_type = '13';
-        this.props.delgDispSave(delgDisp, dispatch, partner
-        ).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.props.setSavedStatus({ saved: true });
-            }
-          }
-        );
-      }
+    let partner = {};
+    if (recv.recv_name === dispatch.recv_name) {
+      partner.name = dispatch.recv_name;
+      partner.tid = dispatch.recv_tenant_id;
+      partner.partner_id = dispatch.recv_partner_id;
     } else {
-      let pts = partners.filter(pt => pt.partner_id === recv.decl_name);
-      let partner = {};
+      const pts = partners.filter(pt => pt.partner_id === recv.recv_name);
       if (pts.length === 1) {
         partner = pts[0];
-        partner.server_type = '1';
-        this.props.delgDispSave(delgDisp, dispatch, partner
-        ).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.props.setSavedStatus({ saved: true });
-            }
-          });
-      }
-      pts = partners.filter(pt => pt.partner_id === recv.insp_name);
-      partner = {};
-      if (pts.length === 1) {
-        partner = pts[0];
-        partner.server_type = '2';
-        this.props.delgDispSave(delgDisp, dispatch, partner
-        ).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.props.setSavedStatus({ saved: true });
-            }
-          });
-      }
-      pts = partners.filter(pt => pt.partner_id === recv.cert_name);
-      partner = {};
-      if (pts.length === 1) {
-        partner = pts[0];
-        partner.server_type = '3';
-        this.props.delgDispSave(delgDisp, dispatch, partner
-        ).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.props.setSavedStatus({ saved: true });
-            }
-          }
-        );
       }
     }
+    this.props.delgDispSave(delgDisp, dispatch, partner
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.setSavedStatus({ saved: true });
+      }
+    });
   }
   render() {
-    const { form: { getFieldDecorator }, delgDisp, partners, show, saved, fieldInits } = this.props;
+    const { form: { getFieldDecorator }, delgDisp, partners, show, saved, dispatch } = this.props;
     const dataSource = [delgDisp];
+    let title = '';
+    let label = '';
+    if (dispatch.type === 'delg') {
+      title = this.msg('delgDispatch');
+      label = this.msg('dispDecl');
+    } else if (dispatch.type === 'ciq') {
+      title = this.msg('ciqDispatch');
+      label = this.msg('dispciq');
+    } else if (dispatch.type === 'cert') {
+      title = this.msg('certDispatch');
+      label = this.msg('dispCert');
+    }
     let dock = '';
     if (show) {
       dock = (
         <div className="dock-panel inside">
           <div className="panel-heading">
-            <span className="title">{this.msg('delgDispatch')}</span>
+            <span className="title">{title}</span>
             <div className="pull-right">
               <Button type="ghost" shape="circle-outline" onClick={this.onClose}>
                 <Icon type="cross" />
@@ -245,48 +148,8 @@ export default class DelgDispatch extends Component {
           </div>
           <Card>
             <Form>
-              <FormItem label={this.msg('dispDecl')} {...formItemLayout}>
-                {getFieldDecorator('decl_name', { initialValue: fieldInits.decl_name }
-                )(<Select
-                  showSearch
-                  showArrow
-                  optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')}
-                  style={{ width: '80%' }}
-                >
-                  {
-                  partners.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
-                    >
-                      {pt.name}
-                    </Option>)
-                  )
-                }
-                </Select>)}
-              </FormItem>
-              <FormItem label={this.msg('dispInspect')} {...formItemLayout}>
-                {getFieldDecorator('insp_name', { initialValue: fieldInits.insp_name }
-                )(<Select
-                  showSearch
-                  showArrow
-                  optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')}
-                  style={{ width: '80%' }}
-                >
-                  {
-                  partners.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
-                    >
-                      {pt.name}
-                    </Option>)
-                  )
-                }
-                </Select>)}
-              </FormItem>
-              <FormItem label={this.msg('dispCert')} {...formItemLayout}>
-                {getFieldDecorator('cert_name', { initialValue: fieldInits.cert_name }
+              <FormItem label={label} {...formItemLayout}>
+                {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
                 )(<Select
                   showSearch
                   showArrow
