@@ -7,9 +7,6 @@ export default class Wrapper extends React.Component {
   render() {
     return (
       <div>
-        <header className="top-bar">
-          <span />
-        </header>
         <div className="main-content">
           {this.props.children}
         </div>

@@ -1,1 +1,1 @@
-export Overview from './overview';
+export Index from './overview';

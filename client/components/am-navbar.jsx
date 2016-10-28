@@ -78,7 +78,7 @@ export default class AmNavBar extends React.Component {
           <MenuItem>
             <NavLink to="/my/profile">
               <Icon type="user" />
-              <span>{formatMsg(intl, 'userSetting')}</span>
+              <span>{formatMsg(intl, 'userAccount')}</span>
             </NavLink>
           </MenuItem>
           <MenuItem>
@@ -86,12 +86,6 @@ export default class AmNavBar extends React.Component {
               <i className="zmdi zmdi-globe zmdi-hc-fw" />
               <span>{formatMsg(intl, 'userLanguage')}</span>
             </a>
-          </MenuItem>
-          <MenuItem>
-            <NavLink to="/my/password">
-              <Icon type="lock" />
-              <span>{formatMsg(intl, 'pwdSetting')}</span>
-            </NavLink>
           </MenuItem>
           <MenuDivider />
           <MenuItem>

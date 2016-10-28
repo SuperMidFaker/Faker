@@ -12,7 +12,7 @@ import MessageList from './account/messageList';
 import MyProfile from './account/profile';
 import Password from './account/password';
 import Corp from './corp/pack-corp';
-import CorpOverview from './corp/overview';
+import * as CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
 import * as Organization from './corp/organization';
 import * as Personnel from './corp/personnel';
@@ -124,7 +124,7 @@ export default(store, cookie) => {
         </Route>
         <Route path="corp" component={Corp}>
           <IndexRedirect to="/corp/overview" />
-          <Route path="overview" component={CorpOverview} />
+          <Route path="overview" component={CorpOverview.Index} />
           <Route path="info" component={CorpInfo} />
           <Route path="organization" component={Organization.Wrapper}>
             <IndexRoute component={Organization.List} />

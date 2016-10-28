@@ -6,7 +6,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
  'common/reducers/personnel';
 import NavLink from 'client/components/nav-link';
-import SearchBar from 'client/components/search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -54,7 +53,7 @@ function fetchData({ state, dispatch, cookie }) {
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
 @connectNav({
-  depth: 2,
+  depth: 1,
   text: props => formatContainerMsg(props.intl, 'personnelUser'),
   moduleName: 'corp',
   lifecycle: 'componentDidMount',
@@ -323,11 +322,6 @@ export default class PersonnelSetting extends React.Component {
     }];
     return (
       <div>
-        <header className="top-bar">
-          <div className="tools">
-            <SearchBar placeholder={msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
-        </header>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">

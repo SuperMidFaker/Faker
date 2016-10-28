@@ -166,12 +166,8 @@ export default class MessageList extends React.Component {
       remotes: this.props.messages,
     });
     return (
-      <div className="page-body-center">
-        <div className="panel-heading">
-          <h3>{msg('messageCenter')}</h3>
-          <Button size="large" onClick={() => { this.context.router.goBack(); }} style={{ float: 'right' }} icon="left">{msg('goBack')}</Button>
-        </div>
-        <div className="panel-body" style={{ padding: 20 }}>
+      <div className="page-body">
+        <div className="panel-body" style={{ padding: 16 }}>
           <div>
             <RadioGroup defaultValue={this.props.messages.status} size="large" onChange={this.handleStatusChange}>
               <RadioButton value={MESSAGE_STATUS.notRead.key}>{MESSAGE_STATUS.notRead.value}</RadioButton>
