@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'ALTER_BILLINGFEES',
   'CHANGE_FEES_FILTER',
   'CHANGE_BILLINGS_FILTER',
+  'TOGGLE_ADVANCECHARGE_MODAL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FEES', 'LOAD_FEES_SUCCEED', 'LOAD_FEES_FAIL',
   'LOAD_FEES_BYCHOOSEMODAL', 'LOAD_FEES_BYCHOOSEMODAL_SUCCEED', 'LOAD_FEES_BYCHOOSEMODAL_FAIL',
@@ -71,6 +72,9 @@ const initialState = {
     data: [],
   },
   partners: [],
+  advanceChargeModal: {
+    visible: false,
+  },
 };
 
 function calculateBillingCharges(fees) {
@@ -190,6 +194,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_BILLINGS_FILTER: {
       const billings = { ...state.billings, searchValue: action.data.value };
       return { ...state, billings };
+    }
+    case actionTypes.TOGGLE_ADVANCECHARGE_MODAL: {
+      return { ...state, advanceChargeModal: { visible: action.data.visible } };
     }
     default:
       return state;
@@ -407,7 +414,7 @@ export function changeCancelCharge({ tenantId, loginId, loginName, billingId, ca
   };
 }
 
-export function importAdvanceCharge({ tenantId, loginId, loginName }) {
+export function importAdvanceCharge({ tenantId, loginId, loginName, advances }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -417,7 +424,7 @@ export function importAdvanceCharge({ tenantId, loginId, loginName }) {
       ],
       endpoint: 'v1/transport/billing/importAdvanceCharge',
       method: 'post',
-      data: { tenantId, loginId, loginName },
+      data: { tenantId, loginId, loginName, advances },
     },
   };
 }
@@ -445,3 +452,6 @@ export function changeBillingsFilter(key, value) {
   return { type: actionTypes.CHANGE_BILLINGS_FILTER, data: { key, value } };
 }
 
+export function toggleAdvanceChargeModal(visible) {
+  return { type: actionTypes.TOGGLE_ADVANCECHARGE_MODAL, data: { visible } };
+}

@@ -55,6 +55,7 @@ const initialState = {
     visible: false,
     dispId: -1,
     parentDispId: -1,
+    spTenantId: -2,
     shipmtNo: '',
   },
   locModal: {
@@ -63,7 +64,6 @@ const initialState = {
       parent_no: '',
       shipmt_no: '',
       disp_id: -1,
-      transit_time: -1,
     },
   },
   locReportedShipments: [],
@@ -283,10 +283,10 @@ export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportM
   };
 }
 
-export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId }) {
+export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId }) {
   return {
     type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
-    data: { visible, dispId, shipmtNo, parentDispId },
+    data: { visible, dispId, shipmtNo, parentDispId, spTenantId },
   };
 }
 

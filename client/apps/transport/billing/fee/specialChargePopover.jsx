@@ -55,7 +55,7 @@ export default class SpecialChargePopover extends React.Component {
     );
     return (
       <Popover placement="rightTop" title="特殊费用" content={content} trigger="hover">
-        <a onMouseOver={this.handleMouseOver} style={{ textDecoration: 'underline' }}>
+        <a onMouseOver={this.handleMouseOver}>
           {this.props.children}
         </a>
       </Popover>

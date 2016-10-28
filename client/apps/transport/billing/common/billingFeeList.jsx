@@ -254,7 +254,6 @@ export default class BillingFeeList extends React.Component {
           shipmtNo={record.shipmt_no}
           dispId={record.disp_id}
           excpCount={o}
-          onShowExcpModal={() => {}}
         />);
       },
     }, {

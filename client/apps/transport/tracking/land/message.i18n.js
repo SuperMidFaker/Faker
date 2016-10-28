@@ -65,10 +65,6 @@ export default defineMessages({
     id: 'transport.tracking.notify.pickup',
     defaultMessage: '催促提货',
   },
-  updateEvents: {
-    id: 'transport.tracking.update.events',
-    defaultMessage: '记录异常',
-  },
   updateVehicleDriver: {
     id: 'transport.tracking.update.drivervehicle',
     defaultMessage: '上报车辆信息',
@@ -128,30 +124,6 @@ export default defineMessages({
   exceptionLevel: {
     id: 'transport.tracking.shipmt.exception.exceptionLevel',
     defaultMessage: '异常等级',
-  },
-  exceptionResolved: {
-    id: 'transport.tracking.shipmt.exception.exceptionResolved',
-    defaultMessage: '异常状态',
-  },
-  exceptionType: {
-    id: 'transport.tracking.shipmt.exception.exceptionType',
-    defaultMessage: '异常类型',
-  },
-  exceptionDescription: {
-    id: 'transport.tracking.shipmt.exception.exceptionDescription',
-    defaultMessage: '描述',
-  },
-  submitter: {
-    id: 'transport.tracking.shipmt.exception.submitter',
-    defaultMessage: '提交人',
-  },
-  submitDate: {
-    id: 'transport.tracking.shipmt.exception.submitDate',
-    defaultMessage: '时间',
-  },
-  operation: {
-    id: 'transport.tracking.shipmt.exception.operation',
-    defaultMessage: '操作',
   },
   shipmtCarrier: {
     id: 'transport.tracking.shipmt.carrier',

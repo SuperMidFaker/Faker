@@ -14,6 +14,7 @@ import '../../../index.less';
     loginName: state.account.username,
     dealExcpModal: state.trackingLandException.dealExcpModal,
     visible: state.trackingLandException.dealExcpModal.visible,
+    shipmtNo: state.trackingLandException.dealExcpModal.shipmtNo,
     exceptions: state.trackingLandException.exceptions,
   }),
   { showDealExcpModal, loadExceptions, dealException }
@@ -29,7 +30,6 @@ export default class DealException extends React.Component {
     dealExcpModal: PropTypes.object.isRequired,
     dealException: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
-    dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     exceptions: PropTypes.object.isRequired,
   }
@@ -57,7 +57,7 @@ export default class DealException extends React.Component {
     });
   }
   handleCancel = () => {
-    this.props.showDealExcpModal(false, {});
+    this.props.showDealExcpModal({ visible: false });
   }
   renderException() {
     const { dealExcpModal: { exception } } = this.props;

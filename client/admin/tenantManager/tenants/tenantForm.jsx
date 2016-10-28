@@ -5,7 +5,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { setFormValue, uploadImg, submitTenant, clearForm, loadTenantForm } from
   'common/reducers/tenants';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
-import { validatePhone } from 'common/validater';
 import { DEFAULT_MODULES } from 'common/constants/module';
 import './tenant.less';
 
@@ -46,19 +45,22 @@ class TenantForm extends React.Component {
   handleSubmit = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const formData = { ...this.props.form.getFieldsValue() };
-        formData.tenant_id = this.props.formData.tenant_id;
+        const formData = { ...this.props.formData, ...this.props.form.getFieldsValue() };
         formData.tenantAppList = formData.tenantAppList.map(id => ({
           id,
         }));
-        this.props.submitTenant(formData).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.info('保存成功', 5);
-            this.handleNavigationTo('/manager/tenants');
-          }
-        });
+        if (formData.phone || formData.email) {
+          this.props.submitTenant(formData).then((result) => {
+            if (result.error) {
+              message.error(result.error.message, 10);
+            } else {
+              message.info('保存成功', 5);
+              this.handleNavigationTo('/manager/tenants');
+            }
+          });
+        } else {
+          message.error('电话和邮箱必须填写其中一个');
+        }
       } else {
         this.forceUpdate();
         message.error('表单数据填写有误', 10);
@@ -82,14 +84,14 @@ class TenantForm extends React.Component {
     );
   }
   render() {
-    const { formData: { logo: logoPng }, formData, form: { getFieldDecorator, getFieldError } }
+    const { formData, form: { getFieldDecorator, getFieldError } }
       = this.props;
     const tenantAppValueList = this.props.formData.tenantAppValueList || [];
     return (
       <div className="main-content">
         <div className="tenant-form page-body">
           <div className="panel-body body-responsive">
-            <Form horizontal form={this.props.form}>
+            <Form horizontal>
               <Row>
                 <Col span="12">
                   {this.renderTextInput(
@@ -117,11 +119,10 @@ class TenantForm extends React.Component {
                       whitespace: true,
                     }], { transform: value => (value.trim()), initialValue: formData.contact }
                   )}
-                  {this.renderTextInput('电话', '请填写联系人电话', 'phone', true, [{
-                    validator: (rule, value, callback) => validatePhone(
-                      value, callback,
-                      () => { return '请填写联系人电话'; }
-                    ),
+                  {this.renderTextInput('电话', '请填写联系人电话', 'phone', false, [{
+                    message: '请填写联系人电话',
+                    type: 'string',
+                    whitespace: false,
                   }], { transform: value => (value.trim()), initialValue: formData.phone })}
                 </Col>
               </Row>
@@ -137,7 +138,7 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} className="imgZone">
-                    <img src={logoPng || '/assets/img/wetms.png'} style={{
+                    <img src={formData.logo || '/assets/img/wetms.png'} style={{
                       height: 120, width: 120, margin: 10,
                       border: '1px solid #e0e0e0', borderRadius: 60,
                     }} alt="logo"

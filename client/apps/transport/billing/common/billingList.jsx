@@ -56,6 +56,7 @@ export default class BillingList extends React.Component {
     totalCharge: 0,
     customers: [],
     carriers: [],
+    selectedRowKeys: [],
   }
   componentWillMount() {
     this.props.loadPartners(this.props.tenantId, PARTNERSHIP_TYPE_INFO.customer).then((result) => {
@@ -106,6 +107,9 @@ export default class BillingList extends React.Component {
         this.handleTableLoad();
       }
     });
+  }
+  handleSelectionClear = () => {
+    this.setState({ selectedRowKeys: [] });
   }
   handleTableLoad = (searchValue) => {
     const { tenantId, type } = this.props;
@@ -273,7 +277,12 @@ export default class BillingList extends React.Component {
         return '';
       },
     }];
-
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <div>
         <header className="top-bar">
@@ -291,7 +300,7 @@ export default class BillingList extends React.Component {
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}

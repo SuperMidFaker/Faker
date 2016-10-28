@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import {
-  loadTenants, delTenant, switchStatus, INITIAL_LIST_PAGE_SIZE,
+  loadTenants, delTenant, switchStatus,
 } from 'common/reducers/tenants';
 import { Button, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
@@ -95,8 +95,6 @@ export default class List extends React.Component {
         current: currentResolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
-        pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`,
-        `${INITIAL_LIST_PAGE_SIZE * 3}`, `${INITIAL_LIST_PAGE_SIZE * 4}`],
         pageSize: result.pageSize,
       }),
       getParams: (pagination, filters, sorter) => {
@@ -123,6 +121,10 @@ export default class List extends React.Component {
       },
     };
     const columns = [{
+      title: '租户id',
+      dataIndex: 'key',
+      render: (o, record) => this.renderColumnText(record.status, record.key),
+    }, {
       title: '公司名称',
       dataIndex: 'name',
       render: (o, record) => this.renderColumnText(record.status, record.name),

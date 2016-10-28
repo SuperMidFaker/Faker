@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'COMPUTE_SALECHARGE', 'COMPUTE_SALECHARGE_SUCCEED', 'COMPUTE_SALECHARGE_FAIL',
   'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
   'SHOW_CHANGE_SHIPMENT_MODAL',
+  'CHANGE_PREVIEWER_TAB',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
@@ -53,7 +54,7 @@ const initialState = {
     shipmt: {
       goodslist: [],
     },
-    tracking: {
+    dispatch: {
     },
     charges: {
     },
@@ -135,7 +136,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
-        tracking: action.result.data.tracking,
         dispatch: action.result.data.dispatch,
         charges: action.result.data.charges,
         pod: action.result.data.pod,
@@ -171,6 +171,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, points: state.previewer.points.filter(item => item.id !== action.data.pointId) } };
+    }
+    case actionTypes.CHANGE_PREVIEWER_TAB: {
+      return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -402,7 +405,7 @@ export function loadShipmtPoints(shipmtNo) {
   };
 }
 
-export function removeShipmtPoint(pointId) {
+export function removeShipmtPoint(pointId, content, dispId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -412,7 +415,7 @@ export function removeShipmtPoint(pointId) {
       ],
       endpoint: 'v1/transport/shipment/removePoint',
       method: 'post',
-      data: { pointId },
+      data: { pointId, content, dispId },
     },
   };
 }
@@ -449,9 +452,16 @@ export function computeCostCharge(data) {
   };
 }
 
-export function showChangeShipmentModal({ visible, shipmtNo, type }) {
+export function showChangeShipmentModal({ visible, shipmtNo, type = '' }) {
   return {
     type: actionTypes.SHOW_CHANGE_SHIPMENT_MODAL,
     data: { visible, shipmtNo, type },
+  };
+}
+
+export function changePreviewerTab(tabKey) {
+  return {
+    type: actionTypes.CHANGE_PREVIEWER_TAB,
+    data: { tabKey },
   };
 }

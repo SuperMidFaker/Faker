@@ -12,10 +12,9 @@ import {
   showLocModal, loadShipmtLastPoint, deliverConfirm,
 } from 'common/reducers/trackingLandStatus';
 import { showPodModal } from 'common/reducers/trackingLandPod';
-import { showExcpModal } from 'common/reducers/trackingLandException';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
-import ExcpEventsModal from './modals/excpEventsModal';
+import CreateException from './modals/create-exception';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
 import PodModal from './modals/pod-submit';
@@ -61,8 +60,7 @@ function fetchData({ state, dispatch, params, cookie }) {
   }),
   {
     loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
-    showVehicleModal, showLocModal, loadShipmtLastPoint, showExcpModal,
-    sendMessage, deliverConfirm,
+    showVehicleModal, showLocModal, loadShipmtLastPoint, sendMessage, deliverConfirm,
   }
 )
 export default class LandStatusList extends React.Component {
@@ -84,7 +82,6 @@ export default class LandStatusList extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     loadTransitTable: PropTypes.func.isRequired,
     loadShipmtLastPoint: PropTypes.func.isRequired,
-    showExcpModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
   }
@@ -98,7 +95,6 @@ export default class LandStatusList extends React.Component {
       onShowPodModal: this.handleShowPodModal,
       onShowDeliverModal: this.handleShowDeliverModal,
       onTableLoad: this.handleTableLoad,
-      onShowExcpModal: this.handleShowExcpModal,
       sendMessage: this.props.sendMessage,
       deliverConfirm: this.handleDeliverConfirm,
       tenantId: this.props.tenantId,
@@ -234,18 +230,12 @@ export default class LandStatusList extends React.Component {
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
       parent_no: row.parent_no,
-      pickup_act_date: row.pickup_act_date,
     });
   }
   handleShowPodModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
     this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
-  }
-  handleShowExcpModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.props.showExcpModal(row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then((result) => {
@@ -298,10 +288,6 @@ export default class LandStatusList extends React.Component {
           <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
             onAnchored={this.handleShowTransitModal} row={record}
             className={reported ? 'mdc-text-grey' : ''}
-          />
-          <span className="ant-divider" />
-          <RowUpdater label={this.msg('updateEvents')}
-            onAnchored={this.handleShowExcpModal} row={record}
           />
         </span>
       </PrivilegeCover>
@@ -366,7 +352,7 @@ export default class LandStatusList extends React.Component {
         <LocationModal onOK={this.handleTableLoad} />
         <PodModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <ExcpEventsModal />
+        <CreateException />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>

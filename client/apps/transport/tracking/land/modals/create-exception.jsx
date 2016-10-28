@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Cascader, Input, Modal } from 'antd';
-import { createException, loadExceptions } from 'common/reducers/trackingLandException';
+import { createException, loadExceptions, showCreateExcpModal } from 'common/reducers/trackingLandException';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import '../../../index.less';
 
@@ -14,8 +14,11 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     loginName: state.account.username,
     exceptions: state.trackingLandException.exceptions,
+    visible: state.trackingLandException.createExcpModal.visible,
+    shipmtNo: state.trackingLandException.createExcpModal.shipmtNo,
+    dispId: state.trackingLandException.createExcpModal.dispId,
   }),
-  { createException, loadExceptions }
+  { createException, loadExceptions, showCreateExcpModal }
 )
 @Form.create()
 export default class CreateException extends React.Component {
@@ -29,14 +32,13 @@ export default class CreateException extends React.Component {
     loadExceptions: PropTypes.func.isRequired,
     exceptions: PropTypes.object.isRequired,
     visible: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired,
+    showCreateExcpModal: PropTypes.func.isRequired,
   }
   handleOk = () => {
     const { form, dispId, shipmtNo, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.type && fieldsValue.type[1]) {
       this.props.form.setFieldsValue({ type: '', excp_event: '' });
-      this.handleCancel();
       const type = fieldsValue.type[1];
       let excpLevel = '';
       let typeName = '';
@@ -58,6 +60,7 @@ export default class CreateException extends React.Component {
         if (result.error) {
           message.error(result.error);
         } else {
+          this.handleCancel();
           message.info('添加成功');
           this.props.loadExceptions({
             shipmtNo,
@@ -71,7 +74,7 @@ export default class CreateException extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.toggle();
+    this.props.showCreateExcpModal({ visible: false, shipmtNo: '', dispId: -1 });
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
