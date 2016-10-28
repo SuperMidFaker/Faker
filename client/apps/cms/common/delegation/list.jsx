@@ -471,6 +471,14 @@ export default class DelegationList extends Component {
       title: this.msg('opColumn'),
       width: 140,
       render: (o, record) => {
+        let CIQ = true;
+        let CERT = true;
+        if (record.ciq_status && record.ciq_status === 1) {
+          CIQ = false;
+        }
+        if (record.cert_status && record.cert_status === 1) {
+          CERT = false;
+        }
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
           return (
             <span>
@@ -496,10 +504,10 @@ export default class DelegationList extends Component {
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <span>
                 <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+                { CIQ && <span className="ant-divider" /> }
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} /> }
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} /> }
               </span>
             </PrivilegeCover>
           );
@@ -517,11 +525,13 @@ export default class DelegationList extends Component {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
+                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
+                <span className="ant-divider" />
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+                { CIQ && <span className="ant-divider" />}
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
               </span>
             </PrivilegeCover>
           );
@@ -530,10 +540,10 @@ export default class DelegationList extends Component {
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+                { CIQ && <span className="ant-divider" />}
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
               </span>
             </PrivilegeCover>
           );
@@ -542,10 +552,10 @@ export default class DelegationList extends Component {
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+                { CIQ && <span className="ant-divider" />}
+                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
+                { CERT && <span className="ant-divider" />}
+                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
               </span>
             </PrivilegeCover>
           );
