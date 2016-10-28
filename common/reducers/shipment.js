@@ -173,7 +173,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, points: state.previewer.points.filter(item => item.id !== action.data.pointId) } };
     }
     case actionTypes.CHANGE_PREVIEWER_TAB: {
-      return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey} };
+      return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
