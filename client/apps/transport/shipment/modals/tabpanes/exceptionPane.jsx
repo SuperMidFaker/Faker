@@ -124,7 +124,7 @@ export default class ExceptionPane extends React.Component {
 
     return (
       <div className="pane-content tab-pane">
-        <Card>
+        <Card bodyStyle={{ padding: 0 }}>
           <Table columns={this.columns}
             dataSource={this.dataSource} rowKey="id" size="small" pagination={false}
           />

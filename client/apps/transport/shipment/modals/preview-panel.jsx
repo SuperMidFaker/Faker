@@ -148,11 +148,11 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('trackPod')} key="pod">
             <PodPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtLogs')} key="logs">
-            <LogPane />
-          </TabPane>
           <TabPane tab={this.msg('shipmtException')} key="exception">
             <ExceptionPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtLogs')} key="logs">
+            <LogPane />
           </TabPane>
         </Tabs>
       );
@@ -168,11 +168,11 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtLogs')} key="logs">
-            <LogPane />
-          </TabPane>
           <TabPane tab={this.msg('shipmtException')} key="exception">
             <ExceptionPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtLogs')} key="logs">
+            <LogPane />
           </TabPane>
         </Tabs>
       );
