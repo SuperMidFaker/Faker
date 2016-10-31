@@ -563,8 +563,8 @@ export default class DelegationList extends Component {
           return (
             <span>
               <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
-              <span className="ant-divider" />
-              <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />
+              { CERT && <span className="ant-divider" />}
+              { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
             </span>
           );
         }
