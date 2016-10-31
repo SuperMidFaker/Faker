@@ -107,7 +107,7 @@ export default class SendPanel extends React.Component {
       render: (o, record) => moment(record.created_date).format('YYYY.MM.DD'),
     }];
     return (
-      <div className={`preview-panel ${visible ? 'inside' : ''}`}>
+      <div className={`dock-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
             <span className="title" />

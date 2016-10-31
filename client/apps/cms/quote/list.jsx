@@ -52,7 +52,7 @@ export default class QuoteList extends Component {
       {
         title: msg('quoteNo'),
         dataIndex: 'quote_no',
-        width: 150,
+        width: 100,
       }, {
         title: msg('partners'),
         dataIndex: 'partner.name',
@@ -60,7 +60,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('tariffKinds'),
         dataIndex: 'tariff_kind',
-        width: 150,
+        width: 80,
         render: (o) => {
           const decl = TARIFF_KINDS.filter(ts => ts.value === o)[0];
           return decl && decl.text;
@@ -68,7 +68,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('declareWay'),
         dataIndex: 'decl_way_code',
-        width: 150,
+        width: 300,
         render: (o) => {
           const text = [];
           if (o) {
@@ -96,7 +96,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('remark'),
         dataIndex: 'remarks',
-        width: 150,
+        width: 50,
         render: (o) => {
           const text = [];
           if (o) {
@@ -109,7 +109,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('status'),
         dataIndex: 'valid',
-        width: 150,
+        width: 50,
         render: (o) => {
           if (!o) {
             return <Tag color="#CCCCCC">{msg('invalid')}</Tag>;
@@ -120,21 +120,21 @@ export default class QuoteList extends Component {
       }, {
         title: msg('modifiedCount'),
         dataIndex: 'modify_count',
-        width: 150,
+        width: 50,
       }, {
         title: msg('modifiedBy'),
         dataIndex: 'modify_name',
-        width: 150,
+        width: 60,
       }, {
         title: msg('modifiedTime'),
         dataIndex: 'modify_time',
-        width: 150,
+        width: 80,
         render: (o, record) => {
           return `${moment(record.modify_time).format('MM.DD HH:mm')}`;
         },
       }, {
         title: msg('operation'),
-        width: 100,
+        width: 60,
         render: (o, record) => {
           return (
             <span>

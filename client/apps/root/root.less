@@ -619,7 +619,6 @@ img {
 .pane-header {
   position: relative;
   margin-bottom: 8px;
-  padding: 0 24px;
   .ant-select, button {
     margin-right: 8px;
   }
@@ -763,9 +762,10 @@ img {
     }
 }
 
-.preview-panel {
+@dock-panel-width: 680px;
+.dock-panel {
   position: fixed;
-  width: 80%;
+  width: @dock-panel-width;
   top: @am-header-height;
   right: 0;
   bottom: 0;
@@ -853,7 +853,11 @@ img {
       }
     }
   }
+  &.preview-panel {
+    width: 80%;
+  }
 }
+
 .info-item {
   position: relative;
   padding: 8px 16px;
@@ -877,6 +881,7 @@ img {
     line-height: 14px;
   }
   .info-data {
+    min-height: 22px;
     font-size: 14px;
     vertical-align: middle;
     overflow: hidden;

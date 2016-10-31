@@ -612,7 +612,7 @@ export default class DispatchDock extends Component {
               </div>
             </div>
             <div className="body">
-              <Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
+              <Tabs type="card" defaultActiveKey="carrier" onChange={this.handleTabChange}>
                 <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
                   <div className="pane-header">
                     <div className="tools"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>

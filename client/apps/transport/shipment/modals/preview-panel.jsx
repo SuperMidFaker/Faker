@@ -186,7 +186,7 @@ export default class PreviewPanel extends React.Component {
       </button>);
     return (
       shipmtNo ?
-        <div className={`preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
+        <div className={`dock-panel preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
           <div className="panel-content">
             <div className="header">
               <span className="title">{shipmtNo}</span>

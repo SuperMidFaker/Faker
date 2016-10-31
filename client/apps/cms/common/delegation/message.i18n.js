@@ -287,27 +287,27 @@ export default defineMessages({
   },
   delgDispatch: {
     id: 'cms.delegation.delg.dispatch',
-    defaultMessage: '分配报关委托',
+    defaultMessage: '分配报关业务',
   },
   ciqDispatch: {
     id: 'cms.delegation.delg.dispatch',
-    defaultMessage: '分配报检委托',
+    defaultMessage: '分配报检业务',
   },
   certDispatch: {
     id: 'cms.delegation.delg.dispatch',
-    defaultMessage: '分配鉴定办证委托',
+    defaultMessage: '分配鉴定办证',
   },
   dispDecl: {
     id: 'cms.delegation.delg.dispDecl',
-    defaultMessage: '报关分配: ',
+    defaultMessage: '选择报关单位',
   },
   dispciq: {
     id: 'cms.delegation.delg.dispciq',
-    defaultMessage: '报检分配: ',
+    defaultMessage: '选择报检单位',
   },
   dispCert: {
     id: 'cms.delegation.delg.dispCert',
-    defaultMessage: '鉴定办证分配: ',
+    defaultMessage: '选择鉴定办证单位',
   },
   ciq: {
     id: 'cms.delegation.delg.ciq',
