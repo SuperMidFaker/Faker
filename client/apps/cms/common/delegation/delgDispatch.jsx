@@ -141,19 +141,19 @@ export default class DelgDispatch extends Component {
 
 
     return (
-        <div className={`dock-panel ${show ? 'inside' : ''}`}>
-          <div className="panel-content">
-            <div className="header">
-              <span className="title">{title}</span>
-              <div className="pull-right">
-                {closer}
-              </div>
+      <div className={`dock-panel ${show ? 'inside' : ''}`}>
+        <div className="panel-content">
+          <div className="header">
+            <span className="title">{title}</span>
+            <div className="pull-right">
+              {closer}
             </div>
-            <div className="body">
-              <Card>
-                <Form vertical>
-                  <FormItem label={label}>
-                    {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
+          </div>
+          <div className="body">
+            <Card>
+              <Form vertical>
+                <FormItem label={label}>
+                  {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
                     )(<Select
                       showSearch
                       showArrow
@@ -171,14 +171,14 @@ export default class DelgDispatch extends Component {
                       )
                     }
                     </Select>)}
-                  </FormItem>
-                </Form>
-                <Table size="small" columns={this.columns} dataSource={dataSource} pagination={false} />
-              </Card>
-              <ButtonSelect saved={saved} onconfirm={this.handleConfirm} onclick={this.handleSave} />
-            </div>
+                </FormItem>
+              </Form>
+              <Table size="small" columns={this.columns} dataSource={dataSource} pagination={false} />
+            </Card>
+            <ButtonSelect saved={saved} onconfirm={this.handleConfirm} onclick={this.handleSave} />
           </div>
         </div>
+      </div>
       );
-    }
+  }
 }
