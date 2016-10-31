@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Input, Button, Alert, message } from 'antd';
+import { Input, Button, Alert, Table, message } from 'antd';
 import { searchShipment } from 'common/reducers/shipment';
 import './index.less';
 
@@ -25,7 +25,8 @@ export default class TrackingSearch extends React.Component {
   }
   state = {
     searchText: '',
-  };
+    dataSource: [],
+  }
   componentDidMount() {
     window.$('title').text('运单查询');
   }
@@ -40,19 +41,38 @@ export default class TrackingSearch extends React.Component {
     } else {
       subdomain = window.location.hostname.split('.')[0];
     }
-    this.props.searchShipment(this.state.searchText, subdomain).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else if (result.data.length === 0) {
-        message.info('运单不存在', 10);
-      } else {
-        const shipment = result.data[0];
-        window.open(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);
-      }
-    });
+    if (/\s+/.test(this.state.searchText) || this.state.searchText === '') {
+      message.error('请输入正确的运单号或客户单号');
+    } else {
+      this.props.searchShipment(this.state.searchText, subdomain).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else if (result.data.length === 0) {
+          message.info('运单不存在', 10);
+        } else {
+          this.setState({ dataSource: result.data });
+          if (result.data.length === 1) {
+            const shipment = result.data[0];
+            window.open(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);
+          }
+        }
+      });
+    }
+  }
+  renderColumn = (o, shipment) => {
+    return (<a href={`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`} target="_blank" rel="noopener noreferrer">{o}</a>);
   }
   render() {
     const { logo, name } = this.props;
+    const columns = [{
+      title: '运单号',
+      dataIndex: 'shipmt_no',
+      render: this.renderColumn,
+    }, {
+      title: '客户单号',
+      dataIndex: 'ref_external_no',
+      render: this.renderColumn,
+    }];
     return (
       <div className="main-content">
         <div className="page-body" style={{ padding: 64, marginBottom: 16 }}>
@@ -70,6 +90,9 @@ export default class TrackingSearch extends React.Component {
               </Button>
               <div style={{ width: 400, marginTop: 96 }}>
                 <Alert message="为了能够浏览追踪页面，请您设置允许浏览器弹出窗口" type="info" showIcon />
+              </div>
+              <div style={{ display: this.state.dataSource.length === 0 ? 'none' : '' }}>
+                <Table columns={columns} dataSource={this.state.dataSource} pagination={false} size="small" />
               </div>
             </center>
           </div>
