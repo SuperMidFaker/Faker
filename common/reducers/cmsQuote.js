@@ -81,12 +81,13 @@ export function loadPartners(tenantId) {
     },
   };
 }
-export function loadQuoteModel() {
+export function loadQuoteModel(tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTE_MODEL_LOAD, actionTypes.QUOTE_MODEL_LOAD_SUCCEED, actionTypes.QUOTE_MODEL_LOAD_FAIL],
       endpoint: 'v1/cms/quote/loadModel',
       method: 'get',
+      params: { tenantId },
       origin: 'mongo',
     },
   };

@@ -46,7 +46,7 @@ export default class Settings extends Component {
   msg = key => formatMsg(this.props.intl, key);
   handleClick = (e) => {
     if (e.key === 'quotemodel') {
-      this.props.loadQuoteModel();
+      this.props.loadQuoteModel(this.props.tenantId);
       this.setState({ qtModelShow: true });
     }
   }
