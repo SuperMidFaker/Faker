@@ -66,7 +66,7 @@ export default class ExceptionListPopover extends React.Component {
     }];
     const content = (
       <div>
-        <Table columns={columns} dataSource={this.state.exceptions} rowKey="id" size="middle" pagination={false} showHeader={false} />
+        <Table columns={columns} dataSource={this.state.exceptions} rowKey="id" size="small" pagination={false} showHeader={false} />
       </div>
     );
     return (

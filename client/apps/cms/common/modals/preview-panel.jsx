@@ -210,7 +210,7 @@ export default class PreviewPanel extends React.Component {
         <span className="ant-modal-close-x" />
       </button>);
     return (
-      <div className={`preview-panel ${visible ? 'inside' : ''}`}>
+      <div className={`dock-panel preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
             <span className="title">{delegation.delg_no}</span>

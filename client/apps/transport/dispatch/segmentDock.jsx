@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Icon, Tag, Button, Select, DatePicker, Row, Col, message, Alert } from 'antd';
+import { Card, Icon, Tag, Button, Select, DatePicker, Row, Col, message, Alert, Form } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import { segmentRequest } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
 
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 function noop() {}
 
@@ -81,40 +82,41 @@ export default class SegmentDock extends React.Component {
       <Option key={t.id} value={t.id}>{t.mode_name}</Option>);
     const s = (
       <div className="pane-section">
-        <Row type="flex" justify="start">
-          <Col span="12">中转站：</Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Select style={{ width: 400 }} onChange={this.handleNodeLocationChange.bind(this, od)}>
-            {nds}
-          </Select>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col span="12">预计到达中转站时间：</Col>
-          <Col span="12">运输模式：</Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col span="12">
-            <DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'deliver')} />
-          </Col>
-          <Col span="12">
-            <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'deliver')}>
-              {mds}
+        <Form vertical>
+          <FormItem label="中转站">
+            <Select style={{ width: 600 }} onChange={this.handleNodeLocationChange.bind(this, od)}>
+              {nds}
             </Select>
-          </Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col span="12">预计离开中转站时间：</Col>
-          <Col span="12">运输模式：</Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col span="12"><DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'pickup')} /></Col>
-          <Col span="12">
-            <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'pickup')}>
-              {mds}
-            </Select>
-          </Col>
-        </Row>
+          </FormItem>
+          <Row>
+            <Col span="12">
+              <FormItem label="预计到达中转站时间">
+                <DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'deliver')} />
+              </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem label="运输模式">
+                <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'deliver')}>
+                  {mds}
+                </Select>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
+              <FormItem label="预计离开中转站时间">
+                <DatePicker format="YYYY.MM.DD" onChange={this.handleDayChange.bind(this, od, 'pickup')} />
+              </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem label="运输模式">
+                <Select style={{ width: 200 }} onChange={this.handleTransitModeChange.bind(this, od, 'pickup')}>
+                  {mds}
+                </Select>
+              </FormItem>
+            </Col>
+          </Row>
+        </Form>
       </div>);
     return s;
   }
@@ -305,20 +307,26 @@ export default class SegmentDock extends React.Component {
             </div>
             <div className="body">
               <div className="pane-content">
-                <div className="subform-heading">
-                  <h3 className="subform-title">时间计划</h3>
-                </div>
-                <Row className="pane-section" type="flex" justify="start">
-                  <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
-                  <Col span="12">送货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
-                </Row>
-                <div className="subform-heading">
-                  <h3 className="subform-title">分段中转</h3>
-                </div>
-                {err}
-                {sg}
-                {this.state.segments}
-                <div style={{ marginTop: 24 }}>
+                <Card>
+                  <Row className="pane-section" type="flex" justify="start">
+                    <Col span="12">
+                      <div className="info-item">
+                        <div className="info-label">提货日期</div>
+                        <div className="info-data"> {moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</div>
+                      </div>
+                    </Col>
+                    <Col span="12">
+                      <div className="info-item">
+                        <div className="info-label">送货日期</div>
+                        <div className="info-data"> {moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</div>
+                      </div>
+                    </Col>
+                  </Row>
+                  {err}
+                  {sg}
+                  {this.state.segments}
+                </Card>
+                <div>
                   <Button type="ghost" onClick={this.onCloseWrapper}>{this.msg('btnTextCancel')}</Button>
                   <span className="ant-divider" style={{ width: '0px' }} />
                   <Button type="primary" onClick={this.handleSegment}>{this.msg('btnTextOk')}</Button>

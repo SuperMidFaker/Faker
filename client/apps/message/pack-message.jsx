@@ -6,7 +6,7 @@ import AmNavBar from 'client/components/am-navbar';
 import { setNavTitle } from 'common/reducers/navbar';
 
 @connect()
-export default class AccountPack extends React.Component {
+export default class MessagePack extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.object.isRequired,
@@ -22,16 +22,11 @@ export default class AccountPack extends React.Component {
         <AmNavBar />
         <div className="am-content">
           <aside className="side-bar no-left-menu no-top-bar">
-            <h2>个人帐号</h2>
-            <Menu defaultSelectedKeys={['profile']} mode="inline">
-              <Menu.Item key="profile">
-                <NavLink to="/my/profile">
-                  <span><Icon type="user" /><span>个人资料</span></span>
-                </NavLink>
-              </Menu.Item>
-              <Menu.Item key="security">
-                <NavLink to="/my/password">
-                  <span><Icon type="lock" /><span>安全设置</span></span>
+            <h2>消息中心</h2>
+            <Menu defaultSelectedKeys={['message']} mode="inline">
+              <Menu.Item key="message">
+                <NavLink to="/list">
+                  <span><Icon type="message" /><span>消息列表</span></span>
                 </NavLink>
               </Menu.Item>
             </Menu>

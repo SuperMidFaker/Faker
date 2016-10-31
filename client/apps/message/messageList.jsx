@@ -8,7 +8,6 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { MESSAGE_STATUS } from 'common/constants';
 import { loadMessages, markMessages, markMessage } from 'common/reducers/corps';
-import './acc.less';
 
 const formatMsg = format(messages);
 

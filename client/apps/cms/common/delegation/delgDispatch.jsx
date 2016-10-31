@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
-import QueueAnim from 'rc-queue-anim';
 import { connect } from 'react-redux';
-import { Icon, Button, Select, Form, Popconfirm, message, Card, Table } from 'antd';
+import { Button, Select, Form, Popconfirm, message, Card, Table } from 'antd';
 import { delgDispSave, delDisp, setSavedStatus } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -10,10 +9,7 @@ const formatMsg = format(messages);
 
 const Option = Select.Option;
 const FormItem = Form.Item;
-const formItemLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 20 },
-};
+
 function noop() {}
 
 function ButtonSelect(props) {
@@ -33,7 +29,7 @@ function ButtonSelect(props) {
       );
   }
   return (
-    <div className="pull-right">{button}</div>
+    <div>{button}</div>
    );
 }
 ButtonSelect.PropTypes = {
@@ -122,6 +118,14 @@ export default class DelgDispatch extends Component {
   render() {
     const { form: { getFieldDecorator }, delgDisp, partners, show, saved, dispatch } = this.props;
     const dataSource = [delgDisp];
+    const closer = (
+      <button
+        onClick={this.onClose}
+        aria-label="Close"
+        className="ant-modal-close"
+      >
+        <span className="ant-modal-close-x" />
+      </button>);
     let title = '';
     let label = '';
     if (dispatch.type === 'delg') {
@@ -134,51 +138,47 @@ export default class DelgDispatch extends Component {
       title = this.msg('certDispatch');
       label = this.msg('dispCert');
     }
-    let dock = '';
-    if (show) {
-      dock = (
-        <div className="dock-panel inside">
-          <div className="panel-heading">
+
+
+    return (
+      <div className={`dock-panel ${show ? 'inside' : ''}`}>
+        <div className="panel-content">
+          <div className="header">
             <span className="title">{title}</span>
             <div className="pull-right">
-              <Button type="ghost" shape="circle-outline" onClick={this.onClose}>
-                <Icon type="cross" />
-              </Button>
+              {closer}
             </div>
           </div>
-          <Card>
-            <Form>
-              <FormItem label={label} {...formItemLayout}>
-                {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
-                )(<Select
-                  showSearch
-                  showArrow
-                  optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')}
-                  style={{ width: '80%' }}
-                >
-                  {
-                  partners.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
+          <div className="body">
+            <Card>
+              <Form vertical>
+                <FormItem label={label}>
+                  {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
+                    )(<Select
+                      showSearch
+                      showArrow
+                      optionFilterProp="searched"
+                      placeholder={this.msg('dispatchMessage')}
+                      style={{ width: '80%' }}
                     >
-                      {pt.name}
-                    </Option>)
-                  )
-                }
-                </Select>)}
-              </FormItem>
-            </Form>
-            <Table columns={this.columns} dataSource={dataSource} pagination={false} />
-          </Card>
-          <div className="panel-footer">
+                      {
+                      partners.map(pt => (
+                        <Option searched={`${pt.partner_code}${pt.name}`}
+                          value={pt.partner_id} key={pt.partner_id}
+                        >
+                          {pt.name}
+                        </Option>)
+                      )
+                    }
+                    </Select>)}
+                </FormItem>
+              </Form>
+              <Table size="small" columns={this.columns} dataSource={dataSource} pagination={false} />
+            </Card>
             <ButtonSelect saved={saved} onconfirm={this.handleConfirm} onclick={this.handleSave} />
           </div>
         </div>
+      </div>
       );
-    }
-    return (
-      <QueueAnim key="dock" animConfig={{ translateX: [0, 400], opacity: [1, 1] }}>{dock}</QueueAnim>
-    );
   }
 }

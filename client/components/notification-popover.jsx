@@ -252,7 +252,7 @@ export default class NotificationPopover extends React.Component {
       />
       </div>
       <div className="popover-footer">
-        <NavLink to="/my/messages">{this.msg('seeAll')}</NavLink>
+        <NavLink to="/message/list">{this.msg('seeAll')}</NavLink>
       </div>
     </div>);
   }
