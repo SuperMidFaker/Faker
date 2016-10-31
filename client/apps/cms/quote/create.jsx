@@ -6,7 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { createQuote, loadQuoteModel, loadPartners } from 'common/reducers/cmsQuote';
+import { createQuote, loadQtModelbyTenantId, loadPartners } from 'common/reducers/cmsQuote';
 import { Button, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
@@ -15,7 +15,7 @@ const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadPartners(state.account.tenantId)));
-  promises.push(dispatch(loadQuoteModel()));
+  promises.push(dispatch(loadQtModelbyTenantId(state.account.tenantId)));
   return Promise.all(promises);
 }
 
@@ -39,7 +39,6 @@ function fetchData({ state, dispatch }) {
 })
 @withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 @Form.create()
-@withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 export default class QuotingCreate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

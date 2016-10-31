@@ -13,6 +13,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'FEE_ADD', 'FEE_ADD_SUCCEED', 'FEE_ADD_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
+  'SAVE_QUOTE_MODEL', 'SAVE_QUOTE_MODEL_SUCCEED', 'SAVE_QUOTE_MODEL_FAIL',
+  'QUOTE_MODELBY_LOAD', 'QUOTE_MODELBY_LOAD_SUCCEED', 'QUOTE_MODELBY_LOAD_FAIL',
 ]);
 
 const initialState = {
@@ -43,6 +45,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUOTE_MODEL_LOAD:
       return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
     case actionTypes.QUOTE_MODEL_LOAD_SUCCEED:
+      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
+    case actionTypes.QUOTE_MODELBY_LOAD:
+      return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
+    case actionTypes.QUOTE_MODELBY_LOAD_SUCCEED:
       return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     case actionTypes.CREATE_QUOTE:
       return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
@@ -81,6 +87,34 @@ export function loadQuoteModel() {
       types: [actionTypes.QUOTE_MODEL_LOAD, actionTypes.QUOTE_MODEL_LOAD_SUCCEED, actionTypes.QUOTE_MODEL_LOAD_FAIL],
       endpoint: 'v1/cms/quote/loadModel',
       method: 'get',
+      origin: 'mongo',
+    },
+  };
+}
+
+export function saveQuoteModel(tenantId, params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_QUOTE_MODEL,
+        actionTypes.SAVE_QUOTE_MODEL_SUCCEED,
+        actionTypes.SAVE_QUOTE_MODEL_FAIL,
+      ],
+      endpoint: 'v1/cms/quote/saveModel',
+      method: 'post',
+      data: { tenantId, params },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadQtModelbyTenantId(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.QUOTE_MODELBY_LOAD, actionTypes.QUOTE_MODELBY_LOAD_SUCCEED, actionTypes.QUOTE_MODELBY_LOAD_FAIL],
+      endpoint: 'v1/cms/quote/loadModel/byTenantId',
+      method: 'get',
+      params: { tenantId },
       origin: 'mongo',
     },
   };
