@@ -21,7 +21,6 @@ export default function InvitationList(props) {
   }
 
   return (
-    <div className="main-content">
       <div className="page-body">
         <div className="panel-header">
           <RadioGroup defaultValue={invitationType} onChange={handleInvitationTypeChange}>
@@ -34,7 +33,6 @@ export default function InvitationList(props) {
           {content}
         </div>
       </div>
-    </div>
   );
 }
 

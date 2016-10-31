@@ -27,11 +27,11 @@ function getColCls(col) {
 }
 function PaneFormItem(props) {
   const { label, labelCol, field, fieldCol } = props;
-  const labelCls = getColCls(labelCol);
-  const fieldCls = `pane-field ${getColCls(fieldCol)}`;
+  const labelCls = `info-label ${getColCls(labelCol)}`;
+  const fieldCls = `info-data ${getColCls(fieldCol)}`;
   return (
-    <div className="pane-form-item">
-      <label className={labelCls} htmlFor="pane">{label}：</label>
+    <div className="info-item">
+      <div className={labelCls}>{label}：</div>
       <div className={fieldCls}>{field}</div>
     </div>
   );

@@ -854,3 +854,36 @@ img {
     }
   }
 }
+.info-item {
+  position: relative;
+  padding: 8px 16px;
+  height: auto;
+  width: 100%;
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+  &:before {
+    content: " ";
+    display: table;
+  }
+  .info-label {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    vertical-align: middle;
+    color: #999;
+    line-height: 14px;
+  }
+  .info-data {
+    font-size: 14px;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+.info-item:hover {
+  background: #f4f4f4;
+}

@@ -196,19 +196,17 @@ export default class BaseList extends Component {
     const dataSource = this.dataSourceFromPartnerlist(partnerlist);
     const header = this.setHeader();
     return (
-      <div className="main-content">
-        <div className="page-body">
-          <div className="panel-header">
-            <div className="tools">
-              {header}
-            </div>
-            <PrivilegeCover module="corp" feature="partners" action="create">
-              <Button type="primary" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
-            </PrivilegeCover>
+      <div className="page-body">
+        <div className="panel-header">
+          <div className="tools">
+            {header}
           </div>
-          <div className="panel-body table-panel">
-            <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
-          </div>
+          <PrivilegeCover module="corp" feature="partners" action="create">
+            <Button type="primary" onClick={() => this.handleAddBtnClick()} icon="plus-circle-o">新增{partnerTypeName}</Button>
+          </PrivilegeCover>
+        </div>
+        <div className="panel-body table-panel">
+          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
         </div>
       </div>
     );

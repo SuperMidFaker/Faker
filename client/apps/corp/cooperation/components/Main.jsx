@@ -12,7 +12,7 @@ export default function Main(props) {
   const content = [<CustomerListContainer />, <SupplierListContainer />, <div />, <ProviderListContainer />, <InvitationListContainer />]
     .map((container, index) => <div style={{ display: index === parseInt(selectedMenuItemKey, 10) ? 'block' : 'none' }} key={index}>{container}</div>);
   return (
-    <div>
+    <div className="main-content">
       <Menu selectedKeys={[selectedMenuItemKey]} mode="horizontal" onClick={onMenuItemClick}>
         <MenuItem key="0">客户</MenuItem>
         <MenuItem key="1">供应商</MenuItem>
