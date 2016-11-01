@@ -74,19 +74,19 @@ export default class ChangeShipment extends React.Component {
   renderForm() {
     const { form, intl, type } = this.props;
     if (type === 'consignerInfoChanged') {
-      return (<ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />);
+      return (<ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} vertical />);
     } else if (type === 'consigneeInfoChanged') {
-      return (<ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />);
+      return (<ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} vertical />);
     } else if (type === 'transitModeChanged') {
-      return (<ModeInfo intl={intl} formhoc={form} />);
+      return (<ModeInfo intl={intl} formhoc={form} vertical type="transMode" />);
     } else if (type === 'timeInfoChanged') {
-      return (<ModeInfo intl={intl} formhoc={form} />);
+      return (<ModeInfo intl={intl} formhoc={form} vertical type="schedule" />);
     } else if (type === 'goodsInfoChanged') {
-      return (<GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />);
+      return (<GoodsInfo intl={intl} labelColSpan={8} formhoc={form} vertical />);
     } else if (type === 'clientInfoChanged') {
       return (<ClientInfo outerColSpan={12} intl={intl} formhoc={form} mode="edit" vertical />);
     } else if (type === 'correlInfoChanged') {
-      return (<CorrelInfo formhoc={form} intl={intl} />);
+      return (<CorrelInfo formhoc={form} intl={intl} vertical />);
     }
     return null;
   }

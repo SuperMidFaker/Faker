@@ -185,17 +185,25 @@ export default class ShipmentCreate extends React.Component {
                   <Card bodyStyle={{ padding: 16 }}>
                     <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
                   </Card>
-                  <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
-                  />
-                  <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
-                  />
-                  <ModeInfo intl={intl} formhoc={form} />
+                  <Card bodyStyle={{ padding: 16 }}>
+                    <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
+                      labelColSpan={8} formhoc={form}
+                    />
+                  </Card>
+                  <Card bodyStyle={{ padding: 16 }}>
+                    <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
+                      labelColSpan={8} formhoc={form}
+                    />
+                  </Card>
+                  <Card bodyStyle={{ padding: 16 }}>
+                    <ModeInfo intl={intl} formhoc={form} />
+                  </Card>
                   <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
                 </Col>
                 <Col span="8">
-                  <CorrelInfo formhoc={form} intl={intl} />
+                  <Card bodyStyle={{ padding: 16 }}>
+                    <CorrelInfo formhoc={form} intl={intl} />
+                  </Card>
                   <FreightCharge formhoc={form} intl={this.props.intl} />
                 </Col>
               </Row>

@@ -91,6 +91,7 @@ export default class PreviewPanel extends React.Component {
   }
 
   componentDidMount() {
+    /*
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
       if (!this.props.specialChargeModalVisible && !this.props.dealExcpModalVisible &&
@@ -101,9 +102,12 @@ export default class PreviewPanel extends React.Component {
         this.handleClose();
       }
     });
+    */
   }
   componentWillUnmount() {
+    /*
     window.$(document).unbind('click');
+    */
   }
   viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)

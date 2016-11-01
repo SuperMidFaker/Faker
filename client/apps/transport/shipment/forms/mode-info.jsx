@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import moment from 'moment';
-import { Row, Col, Form, Select, InputNumber, DatePicker, Card } from 'antd';
+import { Row, Col, Form, Select, InputNumber, DatePicker } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { setConsignFields } from 'common/reducers/shipment';
 import { PRESET_TRANSMODES } from 'common/constants';
@@ -41,6 +41,8 @@ export default class ModeInfo extends React.Component {
     fieldDefaults: PropTypes.object.isRequired,
     formhoc: PropTypes.object.isRequired,
     setConsignFields: PropTypes.func.isRequired,
+    vertical: PropTypes.bool,
+    type: PropTypes.string,
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -100,6 +102,8 @@ export default class ModeInfo extends React.Component {
         vehicle_length_id, container_no, transport_mode_code: modeCode,
         transport_mode_id: modeId,
       },
+      vertical,
+      type,
     } = this.props;
     let outerColSpan = 24;
     let labelColSpan = 2;
@@ -153,8 +157,49 @@ export default class ModeInfo extends React.Component {
         <Col key="body2" span={`${outerColSpan}`} />
       );
     }
-    return (
-      <Card title={this.msg('scheduleInfo')} bodyStyle={{ padding: 16 }}>
+    let content = '';
+    if (vertical && type === 'transMode') {
+      content = (<div>{ modeEditCols }</div>);
+    } else if (vertical && type === 'schedule') {
+      content = (
+        <div>
+        <FormItem label={this.msg('pickupDate')} required>
+              {getFieldDecorator(
+                'pickup_est_date', {
+                  onChange: this.handlePickupChange,
+                  rules: [{
+                    required: true, message: this.msg('deliveryDateMust'), type: 'object',
+                  }],
+                  initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
+                }
+              )(<DatePicker style={{ width: '100%' }} />)}
+            </FormItem>
+            <FormItem label={this.msg('shipmtTransit')} required>
+              {getFieldDecorator(
+                'transit_time', {
+                  onChange: this.handleTransitChange,
+                  rules: [{
+                    required: true, message: this.msg('tranistTimeMust'), type: 'number',
+                  }],
+                  initialValue: transit_time,
+                })(<InputNumber style={{ width: '100%' }} min={0} />)}
+            </FormItem>
+            <FormItem label={this.msg('deliveryDate')} required>
+              {getFieldDecorator(
+                'deliver_est_date', {
+                  onChange: this.handleDeliveryChange,
+                  rules: [{
+                    required: true, message: this.msg('deliveryDateMust'), type: 'object',
+                  }],
+                  initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
+                }
+              )(<DatePicker style={{ width: '100%' }} />)}
+            </FormItem>
+        </div>
+      );
+    } else {
+      content = (
+        <div>
         <Row>
           <Col span={`${outerColSpan}`} >
             <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
@@ -226,7 +271,14 @@ export default class ModeInfo extends React.Component {
         <Row>
           {modeEditCols}
         </Row>
-      </Card>
+
+        </div>
+      );
+    }
+    return (
+      <div>
+        {content}
+      </div>
     );
   }
 }
