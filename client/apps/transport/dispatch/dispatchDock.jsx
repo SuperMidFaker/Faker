@@ -1,6 +1,7 @@
+/* eslint no-loop-func: 0 */
 import React, { PropTypes, Component } from 'react';
 import update from 'react/lib/update';
-import { Icon, Tag, InputNumber, Button, Popover, message, Tabs }
+import { Icon, Tag, Button, Popover, message, Tabs }
   from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -108,24 +109,22 @@ export default class DispatchDock extends Component {
       width: 120,
       render: (o, record, index) => {
         if (o) {
-          if (o.manual) {
-            return (
-              <InputNumber min={1} onChange={value =>
-                this.handleChargeChange({ ...o, total_charge: value }, index)}
-              />
-            );
-          } else {
-            return (
-              <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
-                <ChargeSpecForm charge={o} onChange={this.handleChargeChange} index={index} />
+          const charge = o.reduce((a, b) => {
+            return {
+              freight_charge: a.freight_charge + b.freight_charge,
+              pickup_charge: a.pickup_charge + b.pickup_charge,
+              deliver_charge: a.deliver_charge + b.deliver_charge,
+              total_charge: a.total_charge + b.total_charge,
+            };
+          });
+          return (
+            <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
+              <ChargeSpecForm charge={charge} onChange={() => {}} index={index} />
               }
-              >
-                <span>{o.total_charge}</span>
-              </Popover>
+            >
+              <span>{charge.total_charge}</span>
+            </Popover>
             );
-          }
-        } else if (this.props.shipmts.length > 1) {
-          return <InputNumber min={1} onChange={this.handleQuotationChange} />;
         } else {
           return '';
         }
@@ -218,54 +217,76 @@ export default class DispatchDock extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.shipmts.length === 1
-      && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
+    if (nextProps.shipmts.length > 0 && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
       || nextProps.lsps.current !== this.state.lspsVar.current
       || nextProps.lsps.data.length !== this.state.lspsVar.data.length
-      || nextProps.lsps.data !== this.state.lspsVar.data
-      || nextProps.shipmts[0] !== this.props.shipmts[0])) {
+      || nextProps.lsps.data !== this.state.lspsVar.data)) {
       let lspsVar = { ...nextProps.lsps };
-      const {
-        consigner_region_code, consignee_region_code, transport_mode_id,
-        transport_mode_code, package: ctn, created_date: created, goods_type,
-        vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-      } = nextProps.shipmts[0];
-      const promises = [];
-      for (let index = 0; index < lspsVar.data.length; index++) {
-        const row = lspsVar.data[index];
-        promises.push(
-          this.props.computeCostCharge({
-            tenant_id: this.props.tenantId, created_date: created,
-            partner_id: row.partner_id, consigner_region_code, consignee_region_code,
-            goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
-            vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-          })
-        );
-      }
-      Promise.all(promises).then((results) => {
-        for (let index = 0; index < results.length; index++) {
-          const result = results[index];
-          if (result.error || result.data.freight < 0) {
-            lspsVar = update(lspsVar, { data: {
-              [index]: { charge: { $set: { manual: true } } } } });
-          } else {
-            const { freight, pickup, deliver, meter, quantity,
-              unitRatio, gradient, miles, coefficient } = result.data;
-            const charge = {
-              freight_charge: freight,
-              pickup_charge: pickup,
-              deliver_charge: deliver,
-              total_charge: Number(freight) + Number(pickup) + Number(deliver),
-              charge_gradient: gradient,
-              charge_amount: getChargeAmountExpression(meter, miles, quantity,
-                unitRatio, coefficient),
-            };
-            lspsVar = update(lspsVar, { data: {
-              [index]: { charge: { $set: charge } } } });
-          }
-        }
-        this.setState({ lspsVar, lspLoading: false });
+      const charges = [];
+      const shipmts = nextProps.shipmts;
+      shipmts.forEach(() => {
+        charges.push({
+          freight_charge: 0,
+          pickup_charge: 0,
+          deliver_charge: 0,
+          total_charge: 0,
+          charge_gradient: 0,
+          charge_amount: '',
+        });
       });
+
+      let flag = 0;
+      for (let index = 0; index < lspsVar.data.length; index++) {
+        lspsVar = update(lspsVar, { data: {
+          [index]: { charge: { $set: charges } } } });
+        const row = lspsVar.data[index];
+        for (let j = 0; j < shipmts.length; j++) {
+          ((ci, cj) => {
+            const {
+              consigner_region_code, consignee_region_code, transport_mode_id,
+              transport_mode_code, package: ctn, created_date: created, goods_type,
+              vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+            } = shipmts[cj];
+            this.props.computeCostCharge({
+              tenant_id: this.props.tenantId, created_date: created,
+              partner_id: row.partner_id, consigner_region_code, consignee_region_code,
+              goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
+              vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+            }).then((result) => {
+              if (result.error || result.data.freight < 0) {
+                const charge = {
+                  freight_charge: 0,
+                  pickup_charge: 0,
+                  deliver_charge: 0,
+                  total_charge: 0,
+                  charge_gradient: 0,
+                  charge_amount: '',
+                };
+                lspsVar = update(lspsVar, { data: {
+                  [ci]: { charge: { [cj]: { $set: charge } } } } });
+              } else {
+                const { freight, pickup, deliver, meter, quantity,
+                  unitRatio, gradient, miles, coefficient } = result.data;
+                const charge = {
+                  freight_charge: freight,
+                  pickup_charge: pickup,
+                  deliver_charge: deliver,
+                  total_charge: Number(freight) + Number(pickup) + Number(deliver),
+                  charge_gradient: gradient,
+                  charge_amount: getChargeAmountExpression(meter, miles, quantity,
+                    unitRatio, coefficient),
+                };
+                lspsVar = update(lspsVar, { data: {
+                  [ci]: { charge: { [cj]: { $set: charge } } } } });
+              }
+              flag++;
+              if (flag === lspsVar.data.length * shipmts.length) {
+                this.setState({ lspsVar, lspLoading: false });
+              }
+            });
+          })(index, j);
+        }
+      }
     }
   }
 
@@ -335,7 +356,7 @@ export default class DispatchDock extends Component {
         tenantId,
         loginId,
         shipmtNos,
-        charge: target.charge || { total_charge: this.state.quotation },
+        charge: target.charge,
         partnerId: target.partner_id,
         partnerName: target.partner_name,
         partnerTenantId: target.partner_tenant_id,
@@ -384,7 +405,7 @@ export default class DispatchDock extends Component {
         loginId,
         loginName,
         shipmtNos,
-        charge: target.charge || { total_charge: this.state.quotation },
+        charge: target.charge,
         partnerId: target.partner_id,
         partnerName: target.partner_name,
         partnerTenantId: target.partner_tenant_id,
@@ -496,7 +517,7 @@ export default class DispatchDock extends Component {
   }
   handleChargeChange = (charge, index) => {
     const state = update(this.state, { lspsVar: { data:
-      { [index]: { charge: { $set: charge } } } } });
+      { [index]: { charge: { 0: { $set: charge } } } } } });
     this.setState(state);
   }
   handleCostCompute = (ev, row, index) => {
@@ -578,7 +599,7 @@ export default class DispatchDock extends Component {
     this.lspsds.remotes = this.state.lspsVar;
     this.vesds.remotes = vehicles;
     let dock = '';
-    if (show) {
+    if (show && shipmts.length > 0) {
       const arr = [];
       let close = true;
       let totalCount = 0;

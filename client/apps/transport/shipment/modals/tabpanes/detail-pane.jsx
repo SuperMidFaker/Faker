@@ -135,7 +135,7 @@ export default class DetailPane extends React.Component {
       key: pk.package_code,
       value: pk.package_name,
     }));
-
+    const pckg = apackagings.find(item => item.key === shipmt.package);
     let clientInfo = this.msg('customerInfo');
     let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
@@ -247,7 +247,7 @@ export default class DetailPane extends React.Component {
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
-                field={apackagings.find(item => item.key === shipmt.package).value} fieldCol={{ span: 16 }}
+                field={pckg ? pckg.value : shipmt.package} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="8">
