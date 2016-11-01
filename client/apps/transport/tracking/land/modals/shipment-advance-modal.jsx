@@ -22,7 +22,7 @@ const Option = Select.Option;
     transportModeId: state.trackingLandStatus.shipmentAdvanceModal.transportModeId,
     customerPartnerId: state.trackingLandStatus.shipmentAdvanceModal.customerPartnerId,
     goodsType: state.trackingLandStatus.shipmentAdvanceModal.goodsType,
-    quotes: state.transportTariff.quotes,
+    fees: state.transportTariff.fees,
   }),
   { showShipmentAdvanceModal, createAdvance, getTariffByTransportInfo }
 )
@@ -41,7 +41,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     transportModeId: PropTypes.number.isRequired,
     customerPartnerId: PropTypes.number.isRequired,
     goodsType: PropTypes.number.isRequired,
-    quotes: PropTypes.object.isRequired,
+    fees: PropTypes.object.isRequired,
     getTariffByTransportInfo: PropTypes.func.isRequired,
   }
   state = {
@@ -64,7 +64,7 @@ export default class ShipmentAdvanceModal extends React.Component {
       message.error('请输入垫付金额');
     } else {
       const { type, amount, remark, photos } = fieldsValue;
-      const advance = this.props.quotes.fees.find(item => item.fee_code === type);
+      const advance = this.props.fees.find(item => item.fee_code === type);
       const uploadData = {
         shipmtNo, dispId, name: advance.fee_name, code: type, amount: Number(amount),
         remark, photos, submitter: loginName, loginId, tenantId,
@@ -107,7 +107,7 @@ export default class ShipmentAdvanceModal extends React.Component {
           <FormItem label="垫付类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('type')(<Select placeholder="请选择垫付类型">
               {
-              this.props.quotes.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
+              this.props.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
             }
             </Select>)}
           </FormItem>

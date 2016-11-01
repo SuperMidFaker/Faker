@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Input, Table, Select, Switch, message } from 'antd';
 import { TAX_MODE, FEE_STYLE } from 'common/constants';
-import { submitSurcharges, createQuotes } from 'common/reducers/transportTariff';
+import { submitSurcharges, addFee, deleteFee, updateFee } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { feeUpdate, feeAdd, feeDelete } from 'common/reducers/cmsQuote';
 // import containerMessages from 'client/apps/message.i18n';
 // import globalMessages from 'client/common/root.i18n';
 
@@ -24,11 +23,11 @@ const Option = Select.Option;
     loginName: state.account.username,
     surcharge: state.transportTariff.surcharge,
     tariffId: state.transportTariff.tariffId,
-    quotes: state.transportTariff.quotes,
+    fees: state.transportTariff.fees,
     formParams: state.transportTariff.formParams,
     agreement: state.transportTariff.agreement,
   }),
-  { submitSurcharges, feeUpdate, feeAdd, feeDelete, createQuotes }
+  { submitSurcharges, updateFee, deleteFee, addFee }
 )
 
 export default class SurchargeForm extends React.Component {
@@ -39,13 +38,12 @@ export default class SurchargeForm extends React.Component {
     surcharge: PropTypes.object.isRequired,
     submitSurcharges: PropTypes.func.isRequired,
     tariffId: PropTypes.string.isRequired,
-    quotes: PropTypes.object.isRequired,
-    feeUpdate: PropTypes.func.isRequired,
-    feeAdd: PropTypes.func.isRequired,
-    feeDelete: PropTypes.func.isRequired,
+    fees: PropTypes.object.isRequired,
+    updateFee: PropTypes.func.isRequired,
+    deleteFee: PropTypes.func.isRequired,
     formParams: PropTypes.object.isRequired,
     agreement: PropTypes.object.isRequired,
-    createQuotes: PropTypes.func.isRequired,
+    addFee: PropTypes.func.isRequired,
   }
   state = {
     coops: [],
@@ -69,7 +67,7 @@ export default class SurchargeForm extends React.Component {
     });
   }
   handleAddFees = () => {
-    const addFee = {
+    const fee = {
       fee_name: '',
       fee_code: '',
       fee_style: 'cushion',
@@ -83,9 +81,9 @@ export default class SurchargeForm extends React.Component {
       category: 'custom',
     };
     this.setState({
-      editIndex: this.props.quotes.fees.length + 4,
+      editIndex: this.props.fees.length + 4,
     });
-    this.props.quotes.fees.push(addFee);
+    this.props.fees.push(fee);
     this.forceUpdate();
   }
   handleModify = (row, index) => {
@@ -97,39 +95,19 @@ export default class SurchargeForm extends React.Component {
     this.setState({
       editIndex: -1,
     });
-    const row = this.props.quotes.fees[index - 4];
-    if (this.props.quotes._id) {
-      const params = {
-        quoteId: this.props.quotes._id,
-        tenantId: this.props.tenantId,
-        modifyById: this.props.loginId,
-        modifyBy: this.props.loginName,
-        modifyCount: 1,
-      };
-
-      if (row._id) {
-        this.props.feeUpdate(
-          params,
-          row,
-        ).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          }
-        });
-      } else {
-        this.props.feeAdd(
-          params,
-          row,
-        ).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          }
-        });
-      }
+    const row = this.props.fees[index - 4];
+    if (row._id) {
+      this.props.updateFee(
+        this.props.tariffId, row._id, row
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        }
+      });
     } else {
       const tms = this.props.formParams.transModes.find(tm => tm.id === Number(this.props.agreement.transModeCode));
       const transMode = tms.mode_code;
-      this.props.createQuotes(this.props.tariffId, transMode, row).then((result) => {
+      this.props.addFee(this.props.tariffId, transMode, row).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
@@ -140,21 +118,14 @@ export default class SurchargeForm extends React.Component {
     this.setState({
       editIndex: -1,
     });
-    const params = {
-      quoteId: this.props.quotes._id,
-      tenantId: this.props.tenantId,
-      modifyById: this.props.loginId,
-      modifyBy: this.props.loginName,
-      modifyCount: 1,
-    };
-    this.props.feeDelete(
-      params,
+    this.props.deleteFee(
+      this.props.tariffId,
       row._id,
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.quotes.fees.splice(index - 4, 1);
+        this.props.fees.splice(index - 4, 1);
         this.forceUpdate();
       }
     });
@@ -162,7 +133,7 @@ export default class SurchargeForm extends React.Component {
 
   handleChange = (index, col, value) => {
     if (index >= 4) {
-      this.props.quotes.fees[index - 4][col] = value;
+      this.props.fees[index - 4][col] = value;
     } else {
       let key = 'mode';
       let item = 'pickup';
@@ -216,7 +187,7 @@ export default class SurchargeForm extends React.Component {
   }
 
   render() {
-    const { surcharge, quotes } = this.props;
+    const { surcharge, fees } = this.props;
     const { editIndex } = this.state;
     const dataSource = [{
       fee_name: '提货费',
@@ -266,7 +237,7 @@ export default class SurchargeForm extends React.Component {
       tax_rate: 0,
       enabled: true,
       category: '',
-    }].concat(quotes.fees);
+    }].concat(fees);
     const columns = [
       {
         title: this.msg('serialNo'),
