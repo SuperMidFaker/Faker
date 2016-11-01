@@ -345,6 +345,14 @@ export default defineMessages({
     id: 'transport.shipment.log.transitModeChanged',
     defaultMessage: '运输模式变更',
   },
+  clientInfoChanged: {
+    id: 'transport.shipment.log.clientInfoChanged',
+    defaultMessage: '客户单号变更',
+  },
+  correlInfoChanged: {
+    id: 'transport.shipment.log.correlInfoChanged',
+    defaultMessage: '相关单号变更',
+  },
   consignerInfoChanged: {
     id: 'transport.shipment.log.consignerInfoChanged',
     defaultMessage: '发货信息变更',

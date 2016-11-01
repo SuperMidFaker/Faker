@@ -7,8 +7,11 @@ import { saveEdit } from 'common/reducers/transport-acceptance';
 import ConsignInfo from '../forms/consign-info';
 import GoodsInfo from '../forms/goods-info';
 import ModeInfo from '../forms/mode-info';
+import ClientInfo from '../forms/clientInfo';
+import CorrelInfo from '../forms/correlInfo';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import './preview-panel.less';
 const formatMsg = format(messages);
 
 @injectIntl
@@ -80,6 +83,10 @@ export default class ChangeShipment extends React.Component {
       return (<ModeInfo intl={intl} formhoc={form} />);
     } else if (type === 'goodsInfoChanged') {
       return (<GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />);
+    } else if (type === 'clientInfoChanged') {
+      return (<ClientInfo outerColSpan={16} intl={intl} formhoc={form} mode="edit" />);
+    } else if (type === 'correlInfoChanged') {
+      return (<CorrelInfo formhoc={form} intl={intl} />);
     }
     return null;
   }

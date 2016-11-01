@@ -100,6 +100,14 @@ export default class DetailPane extends React.Component {
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consignerInfoChanged' });
   }
+  handleChangeCorrelInfo = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'correlInfoChanged' });
+  }
+  handleChangeClientInfo = () => {
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'clientInfoChanged' });
+  }
   handleChangeTransitConsignee = () => {
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consigneeInfoChanged' });
@@ -117,10 +125,18 @@ export default class DetailPane extends React.Component {
   }
   render() {
     const { shipmt } = this.props;
+    let clientInfo = this.msg('customerInfo');
     let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
     let goodsInfo = `${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`;
     if (shipmt.status <= 3) {
+      clientInfo = (<div>{this.msg('customerInfo')}
+        <div className="extra-actions">
+          <a onClick={this.handleChangeClientInfo}>修改客户单号</a>
+          <span className="ant-divider" />
+          <a onClick={this.handleChangeCorrelInfo}>修改其他单号</a>
+        </div>
+      </div>);
       shipmtSchedule = (<div>{this.msg('shipmtSchedule')} {shipmt.transit_time || '当'}{this.msg('day')}
         <div className="extra-actions">
           <a onClick={this.handleChangeTransitConsigner}>修改发货信息</a>
@@ -143,7 +159,7 @@ export default class DetailPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
-          <Panel header={this.msg('customerInfo')} key="customer">
+          <Panel header={clientInfo} key="customer">
             <Col span="12">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
                 field={shipmt.customer_name} fieldCol={{ span: 16 }}
