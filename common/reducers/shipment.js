@@ -125,7 +125,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_FORM_SUCCEED: {
       const formData = action.result.data.formData;
-      console.log(formData);
       return { ...state, formData: { ...state.formData, ...formData } };
     }
     case actionTypes.LOAD_DRAFTFORM:
