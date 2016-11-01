@@ -198,7 +198,9 @@ export default class ShipmentCreate extends React.Component {
                   <Card bodyStyle={{ padding: 16 }}>
                     <ModeInfo intl={intl} formhoc={form} />
                   </Card>
-                  <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                  <Card bodyStyle={{ padding: 16 }}>
+                    <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                  </Card>
                 </Col>
                 <Col span="8">
                   <Card bodyStyle={{ padding: 16 }}>

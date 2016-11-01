@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Button, message } from 'antd';
+import { Card, Row, Col, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -125,14 +125,30 @@ export default class ShipmentEdit extends React.Component {
               <div className="page-body card-wrapper">
                 <Row gutter={16}>
                   <Col span="16">
-                    <ClientInfo outerColSpan={16} intl={intl} formhoc={form} mode="edit" />
-                    <ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />
-                    <ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />
-                    <ModeInfo intl={intl} formhoc={form} />
-                    <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                    </Card>
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
+                        labelColSpan={8} formhoc={form}
+                      />
+                    </Card>
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
+                        labelColSpan={8} formhoc={form}
+                      />
+                    </Card>
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <ModeInfo intl={intl} formhoc={form} />
+                    </Card>
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                    </Card>
                   </Col>
                   <Col span="8">
-                    <CorrelInfo formhoc={form} intl={intl} />
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <CorrelInfo formhoc={form} intl={intl} />
+                    </Card>
                     <FreightCharge formhoc={form} intl={this.props.intl} />
                   </Col>
                 </Row>
