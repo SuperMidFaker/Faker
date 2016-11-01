@@ -221,6 +221,7 @@ export default class DispatchDock extends Component {
       || nextProps.lsps.current !== this.state.lspsVar.current
       || nextProps.lsps.data.length !== this.state.lspsVar.data.length
       || nextProps.lsps.data !== this.state.lspsVar.data)) {
+      this.setState({ lspLoading: true });
       let lspsVar = { ...nextProps.lsps };
       const charges = [];
       const shipmts = nextProps.shipmts;
