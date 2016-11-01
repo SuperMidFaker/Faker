@@ -87,15 +87,49 @@ export default class TariffList extends React.Component {
     title: this.msg('tariffName'),
     dataIndex: 'name',
     width: 160,
+    render: (o, record) => {
+      if (record.status === 0) {
+        return <span className="mdc-text-grey">{o}</span>;
+      } else {
+        return o;
+      }
+    },
   }, {
     title: this.msg('partnerName'),
     width: 180,
-    dataIndex: 'partnerName',
+    render: (o, record) => {
+      if (record.sendTenantId === this.props.tenantId) {
+        return record.recvName || '';
+      } else if (record.recvTenantId === this.props.tenantId) {
+        return record.sendName || '';
+      } else {
+        return '';
+      }
+    },
   }, {
     title: this.msg('tariffType'),
-    dataIndex: 'kind',
     width: 80,
-    render: o => typeof o === 'number' && TARIFF_KINDS[o].text,
+    render: (o, record) => {
+      let kindIdx = null;
+      if (record.sendTenantId === this.props.tenantId) {
+        if (record.recvName) {
+          kindIdx = 1;
+        } else {
+          kindIdx = 3;
+        }
+      } else if (record.recvTenantId === this.props.tenantId) {
+        if (record.sendName) {
+          kindIdx = 0;
+        } else {
+          kindIdx = 2;
+        }
+      }
+      if (kindIdx !== null) {
+        return TARIFF_KINDS[kindIdx].text;
+      } else {
+        return '';
+      }
+    },
   }, {
     title: this.msg('effectiveDate'),
     dataIndex: 'effectiveDate',

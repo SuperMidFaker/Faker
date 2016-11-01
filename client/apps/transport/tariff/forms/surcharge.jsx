@@ -38,7 +38,7 @@ export default class SurchargeForm extends React.Component {
     surcharge: PropTypes.object.isRequired,
     submitSurcharges: PropTypes.func.isRequired,
     tariffId: PropTypes.string.isRequired,
-    fees: PropTypes.object.isRequired,
+    fees: PropTypes.array.isRequired,
     updateFee: PropTypes.func.isRequired,
     deleteFee: PropTypes.func.isRequired,
     formParams: PropTypes.object.isRequired,
@@ -46,7 +46,6 @@ export default class SurchargeForm extends React.Component {
     addFee: PropTypes.func.isRequired,
   }
   state = {
-    coops: [],
     editIndex: -1,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
