@@ -374,7 +374,7 @@ export default class SurchargeForm extends React.Component {
         width: 80,
         render: (o, record, index) => {
           if (index >= 4) {
-            return (<Switch size="small" defaultChecked={o} onChange={e => this.handleInvoiceEnChange(index, e)} />);
+            return (<Switch size="small" defaultChecked={o} disabled={index !== editIndex} onChange={e => this.handleInvoiceEnChange(index, e)} />);
           } else {
             return '';
           }
@@ -400,7 +400,7 @@ export default class SurchargeForm extends React.Component {
         width: 80,
         render: (o, record, index) => {
           if (index >= 4) {
-            return (<Switch size="small" defaultChecked={o} onChange={e => this.handleEnabledChange(index, e)} />);
+            return (<Switch size="small" defaultChecked={o} disabled={index !== editIndex} onChange={e => this.handleEnabledChange(index, e)} />);
           } else {
             return '';
           }
