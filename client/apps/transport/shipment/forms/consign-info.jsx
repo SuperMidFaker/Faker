@@ -193,34 +193,33 @@ export default class ConsignInfo extends React.Component {
       content = (
         <div>
           <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-              field={this.renderFields.name} {...this.renderRules.name}
-              optionField="name" optionKey="key" optionValue="name"
-              formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
-              allowClear onChange={this.handleAutoInputChange}
-              initialValue={fieldDefaults[name]}
+            field={this.renderFields.name} {...this.renderRules.name}
+            optionField="name" optionKey="key" optionValue="name"
+            formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
+            allowClear onChange={this.handleAutoInputChange}
+            initialValue={fieldDefaults[name]}
+          />
+          <FormItem label={this.msg(this.renderMsgKeys.portal)} {...this.renderRules.portal}>
+            <RegionCascade defaultRegion={region} region={this.state.consignRegion}
+              onChange={this.handleRegionValue}
             />
-            <FormItem label={this.msg(this.renderMsgKeys.portal)} {...this.renderRules.portal}
-            >
-              <RegionCascade defaultRegion={region} region={this.state.consignRegion}
-                onChange={this.handleRegionValue}
-              />
-            </FormItem>
-            <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-              field={this.renderFields.addr} {...this.renderRules.addr}
-              fieldProps={{ initialValue: fieldDefaults[addr] }}
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('contact')}
-              field={this.renderFields.contact} 
-              fieldProps={{ initialValue: fieldDefaults[contact] }}
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
-              field={this.renderFields.mobile} 
-              fieldProps={{ initialValue: fieldDefaults[mobile] }}
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('email')}
-              field={this.renderFields.email}
-              fieldProps={{ initialValue: fieldDefaults[email] }}
-            />
+          </FormItem>
+          <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
+            field={this.renderFields.addr} {...this.renderRules.addr}
+            fieldProps={{ initialValue: fieldDefaults[addr] }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('contact')}
+            field={this.renderFields.contact}
+            fieldProps={{ initialValue: fieldDefaults[contact] }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
+            field={this.renderFields.mobile}
+            fieldProps={{ initialValue: fieldDefaults[mobile] }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('email')}
+            field={this.renderFields.email}
+            fieldProps={{ initialValue: fieldDefaults[email] }}
+          />
         </div>
       );
     } else {

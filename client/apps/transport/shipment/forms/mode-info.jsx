@@ -163,8 +163,8 @@ export default class ModeInfo extends React.Component {
     } else if (vertical && type === 'schedule') {
       content = (
         <div>
-        <FormItem label={this.msg('pickupDate')} required>
-              {getFieldDecorator(
+          <FormItem label={this.msg('pickupDate')} required>
+            {getFieldDecorator(
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
                   rules: [{
@@ -173,9 +173,9 @@ export default class ModeInfo extends React.Component {
                   initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
-            </FormItem>
-            <FormItem label={this.msg('shipmtTransit')} required>
-              {getFieldDecorator(
+          </FormItem>
+          <FormItem label={this.msg('shipmtTransit')} required>
+            {getFieldDecorator(
                 'transit_time', {
                   onChange: this.handleTransitChange,
                   rules: [{
@@ -183,9 +183,9 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: transit_time,
                 })(<InputNumber style={{ width: '100%' }} min={0} />)}
-            </FormItem>
-            <FormItem label={this.msg('deliveryDate')} required>
-              {getFieldDecorator(
+          </FormItem>
+          <FormItem label={this.msg('deliveryDate')} required>
+            {getFieldDecorator(
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,
                   rules: [{
@@ -194,18 +194,18 @@ export default class ModeInfo extends React.Component {
                   initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
-            </FormItem>
+          </FormItem>
         </div>
       );
     } else {
       content = (
         <div>
-        <Row>
-          <Col span={`${outerColSpan}`} >
-            <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
-              wrapperCol={{ span: 24 - labelColSpan }} required
-            >
-              {getFieldDecorator(
+          <Row>
+            <Col span={`${outerColSpan}`} >
+              <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
+                wrapperCol={{ span: 24 - labelColSpan }} required
+              >
+                {getFieldDecorator(
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
                   rules: [{
@@ -214,13 +214,13 @@ export default class ModeInfo extends React.Component {
                   initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-          <Col span={`${outerColSpan}`}>
-            <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
-              wrapperCol={{ span: 24 - labelColSpan }} required
-            >
-              {getFieldDecorator(
+              </FormItem>
+            </Col>
+            <Col span={`${outerColSpan}`}>
+              <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
+                wrapperCol={{ span: 24 - labelColSpan }} required
+              >
+                {getFieldDecorator(
                 'transit_time', {
                   onChange: this.handleTransitChange,
                   rules: [{
@@ -228,13 +228,13 @@ export default class ModeInfo extends React.Component {
                   }],
                   initialValue: transit_time,
                 })(<InputNumber style={{ width: '100%' }} min={0} />)}
-            </FormItem>
-          </Col>
-          <Col span={`${outerColSpan}`}>
-            <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
-              wrapperCol={{ span: 24 - labelColSpan }} required
-            >
-              {getFieldDecorator(
+              </FormItem>
+            </Col>
+            <Col span={`${outerColSpan}`}>
+              <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
+                wrapperCol={{ span: 24 - labelColSpan }} required
+              >
+                {getFieldDecorator(
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,
                   rules: [{
@@ -243,15 +243,15 @@ export default class ModeInfo extends React.Component {
                   initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={16}>
-            <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }} required
-            >
-              {getFieldDecorator(
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={16}>
+              <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }} required
+              >
+                {getFieldDecorator(
                 'transport_mode_id', {
                   rules: [{
                     type: 'number',
@@ -265,12 +265,12 @@ export default class ModeInfo extends React.Component {
                 tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
               )}
               </Select>)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          {modeEditCols}
-        </Row>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            {modeEditCols}
+          </Row>
 
         </div>
       );
