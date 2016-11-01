@@ -120,7 +120,11 @@ export default class AgreementForm extends React.Component {
         }
         promise.then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            if (result.error.message === 'found_tariff') {
+              message.error('相同条件报价协议已存在');
+            } else {
+              message.error(result.error.message);
+            }
           } else {
             this.setState({ readonly: true });
             message.success('保存成功');

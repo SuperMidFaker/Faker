@@ -105,12 +105,24 @@ export default class TariffList extends React.Component {
     title: this.msg('expiryDate'),
     dataIndex: 'expiryDate',
     width: 100,
-    render: (o, record) => moment(record.expiryDate).format('YYYY.MM.DD'),
+    render: (o, record) => {
+      const tommorrow = moment().add(1, 'days').toDate().setHours(0, 0, 0, 0);
+      if (new Date(record.expiryDate).getTime() < tommorrow) {
+        return (
+          <span className="mdc-text-red">{moment(record.expiryDate).format('YYYY.MM.DD')}</span>
+        );
+      } else {
+        return moment(record.expiryDate).format('YYYY.MM.DD');
+      }
+    },
   }, {
     title: this.msg('tariffStatus'),
     dataIndex: 'status',
     width: 80,
-    render: () => '有效',
+    render: (o, record) => {
+      const tommorrow = moment().add(1, 'days').toDate().setHours(0, 0, 0, 0);
+      return new Date(record.expiryDate).getTime() < tommorrow ? '无效' : '有效';
+    },
   }, {
     title: this.msg('tariffRevisions'),
     dataIndex: 'revisions',
