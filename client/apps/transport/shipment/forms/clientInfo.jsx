@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Tooltip, Card } from 'antd';
+import { Row, Col, Tooltip } from 'antd';
 import InputItem from './input-item';
 import AutoCompSelectItem from './autocomp-select-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -27,6 +27,7 @@ export default class ClientInfo extends React.Component {
     outerColSpan: PropTypes.number.isRequired,
     mode: PropTypes.string,
     setConsignFields: PropTypes.func.isRequired,
+    vertical: PropTypes.bool,
   }
 
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -47,25 +48,36 @@ export default class ClientInfo extends React.Component {
     return selclients.length > 0 ? selclients[0].name : evalue;
   }
   render() {
-    const { formhoc, mode, outerColSpan, clients, customer_name: name, ref_external_no } = this.props;
+    const { formhoc, mode, outerColSpan, clients, customer_name: name, ref_external_no, vertical } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.partner_id}/${cl.tid}`,
       value: `${cl.partner_id}`,
       code: cl.partner_code,
       name: cl.name,
     }));
-    return (
-      <Card bodyStyle={{ padding: 16 }}>
+    let content = '';
+    if (vertical) {
+      content = (
+        <div>
+          <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')}
+            field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
+          />
+        </div>
+        );
+    } else {
+      content = (
         <Row>
-          <Col span={outerColSpan}>
+          <Col span={`${outerColSpan}`}>
             {
             mode === 'edit' ?
-              <InputItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+              <InputItem formhoc={formhoc} labelName={this.msg('client')}
+                colSpan={4}
                 field="customer_name" disabled fieldProps={{ initialValue: name }}
               /> :
                 <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
                   <div>
-                    <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')} colSpan={4}
+                    <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')}
+                      colSpan={4}
                       field="customer_name"
                       required optionData={clientOpts} filterFields={['code']}
                       optionField="name" optionKey="key" optionValue="value"
@@ -78,13 +90,20 @@ export default class ClientInfo extends React.Component {
                 </Tooltip>
           }
           </Col>
-          <Col span={24 - outerColSpan}>
-            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')} colSpan={8}
+          <Col span={`${24 - outerColSpan}`}>
+            <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')}
+              colSpan={8}
               field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
             />
           </Col>
         </Row>
-      </Card>
+        );
+    }
+
+    return (
+      <div>
+        {content}
+      </div>
     );
   }
 }

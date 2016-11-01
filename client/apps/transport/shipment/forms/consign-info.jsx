@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Card } from 'antd';
+import { Row, Col, Form } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
@@ -66,6 +66,7 @@ export default class ConsignInfo extends React.Component {
     setConsignFields: PropTypes.func.isRequired,
     formhoc: PropTypes.object.isRequired,
     fieldDefaults: PropTypes.object.isRequired,
+    vertical: PropTypes.bool,
   }
   constructor(...args) {
     super(...args);
@@ -177,7 +178,7 @@ export default class ConsignInfo extends React.Component {
   render() {
     const {
       outerColSpan, labelColSpan, formhoc, consignLocations,
-      fieldDefaults,
+      fieldDefaults, vertical,
     } = this.props;
     const locOptions = consignLocations.map(cl => ({
       name: cl.name,
@@ -187,8 +188,42 @@ export default class ConsignInfo extends React.Component {
     const region = [
       fieldDefaults[province], fieldDefaults[city], fieldDefaults[district], fieldDefaults[street],
     ];
-    return (
-      <Card title={this.msg(this.renderMsgKeys.title)} bodyStyle={{ padding: 16 }}>
+    let content = '';
+    if (vertical) {
+      content = (
+        <div>
+          <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
+            field={this.renderFields.name} {...this.renderRules.name}
+            optionField="name" optionKey="key" optionValue="name"
+            formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
+            allowClear onChange={this.handleAutoInputChange}
+            initialValue={fieldDefaults[name]}
+          />
+          <FormItem label={this.msg(this.renderMsgKeys.portal)} {...this.renderRules.portal}>
+            <RegionCascade defaultRegion={region} region={this.state.consignRegion}
+              onChange={this.handleRegionValue}
+            />
+          </FormItem>
+          <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
+            field={this.renderFields.addr} {...this.renderRules.addr}
+            fieldProps={{ initialValue: fieldDefaults[addr] }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('contact')}
+            field={this.renderFields.contact}
+            fieldProps={{ initialValue: fieldDefaults[contact] }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
+            field={this.renderFields.mobile}
+            fieldProps={{ initialValue: fieldDefaults[mobile] }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('email')}
+            field={this.renderFields.email}
+            fieldProps={{ initialValue: fieldDefaults[email] }}
+          />
+        </div>
+      );
+    } else {
+      content = (
         <Row>
           <Col span={`${outerColSpan}`}>
             <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
@@ -225,7 +260,12 @@ export default class ConsignInfo extends React.Component {
             />
           </Col>
         </Row>
-      </Card>
+      );
+    }
+    return (
+      <div>
+        {content}
+      </div>
     );
   }
 }

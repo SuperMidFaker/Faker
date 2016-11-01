@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input, Select, Table, Card } from 'antd';
+import { Row, Col, Form, Input, Select, Table } from 'antd';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';
@@ -110,6 +110,7 @@ export default class GoodsInfo extends React.Component {
     editLocalGoods: PropTypes.func.isRequired,
     removeLocalGoods: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
+    vertical: PropTypes.bool,
   }
   constructor(...args) {
     super(...args);
@@ -206,6 +207,7 @@ export default class GoodsInfo extends React.Component {
       labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
       packagings, containerPackagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
+      vertical,
     } = this.props;
     const apackagings = this.props.modeCode === 'CTN' ? containerPackagings : packagings.map(pk => ({
       key: pk.package_code,
@@ -344,70 +346,118 @@ export default class GoodsInfo extends React.Component {
         }
       },
     }];
-    return (
-      <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 16 }}>
-        <Row>
-          <Col span={`${outerColSpan}`}>
-            <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
-              wrapperCol={{ span: 24 - labelColSpan }} required
-            >
-              {getFieldDecorator('goods_type', {
-                rules: [{
-                  required: true, type: 'number', message: this.msg('goodsTypeMust'),
-                }],
-                initialValue: goods_type,
-              })(<Select>
-                {goodsTypes.map(
+    let content = '';
+    if (vertical) {
+      content = (
+        <div>
+          <FormItem label={this.msg('goodsType')} required>
+            {getFieldDecorator('goods_type', {
+              rules: [{
+                required: true, type: 'number', message: this.msg('goodsTypeMust'),
+              }],
+              initialValue: goods_type,
+            })(<Select>
+              {goodsTypes.map(
                 gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
               )}
-              </Select>)}
-            </FormItem>
-            <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
-              field="total_count" colSpan={labelColSpan}
-              fieldProps={{ initialValue: total_count }}
-            />
-          </Col>
-          <Col span={`${outerColSpan}`}>
-            <FormItem label={this.msg('goodsPackage')} labelCol={{ span: labelColSpan }}
-              wrapperCol={{ span: 24 - labelColSpan }}
-            >
-              {getFieldDecorator('package', { initialValue: packageform })(<Select>
-                {apackagings.map(
+            </Select>)}
+          </FormItem>
+          <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
+            field="total_count"
+            fieldProps={{ initialValue: total_count }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
+            field="total_weight" addonAfter={this.msg('kilogram')}
+            fieldProps={{ initialValue: total_weight }}
+          />
+          <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
+            field="total_volume" addonAfter={this.msg('cubicMeter')}
+            fieldProps={{ initialValue: total_volume }}
+          />
+          <FormItem label={this.msg('goodsPackage')}>
+            {getFieldDecorator('package', { initialValue: packageform })(<Select>
+              {apackagings.map(
                 pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
               )}
-              </Select>)}
-            </FormItem>
-            <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
-              field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
-              fieldProps={{ initialValue: total_weight }}
-            />
-          </Col>
-          <Col span={`${outerColSpan}`}>
-            <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
-              field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
-              fieldProps={{ initialValue: insure_value }}
-            />
-            <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
-              field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
-              fieldProps={{ initialValue: total_volume }}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col span="24">
-            <Table size="small" columns={columns} dataSource={[...goods, {
-              key: 'goodsinfinity', __ops: [{
-                name: formatGlobalMsg(this.props.intl, 'add'),
-                handler: this.handleGoodsAdd,
-              }, {
-                name: formatMsg(this.props.intl, 'compute'),
-                handler: this.handleGoodsListCompute,
-              }],
-            }]} pagination={false}
-            />
-          </Col>
-        </Row>
-      </Card>
+            </Select>)}
+          </FormItem>
+          <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
+            field="insure_value" addonAfter={this.msg('CNY')}
+            fieldProps={{ initialValue: insure_value }}
+          />
+        </div>
+      );
+    } else {
+      content = (
+        <div>
+          <Row>
+            <Col span={`${outerColSpan}`}>
+              <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
+                wrapperCol={{ span: 24 - labelColSpan }} required
+              >
+                {getFieldDecorator('goods_type', {
+                  rules: [{
+                    required: true, type: 'number', message: this.msg('goodsTypeMust'),
+                  }],
+                  initialValue: goods_type,
+                })(<Select>
+                  {goodsTypes.map(
+                gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
+              )}
+                </Select>)}
+              </FormItem>
+              <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
+                field="total_count" colSpan={labelColSpan}
+                fieldProps={{ initialValue: total_count }}
+              />
+            </Col>
+            <Col span={`${outerColSpan}`}>
+              <FormItem label={this.msg('goodsPackage')} labelCol={{ span: labelColSpan }}
+                wrapperCol={{ span: 24 - labelColSpan }}
+              >
+                {getFieldDecorator('package', { initialValue: packageform })(<Select>
+                  {apackagings.map(
+                pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
+              )}
+                </Select>)}
+              </FormItem>
+              <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
+                field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
+                fieldProps={{ initialValue: total_weight }}
+              />
+            </Col>
+            <Col span={`${outerColSpan}`}>
+              <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
+                field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
+                fieldProps={{ initialValue: insure_value }}
+              />
+              <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
+                field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
+                fieldProps={{ initialValue: total_volume }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Table size="small" columns={columns} dataSource={[...goods, {
+                key: 'goodsinfinity', __ops: [{
+                  name: formatGlobalMsg(this.props.intl, 'add'),
+                  handler: this.handleGoodsAdd,
+                }, {
+                  name: formatMsg(this.props.intl, 'compute'),
+                  handler: this.handleGoodsListCompute,
+                }],
+              }]} pagination={false}
+              />
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+    return (
+      <div>
+        {content}
+      </div>
     );
   }
 }

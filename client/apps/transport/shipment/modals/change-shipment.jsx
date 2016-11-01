@@ -74,19 +74,19 @@ export default class ChangeShipment extends React.Component {
   renderForm() {
     const { form, intl, type } = this.props;
     if (type === 'consignerInfoChanged') {
-      return (<ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />);
+      return (<ConsignInfo type="consigner" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} vertical />);
     } else if (type === 'consigneeInfoChanged') {
-      return (<ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} />);
+      return (<ConsignInfo type="consignee" intl={intl} outerColSpan={16} labelColSpan={8} formhoc={form} vertical />);
     } else if (type === 'transitModeChanged') {
-      return (<ModeInfo intl={intl} formhoc={form} />);
+      return (<ModeInfo intl={intl} formhoc={form} vertical type="transMode" />);
     } else if (type === 'timeInfoChanged') {
-      return (<ModeInfo intl={intl} formhoc={form} />);
+      return (<ModeInfo intl={intl} formhoc={form} vertical type="schedule" />);
     } else if (type === 'goodsInfoChanged') {
-      return (<GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />);
+      return (<GoodsInfo intl={intl} labelColSpan={8} formhoc={form} vertical />);
     } else if (type === 'clientInfoChanged') {
-      return (<ClientInfo outerColSpan={16} intl={intl} formhoc={form} mode="edit" />);
+      return (<ClientInfo outerColSpan={12} intl={intl} formhoc={form} mode="edit" vertical />);
     } else if (type === 'correlInfoChanged') {
-      return (<CorrelInfo formhoc={form} intl={intl} />);
+      return (<CorrelInfo formhoc={form} intl={intl} vertical />);
     }
     return null;
   }
@@ -94,10 +94,12 @@ export default class ChangeShipment extends React.Component {
     const { visible, formData } = this.props;
     return (
       <Modal title={`${this.msg('changeShipment')} ${formData.shipmt_no}`} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel} width="75%"
+        onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <div className="changeShipment">
-          {this.renderForm()}
+          <Form vertical>
+            {this.renderForm()}
+          </Form>
         </div>
       </Modal>
     );
