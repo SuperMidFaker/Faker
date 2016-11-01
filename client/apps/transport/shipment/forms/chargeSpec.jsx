@@ -68,7 +68,7 @@ export default class ChargeSpecForm extends React.Component {
     return (
       <Form horizontal>
         <FormItem label={this.msg('basicCharge')} labelCol={{ span }} wrapperCol={{ span: 24 - span }}>
-          <Input addonAfter={this.msg('CNY')} readOnly value={charge.freight_charge} />
+          <Input addonAfter={this.msg('CNY')} readOnly value={charge.freight_charge.toFixed(2)} />
         </FormItem>
         <FormItem label={
           <span>
@@ -77,14 +77,14 @@ export default class ChargeSpecForm extends React.Component {
           </span>
         } labelCol={{ span }} wrapperCol={{ span: 24 - span }}
         >
-          <Input addonAfter={this.msg('CNY')} readOnly value={charge.pickup_charge} />
+          <Input addonAfter={this.msg('CNY')} readOnly value={charge.pickup_charge.toFixed(2)} />
         </FormItem>
         <FormItem label={<span>
           <Checkbox checked={checkDeliver} onChange={this.handleDeliverCheck} />
           {this.msg('deliverCharge')}
         </span>} labelCol={{ span }} wrapperCol={{ span: 24 - span }}
         >
-          <Input addonAfter={this.msg('CNY')} readOnly value={charge.deliver_charge} />
+          <Input addonAfter={this.msg('CNY')} readOnly value={charge.deliver_charge.toFixed(2)} />
         </FormItem>
         <FormItem label={this.msg('surcharge')} labelCol={{ span }}
           wrapperCol={{ span: 24 - span }}
