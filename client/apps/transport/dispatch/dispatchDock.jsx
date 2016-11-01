@@ -122,7 +122,7 @@ export default class DispatchDock extends Component {
               <ChargeSpecForm charge={charge} onChange={() => {}} index={index} />
               }
             >
-              <span>{charge.total_charge}</span>
+              <span>{charge.total_charge.toFixed(2)}</span>
             </Popover>
             );
         } else {
