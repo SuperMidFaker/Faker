@@ -46,6 +46,9 @@ PaneFormItem.propTypes = {
 @connect(
   state => ({
     shipmt: state.shipment.previewer.shipmt,
+    goodsTypes: state.shipment.formRequire.goodsTypes,
+    packagings: state.shipment.formRequire.packagings,
+    containerPackagings: state.shipment.formRequire.containerPackagings,
   }),
   { showChangeShipmentModal }
 )
@@ -53,6 +56,9 @@ export default class DetailPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmt: PropTypes.object.isRequired,
+    goodsTypes: PropTypes.array.isRequired,
+    packagings: PropTypes.array.isRequired,
+    containerPackagings: PropTypes.array.isRequired,
     showChangeShipmentModal: PropTypes.func.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -124,7 +130,12 @@ export default class DetailPane extends React.Component {
     }
   }
   render() {
-    const { shipmt } = this.props;
+    const { shipmt, goodsTypes, packagings, containerPackagings } = this.props;
+    const apackagings = this.props.shipmt.transport_mode_code === 'CTN' ? containerPackagings : packagings.map(pk => ({
+      key: pk.package_code,
+      value: pk.package_name,
+    }));
+    const pckg = apackagings.find(item => item.key === shipmt.package);
     let clientInfo = this.msg('customerInfo');
     let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
@@ -231,12 +242,12 @@ export default class DetailPane extends React.Component {
           <Panel header={goodsInfo} key="cargo">
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
-                field={shipmt.goods_type} fieldCol={{ span: 16 }}
+                field={goodsTypes.find(item => item.value === shipmt.goods_type).text} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
-                field={shipmt.package} fieldCol={{ span: 16 }}
+                field={pckg ? pckg.value : shipmt.package} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="8">
