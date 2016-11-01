@@ -84,7 +84,7 @@ export default class ChangeShipment extends React.Component {
     } else if (type === 'goodsInfoChanged') {
       return (<GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />);
     } else if (type === 'clientInfoChanged') {
-      return (<ClientInfo outerColSpan={16} intl={intl} formhoc={form} mode="edit" />);
+      return (<ClientInfo outerColSpan={12} intl={intl} formhoc={form} mode="edit" vertical />);
     } else if (type === 'correlInfoChanged') {
       return (<CorrelInfo formhoc={form} intl={intl} />);
     }
@@ -94,10 +94,12 @@ export default class ChangeShipment extends React.Component {
     const { visible, formData } = this.props;
     return (
       <Modal title={`${this.msg('changeShipment')} ${formData.shipmt_no}`} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel} width="75%"
+        onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <div className="changeShipment">
-          {this.renderForm()}
+          <Form vertical>
+            {this.renderForm()}
+          </Form>
         </div>
       </Modal>
     );

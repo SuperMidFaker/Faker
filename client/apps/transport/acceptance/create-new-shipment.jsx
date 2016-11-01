@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Button, message } from 'antd';
+import { Card, Row, Col, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -182,7 +182,9 @@ export default class ShipmentCreate extends React.Component {
             <div className="page-body card-wrapper">
               <Row gutter={16}>
                 <Col span="16">
-                  <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                  <Card bodyStyle={{ padding: 16 }}>
+                    <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                  </Card>
                   <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
                     labelColSpan={8} formhoc={form}
                   />
