@@ -20,8 +20,6 @@ const Option = Select.Option;
     dispId: state.trackingLandStatus.shipmentAdvanceModal.dispId,
     shipmtNo: state.trackingLandStatus.shipmentAdvanceModal.shipmtNo,
     transportModeId: state.trackingLandStatus.shipmentAdvanceModal.transportModeId,
-    customerPartnerId: state.trackingLandStatus.shipmentAdvanceModal.customerPartnerId,
-    customerTenantId: state.trackingLandStatus.shipmentAdvanceModal.tenantId,
     goodsType: state.trackingLandStatus.shipmentAdvanceModal.goodsType,
     fees: state.transportTariff.fees,
   }),
@@ -40,8 +38,6 @@ export default class ShipmentAdvanceModal extends React.Component {
     showShipmentAdvanceModal: PropTypes.func.isRequired,
     createAdvance: PropTypes.func.isRequired,
     transportModeId: PropTypes.number.isRequired,
-    customerPartnerId: PropTypes.number.isRequired,
-    customerTenantId: PropTypes.number.isRequired,
     goodsType: PropTypes.number.isRequired,
     fees: PropTypes.array.isRequired,
     getTariffByTransportInfo: PropTypes.func.isRequired,
@@ -88,7 +84,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.showShipmentAdvanceModal({ visible: false, shipmtNo: '', dispId: -1 });
+    this.props.showShipmentAdvanceModal({ visible: false, shipmtNo: '', dispId: -1, transportModeId: -1, goodsType: -1 });
   }
   handlePhotoRemove = (file) => {
     const photoList = [...this.state.photoList];
