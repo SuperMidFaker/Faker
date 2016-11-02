@@ -43,7 +43,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     customerPartnerId: PropTypes.number.isRequired,
     customerTenantId: PropTypes.number.isRequired,
     goodsType: PropTypes.number.isRequired,
-    fees: PropTypes.object.isRequired,
+    fees: PropTypes.array.isRequired,
     getTariffByTransportInfo: PropTypes.func.isRequired,
     loadShipmtDispatch: PropTypes.func.isRequired,
   }
