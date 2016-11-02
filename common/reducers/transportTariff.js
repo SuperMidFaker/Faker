@@ -485,7 +485,7 @@ export function updateFee(tariffId, feeId, fee) {
   };
 }
 
-export function getTariffByTransportInfo({ transModeCode, partnerId, goodsType }) {
+export function getTariffByTransportInfo({ transModeCode, partnerId, tenantId, goodsType }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -495,7 +495,7 @@ export function getTariffByTransportInfo({ transModeCode, partnerId, goodsType }
       ],
       endpoint: 'v1/transport/tariff/byTransportInfo',
       method: 'get',
-      params: { transModeCode, partnerId, goodsType },
+      params: { transModeCode, partnerId, tenantId, goodsType },
       origin: 'mongo',
     },
   };
