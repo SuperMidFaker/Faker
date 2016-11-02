@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Modal, Select, Upload, Button, message } from 'antd';
-import { showShipmentAdvanceModal, createAdvance } from 'common/reducers/trackingLandStatus';
+import { showShipmentAdvanceModal, createAdvance, loadShipmtDispatch } from 'common/reducers/trackingLandStatus';
 import { getTariffByTransportInfo } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -25,7 +25,7 @@ const Option = Select.Option;
     goodsType: state.trackingLandStatus.shipmentAdvanceModal.goodsType,
     fees: state.transportTariff.fees,
   }),
-  { showShipmentAdvanceModal, createAdvance, getTariffByTransportInfo }
+  { showShipmentAdvanceModal, createAdvance, getTariffByTransportInfo, loadShipmtDispatch }
 )
 @Form.create()
 export default class ShipmentAdvanceModal extends React.Component {
@@ -45,17 +45,22 @@ export default class ShipmentAdvanceModal extends React.Component {
     goodsType: PropTypes.number.isRequired,
     fees: PropTypes.object.isRequired,
     getTariffByTransportInfo: PropTypes.func.isRequired,
+    loadShipmtDispatch: PropTypes.func.isRequired,
   }
   state = {
     photoList: [],
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo) {
-      const { transportModeId, customerPartnerId, customerTenantId, goodsType } = nextProps;
-      this.props.getTariffByTransportInfo({
-        transModeCode: transportModeId, partnerId: customerPartnerId, goodsType,
-        tenantId: customerTenantId,
+      const { transportModeId, goodsType, dispId } = nextProps;
+      this.props.loadShipmtDispatch(dispId).then(result => {
+        console.log(result);
+        this.props.getTariffByTransportInfo({
+          transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
+          tenantId: result.data.sr_tenant_id,
+        });
       });
+      
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)

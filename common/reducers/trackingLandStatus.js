@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'DELIVER_CONFIRM', 'DELIVER_CONFIRM_SUCCEED', 'DELIVER_CONFIRM_FAIL',
   'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
+  'LOAD_SHIPMT_DISPATCH', 'LOAD_SHIPMT_DISPATCH_SUCCEED', 'LOAD_SHIPMT_DISPATCH_FAIL',
 ]);
 
 const initialState = {
@@ -48,8 +49,6 @@ const initialState = {
     dispId: -1,
     shipmtNo: '',
     transportModeId: -1,
-    customerPartnerId: -1,
-    tenantId: -1,
     goodsType: -1,
   },
   shipmentSpecialChargeModal: {
@@ -277,10 +276,10 @@ export function changeStatusFilter(field, value) {
   };
 }
 
-export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportModeId, customerPartnerId, srTenantId, goodsType }) {
+export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType }) {
   return {
     type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
-    data: { visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType, tenantId: srTenantId },
+    data: { visible, dispId, shipmtNo, transportModeId, goodsType },
   };
 }
 
@@ -319,6 +318,21 @@ export function createAdvance({ shipmtNo, dispId, name, code, amount, remark,
       method: 'post',
       data: { shipmtNo, dispId, name, code, amount, remark,
         photos, submitter: loginName, loginId, tenantId },
+    },
+  };
+}
+
+export function loadShipmtDispatch(dispId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHIPMT_DISPATCH,
+        actionTypes.LOAD_SHIPMT_DISPATCH_SUCCEED,
+        actionTypes.LOAD_SHIPMT_DISPATCH_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/dispatch',
+      method: 'get',
+      params: { dispId },
     },
   };
 }
