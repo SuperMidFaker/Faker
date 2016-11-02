@@ -39,7 +39,6 @@ function fetchData({ state, dispatch }) {
 })
 @withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 @Form.create()
-@withPrivilege({ module: 'clearance', feature: 'quote', action: 'create' })
 export default class QuotingCreate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

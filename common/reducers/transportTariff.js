@@ -96,6 +96,7 @@ export default function reducer(state = initialState, action) {
         ratesEndList: initialState.ratesEndList,
         surcharge: initialState.surcharge,
         partners: [],
+        fees: [],
       };
     case actionTypes.LOAD_TARIFF:
       return { ...state, agreement: initialState.agreement };
@@ -105,9 +106,9 @@ export default function reducer(state = initialState, action) {
         id: res._id,
         kind: res.kind,
         name: res.name,
-        partnerId: res.partner && res.partner.id,
-        effectiveDate: new Date(res.effectiveDate),
-        expiryDate: new Date(res.expiryDate),
+        partnerId: res.partnerId,
+        effectiveDate: res.effectiveDate,
+        expiryDate: res.expiryDate,
         transModeCode: res.transModeCode,
         goodsType: res.goodsType,
         meter: res.meter,
@@ -126,8 +127,8 @@ export default function reducer(state = initialState, action) {
           unload: sur.unload,
         };
       }
-      const partners = res.partner ? [{ partner_code: res.partner.name,
-        partner_id: res.partner.id, name: res.partner.name }] : [];
+      const partners = res.partnerId ? [{ partner_code: res.partnerName,
+        partner_id: res.partnerId, name: res.partnerName, tid: 0 }] : [];
       return { ...state, agreement, partners, surcharge,
         ratesRefAgreement: agreement,
         tariffId: action.result.data.tariff._id,
@@ -484,7 +485,7 @@ export function updateFee(tariffId, feeId, fee) {
   };
 }
 
-export function getTariffByTransportInfo({ transModeCode, partnerId, goodsType }) {
+export function getTariffByTransportInfo({ transModeCode, partnerId, tenantId, goodsType }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -494,7 +495,7 @@ export function getTariffByTransportInfo({ transModeCode, partnerId, goodsType }
       ],
       endpoint: 'v1/transport/tariff/byTransportInfo',
       method: 'get',
-      params: { transModeCode, partnerId, goodsType },
+      params: { transModeCode, partnerId, tenantId, goodsType },
       origin: 'mongo',
     },
   };

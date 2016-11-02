@@ -21,6 +21,7 @@ const Option = Select.Option;
     shipmtNo: state.trackingLandStatus.shipmentAdvanceModal.shipmtNo,
     transportModeId: state.trackingLandStatus.shipmentAdvanceModal.transportModeId,
     customerPartnerId: state.trackingLandStatus.shipmentAdvanceModal.customerPartnerId,
+    customerTenantId: state.trackingLandStatus.shipmentAdvanceModal.tenantId,
     goodsType: state.trackingLandStatus.shipmentAdvanceModal.goodsType,
     fees: state.transportTariff.fees,
   }),
@@ -40,6 +41,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     createAdvance: PropTypes.func.isRequired,
     transportModeId: PropTypes.number.isRequired,
     customerPartnerId: PropTypes.number.isRequired,
+    customerTenantId: PropTypes.number.isRequired,
     goodsType: PropTypes.number.isRequired,
     fees: PropTypes.object.isRequired,
     getTariffByTransportInfo: PropTypes.func.isRequired,
@@ -49,8 +51,11 @@ export default class ShipmentAdvanceModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo) {
-      const { transportModeId, customerPartnerId, goodsType } = nextProps;
-      this.props.getTariffByTransportInfo({ transModeCode: transportModeId, partnerId: customerPartnerId, goodsType });
+      const { transportModeId, customerPartnerId, customerTenantId, goodsType } = nextProps;
+      this.props.getTariffByTransportInfo({
+        transModeCode: transportModeId, partnerId: customerPartnerId, goodsType,
+        tenantId: customerTenantId,
+      });
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)

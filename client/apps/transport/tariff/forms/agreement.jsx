@@ -22,6 +22,7 @@ const formItemLayout = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     loginName: state.account.username,
     tariffId: state.transportTariff.tariffId,
@@ -36,12 +37,19 @@ export default class AgreementForm extends React.Component {
   static propTypes = {
     readonly: PropTypes.bool,
     tenantId: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     tariffId: PropTypes.string,
     formData: PropTypes.object.isRequired,
     formParams: PropTypes.object.isRequired,
+    partners: PropTypes.arrayOf(PropTypes.shape({
+      tid: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      partner_id: PropTypes.number.isRequired,
+      partner_code: PropTypes.string.isRequired,
+    })),
     loadPartners: PropTypes.func.isRequired,
     submitAgreement: PropTypes.func.isRequired,
     updateAgreement: PropTypes.func.isRequired,
@@ -53,6 +61,7 @@ export default class AgreementForm extends React.Component {
   }
   componentWillMount() {
     this.handleModeSelect(this.props.formData.transModeCode);
+    this.handleKindChange(this.props.formData.kind);
     if (this.props.readonly) {
       this.setState({ readonly: true });
     }
@@ -63,12 +72,7 @@ export default class AgreementForm extends React.Component {
         vehicleTypes: nextProps.formData.vehicleTypes,
         intervals: nextProps.formData.intervals,
       };
-      if (nextProps.formData.kind) {
-        const kind = TARIFF_KINDS[nextProps.formData.kind];
-        if (kind.isBase) {
-          this.setState({ partnerVisible: false });
-        }
-      }
+      this.handleKindChange(nextProps.formData.kind);
     }
     if (nextProps.formData.transModeCode !== this.props.formData.transModeCode) {
       this.handleModeSelect(nextProps.formData.transModeCode);
@@ -80,6 +84,14 @@ export default class AgreementForm extends React.Component {
   price = {
     vehicleTypes: this.props.formData.vehicleTypes,
     intervals: this.props.formData.intervals,
+  }
+  handleKindChange = (kindIdx) => {
+    if (!isNaN(kindIdx)) {
+      const kind = TARIFF_KINDS[kindIdx];
+      if (kind.isBase) {
+        this.setState({ partnerVisible: false });
+      }
+    }
   }
   handlePriceChange = (intervals, vehicleTypes) => {
     this.price.intervals = intervals;
@@ -93,15 +105,17 @@ export default class AgreementForm extends React.Component {
       } else {
         const editForm = this.props.form.getFieldsValue();
         let partnerName;
+        let partnerTid;
         if (editForm.partnerId) {
           const selpartners = this.props.partners.filter(
             pt => pt.partner_id === editForm.partnerId);
           partnerName = selpartners[0].name;
+          partnerTid = selpartners[0].tid;
         }
         const effDate = editForm.effectiveDate.toDate();
         const expDate = moment(editForm.expiryDate);
         const forms = {
-          ...this.props.formData, ...editForm, ...this.price, partnerName,
+          ...this.props.formData, ...editForm, ...this.price,
           effectiveDate: effDate.setHours(0, 0, 0, 0),
           // 取下一天0点
           expiryDate: expDate.add(1, 'd').toDate().setHours(0, 0, 0, 0),
@@ -112,10 +126,13 @@ export default class AgreementForm extends React.Component {
           forms.loginName = this.props.loginName;
           promise = this.props.updateAgreement(forms);
         } else {
-          const { tariffId, tenantId, loginId } = this.props;
+          const { tariffId, tenantId, tenantName, loginId } = this.props;
           forms.id = tariffId;
           forms.tenantId = tenantId;
+          forms.tenantName = tenantName;
           forms.loginId = loginId;
+          forms.partnerName = partnerName;
+          forms.partnerTid = partnerTid;
           promise = this.props.submitAgreement(forms);
         }
         promise.then((result) => {

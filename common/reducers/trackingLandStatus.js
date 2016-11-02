@@ -49,6 +49,7 @@ const initialState = {
     shipmtNo: '',
     transportModeId: -1,
     customerPartnerId: -1,
+    tenantId: -1,
     goodsType: -1,
   },
   shipmentSpecialChargeModal: {
@@ -276,10 +277,10 @@ export function changeStatusFilter(field, value) {
   };
 }
 
-export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType }) {
+export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportModeId, customerPartnerId, srTenantId, goodsType }) {
   return {
     type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
-    data: { visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType },
+    data: { visible, dispId, shipmtNo, transportModeId, customerPartnerId, goodsType, tenantId: srTenantId },
   };
 }
 
