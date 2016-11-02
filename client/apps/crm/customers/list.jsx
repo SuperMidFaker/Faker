@@ -15,7 +15,7 @@ import { loadCustomers } from 'common/reducers/crmCustomers';
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
   const { pageSize, currentPage, searchValue } = state.crmCustomers.customers;
-  return dispatch(loadCustomers( {
+  return dispatch(loadCustomers({
     tenantId: state.account.tenantId,
     pageSize,
     currentPage,
@@ -51,10 +51,10 @@ export default class List extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleCustomerModal = () => {
-    this.setState({ customerModalVisible: !this.state.customerModalVisible});
+    this.setState({ customerModalVisible: !this.state.customerModalVisible });
   }
   handleRowClick = (record) => {
-    this.setState({customer: record});
+    this.setState({ customer: record });
   }
   render() {
     const dataSource = new Table.DataSource({
@@ -85,8 +85,7 @@ export default class List extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-          </div>
+          <div className="tools" />
           <span>{this.msg('customer')}</span>
         </header>
         <div className="main-content" key="main">
@@ -99,14 +98,14 @@ export default class List extends React.Component {
                   </Button>
                 </div>
                 <div className="panel-body table-panel expandable" >
-                  <Table dataSource={dataSource} columns={columns} showHeader={false} onRowClick={this.handleRowClick}/>
-                  <CustomerModal visible={this.state.customerModalVisible} toggle={this.toggleCustomerModal}/>
+                  <Table dataSource={dataSource} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
+                  <CustomerModal visible={this.state.customerModalVisible} toggle={this.toggleCustomerModal} />
                 </div>
               </Col>
               <Col span={18}>
                 <Tabs defaultActiveKey="1">
-                  <Tabs.TabPane tab="企业资料" key="1"><Profile customer={this.state.customer}/></Tabs.TabPane>
-                  <Tabs.TabPane tab="业务规则" key="2"><div/></Tabs.TabPane>
+                  <Tabs.TabPane tab="企业资料" key="1"><Profile customer={this.state.customer} /></Tabs.TabPane>
+                  <Tabs.TabPane tab="业务规则" key="2"><div /></Tabs.TabPane>
                 </Tabs>
               </Col>
             </Row>
