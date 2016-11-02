@@ -53,14 +53,13 @@ export default class ShipmentAdvanceModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo) {
       const { transportModeId, goodsType, dispId } = nextProps;
-      this.props.loadShipmtDispatch(dispId).then(result => {
+      this.props.loadShipmtDispatch(dispId).then((result) => {
         console.log(result);
         this.props.getTariffByTransportInfo({
           transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
           tenantId: result.data.sr_tenant_id,
         });
       });
-      
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
