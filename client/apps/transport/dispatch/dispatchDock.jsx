@@ -256,6 +256,7 @@ export default class DispatchDock extends Component {
             }).then((result) => {
               if (result.error || result.data.freight < 0) {
                 const charge = {
+                  shipmt_no: shipmts[cj].shipmt_no,
                   freight_charge: 0,
                   pickup_charge: 0,
                   deliver_charge: 0,
@@ -269,6 +270,7 @@ export default class DispatchDock extends Component {
                 const { freight, pickup, deliver, meter, quantity,
                   unitRatio, gradient, miles, coefficient } = result.data;
                 const charge = {
+                  shipmt_no: shipmts[cj].shipmt_no,
                   freight_charge: freight,
                   pickup_charge: pickup,
                   deliver_charge: deliver,

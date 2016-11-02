@@ -56,6 +56,7 @@ import * as SCVSettings from './scv/settings';
 import CRM from './crm/module-crm';
 import * as CRMDashboard from './crm/dashboard';
 import * as CRMOrders from './crm/orders';
+import * as CRMCustomers from './crm/customers';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -290,6 +291,7 @@ export default(store, cookie) => {
             <IndexRedirect to="/customer/dashboard" />
             <Route path="dashboard" component={CRMDashboard.Index} />
             <Route path="orders" component={CRMOrders.List} />
+            <Route path="customers" component={CRMCustomers.List} />
           </Route>
         </Route>
       </Route>
