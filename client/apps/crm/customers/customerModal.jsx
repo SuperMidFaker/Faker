@@ -41,7 +41,7 @@ export default class CustomerModal extends React.Component {
     customerTenantId: -1,
   }
   componentWillMount() {
-    this.props.loadTenants(null, {pageSize: 99999999, currentPage: 1}).then(result => {
+    this.props.loadTenants(null, { pageSize: 99999999, currentPage: 1 }).then((result) => {
       this.setState({ tenants: result.data.data });
     });
   }
@@ -72,8 +72,8 @@ export default class CustomerModal extends React.Component {
     } else {
       this.props.addCustomer({
         tenantId: this.props.tenantId,
-        name, code, contact, phone, email, serviceType, tenantType, customerTenantId, transport, clearance
-      }).then(result => {
+        name, code, contact, phone, email, serviceType, tenantType, customerTenantId, transport, clearance,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -120,13 +120,13 @@ export default class CustomerModal extends React.Component {
           {...formItemLayout}
           label="企业名称"
           hasFeedback
-          required={true}
+          required
         >
           <AutoComplete
             onChange={this.handleCustomerChange}
             style={{ width: '100%' }}
           >
-            {tenants.map(item => {
+            {tenants.map((item) => {
               return <Option value={item.name}>{item.name}</Option>;
             })}
           </AutoComplete>
@@ -136,16 +136,16 @@ export default class CustomerModal extends React.Component {
           {...formItemLayout}
           label="企业编码"
           hasFeedback
-          required={true}
+          required
         >
-          <Input value={this.state.code} onChange={e => {this.setState({code: e.target.value})}} />
+          <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }); }} />
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="业务类型"
           hasFeedback
         >
-          <CheckboxGroup options={CUSTOMER_SERVICE_TYPES} onChange={value => {this.setState({serviceType: value})}}/>
+          <CheckboxGroup options={CUSTOMER_SERVICE_TYPES} onChange={(value) => { this.setState({ serviceType: value }); }} />
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -153,8 +153,8 @@ export default class CustomerModal extends React.Component {
           hasFeedback
         >
           <Input
-          value={this.state.contact}
-          onChange={e => {this.setState({contact: e.target.value})}}
+            value={this.state.contact}
+            onChange={(e) => { this.setState({ contact: e.target.value }); }}
           />
         </FormItem>
         <FormItem
@@ -163,8 +163,8 @@ export default class CustomerModal extends React.Component {
           hasFeedback
         >
           <Input
-          value={this.state.phone}
-          onChange={e => {this.setState({phone: e.target.value})}}
+            value={this.state.phone}
+            onChange={(e) => { this.setState({ phone: e.target.value }); }}
           />
         </FormItem>
         <FormItem
@@ -173,8 +173,8 @@ export default class CustomerModal extends React.Component {
           hasFeedback
         >
           <Input
-          value={this.state.email}
-          onChange={e => {this.setState({email: e.target.value})}}
+            value={this.state.email}
+            onChange={(e) => { this.setState({ email: e.target.value }); }}
           />
         </FormItem>
       </Modal>

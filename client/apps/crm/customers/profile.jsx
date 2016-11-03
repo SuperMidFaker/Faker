@@ -32,34 +32,34 @@ export default class Profile extends React.Component {
         <FormItem
           {...formItemLayout}
           label="企业名称"
-          required={true}
+          required
         >
-        {customer.name}
+          {customer.name}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="企业编码"
-          required={true}
+          required
         >
-        {customer.code}
+          {customer.code}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="联系人"
         >
-        {customer.contact}
+          {customer.contact}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="电话"
         >
-        {customer.phone}
+          {customer.phone}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="邮箱"
         >
-        {customer.email}
+          {customer.email}
         </FormItem>
       </div>
     );
