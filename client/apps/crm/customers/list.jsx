@@ -109,15 +109,11 @@ export default class List extends React.Component {
             </Col>
             <Col span={18}>
               <div className="page-body">
-                <div className="panel-header">
-                  <h3>客户名称</h3>
-                </div>
-                <div className="panel-body" >
-                  <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="企业资料" key="1"><Profile customer={this.state.customer} /></Tabs.TabPane>
-                    <Tabs.TabPane tab="业务规则" key="2"><div /></Tabs.TabPane>
-                  </Tabs>
-                </div>
+                <h2>客户名称</h2>
+                <Tabs defaultActiveKey="1">
+                  <Tabs.TabPane tab="企业资料" key="1"><Profile customer={this.state.customer} /></Tabs.TabPane>
+                  <Tabs.TabPane tab="业务规则" key="2"><div /></Tabs.TabPane>
+                </Tabs>
               </div>
             </Col>
           </Row>
