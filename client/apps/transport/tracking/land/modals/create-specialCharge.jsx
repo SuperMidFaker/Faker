@@ -81,8 +81,8 @@ export default class CreateSpecialCharge extends React.Component {
             {getFieldDecorator('type', {
               initialValue: '1',
             })(<RadioGroup>
-              <RadioButton value="1">应收</RadioButton>
-              {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value="-1">应付</RadioButton>) : ''}
+              <RadioButton value="1">向客户收取</RadioButton>
+              {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value="-1">向承运商支付</RadioButton>) : ''}
             </RadioGroup>)}
           </FormItem>
           <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
