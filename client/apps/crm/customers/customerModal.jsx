@@ -109,74 +109,65 @@ export default class CustomerModal extends React.Component {
   render() {
     const { visible } = this.props;
     const { tenants } = this.state;
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
-    };
 
     return (
       <Modal visible={visible} title="新增客户" onCancel={this.handleCancel} onOk={this.handleOk}>
-        <FormItem
-          {...formItemLayout}
-          label="企业名称"
-          hasFeedback
-          required
-        >
-          <AutoComplete
-            onChange={this.handleCustomerChange}
-            style={{ width: '100%' }}
+        <Form vertical>
+          <FormItem
+            label="企业名称"
+            hasFeedback
+            required
           >
-            {tenants.map((item) => {
-              return <Option value={item.name}>{item.name}</Option>;
-            })}
-          </AutoComplete>
-
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="企业编码"
-          hasFeedback
-          required
-        >
-          <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }); }} />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="业务类型"
-          hasFeedback
-        >
-          <CheckboxGroup options={CUSTOMER_SERVICE_TYPES} onChange={(value) => { this.setState({ serviceType: value }); }} />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="联系人"
-          hasFeedback
-        >
-          <Input
-            value={this.state.contact}
-            onChange={(e) => { this.setState({ contact: e.target.value }); }}
-          />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="电话"
-          hasFeedback
-        >
-          <Input
-            value={this.state.phone}
-            onChange={(e) => { this.setState({ phone: e.target.value }); }}
-          />
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="邮箱"
-          hasFeedback
-        >
-          <Input
-            value={this.state.email}
-            onChange={(e) => { this.setState({ email: e.target.value }); }}
-          />
-        </FormItem>
+            <AutoComplete
+              onChange={this.handleCustomerChange}
+              style={{ width: '100%' }}
+            >
+              {tenants.map((item) => {
+                return <Option value={item.name}>{item.name}</Option>;
+              })}
+            </AutoComplete>
+          </FormItem>
+          <FormItem
+            label="企业编码"
+            hasFeedback
+            required
+          >
+            <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }); }} />
+          </FormItem>
+          <FormItem
+            label="业务类型"
+            hasFeedback
+          >
+            <CheckboxGroup options={CUSTOMER_SERVICE_TYPES} onChange={(value) => { this.setState({ serviceType: value }); }} />
+          </FormItem>
+          <FormItem
+            label="联系人"
+            hasFeedback
+          >
+            <Input
+              value={this.state.contact}
+              onChange={(e) => { this.setState({ contact: e.target.value }); }}
+            />
+          </FormItem>
+          <FormItem
+            label="电话"
+            hasFeedback
+          >
+            <Input
+              value={this.state.phone}
+              onChange={(e) => { this.setState({ phone: e.target.value }); }}
+            />
+          </FormItem>
+          <FormItem
+            label="邮箱"
+            hasFeedback
+          >
+            <Input
+              value={this.state.email}
+              onChange={(e) => { this.setState({ email: e.target.value }); }}
+            />
+          </FormItem>
+        </Form>
       </Modal>
     );
   }

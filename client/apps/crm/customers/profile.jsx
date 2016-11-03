@@ -24,22 +24,20 @@ export default class Profile extends React.Component {
   render() {
     const { customer } = this.props;
     const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
+      labelCol: { span: 3 },
+      wrapperCol: { span: 12 },
     };
     return (
       <div>
         <FormItem
           {...formItemLayout}
           label="企业名称"
-          required
         >
           {customer.name}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="企业编码"
-          required
         >
           {customer.code}
         </FormItem>
