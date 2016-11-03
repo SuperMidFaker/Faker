@@ -464,7 +464,7 @@ export default class Footer extends React.Component {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <ButtonGroup>
-                  <Button type="ghost" size="large"
+                  <Button type="ghost"
                     onClick={() => this.handleShowPickModal(row)}
                   >
                     更新提货
@@ -602,35 +602,69 @@ export default class Footer extends React.Component {
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.delivered) {
         if (row.pod_type === 'none') {
-          buttons = <div />;
+          buttons = (
+            <PrivilegeCover module="transport" feature="tracking" action="edit">
+              <ButtonGroup>
+                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                  添加特殊费用
+                </Button>
+              </ButtonGroup>
+            </PrivilegeCover>
+          );
         } else if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="ghost" size="large"
-                onClick={() => this.handleShowPodModal(row)}
-              >
+              <ButtonGroup>
+                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                  添加特殊费用
+                </Button>
+                <Button type="ghost"
+                  onClick={() => this.handleShowPodModal(row)}
+                >
                   上传回单
-              </Button>
+                </Button>
+              </ButtonGroup>
             </PrivilegeCover>
           );
         } else if (row.sp_tenant_id === 0) {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button type="ghost" size="large"
-                  onClick={() => this.handleShowPodModal(row)}
-                >
+                <ButtonGroup>
+                  <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                    添加特殊费用
+                  </Button>
+                  <Button type="ghost"
+                    onClick={() => this.handleShowPodModal(row)}
+                  >
                     上传回单
-                </Button>
+                  </Button>
+                </ButtonGroup>
               </PrivilegeCover>
             );
           } else {
             // 司机上传
-            buttons = <div />;
+            buttons = (
+              <PrivilegeCover module="transport" feature="tracking" action="edit">
+                <ButtonGroup>
+                  <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                    添加特殊费用
+                  </Button>
+                </ButtonGroup>
+              </PrivilegeCover>
+            );
           }
         } else {
           // 承运商上传
-          buttons = <div />;
+          buttons = (
+            <PrivilegeCover module="transport" feature="tracking" action="edit">
+              <ButtonGroup>
+                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                  添加特殊费用
+                </Button>
+              </ButtonGroup>
+            </PrivilegeCover>
+          );
         }
       }
       return (
@@ -658,7 +692,7 @@ export default class Footer extends React.Component {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <Button type="ghost" onClick={() => this.handleShowPodModal(row)} >
-                    上传回单
+                  上传回单
                 </Button>
               </PrivilegeCover>
             );
@@ -670,7 +704,7 @@ export default class Footer extends React.Component {
                     () => this.props.sendMessage({ notifyType: 'notifyDriverPod', shipment: row })
                   }
                 >
-                    催促回单
+                  催促回单
                 </Button>
               </PrivilegeCover>
             );
@@ -683,7 +717,7 @@ export default class Footer extends React.Component {
                   () => this.props.sendMessage({ notifyType: 'notifySpPod', shipment: row })
                 }
               >
-                  催促回单
+                催促回单
               </Button>
             </PrivilegeCover>
           );
@@ -703,7 +737,7 @@ export default class Footer extends React.Component {
         // 重新上传
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <Button type="ghost" size="large"
+            <Button type="ghost"
               onClick={() => this.handleResubmit(row)}
             >
                 重新上传回单
