@@ -37,25 +37,34 @@ export default class CorpOverview extends React.Component {
         <div className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Row gutter={16}>
-              <Col span={16}>
-                <Card title="Order">
-                  hello
-                </Card>
-                <Card title="Shipment">
-                  hello
-                </Card>
-                <Card title="Payment">
-                  hello
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card title="Alerts" style={{ height: '100%' }}>
-                  hello
-                </Card>
-              </Col>
               <Col span={24}>
-                <Card title="Statistics">
-                    hello
+                <Card title="帐户使用">
+                  <ul className="statistics-columns">
+                    <li className="col-6">
+                      <div className="statistics-cell">
+                        <h6>开通用户数</h6>
+                        <p className="data-num lg">12</p>
+                      </div>
+                    </li>
+                    <li className="col-6">
+                      <div className="statistics-cell">
+                        <h6>已设置组织部门</h6>
+                        <p className="data-num lg">6</p>
+                      </div>
+                    </li>
+                    <li className="col-6">
+                      <div className="statistics-cell">
+                        <h6>连接客户数</h6>
+                        <p className="data-num lg">18</p>
+                      </div>
+                    </li>
+                    <li className="col-6">
+                      <div className="statistics-cell">
+                        <h6>连接服务商数</h6>
+                        <p className="data-num lg">23</p>
+                      </div>
+                    </li>
+                  </ul>
                 </Card>
               </Col>
             </Row>

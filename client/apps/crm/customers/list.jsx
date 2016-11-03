@@ -89,27 +89,38 @@ export default class List extends React.Component {
           <span>{this.msg('customer')}</span>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body">
-            <Row>
-              <Col span={6}>
+          <Row gutter={16}>
+            <Col span={6}>
+              <div className="page-body">
                 <div className="panel-header">
-                  <Button type="primary" icon="plus-circle-o" onClick={this.toggleCustomerModal}>
-                    {this.msg('add')}
-                  </Button>
+
+                  <div className="pull-right">
+                    <Button type="primary" icon="plus-circle-o" onClick={this.toggleCustomerModal}>
+                      {this.msg('add')}
+                    </Button>
+                  </div>
+                  <h3>客户列表</h3>
                 </div>
-                <div className="panel-body table-panel expandable" >
+                <div className="panel-body table-panel" >
                   <Table dataSource={dataSource} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
                   <CustomerModal visible={this.state.customerModalVisible} toggle={this.toggleCustomerModal} />
                 </div>
-              </Col>
-              <Col span={18}>
-                <Tabs defaultActiveKey="1">
-                  <Tabs.TabPane tab="企业资料" key="1"><Profile customer={this.state.customer} /></Tabs.TabPane>
-                  <Tabs.TabPane tab="业务规则" key="2"><div /></Tabs.TabPane>
-                </Tabs>
-              </Col>
-            </Row>
-          </div>
+              </div>
+            </Col>
+            <Col span={18}>
+              <div className="page-body">
+                <div className="panel-header">
+                  <h3>客户名称</h3>
+                </div>
+                <div className="panel-body" >
+                  <Tabs defaultActiveKey="1">
+                    <Tabs.TabPane tab="企业资料" key="1"><Profile customer={this.state.customer} /></Tabs.TabPane>
+                    <Tabs.TabPane tab="业务规则" key="2"><div /></Tabs.TabPane>
+                  </Tabs>
+                </div>
+              </div>
+            </Col>
+          </Row>
         </div>
       </QueueAnim>
     );

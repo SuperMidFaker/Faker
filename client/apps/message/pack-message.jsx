@@ -25,7 +25,7 @@ export default class MessagePack extends React.Component {
             <h2>消息中心</h2>
             <Menu defaultSelectedKeys={['message']} mode="inline">
               <Menu.Item key="message">
-                <NavLink to="/list">
+                <NavLink to="/message/list">
                   <span><Icon type="message" /><span>消息列表</span></span>
                 </NavLink>
               </Menu.Item>
