@@ -109,11 +109,16 @@ export default class CustomerModal extends React.Component {
   render() {
     const { visible } = this.props;
     const { tenants } = this.state;
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 14 },
+    };
 
     return (
       <Modal visible={visible} title="新增客户" onCancel={this.handleCancel} onOk={this.handleOk}>
-        <Form vertical>
+        <Form horizontal>
           <FormItem
+            {...formItemLayout}
             label="企业名称"
             hasFeedback
             required
@@ -128,6 +133,7 @@ export default class CustomerModal extends React.Component {
             </AutoComplete>
           </FormItem>
           <FormItem
+            {...formItemLayout}
             label="企业编码"
             hasFeedback
             required
@@ -135,12 +141,14 @@ export default class CustomerModal extends React.Component {
             <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }); }} />
           </FormItem>
           <FormItem
+            {...formItemLayout}
             label="业务类型"
             hasFeedback
           >
             <CheckboxGroup options={CUSTOMER_SERVICE_TYPES} onChange={(value) => { this.setState({ serviceType: value }); }} />
           </FormItem>
           <FormItem
+            {...formItemLayout}
             label="联系人"
             hasFeedback
           >
@@ -150,6 +158,7 @@ export default class CustomerModal extends React.Component {
             />
           </FormItem>
           <FormItem
+            {...formItemLayout}
             label="电话"
             hasFeedback
           >
@@ -159,6 +168,7 @@ export default class CustomerModal extends React.Component {
             />
           </FormItem>
           <FormItem
+            {...formItemLayout}
             label="邮箱"
             hasFeedback
           >
