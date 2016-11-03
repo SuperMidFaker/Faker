@@ -10,7 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import { Card, DatePicker, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
-import { loadShipmentStatistics, loadShipmtDetail } from 'common/reducers/shipment';
+import { loadShipmentStatistics, loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import messages from '../message.i18n';
 import '../index.less';
 import PreviewPanel from '../shipment/modals/preview-panel';
@@ -20,7 +20,9 @@ const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch, cookie }) {
   const { startDate, endDate } = state.shipment.statistics;
-  return dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate));
+  const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate)),
+  dispatch(loadFormRequire(cookie, state.account.tenantId))];
+  return Promise.all(promises);
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -80,6 +82,7 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '操作',
       dataIndex: 'name',
+      key: 'name',
       width: '8%',
       render(text) {
         return text;
@@ -87,6 +90,7 @@ export default class Dashboard extends React.Component {
     }, {
       title: '详情',
       dataIndex: 'operation',
+      key: 'operation',
       width: '92%',
       render: (value) => {
         return value;

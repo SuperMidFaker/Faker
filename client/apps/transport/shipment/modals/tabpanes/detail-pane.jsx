@@ -136,6 +136,7 @@ export default class DetailPane extends React.Component {
       value: pk.package_name,
     }));
     const pckg = apackagings.find(item => item.key === shipmt.package);
+    const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     let clientInfo = this.msg('customerInfo');
     let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
@@ -242,7 +243,7 @@ export default class DetailPane extends React.Component {
           <Panel header={goodsInfo} key="cargo">
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
-                field={goodsTypes.find(item => item.value === shipmt.goods_type).text} fieldCol={{ span: 16 }}
+                field={goodsType ? goodsType.text : shipmt.goods_type} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="8">
