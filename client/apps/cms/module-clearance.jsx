@@ -94,6 +94,19 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'settings'),
       });
     }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'resources' })) {
+      linkMenus.push({
+        single: false,
+        key: 'cms-7',
+        icon: 'zmdi zmdi-library',
+        text: '资源',
+        sublinks: [{
+          key: 'tms-6-0',
+          path: '/clearance/resources/broker',
+          text: '供应商管理',
+        }],
+      });
+    }
     this.setState({ linkMenus });
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);

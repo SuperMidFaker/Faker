@@ -215,7 +215,7 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-          { getFieldValue('trans_mode') === '2' &&
+            { getFieldValue('trans_mode') === '2' &&
             <FormItem label="换单" {...formItemLayout}>
               {getFieldDecorator('transfer', { initialValue: fieldInits.transfer })(<RadioGroup>
                 <RadioButton value={DOC_TRANSFER.notransf.key}>{DOC_TRANSFER.notransf.value}</RadioButton>

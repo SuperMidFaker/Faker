@@ -34,6 +34,8 @@ const PARTNERSHIP_TYPE_INFO = {
   freightForwarder: 'FWD',
   transportation: 'TRS',
   warehouse: 'WHS',
+  customsInspectBroker: 'CIB',
+  identifyCertBroker: 'ICB',
 };
 
 const WRAP_TYPE = [{
