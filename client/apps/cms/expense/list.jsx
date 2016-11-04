@@ -319,14 +319,14 @@ export default class ExpenseList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
-               bordered scroll={{ x: 1560 }}
+                bordered scroll={{ x: 1560 }}
               />
             </div>
           </div>
         </div>
         <InputModal data={unstateData} />
         <MarkModal data={unstateData} />
-        <PreviewPanel ietype='import' />
+        <PreviewPanel ietype="import" />
       </QueueAnim>
     );
   }

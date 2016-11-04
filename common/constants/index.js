@@ -227,7 +227,16 @@ export const EXP_STATUS = [
   { value: 1, text: '已结单' },
   { value: 2, text: '已开票' },
 ];
-
+export const DOC_TRANSFER = {
+  notransf: {
+    key: 0,
+    value: '不换单',
+  },
+  transf: {
+    key: 1,
+    value: '换单',
+  },
+};
 export {
   TENANT_LEVEL,
   TENANT_ASPECT,

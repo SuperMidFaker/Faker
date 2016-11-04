@@ -1,13 +1,15 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col, Row } from 'antd';
+import { Form, Select, Input, Card, Col, Row, Radio } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { GOODSTYPES, TRANS_MODE } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE, DOC_TRANSFER } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,7 +24,7 @@ function getFieldInits(aspect, formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no',
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
-      'goods_type', 'order_no', 'remark',
+      'goods_type', 'order_no', 'remark', 'transfer',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
@@ -211,6 +213,16 @@ export default class BasicForm extends Component {
                 initialValue: fieldInits.internal_no,
               })(<Input />)}
             </FormItem>
+          </Col>
+          <Col sm={8}>
+          { getFieldValue('trans_mode') === '2' &&
+            <FormItem label="换单" {...formItemLayout}>
+              {getFieldDecorator('transfer', { initialValue: fieldInits.transfer })(<RadioGroup>
+                <RadioButton value={DOC_TRANSFER.notransf.key}>{DOC_TRANSFER.notransf.value}</RadioButton>
+                <RadioButton value={DOC_TRANSFER.transf.key}>{DOC_TRANSFER.transf.value}</RadioButton>
+              </RadioGroup>)}
+            </FormItem>
+          }
           </Col>
         </Row>
         <Row>
