@@ -45,13 +45,13 @@ export default class BillingForm extends React.Component {
     partnerName: '',
   }
   componentWillMount() {
-    let partnerShipType = PARTNERSHIP_TYPE_INFO.customer;
+    let partnerShipTypes = [ PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer ];
     if (this.props.type === 'receivable') {
-      partnerShipType = PARTNERSHIP_TYPE_INFO.customer;
+      partnerShipTypes = [ PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer ];
     } else if (this.props.type === 'payable') {
-      partnerShipType = PARTNERSHIP_TYPE_INFO.transportation;
+      partnerShipTypes = [ PARTNERSHIP_TYPE_INFO.transportation ];
     }
-    this.props.loadPartners(this.props.tenantId, partnerShipType);
+    this.props.loadPartners(this.props.tenantId, partnerShipTypes);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleOk = () => {

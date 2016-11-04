@@ -29,6 +29,7 @@ const INVITATION_STATUS = {
   CANCELED: 3, // 取消邀请
 };
 const PARTNERSHIP_TYPE_INFO = {
+  dispatchCustomer: 'DCUS',
   customer: 'CUS',
   customsClearanceBroker: 'CCB',
   freightForwarder: 'FWD',

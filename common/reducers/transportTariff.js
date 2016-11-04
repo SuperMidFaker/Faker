@@ -237,7 +237,7 @@ export function delTariff(tariffId) {
   };
 }
 
-export function loadPartners(tenantId, typeCode) {
+export function loadPartners(tenantId, typeCodes) {
   return {
     [CLIENT_API]: {
       types: [
@@ -247,7 +247,7 @@ export function loadPartners(tenantId, typeCode) {
       ],
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
-      params: { tenantId, typeCode },
+      params: { tenantId, typeCodes: JSON.stringify(typeCodes) },
     },
   };
 }
