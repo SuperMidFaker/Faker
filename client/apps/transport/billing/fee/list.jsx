@@ -73,10 +73,10 @@ export default class FeesList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadPartners(this.props.tenantId, [ PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer ]).then((result) => {
+    this.props.loadPartners(this.props.tenantId, [PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer]).then((result) => {
       this.setState({ customers: result.data });
     });
-    this.props.loadPartners(this.props.tenantId, [ PARTNERSHIP_TYPE_INFO.transportation ]).then((result) => {
+    this.props.loadPartners(this.props.tenantId, [PARTNERSHIP_TYPE_INFO.transportation]).then((result) => {
       this.setState({ carriers: result.data });
     });
   }

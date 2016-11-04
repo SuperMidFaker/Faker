@@ -151,12 +151,11 @@ export default class AgreementForm extends React.Component {
     });
   }
   handleTariffKindSelect = (value) => {
-    
     const kind = TARIFF_KINDS[value];
     if (kind.isBase) {
       this.setState({ partnerVisible: false });
     } else if (kind.value === 'sales') {
-      this.props.loadPartners(this.props.tenantId, [ PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer ])
+      this.props.loadPartners(this.props.tenantId, [PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer])
         .then((result) => {
           if (result.error) {
             message.error(result.error.message);
@@ -165,7 +164,7 @@ export default class AgreementForm extends React.Component {
           }
         });
     } else if (kind.value === 'cost') {
-      this.props.loadPartners(this.props.tenantId, [ PARTNERSHIP_TYPE_INFO.transportation ])
+      this.props.loadPartners(this.props.tenantId, [PARTNERSHIP_TYPE_INFO.transportation])
         .then((result) => {
           if (result.error) {
             message.error(result.error.message);
