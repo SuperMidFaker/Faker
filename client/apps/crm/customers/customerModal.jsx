@@ -6,7 +6,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { addCustomer } from 'common/reducers/crmCustomers';
 import { loadTenants } from 'common/reducers/tenants';
-import { CUSTOMER_SERVICE_TYPES } from 'common/constants';
+import { CUSTOMER_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const Option = AutoComplete.Option;
 const CheckboxGroup = Checkbox.Group;
@@ -32,13 +32,13 @@ export default class CustomerModal extends React.Component {
   state = {
     tenants: [],
     name: '',
-    code: '',
+    partnerCode: '',
     contact: '',
     phone: '',
     email: '',
-    serviceType: [],
+    customerTypes: [],
     tenantType: 'TENANT_OFFLINE',
-    customerTenantId: -1,
+    partnerTenantId: -1,
   }
   componentWillMount() {
     this.props.loadTenants(null, { pageSize: 99999999, currentPage: 1 }).then((result) => {
@@ -49,30 +49,29 @@ export default class CustomerModal extends React.Component {
   handleCancel = () => {
     this.setState({
       name: '',
-      code: '',
+      partnerCode: '',
       contact: '',
       phone: '',
       email: '',
-      serviceType: [],
+      customerTypes: [],
       tenantType: 'TENANT_OFFLINE',
-      customerTenantId: -1,
+      partnerTenantId: -1,
     });
     this.props.toggle();
   }
   handleOk = () => {
-    let transport = 0;
-    let clearance = 0;
-    const { name, code, contact, phone, email, serviceType, tenantType, customerTenantId } = this.state;
-    if (serviceType.indexOf('TRS') >= 0) transport = 1;
-    if (serviceType.indexOf('TRS') >= 0) clearance = 1;
+    const { name, partnerCode, contact, phone, email, customerTypes, tenantType, partnerTenantId } = this.state;
     if (!name || name === '') {
       message.error('企业名称必填');
-    } else if (!code || code === '') {
+    } else if (!partnerCode || partnerCode === '') {
       message.error('企业编码必填');
+    } else if (customerTypes.length === 0) {
+      message.error('请选择客户业务类型');
     } else {
       this.props.addCustomer({
         tenantId: this.props.tenantId,
-        name, code, contact, phone, email, serviceType, tenantType, customerTenantId, transport, clearance,
+        partnerInfo: { name, partnerCode, contact, phone, email, tenantType, partnerTenantId },
+        customerTypes,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -89,8 +88,9 @@ export default class CustomerModal extends React.Component {
     if (customer) {
       this.setState({
         name: customer.name,
+        partnerCode: customer.partnerCode,
         tenantType: 'TENANT_ENTERPRISE',
-        customerTenantId: customer.key,
+        partnerTenantId: customer.key,
         contact: customer.contact,
         phone: customer.phone,
         email: customer.email,
@@ -98,8 +98,9 @@ export default class CustomerModal extends React.Component {
     } else {
       this.setState({
         name: value,
+        partnerCode: '',
         tenantType: 'TENANT_OFFLINE',
-        customerTenantId: -1,
+        partnerTenantId: -1,
         contact: '',
         phone: '',
         email: '',
@@ -128,7 +129,7 @@ export default class CustomerModal extends React.Component {
               style={{ width: '100%' }}
             >
               {tenants.map((item) => {
-                return <Option value={item.name}>{item.name}</Option>;
+                return <Option key={item.key} value={item.name}>{item.name}</Option>;
               })}
             </AutoComplete>
           </FormItem>
@@ -138,14 +139,14 @@ export default class CustomerModal extends React.Component {
             hasFeedback
             required
           >
-            <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }); }} />
+            <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={CUSTOMER_SERVICE_TYPES} onChange={(value) => { this.setState({ serviceType: value }); }} />
+            <CheckboxGroup options={CUSTOMER_TYPES} onChange={(value) => { this.setState({ customerTypes: value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}

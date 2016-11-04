@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Row, Col, Tabs } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import { Button, Row, Col, Tabs, Table } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -14,12 +13,8 @@ import { loadCustomers } from 'common/reducers/crmCustomers';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
-  const { pageSize, currentPage, searchValue } = state.crmCustomers.customers;
   return dispatch(loadCustomers({
     tenantId: state.account.tenantId,
-    pageSize,
-    currentPage,
-    searchValue,
   }));
 }
 @connectFetch()(fetchData)
@@ -39,7 +34,7 @@ export default class List extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    customers: PropTypes.object.isRequired,
+    customers: PropTypes.array.isRequired,
     loadCustomers: PropTypes.func.isRequired,
   }
   state = {
@@ -47,7 +42,7 @@ export default class List extends React.Component {
     customer: {},
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ customer: nextProps.customers.data[0] || {} });
+    this.setState({ customer: nextProps.customers[0] || {} });
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleCustomerModal = () => {
@@ -57,27 +52,6 @@ export default class List extends React.Component {
     this.setState({ customer: record });
   }
   render() {
-    const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadCustomers(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.currentPage, result.pageSize),
-        showSizeChanger: false,
-        showQuickJumper: false,
-        pageSize: result.pageSize,
-      }),
-      getParams: (pagination) => {
-        const params = {
-          tenantId: this.props.tenantId,
-          pageSize: pagination.pageSize,
-          currentPage: pagination.current,
-          searchValue: this.props.customers.searchValue,
-        };
-        return params;
-      },
-      remotes: this.props.customers,
-    });
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -102,7 +76,7 @@ export default class List extends React.Component {
                   <h3>客户列表</h3>
                 </div>
                 <div className="panel-body table-panel" >
-                  <Table dataSource={dataSource} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
+                  <Table dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
                   <CustomerModal visible={this.state.customerModalVisible} toggle={this.toggleCustomerModal} />
                 </div>
               </div>

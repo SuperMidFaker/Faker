@@ -1,4 +1,4 @@
-export const CUSTOMER_SERVICE_TYPES = [
-  { label: '运输', value: 'TRS' },
-  { label: '清关', value: 'CCB' },
+export const CUSTOMER_TYPES = [
+  { label: '运输', value: 1 },
+  { label: '清关', value: 2 },
 ];

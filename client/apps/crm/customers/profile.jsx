@@ -39,7 +39,7 @@ export default class Profile extends React.Component {
           {...formItemLayout}
           label="企业编码"
         >
-          {customer.code}
+          {customer.partner_code}
         </FormItem>
         <FormItem
           {...formItemLayout}

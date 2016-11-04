@@ -10,12 +10,7 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/',
 const initialState = {
   loaded: true,
   loading: false,
-  customers: {
-    data: [],
-    pageSize: 10,
-    currentPage: 1,
-    searchValue: '',
-  },
+  customers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -23,8 +18,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMERS_SUCCEED:
       return { ...state, customers: action.result.data };
     case actionTypes.ADD_CUSTOMER_SUCCEED: {
-      const customers = { ...state.customers };
-      customers.data.unshift(action.result.data);
+      const customers = [...state.customers];
+      customers.unshift(action.result.data);
       return { ...state, customers };
     }
     default:
@@ -47,7 +42,7 @@ export function loadCustomers(params) {
   };
 }
 
-export function addCustomer(data) {
+export function addCustomer({ tenantId, partnerInfo, customerTypes }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -57,7 +52,7 @@ export function addCustomer(data) {
       ],
       endpoint: 'v1/crm/customer/add',
       method: 'post',
-      data,
+      data: { tenantId, partnerInfo, customerTypes },
     },
   };
 }
