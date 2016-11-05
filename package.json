@@ -43,7 +43,7 @@
   ],
   "dependencies": {
     "@welogix/react-data-grid": "^1.0.51",
-    "antd": "^2.1.0",
+    "antd": "^2.2.1",
     "babel-core": "^6.17.0",
     "babel-runtime": "^6.11.6",
     "classnames": "^2.2.5",
