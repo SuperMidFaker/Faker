@@ -12,7 +12,8 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal, showSpecialChargeModal } from 'common/reducers/trackingLandStatus';
+import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal, showSpecialChargeModal, showChangeActDateModal }
+from 'common/reducers/trackingLandStatus';
 import { showCreateExcpModal } from 'common/reducers/trackingLandException';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
@@ -53,6 +54,7 @@ const MenuItem = Menu.Item;
     showSpecialChargeModal,
     sendMessage,
     showCreateExcpModal,
+    showChangeActDateModal,
   }
 )
 export default class Footer extends React.Component {
@@ -84,6 +86,7 @@ export default class Footer extends React.Component {
     showSpecialChargeModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     showCreateExcpModal: PropTypes.func.isRequired,
+    showChangeActDateModal: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
   static contextTypes = {
@@ -103,6 +106,8 @@ export default class Footer extends React.Component {
       this.props.onShowShareShipmentModal();
     } else if (e.key === 'terminateShipment') {
       this.handleShipmtRevoke(row.disp_id);
+    } else if (e.key === 'changeActDate') {
+      this.handleShowChangeActDateModal(row);
     }
   }
   handleShowExportShipment = () => {
@@ -222,6 +227,10 @@ export default class Footer extends React.Component {
   handleShowSpecialChargeModal = (row) => {
     this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
       parentDispId: row.parent_id, spTenantId: row.sp_tenant_id });
+  }
+  handleShowChangeActDateModal = (row) => {
+    this.props.showChangeActDateModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
+      pickupActDate: row.pickup_act_date, deliverActDate: row.deliver_act_date });
   }
   handleShowCreateExcpModal = (row) => {
     this.props.showCreateExcpModal({ visible: true, shipmtNo: row.shipmt_no, dispId: row.disp_id });
@@ -600,6 +609,12 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
+        menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <MenuItem key="shareShipment">共享运单</MenuItem>
+            <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+          </Menu>
+        );
       } else if (row.status === SHIPMENT_TRACK_STATUS.delivered) {
         if (row.pod_type === 'none') {
           buttons = (
@@ -666,6 +681,12 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
+        menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <MenuItem key="shareShipment">共享运单</MenuItem>
+            <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+          </Menu>
+        );
       }
       return (
         <div className="toolbar">

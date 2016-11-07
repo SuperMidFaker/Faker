@@ -369,6 +369,14 @@ export default defineMessages({
     id: 'transport.shipment.log.timeInfoChanged',
     defaultMessage: '时间计划变更',
   },
+  pickupActDateChanged: {
+    id: 'transport.shipment.log.pickupActDateChanged',
+    defaultMessage: '修改提货时间',
+  },
+  deliverActDateChanged: {
+    id: 'transport.shipment.log.deliverActDateChanged',
+    defaultMessage: '修改交货时间',
+  },
   removePoint: {
     id: 'transport.shipment.log.removePoint',
     defaultMessage: '删除位置信息',

@@ -234,10 +234,6 @@ export default class DispatchList extends React.Component {
         return (<span>{o}</span>);
       },
     }, {
-      title: this.msg('spDispLoginName'),
-      dataIndex: 'sp_disp_login_name',
-      width: 60,
-    }, {
       title: this.msg('refCustomerNo'),
       dataIndex: 'ref_external_no',
       width: 80,
@@ -261,6 +257,10 @@ export default class DispatchList extends React.Component {
         width: 100,
         render: (text, record) => (record.acpt_time ?
          moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
+      }, {
+        title: this.msg('spDispLoginName'),
+        dataIndex: 'sp_disp_login_name',
+        width: 60,
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
@@ -367,6 +367,10 @@ export default class DispatchList extends React.Component {
           width: 100,
           render: (text, record) => (record.disp_time ?
          moment(record.disp_time).format('MM-DD HH:mm') : ' '),
+        }, {
+          title: this.msg('spDispLoginName'),
+          dataIndex: 'sp_disp_login_name',
+          width: 60,
         }, {
           title: this.msg('shipmtOP'),
           width: 100,

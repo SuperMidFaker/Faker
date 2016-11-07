@@ -15,6 +15,7 @@ import Footer from './preview-panel-footer';
 import ShareShipmentModal from './share-shipment';
 import ShipmentSchedule from './shipmentSchedule';
 import ExceptionPane from './tabpanes/exceptionPane';
+import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -206,6 +207,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
+          <ChangeActDateModal />
         </div>
       : null
     );

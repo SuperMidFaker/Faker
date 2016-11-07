@@ -145,10 +145,6 @@ export default class LandStatusList extends React.Component {
       return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />;
     },
   }, {
-    title: this.msg('spDispLoginName'),
-    fixed: 'left',
-    dataIndex: 'sp_disp_login_name',
-  }, {
     title: this.msg('exceptionCount'),
     fixed: 'left',
     dataIndex: 'excp_count',
@@ -307,7 +303,7 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('proofOfDelivery'),
     dataIndex: 'pod_type',
-    width: 100,
+    width: 50,
     render: (text, record) => {
       if (record.pod_type === 'none') {
         return <Icon type="tags-o" />;
@@ -317,6 +313,9 @@ export default class LandStatusList extends React.Component {
         return <Icon type="qrcode" />;
       }
     },
+  }, {
+    title: this.msg('spDispLoginName'),
+    dataIndex: 'sp_disp_login_name',
   }]
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
     this.props.loadExcpShipments(null, {
