@@ -104,9 +104,10 @@ export default class EntryForm extends React.Component {
   render() {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
+    const declStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
     return (<div>
       <div className="panel-body collapse">
-        <Collapse bordered={false} accordion defaultActiveKey="entry-head" style={{ marginBottom: 46 }}>
+        <Collapse bordered={false} defaultActiveKey={['entry-head', 'entry-list']}>
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
             <Card title={this.props.entry.head.pre_entry_id} bodyStyle={{ padding: 8 }} extra={!readonly &&
               <span><Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
@@ -118,7 +119,7 @@ export default class EntryForm extends React.Component {
             </Card>
           </Panel>
           <Panel header={this.msg('entryList')} key="entry-list">
-            <Card title={this.props.entry.head.pre_entry_id} bodyStyle={{ padding: 0 }}>
+            <Card title={declStats} bodyStyle={{ padding: 0 }}>
               <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
                 onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
                 onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}

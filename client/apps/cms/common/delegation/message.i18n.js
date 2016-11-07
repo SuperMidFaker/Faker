@@ -126,7 +126,7 @@ export default defineMessages({
     defaultMessage: '报检企业',
   },
   certbroker: {
-    id: 'cms.delegation.delg.inspbroker',
+    id: 'cms.delegation.delg.certbroker',
     defaultMessage: '鉴定办证企业',
   },
   goodsType: {
@@ -290,11 +290,11 @@ export default defineMessages({
     defaultMessage: '分配报关业务',
   },
   ciqDispatch: {
-    id: 'cms.delegation.delg.dispatch',
+    id: 'cms.delegation.delg.ciq.dispatch',
     defaultMessage: '分配报检业务',
   },
   certDispatch: {
-    id: 'cms.delegation.delg.dispatch',
+    id: 'cms.delegation.delg.cert.dispatch',
     defaultMessage: '分配鉴定办证',
   },
   dispDecl: {
@@ -390,11 +390,11 @@ export default defineMessages({
     defaultMessage: '数量',
   },
   certTax: {
-    id: 'cms.delegation.certTotal',
+    id: 'cms.delegation.certTax',
     defaultMessage: '税金',
   },
   certCalfee: {
-    id: 'cms.delegation.certTotal',
+    id: 'cms.delegation.certCalfee',
     defaultMessage: '费用金额',
   },
   certTotal: {

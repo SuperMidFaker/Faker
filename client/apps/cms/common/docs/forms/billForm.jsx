@@ -76,7 +76,7 @@ export default class BillForm extends React.Component {
             }),
           }} onUploaded={this.handleUploaded}
         >
-          <Button type="primary" size="small">Import</Button>
+          <Button type="primary" size="small" icon="file-excel">{formatGlobalMsg(this.props.intl, 'import')}</Button>
         </ExcelUpload>
       );
     }
@@ -106,9 +106,10 @@ export default class BillForm extends React.Component {
   }
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
+    const billStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
     return (<div>
       <div className="panel-body collapse">
-        <Collapse bordered={false} accordion defaultActiveKey="bill-head" style={{ marginBottom: 46 }}>
+        <Collapse bordered={false} defaultActiveKey={['bill-head', 'bill-list']}>
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
             <Card title={this.props.billHead.bill_seq_no} bodyStyle={{ padding: 8 }} extra={!readonly &&
               <Button type="primary" size="small" onClick={this.handleBillSave} icon="save">
@@ -119,7 +120,7 @@ export default class BillForm extends React.Component {
             </Card>
           </Panel>
           <Panel header={this.msg('billList')} key="bill-list">
-            <Card title={this.props.billHead.bill_seq_no} bodyStyle={{ padding: 0 }} extra={this.billListPanelHeader}>
+            <Card title={billStats} bodyStyle={{ padding: 0 }} extra={this.billListPanelHeader}>
               <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
                 onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
                 billSeqNo={billHead.bill_seq_no}

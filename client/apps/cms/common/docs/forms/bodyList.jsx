@@ -123,10 +123,14 @@ export default class BodyTable extends React.Component {
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
+      width: 50,
+      fixed: 'left',
     }];
     if (type === 'bill') {
       columns.push({
         title: this.msg('copGNo'),
+        width: 50,
+        fixed: 'left',
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
@@ -135,24 +139,32 @@ export default class BodyTable extends React.Component {
     }
     columns.push({
       title: this.msg('emGNo'),
+      width: 50,
+      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('codeT'),
+      width: 80,
+      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="code_t" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('codeS'),
+      width: 60,
+      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="code_s" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('gName'),
+      width: 200,
+      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="g_name" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -341,7 +353,7 @@ export default class BodyTable extends React.Component {
   render() {
     const columns = this.getColumns();
     return (<Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies}
-      size="small" scroll={{ x: 3280 }}
+      size="small" scroll={{ x: 2600 }}
     />);
   }
 }
