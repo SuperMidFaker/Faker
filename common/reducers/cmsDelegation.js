@@ -34,6 +34,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
   'MATCH_CERT_QUOTE', 'MATCH_CERT_QUOTE_SUCCEED', 'MATCH_CERT_QUOTE_FAIL',
+  'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
 ]);
 
 const initialState = {
@@ -242,6 +243,17 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function setCiqFinish(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.CIQ_FINISH_SET, actionTypes.CIQ_FINISH_SET_SUCCEED, actionTypes.CIQ_FINISH_SET_FAIL],
+      endpoint: 'v1/cms/set/ciq/finish',
+      method: 'get',
+      params: { delgNo },
+    },
+  };
 }
 
 export function loadAcceptanceTable(params) {
@@ -491,7 +503,7 @@ export function acceptDelg(loginId, loginName, dispId) {
     },
   };
 }
-export function acceptCiqCert(loginId, loginName, delgNo, serverType) {
+export function acceptCiqCert(loginId, loginName, delgNo, serverType, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -501,7 +513,7 @@ export function acceptCiqCert(loginId, loginName, delgNo, serverType) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delg/accept/ciqorcert',
-      data: { loginId, loginName, delgNo, serverType },
+      data: { loginId, loginName, delgNo, serverType, tenantId },
     },
   };
 }

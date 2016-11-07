@@ -17,15 +17,15 @@ import DelgDispatch from './delgDispatch';
 import CiqTable from './ciqTableList';
 import CertTable from './certTableList';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
-  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertTable } from 'common/reducers/cmsDelegation';
-import { loadPaneExp } from 'common/reducers/cmsExpense';
+  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertTable, loadCertBrokers, loadRelatedDisp } from 'common/reducers/cmsDelegation';
+import { loadPaneExp, loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import CertModal from './modals/certModal';
 
 const formatMsg = format(messages);
-
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -48,7 +48,8 @@ const RadioButton = Radio.Button;
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote, loadCertTable }
+    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote, loadCertTable,
+    loadCertFees, openCertModal, loadCertBrokers, loadRelatedDisp }
 )
 @connectNav({
   depth: 2,
@@ -400,12 +401,6 @@ export default class DelegationList extends Component {
       this.props.tenantId,
       PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
       type);
-    } else if (row.cert_name && type === 'cert' && row.cert_name !== null) {
-      this.props.loadDisp(
-      row.delg_no,
-      this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
-      type);
     } else {
       this.props.loadDelgDisp(
         row.delg_no,
@@ -462,23 +457,20 @@ export default class DelegationList extends Component {
     }
     return newFilters;
   }
-
+  handleCertModalLoad = (row) => {
+    this.props.loadCertBrokers(this.props.tenantId);
+    this.props.loadRelatedDisp(this.props.tenantId, row.delg_no);
+    this.props.loadCertFees(row.id);
+    this.props.openCertModal();
+  }
   render() {
     const { delegationlist, listFilter } = this.props;
     this.dataSource.remotes = delegationlist;
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 140,
+      width: 120,
       render: (o, record) => {
-        let CIQ = true;
-        let CERT = true;
-        if (record.ciq_status && record.ciq_status === 1) {
-          CIQ = false;
-        }
-        if (record.cert_status && record.cert_status === 1) {
-          CERT = false;
-        }
         if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
           return (
             <span>
@@ -501,15 +493,7 @@ export default class DelegationList extends Component {
           );
         } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 2) {
           return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <span>
-                <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
-                { CIQ && <span className="ant-divider" /> }
-                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} /> }
-                { CERT && <span className="ant-divider" />}
-                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} /> }
-              </span>
-            </PrivilegeCover>
+            <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
           );
         } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && (record.sub_status === 3 || record.sub_status === null)) {
           return (
@@ -528,47 +512,33 @@ export default class DelegationList extends Component {
                 <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
                 <span className="ant-divider" />
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-                { CIQ && <span className="ant-divider" />}
-                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
-                { CERT && <span className="ant-divider" />}
-                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
               </span>
             </PrivilegeCover>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
           return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <span>
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-                { CIQ && <span className="ant-divider" />}
-                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
-                { CERT && <span className="ant-divider" />}
-                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
-              </span>
-            </PrivilegeCover>
+            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
           );
         } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
           return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <span>
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-                { CIQ && <span className="ant-divider" />}
-                { CIQ && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('ciq')} row={record} />}
-                { CERT && <span className="ant-divider" />}
-                { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
-              </span>
-            </PrivilegeCover>
+            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
           );
         } else {
           return (
-            <span>
-              <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
-              { CERT && <span className="ant-divider" />}
-              { CERT && <RowUpdater onHit={() => this.handleDelegationAssign(record, 'cert')} label={this.msg('cert')} row={record} />}
-            </span>
+            <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
           );
         }
-      },
+      }
+    }, {
+      title: this.msg('办证'),
+      width: 80,
+      render: (o, record) => {
+        if (record.status > 0) {
+          return (
+            <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
+          );
+        }
+      }
     });
     // todo expandedRow fixed
     return (
@@ -588,7 +558,6 @@ export default class DelegationList extends Component {
           <span />
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChangeType}>
             <RadioButton value="ciq">{this.msg('ciq')}</RadioButton>
-            <RadioButton value="cert">{this.msg('cert')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="main-content" key="main">
@@ -614,6 +583,7 @@ export default class DelegationList extends Component {
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
         <PreviewPanel ietype={this.props.ietype} />
+        <CertModal />
       </QueueAnim>
     );
   }
