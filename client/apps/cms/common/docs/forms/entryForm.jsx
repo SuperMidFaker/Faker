@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Button, message } from 'antd';
+import { Card, Collapse, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -105,30 +105,28 @@ export default class EntryForm extends React.Component {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
     return (<div>
-      <div className="panel-body collapse fixed-height">
-        <Collapse accordion defaultActiveKey="entry-head" style={{ marginBottom: 46 }}>
+      <div className="panel-body collapse">
+        <Collapse bordered={false} accordion defaultActiveKey="entry-head" style={{ marginBottom: 46 }}>
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
-            <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
+            <Card title={this.props.entry.head.pre_entry_id} bodyStyle={{ padding: 8 }} extra={!readonly &&
+              <span><Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
+                {formatGlobalMsg(this.props.intl, 'save')}
+              </Button> <Button type="ghost" size="small" icon="delete" onClick={this.handleEntryDel} /></span>
+            }
+            >
+              <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
+            </Card>
           </Panel>
           <Panel header={this.msg('entryList')} key="entry-list">
-            <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
-              onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
-              billSeqNo={head.bill_seq_no}
-            />
+            <Card title={this.props.entry.head.pre_entry_id} bodyStyle={{ padding: 0 }}>
+              <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
+                onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
+                onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
+                billSeqNo={head.bill_seq_no}
+              />
+            </Card>
           </Panel>
         </Collapse>
-      </div>
-      <div className="panel-footer">
-        {!readonly &&
-          <Button type="primary" onClick={this.handleEntryHeadSave} icon="save">
-            {formatGlobalMsg(this.props.intl, 'save')}
-          </Button>
-        }
-        <span />
-        {!readonly &&
-          <Button type="ghost" icon="delete" onClick={this.handleEntryDel} />
-        }
       </div>
     </div>);
   }

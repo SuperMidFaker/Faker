@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Dropdown, Menu, Icon, Progress } from 'antd';
+import { Tabs, Dropdown, Menu, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -86,36 +86,36 @@ export default class EntryBillForm extends React.Component {
     const { readonly, ietype, entries } = this.props;
     const panes = [
       <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
-        <BillForm readonly={readonly} ietype={ietype} />
+        <div className="main-tab-content">
+          <div className="page-body tabbed fixed-height">
+            <BillForm readonly={readonly} ietype={ietype} />
+          </div>
+        </div>
       </TabPane>,
     ].concat(
       entries.map((entry, idx) => (
         <TabPane tab={
           <span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>
-          } key={`entry${idx}`}
+        } key={`entry${idx}`}
         >
-          <EntryForm readonly={readonly} ietype={ietype} entry={entry}
-            totalCount={entries.length} index={idx}
-          />
+          <div className="main-tab-content">
+            <div className="page-body tabbed fixed-height">
+              <EntryForm readonly={readonly} ietype={ietype} entry={entry}
+                totalCount={entries.length} index={idx}
+              />
+            </div>
+          </div>
         </TabPane>
       ))
-    );
+      );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
-          <div className="tools" style={{ width: '20%' }}><Progress percent={30} /></div>
-          <span>清单编号 {this.props.params.billno}</span>
-        </header>
-        <div className="main-content">
-          <div className="page-body tabbed fixed-height">
-            <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={this.state.activeKey}
-              onChange={this.handleTabChange}
-            >
-              { panes }
-            </Tabs>
-          </div>
-          <MergeSplitModal />
-        </div>
+        <Tabs tabBarExtraContent={!readonly && this.renderTabButton()} activeKey={this.state.activeKey}
+          onChange={this.handleTabChange} className="top-tabs-bar"
+        >
+          {panes}
+        </Tabs>
+        <MergeSplitModal />
       </QueueAnim>
     );
   }
