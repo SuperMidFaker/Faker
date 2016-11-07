@@ -45,9 +45,6 @@ export default function makeColumns(type, handlers, msg) {
         />);
     },
   }, {
-    title: msg('spDispLoginName'),
-    dataIndex: 'sp_disp_login_name',
-  }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
     render: o => <TrimSpan text={o} maxLen={10} />,
@@ -241,6 +238,9 @@ export default function makeColumns(type, handlers, msg) {
 
   if (type === 'pod') { // 回单处理
     columns.push({
+      title: msg('spDispLoginName'),
+      dataIndex: 'sp_disp_login_name',
+    }, {
       title: msg('proofOfDelivery'),
       dataIndex: 'pod_type',
       fixed: 'right',
@@ -403,6 +403,9 @@ export default function makeColumns(type, handlers, msg) {
             ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
         }
       },
+    }, {
+      title: msg('spDispLoginName'),
+      dataIndex: 'sp_disp_login_name',
     }, {
       title: msg('shipmtNextUpdate'),
       width: 160,

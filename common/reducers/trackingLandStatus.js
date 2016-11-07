@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL',
   'SHOW_SPECIAL_CHARGE_MODAL',
+  'SHOW_CHANGE_ACTDATE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
@@ -13,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SAVE_BATCH_DATE', 'SAVE_BATCH_DATE_SUCCEED', 'SAVE_BATCH_DATE_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'DELIVER_CONFIRM', 'DELIVER_CONFIRM_SUCCEED', 'DELIVER_CONFIRM_FAIL',
+  'CHANGE_ACT_DATE', 'CHANGE_ACT_DATE_SUCCEED', 'CHANGE_ACT_DATE_FAIL',
   'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
   'LOAD_SHIPMT_DISPATCH', 'LOAD_SHIPMT_DISPATCH_SUCCEED', 'LOAD_SHIPMT_DISPATCH_FAIL',
 ]);
@@ -57,6 +59,13 @@ const initialState = {
     parentDispId: -1,
     spTenantId: -2,
     shipmtNo: '',
+  },
+  changeActDateModal: {
+    visible: false,
+    dispId: -1,
+    shipmtNo: '',
+    pickupActDate: '',
+    deliverActDate: '',
   },
   locModal: {
     visible: false,
@@ -129,6 +138,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_SPECIAL_CHARGE_MODAL:
       return {
         ...state, shipmentSpecialChargeModal: action.data,
+      };
+    case actionTypes.SHOW_CHANGE_ACTDATE_MODAL:
+      return {
+        ...state, changeActDateModal: { ...state.changeActDateModal, ...action.data },
       };
     case actionTypes.DELIVER_CONFIRM_SUCCEED:
       return {
@@ -290,6 +303,13 @@ export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId
   };
 }
 
+export function showChangeActDateModal({ visible, dispId = -1, shipmtNo = '', pickupActDate, deliverActDate }) {
+  return {
+    type: actionTypes.SHOW_CHANGE_ACTDATE_MODAL,
+    data: { visible, dispId, shipmtNo, pickupActDate, deliverActDate },
+  };
+}
+
 export function deliverConfirm(shipmtNo, dispId) {
   return {
     [CLIENT_API]: {
@@ -301,6 +321,21 @@ export function deliverConfirm(shipmtNo, dispId) {
       endpoint: 'v1/transport/tracking/deliverConfirm',
       method: 'post',
       data: { shipmtNo, dispId },
+    },
+  };
+}
+
+export function changePickDeliverDate({ dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHANGE_ACT_DATE,
+        actionTypes.CHANGE_ACT_DATE_SUCCEED,
+        actionTypes.CHANGE_ACT_DATE_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/changePickDeliverDate',
+      method: 'post',
+      data: { dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate },
     },
   };
 }
