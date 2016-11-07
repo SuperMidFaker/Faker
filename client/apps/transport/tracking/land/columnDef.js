@@ -45,6 +45,9 @@ export default function makeColumns(type, handlers, msg) {
         />);
     },
   }, {
+    title: msg('spDispLoginName'),
+    dataIndex: 'sp_disp_login_name',
+  }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
     render: o => <TrimSpan text={o} maxLen={10} />,

@@ -9,6 +9,10 @@ export default defineMessages({
     id: 'transport.dispatch.ship.no',
     defaultMessage: '运单号',
   },
+  spDispLoginName: {
+    id: 'transport.dispatch.ship.spDispLoginName',
+    defaultMessage: '调度员',
+  },
   refCustomerNo: {
     id: 'transport.acceptance.ref.customer.no',
     defaultMessage: '客户单号',

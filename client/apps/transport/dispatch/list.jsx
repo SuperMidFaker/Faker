@@ -234,6 +234,10 @@ export default class DispatchList extends React.Component {
         return (<span>{o}</span>);
       },
     }, {
+      title: this.msg('spDispLoginName'),
+      dataIndex: 'sp_disp_login_name',
+      width: 60,
+    }, {
       title: this.msg('refCustomerNo'),
       dataIndex: 'ref_external_no',
       width: 80,

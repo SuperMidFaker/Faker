@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, message, Popover } from 'antd';
+import { Icon, message, Popover, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -145,6 +145,10 @@ export default class LandStatusList extends React.Component {
       return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />;
     },
   }, {
+    title: this.msg('spDispLoginName'),
+    fixed: 'left',
+    dataIndex: 'sp_disp_login_name',
+  }, {
     title: this.msg('exceptionCount'),
     fixed: 'left',
     dataIndex: 'excp_count',
@@ -182,17 +186,17 @@ export default class LandStatusList extends React.Component {
     width: 100,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return `1 ${this.msg('pendingShipmt')}`;
+        return <Tag>{this.msg('pendingShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-        return `2 ${this.msg('acceptedShipmt')}`;
+        return <Tag>{this.msg('acceptedShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-        return `3 ${this.msg('dispatchedShipmt')}`;
+        return <Tag color="yellow">{this.msg('dispatchedShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        return `4 ${this.msg('intransitShipmt')}`;
+        return <Tag color="blue">{this.msg('intransitShipmt')}</Tag>;
       } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        return `5 ${this.msg('deliveredShipmt')}`;
+        return <Tag color="green">{this.msg('deliveredShipmt')}</Tag>;
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-        return `6 ${this.msg('proofOfDelivery')}`;
+        return <Tag color="green">{this.msg('proofOfDelivery')}</Tag>;
       } else {
         return <span />;
       }
