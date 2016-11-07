@@ -67,10 +67,10 @@ export default class ChangeActDateModal extends React.Component {
     });
   }
   handlePickupActDateChange = (value) => {
-    this.setState({pickupActDate: value});
+    this.setState({ pickupActDate: value });
   }
   handleDeliverActDateChange = (value) => {
-    this.setState({deliverActDate: value});
+    this.setState({ deliverActDate: value });
   }
   handleCancel = () => {
     this.props.showChangeActDateModal({ visible: false });

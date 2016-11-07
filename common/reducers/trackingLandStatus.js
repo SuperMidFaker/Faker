@@ -141,7 +141,7 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.SHOW_CHANGE_ACTDATE_MODAL:
       return {
-        ...state, changeActDateModal: {...state.changeActDateModal, ...action.data },
+        ...state, changeActDateModal: { ...state.changeActDateModal, ...action.data },
       };
     case actionTypes.DELIVER_CONFIRM_SUCCEED:
       return {
