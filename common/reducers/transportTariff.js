@@ -22,6 +22,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'CREATE_FEE', 'CREATE_FEE_SUCCEED', 'CREATE_FEE_FAIL',
   'DELETE_FEE', 'DELETE_FEE_SUCCEED', 'DELETE_FEE_FAIL',
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
+  'UPDATE_TARIFF_STATUS', 'UPDATE_TARIFF_STATUS_SUCCEED', 'UPDATE_TARIFF_STATUS_FAIL',
   'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
 ]);
 
@@ -496,6 +497,22 @@ export function getTariffByTransportInfo({ transModeCode, partnerId, tenantId, g
       endpoint: 'v1/transport/tariff/byTransportInfo',
       method: 'get',
       params: { transModeCode, partnerId, tenantId, goodsType },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function updateTariffStatus(tariffId, status) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_TARIFF_STATUS,
+        actionTypes.UPDATE_TARIFF_STATUS_SUCCEED,
+        actionTypes.UPDATE_TARIFF_STATUS_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/status',
+      method: 'post',
+      data: { tariffId, status },
       origin: 'mongo',
     },
   };

@@ -10,7 +10,7 @@ import { ConfirmDel } from './forms/commodity';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadTable, delTariff } from 'common/reducers/transportTariff';
+import { loadTable, delTariff, updateTariffStatus } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS } from 'common/constants';
 import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
@@ -40,7 +40,7 @@ function fetchData({ state, dispatch }) {
     filters: state.transportTariff.filters,
     loading: state.transportTariff.loading,
   }),
-  { loadTable, delTariff })
+  { loadTable, delTariff, updateTariffStatus })
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -55,6 +55,7 @@ export default class TariffList extends React.Component {
     tarifflist: PropTypes.object.isRequired,
     loadTable: PropTypes.func.isRequired,
     delTariff: PropTypes.func.isRequired,
+    updateTariffStatus: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -175,19 +176,34 @@ export default class TariffList extends React.Component {
     title: formatContainerMsg(this.props.intl, 'opColumn'),
     width: 100,
     render: (o, record) => {
-      return (
-        <span>
-          <PrivilegeCover module="transport" feature="tariff" action="edit">
-            <NavLink to={`/transport/tariff/edit/${record._id}`}>
-              {this.msg('revise')}
-            </NavLink>
-          </PrivilegeCover>
-          <span className="ant-divider" />
-          <PrivilegeCover module="transport" feature="tariff" action="delete">
-            <ConfirmDel row={record} text="删除" onConfirm={this.handleDel} />
-          </PrivilegeCover>
-        </span>
-      );
+      if (record.status === 0) {
+        return (
+          <span>
+            <PrivilegeCover module="transport" feature="tariff" action="edit">
+              <a onClick={() => this.handleChangeStatus(record._id, 1)}>{this.msg('enable')}</a>
+            </PrivilegeCover>
+            <span className="ant-divider" />
+            <PrivilegeCover module="transport" feature="tariff" action="delete">
+              <ConfirmDel row={record} text="删除" onConfirm={this.handleDel} />
+            </PrivilegeCover>
+          </span>
+        );
+      } else if (record.status === 1) {
+        return (
+          <span>
+            <PrivilegeCover module="transport" feature="tariff" action="edit">
+              <div>
+                <a onClick={() => this.handleChangeStatus(record._id, 0)}>{this.msg('disable')}</a>
+                <span className="ant-divider" />
+                <NavLink to={`/transport/tariff/edit/${record._id}`}>
+                  {this.msg('revise')}
+                </NavLink>
+              </div>
+            </PrivilegeCover>
+          </span>
+        );
+      }
+      return '';
     },
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
@@ -211,6 +227,11 @@ export default class TariffList extends React.Component {
       } else {
         this.handleTableLoad();
       }
+    });
+  }
+  handleChangeStatus = (tariffId, status) => {
+    this.props.updateTariffStatus(tariffId, status).then(() => {
+      this.handleTableLoad();
     });
   }
   handleSearch = (searchVal) => {

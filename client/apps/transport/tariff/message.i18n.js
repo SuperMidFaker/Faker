@@ -181,4 +181,12 @@ export default defineMessages({
     id: 'transport.tariff.modify',
     defaultMessage: '修改',
   },
+  enable: {
+    id: 'transport.tariff.enable',
+    defaultMessage: '启用',
+  },
+  disable: {
+    id: 'transport.tariff.disable',
+    defaultMessage: '禁用',
+  },
 });
