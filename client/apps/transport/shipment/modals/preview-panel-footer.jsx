@@ -550,6 +550,12 @@ export default class Footer extends React.Component {
               </ButtonGroup>
             </PrivilegeCover>
           );
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+            </Menu>
+          );
         } else if (row.sp_tenant_id === 0) {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
@@ -591,6 +597,12 @@ export default class Footer extends React.Component {
               </PrivilegeCover>
             );
           }
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+            </Menu>
+          );
         } else {
           // 承运商更新
           buttons = (
@@ -609,12 +621,6 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="shareShipment">共享运单</MenuItem>
-            <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
-          </Menu>
-        );
       } else if (row.status === SHIPMENT_TRACK_STATUS.delivered) {
         if (row.pod_type === 'none') {
           buttons = (
@@ -625,6 +631,12 @@ export default class Footer extends React.Component {
                 </Button>
               </ButtonGroup>
             </PrivilegeCover>
+          );
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+            </Menu>
           );
         } else if (row.sp_tenant_id === -1) {
           buttons = (
@@ -640,6 +652,12 @@ export default class Footer extends React.Component {
                 </Button>
               </ButtonGroup>
             </PrivilegeCover>
+          );
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+            </Menu>
           );
         } else if (row.sp_tenant_id === 0) {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
@@ -669,6 +687,12 @@ export default class Footer extends React.Component {
               </PrivilegeCover>
             );
           }
+          menu = (
+            <Menu onClick={this.handleMenuClick}>
+              <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+            </Menu>
+          );
         } else {
           // 承运商上传
           buttons = (
@@ -681,12 +705,7 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="shareShipment">共享运单</MenuItem>
-            <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
-          </Menu>
-        );
+        
       }
       return (
         <div className="toolbar">
