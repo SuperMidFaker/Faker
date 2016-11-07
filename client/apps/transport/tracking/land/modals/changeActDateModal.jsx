@@ -29,7 +29,7 @@ export default class ChangeActDateModal extends React.Component {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
-    tenantName: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     pickupActDate: PropTypes.string,
@@ -55,8 +55,10 @@ export default class ChangeActDateModal extends React.Component {
     const { pickupActDate, deliverActDate } = this.state;
     const data = { dispId, shipmtNo, loginName, loginId, tenantId, tenantName,
       pickupActDate: moment(pickupActDate).format('YYYY-MM-DD HH:mm:ss'),
-      deliverActDate: moment(deliverActDate).format('YYYY-MM-DD HH:mm:ss'),
     };
+    if (this.props.status === SHIPMENT_TRACK_STATUS.delivered) {
+      data.deliverActDate = moment(deliverActDate).format('YYYY-MM-DD HH:mm:ss');
+    }
     this.props.changePickDeliverDate(data).then((result) => {
       if (result.error) {
         message.error(result.error.message);

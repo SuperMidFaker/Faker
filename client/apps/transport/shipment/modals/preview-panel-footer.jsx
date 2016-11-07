@@ -705,7 +705,6 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
-        
       }
       return (
         <div className="toolbar">
