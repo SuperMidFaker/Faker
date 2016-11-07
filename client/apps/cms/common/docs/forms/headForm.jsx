@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'antd';
+import { Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
   RelationAutoCompSelect, PortDate, Transport,
-  TradeRemission, CountryAttr, DestInvoice, Fee, PackWeight,
+  TradeRemission, CountryAttr, DestInvoice, LicenseTrade, Fee, ContractNo, PackWeight, ContainerUsage,
 } from './headFormItems';
 import { loadSearchedParam } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
@@ -67,7 +67,7 @@ export default class HeadForm extends React.Component {
       formData,
     };
     return (
-      <Form horizontal className="form-compact">
+      <Form horizontal>
         {type === 'entry' &&
           <FormInput field="pre_entry_id" outercol={9} col={6}
             label={this.msg('preEntryId')} {...formProps}
@@ -80,42 +80,58 @@ export default class HeadForm extends React.Component {
             />
           </Col>
         }
-        <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
-          codeField="trade_co" nameField="trade_name"
-          codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-          onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-          {...formProps} options={formRequire.trades}
-        />
-        <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
-          onSearch={this.handlePortSearch}
-        />
-        <RelationAutoCompSelect label={
-          ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
-          } codeField="owner_code" nameField="owner_name" intl={intl}
-          codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-          onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-          {...formProps} options={formRequire.owners}
-        />
-        <Transport {...formProps} intl={intl} formRequire={formRequire} />
-        <RelationAutoCompSelect label={this.msg('agentName')}
-          codeField="agent_code" nameField="agent_name" intl={intl}
-          codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-          onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-          {...formProps} options={formRequire.agents}
-        />
-        <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
-        <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
-
-        <DestInvoice {...formProps} intl={intl} formRequire={formRequire}
-          ietype={ietype} type={type} onSearch={this.handlePortSearch}
-        />
-        <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
-        <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
-        <Col span="15">
-          <FormInput field="cert_mark" outercol={16} col={4}
-            label={this.msg('certMark')} {...formProps}
+        <Row>
+          <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
+            codeField="trade_co" nameField="trade_name"
+            codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+            onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
+            {...formProps} options={formRequire.trades}
           />
-        </Col>
+          <PortDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
+            onSearch={this.handlePortSearch}
+          />
+        </Row>
+        <Row>
+          <RelationAutoCompSelect label={
+            ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
+            } codeField="owner_code" nameField="owner_name" intl={intl}
+            codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+            onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
+            {...formProps} options={formRequire.owners}
+          />
+          <Transport {...formProps} intl={intl} formRequire={formRequire} />
+        </Row>
+        <Row>
+          <RelationAutoCompSelect label={this.msg('agentName')}
+            codeField="agent_code" nameField="agent_name" intl={intl}
+            codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+            onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
+            {...formProps} options={formRequire.agents}
+          />
+          <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
+        </Row>
+        <Row>
+          <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+          <DestInvoice {...formProps} intl={intl} formRequire={formRequire}
+            ietype={ietype} type={type} onSearch={this.handlePortSearch}
+          />
+        </Row>
+        <Row>
+          <LicenseTrade {...formProps} intl={intl} formRequire={formRequire} />
+          <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+        </Row>
+        <Row>
+          <ContractNo {...formProps} intl={intl} formRequire={formRequire} />
+          <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+        </Row>
+        <Row>
+          <ContainerUsage {...formProps} intl={intl} formRequire={formRequire} />
+          <Col span="15">
+            <FormInput field="cert_mark" outercol={16} col={4}
+              label={this.msg('certMark')} {...formProps}
+            />
+          </Col>
+        </Row>
         <Col span="24">
           <FormInput field="note" outercol={9} col={4} type="textarea"
             label={this.msg('markNotes')} {...formProps}
