@@ -374,7 +374,7 @@ export default defineMessages({
     defaultMessage: '上传',
   },
   info: {
-    id: 'cms.modals.tabpanes.expense,info',
+    id: 'cms.delegation.expense,info',
     defaultMessage: '无匹配报价规则',
   },
   certFee: {

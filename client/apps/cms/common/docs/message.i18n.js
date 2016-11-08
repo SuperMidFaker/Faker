@@ -275,7 +275,7 @@ export default defineMessages({
   },
   copGNo: {
     id: 'cms.docs.table.cop.gno',
-    defaultMessage: '料号',
+    defaultMessage: '商品货号',
   },
   emGNo: {
     id: 'cms.docs.table.em.gno',
