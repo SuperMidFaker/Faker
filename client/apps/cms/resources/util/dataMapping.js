@@ -7,7 +7,7 @@ export const partnerTypes = {
   FWD: '货代提供商',
   ALL: '物流提供商',
   CIB: '报检提供商',
-  ICB: '鉴定办证提供商',
+  ICB: '鉴定办证',
 };
 
 export const providerShorthandTypes = {

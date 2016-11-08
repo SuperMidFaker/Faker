@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon, Tag } from 'antd';
+import { message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, openCiqModal, acceptCiqCert, loadCertBrokers,
   loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish } from 'common/reducers/cmsDelegation';
@@ -26,6 +25,7 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
+    saved: state.cmsDelegation.saved,
   }),
   { loadCiqTable, openCiqModal, acceptCiqCert, loadCertFees, openCertModal,
     loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish }
@@ -39,9 +39,15 @@ export default class CiqTable extends Component {
     loginName: PropTypes.string.isRequired,
     ciqlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+    saved: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.saved !== this.props.saved) {
+      this.handleTableLoad();
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -117,7 +123,7 @@ export default class CiqTable extends Component {
           <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
         );
       }
-    }
+    },
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadCiqTable(params),
@@ -179,7 +185,7 @@ export default class CiqTable extends Component {
   handleCertModalLoad = (row) => {
     this.props.loadCertBrokers(this.props.tenantId);
     this.props.loadRelatedDisp(this.props.tenantId, row.delg_no);
-    this.props.loadCertFees(row.id);
+    this.props.loadCertFees(row);
     this.props.openCertModal();
   }
   handleCiqNoFill = (row) => {

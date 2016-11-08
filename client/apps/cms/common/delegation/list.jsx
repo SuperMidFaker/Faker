@@ -91,6 +91,9 @@ export default class DelegationList extends Component {
     expandedKeys: [],
     service: 0,
   }
+  componentDidMount() {
+    this.props.loadCertBrokers(this.props.tenantId);
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
@@ -458,9 +461,16 @@ export default class DelegationList extends Component {
     return newFilters;
   }
   handleCertModalLoad = (row) => {
-    this.props.loadCertBrokers(this.props.tenantId);
     this.props.loadRelatedDisp(this.props.tenantId, row.delg_no);
-    this.props.loadCertFees(row.id);
+    const params = {};
+    params.id = row.id0;
+    params.delg_no = row.delg_no;
+    if (row.type === 1) {
+      params.recv_tenant_id = row.recv_tenant_id;
+    } else {
+      params.recv_tenant_id = row.send_tenant_id;
+    }
+    this.props.loadCertFees(params);
     this.props.openCertModal();
   }
   render() {
@@ -528,7 +538,7 @@ export default class DelegationList extends Component {
             <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
           );
         }
-      }
+      },
     }, {
       title: this.msg('办证'),
       width: 80,
@@ -538,7 +548,7 @@ export default class DelegationList extends Component {
             <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
           );
         }
-      }
+      },
     });
     // todo expandedRow fixed
     return (
