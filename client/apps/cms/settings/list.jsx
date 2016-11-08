@@ -75,7 +75,7 @@ export default class Settings extends Component {
         <aside className="side-bar" key="aside">
           <Menu
             onClick={this.handleClick}
-            defaultOpenKeys={['sub1']}
+            defaultOpenKeys={['sub1', 'sub2']}
             mode="inline"
           >
             <SubMenu key="sub1" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
@@ -90,12 +90,7 @@ export default class Settings extends Component {
           </Menu>
         </aside>
         <div className="main-content with-side-bar" key="main">
-          <div className="page-body">
-            <div className="panel-header" />
-            <div className="panel-body table-panel">
-              { qtModelShow && <FeesTable action="model" editable />}
-            </div>
-          </div>
+          { qtModelShow && <FeesTable action="model" editable />}
         </div>
       </QueueAnim>
     );

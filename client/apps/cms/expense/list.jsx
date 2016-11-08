@@ -96,13 +96,13 @@ export default class ExpenseList extends Component {
     }, {
       title: this.msg('bLNo'),
       dataIndex: 'bl_wb_no',
-      width: 100,
+      width: 120,
     }, {
       title: '收款',
       children: [
         {
           title: this.msg('allBill'),
-          width: 100,
+          width: 80,
           dataIndex: 'all_bill',
           key: 'all_bill',
           render: (o) => {
@@ -114,7 +114,7 @@ export default class ExpenseList extends Component {
           title: this.msg('servBill'),
           dataIndex: 'serv_bill',
           key: 'serv_bill',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -124,7 +124,7 @@ export default class ExpenseList extends Component {
           title: this.msg('cushBill'),
           dataIndex: 'cush_bill',
           key: 'cush_bill',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -138,7 +138,7 @@ export default class ExpenseList extends Component {
         {
           title: this.msg('allCost'),
           dataIndex: 'all_cost',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return (<span style={{ color: '#FF9933' }}>{o.toFixed(2)}</span>);
@@ -147,7 +147,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('进出口代理'),
           dataIndex: 'agency',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -156,7 +156,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('报关'),
           dataIndex: 'cust',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -165,7 +165,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('报检'),
           dataIndex: 'ciq',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -174,7 +174,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('鉴定办证'),
           dataIndex: 'cert',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -183,7 +183,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('其他'),
           dataIndex: 'misc',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -193,7 +193,7 @@ export default class ExpenseList extends Component {
       ],
     }, {
       title: this.msg('statementEn'),
-      width: 100,
+      width: 60,
       dataIndex: 'status',
       render: (o) => {
         return EXP_STATUS.filter(st => st.value === o)[0].text;
@@ -317,9 +317,9 @@ export default class ExpenseList extends Component {
                 {this.msg('markState')}
               </Button>
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel group-header">
               <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 1560 }}
+                bordered scroll={{ x: 2000 }}
               />
             </div>
           </div>

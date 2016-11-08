@@ -587,6 +587,9 @@ img {
     .ant-table-footer {
       border-radius: 0 0 2px 2px;
     }
+    .ant-table-bordered .ant-table-body>table {
+      border: none;
+    }
   }
   &.fixed-height {
     height: 580px;
@@ -595,6 +598,11 @@ img {
   &.expandable {
     .ant-table-body {
       height: auto;
+    }
+  }
+  &.group-header {
+    .ant-table-thead > tr > th {
+      padding: 8px;
     }
   }
   &.collapse {

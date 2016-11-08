@@ -14,7 +14,7 @@ export default defineMessages({
     defaultMessage: '调度员',
   },
   refCustomerNo: {
-    id: 'transport.acceptance.ref.customer.no',
+    id: 'transport.dispatch.ref.customer.no',
     defaultMessage: '客户单号',
   },
   shipNoCount: {
