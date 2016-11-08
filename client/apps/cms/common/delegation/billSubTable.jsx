@@ -161,7 +161,7 @@ export default class SubdelgTable extends Component {
     return (
       <div>
         <Table expandedRowKeys={this.state.expandedRowKeys} columns={this.columns}
-          dataSource={delgBills} pagination={false} size="middle" scroll={{ y: 200 }}
+          dataSource={delgBills} pagination={false} size="small" scroll={{ y: 200 }}
           onExpandedRowsChange={this.handleExpandedChange} loading={delgBills.loading}
         />
         <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
