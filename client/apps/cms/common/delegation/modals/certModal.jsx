@@ -55,7 +55,7 @@ export default class CertModal extends Component {
       if (rows[e.rowIdx].invoice_en) {
         taxFee = (calFee / (1 + rows[e.rowIdx].tax_rate / 100) * rows[e.rowIdx].tax_rate / 100).toFixed(3);
       }
-      const totalFee = calFee + taxFee;
+      const totalFee = Number(calFee) + Number(taxFee);
       Object.assign(rows[e.rowIdx], { cal_fee: calFee, charge_count: chargeCount, tax_fee: Number(taxFee), total_fee: Number(totalFee) });
     } else {
       Object.assign(rows[e.rowIdx], e.updated);
