@@ -56,7 +56,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('partners'),
         dataIndex: 'partner.name',
-        width: 150,
+        width: 200,
       }, {
         title: msg('tariffKinds'),
         dataIndex: 'tariff_kind',
@@ -68,7 +68,6 @@ export default class QuoteList extends Component {
       }, {
         title: msg('declareWay'),
         dataIndex: 'decl_way_code',
-        width: 300,
         render: (o) => {
           const text = [];
           if (o) {
@@ -96,7 +95,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('remark'),
         dataIndex: 'remarks',
-        width: 50,
+        width: 80,
         render: (o) => {
           const text = [];
           if (o) {
@@ -120,21 +119,22 @@ export default class QuoteList extends Component {
       }, {
         title: msg('modifiedCount'),
         dataIndex: 'modify_count',
-        width: 50,
+        width: 80,
       }, {
         title: msg('modifiedBy'),
         dataIndex: 'modify_name',
-        width: 60,
+        width: 80,
       }, {
         title: msg('modifiedTime'),
         dataIndex: 'modify_time',
-        width: 80,
+        width: 100,
         render: (o, record) => {
           return `${moment(record.modify_time).format('MM.DD HH:mm')}`;
         },
       }, {
         title: msg('operation'),
         width: 60,
+        fixed: 'right',
         render: (o, record) => {
           return (
             <span>
@@ -159,7 +159,7 @@ export default class QuoteList extends Component {
               </Button>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={quotes} />
+              <Table columns={columns} dataSource={quotes} scroll={{ x: 1600 }} />
             </div>
           </div>
         </div>

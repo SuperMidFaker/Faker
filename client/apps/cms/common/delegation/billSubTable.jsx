@@ -132,7 +132,7 @@ export default class SubdelgTable extends Component {
     title: this.msg('processDate'),
     width: 160,
     render: (o, record) => (record.id ?
-    record.process_date && moment(record.process_date).format('YYYY.MM.DD') : '-'),
+    record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }]
 
   handleTableLoad = () => {
