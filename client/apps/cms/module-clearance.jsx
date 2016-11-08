@@ -31,13 +31,39 @@ export default class Clearance extends React.Component {
   componentWillMount() {
     const { privileges, intl } = this.props;
     const linkMenus = [];
-    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
+        key: 'cms-0',
+        path: '/clearance/dashboard',
+        icon: 'zmdi zmdi-tv-list',
+        text: '工作台',
+      });
+    }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+      linkMenus.push({
+        single: false,
         key: 'cms-1',
         path: '/clearance/import',
         icon: 'icon-ikons-login',
         text: formatMsg(intl, 'import'),
+        sublinks: [{
+          key: 'cms-1-0',
+          path: '/clearance/import',
+          text: '报关委托',
+        }, {
+          key: 'cms-1-1',
+          path: '/clearance/import/customs',
+          text: '报关单',
+        }, {
+          key: 'cms-1-2',
+          path: '/clearance/import/ciq',
+          text: '报检',
+        }, {
+          key: 'cms-1-3',
+          path: '/clearance/import/certs',
+          text: '鉴定办证',
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'export' })) {
@@ -49,62 +75,52 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'expense' })) {
-      linkMenus.push({
-        single: true,
-        key: 'cms-3',
-        path: '/clearance/expense',
-        icon: 'zmdi zmdi-money-box',
-        text: formatMsg(intl, 'expense'),
-      });
-    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
       linkMenus.push({
         single: false,
         key: 'cms-4',
         path: '/clearance/billing',
-        icon: 'icon-ikons-credit-card',
+        icon: 'zmdi zmdi-money-box',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
+          path: '/clearance/expense',
+          text: formatMsg(intl, 'expense'),
+        }, {
+          key: 'tms-4-1',
           path: '/clearance/billing/receivable',
           text: '应收账单',
         }, {
-          key: 'tms-4-1',
+          key: 'tms-4-2',
           path: '/clearance/billing/payable',
           text: '应付账单',
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'quote' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'resources' })) {
       linkMenus.push({
-        single: true,
-        key: 'cms-5',
-        path: '/clearance/quote',
-        icon: 'zmdi zmdi-case',
-        text: formatMsg(intl, 'quote'),
+        single: false,
+        key: 'cms-6',
+        icon: 'zmdi zmdi-library',
+        text: '资源',
+        sublinks: [{
+          key: 'cms-6-0',
+          path: '/clearance/resources/broker',
+          text: '供应商管理',
+        }, {
+          key: 'cms-6-1',
+          path: '/clearance/quote',
+          text: formatMsg(intl, 'quote'),
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: true,
-        key: 'cms-6',
+        key: 'cms-7',
         path: '/clearance/settings',
         icon: 'zmdi zmdi-settings',
         text: formatMsg(intl, 'settings'),
-      });
-    }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'resources' })) {
-      linkMenus.push({
-        single: false,
-        key: 'cms-7',
-        icon: 'zmdi zmdi-library',
-        text: '资源',
-        sublinks: [{
-          key: 'tms-6-0',
-          path: '/clearance/resources/broker',
-          text: '供应商管理',
-        }],
       });
     }
     this.setState({ linkMenus });

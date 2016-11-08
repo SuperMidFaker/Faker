@@ -77,7 +77,7 @@ export default class ExpenseList extends Component {
     {
       title: this.msg('delgNo'),
       dataIndex: 'delg_no',
-      width: 100,
+      width: 150,
       render: (o, record) => {
         return (
           <a onClick={() => this.handlePreview(o, record)}>
@@ -87,22 +87,21 @@ export default class ExpenseList extends Component {
     }, {
       title: this.msg('custName'),
       dataIndex: 'send_name',
-      width: 150,
-      render: o => <TrimSpan text={o} maxLen={12} />,
+      render: o => <TrimSpan text={o} maxLen={20} />,
     }, {
       title: this.msg('invoiceNo'),
       dataIndex: 'invoice_no',
-      width: 100,
+      width: 200,
     }, {
       title: this.msg('bLNo'),
       dataIndex: 'bl_wb_no',
-      width: 120,
+      width: 240,
     }, {
       title: '收款',
       children: [
         {
           title: this.msg('allBill'),
-          width: 80,
+          width: 100,
           dataIndex: 'all_bill',
           key: 'all_bill',
           render: (o) => {
@@ -114,7 +113,7 @@ export default class ExpenseList extends Component {
           title: this.msg('servBill'),
           dataIndex: 'serv_bill',
           key: 'serv_bill',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -124,7 +123,7 @@ export default class ExpenseList extends Component {
           title: this.msg('cushBill'),
           dataIndex: 'cush_bill',
           key: 'cush_bill',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -138,7 +137,7 @@ export default class ExpenseList extends Component {
         {
           title: this.msg('allCost'),
           dataIndex: 'all_cost',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return (<span style={{ color: '#FF9933' }}>{o.toFixed(2)}</span>);
@@ -147,7 +146,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('进出口代理'),
           dataIndex: 'agency',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -156,7 +155,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('报关'),
           dataIndex: 'cust',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -165,7 +164,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('报检'),
           dataIndex: 'ciq',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -174,7 +173,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('鉴定办证'),
           dataIndex: 'cert',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -183,7 +182,7 @@ export default class ExpenseList extends Component {
         }, {
           title: this.msg('其他'),
           dataIndex: 'misc',
-          width: 80,
+          width: 100,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -193,7 +192,7 @@ export default class ExpenseList extends Component {
       ],
     }, {
       title: this.msg('statementEn'),
-      width: 60,
+      width: 80,
       dataIndex: 'status',
       render: (o) => {
         return EXP_STATUS.filter(st => st.value === o)[0].text;
@@ -201,7 +200,7 @@ export default class ExpenseList extends Component {
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_act_time',
-      width: 100,
+      width: 120,
       render: (o) => {
         return `${moment(o).format('MM.DD HH:mm')}`;
       },

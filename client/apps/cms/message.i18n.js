@@ -42,28 +42,28 @@ const messages = defineMessages({
     defaultMessage: '新建',
   },
   import: {
-    id: 'cms.moduleClearance.import',
+    id: 'cms.module.import',
     defaultMessage: '进口',
   },
   export: {
-    id: 'cms.moduleClearance.export',
+    id: 'cms.module.export',
     defaultMessage: '出口',
   },
-  expense: {
-    id: 'cms.moduleClearance.expense',
-    defaultMessage: '费用',
-  },
   billing: {
-    id: 'cms.moduleClearance.billing',
-    defaultMessage: '账单',
+    id: 'cms.module.billing',
+    defaultMessage: '计费',
+  },
+  expense: {
+    id: 'cms.module.billing.expense',
+    defaultMessage: '费用管理',
+  },
+  resources: {
+    id: 'cms.module.resources',
+    defaultMessage: '资源',
   },
   quote: {
-    id: 'cms.moduleClearance.quote',
-    defaultMessage: '报价',
-  },
-  manage: {
-    id: 'cms.moduleClearance.manage',
-    defaultMessage: '管理',
+    id: 'cms.module.resources.quote',
+    defaultMessage: '报价管理',
   },
   settings: {
     id: 'cms.moduleClearance.settings',
