@@ -35,6 +35,8 @@ const PARTNERSHIP_TYPE_INFO = {
   freightForwarder: 'FWD',
   transportation: 'TRS',
   warehouse: 'WHS',
+  customsInspectBroker: 'CIB',
+  identifyCertBroker: 'ICB',
 };
 
 const WRAP_TYPE = [{
@@ -148,6 +150,17 @@ const CMS_DELG_STATUS = [
   { value: 3, text: '已申报' },
   { value: 4, text: '已放行' },
 ];
+export const CMS_CIQ_STATUS = [
+  { value: 0, text: '待接单' },
+  { value: 1, text: '已接单' },
+  { value: 2, text: '已完成' },
+];
+
+export const CIQ_SUP_STATUS = [
+  { value: 0, text: '待供应商接单' },
+  { value: 1, text: '供应商已接单' },
+  { value: 2, text: '已完成' },
+];
 
 export const FEE_STYLE = [
   { value: 'service', text: '服务费' },
@@ -203,11 +216,6 @@ export const CMS_BILLING_STATUS = {
   7: '已核销',
 };
 
-export const CMS_CIQ_STATUS = {
-  0: '未报检',
-  1: '已报检',
-};
-
 const MESSAGE_STATUS = {
   notRead: {
     key: 0,
@@ -228,7 +236,16 @@ export const EXP_STATUS = [
   { value: 1, text: '已结单' },
   { value: 2, text: '已开票' },
 ];
-
+export const DOC_TRANSFER = {
+  notransf: {
+    key: 0,
+    value: '不换单',
+  },
+  transf: {
+    key: 1,
+    value: '换单',
+  },
+};
 export {
   TENANT_LEVEL,
   TENANT_ASPECT,

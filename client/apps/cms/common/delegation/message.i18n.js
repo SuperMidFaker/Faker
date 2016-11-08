@@ -379,7 +379,7 @@ export default defineMessages({
   },
   certFee: {
     id: 'cms.delegation.certFee',
-    defaultMessage: '办证服务费用项',
+    defaultMessage: '办证费用项',
   },
   certPrice: {
     id: 'cms.delegation.certPrice',
