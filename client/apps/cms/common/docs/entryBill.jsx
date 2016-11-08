@@ -50,6 +50,7 @@ export default class EntryBillForm extends React.Component {
   }
   state = {
     activeKey: 'bill',
+    visible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entries && nextProps.entries.length !== 0 &&
@@ -69,6 +70,9 @@ export default class EntryBillForm extends React.Component {
   }
   handleTabChange = (activeKey) => {
     this.setState({ activeKey });
+  }
+  handleDock = () => {
+    this.setState({ visible: true });
   }
   render() {
     const { readonly, ietype, entries } = this.props;
@@ -103,7 +107,9 @@ export default class EntryBillForm extends React.Component {
       ))
       );
     let tabButtons = (
-      <Button><Icon type="double-left" /></Button>
+      <ButtonGroup>
+        <Button onClick={this.handleDock}><Icon type="double-left" /></Button>
+      </ButtonGroup>
     );
     if (!this.props.readonly) {
       tabButtons = (
@@ -112,7 +118,7 @@ export default class EntryBillForm extends React.Component {
             <Icon type="plus-square" />{this.msg('newDeclaration')}
           </DropdownButton>
           <ButtonGroup>
-            <Button><Icon type="double-left" /></Button>
+            <Button onClick={this.handleDock}><Icon type="double-left" /></Button>
           </ButtonGroup>
         </div>
       );
@@ -125,7 +131,7 @@ export default class EntryBillForm extends React.Component {
           {panes}
         </Tabs>
         <MergeSplitModal />
-        <ExtraDock />
+        <ExtraDock visible={this.state.visible} />
       </QueueAnim>
     );
   }

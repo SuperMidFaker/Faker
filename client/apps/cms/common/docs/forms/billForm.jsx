@@ -108,7 +108,7 @@ export default class BillForm extends React.Component {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
     const billStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
     return (<div>
-      <div className="panel-body collapse">
+      <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
         <Collapse bordered={false} defaultActiveKey={['bill-head', 'bill-list']}>
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
             <Card title={this.props.billHead.bill_seq_no} bodyStyle={{ padding: 8 }} extra={!readonly &&

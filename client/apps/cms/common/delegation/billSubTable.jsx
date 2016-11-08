@@ -52,7 +52,7 @@ export default class SubdelgTable extends Component {
   columns = [{
     title: this.msg('billNo'),
     dataIndex: 'bill_seq_no',
-    width: 160,
+    width: 200,
     render: (o, record) => {
       if (record.bill_status === undefined
         || this.props.delgStatus === CMS_DELEGATION_STATUS.unaccepted) {
@@ -76,7 +76,7 @@ export default class SubdelgTable extends Component {
   }, {
     title: this.msg('declareWay'),
     dataIndex: 'decl_way_code',
-    width: 100,
+    width: 140,
     render: (o) => {
       const decls = this.props.ietype === 'import' ?
         DECL_I_TYPE : DECL_E_TYPE;
@@ -84,8 +84,12 @@ export default class SubdelgTable extends Component {
       return decl && decl.value;
     },
   }, {
+    title: this.msg('manualNo'),
+    dataIndex: 'manual_no',
+    width: 140,
+  }, {
     title: this.msg('entryId'),
-    width: 160,
+    width: 140,
     dataIndex: 'entry_id',
     render: (o, record) => {
       // 用id字段表示为children数据
@@ -107,25 +111,26 @@ export default class SubdelgTable extends Component {
     },
   }, {
     title: this.msg('preEntryNo'),
-    width: 160,
+    width: 220,
     dataIndex: 'pre_entry_seq_no',
     render: (o, record) => (record.id ? o : '-'),
   }, {
     title: this.msg('packageNum'),
     width: 60,
     dataIndex: 'pack_count',
+    render: (o, record) => (record.id ? o : (<b>{o}</b>)),
   }, {
     title: this.msg('delgGrossWt'),
-    width: 80,
+    width: 120,
     dataIndex: 'gross_wt',
+    render: (o, record) => (record.id ? o : (<b>{o}</b>)),
   }, {
     title: this.msg('clrStatus'),
-    width: 160,
     dataIndex: 'note',
     render: (o, record) => (record.id ? o : '-'),
   }, {
     title: this.msg('processDate'),
-    width: 80,
+    width: 160,
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('YYYY.MM.DD') : '-'),
   }]

@@ -602,12 +602,23 @@ img {
         border-radius: 2px;
         border: none;
     }
-    .ant-collapse-header {
-      font-size: 14px;
+  }
+  &.readonly {
+    .ant-input[disabled],
+    .ant-select-disabled {
+      color: #666;
     }
   }
   .ant-table-expanded-row > td {
     padding: 8px 8px;
+  }
+  .ant-card-head {
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px;
+  }
+  .ant-card-extra {
+    top: 8px;
   }
 }
 .panel-footer {
