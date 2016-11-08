@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
-import { feeUpdate, feeAdd, feeDelete } from 'common/reducers/cmsQuote';
+import { feeUpdate, feeAdd, feeDelete, saveQuoteModel } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
 import { CHARGE_MODE, FEE_STYLE } from 'common/constants';
@@ -137,7 +137,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { feeUpdate, feeAdd, feeDelete }
+  { feeUpdate, feeAdd, feeDelete, saveQuoteModel }
 )
 export default class FeesTable extends Component {
   static propTypes = {
@@ -148,6 +148,7 @@ export default class FeesTable extends Component {
     feeUpdate: PropTypes.func.isRequired,
     feeAdd: PropTypes.func.isRequired,
     feeDelete: PropTypes.func.isRequired,
+    saveQuoteModel: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -263,6 +264,27 @@ export default class FeesTable extends Component {
     });
     this.props.quoteData.fees.splice(index, 1);
   }
+  handleModelSave = () => {
+    this.props.saveQuoteModel(
+      this.props.tenantId,
+      this.props.quoteData.fees
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+      }
+    });
+  }
+  handleMdlFeeDelete = (row, index) => {
+    const count = this.state.count + 1;
+    this.setState({
+      editIndex: -1,
+      count,
+    });
+    this.props.quoteData.fees.splice(index, 1);
+  }
+
   render() {
     const { quoteData, action, editable } = this.props;
     const { editIndex, addedit } = this.state;
@@ -365,6 +387,10 @@ export default class FeesTable extends Component {
                 <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
               );
             }
+          } else if (record.category === 'custom' && action === 'model') {
+            return (
+              <RowUpdater onHit={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
+            );
           } else {
             return <span />;
           }
@@ -376,7 +402,8 @@ export default class FeesTable extends Component {
         <div className="panel-body table-panel">
           <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} />
           <div style={{ padding: 16 }}>
-            <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>
+            { (action === 'model') && <Button type="primary" style={{ marginRight: '20px' }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+            { (action === 'model') && <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>}
           </div>
         </div>
       </div>

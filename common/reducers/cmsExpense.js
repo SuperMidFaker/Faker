@@ -229,7 +229,7 @@ export function openCertModal() {
   };
 }
 
-export function loadCertFees(dispId) {
+export function loadCertFees(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -239,13 +239,13 @@ export function loadCertFees(dispId) {
       ],
       endpoint: 'v1/cms/expense/certfees',
       method: 'get',
-      params: { dispId },
+      params,
       origin: 'mongo',
     },
   };
 }
 
-export function saveCertFees(dispId, params) {
+export function saveCertFees(disps, params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -255,7 +255,7 @@ export function saveCertFees(dispId, params) {
       ],
       endpoint: 'v1/cms/expense/update/certfees',
       method: 'post',
-      data: { dispId, params },
+      data: { disps, params },
       origin: 'mongo',
     },
   };
