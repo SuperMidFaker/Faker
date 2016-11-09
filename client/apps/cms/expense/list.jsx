@@ -145,7 +145,7 @@ export default class ExpenseList extends Component {
           },
         }, {
           title: this.msg('进出口代理'),
-          dataIndex: 'agency',
+          dataIndex: 'agency_cost',
           width: 100,
           render: (o) => {
             if (o) {
@@ -154,7 +154,7 @@ export default class ExpenseList extends Component {
           },
         }, {
           title: this.msg('报关'),
-          dataIndex: 'cust',
+          dataIndex: 'cust_cost',
           width: 100,
           render: (o) => {
             if (o) {
@@ -163,7 +163,7 @@ export default class ExpenseList extends Component {
           },
         }, {
           title: this.msg('报检'),
-          dataIndex: 'ciq',
+          dataIndex: 'ciq_cost',
           width: 100,
           render: (o) => {
             if (o) {
@@ -172,7 +172,7 @@ export default class ExpenseList extends Component {
           },
         }, {
           title: this.msg('鉴定办证'),
-          dataIndex: 'cert',
+          dataIndex: 'cert_cost',
           width: 100,
           render: (o) => {
             if (o) {
@@ -181,7 +181,7 @@ export default class ExpenseList extends Component {
           },
         }, {
           title: this.msg('其他'),
-          dataIndex: 'misc',
+          dataIndex: 'misc_cost',
           width: 100,
           render: (o) => {
             if (o) {
