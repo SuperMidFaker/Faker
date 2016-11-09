@@ -38,6 +38,7 @@ module.exports = (serverPort, dirName, appName) => {
     config.set('API_ROOTS', {
       default: 'http://localhost:3030/',
       mongo: 'http://localhost:3032/',
+      scv: 'http://localhost:3034/',
       self: '/',
     });
   }
@@ -46,6 +47,7 @@ module.exports = (serverPort, dirName, appName) => {
     config.set('API_ROOTS', {
       default: 'http://localhost:3030/',
       mongo: 'http://localhost:3032/',
+      scv: 'http://localhost:3034/',
       self: '/',
     });
   }
@@ -53,6 +55,7 @@ module.exports = (serverPort, dirName, appName) => {
     config.set('API_ROOTS', {
       default: 'https://api.welogix.cn/',
       mongo: 'https://api1.welogix.cn/',
+      scv: 'https://api2.welogix.cn/',
       self: '/',
     });
     config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
@@ -60,6 +63,7 @@ module.exports = (serverPort, dirName, appName) => {
       config.set('API_ROOTS', {
         default: 'https://api.welogix.co/',
         mongo: 'https://api1.welogix.co/',
+        scv: 'https://api2.welogix.co/',
         self: '/',
       });
       config.set('CDN_URL', '');
