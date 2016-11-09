@@ -7,10 +7,11 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { createQuote, loadQtModelbyTenantId, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, message, Form } from 'antd';
+import { Button, Collapse, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 const formatMsg = format(messages);
+const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -87,8 +88,16 @@ export default class QuotingCreate extends Component {
           </div>
         </header>
         <div className="main-content">
-          <FeesForm form={form} action="create" />
-          <FeesTable action="create" editable />
+          <div className="page-body">
+            <Collapse bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
+              <Panel header={<span>基础信息</span>} key="fees-form">
+                <FeesForm form={form} action="create" />
+              </Panel>
+              <Panel header={<span>价格表</span>} key="fees-table">
+                <FeesTable action="create" editable />
+              </Panel>
+            </Collapse>
+          </div>
         </div>
       </div>
     );

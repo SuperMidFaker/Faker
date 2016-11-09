@@ -105,7 +105,7 @@ export default class EntryForm extends React.Component {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
     const declStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
-    return (<div>
+    return (
       <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
         <Collapse bordered={false} defaultActiveKey={['entry-head', 'entry-list']}>
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
@@ -128,7 +128,6 @@ export default class EntryForm extends React.Component {
             </Card>
           </Panel>
         </Collapse>
-      </div>
-    </div>);
+      </div>);
   }
 }

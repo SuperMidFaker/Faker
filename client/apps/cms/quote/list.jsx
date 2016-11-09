@@ -52,11 +52,11 @@ export default class QuoteList extends Component {
       {
         title: msg('quoteNo'),
         dataIndex: 'quote_no',
-        width: 100,
+        width: 120,
       }, {
         title: msg('partners'),
         dataIndex: 'partner.name',
-        width: 200,
+        width: 240,
       }, {
         title: msg('tariffKinds'),
         dataIndex: 'tariff_kind',
@@ -108,7 +108,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('status'),
         dataIndex: 'valid',
-        width: 50,
+        width: 80,
         render: (o) => {
           if (!o) {
             return <Tag color="#CCCCCC">{msg('invalid')}</Tag>;

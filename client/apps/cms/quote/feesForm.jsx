@@ -5,7 +5,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { submitQuotes } from 'common/reducers/cmsQuote';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, TARIFF_KINDS } from 'common/constants';
-import { Form, Select, Col, Row, Button, message } from 'antd';
+import { Card, Form, Select, Col, Row, Button, message } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -113,15 +113,17 @@ export default class FeesForm extends Component {
     const msg = key => formatMsg(this.props.intl, key);
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     return (
-      <div className="panel-container" >
+      <Card title={(action === 'edit') && <span>{this.props.quoteData.quote_no}</span>} bodyStyle={{ padding: 24 }}
+        extra={(action === 'edit') && <Button size="small" type="primary" style={{ marginLeft: 40 }} icon="save" onClick={this.handleSave} >{msg('save')}</Button>}
+      >
         <Row>
-          <Col sm={8} md={6}>
+          <Col sm={8} md={8}>
             <FormItem label={msg('tariffKinds')} {...formItemLayout}>
               {getFieldDecorator('tariff_kind', {
                 rules: [{ required: true, message: '报价类型必选' }],
                 initialValue: fieldInits.tariff_kind,
               })(
-                <Select style={{ width: '90%' }} onSelect={this.handleKindSelect} >
+                <Select style={{ width: '100%' }} onSelect={this.handleKindSelect} >
                   {
                   TARIFF_KINDS.map(qt =>
                     <Option value={qt.value} key={qt.value}>{qt.text}</Option>
@@ -131,7 +133,25 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={6}>
+          <Col sm={8} md={16}>
+            <FormItem label={msg('declareWay')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+              {getFieldDecorator('decl_way_code', {
+                rules: [{ required: true, message: '报关类型必选', type: 'array' }],
+                initialValue: fieldInits.decl_way_code,
+              })(
+                <Select multiple style={{ width: '100%' }} placeholder="不限" >
+                  {
+                  DECL_TYPE.map(dw =>
+                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                  )
+                }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={8} md={8}>
             <FormItem label={msg('partners')} {...formItemLayout}>
               {getFieldDecorator('partner.name', {
                 rules: [{ required: true, message: '必选' }],
@@ -139,7 +159,7 @@ export default class FeesForm extends Component {
                 initialValue: fieldInits.partner.name,
               })(
                 <Select showSearch showArrow optionFilterProp="searched"
-                  style={{ width: '90%' }} disabled={disBase}
+                  style={{ width: '100%' }} disabled={disBase}
                 >
                   {
                   coops.map(pt => (
@@ -152,29 +172,13 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={6}>
-            <FormItem label={msg('declareWay')} {...formItemLayout}>
-              {getFieldDecorator('decl_way_code', {
-                rules: [{ required: true, message: '报关类型必选', type: 'array' }],
-                initialValue: fieldInits.decl_way_code,
-              })(
-                <Select multiple style={{ width: '90%' }} placeholder="不限" >
-                  {
-                  DECL_TYPE.map(dw =>
-                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                  )
-                }
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col sm={8} md={6}>
+          <Col sm={8} md={8}>
             <FormItem label={msg('transMode')} {...formItemLayout}>
               {getFieldDecorator('trans_mode', {
                 rules: [{ required: true, message: '运输方式必选', type: 'array' }],
                 initialValue: fieldInits.trans_mode,
               })(
-                <Select multiple style={{ width: '90%' }} placeholder="不限" >
+                <Select multiple style={{ width: '100%' }} placeholder="不限" >
                   {
                   TRANS_MODE.map(tr =>
                     <Option value={tr.value} key={tr.value}>{tr.text}</Option>
@@ -184,18 +188,15 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={6}>
+          <Col sm={8} md={8}>
             <FormItem label={msg('remark')} {...formItemLayout}>
               {getFieldDecorator('remarks', {
                 initialValue: fieldInits.remarks,
-              })(<Select tags style={{ width: '90%' }} />)}
+              })(<Select tags style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
         </Row>
-        {
-          (action === 'edit') &&
-            <Button type="primary" style={{ marginLeft: 40 }} onClick={this.handleSave} >{msg('save')}</Button>}
-      </div>
+      </Card>
     );
   }
 }

@@ -90,7 +90,9 @@ export default class Settings extends Component {
           </Menu>
         </aside>
         <div className="main-content with-side-bar" key="main">
-          { qtModelShow && <FeesTable action="model" editable />}
+          <div className="page-body">
+            { qtModelShow && <FeesTable action="model" editable />}
+          </div>
         </div>
       </QueueAnim>
     );
