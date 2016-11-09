@@ -43,12 +43,12 @@ export default class PreviewPanel extends React.Component {
   }, {
     title: this.msg('收款金额'),
     dataIndex: 'bill',
-    key: 'total_fee',
+    key: 'sale_fee',
     width: '30%',
   }, {
     title: this.msg('付款金额'),
     dataIndex: 'cost',
-    key: 'total_fee',
+    key: 'cost_fee',
     width: '30%',
   }];
   handleClose = () => {

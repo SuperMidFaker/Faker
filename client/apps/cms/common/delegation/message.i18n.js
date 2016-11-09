@@ -11,11 +11,19 @@ export default defineMessages({
   },
   importDeclaration: {
     id: 'cms.delegation.import.declaration',
-    defaultMessage: '进口清关',
+    defaultMessage: '进口报关',
   },
   exportDeclaration: {
     id: 'cms.delegation.export.declaration',
-    defaultMessage: '出口清关',
+    defaultMessage: '出口报关',
+  },
+  importCiq: {
+    id: 'cms.delegation.import.ciq',
+    defaultMessage: '进口报检',
+  },
+  exportCiq: {
+    id: 'cms.delegation.export.ciq',
+    defaultMessage: '出口报检',
   },
   all: {
     id: 'cms.delegation.stage.all',

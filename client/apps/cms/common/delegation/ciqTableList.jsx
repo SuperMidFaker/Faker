@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
+import QueueAnim from 'rc-queue-anim';
+import connectNav from 'client/common/decorators/connect-nav';
 import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, openCiqModal, acceptCiqCert, loadCertBrokers,
   loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish } from 'common/reducers/cmsDelegation';
@@ -12,8 +14,9 @@ import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
-import CiqnoFillModal from './modals/ciqNoFill';
+// import CiqnoFillModal from './modals/ciqNoFill';
 import DelgDispatch from './delgDispatch';
+import SearchBar from 'client/components/search-bar';
 
 const formatMsg = format(messages);
 
@@ -30,7 +33,11 @@ const formatMsg = format(messages);
   { loadCiqTable, openCiqModal, acceptCiqCert, loadCertFees, openCertModal,
     loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish }
 )
-export default class CiqTable extends Component {
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
+})
+export default class CiqList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -206,18 +213,31 @@ export default class CiqTable extends Component {
       }
     });
   }
+  handleSearch = (searchVal) => {
+    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    this.handleTableLoad(1, filters);
+  }
   render() {
     const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
     const columns = [...this.columns];
     return (
-      <div className="page-body">
-        <div className="panel-body table-panel expandable">
-          <Table columns={columns} dataSource={this.dataSource} />
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          </div>
+          <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
+        </header>
+        <div className="main-content" key="main">
+          <div className="page-body">
+            <div className="panel-body table-panel expandable">
+              <Table columns={columns} dataSource={this.dataSource} />
+            </div>
+          </div>
         </div>
-        <CiqnoFillModal reload={this.handleTableLoad} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-      </div>
+      </QueueAnim>
     );
   }
 }

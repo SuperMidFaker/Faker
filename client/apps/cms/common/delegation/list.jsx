@@ -14,8 +14,6 @@ import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
-import CiqTable from './ciqTableList';
-import CertTable from './certTableList';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertTable, loadCertBrokers, loadRelatedDisp } from 'common/reducers/cmsDelegation';
 import { loadPaneExp, loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
@@ -89,7 +87,6 @@ export default class DelegationList extends Component {
   state = {
     searchInput: '',
     expandedKeys: [],
-    service: 0,
   }
   componentDidMount() {
     this.props.loadCertBrokers(this.props.tenantId);
@@ -315,7 +312,6 @@ export default class DelegationList extends Component {
     });
   }
   handleRadioChange = (ev) => {
-    this.setState({ service: 0 });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
@@ -325,15 +321,6 @@ export default class DelegationList extends Component {
   handleRadioChangeType = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
-    }
-    if (ev.target.value === 'ciq') {
-      this.setState({ service: 1 });
-      const filter = { ...this.props.listFilter, status: ev.target.value };
-      this.handleCiqListLoad(1, filter);
-    } else if (ev.target.value === 'cert') {
-      this.setState({ service: 2 });
-      const filter = { ...this.props.listFilter, status: ev.target.value };
-      this.handleCertListLoad(1, filter);
     }
   }
   handleMQdeclWay = (row) => {
@@ -563,15 +550,12 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChangeType}>
-            <RadioButton value="ciq">{this.msg('ciq')}</RadioButton>
-          </RadioGroup>
         </header>
         <div className="top-bar-tools">
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="main-content" key="main">
-          {this.state.service === 0 && <div className="page-body">
+          <div className="page-body">
             <div className="panel-header">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus-circle-o">
@@ -586,9 +570,7 @@ export default class DelegationList extends Component {
                 scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
-          </div>}
-          {this.state.service === 1 && <CiqTable ietype={this.props.ietype} />}
-          {this.state.service === 2 && <CertTable ietype={this.props.ietype} />}
+          </div>
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />

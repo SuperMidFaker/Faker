@@ -53,22 +53,27 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'importDelegation'),
         }, {
           key: 'cms-1-1',
-          path: '/clearance/import/customs',
-          text: formatMsg(intl, 'importCustomsDecl'),
-        }, {
-          key: 'cms-1-2',
           path: '/clearance/import/ciq',
-          text: formatMsg(intl, 'importCiq'),
+          text: '报检',
         }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'export' })) {
       linkMenus.push({
-        single: true,
+        single: false,
         key: 'cms-2',
         path: '/clearance/export',
         icon: 'icon-ikons-logout',
         text: formatMsg(intl, 'export'),
+        sublinks: [{
+          key: 'cms-2-0',
+          path: '/clearance/export',
+          text: '报关委托',
+        }, {
+          key: 'cms-2-1',
+          path: '/clearance/export/ciq',
+          text: '报检',
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
