@@ -168,13 +168,10 @@ export default class FreightCharge extends React.Component {
     const { computed } = this.state;
     return (
       <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}
-        extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : null}
-      >
-        <Button style={{ width: '100%', marginBottom: 16 }} type="primary" size="large" icon="calculator"
+        extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
           onClick={this.handleCompute}
-        >
-          {this.msg('computeCharge')}
-        </Button>
+        >{this.msg('computeCharge')}</Button>}
+      >
         {
           computed &&
           <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}

@@ -96,6 +96,20 @@ export default class AcceptanceEdit extends Component {
     const { form, type, submitting } = this.props;
     return (
       <div className="main-content">
+        <header className="top-bar">
+          <span>修改委托</span>
+        </header>
+        <div className="top-bar-tools">
+          <Button size="large" type="primary" style={{ marginRight: 20 }}
+            onClick={this.handleSaveBtnClick} loading={submitting}
+          >
+            {this.msg('save')}
+          </Button>
+          <span />
+          <Popconfirm title={this.msg('acceptSaveMessage')} onConfirm={this.handleSaveAccept}>
+            <Button size="large" loading={submitting}>一键接单</Button>
+          </Popconfirm>
+        </div>
         <div className="page-body">
           <Form horizontal form={form}>
             <div className="panel-body">
@@ -110,16 +124,6 @@ export default class AcceptanceEdit extends Component {
             </div>
             <div id="parent" style={{ padding: '16px' }}>
               <SubForm form={form} ietype={type} />
-            </div>
-            <div style={{ padding: '16px' }}>
-              <Button size="large" type="primary" style={{ marginRight: 20 }}
-                onClick={this.handleSaveBtnClick} loading={submitting}
-              >
-                {this.msg('save')}
-              </Button>
-              <Popconfirm title={this.msg('acceptSaveMessage')} onConfirm={this.handleSaveAccept}>
-                <Button size="large" loading={submitting}>一键接单</Button>
-              </Popconfirm>
             </div>
           </Form>
         </div>

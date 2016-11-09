@@ -96,14 +96,14 @@ export default class QuotingEdit extends Component {
       <div>
         <header className="top-bar">
           <span>{msg('editQuote')}</span>
-          <div className="tools">
-            <Button type="primary" onClick={this.handleCopy} >{msg('copy')}</Button>
-            <span />
-            <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
-              <Button>{msg('delete')}</Button>
-            </Popconfirm>
-          </div>
         </header>
+        <div className="top-bar-tools">
+          <Button type="primary" onClick={this.handleCopy} >{msg('copy')}</Button>
+          <span />
+          <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
+            <Button>{msg('delete')}</Button>
+          </Popconfirm>
+        </div>
         <div className="main-content">
           <div className="page-body">
             <Collapse bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>

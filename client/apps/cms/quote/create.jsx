@@ -83,10 +83,10 @@ export default class QuotingCreate extends Component {
       <div>
         <header className="top-bar">
           <span>{msg('newQuote')}</span>
-          <div className="tools">
-            <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
-          </div>
         </header>
+        <div className="top-bar-tools">
+          <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
+        </div>
         <div className="main-content">
           <div className="page-body">
             <Collapse bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
