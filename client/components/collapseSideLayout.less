@@ -1,5 +1,7 @@
 @import "~antd/lib/style/mixins/compatibility.less";
 @import "~antd/lib/style/themes/default.less";
+@sider-width: 180px;
+@sider-collapse-width: 64px;
 .ant-layout-aside {
   position: relative;
   min-height: 100%;
@@ -21,7 +23,7 @@
 }
 
 .ant-layout-aside .ant-layout-sider {
-  width: 180px;
+  width: @sider-width;
   background: #404040;
   position: fixed;
   overflow: visible;
@@ -32,7 +34,7 @@
 }
 
 .ant-layout-aside-collapse .ant-layout-sider {
-  width: 64px;
+  width: @sider-collapse-width;
   transition: all 0.3s ease;
 }
 
@@ -91,7 +93,7 @@
 /* 实际使用中需要改成 position: fixed */
 .ant-layout-aside .ant-aside-action {
   height: 42px;
-  width: 224px;
+  width: @sider-width;
   position: fixed;
   bottom: 0;
   background: #656565;
@@ -103,7 +105,7 @@
 }
 
 .ant-layout-aside-collapse .ant-aside-action {
-  width: 64px;
+  width: @sider-collapse-width;
   transition: all 0.3s ease;
 }
 
@@ -118,12 +120,12 @@
 }
 
 .ant-layout-aside .ant-layout-main {
-  margin-left: 224px;
+  margin-left: @sider-width;
   transition: all 0.3s ease;
 }
 
 .ant-layout-aside-collapse .ant-layout-main {
-  margin-left: 64px;
+  margin-left: @sider-collapse-width;
   transition: all 0.3s ease;
 }
 
