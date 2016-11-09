@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadCiqTable } from 'common/reducers/cmsDelegation';
-import CiqList from '../../common/delegation/ciqTableList';
+import CiqList from '../../common/delegation/ciqList';
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCiqTable({
