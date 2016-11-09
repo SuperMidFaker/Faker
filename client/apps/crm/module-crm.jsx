@@ -45,14 +45,14 @@ export default class ModuleCRM extends React.Component {
       single: true,
       key: 'customer-4',
       path: '/customer/customers',
-      icon: 'icon-ikons-logout',
+      icon: 'zmdi zmdi-accounts-list',
       text: formatMsg(intl, 'customers'),
     });
     linkMenus.push({
       single: true,
       key: 'customer-5',
       path: '/customer/reports',
-      icon: 'zmdi zmdi-money-box',
+      icon: 'zmdi zmdi-chart',
       text: formatMsg(intl, 'reports'),
     });
     linkMenus.push({

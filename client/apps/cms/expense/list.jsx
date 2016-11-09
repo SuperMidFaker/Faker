@@ -295,9 +295,6 @@ export default class ExpenseList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.msg('expense')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
@@ -306,6 +303,9 @@ export default class ExpenseList extends Component {
             <RadioButton value="invoiced">{this.msg('invoiced')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">

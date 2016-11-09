@@ -554,9 +554,6 @@ export default class DelegationList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
@@ -570,6 +567,9 @@ export default class DelegationList extends Component {
             <RadioButton value="ciq">{this.msg('ciq')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           {this.state.service === 0 && <div className="page-body">
             <div className="panel-header">

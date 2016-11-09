@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
+import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -22,7 +23,6 @@ function fetchData({ state, dispatch, cookie }) {
     status: state.corps.messages.status,
   }));
 }
-
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
@@ -32,6 +32,9 @@ function fetchData({ state, dispatch, cookie }) {
   }),
   { loadMessages, markMessages, markMessage }
 )
+@connectNav({
+  depth: 3,
+})
 export default class MessageList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

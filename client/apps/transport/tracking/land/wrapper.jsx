@@ -141,13 +141,6 @@ export default class TrackingLandWrapper extends React.Component {
             { opacity: [1, 0], translateY: [0, -50] }]}
       >
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-              value={searchInput}
-            />
-            <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-          </div>
           <span>{this.msg('transportTracking')}</span>
           <RadioGroup onChange={this.handleStatusNav} value={radioValue}>
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
@@ -168,6 +161,13 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+            value={searchInput}
+          />
+          <span />
+          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+        </div>
         <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           {this.props.children}
