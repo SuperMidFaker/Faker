@@ -95,7 +95,7 @@ export default class AcceptanceEdit extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <div className="main-content">
+      <div>
         <header className="top-bar">
           <span>修改委托</span>
         </header>
@@ -110,22 +110,25 @@ export default class AcceptanceEdit extends Component {
             <Button size="large" loading={submitting}>一键接单</Button>
           </Popconfirm>
         </div>
-        <div className="page-body">
-          <Form horizontal form={form}>
-            <div className="panel-body">
-              <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
-                <BasicForm form={form} ieType={type} partnershipType="CCB" />
-              </Col>
-              <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
-                <UploadGroup onFileUpload={this.handleUploadedFile}
-                  onFileRemove={this.handleFileRemove}
-                />
-              </Col>
-            </div>
-            <div id="parent" style={{ padding: '16px' }}>
-              <SubForm form={form} ietype={type} />
-            </div>
-          </Form>
+        <div className="main-content">
+
+          <div className="page-body">
+            <Form horizontal form={form}>
+              <div className="panel-body">
+                <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
+                  <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                </Col>
+                <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
+                  <UploadGroup onFileUpload={this.handleUploadedFile}
+                    onFileRemove={this.handleFileRemove}
+                  />
+                </Col>
+              </div>
+              <div id="parent" style={{ padding: '16px' }}>
+                <SubForm form={form} ietype={type} />
+              </div>
+            </Form>
+          </div>
         </div>
       </div>
     );

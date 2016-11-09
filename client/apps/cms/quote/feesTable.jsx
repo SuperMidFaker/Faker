@@ -6,7 +6,7 @@ import { feeUpdate, feeAdd, feeDelete, saveQuoteModel } from 'common/reducers/cm
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
 import { CHARGE_MODE, FEE_STYLE } from 'common/constants';
-import { Card, Select, Table, Button, Input, Switch, message } from 'antd';
+import { Select, Table, Button, Input, Switch, message } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -398,13 +398,10 @@ export default class FeesTable extends Component {
       },
     ];
     return (
-      <Card bodyStyle={{ padding: 0 }}>
-        <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} size="middle" scroll={{ y: 580 }} />
-        <div style={{ padding: 16 }}>
-          { (action === 'model') && <Button type="primary" style={{ marginRight: '20px' }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
-          { (action === 'model') && <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>}
-        </div>
-      </Card>
+      <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} size="middle" scroll={{ y: 500 }}
+        title={() => (action === 'model') && <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>}
+        footer={() => (action === 'model') && <Button type="primary" style={{ marginRight: '20px' }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+      />
     );
   }
 }

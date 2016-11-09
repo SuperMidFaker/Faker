@@ -6,7 +6,7 @@ import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote, copyQuote, deleteQuote, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Collapse, message, Form, Popconfirm } from 'antd';
+import { Button, Card, Collapse, message, Form, Popconfirm } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -111,7 +111,9 @@ export default class QuotingEdit extends Component {
                 <FeesForm form={form} action="edit" />
               </Panel>
               <Panel header={<span>价格表</span>} key="fees-table">
-                <FeesTable action="edit" editable={false} />
+                <Card bodyStyle={{ padding: 0 }}>
+                  <FeesTable action="edit" editable={false} />
+                </Card>
               </Panel>
             </Collapse>
           </div>

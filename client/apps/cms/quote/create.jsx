@@ -7,7 +7,7 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { createQuote, loadQtModelbyTenantId, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Collapse, message, Form } from 'antd';
+import { Button, Card, Collapse, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 const formatMsg = format(messages);
@@ -94,7 +94,9 @@ export default class QuotingCreate extends Component {
                 <FeesForm form={form} action="create" />
               </Panel>
               <Panel header={<span>价格表</span>} key="fees-table">
-                <FeesTable action="create" editable />
+                <Card bodyStyle={{ padding: 0 }}>
+                  <FeesTable action="create" editable />
+                </Card>
               </Panel>
             </Collapse>
           </div>

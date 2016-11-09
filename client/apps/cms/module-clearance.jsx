@@ -37,7 +37,7 @@ export default class Clearance extends React.Component {
         key: 'cms-0',
         path: '/clearance/dashboard',
         icon: 'zmdi zmdi-tv-list',
-        text: '工作台',
+        text: formatMsg(intl, 'dashboard'),
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
@@ -50,19 +50,15 @@ export default class Clearance extends React.Component {
         sublinks: [{
           key: 'cms-1-0',
           path: '/clearance/import',
-          text: '报关委托',
+          text: formatMsg(intl, 'importDelegation'),
         }, {
           key: 'cms-1-1',
           path: '/clearance/import/customs',
-          text: '报关单',
+          text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-1-2',
           path: '/clearance/import/ciq',
-          text: '报检',
-        }, {
-          key: 'cms-1-3',
-          path: '/clearance/import/certs',
-          text: '鉴定办证',
+          text: formatMsg(intl, 'importCiq'),
         }],
       });
     }
@@ -89,11 +85,11 @@ export default class Clearance extends React.Component {
         }, {
           key: 'tms-4-1',
           path: '/clearance/billing/receivable',
-          text: '应收账单',
+          text: formatMsg(intl, 'billingReceivable'),
         }, {
           key: 'tms-4-2',
           path: '/clearance/billing/payable',
-          text: '应付账单',
+          text: formatMsg(intl, 'billingPayable'),
         }],
       });
     }
@@ -102,11 +98,11 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-6',
         icon: 'zmdi zmdi-library',
-        text: '资源',
+        text: formatMsg(intl, 'resources'),
         sublinks: [{
           key: 'cms-6-0',
           path: '/clearance/resources/broker',
-          text: '供应商管理',
+          text: formatMsg(intl, 'providers'),
         }, {
           key: 'cms-6-1',
           path: '/clearance/quote',

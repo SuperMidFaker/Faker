@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import CarrierList from '../components/CarrierList';
+import BrokerList from '../components/brokerList';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadPartners, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -20,7 +20,7 @@ function fetchData({ dispatch, state, cookie }) {
   depth: 2,
   muduleName: 'clearance',
 })
-export default class DriverListContainer extends Component {
+export default class ProviderListContainer extends Component {
   static propTypes = {
     partnerlist: PropTypes.array.isRequired,
     changePartnerStatus: PropTypes.func.isRequired,
@@ -51,7 +51,7 @@ export default class DriverListContainer extends Component {
       ps => ['CCB', 'CIB', 'ICB'].indexOf(ps) >= 0)
     );
     return (
-      <CarrierList
+      <BrokerList
         dataSource={dataSource}
         onAddBtnClicked={this.handleAddBtnClick}
         onEditBtnClick={this.handleEditBtnClick}

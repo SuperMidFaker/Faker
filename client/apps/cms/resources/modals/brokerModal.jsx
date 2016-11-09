@@ -23,7 +23,7 @@ const options = [
   operation: state.transportResources.carrierModal.operation,
 }), { addPartner, editPartner, toggleCarrierModal })
 
-export default class CarrierModal extends React.Component {
+export default class BrokerModal extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool,

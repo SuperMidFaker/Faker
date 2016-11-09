@@ -1,6 +1,62 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
+  dashboard: {
+    id: 'cms.module.dashboard',
+    defaultMessage: '工作台',
+  },
+  import: {
+    id: 'cms.module.import',
+    defaultMessage: '进口清关',
+  },
+  importDelegation: {
+    id: 'cms.module.import.delegation',
+    defaultMessage: '委托管理',
+  },
+  importCustomsDecl: {
+    id: 'cms.module.import.customs.decl',
+    defaultMessage: '报关单',
+  },
+  importCiq: {
+    id: 'cms.module.import.ciq',
+    defaultMessage: '报检管理',
+  },
+  export: {
+    id: 'cms.module.export',
+    defaultMessage: '出口清关',
+  },
+  billing: {
+    id: 'cms.module.billing',
+    defaultMessage: '计费中心',
+  },
+  expense: {
+    id: 'cms.module.billing.expense',
+    defaultMessage: '费用管理',
+  },
+  billingReceivable: {
+    id: 'cms.module.billing.receivable',
+    defaultMessage: '应收账单',
+  },
+  billingPayable: {
+    id: 'cms.module.billing.payable',
+    defaultMessage: '应付账单',
+  },
+  resources: {
+    id: 'cms.module.resources',
+    defaultMessage: '资源中心',
+  },
+  quote: {
+    id: 'cms.module.resources.quote',
+    defaultMessage: '报价管理',
+  },
+  providers: {
+    id: 'cms.module.resources.providers',
+    defaultMessage: '供应商管理',
+  },
+  settings: {
+    id: 'cms.moduleClearance.settings',
+    defaultMessage: '设置',
+  },
   comp_code: {
     id: 'cms.manage.comp_code',
     defaultMessage: '社会信用代码',
@@ -40,34 +96,6 @@ const messages = defineMessages({
   new: {
     id: 'cms.manage.new',
     defaultMessage: '新建',
-  },
-  import: {
-    id: 'cms.module.import',
-    defaultMessage: '进口',
-  },
-  export: {
-    id: 'cms.module.export',
-    defaultMessage: '出口',
-  },
-  billing: {
-    id: 'cms.module.billing',
-    defaultMessage: '计费',
-  },
-  expense: {
-    id: 'cms.module.billing.expense',
-    defaultMessage: '费用管理',
-  },
-  resources: {
-    id: 'cms.module.resources',
-    defaultMessage: '资源',
-  },
-  quote: {
-    id: 'cms.module.resources.quote',
-    defaultMessage: '报价管理',
-  },
-  settings: {
-    id: 'cms.moduleClearance.settings',
-    defaultMessage: '设置',
   },
 });
 export default messages;

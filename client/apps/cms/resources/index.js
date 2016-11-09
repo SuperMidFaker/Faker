@@ -1,1 +1,1 @@
-export BrokerContainer from './containers/CarrierListContainer';
+export BrokerContainer from './containers/brokerListContainer';

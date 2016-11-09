@@ -3,14 +3,18 @@ import { Table, Button, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import CarrierModal from '../modals/carrierModal';
+import BrokerModal from '../modals/brokerModal';
+import connectNav from 'client/common/decorators/connect-nav';
 import { mapPartnerships } from '../util/dataMapping';
 
 const rowSelection = {
   onSelect() {},
 };
-
-export default class DriverList extends Component {
+@connectNav({
+  depth: 2,
+  muduleName: 'clearance',
+})
+export default class BrokerList extends Component {
   static propTyps = {
     dataSource: PropTypes.array,
     onAddBtnClicked: PropTypes.func.isRequired,
@@ -104,7 +108,7 @@ export default class DriverList extends Component {
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
             </div>
-            <CarrierModal />
+            <BrokerModal />
           </div>
         </div>
       </QueueAnim>

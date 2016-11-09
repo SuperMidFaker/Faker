@@ -73,7 +73,7 @@ export default class Transport extends React.Component {
         key: 'tms-4',
         path: '/transport/billing',
         icon: 'icon-fontello-credit-card-2',
-        text: '计费',
+        text: '计费中心',
         sublinks: [{
           key: 'tms-4-0',
           path: '/transport/billing/fee',
@@ -94,7 +94,7 @@ export default class Transport extends React.Component {
         single: false,
         key: 'tms-5',
         icon: 'zmdi zmdi-library',
-        text: '资源',
+        text: '资源中心',
         sublinks: [{
           key: 'tms-5-0',
           path: '/transport/resources/carrier',

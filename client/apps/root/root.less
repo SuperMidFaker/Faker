@@ -788,7 +788,7 @@ img {
   position: fixed;
   width: @dock-panel-width;
   top: @am-header-height;
-  right: 0;
+  right: -20px;
   bottom: 0;
   z-index: 75;
   background-color: #fff;
@@ -796,6 +796,7 @@ img {
   transform: translate(100%);
   box-shadow: 0 7px 21px rgba(0,0,0,.3);
   &.inside {
+    right: 0;
     transform: translate(0);
   }
   .panel-content {

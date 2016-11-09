@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Menu, Icon, Dropdown, Button } from 'antd';
+import { Breadcrumb, Menu, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -52,27 +52,9 @@ export default class Settings extends Component {
   }
   render() {
     const { qtModelShow } = this.state;
-    const menu = (
-      <Menu>
-        <Menu.Item key="1">第一个菜单项</Menu.Item>
-        <Menu.Item key="2">第二个菜单项</Menu.Item>
-        <Menu.Item key="3">第三个菜单项</Menu.Item>
-      </Menu>
-    );
-
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
-          <span>设置</span>
-        </header>
-        <div className="top-bar-tools">
-          <Dropdown overlay={menu}>
-            <Button type="ghost" style={{ marginLeft: 8 }}>
-              更多 <Icon type="down" />
-            </Button>
-          </Dropdown>
-        </div>
-        <aside className="side-bar" key="aside">
+        <aside className="side-bar no-top-bar" key="aside">
           <Menu
             onClick={this.handleClick}
             defaultOpenKeys={['integration', 'bizdata']}
@@ -90,11 +72,11 @@ export default class Settings extends Component {
             </SubMenu>
           </Menu>
         </aside>
-        <div className="main-content with-side-bar" key="main">
+        <div className="main-content with-side-bar no-top-bar" key="main">
           <div className="ant-layout-breadcrumb">
             <Breadcrumb>
               <Breadcrumb.Item href="">
-                <Icon type="setting" />
+                <Icon type="setting" /> 设置
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 通知提醒
@@ -102,7 +84,7 @@ export default class Settings extends Component {
             </Breadcrumb>
           </div>
           <div className="page-body">
-            { qtModelShow && <FeesTable action="model" editable />}
+            {qtModelShow && <FeesTable action="model" editable />}
           </div>
         </div>
       </QueueAnim>
