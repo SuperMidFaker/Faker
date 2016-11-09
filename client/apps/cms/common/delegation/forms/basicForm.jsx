@@ -24,12 +24,13 @@ function getFieldInits(aspect, formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no',
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
-      'goods_type', 'order_no', 'remark', 'transfer',
+      'goods_type', 'order_no', 'remark',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
     init.internal_no = formData.ref_external_no;
   }
+  init.transfer = 0;
   return init;
 }
 @injectIntl
