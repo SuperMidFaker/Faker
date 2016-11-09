@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Menu, Icon, Dropdown, Button } from 'antd';
+import { Breadcrumb, Menu, Icon, Dropdown, Button } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -63,33 +63,44 @@ export default class Settings extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="pull-right">
-            <Dropdown overlay={menu}>
-              <Button type="ghost" style={{ marginLeft: 8 }}>
-                更多 <Icon type="down" />
-              </Button>
-            </Dropdown>
-          </div>
           <span>设置</span>
         </header>
+        <div className="top-bar-tools">
+          <Dropdown overlay={menu}>
+            <Button type="ghost" style={{ marginLeft: 8 }}>
+              更多 <Icon type="down" />
+            </Button>
+          </Dropdown>
+        </div>
         <aside className="side-bar" key="aside">
           <Menu
             onClick={this.handleClick}
-            defaultOpenKeys={['sub1', 'sub2']}
+            defaultOpenKeys={['integration', 'bizdata']}
+            defaultSelectedKeys={['notification']}
             mode="inline"
           >
-            <SubMenu key="sub1" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
+            <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
+            <SubMenu key="integration" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
               <Menu.Item key="1">开放API</Menu.Item>
               <Menu.Item key="2">EDI</Menu.Item>
             </SubMenu>
-            <Menu.Item key="5"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
-            <SubMenu key="sub2" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
+            <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
               <Menu.Item key="9">报关清单</Menu.Item>
               <Menu.Item key="quotemodel">报价模板</Menu.Item>
             </SubMenu>
           </Menu>
         </aside>
         <div className="main-content with-side-bar" key="main">
+          <div className="ant-layout-breadcrumb">
+            <Breadcrumb>
+              <Breadcrumb.Item href="">
+                <Icon type="setting" />
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                通知提醒
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
           <div className="page-body">
             { qtModelShow && <FeesTable action="model" editable />}
           </div>
