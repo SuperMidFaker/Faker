@@ -346,6 +346,21 @@ export default class InboundShipmentsList extends React.Component {
   handleShipmentCreate = () => {
     this.props.openCreateModal();
   }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, shipment_no: value };
+    const { tenantId, inboundlist: { pageSize } } = this.props;
+    this.setState({ expandedKeys: [] });
+    this.props.loadInbounds({
+      tenantId,
+      filter: JSON.stringify(filter),
+      pageSize,
+      current: 1,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
   render() {
     const { inboundlist, listFilter } = this.props;
     this.dataSource.remotes = inboundlist;
