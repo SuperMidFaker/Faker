@@ -22,6 +22,7 @@ const initialState = {
     sortField: '',
     sortOrder: '',
     status: 'all',
+    shipment_no: '',
   },
   sendModal: {
     visible: false,
