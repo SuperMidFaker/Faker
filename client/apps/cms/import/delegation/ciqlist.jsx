@@ -16,7 +16,7 @@ function fetchData({ state, dispatch }) {
 
 @connectFetch()(fetchData)
 @withPrivilege({ module: 'clearance', feature: 'import' })
-export default class ImportAcceptanceList extends React.Component {
+export default class ImportCiqList extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
   }

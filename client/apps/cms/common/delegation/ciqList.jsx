@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Tag, } from 'antd';
+import { message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -147,7 +147,7 @@ export default class CiqList extends Component {
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),
-    getParams: (pagination, filters, sorter) => {
+    getParams: (pagination, filters) => {
       const params = {
         ietype: this.props.ietype,
         tenantId: this.props.tenantId,
@@ -232,8 +232,7 @@ export default class CiqList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading}
-              />
+              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
             </div>
           </div>
         </div>

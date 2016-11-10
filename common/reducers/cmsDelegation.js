@@ -812,10 +812,10 @@ export function openEfModal({ entryHeadId, delgNo, billSeqNo }) {
     data: { entryHeadId, delgNo, billSeqNo },
   };
 }
-export function openCiqModal({ delgNo }) {
+export function openCiqModal({ entryHeadId, delgNo }) {
   return {
     type: actionTypes.OPEN_CIQ_MODAL,
-    data: { delgNo },
+    data: { entryHeadId, delgNo },
   };
 }
 
@@ -844,7 +844,7 @@ export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
   };
 }
 
-export function fillCustomsNo({ entryNo, delgNo }) {
+export function fillCustomsNo({ entryNo, entryHeadId, delgNo }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -854,7 +854,7 @@ export function fillCustomsNo({ entryNo, delgNo }) {
       ],
       endpoint: 'v1/cms/fill/customsno',
       method: 'post',
-      data: { entryNo, delgNo },
+      data: { entryNo, entryHeadId, delgNo },
     },
   };
 }

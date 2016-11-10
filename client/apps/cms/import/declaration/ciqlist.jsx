@@ -1,26 +1,25 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadCiqTable } from 'common/reducers/cmsDelegation';
-import CiqList from '../../common/delegation/ciqList';
+import { loadCiqDecls } from 'common/reducers/cmsDeclare';
+import Ciqlist from '../../common/declaration/ciqlist';
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadCiqTable({
-    ietype: 'export',
+  return dispatch(loadCiqDecls({
+    ietype: 'import',
     tenantId: state.account.tenantId,
-    filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.cmsDelegation.ciqlist.pageSize,
-    currentPage: state.cmsDelegation.ciqlist.current,
+    pageSize: state.cmsDelegation.delegationlist.pageSize,
+    currentPage: state.cmsDelegation.delegationlist.current,
   }));
 }
 
 @connectFetch()(fetchData)
 @withPrivilege({ module: 'clearance', feature: 'import' })
-export default class ExportCiqList extends React.Component {
+export default class ImportCiqDeclsList extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <CiqList ietype="export" {...this.props} />;
+    return <Ciqlist ietype="import" {...this.props} />;
   }
 }
