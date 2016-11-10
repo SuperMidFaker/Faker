@@ -1,0 +1,50 @@
+import React, { Component, PropTypes } from 'react';
+import { Form, Steps } from 'antd';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadFormRequires } from 'common/reducers/crmOrders';
+import { intlShape, injectIntl } from 'react-intl';
+import messages from './message.i18n';
+import { format } from 'client/common/i18n/helpers';
+import BasicForm from './forms/basicForm';
+import ClearanceForm from './forms/clearanceForm';
+import TransportForm from './forms/transportForm';
+const formatMsg = format(messages);
+const Step = Steps.Step;
+
+function fetchData({ state, dispatch }) {
+  return dispatch(loadFormRequires({
+    tenantId: state.account.tenantId,
+  }));
+}
+
+@connectFetch()(fetchData)
+@injectIntl
+
+export default class OrderForm extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    operation: PropTypes.oneOf(['view', 'edit', 'create']),
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+  state = {
+    attachments: [],
+  }
+  msg = key => formatMsg(this.props.intl, key)
+
+
+  render() {
+    const { operation } = this.props;
+
+    return (
+      <Form horizontal>
+        <Steps direction="vertical" current={1}>
+          <Step title="基础信息" description={<BasicForm operation={operation} />} />
+          <Step title="清关" description={<ClearanceForm operation={operation} />} />
+          <Step title="运输" description={<TransportForm operation={operation} />} />
+        </Steps>
+      </Form>
+    );
+  }
+}
