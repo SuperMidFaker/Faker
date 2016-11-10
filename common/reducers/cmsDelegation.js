@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
   'RELATED_DISP_LOAD', 'RELATED_DISP_LOAD_SUCCEED', 'RELATED_DISP_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
+  'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
 ]);
 
 const initialState = {
@@ -60,6 +61,14 @@ const initialState = {
   },
   delgBillsMap: {
   },
+  ciqBillsMap: {
+  },
+  ciqBills: [{
+    decl_way_code: '',
+    manual_no: '',
+    pack_count: null,
+    gross_wt: null,
+  }],
   listFilter: {
     sortField: '',
     sortOrder: '',
@@ -142,14 +151,23 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
     }
+    case actionTypes.LOAD_ACCEPT_FAIL:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
+    case actionTypes.LOAD_CIQ:
+      return { ...state, ciqlist: { ...state.ciqlist, loading: true } };
     case actionTypes.LOAD_CIQ_SUCCEED: {
-      return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
+      const ciqBillsMap = {};
+      const ciqList = action.result.data;
+      ciqList.data.forEach((delg) => {
+        ciqBillsMap[delg.delg_no] = [];
+      });
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap, listFilter: JSON.parse(action.params.filter) };
     }
+    case actionTypes.LOAD_CIQ_FAIL:
+      return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };
     case actionTypes.LOAD_CERT_SUCCEED: {
       return { ...state, certlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
     }
-    case actionTypes.LOAD_ACCEPT_FAIL:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
     case actionTypes.LOAD_SUBDELG: {
       const delgBillsMap = { ...state.delgBillsMap };
       delgBillsMap[action.params.delg_no] = [];
@@ -167,6 +185,24 @@ export default function reducer(state = initialState, action) {
       delgBillsMap[action.params.delg_no] = [];
       delgBillsMap[action.params.delg_no].loading = false;
       return { ...state, delgBillsMap };
+    }
+    case actionTypes.LOAD_CIQSUB: {
+      const ciqBillsMap = { ...state.ciqBillsMap };
+      ciqBillsMap[action.params.delg_no] = [];
+      ciqBillsMap[action.params.delg_no].loading = true;
+      return { ...state, ciqBillsMap };
+    }
+    case actionTypes.LOAD_CIQSUB_SUCCEED: {
+      const ciqBillsMap = { ...state.ciqBillsMap };
+      ciqBillsMap[action.params.delg_no] = action.result.data;
+      ciqBillsMap[action.params.delg_no].loading = false;
+      return { ...state, ciqBillsMap };
+    }
+    case actionTypes.LOAD_CIQSUB_FAIL: {
+      const ciqBillsMap = { ...state.ciqBillsMap };
+      ciqBillsMap[action.params.delg_no] = [];
+      ciqBillsMap[action.params.delg_no].loading = false;
+      return { ...state, ciqBillsMap };
     }
     case actionTypes.LOAD_BILLMAKE:
       return { ...state, billMakeModal: { ...state.billMakeModal, type: action.modalType } };
@@ -251,6 +287,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function loadCiqSubTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQSUB,
+        actionTypes.LOAD_CIQSUB_SUCCEED,
+        actionTypes.LOAD_CIQSUB_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/bills',
+      method: 'get',
+      params,
+    },
+  };
 }
 
 export function setCiqFinish(delgNo) {
