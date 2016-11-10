@@ -24,7 +24,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     formData: state.crmOrders.formData,
   }),
-  {  }
+  { }
 )
 export default class OrderForm extends Component {
   static propTypes = {

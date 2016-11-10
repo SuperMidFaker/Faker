@@ -40,7 +40,6 @@ export default class Create extends Component {
   handleSave = () => {
     const { formData, tenantId, loginId, username, tenantName } = this.props;
 
-
     // cust_shipmt_package: '',
     // ccb_need_exchange: 0,
     if (formData.customer_name === '') {
