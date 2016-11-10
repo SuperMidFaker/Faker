@@ -295,7 +295,7 @@ export default class FeesTable extends Component {
         title: msg('serialNo'),
         width: 50,
         render: (o, record, index) => {
-          return <span>{index}</span>;
+          return <span>{index + 1}</span>;
         },
       }, {
         title: msg('feeName'),
@@ -328,13 +328,13 @@ export default class FeesTable extends Component {
       }, {
         title: msg('lotNum'),
         dataIndex: 'lot_num',
-        width: 150,
+        width: 100,
         render: (o, record, index) =>
           <ColumnInput field="lot_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('freeNum'),
         dataIndex: 'free_num',
-        width: 150,
+        width: 100,
         render: (o, record, index) =>
           <ColumnInput field="free_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
@@ -352,7 +352,7 @@ export default class FeesTable extends Component {
       }, {
         title: msg('taxRate'),
         dataIndex: 'tax_rate',
-        width: 150,
+        width: 100,
         render: (o, record, index) =>
           <TaxInput field="tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
@@ -399,8 +399,8 @@ export default class FeesTable extends Component {
     ];
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} size="middle" scroll={{ y: 500 }}
-        title={() => (action === 'model') && <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>}
-        footer={() => (action === 'model') && <Button type="primary" style={{ marginRight: '20px' }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+        title={() => (action === 'model') && <Button type="primary" size="large" onClick={this.handleModelSave}>{msg('save')}</Button>}
+        footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
       />
     );
   }

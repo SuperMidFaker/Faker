@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   shipmentNo: {
     id: 'scv.shipment.inbound.shipmentno',
-    defaultMessage: 'Shipment No.',
+    defaultMessage: '货运编号',
   },
   orderNo: {
     id: 'scv.shipment.inbound.orderno',

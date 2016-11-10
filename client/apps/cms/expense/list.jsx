@@ -106,7 +106,7 @@ export default class ExpenseList extends Component {
           key: 'all_bill',
           render: (o) => {
             if (o) {
-              return (<span className="ant-alert-info"><b>{o.toFixed(2)}</b></span>);
+              return (<span className="mdc-text-info"><b>{o.toFixed(2)}</b></span>);
             }
           },
         }, {
@@ -140,7 +140,7 @@ export default class ExpenseList extends Component {
           width: 100,
           render: (o) => {
             if (o) {
-              return (<span className="ant-alert-warning"><b>{o.toFixed(2)}</b></span>);
+              return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
             }
           },
         }, {

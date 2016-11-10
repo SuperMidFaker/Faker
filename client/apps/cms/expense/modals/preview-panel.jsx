@@ -75,19 +75,19 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Card title={this.msg('进出口代理 供应商：')} bodyStyle={{ padding: 8 }}>
+            <Card title={this.msg('进出口代理 供应商：')} bodyStyle={{ padding: 0 }}>
               <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
             </Card>
-            <Card title={this.msg('报关 供应商：')} bodyStyle={{ padding: 8 }}>
+            <Card title={this.msg('报关 供应商：')} bodyStyle={{ padding: 0 }}>
               <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
             </Card>
-            <Card title={this.msg('报检 供应商：')} bodyStyle={{ padding: 8 }}>
+            <Card title={this.msg('报检 供应商：')} bodyStyle={{ padding: 0 }}>
               <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
             </Card>
-            <Card title={this.msg('鉴定办证 供应商：')} bodyStyle={{ padding: 8 }}>
+            <Card title={this.msg('鉴定办证 供应商：')} bodyStyle={{ padding: 0 }}>
               <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
             </Card>
-            <Card title={this.msg('其他 供应商：')} bodyStyle={{ padding: 8 }}>
+            <Card title={this.msg('其他 供应商：')} bodyStyle={{ padding: 0 }}>
               <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
             </Card>
           </div>

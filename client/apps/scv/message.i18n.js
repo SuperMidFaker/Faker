@@ -7,15 +7,15 @@ const messages = defineMessages({
   },
   orders: {
     id: 'scv.module.orders',
-    defaultMessage: '订单',
+    defaultMessage: '订单中心',
   },
   inboundShipments: {
     id: 'scv.module.shipments.inbound',
-    defaultMessage: '进口追踪',
+    defaultMessage: '进口管理',
   },
   outboundShipments: {
     id: 'scv.module.shipments.outbound',
-    defaultMessage: '出口追踪',
+    defaultMessage: '出口管理',
   },
   payment: {
     id: 'scv.module.payment',
@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
   analytics: {
     id: 'scv.module.analytics',
-    defaultMessage: '统计',
+    defaultMessage: '统计分析',
   },
   kpiAnalytics: {
     id: 'scv.module.analytics.kpi',
