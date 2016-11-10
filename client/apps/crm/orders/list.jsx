@@ -76,7 +76,7 @@ export default class ShipmentOrderList extends React.Component {
   }
   handleRemove = (shipmtOrderNo) => {
     const { tenantId, loginId, username } = this.props;
-    this.props.removeOrder({ tenantId, loginId, username, shipmtOrderNo }).then(result => {
+    this.props.removeOrder({ tenantId, loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -155,7 +155,7 @@ export default class ShipmentOrderList extends React.Component {
         return (
           <div>
             <Link to={`/customer/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
-            <span className="ant-divider"/>
+            <span className="ant-divider" />
             <a onClick={() => this.handleRemove(record.shipmt_order_no)}>删除</a>
           </div>
         );

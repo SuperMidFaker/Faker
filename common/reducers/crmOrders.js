@@ -90,11 +90,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORM_REQUIRES_SUCCEED:
       return { ...state, formRequires: action.result.data };
     case actionTypes.SET_CLIENT_FORM:
-    if (Object.keys(action.data).length === 0) {
-      return { ...state, formData: initialState.formData };
-    } else {
-      return { ...state, formData: { ...state.formData, ...action.data } };
-    }
+      if (Object.keys(action.data).length === 0) {
+        return { ...state, formData: initialState.formData };
+      } else {
+        return { ...state, formData: { ...state.formData, ...action.data } };
+      }
     case actionTypes.SUBMIT_ORDER_SUCCEED:
       return { ...state };
     case actionTypes.LOAD_ORDERS:
