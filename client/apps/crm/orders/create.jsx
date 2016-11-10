@@ -13,7 +13,6 @@ const formatMsg = format(messages);
 
 @connectNav({
   depth: 3,
-  text: '新建订单',
   moduleName: 'customer',
 })
 @connect(

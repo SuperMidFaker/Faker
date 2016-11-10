@@ -299,6 +299,7 @@ export default(store, cookie) => {
             <Route path="orders" >
               <IndexRoute component={CRMOrders.List} />
               <Route path="create" component={CRMOrders.Create} />
+              <Route path="view" component={CRMOrders.View} />
             </Route>
             <Route path="customers" component={CRMCustomers.List} />
           </Route>

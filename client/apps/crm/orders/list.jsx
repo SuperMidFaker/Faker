@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -10,7 +10,7 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, loadFormRequires } from 'common/reducers/crmOrders';
+import { loadOrders, loadFormRequires, removeOrder, setClientForm } from 'common/reducers/crmOrders';
 import moment from 'moment';
 import { ORDER_STATUS } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
@@ -37,11 +37,13 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    username: state.account.username,
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
     formRequires: state.crmOrders.formRequires,
   }), {
-    loadOrders,
+    loadOrders, removeOrder, setClientForm,
   }
 )
 @connectNav({
@@ -53,15 +55,45 @@ export default class ShipmentOrderList extends React.Component {
     intl: intlShape.isRequired,
     loading: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
     orders: PropTypes.object.isRequired,
     loadOrders: PropTypes.func.isRequired,
+    removeOrder: PropTypes.func.isRequired,
+    setClientForm: PropTypes.func.isRequired,
     formRequires: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
   }
   msg = key => formatMsg(this.props.intl, key)
-
+  handleCreate = () => {
+    this.props.setClientForm({});
+    this.context.router.push('/customer/orders/create');
+  }
+  handleRemove = (shipmtOrderNo) => {
+    const { tenantId, loginId, username } = this.props;
+    this.props.removeOrder({ tenantId, loginId, username, shipmtOrderNo }).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('删除成功');
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleTableLoad = () => {
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      searchValue: this.props.orders.searchValue,
+      filters: this.props.orders.filters,
+    });
+  }
   render() {
     // const { loading, formRequires: { clients } } = this.props;
     const { loading } = this.props;
@@ -118,6 +150,16 @@ export default class ShipmentOrderList extends React.Component {
       },
     }, {
       title: '操作',
+      dataIndex: 'id',
+      render: (o, record) => {
+        return (
+          <div>
+            <Link to={`/customer/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
+            <span className="ant-divider"/>
+            <a onClick={() => this.handleRemove(record.shipmt_order_no)}>删除</a>
+          </div>
+        );
+      },
     }];
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadOrders(params),
@@ -153,11 +195,9 @@ export default class ShipmentOrderList extends React.Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Link to="/customer/orders/create">
-                <Button type="primary" icon="plus-circle-o">
-                  {this.msg('new')}
-                </Button>
-              </Link>
+              <Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>
+                {this.msg('new')}
+              </Button>
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />

@@ -77,5 +77,6 @@ export default class OrderForm extends Component {
         </Form>
       );
     }
+    return null;
   }
 }

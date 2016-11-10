@@ -4,8 +4,10 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_FORM_REQUIRES', 'LOAD_FORM_REQUIRES_SUCCEED', 'LOAD_FORM_REQUIRES_FAIL',
   'LOAD_ORDERS', 'LOAD_ORDERS_SUCCEED', 'LOAD_ORDERS_FAIL',
+  'LOAD_ORDER', 'LOAD_ORDER_SUCCEED', 'LOAD_ORDER_FAIL',
   'SUBMIT_ORDER', 'SUBMIT_ORDER_SUCCEED', 'SUBMIT_ORDER_FAIL',
   'SET_CLIENT_FORM',
+  'REMOVE_ORDER', 'REMOVE_ORDER_SUCCEED', 'REMOVE_ORDER_FAIL',
 ]);
 
 const initialState = {
@@ -88,13 +90,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORM_REQUIRES_SUCCEED:
       return { ...state, formRequires: action.result.data };
     case actionTypes.SET_CLIENT_FORM:
+    if (Object.keys(action.data).length === 0) {
+      return { ...state, formData: initialState.formData };
+    } else {
       return { ...state, formData: { ...state.formData, ...action.data } };
+    }
     case actionTypes.SUBMIT_ORDER_SUCCEED:
       return { ...state };
     case actionTypes.LOAD_ORDERS:
       return { ...state, loading: true };
     case actionTypes.LOAD_ORDERS_SUCCEED:
       return { ...state, orders: action.result.data, loading: false };
+    case actionTypes.LOAD_ORDER_SUCCEED:
+      return { ...state, formData: action.result.data };
     default:
       return state;
   }
@@ -130,6 +138,36 @@ export function loadOrders({ tenantId, pageSize, current, searchValue, filters }
   };
 }
 
+export function loadOrder(shipmtOrderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDER,
+        actionTypes.LOAD_ORDER_SUCCEED,
+        actionTypes.LOAD_ORDER_FAIL,
+      ],
+      endpoint: 'v1/crm/order',
+      method: 'get',
+      params: { shipmtOrderNo },
+    },
+  };
+}
+
+export function removeOrder({ tenantId, loginId, username, shipmtOrderNo }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_ORDER,
+        actionTypes.REMOVE_ORDER_SUCCEED,
+        actionTypes.REMOVE_ORDER_FAIL,
+      ],
+      endpoint: 'v1/crm/order/remove',
+      method: 'post',
+      data: { tenantId, loginId, username, shipmtOrderNo },
+    },
+  };
+}
+
 export function setClientForm(data) {
   return {
     type: actionTypes.SET_CLIENT_FORM,
@@ -151,4 +189,3 @@ export function submitOrder(data) {
     },
   };
 }
-
