@@ -113,7 +113,7 @@ export default class ClearanceForm extends Component {
         <Row>
           <Col sm={8}>
             <FormItem label="是否需要换单" {...formItemLayout}>
-              <Switch onChange={this.handleClientChange} />
+              <Switch onChange={this.handleClientChange} checked={formData.ccb_need_exchange === 1}/>
             </FormItem>
           </Col>
         </Row>
