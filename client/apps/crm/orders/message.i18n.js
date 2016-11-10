@@ -105,9 +105,13 @@ const messages = defineMessages({
     id: 'crm.orders.radio.all',
     defaultMessage: 'All',
   },
-  importShipments: {
-    id: 'crm.orders.import',
-    defaultMessage: 'Import',
+  new: {
+    id: 'crm.orders.new',
+    defaultMessage: '新建',
+  },
+  save: {
+    id: 'crm.orders.save',
+    defaultMessage: '保存',
   },
   forwarder: {
     id: 'crm.orders.forwarder',
@@ -192,6 +196,30 @@ const messages = defineMessages({
   transportDest: {
     id: 'crm.orders.send.transport.dest',
     defaultMessage: 'Destination',
+  },
+  declareWay: {
+    id: 'crm.orders.delg.declareWay',
+    defaultMessage: '报关类型',
+  },
+  manualNo: {
+    id: 'crm.orders.delg.manualNo',
+    defaultMessage: '备案号',
+  },
+  delgGrossWt: {
+    id: 'crm.orders.delg.grosswt',
+    defaultMessage: '毛重',
+  },
+  packageNum: {
+    id: 'crm.orders.delg.packageNum',
+    defaultMessage: '件数',
+  },
+  delgWeight: {
+    id: 'crm.orders.delg.weight',
+    defaultMessage: '总毛重',
+  },
+  addMore: {
+    id: 'crm.orders.delg.addMore',
+    defaultMessage: '添加',
   },
 });
 

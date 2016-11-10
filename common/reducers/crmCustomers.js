@@ -1,16 +1,18 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/crm/customers/',
-  ['LOAD_CUSTOMERS', 'LOAD_CUSTOMERS_FAIL', 'LOAD_CUSTOMERS_SUCCEED',
+const actionTypes = createActionTypes('@@welogix/crm/customers/', [
+  'LOAD_CUSTOMERS', 'LOAD_CUSTOMERS_FAIL', 'LOAD_CUSTOMERS_SUCCEED',
   'ADD_CUSTOMER', 'ADD_CUSTOMER_FAIL', 'ADD_CUSTOMER_SUCCEED',
-
-   ]);
+]);
 
 const initialState = {
   loaded: true,
   loading: false,
   customers: [],
+  formData: {
+
+  },
 };
 
 export default function reducer(state = initialState, action) {

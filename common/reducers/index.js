@@ -28,6 +28,7 @@ import scvinbound from './scvinbound';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
 import crmCustomers from './crmCustomers';
+import crmOrders from './crmOrders';
 
 export default combineReducers({
   intl,
@@ -59,4 +60,5 @@ export default combineReducers({
   cmsExpense,
   cmsBilling,
   crmCustomers,
+  crmOrders,
 });

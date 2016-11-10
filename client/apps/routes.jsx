@@ -290,7 +290,10 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
             <IndexRedirect to="/customer/dashboard" />
             <Route path="dashboard" component={CRMDashboard.Index} />
-            <Route path="orders" component={CRMOrders.List} />
+            <Route path="orders" >
+              <IndexRoute component={CRMOrders.List} />
+              <Route path="create" component={CRMOrders.Create} />
+            </Route>
             <Route path="customers" component={CRMCustomers.List} />
           </Route>
         </Route>
