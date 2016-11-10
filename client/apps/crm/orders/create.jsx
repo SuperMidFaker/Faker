@@ -65,13 +65,13 @@ export default class Create extends Component {
     return (
       <div>
         <header className="top-bar">
-          <div className="tools">
-            <Button size="large" type="primary" onClick={this.handleSave}>
-              {this.msg('save')}
-            </Button>
-          </div>
           <span>新建订单</span>
         </header>
+        <div className="top-bar-tools">
+          <Button size="large" type="primary" onClick={this.handleSave}>
+            {this.msg('save')}
+          </Button>
+        </div>
         <div className="main-content">
           <div className="page-body card-wrapper">
             <OrderForm operation="create" />
