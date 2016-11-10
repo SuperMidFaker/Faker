@@ -1045,11 +1045,6 @@ export default class DispatchList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-            <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-          </div>
           <span>{this.msg('transportDispatch')}</span>
           <RadioGroup onChange={this.handleStatusChange} value={status}>
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
@@ -1057,6 +1052,11 @@ export default class DispatchList extends React.Component {
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <span />
+          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+        </div>
         <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">

@@ -8,6 +8,7 @@ import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, openInModal, loadCurrencies, openMarkModal } from 'common/reducers/cmsExpense';
+import { showPreviewer } from 'common/reducers/cmsDelegation';
 import { EXP_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -17,6 +18,7 @@ import TrimSpan from 'client/components/trimSpan';
 import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
 import MarkModal from './modals/markModal';
+import PreviewPanel from './modals/preview-panel';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -40,7 +42,7 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
   }),
-  { openInModal, loadCurrencies, loadExpense, openMarkModal }
+  { openInModal, loadCurrencies, loadExpense, openMarkModal, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -75,77 +77,122 @@ export default class ExpenseList extends Component {
     {
       title: this.msg('delgNo'),
       dataIndex: 'delg_no',
-      width: 100,
+      width: 150,
+      render: (o, record) => {
+        return (
+          <a onClick={() => this.handlePreview(o, record)}>
+            {o}
+          </a>);
+      },
     }, {
       title: this.msg('custName'),
       dataIndex: 'send_name',
-      width: 150,
-      render: o => <TrimSpan text={o} maxLen={12} />,
+      render: o => <TrimSpan text={o} maxLen={20} />,
     }, {
       title: this.msg('invoiceNo'),
       dataIndex: 'invoice_no',
-      width: 100,
+      width: 200,
     }, {
       title: this.msg('bLNo'),
       dataIndex: 'bl_wb_no',
-      width: 100,
+      width: 240,
     }, {
-      title: this.msg('servBill'),
-      dataIndex: 'serv_bill',
-      width: 100,
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
+      title: '收款',
+      children: [
+        {
+          title: this.msg('allBill'),
+          width: 100,
+          dataIndex: 'all_bill',
+          key: 'all_bill',
+          render: (o) => {
+            if (o) {
+              return (<span className="mdc-text-info"><b>{o.toFixed(2)}</b></span>);
+            }
+          },
+        }, {
+          title: this.msg('servBill'),
+          dataIndex: 'serv_bill',
+          key: 'serv_bill',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('cushBill'),
+          dataIndex: 'cush_bill',
+          key: 'cush_bill',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        },
+      ],
     }, {
-      title: this.msg('cushBill'),
-      dataIndex: 'cush_bill',
-      width: 100,
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
-    }, {
-      title: this.msg('allBill'),
-      width: 100,
-      dataIndex: 'all_bill',
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
-    }, {
-      title: this.msg('servCost'),
-      dataIndex: 'serv_cost',
-      width: 100,
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
-    }, {
-      title: this.msg('cushCost'),
-      dataIndex: 'cush_cost',
-      width: 100,
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
-    }, {
-      title: this.msg('allCost'),
-      dataIndex: 'all_cost',
-      width: 100,
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
+      title: '付款',
+      children: [
+        {
+          title: this.msg('allCost'),
+          dataIndex: 'all_cost',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
+            }
+          },
+        }, {
+          title: this.msg('进出口代理'),
+          dataIndex: 'agency',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('报关'),
+          dataIndex: 'cust',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('报检'),
+          dataIndex: 'ciq',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('鉴定办证'),
+          dataIndex: 'cert',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('其他'),
+          dataIndex: 'misc',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        },
+      ],
     }, {
       title: this.msg('statementEn'),
-      width: 100,
+      width: 80,
       dataIndex: 'status',
       render: (o) => {
         return EXP_STATUS.filter(st => st.value === o)[0].text;
@@ -153,7 +200,7 @@ export default class ExpenseList extends Component {
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_act_time',
-      width: 100,
+      width: 120,
       render: (o) => {
         return `${moment(o).format('MM.DD HH:mm')}`;
       },
@@ -181,6 +228,13 @@ export default class ExpenseList extends Component {
     },
     remotes: this.props.expslist,
   })
+
+  handlePreview = (o, record) => {
+    this.props.showPreviewer({
+      delgNo: o,
+      tenantId: this.props.tenantId,
+    }, record.status);
+  }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, expslist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
@@ -241,9 +295,6 @@ export default class ExpenseList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.msg('expense')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
@@ -252,6 +303,9 @@ export default class ExpenseList extends Component {
             <RadioButton value="invoiced">{this.msg('invoiced')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
@@ -262,17 +316,16 @@ export default class ExpenseList extends Component {
                 {this.msg('markState')}
               </Button>
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel group-header">
               <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
-                expandedRowKeys={this.state.expandedKeys}
-                expandedRowRender={expslist.data.length > 0 && this.handleSubexpsList}
-                scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
+                bordered scroll={{ x: 2000 }}
               />
             </div>
           </div>
         </div>
         <InputModal data={unstateData} />
         <MarkModal data={unstateData} />
+        <PreviewPanel ietype="import" />
       </QueueAnim>
     );
   }

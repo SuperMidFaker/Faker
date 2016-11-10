@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
-import { feeUpdate, feeAdd, feeDelete } from 'common/reducers/cmsQuote';
+import { feeUpdate, feeAdd, feeDelete, saveQuoteModel } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
 import { CHARGE_MODE, FEE_STYLE } from 'common/constants';
@@ -137,7 +137,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { feeUpdate, feeAdd, feeDelete }
+  { feeUpdate, feeAdd, feeDelete, saveQuoteModel }
 )
 export default class FeesTable extends Component {
   static propTypes = {
@@ -148,6 +148,7 @@ export default class FeesTable extends Component {
     feeUpdate: PropTypes.func.isRequired,
     feeAdd: PropTypes.func.isRequired,
     feeDelete: PropTypes.func.isRequired,
+    saveQuoteModel: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -263,6 +264,27 @@ export default class FeesTable extends Component {
     });
     this.props.quoteData.fees.splice(index, 1);
   }
+  handleModelSave = () => {
+    this.props.saveQuoteModel(
+      this.props.tenantId,
+      this.props.quoteData.fees
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+      }
+    });
+  }
+  handleMdlFeeDelete = (row, index) => {
+    const count = this.state.count + 1;
+    this.setState({
+      editIndex: -1,
+      count,
+    });
+    this.props.quoteData.fees.splice(index, 1);
+  }
+
   render() {
     const { quoteData, action, editable } = this.props;
     const { editIndex, addedit } = this.state;
@@ -273,7 +295,7 @@ export default class FeesTable extends Component {
         title: msg('serialNo'),
         width: 50,
         render: (o, record, index) => {
-          return <span>{index}</span>;
+          return <span>{index + 1}</span>;
         },
       }, {
         title: msg('feeName'),
@@ -306,13 +328,13 @@ export default class FeesTable extends Component {
       }, {
         title: msg('lotNum'),
         dataIndex: 'lot_num',
-        width: 150,
+        width: 100,
         render: (o, record, index) =>
           <ColumnInput field="lot_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('freeNum'),
         dataIndex: 'free_num',
-        width: 150,
+        width: 100,
         render: (o, record, index) =>
           <ColumnInput field="free_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
@@ -330,7 +352,7 @@ export default class FeesTable extends Component {
       }, {
         title: msg('taxRate'),
         dataIndex: 'tax_rate',
-        width: 150,
+        width: 100,
         render: (o, record, index) =>
           <TaxInput field="tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
@@ -365,6 +387,10 @@ export default class FeesTable extends Component {
                 <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
               );
             }
+          } else if (record.category === 'custom' && action === 'model') {
+            return (
+              <RowUpdater onHit={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
+            );
           } else {
             return <span />;
           }
@@ -372,14 +398,10 @@ export default class FeesTable extends Component {
       },
     ];
     return (
-      <div className="page-body">
-        <div className="panel-body table-panel">
-          <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} />
-          <div style={{ padding: 16 }}>
-            <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          </div>
-        </div>
-      </div>
+      <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} size="middle" scroll={{ y: 500 }}
+        title={() => (action === 'model') && <Button type="primary" size="large" onClick={this.handleModelSave}>{msg('save')}</Button>}
+        footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+      />
     );
   }
 }

@@ -112,13 +112,13 @@ export default class ShipmentEdit extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <div className="tools">
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleEdit}>
-              {this.msg('save')}
-            </Button>
-          </div>
           <span>{this.msg('shipmtEdit')}</span>
         </header>
+        <div className="top-bar-tools">
+          <Button size="large" type="primary" loading={submitting} onClick={this.handleEdit}>
+            {this.msg('save')}
+          </Button>
+        </div>
         <div className="main-content">
           <Form horizontal>
             <div className="page-body">

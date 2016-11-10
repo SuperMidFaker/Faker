@@ -24,7 +24,7 @@ export default class FormInput extends React.Component {
   render() {
     const {
       outercol, label, col, field, required, hasFeedback, type = 'text', disabled,
-      placeholder, getFieldDecorator, rules, fieldProps, formData = {},
+      placeholder, getFieldDecorator, rules, addonBefore, addonAfter, fieldProps, formData = {},
     } = this.props;
     return (
       <Col span={outercol}>
@@ -33,7 +33,10 @@ export default class FormInput extends React.Component {
         >
           {getFieldDecorator(field, { rules, initialValue:
               formData && formData[field] && String(formData[field]),
-            ...fieldProps })(<Input type={type} disabled={disabled} placeholder={placeholder} />)}
+            ...fieldProps })(
+              <Input type={type} disabled={disabled} placeholder={placeholder}
+                addonBefore={addonBefore} addonAfter={addonAfter}
+              />)}
         </FormItem>
       </Col>
     );

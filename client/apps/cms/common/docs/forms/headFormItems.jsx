@@ -104,31 +104,35 @@ export class RelationAutoCompSelect extends React.Component {
       <Col span="9">
         <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
           <Row>
-            <Col span="12" style={{ paddingRight: 2 }}>
-              {getFieldDecorator(codeField, {
-                rules: codeRules,
-                onChange: this.handleInputChange,
-                initialValue: formData && formData[codeField] || '',
-              })(<Select
-                size="large"
-                combobox
-                showArrow={false}
-                disabled={disabled}
-                allowClear
-                optionFilterProp="search"
-                placeholder={this.msg('relationCodeSearch')}
-                onSelect={this.handleSelect}
-              >
-                {
-                  options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
-                }
-              </Select>)}
+            <Col span="8">
+              <FormItem>
+                {getFieldDecorator(codeField, {
+                  rules: codeRules,
+                  onChange: this.handleInputChange,
+                  initialValue: formData && formData[codeField] || '',
+                })(<Select
+                  size="large"
+                  combobox
+                  showArrow={false}
+                  disabled={disabled}
+                  allowClear
+                  optionFilterProp="search"
+                  placeholder={this.msg('relationCodeSearch')}
+                  onSelect={this.handleSelect}
+                >
+                  {
+                    options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
+                  }
+                </Select>)}
+              </FormItem>
             </Col>
-            <Col span="12">
-              {getFieldDecorator(nameField, {
-                rules: nameRules,
-                initialValue: formData && formData[nameField],
-              })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
+            <Col span="16">
+              <FormItem style={{ marginBottom: 0 }} >
+                {getFieldDecorator(nameField, {
+                  rules: nameRules,
+                  initialValue: formData && formData[nameField],
+                })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
+              </FormItem>
             </Col>
           </Row>
         </FormItem>
@@ -280,75 +284,10 @@ export function CountryAttr(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
-  const licenseNoProps = {
-    outercol: 12,
-    col: 8,
-    field: 'license_no',
-    label: msg('licenseNo'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
-  const trxModeProps = {
-    outercol: 12,
-    col: 8,
-    field: 'trxn_mode',
-    options: formRequire.trxModes.map(tm => ({
-      value: tm.trx_mode,
-      text: tm.trx_spec,
-    })),
-    label: msg('trxMode'),
-    disabled,
-    formData,
-    getFieldDecorator,
-    searchKeyFn: opt => opt.value,
-  };
-  const contractNoProps = {
-    outercol: 12,
-    col: 8,
-    field: 'contr_no',
-    label: msg('contractNo'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
-  const packCountProps = {
-    outercol: 12,
-    col: 8,
-    field: 'pack_count',
-    label: msg('packCount'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
-  const containerNoProps = {
-    outercol: 12,
-    col: 8,
-    field: 'container_no',
-    label: msg('containerNo'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
-  const usageProps = {
-    outercol: 12,
-    col: 8,
-    field: 'usage',
-    label: msg('usage'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
   return (
     <Col span="9">
       <FormLocalSearchSelect {...tradeCountryProps} />
       <FormLocalSearchSelect {...departCountryProps} />
-      <FormInput {...licenseNoProps} />
-      <FormLocalSearchSelect {...trxModeProps} />
-      <FormInput {...contractNoProps} />
-      <FormInput {...packCountProps} />
-      <FormInput {...containerNoProps} />
-      <FormInput {...usageProps} />
     </Col>
   );
 }
@@ -425,6 +364,48 @@ DestInvoice.propTypes = {
   onSearch: PropTypes.func.isRequired,
 };
 
+export function LicenseTrade(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData, formRequire } = props;
+  const licenseNoProps = {
+    outercol: 12,
+    col: 8,
+    field: 'license_no',
+    label: msg('licenseNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  const trxModeProps = {
+    outercol: 12,
+    col: 8,
+    field: 'trxn_mode',
+    options: formRequire.trxModes.map(tm => ({
+      value: tm.trx_mode,
+      text: tm.trx_spec,
+    })),
+    label: msg('trxMode'),
+    disabled,
+    formData,
+    getFieldDecorator,
+    searchKeyFn: opt => opt.value,
+  };
+  return (
+    <Col span="9">
+      <FormInput {...licenseNoProps} />
+      <FormLocalSearchSelect {...trxModeProps} />
+    </Col>
+  );
+}
+
+LicenseTrade.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+};
+
 // 费用
 function FeeFormItem(props) {
   const { feeField, currencyField, label, disabled, formData, getFieldDecorator, formRequire } = props;
@@ -499,6 +480,43 @@ Fee.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+export function ContractNo(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
+  const contractNoProps = {
+    outercol: 12,
+    col: 8,
+    field: 'contr_no',
+    label: msg('contractNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  const packCountProps = {
+    outercol: 12,
+    col: 8,
+    field: 'pack_count',
+    label: msg('packCount'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+
+  return (
+    <Col span="9">
+      <FormInput {...contractNoProps} />
+      <FormInput {...packCountProps} />
+    </Col>
+  );
+}
+
+ContractNo.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+};
+
 // 包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
@@ -519,6 +537,7 @@ export function PackWeight(props) {
     field: 'gross_wt',
     label: msg('grosswt'),
     rules: [{ required: true }],
+    addonAfter: 'KG',
     disabled,
     formData,
     getFieldDecorator,
@@ -529,6 +548,7 @@ export function PackWeight(props) {
     field: 'net_wt',
     label: msg('netwt'),
     rules: [{ required: true }],
+    addonAfter: 'KG',
     disabled,
     formData,
     getFieldDecorator,
@@ -548,4 +568,44 @@ PackWeight.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
+};
+
+// 贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
+export function ContainerUsage(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
+
+
+  const containerNoProps = {
+    outercol: 12,
+    col: 8,
+    field: 'container_no',
+    label: msg('containerNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  const usageProps = {
+    outercol: 12,
+    col: 8,
+    field: 'usage',
+    label: msg('usage'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  return (
+    <Col span="9">
+      <FormInput {...containerNoProps} />
+      <FormInput {...usageProps} />
+    </Col>
+  );
+}
+
+ContainerUsage.propTypes = {
+  intl: intlShape.isRequired,
+  ietype: PropTypes.oneOf(['import', 'export']),
+  disabled: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
 };

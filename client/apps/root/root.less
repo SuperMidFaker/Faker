@@ -59,6 +59,18 @@ img {
 .mdc-text-red {
   color: #f50;
 }
+.mdc-text-success {
+  color: #87d068;
+}
+.mdc-text-info {
+  color: #2db7f5;
+}
+.mdc-text-warning {
+  color: #fa0;
+}
+.mdc-text-error {
+  color: #f50;
+}
 .ant-alert-success {
   color: #87d068;
 }
@@ -249,8 +261,7 @@ img {
 }
 .top-bar {
   position: fixed;
-  right: 0;
-  left: @am-leftbar-width;
+  width: 100%;
   height: @top-bar-height;
   z-index: 30;
   background: rgba(252,252,252,0.95);
@@ -281,12 +292,40 @@ img {
     left: 0;
   }
 }
+.top-bar-tools {
+  position: fixed;
+  right: 16px;
+  z-index: 55;
+  padding: 8px 0;
+  >span {
+    margin-right: 8px;
+  }
+}
+.top-tabs-bar {
+  .ant-tabs-bar {
+    position: fixed;
+    right: 0;
+    left: @am-leftbar-width;
+    z-index: 30;
+    background: hsla(0,0%,99%,.95);
+    box-shadow: 0 0 1px 0 rgba(0,0,0,.14);
+  }
+  .ant-tabs-nav .ant-tabs-tab {
+    padding: 13px 20px 12px;
+  }
+  .ant-tabs-extra-content {
+    margin-right: 8px;
+    line-height: 44px;
+    .ant-btn-group {
+      margin-right: 8px;
+    }
+  }
+}
 .side-bar {
   width: @side-bar-width;
   height: 100%;
   padding-top: 16px;
   top: 94px;
-  left: @am-leftbar-width;
   overflow-x: hidden;
   overflow-y: auto;
   position: fixed;
@@ -567,6 +606,9 @@ img {
     .ant-table-footer {
       border-radius: 0 0 2px 2px;
     }
+    .ant-table-bordered .ant-table-body>table {
+      border: none;
+    }
   }
   &.fixed-height {
     height: 580px;
@@ -577,17 +619,33 @@ img {
       height: auto;
     }
   }
+  &.group-header {
+    .ant-table-thead > tr > th {
+      padding: 8px;
+    }
+  }
   &.collapse {
     .ant-collapse {
-        border-radius: 0;
+        border-radius: 2px;
         border: none;
     }
-    .ant-collapse-header {
-      font-size: 14px;
+  }
+  &.readonly {
+    .ant-input[disabled],
+    .ant-select-disabled {
+      color: #666;
     }
   }
   .ant-table-expanded-row > td {
     padding: 8px 8px;
+  }
+  .ant-card-head {
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px;
+  }
+  .ant-card-extra {
+    top: 8px;
   }
 }
 .panel-footer {
@@ -686,43 +744,6 @@ img {
     }
   }
 }
-.form-compact {
-  .ant-form-item-with-help {
-    margin-bottom: 0;
-  }
-  .ant-form-item {
-    margin-bottom: 16px;
-  }
-  .ant-input-lg ,
-  .ant-select-lg, 
-  .ant-select-lg .ant-select-selection--single {
-    height: 28px;
-  }
-}
-.subform {
-  background-color: #fff;
-  box-shadow: none;
-  margin: 0 10px 10px;
-  padding: 10px 10px 10px;
-  &-heading {
-    color: #666;
-    margin-bottom: 8px;
-    background-color: transparent;
-  }
-  &-heading > &-title {
-    font-size: 14px;
-    font-weight: 400;
-    display: block;
-    margin: 0;
-  }
-  &-body {
-    margin-bottom: 24px;
-    .ant-form-item {
-      margin-bottom: 8px;
-    }
-  }
-}
-
 
 .statistics-columns {
     width: 100%;
@@ -779,14 +800,15 @@ img {
   position: fixed;
   width: @dock-panel-width;
   top: @am-header-height;
-  right: 0;
+  right: -20px;
   bottom: 0;
-  z-index: 50;
+  z-index: 75;
   background-color: #fff;
   transition: transform 358ms ease;
   transform: translate(100%);
   box-shadow: 0 7px 21px rgba(0,0,0,.3);
   &.inside {
+    right: 0;
     transform: translate(0);
   }
   .panel-content {

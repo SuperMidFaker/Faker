@@ -27,3 +27,12 @@ export function format(messages) {
     return intl.formatMessage(messages[descriptor], values);
   };
 }
+
+export function formati18n(messages) {
+  return intl => (descriptor, values) => {
+    if (!messages[descriptor]) {
+      return descriptor;
+    }
+    return intl.formatMessage(messages[descriptor], values);
+  };
+}

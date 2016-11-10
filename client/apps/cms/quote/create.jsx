@@ -6,16 +6,17 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { createQuote, loadQuoteModel, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, message, Form } from 'antd';
+import { createQuote, loadQtModelbyTenantId, loadPartners } from 'common/reducers/cmsQuote';
+import { Button, Card, Collapse, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 const formatMsg = format(messages);
+const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadPartners(state.account.tenantId)));
-  promises.push(dispatch(loadQuoteModel()));
+  promises.push(dispatch(loadQtModelbyTenantId(state.account.tenantId)));
   return Promise.all(promises);
 }
 
@@ -82,13 +83,23 @@ export default class QuotingCreate extends Component {
       <div>
         <header className="top-bar">
           <span>{msg('newQuote')}</span>
-          <div className="tools">
-            <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
-          </div>
         </header>
+        <div className="top-bar-tools">
+          <Button type="primary" onClick={this.handleSave} >{msg('save')}</Button>
+        </div>
         <div className="main-content">
-          <FeesForm form={form} action="create" />
-          <FeesTable action="create" editable />
+          <div className="page-body">
+            <Collapse bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
+              <Panel header={<span>基础信息</span>} key="fees-form">
+                <FeesForm form={form} action="create" />
+              </Panel>
+              <Panel header={<span>价格表</span>} key="fees-table">
+                <Card bodyStyle={{ padding: 0 }}>
+                  <FeesTable action="create" editable />
+                </Card>
+              </Panel>
+            </Collapse>
+          </div>
         </div>
       </div>
     );

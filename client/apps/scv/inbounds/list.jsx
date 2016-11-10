@@ -5,7 +5,7 @@ import { Radio, Button, Progress, Upload, Modal, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadInbounds, loadInboundPartners, openModal } from 'common/reducers/scvinbound';
+import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvinbound';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 // import TrimSpan from 'client/components/trimSpan';
@@ -15,6 +15,7 @@ import messages from './message.i18n';
 import RowUpdater from './rowUpdater';
 import InboundExpander from './expander';
 import SendModal from './senderModal';
+import CreateModal from './createModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -34,10 +35,11 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    reload: state.scvinbound.reload,
     inboundlist: state.scvinbound.list,
     listFilter: state.scvinbound.listFilter,
   }),
-  { loadInbounds, loadInboundPartners, openModal }
+  { loadInbounds, loadInboundPartners, openModal, openCreateModal }
 )
 @connectNav({
   depth: 2,
@@ -47,6 +49,7 @@ export default class InboundShipmentsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    reload: PropTypes.bool.isRequired,
     inboundlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     loadInbounds: PropTypes.func.isRequired,
@@ -70,6 +73,17 @@ export default class InboundShipmentsList extends React.Component {
         current,
       });
     }, 20 * 1000);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      const { tenantId, listFilter, inboundlist: { pageSize } } = nextProps;
+      nextProps.loadInbounds({
+        tenantId,
+        filter: JSON.stringify(listFilter),
+        pageSize,
+        current: 1,
+      });
+    }
   }
   componentWillUnmount() {
     if (this.inboundPoll) {
@@ -329,6 +343,9 @@ export default class InboundShipmentsList extends React.Component {
     });
   }
   handleExpandDetail = row => <InboundExpander row={row} />
+  handleShipmentCreate = () => {
+    this.props.openCreateModal();
+  }
   render() {
     const { inboundlist, listFilter } = this.props;
     this.dataSource.remotes = inboundlist;
@@ -336,9 +353,6 @@ export default class InboundShipmentsList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.msg('inboundShipments')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
@@ -350,10 +364,13 @@ export default class InboundShipmentsList extends React.Component {
             <RadioButton value="received">{this.msg('atreceived')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Upload accept=".xls,.xlsx" action={`${API_ROOTS.default}v1/scv/inbound/import/shipments`}
+              <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
                 data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
                 showUploadList={false} withCredentials
               >
@@ -361,6 +378,10 @@ export default class InboundShipmentsList extends React.Component {
                   {this.msg('importShipments')}
                 </Button>
               </Upload>
+              <span style={{ marginRight: 8 }} />
+              <Button type="primary" icon="plus-circle-o" onClick={this.handleShipmentCreate}>
+                {this.msg('newShipment')}
+              </Button>
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
@@ -371,6 +392,7 @@ export default class InboundShipmentsList extends React.Component {
             </div>
           </div>
           <SendModal reload={this.handleShipmentLoad} />
+          <CreateModal />
         </div>
         <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
           <Progress type="circle" percent={uploadPercent} status={uploadStatus}

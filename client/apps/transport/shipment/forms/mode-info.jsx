@@ -147,7 +147,7 @@ export default class ModeInfo extends React.Component {
             fieldProps={{ initialValue: container_no }}
           />
         </Col>,
-        <Col key="subform-padding" span={`${outerColSpan}`} />
+        <Col key="container_size" span={`${outerColSpan}`} />
       );
     } else {
       outerColSpan = 8;

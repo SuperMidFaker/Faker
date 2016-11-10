@@ -1,9 +1,10 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   shipmentNo: {
     id: 'scv.shipment.inbound.shipmentno',
-    defaultMessage: 'Shipment No.',
+    defaultMessage: '货运编号',
   },
   orderNo: {
     id: 'scv.shipment.inbound.orderno',
@@ -193,6 +194,28 @@ const messages = defineMessages({
     id: 'scv.shipment.inbound.send.transport.dest',
     defaultMessage: '目的地',
   },
+  newShipment: {
+    id: 'scv.shipment.inbound.newshipment',
+    defaultMessage: '新建',
+  },
+  transModeRequired: {
+    id: 'scv.shipment.inbound.transmode.required',
+    defaultMessage: '运输方式必选',
+  },
+  seaWay: {
+    id: 'scv.shipment.inbound.sea.way',
+    defaultMessage: '海运',
+  },
+  airWay: {
+    id: 'scv.shipment.inbound.air.way',
+    defaultMessage: '空运',
+  },
+  paramRequired: {
+    id: 'scv.shipment.inbound.mode.param.required',
+    defaultMessage: '运输参数必填',
+  },
 });
 
 export default messages;
+
+export const formatMsg = formati18n(messages);

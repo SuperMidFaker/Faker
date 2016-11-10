@@ -147,7 +147,7 @@ export default defineMessages({
   },
   transModeName: {
     id: 'cms.docs.form.transModeName',
-    defaultMessage: '运输名称',
+    defaultMessage: '运输工具名',
   },
   ladingWayBill: {
     id: 'cms.docs.form.ladingWayBill',
@@ -255,11 +255,11 @@ export default defineMessages({
   },
   grosswt: {
     id: 'cms.docs.form.gross.wt',
-    defaultMessage: '毛重(kg)',
+    defaultMessage: '毛重',
   },
   netwt: {
     id: 'cms.docs.form.net.wt',
-    defaultMessage: '净重(kg)',
+    defaultMessage: '净重',
   },
   certMark: {
     id: 'cms.docs.form.cert.mark',
@@ -275,7 +275,7 @@ export default defineMessages({
   },
   copGNo: {
     id: 'cms.docs.table.cop.gno',
-    defaultMessage: '料号',
+    defaultMessage: '商品货号',
   },
   emGNo: {
     id: 'cms.docs.table.em.gno',
@@ -336,6 +336,10 @@ export default defineMessages({
   save: {
     id: 'cms.docs.table.save',
     defaultMessage: '保存',
+  },
+  import: {
+    id: 'cms.docs.table.import',
+    defaultMessage: '导入',
   },
   cancel: {
     id: 'cms.docs.table.cancel',

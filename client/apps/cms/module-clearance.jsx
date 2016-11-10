@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
-import AmLeftSidebar from 'client/components/am-ant-leftbar';
+import CollapseSideLayout from 'client/components/collapseSideLayout';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -31,13 +31,35 @@ export default class Clearance extends React.Component {
   componentWillMount() {
     const { privileges, intl } = this.props;
     const linkMenus = [];
-    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
+        key: 'cms-0',
+        path: '/clearance/dashboard',
+        icon: 'zmdi zmdi-tv-list',
+        text: formatMsg(intl, 'dashboard'),
+      });
+    }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+      linkMenus.push({
+        single: false,
         key: 'cms-1',
         path: '/clearance/import',
         icon: 'icon-ikons-login',
         text: formatMsg(intl, 'import'),
+        sublinks: [{
+          key: 'cms-1-0',
+          path: '/clearance/import',
+          text: formatMsg(intl, 'importDelegation'),
+        }, {
+          key: 'cms-1-1',
+          path: '/clearance/import/customs',
+          text: formatMsg(intl, 'importCustomsDecl'),
+        }, {
+          key: 'cms-1-2',
+          path: '/clearance/import/ciq',
+          text: formatMsg(intl, 'importCiq'),
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'export' })) {
@@ -49,46 +71,49 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'expense' })) {
-      linkMenus.push({
-        single: true,
-        key: 'cms-3',
-        path: '/clearance/expense',
-        icon: 'zmdi zmdi-money-box',
-        text: formatMsg(intl, 'expense'),
-      });
-    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
       linkMenus.push({
         single: false,
         key: 'cms-4',
         path: '/clearance/billing',
-        icon: 'icon-ikons-credit-card',
+        icon: 'zmdi zmdi-money-box',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
-          path: '/clearance/billing/receivable',
-          text: '应收账单',
+          path: '/clearance/expense',
+          text: formatMsg(intl, 'expense'),
         }, {
           key: 'tms-4-1',
+          path: '/clearance/billing/receivable',
+          text: formatMsg(intl, 'billingReceivable'),
+        }, {
+          key: 'tms-4-2',
           path: '/clearance/billing/payable',
-          text: '应付账单',
+          text: formatMsg(intl, 'billingPayable'),
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'quote' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'resources' })) {
       linkMenus.push({
-        single: true,
-        key: 'cms-5',
-        path: '/clearance/quote',
-        icon: 'zmdi zmdi-case',
-        text: formatMsg(intl, 'quote'),
+        single: false,
+        key: 'cms-6',
+        icon: 'zmdi zmdi-library',
+        text: formatMsg(intl, 'resources'),
+        sublinks: [{
+          key: 'cms-6-0',
+          path: '/clearance/resources/broker',
+          text: formatMsg(intl, 'providers'),
+        }, {
+          key: 'cms-6-1',
+          path: '/clearance/quote',
+          text: formatMsg(intl, 'quote'),
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: true,
-        key: 'cms-6',
+        key: 'cms-7',
         path: '/clearance/settings',
         icon: 'zmdi zmdi-settings',
         text: formatMsg(intl, 'settings'),
@@ -131,10 +156,7 @@ export default class Clearance extends React.Component {
   }
   render() {
     return (
-      <div className="am-content">
-        <AmLeftSidebar links={this.state.linkMenus} location={this.props.location} />
-        {this.props.children}
-      </div>
+      <CollapseSideLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
     );
   }
 }

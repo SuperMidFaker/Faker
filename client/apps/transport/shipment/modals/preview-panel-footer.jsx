@@ -553,7 +553,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         } else if (row.sp_tenant_id === 0) {
@@ -600,7 +600,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         } else {
@@ -635,7 +635,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         } else if (row.sp_tenant_id === -1) {
@@ -656,7 +656,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         } else if (row.sp_tenant_id === 0) {
@@ -690,7 +690,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">修改提货交货时间</MenuItem>
+              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         } else {

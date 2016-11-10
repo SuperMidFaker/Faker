@@ -365,12 +365,12 @@ export default class FeesList extends React.Component {
       <div>
         <header className="top-bar">
           <span>{this.msg('fee')}</span>
-          <div className="tools">
-            <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
-              value={this.props.fees.searchValue}
-            />
-          </div>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
+            value={this.props.fees.searchValue}
+          />
+        </div>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">

@@ -135,13 +135,13 @@ export default class ShipmentDraftEdit extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <div className="tools">
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleDraftAccept}>
-              {this.msg('saveAndAccept')}
-            </Button>
-          </div>
           <span>{this.msg('shipmtDraft')}</span>
         </header>
+        <div className="top-bar-tools">
+          <Button size="large" type="primary" loading={submitting} onClick={this.handleDraftAccept}>
+            {this.msg('saveAndAccept')}
+          </Button>
+        </div>
         <div className="main-content">
           <Form horizontal>
             <div className="page-body card-wrapper">

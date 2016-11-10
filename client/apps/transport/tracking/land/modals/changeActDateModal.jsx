@@ -80,14 +80,14 @@ export default class ChangeActDateModal extends React.Component {
   render() {
     const colSpan = 10;
     return (
-      <Modal title="添加特殊费用" onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
-        <FormItem label="实际提货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+        <FormItem label="实际提货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
           <DatePicker value={this.state.pickupActDate} onChange={this.handlePickupActDateChange} />
         </FormItem>
         {this.props.status === SHIPMENT_TRACK_STATUS.delivered ? (
-          <FormItem label="实际交货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+          <FormItem label="实际交货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
             <DatePicker value={this.state.deliverActDate} onChange={this.handleDeliverActDateChange} />
           </FormItem>) : ''}
       </Modal>

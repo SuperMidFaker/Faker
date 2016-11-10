@@ -43,6 +43,7 @@ import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSSettings from './cms/settings';
 import * as CMSBilling from './cms/billing';
+import * as CMSResources from './cms/resources';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -269,6 +270,11 @@ export default(store, cookie) => {
             </Route>
             <Route path="settings">
               <IndexRoute component={CMSSettings.List} />
+            </Route>
+            <Route path="resources">
+              <Route path="broker">
+                <IndexRoute component={CMSResources.BrokerContainer} />
+              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>

@@ -6,11 +6,12 @@ import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote, copyQuote, deleteQuote, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, message, Form, Popconfirm } from 'antd';
+import { Button, Card, Collapse, message, Form, Popconfirm } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
+const Panel = Collapse.Panel;
 
 function fetchData({ params, state, dispatch }) {
   const promises = [];
@@ -95,16 +96,27 @@ export default class QuotingEdit extends Component {
       <div>
         <header className="top-bar">
           <span>{msg('editQuote')}</span>
-          <div className="tools">
-            <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCopy} >{msg('copy')}</Button>
-            <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
-              <Button>{msg('delete')}</Button>
-            </Popconfirm>
-          </div>
         </header>
+        <div className="top-bar-tools">
+          <Button type="primary" onClick={this.handleCopy} >{msg('copy')}</Button>
+          <span />
+          <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
+            <Button>{msg('delete')}</Button>
+          </Popconfirm>
+        </div>
         <div className="main-content">
-          <FeesForm form={form} action="edit" />
-          <FeesTable action="edit" editable={false} />
+          <div className="page-body">
+            <Collapse bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
+              <Panel header={<span>基础信息</span>} key="fees-form">
+                <FeesForm form={form} action="edit" />
+              </Panel>
+              <Panel header={<span>价格表</span>} key="fees-table">
+                <Card bodyStyle={{ padding: 0 }}>
+                  <FeesTable action="edit" editable={false} />
+                </Card>
+              </Panel>
+            </Collapse>
+          </div>
         </div>
       </div>
     );

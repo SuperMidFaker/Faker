@@ -188,7 +188,7 @@ export default class BillingList extends React.Component {
         return <TrimSpan text={o} maxLen={10} />;
       },
       filters: type === 'receivable' ? customers.map(item => ({ text: item.name, value: item.name })) :
-      carriers.map(item => ({ text: item.name, value: item.name })),
+        carriers.map(item => ({ text: item.name, value: item.name })),
     }, {
       title: '运单数量',
       dataIndex: 'shipmt_count',
@@ -287,12 +287,12 @@ export default class BillingList extends React.Component {
       <div>
         <header className="top-bar">
           <span>{this.msg(this.props.type)}{this.msg('billing')}</span>
-          <div className="tools">
-            <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-              value={this.props.billings.searchValue}
-            />
-          </div>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+            value={this.props.billings.searchValue}
+          />
+        </div>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">

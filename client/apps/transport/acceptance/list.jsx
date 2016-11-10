@@ -422,11 +422,6 @@ export default class AcceptList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-            <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-          </div>
           <span>{this.msg('transportShipment')}</span>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
@@ -438,6 +433,11 @@ export default class AcceptList extends React.Component {
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <span />
+          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+        </div>
         <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch}
             toggle={this.toggleAdvancedSearch}

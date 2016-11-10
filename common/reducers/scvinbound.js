@@ -5,11 +5,13 @@ const actionTypes = createActionTypes('@@welogix/scv/inbound/', [
   'LOAD_INBOUND', 'LOAD_INBOUND_SUCCEED', 'LOAD_INBOUND_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'SEND_SHIPMENT', 'SEND_SHIPMENT_SUCCEED', 'SEND_SHIPMENT_FAIL',
-  'OPEN_MODAL', 'CLOSE_MODAL',
+  'OPEN_MODAL', 'CLOSE_MODAL', 'OPEN_CREATE_MODAL', 'CLOSE_CREATE_MODAL',
+  'CREATE_SHIPMENT', 'CREATE_SHIPMENT_SUCCEED', 'CREATE_SHIPMENT_FAIL',
 ]);
 
 const initialState = {
   loading: false,
+  reload: false,
   list: {
     totalCount: 0,
     current: 1,
@@ -29,6 +31,9 @@ const initialState = {
       hawb: '',
     },
   },
+  createModal: {
+    visible: false,
+  },
   brokerPartners: [],
   transpPartners: [],
 };
@@ -36,7 +41,7 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_INBOUND:
-      return { ...state, loading: true, listFilter: JSON.parse(action.params.filter) };
+      return { ...state, loading: true, reload: false, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_INBOUND_SUCCEED:
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_INBOUND_FAIL:
@@ -48,6 +53,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, sendModal: { visible: true, shipment: action.data } };
     case actionTypes.CLOSE_MODAL:
       return { ...state, sendModal: { ...state.sendModal, visible: false } };
+    case actionTypes.OPEN_CREATE_MODAL:
+      return { ...state, createModal: { visible: true } };
+    case actionTypes.CLOSE_CREATE_MODAL:
+      return { ...state, createModal: { visible: false } };
+    case actionTypes.CREATE_SHIPMENT_SUCCEED:
+      return { ...state, reload: true };
     default:
       return state;
   }
@@ -64,6 +75,7 @@ export function loadInbounds(params) {
       endpoint: 'v1/scv/inbounds',
       method: 'get',
       params,
+      origin: 'scv',
     },
   };
 }
@@ -96,6 +108,18 @@ export function closeModal() {
   };
 }
 
+export function openCreateModal() {
+  return {
+    type: actionTypes.OPEN_CREATE_MODAL,
+  };
+}
+
+export function closeCreateModal() {
+  return {
+    type: actionTypes.CLOSE_CREATE_MODAL,
+  };
+}
+
 export function sendInboundShipment(sendInbound) {
   return {
     [CLIENT_API]: {
@@ -107,6 +131,22 @@ export function sendInboundShipment(sendInbound) {
       endpoint: 'v1/scv/inbound/send/shipment',
       method: 'post',
       data: sendInbound,
+    },
+  };
+}
+
+export function createShipment(shipment) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_SHIPMENT,
+        actionTypes.CREATE_SHIPMENT_SUCCEED,
+        actionTypes.CREATE_SHIPMENT_FAIL,
+      ],
+      endpoint: 'v1/scv/inbound/create/shipment',
+      method: 'post',
+      data: shipment,
+      origin: 'scv',
     },
   };
 }

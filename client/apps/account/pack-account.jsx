@@ -3,9 +3,13 @@ import { connect } from 'react-redux';
 import { Menu, Icon } from 'antd';
 import NavLink from 'client/components/nav-link';
 import AmNavBar from 'client/components/am-navbar';
+import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 
 @connect()
+@connectNav({
+  depth: 3,
+})
 export default class AccountPack extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

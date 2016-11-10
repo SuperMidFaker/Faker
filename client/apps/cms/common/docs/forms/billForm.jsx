@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Button, message } from 'antd';
+import { Card, Collapse, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -67,25 +67,21 @@ export default class BillForm extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.readonly && nextProps.billHead !== this.props.billHead) {
       this.billListPanelHeader = (
-        <span>
-          {this.msg('billList')}
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
-            formData={{
-              data: JSON.stringify({
-                bill_seq_no: this.props.billHead.bill_seq_no,
-                tenant_id: this.props.tenantId,
-                creater_login_id: this.props.loginId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Button type="primary" style={{ marginLeft: 5, paddingTop: -2 }}>Import</Button>
-          </ExcelUpload>
-        </span>
+        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
+          formData={{
+            data: JSON.stringify({
+              bill_seq_no: this.props.billHead.bill_seq_no,
+              tenant_id: this.props.tenantId,
+              creater_login_id: this.props.loginId,
+            }),
+          }} onUploaded={this.handleUploaded}
+        >
+          <Button type="primary" size="small" icon="file-excel">{formatGlobalMsg(this.props.intl, 'import')}</Button>
+        </ExcelUpload>
       );
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  billListPanelHeader = this.msg('billList')
   handleUploaded = () => {
     this.props.loadBillBodyList({ billSeqNo: this.props.billHead.bill_seq_no });
   }
@@ -110,27 +106,28 @@ export default class BillForm extends React.Component {
   }
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
-    return (<div>
-      <div className="panel-body collapse fixed-height">
-        <Collapse accordion defaultActiveKey="bill-head" style={{ marginBottom: 46 }}>
+    const billStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
+    return (
+      <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
+        <Collapse bordered={false} defaultActiveKey={['bill-head', 'bill-list']}>
           <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
-            <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
+            <Card title={this.props.billHead.bill_seq_no} bodyStyle={{ padding: 8 }} extra={!readonly &&
+              <Button type="primary" size="small" onClick={this.handleBillSave} icon="save">
+                {formatGlobalMsg(this.props.intl, 'save')}
+              </Button>}
+            >
+              <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
+            </Card>
           </Panel>
-          <Panel header={/* this.msg('billList') */this.billListPanelHeader} key="bill-list">
-            <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
-              onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-              billSeqNo={billHead.bill_seq_no}
-            />
+          <Panel header={this.msg('billList')} key="bill-list">
+            <Card title={billStats} bodyStyle={{ padding: 0 }} extra={this.billListPanelHeader}>
+              <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
+                onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+                billSeqNo={billHead.bill_seq_no}
+              />
+            </Card>
           </Panel>
         </Collapse>
-      </div>
-      <div className="panel-footer">
-        {!readonly &&
-          <Button type="primary" onClick={this.handleBillSave} icon="save">
-            {formatGlobalMsg(this.props.intl, 'save')}
-          </Button>
-        }
-      </div>
-    </div>);
+      </div>);
   }
 }

@@ -170,13 +170,13 @@ export default class ShipmentCreate extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <div className="tools">
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
-              {formatGlobalMsg(intl, 'save')}
-            </Button>
-          </div>
           <span>{this.msg('shipmtCreate')}</span>
         </header>
+        <div className="top-bar-tools">
+          <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
+            {formatGlobalMsg(intl, 'save')}
+          </Button>
+        </div>
         <div className="main-content">
           <Form horizontal>
             <div className="page-body card-wrapper">

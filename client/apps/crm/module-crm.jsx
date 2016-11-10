@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
-import AmLeftSidebar from 'client/components/am-ant-leftbar';
+import CollapseSideLayout from 'client/components/collapseSideLayout';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -45,14 +45,14 @@ export default class ModuleCRM extends React.Component {
       single: true,
       key: 'customer-4',
       path: '/customer/customers',
-      icon: 'icon-ikons-logout',
+      icon: 'zmdi zmdi-accounts-list',
       text: formatMsg(intl, 'customers'),
     });
     linkMenus.push({
       single: true,
       key: 'customer-5',
       path: '/customer/reports',
-      icon: 'zmdi zmdi-money-box',
+      icon: 'zmdi zmdi-chart',
       text: formatMsg(intl, 'reports'),
     });
     linkMenus.push({
@@ -66,10 +66,7 @@ export default class ModuleCRM extends React.Component {
   }
   render() {
     return (
-      <div className="am-content">
-        <AmLeftSidebar links={this.state.linkMenus} location={this.props.location} />
-        {this.props.children}
-      </div>
+      <CollapseSideLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
     );
   }
 }

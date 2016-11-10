@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
-import AmLeftSidebar from 'client/components/am-ant-leftbar';
+import CollapseSideLayout from 'client/components/collapseSideLayout';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
 
@@ -73,11 +73,11 @@ export default class Transport extends React.Component {
         key: 'tms-4',
         path: '/transport/billing',
         icon: 'icon-fontello-credit-card-2',
-        text: '账单',
+        text: '计费中心',
         sublinks: [{
           key: 'tms-4-0',
           path: '/transport/billing/fee',
-          text: '费用',
+          text: '费用管理',
         }, {
           key: 'tms-4-1',
           path: '/transport/billing/receivable',
@@ -89,35 +89,30 @@ export default class Transport extends React.Component {
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'transport', feature: 'tariff' })) {
-      linkMenus.push({
-        single: true,
-        key: 'tms-5',
-        icon: 'icon-fontello-briefcase',
-        path: '/transport/tariff',
-        text: '报价',
-      });
-    }
     if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
       linkMenus.push({
         single: false,
-        key: 'tms-6',
+        key: 'tms-5',
         icon: 'zmdi zmdi-library',
-        text: '资源',
+        text: '资源中心',
         sublinks: [{
-          key: 'tms-6-0',
+          key: 'tms-5-0',
           path: '/transport/resources/carrier',
           text: '承运商管理',
         }, {
-          key: 'tms-6-1',
+          key: 'tms-5-1',
+          path: '/transport/tariff',
+          text: '报价管理',
+        }, {
+          key: 'tms-5-2',
           path: '/transport/resources/vehicle',
           text: '车辆管理',
         }, {
-          key: 'tms-6-2',
+          key: 'tms-5-3',
           path: '/transport/resources/driver',
           text: '司机管理',
         }, {
-          key: 'tms-5-3',
+          key: 'tms-5-4',
           path: '/transport/resources/node',
           text: '地点管理',
         }],
@@ -160,10 +155,7 @@ export default class Transport extends React.Component {
   }
   render() {
     return (
-      <div className="am-content">
-        <AmLeftSidebar links={this.state.linkMenus} location={this.props.location} />
-        {this.props.children}
-      </div>
+      <CollapseSideLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
     );
   }
 }
