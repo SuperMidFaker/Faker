@@ -8,7 +8,8 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, openCiqModal, acceptCiqCert, loadCertBrokers,
-  loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish } from 'common/reducers/cmsDelegation';
+  loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,
+  setCiqFinish, loadCMQParams, matchCQuote } from 'common/reducers/cmsDelegation';
 import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -29,9 +30,11 @@ const formatMsg = format(messages);
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.saved,
+    cMQParams: state.cmsDelegation.cMQParams,
   }),
   { loadCiqTable, openCiqModal, acceptCiqCert, loadCertFees, openCertModal,
-    loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish }
+    loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,
+    setCiqFinish, loadCMQParams, matchCQuote }
 )
 @connectNav({
   depth: 2,
@@ -59,6 +62,9 @@ export default class CiqList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleTableLoad();
+    }
+    if (nextProps.cMQParams !== this.props.cMQParams) {
+      this.handleMatchQuote(nextProps.cMQParams);
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -160,6 +166,24 @@ export default class CiqList extends Component {
     },
     remotes: this.props.ciqlist,
   })
+  handleMQParam = (delgNo) => {
+    this.props.loadCMQParams(this.props.tenantId, delgNo, 2).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        }
+      });
+  }
+  handleMatchQuote = (params) => {
+    this.props.matchCQuote(params).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleTableLoad();
+        }
+      });
+  }
   handleAccept = (row) => {
     const { loginId, loginName, tenantId } = this.props;
     this.props.acceptCiqCert(loginId, loginName, row.delg_no, row.recv_server_type, tenantId).then(
@@ -168,6 +192,7 @@ export default class CiqList extends Component {
           message.error(result.error.message);
         } else {
           this.handleTableLoad();
+          this.handleMQParam(row.delg_no);
         }
       }
     );

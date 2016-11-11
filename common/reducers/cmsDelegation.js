@@ -33,7 +33,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
   'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
-  'MATCH_CERT_QUOTE', 'MATCH_CERT_QUOTE_SUCCEED', 'MATCH_CERT_QUOTE_FAIL',
+  'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
   'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
   'RELATED_DISP_LOAD', 'RELATED_DISP_LOAD_SUCCEED', 'RELATED_DISP_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
@@ -133,7 +133,7 @@ const initialState = {
   partners: [],
   matchParam: {},
   matchStatus: {},
-  certMQParams: [],
+  cMQParams: [],
   brokers: [],
   relatedDisps: [],
 };
@@ -279,7 +279,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.MATCH_QUOTE_SUCCEED:
       return { ...state, matchStatus: action.result.data };
     case actionTypes.LOAD_MQPARAM_SUCCEED:
-      return { ...state, certMQParams: action.result.data };
+      return { ...state, cMQParams: action.result.data };
     case actionTypes.BROKERS_LOAD_SUCCEED:
       return { ...state, brokers: action.result.data.brokers };
     case actionTypes.RELATED_DISP_LOAD_SUCCEED:
@@ -424,15 +424,15 @@ export function loadCMQParams(tenantId, delgNo, type) {
   };
 }
 
-export function matchCertQuote(params) {
+export function matchCQuote(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.MATCH_CERT_QUOTE,
-        actionTypes.MATCH_CERT_QUOTE_SUCCEED,
-        actionTypes.MATCH_CERT_QUOTE_FAIL,
+        actionTypes.MATCH_CIQ_QUOTE,
+        actionTypes.MATCH_CIQ_QUOTE_SUCCEED,
+        actionTypes.MATCH_CIQ_QUOTE_FAIL,
       ],
-      endpoint: 'v1/cms/match/cert/quote',
+      endpoint: 'v1/cms/match/ciq/quote',
       method: 'post',
       data: params,
       origin: 'mongo',
