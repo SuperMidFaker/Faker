@@ -3,17 +3,21 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
+import QueueAnim from 'rc-queue-anim';
+import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, openCiqModal, acceptCiqCert, loadCertBrokers,
-  loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish } from 'common/reducers/cmsDelegation';
+  loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,
+  setCiqFinish, loadCMQParams, matchCQuote } from 'common/reducers/cmsDelegation';
 import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
-import CiqnoFillModal from './modals/ciqNoFill';
 import DelgDispatch from './delgDispatch';
+import SearchBar from 'client/components/search-bar';
 
 const formatMsg = format(messages);
 
@@ -26,11 +30,18 @@ const formatMsg = format(messages);
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.saved,
+    cMQParams: state.cmsDelegation.cMQParams,
   }),
   { loadCiqTable, openCiqModal, acceptCiqCert, loadCertFees, openCertModal,
-    loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp, setCiqFinish }
+    loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,
+    setCiqFinish, loadCMQParams, matchCQuote }
 )
-export default class CiqTable extends Component {
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
+})
+@withPrivilege({ module: 'clearance', feature: 'import' })
+export default class CiqList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -44,9 +55,16 @@ export default class CiqTable extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    searchInput: '',
+    expandedKeys: [],
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleTableLoad();
+    }
+    if (nextProps.cMQParams !== this.props.cMQParams) {
+      this.handleMatchQuote(nextProps.cMQParams);
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -135,19 +153,38 @@ export default class CiqTable extends Component {
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),
-    getParams: (pagination, filters, sorter) => {
+    getParams: (pagination, filters) => {
       const params = {
         ietype: this.props.ietype,
+        filter: JSON.stringify(filters),
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
-      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+      const filter = { ...this.props.listFilter };
       params.filter = JSON.stringify(filter);
       return params;
     },
     remotes: this.props.ciqlist,
   })
+  handleMQParam = (delgNo) => {
+    this.props.loadCMQParams(this.props.tenantId, delgNo, 2).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        }
+      });
+  }
+  handleMatchQuote = (params) => {
+    this.props.matchCQuote(params).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleTableLoad();
+        }
+      });
+  }
   handleAccept = (row) => {
     const { loginId, loginName, tenantId } = this.props;
     this.props.acceptCiqCert(loginId, loginName, row.delg_no, row.recv_server_type, tenantId).then(
@@ -156,6 +193,7 @@ export default class CiqTable extends Component {
           message.error(result.error.message);
         } else {
           this.handleTableLoad();
+          this.handleMQParam(row.delg_no);
         }
       }
     );
@@ -188,36 +226,44 @@ export default class CiqTable extends Component {
     this.props.loadCertFees(row);
     this.props.openCertModal();
   }
-  handleCiqNoFill = (row) => {
-    this.props.openCiqModal({
-      delgNo: row.delg_no,
-    });
-  }
-  handleTableLoad = () => {
+  handleTableLoad = (currentPage, filter) => {
+    this.setState({ expandedKeys: [] });
     this.props.loadCiqTable({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
-      filter: JSON.stringify(this.props.listFilter),
+      filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.ciqlist.pageSize,
-      currentPage: this.props.ciqlist.current,
+      currentPage: currentPage || this.props.ciqlist.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
     });
   }
+  handleSearch = (searchVal) => {
+    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    this.handleTableLoad(1, filters);
+  }
   render() {
     const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
-    const columns = [...this.columns];
     return (
-      <div className="page-body">
-        <div className="panel-body table-panel expandable">
-          <Table columns={columns} dataSource={this.dataSource} />
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
+          <div className="tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          </div>
+          <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
+        </header>
+        <div className="main-content" key="main">
+          <div className="page-body">
+            <div className="panel-body table-panel expandable">
+              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
+            </div>
+          </div>
         </div>
-        <CiqnoFillModal reload={this.handleTableLoad} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-      </div>
+      </QueueAnim>
     );
   }
 }

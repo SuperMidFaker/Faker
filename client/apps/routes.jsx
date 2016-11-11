@@ -36,6 +36,7 @@ import WxTmsDetail from './weixin/tms/detail';
 import Clearance from './cms/module-clearance';
 import * as ImportDelegation from './cms/import/delegation';
 import * as ImportDocs from './cms/import/docs';
+import * as ImportDecl from './cms/import/declaration';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
 import * as CMSRelation from './cms/relation';
@@ -222,15 +223,21 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
             <Route path="import">
               <IndexRoute component={ImportDelegation.List} />
+              <Route path="ciq" component={ImportDelegation.Ciq} />
               <Route path="create" component={ImportDelegation.Create} />
               <Route path="edit/:delgNo" component={ImportDelegation.Edit} />
               <Route path="docs">
                 <Route path="make/:billno" component={ImportDocs.Make} />
                 <Route path="view/:billno" component={ImportDocs.View} />
               </Route>
+              <Route path="declare">
+                <Route path="delg" component={ImportDecl.Delglist} />
+                <Route path="ciq" component={ImportDecl.Ciqlist} />
+              </Route>
             </Route>
             <Route path="export">
               <IndexRoute component={ExportDelegation.List} />
+              <Route path="ciq" component={ExportDelegation.Ciq} />
               <Route path="create" component={ExportDelegation.Create} />
               <Route path="edit/:delgNo" component={ExportDelegation.Edit} />
               <Route path="docs">

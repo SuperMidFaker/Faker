@@ -33,10 +33,11 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
   'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
-  'MATCH_CERT_QUOTE', 'MATCH_CERT_QUOTE_SUCCEED', 'MATCH_CERT_QUOTE_FAIL',
+  'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
   'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
   'RELATED_DISP_LOAD', 'RELATED_DISP_LOAD_SUCCEED', 'RELATED_DISP_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
+  'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
 ]);
 
 const initialState = {
@@ -60,6 +61,14 @@ const initialState = {
   },
   delgBillsMap: {
   },
+  ciqBillsMap: {
+  },
+  ciqBills: [{
+    decl_way_code: '',
+    manual_no: '',
+    pack_count: null,
+    gross_wt: null,
+  }],
   listFilter: {
     sortField: '',
     sortOrder: '',
@@ -124,7 +133,7 @@ const initialState = {
   partners: [],
   matchParam: {},
   matchStatus: {},
-  certMQParams: [],
+  cMQParams: [],
   brokers: [],
   relatedDisps: [],
 };
@@ -142,14 +151,23 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
     }
+    case actionTypes.LOAD_ACCEPT_FAIL:
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
+    case actionTypes.LOAD_CIQ:
+      return { ...state, ciqlist: { ...state.ciqlist, loading: true } };
     case actionTypes.LOAD_CIQ_SUCCEED: {
-      return { ...state, ciqlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
+      const ciqBillsMap = {};
+      const ciqList = action.result.data;
+      ciqList.data.forEach((delg) => {
+        ciqBillsMap[delg.delg_no] = [];
+      });
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap, listFilter: JSON.parse(action.params.filter) };
     }
+    case actionTypes.LOAD_CIQ_FAIL:
+      return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };
     case actionTypes.LOAD_CERT_SUCCEED: {
       return { ...state, certlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
     }
-    case actionTypes.LOAD_ACCEPT_FAIL:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
     case actionTypes.LOAD_SUBDELG: {
       const delgBillsMap = { ...state.delgBillsMap };
       delgBillsMap[action.params.delg_no] = [];
@@ -167,6 +185,24 @@ export default function reducer(state = initialState, action) {
       delgBillsMap[action.params.delg_no] = [];
       delgBillsMap[action.params.delg_no].loading = false;
       return { ...state, delgBillsMap };
+    }
+    case actionTypes.LOAD_CIQSUB: {
+      const ciqBillsMap = { ...state.ciqBillsMap };
+      ciqBillsMap[action.params.delg_no] = [];
+      ciqBillsMap[action.params.delg_no].loading = true;
+      return { ...state, ciqBillsMap };
+    }
+    case actionTypes.LOAD_CIQSUB_SUCCEED: {
+      const ciqBillsMap = { ...state.ciqBillsMap };
+      ciqBillsMap[action.params.delg_no] = action.result.data;
+      ciqBillsMap[action.params.delg_no].loading = false;
+      return { ...state, ciqBillsMap };
+    }
+    case actionTypes.LOAD_CIQSUB_FAIL: {
+      const ciqBillsMap = { ...state.ciqBillsMap };
+      ciqBillsMap[action.params.delg_no] = [];
+      ciqBillsMap[action.params.delg_no].loading = false;
+      return { ...state, ciqBillsMap };
     }
     case actionTypes.LOAD_BILLMAKE:
       return { ...state, billMakeModal: { ...state.billMakeModal, type: action.modalType } };
@@ -243,7 +279,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.MATCH_QUOTE_SUCCEED:
       return { ...state, matchStatus: action.result.data };
     case actionTypes.LOAD_MQPARAM_SUCCEED:
-      return { ...state, certMQParams: action.result.data };
+      return { ...state, cMQParams: action.result.data };
     case actionTypes.BROKERS_LOAD_SUCCEED:
       return { ...state, brokers: action.result.data.brokers };
     case actionTypes.RELATED_DISP_LOAD_SUCCEED:
@@ -251,6 +287,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function loadCiqSubTable(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQSUB,
+        actionTypes.LOAD_CIQSUB_SUCCEED,
+        actionTypes.LOAD_CIQSUB_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/bills',
+      method: 'get',
+      params,
+    },
+  };
 }
 
 export function setCiqFinish(delgNo) {
@@ -373,15 +424,15 @@ export function loadCMQParams(tenantId, delgNo, type) {
   };
 }
 
-export function matchCertQuote(params) {
+export function matchCQuote(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.MATCH_CERT_QUOTE,
-        actionTypes.MATCH_CERT_QUOTE_SUCCEED,
-        actionTypes.MATCH_CERT_QUOTE_FAIL,
+        actionTypes.MATCH_CIQ_QUOTE,
+        actionTypes.MATCH_CIQ_QUOTE_SUCCEED,
+        actionTypes.MATCH_CIQ_QUOTE_FAIL,
       ],
-      endpoint: 'v1/cms/match/cert/quote',
+      endpoint: 'v1/cms/match/ciq/quote',
       method: 'post',
       data: params,
       origin: 'mongo',
@@ -761,10 +812,10 @@ export function openEfModal({ entryHeadId, delgNo, billSeqNo }) {
     data: { entryHeadId, delgNo, billSeqNo },
   };
 }
-export function openCiqModal({ delgNo }) {
+export function openCiqModal({ entryHeadId, delgNo }) {
   return {
     type: actionTypes.OPEN_CIQ_MODAL,
-    data: { delgNo },
+    data: { entryHeadId, delgNo },
   };
 }
 
@@ -793,7 +844,7 @@ export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
   };
 }
 
-export function fillCustomsNo({ entryNo, delgNo }) {
+export function fillCustomsNo({ entryNo, entryHeadId, delgNo }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -803,7 +854,7 @@ export function fillCustomsNo({ entryNo, delgNo }) {
       ],
       endpoint: 'v1/cms/fill/customsno',
       method: 'post',
-      data: { entryNo, delgNo },
+      data: { entryNo, entryHeadId, delgNo },
     },
   };
 }

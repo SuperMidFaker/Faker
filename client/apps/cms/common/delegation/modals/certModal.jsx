@@ -57,6 +57,9 @@ export default class CertModal extends Component {
       }
       const totalFee = Number(calFee) + Number(taxFee);
       Object.assign(rows[e.rowIdx], { cal_fee: calFee, charge_count: chargeCount, tax_fee: Number(taxFee), total_fee: Number(totalFee) });
+    } else if (e.updated.cal_fee) {
+      const calFee = parseInt(e.updated.cal_fee, 10);
+      Object.assign(rows[e.rowIdx], { cal_fee: calFee, tax_fee: 0, total_fee: calFee });
     } else {
       Object.assign(rows[e.rowIdx], e.updated);
     }
@@ -106,6 +109,7 @@ export default class CertModal extends Component {
         name: msg('certCalfee'),
         key: 'cal_fee',
         width: 90,
+        editable: true,
       }, {
         name: msg('certTax'),
         key: 'tax_fee',

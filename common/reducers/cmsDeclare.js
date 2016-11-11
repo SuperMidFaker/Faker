@@ -24,6 +24,9 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
   'LOAD_BILLBODY', 'LOAD_BILLBODY_SUCCEED', 'LOAD_BILLBODY_FAIL',
+  'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
+  'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
+  'SAVE_CHECKED_STATE', 'SAVE_CHECKED_STATE_SUCCEED', 'SAVE_CHECKED_STATE_FAIL',
 ]);
 
 const initialState = {
@@ -69,6 +72,18 @@ const initialState = {
   efModal: {
     entryHeadId: -1,
     delgNo: '',
+  },
+  ciqdeclList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  delgdeclList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
   },
 };
 
@@ -172,27 +187,67 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleEfModal: false, efModal: initialState.efModal };
     case actionTypes.LOAD_BILLBODY_SUCCEED:
       return { ...state, billBody: action.result.data };
+    case actionTypes.LOAD_CIQ_DECLS:
+      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: true } };
+    case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
+      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data } };
+    case actionTypes.LOAD_CIQ_DECLS_FAIL:
+      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
+    case actionTypes.LOAD_DELG_DECLS:
+      return { ...state, delgdeclList: { ...state.delgdeclList, loading: true } };
+    case actionTypes.LOAD_DELG_DECLS_SUCCEED:
+      return { ...state, delgdeclList: { ...state.delgdeclList, loading: false, ...action.result.data } };
+    case actionTypes.LOAD_DELG_DECLS_FAIL:
+      return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
     default:
       return state;
   }
 }
-/*
-export function loadDelgList(cookie, params) {
+
+export function loadCiqDecls(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_DELGLIST,
-        actionTypes.LOAD_DELGLIST_SUCCEED,
-        actionTypes.LOAD_DELGLIST_FAIL,
+        actionTypes.LOAD_CIQ_DECLS,
+        actionTypes.LOAD_CIQ_DECLS_SUCCEED,
+        actionTypes.LOAD_CIQ_DECLS_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/declares',
+      endpoint: 'v1/cms/declare/get/ciqDecls',
       method: 'get',
       params,
-      cookie,
     },
   };
 }
-*/
+
+export function loadDelgDecls(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELG_DECLS,
+        actionTypes.LOAD_DELG_DECLS_SUCCEED,
+        actionTypes.LOAD_DELG_DECLS_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/get/delgDecls',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function saveCheckedState(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_CHECKED_STATE,
+        actionTypes.SAVE_CHECKED_STATE_SUCCEED,
+        actionTypes.SAVE_CHECKED_STATE_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/save/checkedState',
+      method: 'post',
+      data: params,
+    },
+  };
+}
 
 export function loadBills(billSeqNo) {
   return {
