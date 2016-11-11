@@ -90,7 +90,7 @@ export default class ShipmentOrderList extends React.Component {
   }
   handleAccept = (shipmtOrderNo) => {
     const { tenantId, tenantName, loginId, username } = this.props;
-    this.props.acceptOrder({tenantId, tenantName, loginId, username, shipmtOrderNo}).then(result => {
+    this.props.acceptOrder({ tenantId, tenantName, loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -140,19 +140,18 @@ export default class ShipmentOrderList extends React.Component {
           const os = o.split(',');
           const content = (
             <div>
-            {os.map(item => <p>{item}</p>)}
+              {os.map(item => <p>{item}</p>)}
             </div>
           );
 
           return (
             <Popover content={content} title="运单号">
-            <div>{`${os[0]}${os.length > 0 ? '...' : ''}`}</div>
+              <div>{`${os[0]}${os.length > 0 ? '...' : ''}`}</div>
             </Popover>
           );
         } else {
           return '';
         }
-        
       },
     }, {
       title: '客户',
@@ -179,7 +178,7 @@ export default class ShipmentOrderList extends React.Component {
       render: (o) => {
         const pkg = packagings.find(item => item.package_code === o);
         return pkg ? pkg.package_name : '';
-      }
+      },
     }, {
       title: '货物类型',
       dataIndex: 'cust_shipmt_goods_type',
