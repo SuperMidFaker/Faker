@@ -93,5 +93,8 @@ export default defineMessages({
     id: 'cms.delegation.anipk.check',
     defaultMessage: '动检包装查验',
   },
-  
+  custmosCheck: {
+    id: 'cms.delegation.custmos.check',
+    defaultMessage: '海关查验',
+  },
 });

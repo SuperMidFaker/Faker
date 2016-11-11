@@ -156,6 +156,7 @@ export default class CiqList extends Component {
     getParams: (pagination, filters) => {
       const params = {
         ietype: this.props.ietype,
+        filter: JSON.stringify(filters),
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,

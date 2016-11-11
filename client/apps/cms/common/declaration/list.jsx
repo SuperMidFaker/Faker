@@ -105,6 +105,11 @@ export default class DelgDeclList extends Component {
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
+    title: this.msg('custmosCheck'),
+    width: 130,
+    dataIndex: 'customs_check',
+    render: o => (o === 1 ? '是' : '否'),
+  }, {
     title: this.msg('opColumn'),
     width: 140,
   }]
@@ -118,7 +123,7 @@ export default class DelgDeclList extends Component {
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),
-    getParams: (pagination, filters) => {
+    getParams: (pagination) => {
       const params = {
         ietype: this.props.ietype,
         tenantId: this.props.tenantId,

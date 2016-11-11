@@ -25,7 +25,10 @@ function ColumnSwitch(props) {
       onChange(record, field, value);
     }
   }
-  const check = record[field] === 1 ? true: false;
+  let check = false;
+  if (record[field] === 1) {
+    check = true;
+  }
   return <Switch size="small" checked={check} value={record[field] || 0} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
@@ -160,6 +163,7 @@ export default class CiqDeclList extends Component {
     getParams: (pagination, filters) => {
       const params = {
         ietype: this.props.ietype,
+        filter: JSON.stringify(filters),
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
@@ -171,12 +175,12 @@ export default class CiqDeclList extends Component {
     remotes: this.props.ciqdeclList,
   })
   handleEditChange = (record, field, value) => {
-    record[field] = value ? 1: 0; // eslint-disable-line no-param-reassign
+    record[field] = value ? 1 : 0; // eslint-disable-line no-param-reassign
     this.props.saveCheckedState(record);
     this.forceUpdate();
   }
-  handleCiqFinish = (row) => {
-    
+  handleCiqFinish = () => {
+
   }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
