@@ -65,6 +65,10 @@ export default defineMessages({
     id: 'cms.declaration.modal.ciqnofill.title',
     defaultMessage: '填写通关单号',
   },
+  entryNoFillModalTitle: {
+    id: 'cms.delegation.modal.entrynofill.title',
+    defaultMessage: '填写报关单号',
+  },
   successfulOperation: {
     id: 'cms.declaration.modal.successful.operation',
     defaultMessage: '操作成功',
