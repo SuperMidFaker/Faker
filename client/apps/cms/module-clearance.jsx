@@ -54,15 +54,15 @@ export default class Clearance extends React.Component {
         }, {
           key: 'cms-1-1',
           path: '/clearance/import/declare/delg',
-          text: '报关申报',
+          text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-1-2',
           path: '/clearance/import/ciq',
-          text: '报检委托',
+          text: formatMsg(intl, 'importCiq'),
         }, {
           key: 'cms-1-3',
           path: '/clearance/import/declare/ciq',
-          text: '报检申报',
+          text: formatMsg(intl, 'importCiqDecl'),
         }],
       });
     }
