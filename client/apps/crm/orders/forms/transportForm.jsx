@@ -55,7 +55,7 @@ export default class TransportForm extends Component {
       consignee_city: '',
       consignee_district: '',
       consignee_street: '',
-      consignee_region_code: '',
+      consignee_region_code: -1,
       consignee_addr: '',
       consignee_email: '',
       consignee_contact: '',
@@ -102,7 +102,7 @@ export default class TransportForm extends Component {
         transports[k].consigner_city = '';
         transports[k].consigner_district = '';
         transports[k].consigner_street = '';
-        transports[k].consigner_region_code = '';
+        transports[k].consigner_region_code = -1;
         transports[k].consigner_addr = '';
         transports[k].consigner_email = '';
         transports[k].consigner_contact = '';
@@ -112,7 +112,7 @@ export default class TransportForm extends Component {
         transports[k].consignee_city = '';
         transports[k].consignee_district = '';
         transports[k].consignee_street = '';
-        transports[k].consignee_region_code = '';
+        transports[k].consignee_region_code = -1;
         transports[k].consignee_addr = '';
         transports[k].consignee_email = '';
         transports[k].consignee_contact = '';

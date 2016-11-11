@@ -1,14 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Button, message } from 'antd';
 import OrderForm from './form';
-import { submitOrder } from 'common/reducers/crmOrders';
+import { loadOrder, editOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
+function fetchData({ location, dispatch }) {
+  return dispatch(loadOrder(location.query.shipmtOrderNo));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 
 @connectNav({
@@ -23,9 +29,9 @@ const formatMsg = format(messages);
     tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
   }),
-  { submitOrder }
+  { editOrder }
 )
-export default class Create extends Component {
+export default class Edit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -33,14 +39,11 @@ export default class Create extends Component {
     username: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
-    submitOrder: PropTypes.func.isRequired,
+    editOrder: PropTypes.func.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
     const { formData, tenantId, loginId, username, tenantName } = this.props;
-
-    // cust_shipmt_package: '',
-    // ccb_need_exchange: 0,
     if (formData.customer_name === '') {
       message.error('请选择客户');
     } else if (formData.cust_shipmt_trans_mode === '') {
@@ -50,7 +53,7 @@ export default class Create extends Component {
     } else if ((formData.shipmt_order_mode === 1 || formData.shipmt_order_mode === 2) && formData.transports[0].trs_mode_code === '') {
       message.error('请选择运输模式');
     } else {
-      this.props.submitOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
+      this.props.editOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -63,7 +66,7 @@ export default class Create extends Component {
     return (
       <div>
         <header className="top-bar">
-          <span>新建订单</span>
+          <span>修改订单</span>
         </header>
         <div className="top-bar-tools">
           <Button size="large" type="primary" onClick={this.handleSave}>
@@ -72,7 +75,7 @@ export default class Create extends Component {
         </div>
         <div className="main-content">
           <div className="page-body card-wrapper">
-            <OrderForm operation="create" />
+            <OrderForm operation="edit" />
           </div>
         </div>
       </div>

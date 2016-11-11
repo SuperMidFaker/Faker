@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, message } from 'antd';
+import { Button, Popconfirm, Popover, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -10,9 +10,9 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, loadFormRequires, removeOrder, setClientForm } from 'common/reducers/crmOrders';
+import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
 import moment from 'moment';
-import { ORDER_STATUS } from 'common/constants';
+import { ORDER_STATUS, GOODSTYPES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
@@ -39,11 +39,12 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
+    tenantName: state.account.tenantName,
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
     formRequires: state.crmOrders.formRequires,
   }), {
-    loadOrders, removeOrder, setClientForm,
+    loadOrders, removeOrder, setClientForm, acceptOrder,
   }
 )
 @connectNav({
@@ -57,10 +58,12 @@ export default class ShipmentOrderList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
+    tenantName: PropTypes.string.isRequired,
     orders: PropTypes.object.isRequired,
     loadOrders: PropTypes.func.isRequired,
     removeOrder: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
+    acceptOrder: PropTypes.func.isRequired,
     formRequires: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -85,6 +88,17 @@ export default class ShipmentOrderList extends React.Component {
       }
     });
   }
+  handleAccept = (shipmtOrderNo) => {
+    const { tenantId, tenantName, loginId, username } = this.props;
+    this.props.acceptOrder({tenantId, tenantName, loginId, username, shipmtOrderNo}).then(result => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('接单成功');
+        this.handleTableLoad();
+      }
+    });
+  }
   handleTableLoad = () => {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
@@ -94,9 +108,17 @@ export default class ShipmentOrderList extends React.Component {
       filters: this.props.orders.filters,
     });
   }
+  handleSearch = (searchValue) => {
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      searchValue,
+      filters: this.props.orders.filters,
+    });
+  }
   render() {
-    // const { loading, formRequires: { clients } } = this.props;
-    const { loading } = this.props;
+    const { loading, formRequires: { packagings } } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -112,7 +134,26 @@ export default class ShipmentOrderList extends React.Component {
       dataIndex: 'ccb_delg_no',
     }, {
       title: '运输单号',
-      dataIndex: '',
+      dataIndex: 'trs_shipmt_no',
+      render: (o) => {
+        if (o) {
+          const os = o.split(',');
+          const content = (
+            <div>
+            {os.map(item => <p>{item}</p>)}
+            </div>
+          );
+
+          return (
+            <Popover content={content} title="运单号">
+            <div>{`${os[0]}${os.length > 0 ? '...' : ''}`}</div>
+            </Popover>
+          );
+        } else {
+          return '';
+        }
+        
+      },
     }, {
       title: '客户',
       dataIndex: 'customer_name',
@@ -135,9 +176,17 @@ export default class ShipmentOrderList extends React.Component {
     }, {
       title: '包装方式',
       dataIndex: 'cust_shipmt_package',
+      render: (o) => {
+        const pkg = packagings.find(item => item.package_code === o);
+        return pkg ? pkg.package_name : '';
+      }
     }, {
-      title: '货物性质',
+      title: '货物类型',
       dataIndex: 'cust_shipmt_goods_type',
+      render: (o) => {
+        const goodsType = GOODSTYPES.find(item => item.value === o);
+        return goodsType ? goodsType.text : '';
+      },
     }, {
       title: '创建时间',
       dataIndex: 'created_date',
@@ -152,13 +201,25 @@ export default class ShipmentOrderList extends React.Component {
       title: '操作',
       dataIndex: 'id',
       render: (o, record) => {
-        return (
-          <div>
-            <Link to={`/customer/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
-            <span className="ant-divider" />
-            <a onClick={() => this.handleRemove(record.shipmt_order_no)}>删除</a>
-          </div>
-        );
+        if (record.order_status === 1) {
+          return (
+            <div>
+              <a onClick={() => this.handleAccept(record.shipmt_order_no)}>接单</a>
+              <span className="ant-divider" />
+              <Link to={`/customer/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}>修改</Link>
+              <span className="ant-divider" />
+              <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(record.shipmt_order_no)}>
+                <a>删除</a>
+              </Popconfirm>
+            </div>
+          );
+        } else {
+          return (
+            <div>
+              <Link to={`/customer/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
+            </div>
+          );
+        }
       },
     }];
     const dataSource = new Table.DataSource({
@@ -186,12 +247,13 @@ export default class ShipmentOrderList extends React.Component {
     });
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
+        <header className="top-bar">
           <span>{this.msg('shipmentOrders')}</span>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
+
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">

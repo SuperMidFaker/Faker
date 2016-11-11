@@ -32,12 +32,7 @@ export default class OrderForm extends Component {
     formData: PropTypes.object.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-  state = {
-    attachments: [],
-  }
+
   msg = key => formatMsg(this.props.intl, key)
 
   render() {

@@ -8,6 +8,8 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'SUBMIT_ORDER', 'SUBMIT_ORDER_SUCCEED', 'SUBMIT_ORDER_FAIL',
   'SET_CLIENT_FORM',
   'REMOVE_ORDER', 'REMOVE_ORDER_SUCCEED', 'REMOVE_ORDER_FAIL',
+  'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
+  'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
 ]);
 
 const initialState = {
@@ -15,6 +17,7 @@ const initialState = {
   loading: false,
   customers: [],
   formData: {
+    shipmt_order_no: '',
     shipmt_order_mode: 2,
     customer_name: '',
     customer_tenant_id: -1,
@@ -81,6 +84,7 @@ const initialState = {
     pageSize: 10,
     current: 1,
     filters: [],
+    searchValue: '',
     data: [],
   },
 };
@@ -184,6 +188,36 @@ export function submitOrder(data) {
         actionTypes.SUBMIT_ORDER_FAIL,
       ],
       endpoint: 'v1/crm/order/submit',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function editOrder(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_ORDER,
+        actionTypes.EDIT_ORDER_SUCCEED,
+        actionTypes.EDIT_ORDER_FAIL,
+      ],
+      endpoint: 'v1/crm/order/edit',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function acceptOrder(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCEPT_ORDER,
+        actionTypes.ACCEPT_ORDER_SUCCEED,
+        actionTypes.ACCEPT_ORDER_FAIL,
+      ],
+      endpoint: 'v1/crm/order/accept',
       method: 'post',
       data,
     },
