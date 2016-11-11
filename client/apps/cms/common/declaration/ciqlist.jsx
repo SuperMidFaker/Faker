@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon } from 'antd';
+import { message, Icon, Switch } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqDecls } from 'common/reducers/cmsDeclare';
+import { loadCiqDecls, saveCheckedState } from 'common/reducers/cmsDeclare';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -18,6 +18,22 @@ import CiqnoFillModal from './modals/ciqNoFill';
 
 const formatMsg = format(messages);
 
+function ColumnSwitch(props) {
+  const { record, field, onChange } = props;
+  function handleChange(value) {
+    if (onChange) {
+      onChange(record, field, value);
+    }
+  }
+  const check = record[field] === 1 ? true: false;
+  return <Switch size="small" checked={check} value={record[field] || 0} onChange={handleChange} />;
+}
+ColumnSwitch.propTypes = {
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+};
+
 @injectIntl
 @connect(
   state => ({
@@ -27,7 +43,7 @@ const formatMsg = format(messages);
     ciqdeclList: state.cmsDeclare.ciqdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadCiqDecls, openCiqModal }
+  { loadCiqDecls, openCiqModal, saveCheckedState }
 )
 @connectNav({
   depth: 2,
@@ -50,7 +66,6 @@ export default class CiqDeclList extends Component {
   state = {
     searchInput: '',
   }
-
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('entryId'),
@@ -106,10 +121,31 @@ export default class CiqDeclList extends Component {
     title: this.msg('processDate'),
     width: 160,
     render: (o, record) => (record.id ?
-    record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
+      record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: this.msg('qualityCheck'),
+    dataIndex: 'quality_check',
+    width: 80,
+    render: (o, record) =>
+      <ColumnSwitch field="quality_check" record={record} onChange={this.handleEditChange} />,
+  }, {
+    title: this.msg('动检包装查验'),
+    dataIndex: 'anipk_check',
+    width: 80,
+    render: (o, record) =>
+      <ColumnSwitch field="anipk_check" record={record} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('opColumn'),
     width: 140,
+    render: (o, record) => {
+      if (record.entry_id) {
+        return (
+          <span>
+            <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
+          </span>
+        );
+      }
+    },
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadCiqDecls(params),
@@ -134,6 +170,14 @@ export default class CiqDeclList extends Component {
     },
     remotes: this.props.ciqdeclList,
   })
+  handleEditChange = (record, field, value) => {
+    record[field] = value ? 1: 0; // eslint-disable-line no-param-reassign
+    this.props.saveCheckedState(record);
+    this.forceUpdate();
+  }
+  handleCiqFinish = (row) => {
+    
+  }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
     this.props.loadCiqDecls({

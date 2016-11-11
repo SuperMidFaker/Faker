@@ -77,9 +77,21 @@ export default defineMessages({
     id: 'cms.declaration.save',
     defaultMessage: '保存',
   },
-  lastActTime: {
-    id: 'cms.declaration.last.act.time',
-    defaultMessage: '最后更新时间',
+  processDate: {
+    id: 'cms.delegation.process.date',
+    defaultMessage: '更新时间',
   },
-
+  ciqFinish: {
+    id: 'cms.delegation.ciq.finish',
+    defaultMessage: '完成',
+  },
+  qualityCheck: {
+    id: 'cms.delegation.quality.check',
+    defaultMessage: '品质查验',
+  },
+  anipkCheck: {
+    id: 'cms.delegation.anipk.check',
+    defaultMessage: '动检包装查验',
+  },
+  
 });
