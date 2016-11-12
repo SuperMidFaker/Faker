@@ -35,6 +35,9 @@ export default class Create extends Component {
     formData: PropTypes.object.isRequired,
     submitOrder: PropTypes.func.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
     const { formData, tenantId, loginId, username, tenantName } = this.props;
@@ -55,6 +58,7 @@ export default class Create extends Component {
           message.error(result.error.message);
         } else {
           message.info('保存成功');
+          this.context.router.push('/customer/orders');
         }
       });
     }

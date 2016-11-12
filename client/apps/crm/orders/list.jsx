@@ -140,7 +140,7 @@ export default class ShipmentOrderList extends React.Component {
           const os = o.split(',');
           const content = (
             <div>
-              {os.map(item => <p>{item}</p>)}
+              {os.map((item, index) => <p key={index}>{item}</p>)}
             </div>
           );
 
