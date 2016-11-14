@@ -27,6 +27,7 @@ export default class CarrierModal extends React.Component {
     addPartner: PropTypes.func.isRequired,
     editPartner: PropTypes.func.isRequired,
     toggleCarrierModal: PropTypes.func.isRequired,
+    onOk: PropTypes.func,
   }
   state = {
     partnerName: '',
@@ -51,11 +52,23 @@ export default class CarrierModal extends React.Component {
         this.props.editPartner(carrier.id, partnerName, partnerCode).then((result) => {
           if (result.error) {
             message.error(result.error.message);
+          } else {
+            message.success('修改成功');
+            if(this.props.onOk) {
+              this.props.onOk();
+            }
           }
         });
       } else {
-        this.props.addPartner({ tenantId, partnerInfo: { partnerName, partnerCode }, partnerships: ['TRS'] }).then(() => {
-          message.success('添加成功');
+        this.props.addPartner({ tenantId, partnerInfo: { partnerName, partnerCode }, partnerships: ['TRS'] }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            message.success('添加成功');
+            if(this.props.onOk) {
+              this.props.onOk();
+            }
+          }
         });
       }
     }

@@ -14,8 +14,9 @@ import { getChargeAmountExpression } from '../common/charge';
 import ChargeSpecForm from '../shipment/forms/chargeSpec';
 import SearchBar from 'client/components/search-bar';
 import DispatchConfirmModal from './DispatchConfirmModal';
-import partnerModal from '../../corp/cooperation/components/partnerModal';
+import CarrierModal from '../resources/modals/carrierModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';
+import { toggleCarrierModal } from 'common/reducers/transportResources';
 
 const TabPane = Tabs.TabPane;
 
@@ -58,7 +59,7 @@ function fetch({ state, dispatch, cookie }) {
   vehicleLengths: state.transportDispatch.vehicleLengths,
   shipmts: state.transportDispatch.shipmts,
 }),
-  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge }
+  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal }
 )
 export default class DispatchDock extends Component {
   static propTypes = {
@@ -82,6 +83,7 @@ export default class DispatchDock extends Component {
     vehicleLengths: PropTypes.array.isRequired,
     computeCostCharge: PropTypes.func.isRequired,
     doDispatchAndSend: PropTypes.func.isRequired,
+    toggleCarrierModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -518,6 +520,19 @@ export default class DispatchDock extends Component {
       newVehicleVisible: false,
     });
   }
+  handleCarrierLoad = () => {
+    const { lsps, tenantId } = this.props;
+    this.props.loadLsps(null, {
+      tenantId,
+      pageSize: lsps.pageSize,
+      current: 1,
+      carrier: '',
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   handleChargeChange = (charge, index) => {
     const state = update(this.state, { lspsVar: { data:
       { [index]: { charge: { 0: { $set: charge } } } } } });
@@ -576,23 +591,7 @@ export default class DispatchDock extends Component {
     }, 200);
   }
   handleNewCarrierClick = () => {
-    const { tenantId } = this.props;
-    partnerModal({
-      isProvider: true,
-      partnerships: ['TRS'],
-      onOk: (partnerInfo) => {
-        this.props.addPartner({ tenantId, partnerInfo, partnerships: partnerInfo.partnerships }).then(() => {
-          message.success('合作伙伴已添加');
-          const { lsps } = this.props;
-          this.props.loadLsps(null, {
-            tenantId,
-            pageSize: lsps.pageSize,
-            current: 1,
-            carrier: '',
-          });
-        });
-      },
-    });
+    this.props.toggleCarrierModal(true, 'add');
   }
   handleNewVehicleClick = () => {
     this.setState({ newVehicleVisible: true });
@@ -668,6 +667,7 @@ export default class DispatchDock extends Component {
                 onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
                 onDispatch={() => this.handleShipmtDispatch()}
               />
+              <CarrierModal onOk={this.handleCarrierLoad}/>
             </div>
           </div>
         </div>
