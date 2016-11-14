@@ -57,16 +57,12 @@ export default class TrackingLandWrapper extends React.Component {
   componentWillMount() {
     const locName = this.props.location.pathname.split('/')[4];
     let propFilters = [];
-    let stage = '';
     if (locName === 'status') {
       propFilters = this.props.statusfilters;
-      stage = 'tracking';
     } else if (locName === 'pod') {
       propFilters = this.props.podfilters;
-      stage = 'pod';
     } else if (locName === 'exception') {
       propFilters = this.props.excpfilters;
-      stage = 'exception';
     }
     let radioValue;
     let searchInput;
@@ -78,24 +74,28 @@ export default class TrackingLandWrapper extends React.Component {
     if (nos.length === 1) {
       searchInput = nos[0].value;
     }
-    this.setState({ radioValue, searchInput, stage });
+    this.setState({ radioValue, searchInput });
   }
   componentWillReceiveProps(nextProps) {
     const locName = nextProps.location.pathname.split('/')[4];
     let propFilters = [];
+    let stage = '';
     if (locName === 'status') {
       propFilters = nextProps.statusfilters;
+      stage = 'tracking';
     } else if (locName === 'pod') {
       propFilters = nextProps.podfilters;
+      stage = 'pod';
     } else if (locName === 'exception') {
       propFilters = nextProps.excpfilters;
+      stage = 'exception';
     }
     let radioValue;
     const types = propFilters.filter(flt => flt.name === 'type');
     if (types.length === 1) {
       radioValue = types[0].value;
     }
-    this.setState({ radioValue });
+    this.setState({ radioValue, stage });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
