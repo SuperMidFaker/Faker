@@ -73,11 +73,11 @@ export default class CiqDeclList extends Component {
   columns = [{
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -85,10 +85,10 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('billNo'),
     dataIndex: 'bill_seq_no',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('customsId'),
-    width: 200,
+    width: 180,
     dataIndex: 'customs_id',
     render: (o, record) => {
       if (record.id) {
@@ -109,20 +109,20 @@ export default class CiqDeclList extends Component {
     },
   }, {
     title: this.msg('agentCode'),
-    width: 130,
+    width: 100,
     dataIndex: 'agent_code',
   }, {
     title: this.msg('agentName'),
-    width: 130,
+    width: 180,
     dataIndex: 'agent_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('clrStatus'),
-    width: 130,
+    width: 100,
     dataIndex: 'note',
   }, {
     title: this.msg('processDate'),
-    width: 160,
+    width: 100,
     render: (o, record) => (record.id ?
       record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
@@ -139,7 +139,7 @@ export default class CiqDeclList extends Component {
       <ColumnSwitch field="anipk_check" record={record} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('opColumn'),
-    width: 140,
+    width: 100,
     render: (o, record) => {
       if (record.entry_id) {
         return (

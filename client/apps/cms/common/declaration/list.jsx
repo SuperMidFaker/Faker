@@ -55,7 +55,7 @@ export default class DelgDeclList extends Component {
   columns = [{
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 120,
+    width: 150,
     render: (o, record) => {
       // 用id字段表示为children数据
       if (record.id) {
@@ -77,7 +77,7 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -85,33 +85,33 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('billNo'),
     dataIndex: 'bill_seq_no',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('agentCode'),
-    width: 130,
+    width: 100,
     dataIndex: 'agent_code',
   }, {
     title: this.msg('agentName'),
-    width: 130,
+    width: 180,
     dataIndex: 'agent_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('clrStatus'),
-    width: 130,
+    width: 100,
     dataIndex: 'note',
   }, {
     title: this.msg('processDate'),
-    width: 160,
+    width: 100,
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('custmosCheck'),
-    width: 130,
+    width: 80,
     dataIndex: 'customs_check',
     render: o => (o === 1 ? '是' : '否'),
   }, {
     title: this.msg('opColumn'),
-    width: 140,
+    width: 100,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),
