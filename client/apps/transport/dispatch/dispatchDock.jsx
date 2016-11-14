@@ -120,8 +120,8 @@ export default class DispatchDock extends Component {
             };
           });
           return (
-            <Popover placement="rightBottom" overlayStyle={{ width: 360 }} title="价格明细" content={
-              <ChargeSpecForm charge={charge} onChange={() => {}} index={index} />
+            <Popover placement="rightBottom" title={`${record.partner_name} 价格明细`} content={
+              <ChargeSpecForm charges={o} onChange={this.handleChargeChange} index={index} />
               }
             >
               <span>{charge.total_charge.toFixed(2)}</span>
@@ -232,6 +232,7 @@ export default class DispatchDock extends Component {
           freight_charge: 0,
           pickup_charge: 0,
           deliver_charge: 0,
+          surcharge: 0,
           total_charge: 0,
           charge_gradient: 0,
           charge_amount: '',
@@ -262,6 +263,7 @@ export default class DispatchDock extends Component {
                   freight_charge: 0,
                   pickup_charge: 0,
                   deliver_charge: 0,
+                  surcharge: 0,
                   total_charge: 0,
                   charge_gradient: 0,
                   charge_amount: '',
@@ -276,6 +278,7 @@ export default class DispatchDock extends Component {
                   freight_charge: freight,
                   pickup_charge: pickup,
                   deliver_charge: deliver,
+                  surcharge: 0,
                   total_charge: Number(freight) + Number(pickup) + Number(deliver),
                   charge_gradient: gradient,
                   charge_amount: getChargeAmountExpression(meter, miles, quantity,
@@ -533,9 +536,9 @@ export default class DispatchDock extends Component {
       }
     });
   }
-  handleChargeChange = (charge, index) => {
+  handleChargeChange = (charges, index) => {
     const state = update(this.state, { lspsVar: { data:
-      { [index]: { charge: { 0: { $set: charge } } } } } });
+      { [index]: { charge: { $set: charges } } } } });
     this.setState(state);
   }
   handleCostCompute = (ev, row, index) => {
