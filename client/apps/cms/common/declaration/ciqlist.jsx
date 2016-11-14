@@ -118,7 +118,7 @@ export default class CiqDeclList extends Component {
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('clrStatus'),
-    width: 100,
+    width: 120,
     dataIndex: 'note',
   }, {
     title: this.msg('processDate'),
@@ -132,14 +132,15 @@ export default class CiqDeclList extends Component {
     render: (o, record) =>
       <ColumnSwitch field="quality_check" record={record} onChange={this.handleEditChange} />,
   }, {
-    title: this.msg('动检包装查验'),
+    title: this.msg('anipkCheck'),
     dataIndex: 'anipk_check',
-    width: 80,
+    width: 100,
     render: (o, record) =>
       <ColumnSwitch field="anipk_check" record={record} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('opColumn'),
     width: 100,
+    fixed: 'right',
     render: (o, record) => {
       if (record.entry_id) {
         return (
@@ -220,7 +221,7 @@ export default class CiqDeclList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqdeclList.loading} />
+              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1300 }} />
             </div>
             <CiqnoFillModal reload={this.handleTableLoad} />
           </div>

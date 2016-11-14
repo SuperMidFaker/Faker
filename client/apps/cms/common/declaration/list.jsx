@@ -56,6 +56,7 @@ export default class DelgDeclList extends Component {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
     width: 150,
+    fixed: 'left',
     render: (o, record) => {
       // 用id字段表示为children数据
       if (record.id) {
@@ -97,11 +98,11 @@ export default class DelgDeclList extends Component {
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('clrStatus'),
-    width: 100,
+    width: 120,
     dataIndex: 'note',
   }, {
     title: this.msg('processDate'),
-    width: 100,
+    width: 120,
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
@@ -111,6 +112,7 @@ export default class DelgDeclList extends Component {
     render: o => (o === 1 ? '是' : '否'),
   }, {
     title: this.msg('opColumn'),
+    fixed: 'right',
     width: 100,
   }]
   dataSource = new Table.DataSource({
@@ -170,12 +172,12 @@ export default class DelgDeclList extends Component {
           <div className="tools">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
+          <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
         </header>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={delgdeclList.loading} />
+              <Table columns={this.columns} dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1300 }} />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
           </div>

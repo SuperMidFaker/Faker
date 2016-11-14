@@ -10,20 +10,20 @@ export default defineMessages({
     defaultMessage: '提运单号/订单号/发票号',
   },
   importDeclaration: {
-    id: 'cms.delegation.import.declaration',
-    defaultMessage: '进口报关',
+    id: 'cms.delegation.import',
+    defaultMessage: '进口委托管理',
   },
   exportDeclaration: {
-    id: 'cms.delegation.export.declaration',
-    defaultMessage: '出口报关',
+    id: 'cms.delegation.export',
+    defaultMessage: '出口委托管理',
   },
   importCiq: {
     id: 'cms.delegation.import.ciq',
-    defaultMessage: '进口报检',
+    defaultMessage: '进口报检委托',
   },
   exportCiq: {
     id: 'cms.delegation.export.ciq',
-    defaultMessage: '出口报检',
+    defaultMessage: '出口报检委托',
   },
   all: {
     id: 'cms.delegation.stage.all',
@@ -331,7 +331,7 @@ export default defineMessages({
   },
   certOp: {
     id: 'cms.delegation.certOp',
-    defaultMessage: '办证',
+    defaultMessage: '鉴定办证',
   },
   dispatchMessage: {
     id: 'cms.delegation.message.dispatch',
