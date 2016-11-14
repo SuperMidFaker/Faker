@@ -46,11 +46,11 @@ export default defineMessages({
     defaultMessage: '通关单号',
   },
   agentName: {
-    id: 'cms.declaration.agentName',
+    id: 'cms.declaration.agent.name',
     defaultMessage: '申报单位名称',
   },
   agentCode: {
-    id: 'cms.declaration.agentName',
+    id: 'cms.declaration.agent.code',
     defaultMessage: '申报单位代码',
   },
   status: {
@@ -66,7 +66,7 @@ export default defineMessages({
     defaultMessage: '填写通关单号',
   },
   entryNoFillModalTitle: {
-    id: 'cms.delegation.modal.entrynofill.title',
+    id: 'cms.declaration.modal.entrynofill.title',
     defaultMessage: '填写报关单号',
   },
   successfulOperation: {
@@ -78,23 +78,23 @@ export default defineMessages({
     defaultMessage: '保存',
   },
   processDate: {
-    id: 'cms.delegation.process.date',
+    id: 'cms.declaration.process.date',
     defaultMessage: '更新时间',
   },
   ciqFinish: {
-    id: 'cms.delegation.ciq.finish',
+    id: 'cms.declaration.ciq.finish',
     defaultMessage: '完成',
   },
   qualityCheck: {
-    id: 'cms.delegation.quality.check',
+    id: 'cms.declaration.quality.check',
     defaultMessage: '品质查验',
   },
   anipkCheck: {
-    id: 'cms.delegation.anipk.check',
+    id: 'cms.declaration.anipk.check',
     defaultMessage: '动检包装查验',
   },
   custmosCheck: {
-    id: 'cms.delegation.custmos.check',
+    id: 'cms.declaration.custmos.check',
     defaultMessage: '海关查验',
   },
 });
