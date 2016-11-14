@@ -49,11 +49,11 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'import'),
         sublinks: [{
           key: 'cms-1-0',
-          path: '/clearance/import',
+          path: '/clearance/import/delegation',
           text: formatMsg(intl, 'importDelegation'),
         }, {
           key: 'cms-1-1',
-          path: '/clearance/import/declare/delg',
+          path: '/clearance/import/declare/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-1-2',
@@ -75,20 +75,16 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
         sublinks: [{
           key: 'cms-2-0',
-          path: '/clearance/export',
-          text: '报关委托',
+          path: '/clearance/export/delegation',
+          text: formatMsg(intl, 'exportDelegation'),
         }, {
           key: 'cms-2-1',
-          path: '/clearance/export/declare/delg',
-          text: '报关申报',
-        }, {
-          key: 'cms-2-2',
-          path: '/clearance/export/ciq',
-          text: '报检委托',
+          path: '/clearance/export/declare/customs',
+          text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
           key: 'cms-2-3',
           path: '/clearance/export/declare/ciq',
-          text: '报检申报',
+          text: formatMsg(intl, 'exportCiqDecl'),
         }],
       });
     }

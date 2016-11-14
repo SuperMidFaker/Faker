@@ -222,7 +222,8 @@ export default(store, cookie) => {
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
             <Route path="import">
-              <IndexRoute component={ImportDelegation.List} />
+              <IndexRedirect to="/clearance/import/delegation" />
+              <Route path="delegation" component={ImportDelegation.List} />
               <Route path="ciq" component={ImportDelegation.Ciq} />
               <Route path="create" component={ImportDelegation.Create} />
               <Route path="edit/:delgNo" component={ImportDelegation.Edit} />
@@ -231,12 +232,13 @@ export default(store, cookie) => {
                 <Route path="view/:billno" component={ImportDocs.View} />
               </Route>
               <Route path="declare">
-                <Route path="delg" component={ImportDecl.Delglist} />
+                <Route path="customs" component={ImportDecl.Delglist} />
                 <Route path="ciq" component={ImportDecl.Ciqlist} />
               </Route>
             </Route>
             <Route path="export">
-              <IndexRoute component={ExportDelegation.List} />
+              <IndexRedirect to="/clearance/export/delegation" />
+              <Route path="delegation" component={ExportDelegation.List} />
               <Route path="ciq" component={ExportDelegation.Ciq} />
               <Route path="create" component={ExportDelegation.Create} />
               <Route path="edit/:delgNo" component={ExportDelegation.Edit} />

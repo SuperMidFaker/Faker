@@ -6,20 +6,20 @@ export default defineMessages({
     defaultMessage: '报关单号',
   },
   importDeclaration: {
-    id: 'cms.declaration.import.delg',
-    defaultMessage: '进口报关申报',
+    id: 'cms.declaration.import.customs',
+    defaultMessage: '进口海关申报',
   },
   exportDeclaration: {
-    id: 'cms.declaration.export.delg',
-    defaultMessage: '出口报关申报',
+    id: 'cms.declaration.export.customs',
+    defaultMessage: '出口海关申报',
   },
   importCiq: {
     id: 'cms.declaration.import.ciq',
-    defaultMessage: '进口报检申报',
+    defaultMessage: '进口商检申报',
   },
   exportCiq: {
     id: 'cms.declaration.export.ciq',
-    defaultMessage: '出口报检申报',
+    defaultMessage: '出口商检申报',
   },
   entryId: {
     id: 'cms.declaration.delg.entryId',
@@ -91,7 +91,7 @@ export default defineMessages({
   },
   anipkCheck: {
     id: 'cms.declaration.anipk.check',
-    defaultMessage: '动检包装查验',
+    defaultMessage: '动植检查验',
   },
   custmosCheck: {
     id: 'cms.declaration.custmos.check',
