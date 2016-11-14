@@ -667,7 +667,7 @@ export default class DispatchDock extends Component {
                 onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
                 onDispatch={() => this.handleShipmtDispatch()}
               />
-              <CarrierModal onOk={this.handleCarrierLoad}/>
+              <CarrierModal onOk={this.handleCarrierLoad} />
             </div>
           </div>
         </div>

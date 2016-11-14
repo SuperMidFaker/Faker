@@ -54,7 +54,7 @@ export default class CarrierModal extends React.Component {
             message.error(result.error.message);
           } else {
             message.success('修改成功');
-            if(this.props.onOk) {
+            if (this.props.onOk) {
               this.props.onOk();
             }
           }
@@ -65,7 +65,7 @@ export default class CarrierModal extends React.Component {
             message.error(result.error.message);
           } else {
             message.success('添加成功');
-            if(this.props.onOk) {
+            if (this.props.onOk) {
               this.props.onOk();
             }
           }
