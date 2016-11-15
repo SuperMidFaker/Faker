@@ -6,7 +6,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqDecls, saveCheckedState } from 'common/reducers/cmsDeclare';
+import { loadCiqDecls, saveCheckedState, setDeclFinish } from 'common/reducers/cmsDeclare';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -29,7 +29,7 @@ function ColumnSwitch(props) {
   if (record[field] === 1) {
     check = true;
   }
-  return <Switch size="small" checked={check} value={record[field] || 0} onChange={handleChange} />;
+  return <Switch size="small" disabled={record.status === 1} checked={check} value={record[field] || 0} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
   record: PropTypes.object.isRequired,
@@ -46,7 +46,7 @@ ColumnSwitch.propTypes = {
     ciqdeclList: state.cmsDeclare.ciqdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadCiqDecls, openCiqModal, saveCheckedState }
+  { loadCiqDecls, openCiqModal, saveCheckedState, setDeclFinish }
 )
 @connectNav({
   depth: 2,
@@ -94,7 +94,7 @@ export default class CiqDeclList extends Component {
       if (record.id) {
         if (o) {
           return o;
-        } else {
+        } else if (record.status !== 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <RowUpdater onHit={this.handleCiqNoFill} row={record}
@@ -102,6 +102,8 @@ export default class CiqDeclList extends Component {
               />
             </PrivilegeCover>
           );
+        } else {
+          return '-';
         }
       } else {
         return '-';
@@ -142,11 +144,15 @@ export default class CiqDeclList extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (record.entry_id) {
+      if (record.status !== 1) {
         return (
           <span>
             <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
           </span>
+        );
+      } else if (record.status === 1) {
+        return (
+          <span>{this.msg('ciqFinish')}</span>
         );
       }
     },
@@ -180,8 +186,8 @@ export default class CiqDeclList extends Component {
     this.props.saveCheckedState(record);
     this.forceUpdate();
   }
-  handleCiqFinish = () => {
-
+  handleCiqFinish = (row) => {
+    this.props.setDeclFinish(row.entry_id, row.delg_no);
   }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });

@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
   'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
   'SAVE_CHECKED_STATE', 'SAVE_CHECKED_STATE_SUCCEED', 'SAVE_CHECKED_STATE_FAIL',
+  'DECL_FINISH_SET', 'DECL_FINISH_SET_SUCCEED', 'DECL_FINISH_SET_FAIL',
 ]);
 
 const initialState = {
@@ -249,6 +250,16 @@ export function saveCheckedState(params) {
   };
 }
 
+export function setDeclFinish(entryId, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.DECL_FINISH_SET, actionTypes.DECL_FINISH_SET_SUCCEED, actionTypes.DECL_FINISH_SET_FAIL],
+      endpoint: 'v1/cms/set/ciq/decl/finish',
+      method: 'get',
+      params: { entryId, delgNo },
+    },
+  };
+}
 export function loadBills(billSeqNo) {
   return {
     [CLIENT_API]: {

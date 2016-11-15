@@ -249,6 +249,7 @@ export default(store, cookie) => {
             </Route>
             <Route path="expense">
               <IndexRoute component={CMSExpense.List} />
+              <Route path="declare" component={CMSExpense.DeclList} />
             </Route>
             <Route path="quote">
               <IndexRoute component={CMSQuote.List} />

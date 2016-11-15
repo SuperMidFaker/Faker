@@ -27,6 +27,12 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
+  declexps: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
   listFilter: {
     status: 'all',
   },

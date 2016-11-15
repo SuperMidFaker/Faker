@@ -126,11 +126,11 @@ export default class DelegationList extends Component {
       }
       if (nextProps.preStatus === 'dispatch') {
         const { delegation } = this.props;
-        this.handleDelegationAssign(delegation);
+        this.handleDelegationAssign(delegation, 'delg');
       }
       if (nextProps.preStatus === 'dispCancel') {
         const { delegation } = this.props;
-        this.handleDelegationCancel(delegation);
+        this.handleDelegationCancel(delegation, 'delg');
       }
       if (nextProps.preStatus === 'view') {
         const { delegation } = this.props;
@@ -385,20 +385,12 @@ export default class DelegationList extends Component {
     );
   }
   handleDelegationAssign = (row, type) => {
-    if (row.ciq_name && type === 'ciq' && row.ciq_name !== null) {
-      this.props.loadDisp(
+    this.props.loadDelgDisp(
       row.delg_no,
       this.props.tenantId,
       PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
-      type);
-    } else {
-      this.props.loadDelgDisp(
-        row.delg_no,
-        this.props.tenantId,
-        PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
-        type
-      );
-    }
+      type
+    );
     this.props.setDispStatus({ delgDispShow: true });
   }
   handleDelegationCancel = (row, type) => {
@@ -492,17 +484,7 @@ export default class DelegationList extends Component {
           return (
             <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && (record.sub_status === 3 || record.sub_status === null)) {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <span>
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={this.handleMQdeclWay} label={this.msg('matchQuote')} row={record} />
-              </span>
-            </PrivilegeCover>
-          );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && record.sub_status === 4) {
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>

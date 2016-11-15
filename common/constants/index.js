@@ -153,13 +153,13 @@ const CMS_DELG_STATUS = [
 export const CMS_CIQ_STATUS = [
   { value: 0, text: '待接单' },
   { value: 1, text: '已接单' },
-  { value: 2, text: '已完成' },
+  { value: 4, text: '已完成' },
 ];
 
 export const CIQ_SUP_STATUS = [
   { value: 0, text: '待供应商接单' },
   { value: 1, text: '供应商已接单' },
-  { value: 2, text: '已完成' },
+  { value: 4, text: '已完成' },
 ];
 
 export const FEE_STYLE = [
