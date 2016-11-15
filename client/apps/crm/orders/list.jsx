@@ -137,17 +137,20 @@ export default class ShipmentOrderList extends React.Component {
     const columns = [{
       title: '业务编号',
       dataIndex: 'shipmt_order_no',
+      width: 150,
       render: (o) => {
         return (
           <a onClick={() => this.handleShowPreviewer(o)}>{o}</a>
         );
       },
     }, {
-      title: '报关委托号',
+      title: '清关编号',
       dataIndex: 'ccb_delg_no',
+      width: 120,
     }, {
       title: '运输单号',
       dataIndex: 'trs_shipmt_no',
+      width: 150,
       render: (o) => {
         if (o) {
           const os = o.split(',');
@@ -169,25 +172,31 @@ export default class ShipmentOrderList extends React.Component {
     }, {
       title: '客户',
       dataIndex: 'customer_name',
-      render: o => <TrimSpan text={o} maxLen={10} />,
+      render: o => <TrimSpan text={o} maxLen={16} />,
     }, {
       title: '客户订单号',
       dataIndex: 'cust_order_no',
+      width: 120,
     }, {
       title: '客户发票号',
       dataIndex: 'cust_invoice_no',
+      width: 120,
     }, {
       title: '提运单号',
       dataIndex: 'cust_shipmt_bill_lading',
+      width: 180,
     }, {
       title: '件数',
       dataIndex: 'cust_shipmt_pieces',
+      width: 50,
     }, {
       title: '毛重',
       dataIndex: 'cust_shipmt_weight',
+      width: 80,
     }, {
       title: '包装方式',
       dataIndex: 'cust_shipmt_package',
+      width: 80,
       render: (o) => {
         const pkg = packagings.find(item => item.package_code === o);
         return pkg ? pkg.package_name : '';
@@ -195,23 +204,28 @@ export default class ShipmentOrderList extends React.Component {
     }, {
       title: '货物类型',
       dataIndex: 'cust_shipmt_goods_type',
+      width: 80,
       render: (o) => {
         const goodsType = GOODSTYPES.find(item => item.value === o);
         return goodsType ? goodsType.text : '';
       },
     }, {
-      title: '创建时间',
-      dataIndex: 'created_date',
-      render: o => moment(o).format('YYYY-MM-DD HH:mm'),
-    }, {
       title: '状态',
       dataIndex: 'order_status',
+      width: 60,
       render: (o) => {
         return ORDER_STATUS[o];
       },
     }, {
+      title: '创建时间',
+      dataIndex: 'created_date',
+      width: 100,
+      render: o => moment(o).format('MM.DD HH:mm'),
+    }, {
       title: '操作',
       dataIndex: 'id',
+      width: 120,
+      fixed: 'right',
       render: (o, record) => {
         if (record.order_status === 1) {
           return (
@@ -274,7 +288,7 @@ export default class ShipmentOrderList extends React.Component {
               </Button>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1700 }} />
             </div>
           </div>
         </div>

@@ -262,11 +262,11 @@ export default class CiqList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
