@@ -303,7 +303,7 @@ export default(store, cookie) => {
             <Route path="settings" component={SCVSettings.List} />
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
-            <IndexRedirect to="/customer/dashboard" />
+            <IndexRedirect to="/customer/orders" />
             <Route path="dashboard" component={CRMDashboard.Index} />
             <Route path="orders" >
               <IndexRoute component={CRMOrders.List} />

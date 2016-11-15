@@ -55,7 +55,7 @@ export default class DelgDeclList extends Component {
   columns = [{
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 150,
+    width: 160,
     fixed: 'left',
     render: (o, record) => {
       // 用id字段表示为children数据
@@ -78,7 +78,7 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
-    width: 150,
+    width: 160,
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -86,19 +86,18 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('billNo'),
     dataIndex: 'bill_seq_no',
-    width: 150,
+    width: 160,
   }, {
     title: this.msg('agentCode'),
     width: 100,
     dataIndex: 'agent_code',
   }, {
     title: this.msg('agentName'),
-    width: 180,
     dataIndex: 'agent_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('clrStatus'),
-    width: 120,
+    width: 150,
     dataIndex: 'note',
   }, {
     title: this.msg('processDate'),
@@ -169,15 +168,15 @@ export default class DelgDeclList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1300 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1400 }} />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
           </div>
