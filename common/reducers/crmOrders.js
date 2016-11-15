@@ -114,10 +114,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_SUCCEED:
       return { ...state, formData: action.result.data };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
+      console.log(action.result.data);
       return { ...state, previewer: {
+        ...state.previewer,
         visible: true,
         tabKey: action.tabKey,
-        order: {},
+        ...action.result.data,
       } };
     }
     case actionTypes.HIDE_PREVIWER: {
@@ -243,7 +245,7 @@ export function acceptOrder(data) {
   };
 }
 
-export function loadOrderDetail(orderNo, tenantId, tabKey) {
+export function loadOrderDetail(shipmtOrderNo, tenantId, tabKey) {
   return {
     [CLIENT_API]: {
       types: [
@@ -251,9 +253,9 @@ export function loadOrderDetail(orderNo, tenantId, tabKey) {
         actionTypes.LOAD_DETAIL_SUCCEED,
         actionTypes.LOAD_DETAIL_FAIL,
       ],
-      endpoint: 'v1/transport/shipment/detail',
+      endpoint: 'v1/crm/order/detail',
       method: 'get',
-      params: { orderNo, tenantId },
+      params: { shipmtOrderNo, tenantId },
       tabKey,
     },
   };

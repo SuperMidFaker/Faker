@@ -57,9 +57,9 @@ export default class List extends React.Component {
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
-  handleTenantDel(id, loginId) {
+  handleTenantDel(id) {
     const { corplist: { totalCount, current, pageSize } } = this.props;
-    this.props.delTenant(id, loginId).then((result) => {
+    this.props.delTenant(id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -174,7 +174,7 @@ export default class List extends React.Component {
         } else if (record.status === ACCOUNT_STATUS.blocked.name) {
           return (
             <span>
-              <Popconfirm placement="top" title={`确认删除 ${record.name}`} onConfirm={() => this.handleTenantDel(record.key, record.login_id)} onCancel={() => {}} onVisibleChange={() => {}}>
+              <Popconfirm placement="top" title={`确认删除 ${record.name}`} onConfirm={() => this.handleTenantDel(record.key)} onCancel={() => {}} onVisibleChange={() => {}}>
                 <a role="button" href="#">
               删除
                 </a>

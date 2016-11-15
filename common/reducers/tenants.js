@@ -167,14 +167,14 @@ export function loadTenantForm(cookie, params) {
   };
 }
 
-export function delTenant(tenantId, loginId) {
+export function delTenant(tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.TENANT_DELETE, actionTypes.TENANT_DELETE_SUCCEED,
         actionTypes.TENANT_DELETE_FAIL],
       endpoint: 'v1/user/corp/tenant/delete',
       method: 'del',
-      data: { tenantId, loginId },
+      data: { tenantId },
     },
   };
 }
