@@ -47,8 +47,8 @@ export default class OrderForm extends Component {
       return (
         <Form horizontal>
           <Steps direction="vertical" current={current}>
-            <Step title="基础信息" description={<BasicForm operation={operation} />} />
-            <Step title="清关" description={<ClearanceForm operation={operation} />} />
+            <Step title="基础信息" status="process" description={<BasicForm operation={operation} />} />
+            <Step title="清关" status="process" description={<ClearanceForm operation={operation} />} />
           </Steps>
         </Form>
       );
@@ -56,8 +56,8 @@ export default class OrderForm extends Component {
       return (
         <Form horizontal>
           <Steps direction="vertical" current={current}>
-            <Step title="基础信息" description={<BasicForm operation={operation} />} />
-            <Step title="运输" description={<TransportForm operation={operation} />} />
+            <Step title="基础信息" status="process" description={<BasicForm operation={operation} />} />
+            <Step title="运输" status="process" description={<TransportForm operation={operation} />} />
           </Steps>
         </Form>
       );
@@ -65,9 +65,9 @@ export default class OrderForm extends Component {
       return (
         <Form horizontal>
           <Steps direction="vertical" current={current}>
-            <Step title="基础信息" description={<BasicForm operation={operation} />} />
-            <Step title="清关" description={<ClearanceForm operation={operation} />} />
-            <Step title="运输" description={<TransportForm operation={operation} />} />
+            <Step title="基础信息" status="process" description={<BasicForm operation={operation} />} />
+            <Step title="清关" status="process" description={<ClearanceForm operation={operation} />} />
+            <Step title="运输" status="process" description={<TransportForm operation={operation} />} />
           </Steps>
         </Form>
       );
