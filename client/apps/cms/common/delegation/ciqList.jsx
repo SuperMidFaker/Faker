@@ -18,6 +18,7 @@ import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import SearchBar from 'client/components/search-bar';
+import CertModal from './modals/certModal';
 
 const formatMsg = format(messages);
 
@@ -60,6 +61,9 @@ export default class CiqList extends Component {
     searchInput: '',
     expandedKeys: [],
   }
+  componentDidMount() {
+    this.props.loadCertBrokers(this.props.tenantId);
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleTableLoad();
@@ -92,7 +96,7 @@ export default class CiqList extends Component {
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
         return <Tag>{decl && decl.text}</Tag>;
-      } else if (record.status === 2) {
+      } else if (record.status === 4) {
         return <Tag color="green">{decl && decl.text}</Tag>;
       } else {
         return <Tag>{decl && decl.text}</Tag>;
@@ -200,7 +204,14 @@ export default class CiqList extends Component {
     );
   }
   handleCiqFinish = (row) => {
-    this.props.setCiqFinish(row.delg_no);
+    this.props.setCiqFinish(row.delg_no).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleTableLoad();
+        }
+      });
   }
   handleDelegationAssign = (row, type) => {
     this.props.loadDelgDisp(
@@ -264,6 +275,7 @@ export default class CiqList extends Component {
           </div>
         </div>
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
+        <CertModal />
       </QueueAnim>
     );
   }

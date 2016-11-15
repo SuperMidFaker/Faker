@@ -484,17 +484,7 @@ export default class DelegationList extends Component {
           return (
             <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && (record.sub_status === 3 || record.sub_status === null)) {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <span>
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={this.handleMQdeclWay} label={this.msg('matchQuote')} row={record} />
-              </span>
-            </PrivilegeCover>
-          );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1 && record.sub_status === 4) {
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
               <span>
