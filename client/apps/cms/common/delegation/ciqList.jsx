@@ -31,6 +31,7 @@ const formatMsg = format(messages);
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.saved,
     cMQParams: state.cmsDelegation.cMQParams,
+    delgDispShow: state.cmsDelegation.delgDispShow,
   }),
   { loadCiqTable, openCiqModal, acceptCiqCert, loadCertFees, openCertModal,
     loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,

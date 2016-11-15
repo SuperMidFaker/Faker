@@ -2,27 +2,21 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Radio, message } from 'antd';
+import { message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadDeclExps, openInModal, loadCurrencies, openMarkModal } from 'common/reducers/cmsExpense';
 import { showPreviewer } from 'common/reducers/cmsDelegation';
-import { EXP_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
-import TrimSpan from 'client/components/trimSpan';
-import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
 import MarkModal from './modals/markModal';
 import PreviewPanel from './modals/preview-panel';
 
 const formatMsg = format(messages);
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadDeclExps({
@@ -142,8 +136,8 @@ export default class ExpenseList extends Component {
           width: 100,
           render: (o) => {
             if (o) {
-                return o.toFixed(2);
-              }
+              return o.toFixed(2);
+            }
           },
         }],
       }, {
@@ -155,8 +149,8 @@ export default class ExpenseList extends Component {
           width: 100,
           render: (o) => {
             if (o) {
-                return o.toFixed(2);
-              }
+              return o.toFixed(2);
+            }
           },
         }, {
           title: '服务费',
@@ -164,10 +158,10 @@ export default class ExpenseList extends Component {
           key: 'pzcyfwf_bill',
           width: 100,
           render: (o) => {
-              if (o) {
-                return o.toFixed(2);
-              }
-            },
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
         }],
       },
     ],
@@ -203,8 +197,8 @@ export default class ExpenseList extends Component {
             width: 100,
             render: (o) => {
               if (o) {
-                  return o.toFixed(2);
-                }
+                return o.toFixed(2);
+              }
             },
           },
         ],
@@ -217,8 +211,8 @@ export default class ExpenseList extends Component {
           width: 100,
           render: (o) => {
             if (o) {
-                return o.toFixed(2);
-              }
+              return o.toFixed(2);
+            }
           },
         }, {
           title: '服务费',
@@ -226,10 +220,10 @@ export default class ExpenseList extends Component {
           key: 'djcyfwf_cost',
           width: 100,
           render: (o) => {
-              if (o) {
-                return o.toFixed(2);
-              }
-            },
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
         }],
       }, {
         title: this.msg('品质查验'),
@@ -239,21 +233,21 @@ export default class ExpenseList extends Component {
           key: 'pzcycdf_cost',
           width: 100,
           render: (o) => {
-              if (o) {
-                return o.toFixed(2);
-              }
-            },
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
         }, {
-            title: '服务费',
-            dataIndex: 'pzcyfwf_cost',
-            key: 'pzcyfwf_cost',
-            width: 100,
-            render: (o) => {
-              if (o) {
-                return o.toFixed(2);
-              }
-            },
-          }],
+          title: '服务费',
+          dataIndex: 'pzcyfwf_cost',
+          key: 'pzcyfwf_cost',
+          width: 100,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }],
       },
     ],
   }, {
@@ -316,7 +310,7 @@ export default class ExpenseList extends Component {
     return newFilters;
   }
   render() {
-    const { declexps, listFilter } = this.props;
+    const { declexps } = this.props;
     this.dataSource.remotes = declexps;
     const unstateData = declexps.data.filter(dt => dt.status === 0);
     return (
