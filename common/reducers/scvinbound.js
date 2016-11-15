@@ -132,6 +132,7 @@ export function sendInboundShipment(sendInbound) {
       endpoint: 'v1/scv/inbound/send/shipment',
       method: 'post',
       data: sendInbound,
+      origin: 'scv',
     },
   };
 }

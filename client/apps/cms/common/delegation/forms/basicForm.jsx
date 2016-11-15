@@ -24,13 +24,12 @@ function getFieldInits(aspect, formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no',
       'pieces', 'weight', 'trans_mode', 'voyage_no', 'trade_mode',
-      'goods_type', 'order_no', 'remark',
+      'goods_type', 'order_no', 'remark', 'ref_external_no',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
-    init.internal_no = formData.ref_external_no;
   }
-  init.transfer = 0;
+  init.transfer = formData.transfer || 0;
   return init;
 }
 @injectIntl
@@ -210,8 +209,8 @@ export default class BasicForm extends Component {
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
-              {getFieldDecorator('internal_no', {
-                initialValue: fieldInits.internal_no,
+              {getFieldDecorator('ref_external_no', {
+                initialValue: fieldInits.ref_external_no,
               })(<Input />)}
             </FormItem>
           </Col>

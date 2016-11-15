@@ -6,16 +6,21 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDERS', 'LOAD_ORDERS_SUCCEED', 'LOAD_ORDERS_FAIL',
   'LOAD_ORDER', 'LOAD_ORDER_SUCCEED', 'LOAD_ORDER_FAIL',
   'SUBMIT_ORDER', 'SUBMIT_ORDER_SUCCEED', 'SUBMIT_ORDER_FAIL',
-  'SET_CLIENT_FORM',
+  'SET_CLIENT_FORM', 'HIDE_PREVIWER', 'CHANGE_PREVIEWER_TAB',
   'REMOVE_ORDER', 'REMOVE_ORDER_SUCCEED', 'REMOVE_ORDER_FAIL',
   'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
   'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
+  'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
 ]);
 
 const initialState = {
   loaded: true,
   loading: false,
-  customers: [],
+  previewer: {
+    visible: false,
+    tabKey: null,
+    order: {},
+  },
   formData: {
     shipmt_order_no: '',
     shipmt_order_mode: 2,
@@ -87,6 +92,7 @@ const initialState = {
     searchValue: '',
     data: [],
   },
+
 };
 
 export default function reducer(state = initialState, action) {
@@ -107,6 +113,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, orders: action.result.data, loading: false };
     case actionTypes.LOAD_ORDER_SUCCEED:
       return { ...state, formData: action.result.data };
+    case actionTypes.LOAD_DETAIL_SUCCEED: {
+      return { ...state, previewer: {
+        visible: true,
+        tabKey: action.tabKey,
+        order: {},
+      } };
+    }
+    case actionTypes.HIDE_PREVIWER: {
+      return { ...state, previewer: { ...state.previewer, visible: false } };
+    }
+    case actionTypes.CHANGE_PREVIEWER_TAB: {
+      return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
+    }
     default:
       return state;
   }
@@ -221,5 +240,34 @@ export function acceptOrder(data) {
       method: 'post',
       data,
     },
+  };
+}
+
+export function loadOrderDetail(orderNo, tenantId, tabKey) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DETAIL,
+        actionTypes.LOAD_DETAIL_SUCCEED,
+        actionTypes.LOAD_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/detail',
+      method: 'get',
+      params: { orderNo, tenantId },
+      tabKey,
+    },
+  };
+}
+
+export function changePreviewerTab(tabKey) {
+  return {
+    type: actionTypes.CHANGE_PREVIEWER_TAB,
+    data: { tabKey },
+  };
+}
+
+export function hidePreviewer() {
+  return {
+    type: actionTypes.HIDE_PREVIWER,
   };
 }

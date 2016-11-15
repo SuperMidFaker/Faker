@@ -53,6 +53,10 @@ const messages = defineMessages({
     id: 'cms.module.billing.expense',
     defaultMessage: '费用管理',
   },
+  declExp: {
+    id: 'cms.module.billing.declExp',
+    defaultMessage: '分报关单费用',
+  },
   billingReceivable: {
     id: 'cms.module.billing.receivable',
     defaultMessage: '应收账单',

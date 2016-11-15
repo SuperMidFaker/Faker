@@ -101,10 +101,14 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'expense'),
         }, {
           key: 'tms-4-1',
+          path: '/clearance/expense/declare',
+          text: formatMsg(intl, 'declExp'),
+        }, {
+          key: 'tms-4-2',
           path: '/clearance/billing/receivable',
           text: formatMsg(intl, 'billingReceivable'),
         }, {
-          key: 'tms-4-2',
+          key: 'tms-4-3',
           path: '/clearance/billing/payable',
           text: formatMsg(intl, 'billingPayable'),
         }],

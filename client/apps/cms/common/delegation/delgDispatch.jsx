@@ -138,8 +138,6 @@ export default class DelgDispatch extends Component {
       title = this.msg('certDispatch');
       label = this.msg('dispCert');
     }
-
-
     return (
       <div className={`dock-panel ${show ? 'inside' : ''}`}>
         <div className="panel-content">

@@ -10,10 +10,12 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
+import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
+loadOrderDetail, changePreviewerTab, hidePreviewer } from 'common/reducers/crmOrders';
 import moment from 'moment';
 import { ORDER_STATUS, GOODSTYPES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
+// import PreviewPanel from './modals/preview-panel';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
@@ -44,7 +46,7 @@ function fetchData({ state, dispatch }) {
     orders: state.crmOrders.orders,
     formRequires: state.crmOrders.formRequires,
   }), {
-    loadOrders, removeOrder, setClientForm, acceptOrder,
+    loadOrders, removeOrder, setClientForm, acceptOrder, loadOrderDetail, changePreviewerTab, hidePreviewer,
   }
 )
 @connectNav({
@@ -65,6 +67,9 @@ export default class ShipmentOrderList extends React.Component {
     setClientForm: PropTypes.func.isRequired,
     acceptOrder: PropTypes.func.isRequired,
     formRequires: PropTypes.object.isRequired,
+    loadOrderDetail: PropTypes.func.isRequired,
+    changePreviewerTab: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -117,6 +122,9 @@ export default class ShipmentOrderList extends React.Component {
       filters: this.props.orders.filters,
     });
   }
+  handleShowPreviewer = (orderNo) => {
+    this.props.loadOrderDetail(orderNo, this.props.tenantId, 'detail');
+  }
   render() {
     const { loading, formRequires: { packagings } } = this.props;
     const rowSelection = {
@@ -129,6 +137,11 @@ export default class ShipmentOrderList extends React.Component {
     const columns = [{
       title: '业务编号',
       dataIndex: 'shipmt_order_no',
+      render: (o) => {
+        return (
+          <a onClick={() => this.handleShowPreviewer(o)}>{o}</a>
+        );
+      },
     }, {
       title: '报关委托号',
       dataIndex: 'ccb_delg_no',
