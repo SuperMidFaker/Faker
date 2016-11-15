@@ -114,7 +114,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_SUCCEED:
       return { ...state, formData: action.result.data };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      console.log(action.result.data);
       return { ...state, previewer: {
         ...state.previewer,
         visible: true,
