@@ -67,9 +67,9 @@ export default class ShipmentOrderList extends React.Component {
     setClientForm: PropTypes.func.isRequired,
     acceptOrder: PropTypes.func.isRequired,
     formRequires: PropTypes.object.isRequired,
-    loadOrderDetail:PropTypes.func.isRequired,
-    changePreviewerTab:PropTypes.func.isRequired,
-    hidePreviewer:PropTypes.func.isRequired,
+    loadOrderDetail: PropTypes.func.isRequired,
+    changePreviewerTab: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
