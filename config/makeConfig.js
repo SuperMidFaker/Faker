@@ -58,8 +58,7 @@ module.exports = (serverPort, dirName, appName) => {
       scv: 'https://api2.welogix.cn/',
       self: '/',
     });
-    // config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
-    config.set('CDN_URL', '');
+    config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
     if (env === 'staging') {
       config.set('API_ROOTS', {
         default: 'https://api.welogix.co/',
