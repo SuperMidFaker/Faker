@@ -165,7 +165,7 @@ export default class DelegationList extends Component {
     dataIndex: 'invoice_no',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: this.msg('deliveryNo'),
+    title: this.msg('waybillLadingNo'),
     width: 200,
     dataIndex: 'bl_wb_no',
   }, {
