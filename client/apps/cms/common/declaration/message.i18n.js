@@ -41,8 +41,8 @@ export default defineMessages({
     id: 'cms.declaration.clr.status',
     defaultMessage: '通关状态',
   },
-  customsId: {
-    id: 'cms.declaration.customsId',
+  ciqNo: {
+    id: 'cms.declaration.ciqNo',
     defaultMessage: '通关单号',
   },
   agentName: {
@@ -93,8 +93,8 @@ export default defineMessages({
     id: 'cms.declaration.anipk.check',
     defaultMessage: '动植检查验',
   },
-  custmosCheck: {
-    id: 'cms.declaration.custmos.check',
+  customsCheck: {
+    id: 'cms.declaration.customs.check',
     defaultMessage: '海关查验',
   },
 });

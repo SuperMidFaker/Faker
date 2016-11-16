@@ -2,19 +2,19 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { message } from 'antd';
+import { message, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadDeclExps, openInModal, loadCurrencies, openMarkModal } from 'common/reducers/cmsExpense';
+import { loadDeclExps, openDeclInputModal } from 'common/reducers/cmsExpense';
 import { showPreviewer } from 'common/reducers/cmsDelegation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SearchBar from 'client/components/search-bar';
-import InputModal from './modals/inputModal';
-import MarkModal from './modals/markModal';
 import PreviewPanel from './modals/preview-panel';
+import RowUpdater from './rowUpdater';
+import DeclexpInputModal from './modals/declInputModal';
 
 const formatMsg = format(messages);
 
@@ -36,7 +36,7 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
   }),
-  { openInModal, loadCurrencies, loadDeclExps, openMarkModal, showPreviewer }
+  { openDeclInputModal, loadDeclExps, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -49,17 +49,12 @@ export default class ExpenseList extends Component {
     declexps: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
-    openInModal: PropTypes.func.isRequired,
-    openMarkModal: PropTypes.func.isRequired,
-    loadCurrencies: PropTypes.func.isRequired,
+    openDeclInputModal: PropTypes.func.isRequired,
     loadDeclExps: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
-  state = {
-    expandedKeys: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -100,9 +95,15 @@ export default class ExpenseList extends Component {
             dataIndex: 'hgcycdf_bill',
             key: 'hgcycdf_bill',
             width: 100,
-            render: (o) => {
+            render: (o, record) => {
               if (o) {
-                return o.toFixed(2);
+                return o;
+              } else {
+                return (
+                  <RowUpdater onHit={this.handleInput} row={record} field="hgcycdf_bill"
+                    label={<Icon type="edit" />}
+                  />
+                );
               }
             },
           }, {
@@ -124,9 +125,15 @@ export default class ExpenseList extends Component {
           dataIndex: 'djcdf_bill',
           key: 'djcdf_bill',
           width: 100,
-          render: (o) => {
+          render: (o, record) => {
             if (o) {
-              return o.toFixed(2);
+              return o;
+            } else {
+              return (
+                <RowUpdater onHit={this.handleInput} row={record} field="djcdf_bill"
+                  label={<Icon type="edit" />}
+                />
+                );
             }
           },
         }, {
@@ -147,9 +154,15 @@ export default class ExpenseList extends Component {
           dataIndex: 'pzcycdf_bill',
           key: 'pzcycdf_bill',
           width: 100,
-          render: (o) => {
+          render: (o, record) => {
             if (o) {
-              return o.toFixed(2);
+              return o;
+            } else {
+              return (
+                <RowUpdater onHit={this.handleInput} row={record} field="pzcycdf_bill"
+                  label={<Icon type="edit" />}
+                />
+              );
             }
           },
         }, {
@@ -185,9 +198,15 @@ export default class ExpenseList extends Component {
             dataIndex: 'hgcycdf_cost',
             key: 'hgcycdf_cost',
             width: 100,
-            render: (o) => {
+            render: (o, record) => {
               if (o) {
-                return o.toFixed(2);
+                return o;
+              } else {
+                return (
+                  <RowUpdater onHit={this.handleInput} row={record} field="hgcycdf_cost"
+                    label={<Icon type="edit" />}
+                  />
+                );
               }
             },
           }, {
@@ -209,9 +228,15 @@ export default class ExpenseList extends Component {
           dataIndex: 'djcdf_cost',
           key: 'djcdf_cost',
           width: 100,
-          render: (o) => {
+          render: (o, record) => {
             if (o) {
-              return o.toFixed(2);
+              return o;
+            } else {
+              return (
+                <RowUpdater onHit={this.handleInput} row={record} field="djcdf_cost"
+                  label={<Icon type="edit" />}
+                />
+              );
             }
           },
         }, {
@@ -232,9 +257,15 @@ export default class ExpenseList extends Component {
           dataIndex: 'pzcycdf_cost',
           key: 'pzcycdf_cost',
           width: 100,
-          render: (o) => {
+          render: (o, record) => {
             if (o) {
-              return o.toFixed(2);
+              return o;
+            } else {
+              return (
+                <RowUpdater onHit={this.handleInput} row={record} field="pzcycdf_cost"
+                  label={<Icon type="edit" />}
+                />
+              );
             }
           },
         }, {
@@ -279,9 +310,11 @@ export default class ExpenseList extends Component {
     remotes: this.props.declexps,
   })
 
+  handleInput = (row, field) => {
+    this.props.openDeclInputModal({ entryId: row.entry_id, feecode: field });
+  }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, declexps: { pageSize, current } } = this.props;
-    this.setState({ expandedKeys: [] });
     this.props.loadDeclExps({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
@@ -312,7 +345,6 @@ export default class ExpenseList extends Component {
   render() {
     const { declexps } = this.props;
     this.dataSource.remotes = declexps;
-    const unstateData = declexps.data.filter(dt => dt.status === 0);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -330,9 +362,8 @@ export default class ExpenseList extends Component {
             </div>
           </div>
         </div>
-        <InputModal data={unstateData} />
-        <MarkModal data={unstateData} />
         <PreviewPanel ietype="import" />
+        <DeclexpInputModal />
       </QueueAnim>
     );
   }
