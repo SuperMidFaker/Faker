@@ -49,9 +49,9 @@ export default class BrokerModal extends React.Component {
     const { tenantId, carrier } = this.props;
     const { partnerName, partnerCode, partnerships } = this.state;
     if (partnerName === '') {
-      message.error('请填写合作伙伴名称');
+      message.error('请填写供应商名称');
     } else if (partnerCode === '') {
-      message.error('请填写合作伙伴代码');
+      message.error('请填写供应商代码');
     } else {
       this.handleCancel();
       if (this.props.operation === 'edit') {
@@ -82,24 +82,21 @@ export default class BrokerModal extends React.Component {
   render() {
     const { visible } = this.props;
     const { partnerName, partnerCode, partnerships } = this.state;
-    const providerCheckbox = (
-      <FormItem {...formItemLayout} label="供应商类型:" required>
-        <CheckboxGroup
-          options={options}
-          defaultValue={partnerships}
-          onChange={this.handleProviderChange}
-        />
-      </FormItem>
-    );
     return (
       <Modal title={this.props.operation === 'add' ? '新增供应商' : '修改供应商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <FormItem {...formItemLayout} label="合作伙伴名称:" required>
+        <FormItem {...formItemLayout} label="供应商名称:" required>
           <Input required value={partnerName} onChange={this.handleNameChange} />
         </FormItem>
-        <FormItem {...formItemLayout} label="合作伙伴代码:" required>
+        <FormItem {...formItemLayout} label="供应商代码:" required>
           <Input required value={partnerCode} onChange={this.handleCodeChange} />
         </FormItem>
-        {providerCheckbox}
+        <FormItem {...formItemLayout} label="供应商类型:" required>
+          <CheckboxGroup
+            options={options}
+            defaultValue={partnerships}
+            onChange={this.handleProviderChange}
+          />
+        </FormItem>
       </Modal>
     );
   }

@@ -129,7 +129,7 @@ export default class BodyTable extends React.Component {
     if (type === 'bill') {
       columns.push({
         title: this.msg('copGNo'),
-        width: 80,
+        width: 120,
         fixed: 'left',
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
@@ -147,7 +147,7 @@ export default class BodyTable extends React.Component {
         />,
     }, {
       title: this.msg('codeT'),
-      width: 80,
+      width: 100,
       fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="code_t" inEdit={index === editIndex} record={record}

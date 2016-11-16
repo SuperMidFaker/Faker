@@ -73,11 +73,11 @@ export default class CiqDeclList extends Component {
   columns = [{
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 150,
+    width: 160,
   }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
-    width: 150,
+    width: 160,
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -85,7 +85,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('billNo'),
     dataIndex: 'bill_seq_no',
-    width: 150,
+    width: 160,
   }, {
     title: this.msg('customsId'),
     width: 180,
@@ -115,16 +115,15 @@ export default class CiqDeclList extends Component {
     dataIndex: 'agent_code',
   }, {
     title: this.msg('agentName'),
-    width: 180,
     dataIndex: 'agent_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('clrStatus'),
-    width: 120,
+    width: 150,
     dataIndex: 'note',
   }, {
     title: this.msg('processDate'),
-    width: 100,
+    width: 120,
     render: (o, record) => (record.id ?
       record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
@@ -219,11 +218,11 @@ export default class CiqDeclList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
           <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
         </header>
+        <div className="top-bar-tools">
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+        </div>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
