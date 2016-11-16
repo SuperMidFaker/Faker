@@ -11,6 +11,8 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
   'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
+  'LOAD_CLEARANCE_DETAIL', 'LOAD_CLEARANCE_DETAIL_SUCCEED', 'LOAD_CLEARANCE_DETAIL_FAILED',
+  'LOAD_TRANSPORT_DETAIL', 'LOAD_TRANSPORT_DETAIL_SUCCEED', 'LOAD_TRANSPORT_DETAIL_FAILED',
 ]);
 
 const initialState = {
@@ -20,6 +22,13 @@ const initialState = {
     visible: false,
     tabKey: null,
     order: {},
+    clearance: {
+      delegation: {},
+      files: [],
+      delegateTracking: {},
+      clearanceTracking: [],
+    },
+    transports: [],
   },
   formData: {
     shipmt_order_no: '',
@@ -81,8 +90,10 @@ const initialState = {
     clients: [],
     packagings: [],
     transitModes: [],
+    goodsTypes: [],
     consignerLocations: [],
     consigneeLocations: [],
+    containerPackagings: [],
   },
   orders: {
     totalCount: 0,
@@ -121,6 +132,18 @@ export default function reducer(state = initialState, action) {
         ...action.result.data,
       } };
     }
+    case actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED: {
+      return { ...state, previewer: {
+        ...state.previewer,
+        clearance: action.result.data,
+      } };
+    }
+    case actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED: {
+      return { ...state, previewer: {
+        ...state.previewer,
+        transports: action.result.data,
+      } };
+    }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false } };
     }
@@ -140,7 +163,7 @@ export function loadFormRequires(params) {
         actionTypes.LOAD_FORM_REQUIRES_SUCCEED,
         actionTypes.LOAD_FORM_REQUIRES_FAIL,
       ],
-      endpoint: 'v1/crm/order/requires',
+      endpoint: 'v1/transport/shipment/requires',
       method: 'get',
       params,
     },
@@ -244,7 +267,7 @@ export function acceptOrder(data) {
   };
 }
 
-export function loadOrderDetail(shipmtOrderNo, tenantId, tabKey) {
+export function loadOrderDetail(shipmtOrderNo, tenantId, tabKey = '') {
   return {
     [CLIENT_API]: {
       types: [
@@ -256,6 +279,36 @@ export function loadOrderDetail(shipmtOrderNo, tenantId, tabKey) {
       method: 'get',
       params: { shipmtOrderNo, tenantId },
       tabKey,
+    },
+  };
+}
+
+export function loadClearanceDetail({ delgNo, tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CLEARANCE_DETAIL,
+        actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED,
+        actionTypes.LOAD_CLEARANCE_DETAIL_FAILED,
+      ],
+      endpoint: 'v1/cms/delegate/previewer',
+      method: 'get',
+      params: { delgNo, tenantId },
+    },
+  };
+}
+
+export function loadTransportDetail({ shipmtNos, tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRANSPORT_DETAIL,
+        actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED,
+        actionTypes.LOAD_TRANSPORT_DETAIL_FAILED,
+      ],
+      endpoint: 'v1/customer/transport/shipment/detail',
+      method: 'get',
+      params: { shipmtNos, tenantId },
     },
   };
 }

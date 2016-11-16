@@ -145,10 +145,6 @@ const messages = defineMessages({
     id: 'crm.orders.voyage',
     defaultMessage: 'Voyage',
   },
-  containerNo: {
-    id: 'crm.orders.container.no',
-    defaultMessage: 'Container No.',
-  },
   containerSizeHeight: {
     id: 'crm.orders.container.size.height',
     defaultMessage: 'Contn. Size/Height',
@@ -220,6 +216,163 @@ const messages = defineMessages({
   addMore: {
     id: 'crm.orders.delg.addMore',
     defaultMessage: '添加',
+  },
+  created: {
+    id: 'crm.orders.status.created',
+    defaultMessage: '创建',
+  },
+  clearancing: {
+    id: 'crm.orders.status.clearancing',
+    defaultMessage: '清关',
+  },
+  transporting: {
+    id: 'crm.orders.status.transporting',
+    defaultMessage: '运输',
+  },
+  finished: {
+    id: 'crm.orders.status.finished',
+    defaultMessage: '完结',
+  },
+  clearance: {
+    id: 'crm.orders.previewer.clearance',
+    defaultMessage: '清关',
+  },
+  transport: {
+    id: 'crm.orders.previewer.transport',
+    defaultMessage: '运输',
+  },
+  charge: {
+    id: 'crm.orders.previewer.charge',
+    defaultMessage: '费用',
+  },
+  logs: {
+    id: 'crm.orders.previewer.logs',
+    defaultMessage: '日志',
+  },
+  customerInfo: {
+    id: 'crm.orders.previewer.customerInfo',
+    defaultMessage: '客户信息',
+  },
+  shipmtSchedule: {
+    id: 'crm.orders.previewer.shipmtSchedule',
+    defaultMessage: '运输计划',
+  },
+
+  client: {
+    id: 'transport.acceptance.client',
+    defaultMessage: '客户名称',
+  },
+  refExternalNo: {
+    id: 'crm.orders.previewer.ref.external',
+    defaultMessage: '客户单号',
+  },
+  refWaybillNo: {
+    id: 'crm.orders.previewer.ref.waybill',
+    defaultMessage: '关联提运单号',
+  },
+  refEntryNo: {
+    id: 'crm.orders.previewer.ref.entryno',
+    defaultMessage: '关联报关单号',
+  },
+  pickupEstDate: {
+    id: 'crm.orders.previewer.pickup.est.date',
+    defaultMessage: '预计提货日期',
+  },
+  deliveryEstDate: {
+    id: 'crm.orders.previewer.delivery.est.date',
+    defaultMessage: '预计送货日期',
+  },
+  day: {
+    id: 'crm.orders.previewer.day',
+    defaultMessage: '天',
+  },
+  remark: {
+    id: 'crm.orders.previewer.remark',
+    defaultMessage: '备注',
+  },
+  transitModeInfo: {
+    id: 'crm.orders.previewer.transit.mode.info',
+    defaultMessage: '运输模式',
+  },
+  goodsInfo: {
+    id: 'crm.orders.previewer.goods.info',
+    defaultMessage: '货物信息',
+  },
+  goodsType: {
+    id: 'crm.orders.previewer.goods.type',
+    defaultMessage: '货物类型',
+  },
+  totalCount: {
+    id: 'crm.orders.previewer.goods.total.count',
+    defaultMessage: '总数量',
+  },
+  goodsPackage: {
+    id: 'crm.orders.previewer.goods.package',
+    defaultMessage: '包装',
+  },
+  totalWeight: {
+    id: 'crm.orders.previewer.goods.total.weight',
+    defaultMessage: '总重量',
+  },
+  kilogram: {
+    id: 'crm.orders.previewer.goods.kilogram',
+    defaultMessage: '公斤',
+  },
+  insuranceValue: {
+    id: 'tcrm.orders.previewer.goods.insurance',
+    defaultMessage: '保险货值',
+  },
+  CNY: {
+    id: 'crm.orders.previewer.goods.cny',
+    defaultMessage: '元',
+  },
+  totalVolume: {
+    id: 'crm.orders.previewer.goods.total.volume',
+    defaultMessage: '总体积',
+  },
+  cubicMeter: {
+    id: 'crm.orders.previewer.goods.cubic.meter',
+    defaultMessage: '立方米',
+  },
+  goodsCode: {
+    id: 'crm.orders.previewer.goods.code',
+    defaultMessage: '货物代码',
+  },
+  goodsName: {
+    id: 'crm.orders.previewer.goods.name',
+    defaultMessage: '货物名称',
+  },
+  goodsCount: {
+    id: 'crm.orders.previewer.goods.count',
+    defaultMessage: '数量',
+  },
+  goodsWeight: {
+    id: 'crm.orders.previewer.goods.weight',
+    defaultMessage: '重量(公斤)',
+  },
+  goodsVolume: {
+    id: 'crm.orders.previewer.goods.volume',
+    defaultMessage: '体积(立方米)',
+  },
+  goodsLength: {
+    id: 'crm.orders.previewer.goods.length',
+    defaultMessage: '长(米)',
+  },
+  goodsWidth: {
+    id: 'crm.orders.previewer.goods.width',
+    defaultMessage: '宽(米)',
+  },
+  goodsHeight: {
+    id: 'crm.orders.previewer.goods.height',
+    defaultMessage: '高(米)',
+  },
+  goodsRemark: {
+    id: 'crm.orders.previewer.goods.remark',
+    defaultMessage: '备注',
+  },
+  containerNo: {
+    id: 'crm.orders.previewer.container.no',
+    defaultMessage: '箱号',
   },
 });
 

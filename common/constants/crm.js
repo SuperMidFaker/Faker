@@ -3,9 +3,15 @@ export const CUSTOMER_TYPES = [
   { label: '清关', value: 2 },
 ];
 
-export const ORDER_STATUS = {
-  1: '创建',
-  2: '清关',
-  3: '运输',
-  4: '完结',
+export const CRM_ORDER_STATUS = {
+  created: 1,
+  clearancing: 2,
+  transporting: 3,
+  finished: 4,
+};
+
+export const CRM_ORDER_MODE = {
+  clearance: 0,
+  transport: 1,
+  clearanceAndTransport: 2,
 };

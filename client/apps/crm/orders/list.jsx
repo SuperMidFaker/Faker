@@ -13,9 +13,9 @@ import messages from './message.i18n';
 import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
 loadOrderDetail, changePreviewerTab, hidePreviewer } from 'common/reducers/crmOrders';
 import moment from 'moment';
-import { ORDER_STATUS, GOODSTYPES } from 'common/constants';
+import { CRM_ORDER_STATUS, GOODSTYPES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
-// import PreviewPanel from './modals/preview-panel';
+import PreviewPanel from './modals/preview-panel';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
@@ -123,7 +123,7 @@ export default class ShipmentOrderList extends React.Component {
     });
   }
   handleShowPreviewer = (orderNo) => {
-    this.props.loadOrderDetail(orderNo, this.props.tenantId, 'detail');
+    this.props.loadOrderDetail(orderNo, this.props.tenantId);
   }
   render() {
     const { loading, formRequires: { packagings } } = this.props;
@@ -137,10 +137,13 @@ export default class ShipmentOrderList extends React.Component {
     const columns = [{
       title: '业务编号',
       dataIndex: 'shipmt_order_no',
-      render: (o) => {
-        return (
-          <a onClick={() => this.handleShowPreviewer(o)}>{o}</a>
-        );
+      render: (o, record) => {
+        if (record.order_status !== CRM_ORDER_STATUS.created) {
+          return (
+            <a onClick={() => this.handleShowPreviewer(o)}>{o}</a>
+          );
+        }
+        return o;
       },
     }, {
       title: '报关委托号',
@@ -207,7 +210,16 @@ export default class ShipmentOrderList extends React.Component {
       title: '状态',
       dataIndex: 'order_status',
       render: (o) => {
-        return ORDER_STATUS[o];
+        if (o === CRM_ORDER_STATUS.created) {
+          return '创建';
+        } else if (o === CRM_ORDER_STATUS.clearancing) {
+          return '清关';
+        } else if (o === CRM_ORDER_STATUS.transporting) {
+          return '运输';
+        } else if (o === CRM_ORDER_STATUS.finished) {
+          return '完结';
+        }
+        return '';
       },
     }, {
       title: '操作',
@@ -278,6 +290,7 @@ export default class ShipmentOrderList extends React.Component {
             </div>
           </div>
         </div>
+        <PreviewPanel />
       </QueueAnim>
     );
   }
