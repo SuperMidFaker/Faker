@@ -65,6 +65,15 @@ export default class TransportPane extends React.Component {
   state = {
     tabKey: '',
   }
+  
+  componentWillMount() {
+    const { tenantId, shipmtNos, transports } = this.props;
+    this.props.loadTransportDetail({ tenantId, shipmtNos });
+    const tabKey = transports[0] ? transports[0].shipmt_no : '';
+    this.setState({
+      tabKey,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     const { tenantId, shipmtNos, transports } = nextProps;
     if (shipmtNos !== this.props.shipmtNos) {

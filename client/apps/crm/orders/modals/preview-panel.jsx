@@ -39,23 +39,15 @@ export default class PreviewPanel extends React.Component {
   }
 
   componentDidMount() {
-    /*
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
-      if (!this.props.specialChargeModalVisible && !this.props.dealExcpModalVisible &&
-        !this.props.createExcpModalVisible && !this.props.advanceChargeModalvisible &&
-        !this.props.changeShipmentModalVisible && !this.props.locModalVisible &&
-        !this.props.dateModalVisible &&
-        !previewerClicked) {
+      if (!previewerClicked) {
         this.handleClose();
       }
     });
-    */
   }
   componentWillUnmount() {
-    /*
     window.$(document).unbind('click');
-    */
   }
 
   getTrackStatusMsg(status) {

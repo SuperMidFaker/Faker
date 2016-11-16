@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Popconfirm, Popover, message } from 'antd';
+import { Button, Popconfirm, Popover, Progress, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -13,7 +13,7 @@ import messages from './message.i18n';
 import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
 loadOrderDetail, changePreviewerTab, hidePreviewer } from 'common/reducers/crmOrders';
 import moment from 'moment';
-import { CRM_ORDER_STATUS, GOODSTYPES } from 'common/constants';
+import { CRM_ORDER_STATUS, GOODSTYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from './modals/preview-panel';
 
@@ -215,16 +215,44 @@ export default class ShipmentOrderList extends React.Component {
     }, {
       title: '状态',
       dataIndex: 'order_status',
-      width: 60,
-      render: (o) => {
+      width: 100,
+      render: (o, record) => {
         if (o === CRM_ORDER_STATUS.created) {
-          return '创建';
+          return (
+            <div>
+              创建
+              <Progress percent={25} strokeWidth={5} showInfo={false} />
+            </div>
+          );
         } else if (o === CRM_ORDER_STATUS.clearancing) {
-          return '清关';
+          let percent = 50;
+          if (record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+            percent = 25;
+          }
+          return (
+            <div>
+              清关
+              <Progress percent={percent} strokeWidth={5} showInfo={false} />
+            </div>
+          );
         } else if (o === CRM_ORDER_STATUS.transporting) {
-          return '运输';
+          let percent = 50;
+          if (record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+            percent = 75;
+          }
+          return (
+            <div>
+              运输
+              <Progress percent={percent} strokeWidth={5} showInfo={false} />
+            </div>
+          );
         } else if (o === CRM_ORDER_STATUS.finished) {
-          return '完结';
+          return (
+            <div>
+              完结
+              <Progress percent={100} strokeWidth={5} showInfo={false} />
+            </div>
+          );
         }
         return '';
       },
