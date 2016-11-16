@@ -242,17 +242,11 @@ export default class InboundShipmentsList extends React.Component {
     title: this.msg('opColumn'),
     width: 100,
     render: (o, record) => {
-      if (record.status === 3) {
+      if (record.status <= 3) {
         return (
           <span>
             <RowUpdater onHit={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
             <span className="ant-divider" />
-          </span>
-        );
-      } else if (record.status < 3) {
-        return (
-          <span>
-            <RowUpdater onHit={this.handleDelegationCancel} label={this.msg('viewTrack')} row={record} />
           </span>
         );
       }

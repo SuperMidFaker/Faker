@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_CERT_LOAD', 'EXP_CERT_LOAD_SUCCEED', 'EXP_CERT_LOAD_FAIL',
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
   'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
+  'LOAD_ADVPARTIES', 'LOAD_ADVPARTIES_SUCCEED', 'LOAD_ADVPARTIES_FAIL',
 ]);
 
 const initialState = {
@@ -50,6 +51,7 @@ const initialState = {
     feecode: '',
   },
   showDeclInputModal: false,
+  advanceParties: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -115,6 +117,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, declInModal: action.data, showDeclInputModal: true };
     case actionTypes.CLOSE_DECL_INPUT_MODAL:
       return { ...state, declInModal: initialState.declInModal, showDeclInputModal: false };
+    case actionTypes.LOAD_ADVPARTIES_SUCCEED:
+      return { ...state, advanceParties: action.result.data };
     default:
       return state;
   }
@@ -306,6 +310,21 @@ export function saveCertFees(disps, params) {
       method: 'post',
       data: { disps, params },
       origin: 'mongo',
+    },
+  };
+}
+
+export function loadAdvanceParties(delgNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ADVPARTIES,
+        actionTypes.LOAD_ADVPARTIES_SUCCEED,
+        actionTypes.LOAD_ADVPARTIES_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/load/advanceparties',
+      method: 'get',
+      params: { delgNo, tenantId },
     },
   };
 }

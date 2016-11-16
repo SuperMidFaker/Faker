@@ -72,7 +72,7 @@ export default class Expander extends Component {
         [record.container_size || '', record.container_height || ''].filter(cont => cont).join('/'),
     }, {
       title: this.msg('pickupQty'),
-      dataIndex: 'pick_qty',
+      dataIndex: 'pickup_qty',
       width: 100,
     }, {
       title: this.msg('ctnQty'),

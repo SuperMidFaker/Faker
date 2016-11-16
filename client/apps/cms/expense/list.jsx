@@ -274,8 +274,13 @@ export default class ExpenseList extends Component {
     return newFilters;
   }
   handleCushInput = () => {
-    this.props.loadCurrencies();
-    this.props.openInModal();
+    this.props.loadCurrencies().then((result) => {
+      if (!result.error) {
+        this.props.openInModal();
+      } else {
+        message.error(result.error.message);
+      }
+    });
   }
   handleMarkStatement = () => {
     this.props.openMarkModal();

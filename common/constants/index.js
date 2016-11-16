@@ -246,6 +246,15 @@ export const DOC_TRANSFER = {
     value: '换单',
   },
 };
+
+export const CMS_DUTY_TAXTYPE = [
+  { value: 0, text: '供应商增票' },
+  { value: 1, text: '供应商普票' },
+  { value: 2, text: '我方增票' },
+  { value: 3, text: '我方普票' },
+  { value: 4, text: '客户开票' },
+];
+
 export {
   TENANT_LEVEL,
   TENANT_ASPECT,
