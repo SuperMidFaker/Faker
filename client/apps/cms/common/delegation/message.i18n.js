@@ -77,6 +77,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.trans_mode',
     defaultMessage: '运输方式',
   },
+  waybillLadingNo: {
+    id: 'cms.delegation.delg.waybill.lading.no',
+    defaultMessage: '提运单号',
+  },
   deliveryNo: {
     id: 'cms.delegation.delg.delivery.no',
     defaultMessage: '运单号',
