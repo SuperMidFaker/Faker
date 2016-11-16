@@ -114,7 +114,7 @@ export default class DelgDeclList extends Component {
       } else {
         return <Tag>否</Tag>;
       }
-    }
+    },
   }, {
     title: this.msg('opColumn'),
     fixed: 'right',

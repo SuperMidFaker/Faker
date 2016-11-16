@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_PANE_LOAD', 'EXP_PANE_LOAD_SUCCEED', 'EXP_PANE_LOAD_FAIL',
+  'DECL_EXPS_LOAD', 'DECL_EXPS_LOAD_SUCCEED', 'DECL_EXPS_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
@@ -13,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CLOSE_CERT_MODAL', 'OPEN_CERT_MODAL',
   'EXP_CERT_LOAD', 'EXP_CERT_LOAD_SUCCEED', 'EXP_CERT_LOAD_FAIL',
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
+  'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
 ]);
 
 const initialState = {
@@ -43,6 +45,11 @@ const initialState = {
   saved: false,
   showCertModal: false,
   certExp: {},
+  declInModal: {
+    entryId: -1,
+    feecode: '',
+  },
+  showDeclInputModal: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -62,6 +69,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, expslist: { ...state.expslist, ...exps, loading: false },
         expFeesMap, listFilter: JSON.parse(action.params.filter) };
     }
+    case actionTypes.DECL_EXPS_LOAD:
+      return { ...state, declexps: { ...state.declexps, loading: true } };
+    case actionTypes.DECL_EXPS_LOAD_SUCCEED:
+      return { ...state, declexps: { ...state.declexps, ...action.result.data, loading: false } };
     case actionTypes.CURRENCY_LOAD_SUCCEED:
       return { ...state, currencies: action.result.data };
     case actionTypes.CLOSE_IN_MODAL:
@@ -100,6 +111,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, saved: true };
     case actionTypes.EXP_CERT_LOAD_SUCCEED:
       return { ...state, certExp: action.result.data };
+    case actionTypes.OPEN_DECL_INPUT_MODAL:
+      return { ...state, declInModal: action.data, showDeclInputModal: true };
+    case actionTypes.CLOSE_DECL_INPUT_MODAL:
+      return { ...state, declInModal: initialState.declInModal, showDeclInputModal: false };
     default:
       return state;
   }
@@ -116,6 +131,22 @@ export function loadPaneExp(delgNo) {
       endpoint: 'v1/cms/expense/paneload',
       method: 'get',
       params: { delgNo },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadDeclExps(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DECL_EXPS_LOAD,
+        actionTypes.DECL_EXPS_LOAD_SUCCEED,
+        actionTypes.DECL_EXPS_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/decl/load',
+      method: 'get',
+      params,
       origin: 'mongo',
     },
   };
@@ -232,6 +263,18 @@ export function closeCertModal() {
 export function openCertModal() {
   return {
     type: actionTypes.OPEN_CERT_MODAL,
+  };
+}
+
+export function openDeclInputModal({ entryId, feecode }) {
+  return {
+    type: actionTypes.OPEN_DECL_INPUT_MODAL,
+    data: { entryId, feecode },
+  };
+}
+export function closeDeclInputModal() {
+  return {
+    type: actionTypes.CLOSE_DECL_INPUT_MODAL,
   };
 }
 
