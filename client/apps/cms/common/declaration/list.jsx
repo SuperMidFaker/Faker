@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon } from 'antd';
+import { message, Icon, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -105,10 +105,16 @@ export default class DelgDeclList extends Component {
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: this.msg('custmosCheck'),
+    title: this.msg('customsCheck'),
     width: 80,
     dataIndex: 'customs_check',
-    render: o => (o === 1 ? '是' : '否'),
+    render: (o) => {
+      if (o === 1) {
+        return <Tag color="green">是</Tag>;
+      } else {
+        return <Tag>否</Tag>;
+      }
+    }
   }, {
     title: this.msg('opColumn'),
     fixed: 'right',

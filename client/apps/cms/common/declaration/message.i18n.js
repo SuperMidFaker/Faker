@@ -93,8 +93,8 @@ export default defineMessages({
     id: 'cms.declaration.anipk.check',
     defaultMessage: '动植检查验',
   },
-  custmosCheck: {
-    id: 'cms.declaration.custmos.check',
+  customsCheck: {
+    id: 'cms.declaration.customs.check',
     defaultMessage: '海关查验',
   },
 });
