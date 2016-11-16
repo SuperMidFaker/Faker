@@ -83,7 +83,7 @@ export default class PreviewPanel extends React.Component {
       default: return 'default';
     }
   }
-  
+
   renderTabs(mode) {
     let tabKey;
     if (this.props.tabKey) {
