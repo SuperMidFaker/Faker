@@ -332,12 +332,6 @@ export default class FeesTable extends Component {
         render: (o, record, index) =>
           <ColumnInput field="lot_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
-        title: msg('freeNum'),
-        dataIndex: 'free_num',
-        width: 100,
-        render: (o, record, index) =>
-          <ColumnInput field="free_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
-      }, {
         title: msg('unitPrice'),
         dataIndex: 'unit_price',
         width: 150,
@@ -355,6 +349,12 @@ export default class FeesTable extends Component {
         width: 100,
         render: (o, record, index) =>
           <TaxInput field="tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
+      }, {
+        title: msg('commonTaxRate'),
+        dataIndex: 'common_tax_rate',
+        width: 100,
+        render: (o, record, index) =>
+          <TaxInput field="common_tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('enabledOp'),
         dataIndex: 'enabled',
