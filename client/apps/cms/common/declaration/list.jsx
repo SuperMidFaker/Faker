@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon, Tag } from 'antd';
+import { message, Icon, Radio, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -17,6 +17,8 @@ import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 
 const formatMsg = format(messages);
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -175,6 +177,13 @@ export default class DelgDeclList extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
+          <RadioGroup onChange={this.handleRadioChange}>
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
+            <RadioButton value="inspected">{this.msg('filterInspected')}</RadioButton>
+            <RadioButton value="taxed">{this.msg('filterTaxed')}</RadioButton>
+            <RadioButton value="released">{this.msg('filterReleased')}</RadioButton>
+          </RadioGroup>
         </header>
         <div className="top-bar-tools">
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />

@@ -38,7 +38,7 @@ PaneFormItem.propTypes = {
     delegateTracking: state.cmsDelegation.previewer.delegateTracking,
   })
 )
-export default class CiqDeclPane extends React.Component {
+export default class DutyTaxPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,
@@ -53,15 +53,15 @@ export default class CiqDeclPane extends React.Component {
       dataIndex: 'fee_name',
       key: 'fee_name',
     }, {
-      title: '通关单号',
+      title: '关税金额',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '报检日期',
+      title: '增值税金额',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '品质查验',
+      title: '消费税金额',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
@@ -75,25 +75,6 @@ export default class CiqDeclPane extends React.Component {
     }];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="报检企业"
-                field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="受理日期"
-                field={delegateTracking.acpt_time} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="来源"
-                field={delegateTracking.source} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-        </Card>
         <Card bodyStyle={{ padding: 8 }}>
           <Table size="small" columns={columns} pagination={false} />
         </Card>

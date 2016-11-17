@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { Button, Icon, Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import BasicPane from './tabpanes/basic-pane';
+import BasicPane from './tabpanes/BasicPane';
 import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
-import ExpensePane from './tabpanes/expensePane';
+import CertsPane from './tabpanes/CertsPane';
+import DutyTaxPane from './tabpanes/DutyTaxPane';
+import ExpensePane from './tabpanes/ExpensePane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
@@ -115,10 +117,10 @@ export default class PreviewPanel extends React.Component {
             <CiqDeclPane />
           </TabPane>
           <TabPane tab="鉴定办证" key="certs">
-            <ExpensePane />
+            <CertsPane />
           </TabPane>
           <TabPane tab="缴税" key="taxes">
-            <ExpensePane />
+            <DutyTaxPane />
           </TabPane>
           <TabPane tab="计费" key="expenses">
             <ExpensePane />
@@ -144,10 +146,10 @@ export default class PreviewPanel extends React.Component {
           <CiqDeclPane />
         </TabPane>
         <TabPane tab="鉴定办证" key="certs">
-          <ExpensePane />
+          <CertsPane />
         </TabPane>
         <TabPane tab="缴税" key="taxes">
-          <ExpensePane />
+          <DutyTaxPane />
         </TabPane>
         <TabPane tab="计费" key="expenses">
           <ExpensePane />

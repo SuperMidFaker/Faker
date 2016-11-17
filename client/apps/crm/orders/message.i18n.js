@@ -259,7 +259,7 @@ const messages = defineMessages({
   },
 
   client: {
-    id: 'transport.acceptance.client',
+    id: 'crm.orders.client',
     defaultMessage: '客户名称',
   },
   refExternalNo: {

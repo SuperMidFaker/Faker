@@ -38,7 +38,7 @@ PaneFormItem.propTypes = {
     delegateTracking: state.cmsDelegation.previewer.delegateTracking,
   })
 )
-export default class CiqDeclPane extends React.Component {
+export default class CertsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,
@@ -49,19 +49,19 @@ export default class CiqDeclPane extends React.Component {
   render() {
     const { delegation, delegateTracking } = this.props;
     const columns = [{
-      title: '报关单号',
+      title: '服务商',
       dataIndex: 'fee_name',
       key: 'fee_name',
     }, {
-      title: '通关单号',
+      title: '鉴定办证类型',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '报检日期',
+      title: '数量',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '品质查验',
+      title: '鉴定办证日期',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
@@ -69,31 +69,12 @@ export default class CiqDeclPane extends React.Component {
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '处理结果',
+      title: '备注',
       dataIndex: 'unit_price',
       key: 'unit_price',
     }];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="报检企业"
-                field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="受理日期"
-                field={delegateTracking.acpt_time} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="来源"
-                field={delegateTracking.source} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-        </Card>
         <Card bodyStyle={{ padding: 8 }}>
           <Table size="small" columns={columns} pagination={false} />
         </Card>

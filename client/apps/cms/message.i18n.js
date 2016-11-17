@@ -19,11 +19,11 @@ const messages = defineMessages({
   },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
-    defaultMessage: '进口海关申报',
+    defaultMessage: '进口报关管理',
   },
   importCiqDecl: {
     id: 'cms.module.import.decl.ciq',
-    defaultMessage: '进口商检申报',
+    defaultMessage: '进口报检管理',
   },
   export: {
     id: 'cms.module.export',
@@ -39,11 +39,11 @@ const messages = defineMessages({
   },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
-    defaultMessage: '出口海关申报',
+    defaultMessage: '出口报关管理',
   },
   exportCiqDecl: {
     id: 'cms.module.export.decl.ciq',
-    defaultMessage: '出口商检申报',
+    defaultMessage: '出口报检管理',
   },
   billing: {
     id: 'cms.module.billing',

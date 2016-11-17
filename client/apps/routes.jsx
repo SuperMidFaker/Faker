@@ -248,7 +248,8 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="expense">
-              <IndexRoute component={CMSExpense.List} />
+              <IndexRedirect to="/clearance/expense/delg" />
+              <Route path="delg" component={CMSExpense.List} />
               <Route path="declare" component={CMSExpense.DeclList} />
             </Route>
             <Route path="quote">
