@@ -222,14 +222,16 @@ export default class TransportForm extends Component {
         <Row key={k} style={{ marginBottom: 8 }}>
           <Col sm={6}>
             <FormItem
-            label={
-              <ConsignInfo
-              consignType='consigner'
-              consign={item}
-              index={k}
-              handleRegionValueChange={this.handleRegionValueChange}
-              handleChange={this.handleChange} />}
-            {...formItemLayout}>
+              label={
+                <ConsignInfo
+                  consignType="consigner"
+                  consign={item}
+                  index={k}
+                  handleRegionValueChange={this.handleRegionValueChange}
+                  handleChange={this.handleChange}
+                />}
+              {...formItemLayout}
+            >
               <Select combobox value={item.consigner_name} onChange={value => this.handleConsignChange(k, 'consigner_name', value)}>
                 {formRequires.consignerLocations.map(dw =>
                   <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
@@ -239,14 +241,16 @@ export default class TransportForm extends Component {
           </Col>
           <Col sm={6}>
             <FormItem
-            label={
-              <ConsignInfo
-              consignType='consignee'
-              consign={item}
-              index={k}
-              handleRegionValueChange={this.handleRegionValueChange}
-              handleChange={this.handleChange} />}
-            {...formItemLayout}>
+              label={
+                <ConsignInfo
+                  consignType="consignee"
+                  consign={item}
+                  index={k}
+                  handleRegionValueChange={this.handleRegionValueChange}
+                  handleChange={this.handleChange}
+                />}
+              {...formItemLayout}
+            >
               <Select combobox value={item.consignee_name} onChange={value => this.handleConsignChange(k, 'consignee_name', value)}>
                 {formRequires.consigneeLocations.map(dw =>
                   <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)

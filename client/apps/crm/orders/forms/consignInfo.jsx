@@ -37,13 +37,13 @@ export default class ConsignInfo extends React.Component {
     });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  
+
   handleClose = () => {
     this.setState({ visible: false });
   }
   handleShowPopover = (visible) => {
     if (visible) {
-      this.setState({ visible });  
+      this.setState({ visible });
     }
   }
   render() {

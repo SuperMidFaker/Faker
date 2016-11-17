@@ -67,7 +67,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   }
   handleShowPopover = (visible) => {
     if (visible) {
-      this.setState({ visible });  
+      this.setState({ visible });
     }
   }
   render() {
