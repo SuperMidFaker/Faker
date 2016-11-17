@@ -6,6 +6,7 @@ import { setClientForm } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import ConsignInfo from './consignInfo';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -171,44 +172,44 @@ export default class TransportForm extends Component {
     });
     this.props.setClientForm({ transports });
   }
-  renderConsign = (consignType, item, k) => {
+  renderConsign = (consignType, consign, index) => {
     const title = consignType === 'consigner' ? '发货方' : '收货方';
     const consignRegion = [
-      item[`${consignType}_province`], item[`${consignType}_city`],
-      item[`${consignType}_district`], item[`${consignType}_street`],
+      consign[`${consignType}_province`], consign[`${consignType}_city`],
+      consign[`${consignType}_district`], consign[`${consignType}_street`],
     ];
     const content = (
       <div style={{ width: 250 }}>
         <FormItem label="目的地" {...formItemLayout}>
           <RegionCascade defaultRegion={consignRegion} region={consignRegion}
-            onChange={region => this.handleRegionValueChange(k, consignType, region)}
+            onChange={region => this.handleRegionValueChange(index, consignType, region)}
             style={{ width: '100%' }}
           />
         </FormItem>
         <FormItem label="送货地址" {...formItemLayout}>
-          <Input value={item[`${consignType}_addr`]}
-            onChange={e => this.handleChange(k, `${consignType}_addr`, e.target.value)}
+          <Input value={consign[`${consignType}_addr`]}
+            onChange={e => this.handleChange(index, `${consignType}_addr`, e.target.value)}
           />
         </FormItem>
         <FormItem label="联系人" {...formItemLayout}>
-          <Input value={item[`${consignType}_contact`]}
-            onChange={e => this.handleChange(k, `${consignType}_contact`, e.target.value)}
+          <Input value={consign[`${consignType}_contact`]}
+            onChange={e => this.handleChange(index, `${consignType}_contact`, e.target.value)}
           />
         </FormItem>
         <FormItem label="电话" {...formItemLayout}>
-          <Input value={item[`${consignType}_mobile`]} type="tel"
-            onChange={e => this.handleChange(k, `${consignType}_mobile`, e.target.value)}
+          <Input value={consign[`${consignType}_mobile`]} type="tel"
+            onChange={e => this.handleChange(index, `${consignType}_mobile`, e.target.value)}
           />
         </FormItem>
         <FormItem label="邮箱" {...formItemLayout}>
-          <Input value={item[`${consignType}_email`]} type="email"
-            onChange={e => this.handleChange(k, `${consignType}_email`, e.target.value)}
+          <Input value={consign[`${consignType}_email`]} type="email"
+            onChange={e => this.handleChange(index, `${consignType}_email`, e.target.value)}
           />
         </FormItem>
 
       </div>);
     return (
-      <Popover content={content} title={title} placement="topRight">
+      <Popover content={content} title={title} placement="topRight" trigger="click">
         <a type="primary">{title}</a>
       </Popover>
     );
@@ -220,7 +221,15 @@ export default class TransportForm extends Component {
       return (
         <Row key={k} style={{ marginBottom: 8 }}>
           <Col sm={6}>
-            <FormItem label={this.renderConsign('consigner', item, k)} {...formItemLayout}>
+            <FormItem
+            label={
+              <ConsignInfo
+              consignType='consigner'
+              consign={item}
+              index={k}
+              handleRegionValueChange={this.handleRegionValueChange}
+              handleChange={this.handleChange} />}
+            {...formItemLayout}>
               <Select combobox value={item.consigner_name} onChange={value => this.handleConsignChange(k, 'consigner_name', value)}>
                 {formRequires.consignerLocations.map(dw =>
                   <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
@@ -229,7 +238,15 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
           <Col sm={6}>
-            <FormItem label={this.renderConsign('consignee', item, k)} {...formItemLayout}>
+            <FormItem
+            label={
+              <ConsignInfo
+              consignType='consignee'
+              consign={item}
+              index={k}
+              handleRegionValueChange={this.handleRegionValueChange}
+              handleChange={this.handleChange} />}
+            {...formItemLayout}>
               <Select combobox value={item.consignee_name} onChange={value => this.handleConsignChange(k, 'consignee_name', value)}>
                 {formRequires.consigneeLocations.map(dw =>
                   <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)

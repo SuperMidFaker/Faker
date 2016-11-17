@@ -65,8 +65,10 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   handleClose = () => {
     this.setState({ visible: false });
   }
-  handleShowPopover = () => {
-    this.setState({ visible: true });
+  handleShowPopover = (visible) => {
+    if (visible) {
+      this.setState({ visible });  
+    }
   }
   render() {
     const { shipmtNo, form: { getFieldDecorator } } = this.props;
@@ -104,13 +106,9 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
         trigger="click"
         content={content}
         visible={this.state.visible}
+        onVisibleChange={this.handleShowPopover}
       >
-        <a className={`pickupDeliver${shipmtNo}`} onClick={(ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          this.handleShowPopover();
-        }}
-        >{this.props.children}</a>
+        <a className={`pickupDeliver${shipmtNo}`}>{this.props.children}</a>
       </Popover>
     );
   }
