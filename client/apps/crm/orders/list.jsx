@@ -328,7 +328,7 @@ export default class ShipmentOrderList extends React.Component {
               </Button>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1700 }} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1800 }} />
             </div>
           </div>
         </div>
