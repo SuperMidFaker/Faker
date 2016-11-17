@@ -77,11 +77,31 @@ export default class CiqList extends Component {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
+    render: (o, record) => {
+      return (
+        <a onClick={() => this.handlePreview(o, record)}>
+          {o}
+        </a>);
+    },
   }, {
     title: this.msg('delgClient'),
     width: 200,
     dataIndex: 'send_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: this.msg('orderNo'),
+    width: 140,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: this.msg('invoiceNo'),
+    width: 140,
+    dataIndex: 'invoice_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: this.msg('waybillLadingNo'),
+    width: 200,
+    dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('inspbroker'),
     width: 140,
@@ -134,16 +154,6 @@ export default class CiqList extends Component {
       } else {
         return (
           <RowUpdater label={this.msg('declareView')} />
-        );
-      }
-    },
-  }, {
-    title: this.msg('办证'),
-    width: 80,
-    render: (o, record) => {
-      if (record.status > 0) {
-        return (
-          <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
         );
       }
     },
@@ -255,6 +265,13 @@ export default class CiqList extends Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, filters);
+  }
+  handlePreview = (o, record) => {
+    this.props.showPreviewer({
+      delgNo: o,
+      tenantId: this.props.tenantId,
+    }, record.status);
+    this.props.loadPaneExp(o);
   }
   render() {
     const { ciqlist } = this.props;

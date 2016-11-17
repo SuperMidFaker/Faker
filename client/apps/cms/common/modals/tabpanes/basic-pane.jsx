@@ -102,49 +102,34 @@ export default class BasicPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
-            <Col span="12">
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="委托方"
                 field={delegation.customer_name} fieldCol={{ span: 9 }}
               />
             </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="申报单位"
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="代理方"
                 field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
               />
             </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
-                field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="运单号"
-                field={delegation.shipping_no} fieldCol={{ span: 9 }}
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="委托日期"
+                field={delegateTracking.delg_time} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           <Row>
-            <Col span="12">
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="客户订单号"
+                field={delegation.order_no} fieldCol={{ span: 9 }}
+              />
+            </Col>
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="发票号"
                 field={delegation.invoice_no} fieldCol={{ span: 9 }}
               />
             </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="订单号"
-                field={delegation.order_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="船名航次"
-                field={delegation.voyage_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
-
-            <Col span="12">
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="外部编号"
                 field={delegation.ref_external_no}
                 fieldCol={{ span: 9 }}
@@ -152,19 +137,41 @@ export default class BasicPane extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="总重量"
-                field={`${delegation.weight ? delegation.weight : ''} 公斤`} fieldCol={{ span: 9 }}
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="运输方式"
+                field={delegation.trans_mode} fieldCol={{ span: 9 }}
               />
             </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="总件数"
-                field={`${delegation.pieces} 件`} fieldCol={{ span: 9 }}
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
+                field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
+              />
+            </Col>
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="船名航次"
+                field={delegation.voyage_no} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           <Row>
-            <Col span="12">
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="货物类型"
+                field={delegation.goods_type} fieldCol={{ span: 9 }}
+              />
+            </Col>
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="总件数"
+                field={`${delegation.pieces} 件`} fieldCol={{ span: 9 }}
+              />
+            </Col>
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="总重量"
+                field={`${delegation.weight ? delegation.weight : ''} 公斤`} fieldCol={{ span: 9 }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
               <PaneFormItem labelCol={{ span: 3 }} label="备注"
                 field={delegation.remark}
                 fieldCol={{ span: 9 }}

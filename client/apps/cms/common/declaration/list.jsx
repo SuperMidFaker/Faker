@@ -94,7 +94,7 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('agentName'),
     dataIndex: 'agent_name',
-    render: o => <TrimSpan text={o} maxLen={12} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('clrStatus'),
     width: 150,
