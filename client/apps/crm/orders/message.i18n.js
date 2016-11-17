@@ -374,6 +374,62 @@ const messages = defineMessages({
     id: 'crm.orders.previewer.container.no',
     defaultMessage: '箱号',
   },
+  basicCharge: {
+    id: 'crm.orders.previewer.basic.charge',
+    defaultMessage: '基本运费',
+  },
+  revenueItem: {
+    id: 'crm.orders.previewer.charge.revenue.item',
+    defaultMessage: '收入明细项',
+  },
+  chargeRate: {
+    id: 'crm.orders.previewer.charge.rate',
+    defaultMessage: '费率',
+  },
+  chargeAmount: {
+    id: 'crm.orders.previewer.charge.amount',
+    defaultMessage: '计费量',
+  },
+  chargeFee: {
+    id: 'crm.orders.previewer.charge.fee',
+    defaultMessage: '金额',
+  },
+  chargeChecked: {
+    id: 'crm.orders.previewer.charge.checked',
+    defaultMessage: '计入',
+  },
+  pickupCharge: {
+    id: 'crm.orders.previewer.pickup.charge',
+    defaultMessage: '提货费',
+  },
+  deliverCharge: {
+    id: 'crm.orders.previewer.deliver.charge',
+    defaultMessage: '配送费',
+  },
+  surcharge: {
+    id: 'crm.orders.previewer.surcharge',
+    defaultMessage: '运费调整项',
+  },
+  totalCharge: {
+    id: 'crm.orders.previewer.total.charge',
+    defaultMessage: '总运费',
+  },
+  advanceName: {
+    id: 'crm.orders.previewer.advance.name',
+    defaultMessage: '垫付类型',
+  },
+  advanceAmount: {
+    id: 'crm.orders.previewer.advance.amount',
+    defaultMessage: '金额',
+  },
+  advanceSubmitter: {
+    id: 'crm.orders.previewer.advance.submitter',
+    defaultMessage: '提交者',
+  },
+  advanceRemark: {
+    id: 'crm.orders.previewer.advance.remark',
+    defaultMessage: '备注',
+  },
 });
 
 export default messages;

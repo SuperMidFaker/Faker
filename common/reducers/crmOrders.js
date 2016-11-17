@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
   'LOAD_CLEARANCE_DETAIL', 'LOAD_CLEARANCE_DETAIL_SUCCEED', 'LOAD_CLEARANCE_DETAIL_FAILED',
   'LOAD_TRANSPORT_DETAIL', 'LOAD_TRANSPORT_DETAIL_SUCCEED', 'LOAD_TRANSPORT_DETAIL_FAILED',
+  'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
 ]);
 
 const initialState = {
@@ -29,6 +30,11 @@ const initialState = {
       clearanceTracking: [],
     },
     transports: [],
+    clearanceFees: {
+      server_charges: [],
+      cush_charges: [],
+      tot_sercharges: {},
+    },
   },
   formData: {
     shipmt_order_no: '',
@@ -138,6 +144,11 @@ export default function reducer(state = initialState, action) {
         clearance: action.result.data,
       } };
     }
+    case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
+      return { ...state, previewer: {
+        ...state.previewer,
+        clearanceFees: action.result.data,
+      } };
     case actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED: {
       return { ...state, previewer: {
         ...state.previewer,
@@ -294,6 +305,22 @@ export function loadClearanceDetail({ delgNo, tenantId }) {
       endpoint: 'v1/cms/delegate/previewer',
       method: 'get',
       params: { delgNo, tenantId },
+    },
+  };
+}
+
+export function loadClearanceFees(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CLEARANCE_FEES,
+        actionTypes.LOAD_CLEARANCE_FEES_SUCCEED,
+        actionTypes.LOAD_CLEARANCE_FEES_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/paneload',
+      method: 'get',
+      params: { delgNo },
+      origin: 'mongo',
     },
   };
 }

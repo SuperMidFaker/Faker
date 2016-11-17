@@ -80,7 +80,7 @@ export default class ClearancePane extends React.Component {
         fileSort(fl.name);
       });
     }
-    if (delgNo !== this.props.delgNo) {
+    if (delgNo && delgNo !== this.props.delgNo) {
       this.props.loadClearanceDetail({ tenantId, delgNo });
     }
   }
