@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, InputNumber, Select } from 'antd';
 import { loadCurrencies, loadAdvanceParties } from 'common/reducers/cmsExpense';
 import { formatMsg } from './message.i18n';
 import { CMS_DUTY_TAXTYPE } from 'common/constants';
@@ -13,21 +13,16 @@ const Option = Select.Option;
 @connect(state => ({
   currencies: state.cmsExpense.currencies,
   advanceParties: state.cmsExpense.advanceParties,
+  tenantId: state.account.tenantId,
 }),
-  { loadAdvanceParties }
+  { loadCurrencies, loadAdvanceParties }
 )
-export default class AdvanceExpenseSubForm extends Component {
+export default class AdvanceExpenseForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     delgNo: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
-    formhoc: PropTypes.object.isRequired,
-    formCols: PropTypes.shape({
-      labelCol: PropTypes.shape({ span: PropTypes.number.isRequired }),
-      wrapperCol: PropTypes.shape({ span: PropTypes.number.isRequired }),
-    }),
-    dispatch: PropTypes.func.isRequired,
-    children: PropTypes.node,
+    labelCol: PropTypes.number.isRequired,
     currencies: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
@@ -36,30 +31,31 @@ export default class AdvanceExpenseSubForm extends Component {
       disp_id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
     })),
+    loadCurrencies: PropTypes.func.isRequired,
     loadAdvanceParties: PropTypes.func.isRequired,
   }
   componentWillMount() {
     if (this.props.currencies.length === 0) {
-      this.props.dispatch(loadCurrencies());
+      this.props.loadCurrencies();
     }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {
-      this.props.loadAdvanceParties(nextProps.delgNo, nextProps.tenantId);
-    }
+    this.props.loadAdvanceParties(this.props.delgNo, this.props.tenantId);
   }
   msg = formatMsg(this.props.intl);
   render() {
     const {
-      formhoc, formhoc: { getFieldDecorator }, formCols, children,
+      formhoc: { getFieldDecorator }, labelCol,
       advanceParties, currencies,
     } = this.props;
+    const formCols = {
+      labelCol: { span: labelCol },
+      wrapperCol: { span: 18 - labelCol },
+    };
     return (
-      <Form horizontal form={formhoc}>
+      <Form horizontal>
         <FormItem {...formCols} label={this.msg('advanceParty')}>
           {
             getFieldDecorator('advance_disp_id', {
-              rules: [{ required: true, message: this.msg('advancePartyRequired') }],
+              rules: [{ required: true, message: this.msg('advancePartyRequired'), type: 'number' }],
             })(
               <Select>
                 {
@@ -69,13 +65,13 @@ export default class AdvanceExpenseSubForm extends Component {
             )
           }
         </FormItem>
-        {children}
         <FormItem {...formCols} label={this.msg('advanceFee')}>
           {
             getFieldDecorator('advance_fee', {
-              rules: [{ required: true, message: this.msg('advanceFeeRequired') }],
+              rules: [{ required: true, message: this.msg('advanceFeeRequired'), type: 'number' }],
+              initialValue: 0,
             })(
-              <Input />
+              <InputNumber style={{ width: '100%' }} min={0} />
             )
           }
         </FormItem>
@@ -93,7 +89,7 @@ export default class AdvanceExpenseSubForm extends Component {
         <FormItem {...formCols} label={this.msg('advanceTaxType')}>
           {
             getFieldDecorator('advance_tax_type', {
-              rules: [{ required: true, message: this.msg('advanceTaxTypeRequired') }],
+              rules: [{ required: true, message: this.msg('advanceTaxTypeRequired'), type: 'number' }],
             })(
               <Select>
                 {
@@ -102,6 +98,11 @@ export default class AdvanceExpenseSubForm extends Component {
               </Select>
             )
           }
+        </FormItem>
+        <FormItem label={this.msg('remark')} {...formCols}>
+          {getFieldDecorator('remark')(
+            <Input type="textarea" rows="3" />
+          )}
         </FormItem>
       </Form>
     );

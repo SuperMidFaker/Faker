@@ -1,30 +1,29 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Table } from 'antd';
+import { Button, Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
+import { openAdvanceFeeModal } from 'common/reducers/cmsExpense';
+import DelgAdvanceExpenseModal from './delgAdvanceExpenseModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
     visible: state.cmsDelegation.previewer.visible,
     previewer: state.cmsDelegation.previewer,
-    delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus }
+  { hidePreviewer, setPreviewStatus, openAdvanceFeeModal }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
-    delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
-  }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
+    openAdvanceFeeModal: PropTypes.func.isRequired,
   }
   state = {
     tabKey: this.props.previewer.tabKey || 'basic',
@@ -54,6 +53,9 @@ export default class PreviewPanel extends React.Component {
   handleClose = () => {
     this.props.hidePreviewer();
   }
+  handleAddAdvanceFee = () => {
+    this.props.openAdvanceFeeModal(this.props.previewer.delgNo);
+  }
   render() {
     const { visible, previewer } = this.props;
     const { delegation } = previewer;
@@ -71,6 +73,11 @@ export default class PreviewPanel extends React.Component {
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
             <div className="pull-right">
+              <div className="toolbar">
+                <Button type="ghost" onClick={this.handleAddAdvanceFee}>
+                  添加代垫费用
+                </Button>
+              </div>
               {closer}
             </div>
           </div>
@@ -92,6 +99,7 @@ export default class PreviewPanel extends React.Component {
             </Card>
           </div>
         </div>
+        <DelgAdvanceExpenseModal delgNo={delegation.delg_no} />
       </div>
     );
   }
