@@ -8,7 +8,7 @@ import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
 import CertsPane from './tabpanes/CertsPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
-import ExpensePane from './tabpanes/ExpensePane';
+import ExpensesPane from './tabpanes/ExpensesPane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
@@ -123,7 +123,7 @@ export default class PreviewPanel extends React.Component {
             <DutyTaxPane />
           </TabPane>
           <TabPane tab="计费" key="expenses">
-            <ExpensePane />
+            <ExpensesPane />
           </TabPane>
           <TabPane tab="通关追踪" key="clearanceTracking">
             <ClearanceTrackingPane />
@@ -152,7 +152,7 @@ export default class PreviewPanel extends React.Component {
           <DutyTaxPane />
         </TabPane>
         <TabPane tab="计费" key="expenses">
-          <ExpensePane />
+          <ExpensesPane />
         </TabPane>
         <TabPane tab="日志" key="delegateTracking">
           <DelegateTrackingPane delegateTracking={delegateTracking} />
