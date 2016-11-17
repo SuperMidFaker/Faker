@@ -20,8 +20,8 @@ export default class CarForm extends Component {
     const setFieldsValue = form.setFieldsValue;
     if (mode === 'edit') {
       setFieldsValue(node);
-      const [code, province, city, district, street] = region;
-      changeRegion({ province, city, district, region_code: code, street });
+      const [province, city, district, street] = region;
+      changeRegion({ province, city, district, street });
     }
   }
   render() {
