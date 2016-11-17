@@ -29,7 +29,7 @@ function ColumnSwitch(props) {
   if (record[field] === 1) {
     check = true;
   }
-  return <Switch size="small" disabled={record.status === 1} checked={check} value={record[field] || 0} onChange={handleChange} />;
+  return <Switch size="small" disabled={record.ciq_status === 1} checked={check} value={record[field] || 0} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
   record: PropTypes.object.isRequired,
@@ -87,14 +87,14 @@ export default class CiqDeclList extends Component {
     dataIndex: 'bill_seq_no',
     width: 160,
   }, {
-    title: this.msg('customsId'),
+    title: this.msg('ciqNo'),
     width: 180,
-    dataIndex: 'customs_id',
+    dataIndex: 'ciq_no',
     render: (o, record) => {
       if (record.id) {
         if (o) {
           return o;
-        } else if (record.status !== 1) {
+        } else if (record.ciq_status !== 1) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <RowUpdater onHit={this.handleCiqNoFill} row={record}
@@ -143,13 +143,13 @@ export default class CiqDeclList extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status !== 1) {
+      if (record.ciq_status !== 1) {
         return (
           <span>
             <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
           </span>
         );
-      } else if (record.status === 1) {
+      } else if (record.ciq_status === 1) {
         return (
           <span>{this.msg('ciqFinish')}</span>
         );
