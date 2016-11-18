@@ -35,11 +35,20 @@ export default class ModuleCRM extends React.Component {
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'customer-3',
       path: '/customer/billing',
       icon: 'zmdi zmdi-money-box',
       text: formatMsg(intl, 'billing'),
+      sublinks: [{
+        key: 'tms-3-0',
+        path: '/customer/billing/fees',
+        text: '费用管理',
+      }, {
+        key: 'tms-3-1',
+        path: '/customer/billing/billings',
+        text: '账单管理',
+      }],
     });
     linkMenus.push({
       single: true,

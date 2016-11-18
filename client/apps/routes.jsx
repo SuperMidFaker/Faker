@@ -59,6 +59,7 @@ import CRM from './crm/module-crm';
 import * as CRMDashboard from './crm/dashboard';
 import * as CRMOrders from './crm/orders';
 import * as CRMCustomers from './crm/customers';
+import * as CRMBilling from './crm/billing';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -314,6 +315,10 @@ export default(store, cookie) => {
               <Route path="edit" component={CRMOrders.Edit} />
             </Route>
             <Route path="customers" component={CRMCustomers.List} />
+            <Route path="billing">
+              <Route path="fees" component={CRMBilling.FeeList} />
+              <Route path="billings" component={CRMBilling.BillingList} />
+            </Route>
           </Route>
         </Route>
       </Route>

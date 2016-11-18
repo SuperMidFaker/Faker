@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Popconfirm, Popover, Progress, message } from 'antd';
+import { Button, Popconfirm, Progress, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -16,6 +16,7 @@ import moment from 'moment';
 import { CRM_ORDER_STATUS, GOODSTYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from './modals/preview-panel';
+import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
@@ -155,22 +156,7 @@ export default class ShipmentOrderList extends React.Component {
       dataIndex: 'trs_shipmt_no',
       width: 150,
       render: (o) => {
-        if (o) {
-          const os = o.split(',');
-          const content = (
-            <div>
-              {os.map((item, index) => <p key={index}>{item}</p>)}
-            </div>
-          );
-
-          return (
-            <Popover content={content} title="运单号">
-              <div>{`${os[0]}${os.length > 0 ? '...' : ''}`}</div>
-            </Popover>
-          );
-        } else {
-          return '';
-        }
+        return <TrsShipmtNoColumn trsShipmtNos={o} />;
       },
     }, {
       title: '客户',
