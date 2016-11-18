@@ -74,6 +74,7 @@ export default class CiqDeclList extends Component {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
     width: 160,
+    fixed: 'left',
   }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
@@ -130,12 +131,14 @@ export default class CiqDeclList extends Component {
     title: this.msg('qualityCheck'),
     dataIndex: 'quality_check',
     width: 80,
+    fixed: 'right',
     render: (o, record) =>
       <ColumnSwitch field="quality_check" record={record} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('anipkCheck'),
     dataIndex: 'anipk_check',
     width: 100,
+    fixed: 'right',
     render: (o, record) =>
       <ColumnSwitch field="anipk_check" record={record} onChange={this.handleEditChange} />,
   }, {
@@ -226,7 +229,7 @@ export default class CiqDeclList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1300 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
             </div>
             <CiqnoFillModal reload={this.handleTableLoad} />
           </div>

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
+import { Badge, Radio, Button, Popconfirm, message, Modal } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -189,21 +189,21 @@ export default class DelegationList extends Component {
       const CMS_STATUS = (record.type === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
-        return <Tag>{decl && decl.text}</Tag>;
+        return <Badge status="default" text={decl && decl.text} />;
       } else if (record.status === 2) {
-        return <Tag color="blue">{decl && decl.text}</Tag>;
+        return <Badge status="warning" text={decl && decl.text} />;
       } else if (record.status === 3) {
         if (record.sub_status === 1) {
-          return <Tag color="orange">{this.msg('declaredPart')}</Tag>;
-        } else { return <Tag color="yellow">{decl && decl.text}</Tag>; }
+          return <Badge status="processing" text={this.msg('declaredPart')} />;
+        } else { return <Badge status="processing" text={decl && decl.text} />; }
       } else if (record.status === 4) {
         if (record.sub_status === 0) {
-          return <Tag color="green">{decl && decl.text}</Tag>;
+          return <Badge status="success" text={decl && decl.text} />;
         } else {
-          return <Tag color="orange">{this.msg('releasedPart')}</Tag>;
+          return <Badge status="success" text={this.msg('releasedPart')} />;
         }
       } else {
-        return <Tag>{decl && decl.text}</Tag>;
+        return <Badge status="default" text={decl && decl.text} />;
       }
     },
   }, {

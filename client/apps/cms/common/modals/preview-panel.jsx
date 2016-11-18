@@ -3,8 +3,12 @@ import { connect } from 'react-redux';
 import { Button, Icon, Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import BasicPane from './tabpanes/basic-pane';
-import ExpensePane from './tabpanes/expensePane';
+import BasicPane from './tabpanes/BasicPane';
+import CustomsDeclPane from './tabpanes/CustomsDeclPane';
+import CiqDeclPane from './tabpanes/CiqDeclPane';
+import CertsPane from './tabpanes/CertsPane';
+import DutyTaxPane from './tabpanes/DutyTaxPane';
+import ExpensesPane from './tabpanes/ExpensesPane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
@@ -76,24 +80,24 @@ export default class PreviewPanel extends React.Component {
     switch (status) {
       case 0:
         {
-          if (source === 1) return '待接单';
-          if (source === 2) return '待供应商接单';
+          if (source === 1) return <Badge status="default" text="待接单" />;
+          if (source === 2) return <Badge status="default" text="待供应商接单" />;
           break;
         }
       case 1:
         {
-          if (source === 1) return '已接单';
-          if (source === 2) return '供应商已接单';
+          if (source === 1) return <Badge status="default" text="已接单" />;
+          if (source === 2) return <Badge status="default" text="供应商已接单" />;
           break;
         }
       case 2:
         {
-          if (source === 1) return '制单中';
-          if (source === 2) return '供应商制单中';
+          if (source === 1) return <Badge status="warning" text="制单中" />;
+          if (source === 2) return <Badge status="warning" text="供应商制单中" />;
           break;
         }
-      case 3: return '已申报';
-      case 4: return '已结单';
+      case 3: return <Badge status="processing" text="已申报" />;
+      case 4: return <Badge status="success" text="已放行" />;
       default: return '';
     }
   }
@@ -106,8 +110,20 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab="委托" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
-          <TabPane tab="费用" key="expenses">
-            <ExpensePane />
+          <TabPane tab="报关" key="customsDecl">
+            <CustomsDeclPane />
+          </TabPane>
+          <TabPane tab="报检" key="ciqDecl">
+            <CiqDeclPane />
+          </TabPane>
+          <TabPane tab="鉴定办证" key="certs">
+            <CertsPane />
+          </TabPane>
+          <TabPane tab="缴税" key="taxes">
+            <DutyTaxPane />
+          </TabPane>
+          <TabPane tab="计费" key="expenses">
+            <ExpensesPane />
           </TabPane>
           <TabPane tab="通关追踪" key="clearanceTracking">
             <ClearanceTrackingPane />
@@ -120,11 +136,23 @@ export default class PreviewPanel extends React.Component {
     }
     return (
       <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-        <TabPane tab="委托" key="basic">
+        <TabPane tab="业务信息" key="basic">
           <BasicPane delegation={delegation} files={files} />
         </TabPane>
-        <TabPane tab="费用" key="expenses">
-          <ExpensePane />
+        <TabPane tab="报关" key="customsDecl">
+          <CustomsDeclPane />
+        </TabPane>
+        <TabPane tab="报检" key="ciqDecl">
+          <CiqDeclPane />
+        </TabPane>
+        <TabPane tab="鉴定办证" key="certs">
+          <CertsPane />
+        </TabPane>
+        <TabPane tab="缴税" key="taxes">
+          <DutyTaxPane />
+        </TabPane>
+        <TabPane tab="计费" key="expenses">
+          <ExpensesPane />
         </TabPane>
         <TabPane tab="日志" key="delegateTracking">
           <DelegateTrackingPane delegateTracking={delegateTracking} />
@@ -214,7 +242,7 @@ export default class PreviewPanel extends React.Component {
         <div className="panel-content">
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
-            <Badge status="processing" text={this.translateStatus(delegation.status, delegation.source)} />
+            {this.translateStatus(delegation.status, delegation.source)}
             <div className="pull-right">
               <div className="toolbar">
                 {this.state.tabKey === 'basic' && this.button()}

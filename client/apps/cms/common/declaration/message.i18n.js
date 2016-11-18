@@ -7,19 +7,19 @@ export default defineMessages({
   },
   importDeclaration: {
     id: 'cms.declaration.import.customs',
-    defaultMessage: '进口海关申报',
+    defaultMessage: '进口报关管理',
   },
   exportDeclaration: {
     id: 'cms.declaration.export.customs',
-    defaultMessage: '出口海关申报',
+    defaultMessage: '出口报关管理',
   },
   importCiq: {
     id: 'cms.declaration.import.ciq',
-    defaultMessage: '进口商检申报',
+    defaultMessage: '进口报价管理',
   },
   exportCiq: {
     id: 'cms.declaration.export.ciq',
-    defaultMessage: '出口商检申报',
+    defaultMessage: '出口报检管理',
   },
   entryId: {
     id: 'cms.declaration.delg.entryId',
@@ -96,5 +96,21 @@ export default defineMessages({
   customsCheck: {
     id: 'cms.declaration.customs.check',
     defaultMessage: '海关查验',
+  },
+  filterDeclared: {
+    id: 'cms.declaration.customs.filter.declared',
+    defaultMessage: '申报',
+  },
+  filterInspected: {
+    id: 'cms.declaration.customs.filter.inspected',
+    defaultMessage: '查验',
+  },
+  filterTaxed: {
+    id: 'cms.declaration.customs.filter.taxed',
+    defaultMessage: '缴税',
+  },
+  filterReleased: {
+    id: 'cms.declaration.customs.filter.released',
+    defaultMessage: '放行',
   },
 });

@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Table, message } from 'antd';
+import { Card, Table, Tabs, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -94,12 +95,24 @@ export default class ExpensePane extends React.Component {
     const cushDataSource = expenses.cush_charges;
     return (
       <div className="pane-content tab-pane">
-        <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
-        </Card>
-        <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
-        </Card>
+        <Tabs defaultActiveKey="recievable" tabPosition="left">
+          <TabPane tab="应收" key="recievable" style={{ padding: 8 }}>
+            <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+              <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+            </Card>
+            <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+              <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+            </Card>
+          </TabPane>
+          <TabPane tab="应付" key="payable" style={{ padding: 8 }}>
+            <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+              <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+            </Card>
+            <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+              <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

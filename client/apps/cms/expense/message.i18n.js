@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   searchPlaceholder: {
@@ -113,5 +114,30 @@ const messages = defineMessages({
     id: 'cms.expense.delg.preEntry.no',
     defaultMessage: '统一编号',
   },
+  advanceFee: {
+    id: 'cms.expense.delg.advance.fee',
+    defaultMessage: '代垫费',
+  },
+  advanceParty: {
+    id: 'cms.modals.expense.advance.party',
+    defaultMessage: '代垫方',
+  },
+  advancePartyRequired: {
+    id: 'cms.modals.expense.advance.party.required',
+    defaultMessage: '代垫方必选',
+  },
+  advanceFeeRequired: {
+    id: 'cms.modals.expense.advance.fee.required',
+    defaultMessage: '金额必填',
+  },
+  advanceTaxType: {
+    id: 'cms.modals.expense.advance.taxtype',
+    defaultMessage: '开票',
+  },
+  advanceTaxTypeRequired: {
+    id: 'cms.modals.expense.advance.taxtype.required',
+    defaultMessage: '开票类型必选',
+  },
 });
 export default messages;
+export const formatMsg = formati18n(messages);
