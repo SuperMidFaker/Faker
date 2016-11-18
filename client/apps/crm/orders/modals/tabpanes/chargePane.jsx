@@ -187,7 +187,7 @@ export default class ChargePanel extends React.Component {
       width: '60%',
     }];
     const servDataSource = clearanceFees.server_charges;
-    if (clearanceFees.tot_sercharges.fee_name) {
+    if (clearanceFees.tot_sercharges && clearanceFees.tot_sercharges.fee_name) {
       servDataSource.push(clearanceFees.tot_sercharges);
     }
     const cushDataSource = clearanceFees.cush_charges;
