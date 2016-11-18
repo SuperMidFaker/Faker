@@ -47,7 +47,8 @@ export default class CiqDeclPane extends React.Component {
     delegateTracking: PropTypes.object.isRequired,
   }
   render() {
-    const { delegation, delegateTracking } = this.props;
+    // const { delegation, delegateTracking } = this.props;
+    const { delegateTracking } = this.props;
     const columns = [{
       title: '报关单号',
       dataIndex: 'fee_name',
