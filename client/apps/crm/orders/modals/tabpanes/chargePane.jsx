@@ -16,6 +16,7 @@ const TabPane = Tabs.TabPane;
     order: state.crmOrders.previewer.order,
     delgNo: state.crmOrders.previewer.order.ccb_delg_no,
     transports: state.crmOrders.previewer.transports,
+    clearanceFees: state.crmOrders.previewer.clearanceFees,
   }),
   { loadClearanceFees }
 )
@@ -26,26 +27,33 @@ export default class ChargePanel extends React.Component {
     delgNo: PropTypes.string.isRequired,
     order: PropTypes.object.isRequired,
     transports: PropTypes.array.isRequired,
+    clearanceFees: PropTypes.object.isRequired,
   }
   state = {
     tabKey: '',
   }
   componentWillMount() {
-    const { delgNo, transports } = this.props;
+    const { delgNo, transports, order } = this.props;
     if (delgNo && delgNo !== this.props.delgNo) {
       this.props.loadClearanceFees(delgNo);
     }
-    const tabKey = transports[0] ? transports[0].shipmt_no : '';
+    let tabKey = transports[0] ? transports[0].shipmt_no : '';
+    if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+      tabKey = delgNo;
+    }
     this.setState({
       tabKey,
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { delgNo, transports } = nextProps;
+    const { delgNo, transports, order } = nextProps;
     if (delgNo && delgNo !== this.props.delgNo) {
       this.props.loadClearanceFees(delgNo);
     }
-    const tabKey = transports[0] ? transports[0].shipmt_no : '';
+    let tabKey = transports[0] ? transports[0].shipmt_no : '';
+    if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+      tabKey = delgNo;
+    }
     this.setState({
       tabKey,
     });
@@ -123,6 +131,76 @@ export default class ChargePanel extends React.Component {
         }),
       });
     }
+  }
+  renderClearanceFees = () => {
+    const { clearanceFees } = this.props;
+    const columns = [{
+      title: this.msg('feeName'),
+      dataIndex: 'fee_name',
+      key: 'fee_name',
+      width: '16.7%',
+    }, {
+      title: this.msg('charCount'),
+      dataIndex: 'charge_count',
+      key: 'charge_count',
+      width: '16.7%',
+    }, {
+      title: this.msg('unitPrice'),
+      dataIndex: 'unit_price',
+      key: 'unit_price',
+      width: '16.7%',
+    }, {
+      title: this.msg('feeVal'),
+      dataIndex: 'sum_fee',
+      key: 'sum_fee',
+      width: '16.7%',
+    }, {
+      title: this.msg('taxFee'),
+      dataIndex: 'tax_fee',
+      key: 'tax_fee',
+      width: '16.7%',
+      render: (o) => {
+        if (o) {
+          return o.toFixed(2);
+        }
+      },
+    }, {
+      title: this.msg('totalFee'),
+      dataIndex: 'total_fee',
+      key: 'total_fee',
+      width: '16.7%',
+      render: (o) => {
+        if (o) {
+          return o.toFixed(2);
+        }
+      },
+    }];
+    const cushColumns = [{
+      title: this.msg('feeName'),
+      dataIndex: 'fee_name',
+      key: 'fee_name',
+      width: '40%',
+    }, {
+      title: this.msg('totalFee'),
+      dataIndex: 'total_fee',
+      key: 'total_fee',
+      width: '60%',
+    }];
+    const servDataSource = clearanceFees.server_charges;
+    if (clearanceFees.tot_sercharges.fee_name) {
+      servDataSource.push(clearanceFees.tot_sercharges);
+    }
+    const cushDataSource = clearanceFees.cush_charges;
+    return (
+      <div className="pane-content tab-pane">
+        <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+          <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+        </Card>
+        <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+          <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+        </Card>
+      </div>
+    );
   }
   renderTransportFees = (shipmt) => {
     const { fees, advances, specialCharges } = shipmt;
@@ -229,11 +307,21 @@ export default class ChargePanel extends React.Component {
     );
   }
   render() {
-    const { intl, order, transports } = this.props;
+    const { intl, order, transports, clearanceFees } = this.props;
     let clearanceFee = 0;
     let transportFee = 0;
     if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
-      clearanceFee = 0;
+      const servDataSource = clearanceFees.server_charges;
+      if (clearanceFees.tot_sercharges.fee_name) {
+        servDataSource.push(clearanceFees.tot_sercharges);
+      }
+      const cushDataSource = clearanceFees.cush_charges;
+      servDataSource.forEach((item) => {
+        clearanceFee += item.total_fee;
+      });
+      cushDataSource.forEach((item) => {
+        clearanceFee += item.total_fee;
+      });
     }
     if (order.shipmt_order_mode === CRM_ORDER_MODE.transport || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
       transports.forEach((item) => {
@@ -252,42 +340,98 @@ export default class ChargePanel extends React.Component {
         }
       });
     }
-    // console.log(transportFee);
     const totalFee = clearanceFee + transportFee;
-    return (
-      <div className="pane-content tab-pane" >
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row>
-            <Col span="8">
+    if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance) {
+      return (
+        <div className="pane-content tab-pane" >
+          <Card bodyStyle={{ padding: 16 }}>
+            <Row>
               <h5>清关</h5>
               <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                   intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
                 }</div>
-            </Col>
-            <Col span="8">
-              <h5>运输</h5>
-              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
-                  intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                }</div>
-            </Col>
-            <Col span="8">
-              <h5>总计</h5>
-              <div style={{ color: '#666', fontSize: '18px' }}>{
-                  intl.formatNumber(totalFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                }</div>
-            </Col>
-          </Row>
-        </Card>
-        <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-          {transports.map((item) => {
-            return (
-              <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                {this.renderTransportFees(item)}
-              </TabPane>
-              );
-          })}
-        </Tabs>
-      </div>
-    );
+            </Row>
+          </Card>
+          {this.renderClearanceFees()}
+        </div>
+      );
+    } else if (order.shipmt_order_mode === CRM_ORDER_MODE.transport) {
+      if (transports.length === 1) {
+        return (
+          <div className="pane-content tab-pane" >
+            <Card bodyStyle={{ padding: 16 }}>
+              <Row>
+                <h5>运输</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Row>
+            </Card>
+            {this.renderTransportFees(transports[0])}
+          </div>
+        );
+      } else {
+        return (
+          <div className="pane-content tab-pane" >
+            <Card bodyStyle={{ padding: 16 }}>
+              <Row>
+                <h5>运输</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Row>
+            </Card>
+            <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+              {transports.map((item) => {
+                return (
+                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                    {this.renderTransportFees(item)}
+                  </TabPane>
+                  );
+              })}
+            </Tabs>
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div className="pane-content tab-pane" >
+          <Card bodyStyle={{ padding: 16 }}>
+            <Row>
+              <Col span="8">
+                <h5>清关</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Col>
+              <Col span="8">
+                <h5>运输</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Col>
+              <Col span="8">
+                <h5>总计</h5>
+                <div style={{ color: '#666', fontSize: '18px' }}>{
+                    intl.formatNumber(totalFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Col>
+            </Row>
+          </Card>
+          <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+            <TabPane tab={order.ccb_delg_no} key={order.ccb_delg_no}>
+              {this.renderClearanceFees()}
+            </TabPane>
+            {transports.map((item) => {
+              return (
+                <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                  {this.renderTransportFees(item)}
+                </TabPane>
+                );
+            })}
+          </Tabs>
+        </div>
+      );
+    }
   }
 }

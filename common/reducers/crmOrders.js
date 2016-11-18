@@ -147,7 +147,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
       return { ...state, previewer: {
         ...state.previewer,
-        clearanceFees: action.result.data,
+        clearanceFees: action.result.data || initialState.previewer.clearanceFees,
       } };
     case actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED: {
       return { ...state, previewer: {

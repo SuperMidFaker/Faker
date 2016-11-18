@@ -243,18 +243,26 @@ export default class TransportPane extends React.Component {
   }
   render() {
     const { transports } = this.props;
-    return (
-      <div>
-        <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-          {transports.map((item) => {
-            return (
-              <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                {this.renderShipmt(item)}
-              </TabPane>
-            );
-          })}
-        </Tabs>
-      </div>
-    );
+    if (transports.length === 1) {
+      return (
+        <div>
+          {this.renderShipmt(transports[0])}
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+            {transports.map((item) => {
+              return (
+                <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                  {this.renderShipmt(item)}
+                </TabPane>
+              );
+            })}
+          </Tabs>
+        </div>
+      );
+    }
   }
 }

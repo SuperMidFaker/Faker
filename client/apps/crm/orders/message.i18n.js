@@ -430,6 +430,39 @@ const messages = defineMessages({
     id: 'crm.orders.previewer.advance.remark',
     defaultMessage: '备注',
   },
+
+  serviceFee: {
+    id: 'crm.orders.previewer.service.fee',
+    defaultMessage: '服务费',
+  },
+  cushionFee: {
+    id: 'crm.orders.previewer.cushion.fee',
+    defaultMessage: '代垫费',
+  },
+  feeName: {
+    id: 'crm.orders.previewer.fee.name',
+    defaultMessage: '费用名称',
+  },
+  charCount: {
+    id: 'crm.orders.previewer.charge.count',
+    defaultMessage: '计费数量',
+  },
+  unitPrice: {
+    id: 'crm.orders.previewer.unit.price',
+    defaultMessage: '计费单价',
+  },
+  feeVal: {
+    id: 'crm.orders.previewer.fee.val',
+    defaultMessage: '费用金额',
+  },
+  taxFee: {
+    id: 'crm.orders.previewer.tax.fee',
+    defaultMessage: '税金',
+  },
+  totalFee: {
+    id: 'crm.orders.previewer.total.fee',
+    defaultMessage: '应收金额',
+  },
 });
 
 export default messages;
