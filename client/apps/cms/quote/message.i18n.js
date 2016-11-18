@@ -119,7 +119,11 @@ const messages = defineMessages({
   },
   taxRate: {
     id: 'cms.quote.tax.rate',
-    defaultMessage: '开票税率',
+    defaultMessage: '增票税率',
+  },
+  commonTaxRate: {
+    id: 'cms.quote.common.tax.rate',
+    defaultMessage: '普票税率',
   },
   status: {
     id: 'cms.quote.status',

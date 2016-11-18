@@ -132,6 +132,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, advanceParties: action.result.data };
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
+    case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
+      return { ...state, saved: true };
     default:
       return state;
   }

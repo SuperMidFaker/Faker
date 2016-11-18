@@ -67,7 +67,16 @@ export default class DelgAdvanceExpenseModal extends React.Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const formData = this.props.form.getFieldsValue();
-        this.props.computeDelgAdvanceFee(formData).then((result) => {
+        const fee = this.props.fees.filter(fe => fe.code === formData.fee_code)[0];
+        this.props.computeDelgAdvanceFee({
+          delg_no: this.props.delgNo,
+          disp_id: fee.disp_id,
+          advance_fee: formData.advance_fee,
+          fee_code: formData.fee_code,
+          curr_code: formData.advance_curr,
+          advance_tax_type: formData.advance_tax_type,
+          remark: formData.remark,
+        }).then((result) => {
           if (!result.error) {
             this.props.closeAdvanceFeeModal();
             this.props.form.resetFields();
@@ -123,7 +132,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
                 rules: [{ required: true, message: this.msg('advanceFeeRequired'), type: 'number' }],
                 initialValue: 0,
               })(
-                <InputNumber style={{ width: '100%' }} min={0} />
+                <InputNumber style={{ width: '100%' }} min={0} step={0.01} />
               )
             }
           </FormItem>
@@ -132,7 +141,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
               getFieldDecorator('advance_curr')(
                 <Select>
                   {
-                    currencies.map(curr => <Option key={curr.curr_code} value={curr.curr_code}>{curr.curr_name}</Option>)
+                    currencies.map(curr => <Option key={curr.curr_code} value={curr.curr_symb}>{curr.curr_name}</Option>)
                   }
                 </Select>
               )
