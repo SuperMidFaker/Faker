@@ -106,6 +106,10 @@ const messages = defineMessages({
     id: 'cms.expense.modal.ciq.broker',
     defaultMessage: '报检供应商',
   },
+  certBroker: {
+    id: 'cms.expense.modal.cert.broker',
+    defaultMessage: '办证供应商',
+  },
   entryId: {
     id: 'cms.expense.delg.entryId',
     defaultMessage: '报关单号',
