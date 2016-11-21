@@ -5,7 +5,7 @@ import { format } from 'client/common/i18n/helpers';
 import { feeUpdate, feeAdd, feeDelete, saveQuoteModel } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
-import { CHARGE_MODE, FEE_STYLE } from 'common/constants';
+import { CHARGE_MODE, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 import { Select, Table, Button, Input, Switch, message } from 'antd';
 
 const formatMsg = format(messages);
@@ -309,6 +309,14 @@ export default class FeesTable extends Component {
         width: 150,
         render: (o, record, index) =>
           <CustomInput field="fee_code" Edit={addedit && (index === editIndex)} placeholder="自定义费用代码" record={record} onChange={this.handleEditChange} />,
+      }, {
+        title: msg('feeCategory'),
+        dataIndex: 'category',
+        width: 150,
+        render: (o, record, index) =>
+          <ColumnSelect field="category" inEdit={editable || (index === editIndex)} record={record}
+            onChange={this.handleEditChange} options={FEE_CATEGORY}
+          />,
       }, {
         title: msg('feeStyle'),
         dataIndex: 'fee_style',

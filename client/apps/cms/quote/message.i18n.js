@@ -45,6 +45,10 @@ const messages = defineMessages({
     id: 'cms.quote.fee_code',
     defaultMessage: '费用代码',
   },
+  feeCategory: {
+    id: 'cms.quote.fee_category',
+    defaultMessage: '费用分类',
+  },
   feeStyle: {
     id: 'cms.quote.fee_style',
     defaultMessage: '费用类型',

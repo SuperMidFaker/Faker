@@ -166,16 +166,23 @@ export const FEE_STYLE = [
   { value: 'service', text: '服务费' },
   { value: 'cushion', text: '代垫费' },
 ];
-
+export const FEE_CATEGORY = [
+  { value: 'agency_expenses', text: '进出口代理' },
+  { value: 'customs_expenses', text: '报关' },
+  { value: 'ciq_expenses', text: '报检' },
+  { value: 'misc_expenses', text: '杂项' },
+  { value: 'certs_expenses', text: '鉴定办证' },
+];
 export const CHARGE_MODE = [
   { value: '0', text: '按Shipment' },
-  { value: '1', text: '按报关单量' },
+  { value: '1', text: '按报关单' },
   { value: '2', text: '按品名量' },
   { value: '3', text: '按料号' },
   { value: '4', text: '按货值' },
   { value: '5', text: '按实收取' },
   { value: '6', text: '型号' },
   { value: '7', text: '证书' },
+  { value: '8', text: '按报关单量' },
 ];
 
 export const TRANS_MODE = [
