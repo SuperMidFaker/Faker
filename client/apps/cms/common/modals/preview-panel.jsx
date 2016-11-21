@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Tabs, Badge } from 'antd';
+import { Button, Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BasicPane from './tabpanes/BasicPane';
@@ -10,9 +10,7 @@ import CertsPane from './tabpanes/CertsPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
-import ClearanceTrackingPane from './tabpanes/clearanceTrackingPane';
 import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
-import downloadMultiple from 'client/util/multipleDownloader';
 
 const TabPane = Tabs.TabPane;
 const ButtonGroup = Button.Group;
@@ -72,10 +70,6 @@ export default class PreviewPanel extends React.Component {
     this.props.setPreviewStatus({ preStatus: 'view' });
     this.props.hidePreviewer();
   }
-  handleFilesDownload = () => {
-    const { previewer } = this.props;
-    downloadMultiple(previewer.files);
-  }
   translateStatus(status, source) {
     switch (status) {
       case 0:
@@ -104,7 +98,74 @@ export default class PreviewPanel extends React.Component {
   tablePan() {
     const { previewer } = this.props;
     const { delegation, files, delegateTracking } = previewer;
-    if (previewer.status === 3 || previewer.status === 4) {
+    if (previewer.status === 0) {
+      return (
+        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab="委托" key="basic">
+            <BasicPane delegation={delegation} files={files} />
+          </TabPane>
+          <TabPane tab="日志" key="delegateTracking">
+            <DelegateTrackingPane delegateTracking={delegateTracking} />
+          </TabPane>
+        </Tabs>
+      );
+    } else if (previewer.status === 1 || previewer.status === 2) {
+      if (delegation.ciq_inspect === 'NA') {
+        return (
+          <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+            <TabPane tab="委托" key="basic">
+              <BasicPane delegation={delegation} files={files} />
+            </TabPane>
+            <TabPane tab="报关" key="customsDecl">
+              <CustomsDeclPane />
+            </TabPane>
+            <TabPane tab="鉴定办证" key="certs">
+              <CertsPane />
+            </TabPane>
+            <TabPane tab="日志" key="delegateTracking">
+              <DelegateTrackingPane delegateTracking={delegateTracking} />
+            </TabPane>
+          </Tabs>
+        );
+      }
+      return (
+        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab="委托" key="basic">
+            <BasicPane delegation={delegation} files={files} />
+          </TabPane>
+          <TabPane tab="报关" key="customsDecl">
+            <CustomsDeclPane />
+          </TabPane>
+          <TabPane tab="报检" key="ciqDecl">
+            <CiqDeclPane />
+          </TabPane>
+          <TabPane tab="鉴定办证" key="certs">
+            <CertsPane />
+          </TabPane>
+          <TabPane tab="日志" key="delegateTracking">
+            <DelegateTrackingPane delegateTracking={delegateTracking} />
+          </TabPane>
+        </Tabs>
+      );
+    } else if (previewer.status === 3 || previewer.status === 4) {
+      if (delegation.ciq_inspect === 'NA') {
+        return (
+          <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+            <TabPane tab="委托" key="basic">
+              <BasicPane delegation={delegation} files={files} />
+            </TabPane>
+            <TabPane tab="报关" key="customsDecl">
+              <CustomsDeclPane />
+            </TabPane>
+            <TabPane tab="鉴定办证" key="certs">
+              <CertsPane />
+            </TabPane>
+            <TabPane tab="日志" key="delegateTracking">
+              <DelegateTrackingPane delegateTracking={delegateTracking} />
+            </TabPane>
+          </Tabs>
+        );
+      }
       return (
         <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
           <TabPane tab="委托" key="basic">
@@ -125,105 +186,82 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab="计费" key="expenses">
             <ExpensesPane />
           </TabPane>
-          <TabPane tab="通关追踪" key="clearanceTracking">
-            <ClearanceTrackingPane />
-          </TabPane>
           <TabPane tab="日志" key="delegateTracking">
             <DelegateTrackingPane delegateTracking={delegateTracking} />
           </TabPane>
         </Tabs>
       );
     }
-    return (
-      <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-        <TabPane tab="业务信息" key="basic">
-          <BasicPane delegation={delegation} files={files} />
-        </TabPane>
-        <TabPane tab="报关" key="customsDecl">
-          <CustomsDeclPane />
-        </TabPane>
-        <TabPane tab="报检" key="ciqDecl">
-          <CiqDeclPane />
-        </TabPane>
-        <TabPane tab="鉴定办证" key="certs">
-          <CertsPane />
-        </TabPane>
-        <TabPane tab="缴税" key="taxes">
-          <DutyTaxPane />
-        </TabPane>
-        <TabPane tab="计费" key="expenses">
-          <ExpensesPane />
-        </TabPane>
-        <TabPane tab="日志" key="delegateTracking">
-          <DelegateTrackingPane delegateTracking={delegateTracking} />
-        </TabPane>
-      </Tabs>
-    );
   }
   button() {
     const { previewer } = this.props;
     const { delegation } = previewer;
-    if (previewer.status === 0 && delegation.source === 1) {
-      return (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-          <Button type="ghost" onClick={this.handleAccept}>
-            接单
-          </Button>
-        </PrivilegeCover>
-      );
-    } else if (previewer.status === 0 && delegation.source === 2) {
-      return (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-          <ButtonGroup>
-            <Button type="default" onClick={this.handleDispCancel}>
-              撤回
+    if (this.state.tabKey === 'basic') {
+      if (previewer.status === 0 && delegation.source === 1) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <Button type="ghost" onClick={this.handleAccept}>
+              接单
             </Button>
-            <Button type="ghost" onClick={this.handleFilesDownload}>
-              <Icon type="download" />
+          </PrivilegeCover>
+        );
+      } else if (previewer.status === 0 && delegation.source === 2) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <ButtonGroup>
+              <Button type="default" onClick={this.handleDispCancel}>
+                撤回
+              </Button>
+            </ButtonGroup>
+          </PrivilegeCover>
+        );
+      }
+    } else if (this.state.tabKey === 'customsDecl') {
+      if (previewer.status === 1 && delegation.source === 1) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <div className="btn-bar">
+              <Button type="primary" onClick={this.handleMake}>
+                制单
+              </Button>
+              <span />
+              <Button type="ghost" onClick={this.handleDisp}>
+                分配报关供应商
+              </Button>
+            </div>
+          </PrivilegeCover>
+        );
+      } else if (previewer.status === 2 && delegation.source === 1) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <div className="btn-bar">
+              <Button type="ghost" onClick={this.handleMake}>
+                制单
+              </Button>
+            </div>
+          </PrivilegeCover>
+        );
+      } else {
+        return (
+          <div className="btn-bar">
+            <Button type="ghost" onClick={this.handleView}>
+            查看
             </Button>
-          </ButtonGroup>
-        </PrivilegeCover>
-      );
-    } else if (previewer.status === 1 && delegation.source === 1) {
-      return (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-          <ButtonGroup>
-            <Button type="ghost" onClick={this.handleMake}>
-              制单
-            </Button>
-            <Button type="ghost" onClick={this.handleDisp}>
-              分配
-            </Button>
-            <Button type="ghost" onClick={this.handleFilesDownload}>
-              <Icon type="download" />
-            </Button>
-          </ButtonGroup>
-        </PrivilegeCover>
-      );
-    } else if (previewer.status === 2 && delegation.source === 1) {
-      return (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-          <ButtonGroup>
-            <Button type="ghost" onClick={this.handleMake}>
-              制单
-            </Button>
-            <Button type="ghost" onClick={this.handleFilesDownload}>
-              <Icon type="download" />
-            </Button>
-          </ButtonGroup>
-        </PrivilegeCover>
-      );
-    } else {
-      return (
-        <ButtonGroup>
-          <Button type="ghost" onClick={this.handleView}>
-          查看
-          </Button>
-          <Button type="ghost" onClick={this.handleFilesDownload}>
-            <Icon type="download" />
-          </Button>
-        </ButtonGroup>
-      );
+          </div>
+        );
+      }
+    } else if (this.state.tabKey === 'ciqDecl') {
+      if (previewer.status === 1 && delegation.source === 1) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <div className="btn-bar">
+              <Button type="ghost" onClick={this.handleDisp}>
+                分配报检供应商
+              </Button>
+            </div>
+          </PrivilegeCover>
+        );
+      }
     }
   }
   render() {
@@ -243,12 +281,10 @@ export default class PreviewPanel extends React.Component {
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
             {this.translateStatus(delegation.status, delegation.source)}
-            <div className="pull-right">
-              <div className="toolbar">
-                {this.state.tabKey === 'basic' && this.button()}
-              </div>
-              {closer}
+            <div className="toolbar">
+              {this.button()}
             </div>
+            {closer}
           </div>
           <div className="body">
             {this.tablePan()}

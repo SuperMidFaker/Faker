@@ -109,7 +109,7 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('customsCheck'),
     width: 80,
-    dataIndex: 'customs_check',
+    dataIndex: 'customs_inspect',
     render: (o) => {
       if (o === 1) {
         return <Tag color="green">是</Tag>;

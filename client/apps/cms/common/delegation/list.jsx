@@ -174,8 +174,20 @@ export default class DelegationList extends Component {
     dataIndex: 'pieces',
   }, {
     title: this.msg('delgWeight'),
-    width: 120,
+    width: 80,
     dataIndex: 'weight',
+  }, {
+    title: this.msg('ciqInspect'),
+    width: 90,
+    dataIndex: 'ciq_inspect',
+    render: (o) => {
+      if (o === 'NL') {
+        return <Badge status="warning" text="非法检" />;
+      } else if (o === 'LA' || o === 'LB') {
+        return <Badge status="error" text="法检" />;
+      }
+      return <Badge status="default" text="不报检" />;
+    },
   }, {
     title: this.msg('broker'),
     width: 180,

@@ -129,18 +129,18 @@ export default class CiqDeclList extends Component {
       record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('qualityCheck'),
-    dataIndex: 'quality_check',
+    dataIndex: 'ciq_quality_inspect',
     width: 80,
     fixed: 'right',
     render: (o, record) =>
-      <ColumnSwitch field="quality_check" record={record} onChange={this.handleEditChange} />,
+      <ColumnSwitch field="ciq_quality_inspect" record={record} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('anipkCheck'),
-    dataIndex: 'anipk_check',
+    dataIndex: 'ciq_ap_inspect',
     width: 100,
     fixed: 'right',
     render: (o, record) =>
-      <ColumnSwitch field="anipk_check" record={record} onChange={this.handleEditChange} />,
+      <ColumnSwitch field="ciq_ap_inspect" record={record} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('opColumn'),
     width: 100,

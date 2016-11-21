@@ -15,7 +15,7 @@ export default defineMessages({
   },
   importCiq: {
     id: 'cms.declaration.import.ciq',
-    defaultMessage: '进口报价管理',
+    defaultMessage: '进口报检管理',
   },
   exportCiq: {
     id: 'cms.declaration.export.ciq',

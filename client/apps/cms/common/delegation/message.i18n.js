@@ -129,6 +129,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.grosswt',
     defaultMessage: '毛重',
   },
+  ciqInspect: {
+    id: 'cms.delegation.delg.ciq.inspect',
+    defaultMessage: '检验检疫',
+  },
   broker: {
     id: 'cms.delegation.delg.broker',
     defaultMessage: '报关企业',

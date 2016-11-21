@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row, Radio } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { GOODSTYPES, TRANS_MODE, DOC_TRANSFER } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -29,7 +29,7 @@ function getFieldInits(aspect, formData) {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
   }
-  init.transfer = formData.transfer || 0;
+  init.claim_do_awb = formData.claim_do_awb || 0;
   return init;
 }
 @injectIntl
@@ -86,22 +86,23 @@ export default class BasicForm extends Component {
         <Row>
           <Col sm={8}>
             <FormItem label={this.msg('delgClient')} {...formItemLayout} style={{ display: customerName.display }}>
-              {getFieldDecorator('customer_name', { rules: [{
-                required: customerName.required, message: '客户名称必填',
-              }],
-                  getValueFromEvent: this.handleClientChange,
-                  initialValue: fieldInits.customer_name,
-                })(
-                  <Select size="large" combobox showArrow={false} optionFilterProp="search"
-                    placeholder="输入客户代码或名称"
+              {getFieldDecorator('customer_name', {
+                rules: [{
+                  required: customerName.required, message: '客户名称必填',
+                }],
+                getValueFromEvent: this.handleClientChange,
+                initialValue: fieldInits.customer_name,
+              })(
+                <Select size="large" combobox showArrow={false} optionFilterProp="search"
+                  placeholder="输入客户代码或名称"
                   >
-                    {
-                  clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                    search={`${data.partner_code}${data.name}`}
-                  >{data.name}</Option>)
+                  {
+                    clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                      search={`${data.partner_code}${data.name}`}
+                      >{data.name}</Option>)
+                    )}
+                </Select>
                 )}
-                  </Select>
-              )}
             </FormItem>
           </Col>
           <Col sm={8}>
@@ -128,45 +129,45 @@ export default class BasicForm extends Component {
               })(
                 <Select>
                   {
-                  TRANS_MODE.map(tr =>
-                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                  )
-                }
+                    TRANS_MODE.map(tr =>
+                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                    )
+                  }
                 </Select>
-              )}
+                )}
             </FormItem>
           </Col>
           <Col sm={8}>
-            { getFieldValue('trans_mode') === '2' &&
-            <FormItem label={this.msg('bLNo')} {...formItemLayout}>
-              {getFieldDecorator('bl_wb_no', {
-                initialValue: fieldInits.bl_wb_no,
-              })(<Input />)}
-            </FormItem>
-          }
-            { getFieldValue('trans_mode') === '5' &&
-            <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
-              {getFieldDecorator('bl_wb_no', {
-                initialValue: fieldInits.bl_wb_no,
-              })(<Input />)}
-            </FormItem>
-          }
+            {getFieldValue('trans_mode') === '2' &&
+              <FormItem label={this.msg('bLNo')} {...formItemLayout}>
+                {getFieldDecorator('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })(<Input />)}
+              </FormItem>
+            }
+            {getFieldValue('trans_mode') === '5' &&
+              <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
+                {getFieldDecorator('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })(<Input />)}
+              </FormItem>
+            }
           </Col>
           <Col sm={8}>
-            { getFieldValue('trans_mode') === '2' &&
-            <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
-              {getFieldDecorator('voyage_no', {
-                initialValue: fieldInits.voyage_no,
-              })(<Input />)}
-            </FormItem>
-          }
-            { getFieldValue('trans_mode') === '5' &&
-            <FormItem label={this.msg('flightNo')} {...formItemLayout}>
-              {getFieldDecorator('voyage_no', {
-                initialValue: fieldInits.voyage_no,
-              })(<Input />)}
-            </FormItem>
-          }
+            {getFieldValue('trans_mode') === '2' &&
+              <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
+                {getFieldDecorator('voyage_no', {
+                  initialValue: fieldInits.voyage_no,
+                })(<Input />)}
+              </FormItem>
+            }
+            {getFieldValue('trans_mode') === '5' &&
+              <FormItem label={this.msg('flightNo')} {...formItemLayout}>
+                {getFieldDecorator('voyage_no', {
+                  initialValue: fieldInits.voyage_no,
+                })(<Input />)}
+              </FormItem>
+            }
           </Col>
         </Row>
         <Row>
@@ -177,10 +178,10 @@ export default class BasicForm extends Component {
                 rules: [{ required: true, message: '货物类型必选', type: 'number' }],
               })(<Select>
                 {
-                GOODSTYPES.map(gt =>
-                  <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                )
-              }
+                  GOODSTYPES.map(gt =>
+                    <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                  )
+                }
               </Select>)}
             </FormItem>
           </Col>
@@ -215,14 +216,22 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            { getFieldValue('trans_mode') === '2' &&
-            <FormItem label="换单" {...formItemLayout}>
-              {getFieldDecorator('transfer', { initialValue: fieldInits.transfer })(<RadioGroup>
-                <RadioButton value={DOC_TRANSFER.notransf.key}>{DOC_TRANSFER.notransf.value}</RadioButton>
-                <RadioButton value={DOC_TRANSFER.transf.key}>{DOC_TRANSFER.transf.value}</RadioButton>
-              </RadioGroup>)}
-            </FormItem>
-          }
+            {getFieldValue('trans_mode') === '2' &&
+              <FormItem label="换单" {...formItemLayout}>
+                {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
+                  <RadioButton value={CLAIM_DO_AWB.notClaimDO.key}>{CLAIM_DO_AWB.notClaimDO.value}</RadioButton>
+                  <RadioButton value={CLAIM_DO_AWB.claimDO.key}>{CLAIM_DO_AWB.claimDO.value}</RadioButton>
+                </RadioGroup>)}
+              </FormItem>
+            }
+            {getFieldValue('trans_mode') === '5' &&
+              <FormItem label="抽单" {...formItemLayout}>
+                {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
+                  <RadioButton value={CLAIM_DO_AWB.notClaimAWB.key}>{CLAIM_DO_AWB.notClaimAWB.value}</RadioButton>
+                  <RadioButton value={CLAIM_DO_AWB.claimAWB.key}>{CLAIM_DO_AWB.claimAWB.value}</RadioButton>
+                </RadioGroup>)}
+              </FormItem>
+            }
           </Col>
         </Row>
         <Row>

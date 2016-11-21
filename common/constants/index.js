@@ -236,14 +236,22 @@ export const EXP_STATUS = [
   { value: 1, text: '已结单' },
   { value: 2, text: '已开票' },
 ];
-export const DOC_TRANSFER = {
-  notransf: {
+export const CLAIM_DO_AWB = {
+  notClaimDO: {
     key: 0,
-    value: '不换单',
+    value: '无需换单',
   },
-  transf: {
+  claimDO: {
     key: 1,
-    value: '换单',
+    value: '需要换单',
+  },
+  notClaimAWB: {
+    key: 0,
+    value: '无需抽单',
+  },
+  claimAWB: {
+    key: 1,
+    value: '需要抽单',
   },
 };
 

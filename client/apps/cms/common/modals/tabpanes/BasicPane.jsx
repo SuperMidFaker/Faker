@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card } from 'antd';
+import { Button, Row, Col, Card } from 'antd';
+import downloadMultiple from 'client/util/multipleDownloader';
 import './pane.less';
 
 let FILE = [];
@@ -73,6 +74,9 @@ export default class BasicPane extends React.Component {
         fileSort(fl.name);
       });
     }
+  }
+  handleFilesDownload = () => {
+    downloadMultiple(this.files);
   }
   render() {
     const { delegation, delegateTracking } = this.props;
@@ -171,7 +175,12 @@ export default class BasicPane extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 3 }} label="是否抽/换单"
+                field={delegation.claim_do_awb} fieldCol={{ span: 9 }}
+              />
+            </Col>
+            <Col span="16">
               <PaneFormItem labelCol={{ span: 3 }} label="备注"
                 field={delegation.remark}
                 fieldCol={{ span: 9 }}
@@ -179,7 +188,11 @@ export default class BasicPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card title="附件" bodyStyle={{ padding: 16 }}>
+        <Card title="附件" bodyStyle={{ padding: 16 }} extra={
+          <Button type="primary" size="small" onClick={this.handleFilesDownload} icon="download">
+            下载
+          </Button>}
+        >
           {filenames}
         </Card>
       </div>
