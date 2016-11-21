@@ -72,6 +72,12 @@ export default class ClearancePane extends React.Component {
     loadClearanceDetail: PropTypes.func.isRequired,
     delgNo: PropTypes.string.isRequired,
   }
+  componentWillMount() {
+    const { tenantId, delgNo } = this.props;
+    if (delgNo) {
+      this.props.loadClearanceDetail({ tenantId, delgNo });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { tenantId, delgNo } = nextProps;
     if (nextProps.files.length !== this.props.files.length) {

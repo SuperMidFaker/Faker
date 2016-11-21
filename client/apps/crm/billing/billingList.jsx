@@ -71,7 +71,7 @@ export default class BillingList extends React.Component {
     });
   }
   componentDidMount() {
-    this.handleTableLoad();
+    // this.handleTableLoad();
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.billings.searchValue !== nextProps.billings.searchValue) {

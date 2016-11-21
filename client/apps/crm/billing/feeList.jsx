@@ -74,13 +74,13 @@ export default class FeesList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
-      this.handleTableLoad(nextProps.fees.searchValue);
+      // this.handleTableLoad(nextProps.fees.searchValue);
     }
   }
   onDateChange = (value) => {
     const promises = [this.props.changeFeesFilter('startDate', value[0]), this.props.changeFeesFilter('endDate', value[1])];
     Promise.all(promises).then(() => {
-      this.handleTableLoad();
+      // this.handleTableLoad();
     });
   }
   handleSelectionClear = () => {
