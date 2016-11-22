@@ -8,6 +8,7 @@ import { PRESET_TRANSMODES } from 'common/constants';
 import messages from '../../message.i18n';
 import './pane.less';
 import { renderConsignLoc } from '../../../../transport/common/consignLocation';
+import TransportStatus from './transportStatus';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -132,9 +133,9 @@ export default class TransportPane extends React.Component {
     const shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     const transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
     const goodsInfo = `${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`;
-
     return (
       <div className="pane-content tab-pane">
+        <TransportStatus status={shipmt.status} />
         <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
           <Panel header={clientInfo} key="customer">
             <Col span="12">

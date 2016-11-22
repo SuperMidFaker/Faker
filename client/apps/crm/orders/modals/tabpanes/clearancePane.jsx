@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card } from 'antd';
 import './pane.less';
+import ClearanceStatus from './clearanceStatus';
 
 let FILE = [];
 function getColCls(col) {
@@ -100,6 +101,7 @@ export default class ClearancePane extends React.Component {
     });
     return (
       <div className="pane-content tab-pane">
+        <ClearanceStatus status={delegateTracking.status} subStatus={delegateTracking.sub_status} />
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="12">

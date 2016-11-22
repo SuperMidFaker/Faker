@@ -370,6 +370,14 @@ const messages = defineMessages({
     id: 'crm.orders.previewer.goods.remark',
     defaultMessage: '备注',
   },
+  vehicleType: {
+    id: 'crm.orders.previewer.vehicle.type',
+    defaultMessage: '车型',
+  },
+  vehicleLength: {
+    id: 'crm.orders.previewer.vehicle.length',
+    defaultMessage: '车长',
+  },
   containerNo: {
     id: 'crm.orders.previewer.container.no',
     defaultMessage: '箱号',
@@ -462,6 +470,64 @@ const messages = defineMessages({
   totalFee: {
     id: 'crm.orders.previewer.total.fee',
     defaultMessage: '应收金额',
+  },
+
+  pendingShipmt: {
+    id: 'crm.orders.previewer.transport.status.pendingShipmt',
+    defaultMessage: '待接单',
+  },
+  acceptedShipmt: {
+    id: 'crm.orders.previewer.transport.status.acceptedShipmt',
+    defaultMessage: '待调度',
+  },
+  dispatchedShipmt: {
+    id: 'crm.orders.previewer.transport.status.dispatchedShipmt',
+    defaultMessage: '待提货',
+  },
+  intransitShipmt: {
+    id: 'crm.orders.previewer.transport.status.intransitShipmt',
+    defaultMessage: '运输中',
+  },
+  deliveredShipmt: {
+    id: 'crm.orders.previewer.transport.status.deliveredShipmt',
+    defaultMessage: '已送货',
+  },
+  podsubmit: {
+    id: 'crm.orders.previewer.transport.status.podsubmit',
+    defaultMessage: '回单已提交',
+  },
+  podaccept: {
+    id: 'crm.orders.previewer.transport.status.podaccept',
+    defaultMessage: '回单已接受',
+  },
+
+  unacceptedDelegation: {
+    id: 'crm.orders.previewer.clearance.status.unaccepted',
+    defaultMessage: '待接单',
+  },
+  acceptedDelegation: {
+    id: 'crm.orders.previewer.clearance.status.accepted',
+    defaultMessage: '已接单',
+  },
+  processedDelegation: {
+    id: 'crm.orders.previewer.clearance.status.processed',
+    defaultMessage: '制单中',
+  },
+  declaredDelegation: {
+    id: 'crm.orders.previewer.clearance.status.declared',
+    defaultMessage: '已申报',
+  },
+  releasedDelegation: {
+    id: 'crm.orders.previewer.clearance.status.released',
+    defaultMessage: '已放行',
+  },
+  declaredPartDelegation: {
+    id: 'crm.orders.previewer.clearance.status.declaredPart',
+    defaultMessage: '部分申报',
+  },
+  releasedPartDelegation: {
+    id: 'crm.orders.previewer.clearance.status.releasedPart',
+    defaultMessage: '部分放行',
   },
 });
 

@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_MODE, CRM_ORDER_STATUS } from 'common/constants';
 import { hidePreviewer, changePreviewerTab, loadClearanceDetail, loadTransportDetail } from 'common/reducers/crmOrders';
 
-import ShipmentSchedule from './shipmentSchedule';
 import ClearancePane from './tabpanes/clearancePane';
 import TransportPane from './tabpanes/transportPane';
 import LogPane from './tabpanes/logPane';
@@ -173,7 +172,6 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <ShipmentSchedule />
             {this.renderTabs(order.shipmt_order_mode)}
           </div>
         </div>
