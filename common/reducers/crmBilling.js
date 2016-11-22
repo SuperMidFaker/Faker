@@ -3,7 +3,9 @@ import { createActionTypes } from 'client/common/redux-actions';
 import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/crm/billing/', [
-  'LOAD_FEES', 'LOAD_FEES_SUCCEED', 'LOAD_FEES_FAIL',
+  'LOAD_ORDERS', 'LOAD_ORDERS_SUCCEED', 'LOAD_ORDERS_FAIL',
+  'LOAD_TRANSPORT_FEES', 'LOAD_TRANSPORT_FEES_SUCCEED', 'LOAD_TRANSPORT_FEES_FAIL',
+  'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'CHANGE_FEES_FILTER',
   'TOGGLE_ADVANCECHARGE_MODAL',
@@ -17,6 +19,7 @@ const initialState = {
   loaded: true,
   loading: false,
   fees: {
+    loadTimes: 0,
     startDate: sDate,
     endDate: eDate,
     searchValue: '',
@@ -34,8 +37,7 @@ const initialState = {
     currentPage: 1,
     data: [],
     filters: {
-      sr_name: [],
-      sp_name: [],
+      customer_name: [],
     },
   },
   billingFees: {
@@ -46,8 +48,52 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_FEES_SUCCEED: {
-      return { ...state, fees: action.result.data };
+    case actionTypes.LOAD_ORDERS_SUCCEED: {
+      return { ...state, fees: { ...action.result.data, loadTimes: state.fees.loadTimes + 1 } };
+    }
+    case actionTypes.LOAD_TRANSPORT_FEES_SUCCEED: {
+      const fees = state.fees.data;
+      const data = [];
+      for (let i = 0; i < fees.length; i++) {
+        let trsFreightCharge = 0;
+        let trsExcpCharge = 0;
+        let trsAdvanceCharge = 0;
+        let trsTotalCharge = 0;
+        let totalCharge = 0;
+        const fee = action.result.data.find(item => item.trs_shipmt_no === fees[i].trs_shipmt_no);
+        if (fee && fee.transportFees.length > 0) {
+          fee.transportFees.forEach((item) => {
+            if (item.total_charge) {
+              trsFreightCharge += item.total_charge;
+              trsTotalCharge += item.total_charge;
+            }
+            if (item.excp_charge) {
+              trsExcpCharge += item.excp_charge;
+              trsTotalCharge += item.excp_charge;
+            }
+            if (item.advance_charge) {
+              trsAdvanceCharge += item.advance_charge;
+              trsTotalCharge += item.advance_charge;
+            }
+          });
+          totalCharge = trsTotalCharge;
+          if (fees[i].ccbTotalCharge) {
+            totalCharge += fees[i].ccbTotalCharge;
+          }
+        }
+        data.push({
+          ...fees[i],
+          trsFreightCharge,
+          trsExcpCharge,
+          trsAdvanceCharge,
+          trsTotalCharge,
+          totalCharge,
+        });
+      }
+      return { ...state, fees: { ...state.fees, data } };
+    }
+    case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED: {
+      return { ...state };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
@@ -63,15 +109,16 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadFees({ tenantId, pageSize, current, searchValue, filters, startDate, endDate }) {
+
+export function loadOrders({ tenantId, pageSize, current, searchValue, filters, startDate, endDate }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_FEES,
-        actionTypes.LOAD_FEES_SUCCEED,
-        actionTypes.LOAD_FEES_FAIL,
+        actionTypes.LOAD_ORDERS,
+        actionTypes.LOAD_ORDERS_SUCCEED,
+        actionTypes.LOAD_ORDERS_FAIL,
       ],
-      endpoint: 'v1/crm/billing/fees',
+      endpoint: 'v1/crm/billing/orders',
       method: 'get',
       params: {
         tenantId,
@@ -82,6 +129,36 @@ export function loadFees({ tenantId, pageSize, current, searchValue, filters, st
         startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
         endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
       },
+    },
+  };
+}
+
+export function loadClearanceFees(delgNos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CLEARANCE_FEES,
+        actionTypes.LOAD_CLEARANCE_FEES_SUCCEED,
+        actionTypes.LOAD_CLEARANCE_FEES_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/fees',
+      method: 'get',
+      params: { delgNos },
+    },
+  };
+}
+
+export function loadTransportFees(shipmtOrders) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRANSPORT_FEES,
+        actionTypes.LOAD_TRANSPORT_FEES_SUCCEED,
+        actionTypes.LOAD_TRANSPORT_FEES_FAIL,
+      ],
+      endpoint: 'v1/crm/transport/billing/fees',
+      method: 'get',
+      params: { shipmtOrders: JSON.stringify(shipmtOrders) },
     },
   };
 }

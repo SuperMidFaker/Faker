@@ -75,7 +75,7 @@ export default class BillingList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.billings.searchValue !== nextProps.billings.searchValue) {
-      this.handleTableLoad(nextProps.billings.searchValue);
+      // this.handleTableLoad(nextProps.billings.searchValue);
     }
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)

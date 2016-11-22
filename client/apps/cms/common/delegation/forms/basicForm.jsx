@@ -95,11 +95,11 @@ export default class BasicForm extends Component {
               })(
                 <Select size="large" combobox showArrow={false} optionFilterProp="search"
                   placeholder="输入客户代码或名称"
-                  >
+                >
                   {
                     clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                       search={`${data.partner_code}${data.name}`}
-                      >{data.name}</Option>)
+                    >{data.name}</Option>)
                     )}
                 </Select>
                 )}

@@ -8,20 +8,20 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadFees, changeFeesFilter, loadPartners, toggleAdvanceChargeModal } from 'common/reducers/crmBilling';
+import { loadOrders, loadClearanceFees, loadTransportFees, changeFeesFilter, loadPartners, toggleAdvanceChargeModal } from 'common/reducers/crmBilling';
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
 import PreviewPanel from '../orders/modals/preview-panel';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import SearchBar from 'client/components/search-bar';
-import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
+import { PARTNERSHIP_TYPE_INFO, CRM_ORDER_MODE } from 'common/constants';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadFees({
+  return dispatch(loadOrders({
     tenantId: state.account.tenantId,
     pageSize: state.crmBilling.fees.pageSize,
     current: state.crmBilling.fees.current,
@@ -46,7 +46,7 @@ function fetchData({ state, dispatch }) {
     fees: state.crmBilling.fees,
     loading: state.crmBilling.loading,
   }),
-  { loadFees, loadOrderDetail, changeFeesFilter, loadPartners, toggleAdvanceChargeModal }
+  { loadOrders, loadClearanceFees, loadTransportFees, loadOrderDetail, changeFeesFilter, loadPartners, toggleAdvanceChargeModal }
 )
 
 export default class FeesList extends React.Component {
@@ -55,11 +55,13 @@ export default class FeesList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    loadFees: PropTypes.func.isRequired,
+    loadOrders: PropTypes.func.isRequired,
     fees: PropTypes.object.isRequired,
     loadOrderDetail: PropTypes.func.isRequired,
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
+    loadClearanceFees: PropTypes.func.isRequired,
+    loadTransportFees: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     toggleAdvanceChargeModal: PropTypes.func.isRequired,
   }
@@ -76,6 +78,16 @@ export default class FeesList extends React.Component {
     if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
       // this.handleTableLoad(nextProps.fees.searchValue);
     }
+    if (this.props.fees.loadTimes !== nextProps.fees.loadTimes) {
+      const shipmtOrders = [];
+      nextProps.fees.data.forEach((item) => {
+        shipmtOrders.push({
+          trs_shipmt_no: item.trs_shipmt_no,
+          shipmt_order_no: item.shipmt_order_no,
+        });
+      });
+      this.props.loadTransportFees(shipmtOrders);
+    }
   }
   onDateChange = (value) => {
     const promises = [this.props.changeFeesFilter('startDate', value[0]), this.props.changeFeesFilter('endDate', value[1])];
@@ -90,7 +102,7 @@ export default class FeesList extends React.Component {
     this.handleSelectionClear();
     const { tenantId } = this.props;
     const { pageSize, current, filters, startDate, endDate } = this.props.fees;
-    this.props.loadFees({
+    this.props.loadOrders({
       tenantId,
       pageSize,
       current,
@@ -111,6 +123,13 @@ export default class FeesList extends React.Component {
   handleSearchInput = (value) => {
     this.props.changeFeesFilter('searchValue', value);
   }
+  renderTransportCharge = (o, record) => {
+    if (record.shipmt_order_mode === CRM_ORDER_MODE.transport || record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+      return o ? o.toFixed(2) : '';
+    } else {
+      return '';
+    }
+  }
   render() {
     const { customers } = this.state;
     const { loading } = this.props;
@@ -120,7 +139,7 @@ export default class FeesList extends React.Component {
       fixed: 'left',
       width: 150,
       render: (o, record) => {
-        return (<a onClick={() => this.props.loadOrderDetail(record.shipmt_order_no, this.props.tenantId, 'clearance')}>{record.shipmt_order_no}</a>);
+        return (<a onClick={() => this.props.loadOrderDetail(record.shipmt_order_no, this.props.tenantId, 'charge')}>{record.shipmt_order_no}</a>);
       },
     }, {
       title: '委托客户',
@@ -144,18 +163,35 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '基本运费',
+      key: 'trsFreightCharge',
+      dataIndex: 'trsFreightCharge',
+      render: this.renderTransportCharge,
     }, {
       title: '特殊费用',
+      key: 'trsExcpCharge',
+      dataIndex: 'trsExcpCharge',
+      render: this.renderTransportCharge,
     }, {
       title: '运输代垫费用',
+      key: 'trsAdvanceCharge',
+      dataIndex: 'trsAdvanceCharge',
+      render: this.renderTransportCharge,
     }, {
       title: '运输费用合计',
+      key: 'trsTotalCharge',
+      dataIndex: 'trsTotalCharge',
+      render: this.renderTransportCharge,
     }, {
       title: '订单总费用',
+      key: 'totalCharge',
+      dataIndex: 'totalCharge',
+      render(o) {
+        return o ? o.toFixed(2) : '';
+      },
     }];
 
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadFees(params),
+      fetcher: params => this.props.loadOrders(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,

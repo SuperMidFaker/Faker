@@ -325,7 +325,6 @@ export default class ChargePanel extends React.Component {
     }
     if (order.shipmt_order_mode === CRM_ORDER_MODE.transport || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
       transports.forEach((item) => {
-        // console.log(item);
         if (item.fees.advance_charge) {
           transportFee += item.fees.advance_charge;
         }
