@@ -6,7 +6,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqDecls, saveCheckedState, setDeclFinish } from 'common/reducers/cmsDeclare';
+import { loadCiqDecls, saveCheckedState, setDeclFinish, saveStateTOExp } from 'common/reducers/cmsDeclare';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -46,7 +46,7 @@ ColumnSwitch.propTypes = {
     ciqdeclList: state.cmsDeclare.ciqdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadCiqDecls, openCiqModal, saveCheckedState, setDeclFinish }
+  { loadCiqDecls, openCiqModal, saveCheckedState, setDeclFinish, saveStateTOExp }
 )
 @connectNav({
   depth: 2,
@@ -186,6 +186,7 @@ export default class CiqDeclList extends Component {
   handleEditChange = (record, field, value) => {
     record[field] = value ? 1 : 0; // eslint-disable-line no-param-reassign
     this.props.saveCheckedState(record);
+    this.props.saveStateTOExp(record);
     this.forceUpdate();
   }
   handleCiqFinish = (row) => {
