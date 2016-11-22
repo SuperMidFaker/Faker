@@ -190,7 +190,10 @@ export const TRANS_MODE = [
   { value: '5', text: '空运' },
   { value: '9', text: '其他' },
 ];
-
+export const INVOICE_TYPE = [
+  { value: 0, text: '增值税专用发票' },
+  { value: 1, text: '增值税普通发票' },
+];
 export const CMS_SUP_STATUS = [
   { value: 0, text: '待供应商接单' },
   { value: 1, text: '供应商已接单' },
