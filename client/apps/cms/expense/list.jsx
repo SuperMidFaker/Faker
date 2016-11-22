@@ -7,8 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, openInModal, loadCurrencies, openMarkModal } from 'common/reducers/cmsExpense';
-import { showPreviewer } from 'common/reducers/cmsDelegation';
+import { loadExpense, openInModal, loadCurrencies, openMarkModal, showPreviewer } from 'common/reducers/cmsExpense';
 import { EXP_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -78,9 +77,9 @@ export default class ExpenseList extends Component {
       title: this.msg('delgNo'),
       dataIndex: 'delg_no',
       width: 150,
-      render: (o, record) => {
+      render: (o) => {
         return (
-          <a onClick={() => this.handlePreview(o, record)}>
+          <a onClick={() => this.handlePreview(o)}>
             {o}
           </a>);
       },
@@ -229,11 +228,11 @@ export default class ExpenseList extends Component {
     remotes: this.props.expslist,
   })
 
-  handlePreview = (o, record) => {
+  handlePreview = (o) => {
     this.props.showPreviewer({
       delgNo: o,
       tenantId: this.props.tenantId,
-    }, record.status);
+    });
   }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, expslist: { pageSize, current } } = this.props;
@@ -330,7 +329,7 @@ export default class ExpenseList extends Component {
         </div>
         <InputModal data={unstateData} />
         <MarkModal data={unstateData} />
-        <PreviewPanel ietype="import" />
+        <PreviewPanel />
       </QueueAnim>
     );
   }

@@ -17,6 +17,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
   'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
   'LOAD_ADVPARTIES', 'LOAD_ADVPARTIES_SUCCEED', 'LOAD_ADVPARTIES_FAIL',
+  'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
+  'HIDE_PREVIEWER',
   'LOAD_DELGADVFEES', 'LOAD_DELGADVFEES_SUCCEED', 'LOAD_DELGADVFEES_FAIL',
   'COMPUTE_DELGADVFEES', 'COMPUTE_DELGADVFEES_SUCCEED', 'COMPUTE_DELGADVFEES_FAIL',
 ]);
@@ -55,6 +57,21 @@ const initialState = {
   },
   showDeclInputModal: false,
   advanceParties: [],
+  previewer: {
+    customs: {
+      provider: '',
+      data: [],
+    },
+    ciq: {
+      provider: '',
+      data: [],
+    },
+    cert: {
+      provider: '',
+      data: [],
+    },
+    visible: false,
+  },
   advanceFeeModal: {
     visible: false,
     fees: [],
@@ -130,6 +147,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, visible: false } };
     case actionTypes.LOAD_ADVPARTIES_SUCCEED:
       return { ...state, advanceParties: action.result.data };
+    case actionTypes.SHOW_PREVIEWER:
+      return { ...state, previewer: {
+        ...state.previewer,
+        visible: action.visible } };
+    case actionTypes.SHOW_PREVIEWER_SUCCEED:
+      return { ...state, previewer: {
+        ...state.previewer,
+        visible: action.visible,
+        ...action.result.data } };
+    case actionTypes.HIDE_PREVIEWER:
+      return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
     case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
@@ -137,6 +165,31 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function showPreviewer(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHOW_PREVIEWER,
+        actionTypes.SHOW_PREVIEWER_SUCCEED,
+        actionTypes.SHOW_PREVIEWER_FAILED,
+      ],
+      endpoint: 'v1/cms/expense/previewer',
+      method: 'get',
+      params,
+      visible: true,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function hidePreviewer(delgNo) {
+  return {
+    type: actionTypes.HIDE_PREVIEWER,
+    delgNo,
+    visible: false,
+  };
 }
 
 export function loadPaneExp(delgNo) {

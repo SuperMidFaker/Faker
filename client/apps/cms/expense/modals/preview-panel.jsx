@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
-import { openAdvanceFeeModal } from 'common/reducers/cmsExpense';
+import { openAdvanceFeeModal, hidePreviewer } from 'common/reducers/cmsExpense';
 import DelgAdvanceExpenseModal from './delgAdvanceExpenseModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -12,26 +11,20 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsDelegation.previewer.visible,
-    previewer: state.cmsDelegation.previewer,
+    visible: state.cmsExpense.previewer.visible,
+    previewer: state.cmsExpense.previewer,
   }),
-  { hidePreviewer, setPreviewStatus, openAdvanceFeeModal }
+  { hidePreviewer, openAdvanceFeeModal }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
-    setPreviewStatus: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
     openAdvanceFeeModal: PropTypes.func.isRequired,
   }
-  state = {
-    tabKey: this.props.previewer.tabKey || 'basic',
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey !== this.state.tabKey) {
-      this.setState({ tabKey: nextProps.tabKey || 'basic' });
-    }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor);
   columns = [{
@@ -41,14 +34,35 @@ export default class PreviewPanel extends React.Component {
     width: '40%',
   }, {
     title: this.msg('收款金额'),
-    dataIndex: 'bill',
+    dataIndex: 'total_fee_bill',
     key: 'sale_fee',
     width: '30%',
   }, {
     title: this.msg('付款金额'),
-    dataIndex: 'cost',
+    dataIndex: 'total_fee_cost',
     key: 'cost_fee',
     width: '30%',
+  }];
+  certColumns = [{
+    title: this.msg('certBroker'),
+    dataIndex: 'broker',
+    key: 'broker',
+    width: '25%',
+  }, {
+    title: this.msg('feeName'),
+    dataIndex: 'fee_name',
+    key: 'fee_name',
+    width: '25%',
+  }, {
+    title: this.msg('收款金额'),
+    dataIndex: 'total_fee_bill',
+    key: 'sale_fee',
+    width: '25%',
+  }, {
+    title: this.msg('付款金额'),
+    dataIndex: 'total_fee_cost',
+    key: 'cost_fee',
+    width: '25%',
   }];
   handleClose = () => {
     this.props.hidePreviewer();
@@ -58,7 +72,6 @@ export default class PreviewPanel extends React.Component {
   }
   render() {
     const { visible, previewer } = this.props;
-    const { delegation } = previewer;
     const closer = (
       <button
         onClick={this.handleClose}
@@ -71,7 +84,7 @@ export default class PreviewPanel extends React.Component {
       <div className={`dock-panel preview-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
-            <span className="title">{delegation.delg_no}</span>
+            <span className="title">{previewer.delg_no}</span>
             <div className="pull-right">
               <div className="toolbar">
                 <Button type="ghost" onClick={this.handleAddAdvanceFee}>
@@ -82,24 +95,18 @@ export default class PreviewPanel extends React.Component {
             </div>
           </div>
           <div className="body">
-            <Card title={this.msg('进出口代理 供应商：')} bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
+            <Card title={`报关 供应商: ${previewer.customs.provider}`} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={this.columns} dataSource={previewer.customs.data} rowKey="id" pagination={false} />
             </Card>
-            <Card title={this.msg('报关 供应商：')} bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
+            <Card title={`报检 供应商: ${previewer.ciq.provider}`} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={this.columns} dataSource={previewer.ciq.data} rowKey="id" pagination={false} />
             </Card>
-            <Card title={this.msg('报检 供应商：')} bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
-            </Card>
-            <Card title={this.msg('鉴定办证 供应商：')} bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
-            </Card>
-            <Card title={this.msg('其他 供应商：')} bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={this.columns} rowKey="id" pagination={false} />
+            <Card title={'鉴定办证'} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={this.certColumns} dataSource={previewer.cert.data} rowKey="id" pagination={false} />
             </Card>
           </div>
         </div>
-        <DelgAdvanceExpenseModal delgNo={delegation.delg_no} />
+        <DelgAdvanceExpenseModal delgNo={previewer.delg_no} />
       </div>
     );
   }

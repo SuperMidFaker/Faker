@@ -98,7 +98,7 @@ export default class ExpenseList extends Component {
             render: (o, record) => {
               if (o) {
                 return o;
-              } else {
+              } else if (record.customs_check) {
                 return (
                   <RowUpdater onHit={this.handleInput} row={record} field="hgcycdf_bill"
                     label={<Icon type="edit" />}
@@ -128,7 +128,7 @@ export default class ExpenseList extends Component {
           render: (o, record) => {
             if (o) {
               return o;
-            } else {
+            } else if (record.anipk_check) {
               return (
                 <RowUpdater onHit={this.handleInput} row={record} field="djcdf_bill"
                   label={<Icon type="edit" />}
@@ -157,7 +157,7 @@ export default class ExpenseList extends Component {
           render: (o, record) => {
             if (o) {
               return o;
-            } else {
+            } else if (record.quality_check) {
               return (
                 <RowUpdater onHit={this.handleInput} row={record} field="pzcycdf_bill"
                   label={<Icon type="edit" />}
@@ -201,7 +201,7 @@ export default class ExpenseList extends Component {
             render: (o, record) => {
               if (o) {
                 return o;
-              } else {
+              } else if (record.customs_check) {
                 return (
                   <RowUpdater onHit={this.handleInput} row={record} field="hgcycdf_cost"
                     label={<Icon type="edit" />}
@@ -231,7 +231,7 @@ export default class ExpenseList extends Component {
           render: (o, record) => {
             if (o) {
               return o;
-            } else {
+            } else if (record.anipk_check) {
               return (
                 <RowUpdater onHit={this.handleInput} row={record} field="djcdf_cost"
                   label={<Icon type="edit" />}
@@ -260,7 +260,7 @@ export default class ExpenseList extends Component {
           render: (o, record) => {
             if (o) {
               return o;
-            } else {
+            } else if (record.quality_check) {
               return (
                 <RowUpdater onHit={this.handleInput} row={record} field="pzcycdf_cost"
                   label={<Icon type="edit" />}

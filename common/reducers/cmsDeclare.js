@@ -28,6 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
   'SAVE_CHECKED_STATE', 'SAVE_CHECKED_STATE_SUCCEED', 'SAVE_CHECKED_STATE_FAIL',
   'DECL_FINISH_SET', 'DECL_FINISH_SET_SUCCEED', 'DECL_FINISH_SET_FAIL',
+  'SAVE_STATE_TOEXP', 'SAVE_STATE_TOEXP_SUCCEED', 'SAVE_STATE_TOEXP_FAIL',
 ]);
 
 const initialState = {
@@ -246,6 +247,22 @@ export function saveCheckedState(params) {
       endpoint: 'v1/cms/declare/save/checkedState',
       method: 'post',
       data: params,
+    },
+  };
+}
+
+export function saveStateTOExp(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_STATE_TOEXP,
+        actionTypes.SAVE_STATE_TOEXP_SUCCEED,
+        actionTypes.SAVE_STATE_TOEXP_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/save/checkedState',
+      method: 'post',
+      data: params,
+      origin: 'mongo',
     },
   };
 }
