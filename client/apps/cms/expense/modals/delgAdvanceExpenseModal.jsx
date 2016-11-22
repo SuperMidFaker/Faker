@@ -73,7 +73,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
           disp_id: fee.disp_id,
           advance_fee: formData.advance_fee,
           fee_code: formData.fee_code,
-          curr_code: formData.advance_curr,
+          curr_code: formData.advance_curr || '',
           advance_tax_type: formData.advance_tax_type,
           remark: formData.remark,
         }).then((result) => {

@@ -53,9 +53,6 @@ export default class ExpenseList extends Component {
     loadDeclExps: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleExpListLoad();
@@ -87,95 +84,6 @@ export default class ExpenseList extends Component {
             return (<span className="mdc-text-info"><b>{o.toFixed(2)}</b></span>);
           }
         },
-      }, {
-        title: this.msg('海关查验'),
-        children: [
-          {
-            title: this.msg('场地费'),
-            dataIndex: 'hgcycdf_bill',
-            key: 'hgcycdf_bill',
-            width: 100,
-            render: (o, record) => {
-              if (o) {
-                return o;
-              } else if (record.customs_check) {
-                return (
-                  <RowUpdater onHit={this.handleInput} row={record} field="hgcycdf_bill"
-                    label={<Icon type="edit" />}
-                  />
-                );
-              }
-            },
-          }, {
-            title: this.msg('服务费'),
-            dataIndex: 'hgcyfwf_bill',
-            key: 'hgcyfwf_bill',
-            width: 100,
-            render: (o) => {
-              if (o) {
-                return o.toFixed(2);
-              }
-            },
-          },
-        ],
-      }, {
-        title: this.msg('动检'),
-        children: [{
-          title: '场地费',
-          dataIndex: 'djcdf_bill',
-          key: 'djcdf_bill',
-          width: 100,
-          render: (o, record) => {
-            if (o) {
-              return o;
-            } else if (record.anipk_check) {
-              return (
-                <RowUpdater onHit={this.handleInput} row={record} field="djcdf_bill"
-                  label={<Icon type="edit" />}
-                />
-                );
-            }
-          },
-        }, {
-          title: '服务费',
-          dataIndex: 'djcyfwf_bill',
-          key: 'djcyfwf_bill',
-          width: 100,
-          render: (o) => {
-            if (o) {
-              return o.toFixed(2);
-            }
-          },
-        }],
-      }, {
-        title: this.msg('品质查验'),
-        children: [{
-          title: '场地费',
-          dataIndex: 'pzcycdf_bill',
-          key: 'pzcycdf_bill',
-          width: 100,
-          render: (o, record) => {
-            if (o) {
-              return o;
-            } else if (record.quality_check) {
-              return (
-                <RowUpdater onHit={this.handleInput} row={record} field="pzcycdf_bill"
-                  label={<Icon type="edit" />}
-                />
-              );
-            }
-          },
-        }, {
-          title: '服务费',
-          dataIndex: 'pzcyfwf_bill',
-          key: 'pzcyfwf_bill',
-          width: 100,
-          render: (o) => {
-            if (o) {
-              return o.toFixed(2);
-            }
-          },
-        }],
       },
     ],
   }, {
@@ -190,95 +98,6 @@ export default class ExpenseList extends Component {
             return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
           }
         },
-      }, {
-        title: this.msg('海关查验'),
-        children: [
-          {
-            title: this.msg('场地费'),
-            dataIndex: 'hgcycdf_cost',
-            key: 'hgcycdf_cost',
-            width: 100,
-            render: (o, record) => {
-              if (o) {
-                return o;
-              } else if (record.customs_check) {
-                return (
-                  <RowUpdater onHit={this.handleInput} row={record} field="hgcycdf_cost"
-                    label={<Icon type="edit" />}
-                  />
-                );
-              }
-            },
-          }, {
-            title: this.msg('服务费'),
-            dataIndex: 'hgcyfwf_cost',
-            key: 'hgcyfwf_cost',
-            width: 100,
-            render: (o) => {
-              if (o) {
-                return o.toFixed(2);
-              }
-            },
-          },
-        ],
-      }, {
-        title: this.msg('动检'),
-        children: [{
-          title: '场地费',
-          dataIndex: 'djcdf_cost',
-          key: 'djcdf_cost',
-          width: 100,
-          render: (o, record) => {
-            if (o) {
-              return o;
-            } else if (record.anipk_check) {
-              return (
-                <RowUpdater onHit={this.handleInput} row={record} field="djcdf_cost"
-                  label={<Icon type="edit" />}
-                />
-              );
-            }
-          },
-        }, {
-          title: '服务费',
-          dataIndex: 'djcyfwf_cost',
-          key: 'djcyfwf_cost',
-          width: 100,
-          render: (o) => {
-            if (o) {
-              return o.toFixed(2);
-            }
-          },
-        }],
-      }, {
-        title: this.msg('品质查验'),
-        children: [{
-          title: '场地费',
-          dataIndex: 'pzcycdf_cost',
-          key: 'pzcycdf_cost',
-          width: 100,
-          render: (o, record) => {
-            if (o) {
-              return o;
-            } else if (record.quality_check) {
-              return (
-                <RowUpdater onHit={this.handleInput} row={record} field="pzcycdf_cost"
-                  label={<Icon type="edit" />}
-                />
-              );
-            }
-          },
-        }, {
-          title: '服务费',
-          dataIndex: 'pzcyfwf_cost',
-          key: 'pzcyfwf_cost',
-          width: 100,
-          render: (o) => {
-            if (o) {
-              return o.toFixed(2);
-            }
-          },
-        }],
       },
     ],
   }, {
@@ -310,8 +129,8 @@ export default class ExpenseList extends Component {
     remotes: this.props.declexps,
   })
 
-  handleInput = (row, field) => {
-    this.props.openDeclInputModal({ entryId: row.entry_id, feecode: field });
+  handleInput = (row) => {
+    this.props.openDeclInputModal(row);
   }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, declexps: { pageSize, current } } = this.props;
@@ -345,6 +164,78 @@ export default class ExpenseList extends Component {
   render() {
     const { declexps } = this.props;
     this.dataSource.remotes = declexps;
+    const columns = [...this.columns];
+    columns[3].children = [
+      {
+        title: this.msg('allBill'),
+        width: 100,
+        dataIndex: 'all_bill',
+        key: 'all_bill',
+        render: (o) => {
+          if (o) {
+            return (<span className="mdc-text-info"><b>{o.toFixed(2)}</b></span>);
+          }
+        },
+      }];
+    columns[4].children = [
+      {
+        title: this.msg('allCost'),
+        dataIndex: 'all_cost',
+        width: 100,
+        render: (o) => {
+          if (o) {
+            return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
+          }
+        },
+      }];
+    declexps.fields.forEach((fld) => {
+      columns[3].children.push({
+        title: fld.name,
+        dataIndex: `bill_${fld.code}`,
+        width: 100,
+        render: (o, record) => {
+          if (!o.editable) {
+            return o.value && o.value.toFixed(2);
+          } else {
+            const value = o.value && o.value.toFixed(2);
+            return (
+              <RowUpdater onHit={this.handleInput} field={`bill_${fld.code}`}
+                row={{
+                  delg_no: record.delg_no,
+                  entry_id: record.entry_id,
+                  fee_name: fld.name,
+                  fee_code: fld.code,
+                  is_ciq: o.is_ciq,
+                }} label={<Icon type="edit">{value}</Icon>}
+              />
+            );
+          }
+        },
+      });
+      columns[4].children.push({
+        title: fld.name,
+        dataIndex: `cost_${fld.code}`,
+        width: 100,
+        render: (o, record) => {
+          if (!o.editable) {
+            return o.value && o.value.toFixed(2);
+          } else {
+            const value = o.value && o.value.toFixed(2);
+            return (
+              <RowUpdater onHit={this.handleInput} field={`cost_${fld.code}`}
+                row={{
+                  delg_no: record.delg_no,
+                  entry_id: record.entry_id,
+                  fee_name: fld.name,
+                  fee_code: fld.code,
+                  is_ciq: o.is_ciq,
+                }} label={<Icon type="edit">{value}</Icon>}
+              />
+            );
+          }
+        },
+      });
+    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -356,7 +247,7 @@ export default class ExpenseList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel group-header">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={declexps.loading}
+              <Table columns={columns} dataSource={this.dataSource} loading={declexps.loading}
                 bordered scroll={{ x: 2000 }}
               />
             </div>

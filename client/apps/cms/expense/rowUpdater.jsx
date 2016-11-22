@@ -18,6 +18,5 @@ RowUpdater.propTypes = {
   label: PropTypes.node,
   onHit: PropTypes.func,
   row: PropTypes.object,
-  index: PropTypes.number,
   field: PropTypes.string,
 };

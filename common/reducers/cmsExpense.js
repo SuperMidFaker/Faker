@@ -21,6 +21,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'HIDE_PREVIEWER',
   'LOAD_DELGADVFEES', 'LOAD_DELGADVFEES_SUCCEED', 'LOAD_DELGADVFEES_FAIL',
   'COMPUTE_DELGADVFEES', 'COMPUTE_DELGADVFEES_SUCCEED', 'COMPUTE_DELGADVFEES_FAIL',
+  'LOAD_DECLADVPARTIES', 'LOAD_DECLADVPARTIES_SUCCEED', 'LOAD_DECLADVPARTIES_FAIL',
+  'COMPUTE_DECLADVFEES', 'COMPUTE_DECLADVFEES_SUCCEED', 'COMPUTE_DECLADVFEES_FAIL',
 ]);
 
 const initialState = {
@@ -40,6 +42,7 @@ const initialState = {
     current: 1,
     pageSize: 10,
     data: [],
+    fields: [],
   },
   listFilter: {
     status: 'all',
@@ -52,9 +55,8 @@ const initialState = {
   showCertModal: false,
   certExp: {},
   declInModal: {
-    entryId: -1,
-    feecode: '',
   },
+  declAdvanceParties: [],
   showDeclInputModal: false,
   advanceParties: [],
   previewer: {
@@ -96,7 +98,7 @@ export default function reducer(state = initialState, action) {
         expFeesMap, listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.DECL_EXPS_LOAD:
-      return { ...state, declexps: { ...state.declexps, loading: true } };
+      return { ...state, declexps: { ...state.declexps, loading: true }, saved: false };
     case actionTypes.DECL_EXPS_LOAD_SUCCEED:
       return { ...state, declexps: { ...state.declexps, ...action.result.data, loading: false } };
     case actionTypes.CURRENCY_LOAD_SUCCEED:
@@ -161,6 +163,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
     case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
+      return { ...state, saved: true };
+    case actionTypes.LOAD_DECLADVPARTIES_SUCCEED:
+      return { ...state, declAdvanceParties: action.result.data };
+    case actionTypes.COMPUTE_DECLADVFEES_SUCCEED:
       return { ...state, saved: true };
     default:
       return state;
@@ -350,10 +356,10 @@ export function openCertModal() {
   };
 }
 
-export function openDeclInputModal({ entryId, feecode }) {
+export function openDeclInputModal(row) {
   return {
     type: actionTypes.OPEN_DECL_INPUT_MODAL,
-    data: { entryId, feecode },
+    data: row,
   };
 }
 export function closeDeclInputModal() {
@@ -434,6 +440,37 @@ export function computeDelgAdvanceFee(formData) {
         actionTypes.COMPUTE_DELGADVFEES_FAIL,
       ],
       endpoint: 'v1/cms/expense/compute/delg/advancefee',
+      method: 'post',
+      data: formData,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadDeclAdvanceParties(isCiq, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECLADVPARTIES,
+        actionTypes.LOAD_DECLADVPARTIES_SUCCEED,
+        actionTypes.LOAD_DECLADVPARTIES_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/load/decl/advanceparties',
+      method: 'get',
+      params: { isCiq, delgNo },
+    },
+  };
+}
+
+export function computeDeclAdvanceFee(formData) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPUTE_DECLADVFEES,
+        actionTypes.COMPUTE_DECLADVFEES_SUCCEED,
+        actionTypes.COMPUTE_DECLADVFEES_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/compute/decl/advancefee',
       method: 'post',
       data: formData,
       origin: 'mongo',
