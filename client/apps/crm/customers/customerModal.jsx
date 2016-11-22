@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, Checkbox, AutoComplete, message } from 'antd';
+import { Modal, Form, Input, Checkbox, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { addCustomer } from 'common/reducers/crmCustomers';
-import { loadTenants } from 'common/reducers/tenants';
 import { CUSTOMER_TYPES } from 'common/constants';
 const FormItem = Form.Item;
-const Option = AutoComplete.Option;
 const CheckboxGroup = Checkbox.Group;
 const formatMsg = format(messages);
 
@@ -17,7 +15,7 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
   }),
-  { addCustomer, loadTenants }
+  { addCustomer }
 )
 
 export default class CustomerModal extends React.Component {
@@ -27,23 +25,14 @@ export default class CustomerModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
     addCustomer: PropTypes.func.isRequired,
-    loadTenants: PropTypes.func.isRequired,
   }
   state = {
-    tenants: [],
     name: '',
     partnerCode: '',
     contact: '',
     phone: '',
     email: '',
     customerTypes: [],
-    tenantType: 'TENANT_OFFLINE',
-    partnerTenantId: -1,
-  }
-  componentWillMount() {
-    this.props.loadTenants(null, { pageSize: 99999999, currentPage: 1 }).then((result) => {
-      this.setState({ tenants: result.data.data });
-    });
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
@@ -54,13 +43,11 @@ export default class CustomerModal extends React.Component {
       phone: '',
       email: '',
       customerTypes: [],
-      tenantType: 'TENANT_OFFLINE',
-      partnerTenantId: -1,
     });
     this.props.toggle();
   }
   handleOk = () => {
-    const { name, partnerCode, contact, phone, email, customerTypes, tenantType, partnerTenantId } = this.state;
+    const { name, partnerCode, contact, phone, email, customerTypes } = this.state;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (!partnerCode || partnerCode === '') {
@@ -70,7 +57,7 @@ export default class CustomerModal extends React.Component {
     } else {
       this.props.addCustomer({
         tenantId: this.props.tenantId,
-        partnerInfo: { name, partnerCode, contact, phone, email, tenantType, partnerTenantId },
+        partnerInfo: { name, partnerCode, contact, phone, email },
         customerTypes,
       }).then((result) => {
         if (result.error) {
@@ -83,33 +70,8 @@ export default class CustomerModal extends React.Component {
     }
   }
 
-  handleCustomerChange = (value) => {
-    const customer = this.state.tenants.find(item => item.name === value);
-    if (customer) {
-      this.setState({
-        name: customer.name,
-        partnerCode: customer.partnerCode,
-        tenantType: 'TENANT_ENTERPRISE',
-        partnerTenantId: customer.key,
-        contact: customer.contact,
-        phone: customer.phone,
-        email: customer.email,
-      });
-    } else {
-      this.setState({
-        name: value,
-        partnerCode: '',
-        tenantType: 'TENANT_OFFLINE',
-        partnerTenantId: -1,
-        contact: '',
-        phone: '',
-        email: '',
-      });
-    }
-  }
   render() {
     const { visible } = this.props;
-    const { tenants } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -124,14 +86,7 @@ export default class CustomerModal extends React.Component {
             hasFeedback
             required
           >
-            <AutoComplete
-              onChange={this.handleCustomerChange}
-              style={{ width: '100%' }}
-            >
-              {tenants.map((item) => {
-                return <Option key={item.key} value={item.name}>{item.name}</Option>;
-              })}
-            </AutoComplete>
+            <Input value={this.state.name} onChange={(e) => { this.setState({ name: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
