@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Tag } from 'antd';
+import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -103,23 +103,35 @@ export default class CiqList extends Component {
     width: 200,
     dataIndex: 'bl_wb_no',
   }, {
+    title: this.msg('ciqType'),
+    width: 90,
+    dataIndex: 'ciq_type',
+    render: (o) => {
+      if (o === 'NL') {
+        return <Tag color="#2db7f5">需报检</Tag>;
+      } else if (o === 'LA' || o === 'LB') {
+        return <Tag color="#fa0">法定检验</Tag>;
+      }
+      return <Tag>不报检</Tag>;
+    },
+  }, {
     title: this.msg('inspbroker'),
-    width: 140,
+    width: 180,
     dataIndex: 'recv_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: this.msg('status'),
+    title: this.msg('ciqStatus'),
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
       const CMS_STATUS = (record.type === 1) ? CMS_CIQ_STATUS : CIQ_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
-        return <Tag>{decl && decl.text}</Tag>;
+        return <Badge status="processing" text={decl && decl.text} />;
       } else if (record.status === 4) {
-        return <Tag color="green">{decl && decl.text}</Tag>;
+        return <Badge status="success" text={decl && decl.text} />;
       } else {
-        return <Tag>{decl && decl.text}</Tag>;
+        return <Badge status="default" text={decl && decl.text} />;
       }
     },
   }, {

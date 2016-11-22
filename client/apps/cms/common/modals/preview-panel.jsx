@@ -110,7 +110,7 @@ export default class PreviewPanel extends React.Component {
         </Tabs>
       );
     } else if (previewer.status === 1 || previewer.status === 2) {
-      if (delegation.ciq_inspect === 'NA') {
+      if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
             <TabPane tab="委托" key="basic">
@@ -148,7 +148,7 @@ export default class PreviewPanel extends React.Component {
         </Tabs>
       );
     } else if (previewer.status === 3 || previewer.status === 4) {
-      if (delegation.ciq_inspect === 'NA') {
+      if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
             <TabPane tab="委托" key="basic">
@@ -215,6 +215,14 @@ export default class PreviewPanel extends React.Component {
             </ButtonGroup>
           </PrivilegeCover>
         );
+      } else if (previewer.status === 1 && delegation.source === 1) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <Button type="ghost" onClick={this.handleAccept}>
+              转包
+            </Button>
+          </PrivilegeCover>
+        );
       }
     } else if (this.state.tabKey === 'customsDecl') {
       if (previewer.status === 1 && delegation.source === 1) {
@@ -226,7 +234,7 @@ export default class PreviewPanel extends React.Component {
               </Button>
               <span />
               <Button type="ghost" onClick={this.handleDisp}>
-                分配报关供应商
+                指定报关单位
               </Button>
             </div>
           </PrivilegeCover>
@@ -256,7 +264,7 @@ export default class PreviewPanel extends React.Component {
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
               <Button type="ghost" onClick={this.handleDisp}>
-                分配报检供应商
+                指定报检单位
               </Button>
             </div>
           </PrivilegeCover>

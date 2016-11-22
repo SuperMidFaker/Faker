@@ -55,9 +55,14 @@ export default class DelgDeclList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    title: this.msg('preEntryNo'),
+    dataIndex: 'pre_entry_seq_no',
+    fixed: 'left',
+    width: 150,
+  }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 160,
+    width: 150,
     fixed: 'left',
     render: (o, record) => {
       // 用id字段表示为children数据
@@ -68,7 +73,7 @@ export default class DelgDeclList extends Component {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                label={<Icon type="edit" />}
+                label={<span><Icon type="edit" /> 录入海关编号</span>}
               />
             </PrivilegeCover>
           );
@@ -78,49 +83,42 @@ export default class DelgDeclList extends Component {
       }
     },
   }, {
-    title: this.msg('preEntryNo'),
-    dataIndex: 'pre_entry_seq_no',
-    width: 160,
+    title: '委托方',
+    dataIndex: 'owner_name',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: this.msg('agent'),
+    dataIndex: 'agent_name',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: '提运单号',
+    dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
   }, {
-    title: this.msg('billNo'),
-    dataIndex: 'bill_seq_no',
-    width: 160,
-  }, {
-    title: this.msg('agentCode'),
-    width: 100,
-    dataIndex: 'agent_code',
-  }, {
-    title: this.msg('agentName'),
-    dataIndex: 'agent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
     title: this.msg('clrStatus'),
     width: 150,
     dataIndex: 'note',
-  }, {
-    title: this.msg('processDate'),
-    width: 120,
-    render: (o, record) => (record.id ?
-    record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('customsCheck'),
     width: 80,
     dataIndex: 'customs_inspect',
     render: (o) => {
       if (o === 1) {
-        return <Tag color="green">是</Tag>;
+        return <Tag color="red">是</Tag>;
       } else {
         return <Tag>否</Tag>;
       }
     },
   }, {
-    title: this.msg('opColumn'),
-    fixed: 'right',
-    width: 100,
+    title: this.msg('processDate'),
+    width: 120,
+    render: (o, record) => (record.id ?
+    record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),

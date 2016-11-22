@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Radio, Button, Popconfirm, message, Modal } from 'antd';
+import { Badge, Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -177,24 +177,12 @@ export default class DelegationList extends Component {
     width: 80,
     dataIndex: 'weight',
   }, {
-    title: this.msg('ciqInspect'),
-    width: 90,
-    dataIndex: 'ciq_inspect',
-    render: (o) => {
-      if (o === 'NL') {
-        return <Badge status="warning" text="非法检" />;
-      } else if (o === 'LA' || o === 'LB') {
-        return <Badge status="error" text="法检" />;
-      }
-      return <Badge status="default" text="不报检" />;
-    },
-  }, {
     title: this.msg('broker'),
     width: 180,
     dataIndex: 'decl_name',
-    render: o => <TrimSpan text={o} maxLen={8} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: this.msg('status'),
+    title: this.msg('declStatus'),
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
@@ -217,6 +205,18 @@ export default class DelegationList extends Component {
       } else {
         return <Badge status="default" text={decl && decl.text} />;
       }
+    },
+  }, {
+    title: this.msg('ciqType'),
+    width: 90,
+    dataIndex: 'ciq_type',
+    render: (o) => {
+      if (o === 'NL') {
+        return <Tag color="#2db7f5">需报检</Tag>;
+      } else if (o === 'LA' || o === 'LB') {
+        return <Tag color="#fa0">法定检验</Tag>;
+      }
+      return <Tag>不报检</Tag>;
     },
   }, {
     title: this.msg('lastActTime'),
@@ -323,17 +323,19 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleRadioChange = (ev) => {
+  handleDelegationFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleDelgListLoad(1, filter);
   }
-  handleRadioChangeType = (ev) => {
+  handleCiqFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleCiqListLoad(1, filter);
   }
   handleMQdeclWay = (row) => {
     this.props.loadDeclareWay(row).then((result) => {
@@ -536,7 +538,7 @@ export default class DelegationList extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
           <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="accept">{this.msg('accepting')}</RadioButton>
             <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
@@ -544,6 +546,10 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
           <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter}>
+            <RadioButton value="ciqPending">{this.msg('ciqPending')}</RadioButton>
+            <RadioButton value="ciqPassed">{this.msg('ciqPassed')}</RadioButton>
+          </RadioGroup>
         </header>
         <div className="top-bar-tools">
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />

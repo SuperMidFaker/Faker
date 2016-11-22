@@ -71,22 +71,10 @@ export default class CiqDeclList extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('entryId'),
-    dataIndex: 'entry_id',
-    width: 160,
-    fixed: 'left',
-  }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
-    width: 160,
-  }, {
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-    width: 120,
-  }, {
-    title: this.msg('billNo'),
-    dataIndex: 'bill_seq_no',
-    width: 160,
+    fixed: 'left',
+    width: 150,
   }, {
     title: this.msg('ciqNo'),
     width: 180,
@@ -111,19 +99,28 @@ export default class CiqDeclList extends Component {
       }
     },
   }, {
-    title: this.msg('agentCode'),
-    width: 100,
-    dataIndex: 'agent_code',
-  }, {
-    title: this.msg('agentName'),
-    dataIndex: 'agent_name',
+    title: '委托方',
+    dataIndex: 'owner_name',
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
-    title: this.msg('clrStatus'),
-    width: 150,
-    dataIndex: 'note',
+    title: this.msg('ciqAgent'),
+    dataIndex: 'agent_name',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
-    title: this.msg('processDate'),
+    title: '提运单号',
+    dataIndex: 'bl_wb_no',
+  }, {
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
+    width: 120,
+  }, {
+    title: '检验检疫',
+    width: 100,
+    dataIndex: 'ciq_type',
+  }, {
+    title: '报检日期',
     width: 120,
     render: (o, record) => (record.id ?
       record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),

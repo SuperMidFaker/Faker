@@ -23,7 +23,7 @@ export default defineMessages({
   },
   entryId: {
     id: 'cms.declaration.delg.entryId',
-    defaultMessage: '报关单号',
+    defaultMessage: '海关编号',
   },
   delgNo: {
     id: 'cms.declaration.delg.no',
@@ -45,14 +45,11 @@ export default defineMessages({
     id: 'cms.declaration.ciqNo',
     defaultMessage: '通关单号',
   },
-  agentName: {
-    id: 'cms.declaration.agent.name',
-    defaultMessage: '申报单位名称',
+  agent: {
+    id: 'cms.declaration.agent',
+    defaultMessage: '申报单位',
   },
-  agentCode: {
-    id: 'cms.declaration.agent.code',
-    defaultMessage: '申报单位代码',
-  },
+
   status: {
     id: 'cms.declaration.delg.status',
     defaultMessage: '状态',
@@ -112,5 +109,9 @@ export default defineMessages({
   filterReleased: {
     id: 'cms.declaration.customs.filter.released',
     defaultMessage: '放行',
+  },
+  ciqAgent: {
+    id: 'cms.declaration.ciq.agent',
+    defaultMessage: '报检单位',
   },
 });

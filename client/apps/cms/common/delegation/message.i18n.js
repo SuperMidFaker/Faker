@@ -45,6 +45,14 @@ export default defineMessages({
     id: 'cms.delegation.stage.releasing',
     defaultMessage: '放行',
   },
+  ciqPending: {
+    id: 'cms.delegation.stage.ciq.pending',
+    defaultMessage: '报检待处理',
+  },
+  ciqPassed: {
+    id: 'cms.delegation.stage.ciq.passed',
+    defaultMessage: '报检已通过',
+  },
   declaringDelg: {
     id: 'cms.delegation.declaring',
     defaultMessage: '制单中',
@@ -129,17 +137,17 @@ export default defineMessages({
     id: 'cms.delegation.delg.grosswt',
     defaultMessage: '毛重',
   },
-  ciqInspect: {
-    id: 'cms.delegation.delg.ciq.inspect',
+  ciqType: {
+    id: 'cms.delegation.delg.ciq.type',
     defaultMessage: '检验检疫',
   },
   broker: {
     id: 'cms.delegation.delg.broker',
-    defaultMessage: '报关企业',
+    defaultMessage: '申报单位',
   },
   inspbroker: {
     id: 'cms.delegation.delg.inspbroker',
-    defaultMessage: '报检企业',
+    defaultMessage: '报检单位',
   },
   certbroker: {
     id: 'cms.delegation.delg.certbroker',
@@ -160,6 +168,14 @@ export default defineMessages({
   status: {
     id: 'cms.delegation.delg.status',
     defaultMessage: '状态',
+  },
+  declStatus: {
+    id: 'cms.delegation.delg.decl.status',
+    defaultMessage: '报关状态',
+  },
+  ciqStatus: {
+    id: 'cms.delegation.delg.ciq.status',
+    defaultMessage: '报检状态',
   },
   delgSource: {
     id: 'cms.delegation.delg.source',
