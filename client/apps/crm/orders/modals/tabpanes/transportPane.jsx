@@ -8,7 +8,6 @@ import { PRESET_TRANSMODES } from 'common/constants';
 import messages from '../../message.i18n';
 import './pane.less';
 import { renderConsignLoc } from '../../../../transport/common/consignLocation';
-import { loadTransportDetail } from 'common/reducers/crmOrders';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -48,9 +47,8 @@ PaneFormItem.propTypes = {
     goodsTypes: state.crmOrders.formRequires.goodsTypes,
     packagings: state.crmOrders.formRequires.packagings,
     containerPackagings: state.crmOrders.formRequires.containerPackagings,
-    shipmtNos: state.crmOrders.previewer.order.trs_shipmt_no || '',
   }),
-  { loadTransportDetail }
+  { }
 )
 export default class TransportPane extends React.Component {
   static propTypes = {
@@ -59,28 +57,20 @@ export default class TransportPane extends React.Component {
     goodsTypes: PropTypes.array.isRequired,
     packagings: PropTypes.array.isRequired,
     containerPackagings: PropTypes.array.isRequired,
-    shipmtNos: PropTypes.string.isRequired,
-    loadTransportDetail: PropTypes.func.isRequired,
   }
   state = {
     tabKey: '',
   }
 
   componentWillMount() {
-    const { tenantId, shipmtNos, transports } = this.props;
-    if (shipmtNos) {
-      this.props.loadTransportDetail({ tenantId, shipmtNos });
-    }
+    const { transports } = this.props;
     const tabKey = transports[0] ? transports[0].shipmt_no : '';
     this.setState({
       tabKey,
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { tenantId, shipmtNos, transports } = nextProps;
-    if (shipmtNos && shipmtNos !== this.props.shipmtNos) {
-      this.props.loadTransportDetail({ tenantId, shipmtNos });
-    }
+    const { transports } = nextProps;
     const tabKey = transports[0] ? transports[0].shipmt_no : '';
     this.setState({
       tabKey,

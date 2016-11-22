@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Tabs, Badge } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_MODE, CRM_ORDER_STATUS } from 'common/constants';
-import { hidePreviewer, changePreviewerTab } from 'common/reducers/crmOrders';
+import { hidePreviewer, changePreviewerTab, loadClearanceDetail, loadTransportDetail } from 'common/reducers/crmOrders';
 
 import ShipmentSchedule from './shipmentSchedule';
 import ClearancePane from './tabpanes/clearancePane';
@@ -23,8 +23,10 @@ const TabPane = Tabs.TabPane;
     tabKey: state.crmOrders.previewer.tabKey,
     order: state.crmOrders.previewer.order,
     previewer: state.crmOrders.previewer,
+    delgNo: state.crmOrders.previewer.order.ccb_delg_no,
+    shipmtNos: state.crmOrders.previewer.order.trs_shipmt_no || '',
   }),
-  { hidePreviewer, changePreviewerTab }
+  { hidePreviewer, changePreviewerTab, loadClearanceDetail, loadTransportDetail }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -36,8 +38,20 @@ export default class PreviewPanel extends React.Component {
     changePreviewerTab: PropTypes.func.isRequired,
     order: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
+    delgNo: PropTypes.string.isRequired,
+    shipmtNos: PropTypes.string.isRequired,
+    loadClearanceDetail: PropTypes.func.isRequired,
+    loadTransportDetail: PropTypes.func.isRequired,
   }
-
+  componentWillMount() {
+    const { tenantId, delgNo, shipmtNos } = this.props;
+    if (delgNo) {
+      this.props.loadClearanceDetail({ tenantId, delgNo });
+    }
+    if (shipmtNos) {
+      this.props.loadTransportDetail({ tenantId, shipmtNos });
+    }
+  }
   componentDidMount() {
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
@@ -46,10 +60,18 @@ export default class PreviewPanel extends React.Component {
       }
     });
   }
+  componentWillReceiveProps(nextProps) {
+    const { tenantId, delgNo, shipmtNos } = nextProps;
+    if (delgNo && delgNo !== this.props.delgNo) {
+      this.props.loadClearanceDetail({ tenantId, delgNo });
+    }
+    if (shipmtNos && shipmtNos !== this.props.shipmtNos) {
+      this.props.loadTransportDetail({ tenantId, shipmtNos });
+    }
+  }
   componentWillUnmount() {
     window.$(document).unbind('click');
   }
-
   getTrackStatusMsg(status) {
     switch (status) {
       case CRM_ORDER_STATUS.created: return this.msg('created');

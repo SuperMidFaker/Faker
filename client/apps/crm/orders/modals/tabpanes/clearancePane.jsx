@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card } from 'antd';
 import './pane.less';
-import { loadClearanceDetail } from 'common/reducers/crmOrders';
 
 let FILE = [];
 function getColCls(col) {
@@ -57,10 +56,7 @@ PaneFormItem.propTypes = {
     delegation: state.crmOrders.previewer.clearance.delegation,
     files: state.crmOrders.previewer.clearance.files,
     delegateTracking: state.crmOrders.previewer.clearance.delegateTracking,
-    delgNo: state.crmOrders.previewer.order.ccb_delg_no,
-  }), {
-    loadClearanceDetail,
-  }
+  }), { }
 )
 export default class ClearancePane extends React.Component {
   static propTypes = {
@@ -69,25 +65,13 @@ export default class ClearancePane extends React.Component {
     delegation: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     delegateTracking: PropTypes.object.isRequired,
-    loadClearanceDetail: PropTypes.func.isRequired,
-    delgNo: PropTypes.string.isRequired,
-  }
-  componentWillMount() {
-    const { tenantId, delgNo } = this.props;
-    if (delgNo) {
-      this.props.loadClearanceDetail({ tenantId, delgNo });
-    }
   }
   componentWillReceiveProps(nextProps) {
-    const { tenantId, delgNo } = nextProps;
     if (nextProps.files.length !== this.props.files.length) {
       FILE = [];
       nextProps.files.forEach((fl) => {
         fileSort(fl.name);
       });
-    }
-    if (delgNo && delgNo !== this.props.delgNo) {
-      this.props.loadClearanceDetail({ tenantId, delgNo });
     }
   }
   render() {
