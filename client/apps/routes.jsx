@@ -225,7 +225,6 @@ export default(store, cookie) => {
             <Route path="import">
               <IndexRedirect to="/clearance/import/delegation" />
               <Route path="delegation" component={ImportDelegation.List} />
-              <Route path="ciq" component={ImportDelegation.Ciq} />
               <Route path="create" component={ImportDelegation.Create} />
               <Route path="edit/:delgNo" component={ImportDelegation.Edit} />
               <Route path="docs">

@@ -41,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 ]);
 
 const initialState = {
+  listView: 'delegation',
   delegationlist: {
     totalCount: 0,
     current: 1,
@@ -149,7 +150,8 @@ export default function reducer(state = initialState, action) {
         delgBillsMap[delg.delg_no] = [];
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
-        ...delgList }, delgBillsMap, listFilter: JSON.parse(action.params.filter) };
+        ...delgList }, delgBillsMap, listView: 'delegation',
+        listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
@@ -161,7 +163,9 @@ export default function reducer(state = initialState, action) {
       ciqList.data.forEach((delg) => {
         ciqBillsMap[delg.delg_no] = [];
       });
-      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap, listFilter: JSON.parse(action.params.filter) };
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap,
+        listView: 'ciq',
+        listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.LOAD_CIQ_FAIL:
       return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };

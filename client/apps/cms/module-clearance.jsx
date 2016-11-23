@@ -56,10 +56,6 @@ export default class Clearance extends React.Component {
           path: '/clearance/import/declare/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
-          key: 'cms-1-2',
-          path: '/clearance/import/ciq',
-          text: formatMsg(intl, 'importCiq'),
-        }, {
           key: 'cms-1-3',
           path: '/clearance/import/declare/ciq',
           text: formatMsg(intl, 'importCiqDecl'),

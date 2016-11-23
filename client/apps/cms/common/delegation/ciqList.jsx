@@ -3,22 +3,14 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import QueueAnim from 'rc-queue-anim';
-import connectNav from 'client/common/decorators/connect-nav';
-import withPrivilege from 'client/common/decorators/withPrivilege';
 import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
-import { loadCiqTable, openCiqModal, acceptCiqCert, loadCertBrokers,
-  loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,
-  setCiqFinish, loadCMQParams, matchCQuote } from 'common/reducers/cmsDelegation';
-import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
+import { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDisp,
+  loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
-import DelgDispatch from './delgDispatch';
-import SearchBar from 'client/components/search-bar';
-import CertModal from './modals/certModal';
 
 const formatMsg = format(messages);
 
@@ -34,15 +26,9 @@ const formatMsg = format(messages);
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadCiqTable, openCiqModal, acceptCiqCert, loadCertFees, openCertModal,
-    loadCertBrokers, loadRelatedDisp, setDispStatus, loadDisp, loadDelgDisp,
-    setCiqFinish, loadCMQParams, matchCQuote }
+  { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus,
+    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote }
 )
-@connectNav({
-  depth: 2,
-  moduleName: 'clearance',
-})
-@withPrivilege({ module: 'clearance', feature: 'import' })
 export default class CiqList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -54,11 +40,7 @@ export default class CiqList extends Component {
     listFilter: PropTypes.object.isRequired,
     saved: PropTypes.bool.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
   state = {
-    searchInput: '',
     expandedKeys: [],
   }
   componentDidMount() {
@@ -140,7 +122,7 @@ export default class CiqList extends Component {
     dataIndex: 'last_act_time',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+        return moment(o).format('MM.DD HH:mm');
       }
     },
   }, {
@@ -251,15 +233,6 @@ export default class CiqList extends Component {
       type);
     this.props.setDispStatus({ delgDispShow: true });
   }
-  closeDispDock = () => {
-    this.props.setDispStatus({ delgDispShow: false });
-  }
-  handleCertModalLoad = (row) => {
-    this.props.loadCertBrokers(this.props.tenantId);
-    this.props.loadRelatedDisp(this.props.tenantId, row.delg_no);
-    this.props.loadCertFees(row);
-    this.props.openCertModal();
-  }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
     this.props.loadCiqTable({
@@ -274,10 +247,6 @@ export default class CiqList extends Component {
       }
     });
   }
-  handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
-    this.handleTableLoad(1, filters);
-  }
   handlePreview = (o, record) => {
     this.props.showPreviewer({
       delgNo: o,
@@ -289,23 +258,7 @@ export default class CiqList extends Component {
     const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
-          <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
-          <div className="page-body">
-            <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
-            </div>
-          </div>
-        </div>
-        <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-        <CertModal />
-      </QueueAnim>
+      <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
     );
   }
 }

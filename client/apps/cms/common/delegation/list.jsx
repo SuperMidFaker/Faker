@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Badge, Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
@@ -15,13 +16,13 @@ import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
-  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertTable, loadCertBrokers, loadRelatedDisp } from 'common/reducers/cmsDelegation';
+  showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertBrokers, loadRelatedDisp } from 'common/reducers/cmsDelegation';
 import { loadPaneExp, loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
-import { intlShape, injectIntl } from 'react-intl';
+import CertModal from './modals/certModal';
+import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import CertModal from './modals/certModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -43,10 +44,11 @@ const RadioButton = Radio.Button;
     delegation: state.cmsDelegation.previewer.delegation,
     matchParam: state.cmsDelegation.matchParam,
     matchStatus: state.cmsDelegation.matchStatus,
+    listView: state.cmsDelegation.listView,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote, loadCertTable,
+    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote,
     loadCertFees, openCertModal, loadCertBrokers, loadRelatedDisp }
 )
 @connectNav({
@@ -57,6 +59,7 @@ export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
+    listView: PropTypes.oneOf(['delegation', 'ciq']),
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
@@ -308,21 +311,6 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleCertListLoad = (currentPage, filter) => {
-    const { tenantId, ietype, listFilter,
-      delegationlist: { pageSize, current } } = this.props;
-    this.props.loadCertTable({
-      ietype,
-      filter: JSON.stringify(filter || listFilter),
-      tenantId,
-      pageSize,
-      currentPage: currentPage || current,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      }
-    });
-  }
   handleDelegationFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
@@ -439,7 +427,11 @@ export default class DelegationList extends Component {
   }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
-    this.handleDelgListLoad(1, filters);
+    if (this.props.listView === 'delegation') {
+      this.handleDelgListLoad(1, filters);
+    } else if (this.props.listView === 'ciq') {
+      this.handleCiqListLoad(1, filters);
+    }
   }
   mergeFilters(curFilters, value) {
     const newFilters = {};
@@ -467,72 +459,75 @@ export default class DelegationList extends Component {
     this.props.openCertModal();
   }
   render() {
-    const { delegationlist, listFilter } = this.props;
-    this.dataSource.remotes = delegationlist;
-    const columns = [...this.columns];
-    columns.push({
-      title: this.msg('opColumn'),
-      width: 120,
-      render: (o, record) => {
-        if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
-          return (
-            <span>
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
-                  {this.msg('modify')}
-                </NavLink>
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="delete">
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                  <a role="button">{this.msg('delete')}</a>
-                </Popconfirm>
-              </PrivilegeCover>
-            </span>
-          );
-        } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 2) {
-          return (
-            <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
-          );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+    const { delegationlist, listFilter, listView } = this.props;
+    let columns = [];
+    if (listView === 'delegation') {
+      this.dataSource.remotes = delegationlist;
+      columns = [...this.columns];
+      columns.push({
+        title: this.msg('opColumn'),
+        width: 120,
+        render: (o, record) => {
+          if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 1) {
+            return (
               <span>
-                <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                  <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+                </PrivilegeCover>
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                  <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
+                    {this.msg('modify')}
+                  </NavLink>
+                </PrivilegeCover>
+                <span className="ant-divider" />
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="delete">
+                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                    <a role="button">{this.msg('delete')}</a>
+                  </Popconfirm>
+                </PrivilegeCover>
               </span>
-            </PrivilegeCover>
-          );
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
-          return (
-            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-          );
-        } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
-          return (
-            <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
-          );
-        } else {
-          return (
-            <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
-          );
-        }
-      },
-    }, {
-      title: this.msg('办证'),
-      width: 80,
-      render: (o, record) => {
-        if (record.status > 0) {
-          return (
-            <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
-          );
-        }
-      },
-    });
+            );
+          } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.type === 2) {
+            return (
+              <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
+            );
+          } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.type === 1) {
+            return (
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+                <span>
+                  <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                </span>
+              </PrivilegeCover>
+            );
+          } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.type === 1) {
+            return (
+              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+            );
+          } else if (record.status === CMS_DELEGATION_STATUS.declared && record.type === 1 && record.sub_status === 1) {
+            return (
+              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+            );
+          } else {
+            return (
+              <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
+            );
+          }
+        },
+      }, {
+        title: this.msg('办证'),
+        width: 80,
+        render: (o, record) => {
+          if (record.status > 0) {
+            return (
+              <RowUpdater onHit={this.handleCertModalLoad} label={this.msg('certOp')} row={record} />
+            );
+          }
+        },
+      });
+    }
     // todo expandedRow fixed
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -564,11 +559,18 @@ export default class DelegationList extends Component {
               </PrivilegeCover>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                expandedRowKeys={this.state.expandedKeys}
-                expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
-              />
+              {
+                listView === 'delegation' &&
+                <Table columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
+                  expandedRowKeys={this.state.expandedKeys}
+                  expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
+                  scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
+                />
+              }
+              {
+                listView === 'ciq' &&
+                <CiqList ietype={this.props.ietype} />
+              }
             </div>
           </div>
         </div>
