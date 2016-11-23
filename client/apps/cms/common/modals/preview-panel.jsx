@@ -200,7 +200,7 @@ export default class PreviewPanel extends React.Component {
       if (previewer.status === 0 && delegation.source === 1) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="ghost" onClick={this.handleAccept}>
+            <Button type="primary" onClick={this.handleAccept}>
               接单
             </Button>
           </PrivilegeCover>

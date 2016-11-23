@@ -69,41 +69,41 @@ export default class QuoteList extends Component {
         title: msg('declareWay'),
         dataIndex: 'decl_way_code',
         render: (o) => {
-          const text = [];
+          const tags = [];
           if (o) {
             o.forEach((d) => {
               const decl = DECL_TYPE.filter(dl => dl.key === d)[0];
-              text.push(`${decl && decl.value}`);
+              tags.push(<Tag>{decl && decl.value}</Tag>);
             });
           }
-          return text.join('|');
+          return tags;
         },
       }, {
         title: msg('transMode'),
         dataIndex: 'trans_mode',
-        width: 150,
+        width: 200,
         render: (o) => {
-          const text = [];
+          const tags = [];
           if (o) {
             o.forEach((d) => {
               const decl = TRANS_MODE.filter(dl => dl.value === d)[0];
-              text.push(`${decl && decl.text}`);
+              tags.push(<Tag>{decl && decl.text}</Tag>);
             });
           }
-          return text.join('|');
+          return tags;
         },
       }, {
         title: msg('remark'),
         dataIndex: 'remarks',
         width: 80,
         render: (o) => {
-          const text = [];
+          const tags = [];
           if (o) {
             o.forEach((d) => {
-              text.push(`${d}`);
+              tags.push(<Tag>{d}</Tag>);
             });
           }
-          return text.join('|');
+          return tags;
         },
       }, {
         title: msg('status'),
@@ -111,7 +111,7 @@ export default class QuoteList extends Component {
         width: 80,
         render: (o) => {
           if (!o) {
-            return <Tag color="#CCCCCC">{msg('invalid')}</Tag>;
+            return <Tag color="#ccc">{msg('invalid')}</Tag>;
           } else {
             return <Tag color="green">{msg('valid')}</Tag>;
           }

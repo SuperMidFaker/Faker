@@ -29,7 +29,7 @@ function getFieldInits(aspect, formData) {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
   }
-  init.claim_do_awb = formData.claim_do_awb || 0;
+  init.claim_do_awb = formData.claim_do_awb || 1;
   return init;
 }
 @injectIntl
@@ -219,16 +219,16 @@ export default class BasicForm extends Component {
             {getFieldValue('trans_mode') === '2' &&
               <FormItem label="换单" {...formItemLayout}>
                 {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
-                  <RadioButton value={CLAIM_DO_AWB.notClaimDO.key}>{CLAIM_DO_AWB.notClaimDO.value}</RadioButton>
                   <RadioButton value={CLAIM_DO_AWB.claimDO.key}>{CLAIM_DO_AWB.claimDO.value}</RadioButton>
+                  <RadioButton value={CLAIM_DO_AWB.notClaimDO.key}>{CLAIM_DO_AWB.notClaimDO.value}</RadioButton>
                 </RadioGroup>)}
               </FormItem>
             }
             {getFieldValue('trans_mode') === '5' &&
               <FormItem label="抽单" {...formItemLayout}>
                 {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
-                  <RadioButton value={CLAIM_DO_AWB.notClaimAWB.key}>{CLAIM_DO_AWB.notClaimAWB.value}</RadioButton>
                   <RadioButton value={CLAIM_DO_AWB.claimAWB.key}>{CLAIM_DO_AWB.claimAWB.value}</RadioButton>
+                  <RadioButton value={CLAIM_DO_AWB.notClaimAWB.key}>{CLAIM_DO_AWB.notClaimAWB.value}</RadioButton>
                 </RadioGroup>)}
               </FormItem>
             }
