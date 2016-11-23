@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Icon, Tag, Tooltip } from 'antd';
+import { Badge, Icon, Tooltip } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
@@ -145,17 +145,17 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'status',
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        return <Tag>{msg('pendingShipmt')}</Tag>;
+        return <Badge status="default" text={msg('pendingShipmt')} />;
       } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-        return <Tag>{msg('acceptedShipmt')}</Tag>;
+        return <Badge status="default" text={msg('acceptedShipmt')} />;
       } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-        return <Tag color="yellow">{msg('dispatchedShipmt')}</Tag>;
+        return <Badge status="warning" text={msg('dispatchedShipmt')} />;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-        return <Tag color="blue">{msg('intransitShipmt')}</Tag>;
+        return <Badge status="processing" text={msg('intransitShipmt')} />;
       } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-        return <Tag color="green">{msg('deliveredShipmt')}</Tag>;
+        return <Badge status="success" text={msg('deliveredShipmt')} />;
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-        return <Tag color="green">{msg('proofOfDelivery')}</Tag>;
+        return <Badge status="success" text={msg('proofOfDelivery')} />;
       } else {
         return <span />;
       }
@@ -182,15 +182,13 @@ export default function makeColumns(type, handlers, msg) {
             // todo pure css circle
           return (
             <span>
-              <i className="zmdi zmdi-circle mdc-text-green" />
               {spSpan}
             </span>
           );
         } else if (record.sp_tenant_id === -1) {
           return (
             <span>
-              <i className="zmdi zmdi-circle mdc-text-grey" />
-              {spSpan}
+              <Icon type="info-circle-o" /> {spSpan}
             </span>
           );
         } else {

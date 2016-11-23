@@ -90,11 +90,11 @@ export default class CiqList extends Component {
     dataIndex: 'ciq_type',
     render: (o) => {
       if (o === 'NL') {
-        return <Tag color="#2db7f5">需报检</Tag>;
+        return <Tag color="#ccc">一般报检</Tag>;
       } else if (o === 'LA' || o === 'LB') {
         return <Tag color="#fa0">法定检验</Tag>;
       }
-      return <Tag>不报检</Tag>;
+      return <span />;
     },
   }, {
     title: this.msg('inspbroker'),
