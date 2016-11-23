@@ -13,10 +13,11 @@ export default class TransportStatus extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     status: PropTypes.number.isRequired,
+    podType: PropTypes.string.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { status } = this.props;
+    const { status, podType } = this.props;
     let statusDes = [];
     let statusPos = 0;
     if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -211,6 +212,10 @@ export default class TransportStatus extends React.Component {
         title: this.msg('podaccept'),
       }];
       statusPos = -1;
+    }
+    if (!podType || podType === 'none') {
+      statusDes.pop();
+      statusDes.pop();
     }
     const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} />);
     return (
