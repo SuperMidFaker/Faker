@@ -29,6 +29,7 @@ export default class CustomerModal extends React.Component {
   state = {
     name: '',
     partnerCode: '',
+    partnerUniqueCode: '',
     contact: '',
     phone: '',
     email: '',
@@ -39,6 +40,7 @@ export default class CustomerModal extends React.Component {
     this.setState({
       name: '',
       partnerCode: '',
+      partnerUniqueCode: '',
       contact: '',
       phone: '',
       email: '',
@@ -47,17 +49,19 @@ export default class CustomerModal extends React.Component {
     this.props.toggle();
   }
   handleOk = () => {
-    const { name, partnerCode, contact, phone, email, customerTypes } = this.state;
+    const { name, partnerCode, partnerUniqueCode, contact, phone, email, customerTypes } = this.state;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (!partnerCode || partnerCode === '') {
       message.error('企业编码必填');
+    } else if (!partnerUniqueCode || partnerUniqueCode === '') {
+      message.error('企业唯一标识码必填');
     } else if (customerTypes.length === 0) {
       message.error('请选择客户业务类型');
     } else {
       this.props.addCustomer({
         tenantId: this.props.tenantId,
-        partnerInfo: { name, partnerCode, contact, phone, email },
+        partnerInfo: { name, partnerCode, partnerUniqueCode, contact, phone, email },
         customerTypes,
       }).then((result) => {
         if (result.error) {
@@ -95,6 +99,14 @@ export default class CustomerModal extends React.Component {
             required
           >
             <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="企业唯一标识码"
+            hasFeedback
+            required
+          >
+            <Input value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
