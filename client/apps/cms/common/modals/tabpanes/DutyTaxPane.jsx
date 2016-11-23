@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Table } from 'antd';
+import { Card, Table } from 'antd';
 
 function getColCls(col) {
   if (col) {
@@ -33,21 +33,14 @@ PaneFormItem.propTypes = {
 @connect(
   state => ({
     aspect: state.account.aspect,
-    delegation: state.cmsDelegation.previewer.delegation,
-    files: state.cmsDelegation.previewer.files,
-    delegateTracking: state.cmsDelegation.previewer.delegateTracking,
   })
 )
 export default class DutyTaxPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     aspect: PropTypes.number.isRequired,
-    delegation: PropTypes.object.isRequired,
-    files: PropTypes.array.isRequired,
-    delegateTracking: PropTypes.object.isRequired,
   }
   render() {
-    const { delegation, delegateTracking } = this.props;
     const columns = [{
       title: '报关单号',
       dataIndex: 'fee_name',
