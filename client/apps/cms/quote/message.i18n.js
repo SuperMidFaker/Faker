@@ -33,6 +33,10 @@ const messages = defineMessages({
     id: 'cms.quote.declare_way',
     defaultMessage: '清关类型',
   },
+  invoiceType: {
+    id: 'cms.quote.invoice_type',
+    defaultMessage: '发票类型',
+  },
   serialNo: {
     id: 'cms.quote.serial_no',
     defaultMessage: '序号',
@@ -123,11 +127,7 @@ const messages = defineMessages({
   },
   taxRate: {
     id: 'cms.quote.tax.rate',
-    defaultMessage: '增票税率',
-  },
-  commonTaxRate: {
-    id: 'cms.quote.common.tax.rate',
-    defaultMessage: '普票税率',
+    defaultMessage: '开票税率',
   },
   status: {
     id: 'cms.quote.status',

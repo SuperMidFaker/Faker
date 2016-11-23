@@ -37,9 +37,7 @@ export default class CertModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.certExp !== this.props.certExp) {
-      const certFees = nextProps.certExp.fees.filter(fe =>
-        (fe.category === 'certs_expenses') && (fe.enabled === true)
-      );
+      const certFees = nextProps.certExp.fees;
       this.setState({ rows: certFees });
     }
   }

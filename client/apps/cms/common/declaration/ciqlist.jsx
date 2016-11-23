@@ -29,7 +29,7 @@ function ColumnSwitch(props) {
   if (record[field] === 1) {
     check = true;
   }
-  return <Switch size="small" disabled={record.ciq_status === 1} checked={check} value={record[field] || 0} onChange={handleChange} />;
+  return <Switch size="small" disabled={record.ciq_status === 1 || check} checked={check} value={record[field] || 0} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
   record: PropTypes.object.isRequired,
@@ -183,6 +183,7 @@ export default class CiqDeclList extends Component {
   handleEditChange = (record, field, value) => {
     record[field] = value ? 1 : 0; // eslint-disable-line no-param-reassign
     this.props.saveCheckedState(record);
+    record.field = field; // eslint-disable-line no-param-reassign
     this.props.saveStateTOExp(record);
     this.forceUpdate();
   }

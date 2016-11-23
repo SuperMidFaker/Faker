@@ -358,12 +358,6 @@ export default class FeesTable extends Component {
         render: (o, record, index) =>
           <TaxInput field="tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
-        title: msg('commonTaxRate'),
-        dataIndex: 'common_tax_rate',
-        width: 100,
-        render: (o, record, index) =>
-          <TaxInput field="common_tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
-      }, {
         title: msg('enabledOp'),
         dataIndex: 'enabled',
         width: 80,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { submitQuotes } from 'common/reducers/cmsQuote';
-import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, TARIFF_KINDS } from 'common/constants';
+import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, TARIFF_KINDS, INVOICE_TYPE } from 'common/constants';
 import { Card, Form, Select, Col, Row, Button, message } from 'antd';
 
 const formatMsg = format(messages);
@@ -18,6 +18,7 @@ function getFieldInits(quoteData) {
   const init = {};
   if (quoteData) {
     init.tariff_kind = quoteData.tariff_kind || '';
+    init.invoice_type = quoteData.invoice_type;
     init.partner = quoteData.partner || {};
     [
       'decl_way_code', 'trans_mode', 'remarks',
@@ -133,7 +134,7 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={16}>
+          <Col sm={8} md={12}>
             <FormItem label={msg('declareWay')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('decl_way_code', {
                 rules: [{ required: true, message: '报关类型必选', type: 'array' }],
@@ -172,8 +173,8 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={8}>
-            <FormItem label={msg('transMode')} {...formItemLayout}>
+          <Col sm={8} md={12}>
+            <FormItem label={msg('transMode')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
               {getFieldDecorator('trans_mode', {
                 rules: [{ required: true, message: '运输方式必选', type: 'array' }],
                 initialValue: fieldInits.trans_mode,
@@ -188,8 +189,26 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
+        </Row>
+        <Row>
           <Col sm={8} md={8}>
-            <FormItem label={msg('remark')} {...formItemLayout}>
+            <FormItem label={msg('invoiceType')} {...formItemLayout} >
+              {getFieldDecorator('invoice_type', {
+                rules: [{ required: true, message: '开票类型必选', type: 'number' }],
+                initialValue: fieldInits.invoice_type,
+              })(
+                <Select style={{ width: '100%' }} >
+                  {
+                  INVOICE_TYPE.map(inv =>
+                    <Option value={inv.value} key={inv.value}>{inv.text}</Option>
+                  )
+                }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col sm={8} md={12}>
+            <FormItem label={msg('remark')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('remarks', {
                 initialValue: fieldInits.remarks,
               })(<Select tags style={{ width: '100%' }} />)}
