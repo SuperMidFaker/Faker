@@ -39,6 +39,7 @@ import * as ImportDocs from './cms/import/docs';
 import * as ImportDecl from './cms/import/declaration';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
+import * as ExportDecl from './cms/export/declaration';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
@@ -245,6 +246,10 @@ export default(store, cookie) => {
               <Route path="docs">
                 <Route path="make/:billno" component={ExportDocs.Make} />
                 <Route path="view/:billno" component={ExportDocs.View} />
+              </Route>
+              <Route path="declare">
+                <Route path="customs" component={ExportDecl.Delglist} />
+                <Route path="ciq" component={ExportDecl.Ciqlist} />
               </Route>
             </Route>
             <Route path="expense">
