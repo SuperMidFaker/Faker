@@ -5,7 +5,6 @@ import { Button, Row, Col, Card } from 'antd';
 import downloadMultiple from 'client/util/multipleDownloader';
 import './pane.less';
 
-let FILE = [];
 function getColCls(col) {
   if (col) {
     const { span, offset } = col;
@@ -31,25 +30,12 @@ function getExtension(filename) {
   return parts[parts.length - 1];
 }
 
-function fileSort(filename) {
-  const ext = getExtension(filename);
-  const type = ext.toLowerCase();
-  if (type === 'doc' || type === 'pages' || type === 'docx') {
-    FILE.push({ type: 'doc', name: filename });
-  } else if (type === 'xls' || type === 'numbers') {
-    FILE.push({ type: 'xls', name: filename });
-  } else if (type === 'zip' || type === 'rar') {
-    FILE.push({ type: 'zip', name: filename });
-  } else {
-    FILE.push({ type: 'pdf', name: filename });
-  }
-}
-
 PaneFormItem.propTypes = {
   label: PropTypes.string.isRequired,
   labelCol: PropTypes.object,
   fieldCol: PropTypes.object,
 };
+
 @injectIntl
 @connect(
   state => ({
@@ -67,12 +53,27 @@ export default class BasicPane extends React.Component {
     files: PropTypes.array.isRequired,
     delegateTracking: PropTypes.object.isRequired,
   }
+  state = {
+    sortedFiles: [],
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.files.length !== this.props.files.length) {
-      FILE = [];
+      const sortedFiles = [];
       nextProps.files.forEach((fl) => {
-        fileSort(fl.name);
+        const filename = fl.name;
+        const ext = getExtension(filename);
+        const type = ext.toLowerCase();
+        if (type === 'doc' || type === 'pages' || type === 'docx') {
+          sortedFiles.push({ type: 'doc', name: filename });
+        } else if (type === 'xls' || type === 'numbers') {
+          sortedFiles.push({ type: 'xls', name: filename });
+        } else if (type === 'zip' || type === 'rar') {
+          sortedFiles.push({ type: 'zip', name: filename });
+        } else {
+          sortedFiles.push({ type: 'pdf', name: filename });
+        }
       });
+      this.setState({ sortedFiles });
     }
   }
   handleFilesDownload = () => {
@@ -81,7 +82,7 @@ export default class BasicPane extends React.Component {
   render() {
     const { delegation, delegateTracking } = this.props;
     let img = '';
-    const filenames = FILE.map((fl, index) => {
+    const filenames = this.state.sortedFiles.map((fl, index) => {
       if (fl.type === 'doc') {
         img = 'word.png';
       }

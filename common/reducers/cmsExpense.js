@@ -457,7 +457,7 @@ export function loadDeclAdvanceParties(isCiq, delgNo) {
       ],
       endpoint: 'v1/cms/expense/load/decl/advanceparties',
       method: 'get',
-      params: { isCiq, delgNo },
+      params: { cls: JSON.stringify({ isCiq, delgNo }) },
     },
   };
 }
