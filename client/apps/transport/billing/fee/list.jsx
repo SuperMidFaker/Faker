@@ -181,7 +181,7 @@ export default class FeesList extends React.Component {
         if (record.p_total_charge) {
           pTotalCharge += record.p_total_charge;
         }
-        return record.p_status !== null ? (<span style={{ color: '#339966' }}>{pTotalCharge.toFixed(2)}</span>) : '';
+        return record.p_status !== null ? pTotalCharge.toFixed(2) : '';
       },
     }, {
       title: '入账状态',
@@ -243,7 +243,7 @@ export default class FeesList extends React.Component {
         if (record.total_charge) {
           totalCharge += record.total_charge;
         }
-        return record.status !== null ? (<span style={{ color: '#FF0000' }}>{totalCharge.toFixed(2)}</span>) : '';
+        return record.status !== null ? totalCharge.toFixed(2) : '';
       },
     }, {
       title: '入账状态',
@@ -282,7 +282,11 @@ export default class FeesList extends React.Component {
         if (record.total_charge) {
           totalCharge += record.total_charge;
         }
-        return <span style={{ color: '#FF9900' }}>{(pTotalCharge - totalCharge).toFixed(2)}</span>;
+        const profit = pTotalCharge - totalCharge;
+        if (profit < 0) {
+          return <span style={{ color: '#FF0000' }}>{profit.toFixed(2)}</span>;
+        }
+        return <span style={{ color: '#339966' }}>{profit.toFixed(2)}</span>;
       },
     }, {
       title: '始发地',
