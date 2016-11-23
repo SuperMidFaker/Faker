@@ -98,9 +98,6 @@ export default class DelegationList extends Component {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
     }
-    if (nextProps.matchParam !== this.props.matchParam) {
-      this.handleMatchQuote(nextProps.matchParam);
-    }
     if (nextProps.matchStatus !== this.props.matchStatus) {
       if (nextProps.matchStatus.status === 'noquote') {
         message.info(formatMsg(this.props.intl, 'info'), 3);
@@ -381,7 +378,6 @@ export default class DelegationList extends Component {
         } else {
           this.handleDelgListLoad();
           this.showAcceptInfo(row);
-          this.handleMQdeclWay(row);
         }
       }
     );
