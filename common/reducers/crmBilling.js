@@ -93,7 +93,42 @@ export default function reducer(state = initialState, action) {
       return { ...state, fees: { ...state.fees, data } };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED: {
-      return { ...state };
+      const fees = state.fees.data;
+      const data = [];
+      for (let i = 0; i < fees.length; i++) {
+        let ccbCushCharge = 0;
+        let ccbServerCharge = 0;
+        let ccbTotalCharge = 0;
+        let totalCharge = 0;
+        const fee = action.result.data.find(item => item.delg_no === fees[i].ccb_delg_no);
+        if (fee && fee.cush_charges.length > 0) {
+          fee.cush_charges.forEach((item) => {
+            if (item.total_fee) {
+              ccbCushCharge += item.total_fee;
+            }
+          });
+        }
+        if (fee && fee.server_charges.length > 0) {
+          fee.server_charges.forEach((item) => {
+            if (item.total_fee) {
+              ccbServerCharge += item.total_fee;
+            }
+          });
+        }
+        ccbTotalCharge = ccbCushCharge + ccbServerCharge;
+        totalCharge = ccbTotalCharge;
+        if (fees[i].trsTotalCharge) {
+          totalCharge += fees[i].trsTotalCharge;
+        }
+        data.push({
+          ...fees[i],
+          ccbCushCharge,
+          ccbServerCharge,
+          ccbTotalCharge,
+          totalCharge,
+        });
+      }
+      return { ...state, fees: { ...state.fees, data } };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
@@ -141,9 +176,10 @@ export function loadClearanceFees(delgNos) {
         actionTypes.LOAD_CLEARANCE_FEES_SUCCEED,
         actionTypes.LOAD_CLEARANCE_FEES_FAIL,
       ],
-      endpoint: 'v1/cms/billing/fees',
+      endpoint: 'v1/crm/cms/expenses',
       method: 'get',
       params: { delgNos },
+      origin: 'mongo',
     },
   };
 }

@@ -80,13 +80,18 @@ export default class FeesList extends React.Component {
     }
     if (this.props.fees.loadTimes !== nextProps.fees.loadTimes) {
       const shipmtOrders = [];
+      const delgNos = [];
       nextProps.fees.data.forEach((item) => {
         shipmtOrders.push({
           trs_shipmt_no: item.trs_shipmt_no,
           shipmt_order_no: item.shipmt_order_no,
         });
+        if (item.ccb_delg_no) {
+          delgNos.push(item.ccb_delg_no);
+        }
       });
       this.props.loadTransportFees(shipmtOrders);
+      this.props.loadClearanceFees(delgNos);
     }
   }
   onDateChange = (value) => {
@@ -130,6 +135,13 @@ export default class FeesList extends React.Component {
       return '';
     }
   }
+  renderClearanceCharge = (o, record) => {
+    if (record.shipmt_order_mode === CRM_ORDER_MODE.clearance || record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+      return o ? o.toFixed(2) : '';
+    } else {
+      return '';
+    }
+  }
   render() {
     const { customers } = this.state;
     const { loading } = this.props;
@@ -151,10 +163,19 @@ export default class FeesList extends React.Component {
       dataIndex: 'ccb_delg_no',
     }, {
       title: '报关服务费',
+      key: 'ccbServerCharge',
+      dataIndex: 'ccbServerCharge',
+      render: this.renderClearanceCharge,
     }, {
       title: '报关代垫费用',
+      key: 'ccbCushCharge',
+      dataIndex: 'ccbCushCharge',
+      render: this.renderClearanceCharge,
     }, {
       title: '报关费用合计',
+      key: 'ccbTotalCharge',
+      dataIndex: 'ccbTotalCharge',
+      render: this.renderClearanceCharge,
     }, {
       title: '运输单号',
       dataIndex: 'trs_shipmt_no',

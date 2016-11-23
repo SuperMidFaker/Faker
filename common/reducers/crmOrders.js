@@ -333,7 +333,7 @@ export function loadTransportDetail({ shipmtNos, tenantId }) {
         actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED,
         actionTypes.LOAD_TRANSPORT_DETAIL_FAILED,
       ],
-      endpoint: 'v1/customer/transport/shipment/detail',
+      endpoint: 'v1/crm/transport/shipment/detail',
       method: 'get',
       params: { shipmtNos, tenantId },
     },
