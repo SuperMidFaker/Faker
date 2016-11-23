@@ -307,11 +307,13 @@ img {
 .top-tabs-bar {
   .ant-tabs-bar {
     position: fixed;
-    right: 0;
-    left: @am-leftbar-width;
+    width: 100%;
+    height: @top-bar-height;
     z-index: 30;
-    background: hsla(0,0%,99%,.95);
-    box-shadow: 0 0 1px 0 rgba(0,0,0,.14);
+    background: rgba(252,252,252,0.95);
+    padding: 0 16px;
+    line-height: 46px;
+    box-shadow: 0 0 1px 0 rgba(0,0,0,0.14);
   }
   .ant-tabs-nav .ant-tabs-tab {
     padding: 13px 20px 12px;
