@@ -203,6 +203,7 @@ export default class ExpenseList extends Component {
                 row={{
                   delg_no: record.delg_no,
                   entry_id: record.entry_id,
+                  pre_entry_seq_no: record.pre_entry_seq_no,
                   fee_name: fld.name,
                   fee_code: fld.code,
                   is_ciq: o.is_ciq,
@@ -226,6 +227,7 @@ export default class ExpenseList extends Component {
                 row={{
                   delg_no: record.delg_no,
                   entry_id: record.entry_id,
+                  pre_entry_seq_no: record.pre_entry_seq_no,
                   fee_name: fld.name,
                   fee_code: fld.code,
                   is_ciq: o.is_ciq,

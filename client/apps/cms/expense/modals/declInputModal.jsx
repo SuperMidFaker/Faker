@@ -28,7 +28,7 @@ export default class DeclexpInputModal extends React.Component {
     showDeclInputModal: PropTypes.bool.isRequired,
     declInModal: PropTypes.shape({
       delg_no: PropTypes.string.isRequired,
-      entry_id: PropTypes.string.isRequired,
+      pre_entry_seq_no: PropTypes.string.isRequired,
       fee_name: PropTypes.string.isRequired,
       fee_code: PropTypes.string.isRequired,
       is_ciq: PropTypes.bool.isRequired,
@@ -54,7 +54,7 @@ export default class DeclexpInputModal extends React.Component {
       if (!errors) {
         const formData = this.props.form.getFieldsValue();
         this.props.computeDeclAdvanceFee({
-          entry_id: this.props.declInModal.entry_id,
+          pre_entry_seq_no: this.props.declInModal.pre_entry_seq_no,
           disp_id: formData.advance_party_dispid,
           fee_code: this.props.declInModal.fee_code,
           fee_value: formData.amount,
@@ -83,8 +83,8 @@ export default class DeclexpInputModal extends React.Component {
         visible={this.props.showDeclInputModal} maskClosable={false}
       >
         <Form className="row" style={{ width: '400px' }}>
-          <FormItem label="报关单号" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }}>
-            {declInModal.entry_id}
+          <FormItem label="统一编号" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }}>
+            {declInModal.pre_entry_seq_no}
           </FormItem>
           <FormItem label="费用名称" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }}>
             {declInModal.fee_name}
