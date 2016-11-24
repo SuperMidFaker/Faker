@@ -4,7 +4,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { addCustomer } from 'common/reducers/crmCustomers';
+import { addCustomer, showCustomerModal, hideCustomerModal } from 'common/reducers/crmCustomers';
+import { checkPartner } from 'common/reducers/partner';
 import { CUSTOMER_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -14,8 +15,10 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    visible: state.crmCustomers.customerModal.visible,
+    partnerId: state.crmCustomers.customerModal.customer,
   }),
-  { addCustomer }
+  { addCustomer, checkPartner, showCustomerModal, hideCustomerModal }
 )
 
 export default class CustomerModal extends React.Component {
@@ -23,8 +26,11 @@ export default class CustomerModal extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired,
     addCustomer: PropTypes.func.isRequired,
+    checkPartner: PropTypes.func.isRequired,
+    showCustomerModal: PropTypes.func.isRequired,
+    hideCustomerModal: PropTypes.func.isRequired,
+    partnerId: PropTypes.number.isRequired,
   }
   state = {
     name: '',
@@ -46,10 +52,11 @@ export default class CustomerModal extends React.Component {
       email: '',
       customerTypes: [],
     });
-    this.props.toggle();
+    this.props.hideCustomerModal();
   }
   handleOk = () => {
     const { name, partnerCode, partnerUniqueCode, contact, phone, email, customerTypes } = this.state;
+    const { tenantId } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (!partnerCode || partnerCode === '') {
@@ -59,17 +66,30 @@ export default class CustomerModal extends React.Component {
     } else if (customerTypes.length === 0) {
       message.error('请选择客户业务类型');
     } else {
-      this.props.addCustomer({
-        tenantId: this.props.tenantId,
-        partnerInfo: { name, partnerCode, partnerUniqueCode, contact, phone, email },
-        customerTypes,
+      this.props.checkPartner({
+        tenantId,
+        partnerInfo: { name, partnerCode, partnerUniqueCode },
       }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          message.info('添加成功');
-          this.props.toggle();
+        let customerName = name;
+        if (result.data.partner && result.data.partner.name !== name) {
+          customerName = result.data.partner.name;
         }
+        this.props.addCustomer({
+          tenantId,
+          partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
+          customerTypes,
+        }).then((result1) => {
+          if (result1.error) {
+            message.error(result1.error.message);
+          } else {
+            if (customerName !== name) {
+              message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的企业信息， 已将企业名称 ${name} 替换为 ${customerName} `, 10);
+            } else {
+              message.info('添加成功');
+            }
+            this.handleCancel();
+          }
+        });
       });
     }
   }
