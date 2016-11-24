@@ -43,6 +43,12 @@ export default class Profile extends React.Component {
         </FormItem>
         <FormItem
           {...formItemLayout}
+          label="企业唯一标识码"
+        >
+          {customer.partner_unique_code}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
           label="联系人"
         >
           {customer.contact}

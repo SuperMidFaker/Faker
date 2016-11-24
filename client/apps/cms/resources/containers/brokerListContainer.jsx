@@ -30,8 +30,8 @@ export default class ProviderListContainer extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  handleEditBtnClick = (id, name, code) => {
-    this.props.toggleCarrierModal(true, 'edit', { id, name, code });
+  handleEditBtnClick = (id, name, code, partnerUniqueCode) => {
+    this.props.toggleCarrierModal(true, 'edit', { id, name, code, partnerUniqueCode });
   }
   handleAddBtnClick = () => {
     this.props.toggleCarrierModal(true, 'add');
