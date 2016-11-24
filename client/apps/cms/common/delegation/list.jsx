@@ -348,6 +348,11 @@ export default class DelegationList extends Component {
     }, 'make').then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        const bills = this.props.billMakeModal.bills;
+        if (bills.length === 1) {
+          this.context.router.push(`/clearance/${this.props.ietype}/docs/make/${bills[0].bill_seq_no}`);
+        }
       }
     });
   }
