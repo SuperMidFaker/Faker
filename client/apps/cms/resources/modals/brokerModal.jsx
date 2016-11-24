@@ -83,13 +83,13 @@ export default class BrokerModal extends React.Component {
     return (
       <Modal title={this.props.operation === 'add' ? '新增供应商' : '修改供应商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="供应商名称:" required>
-          <Input required value={partnerName} onChange={(e) => this.setState({ partnerName: e.target.value})} />
+          <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="供应商代码:" required>
-          <Input required value={partnerCode} onChange={(e) => this.setState({ partnerCode: e.target.value})} />
+          <Input required value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="企业唯一标识码:" required>
-          <Input required value={partnerUniqueCode} onChange={(e) => this.setState({ partnerUniqueCode: e.target.value})} />
+          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="供应商类型:" required>
           <CheckboxGroup
