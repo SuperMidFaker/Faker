@@ -9,6 +9,8 @@ export const partnerTypes = {
 };
 
 export const providerShorthandTypes = {
+  CUS: '客户',
+  DCUS: '客户',
   TRS: '运输',
   WHS: '仓储',
   CCB: '报关',
@@ -27,7 +29,7 @@ export function mapPartnerships(partnerships) {
   if (partnerships.length === 1) {
     content = partnerTypes[partnerships[0]];
   } else {
-    content = `${partnerships.map(ps => providerShorthandTypes[ps]).join('/')}提供商`;
+    content = partnerships.map(ps => providerShorthandTypes[ps]).join('/');
   }
   return content;
 }

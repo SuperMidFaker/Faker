@@ -20,11 +20,11 @@ export default class DriverList extends Component {
   }
 
   renderEditAndStopOperations = (itemInfo) => {
-    const { id, name, partnerCode } = itemInfo;
+    const { id, name, partnerCode, partnerUniqueCode } = itemInfo;
     return (
       <PrivilegeCover module="corp" feature="partners" action="edit">
         <span>
-          <a onClick={() => this.props.onEditBtnClick(id, name, partnerCode)}>修改</a>
+          <a onClick={() => this.props.onEditBtnClick(id, name, partnerCode, partnerUniqueCode)}>修改</a>
           <span className="ant-divider" />
           <a onClick={() => this.props.onStopBtnClick(id)}>停用</a>
         </span>
@@ -60,6 +60,10 @@ export default class DriverList extends Component {
         title: '承运商代码',
         dataIndex: 'partnerCode',
         key: 'partnerCode',
+      }, {
+        title: '企业唯一标识码',
+        dataIndex: 'partnerUniqueCode',
+        key: 'partnerUniqueCode',
       }, {
         title: '创建日期',
         dataIndex: 'created_date',

@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Table } from 'antd';
+import { Tag, Row, Col, Card, Table } from 'antd';
+import { DELG_SOURCE } from 'common/constants';
+import moment from 'moment';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 
 function getColCls(col) {
   if (col) {
@@ -32,71 +35,98 @@ PaneFormItem.propTypes = {
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect,
-    delegation: state.cmsDelegation.previewer.delegation,
-    files: state.cmsDelegation.previewer.files,
-    delegateTracking: state.cmsDelegation.previewer.delegateTracking,
-  })
+    delgNo: state.cmsDelegation.previewer.delegation.delg_no,
+    ciqdecl: state.cmsDeclare.previewer.ciqdecl,
+    tenantId: state.account.tenantId,
+  }),
+  { loadDeclCiqByDelgNo }
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    aspect: PropTypes.number.isRequired,
-    delegation: PropTypes.object.isRequired,
-    files: PropTypes.array.isRequired,
-    delegateTracking: PropTypes.object.isRequired,
+    delgNo: PropTypes.string.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    ciqdecl: PropTypes.shape({
+      inspection_name: PropTypes.string,
+      acpt_time: PropTypes.date,
+      source: PropTypes.number,
+      ciqlist: PropTypes.arrayOf(PropTypes.shape({
+        pre_entry_seq_no: PropTypes.string,
+      })),
+    }),
+  }
+  componentWillMount() {
+    this.props.loadDeclCiqByDelgNo(this.props.delgNo, this.props.tenantId);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.delgNo !== this.props.delgNo) {
+      this.props.loadDeclCiqByDelgNo(nextProps.delgNo, this.props.tenantId);
+    }
   }
   render() {
-    // const { delegation, delegateTracking } = this.props;
-    const { delegateTracking } = this.props;
+    const { ciqdecl } = this.props;
     const columns = [{
-      title: '报关单号',
-      dataIndex: 'fee_name',
-      key: 'fee_name',
+      title: '统一编号',
+      dataIndex: 'pre_entry_seq_no',
+    }, {
+      title: '海关编号',
+      dataIndex: 'entry_id',
     }, {
       title: '通关单号',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
+      dataIndex: 'ciq_no',
     }, {
       title: '报检日期',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
+      dataIndex: 'inspection_time',
+      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
     }, {
       title: '品质查验',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
+      dataIndex: 'ciq_quality_inspect',
+      render: (o) => {
+        return o === 1 ? <Tag color="red">是</Tag>
+          : <Tag>否</Tag>;
+      },
     }, {
       title: '动检查验',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
+      dataIndex: 'ciq_ap_inspect',
+      render: (o) => {
+        return o === 1 ? <Tag color="red">是</Tag>
+          : <Tag>否</Tag>;
+      },
     }, {
       title: '处理结果',
-      dataIndex: 'unit_price',
-      key: 'unit_price',
+      dataIndex: 'ciq_status',
+      render: (o) => {
+        if (o !== 1) {
+          return <span>未完成</span>;
+        } else {
+          return <span>完成</span>;
+        }
+      },
     }];
+    const sourceText = ciqdecl.source === DELG_SOURCE.consigned ? '委托' : '分包';
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="报检企业"
-                field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
+                field={ciqdecl.inspection_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="受理日期"
-                field={delegateTracking.acpt_time} fieldCol={{ span: 9 }}
+              <PaneFormItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
+                field={ciqdecl.acpt_time && moment(ciqdecl.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="来源"
-                field={delegateTracking.source} fieldCol={{ span: 9 }}
+                field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
         </Card>
         <Card bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={columns} pagination={false} />
+          <Table size="small" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} />
         </Card>
       </div>
     );
