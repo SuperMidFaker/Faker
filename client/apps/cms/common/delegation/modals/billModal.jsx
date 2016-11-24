@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { routerShape } from 'react-router';
 import { Modal, Row, Col, Progress, Button } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { closeBillMakeModal } from 'common/reducers/cmsDelegation';
@@ -15,13 +16,33 @@ export default class BillModal extends Component {
   static propTypes = {
     billMakeModal: PropTypes.object.isRequired,
   }
-
+  static contextTypes = {
+    router: routerShape.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billMakeModal.bills.length === 1) {
+      if (
+        nextProps.billMakeModal.bills.length !== this.props.billMakeModal.bills.length ||
+        nextProps.billMakeModal.bills[0].bill_seq_no !== this.props.billMakeModal.bills[0].bill_seq_no
+      ) {
+        let link = `/clearance/${this.props.ietype}/docs/make/`;
+        if (nextProps.billMakeModal.type === 'view') {
+          link = `/clearance/${this.props.ietype}/docs/view/`;
+        }
+        this.context.router.push(`${link}${nextProps.billMakeModal.bills[0].bill_seq_no}`);
+      }
+    }
+  }
   handleCancel = () => {
     this.props.closeBillMakeModal();
   }
 
   render() {
     const { ietype, billMakeModal } = this.props;
+    if (billMakeModal.bills.length === 1) {
+      return null;
+    }
+    const visible = billMakeModal.visible;
     let linkTo = `/clearance/${ietype}/docs/make/`;
     let title = '选择清单-开始制单';
     if (billMakeModal.type === 'view') {
@@ -47,7 +68,7 @@ export default class BillModal extends Component {
       );
     });
     return (
-      <Modal visible={billMakeModal.visible} title={title} footer={footer} onCancel={this.handleCancel}>
+      <Modal visible={visible} title={title} footer={footer} onCancel={this.handleCancel}>
         <Row>
           <Col span={8} style={{ padding: 8 }}>
             清单编号
