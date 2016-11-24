@@ -128,6 +128,10 @@ export default class DelegationList extends Component {
         const { delegation } = this.props;
         this.handleDelegationAssign(delegation, 'delg');
       }
+      if (nextProps.preStatus === 'ciqdispatch') {
+        const { delegation } = this.props;
+        this.handleDelegationAssign(delegation, 'ciq');
+      }
       if (nextProps.preStatus === 'dispCancel') {
         const { delegation } = this.props;
         this.handleDelegationCancel(delegation, 'delg');
@@ -197,10 +201,10 @@ export default class DelegationList extends Component {
           return <Badge status="processing" text={this.msg('declaredPart')} />;
         } else { return <Badge status="processing" text={decl && decl.text} />; }
       } else if (record.status === 4) {
-        if (record.sub_status === 0) {
-          return <Badge status="success" text={decl && decl.text} />;
-        } else {
+        if (record.sub_status === 1) {
           return <Badge status="success" text={this.msg('releasedPart')} />;
+        } else {
+          return <Badge status="success" text={decl && decl.text} />;
         }
       } else {
         return <Badge status="default" text={decl && decl.text} />;
@@ -383,12 +387,11 @@ export default class DelegationList extends Component {
     );
   }
   handleDelegationAssign = (row, type) => {
-    this.props.loadDelgDisp(
-      row.delg_no,
-      this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
-      type
-    );
+    let typecode = PARTNERSHIP_TYPE_INFO.customsClearanceBroker;
+    if (type === 'ciq') {
+      typecode = PARTNERSHIP_TYPE_INFO.customsInspectBroker;
+    }
+    this.props.loadDelgDisp(row.delg_no, this.props.tenantId, typecode, type);
     this.props.setDispStatus({ delgDispShow: true });
   }
   handleDelegationCancel = (row, type) => {

@@ -62,6 +62,10 @@ export default class PreviewPanel extends React.Component {
     this.props.setPreviewStatus({ preStatus: 'dispatch' });
     this.props.hidePreviewer();
   }
+  handleCiqDisp = () => {
+    this.props.setPreviewStatus({ preStatus: 'ciqdispatch' });
+    this.props.hidePreviewer();
+  }
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'dispCancel' });
     this.props.hidePreviewer();
@@ -263,7 +267,7 @@ export default class PreviewPanel extends React.Component {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
-              <Button type="ghost" onClick={this.handleDisp}>
+              <Button type="ghost" onClick={this.handleCiqDisp}>
                 指定报检单位
               </Button>
             </div>

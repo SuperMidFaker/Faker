@@ -17,7 +17,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   (state, props) => ({
-    tenantId: state.account.tenantId,
     delgBills: state.cmsDelegation.delgBillsMap[props.delgNo],
   }),
   { loadSubdelgsTable, openEfModal }
@@ -138,8 +137,6 @@ export default class SubdelgTable extends Component {
   handleTableLoad = () => {
     this.props.loadSubdelgsTable({
       delg_no: this.props.delgNo,
-      pageSize: this.props.delgBills.pageSize,
-      current: this.props.delgBills.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
