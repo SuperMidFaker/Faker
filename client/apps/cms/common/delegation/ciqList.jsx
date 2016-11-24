@@ -50,9 +50,6 @@ export default class CiqList extends Component {
     if (nextProps.saved !== this.props.saved) {
       this.handleTableLoad();
     }
-    if (nextProps.cMQParams !== this.props.cMQParams) {
-      this.handleMatchQuote(nextProps.cMQParams);
-    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -202,7 +199,6 @@ export default class CiqList extends Component {
           message.error(result.error.message);
         } else {
           this.handleTableLoad();
-          this.handleMQParam(row.delg_no);
         }
       }
     );
