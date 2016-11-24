@@ -208,11 +208,9 @@ export default class PreviewPanel extends React.Component {
       } else if (previewer.status === 0 && delegation.source === 2) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <ButtonGroup>
-              <Button type="default" onClick={this.handleDispCancel}>
-                撤回
-              </Button>
-            </ButtonGroup>
+            <Button type="default" onClick={this.handleDispCancel}>
+              撤回
+            </Button>
           </PrivilegeCover>
         );
       } else if (previewer.status === 1 && delegation.source === 1) {
@@ -243,7 +241,7 @@ export default class PreviewPanel extends React.Component {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
-              <Button type="ghost" onClick={this.handleMake}>
+              <Button type="primary" onClick={this.handleMake}>
                 制单
               </Button>
             </div>
