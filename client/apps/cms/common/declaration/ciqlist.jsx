@@ -41,8 +41,6 @@ ColumnSwitch.propTypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
     ciqdeclList: state.cmsDeclare.ciqdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
@@ -58,13 +56,8 @@ export default class CiqDeclList extends Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
     ciqdeclList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-  }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
   }
   state = {
     searchInput: '',

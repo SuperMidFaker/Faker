@@ -38,6 +38,14 @@ const messages = defineMessages({
     id: 'cms.modals.tabpanes.expense,info',
     defaultMessage: '无匹配报价规则',
   },
+  consginSource: {
+    id: 'cms.docs.consign.source',
+    defaultMessage: '委托',
+  },
+  subcontractSource: {
+    id: 'cms.docs.subcontract.source',
+    defaultMessage: '分包',
+  },
 });
 
 export default messages;

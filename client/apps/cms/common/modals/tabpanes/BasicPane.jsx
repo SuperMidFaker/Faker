@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Row, Col, Card } from 'antd';
+import moment from 'moment';
 import downloadMultiple from 'client/util/multipleDownloader';
+import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import './pane.less';
 
 function getColCls(col) {
@@ -39,7 +41,6 @@ PaneFormItem.propTypes = {
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect,
     delegation: state.cmsDelegation.previewer.delegation,
     files: state.cmsDelegation.previewer.files,
     delegateTracking: state.cmsDelegation.previewer.delegateTracking,
@@ -48,7 +49,6 @@ PaneFormItem.propTypes = {
 export default class BasicPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    aspect: PropTypes.number.isRequired,
     delegation: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     delegateTracking: PropTypes.object.isRequired,
@@ -103,6 +103,23 @@ export default class BasicPane extends React.Component {
         </div>
       );
     });
+    const goods = GOODSTYPES.filter(gt => gt.value === delegation.goods_type);
+    const tms = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode);
+    let doAwbText = '';
+    if (delegation.trans_mode === '2') {
+      if (CLAIM_DO_AWB.notClaimDO.key === delegation.claim_do_awb) {
+        doAwbText = CLAIM_DO_AWB.notClaimDO.value;
+      } else if (CLAIM_DO_AWB.claimDO.key === delegation.claim_do_awb) {
+        doAwbText = CLAIM_DO_AWB.claimDO.value;
+      }
+    }
+    if (delegation.trans_mode === '5') {
+      if (CLAIM_DO_AWB.notClaimAWB.key === delegation.claim_do_awb) {
+        doAwbText = CLAIM_DO_AWB.notClaimAWB.value;
+      } else if (CLAIM_DO_AWB.claimAWB.key === delegation.claim_do_awb) {
+        doAwbText = CLAIM_DO_AWB.claimAWB.value;
+      }
+    }
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
@@ -114,12 +131,12 @@ export default class BasicPane extends React.Component {
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="代理方"
-                field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
+                field={delegation.agent_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="委托日期"
-                field={delegateTracking.delg_time} fieldCol={{ span: 9 }}
+              <PaneFormItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
+                field={moment(delegateTracking.delg_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
           </Row>
@@ -144,7 +161,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="运输方式"
-                field={delegation.trans_mode} fieldCol={{ span: 9 }}
+                field={tms.length > 0 ? tms[0].text : ''} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
@@ -161,7 +178,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="货物类型"
-                field={delegation.goods_type} fieldCol={{ span: 9 }}
+                field={goods.length > 0 ? goods[0].text : ''} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
@@ -178,7 +195,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="是否抽/换单"
-                field={delegation.claim_do_awb} fieldCol={{ span: 9 }}
+                field={doAwbText} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="16">
