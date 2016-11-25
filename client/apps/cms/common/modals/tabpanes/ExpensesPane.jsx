@@ -95,8 +95,8 @@ export default class ExpensePane extends React.Component {
     const cushDataSource = expenses.cush_charges;
     return (
       <div className="pane-content tab-pane">
-        <Tabs defaultActiveKey="recievable" tabPosition="left">
-          <TabPane tab="应收" key="recievable" style={{ padding: 8 }}>
+        <Tabs defaultActiveKey="revenue" tabPosition="left">
+          <TabPane tab={this.msg('revenue')} key="revenue" style={{ padding: 8 }}>
             <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
               <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
             </Card>
@@ -104,7 +104,7 @@ export default class ExpensePane extends React.Component {
               <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
             </Card>
           </TabPane>
-          <TabPane tab="应付" key="payable" style={{ padding: 8 }}>
+          <TabPane tab={this.msg('cost')} key="cost" style={{ padding: 8 }}>
             <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
               <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
             </Card>

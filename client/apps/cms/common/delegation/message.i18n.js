@@ -183,7 +183,7 @@ export default defineMessages({
   },
   billNo: {
     id: 'cms.delegation.delg.billNo',
-    defaultMessage: '清单编号',
+    defaultMessage: '子业务编号',
   },
   compEntryId: {
     id: 'cms.delegation.delg.comp.entryId',
@@ -191,7 +191,7 @@ export default defineMessages({
   },
   entryId: {
     id: 'cms.delegation.delg.entryId',
-    defaultMessage: '报关单号',
+    defaultMessage: '海关编号',
   },
   consginSource: {
     id: 'cms.delegation.consign.source',

@@ -2,6 +2,14 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  revenue: {
+    id: 'cms.modals.tabpanes.billing.revenue',
+    defaultMessage: '收入',
+  },
+  cost: {
+    id: 'cms.modals.tabpanes.billing.cost',
+    defaultMessage: '成本',
+  },
   serviceFee: {
     id: 'cms.modals.tabpanes.service.fee',
     defaultMessage: '服务费',

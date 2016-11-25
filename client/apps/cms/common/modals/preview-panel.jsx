@@ -164,6 +164,12 @@ export default class PreviewPanel extends React.Component {
             <TabPane tab="鉴定办证" key="certs">
               <CertsPane />
             </TabPane>
+            <TabPane tab="缴税" key="taxes">
+              <DutyTaxPane />
+            </TabPane>
+            <TabPane tab="计费" key="expenses">
+              <ExpensesPane />
+            </TabPane>
             <TabPane tab="日志" key="delegateTracking">
               <DelegateTrackingPane delegateTracking={delegateTracking} />
             </TabPane>

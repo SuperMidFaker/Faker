@@ -114,12 +114,10 @@ export default class AcceptanceCreate extends Component {
               <Row gutter={16}>
                 <Col sm={18}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                  <SubForm form={form} ietype={type} />
                 </Col>
                 <Col sm={6}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
-                </Col>
-                <Col sm={24}>
-                  <SubForm form={form} ietype={type} />
                 </Col>
               </Row>
             </Form>
