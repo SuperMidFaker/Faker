@@ -25,11 +25,11 @@ export default class BrokerList extends Component {
   }
 
   renderEditAndStopOperations = (itemInfo) => {
-    const { id, name, partnerCode, partnerUniqueCode } = itemInfo;
+    const { id, name, partnerCode, partnerUniqueCode, partnerships } = itemInfo;
     return (
       <PrivilegeCover module="corp" feature="partners" action="edit">
         <span>
-          <a onClick={() => this.props.onEditBtnClick(id, name, partnerCode, partnerUniqueCode)}>修改</a>
+          <a onClick={() => this.props.onEditBtnClick(id, name, partnerCode, partnerUniqueCode, partnerships)}>修改</a>
           <span className="ant-divider" />
           <a onClick={() => this.props.onStopBtnClick(id)}>停用</a>
         </span>

@@ -33,34 +33,33 @@ export default class BrokerModal extends React.Component {
     editPartner: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
     toggleCarrierModal: PropTypes.func.isRequired,
-    partnerships: PropTypes.array,
   }
   state = {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
-    partnerships: this.props.partnerships || [],
+    partnerships: [],
+    oldPartnerships: ['CCB', 'CIB', 'ICB'],
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       partnerName: nextProps.carrier.name || '',
       partnerCode: nextProps.carrier.code || '',
       partnerUniqueCode: nextProps.carrier.partnerUniqueCode || '',
+      partnerships: nextProps.carrier.partnerships || [],
     });
   }
   handleOk = () => {
-    const { tenantId, carrier } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, partnerships } = this.state;
+    const { tenantId, carrier, operation } = this.props;
+    const { partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships } = this.state;
     if (partnerName === '') {
       message.error('请填写供应商名称');
-    } else if (partnerCode === '') {
-      message.error('请填写供应商代码');
-    } else if (partnerUniqueCode === '') {
+    } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('请填写企业唯一标识码');
     } else {
       this.handleCancel();
       if (this.props.operation === 'edit') {
-        this.props.editPartner(carrier.id, partnerName, partnerCode).then((result) => {
+        this.props.editPartner(carrier.id, partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           }
@@ -94,23 +93,23 @@ export default class BrokerModal extends React.Component {
     this.setState({ partnerships: value });
   }
   render() {
-    const { visible } = this.props;
+    const { visible, operation } = this.props;
     const { partnerName, partnerCode, partnerUniqueCode, partnerships } = this.state;
     return (
       <Modal title={this.props.operation === 'add' ? '新增供应商' : '修改供应商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="供应商名称:" required>
           <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
         </FormItem>
-        <FormItem {...formItemLayout} label="供应商代码:" required>
-          <Input required value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
-        </FormItem>
         <FormItem {...formItemLayout} label="企业唯一标识码:" required>
-          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
+          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} disabled={operation === 'edit'} />
+        </FormItem>
+        <FormItem {...formItemLayout} label="供应商代码:" required>
+          <Input value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="供应商类型:" required>
           <CheckboxGroup
             options={options}
-            defaultValue={partnerships}
+            value={partnerships}
             onChange={this.handleProviderChange}
           />
         </FormItem>

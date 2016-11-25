@@ -52,12 +52,15 @@ export default class List extends React.Component {
   handleRowClick = (record) => {
     this.setState({ customer: record });
   }
+  handleTableLoad = () => {
+    this.props.loadCustomers({
+      tenantId: this.props.tenantId,
+    });
+  }
   handleOptionClick = (e) => {
     if (e.key === 'remove') {
-      this.props.deletePartner(this.state.customer.id).then(() => {
-        this.props.loadCustomers({
-          tenantId: this.props.tenantId,
-        });
+      this.props.deletePartner(this.state.customer.id, ['CUS']).then(() => {
+        this.handleTableLoad();
       });
     }
   }
@@ -76,7 +79,7 @@ export default class List extends React.Component {
       </Menu>
     );
     const operations = (
-      <Dropdown.Button overlay={menu} type="ghost">
+      <Dropdown.Button overlay={menu} type="ghost" onClick={() => this.props.showCustomerModal('edit', customer)}>
         修 改
       </Dropdown.Button>
     );
@@ -93,7 +96,7 @@ export default class List extends React.Component {
                 <div className="panel-header">
 
                   <div className="pull-right">
-                    <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal()}>
+                    <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')}>
                       {this.msg('add')}
                     </Button>
                   </div>
@@ -101,7 +104,7 @@ export default class List extends React.Component {
                 </div>
                 <div className="panel-body table-panel" >
                   <Table dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
-                  <CustomerModal />
+                  <CustomerModal onOk={this.handleTableLoad}/>
                 </div>
               </div>
             </Col>

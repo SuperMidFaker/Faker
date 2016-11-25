@@ -164,7 +164,7 @@ export function checkPartner({ tenantId, partnerInfo }) {
   };
 }
 
-export function editPartner(partnerId, name, code) {
+export function editPartner(partnerId, name, code, partnerUniqueCode, partnerships, oldPartnerships) {
   return {
     [CLIENT_API]: {
       types: [
@@ -175,11 +175,14 @@ export function editPartner(partnerId, name, code) {
       endpoint: 'v1/cooperation/partner/edit',
       method: 'post',
       id: partnerId,
-      editInfo: { name, code },
+      editInfo: { name, code, partnerUniqueCode, partnerships },
       data: {
         partnerId,
         name,
         code,
+        partnerUniqueCode,
+        partnerships,
+        oldPartnerships,
       },
     },
   };
@@ -205,7 +208,7 @@ export function changePartnerStatus(id, status) {
   };
 }
 
-export function deletePartner(id) {
+export function deletePartner(id, partnerships) {
   return {
     [CLIENT_API]: {
       types: [
@@ -217,7 +220,7 @@ export function deletePartner(id) {
       method: 'post',
       id,
       data: {
-        id,
+        id, partnerships
       },
     },
   };

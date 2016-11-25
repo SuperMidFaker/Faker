@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { addCustomer, showCustomerModal, hideCustomerModal } from 'common/reducers/crmCustomers';
+import { addCustomer, editCustomer, showCustomerModal, hideCustomerModal } from 'common/reducers/crmCustomers';
 import { checkPartner } from 'common/reducers/partner';
 import { CUSTOMER_TYPES } from 'common/constants';
 const FormItem = Form.Item;
@@ -16,9 +16,10 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
     visible: state.crmCustomers.customerModal.visible,
-    partnerId: state.crmCustomers.customerModal.customer,
+    customer: state.crmCustomers.customerModal.customer,
+    operation: state.crmCustomers.customerModal.operation,
   }),
-  { addCustomer, checkPartner, showCustomerModal, hideCustomerModal }
+  { addCustomer, editCustomer, checkPartner, showCustomerModal, hideCustomerModal }
 )
 
 export default class CustomerModal extends React.Component {
@@ -26,13 +27,17 @@ export default class CustomerModal extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
+    operation: PropTypes.string, // add  edit
     addCustomer: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
     hideCustomerModal: PropTypes.func.isRequired,
-    partnerId: PropTypes.number.isRequired,
+    editCustomer: PropTypes.func.isRequired,
+    customer: PropTypes.number.isRequired,
+    onOk: PropTypes.func,
   }
   state = {
+    id: -1,
     name: '',
     partnerCode: '',
     partnerUniqueCode: '',
@@ -41,9 +46,24 @@ export default class CustomerModal extends React.Component {
     email: '',
     customerTypes: [],
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.operation === 'edit') {
+      this.setState({
+        id: nextProps.customer.id,
+        name: nextProps.customer.name,
+        partnerCode: nextProps.customer.partner_code,
+        partnerUniqueCode: nextProps.customer.partner_unique_code || '',
+        contact: nextProps.customer.contact,
+        phone: nextProps.customer.phone,
+        email: nextProps.customer.email,
+        customerTypes: nextProps.customer.customer_types,
+      });
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.setState({
+      id: -1,
       name: '',
       partnerCode: '',
       partnerUniqueCode: '',
@@ -55,54 +75,74 @@ export default class CustomerModal extends React.Component {
     this.props.hideCustomerModal();
   }
   handleOk = () => {
-    const { name, partnerCode, partnerUniqueCode, contact, phone, email, customerTypes } = this.state;
-    const { tenantId } = this.props;
+    const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, customerTypes } = this.state;
+    const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
-    } else if (!partnerCode || partnerCode === '') {
-      message.error('企业编码必填');
-    } else if (!partnerUniqueCode || partnerUniqueCode === '') {
+    } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('企业唯一标识码必填');
     } else if (customerTypes.length === 0) {
       message.error('请选择客户业务类型');
     } else {
-      this.props.checkPartner({
-        tenantId,
-        partnerInfo: { name, partnerCode, partnerUniqueCode },
-      }).then((result) => {
-        let customerName = name;
-        if (result.data.partner && result.data.partner.name !== name) {
-          customerName = result.data.partner.name;
-        }
-        this.props.addCustomer({
+      if (this.props.operation === 'edit') {
+        this.props.editCustomer({
           tenantId,
-          partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
-          customerTypes,
-        }).then((result1) => {
-          if (result1.error) {
-            message.error(result1.error.message);
+          partnerInfo: { id, name, partnerCode, partnerUniqueCode, contact, phone, email },
+          customerTypes
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message);
           } else {
-            if (customerName !== name) {
-              message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的企业信息， 已将企业名称 ${name} 替换为 ${customerName} `, 10);
-            } else {
-              message.info('添加成功');
-            }
+            this.props.onOk();
+            message.success('修改成功');
             this.handleCancel();
           }
         });
-      });
+      } else {
+        this.props.checkPartner({
+          tenantId,
+          partnerInfo: { name, partnerCode, partnerUniqueCode },
+        }).then((result) => {
+          let customerName = name;
+          if (result.data.partner && result.data.partner.name !== name) {
+            customerName = result.data.partner.name;
+          }
+          this.props.addCustomer({
+            tenantId,
+            partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
+            customerTypes,
+          }).then((result1) => {
+            if (result1.error) {
+              message.error(result1.error.message);
+            } else {
+              this.handleCancel();
+              if (customerName !== name) {
+                message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的企业信息， 已将企业名称 ${name} 替换为 ${customerName} `, 10);
+              } else {
+                message.info('添加成功');
+              }
+              
+            }
+          });
+        });
+      }
     }
   }
 
   render() {
-    const { visible } = this.props;
+    const { visible, operation } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
-
+    let title = '';
+    if (operation === 'add') {
+      title = '新增客户';
+    } else if (operation === 'edit') {
+      title = '修改客户';
+    }
     return (
-      <Modal visible={visible} title="新增客户" onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form horizontal>
           <FormItem
             {...formItemLayout}
@@ -114,26 +154,25 @@ export default class CustomerModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="企业编码"
-            hasFeedback
-            required
-          >
-            <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
             label="企业唯一标识码"
             hasFeedback
             required
           >
-            <Input value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
+            <Input value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} disabled={operation === 'edit'} />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="企业代码"
+            hasFeedback
+          >
+            <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={CUSTOMER_TYPES} onChange={(value) => { this.setState({ customerTypes: value }); }} />
+            <CheckboxGroup options={CUSTOMER_TYPES} value={this.state.customerTypes} onChange={(value) => { this.setState({ customerTypes: value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -151,6 +190,7 @@ export default class CustomerModal extends React.Component {
             hasFeedback
           >
             <Input
+              type="tel"
               value={this.state.phone}
               onChange={(e) => { this.setState({ phone: e.target.value }); }}
             />
@@ -161,6 +201,7 @@ export default class CustomerModal extends React.Component {
             hasFeedback
           >
             <Input
+            type="email"
               value={this.state.email}
               onChange={(e) => { this.setState({ email: e.target.value }); }}
             />

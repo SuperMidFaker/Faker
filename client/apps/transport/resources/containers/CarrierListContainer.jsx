@@ -40,7 +40,7 @@ export default class DriverListContainer extends Component {
     this.props.changePartnerStatus(id, 0);
   }
   handleDeleteBtnClick = (id) => {
-    this.props.deletePartner(id);
+    this.props.deletePartner(id, ['TRS']);
   }
   handleResumeBtnClick = (id) => {
     this.props.changePartnerStatus(id, 1);

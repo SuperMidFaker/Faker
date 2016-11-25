@@ -30,8 +30,8 @@ export default class ProviderListContainer extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  handleEditBtnClick = (id, name, code, partnerUniqueCode) => {
-    this.props.toggleCarrierModal(true, 'edit', { id, name, code, partnerUniqueCode });
+  handleEditBtnClick = (id, name, code, partnerUniqueCode, partnerships) => {
+    this.props.toggleCarrierModal(true, 'edit', { id, name, code, partnerUniqueCode, partnerships });
   }
   handleAddBtnClick = () => {
     this.props.toggleCarrierModal(true, 'add');
@@ -40,7 +40,7 @@ export default class ProviderListContainer extends Component {
     this.props.changePartnerStatus(id, 0);
   }
   handleDeleteBtnClick = (id) => {
-    this.props.deletePartner(id);
+    this.props.deletePartner(id, ['CCB', 'CIB', 'ICB']);
   }
   handleResumeBtnClick = (id) => {
     this.props.changePartnerStatus(id, 1);

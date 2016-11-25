@@ -34,27 +34,28 @@ export default class CarrierModal extends React.Component {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
+    partnerships: ['TRS'],
+    oldPartnerships: ['TRS'],
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       partnerName: nextProps.carrier.name || '',
       partnerCode: nextProps.carrier.code || '',
       partnerUniqueCode: nextProps.carrier.partnerUniqueCode || '',
+      partnerships: nextProps.carrier.partnerships || ['TRS'],
     });
   }
   handleOk = () => {
-    const { tenantId, carrier } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode } = this.state;
+    const { tenantId, carrier, operation } = this.props;
+    const { partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships } = this.state;
     if (partnerName === '') {
-      message.error('请填写合作伙伴名称');
-    } else if (partnerCode === '') {
-      message.error('请填写合作伙伴代码');
-    } else if (partnerUniqueCode === '') {
+      message.error('请填写承运商名称');
+    } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('请填写企业唯一标识码');
     } else {
       this.handleCancel();
       if (this.props.operation === 'edit') {
-        this.props.editPartner(carrier.id, partnerName, partnerCode).then((result) => {
+        this.props.editPartner(carrier.id, partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -73,7 +74,7 @@ export default class CarrierModal extends React.Component {
           if (result.data.partner && result.data.partner.name !== partnerName) {
             name = result.data.partner.name;
           }
-          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, partnerships: ['TRS'] }).then((result1) => {
+          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, partnerships }).then((result1) => {
             if (result1.error) {
               message.error(result1.error.message);
             } else {
@@ -95,18 +96,18 @@ export default class CarrierModal extends React.Component {
     this.props.toggleCarrierModal(false);
   }
   render() {
-    const { visible } = this.props;
+    const { visible, operation } = this.props;
     const { partnerName, partnerCode, partnerUniqueCode } = this.state;
     return (
       <Modal title={this.props.operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <FormItem {...formItemLayout} label="合作伙伴名称:" required>
+        <FormItem {...formItemLayout} label="承运商名称:" required>
           <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
         </FormItem>
-        <FormItem {...formItemLayout} label="合作伙伴代码:" required>
-          <Input required value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
-        </FormItem>
         <FormItem {...formItemLayout} label="企业唯一标识码:" required>
-          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
+          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} disabled={operation === 'edit'} />
+        </FormItem>
+        <FormItem {...formItemLayout} label="承运商代码:" required>
+          <Input value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
         </FormItem>
       </Modal>
     );
