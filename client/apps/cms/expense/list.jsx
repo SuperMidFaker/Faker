@@ -96,7 +96,7 @@ export default class ExpenseList extends Component {
       dataIndex: 'bl_wb_no',
       width: 240,
     }, {
-      title: '收款',
+      title: this.msg('revenue'),
       children: [
         {
           title: this.msg('allBill'),
@@ -109,7 +109,7 @@ export default class ExpenseList extends Component {
             }
           },
         }, {
-          title: this.msg('servBill'),
+          title: this.msg('serviceRevenue'),
           dataIndex: 'serv_bill',
           key: 'serv_bill',
           width: 100,
@@ -131,7 +131,7 @@ export default class ExpenseList extends Component {
         },
       ],
     }, {
-      title: '付款',
+      title: this.msg('cost'),
       children: [
         {
           title: this.msg('allCost'),
