@@ -83,49 +83,46 @@ export default class CustomerModal extends React.Component {
       message.error('企业唯一标识码必填');
     } else if (customerTypes.length === 0) {
       message.error('请选择客户业务类型');
+    } else if (this.props.operation === 'edit') {
+      this.props.editCustomer({
+        tenantId,
+        partnerInfo: { id, name, partnerCode, partnerUniqueCode, contact, phone, email },
+        customerTypes,
+      }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.props.onOk();
+          message.success('修改成功');
+          this.handleCancel();
+        }
+      });
     } else {
-      if (this.props.operation === 'edit') {
-        this.props.editCustomer({
+      this.props.checkPartner({
+        tenantId,
+        partnerInfo: { name, partnerCode, partnerUniqueCode },
+      }).then((result) => {
+        let customerName = name;
+        if (result.data.partner && result.data.partner.name !== name) {
+          customerName = result.data.partner.name;
+        }
+        this.props.addCustomer({
           tenantId,
-          partnerInfo: { id, name, partnerCode, partnerUniqueCode, contact, phone, email },
-          customerTypes
-        }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message);
+          partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
+          customerTypes,
+        }).then((result1) => {
+          if (result1.error) {
+            message.error(result1.error.message);
           } else {
-            this.props.onOk();
-            message.success('修改成功');
             this.handleCancel();
-          }
-        });
-      } else {
-        this.props.checkPartner({
-          tenantId,
-          partnerInfo: { name, partnerCode, partnerUniqueCode },
-        }).then((result) => {
-          let customerName = name;
-          if (result.data.partner && result.data.partner.name !== name) {
-            customerName = result.data.partner.name;
-          }
-          this.props.addCustomer({
-            tenantId,
-            partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
-            customerTypes,
-          }).then((result1) => {
-            if (result1.error) {
-              message.error(result1.error.message);
+            if (customerName !== name) {
+              message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的企业信息， 已将企业名称 ${name} 替换为 ${customerName} `, 10);
             } else {
-              this.handleCancel();
-              if (customerName !== name) {
-                message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的企业信息， 已将企业名称 ${name} 替换为 ${customerName} `, 10);
-              } else {
-                message.info('添加成功');
-              }
-              
+              message.info('添加成功');
             }
-          });
+          }
         });
-      }
+      });
     }
   }
 
@@ -201,7 +198,7 @@ export default class CustomerModal extends React.Component {
             hasFeedback
           >
             <Input
-            type="email"
+              type="email"
               value={this.state.email}
               onChange={(e) => { this.setState({ email: e.target.value }); }}
             />

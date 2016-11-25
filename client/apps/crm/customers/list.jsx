@@ -104,7 +104,7 @@ export default class List extends React.Component {
                 </div>
                 <div className="panel-body table-panel" >
                   <Table dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
-                  <CustomerModal onOk={this.handleTableLoad}/>
+                  <CustomerModal onOk={this.handleTableLoad} />
                 </div>
               </div>
             </Col>

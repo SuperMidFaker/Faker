@@ -220,7 +220,7 @@ export function deletePartner(id, partnerships) {
       method: 'post',
       id,
       data: {
-        id, partnerships
+        id, partnerships,
       },
     },
   };
