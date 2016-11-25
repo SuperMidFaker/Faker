@@ -73,7 +73,7 @@ export default class CustomsDeclPane extends React.Component {
       dataIndex: 'entry_id',
     }, {
       title: '申报日期',
-      dataIndex: 'process_date',
+      dataIndex: 'd_date',
       render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
     }, {
       title: '通关状态',
