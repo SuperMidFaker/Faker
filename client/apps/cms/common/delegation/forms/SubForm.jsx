@@ -126,7 +126,7 @@ export default class SubForm extends Component {
       );
     });
     return (
-      <Card bodyStyle={{ padding: 16 }}>
+      <Card title={this.msg('delgClearance')} bodyStyle={{ padding: 16 }}>
         {formItems}
         <div style={{ marginTop: 8 }}>
           <Button type="dashed" size="large" onClick={this.handleAddRow} icon="plus" style={{ width: '100%' }}>

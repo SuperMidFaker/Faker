@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Icon, Input, Card, Col, Row, Radio, Tooltip } from 'antd';
+import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
@@ -203,14 +203,14 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
               {getFieldDecorator('pieces', {
                 initialValue: fieldInits.pieces,
-              })(<Input />)}
+              })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
-              })(<Input />)}
+              })(<Input addonAfter="公斤" />)}
             </FormItem>
           </Col>
         </Row>
@@ -245,7 +245,7 @@ export default class BasicForm extends Component {
             <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
               {getFieldDecorator('remark', {
                 initialValue: fieldInits.remark,
-              })(<Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} />)}
+              })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
             </FormItem>
           </Col>
         </Row>

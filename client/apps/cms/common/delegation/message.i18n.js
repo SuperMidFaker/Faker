@@ -5,6 +5,14 @@ export default defineMessages({
     id: 'cms.delegation',
     defaultMessage: '委托',
   },
+  createDelegation: {
+    id: 'cms.delegation.create',
+    defaultMessage: '新建清关委托',
+  },
+  delgClearance: {
+    id: 'cms.delegation.clearance',
+    defaultMessage: '清关业务',
+  },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
     defaultMessage: '提运单号/订单号/发票号',
@@ -59,7 +67,7 @@ export default defineMessages({
   },
   delgInfo: {
     id: 'cms.delegation.delg.info',
-    defaultMessage: '委托信息',
+    defaultMessage: '基础信息',
   },
   delgNo: {
     id: 'cms.delegation.delg.no',
@@ -283,7 +291,7 @@ export default defineMessages({
   },
   delgNew: {
     id: 'cms.delegation.delg.new',
-    defaultMessage: '新建委托',
+    defaultMessage: '新建清关委托',
   },
   delgSaveConfirm: {
     id: 'cms.delegation.delgsave.confirm',

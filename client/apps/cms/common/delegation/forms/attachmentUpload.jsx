@@ -6,7 +6,7 @@
  */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { Upload, Card, Icon, Button, message } from 'antd';
+import { Alert, Upload, Card, Icon, Button, message } from 'antd';
 
 @connect(
   state => ({
@@ -83,6 +83,7 @@ export default class AttchmentUpload extends Component {
   render() {
     return (
       <Card title="附件" bodyStyle={{ padding: 16 }}>
+        <Alert message="可上传合同、发票、箱单等，支持Excel,Word,PDF,JPG,PNG格式" type="info" />
         <Upload listType="text" fileList={this.state.attachments}
           onRemove={this.handleRemove} onChange={this.handleChange}
           action={`${API_ROOTS.default}v1/upload/img/`} withCredentials

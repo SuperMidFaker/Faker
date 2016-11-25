@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Row, Popconfirm, message } from 'antd';
+import { Form, Col, Button, Row, message } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SubForm from './forms/SubForm';
@@ -95,8 +96,8 @@ export default class AcceptanceEdit extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <span>修改委托</span>
         </header>
         <div className="top-bar-tools">
@@ -106,7 +107,7 @@ export default class AcceptanceEdit extends Component {
             {this.msg('save')}
           </Button>
         </div>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Form horizontal form={form}>
               <Row gutter={16}>
@@ -121,7 +122,7 @@ export default class AcceptanceEdit extends Component {
             </Form>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }
