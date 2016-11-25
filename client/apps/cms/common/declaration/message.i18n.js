@@ -94,6 +94,10 @@ export default defineMessages({
     id: 'cms.declaration.customs.check',
     defaultMessage: '海关查验',
   },
+  all: {
+    id: 'cms.declaration.customs.all',
+    defaultMessage: '全部',
+  },
   filterDeclared: {
     id: 'cms.declaration.customs.filter.declared',
     defaultMessage: '申报',

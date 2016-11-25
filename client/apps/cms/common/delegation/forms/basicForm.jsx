@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col, Row, Radio } from 'antd';
+import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
@@ -139,14 +139,28 @@ export default class BasicForm extends Component {
           </Col>
           <Col sm={8}>
             {getFieldValue('trans_mode') === '2' &&
-              <FormItem label={this.msg('bLNo')} {...formItemLayout}>
+              <FormItem label={(
+                <span>
+                  {this.msg('bLNo')}&nbsp;
+                  <Tooltip title="如有分提单填报：提单号*分提单号">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>)} {...formItemLayout}
+              >
                 {getFieldDecorator('bl_wb_no', {
                   initialValue: fieldInits.bl_wb_no,
                 })(<Input />)}
               </FormItem>
             }
             {getFieldValue('trans_mode') === '5' &&
-              <FormItem label={this.msg('deliveryNo')} {...formItemLayout}>
+              <FormItem label={(
+                <span>
+                  {this.msg('deliveryNo')}&nbsp;
+                  <Tooltip title="填报总运单号_分运单号，无分运单的填报总运单号">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>)} {...formItemLayout}
+              >
                 {getFieldDecorator('bl_wb_no', {
                   initialValue: fieldInits.bl_wb_no,
                 })(<Input />)}
@@ -158,14 +172,14 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
                 {getFieldDecorator('voyage_no', {
                   initialValue: fieldInits.voyage_no,
-                })(<Input />)}
+                })(<Input placeholder="填写船舶英文名称" />)}
               </FormItem>
             }
             {getFieldValue('trans_mode') === '5' &&
               <FormItem label={this.msg('flightNo')} {...formItemLayout}>
                 {getFieldDecorator('voyage_no', {
                   initialValue: fieldInits.voyage_no,
-                })(<Input />)}
+                })(<Input placeholder="填写航班号" />)}
               </FormItem>
             }
           </Col>
@@ -189,14 +203,14 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
               {getFieldDecorator('pieces', {
                 initialValue: fieldInits.pieces,
-              })(<Input />)}
+              })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col sm={8}>
             <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
-              })(<Input />)}
+              })(<Input addonAfter="公斤" />)}
             </FormItem>
           </Col>
         </Row>
@@ -224,14 +238,6 @@ export default class BasicForm extends Component {
                 </RadioGroup>)}
               </FormItem>
             }
-            {getFieldValue('trans_mode') === '5' &&
-              <FormItem label="抽单" {...formItemLayout}>
-                {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
-                  <RadioButton value={CLAIM_DO_AWB.claimAWB.key}>{CLAIM_DO_AWB.claimAWB.value}</RadioButton>
-                  <RadioButton value={CLAIM_DO_AWB.notClaimAWB.key}>{CLAIM_DO_AWB.notClaimAWB.value}</RadioButton>
-                </RadioGroup>)}
-              </FormItem>
-            }
           </Col>
         </Row>
         <Row>
@@ -239,7 +245,7 @@ export default class BasicForm extends Component {
             <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
               {getFieldDecorator('remark', {
                 initialValue: fieldInits.remark,
-              })(<Input type="textarea" autosize={{ minRows: 3, maxRows: 16 }} />)}
+              })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
             </FormItem>
           </Col>
         </Row>

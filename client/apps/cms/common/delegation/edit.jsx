@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Popconfirm, message } from 'antd';
+import { Form, Col, Button, Row, message } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SubForm from './forms/SubForm';
@@ -95,42 +96,33 @@ export default class AcceptanceEdit extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <div>
-        <header className="top-bar">
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
           <span>修改委托</span>
         </header>
         <div className="top-bar-tools">
-          <Button size="large" type="primary" style={{ marginRight: 20 }}
+          <Button size="large" type="primary"
             onClick={this.handleSaveBtnClick} loading={submitting}
           >
             {this.msg('save')}
           </Button>
-          <span />
-          <Popconfirm title={this.msg('acceptSaveMessage')} onConfirm={this.handleSaveAccept}>
-            <Button size="large" loading={submitting}>一键接单</Button>
-          </Popconfirm>
         </div>
-        <div className="main-content">
-
-          <div className="page-body">
+        <div className="main-content" key="main">
+          <div className="page-body card-wrapper">
             <Form horizontal form={form}>
-              <div className="panel-body">
-                <Col sm={16} style={{ padding: '16px 8px 8px 16px' }}>
+              <Row gutter={16}>
+                <Col sm={18}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                  <SubForm form={form} ietype={type} />
                 </Col>
-                <Col sm={8} style={{ padding: '16px 16px 8px 8px' }}>
-                  <UploadGroup onFileUpload={this.handleUploadedFile}
-                    onFileRemove={this.handleFileRemove}
-                  />
+                <Col sm={6}>
+                  <UploadGroup onFileListUpdate={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
                 </Col>
-              </div>
-              <div id="parent" style={{ padding: '16px' }}>
-                <SubForm form={form} ietype={type} />
-              </div>
+              </Row>
             </Form>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

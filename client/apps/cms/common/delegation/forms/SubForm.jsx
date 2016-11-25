@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import update from 'react/lib/update';
 import { connect } from 'react-redux';
-import { Form, Select, Input, InputNumber, Card, Col, Row, Button } from 'antd';
+import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Button } from 'antd';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
@@ -85,7 +85,7 @@ export default class SubForm extends Component {
     const formItems = this.state.keys.map((k) => {
       return (
         <Row key={k} style={{ marginBottom: 8 }}>
-          <Col sm={6}>
+          <Col sm={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
               {getFieldDecorator(`decl_way_code_${k}`, {
                 rules: [{ required: true, message: '报关类型必选' }],
@@ -99,13 +99,7 @@ export default class SubForm extends Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col sm={6}>
-            <FormItem label={this.msg('manualNo')} {...formItemLayout}>
-              {getFieldDecorator(`manual_no_${k}`, {
-                initialValue: bills[k].manual_no })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={5}>
+          <Col sm={7}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               {getFieldDecorator(`pack_count_${k}`, {
                 initialValue: bills[k].pack_count || 1 })(
@@ -113,7 +107,7 @@ export default class SubForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={7}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               {getFieldDecorator(`gross_wt_${k}`, {
                 initialValue: bills[k].gross_wt,
@@ -121,13 +115,18 @@ export default class SubForm extends Component {
             </FormItem>
           </Col>
           <Col span={1} offset={1}>
-            <Button type="ghost" shape="circle" onClick={() => this.remove(k)} icon="delete" />
+            <Icon
+              className="dynamic-delete-button"
+              type="minus-circle-o"
+              disabled={this.state.keys.length === 1}
+              onClick={() => this.remove(k)}
+            />
           </Col>
         </Row>
       );
     });
     return (
-      <Card bodyStyle={{ padding: 16 }}>
+      <Card title={this.msg('delgClearance')} bodyStyle={{ padding: 16 }}>
         {formItems}
         <div style={{ marginTop: 8 }}>
           <Button type="dashed" size="large" onClick={this.handleAddRow} icon="plus" style={{ width: '100%' }}>

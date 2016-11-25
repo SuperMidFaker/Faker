@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Button, message } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SubForm from './forms/SubForm';
@@ -99,33 +100,31 @@ export default class AcceptanceCreate extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <div>
-        <header className="top-bar">
-          <span>新建委托</span>
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
+          <span>{this.msg('createDelegation')}</span>
         </header>
         <div className="top-bar-tools">
           <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick}>
             {this.msg('save')}
           </Button>
         </div>
-        <div className="main-content">
+        <div className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Form horizontal>
               <Row gutter={16}>
                 <Col sm={18}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
+                  <SubForm form={form} ietype={type} />
                 </Col>
                 <Col sm={6}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
-                </Col>
-                <Col sm={24}>
-                  <SubForm form={form} ietype={type} />
                 </Col>
               </Row>
             </Form>
           </div>
         </div>
-      </div>
+      </QueueAnim>
     );
   }
 }

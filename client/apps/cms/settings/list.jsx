@@ -58,18 +58,18 @@ export default class Settings extends Component {
           <Menu
             onClick={this.handleClick}
             defaultOpenKeys={['integration', 'bizdata']}
-            defaultSelectedKeys={['notification']}
+            defaultSelectedKeys={['quotemodel']}
             mode="inline"
           >
-            <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
+            <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
+              <Menu.Item key="quotemodel">报价模板</Menu.Item>
+              <Menu.Item key="9">报关清单</Menu.Item>
+            </SubMenu>
             <SubMenu key="integration" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
               <Menu.Item key="1">开放API</Menu.Item>
               <Menu.Item key="2">EDI</Menu.Item>
             </SubMenu>
-            <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-              <Menu.Item key="9">报关清单</Menu.Item>
-              <Menu.Item key="quotemodel">报价模板</Menu.Item>
-            </SubMenu>
+            <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
           </Menu>
         </aside>
         <div className="main-content with-side-bar no-top-bar" key="main">
@@ -79,7 +79,7 @@ export default class Settings extends Component {
                 <Icon type="setting" /> 设置
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                通知提醒
+                报价模板
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

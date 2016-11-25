@@ -50,17 +50,25 @@ const messages = defineMessages({
     id: 'cms.expense.bill.lading.no',
     defaultMessage: '提运单号',
   },
-  servBill: {
-    id: 'cms.expense.service.bill',
-    defaultMessage: '服务收费',
+  revenue: {
+    id: 'cms.expense.revenue',
+    defaultMessage: '收入',
+  },
+  serviceRevenue: {
+    id: 'cms.expense.revenue.service',
+    defaultMessage: '服务收入',
   },
   cushBill: {
     id: 'cms.expense.cushion.bill',
-    defaultMessage: '代垫收款',
+    defaultMessage: '代垫收入',
   },
   allBill: {
     id: 'cms.expense.all.bill',
-    defaultMessage: '收款合计',
+    defaultMessage: '收入合计',
+  },
+  cost: {
+    id: 'cms.expense.cost',
+    defaultMessage: '成本',
   },
   servCost: {
     id: 'cms.expense.service.cost',
@@ -68,11 +76,11 @@ const messages = defineMessages({
   },
   cushCost: {
     id: 'cms.expense.cushion.cost',
-    defaultMessage: '代垫付款',
+    defaultMessage: '代垫成本',
   },
   allCost: {
     id: 'cms.expense.all.cost',
-    defaultMessage: '付款合计',
+    defaultMessage: '成本合计',
   },
   statementEn: {
     id: 'cms.expense.statementEn',

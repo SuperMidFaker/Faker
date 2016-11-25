@@ -164,6 +164,12 @@ export default class PreviewPanel extends React.Component {
             <TabPane tab="鉴定办证" key="certs">
               <CertsPane />
             </TabPane>
+            <TabPane tab="缴税" key="taxes">
+              <DutyTaxPane />
+            </TabPane>
+            <TabPane tab="计费" key="expenses">
+              <ExpensesPane />
+            </TabPane>
             <TabPane tab="日志" key="delegateTracking">
               <DelegateTrackingPane delegateTracking={delegateTracking} />
             </TabPane>
@@ -212,11 +218,9 @@ export default class PreviewPanel extends React.Component {
       } else if (previewer.status === 0 && delegation.source === 2) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <ButtonGroup>
-              <Button type="default" onClick={this.handleDispCancel}>
-                撤回
-              </Button>
-            </ButtonGroup>
+            <Button type="default" onClick={this.handleDispCancel}>
+              撤回
+            </Button>
           </PrivilegeCover>
         );
       } else if (previewer.status === 1 && delegation.source === 1) {
@@ -247,7 +251,7 @@ export default class PreviewPanel extends React.Component {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
-              <Button type="ghost" onClick={this.handleMake}>
+              <Button type="primary" onClick={this.handleMake}>
                 制单
               </Button>
             </div>
