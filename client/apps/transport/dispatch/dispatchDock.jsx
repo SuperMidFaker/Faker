@@ -630,7 +630,7 @@ export default class DispatchDock extends Component {
           <div className="panel-content">
             <div className="header">
               <span className="title">分配 {shipmts.length}个运单</span>
-              <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
+              <Tag>共{totalCount}件/{totalWeight}千克/{totalVolume}立方</Tag>
               <div className="pull-right">
                 <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
                   <Icon type="cross" />

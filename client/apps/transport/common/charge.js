@@ -9,7 +9,7 @@ export function getChargeAmountExpression(meter, miles, quantity, unitRatio, coe
     if (meter === TARIFF_METER_METHODS[2].value) {
       amounts.push(`x${quantity}立方米`);
     } else {
-      amounts.push(`x${quantity}公斤`);
+      amounts.push(`x${quantity}千克`);
     }
   }
   if (!meter || unitRatio !== 1) {

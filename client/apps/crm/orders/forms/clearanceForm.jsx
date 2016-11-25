@@ -94,7 +94,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={5}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={item.gross_wt} addonAfter="公斤" type="number"
+              <Input value={item.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleChange(k, 'gross_wt', e.target.value)}
               />
             </FormItem>

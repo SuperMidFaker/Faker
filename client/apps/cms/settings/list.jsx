@@ -62,7 +62,7 @@ export default class Settings extends Component {
             mode="inline"
           >
             <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-              <Menu.Item key="quotemodel">报价模板</Menu.Item>
+              <Menu.Item key="quotemodel">费用模板</Menu.Item>
               <Menu.Item key="9">报关清单</Menu.Item>
             </SubMenu>
             <SubMenu key="integration" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
@@ -79,7 +79,7 @@ export default class Settings extends Component {
                 <Icon type="setting" /> 设置
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                报价模板
+                费用模板
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

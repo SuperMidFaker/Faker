@@ -188,7 +188,7 @@ export default class BasicPane extends React.Component {
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="总重量"
-                field={`${delegation.weight ? delegation.weight : ''} 公斤`} fieldCol={{ span: 9 }}
+                field={`${delegation.weight ? delegation.weight : ''} 千克`} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>

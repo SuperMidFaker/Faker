@@ -210,7 +210,7 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
-              })(<Input addonAfter="公斤" />)}
+              })(<Input addonAfter="千克" />)}
             </FormItem>
           </Col>
         </Row>

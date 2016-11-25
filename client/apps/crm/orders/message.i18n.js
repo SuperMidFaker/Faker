@@ -316,7 +316,7 @@ const messages = defineMessages({
   },
   kilogram: {
     id: 'crm.orders.previewer.goods.kilogram',
-    defaultMessage: '公斤',
+    defaultMessage: '千克',
   },
   insuranceValue: {
     id: 'tcrm.orders.previewer.goods.insurance',
@@ -348,7 +348,7 @@ const messages = defineMessages({
   },
   goodsWeight: {
     id: 'crm.orders.previewer.goods.weight',
-    defaultMessage: '重量(公斤)',
+    defaultMessage: '重量(千克)',
   },
   goodsVolume: {
     id: 'crm.orders.previewer.goods.volume',
