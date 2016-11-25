@@ -23,7 +23,6 @@ const ButtonGroup = Button.Group;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    aspect: state.account.aspect,
     entries: state.cmsDeclare.entries,
   }),
   { addEntry, setTabKey, openMergeSplitModal }
@@ -37,7 +36,6 @@ export default class EntryBillForm extends React.Component {
     params: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
-    aspect: PropTypes.number.isRequired,
     readonly: PropTypes.bool,
     entries: PropTypes.array.isRequired,
     addEntry: PropTypes.func.isRequired,
@@ -98,7 +96,7 @@ export default class EntryBillForm extends React.Component {
         >
           <div className="main-content">
             <div className="page-body tabbed fixed-height">
-              <EntryForm readonly={readonly} ietype={ietype} entry={entry}
+              <EntryForm readonly ietype={ietype} entry={entry}
                 totalCount={entries.length} index={idx}
               />
             </div>
