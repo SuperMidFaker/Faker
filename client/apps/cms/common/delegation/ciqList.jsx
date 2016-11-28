@@ -5,12 +5,13 @@ import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDisp,
-  loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote } from 'common/reducers/cmsDelegation';
+  loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
+import PreviewPanel from '../modals/preview-panel';
 
 const formatMsg = format(messages);
 
@@ -27,7 +28,7 @@ const formatMsg = format(messages);
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
   { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus,
-    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote }
+    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer }
 )
 export default class CiqList extends Component {
   static propTypes = {
@@ -254,7 +255,10 @@ export default class CiqList extends Component {
     const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
     return (
-      <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
+      <div>
+        <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
+        <PreviewPanel ietype={this.props.ietype} />
+      </div>
     );
   }
 }
