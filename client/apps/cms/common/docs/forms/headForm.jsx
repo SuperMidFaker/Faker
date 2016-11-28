@@ -63,22 +63,27 @@ export default class HeadForm extends React.Component {
     const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
+      disabled: readonly || type === 'entry',
+      formData,
+    };
+    const entryFormProps = {
+      getFieldDecorator: form.getFieldDecorator,
       disabled: readonly,
       formData,
     };
     return (
       <Form horizontal>
         {type === 'entry' &&
-          <FormInput field="pre_entry_id" outercol={9} col={6}
-            label={this.msg('preEntryId')} {...formProps}
-          />
-        }
-        {type === 'entry' &&
-          <Col span="15">
-            <FormInput field="entry_id" outercol={16} col={4}
-              label={this.msg('formEntryId')} {...formProps}
+          <Row>
+            <FormInput field="pre_entry_id" outercol={9} col={6}
+              label={this.msg('preEntryId')} {...entryFormProps}
             />
-          </Col>
+            <Col span="15">
+              <FormInput field="entry_id" outercol={16} col={4}
+                label={this.msg('formEntryId')} {...entryFormProps}
+              />
+            </Col>
+          </Row>
         }
         <Row>
           <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}

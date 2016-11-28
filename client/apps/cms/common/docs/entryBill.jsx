@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tabs, Dropdown, Menu, Icon } from 'antd';
+import { Button, Tabs, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -15,8 +15,6 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 
 const TabPane = Tabs.TabPane;
-const MenuItem = Menu.Item;
-const DropdownButton = Dropdown.Button;
 const ButtonGroup = Button.Group;
 
 @injectIntl
@@ -51,11 +49,16 @@ export default class EntryBillForm extends React.Component {
     visible: false,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.entries && nextProps.entries.length !== 0 &&
-      nextProps.entries !== this.props.entries) {
+    if (
+      nextProps.entries && nextProps.entries.length !== 0 &&
+      nextProps.entries !== this.props.entries &&
+      nextProps.entries[0].head.agent_code !== ''
+    ) {
       this.setState({
         activeKey: `entry${nextProps.entries.length - 1}`,
       });
+    } else {
+      this.setState({ activeKey: 'bill' });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -69,17 +72,14 @@ export default class EntryBillForm extends React.Component {
   handleTabChange = (activeKey) => {
     this.setState({ activeKey });
   }
+  handleGenerateEntry = () => {
+    this.props.openMergeSplitModal();
+  }
   handleDock = () => {
     this.setState({ visible: true });
   }
   render() {
     const { readonly, ietype, entries } = this.props;
-    const PopMenu = (
-      <Menu onClick={this.handleEntryMenuClick}>
-        <MenuItem key="generate">{this.msg('generateEntry')}</MenuItem>
-        <MenuItem key="add">{this.msg('addEntry')}</MenuItem>
-      </Menu>
-    );
     const panes = [
       <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
         <div className="main-content">
@@ -96,7 +96,7 @@ export default class EntryBillForm extends React.Component {
         >
           <div className="main-content">
             <div className="page-body tabbed fixed-height">
-              <EntryForm readonly ietype={ietype} entry={entry}
+              <EntryForm readonly={readonly} ietype={ietype} entry={entry}
                 totalCount={entries.length} index={idx}
               />
             </div>
@@ -104,23 +104,14 @@ export default class EntryBillForm extends React.Component {
         </TabPane>
       ))
       );
-    let tabButtons = (
-      <ButtonGroup>
-        <Button onClick={this.handleDock}><Icon type="double-left" /></Button>
+    const tabButtons = (
+      <ButtonGroup style={{ marginRight: 50 }}>
+        {!this.props.readonly &&
+        <Button type="ghost" icon="plus-square" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
+        }
+        <Button onClick={this.handleDock} icon="double-left" />
       </ButtonGroup>
     );
-    if (!this.props.readonly) {
-      tabButtons = (
-        <div>
-          <DropdownButton overlay={PopMenu}>
-            <Icon type="plus-square" />{this.msg('newDeclaration')}
-          </DropdownButton>
-          <ButtonGroup>
-            <Button onClick={this.handleDock}><Icon type="double-left" /></Button>
-          </ButtonGroup>
-        </div>
-      );
-    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Tabs tabBarExtraContent={tabButtons} activeKey={this.state.activeKey}
