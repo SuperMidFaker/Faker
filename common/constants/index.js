@@ -94,6 +94,7 @@ export const DELG_EXEMPTIONWAY = [{
 const DELG_SOURCE = {
   consigned: 1,       // 委托
   subcontracted: 2,   // 分包
+  assignAll: 3,   // 转包
 };
 
 const DELG_STATUS = {

@@ -80,7 +80,7 @@ export default class DelgDispatch extends Component {
   }]
   handleConfirm = () => {
     const { dispatch, tenantId } = this.props;
-    this.props.delDisp(dispatch.delg_no, tenantId, dispatch.recv_server_type
+    this.props.delDisp(dispatch.delg_no, tenantId, dispatch.type
     ).then(
       (result) => {
         if (result.error) {
@@ -137,6 +137,9 @@ export default class DelgDispatch extends Component {
     } else if (dispatch.type === 'cert') {
       title = this.msg('certDispatch');
       label = this.msg('dispCert');
+    } else if (dispatch.type === 'all') {
+      title = this.msg('allDispatch');
+      label = this.msg('dispall');
     }
     return (
       <div className={`dock-panel ${show ? 'inside' : ''}`}>
