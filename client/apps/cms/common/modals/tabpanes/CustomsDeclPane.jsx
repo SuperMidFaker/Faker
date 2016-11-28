@@ -73,7 +73,7 @@ export default class CustomsDeclPane extends React.Component {
       dataIndex: 'entry_id',
     }, {
       title: '申报日期',
-      dataIndex: 'process_date',
+      dataIndex: 'd_date',
       render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
     }, {
       title: '通关状态',
@@ -89,7 +89,14 @@ export default class CustomsDeclPane extends React.Component {
         }
       },
     }];
-    const sourceText = delegateTracking.source === DELG_SOURCE.consigned ? '委托' : '分包';
+    let sourceText = '';
+    if (delegateTracking.source === DELG_SOURCE.consigned) {
+      sourceText = '委托';
+    } else if (delegateTracking.source === DELG_SOURCE.subcontracted) {
+      sourceText = '分包';
+    } else {
+      sourceText = '转包';
+    }
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>

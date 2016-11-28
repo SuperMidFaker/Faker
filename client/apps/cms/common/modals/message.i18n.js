@@ -47,11 +47,11 @@ const messages = defineMessages({
     defaultMessage: '无匹配报价规则',
   },
   consginSource: {
-    id: 'cms.docs.consign.source',
+    id: 'cms.modals.consign.source',
     defaultMessage: '委托',
   },
   subcontractSource: {
-    id: 'cms.docs.subcontract.source',
+    id: 'cms.modals.subcontract.source',
     defaultMessage: '分包',
   },
 });

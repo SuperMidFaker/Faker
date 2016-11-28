@@ -99,11 +99,15 @@ export default defineMessages({
   },
   generateEntry: {
     id: 'cms.docs.generate.entry',
-    defaultMessage: '由清单归并生成',
+    defaultMessage: '清单生成报关单',
   },
   addEntry: {
     id: 'cms.docs.add.entry',
     defaultMessage: '直接添加报关单',
+  },
+  removeEntries: {
+    id: 'cms.docs.remove.entries',
+    defaultMessage: '删除报关单',
   },
   billHeader: {
     id: 'cms.docs.form.bill.header',

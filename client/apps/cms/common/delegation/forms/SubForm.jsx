@@ -111,7 +111,7 @@ export default class SubForm extends Component {
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               {getFieldDecorator(`gross_wt_${k}`, {
                 initialValue: bills[k].gross_wt,
-              })(<Input addonAfter="公斤" type="number" />)}
+              })(<Input addonAfter="千克" type="number" />)}
             </FormItem>
           </Col>
           <Col span={1} offset={1}>

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Table, Tabs, message } from 'antd';
+import { Card, Row, Col, Table, Tabs, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -97,20 +97,32 @@ export default class ExpensePane extends React.Component {
       <div className="pane-content tab-pane">
         <Tabs defaultActiveKey="revenue" tabPosition="left">
           <TabPane tab={this.msg('revenue')} key="revenue" style={{ padding: 8 }}>
-            <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-              <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
-            </Card>
-            <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-              <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
-            </Card>
+            <Row gutter={16}>
+              <Col span={14}>
+                <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+                  <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+                </Card>
+              </Col>
+              <Col span={10}>
+                <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+                  <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+                </Card>
+              </Col>
+            </Row>
           </TabPane>
           <TabPane tab={this.msg('cost')} key="cost" style={{ padding: 8 }}>
-            <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-              <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
-            </Card>
-            <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-              <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
-            </Card>
+            <Row gutter={16}>
+              <Col span={14}>
+                <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+                  <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+                </Card>
+              </Col>
+              <Col span={10}>
+                <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+                  <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+                </Card>
+              </Col>
+            </Row>
           </TabPane>
         </Tabs>
       </div>

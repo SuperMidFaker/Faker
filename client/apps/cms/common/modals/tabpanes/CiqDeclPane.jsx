@@ -50,6 +50,8 @@ export default class CiqDeclPane extends React.Component {
       inspection_name: PropTypes.string,
       acpt_time: PropTypes.date,
       source: PropTypes.number,
+      status: PropTypes.number,
+      recv_tenant_id: PropTypes.number,
       ciqlist: PropTypes.arrayOf(PropTypes.shape({
         pre_entry_seq_no: PropTypes.string,
       })),
@@ -103,7 +105,14 @@ export default class CiqDeclPane extends React.Component {
         }
       },
     }];
-    const sourceText = ciqdecl.source === DELG_SOURCE.consigned ? '委托' : '分包';
+    let sourceText = '';
+    if (ciqdecl.source === DELG_SOURCE.consigned) {
+      sourceText = '委托';
+    } else if (ciqdecl.source === DELG_SOURCE.subcontracted) {
+      sourceText = '分包';
+    } else {
+      sourceText = '转包';
+    }
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>

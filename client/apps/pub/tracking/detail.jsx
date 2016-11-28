@@ -284,7 +284,7 @@ export default class TrackingDetail extends React.Component {
                       <Panel header="运输货物" key="3">
                         <p>运输方式：<span style={{ marginLeft: 30 }}>{shipmt.transport_mode}</span></p>
                         <p>总件数：<span style={{ marginLeft: 45 }}>{shipmt.total_count}</span></p>
-                        <p>总重量：<span style={{ marginLeft: 45 }}>{shipmt.total_weight}公斤</span></p>
+                        <p>总重量：<span style={{ marginLeft: 45 }}>{shipmt.total_weight}千克</span></p>
                       </Panel>
                     </Collapse>
                   </Card>

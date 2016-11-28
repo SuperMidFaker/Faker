@@ -19,7 +19,7 @@ export default defineMessages({
   },
   kilogram: {
     id: 'pub.template.shipment.goods.kilogram',
-    defaultMessage: '公斤',
+    defaultMessage: '千克',
   },
   goodsCode: {
     id: 'pub.template.shipment.goods.code',
@@ -35,7 +35,7 @@ export default defineMessages({
   },
   goodsWeight: {
     id: 'pub.template.shipment.goods.weight',
-    defaultMessage: '重量(公斤)',
+    defaultMessage: '重量(千克)',
   },
   goodsVolume: {
     id: 'pub.template.shipment.goods.volume',

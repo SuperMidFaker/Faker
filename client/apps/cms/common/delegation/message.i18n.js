@@ -333,6 +333,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.ciq.dispatch',
     defaultMessage: '分配报检业务',
   },
+  allDispatch: {
+    id: 'cms.delegation.delg.all.dispatch',
+    defaultMessage: '清关业务转包',
+  },
   certDispatch: {
     id: 'cms.delegation.delg.cert.dispatch',
     defaultMessage: '分配鉴定办证',
@@ -344,6 +348,10 @@ export default defineMessages({
   dispciq: {
     id: 'cms.delegation.delg.dispciq',
     defaultMessage: '选择报检单位',
+  },
+  dispall: {
+    id: 'cms.delegation.delg.dispall',
+    defaultMessage: '选择报关报检单位',
   },
   dispCert: {
     id: 'cms.delegation.delg.dispCert',

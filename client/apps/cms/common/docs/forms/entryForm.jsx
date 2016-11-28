@@ -109,10 +109,10 @@ export default class EntryForm extends React.Component {
       <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
         <Collapse bordered={false} defaultActiveKey={['entry-head', 'entry-list']}>
           <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
-            <Card title={this.props.entry.head.pre_entry_id} bodyStyle={{ padding: 8 }} extra={!readonly &&
-              <span><Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
+            <Card title={this.props.entry.head.pre_entry_id} extra={!readonly &&
+              <Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
                 {formatGlobalMsg(this.props.intl, 'save')}
-              </Button> <Button type="ghost" size="small" icon="delete" onClick={this.handleEntryDel} /></span>
+              </Button>
             }
             >
               <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />

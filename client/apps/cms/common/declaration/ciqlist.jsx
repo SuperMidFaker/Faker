@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon, Switch } from 'antd';
+import { message, Icon, Switch, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -93,12 +93,12 @@ export default class CiqDeclList extends Component {
     },
   }, {
     title: '委托方',
-    dataIndex: 'owner_name',
+    dataIndex: 'customer_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('ciqAgent'),
-    dataIndex: 'agent_name',
+    dataIndex: 'ciq_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
@@ -112,6 +112,14 @@ export default class CiqDeclList extends Component {
     title: '检验检疫',
     width: 100,
     dataIndex: 'ciq_type',
+    render: (o) => {
+      if (o === 'NL') {
+        return <Tag color="#ccc">一般报检</Tag>;
+      } else if (o === 'LA' || o === 'LB') {
+        return <Tag color="#fa0">法定检验</Tag>;
+      }
+      return <span />;
+    },
   }, {
     title: '报检日期',
     width: 120,

@@ -20,17 +20,12 @@ export default class BillModal extends Component {
     router: routerShape.isRequired,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.billMakeModal.bills.length === 1) {
-      if (
-        nextProps.billMakeModal.bills.length !== this.props.billMakeModal.bills.length ||
-        nextProps.billMakeModal.bills[0].bill_seq_no !== this.props.billMakeModal.bills[0].bill_seq_no
-      ) {
-        let link = `/clearance/${this.props.ietype}/docs/make/`;
-        if (nextProps.billMakeModal.type === 'view') {
-          link = `/clearance/${this.props.ietype}/docs/view/`;
-        }
-        this.context.router.push(`${link}${nextProps.billMakeModal.bills[0].bill_seq_no}`);
+    if (nextProps.billMakeModal.bills.length === 1 && nextProps.billMakeModal.visible) {
+      let link = `/clearance/${this.props.ietype}/docs/make/`;
+      if (nextProps.billMakeModal.type === 'view') {
+        link = `/clearance/${this.props.ietype}/docs/view/`;
       }
+      this.context.router.push(`${link}${nextProps.billMakeModal.bills[0].bill_seq_no}`);
     }
   }
   handleCancel = () => {
