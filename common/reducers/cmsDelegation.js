@@ -209,13 +209,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, ciqBillsMap };
     }
     case actionTypes.LOAD_BILLMAKE:
-      return { ...state, billMakeModal: { ...state.billMakeModal, type: action.modalType } };
+      return { ...state, billMakeModal: { ...state.billMakeModal, visible: false, type: action.modalType } };
     case actionTypes.LOAD_BILLMAKE_SUCCEED: {
-      if (action.result.data.bills.length === 1) {
-        return { ...state, billMakeModal: { ...state.billMakeModal, visible: false, ...action.result.data } };
-      } else {
-        return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, ...action.result.data } };
-      }
+      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, ...action.result.data } };
     }
     case actionTypes.SET_MODAL_FALSE:
       return { ...state, billMakeModal: initialState.billMakeModal };
