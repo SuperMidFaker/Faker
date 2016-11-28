@@ -166,7 +166,7 @@ export default class FeesForm extends Component {
                   coops.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
-                    >{pt.name}</Option>)
+                    >{pt.partner_unique_code ? `${pt.partner_unique_code} | ${pt.name}` : pt.name}</Option>)
                   )
                 }
                 </Select>

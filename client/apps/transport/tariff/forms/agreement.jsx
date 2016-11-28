@@ -7,7 +7,7 @@ import PricingFTL from './pricingFTL';
 import PricingCTN from './pricingCTN';
 import { loadPartners, submitAgreement,
   updateAgreement } from 'common/reducers/transportTariff';
-import { TARIFF_KINDS, GOODS_TYPES, PARTNERSHIP_TYPE_INFO,
+import { TARIFF_KINDS, GOODS_TYPES, PARTNER_ROLES, PARTNER_BUSINESSES,
   PRESET_TRANSMODES, TAX_STATUS } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -155,7 +155,9 @@ export default class AgreementForm extends React.Component {
     if (kind.isBase) {
       this.setState({ partnerVisible: false });
     } else if (kind.value === 'sales') {
-      this.props.loadPartners(this.props.tenantId, [PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer])
+      this.props.loadPartners(this.props.tenantId,
+        [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+        [PARTNER_BUSINESSES.TRS])
         .then((result) => {
           if (result.error) {
             message.error(result.error.message);
@@ -164,7 +166,9 @@ export default class AgreementForm extends React.Component {
           }
         });
     } else if (kind.value === 'cost') {
-      this.props.loadPartners(this.props.tenantId, [PARTNERSHIP_TYPE_INFO.transportation])
+      this.props.loadPartners(this.props.tenantId,
+        [PARTNER_ROLES.TSUP],
+        [PARTNER_BUSINESSES.TRS])
         .then((result) => {
           if (result.error) {
             message.error(result.error.message);
@@ -260,7 +264,7 @@ export default class AgreementForm extends React.Component {
                             <Option searched={`${pt.partner_code}${pt.name}`}
                               value={pt.partner_id} key={pt.partner_id}
                             >
-                              {pt.name}
+                              {pt.partner_unique_code ? `${pt.partner_unique_code} | ${pt.name}` : pt.name}
                             </Option>)
                           )
                         }

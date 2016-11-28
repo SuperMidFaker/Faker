@@ -38,9 +38,8 @@ export default class BasicForm extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
-    const clients = this.props.formRequires.clients.filter(cl => cl.partner_id === selPartnerId);
-    if (clients.length === 1) {
-      const client = clients[0];
+    const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
+    if (client) {
       this.props.setClientForm({
         customer_name: client.name,
         customer_tenant_id: client.tid,
@@ -80,7 +79,8 @@ export default class BasicForm extends Component {
                 value={formData.customer_name}
                 onChange={value => this.handleClientChange(value)}
               >
-                {formRequires.clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.name}</Option>)
+                {formRequires.clients.map(data => (
+                  <Option key={data.partner_id} value={data.partner_id}>{data.partner_unique_code ? `${data.partner_unique_code} | ${data.name}` : data.name}</Option>)
                 )}
               </Select>
             </FormItem>

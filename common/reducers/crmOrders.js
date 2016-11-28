@@ -174,7 +174,7 @@ export function loadFormRequires(params) {
         actionTypes.LOAD_FORM_REQUIRES_SUCCEED,
         actionTypes.LOAD_FORM_REQUIRES_FAIL,
       ],
-      endpoint: 'v1/transport/shipment/requires',
+      endpoint: 'v1/crm/requires',
       method: 'get',
       params,
     },

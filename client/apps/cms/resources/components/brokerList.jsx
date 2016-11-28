@@ -25,13 +25,12 @@ export default class BrokerList extends Component {
   }
 
   renderEditAndStopOperations = (itemInfo) => {
-    const { id, name, partnerCode, partnerUniqueCode, partnerships } = itemInfo;
     return (
       <PrivilegeCover module="corp" feature="partners" action="edit">
         <span>
-          <a onClick={() => this.props.onEditBtnClick(id, name, partnerCode, partnerUniqueCode, partnerships)}>修改</a>
+          <a onClick={() => this.props.onEditBtnClick(itemInfo)}>修改</a>
           <span className="ant-divider" />
-          <a onClick={() => this.props.onStopBtnClick(id)}>停用</a>
+          <a onClick={() => this.props.onStopBtnClick(itemInfo.id)}>停用</a>
         </span>
       </PrivilegeCover>
     );
@@ -63,19 +62,19 @@ export default class BrokerList extends Component {
         key: 'name',
       }, {
         title: '供应商代码',
-        dataIndex: 'partnerCode',
-        key: 'partnerCode',
+        dataIndex: 'partner_code',
+        key: 'partner_code',
       }, {
         title: '企业唯一标识码',
-        dataIndex: 'partnerUniqueCode',
-        key: 'partnerUniqueCode',
+        dataIndex: 'partner_unique_code',
+        key: 'partner_unique_code',
       }, {
         title: '供应商类型',
-        dataIndex: 'partnerships',
-        key: 'partnerships',
-        render(_, record) {
+        dataIndex: 'business',
+        key: 'business',
+        render(o) {
           return (
-            <span>{mapPartnerships(record.partnerships)}</span>
+            <span>{mapPartnerships(o.split(','))}</span>
         ); },
       }, {
         title: '创建日期',

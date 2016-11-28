@@ -24,6 +24,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     customers: state.crmCustomers.customers,
+    loaded: state.crmCustomers.loaded,
   }),
   { loadCustomers, deletePartner, showCustomerModal }
 )
@@ -34,6 +35,7 @@ function fetchData({ state, dispatch }) {
 export default class List extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    loaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
     customers: PropTypes.array.isRequired,
     loadCustomers: PropTypes.func.isRequired,
@@ -46,6 +48,9 @@ export default class List extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ customer: nextProps.customers[0] || {} });
+    if (!nextProps.loaded) {
+      this.handleTableLoad();
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
 
@@ -59,7 +64,7 @@ export default class List extends React.Component {
   }
   handleOptionClick = (e) => {
     if (e.key === 'remove') {
-      this.props.deletePartner(this.state.customer.id, ['CUS']).then(() => {
+      this.props.deletePartner(this.state.customer.id, 'CUS').then(() => {
         this.handleTableLoad();
       });
     }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import { PARTNERSHIP_TYPE_INFO, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
+import { PARTNER_BUSINESSES, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDisp,
   loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
@@ -217,7 +217,7 @@ export default class CiqList extends Component {
     this.props.loadDelgDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsInspectBroker,
+      PARTNER_BUSINESSES.CIB,
       type);
     this.props.setDispStatus({ delgDispShow: true });
   }
@@ -225,7 +225,7 @@ export default class CiqList extends Component {
     this.props.loadDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsInspectBroker,
+      PARTNER_BUSINESSES.CIB,
       type);
     this.props.setDispStatus({ delgDispShow: true });
   }

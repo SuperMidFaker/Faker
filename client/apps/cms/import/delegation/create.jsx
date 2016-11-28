@@ -7,7 +7,7 @@ import { loadFormRequire, loadNewForm } from 'common/reducers/cmsDelegation';
 function fetchData({ cookie, dispatch, state }) {
   dispatch(loadNewForm());
   return dispatch(
-    loadFormRequire(cookie, state.account.tenantId, 'import', 'CUS')
+    loadFormRequire(cookie, state.account.tenantId, 'import')
   );
 }
 

@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, PARTNERSHIP_TYPE_INFO, CMS_SUP_STATUS } from 'common/constants';
+import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, PARTNER_BUSINESSES, CMS_SUP_STATUS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -387,9 +387,9 @@ export default class DelegationList extends Component {
     );
   }
   handleDelegationAssign = (row, type) => {
-    let typecode = PARTNERSHIP_TYPE_INFO.customsClearanceBroker;
+    let typecode = PARTNER_BUSINESSES.CCB;
     if (type === 'ciq') {
-      typecode = PARTNERSHIP_TYPE_INFO.customsInspectBroker;
+      typecode = PARTNER_BUSINESSES.CIB;
     }
     this.props.loadDelgDisp(row.delg_no, this.props.tenantId, typecode, type);
     this.props.setDispStatus({ delgDispShow: true });
@@ -398,7 +398,7 @@ export default class DelegationList extends Component {
     this.props.loadDisp(
       row.delg_no,
       this.props.tenantId,
-      PARTNERSHIP_TYPE_INFO.customsClearanceBroker,
+      PARTNER_BUSINESSES.CCB,
       type);
     this.props.setDispStatus({ delgDispShow: true });
   }

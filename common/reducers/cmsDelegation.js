@@ -137,6 +137,7 @@ const initialState = {
   cMQParams: [],
   brokers: [],
   relatedDisps: [],
+  suplliers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -251,7 +252,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'undelg' } };
     case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:
       if (action.visible) {
-        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, formRequire: action.result.data };
+        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suplliers: action.result.data };
       } else {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
@@ -657,7 +658,7 @@ export function loadDelg(cookie, params) {
       endpoint: 'v1/cms/delegation',
       method: 'get',
       cookie,
-      params: { ...params, partershipType: 'CUS' },
+      params: { ...params },
     },
   };
 }
@@ -671,9 +672,9 @@ export function toggleSendDelegateModal(visible = true, params = {}, delegations
           actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
           actionTypes.SHOW_SEND_DELEGATE_MODAL_FAIL,
         ],
-        endpoint: 'v1/cms/delegation/form/requires',
+        endpoint: 'v1/cms/suplliers',
         method: 'get',
-        params: { ...params, partershipType: 'CCB' },
+        params,
         visible,
         delegations,
       },
@@ -744,7 +745,7 @@ export function loadNewForm() {
   };
 }
 
-export function loadFormRequire(cookie, tenantId, ieType, partershipType) {
+export function loadFormRequire(cookie, tenantId, ieType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -754,7 +755,7 @@ export function loadFormRequire(cookie, tenantId, ieType, partershipType) {
       ],
       endpoint: 'v1/cms/delegation/form/requires',
       method: 'get',
-      params: { tenantId, ieType, partershipType },
+      params: { tenantId, ieType },
       cookie,
     },
   };

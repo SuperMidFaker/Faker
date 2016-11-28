@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
-  'SET_MENU_ITEM_KEY', 'SET_PROVIDER_TYPE',
+  'SET_PROVIDER_TYPE',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
   'CHECK_PARTNER', 'CHECK_PARTNER_SUCCEED', 'CHECK_PARTNER_FAIL',
@@ -14,63 +14,43 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
 ]);
 
 const initialState = {
+  loading: true,
+  loaded: true,
   partnershipTypes: [
     /* { key:, name: count: } */
   ],
   partnerTenants: [
     /* { id:, name: } */
   ],
-  partnerlist: [],
+  partners: [],
   selectedMenuItemKey: '0',  // 记录当前MenuItemKey的值,
   providerType: 'ALL',        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
 };
 
-function partnerReducer(state, action) {
-  const foundPartner = state.find(partner => partner.id === action.id);
-  const foundPartnerIndex = state.findIndex(partner => partner.id === action.id);
-  switch (action.type) {
-    case actionTypes.DELETE_PARTNER_SUCCEED:
-      return [...state.slice(0, foundPartnerIndex), ...state.slice(foundPartnerIndex + 1)];
-    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
-      const updatedPartner = { ...foundPartner, status: action.status };
-      return [...state.slice(0, foundPartnerIndex), updatedPartner, ...state.slice(foundPartnerIndex + 1)];
-    }
-    case actionTypes.EDIT_PARTNER_SUCCEED: {
-      const { name, code } = action.editInfo;
-      const updatePartner = { ...foundPartner, name, partnerCode: code };
-      return [...state.slice(0, foundPartnerIndex), updatePartner, ...state.slice(foundPartnerIndex + 1)];
-    }
-    case actionTypes.INVITE_PARTNER: {
-      const invitedPartner = { ...foundPartner, invited: 1 };
-      return [...state.slice(0, foundPartnerIndex), invitedPartner, ...state.slice(foundPartnerIndex + 1)];
-    }
-    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED: {
-      const updatePartner = { ...foundPartner, partnerships: action.partnerships };
-      return [...state.slice(0, foundPartnerIndex), updatePartner, ...state.slice(foundPartnerIndex + 1)];
-    }
-    default:
-      return state;
-  }
-}
-
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_PARTNERS:
+      return { ...state, loading: true };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state, ...action.result.data };
-    case actionTypes.SET_MENU_ITEM_KEY:
-      return { ...state, selectedMenuItemKey: action.selectedMenuItemKey };
+      return { ...state, ...action.result.data, loaded: true, loading: false };
     case actionTypes.SET_PROVIDER_TYPE:
       return { ...state, providerType: action.providerType };
     case actionTypes.ADD_PARTNER_SUCCEED: {
-      const { newPartner } = action.result.data;
-      return { ...state, partnerlist: [newPartner, ...state.partnerlist] };
+      return { ...state, loaded: false };
     }
-    case actionTypes.EDIT_PARTNER_SUCCEED:
-    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
-    case actionTypes.DELETE_PARTNER_SUCCEED:
+    case actionTypes.EDIT_PARTNER_SUCCEED: {
+      return { ...state, loaded: false };
+    }
+    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
+      return { ...state, loaded: false };
+    }
+    case actionTypes.DELETE_PARTNER_SUCCEED: {
+      return { ...state, loaded: false };
+    }
     case actionTypes.INVITE_PARTNER:
-    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED:
-      return { ...state, partnerlist: partnerReducer(state.partnerlist, action) };
+    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED: {
+      return { ...state, loaded: false };
+    }
     default:
       return state;
   }
@@ -92,13 +72,6 @@ export function loadPartners(cookie, params) {
   };
 }
 
-export function setMenuItemKey(selectedMenuItemKey) {
-  return {
-    type: actionTypes.SET_MENU_ITEM_KEY,
-    selectedMenuItemKey,
-  };
-}
-
 export function setProviderType(providerType) {
   return {
     type: actionTypes.SET_PROVIDER_TYPE,
@@ -106,28 +79,7 @@ export function setProviderType(providerType) {
   };
 }
 
-export function editProviderTypes({ id, tenantId, partnerships }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.EDIT_PROVIDER_TYPES,
-        actionTypes.EDIT_PROVIDER_TYPES_SUCCEED,
-        actionTypes.EDIT_PROVIDER_TYPES_FAIL,
-      ],
-      endpoint: 'v1/cooperation/partner/edit_provider_types',
-      method: 'post',
-      id,
-      partnerships,
-      data: {
-        partnerId: id,
-        tenantId,
-        partnerships,
-      },
-    },
-  };
-}
-
-export function addPartner({ tenantId, partnerInfo, partnerships }) {
+export function addPartner({ tenantId, partnerInfo, role, business }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -140,7 +92,8 @@ export function addPartner({ tenantId, partnerInfo, partnerships }) {
       data: {
         tenantId,
         partnerInfo,
-        partnerships,
+        role,
+        business,
       },
     },
   };
@@ -164,7 +117,7 @@ export function checkPartner({ tenantId, partnerInfo }) {
   };
 }
 
-export function editPartner(partnerId, name, code, partnerUniqueCode, partnerships, oldPartnerships) {
+export function editPartner(partnerId, name, code, role, business) {
   return {
     [CLIENT_API]: {
       types: [
@@ -175,20 +128,18 @@ export function editPartner(partnerId, name, code, partnerUniqueCode, partnershi
       endpoint: 'v1/cooperation/partner/edit',
       method: 'post',
       id: partnerId,
-      editInfo: { name, code, partnerUniqueCode, partnerships },
       data: {
         partnerId,
         name,
         code,
-        partnerUniqueCode,
-        partnerships,
-        oldPartnerships,
+        role,
+        business,
       },
     },
   };
 }
 
-export function changePartnerStatus(id, status) {
+export function changePartnerStatus(id, status, role) {
   return {
     [CLIENT_API]: {
       types: [
@@ -198,17 +149,16 @@ export function changePartnerStatus(id, status) {
       ],
       endpoint: 'v1/cooperation/partner/change_status',
       method: 'post',
-      id,
-      status,
       data: {
         id,
         status,
+        role,
       },
     },
   };
 }
 
-export function deletePartner(id, partnerships) {
+export function deletePartner(id, role) {
   return {
     [CLIENT_API]: {
       types: [
@@ -220,7 +170,7 @@ export function deletePartner(id, partnerships) {
       method: 'post',
       id,
       data: {
-        id, partnerships,
+        id, role,
       },
     },
   };

@@ -6,7 +6,7 @@ import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { updateBilling, loadPartners } from 'common/reducers/transportBilling';
-import { PARTNERSHIP_TYPE_INFO } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSES } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -45,13 +45,16 @@ export default class BillingForm extends React.Component {
     partnerName: '',
   }
   componentWillMount() {
-    let partnerShipTypes = [PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer];
+    let roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
+    let businesses = [PARTNER_BUSINESSES.TRS];
     if (this.props.type === 'receivable') {
-      partnerShipTypes = [PARTNERSHIP_TYPE_INFO.customer, PARTNERSHIP_TYPE_INFO.dispatchCustomer];
+      roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
+      businesses = [PARTNER_BUSINESSES.TRS];
     } else if (this.props.type === 'payable') {
-      partnerShipTypes = [PARTNERSHIP_TYPE_INFO.transportation];
+      roles = [PARTNER_ROLES.TSUP];
+      businesses = [PARTNER_BUSINESSES.TRS];
     }
-    this.props.loadPartners(this.props.tenantId, partnerShipTypes);
+    this.props.loadPartners(this.props.tenantId, roles, businesses);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleOk = () => {
@@ -113,7 +116,7 @@ export default class BillingForm extends React.Component {
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
-                      {pt.name}
+                      {pt.partner_unique_code ? `${pt.partner_unique_code} | ${pt.name}` : pt.name}
                     </Option>)
                   )
                 }

@@ -33,7 +33,7 @@ export default class CustomerModal extends React.Component {
     showCustomerModal: PropTypes.func.isRequired,
     hideCustomerModal: PropTypes.func.isRequired,
     editCustomer: PropTypes.func.isRequired,
-    customer: PropTypes.number.isRequired,
+    customer: PropTypes.object.isRequired,
     onOk: PropTypes.func,
   }
   state = {
@@ -44,7 +44,7 @@ export default class CustomerModal extends React.Component {
     contact: '',
     phone: '',
     email: '',
-    customerTypes: [],
+    business: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -56,7 +56,7 @@ export default class CustomerModal extends React.Component {
         contact: nextProps.customer.contact,
         phone: nextProps.customer.phone,
         email: nextProps.customer.email,
-        customerTypes: nextProps.customer.customer_types,
+        business: nextProps.customer.business,
       });
     }
   }
@@ -70,24 +70,24 @@ export default class CustomerModal extends React.Component {
       contact: '',
       phone: '',
       email: '',
-      customerTypes: [],
+      business: '',
     });
     this.props.hideCustomerModal();
   }
   handleOk = () => {
-    const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, customerTypes } = this.state;
+    const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, business } = this.state;
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('企业唯一标识码必填');
-    } else if (customerTypes.length === 0) {
+    } else if (business === '') {
       message.error('请选择客户业务类型');
     } else if (this.props.operation === 'edit') {
       this.props.editCustomer({
         tenantId,
         partnerInfo: { id, name, partnerCode, partnerUniqueCode, contact, phone, email },
-        customerTypes,
+        business,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -109,7 +109,7 @@ export default class CustomerModal extends React.Component {
         this.props.addCustomer({
           tenantId,
           partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
-          customerTypes,
+          business,
         }).then((result1) => {
           if (result1.error) {
             message.error(result1.error.message);
@@ -128,6 +128,8 @@ export default class CustomerModal extends React.Component {
 
   render() {
     const { visible, operation } = this.props;
+    const { business } = this.state;
+    const businessArray = business !== '' ? business.split(',') : [];
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -169,7 +171,13 @@ export default class CustomerModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={CUSTOMER_TYPES} value={this.state.customerTypes} onChange={(value) => { this.setState({ customerTypes: value }); }} />
+            <CheckboxGroup options={CUSTOMER_TYPES} value={businessArray}
+              onChange={(value) => {
+                if (value !== []) {
+                  this.setState({ business: value.join(',') });
+                }
+              }}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}

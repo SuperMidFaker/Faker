@@ -24,12 +24,15 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_CUSTOMERS:
+      return { ...state, loading: true };
     case actionTypes.LOAD_CUSTOMERS_SUCCEED:
-      return { ...state, customers: action.result.data };
+      return { ...state, customers: action.result.data, loaded: true, loading: false };
     case actionTypes.ADD_CUSTOMER_SUCCEED: {
-      const customers = [...state.customers];
-      customers.unshift(action.result.data);
-      return { ...state, customers };
+      return { ...state, loaded: false };
+    }
+    case actionTypes.EDIT_CUSTOMER_SUCCEED: {
+      return { ...state, loaded: false };
     }
     case actionTypes.SHOW_CUSTOMER_MODAL: {
       return { ...state, customerModal: {
@@ -63,7 +66,7 @@ export function loadCustomers(params) {
   };
 }
 
-export function addCustomer({ tenantId, partnerInfo, customerTypes }) {
+export function addCustomer({ tenantId, partnerInfo, business }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -73,12 +76,12 @@ export function addCustomer({ tenantId, partnerInfo, customerTypes }) {
       ],
       endpoint: 'v1/crm/customer/add',
       method: 'post',
-      data: { tenantId, partnerInfo, customerTypes },
+      data: { tenantId, partnerInfo, business },
     },
   };
 }
 
-export function editCustomer({ tenantId, partnerInfo, customerTypes }) {
+export function editCustomer({ tenantId, partnerInfo, business }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -88,7 +91,7 @@ export function editCustomer({ tenantId, partnerInfo, customerTypes }) {
       ],
       endpoint: 'v1/crm/customer/edit',
       method: 'post',
-      data: { tenantId, partnerInfo, customerTypes },
+      data: { tenantId, partnerInfo, business },
     },
   };
 }

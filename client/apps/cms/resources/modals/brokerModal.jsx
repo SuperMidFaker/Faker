@@ -38,63 +38,68 @@ export default class BrokerModal extends React.Component {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
-    partnerships: [],
-    oldPartnerships: ['CCB', 'CIB', 'ICB'],
+    role: 'CSUP',
+    business: '',
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      partnerName: nextProps.carrier.name || '',
-      partnerCode: nextProps.carrier.code || '',
-      partnerUniqueCode: nextProps.carrier.partnerUniqueCode || '',
-      partnerships: nextProps.carrier.partnerships || [],
-    });
+    if (nextProps.operation === 'edit') {
+      this.setState({
+        partnerName: nextProps.carrier.name || '',
+        partnerCode: nextProps.carrier.partner_code || '',
+        partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
+        role: nextProps.carrier.role || '',
+        business: nextProps.carrier.business || '',
+      });
+    }
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships } = this.state;
+    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
     if (partnerName === '') {
       message.error('请填写供应商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('请填写企业唯一标识码');
+    } else if (this.props.operation === 'edit') {
+      this.props.editPartner(carrier.id, partnerName, partnerCode, role, business).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        }
+        this.handleCancel();
+      });
     } else {
-      this.handleCancel();
-      if (this.props.operation === 'edit') {
-        this.props.editPartner(carrier.id, partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships).then((result) => {
-          if (result.error) {
-            message.error(result.error.message);
+      this.props.checkPartner({
+        tenantId,
+        partnerInfo: { name: partnerName, partnerCode, partnerUniqueCode },
+      }).then((result) => {
+        let name = partnerName;
+        if (result.data.partner && result.data.partner.name !== partnerName) {
+          name = result.data.partner.name;
+        }
+        this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business }).then((result1) => {
+          if (result1.error) {
+            message.error(result1.error.message);
+          } else if (partnerName !== name) {
+            message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的承运商信息， 已将承运商名称 ${partnerName} 替换为 ${name} `, 10);
+          } else {
+            message.info('添加成功');
           }
+          this.handleCancel();
         });
-      } else {
-        this.props.checkPartner({
-          tenantId,
-          partnerInfo: { name: partnerName, partnerCode, partnerUniqueCode },
-        }).then((result) => {
-          let name = partnerName;
-          if (result.data.partner && result.data.partner.name !== partnerName) {
-            name = result.data.partner.name;
-          }
-          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, partnerships }).then((result1) => {
-            if (result1.error) {
-              message.error(result1.error.message);
-            } else if (partnerName !== name) {
-              message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的承运商信息， 已将承运商名称 ${partnerName} 替换为 ${name} `, 10);
-            } else {
-              message.info('添加成功');
-            }
-          });
-        });
-      }
+      });
     }
   }
   handleCancel = () => {
     this.props.toggleCarrierModal(false);
   }
   handleProviderChange = (value) => {
-    this.setState({ partnerships: value });
+    if (value !== []) {
+      this.setState({ business: value.join(',') });
+    }
   }
   render() {
     const { visible, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, partnerships } = this.state;
+    const { partnerName, partnerCode, partnerUniqueCode, business } = this.state;
+    const businessArray = business !== '' ? business.split(',') : [];
     return (
       <Modal title={this.props.operation === 'add' ? '新增供应商' : '修改供应商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="供应商名称:" required>
@@ -109,7 +114,7 @@ export default class BrokerModal extends React.Component {
         <FormItem {...formItemLayout} label="供应商类型:" required>
           <CheckboxGroup
             options={options}
-            value={partnerships}
+            value={businessArray}
             onChange={this.handleProviderChange}
           />
         </FormItem>

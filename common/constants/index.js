@@ -28,15 +28,19 @@ const INVITATION_STATUS = {
   REJECTED: 2,
   CANCELED: 3, // 取消邀请
 };
-const PARTNERSHIP_TYPE_INFO = {
-  dispatchCustomer: 'DCUS',
-  customer: 'CUS',
-  customsClearanceBroker: 'CCB',
-  freightForwarder: 'FWD',
-  transportation: 'TRS',
-  warehouse: 'WHS',
-  customsInspectBroker: 'CIB',
-  identifyCertBroker: 'ICB',
+
+export const PARTNER_ROLES = {
+  DCUS: 'DCUS',
+  CUS: 'CUS',
+  CSUP: 'CSUP',
+  TSUP: 'TSUP',
+};
+
+export const PARTNER_BUSINESSES = {
+  CCB: 'CCB',
+  TRS: 'TRS',
+  CIB: 'CIB',
+  ICB: 'ICB',
 };
 
 const WRAP_TYPE = [{
@@ -278,7 +282,6 @@ export {
   TENANT_ASPECT,
   INVITATION_STATUS,
   MAX_STANDARD_TENANT,
-  PARTNERSHIP_TYPE_INFO,
   PARTNER_TENANT_TYPE,
   CHINA_CODE,
   ACCOUNT_STATUS,

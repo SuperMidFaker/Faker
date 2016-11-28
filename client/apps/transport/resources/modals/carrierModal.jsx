@@ -34,20 +34,21 @@ export default class CarrierModal extends React.Component {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
-    partnerships: ['TRS'],
-    oldPartnerships: ['TRS'],
+    role: 'TSUP',
+    business: 'TRS',
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      partnerName: nextProps.carrier.name || '',
-      partnerCode: nextProps.carrier.code || '',
-      partnerUniqueCode: nextProps.carrier.partnerUniqueCode || '',
-      partnerships: nextProps.carrier.partnerships || ['TRS'],
-    });
+    if (nextProps.operation === 'edit') {
+      this.setState({
+        partnerName: nextProps.carrier.name || '',
+        partnerCode: nextProps.carrier.partner_code || '',
+        partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
+      });
+    }
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships } = this.state;
+    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
     if (partnerName === '') {
       message.error('请填写承运商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -55,7 +56,7 @@ export default class CarrierModal extends React.Component {
     } else {
       this.handleCancel();
       if (this.props.operation === 'edit') {
-        this.props.editPartner(carrier.id, partnerName, partnerCode, partnerUniqueCode, partnerships, oldPartnerships).then((result) => {
+        this.props.editPartner(carrier.id, partnerName, partnerCode, role, business).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -74,7 +75,7 @@ export default class CarrierModal extends React.Component {
           if (result.data.partner && result.data.partner.name !== partnerName) {
             name = result.data.partner.name;
           }
-          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, partnerships }).then((result1) => {
+          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business }).then((result1) => {
             if (result1.error) {
               message.error(result1.error.message);
             } else {

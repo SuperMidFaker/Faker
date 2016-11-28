@@ -17,7 +17,7 @@ const Option = Select.Option;
     loginName: state.account.username,
     tenantName: state.account.tenantName,
     sendPanel: state.cmsDelegation.sendPanel,
-    formRequire: state.cmsDelegation.formRequire,
+    suplliers: state.cmsDelegation.suplliers,
     delegationlist: state.cmsDelegation.delegationlist,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
@@ -27,6 +27,7 @@ export default class SendPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+    suplliers: PropTypes.array.isRequired,
     sendPanel: PropTypes.object.isRequired,
     sendDelegate: PropTypes.func.isRequired,
     delegationlist: PropTypes.object.isRequired,
@@ -79,15 +80,15 @@ export default class SendPanel extends React.Component {
 
   }
   handleCCBChange = (e) => {
-    const { formRequire } = this.props;
-    formRequire.clients.forEach((item) => {
+    const { suplliers } = this.props;
+    suplliers.forEach((item) => {
       if (item.tid === e) {
         this.setState({ receiver: item });
       }
     });
   }
   render() {
-    const { visible, sendPanel, formRequire } = this.props;
+    const { visible, sendPanel, suplliers } = this.props;
     const { delegations } = sendPanel;
     const columns = [{
       title: '序号',
@@ -121,7 +122,7 @@ export default class SendPanel extends React.Component {
             <Collapse defaultActiveKey={['1']} onChange={this.handleCollapseChange}>
               <Panel header="选择报关行" key="1">
                 <Select size="large" defaultValue="" style={{ width: '100%' }} onChange={this.handleCCBChange}>
-                  {formRequire.clients.map(item => <Option value={item.tid}>{item.name}</Option>)}
+                  {suplliers.map(item => <Option value={item.tid}>{item.name}</Option>)}
                 </Select>
                 <Table columns={columns} dataSource={delegations} rowKey={record => record.delg_no} pagination="false" style={{ marginTop: '10px' }} />
                 <div>

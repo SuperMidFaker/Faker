@@ -99,7 +99,7 @@ export default class BasicForm extends Component {
                   {
                     clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                       search={`${data.partner_code}${data.name}`}
-                    >{data.name}</Option>)
+                    >{data.partner_unique_code ? `${data.partner_unique_code} | ${data.name}` : data.name}</Option>)
                     )}
                 </Select>
                 )}

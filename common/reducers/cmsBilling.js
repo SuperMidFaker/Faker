@@ -150,7 +150,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadPartners(tenantId, typeCodes) {
+export function loadPartners(tenantId, roles, businesses) {
   return {
     [CLIENT_API]: {
       types: [
@@ -160,7 +160,7 @@ export function loadPartners(tenantId, typeCodes) {
       ],
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
-      params: { tenantId, typeCodes: JSON.stringify(typeCodes) },
+      params: { tenantId, roles: JSON.stringify(roles), businesses: JSON.stringify(businesses) },
     },
   };
 }
