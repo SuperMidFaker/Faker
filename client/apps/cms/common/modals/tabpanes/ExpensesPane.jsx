@@ -53,8 +53,8 @@ export default class ExpensePane extends React.Component {
       width: '16.7%',
     }, {
       title: this.msg('feeVal'),
-      dataIndex: 'sum_fee',
-      key: 'sum_fee',
+      dataIndex: 'cal_fee',
+      key: 'cal_fee',
       width: '16.7%',
     }, {
       title: this.msg('taxFee'),
@@ -88,11 +88,7 @@ export default class ExpensePane extends React.Component {
       key: 'total_fee',
       width: '60%',
     }];
-    const servDataSource = expenses.server_charges;
-    if (expenses.tot_sercharges.fee_name) {
-      servDataSource.push(expenses.tot_sercharges);
-    }
-    const cushDataSource = expenses.cush_charges;
+
     return (
       <div className="pane-content tab-pane">
         <Tabs defaultActiveKey="revenue" tabPosition="left">
@@ -100,12 +96,12 @@ export default class ExpensePane extends React.Component {
             <Row gutter={16}>
               <Col span={14}>
                 <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-                  <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+                  <Table size="small" columns={columns} dataSource={expenses.servbill} rowKey="id" pagination={false} />
                 </Card>
               </Col>
               <Col span={10}>
                 <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-                  <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+                  <Table size="small" columns={cushColumns} dataSource={expenses.cushbill} rowKey="id" pagination={false} />
                 </Card>
               </Col>
             </Row>
@@ -114,12 +110,12 @@ export default class ExpensePane extends React.Component {
             <Row gutter={16}>
               <Col span={14}>
                 <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-                  <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+                  <Table size="small" columns={columns} dataSource={expenses.servcost} rowKey="id" pagination={false} />
                 </Card>
               </Col>
               <Col span={10}>
                 <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-                  <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+                  <Table size="small" columns={cushColumns} dataSource={expenses.cushcost} rowKey="id" pagination={false} />
                 </Card>
               </Col>
             </Row>

@@ -181,7 +181,7 @@ export default class PreviewPanel extends React.Component {
           </TabPane>
         </Tabs>
       );
-    } else if (previewer.status === 3 || previewer.status === 4) {
+    } else if (delegation.status === 3 || delegation.status === 4) {
       if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
@@ -372,7 +372,7 @@ export default class PreviewPanel extends React.Component {
     }
   }
   render() {
-    const { visible, previewer, ciqdecl } = this.props;
+    const { visible, previewer } = this.props;
     const { delegation, delegateTracking } = previewer;
     const closer = (
       <button
