@@ -3,7 +3,6 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
-  'SET_PROVIDER_TYPE',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
   'CHECK_PARTNER', 'CHECK_PARTNER_SUCCEED', 'CHECK_PARTNER_FAIL',
@@ -69,13 +68,6 @@ export function loadPartners(cookie, params) {
       params,
       cookie,
     },
-  };
-}
-
-export function setProviderType(providerType) {
-  return {
-    type: actionTypes.SET_PROVIDER_TYPE,
-    providerType,
   };
 }
 

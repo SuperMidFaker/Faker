@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/invitation/', [
-  'CHANGE_INVITATION_TYPE',
+  'CHANGE_INVITATION_TYPE', 'SHOW_INVITE_MODAL',
   'LOAD_TO_INVITES', 'LOAD_TO_INVITES_SUCCEED', 'LOAD_TO_INVITES_FAIL',
   'INVITE_OFFLINE_PARTNER', 'INVITE_OFFLINE_PARTNER_SUCCEED', 'INVITE_OFFLINE_PARTNER_FAIL',
   'INVITE_ONLINE_PARTNER', 'INVITE_ONLINE_PARTNER_SUCCEED', 'INVITE_ONLINE_PARTNER_FAIL',
@@ -14,10 +14,15 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
 ]);
 
 const initialState = {
+  toInvitesLoaded: true,
   invitationType: '0',    // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
   toInvites: [],          // 待邀请的列表数组
   sendInvitations: [],    // 发出的邀请列表数组
   receiveInvitations: [],  // 收到的邀请
+  inviteModal: {
+    visible: false,
+    inviteeInfo: {},
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -25,12 +30,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_INVITATION_TYPE:
       return { ...state, invitationType: action.invitationType };
     case actionTypes.LOAD_TO_INVITES_SUCCEED:
-      return { ...state, toInvites: action.result.data.toInvites };
+      return { ...state, toInvites: action.result.data.toInvites, toInvitesLoaded: true };
     case actionTypes.INVITE_ONLINE_PARTNER_SUCCEED:
     case actionTypes.INVITE_OFFLINE_PARTNER_SUCCEED: {
       const { partnerId } = action;
-      const toInvites = state.toInvites.filter(invitee => invitee.partner_id !== partnerId);
-      return { ...state, toInvites };
+      const toInvites = state.toInvites.filter(invitee => invitee.id !== partnerId);
+      return { ...state, toInvites, toInvitesLoaded: false };
     }
     case actionTypes.LOAD_SEND_INVITATIONS_SUCCEED:
       return { ...state, sendInvitations: action.result.data.sendInvitations };
@@ -51,6 +56,9 @@ export default function reducer(state = initialState, action) {
       const newInvitation = { ...updateInvitation, status: action.status };
       return { ...state, receiveInvitations: [...recevieInvitaions.slice(0, index), newInvitation, ...recevieInvitaions.slice(index + 1)] };
     }
+    case actionTypes.SHOW_INVITE_MODAL: {
+      return { ...state, inviteModal: { ...action.data } };
+    }
     default:
       return state;
   }
@@ -62,6 +70,14 @@ export function changeInvitationType(invitationType) {
     invitationType,
   };
 }
+
+export function showInviteModal(visible, inviteeInfo) {
+  return {
+    type: actionTypes.SHOW_INVITE_MODAL,
+    data: { visible, inviteeInfo },
+  };
+}
+
 
 // 待邀请相关的action
 export function loadToInvites(tenantId) {
@@ -79,7 +95,7 @@ export function loadToInvites(tenantId) {
   };
 }
 
-export function inviteOfflinePartner({ tenantId, inviteeInfo, contactInfo }) {
+export function inviteOfflinePartner({ inviteeInfo, contactInfo }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -91,7 +107,6 @@ export function inviteOfflinePartner({ tenantId, inviteeInfo, contactInfo }) {
       method: 'post',
       partnerId: inviteeInfo.partnerId,
       data: {
-        tenantId,
         inviteeInfo,
         contactInfo,
       },
