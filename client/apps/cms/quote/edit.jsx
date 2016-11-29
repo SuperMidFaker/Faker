@@ -5,8 +5,8 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
-import { loadEditQuote, copyQuote, deleteQuote, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Card, Collapse, message, Form, Popconfirm } from 'antd';
+import { loadEditQuote, copyQuote, loadPartners } from 'common/reducers/cmsQuote';
+import { Button, Card, Collapse, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -31,7 +31,7 @@ function fetchData({ params, state, dispatch }) {
     partners: state.cmsQuote.partners,
     clients: state.cmsQuote.clients,
   }),
-  { copyQuote, deleteQuote }
+  { copyQuote }
 )
 @connectNav({
   depth: 3,
@@ -46,7 +46,6 @@ export default class QuotingEdit extends Component {
     tenantId: PropTypes.number.isRequired,
     quoteData: PropTypes.object.isRequired,
     copyQuote: PropTypes.func.isRequired,
-    deleteQuote: PropTypes.func.isRequired,
     partners: PropTypes.array.isRequired,
     clients: PropTypes.array.isRequired,
   }
@@ -72,23 +71,6 @@ export default class QuotingEdit extends Component {
       }
     });
   }
-  handleDeleteConfirm = () => {
-    const prom = this.props.deleteQuote(
-      this.props.quoteData._id,
-      false,
-      this.props.tenantId,
-      this.props.loginName,
-      this.props.loginId,
-    );
-    prom.then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('已删除', 5);
-        this.context.router.push('/clearance/quote');
-      }
-    });
-  }
   render() {
     const { form } = this.props;
     const msg = key => formatMsg(this.props.intl, key);
@@ -99,10 +81,6 @@ export default class QuotingEdit extends Component {
         </header>
         <div className="top-bar-tools">
           <Button type="primary" onClick={this.handleCopy} >{msg('copy')}</Button>
-          <span />
-          <Popconfirm title="确认删除？" onConfirm={this.handleDeleteConfirm} >
-            <Button>{msg('delete')}</Button>
-          </Popconfirm>
         </div>
         <div className="main-content">
           <div className="page-body">
