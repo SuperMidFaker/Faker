@@ -198,7 +198,7 @@ export function hidePreviewer(delgNo) {
   };
 }
 
-export function loadPaneExp(delgNo) {
+export function loadPaneExp(delgNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -208,7 +208,7 @@ export function loadPaneExp(delgNo) {
       ],
       endpoint: 'v1/cms/expense/paneload',
       method: 'get',
-      params: { delgNo },
+      params: { delgNo, tenantId },
       origin: 'mongo',
     },
   };

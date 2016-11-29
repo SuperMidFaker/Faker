@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
   'SAVE_QUOTE_MODEL', 'SAVE_QUOTE_MODEL_SUCCEED', 'SAVE_QUOTE_MODEL_FAIL',
   'QUOTE_MODELBY_LOAD', 'QUOTE_MODELBY_LOAD_SUCCEED', 'QUOTE_MODELBY_LOAD_FAIL',
+  'QUOTE_STATUS_UPDATE', 'QUOTE_STATUS_UPDATE_SUCCEED', 'QUOTE_STATUS_UPDATE_FAIL',
 ]);
 
 const initialState = {
@@ -188,13 +189,29 @@ export function copyQuote(params) {
   };
 }
 
-export function deleteQuote(quoteId, valid, tenantId, modifyBy, modifyById) {
+export function updateQuoteStatus(quoteId, valid, tenantId, modifyBy, modifyById) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUOTE_STATUS_UPDATE,
+        actionTypes.QUOTE_STATUS_UPDATE_SUCCEED,
+        actionTypes.QUOTE_STATUS_UPDATE_FAIL,
+      ],
+      endpoint: 'v1/cms/quote/statusUpdate',
+      method: 'post',
+      data: { quoteId, valid, tenantId, modifyBy, modifyById },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function deleteQuote(quoteId, tenantId, modifyBy, modifyById) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTE_DELETE, actionTypes.QUOTE_DELETE_SUCCEED, actionTypes.QUOTE_DELETE_FAIL],
       endpoint: 'v1/cms/quote/quoteDelete',
       method: 'post',
-      data: { quoteId, valid, tenantId, modifyBy, modifyById },
+      data: { quoteId, tenantId, modifyBy, modifyById },
       origin: 'mongo',
     },
   };

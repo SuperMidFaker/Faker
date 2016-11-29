@@ -88,69 +88,45 @@ export default class PreviewPanel extends React.Component {
     this.props.setPreviewStatus({ preStatus: 'ciqfinish' });
     this.props.hidePreviewer();
   }
-  translateStatus(delg, ciqdecl, tabKey) {
-    if (tabKey === 'ciqDecl') {
-      const status = ciqdecl.status;
-      const source = ciqdecl.source;
-      switch (status) {
-        case 0:
-          {
-            if (source === 1) return <Badge status="default" text="待接单" />;
-            if (source > 1) return <Badge status="default" text="待供应商接单" />;
-            break;
+  translateStatus(delg) {
+    const status = delg.status;
+    const source = delg.source;
+    switch (status) {
+      case 0:
+        {
+          if (source === 1) return <Badge status="default" text="待接单" />;
+          if (source > 1) return <Badge status="default" text="待供应商接单" />;
+          break;
+        }
+      case 1:
+        {
+          if (source === 1) return <Badge status="default" text="已接单" />;
+          if (source > 1) return <Badge status="default" text="供应商已接单" />;
+          break;
+        }
+      case 2:
+        {
+          if (source === 1) return <Badge status="warning" text="制单中" />;
+          if (source > 1) return <Badge status="warning" text="供应商制单中" />;
+          break;
+        }
+      case 3:
+        {
+          if (delg.sub_status === 1) {
+            return <Badge status="processing" text="部分申报" />;
+          } else {
+            return <Badge status="processing" text="已申报" />;
           }
-        case 1:
-          {
-            if (source === 1) return <Badge status="processing" text="已接单" />;
-            if (source > 1) return <Badge status="processing" text="供应商已接单" />;
-            break;
+        }
+      case 4:
+        {
+          if (delg.sub_status === 1) {
+            return <Badge status="success" text="部分放行" />;
+          } else {
+            return <Badge status="success" text="已放行" />;
           }
-        case 4:
-          {
-            return <Badge status="success" text="报检完成" />;
-          }
-        default: return '';
-      }
-    } else {
-      const status = delg.status;
-      const source = delg.source;
-      switch (status) {
-        case 0:
-          {
-            if (source === 1) return <Badge status="default" text="待接单" />;
-            if (source > 1) return <Badge status="default" text="待供应商接单" />;
-            break;
-          }
-        case 1:
-          {
-            if (source === 1) return <Badge status="default" text="已接单" />;
-            if (source > 1) return <Badge status="default" text="供应商已接单" />;
-            break;
-          }
-        case 2:
-          {
-            if (source === 1) return <Badge status="warning" text="制单中" />;
-            if (source > 1) return <Badge status="warning" text="供应商制单中" />;
-            break;
-          }
-        case 3:
-          {
-            if (delg.sub_status === 1) {
-              return <Badge status="processing" text="部分申报" />;
-            } else {
-              return <Badge status="processing" text="已申报" />;
-            }
-          }
-        case 4:
-          {
-            if (delg.sub_status === 1) {
-              return <Badge status="success" text="部分放行" />;
-            } else {
-              return <Badge status="success" text="已放行" />;
-            }
-          }
-        default: return '';
-      }
+        }
+      default: return '';
     }
   }
   tablePan() {
@@ -205,7 +181,7 @@ export default class PreviewPanel extends React.Component {
           </TabPane>
         </Tabs>
       );
-    } else if (previewer.status === 3 || previewer.status === 4) {
+    } else if (delegation.status === 3 || delegation.status === 4) {
       if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
@@ -396,7 +372,7 @@ export default class PreviewPanel extends React.Component {
     }
   }
   render() {
-    const { visible, previewer, ciqdecl } = this.props;
+    const { visible, previewer } = this.props;
     const { delegation, delegateTracking } = previewer;
     const closer = (
       <button
@@ -411,7 +387,7 @@ export default class PreviewPanel extends React.Component {
         <div className="panel-content">
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
-            {this.translateStatus(delegateTracking, ciqdecl, this.state.tabKey)}
+            {this.translateStatus(delegateTracking)}
             <div className="toolbar">
               {this.button()}
             </div>
