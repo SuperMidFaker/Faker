@@ -96,15 +96,9 @@ export default class DelgDispatch extends Component {
     const { delgDisp, dispatch, partners } = this.props;
     const recv = this.props.form.getFieldsValue();
     let partner = {};
-    if (recv.recv_name === dispatch.recv_name) {
-      partner.name = dispatch.recv_name;
-      partner.tid = dispatch.recv_tenant_id;
-      partner.partner_id = dispatch.recv_partner_id;
-    } else {
-      const pts = partners.filter(pt => pt.partner_id === recv.recv_name);
-      if (pts.length === 1) {
-        partner = pts[0];
-      }
+    const pts = partners.filter(pt => pt.partner_id === recv.recv_name);
+    if (pts.length === 1) {
+      partner = pts[0];
     }
     this.props.delgDispSave(delgDisp, dispatch, partner
     ).then((result) => {
@@ -154,7 +148,7 @@ export default class DelgDispatch extends Component {
             <Card>
               <Form vertical>
                 <FormItem label={label}>
-                  {getFieldDecorator('recv_name', { initialValue: dispatch.recv_name }
+                  {getFieldDecorator('recv_name', { initialValue: delgDisp.recv_name }
                     )(<Select
                       showSearch
                       showArrow

@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Tag } from 'antd';
+import { Button, Tag, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadQuoteTable } from 'common/reducers/cmsQuote';
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import { loadQuoteTable, updateQuoteStatus, deleteQuote } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -24,8 +24,11 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     quotes: state.cmsQuote.quotes,
   }),
+  { loadQuoteTable, updateQuoteStatus, deleteQuote }
 )
 @connectNav({
   depth: 2,
@@ -44,6 +47,38 @@ export default class QuoteList extends Component {
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
+  handleQuoteTableLoad = () => {
+    this.props.loadQuoteTable(this.props.tenantId);
+  }
+  handleChangeStatus = (id, status) => {
+    this.props.updateQuoteStatus(
+      id,
+      status,
+      this.props.tenantId,
+      this.props.loginName,
+      this.props.loginId,
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleQuoteTableLoad();
+      }
+    });
+  }
+  handleDeleteQuote = (id) => {
+    this.props.deleteQuote(
+      id,
+      this.props.tenantId,
+      this.props.loginName,
+      this.props.loginId,
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleQuoteTableLoad();
+      }
+    });
+  }
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     const { quotes } = this.props;
@@ -53,6 +88,13 @@ export default class QuoteList extends Component {
         title: msg('quoteNo'),
         dataIndex: 'quote_no',
         width: 120,
+        render: (o, record) => {
+          if (record.valid) {
+            return o;
+          } else {
+            return <span className="mdc-text-grey">{o}</span>;
+          }
+        },
       }, {
         title: msg('partners'),
         dataIndex: 'partner.name',
@@ -133,16 +175,36 @@ export default class QuoteList extends Component {
         },
       }, {
         title: msg('operation'),
-        width: 60,
+        width: 100,
         fixed: 'right',
         render: (o, record) => {
-          return (
-            <span>
-              <NavLink to={`/clearance/quote/edit/${record.quote_no}`}>
-                {msg('modify')}
-              </NavLink>
-            </span>
-          );
+          if (record.valid) {
+            return (
+              <span>
+                <PrivilegeCover module="clearance" feature="quote" action="edit">
+                  <div>
+                    <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
+                    <span className="ant-divider" />
+                    <NavLink to={`/clearance/quote/edit/${record.quote_no}`}>
+                      {msg('modify')}
+                    </NavLink>
+                  </div>
+                </PrivilegeCover>
+              </span>
+            );
+          } else {
+            return (
+              <span>
+                <PrivilegeCover module="clearance" feature="quote" action="edit">
+                  <div>
+                    <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
+                    <span className="ant-divider" />
+                    <a onClick={() => this.handleDeleteQuote(record._id)}>{msg('delete')}</a>
+                  </div>
+                </PrivilegeCover>
+              </span>
+            );
+          }
         },
       },
     ];

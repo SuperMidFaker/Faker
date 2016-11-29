@@ -6,6 +6,7 @@ import Table from 'client/components/remoteAntTable';
 import { PARTNER_BUSINESSES, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDisp,
   loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
@@ -27,7 +28,7 @@ const formatMsg = format(messages);
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus,
+  { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDeclCiqByDelgNo,
     loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer }
 )
 export default class CiqList extends Component {
@@ -249,7 +250,7 @@ export default class CiqList extends Component {
       delgNo: o,
       tenantId: this.props.tenantId,
     }, record.status);
-    this.props.loadPaneExp(o);
+    this.props.loadDeclCiqByDelgNo(o, this.props.tenantId);
   }
   render() {
     const { ciqlist } = this.props;

@@ -296,7 +296,7 @@ export default class DelegationList extends Component {
       delgNo: o,
       tenantId: this.props.tenantId,
     }, record.status);
-    this.props.loadPaneExp(o);
+    this.props.loadPaneExp(o, this.props.tenantId);
     this.props.loadDeclCiqByDelgNo(o, this.props.tenantId);
   }
   handleCiqFinish = (delgNo) => {

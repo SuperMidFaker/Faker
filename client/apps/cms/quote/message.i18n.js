@@ -145,5 +145,13 @@ const messages = defineMessages({
     id: 'cms.quote.invalid',
     defaultMessage: '无效',
   },
+  disable: {
+    id: 'cms.quote.disable',
+    defaultMessage: '禁用',
+  },
+  enable: {
+    id: 'cms.quote.enable',
+    defaultMessage: '启用',
+  },
 });
 export default messages;
