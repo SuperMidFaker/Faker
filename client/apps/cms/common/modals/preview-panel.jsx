@@ -90,25 +90,31 @@ export default class PreviewPanel extends React.Component {
   }
   translateStatus(delg) {
     const status = delg.status;
-    const source = delg.source;
+    const tenantid = delg.recv_tenant_id;
     switch (status) {
       case 0:
         {
-          if (source === 1) return <Badge status="default" text="待接单" />;
-          if (source > 1) return <Badge status="default" text="待供应商接单" />;
-          break;
+          if (tenantid === this.props.tenantId) {
+            return <Badge status="default" text="待接单" />;
+          } else {
+            return <Badge status="default" text="待供应商接单" />;
+          }
         }
       case 1:
         {
-          if (source === 1) return <Badge status="default" text="已接单" />;
-          if (source > 1) return <Badge status="default" text="供应商已接单" />;
-          break;
+          if (tenantid === this.props.tenantId) {
+            return <Badge status="default" text="已接单" />;
+          } else {
+            return <Badge status="default" text="供应商已接单" />;
+          }
         }
       case 2:
         {
-          if (source === 1) return <Badge status="warning" text="制单中" />;
-          if (source > 1) return <Badge status="warning" text="供应商制单中" />;
-          break;
+          if (tenantid === this.props.tenantId) {
+            return <Badge status="warning" text="制单中" />;
+          } else {
+            return <Badge status="warning" text="供应商制单中" />;
+          }
         }
       case 3:
         {
