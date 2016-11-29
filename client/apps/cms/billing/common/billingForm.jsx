@@ -46,7 +46,7 @@ export default class BillingForm extends React.Component {
   }
   componentWillMount() {
     let roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
-    let businessTypes = [PARTNER_BUSINESSE_TYPES.clearance];
+    const businessTypes = [PARTNER_BUSINESSE_TYPES.clearance];
     if (this.props.type === 'receivable') {
       roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
     } else if (this.props.type === 'payable') {

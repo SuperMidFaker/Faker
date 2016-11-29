@@ -172,7 +172,7 @@ export function deletePartner(id, role, businessType) {
       method: 'post',
       id,
       data: {
-        id, role, businessType
+        id, role, businessType,
       },
     },
   };
