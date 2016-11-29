@@ -210,7 +210,7 @@ export default class DelegationList extends Component {
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
-      const CMS_STATUS = (record.type === 1) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
+      const CMS_STATUS = (record.recv_tenant_id === this.props.tenantId) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
         return <Badge status="default" text={decl && decl.text} />;

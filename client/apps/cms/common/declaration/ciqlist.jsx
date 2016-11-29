@@ -76,7 +76,7 @@ export default class CiqDeclList extends Component {
       if (record.id) {
         if (o) {
           return o;
-        } else if (record.ciq_status !== 1) {
+        } else if (record.ciq_status !== 1 && (record.ciq_type === 'LA' || record.ciq_type === 'LB')) {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <RowUpdater onHit={this.handleCiqNoFill} row={record}
@@ -144,13 +144,13 @@ export default class CiqDeclList extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (record.ciq_status !== 1) {
+      if (record.ciq_status < 2) {
         return (
           <span>
             <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
           </span>
         );
-      } else if (record.ciq_status === 1) {
+      } else {
         return (
           <span>{this.msg('ciqFinish')}</span>
         );
