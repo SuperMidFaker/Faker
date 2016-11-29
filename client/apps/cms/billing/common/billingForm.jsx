@@ -6,7 +6,7 @@ import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { updateBilling, loadPartners } from 'common/reducers/cmsBilling';
-import { PARTNER_ROLES, PARTNER_BUSINESSES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -46,15 +46,13 @@ export default class BillingForm extends React.Component {
   }
   componentWillMount() {
     let roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
-    let businesses = [PARTNER_BUSINESSES.CCB];
+    let businessTypes = [PARTNER_BUSINESSE_TYPES.clearance];
     if (this.props.type === 'receivable') {
       roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
-      businesses = [PARTNER_BUSINESSES.CCB];
     } else if (this.props.type === 'payable') {
       roles = [PARTNER_ROLES.CSUP];
-      businesses = [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB];
     }
-    this.props.loadPartners(this.props.tenantId, roles, businesses);
+    this.props.loadPartners(this.props.tenantId, roles, businessTypes);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleOk = () => {

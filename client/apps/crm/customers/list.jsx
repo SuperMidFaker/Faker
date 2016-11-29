@@ -9,8 +9,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import Profile from './profile';
 import CustomerModal from './customerModal';
-import { loadCustomers, showCustomerModal } from 'common/reducers/crmCustomers';
-import { deletePartner } from 'common/reducers/partner';
+import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
+import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
@@ -26,7 +26,7 @@ function fetchData({ state, dispatch }) {
     customers: state.crmCustomers.customers,
     loaded: state.crmCustomers.loaded,
   }),
-  { loadCustomers, deletePartner, showCustomerModal }
+  { loadCustomers, deleteCustomer, showCustomerModal }
 )
 @connectNav({
   depth: 2,
@@ -39,7 +39,7 @@ export default class List extends React.Component {
     tenantId: PropTypes.number.isRequired,
     customers: PropTypes.array.isRequired,
     loadCustomers: PropTypes.func.isRequired,
-    deletePartner: PropTypes.func.isRequired,
+    deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
   }
   state = {
@@ -64,9 +64,7 @@ export default class List extends React.Component {
   }
   handleOptionClick = (e) => {
     if (e.key === 'remove') {
-      this.props.deletePartner(this.state.customer.id, 'CUS').then(() => {
-        this.handleTableLoad();
-      });
+      this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS);
     }
   }
   render() {

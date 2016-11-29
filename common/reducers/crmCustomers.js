@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'LOAD_CUSTOMERS', 'LOAD_CUSTOMERS_FAIL', 'LOAD_CUSTOMERS_SUCCEED',
   'ADD_CUSTOMER', 'ADD_CUSTOMER_FAIL', 'ADD_CUSTOMER_SUCCEED',
   'EDIT_CUSTOMER', 'EDIT_CUSTOMER_FAIL', 'EDIT_CUSTOMER_SUCCEED',
+  'DELETE_CUSTOMER', 'DELETE_CUSTOMER_SUCCEED', 'DELETE_CUSTOMER_FAIL',
   'SHOW_CUSTOMER_MODAL', 'HIDE_CUSTOMER_MODAL',
 ]);
 
@@ -29,6 +30,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMERS_SUCCEED:
       return { ...state, customers: action.result.data, loaded: true, loading: false };
     case actionTypes.ADD_CUSTOMER_SUCCEED: {
+      return { ...state, loaded: false };
+    }
+    case actionTypes.DELETE_CUSTOMER_SUCCEED: {
       return { ...state, loaded: false };
     }
     case actionTypes.EDIT_CUSTOMER_SUCCEED: {
@@ -66,7 +70,7 @@ export function loadCustomers(params) {
   };
 }
 
-export function addCustomer({ tenantId, partnerInfo, business }) {
+export function addCustomer({ tenantId, partnerInfo, businessType }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -76,12 +80,12 @@ export function addCustomer({ tenantId, partnerInfo, business }) {
       ],
       endpoint: 'v1/crm/customer/add',
       method: 'post',
-      data: { tenantId, partnerInfo, business },
+      data: { tenantId, partnerInfo, businessType },
     },
   };
 }
 
-export function editCustomer({ tenantId, partnerInfo, business }) {
+export function editCustomer({ tenantId, partnerInfo, businessType }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -91,7 +95,25 @@ export function editCustomer({ tenantId, partnerInfo, business }) {
       ],
       endpoint: 'v1/crm/customer/edit',
       method: 'post',
-      data: { tenantId, partnerInfo, business },
+      data: { tenantId, partnerInfo, businessType },
+    },
+  };
+}
+
+export function deleteCustomer(id, role) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_CUSTOMER,
+        actionTypes.DELETE_CUSTOMER_SUCCEED,
+        actionTypes.DELETE_CUSTOMER_FAIL,
+      ],
+      endpoint: 'v1/crm/customer/delete',
+      method: 'post',
+      id,
+      data: {
+        id, role,
+      },
     },
   };
 }

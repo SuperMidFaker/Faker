@@ -44,7 +44,7 @@ export default class CustomerModal extends React.Component {
     contact: '',
     phone: '',
     email: '',
-    business: '',
+    businessType: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -56,7 +56,7 @@ export default class CustomerModal extends React.Component {
         contact: nextProps.customer.contact,
         phone: nextProps.customer.phone,
         email: nextProps.customer.email,
-        business: nextProps.customer.business,
+        businessType: nextProps.customer.business_type,
       });
     }
   }
@@ -70,24 +70,24 @@ export default class CustomerModal extends React.Component {
       contact: '',
       phone: '',
       email: '',
-      business: '',
+      businessType: '',
     });
     this.props.hideCustomerModal();
   }
   handleOk = () => {
-    const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, business } = this.state;
+    const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, businessType } = this.state;
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('企业唯一标识码必填');
-    } else if (business === '') {
+    } else if (businessType === '') {
       message.error('请选择客户业务类型');
     } else if (this.props.operation === 'edit') {
       this.props.editCustomer({
         tenantId,
         partnerInfo: { id, name, partnerCode, partnerUniqueCode, contact, phone, email },
-        business,
+        businessType,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -109,7 +109,7 @@ export default class CustomerModal extends React.Component {
         this.props.addCustomer({
           tenantId,
           partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
-          business,
+          businessType,
         }).then((result1) => {
           if (result1.error) {
             message.error(result1.error.message);
@@ -128,8 +128,8 @@ export default class CustomerModal extends React.Component {
 
   render() {
     const { visible, operation } = this.props;
-    const { business } = this.state;
-    const businessArray = business !== '' ? business.split(',') : [];
+    const { businessType } = this.state;
+    const businessArray = businessType !== '' ? businessType.split(',') : [];
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -174,7 +174,7 @@ export default class CustomerModal extends React.Component {
             <CheckboxGroup options={CUSTOMER_TYPES} value={businessArray}
               onChange={(value) => {
                 if (value !== []) {
-                  this.setState({ business: value.join(',') });
+                  this.setState({ businessType: value.join(',') });
                 }
               }}
             />

@@ -17,7 +17,7 @@ import PreviewPanel from '../../shipment/modals/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
-import { PARTNER_ROLES, PARTNER_BUSINESSES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
 import AdvanceChargeModal from '../modals/advanceChargeModal';
 
@@ -73,10 +73,10 @@ export default class FeesList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], [PARTNER_BUSINESSES.TRS]).then((result) => {
+    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
       this.setState({ customers: result.data });
     });
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.TSUP], [PARTNER_BUSINESSES.TRS]).then((result) => {
+    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
       this.setState({ carriers: result.data });
     });
   }

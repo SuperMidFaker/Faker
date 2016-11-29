@@ -9,6 +9,7 @@ function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadPartners(cookie, {
     tenantId: state.account.tenantId,
     role: '',
+    businessType: '',
   }));
 }
 

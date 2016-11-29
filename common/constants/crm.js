@@ -1,6 +1,6 @@
 export const CUSTOMER_TYPES = [
-  { label: '运输', value: 'TRS' },
-  { label: '清关', value: 'CCB' },
+  { label: '运输', value: 'transport' },
+  { label: '清关', value: 'clearance' },
 ];
 
 export const CRM_ORDER_STATUS = {

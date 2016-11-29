@@ -220,7 +220,7 @@ export function alterBillingFees(fee) {
   return { type: actionTypes.ALTER_BILLINGFEES, data: { fee } };
 }
 
-export function loadPartners(tenantId, roles, businesses) {
+export function loadPartners(tenantId, roles, businessTypes) {
   return {
     [CLIENT_API]: {
       types: [
@@ -230,7 +230,7 @@ export function loadPartners(tenantId, roles, businesses) {
       ],
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
-      params: { tenantId, roles: JSON.stringify(roles), businesses: JSON.stringify(businesses) },
+      params: { tenantId, roles: JSON.stringify(roles), businessTypes: JSON.stringify(businessTypes) },
     },
   };
 }

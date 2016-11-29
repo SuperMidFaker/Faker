@@ -10,7 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 // import BillingForm from './billingForm';
 import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/transportBilling';
-import { PARTNER_ROLES, PARTNER_BUSINESSES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 // import CancelChargeModal from './modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
@@ -68,7 +68,7 @@ export default class BillingList extends React.Component {
   componentWillMount() {
     this.props.loadPartners(this.props.tenantId,
       [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
-      [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.TRS, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB]).then((result) => {
+      [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
         this.setState({ customers: result.data });
       });
   }

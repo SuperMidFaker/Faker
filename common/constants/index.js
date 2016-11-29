@@ -32,8 +32,7 @@ const INVITATION_STATUS = {
 export const PARTNER_ROLES = {
   DCUS: 'DCUS',
   CUS: 'CUS',
-  CSUP: 'CSUP',
-  TSUP: 'TSUP',
+  SUP: 'SUP',
 };
 
 export const PARTNER_BUSINESSES = {
@@ -41,6 +40,11 @@ export const PARTNER_BUSINESSES = {
   TRS: 'TRS',
   CIB: 'CIB',
   ICB: 'ICB',
+};
+
+export const PARTNER_BUSINESSE_TYPES = {
+  clearance: 'clearance',
+  transport: 'transport',
 };
 
 const WRAP_TYPE = [{

@@ -5,13 +5,16 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadPartners, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import connectNav from 'client/common/decorators/connect-nav';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
-const role = 'TSUP';
+const role = PARTNER_ROLES.SUP;
+const businessType = PARTNER_BUSINESSE_TYPES.transport;
 
 function fetchData({ dispatch, state, cookie }) {
   return dispatch(loadPartners(cookie, {
     tenantId: state.account.tenantId,
     role,
+    businessType,
   }));
 }
 
@@ -43,6 +46,7 @@ export default class DriverListContainer extends Component {
       this.props.loadPartners(null, {
         tenantId: nextProps.tenantId,
         role,
+        businessType,
       });
     }
   }
@@ -53,13 +57,13 @@ export default class DriverListContainer extends Component {
     this.props.toggleCarrierModal(true, 'add');
   }
   handleStopBtnClick = (id) => {
-    this.props.changePartnerStatus(id, 0, role);
+    this.props.changePartnerStatus(id, 0, role, businessType);
   }
   handleDeleteBtnClick = (id) => {
-    this.props.deletePartner(id, role);
+    this.props.deletePartner(id, role, businessType);
   }
   handleResumeBtnClick = (id) => {
-    this.props.changePartnerStatus(id, 1, role);
+    this.props.changePartnerStatus(id, 1, role, businessType);
   }
   render() {
     const { partners } = this.props;

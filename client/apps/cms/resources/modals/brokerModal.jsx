@@ -3,6 +3,7 @@ import { Modal, Form, Input, message, Checkbox } from 'antd';
 import { connect } from 'react-redux';
 import { addPartner, editPartner, checkPartner } from 'common/reducers/partner';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -38,8 +39,9 @@ export default class BrokerModal extends React.Component {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
-    role: 'CSUP',
+    role: PARTNER_ROLES.SUP,
     business: '',
+    businessType: PARTNER_BUSINESSE_TYPES.clearance,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -54,7 +56,7 @@ export default class BrokerModal extends React.Component {
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
+    const { partnerName, partnerCode, partnerUniqueCode, role, business, businessType } = this.state;
     if (partnerName === '') {
       message.error('请填写供应商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -75,7 +77,7 @@ export default class BrokerModal extends React.Component {
         if (result.data.partner && result.data.partner.name !== partnerName) {
           name = result.data.partner.name;
         }
-        this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business }).then((result1) => {
+        this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
           if (result1.error) {
             message.error(result1.error.message);
           } else if (partnerName !== name) {

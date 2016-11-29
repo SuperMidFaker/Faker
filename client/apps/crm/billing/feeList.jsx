@@ -14,7 +14,7 @@ import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from '../orders/modals/preview-panel';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import SearchBar from 'client/components/search-bar';
-import { PARTNER_ROLES, PARTNER_BUSINESSES, CRM_ORDER_MODE } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
 
 const formatMsg = format(messages);
@@ -72,7 +72,7 @@ export default class FeesList extends React.Component {
   componentWillMount() {
     this.props.loadPartners(this.props.tenantId,
       [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
-      [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.TRS, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB]).then((result) => {
+      [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
         this.setState({ customers: result.data });
       });
   }

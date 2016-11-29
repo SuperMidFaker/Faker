@@ -79,7 +79,7 @@ export function setProviderType(providerType) {
   };
 }
 
-export function addPartner({ tenantId, partnerInfo, role, business }) {
+export function addPartner({ tenantId, partnerInfo, role, business, businessType }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -94,6 +94,7 @@ export function addPartner({ tenantId, partnerInfo, role, business }) {
         partnerInfo,
         role,
         business,
+        businessType,
       },
     },
   };
@@ -139,7 +140,7 @@ export function editPartner(partnerId, name, code, role, business) {
   };
 }
 
-export function changePartnerStatus(id, status, role) {
+export function changePartnerStatus(id, status, role, businessType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -153,12 +154,13 @@ export function changePartnerStatus(id, status, role) {
         id,
         status,
         role,
+        businessType,
       },
     },
   };
 }
 
-export function deletePartner(id, role) {
+export function deletePartner(id, role, businessType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -170,7 +172,7 @@ export function deletePartner(id, role) {
       method: 'post',
       id,
       data: {
-        id, role,
+        id, role, businessType
       },
     },
   };

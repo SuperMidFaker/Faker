@@ -3,6 +3,7 @@ import { Modal, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { addPartner, editPartner, checkPartner } from 'common/reducers/partner';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, PARTNER_BUSINESSES } from 'common/constants';
 
 const FormItem = Form.Item;
 
@@ -34,8 +35,9 @@ export default class CarrierModal extends React.Component {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
-    role: 'TSUP',
-    business: 'TRS',
+    role: PARTNER_ROLES.SUP,
+    business: PARTNER_BUSINESSES.TRS,
+    businessType: PARTNER_BUSINESSE_TYPES.transport,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -48,7 +50,7 @@ export default class CarrierModal extends React.Component {
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
+    const { partnerName, partnerCode, partnerUniqueCode, role, business, businessType } = this.state;
     if (partnerName === '') {
       message.error('请填写承运商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -75,7 +77,7 @@ export default class CarrierModal extends React.Component {
           if (result.data.partner && result.data.partner.name !== partnerName) {
             name = result.data.partner.name;
           }
-          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business }).then((result1) => {
+          this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
             if (result1.error) {
               message.error(result1.error.message);
             } else {

@@ -7,7 +7,7 @@ import PricingFTL from './pricingFTL';
 import PricingCTN from './pricingCTN';
 import { loadPartners, submitAgreement,
   updateAgreement } from 'common/reducers/transportTariff';
-import { TARIFF_KINDS, GOODS_TYPES, PARTNER_ROLES, PARTNER_BUSINESSES,
+import { TARIFF_KINDS, GOODS_TYPES, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES,
   PRESET_TRANSMODES, TAX_STATUS } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -157,7 +157,7 @@ export default class AgreementForm extends React.Component {
     } else if (kind.value === 'sales') {
       this.props.loadPartners(this.props.tenantId,
         [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
-        [PARTNER_BUSINESSES.TRS])
+        [PARTNER_BUSINESSE_TYPES.transport])
         .then((result) => {
           if (result.error) {
             message.error(result.error.message);
@@ -167,8 +167,8 @@ export default class AgreementForm extends React.Component {
         });
     } else if (kind.value === 'cost') {
       this.props.loadPartners(this.props.tenantId,
-        [PARTNER_ROLES.TSUP],
-        [PARTNER_BUSINESSES.TRS])
+        [PARTNER_ROLES.SUP],
+        [PARTNER_BUSINESSE_TYPES.transport])
         .then((result) => {
           if (result.error) {
             message.error(result.error.message);
