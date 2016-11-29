@@ -16,7 +16,7 @@ function fetchData({ dispatch, state }) {
 }), { editVehicle })
 @connectNav({
   depth: 2,
-  muduleName: 'transport',
+  moduleName: 'transport',
 })
 export default class VehicleListContainer extends Component {
   static propTypes = {

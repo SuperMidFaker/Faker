@@ -23,7 +23,7 @@ function fetchData({ dispatch, state, cookie }) {
 }), { changePartnerStatus, deletePartner, toggleCarrierModal, loadPartners })
 @connectNav({
   depth: 2,
-  muduleName: 'transport',
+  moduleName: 'transport',
 })
 export default class DriverListContainer extends Component {
   static propTypes = {

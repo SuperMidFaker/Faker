@@ -426,9 +426,9 @@ export default class DelegationList extends Component {
     this.props.setDispStatus({ delgDispShow: true });
   }
   handleDelegationCancel = (row, type) => {
-    let typecode = PARTNERSHIP_TYPE_INFO.CCB;
+    let typecode = PARTNER_BUSINESSES.CCB;
     if (type === 'ciq') {
-      typecode = PARTNERSHIP_TYPE_INFO.CIB;
+      typecode = PARTNER_BUSINESSES.CIB;
     } else if (type === 'all') {
       typecode = [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB].join(',');
     }

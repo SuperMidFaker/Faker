@@ -23,7 +23,7 @@ function fetchData({ dispatch, state, cookie }) {
 }), { changePartnerStatus, deletePartner, toggleCarrierModal, loadPartners })
 @connectNav({
   depth: 2,
-  muduleName: 'clearance',
+  moduleName: 'clearance',
 })
 export default class ProviderListContainer extends Component {
   static propTypes = {

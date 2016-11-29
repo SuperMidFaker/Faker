@@ -17,7 +17,7 @@ function fetchData({ dispatch, state }) {
 }), { editDriver, editDriverLogin })
 @connectNav({
   depth: 2,
-  muduleName: 'transport',
+  moduleName: 'transport',
 })
 export default class DriverListContainer extends Component {
   static propTypes = {

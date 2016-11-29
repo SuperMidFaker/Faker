@@ -16,7 +16,7 @@ function fetchData({ dispatch, state }) {
 }), { setNodeType, removeNode })
 @connectNav({
   depth: 2,
-  muduleName: 'transport',
+  moduleName: 'transport',
 })
 export default class NodeListContainer extends Component {
   static propTypes = {

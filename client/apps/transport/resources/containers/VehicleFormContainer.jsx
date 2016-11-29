@@ -14,7 +14,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 @connectNav({
   depth: 3,
   text: '车辆管理',
-  muduleName: 'transport',
+  moduleName: 'transport',
 })
 @Form.create()
 export default class VehicleFormContainer extends Component {

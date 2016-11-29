@@ -26,7 +26,7 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   text: '地点管理',
-  muduleName: 'transport',
+  moduleName: 'transport',
 })
 @Form.create()
 export default class NodeFormConainer extends Component {
