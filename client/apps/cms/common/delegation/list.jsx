@@ -17,11 +17,12 @@ import RowUpdater from './rowUpdater';
 import DelgDispatch from './delgDispatch';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertBrokers, loadRelatedDisp,
-  setCiqFinish } from 'common/reducers/cmsDelegation';
+  setCiqFinish, openAcceptModal } from 'common/reducers/cmsDelegation';
 import { loadPaneExp, loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import PreviewPanel from '../modals/preview-panel';
 import CertModal from './modals/certModal';
+import AcceptModal from './modals/acceptModal';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -52,7 +53,7 @@ const RadioButton = Radio.Button;
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
     loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote,
     loadCertFees, openCertModal, loadCertBrokers, loadRelatedDisp,
-    loadDeclCiqByDelgNo, setCiqFinish }
+    loadDeclCiqByDelgNo, setCiqFinish, openAcceptModal }
 )
 @connectNav({
   depth: 2,
@@ -108,21 +109,9 @@ export default class DelegationList extends Component {
       }
     }
     if (nextProps.preStatus !== this.props.preStatus) {
-      if (nextProps.preStatus === 'accept') {
-        const { loginId, loginName, delegateTracking } = this.props;
-        this.props.acceptDelg(loginId, loginName, delegateTracking.id).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              this.handleDelgListLoad();
-              this.props.showPreviewer({
-                delgNo: delegateTracking.delg_no,
-                tenantId: this.props.tenantId,
-              }, 1);
-            }
-          }
-        );
+      if (nextProps.preStatus === 'accepted') {
+        this.handleDelgListLoad();
+        this.showAcceptInfo(this.acceptingRow);
       }
       if (nextProps.preStatus === 'make') {
         const { delegation } = this.props;
@@ -403,17 +392,12 @@ export default class DelegationList extends Component {
     setTimeout(() => !closed && Info.destroy(), 2000);
   }
   handleDelegationAccept = (row) => {
-    const { loginId, loginName } = this.props;
-    this.props.acceptDelg(loginId, loginName, row.id).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.handleDelgListLoad();
-          this.showAcceptInfo(row);
-        }
-      }
-    );
+    this.props.openAcceptModal({
+      tenantId: this.props.tenantId,
+      dispatchIds: [row.id],
+      type: 'delg',
+    });
+    this.acceptingRow = row;
   }
   handleDelegationAssign = (row, type) => {
     let typecode = PARTNER_BUSINESSES.CCB;
@@ -622,6 +606,7 @@ export default class DelegationList extends Component {
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
         <PreviewPanel ietype={this.props.ietype} />
         <CertModal />
+        <AcceptModal />
       </QueueAnim>
     );
   }
