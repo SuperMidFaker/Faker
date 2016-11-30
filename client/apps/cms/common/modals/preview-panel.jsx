@@ -90,25 +90,31 @@ export default class PreviewPanel extends React.Component {
   }
   translateStatus(delg) {
     const status = delg.status;
-    const source = delg.source;
+    const tenantid = delg.recv_tenant_id;
     switch (status) {
       case 0:
         {
-          if (source === 1) return <Badge status="default" text="待接单" />;
-          if (source > 1) return <Badge status="default" text="待供应商接单" />;
-          break;
+          if (tenantid === this.props.tenantId) {
+            return <Badge status="default" text="待接单" />;
+          } else {
+            return <Badge status="default" text="待供应商接单" />;
+          }
         }
       case 1:
         {
-          if (source === 1) return <Badge status="default" text="已接单" />;
-          if (source > 1) return <Badge status="default" text="供应商已接单" />;
-          break;
+          if (tenantid === this.props.tenantId) {
+            return <Badge status="default" text="已接单" />;
+          } else {
+            return <Badge status="default" text="供应商已接单" />;
+          }
         }
       case 2:
         {
-          if (source === 1) return <Badge status="warning" text="制单中" />;
-          if (source > 1) return <Badge status="warning" text="供应商制单中" />;
-          break;
+          if (tenantid === this.props.tenantId) {
+            return <Badge status="warning" text="制单中" />;
+          } else {
+            return <Badge status="warning" text="供应商制单中" />;
+          }
         }
       case 3:
         {
@@ -245,7 +251,7 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-      } else if (delegateTracking.status === 0 && delegateTracking.source === 3) {
+      } else if (delegateTracking.status === 0 && (delegation.source === 3 || delegation.source === 1)) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="default" onClick={this.handleDispAllCancel}>
@@ -334,9 +340,23 @@ export default class PreviewPanel extends React.Component {
         );
       }
     } else if (this.state.tabKey === 'ciqDecl') {
-      if ((ciqdecl.status === 1 && ciqdecl.source === 1) ||
+      if (((ciqdecl.status === 1 && ciqdecl.source === 1) ||
         (ciqdecl.status === 1 && ciqdecl.source === 3 &&
-          ciqdecl.recv_tenant_id === tenantId)) {
+          ciqdecl.recv_tenant_id === tenantId)) &&
+          (delegateTracking.recv_tenant_id === tenantId)) {
+        return (
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+            <div className="btn-bar">
+              <Button type="ghost" onClick={this.handleCiqDisp}>
+                指定报检单位
+              </Button>
+            </div>
+          </PrivilegeCover>
+        );
+      } else if (((ciqdecl.status === 1 && ciqdecl.source === 1) ||
+        (ciqdecl.status === 1 && ciqdecl.source === 3 &&
+          ciqdecl.recv_tenant_id === tenantId)) &&
+          (delegateTracking.source === 2)) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">

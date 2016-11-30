@@ -103,6 +103,9 @@ const initialState = {
     visible: false,
     delegations: [],
   },
+  acceptModal: {
+    visible: false,
+  },
   previewer: {
     visible: false,
     tabKey: 'basic',
