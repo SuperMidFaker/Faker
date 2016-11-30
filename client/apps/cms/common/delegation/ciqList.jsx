@@ -134,11 +134,7 @@ export default class CiqList extends Component {
         );
       } else if (record.status === 1 && record.type === 1) {
         return (
-          <span>
-            <RowUpdater onHit={() => this.handleDelegationAssign(record, 'ciq')} label={this.msg('delgDistribute')} row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
-          </span>
+          <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
         );
       } else if (record.status === 0 && record.type === 2) {
         return (
