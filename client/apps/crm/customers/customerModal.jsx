@@ -74,6 +74,22 @@ export default class CustomerModal extends React.Component {
     });
     this.props.hideCustomerModal();
   }
+  nameChooseConfirm = (foundName, name) => {
+    Modal.confirm({
+      title: '请选择',
+      content: `${foundName} 与 ${name} 的唯一标示码一致，请选择该标识码下的企业名称`,
+      okText: foundName,
+      cancelText: name,
+      onOk: () => {
+        this.setState({ name: foundName }, () => {
+          this.hancleAddCustomer();
+        });
+      },
+      onCancel: () => {
+        this.hancleAddCustomer();
+      },
+    });
+  }
   handleOk = () => {
     const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, businessType } = this.state;
     const { tenantId, operation } = this.props;
@@ -102,30 +118,34 @@ export default class CustomerModal extends React.Component {
         tenantId,
         partnerInfo: { name, partnerCode, partnerUniqueCode },
       }).then((result) => {
-        let customerName = name;
+        let foundName = name;
         if (result.data.partner && result.data.partner.name !== name) {
-          customerName = result.data.partner.name;
+          foundName = result.data.partner.name;
         }
-        this.props.addCustomer({
-          tenantId,
-          partnerInfo: { name: customerName, partnerCode, partnerUniqueCode, contact, phone, email },
-          businessType,
-        }).then((result1) => {
-          if (result1.error) {
-            message.error(result1.error.message);
-          } else {
-            this.handleCancel();
-            if (customerName !== name) {
-              message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的企业信息， 已将企业名称 ${name} 替换为 ${customerName} `, 10);
-            } else {
-              message.info('添加成功');
-            }
-          }
-        });
+        if (foundName !== name) {
+          this.nameChooseConfirm(foundName, name);
+        } else {
+          this.hancleAddCustomer();
+        }
       });
     }
   }
-
+  hancleAddCustomer = () => {
+    const { name, partnerCode, partnerUniqueCode, contact, phone, email, businessType } = this.state;
+    const { tenantId } = this.props;
+    this.props.addCustomer({
+      tenantId,
+      partnerInfo: { name, partnerCode, partnerUniqueCode, contact, phone, email },
+      businessType,
+    }).then((result1) => {
+      if (result1.error) {
+        message.error(result1.error.message);
+      } else {
+        this.handleCancel();
+        message.info('添加成功');
+      }
+    });
+  }
   render() {
     const { visible, operation } = this.props;
     const { businessType } = this.state;

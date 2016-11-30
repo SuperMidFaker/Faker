@@ -44,19 +44,33 @@ export default class BrokerModal extends React.Component {
     businessType: PARTNER_BUSINESSE_TYPES.clearance,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.operation === 'edit') {
-      this.setState({
-        partnerName: nextProps.carrier.name || '',
-        partnerCode: nextProps.carrier.partner_code || '',
-        partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
-        role: nextProps.carrier.role || '',
-        business: nextProps.carrier.business || '',
-      });
-    }
+    this.setState({
+      partnerName: nextProps.carrier.name || '',
+      partnerCode: nextProps.carrier.partner_code || '',
+      partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
+      role: nextProps.carrier.role || PARTNER_ROLES.SUP,
+      business: nextProps.carrier.business || '',
+    });
+  }
+  nameChooseConfirm = (foundName, name) => {
+    Modal.confirm({
+      title: '请选择',
+      content: `${foundName} 与 ${name} 的唯一标示码一致，请选择该标识码下的企业名称`,
+      okText: foundName,
+      cancelText: name,
+      onOk: () => {
+        this.setState({ partnerName: foundName }, () => {
+          this.handleAddPartner();
+        });
+      },
+      onCancel: () => {
+        this.handleAddPartner();
+      },
+    });
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business, businessType } = this.state;
+    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
     if (partnerName === '') {
       message.error('请填写供应商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -73,22 +87,32 @@ export default class BrokerModal extends React.Component {
         tenantId,
         partnerInfo: { name: partnerName, partnerCode, partnerUniqueCode },
       }).then((result) => {
-        let name = partnerName;
+        let foundName = partnerName;
         if (result.data.partner && result.data.partner.name !== partnerName) {
-          name = result.data.partner.name;
+          foundName = result.data.partner.name;
         }
-        this.props.addPartner({ tenantId, partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
-          if (result1.error) {
-            message.error(result1.error.message);
-          } else if (partnerName !== name) {
-            message.info(`添加成功 找到 企业唯一标识码为:${partnerUniqueCode} 的承运商信息， 已将承运商名称 ${partnerName} 替换为 ${name} `, 10);
-          } else {
-            message.info('添加成功');
-          }
-          this.handleCancel();
-        });
+        if (foundName !== partnerName) {
+          this.nameChooseConfirm(foundName, partnerName);
+        } else {
+          this.handleAddPartner();
+        }
       });
     }
+  }
+  handleAddPartner = () => {
+    const { tenantId } = this.props;
+    const { partnerName, partnerCode, partnerUniqueCode, role, business, businessType } = this.state;
+    this.props.addPartner({ tenantId, partnerInfo: { partnerName, partnerCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
+      if (result1.error) {
+        message.error(result1.error.message);
+      } else {
+        this.handleCancel();
+        message.info('添加成功');
+        if (this.props.onOk) {
+          this.props.onOk();
+        }
+      }
+    });
   }
   handleCancel = () => {
     this.props.toggleCarrierModal(false);
