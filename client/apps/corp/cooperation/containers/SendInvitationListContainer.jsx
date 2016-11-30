@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
-import { mapPartnerships } from '../util/dataMapping';
+import PartnershipsColumn from '../components/partnershipsColumn';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadSendInvitations, cancelInvite } from 'common/reducers/invitation';
 
@@ -16,34 +16,44 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@connect(state => ({ sendInvitations: state.invitation.sendInvitations }), { cancelInvite })
+@connect(state => ({
+  sendInvitationsLoaded: state.invitation.sendInvitationsLoaded,
+  tenantId: state.account.tenantId,
+  sendInvitations: state.invitation.sendInvitations
+}), { cancelInvite, loadSendInvitations })
 export default class SendInvitation extends Component {
   static propTypes = {
+    sendInvitationsLoaded: PropTypes.bool.isRequired,
+    tenantId: PropTypes.number.isRequired,
     sendInvitations: PropTypes.array.isRequired,  // 发出的邀请
     cancelInvite: PropTypes.func.isRequired,      // 取消邀请的action creator
+    loadSendInvitations: PropTypes.func.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.sendInvitationsLoaded) {
+      this.handleTableLoad();
+    }
+  }
+  handleTableLoad = () => {
+    this.props.loadSendInvitations(this.props.tenantId);
   }
   columns = [
     {
       title: '合作伙伴',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
+      dataIndex: 'invitee_name',
+      key: 'invitee_name',
+    }, {
       title: '代码',
-      dataIndex: 'code',
-      key: 'code',
-    },
-    {
-      title: '邀请对方成为',
+      dataIndex: 'invitee_code',
+      key: 'invitee_code',
+    }, {
+      title: '业务关系',
       dataIndex: 'partnerships',
       key: 'partnerships',
-      render(_, record) {
-        return (
-          <span>{mapPartnerships(record.partnerships)}</span>
-        );
+      render: (o) => {
+        return <PartnershipsColumn partnerships={o}/>;
       },
-    },
-    {
+    }, {
       title: '发出时间',
       dataIndex: 'created_date',
       key: 'created_date',
@@ -52,8 +62,7 @@ export default class SendInvitation extends Component {
           <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
         );
       },
-    },
-    {
+    }, {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
@@ -71,20 +80,18 @@ export default class SendInvitation extends Component {
             return null;
         }
       },
-    },
-    {
+    }, {
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
       render: (_, record) => {
         if (record.status === 0) {
-          return (<a onClick={() => this.handleCancelInviteBtnClick(record.id, record.partnerId)}>取消邀请</a>);
+          return (<a onClick={() => this.handleCancelInviteBtnClick(record.id, record.partner_id)}>取消邀请</a>);
         } else {
           return null;
         }
       },
-    },
-  ]
+    }]
   handleCancelInviteBtnClick = (id, partnerId) => {
     this.props.cancelInvite(id, partnerId);
   }

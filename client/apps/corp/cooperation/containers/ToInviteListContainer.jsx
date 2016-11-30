@@ -7,6 +7,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import InviteModal from '../components/inviteModal';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadToInvites, inviteOnlinePartner, showInviteModal } from 'common/reducers/invitation';
+import PartnershipsColumn from '../components/partnershipsColumn';
 
 const rowSelection = {
   onChange() {},
@@ -24,6 +25,7 @@ function fetchData({ state, dispatch }) {
 }), { inviteOnlinePartner, showInviteModal, loadToInvites })
 export default class ToInviteList extends Component {
   static propTypes = {
+    tenantId: PropTypes.number.isRequired,
     toInvitesLoaded: PropTypes.bool.isRequired,
     toInvites: PropTypes.array.isRequired,            // 待邀请的partner
     inviteOnlinePartner: PropTypes.func.isRequired,   // 邀请线上partner的action creator
@@ -47,6 +49,13 @@ export default class ToInviteList extends Component {
     title: '代码',
     dataIndex: 'partner_code',
     key: 'partner_code',
+  }, {
+    title: '业务关系',
+    dataIndex: 'partnerships',
+    key: 'partnerships',
+    render: (o) => {
+      return <PartnershipsColumn partnerships={o}/>;
+    },
   }, {
     title: '创建日期',
     dataIndex: 'created_date',
@@ -90,8 +99,7 @@ export default class ToInviteList extends Component {
 
       return '';
     },
-  },
-  ]
+  }]
   handleTableLoad = () => {
     this.props.loadToInvites(this.props.tenantId);
   }

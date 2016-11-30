@@ -23,13 +23,3 @@ export const tenantTypes = {
   TENANT_EXT: '扩展租户',
   TENANT_OFFLINE: '非平台租户',
 };
-
-export function mapPartnerships(partnerships) {
-  let content;
-  if (partnerships.length === 1) {
-    content = partnerTypes[partnerships[0]];
-  } else {
-    content = partnerships.map(ps => providerShorthandTypes[ps]).join('/');
-  }
-  return content;
-}

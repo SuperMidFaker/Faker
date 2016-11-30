@@ -15,6 +15,8 @@ const actionTypes = createActionTypes('@@welogix/invitation/', [
 
 const initialState = {
   toInvitesLoaded: true,
+  sendInvitationsLoaded: true,
+  receiveInvitationsLoaded: true,
   invitationType: '0',    // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
   toInvites: [],          // 待邀请的列表数组
   sendInvitations: [],    // 发出的邀请列表数组
@@ -33,28 +35,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, toInvites: action.result.data.toInvites, toInvitesLoaded: true };
     case actionTypes.INVITE_ONLINE_PARTNER_SUCCEED:
     case actionTypes.INVITE_OFFLINE_PARTNER_SUCCEED: {
-      const { partnerId } = action;
-      const toInvites = state.toInvites.filter(invitee => invitee.id !== partnerId);
-      return { ...state, toInvites, toInvitesLoaded: false };
+      return { ...state, toInvitesLoaded: false };
     }
     case actionTypes.LOAD_SEND_INVITATIONS_SUCCEED:
-      return { ...state, sendInvitations: action.result.data.sendInvitations };
+      return { ...state, sendInvitations: action.result.data.sendInvitations, sendInvitationsLoaded: true };
     case actionTypes.CANCEL_INVITE_SUCCEED: {
-      const sendInvitations = state.sendInvitations;
-      const cancelInvitation = sendInvitations.find(invitation => invitation.id === action.id);
-      const index = sendInvitations.findIndex(invitaion => invitaion.id === action.id);
-      const newInvitation = { ...cancelInvitation, status: 3 };
-      return { ...state, sendInvitations: [...sendInvitations.slice(0, index), newInvitation, ...sendInvitations.slice(index + 1)] };
+      return { ...state, sendInvitationsLoaded: false };
     }
     case actionTypes.LOAD_RECEIVE_INVITATIONS_SUCCEED:
-      return { ...state, receiveInvitations: action.result.data.receiveInvitations };
+      return { ...state, receiveInvitations: action.result.data.receiveInvitations, receiveInvitationsLoaded: true };
     case actionTypes.ACCEPT_INVITATION_SUCCEED:
     case actionTypes.REJECT_INVITATION_SUCCEED: {
-      const recevieInvitaions = state.receiveInvitations;
-      const updateInvitation = recevieInvitaions.find(invitation => invitation.id === action.id);
-      const index = recevieInvitaions.findIndex(invitaion => invitaion.id === action.id);
-      const newInvitation = { ...updateInvitation, status: action.status };
-      return { ...state, receiveInvitations: [...recevieInvitaions.slice(0, index), newInvitation, ...recevieInvitaions.slice(index + 1)] };
+      return { ...state, receiveInvitationsLoaded: false };
     }
     case actionTypes.SHOW_INVITE_MODAL: {
       return { ...state, inviteModal: { ...action.data } };
@@ -71,7 +63,7 @@ export function changeInvitationType(invitationType) {
   };
 }
 
-export function showInviteModal(visible, inviteeInfo) {
+export function showInviteModal(visible, inviteeInfo = {}) {
   return {
     type: actionTypes.SHOW_INVITE_MODAL,
     data: { visible, inviteeInfo },
