@@ -4,8 +4,9 @@ import moment from 'moment';
 import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PARTNER_BUSINESSES, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
-import { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDisp,
-  loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer } from 'common/reducers/cmsDelegation';
+import { loadCiqTable, loadCertBrokers, setDispStatus, loadDisp, loadDelgDisp,
+  setCiqFinish, loadCMQParams, matchCQuote, showPreviewer, openAcceptModal,
+} from 'common/reducers/cmsDelegation';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -25,11 +26,13 @@ const formatMsg = format(messages);
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.saved,
+    preStatus: state.cmsDelegation.preStatus,
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadCiqTable, acceptCiqCert, loadCertBrokers, setDispStatus, loadDeclCiqByDelgNo,
-    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer }
+  { loadCiqTable, loadCertBrokers, setDispStatus, loadDeclCiqByDelgNo,
+    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer,
+    openAcceptModal }
 )
 export default class CiqList extends Component {
   static propTypes = {
@@ -51,6 +54,11 @@ export default class CiqList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleTableLoad();
+    }
+    if (nextProps.preStatus !== this.props.preStatus) {
+      if (nextProps.preStatus === 'ciqaccepted') {
+        this.handleTableLoad();
+      }
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -190,16 +198,11 @@ export default class CiqList extends Component {
       });
   }
   handleAccept = (row) => {
-    const { loginId, loginName, tenantId } = this.props;
-    this.props.acceptCiqCert(loginId, loginName, row.delg_no, row.recv_server_type, tenantId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.handleTableLoad();
-        }
-      }
-    );
+    this.props.openAcceptModal({
+      tenantId: this.props.tenantId,
+      dispatchIds: [row.id],
+      type: 'ciq',
+    });
   }
   handleCiqFinish = (row) => {
     this.props.setCiqFinish(row.delg_no).then(

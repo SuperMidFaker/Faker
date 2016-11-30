@@ -3,6 +3,8 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
+  'OPEN_ACCEPT_MODAL', 'CLOSE_ACCEPT_MODAL',
+  'LOAD_DELGOPERATOR', 'LOAD_DELGOPERATOR_SUCCEED', 'LOAD_DELGOPERATOR_FAIL',
   'ACPT_DELG', 'ACPT_DELG_SUCCEED', 'ACPT_DELG_FAIL',
   'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
   'LOAD_DELG', 'LOAD_DELG_SUCCEED', 'LOAD_DELG_FAIL',
@@ -31,7 +33,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
   'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
-  'ACPT_CIQCERT', 'ACPT_CIQCERT_SUCCEED', 'ACPT_CIQCERT_FAIL',
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
   'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
   'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
@@ -105,6 +106,9 @@ const initialState = {
   },
   acceptModal: {
     visible: false,
+    tenantId: 0,
+    delgDispIds: [],
+    delgOperators: [],
   },
   previewer: {
     visible: false,
@@ -293,6 +297,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, brokers: action.result.data.brokers };
     case actionTypes.RELATED_DISP_LOAD_SUCCEED:
       return { ...state, relatedDisps: action.result.data };
+    case actionTypes.OPEN_ACCEPT_MODAL:
+      return { ...state, acceptModal: { visible: true, ...action.data } };
+    case actionTypes.CLOSE_ACCEPT_MODAL:
+      return { ...state, acceptModal: { visible: false } };
+    case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
+      return { ...state, acceptModal: { ...state.acceptModal, operators: action.result.data } };
     default:
       return state;
   }
@@ -579,7 +589,35 @@ export function loadDelegateTable(cookie, params) {
   };
 }
 
-export function acceptDelg(loginId, loginName, dispId) {
+export function loadDelgOperators(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELGOPERATOR,
+        actionTypes.LOAD_DELGOPERATOR_SUCCEED,
+        actionTypes.LOAD_DELGOPERATOR_FAIL,
+      ],
+      endpoint: 'v1/cms/delegate/operators',
+      method: 'get',
+      params: { tenantId },
+    },
+  };
+}
+
+export function openAcceptModal(modal) {
+  return {
+    type: actionTypes.OPEN_ACCEPT_MODAL,
+    data: modal,
+  };
+}
+
+export function closeAcceptModal() {
+  return {
+    type: actionTypes.CLOSE_ACCEPT_MODAL,
+  };
+}
+
+export function acceptDelg(loginId, loginName, dispIds) {
   return {
     [CLIENT_API]: {
       types: [
@@ -589,21 +627,7 @@ export function acceptDelg(loginId, loginName, dispId) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
-      data: { loginId, loginName, dispId },
-    },
-  };
-}
-export function acceptCiqCert(loginId, loginName, delgNo, serverType, tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ACPT_CIQCERT,
-        actionTypes.ACPT_CIQCERT_SUCCEED,
-        actionTypes.ACPT_CIQCERT_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/cms/delg/accept/ciqorcert',
-      data: { loginId, loginName, delgNo, serverType, tenantId },
+      data: { loginId, loginName, dispIds },
     },
   };
 }

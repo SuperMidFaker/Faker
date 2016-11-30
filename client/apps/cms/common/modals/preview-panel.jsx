@@ -243,15 +243,7 @@ export default class PreviewPanel extends React.Component {
     const { previewer, tenantId, ciqdecl } = this.props;
     const { delegation, delegateTracking } = previewer;
     if (this.state.tabKey === 'basic') {
-      if (delegation.status === 0) {
-        return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="primary" onClick={this.handleAccept}>
-              接单
-            </Button>
-          </PrivilegeCover>
-        );
-      } else if (delegateTracking.status === 0 && (delegation.source === 3 || delegation.source === 1)) {
+      if (delegateTracking.status === 0 && (delegation.source === 3 || delegation.source === 1)) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="default" onClick={this.handleDispAllCancel}>
