@@ -74,7 +74,7 @@ export default class BrokerList extends Component {
         key: 'business',
         render(o) {
           return (
-            <span>{mapPartnerships(o.split(','))}</span>
+            <span>{o ? mapPartnerships(o.split(',')) : ''}</span>
         ); },
       }, {
         title: '创建日期',

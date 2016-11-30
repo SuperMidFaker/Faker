@@ -137,7 +137,7 @@ export default class ReceiveInvitationList extends Component {
             reversePartnerships.push({
               role: PARTNER_ROLES.DCUS,
               business: '',
-              business_type: PARTNER_BUSINESSE_TYPES.transport,
+              business_type: businessType,
             });
           }
         }

@@ -42,7 +42,7 @@ export default class CarrierModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       partnerName: nextProps.carrier.name || '',
-      partnerCode: nextProps.carrier.partner_code || PARTNER_ROLES.SUP,
+      partnerCode: nextProps.carrier.partner_code || '',
       partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
     });
   }
