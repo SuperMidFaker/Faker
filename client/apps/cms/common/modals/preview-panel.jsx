@@ -251,7 +251,7 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-      } else if (delegateTracking.status === 0 && delegateTracking.source === 3) {
+      } else if (delegateTracking.status === 0 && delegation.source === 3) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="default" onClick={this.handleDispAllCancel}>
@@ -340,9 +340,10 @@ export default class PreviewPanel extends React.Component {
         );
       }
     } else if (this.state.tabKey === 'ciqDecl') {
-      if ((ciqdecl.status === 1 && ciqdecl.source === 1) ||
+      if (((ciqdecl.status === 1 && ciqdecl.source === 1) ||
         (ciqdecl.status === 1 && ciqdecl.source === 3 &&
-          ciqdecl.recv_tenant_id === tenantId)) {
+          ciqdecl.recv_tenant_id === tenantId)) &&
+          (delegateTracking.recv_tenant_id === tenantId)){
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
