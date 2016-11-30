@@ -19,7 +19,7 @@ function fetchData({ state, dispatch }) {
 @connect(state => ({
   sendInvitationsLoaded: state.invitation.sendInvitationsLoaded,
   tenantId: state.account.tenantId,
-  sendInvitations: state.invitation.sendInvitations
+  sendInvitations: state.invitation.sendInvitations,
 }), { cancelInvite, loadSendInvitations })
 export default class SendInvitation extends Component {
   static propTypes = {
@@ -51,7 +51,7 @@ export default class SendInvitation extends Component {
       dataIndex: 'partnerships',
       key: 'partnerships',
       render: (o) => {
-        return <PartnershipsColumn partnerships={o}/>;
+        return <PartnershipsColumn partnerships={o} />;
       },
     }, {
       title: '发出时间',

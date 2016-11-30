@@ -8,7 +8,7 @@ export default class PartnershipsColumn extends React.Component {
   render() {
     const { partnerships } = this.props;
     const strArray = [];
-    for (let i = 0; i < partnerships.length; i ++) {
+    for (let i = 0; i < partnerships.length; i++) {
       if (partnerships[i].business_type && partnerships[i].role) {
         strArray.push(`${partnerships[i].business_type}${partnerships[i].role}`);
       }

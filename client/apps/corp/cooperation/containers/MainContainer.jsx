@@ -44,7 +44,7 @@ export default class MainContainer extends Component {
       <ReceiveInvitationListContainer />,
       <SendInvitationListContainer />,
     ];
-  const content = components[invitationType];
+    const content = components[invitationType];
     return (
       <div className="main-content">
         <div className="page-body">

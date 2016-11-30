@@ -54,7 +54,7 @@ export default class ToInviteList extends Component {
     dataIndex: 'partnerships',
     key: 'partnerships',
     render: (o) => {
-      return <PartnershipsColumn partnerships={o}/>;
+      return <PartnershipsColumn partnerships={o} />;
     },
   }, {
     title: '创建日期',

@@ -21,7 +21,7 @@ function fetchData({ state, dispatch }) {
 @connect(state => ({
   tenantId: state.account.tenantId,
   receiveInvitationsLoaded: state.invitation.receiveInvitationsLoaded,
-  receiveInvitations: state.invitation.receiveInvitations
+  receiveInvitations: state.invitation.receiveInvitations,
 }), { rejectInvitation, acceptInvitation, loadReceiveInvitations })
 export default class ReceiveInvitationList extends Component {
   static propTypes = {
@@ -53,7 +53,7 @@ export default class ReceiveInvitationList extends Component {
     dataIndex: 'partnerships',
     key: 'partnerships',
     render: (o) => {
-      return <PartnershipsColumn partnerships={o}/>;
+      return <PartnershipsColumn partnerships={o} />;
     },
   }, {
     title: '收到时间',
@@ -102,7 +102,7 @@ export default class ReceiveInvitationList extends Component {
   }]
   handleAcceptBtnClick = (id, partnerId, partnerships) => {
     const reversePartnerships = [];
-    for (let i = 0; i < partnerships.length; i ++) {
+    for (let i = 0; i < partnerships.length; i++) {
       if (partnerships[i].business_type && partnerships[i].role) {
         if (partnerships[i].role === PARTNER_ROLES.CUS) {
           if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0) {
