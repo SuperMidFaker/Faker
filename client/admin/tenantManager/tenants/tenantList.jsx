@@ -2,14 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import {
-  loadTenants, delTenant, switchStatus,
+  loadTenants, delTenant, switchStatus, setFormData,
 } from 'common/reducers/tenants';
 import { Button, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from '../../../components/nav-link';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import { ACCOUNT_STATUS }
   from 'common/constants';
 
@@ -28,15 +27,11 @@ function fetchData({ state, dispatch, cookie }) {
     loading: state.tenants.loading,
   }),
   {
-    loadTenants, delTenant, switchStatus,
+    loadTenants, delTenant, switchStatus, setFormData,
   }
 )
-@connectNav({
-  depth: 2,
-  text: '租户管理',
-  moduleName: 'tenants',
-})
-export default class List extends React.Component {
+
+export default class TenantList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     corplist: PropTypes.object.isRequired,
@@ -44,6 +39,7 @@ export default class List extends React.Component {
     switchStatus: PropTypes.func.isRequired,
     delTenant: PropTypes.func.isRequired,
     loadTenants: PropTypes.func.isRequired,
+    setFormData: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
@@ -77,6 +73,19 @@ export default class List extends React.Component {
           message.error(result.error.message, 10);
         }
       });
+  }
+  handleNewTenant = () => {
+    this.props.setFormData({
+      name: '',
+      code: '',
+      subdomain: '',
+      phone: '',
+      tenantAppValueList: [],
+      aspect: 0,
+      email: '',
+      logo: '',
+    });
+    this.handleNavigationTo('/manager/tenants/create');
   }
   renderColumnText(status, text) {
     let style = {};
@@ -191,14 +200,12 @@ export default class List extends React.Component {
     }];
     return (
       <div className="main-content">
-        <div className="page-header">
-          <div className="tools">
-            <Button type="primary" size="large" icon="plus-circle-o" onClick={() => this.handleNavigationTo('/manager/tenants/create')}>
+        <div className="page-body">
+          <div className="panel-header">
+            <Button type="primary" icon="plus-circle-o" onClick={this.handleNewTenant}>
                 新建租户
             </Button>
           </div>
-        </div>
-        <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
           </div>

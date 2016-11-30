@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Icon, Button, Form, Input, Row, Col, message, Checkbox, Radio } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { setFormValue, uploadImg, submitTenant, clearForm, loadTenantForm } from
+import { setFormValue, uploadImg, submitTenant, loadTenantForm } from
   'common/reducers/tenants';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -18,8 +18,6 @@ function fetchData({ dispatch, cookie, params }) {
   if (params.id) {
     const tenantId = params.id;
     return dispatch(loadTenantForm(cookie, tenantId));
-  } else {
-    return dispatch(clearForm());
   }
 }
 

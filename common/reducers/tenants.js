@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import { CHINA_CODE } from '../constants';
-import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValueC } from
+import { appendFormAcitonTypes, formReducer, loadFormC, setFormValueC } from
 './form-common';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'OPEN_TENANT_APPS_EDITOR', 'CLOSE_TENANT_APPS_EDITOR',
@@ -10,9 +10,12 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'SWITCH_APP', 'SWITCH_APP_SUCCEED', 'SWITCH_APP_FAIL',
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
   'TENANTS_LOAD', 'TENANTS_LOAD_SUCCEED', 'TENANTS_LOAD_FAIL',
+  'PARTNERS_LOAD', 'PARTNERS_LOAD_SUCCEED', 'PARTNERS_LOAD_FAIL',
   'TENANT_FORM_LOAD', 'TENANT_FORM_LOAD_SUCCEED', 'TENANT_FORM_LOAD_FAIL',
   'TENANT_NEW', 'TENANT_NEW_SUCCEED', 'TENANT_NEW_FAIL',
   'TENANT_DELETE', 'TENANT_DELETE_SUCCEED', 'TENANT_DELETE_FAIL',
+  'SET_MENU_ITEM_KEY',
+  'SET_FORM_DATA',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
 
@@ -37,6 +40,13 @@ const initialState = {
     current: 1,
     data: [],
   },
+  partners: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
+  },
+  selectedMenuItemKey: '0',
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -79,7 +89,7 @@ export default function reducer(state = initialState, action) {
       return { ...state };
     }
     case actionTypes.TENANT_NEW_SUCCEED: {
-      return { ...state };
+      return { ...state, formData: initialState.formData };
     }
     case actionTypes.TENANT_NEW_FAIL: {
       return { ...state };
@@ -87,6 +97,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TENANT_DELETE_SUCCEED: {
       return { ...state };
     }
+    case actionTypes.PARTNERS_LOAD_SUCCEED: {
+      return { ...state, partners: action.result.data };
+    }
+    case actionTypes.SET_MENU_ITEM_KEY:
+      return { ...state, selectedMenuItemKey: action.key };
+    case actionTypes.SET_FORM_DATA:
+      return { ...state, formData: { ...initialState.formData, ...action.formData } };
     default:
       return formReducer(actionTypes, state, action, { key: null, country: CHINA_CODE }, 'corplist')
              || state;
@@ -111,10 +128,6 @@ export function isFormDataLoaded(corpsState, corpId) {
 
 export function loadForm(cookie, corpId) {
   return loadFormC(cookie, 'v1/user/corp', { corpId }, actionTypes);
-}
-
-export function clearForm() {
-  return clearFormC(actionTypes);
 }
 
 export function setFormValue(field, newValue) {
@@ -156,6 +169,18 @@ export function loadTenants(cookie, params) {
   };
 }
 
+export function loadPartners(cookie, params) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.PARTNERS_LOAD, actionTypes.PARTNERS_LOAD_SUCCEED, actionTypes.PARTNERS_LOAD_FAIL],
+      endpoint: 'v1/user/corp/partners',
+      method: 'get',
+      params,
+      cookie,
+    },
+  };
+}
+
 export function loadTenantForm(cookie, params) {
   return {
     [CLIENT_API]: {
@@ -188,4 +213,12 @@ export function submitTenant(params) {
       data: params,
     },
   };
+}
+
+export function setMenuItemKey(key) {
+  return { type: actionTypes.SET_MENU_ITEM_KEY, key };
+}
+
+export function setFormData(formData) {
+  return { type: actionTypes.SET_FORM_DATA, formData };
 }
