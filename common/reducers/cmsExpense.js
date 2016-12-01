@@ -5,7 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_PANE_LOAD', 'EXP_PANE_LOAD_SUCCEED', 'EXP_PANE_LOAD_FAIL',
   'DECL_EXPS_LOAD', 'DECL_EXPS_LOAD_SUCCEED', 'DECL_EXPS_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
-  'OPEN_ADVFEE_MODAL', 'CLOSE_ADVFEE_MODAL',
+  'CLOSE_ADVFEE_MODAL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
   'CUSH_SAVE', 'CUSH_SAVE_SUCCEED', 'CUSH_SAVE_FAIL',
@@ -143,12 +143,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, declInModal: action.data, showDeclInputModal: true };
     case actionTypes.CLOSE_DECL_INPUT_MODAL:
       return { ...state, declInModal: initialState.declInModal, showDeclInputModal: false };
-    case actionTypes.OPEN_ADVFEE_MODAL:
-      return { ...state, advanceFeeModal: { ...state.advanceFeeModal, visible: true } };
     case actionTypes.CLOSE_ADVFEE_MODAL:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, visible: false } };
     case actionTypes.LOAD_ADVPARTIES_SUCCEED:
-      return { ...state, advanceParties: action.result.data };
+      return { ...state, advanceParties: action.result.data, advanceFeeModal: {
+        ...state.advanceFeeModal, visible: true, direction: action.params.direction } };
     case actionTypes.SHOW_PREVIEWER:
       return { ...state, previewer: {
         ...state.previewer,
@@ -320,12 +319,6 @@ export function openInModal() {
   };
 }
 
-export function openAdvanceFeeModal() {
-  return {
-    type: actionTypes.OPEN_ADVFEE_MODAL,
-  };
-}
-
 export function closeAdvanceFeeModal() {
   return {
     type: actionTypes.CLOSE_ADVFEE_MODAL,
@@ -400,7 +393,7 @@ export function saveCertFees(disps, params) {
   };
 }
 
-export function loadAdvanceParties(delgNo, tenantId) {
+export function loadAdvanceParties(delgNo, tenantId, direction) {
   return {
     [CLIENT_API]: {
       types: [
@@ -410,7 +403,7 @@ export function loadAdvanceParties(delgNo, tenantId) {
       ],
       endpoint: 'v1/cms/expense/load/advanceparties',
       method: 'get',
-      params: { delgNo, tenantId },
+      params: { delgNo, tenantId, direction },
     },
   };
 }
@@ -431,7 +424,7 @@ export function loadDelgAdvanceFee(dispIds) {
   };
 }
 
-export function computeDelgAdvanceFee(formData) {
+export function computeDelgAdvanceFees(feeItems) {
   return {
     [CLIENT_API]: {
       types: [
@@ -439,9 +432,9 @@ export function computeDelgAdvanceFee(formData) {
         actionTypes.COMPUTE_DELGADVFEES_SUCCEED,
         actionTypes.COMPUTE_DELGADVFEES_FAIL,
       ],
-      endpoint: 'v1/cms/expense/compute/delg/advancefee',
+      endpoint: 'v1/cms/expense/compute/delg/advancefees',
       method: 'post',
-      data: formData,
+      data: feeItems,
       origin: 'mongo',
     },
   };

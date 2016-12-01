@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, InputNumber, Select } from 'antd';
-import { loadCurrencies, loadAdvanceParties, closeAdvanceFeeModal,
-  loadDelgAdvanceFee, computeDelgAdvanceFee } from 'common/reducers/cmsExpense';
+import { Table, Modal, Form, Input, Select, message } from 'antd';
+import { loadCurrencies, closeAdvanceFeeModal,
+  loadDelgAdvanceFee, computeDelgAdvanceFees } from 'common/reducers/cmsExpense';
 import { CMS_DUTY_TAXTYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-const FormItem = Form.Item;
 const Option = Select.Option;
-const labelCol = 6;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(state => ({
@@ -17,32 +16,35 @@ const labelCol = 6;
   fees: state.cmsExpense.advanceFeeModal.fees,
   currencies: state.cmsExpense.currencies,
   advanceParties: state.cmsExpense.advanceParties,
+  advDirection: state.cmsExpense.advanceFeeModal.direction,
 }),
-  { loadCurrencies, loadAdvanceParties, closeAdvanceFeeModal, loadDelgAdvanceFee, computeDelgAdvanceFee })
-@Form.create()
+  { loadCurrencies, closeAdvanceFeeModal, loadDelgAdvanceFee, computeDelgAdvanceFees })
 export default class DelgAdvanceExpenseModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     delgNo: PropTypes.string,
     visible: PropTypes.bool.isRequired,
     fees: PropTypes.arrayOf(PropTypes.shape({
-      code: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+      code: PropTypes.string,
+      name: PropTypes.string,
     })),
     currencies: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
+      id: PropTypes.number,
+      name: PropTypes.string,
     })),
     advanceParties: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
       dispIds: PropTypes.arrayOf(PropTypes.number).isRequired,
       name: PropTypes.string.isRequired,
     })),
+    advDirection: PropTypes.oneOf(['send', 'recv']),
     loadCurrencies: PropTypes.func.isRequired,
-    loadAdvanceParties: PropTypes.func.isRequired,
     closeAdvanceFeeModal: PropTypes.func.isRequired,
     loadDelgAdvanceFee: PropTypes.func.isRequired,
-    computeDelgAdvanceFee: PropTypes.func.isRequired,
+    computeDelgAdvanceFees: PropTypes.func.isRequired,
+  }
+  state = {
+    editFees: {},
   }
   componentWillMount() {
     if (this.props.currencies.length === 0) {
@@ -50,122 +52,185 @@ export default class DelgAdvanceExpenseModal extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {
-      this.props.loadAdvanceParties(nextProps.delgNo);
+    if (nextProps.advanceParties !== this.props.advanceParties) {
+      const dispIds = nextProps.advanceParties.reduce((dispatchIds, ap) =>
+          dispatchIds.concat(ap.dispIds), []);
+      this.props.loadDelgAdvanceFee(dispIds);
     }
   }
   msg = formatMsg(this.props.intl)
-  handlePartyChange = (value) => {
-    const dispIds = this.props.advanceParties.filter(ap => ap.key === value)[0].dispIds;
-    this.props.loadDelgAdvanceFee(dispIds);
+  columns = [{
+    title: this.msg('feeName'),
+    width: 120,
+    dataIndex: 'name',
+  }, {
+    title: this.msg('feeVal'),
+    width: 100,
+    dataIndex: 'cal_fee',
+    render: (o, row) => {
+      const formProps = {
+        style: { marginBottom: 0 },
+      };
+      let oval = o;
+      if (this.state.editFees[row.code]) {
+        oval = this.state.editFees[row.code].cal_fee;
+        if (isNaN(oval)) {
+          formProps.validateStatus = 'warning';
+        }
+      }
+      return (
+        <FormItem {...formProps}>
+          <Input value={oval} onChange={ev => this.handleFeeValChange(row, ev.target.value)} />
+        </FormItem>
+      );
+    },
+  }, {
+    title: this.msg('currency'),
+    width: 60,
+    render: () => 'RMB',
+  }, {
+    title: this.msg('advanceTaxType'),
+    dataIndex: 'duty_type',
+    width: 120,
+    render: (o, row) => {
+      const formProps = {
+        style: { marginBottom: 0 },
+      };
+      let oval = o;
+      if (this.state.editFees[row.code]) {
+        oval = this.state.editFees[row.code].duty_type;
+        if (isNaN(oval)) {
+          formProps.validateStatus = 'warning';
+        }
+      }
+      return (
+        <FormItem {...formProps}>
+          <Select onSelect={value => this.handleDutySelect(row, value)} value={oval} style={{ width: '100%' }}>
+            {
+              CMS_DUTY_TAXTYPE.map(cdt => <Option key={cdt.value} value={cdt.value}>{cdt.text}</Option>)
+            }
+          </Select>
+        </FormItem>
+      );
+    },
+  }, {
+    title: this.msg('taxValue'),
+    width: 80,
+    dataIndex: 'tax_fee',
+    render: (o, row) => {
+      const oval = Number(o);
+      if (isNaN(oval)) {
+        return '';
+      } else if (this.state.editFees[row.code]) {
+        return <span className="mdc-text-grey">{o.toFixed(2)}</span>;
+      } else {
+        return o.toFixed(2);
+      }
+    },
+  }, {
+    title: this.msg('totalValue'),
+    width: 80,
+    dataIndex: 'total_fee',
+    render: (o, row) => {
+      const oval = Number(o);
+      if (isNaN(oval)) {
+        return '';
+      } else if (this.state.editFees[row.code]) {
+        return <span className="mdc-text-grey">{o.toFixed(2)}</span>;
+      } else {
+        return o.toFixed(2);
+      }
+    },
+  }]
+  handleFeeValChange = (row, value) => {
+    const feeVal = value ? parseFloat(value) : 0;
+    if (isNaN(feeVal)) {
+      return;
+    }
+    const editFees = { ...this.state.editFees };
+    if (!editFees[row.code]) {
+      editFees[row.code] = {
+        fee_code: row.code,
+        duty_type: row.duty_type,
+        disp_id: row.disp_id,
+        cal_fee: value,
+      };
+    } else {
+      editFees[row.code] = {
+        ...editFees[row.code],
+        cal_fee: value,
+      };
+    }
+    this.setState({ editFees });
+  }
+  handleDutySelect = (row, value) => {
+    const editFees = { ...this.state.editFees };
+    if (!editFees[row.code]) {
+      editFees[row.code] = {
+        fee_code: row.code,
+        duty_type: value,
+        disp_id: row.disp_id,
+        cal_fee: row.cal_fee,
+      };
+    } else {
+      editFees[row.code] = {
+        ...editFees[row.code],
+        duty_type: value,
+      };
+    }
+    this.setState({ editFees });
   }
   handleCancel = () => {
     this.props.closeAdvanceFeeModal();
-    this.props.form.resetFields();
+    this.setState({ editFees: {} });
   }
   handleOk = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-        const formData = this.props.form.getFieldsValue();
-        const fee = this.props.fees.filter(fe => fe.code === formData.fee_code)[0];
-        this.props.computeDelgAdvanceFee({
-          delg_no: this.props.delgNo,
-          disp_id: fee.disp_id,
-          advance_fee: formData.advance_fee,
-          fee_code: formData.fee_code,
-          curr_code: formData.advance_curr || '',
-          advance_tax_type: formData.advance_tax_type,
-          remark: formData.remark,
-        }).then((result) => {
-          if (!result.error) {
-            this.props.closeAdvanceFeeModal();
-            this.props.form.resetFields();
-          }
-        });
+    const changedFees = [];
+    Object.keys(this.state.editFees).forEach((code) => {
+      const fee = {
+        delg_no: this.props.delgNo,
+        ...this.state.editFees[code],
+      };
+      changedFees.push(fee);
+    });
+    this.props.computeDelgAdvanceFees(changedFees).then((result) => {
+      if (!result.error) {
+        this.props.closeAdvanceFeeModal();
+        this.setState({ editFees: {} });
+      } else {
+        message.error(result.error.message);
       }
     });
   }
   render() {
-    const { advanceParties, currencies, visible, delgNo, fees, form: { getFieldDecorator } } = this.props;
-    const formCols = {
-      labelCol: { span: labelCol },
-      wrapperCol: { span: 18 - labelCol },
-    };
+    const { advanceParties, advDirection, visible, delgNo, fees } = this.props;
     return (
-      <Modal title={this.msg('advanceFee')} onOk={this.handleOk}
-        onCancel={this.handleCancel} visible={visible}
+      <Modal title={`${delgNo} ${advDirection === 'send' ? this.msg('cushCost') : this.msg('cushBill')}`}
+        onOk={this.handleOk} onCancel={this.handleCancel} visible={visible}
       >
-        <Form horizontal>
-          <FormItem label={this.msg('delgNo')} {...formCols}>
-            <Input value={delgNo} readOnly />
-          </FormItem>
-          <FormItem {...formCols} label={this.msg('advanceParty')}>
-            {
-              getFieldDecorator('advance_party_key', {
-                rules: [{ required: true, message: this.msg('advancePartyRequired') }],
-                onChange: this.handlePartyChange,
-              })(
-                <Select>
-                  {
-                    advanceParties.map(ap => <Option key={ap.key} value={ap.key}>{ap.name}</Option>)
-                  }
-                </Select>
-              )
+        {
+          advanceParties.map((ap) => {
+            const feeData = fees.filter(fee => ap.dispIds.indexOf(fee.disp_id) >= 0);
+            let titleLabel;
+            if (advDirection === 'send') {
+              if (ap.server_types.length === 2) {
+                titleLabel = '报关报检供应商';
+              } else if (ap.server_types.length === 1) {
+                if (ap.server_types[0] === 1) {
+                  titleLabel = '报关供应商';
+                } else if (ap.server_types[0] === 2) {
+                  titleLabel = '报检供应商';
+                }
+              }
+            } else if (advDirection === 'recv') {
+              titleLabel = '客户';
             }
-          </FormItem>
-          <FormItem label={this.msg('feeName')} {...formCols}>
-            {
-              getFieldDecorator('fee_code', {
-                rules: [{ required: true, message: '费用类型必选' }],
-              })(
-                <Select>
-                  {
-                    fees.map(fee => <Option key={fee.code} value={fee.code}>{fee.name}</Option>)
-                  }
-                </Select>
-              )
-            }
-          </FormItem>
-          <FormItem {...formCols} label={this.msg('feeVal')}>
-            {
-              getFieldDecorator('advance_fee', {
-                rules: [{ required: true, message: this.msg('advanceFeeRequired'), type: 'number' }],
-                initialValue: 0,
-              })(
-                <InputNumber style={{ width: '100%' }} min={0} step={0.01} />
-              )
-            }
-          </FormItem>
-          <FormItem {...formCols} label={this.msg('currency')}>
-            {
-              getFieldDecorator('advance_curr')(
-                <Select>
-                  {
-                    currencies.map(curr => <Option key={curr.curr_code} value={curr.curr_symb}>{curr.curr_name}</Option>)
-                  }
-                </Select>
-              )
-            }
-          </FormItem>
-          <FormItem {...formCols} label={this.msg('advanceTaxType')}>
-            {
-              getFieldDecorator('advance_tax_type', {
-                rules: [{ required: true, message: this.msg('advanceTaxTypeRequired'), type: 'number' }],
-              })(
-                <Select>
-                  {
-                    CMS_DUTY_TAXTYPE.map(cdt => <Option key={cdt.value} value={cdt.value}>{cdt.text}</Option>)
-                  }
-                </Select>
-              )
-            }
-          </FormItem>
-          <FormItem label={this.msg('remark')} {...formCols}>
-            {getFieldDecorator('remark')(
-              <Input type="textarea" rows="3" />
-            )}
-          </FormItem>
-        </Form>
+            return titleLabel ? (
+              <Table columns={this.columns} dataSource={feeData} pagination={false} title={() => `${titleLabel}: ${ap.name}`}
+                bordered rowKey="code" style={{ marginBottom: 10 }}
+              />) : null;
+          })
+        }
       </Modal>
     );
   }

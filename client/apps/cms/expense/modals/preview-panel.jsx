@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Table } from 'antd';
+import { Button, Card, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { openAdvanceFeeModal, hidePreviewer } from 'common/reducers/cmsExpense';
+import { loadAdvanceParties, hidePreviewer } from 'common/reducers/cmsExpense';
 import DelgAdvanceExpenseModal from './delgAdvanceExpenseModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -11,20 +11,18 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     visible: state.cmsExpense.previewer.visible,
     previewer: state.cmsExpense.previewer,
   }),
-  { hidePreviewer, openAdvanceFeeModal }
+  { hidePreviewer, loadAdvanceParties }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     previewer: PropTypes.object.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
-    openAdvanceFeeModal: PropTypes.func.isRequired,
-  }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor);
   columns = [{
@@ -67,8 +65,16 @@ export default class PreviewPanel extends React.Component {
   handleClose = () => {
     this.props.hidePreviewer();
   }
-  handleAddAdvanceFee = () => {
-    this.props.openAdvanceFeeModal(this.props.previewer.delgNo);
+  handleAddAdvanceIncome = () => {
+    this.props.loadAdvanceParties(this.props.previewer.delg_no, this.props.tenantId, 'recv');
+  }
+  handleAddAdvancePayment = () => {
+    this.props.loadAdvanceParties(this.props.previewer.delg_no, this.props.tenantId, 'send')
+      .then((result) => {
+        if (result.error && result.error.message === 'no advance parties') {
+          message.error('无供应商代垫');
+        }
+      });
   }
   render() {
     const { visible, previewer } = this.props;
@@ -87,8 +93,11 @@ export default class PreviewPanel extends React.Component {
             <span className="title">{previewer.delg_no}</span>
             <div className="pull-right">
               <div className="toolbar">
-                <Button type="ghost" onClick={this.handleAddAdvanceFee}>
-                  添加代垫费用
+                <Button type="ghost" onClick={this.handleAddAdvanceIncome}>
+                  录入代垫费用收入
+                </Button>
+                <Button type="ghost" onClick={this.handleAddAdvancePayment}>
+                  录入代垫费用支出
                 </Button>
               </div>
               {closer}
