@@ -29,7 +29,7 @@ function getFieldInits(aspect, formData) {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
   }
-  init.claim_do_awb = formData.claim_do_awb || 1;
+  init.claim_do_awb = formData.claim_do_awb === undefined ? 1 : formData.claim_do_awb;
   return init;
 }
 @injectIntl
@@ -79,6 +79,33 @@ export default class BasicForm extends Component {
       customerName = {
         display: 'none',
         required: false,
+      };
+    }
+    let transModeLabel = {
+      label: '',
+      title: '',
+    };
+    let voyageNoLabel = {
+      label: '',
+      placeholder: '',
+    };
+    if (getFieldValue('trans_mode') === '2' || fieldInits.trans_mode === '2') {
+      transModeLabel = {
+        label: formatMsg(this.props.intl, 'bLNo'),
+        title: '填报总运单号_分运单号，无分运单的填报总运单号',
+      };
+      voyageNoLabel = {
+        label: formatMsg(this.props.intl, 'voyageNo'),
+        placeholder: '填写船舶英文名称',
+      };
+    } else if (getFieldValue('trans_mode') === '5' || fieldInits.trans_mode === '5') {
+      transModeLabel = {
+        label: formatMsg(this.props.intl, 'deliveryNo'),
+        title: '填报总运单号_分运单号，无分运单的填报总运单号',
+      };
+      voyageNoLabel = {
+        label: formatMsg(this.props.intl, 'flightNo'),
+        placeholder: '填写航班号',
       };
     }
     return (
@@ -138,25 +165,11 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            {getFieldValue('trans_mode') === '2' &&
+            {(getFieldValue('trans_mode') === '2' || getFieldValue('trans_mode') === '5') &&
               <FormItem label={(
                 <span>
-                  {this.msg('bLNo')}&nbsp;
-                  <Tooltip title="如有分提单填报：提单号*分提单号">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
-                </span>)} {...formItemLayout}
-              >
-                {getFieldDecorator('bl_wb_no', {
-                  initialValue: fieldInits.bl_wb_no,
-                })(<Input />)}
-              </FormItem>
-            }
-            {getFieldValue('trans_mode') === '5' &&
-              <FormItem label={(
-                <span>
-                  {this.msg('deliveryNo')}&nbsp;
-                  <Tooltip title="填报总运单号_分运单号，无分运单的填报总运单号">
+                  {transModeLabel.label}&nbsp;
+                  <Tooltip title={transModeLabel.title}>
                     <Icon type="question-circle-o" />
                   </Tooltip>
                 </span>)} {...formItemLayout}
@@ -168,18 +181,11 @@ export default class BasicForm extends Component {
             }
           </Col>
           <Col sm={8}>
-            {getFieldValue('trans_mode') === '2' &&
-              <FormItem label={this.msg('voyageNo')} {...formItemLayout}>
+            {(getFieldValue('trans_mode') === '2' || getFieldValue('trans_mode') === '5') &&
+              <FormItem label={voyageNoLabel.label} {...formItemLayout}>
                 {getFieldDecorator('voyage_no', {
                   initialValue: fieldInits.voyage_no,
-                })(<Input placeholder="填写船舶英文名称" />)}
-              </FormItem>
-            }
-            {getFieldValue('trans_mode') === '5' &&
-              <FormItem label={this.msg('flightNo')} {...formItemLayout}>
-                {getFieldDecorator('voyage_no', {
-                  initialValue: fieldInits.voyage_no,
-                })(<Input placeholder="填写航班号" />)}
+                })(<Input placeholder={voyageNoLabel.placeholder} />)}
               </FormItem>
             }
           </Col>
