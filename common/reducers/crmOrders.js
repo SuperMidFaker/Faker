@@ -37,6 +37,7 @@ const initialState = {
     },
   },
   formData: {
+    model: '',
     shipmt_order_no: '',
     shipmt_order_mode: 2,
     customer_name: '',
@@ -91,6 +92,7 @@ const initialState = {
       gross_wt: 0,
     }],
     files: [],
+    subOrders: [],
   },
   formRequires: {
     clients: [],

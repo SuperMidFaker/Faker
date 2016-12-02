@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Input, Select, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, TRANS_MODE } from 'common/constants';
+import { setClientForm } from 'common/reducers/crmOrders';
+import { loadBusinessModels } from 'common/reducers/crmCustomers';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import { setClientForm } from 'common/reducers/crmOrders';
+
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -21,23 +23,27 @@ const RadioGroup = Radio.Group;
     tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
     formRequires: state.crmOrders.formRequires,
+    businessModels: state.crmCustomers.businessModels,
   }),
-  { setClientForm }
+  { setClientForm, loadBusinessModels }
 )
 
 export default class BasicForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
     formRequires: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
+    loadBusinessModels: PropTypes.func.isRequired,
+    businessModels: PropTypes.object.isRequired,
   }
-
   msg = key => formatMsg(this.props.intl, key)
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
+    const { tenantId } = this.props;
     const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
     if (client) {
       this.props.setClientForm({
@@ -46,13 +52,73 @@ export default class BasicForm extends Component {
         customer_partner_id: selPartnerId,
         customer_partner_code: client.partner_code,
       });
+      this.props.loadBusinessModels({
+        partnerId: selPartnerId,
+        tenantId,
+      });
     }
+  }
+  handleBusinessModelChange = (value) => {
+    const { businessModels } = this.props;
+    const businessModel = businessModels.find(item => item.id === value);
+    const subOrders = [];
+    const modelArray = businessModel.model.split(',');
+    modelArray.forEach(item => {
+      if (item === 'transport') {
+        subOrders.push({
+          _mode: item,
+          trs_mode_id: -1,
+          trs_mode_code: '',
+          trs_mode: '',
+          shipments: [{
+            consigner_name: '',
+            consigner_province: '',
+            consigner_city: '',
+            consigner_district: '',
+            consigner_street: '',
+            consigner_region_code: -1,
+            consigner_addr: '',
+            consigner_email: '',
+            consigner_contact: '',
+            consigner_mobile: '',
+            consignee_name: '',
+            consignee_province: '',
+            consignee_city: '',
+            consignee_district: '',
+            consignee_street: '',
+            consignee_region_code: -1,
+            consignee_addr: '',
+            consignee_email: '',
+            consignee_contact: '',
+            consignee_mobile: '',
+            pack_count: 1,
+            gross_wt: 0,
+          }],
+        });
+      } else if (item === 'clearance') {
+        subOrders.push({
+          _mode: item,
+          ccb_need_exchange: 0,
+          files: [],
+          delegations: [{
+            decl_way_code: '',
+            manual_no: '',
+            pack_count: 1,
+            gross_wt: 0,
+          }],
+        });
+      }
+    });
+    this.props.setClientForm({ model: businessModel.model, subOrders });
   }
   handleChange = (key, value) => {
     this.props.setClientForm({ [key]: value });
   }
+  changeModelForm = (model) => {
+    return model.replace(/transport/g, '运输').replace(/clearance/g, '清关')
+  }
   render() {
-    const { formRequires, formData } = this.props;
+    const { formRequires, formData, businessModels } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -70,12 +136,9 @@ export default class BasicForm extends Component {
               </RadioGroup>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
           <Col sm={8}>
             <FormItem label="客户名称" {...formItemLayout} required="true">
               <Select showSearch optionFilterProp="children"
-                placeholder="输入客户代码或名称"
                 value={formData.customer_name}
                 onChange={value => this.handleClientChange(value)}
               >
@@ -85,6 +148,22 @@ export default class BasicForm extends Component {
               </Select>
             </FormItem>
           </Col>
+          <Col sm={8}>
+            <FormItem label="业务规则" {...formItemLayout} required="true">
+              <Select showSearch optionFilterProp="children"
+                value={this.changeModelForm(formData.model)}
+                onChange={value => this.handleBusinessModelChange(value)}
+              >
+                {businessModels.map(data => (
+                  <Option key={data.id} value={data.id}>{this.changeModelForm(data.model)}</Option>)
+                )}
+              </Select>
+            </FormItem>
+          </Col>
+          
+        </Row>
+        <Row>
+          
           <Col sm={8}>
             <FormItem label="客户订单号" {...formItemLayout} required="true">
               <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />

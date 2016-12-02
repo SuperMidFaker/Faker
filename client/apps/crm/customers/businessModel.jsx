@@ -45,6 +45,9 @@ export default class BusinessModel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.customer.id !== this.props.customer.id || !nextProps.businessModelsLoaded) {
       this.handleTableLoad(nextProps.customer.id);
+      this.setState({
+        editIndex: -1,
+      });
     }
   }
   handleTableLoad = (partnerId) => {
@@ -61,7 +64,7 @@ export default class BusinessModel extends React.Component {
     });
     const { customer, tenantId } = this.props;
     const { id: partnerId, partner_tenant_id: partnerTenantId } = customer;
-    if (model.id) {
+    if (model.id > 0) {
       this.props.updateBusinessModel(model.id, model.model);
     } else {
       this.props.addBusinessModel(tenantId, partnerId, partnerTenantId, model.model);
@@ -87,6 +90,7 @@ export default class BusinessModel extends React.Component {
   handleAddModel = () => {
     this.props.addModel({
       model: '',
+      id: -1 * this.props.businessModels.length,
     });
     this.setState({
       editIndex: this.props.businessModels.length,
@@ -114,7 +118,7 @@ export default class BusinessModel extends React.Component {
       if (rowIndex === editIndex) {
         closable = true;
       }
-      return (<Tag color={color} closable={closable} onClose={(e) => { e.preventDefault(); this.handleDeleteModelNode(rowIndex, i); }}>{text}</Tag>);
+      return (<Tag key={i} color={color} closable={closable} onClose={(e) => { e.preventDefault(); this.handleDeleteModelNode(rowIndex, i); }}>{text}</Tag>);
     });
   }
   render() {
@@ -145,7 +149,6 @@ export default class BusinessModel extends React.Component {
     }, {
       title: '操作',
       dataIndex: 'id',
-      key: 'id',
       render: (o, record, index) => {
         if (index === editIndex) {
           return (

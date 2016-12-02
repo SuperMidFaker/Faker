@@ -63,7 +63,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, businessModels: action.result.data, businessModelsLoaded: true };
     }
     case actionTypes.ADD_MODEL: {
-      const businessModels = [...state.businessModels, action.data];
+      const businessModels = [...state.businessModels];
+      businessModels.push(action.data);
       return { ...state, businessModels };
     }
     case actionTypes.DELETE_MODEL: {
@@ -126,7 +127,7 @@ export function loadCustomers(params) {
   };
 }
 
-export function loadBusinessModels(params) {
+export function loadBusinessModels({ partnerId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -136,7 +137,7 @@ export function loadBusinessModels(params) {
       ],
       endpoint: 'v1/crm/customer/business/models',
       method: 'get',
-      params,
+      params: { partnerId, tenantId },
     },
   };
 }
