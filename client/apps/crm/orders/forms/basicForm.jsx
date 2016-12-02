@@ -63,7 +63,7 @@ export default class BasicForm extends Component {
     const businessModel = businessModels.find(item => item.id === value);
     const subOrders = [];
     const modelArray = businessModel.model.split(',');
-    modelArray.forEach(item => {
+    modelArray.forEach((item) => {
       if (item === 'transport') {
         subOrders.push({
           _mode: item,
@@ -115,7 +115,7 @@ export default class BasicForm extends Component {
     this.props.setClientForm({ [key]: value });
   }
   changeModelForm = (model) => {
-    return model.replace(/transport/g, '运输').replace(/clearance/g, '清关')
+    return model.replace(/transport/g, '运输').replace(/clearance/g, '清关');
   }
   render() {
     const { formRequires, formData, businessModels } = this.props;
@@ -160,10 +160,10 @@ export default class BasicForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          
+
         </Row>
         <Row>
-          
+
           <Col sm={8}>
             <FormItem label="客户订单号" {...formItemLayout} required="true">
               <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />
