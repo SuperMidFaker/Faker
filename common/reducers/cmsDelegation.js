@@ -27,7 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
   'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS', 'SET_PREW_STATUS',
-  'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL',
+  'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL', 'SET_PREW_TABKEY',
   'OPEN_CIQ_MODAL', 'CLOSE_CIQ_MODAL',
   'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
   'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
@@ -39,6 +39,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'RELATED_DISP_LOAD', 'RELATED_DISP_LOAD_SUCCEED', 'RELATED_DISP_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
+  'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
 ]);
 
 const initialState = {
@@ -145,6 +146,7 @@ const initialState = {
   brokers: [],
   relatedDisps: [],
   suplliers: [],
+  delgPanel: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -262,11 +264,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_PREVIEWER_SUCCEED:
       return { ...state, previewer: {
         ...state.previewer,
+        tabKey: 'basic',
         visible: action.visible,
-        status: action.status,
+        delgNo: action.delgNo,
         ...action.result.data }, preStatus: '' };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
+    case actionTypes.LOAD_DELG_PANEL_SUCCEED:
+      return { ...state, delgPanel: action.result.data };
     case actionTypes.OPEN_EF_MODAL:
       return { ...state, visibleEfModal: true, efModal: action.data };
     case actionTypes.CLOSE_EF_MODAL:
@@ -287,6 +292,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
+    case actionTypes.SET_PREW_TABKEY:
+      return { ...state, previewer: { ...state.previewer, tabKey: action.data } };
     case actionTypes.LOAD_DECLWAY_SUCCEED:
       return { ...state, matchParam: action.result.data };
     case actionTypes.MATCH_QUOTE_SUCCEED:
@@ -489,6 +496,13 @@ export function loadBillMakeModal(params, type) {
     },
   };
 }
+export function setPreviewTabkey(tabkey) {
+  return {
+    type: actionTypes.SET_PREW_TABKEY,
+    data: tabkey,
+  };
+}
+
 export function setPreviewStatus(status) {
   return {
     type: actionTypes.SET_PREW_STATUS,
@@ -814,7 +828,7 @@ export function returnDelegate(data) {
   };
 }
 
-export function showPreviewer(params, status) {
+export function showPreviewer(params, delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -826,7 +840,22 @@ export function showPreviewer(params, status) {
       method: 'get',
       params,
       visible: true,
-      status,
+      delgNo,
+    },
+  };
+}
+
+export function loadCustPanel(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELG_PANEL,
+        actionTypes.LOAD_DELG_PANEL_SUCCEED,
+        actionTypes.LOAD_DELG_PANEL_FAILED,
+      ],
+      endpoint: 'v1/cms/delegate/load/custPanel',
+      method: 'get',
+      params,
     },
   };
 }
