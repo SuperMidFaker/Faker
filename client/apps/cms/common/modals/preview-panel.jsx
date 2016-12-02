@@ -10,7 +10,7 @@ import CertsPane from './tabpanes/CertsPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
 import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
-import { hidePreviewer, setPreviewStatus } from 'common/reducers/cmsDelegation';
+import { hidePreviewer, setPreviewStatus, setPreviewTabkey } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
 
@@ -20,10 +20,12 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     visible: state.cmsDelegation.previewer.visible,
     previewer: state.cmsDelegation.previewer,
+    tabKey: state.cmsDelegation.previewer.tabKey,
+    delgPanel: state.cmsDelegation.delgPanel,
     ciqdecl: state.cmsDeclare.previewer.ciqdecl,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus }
+  { hidePreviewer, setPreviewStatus, setPreviewTabkey }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -36,15 +38,13 @@ export default class PreviewPanel extends React.Component {
     ciqdecl: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
+    setPreviewTabkey: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    tabKey: this.props.previewer.tabKey || 'basic',
-  }
   handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
+    this.props.setPreviewTabkey(tabKey);
   }
   handleClose = () => {
     this.props.hidePreviewer();
@@ -136,11 +136,11 @@ export default class PreviewPanel extends React.Component {
     }
   }
   tablePan() {
-    const { previewer } = this.props;
+    const { previewer, tabKey } = this.props;
     const { delegation, files, delegateTracking } = previewer;
     if (delegation.status === 0) {
       return (
-        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab="委托" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
@@ -152,7 +152,7 @@ export default class PreviewPanel extends React.Component {
     } else if (delegation.status === 1 || delegation.status === 2) {
       if (delegation.ciq_type === 'NA') {
         return (
-          <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+          <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
             <TabPane tab="委托" key="basic">
               <BasicPane delegation={delegation} files={files} />
             </TabPane>
@@ -169,7 +169,7 @@ export default class PreviewPanel extends React.Component {
         );
       }
       return (
-        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab="委托" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
@@ -190,7 +190,7 @@ export default class PreviewPanel extends React.Component {
     } else if (delegation.status === 3 || delegation.status === 4) {
       if (delegation.ciq_type === 'NA') {
         return (
-          <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+          <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
             <TabPane tab="委托" key="basic">
               <BasicPane delegation={delegation} files={files} />
             </TabPane>
@@ -213,7 +213,7 @@ export default class PreviewPanel extends React.Component {
         );
       }
       return (
-        <Tabs type="card" activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab="委托" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
@@ -240,10 +240,9 @@ export default class PreviewPanel extends React.Component {
     }
   }
   button() {
-    const { previewer, tenantId, ciqdecl } = this.props;
-    const { delegation, delegateTracking } = previewer;
-    if (this.state.tabKey === 'basic') {
-      if (delegateTracking.status === 0 && (delegation.source === 3 || delegation.source === 1)) {
+    const { previewer, tabKey, ciqdecl, delgPanel } = this.props;
+    if (tabKey === 'basic') {
+      if (previewer.delegation.btkey === 'recall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="default" onClick={this.handleDispAllCancel}>
@@ -251,9 +250,7 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-      } else if ((delegation.status === 1 && delegateTracking.source === 1 && delegation.ciq_send === 0) ||
-        (delegation.status === 1 && delegation.source === 3 &&
-          delegateTracking.recv_tenant_id === tenantId && delegation.ciq_send === 0)) {
+      } else if (previewer.delegation.btkey === 'assign') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="ghost" onClick={this.handleAssignAll}>
@@ -262,9 +259,8 @@ export default class PreviewPanel extends React.Component {
           </PrivilegeCover>
         );
       }
-    } else if (this.state.tabKey === 'customsDecl') {
-      if ((delegation.status === 1 && delegateTracking.source === 1) ||
-        (delegation.status === 1 && delegation.source === 3 && delegateTracking.recv_tenant_id === tenantId)) {
+    } else if (tabKey === 'customsDecl') {
+      if (delgPanel.btkey === 'delgDispMake') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
@@ -278,7 +274,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </PrivilegeCover>
         );
-      } else if (delegateTracking.status === 0 && delegateTracking.source !== 1) {
+      } else if (delgPanel.btkey === 'delgRecall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="default" onClick={this.handleDispCancel}>
@@ -286,7 +282,7 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-      } else if (delegateTracking.status === 1 && delegateTracking.recv_tenant_id === -1) {
+      } else if (delgPanel.btkey === 'delgRecallMake') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
@@ -300,8 +296,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </PrivilegeCover>
         );
-      } else if ((delegation.status === 2 && delegateTracking.recv_tenant_id === -1) || (
-         delegation.status === 2 && delegateTracking.recv_tenant_id === tenantId)) {
+      } else if (delgPanel.btkey === 'delgMake') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
@@ -311,18 +306,7 @@ export default class PreviewPanel extends React.Component {
             </div>
           </PrivilegeCover>
         );
-      } else if ((delegation.status === 3 && delegation.sub_status === 1 && delegateTracking.recv_tenant_id === -1) || (
-         delegation.status === 3 && delegation.sub_status === 1 && delegateTracking.recv_tenant_id === tenantId)) {
-        return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <div className="btn-bar">
-              <Button type="ghost" onClick={this.handleMake}>
-                制单
-              </Button>
-            </div>
-          </PrivilegeCover>
-        );
-      } else {
+      } else if (delgPanel.btkey === 'delgView') {
         return (
           <div className="btn-bar">
             <Button type="ghost" onClick={this.handleView}>
@@ -331,34 +315,22 @@ export default class PreviewPanel extends React.Component {
           </div>
         );
       }
-    } else if (this.state.tabKey === 'ciqDecl') {
-      if (((ciqdecl.status === 1 && ciqdecl.source === 1) ||
-        (ciqdecl.status === 1 && ciqdecl.source === 3 &&
-          ciqdecl.recv_tenant_id === tenantId)) &&
-          (delegateTracking.recv_tenant_id === tenantId)) {
+    } else if (tabKey === 'ciqDecl') {
+      if (ciqdecl.btkey === 'ciqDispFinish') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
             <div className="btn-bar">
               <Button type="ghost" onClick={this.handleCiqDisp}>
                 指定报检单位
               </Button>
-            </div>
-          </PrivilegeCover>
-        );
-      } else if (((ciqdecl.status === 1 && ciqdecl.source === 1) ||
-        (ciqdecl.status === 1 && ciqdecl.source === 3 &&
-          ciqdecl.recv_tenant_id === tenantId)) &&
-          (delegateTracking.source === 2)) {
-        return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <div className="btn-bar">
-              <Button type="ghost" onClick={this.handleCiqDisp}>
-                指定报检单位
+              <span />
+              <Button type="primary" onClick={this.handleCiqFinish}>
+                完成
               </Button>
             </div>
           </PrivilegeCover>
         );
-      } else if (ciqdecl.status === 0 && ciqdecl.source !== 1) {
+      } else if (ciqdecl.btkey === 'ciqRecall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="default" onClick={this.handleCiqDispCancel}>
@@ -366,7 +338,7 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-      } else if (ciqdecl.status === 1 && ciqdecl.source !== 1 && ciqdecl.recv_tenant_id === -1) {
+      } else if (ciqdecl.btkey === 'ciqRecallFinish') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <div className="btn-bar">

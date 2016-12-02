@@ -244,11 +244,11 @@ export default class CiqList extends Component {
       }
     });
   }
-  handlePreview = (o, record) => {
+  handlePreview = (o) => {
     this.props.showPreviewer({
       delgNo: o,
       tenantId: this.props.tenantId,
-    }, record.status);
+    }, o);
     this.props.loadDeclCiqByDelgNo(o, this.props.tenantId);
   }
   render() {

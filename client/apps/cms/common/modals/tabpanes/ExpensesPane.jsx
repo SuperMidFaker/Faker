@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col, Table, Tabs, message } from 'antd';
+import { Card, Row, Col, Table, Tabs } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-
+import { loadPaneExp } from 'common/reducers/cmsExpense';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
@@ -12,25 +12,24 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     expenses: state.cmsExpense.expenses,
-    delegation: state.cmsDelegation.previewer.delegation,
-  })
+    delgNo: state.cmsDelegation.previewer.delgNo,
+    tenantId: state.account.tenantId,
+  }),
+  { loadPaneExp }
 )
 export default class ExpensePane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     expenses: PropTypes.object.isRequired,
-    delegation: PropTypes.object.isRequired,
+    delgNo: PropTypes.string.isRequired,
+    tenantId: PropTypes.number.isRequired,
   }
   componentWillMount() {
-    if (this.props.delegation.sub_status === 3) {
-      message.info(formatMsg(this.props.intl, 'info'), 3);
-    }
+    this.props.loadPaneExp(this.props.delgNo, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delegation !== this.props.delegation) {
-      if (nextProps.delegation.sub_status === 3) {
-        message.info(formatMsg(this.props.intl, 'info'), 3);
-      }
+    if (nextProps.delgNo !== this.props.delgNo) {
+      nextProps.loadPaneExp(nextProps.delgNo, this.props.tenantId);
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)

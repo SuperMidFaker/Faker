@@ -35,9 +35,10 @@ PaneFormItem.propTypes = {
 @injectIntl
 @connect(
   state => ({
-    delgNo: state.cmsDelegation.previewer.delegation.delg_no,
+    delgNo: state.cmsDelegation.previewer.delgNo,
     ciqdecl: state.cmsDeclare.previewer.ciqdecl,
     tenantId: state.account.tenantId,
+    tabKey: state.cmsDelegation.previewer.tabKey,
   }),
   { loadDeclCiqByDelgNo }
 )
@@ -61,7 +62,8 @@ export default class CiqDeclPane extends React.Component {
     this.props.loadDeclCiqByDelgNo(this.props.delgNo, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {
+    if (nextProps.tabKey === 'ciqDecl' &&
+      nextProps.tabKey !== this.props.tabKey) {
       this.props.loadDeclCiqByDelgNo(nextProps.delgNo, this.props.tenantId);
     }
   }
