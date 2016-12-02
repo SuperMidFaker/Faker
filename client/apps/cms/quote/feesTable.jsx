@@ -158,8 +158,13 @@ export default class FeesTable extends Component {
     coops: [],
     editIndex: -1,
     count: 0,
+    dataSource: [],
   };
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.quoteData !== this.props.quoteData) {
+      this.setState({ dataSource: nextProps.quoteData.fees });
+    }
+  }
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     if (record.fee_code === 'ALL_IN' && record[field] === true) {
@@ -284,12 +289,40 @@ export default class FeesTable extends Component {
     });
     this.props.quoteData.fees.splice(index, 1);
   }
-
+  handleTableChange = (pagination, filters) => {
+    if (filters.category || filters.fee_style) {
+      const data = this.props.quoteData.fees;
+      let fees = [];
+      let catgfees = [];
+      let stylfees = [];
+      if (filters.category) {
+        for (let i = 0; i < filters.category.length; i++) {
+          const factor = filters.category[i];
+          catgfees = catgfees.concat(data.filter(da => da.category === factor));
+        }
+      }
+      if (filters.fee_style) {
+        for (let i = 0; i < filters.fee_style.length; i++) {
+          const factor = filters.fee_style[i];
+          stylfees = stylfees.concat(data.filter(da => da.fee_style === factor));
+        }
+      }
+      if (catgfees.length > 0 && stylfees.length > 0) {
+        catgfees.forEach((fe) => {
+          fees = fees.concat(stylfees.filter(sf =>
+            (sf.category === fe.category && sf.fee_code === fe.fee_code))
+          );
+        });
+      } else {
+        fees = catgfees.length > 0 ? catgfees : stylfees;
+      }
+      this.setState({ dataSource: fees });
+    }
+  }
   render() {
     const { quoteData, action, editable } = this.props;
-    const { editIndex, addedit } = this.state;
+    const { editIndex, addedit, dataSource } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
-    const dataSource = quoteData.fees;
     const columns = [
       {
         title: msg('serialNo'),
@@ -312,6 +345,13 @@ export default class FeesTable extends Component {
       }, {
         title: msg('feeCategory'),
         dataIndex: 'category',
+        filters: [
+          { text: '代理', value: 'agency_expenses' },
+          { text: '报关', value: 'customs_expenses' },
+          { text: '报检', value: 'ciq_expenses' },
+          { text: '鉴定办证', value: 'certs_expenses' },
+          { text: '杂项', value: 'misc_expenses' },
+        ],
         width: 150,
         render: (o, record, index) =>
           <ColumnSelect field="category" inEdit={editable || (index === editIndex)} record={record}
@@ -320,6 +360,10 @@ export default class FeesTable extends Component {
       }, {
         title: msg('feeStyle'),
         dataIndex: 'fee_style',
+        filters: [
+          { text: '服务', value: 'service' },
+          { text: '代垫', value: 'cushion' },
+        ],
         width: 150,
         render: (o, record, index) =>
           <ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
@@ -400,7 +444,8 @@ export default class FeesTable extends Component {
       },
     ];
     return (
-      <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource} loading={quoteData.loading} size="middle" scroll={{ y: 500 }}
+      <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
+        loading={quoteData.loading} size="middle" scroll={{ y: 500 }} onChange={this.handleTableChange}
         title={() => (action === 'model') && <Button type="primary" size="large" onClick={this.handleModelSave}>{msg('save')}</Button>}
         footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
       />

@@ -181,6 +181,7 @@ export const FEE_CATEGORY = [
   { value: 'ciq_expenses', text: '报检' },
   { value: 'misc_expenses', text: '杂项' },
   { value: 'certs_expenses', text: '鉴定办证' },
+  { value: 'custom', text: '自定义' },
 ];
 export const CHARGE_MODE = [
   { value: '0', text: '按Shipment' },

@@ -56,6 +56,9 @@ export default class QuotingCreate extends Component {
       ...this.props.quoteData,
       ...this.props.form.getFieldsValue(),
     };
+    if (!quoteData.fees || quoteData.fees.length === 0) {
+      return (message.error('无报价费用模板', 5));
+    }
     if (quoteData.partner.name) {
       const coops = this.props.partners.concat(this.props.clients);
       const selpartners = coops.filter(
