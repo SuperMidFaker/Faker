@@ -465,7 +465,7 @@ export default class DelegationList extends Component {
     const params = {};
     params.id = row.id0;
     params.delg_no = row.delg_no;
-    if (row.type === 1) {
+    if (row.recv_tenant_id === this.props.tenantId) {
       params.recv_tenant_id = row.recv_tenant_id;
     } else {
       params.recv_tenant_id = row.send_tenant_id;

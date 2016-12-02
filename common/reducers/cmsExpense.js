@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'COMPUTE_DELGADVFEES', 'COMPUTE_DELGADVFEES_SUCCEED', 'COMPUTE_DELGADVFEES_FAIL',
   'LOAD_DECLADVPARTIES', 'LOAD_DECLADVPARTIES_SUCCEED', 'LOAD_DECLADVPARTIES_FAIL',
   'COMPUTE_DECLADVFEES', 'COMPUTE_DECLADVFEES_SUCCEED', 'COMPUTE_DECLADVFEES_FAIL',
+  'CERT_PANEL_LOAD', 'CERT_PANEL_LOAD_SUCCEED', 'CERT_PANEL_LOAD_FAIL',
 ]);
 
 const initialState = {
@@ -76,6 +77,9 @@ const initialState = {
   },
   advanceFeeModal: {
     visible: false,
+    fees: [],
+  },
+  certPanel: {
     fees: [],
   },
 };
@@ -167,6 +171,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, declAdvanceParties: action.result.data };
     case actionTypes.COMPUTE_DECLADVFEES_SUCCEED:
       return { ...state, saved: true };
+    case actionTypes.CERT_PANEL_LOAD_SUCCEED:
+      return { ...state, certPanel: action.result.data };
     default:
       return state;
   }
@@ -206,6 +212,21 @@ export function loadPaneExp(delgNo, tenantId) {
         actionTypes.EXP_PANE_LOAD_FAIL,
       ],
       endpoint: 'v1/cms/expense/paneload',
+      method: 'get',
+      params: { delgNo, tenantId },
+      origin: 'mongo',
+    },
+  };
+}
+export function loadPanelCert(delgNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CERT_PANEL_LOAD,
+        actionTypes.CERT_PANEL_LOAD_SUCCEED,
+        actionTypes.CERT_PANEL_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/load/certPanel',
       method: 'get',
       params: { delgNo, tenantId },
       origin: 'mongo',

@@ -2,74 +2,64 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Table } from 'antd';
+import { loadPanelCert } from 'common/reducers/cmsExpense';
 
-function getColCls(col) {
-  if (col) {
-    const { span, offset } = col;
-    const spanCls = span ? `col-${span}` : '';
-    const offsetCls = offset ? `col-offset-${offset}` : '';
-    return `${spanCls} ${offsetCls}`;
-  }
-  return '';
-}
-function PaneFormItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
-  const labelCls = `info-label ${getColCls(labelCol)}`;
-  const fieldCls = `info-data ${getColCls(fieldCol)}`;
-  return (
-    <div className="info-item">
-      <label className={labelCls} htmlFor="pane">{label}：</label>
-      <div className={fieldCls}>{field}</div>
-    </div>
-  );
-}
-
-PaneFormItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  labelCol: PropTypes.object,
-  fieldCol: PropTypes.object,
-};
 @injectIntl
 @connect(
   state => ({
-    aspect: state.account.aspect,
-  })
+    certPanel: state.cmsExpense.certPanel,
+    delgNo: state.cmsDelegation.previewer.delgNo,
+    tenantId: state.account.tenantId,
+  }),
+  { loadPanelCert }
 )
 export default class CertsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    aspect: PropTypes.number.isRequired,
+    delgNo: PropTypes.string.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    certPanel: PropTypes.object.isRequired,
+  }
+  componentWillMount() {
+    this.props.loadPanelCert(this.props.delgNo, this.props.tenantId);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.delgNo !== this.props.delgNo) {
+      nextProps.loadPanelCert(nextProps.delgNo, this.props.tenantId);
+    }
   }
   render() {
+    const { certPanel } = this.props;
     const columns = [{
       title: '服务商',
+      dataIndex: 'broker',
+      key: 'broker',
+      width: '25%',
+    }, {
+      title: '鉴定办证费用项',
       dataIndex: 'fee_name',
       key: 'fee_name',
-    }, {
-      title: '鉴定办证类型',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
+      width: '25%',
     }, {
       title: '数量',
       dataIndex: 'charge_count',
       key: 'charge_count',
+      width: '15%',
     }, {
-      title: '鉴定办证日期',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
-    }, {
-      title: '动检查验',
-      dataIndex: 'charge_count',
-      key: 'charge_count',
+      title: '金额',
+      dataIndex: 'total_fee',
+      key: 'total_fee',
+      width: '15%',
     }, {
       title: '备注',
-      dataIndex: 'unit_price',
-      key: 'unit_price',
+      dataIndex: 'remark',
+      key: 'remark',
+      width: '20%',
     }];
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={columns} pagination={false} />
+          <Table size="small" columns={columns} dataSource={certPanel.fees} pagination={false} />
         </Card>
       </div>
     );
