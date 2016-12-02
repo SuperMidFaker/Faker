@@ -18,8 +18,7 @@ import DelgDispatch from './delgDispatch';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertBrokers, loadRelatedDisp,
   setCiqFinish, openAcceptModal } from 'common/reducers/cmsDelegation';
-import { loadPaneExp, loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
-import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import PreviewPanel from '../modals/preview-panel';
 import CertModal from './modals/certModal';
 import AcceptModal from './modals/acceptModal';
@@ -51,9 +50,9 @@ const RadioButton = Radio.Button;
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDelgDisp, loadDisp,
-    loadPaneExp, loadCiqTable, loadDeclareWay, matchQuote,
+    loadCiqTable, loadDeclareWay, matchQuote,
     loadCertFees, openCertModal, loadCertBrokers, loadRelatedDisp,
-    loadDeclCiqByDelgNo, setCiqFinish, openAcceptModal }
+    setCiqFinish, openAcceptModal }
 )
 @connectNav({
   depth: 2,
@@ -81,7 +80,6 @@ export default class DelegationList extends Component {
     preStatus: PropTypes.string.isRequired,
     delegateTracking: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
-    loadPaneExp: PropTypes.func.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
     loadDeclareWay: PropTypes.func.isRequired,
     matchQuote: PropTypes.func.isRequired,
@@ -101,7 +99,6 @@ export default class DelegationList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
-      this.props.loadDeclCiqByDelgNo(this.props.delegation.delgNo, this.props.tenantId);
     }
     if (nextProps.matchStatus !== this.props.matchStatus) {
       if (nextProps.matchStatus.status === 'noquote') {
@@ -280,13 +277,11 @@ export default class DelegationList extends Component {
     remotes: this.props.delegationlist,
   })
 
-  handlePreview = (o, record) => {
+  handlePreview = (o) => {
     this.props.showPreviewer({
       delgNo: o,
       tenantId: this.props.tenantId,
-    }, record.status);
-    this.props.loadPaneExp(o, this.props.tenantId);
-    this.props.loadDeclCiqByDelgNo(o, this.props.tenantId);
+    }, o);
   }
   handleCiqFinish = (delgNo) => {
     this.props.setCiqFinish(delgNo).then(

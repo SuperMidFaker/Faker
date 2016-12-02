@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Tag, Row, Col, Card, Tabs, Table } from 'antd';
 import moment from 'moment';
 import { DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
-import { loadSubdelgsTable } from 'common/reducers/cmsDelegation';
+import { loadSubdelgsTable, loadCustPanel } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
 
@@ -37,33 +37,45 @@ PaneFormItem.propTypes = {
 @injectIntl
 @connect(
   state => ({
-    delgNo: state.cmsDelegation.previewer.delegation.delg_no,
-    delegateTracking: state.cmsDelegation.previewer.delegateTracking,
+    tenantId: state.account.tenantId,
+    delgNo: state.cmsDelegation.previewer.delgNo,
+    delgPanel: state.cmsDelegation.delgPanel,
     delgBillsMap: state.cmsDelegation.delgBillsMap,
+    tabKey: state.cmsDelegation.previewer.tabKey,
   }),
-  { loadSubdelgsTable }
+  { loadSubdelgsTable, loadCustPanel }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
-    delegateTracking: PropTypes.object.isRequired,
+    delgPanel: PropTypes.object.isRequired,
     delgBillsMap: PropTypes.object.isRequired,
   }
   componentWillMount() {
+    this.props.loadCustPanel({
+      delgNo: this.props.delgNo,
+      tenantId: this.props.tenantId,
+    });
     this.props.loadSubdelgsTable({
       delg_no: this.props.delgNo,
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {
+    if (nextProps.tabKey === 'customsDecl' &&
+      nextProps.tabKey !== this.props.tabKey) {
+      nextProps.loadCustPanel({
+        delgNo: nextProps.delgNo,
+        tenantId: this.props.tenantId,
+      });
       nextProps.loadSubdelgsTable({
         delg_no: nextProps.delgNo,
       });
     }
   }
   render() {
-    const { delegateTracking, delgBillsMap } = this.props;
+    const { delgPanel, delgBillsMap } = this.props;
     const delgBills = delgBillsMap[this.props.delgNo];
     const columns = [{
       title: '统一编号',
@@ -90,9 +102,9 @@ export default class CustomsDeclPane extends React.Component {
       },
     }];
     let sourceText = '';
-    if (delegateTracking.source === DELG_SOURCE.consigned) {
+    if (delgPanel.source === DELG_SOURCE.consigned) {
       sourceText = '委托';
-    } else if (delegateTracking.source === DELG_SOURCE.subcontracted) {
+    } else if (delgPanel.source === DELG_SOURCE.subcontracted) {
       sourceText = '分包';
     } else {
       sourceText = '转包';
@@ -103,13 +115,13 @@ export default class CustomsDeclPane extends React.Component {
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="报关企业"
-                field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
+                field={delgPanel.recv_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
-                field={delegateTracking.acpt_time
-                  && moment(delegateTracking.acpt_time).format('YYYY.MM.DD HH:mm')}
+                field={delgPanel.acpt_time
+                  && moment(delgPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
             <Col span="8">

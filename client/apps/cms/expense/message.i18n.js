@@ -134,17 +134,17 @@ const messages = defineMessages({
     id: 'cms.modals.expense.advance.party',
     defaultMessage: '代垫方',
   },
-  advancePartyRequired: {
-    id: 'cms.modals.expense.advance.party.required',
-    defaultMessage: '代垫方必选',
+  taxValue: {
+    id: 'cms.modals.expense.advance.tax.value',
+    defaultMessage: '税金',
   },
-  advanceFeeRequired: {
-    id: 'cms.modals.expense.advance.fee.required',
-    defaultMessage: '金额必填',
+  totalValue: {
+    id: 'cms.modals.expense.advance.fee.total',
+    defaultMessage: '总和',
   },
   advanceTaxType: {
     id: 'cms.modals.expense.advance.taxtype',
-    defaultMessage: '开票',
+    defaultMessage: '开票抬头',
   },
   advanceTaxTypeRequired: {
     id: 'cms.modals.expense.advance.taxtype.required',
