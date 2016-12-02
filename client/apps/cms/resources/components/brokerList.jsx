@@ -75,7 +75,8 @@ export default class BrokerList extends Component {
         render(o) {
           return (
             <span>{o ? mapPartnerships(o.split(',')) : ''}</span>
-        ); },
+          );
+        },
       }, {
         title: '创建日期',
         dataIndex: 'created_date',

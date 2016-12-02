@@ -8,6 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import Profile from './profile';
+import BusinessModel from './businessModel';
 import CustomerModal from './customerModal';
 import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
@@ -115,7 +116,7 @@ export default class List extends React.Component {
               <div className="page-body">
                 <Tabs defaultActiveKey="1" tabBarExtraContent={operations}>
                   <Tabs.TabPane tab="企业资料" key="1"><Profile customer={customer} /></Tabs.TabPane>
-                  <Tabs.TabPane tab="业务规则" key="2"><div /></Tabs.TabPane>
+                  <Tabs.TabPane tab="业务规则" key="2"><BusinessModel customer={customer} /></Tabs.TabPane>
                 </Tabs>
               </div>
             </Col>
