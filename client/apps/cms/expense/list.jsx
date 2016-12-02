@@ -2,12 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Radio, message } from 'antd';
+import { Button, Icon, Radio, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, openInModal, loadCurrencies, openMarkModal, showPreviewer } from 'common/reducers/cmsExpense';
+import { loadExpense, openInModal, loadCurrencies, openMarkModal,
+  loadAdvanceParties } from 'common/reducers/cmsExpense';
+import { showPreviewer } from 'common/reducers/cmsDelegation';
 import { EXP_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -17,7 +19,9 @@ import TrimSpan from 'client/components/trimSpan';
 import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
 import MarkModal from './modals/markModal';
-import PreviewPanel from './modals/preview-panel';
+import PreviewPanel from '../common/modals/preview-panel';
+import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
+import RowUpdater from './rowUpdater';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -41,7 +45,8 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
   }),
-  { openInModal, loadCurrencies, loadExpense, openMarkModal, showPreviewer }
+  { openInModal, loadCurrencies, loadExpense,
+    openMarkModal, showPreviewer, loadAdvanceParties }
 )
 @connectNav({
   depth: 2,
@@ -112,7 +117,7 @@ export default class ExpenseList extends Component {
           title: this.msg('serviceRevenue'),
           dataIndex: 'serv_bill',
           key: 'serv_bill',
-          width: 100,
+          width: 200,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -122,10 +127,16 @@ export default class ExpenseList extends Component {
           title: this.msg('cushBill'),
           dataIndex: 'cush_bill',
           key: 'cush_bill',
-          width: 100,
-          render: (o) => {
+          width: 200,
+          render: (o, row) => {
             if (o) {
-              return o.toFixed(2);
+              const labelElem = (
+                <span>{o.toFixed(2)}<Icon type="edit" /></span>
+              );
+              return (
+                <RowUpdater onHit={this.handleAddAdvanceIncome} field="cush_bill"
+                  row={{ delg_no: row.delg_no }} label={labelElem}
+                />);
             }
           },
         },
@@ -143,6 +154,32 @@ export default class ExpenseList extends Component {
             }
           },
         }, {
+          title: this.msg('servCost'),
+          dataIndex: 'serv_cost',
+          key: 'serv_cost',
+          width: 200,
+          render: (o) => {
+            if (o) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('cushCost'),
+          dataIndex: 'cush_cost',
+          key: 'cush_cost',
+          width: 200,
+          render: (o, row) => {
+            if (o) {
+              const labelElem = (
+                <span>{o.toFixed(2)}<Icon type="edit" /></span>
+              );
+              return (
+                <RowUpdater onHit={this.handleAddAdvancePayment} field="cush_cost"
+                  row={{ delg_no: row.delg_no }} label={labelElem}
+                />);
+            }
+          },
+        /*
           title: this.msg('进出口代理'),
           dataIndex: 'agency_cost',
           width: 100,
@@ -187,6 +224,7 @@ export default class ExpenseList extends Component {
               return o.toFixed(2);
             }
           },
+        */
         },
       ],
     }, {
@@ -228,11 +266,8 @@ export default class ExpenseList extends Component {
     remotes: this.props.expslist,
   })
 
-  handlePreview = (o) => {
-    this.props.showPreviewer({
-      delgNo: o,
-      tenantId: this.props.tenantId,
-    });
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(this.props.tenantId, delgNo, 'expenses');
   }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, expslist: { pageSize, current } } = this.props;
@@ -258,6 +293,12 @@ export default class ExpenseList extends Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleExpListLoad(1, filters);
+  }
+  handleAddAdvanceIncome = (row) => {
+    this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'recv');
+  }
+  handleAddAdvancePayment = (row) => {
+    this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'send');
   }
 
   mergeFilters(curFilters, value) {
@@ -330,6 +371,7 @@ export default class ExpenseList extends Component {
         <InputModal data={unstateData} />
         <MarkModal data={unstateData} />
         <PreviewPanel />
+        <DelgAdvanceExpenseModal />
       </QueueAnim>
     );
   }

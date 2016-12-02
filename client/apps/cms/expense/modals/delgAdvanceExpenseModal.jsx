@@ -13,6 +13,7 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(state => ({
   visible: state.cmsExpense.advanceFeeModal.visible,
+  delgNo: state.cmsExpense.advanceFeeModal.delg_no,
   fees: state.cmsExpense.advanceFeeModal.fees,
   currencies: state.cmsExpense.currencies,
   advanceParties: state.cmsExpense.advanceParties,
@@ -22,7 +23,7 @@ const FormItem = Form.Item;
 export default class DelgAdvanceExpenseModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    delgNo: PropTypes.string,
+    delgNo: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     fees: PropTypes.arrayOf(PropTypes.shape({
       code: PropTypes.string,
@@ -46,7 +47,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
   state = {
     editFees: {},
   }
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.currencies.length === 0) {
       this.props.loadCurrencies();
     }

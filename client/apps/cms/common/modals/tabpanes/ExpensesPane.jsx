@@ -87,6 +87,43 @@ export default class ExpensePane extends React.Component {
       key: 'total_fee',
       width: '60%',
     }];
+    const supplierColumns = [{
+      title: this.msg('feeName'),
+      dataIndex: 'fee_name',
+      key: 'fee_name',
+      width: '40%',
+    }, {
+      title: this.msg('收款金额'),
+      dataIndex: 'total_fee_bill',
+      key: 'sale_fee',
+      width: '30%',
+    }, {
+      title: this.msg('付款金额'),
+      dataIndex: 'total_fee_cost',
+      key: 'cost_fee',
+      width: '30%',
+    }];
+    const certColumns = [{
+      title: '鉴定办证',
+      dataIndex: 'broker',
+      key: 'broker',
+      width: '25%',
+    }, {
+      title: this.msg('feeName'),
+      dataIndex: 'fee_name',
+      key: 'fee_name',
+      width: '25%',
+    }, {
+      title: this.msg('收款金额'),
+      dataIndex: 'total_fee_bill',
+      key: 'sale_fee',
+      width: '25%',
+    }, {
+      title: this.msg('付款金额'),
+      dataIndex: 'total_fee_cost',
+      key: 'cost_fee',
+      width: '25%',
+    }];
 
     return (
       <div className="pane-content tab-pane">
@@ -118,6 +155,17 @@ export default class ExpensePane extends React.Component {
                 </Card>
               </Col>
             </Row>
+          </TabPane>
+          <TabPane tab="供应商" key="supplier" style={{ padding: 8 }}>
+            <Card title={`报关 供应商: ${expenses.supplier.customs.provider}`} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={supplierColumns} dataSource={expenses.supplier.customs.data} rowKey="id" pagination={false} />
+            </Card>
+            <Card title={`报检 供应商: ${expenses.supplier.ciq.provider}`} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={supplierColumns} dataSource={expenses.supplier.ciq.data} rowKey="id" pagination={false} />
+            </Card>
+            <Card title={'鉴定办证'} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={certColumns} dataSource={expenses.supplier.cert.data} rowKey="id" pagination={false} />
+            </Card>
           </TabPane>
         </Tabs>
       </div>

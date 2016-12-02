@@ -244,12 +244,9 @@ export default class CiqList extends Component {
       }
     });
   }
-  handlePreview = (o) => {
-    this.props.showPreviewer({
-      delgNo: o,
-      tenantId: this.props.tenantId,
-    }, o);
-    this.props.loadDeclCiqByDelgNo(o, this.props.tenantId);
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(this.props.tenantId, delgNo);
+    this.props.loadDeclCiqByDelgNo(delgNo, this.props.tenantId);
   }
   render() {
     const { ciqlist } = this.props;

@@ -264,9 +264,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_PREVIEWER_SUCCEED:
       return { ...state, previewer: {
         ...state.previewer,
-        tabKey: 'basic',
+        tabKey: action.payload.tabKey || 'basic',
         visible: action.visible,
-        delgNo: action.delgNo,
+        delgNo: action.payload.delgNo,
         ...action.result.data }, preStatus: '' };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
@@ -828,7 +828,7 @@ export function returnDelegate(data) {
   };
 }
 
-export function showPreviewer(params, delgNo) {
+export function showPreviewer(tenantId, delgNo, tabKey) {
   return {
     [CLIENT_API]: {
       types: [
@@ -838,9 +838,9 @@ export function showPreviewer(params, delgNo) {
       ],
       endpoint: 'v1/cms/delegate/previewer',
       method: 'get',
-      params,
+      params: { tenantId, delgNo },
       visible: true,
-      delgNo,
+      payload: { delgNo, tabKey },
     },
   };
 }

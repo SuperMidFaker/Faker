@@ -31,6 +31,20 @@ const initialState = {
     server_charges: [],
     cush_charges: [],
     tot_sercharges: {},
+    supplier: {
+      customs: {
+        provider: '',
+        data: [],
+      },
+      ciq: {
+        provider: '',
+        data: [],
+      },
+      cert: {
+        provider: '',
+        data: [],
+      },
+    },
   },
   expslist: {
     totalCount: 0,
@@ -151,7 +165,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, visible: false } };
     case actionTypes.LOAD_ADVPARTIES_SUCCEED:
       return { ...state, advanceParties: action.result.data, advanceFeeModal: {
-        ...state.advanceFeeModal, visible: true, direction: action.params.direction } };
+        ...state.advanceFeeModal, visible: true, direction: action.params.direction,
+        delg_no: action.params.delgNo,
+      } };
     case actionTypes.SHOW_PREVIEWER:
       return { ...state, previewer: {
         ...state.previewer,

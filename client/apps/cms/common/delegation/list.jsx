@@ -277,11 +277,8 @@ export default class DelegationList extends Component {
     remotes: this.props.delegationlist,
   })
 
-  handlePreview = (o) => {
-    this.props.showPreviewer({
-      delgNo: o,
-      tenantId: this.props.tenantId,
-    }, o);
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(this.props.tenantId, delgNo);
   }
   handleCiqFinish = (delgNo) => {
     this.props.setCiqFinish(delgNo).then(
