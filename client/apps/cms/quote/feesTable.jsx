@@ -315,6 +315,9 @@ export default class FeesTable extends Component {
         });
       } else {
         fees = catgfees.length > 0 ? catgfees : stylfees;
+        if (fees.length === 0) {
+          fees = data;
+        }
       }
       this.setState({ dataSource: fees });
     }
